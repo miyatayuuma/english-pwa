@@ -1,0 +1,17 @@
+<!DOCTYPE html><html lang="ja"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>英語学習 PWA</title>
+<link rel="manifest" href="./manifest.json"><meta name="theme-color" content="#0b0e1a">
+<script>if('serviceWorker'in navigator){navigator.serviceWorker.register('./service-worker.js',{scope:'./'});}</script>
+<style>body{margin:0;background:#0b0e1a;color:#e6e8ef;font-family:system-ui,"Noto Sans JP",sans-serif}
+main{max-width:800px;margin:40px auto;padding:16px}button{padding:10px 14px;border-radius:10px;border:1px solid #2a3146;background:#131a2c;color:#e6e8ef}</style>
+</head><body><main>
+<h1>英語学習 PWA（最小）</h1>
+<button id="btn">状態確認</button>
+<pre id="log" style="background:#0f1422;border:1px solid #22304b;border-radius:10px;padding:8px"></pre>
+</main>
+<script type="module">
+  const log=document.getElementById('log'); document.getElementById('btn').onclick=()=>{
+    log.textContent=`online=${navigator.onLine}\nurl=${location.href}\nSW=${!!navigator.serviceWorker.controller}`;
+  };
+</script></body></html>
