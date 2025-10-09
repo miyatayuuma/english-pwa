@@ -1,17 +1,366 @@
-<!DOCTYPE html><html lang="ja"><head>
-<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-<title>英語学習 PWA</title>
-<link rel="manifest" href="./manifest.json"><meta name="theme-color" content="#0b0e1a">
-<script>if('serviceWorker'in navigator){navigator.serviceWorker.register('./service-worker.js',{scope:'./'});}</script>
-<style>body{margin:0;background:#0b0e1a;color:#e6e8ef;font-family:system-ui,"Noto Sans JP",sans-serif}
-main{max-width:800px;margin:40px auto;padding:16px}button{padding:10px 14px;border-radius:10px;border:1px solid #2a3146;background:#131a2c;color:#e6e8ef}</style>
-</head><body><main>
-<h1>英語学習 PWA（最小）</h1>
-<button id="btn">状態確認</button>
-<pre id="log" style="background:#0f1422;border:1px solid #22304b;border-radius:10px;padding:8px"></pre>
-</main>
-<script type="module">
-  const log=document.getElementById('log'); document.getElementById('btn').onclick=()=>{
-    log.textContent=`online=${navigator.onLine}\nurl=${location.href}\nSW=${!!navigator.serviceWorker.controller}`;
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>英語学習たたき台（GAS＋Sheets）</title>
+  <style>
+    :root{
+      --bg:#0b0e1a;--panel:rgba(20,24,36,.65);--bd:rgba(255,255,255,.12);--txt:#e6e8ef;--muted:#aeb5c6;
+      --accent:#62d5ff;--good:#46d37f;--warn:#f0c33c;--bad:#ff6b6b;--blue:#7ab0ff;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;background:var(--bg);color:var(--txt);font-family:system-ui,"Segoe UI","Noto Sans JP",sans-serif}
+    #app{position:fixed;inset:0;display:grid;grid-template-rows:auto 1fr auto}
+    header,footer{backdrop-filter:blur(6px);background:var(--panel);border-bottom:1px solid var(--bd)}
+    header{padding:10px 12px;display:flex;gap:12px;align-items:center}
+    header .stat{display:flex;gap:6px;align-items:baseline;font-size:14px;color:var(--muted)}
+    header .stat b{font-size:18px;color:var(--txt)}
+    header .grow{flex:1}
+    button,select,input[type="range"]{background:#111726;border:1px solid var(--bd);color:var(--txt);border-radius:10px;padding:8px 10px}
+    button:active{transform:translateY(1px)}
+    button.primary{background:linear-gradient(180deg,#1a2134,#12192b);border-color:#233252}
+    button.good{background:#10331f;border-color:#1f5c38}
+    button.warn{background:#332a10;border-color:#5c4b1f}
+    button.bad{background:#331717;border-color:#5c2929}
+    main{padding:12px;overflow:auto}
+    .card{max-width:800px;margin:0 auto;background:var(--panel);border:1px solid var(--bd);border-radius:16px;padding:14px}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .en{font-size:22px;line-height:1.5;margin:6px 0}
+    .ja{font-size:16px;color:var(--muted);display:none;margin:6px 0}
+    .chips{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+    .chip{font-size:12px;padding:2px 6px;border-radius:999px;border:1px solid var(--bd);color:var(--muted)}
+    .audioRow,.recRow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .kpi{display:flex;gap:12px;color:var(--muted);font-size:13px;margin-top:8px}
+    .kpi .val{color:var(--txt);font-weight:600}
+    .evalRow{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+    .evalBtn{padding:10px 12px;border-radius:12px;text-align:center}
+    .eval0{background:#231518;border:1px solid #4a1e27}
+    .eval1{background:#2b2313;border:1px solid #56441b}
+    .eval2{background:#152225;border:1px solid #2a444b}
+    .eval3{background:#14261b;border:1px solid #2a5136}
+    .muted{color:var(--muted)}
+    .hidden{display:none !important}
+    progress{width:140px;height:10px}
+    .ab{display:flex;gap:6px;align-items:center}
+    .dbg{font-family:ui-monospace,Menlo,Monaco,monospace;font-size:12px;color:#b7c0d6;white-space:pre-wrap;background:#0f1422;border:1px solid #24304a;border-radius:10px;padding:8px;margin-top:8px}
+  </style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <div class="stat">残カード <b id="statLeft">0</b></div>
+    <div class="stat">学習分数 <b id="statMin">0</b> 分</div>
+    <div class="stat">streak <b id="statStreak">0</b> 日</div>
+    <div class="grow"></div>
+    <button id="btnStart" class="primary">学習を開始</button>
+  </header>
+
+  <main>
+    <section class="card" id="card" aria-live="polite">
+      <div class="chips" id="chips"></div>
+      <div id="enText" class="en">—</div>
+      <div id="jaText" class="ja">—</div>
+
+      <div class="row audioRow">
+        <button id="btnPlay">▶ 再生</button>
+        <button id="btnPause">⏸ 一時停止</button>
+        <label>速度 <select id="speed">
+          <option value="1">1.0x</option>
+          <option value="0.8">0.8x</option>
+          <option value="0.6">0.6x</option>
+        </select></label>
+        <div class="ab">
+          <button id="btnSetA">A</button>
+          <button id="btnSetB">B</button>
+          <label><input type="checkbox" id="chkLoop"> ループ</label>
+          <span class="muted" id="abLabel">A: — / B: —</span>
+        </div>
+        <button id="btnShowJa">和訳を表示</button>
+      </div>
+
+      <div class="row recRow" id="recWrap">
+        <button id="btnRec">🎙️ 録音開始</button>
+        <button id="btnRecStop" disabled>停止</button>
+        <span class="muted">モード: <select id="recMode"><option value="read">音読</option><option value="shadow">シャドウ</option></select></span>
+        <span class="muted">ASR: <b id="asrState">未使用</b></span>
+      </div>
+
+      <div class="kpi" id="resultRow">
+        <div>WER <span class="val" id="valWER">—</span></div>
+        <div>CER <span class="val" id="valCER">—</span></div>
+        <div>Latency <span class="val" id="valLAT">—</span></div>
+        <div>認識 <span class="val" id="valHYP">—</span></div>
+      </div>
+
+      <div class="evalRow">
+        <button class="evalBtn eval0" data-eval="0">0 不正解</button>
+        <button class="evalBtn eval1" data-eval="1">1 ほぼ不正解</button>
+        <button class="evalBtn eval2" data-eval="2">2 迷いあり</button>
+        <button class="evalBtn eval3" data-eval="3">3 余裕</button>
+      </div>
+
+      <div class="dbg" id="dbg" hidden></div>
+    </section>
+  </main>
+
+  <footer style="padding:10px 12px;display:flex;gap:10px;align-items:center;background:var(--panel);border-top:1px solid var(--bd)">
+    <progress id="pbar" value="0" max="1"></progress>
+    <span id="footerInfo" class="muted">—</span>
+    <div class="grow"></div>
+    <button id="btnNext" class="good">次へ</button>
+  </footer>
+</div>
+
+<audio id="player" crossorigin="anonymous"></audio>
+
+<script>
+(function(){
+  // ===== Utilities =====
+  const qs = (s,el=document)=>el.querySelector(s);
+  const qsa= (s,el=document)=>[...el.querySelectorAll(s)];
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+  const now=()=>Date.now();
+  const UA=(()=>navigator.userAgent||'')();
+
+  // Normalize & tokenization for WER/CER
+  function normalize(s){
+    return (s||'')
+      .toLowerCase()
+      .replace(/[\p{P}\p{S}]/gu,' ')
+      .normalize('NFKC')
+      .replace(/\s+/g,' ') 
+      .trim();
+  }
+  function tokens(s){ return normalize(s).split(' ').filter(Boolean); }
+  function cer(ref,hyp){
+    const R=[...normalize(ref)]; const H=[...normalize(hyp)];
+    const n=R.length,m=H.length; if(!n) return H.length?1:0;
+    const dp=Array.from({length:n+1},()=>Array(m+1).fill(0));
+    for(let i=0;i<=n;i++) dp[i][0]=i; for(let j=0;j<=m;j++) dp[0][j]=j;
+    for(let i=1;i<=n;i++) for(let j=1;j<=m;j++){
+      const cost = (R[i-1]===H[j-1]?0:1);
+      dp[i][j]=Math.min(dp[i-1][j]+1, dp[i][j-1]+1, dp[i-1][j-1]+cost);
+    }
+    return dp[n][m]/n;
+  }
+  function wer(ref,hyp){
+    const R=tokens(ref), H=tokens(hyp);
+    const n=R.length,m=H.length; if(!n) return H.length?1:0;
+    const dp=Array.from({length:n+1},()=>Array(m+1).fill(0));
+    for(let i=0;i<=n;i++) dp[i][0]=i; for(let j=0;j<=m;j++) dp[0][j]=j;
+    for(let i=1;i<=n;i++) for(let j=1;j<=m;j++){
+      const cost=(R[i-1]===H[j-1]?0:1);
+      dp[i][j]=Math.min(dp[i-1][j]+1, dp[i][j-1]+1, dp[i-1][j-1]+cost);
+    }
+    return dp[n][m]/n;
+  }
+
+  // ===== State =====
+  let QUEUE=[]; // {id,en,ja,audio_url,tags,chunks_json}
+  let idx=-1;   // current index
+  let sessionStart=0, cardStart=0;
+  let audioStart=0; // for shadow latency
+  let A=null,B=null; let loop=false;
+
+  // Speech Recognition
+  const SR = window.SpeechRecognition||window.webkitSpeechRecognition;
+  let recog = null; let recogBuf=""; let recogFirstTs=0; let recogOn=false;
+
+  // DOM refs
+  const el = {
+    left: qs('#statLeft'), min: qs('#statMin'), streak: qs('#statStreak'),
+    start: qs('#btnStart'), next: qs('#btnNext'), pbar: qs('#pbar'), footer: qs('#footerInfo'),
+    en: qs('#enText'), ja: qs('#jaText'), chips: qs('#chips'),
+    play: qs('#btnPlay'), pause: qs('#btnPause'), speed: qs('#speed'),
+    setA: qs('#btnSetA'), setB: qs('#btnSetB'), loop: qs('#chkLoop'), ab: qs('#abLabel'),
+    showJa: qs('#btnShowJa'),
+    recWrap: qs('#recWrap'), rec: qs('#btnRec'), recStop: qs('#btnRecStop'), recMode: qs('#recMode'), asr: qs('#asrState'),
+    WER: qs('#valWER'), CER: qs('#valCER'), LAT: qs('#valLAT'), HYP: qs('#valHYP'),
+    dbg: qs('#dbg')
   };
-</script></body></html>
+  const audio = qs('#player');
+
+  // ===== Server (GAS) bridge with local fallback =====
+  const svr = {
+    getQueue: (isoDate)=>call('getQueue', isoDate).catch(()=>mockGetQueue()),
+    postAttempt: (a)=>call('postAttempt', a).catch(()=>console.log('[mock] postAttempt', a)),
+    postSpeech: (m)=>call('postSpeechMetrics', m).catch(()=>console.log('[mock] postSpeech', m)),
+    postSession:(s)=>call('postSessionSummary', s).catch(()=>console.log('[mock] postSession', s)),
+  };
+  function call(name, arg){
+    return new Promise((res,rej)=>{
+      if (window.google && google.script && google.script.run){
+        google.script.run.withSuccessHandler(res).withFailureHandler(rej)[name](arg);
+      } else {
+        rej(new Error('no GAS runtime'));
+      }
+    });
+  }
+  function mockGetQueue(){
+    // minimal sample for local trial
+    return Promise.resolve({
+      items:[
+        {id:'E0001',en:'Could you take a look at this?',ja:'これ、見てもらえますか？',audio_url:'https://cdn.freesound.org/previews/676/676212_4031860-lq.mp3',tags:'request,polite',chunks_json:'[]'},
+        {id:'E0002',en:"I'll get back to you soon.",ja:'すぐに折り返します。',audio_url:'https://cdn.freesound.org/previews/676/676211_4031860-lq.mp3',tags:'work,reply',chunks_json:'[]'}
+      ],
+      left: 2, streak: 0, minutes: 0
+    });
+  }
+
+  // ===== Init =====
+  bind();
+  updateASRUI();
+
+  el.start.addEventListener('click', async ()=>{
+    sessionStart = now();
+    await loadQueue();
+    nextCard(true);
+  });
+
+  async function loadQueue(){
+    const iso = new Date().toISOString().slice(0,10);
+    const data = await svr.getQueue(iso);
+    QUEUE = (data.items||[]);
+    idx = -1;
+    el.left.textContent = data.left ?? QUEUE.length;
+    el.min.textContent = data.minutes ?? 0;
+    el.streak.textContent = data.streak ?? 0;
+    el.pbar.value = 0; el.pbar.max = Math.max(1, QUEUE.length);
+    el.footer.textContent = `${QUEUE.length}枚読み込み`;
+  }
+
+  // ===== Rendering & Audio =====
+  function render(i){
+    const it = QUEUE[i]; if(!it) return;
+    el.en.textContent = it.en;
+    el.ja.textContent = it.ja; el.ja.style.display='none';
+    el.chips.innerHTML = '';
+    (it.tags||'').split(',').filter(Boolean).forEach(t=>{
+      const s=document.createElement('span'); s.className='chip'; s.textContent=t.trim(); el.chips.appendChild(s);
+    });
+    audio.src = it.audio_url || '';
+    audio.playbackRate = parseFloat(el.speed.value||'1');
+    A=null; B=null; loop=false; el.loop.checked=false; updAB();
+    cardStart = now();
+    resetResult();
+  }
+  function updAB(){ el.ab.textContent = `A: ${A??'—'} / B: ${B??'—'}`; }
+  function resetResult(){
+    ['WER','CER','LAT','HYP'].forEach(k=>el[k].textContent='—');
+  }
+
+  // Audio handlers
+  el.play.onclick = ()=>{ audio.play().then(()=>{ if(el.recMode.value==='shadow') audioStart=now(); }).catch(()=>{}); };
+  el.pause.onclick= ()=>audio.pause();
+  el.speed.onchange = ()=>{ audio.playbackRate = parseFloat(el.speed.value||'1'); };
+  el.setA.onclick = ()=>{ A = Math.round((audio.currentTime||0)*1000); updAB(); };
+  el.setB.onclick = ()=>{ B = Math.round((audio.currentTime||0)*1000); updAB(); };
+  el.loop.onchange = ()=>{ loop = !!el.loop.checked; };
+  audio.addEventListener('timeupdate', ()=>{
+    if (!loop || A==null || B==null) return;
+    const t = Math.round(audio.currentTime*1000);
+    if (t>=B) { audio.currentTime = (A/1000); }
+  });
+
+  // Show JA
+  el.showJa.onclick = ()=>{ el.ja.style.display = (el.ja.style.display==='none')?'block':'none'; };
+
+  // ===== Speech Recognition =====
+  function updateASRUI(){
+    const supported = !!SR;
+    el.recWrap.style.display = supported? 'flex':'none';
+    el.asr.textContent = supported? '利用可' : '未対応（手動評価のみ）';
+  }
+
+  el.rec.onclick = ()=>startRec();
+  el.recStop.onclick = ()=>stopRec();
+
+  function startRec(){
+    if (!SR) return;
+    recog = new SR();
+    recog.interimResults = true; recog.lang = 'en-US';
+    recog.continuous = true; recog.maxAlternatives = 1;
+    recogBuf = ''; recogFirstTs = 0; recogOn = true;
+    el.asr.textContent = '録音中…';
+    el.rec.disabled = true; el.recStop.disabled=false;
+    if (el.recMode.value==='shadow') audioStart = audioStart || now();
+    try{ recog.start(); }catch(e){ /* Safari double start guard */ }
+
+    recog.onresult = (ev)=>{
+      if (!recogFirstTs) recogFirstTs = now();
+      for (let i=ev.resultIndex;i<ev.results.length;i++){
+        const r = ev.results[i];
+        if (r.isFinal) recogBuf += (r[0].transcript||'') + ' ';
+      }
+      el.HYP.textContent = (recogBuf||'').trim()||'…';
+    };
+    recog.onerror = (e)=>{ el.asr.textContent = 'エラー'; console.warn(e); };
+    recog.onend = ()=>{ if(recogOn) stopRec(); };
+  }
+
+  async function stopRec(){
+    if (!recogOn) return;
+    recogOn=false; try{ recog && recog.stop && recog.stop(); }catch(e){}
+    el.rec.disabled=false; el.recStop.disabled=true; el.asr.textContent='停止';
+    const it = QUEUE[idx]; if (!it) return;
+    const ref = it.en, hyp = (recogBuf||'').trim();
+    const vWER = +wer(ref,hyp).toFixed(3);
+    const vCER = +cer(ref,hyp).toFixed(3);
+    const latency = (el.recMode.value==='shadow' && audioStart)? Math.max(0, (recogFirstTs||now()) - audioStart) : 0;
+    el.WER.textContent = vWER.toFixed(3);
+    el.CER.textContent = vCER.toFixed(3);
+    el.LAT.textContent = latency? (latency+' ms'):'—';
+
+    // Send speech metrics
+    const m = {
+      ts: new Date().toISOString(), id: it.id, mode: el.recMode.value,
+      wer: vWER, cer: vCER, asr_conf: '', duration_ms: 0, words_spoken: tokens(hyp).length, latency_ms: latency
+    };
+    try{ await svr.postSpeech(m); }catch(_){ }
+  }
+
+  // ===== Evaluation & Navigation =====
+  qsa('.evalBtn').forEach(b=>b.addEventListener('click', ()=>{
+    const r = parseInt(b.dataset.eval,10);
+    saveAttempt(r).then(()=> nextCard());
+  }));
+  el.next.onclick = ()=> nextCard();
+
+  async function saveAttempt(r){
+    const it = QUEUE[idx]; if(!it) return;
+    // simple auto-bonus by WER if available
+    let rFinal = r;
+    const w = parseFloat(el.WER.textContent); if (!isNaN(w)){
+      if (w<=0.15) rFinal = clamp(rFinal+1,0,3); else if (w>0.30) rFinal = clamp(rFinal-1,0,3);
+    }
+    const payload = {
+      ts: new Date().toISOString(), id: it.id,
+      mode: (SR? el.recMode.value : 'manual'),
+      response_ms: Math.max(0, now()-cardStart),
+      result: rFinal, hint_used: (el.ja.style.display==='block'), device: UA
+    };
+    try{ await svr.postAttempt(payload); }catch(_){ }
+  }
+
+  function nextCard(first=false){
+    if (!QUEUE.length){ el.footer.textContent='キューが空です'; return; }
+    if (!first) idx++; else idx=0;
+    if (idx>=QUEUE.length){
+      // session summary
+      const minutes = Math.round((now()-sessionStart)/60000);
+      svr.postSession({date: new Date().toISOString().slice(0,10), minutes, cards_done: QUEUE.length, new_introduced: 0, streak: ''});
+      el.footer.textContent = `完了: ${QUEUE.length} 枚`;
+      idx = QUEUE.length-1; // stay on last card
+      return;
+    }
+    render(idx);
+    el.pbar.value = idx; el.pbar.max = QUEUE.length;
+    el.left.textContent = (QUEUE.length-idx);
+    el.footer.textContent = `#${idx+1} / ${QUEUE.length}`;
+  }
+
+})();
+</script>
+</body>
+</html>
