@@ -181,22 +181,58 @@
   };
   const audio = qs('#player');
 
-  // ===== Server (GAS) bridge with local fallback =====
-  const svr = {
-    getQueue: (isoDate)=>call('getQueue', isoDate).catch(()=>mockGetQueue()),
-    postAttempt: (a)=>call('postAttempt', a).catch(()=>console.log('[mock] postAttempt', a)),
-    postSpeech: (m)=>call('postSpeechMetrics', m).catch(()=>console.log('[mock] postSpeech', m)),
-    postSession:(s)=>call('postSessionSummary', s).catch(()=>console.log('[mock] postSession', s)),
-  };
-  function call(name, arg){
-    return new Promise((res,rej)=>{
-      if (window.google && google.script && google.script.run){
-        google.script.run.withSuccessHandler(res).withFailureHandler(rej)[name](arg);
-      } else {
-        rej(new Error('no GAS runtime'));
-      }
-    });
+  // ===== Server (GAS) bridge: sendBeacon / no-cors =====
+  // ① 最新の /exec URL に置き換える
+  const API = 'https://script.google.com/macros/s/AKfycbyRGPL49OQHIdJexZ4ttIkJoAIkGseCZzLjIg_bL6hJPg9siYj2biJpV3MjqfVc9xtL/exec';
+  // ② 任意：GASのScript Propertiesに入れたAPIキー（使わないなら空のまま）
+  const API_KEY = ''; // 例: '7c1d5f3a-....'
+  
+  // 送信（レスポンスは読まない。CORS回避のため text/plain + no-cors or sendBeacon）
+  async function sendLog(type, data){
+    const payload = { apiKey: API_KEY || undefined, type, data };
+    const blob = new Blob([JSON.stringify(payload)], { type: 'text/plain;charset=UTF-8' });
+  
+    // オフライン時は一時保管（Outbox）して終了
+    if (!navigator.onLine) { enqueue(type, data); return; }
+  
+    if ('sendBeacon' in navigator) {
+      navigator.sendBeacon(API, blob); // boolean返るだけ。本文は読めない
+      return;
+    }
+    // フォールバック：プリフライト無しで送る（opaqueレスポンス）
+    try{
+      await fetch(API, { method:'POST', mode:'no-cors', body: blob });
+    }catch(_){ /* 失敗は握りつぶす（保管は別で対応） */ }
   }
+  
+  // 簡易Outbox（オフライン時の積み置き）
+  function enqueue(type, data){
+    try{
+      const q = JSON.parse(localStorage.getItem('outbox')||'[]');
+      q.push({type, data});
+      localStorage.setItem('outbox', JSON.stringify(q));
+    }catch(_){}
+  }
+  async function flushOutbox(){
+    if (!navigator.onLine) return;
+    let q = JSON.parse(localStorage.getItem('outbox')||'[]');
+    if (!q.length) return;
+    const next = q[0];
+    await sendLog(next.type, next.data);   // 成否は見ない
+    q.shift();
+    localStorage.setItem('outbox', JSON.stringify(q));
+    if (q.length) flushOutbox();
+  }
+  window.addEventListener('online', flushOutbox);
+  
+  // アプリ側が呼ぶAPI名は維持（内部でsendLogに委譲）
+  const svr = {
+    getQueue: (_iso)=> mockGetQueue(),       // いまはローカルのダミーで十分
+    postAttempt: (a)=> sendLog('attempt', a),
+    postSpeech:  (m)=> sendLog('speech',  m),
+    postSession: (s)=> sendLog('session', s),
+  };
+
   function mockGetQueue(){
     // minimal sample for local trial
     return Promise.resolve({
