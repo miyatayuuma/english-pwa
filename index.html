@@ -200,6 +200,50 @@
     dbg: qs('#dbg')
   };
   const audio = qs('#player');
+  // ==== データロード & Unit セレクト ====
+  // items一覧（Sheetsから書き出した静的JSON）を同一オリジンで配信
+  const DATA_URL = './data/items.json';
+  
+  // JSONロード
+  async function loadAllItems(){
+    const res = await fetch(DATA_URL, { cache:'no-store' });
+    if (!res.ok) throw new Error('items.json 読込失敗: ' + res.status);
+    return await res.json();
+  }
+  
+  // Unit セレクト初期化
+  async function initUnitSelect(all){
+    const sel = qs('#unitSel');
+    if (!sel) return; // セレクト未設置でも落ちない
+    const units = [...new Set(all.map(x=>x.unit).filter(Boolean))].sort((a,b)=>{
+      const na = parseInt(String(a).replace(/^\D+/,'' )||'0',10);
+      const nb = parseInt(String(b).replace(/^\D+/,'' )||'0',10);
+      return na - nb || String(a).localeCompare(String(b));
+    });
+    sel.innerHTML = '<option value="">すべて</option>' + units.map(u=>`<option value="${u}">${u}</option>`).join('');
+    const prev = localStorage.getItem('unitSel') || '';
+    sel.value = prev;
+    sel.onchange = ()=> localStorage.setItem('unitSel', sel.value);
+  }
+  
+  // 音源URLを解決（OPFS優先→/audio フォールバック）
+  async function resolveAudioUrl(fn){
+    if (!fn) return '';
+    // 1) OPFS
+    try{
+      if (navigator.storage && navigator.storage.getDirectory) {
+        const root = await navigator.storage.getDirectory();
+        const fh = await root.getFileHandle(fn).catch(()=>null);
+        if (fh){
+          const file = await fh.getFile();
+          return URL.createObjectURL(file); // blob: URL
+        }
+      }
+    }catch(_){}
+    // 2) 配布ディレクトリ
+    return './audio/' + encodeURI(fn);
+  }
+
   // ==== 設定（localStorageに保存） ====
   function loadCfg(){ try{ return JSON.parse(localStorage.getItem('cfg')||'{}'); }catch(_){ return {}; } }
   function saveCfg(c){ localStorage.setItem('cfg', JSON.stringify(c)); }
@@ -267,15 +311,9 @@ window.addEventListener('online', async ()=>{
 // アプリが呼ぶAPI名は維持（内部で sendLog を使う）
 const svr = {
   getQueue: async (_iso)=>{
-    // 1) 全件ロード
     const all = await loadAllItems();
-    // 2) Unitでフィルタ
-    const pick = (qs('#unitSel').value || '');
+    const pick = (qs('#unitSel')?.value || '');
     let items = pick ? all.filter(x => String(x.unit) === pick) : all;
-    // 3) 今日の学習順（とりあえずそのまま or シャッフル）
-    // items = items.sort(()=>Math.random()-0.5); // ランダム化したければ有効化
-  
-    // 4) 再生URL解決（非同期）と shape 調整
     const withAudio = await Promise.all(items.map(async it => ({
       id: it.id,
       en: it.en,
@@ -284,13 +322,7 @@ const svr = {
       chunks_json: it.chunks || '[]',
       audio_url: await resolveAudioUrl(it.audio_fn)
     })));
-  
-    return {
-      items: withAudio,
-      left: withAudio.length,
-      streak: 0,
-      minutes: 0
-    };
+    return { items: withAudio, left: withAudio.length, streak: 0, minutes: 0 };
   },
 };
 
@@ -308,13 +340,11 @@ const svr = {
 
   // ===== Init =====
   updateASRUI();
-  
-  // 初回ロードで Unit セレクトを準備
+  // items.json を読んで Unit セレクトを準備
   loadAllItems().then(initUnitSelect).catch(e=>{
-    el.footer.textContent = 'items.json の読み込みに失敗しました';
+    el.footer.textContent = 'items.json の読み込みに失敗';
     console.error(e);
-  });
-  
+  });  
   if (!apiUrl()) el.footer.textContent = 'まず「設定」で GAS の /exec URL を保存';
 
   el.start.addEventListener('click', async ()=>{
