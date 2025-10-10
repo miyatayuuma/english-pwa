@@ -114,7 +114,26 @@
 </div>
 
 <audio id="player" crossorigin="anonymous"></audio>
-
+  
+<!-- 接続設定モーダル -->
+<div id="cfgModal" style="position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.4);z-index:9999">
+  <div style="width:min(520px,92%);background:#111726;border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:16px">
+    <h3 style="margin:0 0 8px 0">接続設定</h3>
+    <label style="display:block;margin:8px 0">
+      GAS Web App URL（/exec）
+      <input id="cfgUrl" style="width:100%" placeholder="https://script.google.com/macros/s/.../exec">
+    </label>
+    <label style="display:block;margin:8px 0">
+      API Key（未設定なら空のままで可）
+      <input id="cfgKey" style="width:100%" placeholder="（空でも可）">
+    </label>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+      <button id="cfgCancel">キャンセル</button>
+      <button class="primary" id="cfgSave">保存</button>
+    </div>
+  </div>
+</div>
+  
 <script>
 (function(){
   // ===== Utilities =====
@@ -181,65 +200,85 @@
     dbg: qs('#dbg')
   };
   const audio = qs('#player');
-
-  // ===== Server (GAS) bridge: sendBeacon / no-cors =====
-  // ① 最新の /exec URL に置き換える
-  const API = 'https://script.google.com/macros/s/AKfycbyRGPL49OQHIdJexZ4ttIkJoAIkGseCZzLjIg_bL6hJPg9siYj2biJpV3MjqfVc9xtL/exec';
-  // ② 任意：GASのScript Propertiesに入れたAPIキー（使わないなら空のまま）
-  const API_KEY = ''; // 例: '7c1d5f3a-....'
+  // ==== 設定（localStorageに保存） ====
+  function loadCfg(){ try{ return JSON.parse(localStorage.getItem('cfg')||'{}'); }catch(_){ return {}; } }
+  function saveCfg(c){ localStorage.setItem('cfg', JSON.stringify(c)); }
+  let CFG = loadCfg();
+  function apiUrl(){ return (CFG.apiUrl||'').trim(); }
+  function apiKey(){ return (CFG.apiKey||'').trim(); }
   
-  // 送信（レスポンスは読まない。CORS回避のため text/plain + no-cors or sendBeacon）
-  async function sendLog(type, data){
-    const payload = { apiKey: API_KEY || undefined, type, data };
-    const blob = new Blob([JSON.stringify(payload)], { type: 'text/plain;charset=UTF-8' });
+  // モーダル制御
+  const cfgModal = document.getElementById('cfgModal');
+  const cfgUrl   = document.getElementById('cfgUrl');
+  const cfgKey   = document.getElementById('cfgKey');
   
-    // オフライン時は一時保管（Outbox）して終了
-    if (!navigator.onLine) { enqueue(type, data); return; }
-  
-    if ('sendBeacon' in navigator) {
-      navigator.sendBeacon(API, blob); // boolean返るだけ。本文は読めない
-      return;
-    }
-    // フォールバック：プリフライト無しで送る（opaqueレスポンス）
-    try{
-      await fetch(API, { method:'POST', mode:'no-cors', body: blob });
-    }catch(_){ /* 失敗は握りつぶす（保管は別で対応） */ }
-  }
-  
-  // 簡易Outbox（オフライン時の積み置き）
-  function enqueue(type, data){
-    try{
-      const q = JSON.parse(localStorage.getItem('outbox')||'[]');
-      q.push({type, data});
-      localStorage.setItem('outbox', JSON.stringify(q));
-    }catch(_){}
-  }
-  async function flushOutbox(){
-    if (!navigator.onLine) return;
-    let q = JSON.parse(localStorage.getItem('outbox')||'[]');
-    if (!q.length) return;
-    const next = q[0];
-    await sendLog(next.type, next.data);   // 成否は見ない
-    q.shift();
-    localStorage.setItem('outbox', JSON.stringify(q));
-    if (q.length) flushOutbox();
-  }
-  window.addEventListener('online', flushOutbox);
-  
-  // アプリ側が呼ぶAPI名は維持（内部でsendLogに委譲）
-  const svr = {
-    getQueue: (_iso)=> mockGetQueue(),       // いまはローカルのダミーで十分
-    postAttempt: (a)=> sendLog('attempt', a),
-    postSpeech:  (m)=> sendLog('speech',  m),
-    postSession: (s)=> sendLog('session', s),
+  document.getElementById('btnCfg').onclick = ()=>{
+    cfgUrl.value = apiUrl();
+    cfgKey.value = apiKey();
+    cfgModal.style.display = 'flex';
   };
+  document.getElementById('cfgCancel').onclick = ()=>{ cfgModal.style.display='none'; };
+  document.getElementById('cfgSave').onclick = ()=>{
+    CFG = { apiUrl: cfgUrl.value, apiKey: cfgKey.value };
+    saveCfg(CFG);
+    cfgModal.style.display='none';
+    el.footer.textContent = '設定を保存しました';
+  };
+
+// ===== Server (GAS) bridge: sendBeacon / no-cors（設定参照版） =====
+async function sendLog(type, data){
+  const url = apiUrl();
+  if (!url){
+    el.footer.textContent = 'GASのURL未設定：右上「設定」から入力';
+    return;
+  }
+  // GAS側は JSON 受け取りのままでOK（text/plainでプリフライト回避）
+  const payload = { apiKey: apiKey() || undefined, type, data };
+  const blob = new Blob([JSON.stringify(payload)], { type: 'text/plain;charset=UTF-8' });
+
+  if (!navigator.onLine) { enqueue(type, data); return; }
+
+  if ('sendBeacon' in navigator) {
+    navigator.sendBeacon(url, blob);     // レスポンス本文は読まないのが仕様
+    return;
+  }
+  try{
+    await fetch(url, { method:'POST', mode:'no-cors', body: blob });
+  }catch(_){ /* 失敗は握りつぶす（Outboxに任せる） */ }
+}
+
+// Outbox（既存のまま利用）
+function enqueue(type, data){
+  try{
+    const q = JSON.parse(localStorage.getItem('outbox')||'[]');
+    q.push({type, data});
+    localStorage.setItem('outbox', JSON.stringify(q));
+  }catch(_){}
+}
+window.addEventListener('online', async ()=>{
+  let q = JSON.parse(localStorage.getItem('outbox')||'[]');
+  while (navigator.onLine && q.length){
+    const {type, data} = q[0];
+    await sendLog(type, data);
+    q.shift(); localStorage.setItem('outbox', JSON.stringify(q));
+  }
+});
+
+// アプリが呼ぶAPI名は維持（内部で sendLog を使う）
+const svr = {
+  getQueue: (_iso)=> mockGetQueue(),             // まずはローカルダミー
+  postAttempt: (a)=> sendLog('attempt', a),
+  postSpeech:  (m)=> sendLog('speech',  m),
+  postSession: (s)=> sendLog('session', s),
+};
+
 
   function mockGetQueue(){
     // minimal sample for local trial
     return Promise.resolve({
       items:[
-        {id:'E0001',en:'Could you take a look at this?',ja:'これ、見てもらえますか？',audio_url:'https://cdn.freesound.org/previews/676/676212_4031860-lq.mp3',tags:'request,polite',chunks_json:'[]'},
-        {id:'E0002',en:"I'll get back to you soon.",ja:'すぐに折り返します。',audio_url:'https://cdn.freesound.org/previews/676/676211_4031860-lq.mp3',tags:'work,reply',chunks_json:'[]'}
+        {id:'E0001', en:'...', ja:'...', audio_url:'', tags:'...', chunks_json:'[]'},
+        {id:'E0002', en:'...', ja:'...', audio_url:'', tags:'...', chunks_json:'[]'}
       ],
       left: 2, streak: 0, minutes: 0
     });
@@ -247,6 +286,7 @@
 
   // ===== Init =====
   updateASRUI();
+  if (!apiUrl()) el.footer.textContent = 'まず「設定」で GAS の /exec URL を保存';
 
   el.start.addEventListener('click', async ()=>{
     sessionStart = now();
