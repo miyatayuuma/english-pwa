@@ -53,6 +53,7 @@
     <div class="stat">学習分数 <b id="statMin">0</b> 分</div>
     <div class="stat">streak <b id="statStreak">0</b> 日</div>
     <div class="grow"></div>
+    <button id="btnCfg">設定</button>
     <button id="btnStart" class="primary">学習を開始</button>
   </header>
 
@@ -397,5 +398,22 @@
 
 })();
 </script>
+  <div id="cfgModal" style="position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.4);">
+    <div style="width:min(520px,92%);background:#111726;border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:16px">
+      <h3 style="margin-top:0">接続設定</h3>
+      <label style="display:block;margin:8px 0">
+        GAS Web App URL（/exec）<br/>
+        <input id="cfgUrl" style="width:100%" placeholder="https://script.google.com/macros/s/.../exec">
+      </label>
+      <label style="display:block;margin:8px 0">
+        API Key（設定していないなら空でOK）<br/>
+        <input id="cfgKey" style="width:100%" placeholder="（空でも可）">
+      </label>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+        <button id="cfgCancel">キャンセル</button>
+        <button class="primary" id="cfgSave">保存</button>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
