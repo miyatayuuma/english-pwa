@@ -266,10 +266,32 @@ window.addEventListener('online', async ()=>{
 
 // アプリが呼ぶAPI名は維持（内部で sendLog を使う）
 const svr = {
-  getQueue: (_iso)=> mockGetQueue(),             // まずはローカルダミー
-  postAttempt: (a)=> sendLog('attempt', a),
-  postSpeech:  (m)=> sendLog('speech',  m),
-  postSession: (s)=> sendLog('session', s),
+  getQueue: async (_iso)=>{
+    // 1) 全件ロード
+    const all = await loadAllItems();
+    // 2) Unitでフィルタ
+    const pick = (qs('#unitSel').value || '');
+    let items = pick ? all.filter(x => String(x.unit) === pick) : all;
+    // 3) 今日の学習順（とりあえずそのまま or シャッフル）
+    // items = items.sort(()=>Math.random()-0.5); // ランダム化したければ有効化
+  
+    // 4) 再生URL解決（非同期）と shape 調整
+    const withAudio = await Promise.all(items.map(async it => ({
+      id: it.id,
+      en: it.en,
+      ja: it.ja,
+      tags: it.tags || '',
+      chunks_json: it.chunks || '[]',
+      audio_url: await resolveAudioUrl(it.audio_fn)
+    })));
+  
+    return {
+      items: withAudio,
+      left: withAudio.length,
+      streak: 0,
+      minutes: 0
+    };
+  },
 };
 
 
@@ -286,6 +308,13 @@ const svr = {
 
   // ===== Init =====
   updateASRUI();
+  
+  // 初回ロードで Unit セレクトを準備
+  loadAllItems().then(initUnitSelect).catch(e=>{
+    el.footer.textContent = 'items.json の読み込みに失敗しました';
+    console.error(e);
+  });
+  
   if (!apiUrl()) el.footer.textContent = 'まず「設定」で GAS の /exec URL を保存';
 
   el.start.addEventListener('click', async ()=>{
@@ -316,6 +345,9 @@ const svr = {
       const s=document.createElement('span'); s.className='chip'; s.textContent=t.trim(); el.chips.appendChild(s);
     });
     audio.src = it.audio_url || '';
+    // 音源エラー時も学習を続行
+    audio.onerror = ()=>{ el.footer.textContent = '音源を読み込めません（後でOPFS導入）'; };
+
     audio.playbackRate = parseFloat(el.speed.value||'1');
     A=null; B=null; loop=false; el.loop.checked=false; updAB();
     cardStart = now();
