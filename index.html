@@ -3,147 +3,159 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>英語学習たたき台（GAS＋Sheets）</title>
+  <title>英語学習（ミニマルUI）</title>
   <style>
     :root{
-      --bg:#0b0e1a;--panel:rgba(20,24,36,.65);--bd:rgba(255,255,255,.12);--txt:#e6e8ef;--muted:#aeb5c6;
-      --accent:#62d5ff;--good:#46d37f;--warn:#f0c33c;--bad:#ff6b6b;--blue:#7ab0ff;
+      --bg:#0b0e1a;--panel:rgba(20,24,36,.65);--bd:rgba(255,255,255,.12);
+      --txt:#e6e8ef;--muted:#aeb5c6;--accent:#62d5ff;--good:#46d37f;--bad:#ff6b6b;
     }
     *{box-sizing:border-box}
-    html,body{height:100%;margin:0;background:var(--bg);color:var(--txt);font-family:system-ui,"Segoe UI","Noto Sans JP",sans-serif}
+    html,body{height:100%;margin:0;background:var(--bg);color:var(--txt);
+      font-family:system-ui,"Segoe UI","Noto Sans JP",sans-serif}
     #app{position:fixed;inset:0;display:grid;grid-template-rows:auto 1fr auto}
     header,footer{backdrop-filter:blur(6px);background:var(--panel);border-bottom:1px solid var(--bd)}
     header{padding:10px 12px;display:flex;gap:12px;align-items:center}
-    header .stat{display:flex;gap:6px;align-items:baseline;font-size:14px;color:var(--muted)}
-    header .stat b{font-size:18px;color:var(--txt)}
-    header .grow{flex:1}
-    button,select,input[type="range"]{background:#111726;border:1px solid var(--bd);color:var(--txt);border-radius:10px;padding:8px 10px}
-    button:active{transform:translateY(1px)}
-    button.primary{background:linear-gradient(180deg,#1a2134,#12192b);border-color:#233252}
-    button.good{background:#10331f;border-color:#1f5c38}
-    button.warn{background:#332a10;border-color:#5c4b1f}
-    button.bad{background:#331717;border-color:#5c2929}
+    .stat{display:flex;gap:6px;align-items:baseline;font-size:14px;color:var(--muted)}
+    .stat b{font-size:18px;color:var(--txt)}
+    .grow{flex:1}
+    .icon{width:34px;height:34px;border-radius:10px;border:1px solid var(--bd);display:grid;place-items:center;cursor:pointer;background:#111726}
+    .icon:active{transform:translateY(1px)}
     main{padding:12px;overflow:auto}
-    .card{max-width:800px;margin:0 auto;background:var(--panel);border:1px solid var(--bd);border-radius:16px;padding:14px}
-    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-    .en{font-size:22px;line-height:1.5;margin:6px 0}
-    .ja{font-size:16px;color:var(--muted);display:none;margin:6px 0}
-    .chips{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+    .card{max-width:820px;margin:0 auto;background:var(--panel);border:1px solid var(--bd);
+      border-radius:18px;padding:20px;min-height:48vh;display:flex;flex-direction:column;gap:12px;
+      touch-action:manipulation}
+    .en{font-size:24px;line-height:1.6}
+    .ja{font-size:16px;color:var(--muted);display:none}
+    .chips{display:flex;gap:6px;flex-wrap:wrap}
     .chip{font-size:12px;padding:2px 6px;border-radius:999px;border:1px solid var(--bd);color:var(--muted)}
-    .audioRow,.recRow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-    .kpi{display:flex;gap:12px;color:var(--muted);font-size:13px;margin-top:8px}
+    .hud{display:flex;gap:10px;align-items:center;justify-content:space-between}
+    .ctrls{display:flex;gap:8px;align-items:center}
+    .pill{border:1px solid var(--bd);border-radius:999px;padding:6px 10px;background:#111726;color:var(--txt)}
+    .kpi{display:flex;gap:12px;color:var(--muted);font-size:12px}
     .kpi .val{color:var(--txt);font-weight:600}
-    .evalRow{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
-    .evalBtn{padding:10px 12px;border-radius:12px;text-align:center}
-    .eval0{background:#231518;border:1px solid #4a1e27}
-    .eval1{background:#2b2313;border:1px solid #56441b}
-    .eval2{background:#152225;border:1px solid #2a444b}
-    .eval3{background:#14261b;border:1px solid #2a5136}
-    .muted{color:var(--muted)}
-    .hidden{display:none !important}
+    .seg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:6px}
+    .seg button{padding:12px 8px;border-radius:12px;border:1px solid var(--bd);background:#111726;color:var(--txt)}
+    .seg button:active{transform:translateY(1px)}
+    .seg .s0{background:#2a161a;border-color:#4a1e27}
+    .seg .s1{background:#2b2313;border-color:#56441b}
+    .seg .s2{background:#152225;border-color:#2a444b}
+    .seg .s3{background:#14261b;border-color:#2a5136}
+    footer{border-top:1px solid var(--bd);padding:8px 12px;display:flex;gap:10px;align-items:center}
     progress{width:140px;height:10px}
-    .ab{display:flex;gap:6px;align-items:center}
-    .dbg{font-family:ui-monospace,Menlo,Monaco,monospace;font-size:12px;color:#b7c0d6;white-space:pre-wrap;background:#0f1422;border:1px solid #24304a;border-radius:10px;padding:8px;margin-top:8px}
+    .muted{color:var(--muted)}
+    /* Help overlay */
+    #help{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;z-index:9999;align-items:center;justify-content:center}
+    #help .box{width:min(560px,92%);background:#111726;border:1px solid var(--bd);border-radius:14px;padding:16px}
+    #help ul{margin:8px 0 0 18px}
+    /* Settings modal */
+    #cfgModal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.45);z-index:9998}
+    #cfgModal .box{width:min(520px,92%);background:#111726;border:1px solid var(--bd);border-radius:14px;padding:16px}
+    input,select,button{font:inherit}
+    input[type="text"]{width:100%;background:#0f1422;border:1px solid var(--bd);color:var(--txt);border-radius:10px;padding:8px 10px}
+    .primary{background:linear-gradient(180deg,#1a2134,#12192b);border-color:#233252}
   </style>
 </head>
 <body>
 <div id="app">
   <header>
-    <div class="stat">残カード <b id="statLeft">0</b></div>
-    <div class="stat">学習分数 <b id="statMin">0</b> 分</div>
-    <div class="stat">streak <b id="statStreak">0</b> 日</div>
+    <div class="stat">残 <b id="statLeft">0</b></div>
+    <div class="stat">分 <b id="statMin">0</b></div>
+    <div class="stat">streak <b id="statStreak">0</b></div>
     <div class="grow"></div>
-    <button id="btnCfg">設定</button>
-    <button id="btnStart" class="primary">学習を開始</button>
+    <div id="btnHelp" class="icon" title="使い方">?</div>
+    <div id="btnCfg" class="icon" title="設定">⚙️</div>
   </header>
 
   <main>
     <section class="card" id="card" aria-live="polite">
-      <div class="chips" id="chips"></div>
-      <div id="enText" class="en">—</div>
-      <div id="jaText" class="ja">—</div>
-
-      <div class="row audioRow">
-        <button id="btnPlay">▶ 再生</button>
-        <button id="btnPause">⏸ 一時停止</button>
-        <label>速度 <select id="speed">
-          <option value="1">1.0x</option>
-          <option value="0.8">0.8x</option>
-          <option value="0.6">0.6x</option>
-        </select></label>
-        <div class="ab">
-          <button id="btnSetA">A</button>
-          <button id="btnSetB">B</button>
-          <label><input type="checkbox" id="chkLoop"> ループ</label>
-          <span class="muted" id="abLabel">A: — / B: —</span>
+      <div class="hud">
+        <div class="chips" id="chips"></div>
+        <div class="ctrls">
+          <button id="btnPlay" class="icon" title="再生/一時停止">▶️</button>
+          <select id="speed" class="pill" title="速度">
+            <option value="1">1.0x</option><option value="0.85">0.85x</option><option value="0.7">0.7x</option>
+          </select>
         </div>
-        <button id="btnShowJa">和訳を表示</button>
       </div>
 
-      <div class="row recRow" id="recWrap">
-        <button id="btnRec">🎙️ 録音開始</button>
-        <button id="btnRecStop" disabled>停止</button>
-        <span class="muted">モード: <select id="recMode"><option value="read">音読</option><option value="shadow">シャドウ</option></select></span>
-        <span class="muted">ASR: <b id="asrState">未使用</b></span>
-      </div>
+      <div id="enText" class="en">タップで再生 / ダブルタップで和訳</div>
+      <div id="jaText" class="ja">—</div>
 
       <div class="kpi" id="resultRow">
         <div>WER <span class="val" id="valWER">—</span></div>
         <div>CER <span class="val" id="valCER">—</span></div>
         <div>Latency <span class="val" id="valLAT">—</span></div>
-        <div>認識 <span class="val" id="valHYP">—</span></div>
+        <div>ASR <span class="val" id="asrState">未使用</span></div>
       </div>
 
-      <div class="evalRow">
-        <button class="evalBtn eval0" data-eval="0">0 不正解</button>
-        <button class="evalBtn eval1" data-eval="1">1 ほぼ不正解</button>
-        <button class="evalBtn eval2" data-eval="2">2 迷いあり</button>
-        <button class="evalBtn eval3" data-eval="3">3 余裕</button>
+      <!-- 最小評価UI（4段階） -->
+      <div class="seg">
+        <button class="s0" data-eval="0" title="× まったくダメ">×</button>
+        <button class="s1" data-eval="1" title="△ かなり怪しい">△</button>
+        <button class="s2" data-eval="2" title="○ 迷いあり">○</button>
+        <button class="s3" data-eval="3" title="◎ 余裕">◎</button>
       </div>
-
-      <div class="dbg" id="dbg" hidden></div>
     </section>
   </main>
 
-  <footer style="padding:10px 12px;display:flex;gap:10px;align-items:center;background:var(--panel);border-top:1px solid var(--bd)">
+  <footer>
     <progress id="pbar" value="0" max="1"></progress>
-    <span id="footerInfo" class="muted">—</span>
+    <span id="footerInfo" class="muted">スワイプ：右=◎ / 左=× / 上=和訳 / タップ=再生</span>
     <div class="grow"></div>
-    <button id="btnNext" class="good">次へ</button>
+    <button id="btnNext" class="primary">次へ</button>
   </footer>
 </div>
 
 <audio id="player" crossorigin="anonymous"></audio>
 
-<!-- 接続設定モーダル -->
-<div id="cfgModal" style="position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.4);z-index:9999">
-  <div style="width:min(520px,92%);background:#111726;border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:16px">
-    <h3 style="margin:0 0 8px 0">接続設定</h3>
+<!-- Help -->
+<div id="help">
+  <div class="box">
+    <b>操作</b>
+    <ul>
+      <li>タップ：再生 / 一時停止</li>
+      <li>ダブルタップ：和訳の表示/非表示</li>
+      <li>スワイプ：右=◎ / 左=× / 上=和訳</li>
+      <li>長押し（カード上）：録音（離すと停止）</li>
+      <li>キーボード：1〜4=評価、Space=再生/停止、J=和訳、N=次へ</li>
+    </ul>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+      <button id="helpClose" class="primary">OK</button>
+    </div>
+  </div>
+</div>
+
+<!-- 設定 -->
+<div id="cfgModal">
+  <div class="box">
+    <h3 style="margin:0 0 8px 0">接続・音源設定</h3>
     <label style="display:block;margin:8px 0">
       GAS Web App URL（/exec）
-      <input id="cfgUrl" style="width:100%" placeholder="https://script.google.com/macros/s/.../exec">
+      <input id="cfgUrl" type="text" placeholder="https://script.google.com/macros/s/.../exec">
     </label>
     <label style="display:block;margin:8px 0">
-      API Key（未設定なら空のままで可）
-      <input id="cfgKey" style="width:100%" placeholder="（空でも可）">
+      API Key（未設定なら空のまま）
+      <input id="cfgKey" type="text" placeholder="（空でも可）">
     </label>
-
-    <hr style="border:none;border-top:1px solid rgba(255,255,255,.12);margin:12px 0">
+    <label style="display:block;margin:8px 0">
+      Unit（空=すべて）
+      <input id="cfgUnit" type="text" placeholder="Section12 など">
+    </label>
+    <hr style="border:none;border-top:1px solid var(--bd);margin:12px 0">
     <h4 style="margin:0 0 6px 0">音源ソース</h4>
     <label style="display:block;margin:6px 0">
-      リモート音源のベースURL（任意。例: https://example.com/audio/）
-      <input id="cfgAudioBase" style="width:100%" placeholder="https://.../audio/">
+      リモート音源 ベースURL（任意。例: https://example.com/audio/）
+      <input id="cfgAudioBase" type="text" placeholder="https://.../audio/">
     </label>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">
-      <button id="btnPickFolder">ローカルフォルダを選択</button>
-      <button id="btnImportFiles">音源ファイルを取り込み（OPFS）</button>
+      <button id="btnPickFolder" class="pill">ローカルフォルダを選択</button>
+      <button id="btnImportFiles" class="pill">音源を取り込み（OPFS）</button>
       <input id="filePicker" type="file" accept="audio/*" multiple style="display:none">
     </div>
-    <div id="audioSourceStatus" class="muted" style="margin-top:6px"></div>
-
+    <div id="audioSourceStatus" class="muted" style="margin-top:6px">—</div>
     <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
-      <button id="cfgCancel">キャンセル</button>
-      <button class="primary" id="cfgSave">保存</button>
+      <button id="cfgCancel">閉じる</button>
+      <button id="cfgSave" class="primary">保存</button>
     </div>
   </div>
 </div>
@@ -158,22 +170,15 @@
   const UA=(()=>navigator.userAgent||'')();
 
   // Normalize & tokenization for WER/CER
-  function normalize(s){
-    return (s||'')
-      .toLowerCase()
-      .replace(/[\p{P}\p{S}]/gu,' ')
-      .normalize('NFKC')
-      .replace(/\s+/g,' ')
-      .trim();
-  }
+  function normalize(s){ return (s||'').toLowerCase().replace(/[\p{P}\p{S}]/gu,' ').normalize('NFKC').replace(/\s+/g,' ').trim(); }
   function tokens(s){ return normalize(s).split(' ').filter(Boolean); }
   function cer(ref,hyp){
-    const R=[...normalize(ref)]; const H=[...normalize(hyp)];
+    const R=[...normalize(ref)], H=[...normalize(hyp)];
     const n=R.length,m=H.length; if(!n) return H.length?1:0;
     const dp=Array.from({length:n+1},()=>Array(m+1).fill(0));
     for(let i=0;i<=n;i++) dp[i][0]=i; for(let j=0;j<=m;j++) dp[0][j]=j;
     for(let i=1;i<=n;i++) for(let j=1;j<=m;j++){
-      const cost = (R[i-1]===H[j-1]?0:1);
+      const cost=(R[i-1]===H[j-1]?0:1);
       dp[i][j]=Math.min(dp[i-1][j]+1, dp[i][j-1]+1, dp[i-1][j-1]+cost);
     }
     return dp[n][m]/n;
@@ -192,253 +197,148 @@
 
   // ===== State =====
   let QUEUE=[]; // {id,en,ja,audio_fn,tags,chunks_json}
-  let idx=-1;
-  let sessionStart=0, cardStart=0;
-  let audioStart=0; // for shadow latency
-  let A=null,B=null; let loop=false;
+  let idx=-1, sessionStart=0, cardStart=0, audioStart=0;
+  let touchStart=null, longPressTimer=null, longPressed=false;
 
   // Speech Recognition
   const SR = window.SpeechRecognition||window.webkitSpeechRecognition;
-  let recog = null; let recogBuf=""; let recogFirstTs=0; let recogOn=false;
+  let recog = null, recogBuf="", recogFirstTs=0, recogOn=false;
 
   // DOM refs
   const el = {
     left: qs('#statLeft'), min: qs('#statMin'), streak: qs('#statStreak'),
-    start: qs('#btnStart'), next: qs('#btnNext'), pbar: qs('#pbar'), footer: qs('#footerInfo'),
+    next: qs('#btnNext'), pbar: qs('#pbar'), footer: qs('#footerInfo'),
     en: qs('#enText'), ja: qs('#jaText'), chips: qs('#chips'),
-    play: qs('#btnPlay'), pause: qs('#btnPause'), speed: qs('#speed'),
-    setA: qs('#btnSetA'), setB: qs('#btnSetB'), loop: qs('#chkLoop'), ab: qs('#abLabel'),
-    showJa: qs('#btnShowJa'),
-    recWrap: qs('#recWrap'), rec: qs('#btnRec'), recStop: qs('#btnRecStop'), recMode: qs('#recMode'), asr: qs('#asrState'),
-    WER: qs('#valWER'), CER: qs('#valCER'), LAT: qs('#valLAT'), HYP: qs('#valHYP'),
-    dbg: qs('#dbg')
+    play: qs('#btnPlay'), speed: qs('#speed'),
+    asr: qs('#asrState'), WER: qs('#valWER'), CER: qs('#valCER'), LAT: qs('#valLAT'),
+    help: qs('#help'), helpClose: qs('#helpClose'),
+    cfgModal: qs('#cfgModal'), cfgUrl: qs('#cfgUrl'), cfgKey: qs('#cfgKey'),
+    cfgAudioBase: qs('#cfgAudioBase'), cfgUnit: qs('#cfgUnit'),
+    audioSourceStatus: qs('#audioSourceStatus'),
+    btnPickFolder: qs('#btnPickFolder'), btnImportFiles: qs('#btnImportFiles'), filePicker: qs('#filePicker'),
+    card: qs('#card'),
   };
   const audio = qs('#player');
 
-  // ==== データロード（同一オリジン） ====
+  // ===== Data load (same-origin JSON) =====
   const DATA_URL = './data/items.json';
   async function loadAllItems(){
     const res = await fetch(DATA_URL, { cache:'no-store' });
     if (!res.ok) throw new Error('items.json 読込失敗: ' + res.status);
     return await res.json();
   }
-  async function initUnitSelect(all){
-    const sel = qs('#unitSel'); if (!sel) return;
-    const units = [...new Set(all.map(x=>x.unit).filter(Boolean))].sort((a,b)=>{
-      const na = parseInt(String(a).replace(/^\D+/,'' )||'0',10);
-      const nb = parseInt(String(b).replace(/^\D+/,'' )||'0',10);
-      return na - nb || String(a).localeCompare(String(b));
-    });
-    sel.innerHTML = '<option value="">すべて</option>' + units.map(u=>`<option value="${u}">${u}</option>`).join('');
-    const prev = localStorage.getItem('unitSel') || '';
-    sel.value = prev;
-    sel.onchange = ()=> localStorage.setItem('unitSel', sel.value);
-  }
 
-  // ==== 設定（localStorage） ====
+  // ===== Config (localStorage) =====
   function loadCfg(){ try{ return JSON.parse(localStorage.getItem('cfg')||'{}'); }catch(_){ return {}; } }
   function saveCfg(c){ localStorage.setItem('cfg', JSON.stringify(c)); }
   let CFG = loadCfg();
-  function apiUrl(){  return (CFG.apiUrl || '').trim(); }
-  function apiKey(){  return (CFG.apiKey || '').trim(); }
-  function audioBase(){return (CFG.audioBase || '').trim().replace(/\s+$/,'');}
+  const apiUrl = ()=> (CFG.apiUrl||'').trim();
+  const apiKey = ()=> (CFG.apiKey||'').trim();
+  const audioBase = ()=> (CFG.audioBase||'').trim().replace(/\s+$/,'');
+  const selUnit  = ()=> (CFG.unit||'').trim();
 
-  const cfgModal = document.getElementById('cfgModal');
-  const cfgUrl   = document.getElementById('cfgUrl');
-  const cfgKey   = document.getElementById('cfgKey');
-  const cfgAudioBase = document.getElementById('cfgAudioBase');
-  const audioSourceStatus = document.getElementById('audioSourceStatus');
-
-  document.getElementById('btnCfg').onclick = ()=>{
-    cfgUrl.value  = apiUrl();
-    cfgKey.value  = apiKey();
-    cfgAudioBase.value = audioBase();
-    cfgModal.style.display = 'flex';
+  // Settings UI
+  qs('#btnCfg').onclick = ()=>{ 
+    el.cfgUrl.value  = apiUrl(); 
+    el.cfgKey.value  = apiKey(); 
+    el.cfgAudioBase.value = audioBase();
+    el.cfgUnit.value = selUnit();
+    el.cfgModal.style.display='flex';
   };
-  document.getElementById('cfgCancel').onclick = ()=>{ cfgModal.style.display='none'; };
-  document.getElementById('cfgSave').onclick = ()=>{
-    CFG = { apiUrl: cfgUrl.value, apiKey: cfgKey.value, audioBase: cfgAudioBase.value };
-    saveCfg(CFG);
-    cfgModal.style.display='none';
-    el.footer.textContent = '設定を保存しました';
-    renderAudioSourceStatus();
+  qs('#cfgCancel').onclick = ()=> el.cfgModal.style.display='none';
+  qs('#cfgSave').onclick = ()=>{
+    CFG = { apiUrl: el.cfgUrl.value, apiKey: el.cfgKey.value, audioBase: el.cfgAudioBase.value, unit: el.cfgUnit.value };
+    saveCfg(CFG); el.cfgModal.style.display='none'; renderAudioSourceStatus(); el.footer.textContent='設定を保存';
+    // 次回以降のキュー生成に反映
   };
 
-  // ==== ローカルフォルダ（フォルダピッカー）/ OPFS 取り込み ====
-  let audioDirHandle = null;
-  let dbp = null;
+  // Help
+  qs('#btnHelp').onclick = ()=> el.help.style.display='flex';
+  el.helpClose.onclick = ()=> el.help.style.display='none';
+
+  // ===== Local folder / OPFS =====
+  let audioDirHandle = null, dbp=null;
   function idb(){
     if (dbp) return dbp;
-    dbp = new Promise((res, rej)=>{
-      const req = indexedDB.open('pwa-store', 1);
-      req.onupgradeneeded = ()=> req.result.createObjectStore('kv');
-      req.onsuccess = ()=> res(req.result);
-      req.onerror = ()=> rej(req.error);
-    });
-    return dbp;
+    dbp = new Promise((res,rej)=>{
+      const r = indexedDB.open('pwa-store',1);
+      r.onupgradeneeded=()=>r.result.createObjectStore('kv');
+      r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error);
+    }); return dbp;
   }
-  async function idbSet(k,v){
-    try{
-      const db = await idb(); return await new Promise((res,rej)=>{
-        const tx = db.transaction('kv','readwrite'); tx.objectStore('kv').put(v,k);
-        tx.oncomplete=()=>res(); tx.onerror=()=>rej(tx.error);
-      });
-    }catch(_){}
-  }
-  async function idbGet(k){
-    try{
-      const db = await idb(); return await new Promise((res,rej)=>{
-        const tx = db.transaction('kv','readonly'); const req = tx.objectStore('kv').get(k);
-        req.onsuccess=()=>res(req.result); req.onerror=()=>rej(req.error);
-      });
-    }catch(_){ return null; }
+  async function idbSet(k,v){ try{ const db=await idb(); await new Promise((res,rej)=>{ const tx=db.transaction('kv','readwrite'); tx.objectStore('kv').put(v,k); tx.oncomplete=res; tx.onerror=()=>rej(tx.error); }); }catch(_){ } }
+  async function idbGet(k){ try{ const db=await idb(); return await new Promise((res,rej)=>{ const tx=db.transaction('kv','readonly'); const rq=tx.objectStore('kv').get(k); rq.onsuccess=()=>res(rq.result); rq.onerror=()=>rej(rq.error); }); }catch(_){ return null; } }
+  function renderAudioSourceStatus(extra){
+    const parts=[]; if (audioDirHandle) parts.push('ローカルフォルダ：設定済');
+    if (audioBase()) parts.push('ベースURL：'+audioBase());
+    parts.push('OPFS：取り込み優先');
+    el.audioSourceStatus.textContent=(parts.join(' / ')||'—')+(extra? ' — '+extra:'');
   }
   function supportsDirPicker(){ return !!window.showDirectoryPicker; }
   async function pickAudioFolder(){
-    if (!supportsDirPicker()){ el.footer.textContent='フォルダ選択に未対応（OPFS取り込みを使用）'; return; }
+    if (!supportsDirPicker()){ el.footer.textContent='端末がフォルダ選択に未対応（OPFS取り込みを使用）'; return; }
     try{
       const h = await window.showDirectoryPicker({mode:'read'});
-      const perm = await h.requestPermission({mode:'read'});
-      if (perm !== 'granted') throw new Error('permission denied');
-      audioDirHandle = h;
-      await idbSet('audioDir', h);
-      renderAudioSourceStatus('フォルダを保存しました');
-    }catch(_){
-      el.footer.textContent = 'フォルダ選択をキャンセル/失敗';
-    }
+      const p = await h.requestPermission({mode:'read'}); if (p!=='granted') throw new Error('perm');
+      audioDirHandle=h; await idbSet('audioDir',h); renderAudioSourceStatus('フォルダを保存しました');
+    }catch(_){ el.footer.textContent='フォルダ選択をキャンセル/失敗'; }
   }
   async function restoreAudioDir(){
-    const h = await idbGet('audioDir');
-    if (!h){ audioSourceStatus && (audioSourceStatus.textContent='ローカルフォルダ：未設定'); return; }
+    const h = await idbGet('audioDir'); if (!h){ renderAudioSourceStatus(); return; }
     try{
-      const st = await h.queryPermission({mode:'read'});
-      if (st !== 'granted'){
-        const r = await h.requestPermission({mode:'read'});
-        if (r !== 'granted') throw new Error('permission denied');
-      }
-      audioDirHandle = h;
-      renderAudioSourceStatus();
-    }catch(_){
-      audioSourceStatus && (audioSourceStatus.textContent='ローカルフォルダ：権限なし（再選択してください）');
-    }
+      const st = await h.queryPermission({mode:'read'}); if (st!=='granted'){ const r=await h.requestPermission({mode:'read'}); if (r!=='granted') throw 0; }
+      audioDirHandle=h; renderAudioSourceStatus();
+    }catch(_){ el.audioSourceStatus.textContent='ローカルフォルダ：権限なし（再選択してください）'; }
   }
-  function renderAudioSourceStatus(extra){
-    const parts = [];
-    if (audioDirHandle) parts.push('ローカルフォルダ：設定済');
-    if (audioBase()) parts.push('ベースURL：' + audioBase());
-    parts.push('OPFS：取り込み優先');
-    audioSourceStatus && (audioSourceStatus.textContent = parts.join(' / ') + (extra? ' — '+extra:''));
-  }
+  el.btnPickFolder.onclick = pickAudioFolder;
+  el.btnImportFiles.onclick = ()=> el.filePicker.click();
+  el.filePicker.onchange = async (e)=>{
+    const files = e.target.files||[]; if (!files.length) return;
+    if (!(navigator.storage && navigator.storage.getDirectory)){ el.footer.textContent='このブラウザはOPFSに未対応'; return; }
+    const root = await navigator.storage.getDirectory(); let ok=0, fail=0;
+    for (const f of files){ try{ const fh=await root.getFileHandle(f.name,{create:true}); const w=await fh.createWritable(); await f.stream().pipeTo(w); ok++; }catch(_){ fail++; } }
+    renderAudioSourceStatus(`取り込み ${ok} 件${fail?`, 失敗 ${fail} 件`:''}`);
+  };
 
-  const filePicker = document.getElementById('filePicker');
-  async function importAudioFiles(files){
-    if (!files || !files.length) return;
-    if (!(navigator.storage && navigator.storage.getDirectory)){
-      el.footer.textContent = 'このブラウザはOPFSに未対応';
-      return;
-    }
-    const root = await navigator.storage.getDirectory();
-    let ok=0, fail=0;
-    for (const f of files){
-      try{
-        const fh = await root.getFileHandle(f.name, {create:true});
-        const w = await fh.createWritable();
-        await f.stream().pipeTo(w);
-        ok++;
-      }catch(_){ fail++; }
-    }
-    renderAudioSourceStatus(`取り込み ${ok} 件${fail? `, 失敗 ${fail} 件`:''}`);
-  }
-  document.getElementById('btnPickFolder').onclick = pickAudioFolder;
-  document.getElementById('btnImportFiles').onclick = ()=> filePicker.click();
-  filePicker.onchange = (e)=> importAudioFiles(e.target.files || []);
-
-  // ==== 音源URL解決（探索順：フォルダ→OPFS→ベースURL→/audio） ====
+  // Resolve audio URL (Folder → OPFS → BaseURL → /audio)
   async function resolveAudioUrl(fn){
     if (!fn) return '';
-
-    // 1) 選択フォルダ
-    if (audioDirHandle){
-      try{
-        const fh = await audioDirHandle.getFileHandle(fn);
-        const file = await fh.getFile();
-        return URL.createObjectURL(file);
-      }catch(_){}
-    }
-    // 2) OPFS
+    if (audioDirHandle){ try{ const fh=await audioDirHandle.getFileHandle(fn); const file=await fh.getFile(); return URL.createObjectURL(file); }catch(_){ } }
     try{
-      if (navigator.storage && navigator.storage.getDirectory) {
+      if (navigator.storage && navigator.storage.getDirectory){
         const root = await navigator.storage.getDirectory();
         const fh = await root.getFileHandle(fn).catch(()=>null);
-        if (fh){
-          const file = await fh.getFile();
-          return URL.createObjectURL(file);
-        }
+        if (fh){ const file=await fh.getFile(); return URL.createObjectURL(file); }
       }
     }catch(_){}
-    // 3) ベースURL
-    const base = audioBase().replace(/\/+$/,'');
-    if (base) return base + '/' + encodeURI(fn);
-    // 4) /audio
+    const base = audioBase().replace(/\/+$/,''); if (base) return base + '/' + encodeURI(fn);
     return './audio/' + encodeURI(fn);
   }
+  async function urlExists(u){ try{ const r=await fetch(u,{method:'HEAD',cache:'no-store'}); return r.ok; }catch(_){ return false; } }
+  function enableAudioUI(on){ el.play.disabled = !on; }
 
-  async function urlExists(u){
-    try{ const r = await fetch(u, {method:'HEAD', cache:'no-store'}); return r.ok; }
-    catch(_){ return false; }
-  }
-  function enableAudioUI(on){
-    el.play.disabled = el.pause.disabled = el.setA.disabled = el.setB.disabled = !on;
-  }
-  async function setAudioFor(it){
-    const url = await resolveAudioUrl(it.audio_fn);
-    if (!url){ enableAudioUI(false); audio.removeAttribute('src'); el.footer.textContent='音源なし'; return; }
-    // blob: は存在チェック不要
-    if (url.startsWith('blob:') || await urlExists(url)){
-      audio.src = url; enableAudioUI(true);
-    }else{
-      audio.removeAttribute('src'); enableAudioUI(false);
-      el.footer.textContent = '音源を読み込めません（未配置またはURL不一致）';
-    }
-  }
-
-  // ===== Server (GAS) bridge: sendBeacon / no-cors =====
+  // ===== Server bridge (sendBeacon/no-cors) =====
   async function sendLog(type, data){
-    const url = apiUrl();
-    if (!url){ el.footer.textContent = 'GASのURL未設定：右上「設定」から入力'; return; }
-    const payload = { apiKey: apiKey() || undefined, type, data };
-    const blob = new Blob([JSON.stringify(payload)], { type: 'text/plain;charset=UTF-8' });
-    if (!navigator.onLine) { enqueue(type, data); return; }
-    if ('sendBeacon' in navigator) { navigator.sendBeacon(url, blob); return; }
-    try{ await fetch(url, { method:'POST', mode:'no-cors', body: blob }); }catch(_){}
+    const url = apiUrl(); if (!url){ el.footer.textContent='GASのURL未設定：設定から入力'; return; }
+    const payload = { apiKey: apiKey()||undefined, type, data };
+    const blob = new Blob([JSON.stringify(payload)], {type:'text/plain;charset=UTF-8'});
+    if (!navigator.onLine) { enqueue(type,data); return; }
+    if ('sendBeacon' in navigator){ navigator.sendBeacon(url, blob); return; }
+    try{ await fetch(url,{method:'POST',mode:'no-cors',body:blob}); }catch(_){}
   }
-  function enqueue(type, data){
-    try{
-      const q = JSON.parse(localStorage.getItem('outbox')||'[]');
-      q.push({type, data});
-      localStorage.setItem('outbox', JSON.stringify(q));
-    }catch(_){}
+  function enqueue(type,data){
+    try{ const q=JSON.parse(localStorage.getItem('outbox')||'[]'); q.push({type,data}); localStorage.setItem('outbox', JSON.stringify(q)); }catch(_){}
   }
   window.addEventListener('online', async ()=>{
-    let q = JSON.parse(localStorage.getItem('outbox')||'[]');
-    while (navigator.onLine && q.length){
-      const {type, data} = q[0];
-      await sendLog(type, data);
-      q.shift(); localStorage.setItem('outbox', JSON.stringify(q));
-    }
+    let q=JSON.parse(localStorage.getItem('outbox')||'[]'); while(navigator.onLine && q.length){ const {type,data}=q[0]; await sendLog(type,data); q.shift(); localStorage.setItem('outbox', JSON.stringify(q)); }
   });
 
   const svr = {
     getQueue: async (_iso)=>{
       const all = await loadAllItems();
-      const pick = (qs('#unitSel')?.value || '');
-      let items = pick ? all.filter(x => String(x.unit) === pick) : all;
-      // audioはrender時に解決（設定変更に追随させるため）
-      const shaped = items.map(it => ({
-        id: it.id, en: it.en, ja: it.ja,
-        tags: it.tags || '', chunks_json: it.chunks || '[]',
-        audio_fn: it.audio_fn || ''
-      }));
+      const unit = selUnit();
+      const items = unit ? all.filter(x=>String(x.unit)===unit) : all;
+      const shaped = items.map(it=>({ id:it.id, en:it.en, ja:it.ja, tags:it.tags||'', chunks_json:it.chunks||'[]', audio_fn:it.audio_fn||'' }));
       return { items: shaped, left: shaped.length, streak: 0, minutes: 0 };
     },
     postAttempt: (a)=> sendLog('attempt', a),
@@ -447,170 +347,142 @@
   };
 
   // ===== Init =====
-  updateASRUI();
-  loadAllItems().then(initUnitSelect).catch(e=>{
-    el.footer.textContent = 'items.json の読み込みに失敗';
-    console.error(e);
-  });
-  if (!apiUrl()) el.footer.textContent = 'まず「設定」で GAS の /exec URL を保存';
-  restoreAudioDir().then(()=>renderAudioSourceStatus());
-
-  el.start.addEventListener('click', async ()=>{
-    sessionStart = now();
-    await loadQueue();
-    nextCard(true);
-  });
+  restoreAudioDir(); renderAudioSourceStatus();
+  if (!apiUrl()) el.footer.textContent='設定から GAS の /exec を保存';
+  // Auto-start first session (tap "次へ" 省略可)
+  sessionStart = now(); loadQueue().then(()=>nextCard(true));
 
   async function loadQueue(){
     const iso = new Date().toISOString().slice(0,10);
     const data = await svr.getQueue(iso);
-    QUEUE = (data.items||[]);
-    idx = -1;
+    QUEUE = (data.items||[]); idx=-1;
     el.left.textContent = data.left ?? QUEUE.length;
     el.min.textContent = data.minutes ?? 0;
     el.streak.textContent = data.streak ?? 0;
-    el.pbar.value = 0; el.pbar.max = Math.max(1, QUEUE.length);
-    el.footer.textContent = `${QUEUE.length}枚読み込み`;
+    el.pbar.value=0; el.pbar.max=Math.max(1, QUEUE.length);
+    el.footer.textContent = `${QUEUE.length}枚`;
   }
 
   // ===== Rendering & Audio =====
-  function render(i){
+  async function setAudioFor(it){
+    const url = await resolveAudioUrl(it.audio_fn);
+    if (!url){ enableAudioUI(false); audio.removeAttribute('src'); el.footer.textContent='音源なし'; return; }
+    if (url.startsWith('blob:') || await urlExists(url)){ audio.src=url; enableAudioUI(true); }
+    else { audio.removeAttribute('src'); enableAudioUI(false); el.footer.textContent='音源未配置/URL不一致'; }
+  }
+
+  async function render(i){
     const it = QUEUE[i]; if(!it) return;
     el.en.textContent = it.en;
     el.ja.textContent = it.ja; el.ja.style.display='none';
-    el.chips.innerHTML = '';
-    (it.tags||'').split(',').filter(Boolean).forEach(t=>{
-      const s=document.createElement('span'); s.className='chip'; s.textContent=t.trim(); el.chips.appendChild(s);
-    });
-
-    // 音源（存在チェック・UI切替込み）
-    setAudioFor(it);
-
+    el.chips.innerHTML=''; (it.tags||'').split(',').filter(Boolean).forEach(t=>{ const s=document.createElement('span'); s.className='chip'; s.textContent=t.trim(); el.chips.appendChild(s); });
+    await setAudioFor(it);
     audio.playbackRate = parseFloat(el.speed.value||'1');
-    A=null; B=null; loop=false; el.loop.checked=false; updAB();
-    cardStart = now();
-    resetResult();
+    cardStart = now(); resetResult();
   }
-  function updAB(){ el.ab.textContent = `A: ${A??'—'} / B: ${B??'—'}`; }
-  function resetResult(){
-    ['WER','CER','LAT','HYP'].forEach(k=>el[k].textContent='—');
-  }
+  function resetResult(){ ['WER','CER','LAT'].forEach(k=>el[k].textContent='—'); }
 
-  // Audio handlers
-  el.play.onclick = ()=>{ audio.play().then(()=>{ if(el.recMode.value==='shadow') audioStart=now(); }).catch(()=>{}); };
-  el.pause.onclick= ()=>audio.pause();
+  // ===== Controls (tap/dbltap/swipe/longpress) =====
   el.speed.onchange = ()=>{ audio.playbackRate = parseFloat(el.speed.value||'1'); };
-  el.setA.onclick = ()=>{ A = Math.round((audio.currentTime||0)*1000); updAB(); };
-  el.setB.onclick = ()=>{ B = Math.round((audio.currentTime||0)*1000); updAB(); };
-  el.loop.onchange = ()=>{ loop = !!el.loop.checked; };
-  audio.addEventListener('timeupdate', ()=>{
-    if (!loop || A==null || B==null) return;
-    const t = Math.round(audio.currentTime*1000);
-    if (t>=B) { audio.currentTime = (A/1000); }
+  el.play.onclick = ()=> togglePlay();
+  el.en.addEventListener('click', ()=> togglePlay());
+  el.en.addEventListener('dblclick', ()=> toggleJA());
+
+  function togglePlay(){ if (!audio.src) return; (audio.paused? audio.play(): audio.pause()).catch(()=>{}); }
+  function toggleJA(){ el.ja.style.display = (el.ja.style.display==='none')?'block':'none'; }
+
+  // swipe + long-press on card
+  el.card.addEventListener('touchstart', (ev)=>{
+    if (!ev.touches || ev.touches.length!==1) return;
+    const t=ev.touches[0]; touchStart={x:t.clientX,y:t.clientY,ts:now()}; longPressed=false;
+    longPressTimer = setTimeout(()=>{ longPressed=true; startRec(); }, 600);
+  }, {passive:true});
+  el.card.addEventListener('touchmove', (ev)=>{
+    if (!touchStart) return;
+    const t=ev.touches[0]; const dx=Math.abs(t.clientX - touchStart.x), dy=Math.abs(t.clientY - touchStart.y);
+    if (dx>10 || dy>10){ clearTimeout(longPressTimer); }
+  }, {passive:true});
+  el.card.addEventListener('touchend', (ev)=>{
+    clearTimeout(longPressTimer);
+    if (longPressed){ stopRec(); touchStart=null; return; }
+    if (!touchStart) return;
+    const dt = now()-touchStart.ts; const end = ev.changedTouches[0];
+    const dx=end.clientX - touchStart.x, dy=end.clientY - touchStart.y;
+    const AD=60; // threshold px
+    if (Math.abs(dx)>Math.abs(dy) && Math.abs(dx)>AD){
+      if (dx>0) submitEval(3); else submitEval(0);
+    } else if (Math.abs(dy)>AD){
+      if (dy<0) toggleJA();
+    } else {
+      // tap (already handled by text), keep no-op
+    }
+    touchStart=null;
+  }, {passive:true});
+
+  // keyboard
+  window.addEventListener('keydown',(e)=>{
+    if (e.target && (e.target.tagName==='INPUT'||e.target.tagName==='SELECT')) return;
+    if (e.key===' ') { e.preventDefault(); togglePlay(); }
+    if (e.key.toLowerCase()==='j') toggleJA();
+    if (e.key.toLowerCase()==='n') nextCard();
+    if (e.key>='1' && e.key<='4'){ submitEval(parseInt(e.key,10)-1); }
   });
 
-  // Show JA
-  el.showJa.onclick = ()=>{ el.ja.style.display = (el.ja.style.display==='none')?'block':'none'; };
-
-  // ===== Speech Recognition =====
-  function updateASRUI(){
-    const supported = !!SR;
-    el.recWrap.style.display = supported? 'flex':'none';
-    el.asr.textContent = supported? '利用可' : '未対応（手動評価のみ）';
-  }
-
-  el.rec.onclick = ()=>startRec();
-  el.recStop.onclick = ()=>stopRec();
+  // ===== Speech Recognition (press & hold) =====
+  function updateASRUI(){ el.asr.textContent = SR? '利用可' : '未対応'; }
+  updateASRUI();
 
   function startRec(){
     if (!SR) return;
-    recog = new SR();
-    recog.interimResults = true; recog.lang = 'en-US';
-    recog.continuous = true; recog.maxAlternatives = 1;
-    recogBuf = ''; recogFirstTs = 0; recogOn = true;
-    el.asr.textContent = '録音中…';
-    el.rec.disabled = true; el.recStop.disabled=false;
-    if (el.recMode.value==='shadow') audioStart = audioStart || now();
-    try{ recog.start(); }catch(e){}
-
-    recog.onresult = (ev)=>{
-      if (!recogFirstTs) recogFirstTs = now();
-      for (let i=ev.resultIndex;i<ev.results.length;i++){
-        const r = ev.results[i];
-        if (r.isFinal) recogBuf += (r[0].transcript||'') + ' ';
-      }
-      el.HYP.textContent = (recogBuf||'').trim()||'…';
+    recog = new SR(); recog.interimResults=true; recog.lang='en-US'; recog.continuous=true; recog.maxAlternatives=1;
+    recogBuf=''; recogFirstTs=0; recogOn=true; el.asr.textContent='録音中…';
+    try{ recog.start(); }catch(_){}
+    recog.onresult=(ev)=>{ if(!recogFirstTs) recogFirstTs=now(); for(let i=ev.resultIndex;i<ev.results.length;i++){ const r=ev.results[i]; if(r.isFinal) recogBuf+=(r[0].transcript||'')+' '; } };
+    recog.onerror=(e)=>{
+      if (e && (e.error==='not-allowed'||e.error==='service-not-allowed')){ el.asr.textContent='マイク未許可'; el.footer.textContent='サイトのマイク権限を許可'; }
+      else if (e && (e.error==='audio-capture'||e.error==='no-speech')){ el.asr.textContent='音声なし'; }
+      else { el.asr.textContent='ASRエラー'; }
     };
-    recog.onerror = (e)=>{
-      console.warn(e);
-      if (e && (e.error==='not-allowed' || e.error==='service-not-allowed')){
-        el.asr.textContent = 'マイク未許可';
-        el.footer.textContent = 'ブラウザのサイト権限でマイクを「許可」にしてください';
-      } else if (e && (e.error==='audio-capture' || e.error==='no-speech')){
-        el.asr.textContent = '音声入力なし';
-        el.footer.textContent = '端末のマイク接続・音量・権限を確認';
-      } else {
-        el.asr.textContent = 'ASRエラー';
-      }
-    };
-    recog.onend = ()=>{ if(recogOn) stopRec(); };
+    recog.onend=()=>{ if(recogOn) stopRec(); };
   }
-
   async function stopRec(){
-    if (!recogOn) return;
-    recogOn=false; try{ recog && recog.stop && recog.stop(); }catch(e){}
-    el.rec.disabled=false; el.recStop.disabled=true; el.asr.textContent='停止';
+    if(!recogOn) return; recogOn=false; try{ recog && recog.stop && recog.stop(); }catch(_){}
+    el.asr.textContent='停止';
     const it = QUEUE[idx]; if (!it) return;
-    const ref = it.en, hyp = (recogBuf||'').trim();
-    const vWER = +wer(ref,hyp).toFixed(3);
-    const vCER = +cer(ref,hyp).toFixed(3);
-    const latency = (el.recMode.value==='shadow' && audioStart)? Math.max(0, (recogFirstTs||now()) - audioStart) : 0;
-    el.WER.textContent = vWER.toFixed(3);
-    el.CER.textContent = vCER.toFixed(3);
-    el.LAT.textContent = latency? (latency+' ms'):'—';
-
-    const m = {
-      ts: new Date().toISOString(), id: it.id, mode: el.recMode.value,
-      wer: vWER, cer: vCER, asr_conf: '', duration_ms: 0, words_spoken: tokens(hyp).length, latency_ms: latency
-    };
-    try{ await svr.postSpeech(m); }catch(_){ }
+    const ref=it.en, hyp=(recogBuf||'').trim();
+    const vWER=+wer(ref,hyp).toFixed(3), vCER=+cer(ref,hyp).toFixed(3);
+    const latency = audioStart? Math.max(0,(recogFirstTs||now())-audioStart):0;
+    el.WER.textContent=vWER.toFixed(3); el.CER.textContent=vCER.toFixed(3);
+    el.LAT.textContent=latency? (latency+' ms'):'—';
+    const m={ ts:new Date().toISOString(), id:it.id, mode:'shadow', wer:vWER, cer:vCER, asr_conf:'', duration_ms:0, words_spoken:tokens(hyp).length, latency_ms:latency };
+    try{ await svr.postSpeech(m); }catch(_){}
   }
 
   // ===== Evaluation & Navigation =====
-  qsa('.evalBtn').forEach(b=>b.addEventListener('click', ()=>{
-    const r = parseInt(b.dataset.eval,10);
-    saveAttempt(r).then(()=> nextCard());
-  }));
+  qsa('.seg button').forEach(b=>b.addEventListener('click', ()=> submitEval(parseInt(b.dataset.eval,10))));
   el.next.onclick = ()=> nextCard();
 
-  async function saveAttempt(r){
+  async function submitEval(r){
     const it = QUEUE[idx]; if(!it) return;
-    let rFinal = r;
-    const w = parseFloat(el.WER.textContent);
-    if (!isNaN(w)){ if (w<=0.15) rFinal = clamp(rFinal+1,0,3); else if (w>0.30) rFinal = clamp(rFinal-1,0,3); }
-    const payload = {
-      ts: new Date().toISOString(), id: it.id,
-      mode: (SR? el.recMode.value : 'manual'),
-      response_ms: Math.max(0, now()-cardStart),
-      result: rFinal, hint_used: (el.ja.style.display==='block'), device: UA
-    };
-    try{ await svr.postAttempt(payload); }catch(_){ }
+    let rFinal=r;
+    const w=parseFloat(el.WER.textContent); if(!isNaN(w)){ if(w<=0.15) rFinal=clamp(rFinal+1,0,3); else if(w>0.30) rFinal=clamp(rFinal-1,0,3); }
+    const payload={ ts:new Date().toISOString(), id:it.id, mode:(SR?'auto':'manual'), response_ms:Math.max(0,now()-cardStart), result:rFinal, hint_used:(el.ja.style.display==='block'), device:UA };
+    try{ await svr.postAttempt(payload); }catch(_){}
+    nextCard();
   }
 
-  function nextCard(first=false){
+  async function nextCard(first=false){
     if (!QUEUE.length){ el.footer.textContent='キューが空です'; return; }
     if (!first) idx++; else idx=0;
     if (idx>=QUEUE.length){
-      const minutes = Math.round((now()-sessionStart)/60000);
-      svr.postSession({date: new Date().toISOString().slice(0,10), minutes, cards_done: QUEUE.length, new_introduced: 0, streak: ''});
-      el.footer.textContent = `完了: ${QUEUE.length} 枚`;
-      idx = QUEUE.length-1;
-      return;
+      const minutes=Math.round((now()-sessionStart)/60000);
+      svr.postSession({date:new Date().toISOString().slice(0,10), minutes, cards_done:QUEUE.length, new_introduced:0, streak:''});
+      el.footer.textContent=`完了: ${QUEUE.length} 枚`; idx=QUEUE.length-1; return;
     }
-    render(idx);
-    el.pbar.value = idx; el.pbar.max = QUEUE.length;
-    el.left.textContent = (QUEUE.length-idx);
-    el.footer.textContent = `#${idx+1} / ${QUEUE.length}`;
+    await render(idx);
+    el.pbar.value=idx; el.pbar.max=QUEUE.length;
+    el.left.textContent=(QUEUE.length-idx);
+    el.footer.textContent=`#${idx+1} / ${QUEUE.length}　タップ=再生 / 右=◎ 左=× / 上=和訳`;
   }
 
 })();
