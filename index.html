@@ -114,7 +114,7 @@
 </div>
 
 <audio id="player" crossorigin="anonymous"></audio>
-  
+
 <!-- 接続設定モーダル -->
 <div id="cfgModal" style="position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.4);z-index:9999">
   <div style="width:min(520px,92%);background:#111726;border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:16px">
@@ -127,13 +127,27 @@
       API Key（未設定なら空のままで可）
       <input id="cfgKey" style="width:100%" placeholder="（空でも可）">
     </label>
+
+    <hr style="border:none;border-top:1px solid rgba(255,255,255,.12);margin:12px 0">
+    <h4 style="margin:0 0 6px 0">音源ソース</h4>
+    <label style="display:block;margin:6px 0">
+      リモート音源のベースURL（任意。例: https://example.com/audio/）
+      <input id="cfgAudioBase" style="width:100%" placeholder="https://.../audio/">
+    </label>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">
+      <button id="btnPickFolder">ローカルフォルダを選択</button>
+      <button id="btnImportFiles">音源ファイルを取り込み（OPFS）</button>
+      <input id="filePicker" type="file" accept="audio/*" multiple style="display:none">
+    </div>
+    <div id="audioSourceStatus" class="muted" style="margin-top:6px"></div>
+
     <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
       <button id="cfgCancel">キャンセル</button>
       <button class="primary" id="cfgSave">保存</button>
     </div>
   </div>
 </div>
-  
+
 <script>
 (function(){
   // ===== Utilities =====
@@ -149,7 +163,7 @@
       .toLowerCase()
       .replace(/[\p{P}\p{S}]/gu,' ')
       .normalize('NFKC')
-      .replace(/\s+/g,' ') 
+      .replace(/\s+/g,' ')
       .trim();
   }
   function tokens(s){ return normalize(s).split(' ').filter(Boolean); }
@@ -177,8 +191,8 @@
   }
 
   // ===== State =====
-  let QUEUE=[]; // {id,en,ja,audio_url,tags,chunks_json}
-  let idx=-1;   // current index
+  let QUEUE=[]; // {id,en,ja,audio_fn,tags,chunks_json}
+  let idx=-1;
   let sessionStart=0, cardStart=0;
   let audioStart=0; // for shadow latency
   let A=null,B=null; let loop=false;
@@ -200,21 +214,16 @@
     dbg: qs('#dbg')
   };
   const audio = qs('#player');
-  // ==== データロード & Unit セレクト ====
-  // items一覧（Sheetsから書き出した静的JSON）を同一オリジンで配信
+
+  // ==== データロード（同一オリジン） ====
   const DATA_URL = './data/items.json';
-  
-  // JSONロード
   async function loadAllItems(){
     const res = await fetch(DATA_URL, { cache:'no-store' });
     if (!res.ok) throw new Error('items.json 読込失敗: ' + res.status);
     return await res.json();
   }
-  
-  // Unit セレクト初期化
   async function initUnitSelect(all){
-    const sel = qs('#unitSel');
-    if (!sel) return; // セレクト未設置でも落ちない
+    const sel = qs('#unitSel'); if (!sel) return;
     const units = [...new Set(all.map(x=>x.unit).filter(Boolean))].sort((a,b)=>{
       const na = parseInt(String(a).replace(/^\D+/,'' )||'0',10);
       const nb = parseInt(String(b).replace(/^\D+/,'' )||'0',10);
@@ -225,127 +234,226 @@
     sel.value = prev;
     sel.onchange = ()=> localStorage.setItem('unitSel', sel.value);
   }
-  
-  // 音源URLを解決（OPFS優先→/audio フォールバック）
+
+  // ==== 設定（localStorage） ====
+  function loadCfg(){ try{ return JSON.parse(localStorage.getItem('cfg')||'{}'); }catch(_){ return {}; } }
+  function saveCfg(c){ localStorage.setItem('cfg', JSON.stringify(c)); }
+  let CFG = loadCfg();
+  function apiUrl(){  return (CFG.apiUrl || '').trim(); }
+  function apiKey(){  return (CFG.apiKey || '').trim(); }
+  function audioBase(){return (CFG.audioBase || '').trim().replace(/\s+$/,'');}
+
+  const cfgModal = document.getElementById('cfgModal');
+  const cfgUrl   = document.getElementById('cfgUrl');
+  const cfgKey   = document.getElementById('cfgKey');
+  const cfgAudioBase = document.getElementById('cfgAudioBase');
+  const audioSourceStatus = document.getElementById('audioSourceStatus');
+
+  document.getElementById('btnCfg').onclick = ()=>{
+    cfgUrl.value  = apiUrl();
+    cfgKey.value  = apiKey();
+    cfgAudioBase.value = audioBase();
+    cfgModal.style.display = 'flex';
+  };
+  document.getElementById('cfgCancel').onclick = ()=>{ cfgModal.style.display='none'; };
+  document.getElementById('cfgSave').onclick = ()=>{
+    CFG = { apiUrl: cfgUrl.value, apiKey: cfgKey.value, audioBase: cfgAudioBase.value };
+    saveCfg(CFG);
+    cfgModal.style.display='none';
+    el.footer.textContent = '設定を保存しました';
+    renderAudioSourceStatus();
+  };
+
+  // ==== ローカルフォルダ（フォルダピッカー）/ OPFS 取り込み ====
+  let audioDirHandle = null;
+  let dbp = null;
+  function idb(){
+    if (dbp) return dbp;
+    dbp = new Promise((res, rej)=>{
+      const req = indexedDB.open('pwa-store', 1);
+      req.onupgradeneeded = ()=> req.result.createObjectStore('kv');
+      req.onsuccess = ()=> res(req.result);
+      req.onerror = ()=> rej(req.error);
+    });
+    return dbp;
+  }
+  async function idbSet(k,v){
+    try{
+      const db = await idb(); return await new Promise((res,rej)=>{
+        const tx = db.transaction('kv','readwrite'); tx.objectStore('kv').put(v,k);
+        tx.oncomplete=()=>res(); tx.onerror=()=>rej(tx.error);
+      });
+    }catch(_){}
+  }
+  async function idbGet(k){
+    try{
+      const db = await idb(); return await new Promise((res,rej)=>{
+        const tx = db.transaction('kv','readonly'); const req = tx.objectStore('kv').get(k);
+        req.onsuccess=()=>res(req.result); req.onerror=()=>rej(req.error);
+      });
+    }catch(_){ return null; }
+  }
+  function supportsDirPicker(){ return !!window.showDirectoryPicker; }
+  async function pickAudioFolder(){
+    if (!supportsDirPicker()){ el.footer.textContent='フォルダ選択に未対応（OPFS取り込みを使用）'; return; }
+    try{
+      const h = await window.showDirectoryPicker({mode:'read'});
+      const perm = await h.requestPermission({mode:'read'});
+      if (perm !== 'granted') throw new Error('permission denied');
+      audioDirHandle = h;
+      await idbSet('audioDir', h);
+      renderAudioSourceStatus('フォルダを保存しました');
+    }catch(_){
+      el.footer.textContent = 'フォルダ選択をキャンセル/失敗';
+    }
+  }
+  async function restoreAudioDir(){
+    const h = await idbGet('audioDir');
+    if (!h){ audioSourceStatus && (audioSourceStatus.textContent='ローカルフォルダ：未設定'); return; }
+    try{
+      const st = await h.queryPermission({mode:'read'});
+      if (st !== 'granted'){
+        const r = await h.requestPermission({mode:'read'});
+        if (r !== 'granted') throw new Error('permission denied');
+      }
+      audioDirHandle = h;
+      renderAudioSourceStatus();
+    }catch(_){
+      audioSourceStatus && (audioSourceStatus.textContent='ローカルフォルダ：権限なし（再選択してください）');
+    }
+  }
+  function renderAudioSourceStatus(extra){
+    const parts = [];
+    if (audioDirHandle) parts.push('ローカルフォルダ：設定済');
+    if (audioBase()) parts.push('ベースURL：' + audioBase());
+    parts.push('OPFS：取り込み優先');
+    audioSourceStatus && (audioSourceStatus.textContent = parts.join(' / ') + (extra? ' — '+extra:''));
+  }
+
+  const filePicker = document.getElementById('filePicker');
+  async function importAudioFiles(files){
+    if (!files || !files.length) return;
+    if (!(navigator.storage && navigator.storage.getDirectory)){
+      el.footer.textContent = 'このブラウザはOPFSに未対応';
+      return;
+    }
+    const root = await navigator.storage.getDirectory();
+    let ok=0, fail=0;
+    for (const f of files){
+      try{
+        const fh = await root.getFileHandle(f.name, {create:true});
+        const w = await fh.createWritable();
+        await f.stream().pipeTo(w);
+        ok++;
+      }catch(_){ fail++; }
+    }
+    renderAudioSourceStatus(`取り込み ${ok} 件${fail? `, 失敗 ${fail} 件`:''}`);
+  }
+  document.getElementById('btnPickFolder').onclick = pickAudioFolder;
+  document.getElementById('btnImportFiles').onclick = ()=> filePicker.click();
+  filePicker.onchange = (e)=> importAudioFiles(e.target.files || []);
+
+  // ==== 音源URL解決（探索順：フォルダ→OPFS→ベースURL→/audio） ====
   async function resolveAudioUrl(fn){
     if (!fn) return '';
-    // 1) OPFS
+
+    // 1) 選択フォルダ
+    if (audioDirHandle){
+      try{
+        const fh = await audioDirHandle.getFileHandle(fn);
+        const file = await fh.getFile();
+        return URL.createObjectURL(file);
+      }catch(_){}
+    }
+    // 2) OPFS
     try{
       if (navigator.storage && navigator.storage.getDirectory) {
         const root = await navigator.storage.getDirectory();
         const fh = await root.getFileHandle(fn).catch(()=>null);
         if (fh){
           const file = await fh.getFile();
-          return URL.createObjectURL(file); // blob: URL
+          return URL.createObjectURL(file);
         }
       }
     }catch(_){}
-    // 2) 配布ディレクトリ
+    // 3) ベースURL
+    const base = audioBase().replace(/\/+$/,'');
+    if (base) return base + '/' + encodeURI(fn);
+    // 4) /audio
     return './audio/' + encodeURI(fn);
   }
 
-  // ==== 設定（localStorageに保存） ====
-  function loadCfg(){ try{ return JSON.parse(localStorage.getItem('cfg')||'{}'); }catch(_){ return {}; } }
-  function saveCfg(c){ localStorage.setItem('cfg', JSON.stringify(c)); }
-  let CFG = loadCfg();
-  function apiUrl(){ return (CFG.apiUrl||'').trim(); }
-  function apiKey(){ return (CFG.apiKey||'').trim(); }
-  
-  // モーダル制御
-  const cfgModal = document.getElementById('cfgModal');
-  const cfgUrl   = document.getElementById('cfgUrl');
-  const cfgKey   = document.getElementById('cfgKey');
-  
-  document.getElementById('btnCfg').onclick = ()=>{
-    cfgUrl.value = apiUrl();
-    cfgKey.value = apiKey();
-    cfgModal.style.display = 'flex';
+  async function urlExists(u){
+    try{ const r = await fetch(u, {method:'HEAD', cache:'no-store'}); return r.ok; }
+    catch(_){ return false; }
+  }
+  function enableAudioUI(on){
+    el.play.disabled = el.pause.disabled = el.setA.disabled = el.setB.disabled = !on;
+  }
+  async function setAudioFor(it){
+    const url = await resolveAudioUrl(it.audio_fn);
+    if (!url){ enableAudioUI(false); audio.removeAttribute('src'); el.footer.textContent='音源なし'; return; }
+    // blob: は存在チェック不要
+    if (url.startsWith('blob:') || await urlExists(url)){
+      audio.src = url; enableAudioUI(true);
+    }else{
+      audio.removeAttribute('src'); enableAudioUI(false);
+      el.footer.textContent = '音源を読み込めません（未配置またはURL不一致）';
+    }
+  }
+
+  // ===== Server (GAS) bridge: sendBeacon / no-cors =====
+  async function sendLog(type, data){
+    const url = apiUrl();
+    if (!url){ el.footer.textContent = 'GASのURL未設定：右上「設定」から入力'; return; }
+    const payload = { apiKey: apiKey() || undefined, type, data };
+    const blob = new Blob([JSON.stringify(payload)], { type: 'text/plain;charset=UTF-8' });
+    if (!navigator.onLine) { enqueue(type, data); return; }
+    if ('sendBeacon' in navigator) { navigator.sendBeacon(url, blob); return; }
+    try{ await fetch(url, { method:'POST', mode:'no-cors', body: blob }); }catch(_){}
+  }
+  function enqueue(type, data){
+    try{
+      const q = JSON.parse(localStorage.getItem('outbox')||'[]');
+      q.push({type, data});
+      localStorage.setItem('outbox', JSON.stringify(q));
+    }catch(_){}
+  }
+  window.addEventListener('online', async ()=>{
+    let q = JSON.parse(localStorage.getItem('outbox')||'[]');
+    while (navigator.onLine && q.length){
+      const {type, data} = q[0];
+      await sendLog(type, data);
+      q.shift(); localStorage.setItem('outbox', JSON.stringify(q));
+    }
+  });
+
+  const svr = {
+    getQueue: async (_iso)=>{
+      const all = await loadAllItems();
+      const pick = (qs('#unitSel')?.value || '');
+      let items = pick ? all.filter(x => String(x.unit) === pick) : all;
+      // audioはrender時に解決（設定変更に追随させるため）
+      const shaped = items.map(it => ({
+        id: it.id, en: it.en, ja: it.ja,
+        tags: it.tags || '', chunks_json: it.chunks || '[]',
+        audio_fn: it.audio_fn || ''
+      }));
+      return { items: shaped, left: shaped.length, streak: 0, minutes: 0 };
+    },
+    postAttempt: (a)=> sendLog('attempt', a),
+    postSpeech:  (m)=> sendLog('speech',  m),
+    postSession: (s)=> sendLog('session', s),
   };
-  document.getElementById('cfgCancel').onclick = ()=>{ cfgModal.style.display='none'; };
-  document.getElementById('cfgSave').onclick = ()=>{
-    CFG = { apiUrl: cfgUrl.value, apiKey: cfgKey.value };
-    saveCfg(CFG);
-    cfgModal.style.display='none';
-    el.footer.textContent = '設定を保存しました';
-  };
-
-// ===== Server (GAS) bridge: sendBeacon / no-cors（設定参照版） =====
-async function sendLog(type, data){
-  const url = apiUrl();
-  if (!url){
-    el.footer.textContent = 'GASのURL未設定：右上「設定」から入力';
-    return;
-  }
-  // GAS側は JSON 受け取りのままでOK（text/plainでプリフライト回避）
-  const payload = { apiKey: apiKey() || undefined, type, data };
-  const blob = new Blob([JSON.stringify(payload)], { type: 'text/plain;charset=UTF-8' });
-
-  if (!navigator.onLine) { enqueue(type, data); return; }
-
-  if ('sendBeacon' in navigator) {
-    navigator.sendBeacon(url, blob);     // レスポンス本文は読まないのが仕様
-    return;
-  }
-  try{
-    await fetch(url, { method:'POST', mode:'no-cors', body: blob });
-  }catch(_){ /* 失敗は握りつぶす（Outboxに任せる） */ }
-}
-
-// Outbox（既存のまま利用）
-function enqueue(type, data){
-  try{
-    const q = JSON.parse(localStorage.getItem('outbox')||'[]');
-    q.push({type, data});
-    localStorage.setItem('outbox', JSON.stringify(q));
-  }catch(_){}
-}
-window.addEventListener('online', async ()=>{
-  let q = JSON.parse(localStorage.getItem('outbox')||'[]');
-  while (navigator.onLine && q.length){
-    const {type, data} = q[0];
-    await sendLog(type, data);
-    q.shift(); localStorage.setItem('outbox', JSON.stringify(q));
-  }
-});
-
-// アプリが呼ぶAPI名は維持（内部で sendLog を使う）
-const svr = {
-  getQueue: async (_iso)=>{
-    const all = await loadAllItems();
-    const pick = (qs('#unitSel')?.value || '');
-    let items = pick ? all.filter(x => String(x.unit) === pick) : all;
-    const withAudio = await Promise.all(items.map(async it => ({
-      id: it.id,
-      en: it.en,
-      ja: it.ja,
-      tags: it.tags || '',
-      chunks_json: it.chunks || '[]',
-      audio_url: await resolveAudioUrl(it.audio_fn)
-    })));
-    return { items: withAudio, left: withAudio.length, streak: 0, minutes: 0 };
-  },
-};
-
-
-  function mockGetQueue(){
-    // minimal sample for local trial
-    return Promise.resolve({
-      items:[
-        {id:'E0001', en:'...', ja:'...', audio_url:'', tags:'...', chunks_json:'[]'},
-        {id:'E0002', en:'...', ja:'...', audio_url:'', tags:'...', chunks_json:'[]'}
-      ],
-      left: 2, streak: 0, minutes: 0
-    });
-  }
 
   // ===== Init =====
   updateASRUI();
-  // items.json を読んで Unit セレクトを準備
   loadAllItems().then(initUnitSelect).catch(e=>{
     el.footer.textContent = 'items.json の読み込みに失敗';
     console.error(e);
-  });  
+  });
   if (!apiUrl()) el.footer.textContent = 'まず「設定」で GAS の /exec URL を保存';
+  restoreAudioDir().then(()=>renderAudioSourceStatus());
 
   el.start.addEventListener('click', async ()=>{
     sessionStart = now();
@@ -374,9 +482,9 @@ const svr = {
     (it.tags||'').split(',').filter(Boolean).forEach(t=>{
       const s=document.createElement('span'); s.className='chip'; s.textContent=t.trim(); el.chips.appendChild(s);
     });
-    audio.src = it.audio_url || '';
-    // 音源エラー時も学習を続行
-    audio.onerror = ()=>{ el.footer.textContent = '音源を読み込めません（後でOPFS導入）'; };
+
+    // 音源（存在チェック・UI切替込み）
+    setAudioFor(it);
 
     audio.playbackRate = parseFloat(el.speed.value||'1');
     A=null; B=null; loop=false; el.loop.checked=false; updAB();
@@ -423,7 +531,7 @@ const svr = {
     el.asr.textContent = '録音中…';
     el.rec.disabled = true; el.recStop.disabled=false;
     if (el.recMode.value==='shadow') audioStart = audioStart || now();
-    try{ recog.start(); }catch(e){ /* Safari double start guard */ }
+    try{ recog.start(); }catch(e){}
 
     recog.onresult = (ev)=>{
       if (!recogFirstTs) recogFirstTs = now();
@@ -433,7 +541,18 @@ const svr = {
       }
       el.HYP.textContent = (recogBuf||'').trim()||'…';
     };
-    recog.onerror = (e)=>{ el.asr.textContent = 'エラー'; console.warn(e); };
+    recog.onerror = (e)=>{
+      console.warn(e);
+      if (e && (e.error==='not-allowed' || e.error==='service-not-allowed')){
+        el.asr.textContent = 'マイク未許可';
+        el.footer.textContent = 'ブラウザのサイト権限でマイクを「許可」にしてください';
+      } else if (e && (e.error==='audio-capture' || e.error==='no-speech')){
+        el.asr.textContent = '音声入力なし';
+        el.footer.textContent = '端末のマイク接続・音量・権限を確認';
+      } else {
+        el.asr.textContent = 'ASRエラー';
+      }
+    };
     recog.onend = ()=>{ if(recogOn) stopRec(); };
   }
 
@@ -450,7 +569,6 @@ const svr = {
     el.CER.textContent = vCER.toFixed(3);
     el.LAT.textContent = latency? (latency+' ms'):'—';
 
-    // Send speech metrics
     const m = {
       ts: new Date().toISOString(), id: it.id, mode: el.recMode.value,
       wer: vWER, cer: vCER, asr_conf: '', duration_ms: 0, words_spoken: tokens(hyp).length, latency_ms: latency
@@ -467,11 +585,9 @@ const svr = {
 
   async function saveAttempt(r){
     const it = QUEUE[idx]; if(!it) return;
-    // simple auto-bonus by WER if available
     let rFinal = r;
-    const w = parseFloat(el.WER.textContent); if (!isNaN(w)){
-      if (w<=0.15) rFinal = clamp(rFinal+1,0,3); else if (w>0.30) rFinal = clamp(rFinal-1,0,3);
-    }
+    const w = parseFloat(el.WER.textContent);
+    if (!isNaN(w)){ if (w<=0.15) rFinal = clamp(rFinal+1,0,3); else if (w>0.30) rFinal = clamp(rFinal-1,0,3); }
     const payload = {
       ts: new Date().toISOString(), id: it.id,
       mode: (SR? el.recMode.value : 'manual'),
@@ -485,11 +601,10 @@ const svr = {
     if (!QUEUE.length){ el.footer.textContent='キューが空です'; return; }
     if (!first) idx++; else idx=0;
     if (idx>=QUEUE.length){
-      // session summary
       const minutes = Math.round((now()-sessionStart)/60000);
       svr.postSession({date: new Date().toISOString().slice(0,10), minutes, cards_done: QUEUE.length, new_introduced: 0, streak: ''});
       el.footer.textContent = `完了: ${QUEUE.length} 枚`;
-      idx = QUEUE.length-1; // stay on last card
+      idx = QUEUE.length-1;
       return;
     }
     render(idx);
