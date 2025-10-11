@@ -3,25 +3,21 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>英語学習（範囲UI＋ASR・安定版）</title>
+  <title>英語学習（範囲UI＋ASR・安定改良版）</title>
   <style>
-    :root{
-      --bg:#0b0e1a;--panel:rgba(20,24,36,.65);--bd:rgba(255,255,255,.12);--txt:#e6e8ef;--muted:#aeb5c6;
-      --accent:#62d5ff;--good:#46d37f;--bad:#ff6b6b;--warn:#f0c33c;
-    }
+    :root{ --bg:#0b0e1a; --panel:rgba(20,24,36,.65); --bd:rgba(255,255,255,.12); --txt:#e6e8ef; --muted:#aeb5c6; --accent:#62d5ff; --good:#46d37f; --bad:#ff6b6b; }
     *{box-sizing:border-box}
     html,body{height:100%;margin:0;background:var(--bg);color:var(--txt);font-family:system-ui,"Segoe UI","Noto Sans JP",sans-serif}
     #app{position:fixed;inset:0;display:grid;grid-template-rows:auto auto 1fr auto}
+
     header{padding:10px 12px;display:flex;gap:12px;align-items:center;background:var(--panel);border-bottom:1px solid var(--bd)}
     .stat{display:flex;gap:6px;align-items:baseline;font-size:14px;color:var(--muted)} .stat b{font-size:18px;color:var(--txt)} .grow{flex:1}
     .icon{width:38px;height:38px;border-radius:999px;border:1px solid var(--bd);display:grid;place-items:center;cursor:pointer;background:#111726}
 
-    /* 出題範囲バー */
+    /* 範囲UI（ネイティブセレクト中心＝モバイル最適） */
     #rangeBar{display:flex;gap:8px;align-items:center;padding:8px 12px;background:rgba(20,24,36,.5);border-bottom:1px solid rgba(255,255,255,.12);overflow:auto}
-    .pill{border:1px solid var(--bd);border-radius:999px;padding:6px 10px;background:#111726;color:var(--txt);cursor:pointer;white-space:nowrap}
-    .pill[data-active="1"], .pill[aria-pressed="true"]{outline:2px solid var(--accent)}
-    .chip{font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid var(--bd);color:var(--muted);cursor:pointer;white-space:nowrap}
-    .chip[data-on="1"]{background:#1a2134;color:var(--txt);border-color:#233252}
+    select, .switch{background:#111726;border:1px solid var(--bd);color:var(--txt);border-radius:12px;padding:8px}
+    .switch{display:flex;gap:8px;align-items:center}
 
     main{padding:12px;overflow:auto}
     .card{max-width:840px;margin:0 auto;background:var(--panel);border:1px solid var(--bd);border-radius:18px;padding:16px;min-height:50vh;display:flex;flex-direction:column;gap:12px;touch-action:manipulation}
@@ -33,8 +29,10 @@
     .ja{font-size:16px;color:var(--muted);display:none}
     #transcript{min-height:1.6em}
     #transcript .interim{opacity:.6}
+
     .kpi{display:flex;gap:12px;color:var(--muted);font-size:12px}
     .kpi .val{color:var(--txt);font-weight:600}
+
     footer{border-top:1px solid var(--bd);padding:8px 12px;display:flex;gap:10px;align-items:center;background:var(--panel)}
     progress{width:160px;height:10px}
     .btn{border:1px solid var(--bd);border-radius:12px;background:#111726;color:var(--txt);padding:10px 14px;cursor:pointer}
@@ -62,14 +60,18 @@
     <div id="btnCfg" class="icon" title="設定">⚙️</div>
   </header>
 
-  <!-- 出題範囲バー（常設） -->
+  <!-- 出題範囲（ネイティブピッカー） -->
   <div id="rangeBar">
-    <div class="pill" id="chipAll" role="button" aria-pressed="true">全体</div>
-    <div id="chipSections" style="display:flex;gap:6px"></div>
-    <div class="pill" id="chipOrder" role="button" data-order="asc" title="並び順">昇順</div>
-    <label class="pill" style="display:flex;gap:6px;align-items:center">
-      <input id="chkOnlyWeak" type="checkbox"> 未習得のみ
+    <label>セクション
+      <select id="secSel"></select>
     </label>
+    <label>並び
+      <select id="orderSel">
+        <option value="asc">昇順</option>
+        <option value="rnd">ランダム</option>
+      </select>
+    </label>
+    <label class="switch"><input id="chkOnlyWeak" type="checkbox"> 未習得のみ</label>
   </div>
 
   <main>
@@ -81,8 +83,8 @@
 
       <div class="kpi">
         <div>ASR <span class="val" id="asrState">待機</span></div>
-        <div>Recall欠損率 <span class="val" id="valWER">—</span></div>
-        <div>Precision欠損率 <span class="val" id="valCER">—</span></div>
+        <div>欠損(Recall) <span class="val" id="valWER">—</span></div>
+        <div>過剰(Precision) <span class="val" id="valCER">—</span></div>
       </div>
 
       <div style="display:flex;gap:8px">
@@ -117,15 +119,17 @@
       <input id="cfgAudioBase" type="text" placeholder="./audio">
     </label>
     <div class="row" style="margin-top:8px">
+      <button id="btnPickDir" class="btn">音源フォルダを指定（フォルダピッカー）</button>
+      <button id="btnClearDir" class="btn">フォルダ解除</button>
+      <span id="dirStatus" class="muted" style="font-size:12px"></span>
+    </div>
+    <div class="row" style="margin-top:8px">
       <input id="filePick" type="file" accept="audio/*" multiple style="display:none">
-      <button id="btnImport" class="btn">ローカル音源をOPFSへ取り込み</button>
+      <button id="btnImport" class="btn">音源ファイルをOPFSへ取り込み</button>
       <button id="btnTestAudio" class="btn">テスト再生</button>
       <div class="grow"></div>
       <button id="cfgClose" class="btn">閉じる</button>
       <button id="cfgSave" class="btn" style="background:#1a2134;border-color:#233252">保存</button>
-    </div>
-    <div id="cfgNote" class="muted" style="margin-top:6px;font-size:12px">
-      * 取り込み: 選んだ音源ファイルは端末内OPFSに保存され、ファイル名（例: "43 Section 43_09.m4a"）で参照します。
     </div>
   </div>
 </div>
@@ -135,244 +139,171 @@
   // ===== Utilities =====
   const qs=(s,el=document)=>el.querySelector(s);
   const qsa=(s,el=document)=>[...el.querySelectorAll(s)];
-  const now=()=>Date.now();
-  const UA=(()=>navigator.userAgent||'')();
+  const now=()=>Date.now(); const UA=(()=>navigator.userAgent||'')();
   const STOP=new Set(['a','the','to','of','in','on','for','at','is','are','was','were','be','been','being','do','does','did','have','has','had']);
   const norm=s=>(s||'').toLowerCase().normalize('NFKC').replace(/[\p{P}\p{S}]/gu,' ').replace(/\s+/g,' ').trim();
   const toks=s=>norm(s).split(' ').filter(Boolean);
-  function lev1(a,b){ if(a===b) return true; const la=a.length, lb=b.length; if(Math.abs(la-lb)>1) return false; let i=0,j=0,d=0; while(i<la&&j<lb){ if(a[i]===b[j]){i++;j++;continue} if(++d>1)return false; if(la>lb)i++; else if(lb>la)j++; else {i++;j++;} } return true; }
+  function dedupeConsecutive(arr){ const out=[]; for(const w of arr){ if(out.length===0||out[out.length-1]!==w) out.push(w); } return out; }
   function spanify(text){ const parts=(text||'').match(/\S+|\s+/g)||[]; return parts.map(w=>/\s+/.test(w)? w.replace(/ /g,'&nbsp;') : `<span class="tok" data-w="${w.replace(/[^\p{L}\p{N}'-]/gu,'')}">${w}</span>`).join(''); }
   function toast(msg, ms=1500){ const t=qs('#toast'); t.textContent=msg; t.style.display='block'; clearTimeout(toast._t); toast._t=setTimeout(()=>t.style.display='none', ms); }
 
   // ===== Elements =====
-  const el={
-    left:qs('#statLeft'), min:qs('#statMin'), streak:qs('#statStreak'),
-    pbar:qs('#pbar'), footer:qs('#footerInfo'),
-    en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'),
-    asr:qs('#asrState'), WER:qs('#valWER'), CER:qs('#valCER'),
-    next:qs('#btnNext'), mic:qs('#btnMic'), card:qs('#card'),
-    chipAll:qs('#chipAll'), chipBox:qs('#chipSections'), chipOrder:qs('#chipOrder'), chkWeak:qs('#chkOnlyWeak'),
-    cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnImport:qs('#btnImport'), filePick:qs('#filePick'), btnTestAudio:qs('#btnTestAudio')
-  };
+  const el={ left:qs('#statLeft'), min:qs('#statMin'), streak:qs('#statStreak'), pbar:qs('#pbar'), footer:qs('#footerInfo'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), asr:qs('#asrState'), WER:qs('#valWER'), CER:qs('#valCER'), next:qs('#btnNext'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), chkWeak:qs('#chkOnlyWeak'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnImport:qs('#btnImport'), filePick:qs('#filePick'), btnTestAudio:qs('#btnTestAudio'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus') };
   const audio=qs('#player');
 
-  // ===== Config (localStorage) =====
-  const CFG_KEY='appConfigV2';
+  // ===== Config =====
+  const CFG_KEY='appConfigV3';
   function loadCfg(){ try{return JSON.parse(localStorage.getItem(CFG_KEY)||'{}')}catch(_){return{}} }
   function saveCfg(o){ localStorage.setItem(CFG_KEY, JSON.stringify(o)); }
   let CFG=Object.assign({ apiUrl:'', apiKey:'', audioBase:'./audio' }, loadCfg());
 
+  // ===== IndexedDB for DirectoryHandle =====
+  const DB='fs-handles', STORE='dir';
+  function idb(){ return new Promise((res,rej)=>{ const r=indexedDB.open(DB,1); r.onupgradeneeded=()=>{ r.result.createObjectStore(STORE); }; r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }); }
+  async function saveDirHandle(h){ const db=await idb(); return new Promise((res,rej)=>{ const tx=db.transaction(STORE,'readwrite'); tx.objectStore(STORE).put(h,'audio'); tx.oncomplete=()=>res(); tx.onerror=()=>rej(tx.error); }); }
+  async function loadDirHandle(){ const db=await idb(); return new Promise((res,rej)=>{ const tx=db.transaction(STORE,'readonly'); const rq=tx.objectStore(STORE).get('audio'); rq.onsuccess=()=>res(rq.result||null); rq.onerror=()=>rej(rq.error); }); }
+  async function clearDirHandle(){ const db=await idb(); return new Promise((res,rej)=>{ const tx=db.transaction(STORE,'readwrite'); tx.objectStore(STORE).delete('audio'); tx.oncomplete=()=>res(); tx.onerror=()=>rej(tx.error); }); }
+
+  let DIR=null; // FileSystemDirectoryHandle
+  async function ensureDir(){ if(DIR) return DIR; try{ DIR = await loadDirHandle(); if(!DIR) return null; const q = await DIR.queryPermission?.({mode:'read'}) || 'granted'; if(q!=='granted'){ const r = await DIR.requestPermission?.({mode:'read'}); if(r!=='granted'){ DIR=null; return null; } } return DIR; }catch(_){ DIR=null; return null; } }
+
   // Settings modal
-  el.cfgBtn.onclick=()=>{ el.cfgUrl.value=CFG.apiUrl||''; el.cfgKey.value=CFG.apiKey||''; el.cfgAudioBase.value=CFG.audioBase||'./audio'; el.cfgModal.style.display='flex'; };
+  el.cfgBtn.onclick=()=>{ el.cfgUrl.value=CFG.apiUrl||''; el.cfgKey.value=CFG.apiKey||''; el.cfgAudioBase.value=CFG.audioBase||'./audio'; refreshDirStatus(); el.cfgModal.style.display='flex'; };
   el.cfgClose.onclick=()=>{ el.cfgModal.style.display='none'; };
   el.cfgSave.onclick=()=>{ CFG.apiUrl=(el.cfgUrl.value||'').trim(); CFG.apiKey=(el.cfgKey.value||'').trim(); CFG.audioBase=(el.cfgAudioBase.value||'').trim()||'./audio'; saveCfg(CFG); el.cfgModal.style.display='none'; toast('設定を保存しました'); };
+  el.btnPickDir.onclick=async()=>{ if(!window.showDirectoryPicker){ toast('この端末はフォルダピッカー非対応'); return; } try{ const h=await showDirectoryPicker({mode:'read'}); await saveDirHandle(h); DIR=h; refreshDirStatus(); toast('フォルダを保存しました'); }catch(e){ if(e&&e.name!=='AbortError') toast('フォルダ選択に失敗'); }};
+  el.btnClearDir.onclick=async()=>{ await clearDirHandle(); DIR=null; refreshDirStatus(); toast('フォルダ設定を解除'); };
+  function refreshDirStatus(){ el.dirStatus.textContent = DIR? '保存済み':'未設定'; }
 
-  // Import audio files to OPFS
+  // Import audio (OPFS)
   el.btnImport.onclick=()=>{ el.filePick.click(); };
-  el.filePick.onchange=async (ev)=>{
-    const files=[...ev.target.files||[]]; if(!files.length){ toast('ファイル未選択'); return; }
-    try{
-      if(!(navigator.storage&&navigator.storage.getDirectory)) throw new Error('OPFS未対応');
-      const root=await navigator.storage.getDirectory();
-      let ok=0; for(const f of files){
-        const fh=await root.getFileHandle(f.name,{create:true});
-        const w=await fh.createWritable(); await w.write(f); await w.close(); ok++;
-      }
-      toast(`${ok} 件をOPFSへ保存`);
-    }catch(e){ console.error(e); toast('OPFS取り込みに失敗: '+(e&&e.message||e)); }
-  };
+  el.filePick.onchange=async (ev)=>{ const files=[...ev.target.files||[]]; if(!files.length){ toast('ファイル未選択'); return; } try{ if(!(navigator.storage&&navigator.storage.getDirectory)) throw new Error('OPFS未対応'); const root=await navigator.storage.getDirectory(); let ok=0; for(const f of files){ const fh=await root.getFileHandle(f.name,{create:true}); const w=await fh.createWritable(); await w.write(f); await w.close(); ok++; } toast(`${ok} 件をOPFSへ保存`); }catch(e){ console.error(e); toast('OPFS取り込み失敗'); } };
 
-  // Test audio (try first item filename or sample)
-  el.btnTestAudio.onclick=async()=>{
-    const fn = window.ALL_ITEMS && window.ALL_ITEMS[0] && window.ALL_ITEMS[0].audio_fn || '';
-    const url = await resolveAudioUrl(fn||'test.m4a');
-    if(!url){ toast('音源URLを解決できません'); return; }
-    try{ audio.src=url; await audio.play(); toast('再生テスト: OK'); }catch(e){ console.warn(e); toast('再生できません（ユーザー操作が必要）'); }
-  };
+  // GAS Bridge
+  async function sendLog(type,data){ const url=(CFG.apiUrl||'').trim(); if(!url) return; const payload={apiKey:CFG.apiKey||undefined,type,data}; const blob=new Blob([JSON.stringify(payload)],{type:'text/plain;charset=UTF-8'}); if('sendBeacon' in navigator){ navigator.sendBeacon(url, blob); return; } try{ await fetch(url,{method:'POST',mode:'no-cors',body:blob}); }catch(_){} }
 
-  // ===== GAS Bridge (sendBeacon / no-cors) =====
-  async function sendLog(type, data){
-    const url=(CFG.apiUrl||'').trim();
-    if(!url){ return; }
-    const payload={ apiKey: CFG.apiKey||undefined, type, data };
-    const blob=new Blob([JSON.stringify(payload)],{type:'text/plain;charset=UTF-8'});
-    if(!navigator.onLine){ enqueue(type,data); return; }
-    if('sendBeacon' in navigator){ navigator.sendBeacon(url, blob); return; }
-    try{ await fetch(url,{method:'POST', mode:'no-cors', body:blob}); }catch(_){ /* ignore */ }
-  }
-  function enqueue(type,data){ try{ const q=JSON.parse(localStorage.getItem('outbox')||'[]'); q.push({type,data}); localStorage.setItem('outbox', JSON.stringify(q)); }catch(_){} }
-  window.addEventListener('online', async()=>{ let q=JSON.parse(localStorage.getItem('outbox')||'[]'); while(navigator.onLine && q.length){ const {type,data}=q[0]; await sendLog(type,data); q.shift(); localStorage.setItem('outbox', JSON.stringify(q)); } });
-
-  // ===== Data: items & srs (cached once) =====
+  // Data
   const DATA_URL='./data/items.json';
   async function fetchJson(url){ const r=await fetch(url,{cache:'no-store'}); if(!r.ok) throw new Error(url+': '+r.status); return r.json(); }
   window.ALL_ITEMS=[]; let SRS_MAP=new Map();
-  async function ensureDataLoaded(){
-    if(!window.ALL_ITEMS.length){ window.ALL_ITEMS = await fetchJson(DATA_URL); }
-    if(!SRS_MAP.size){ try{ const arr=await fetchJson('./data/srs.json'); const m=new Map(); for(const x of arr) m.set(x.id,x); SRS_MAP=m; }catch(_){ SRS_MAP=new Map(); } }
-  }
+  async function ensureDataLoaded(){ if(!window.ALL_ITEMS.length){ window.ALL_ITEMS=await fetchJson(DATA_URL); } if(!SRS_MAP.size){ try{ const arr=await fetchJson('./data/srs.json'); const m=new Map(); for(const x of arr) m.set(x.id,x); SRS_MAP=m; }catch(_){ SRS_MAP=new Map(); } } }
 
-  // ===== Range (UI state) =====
-  const RANGE_KEY='rangeStateV2';
-  function getRange(){ try{return JSON.parse(localStorage.getItem(RANGE_KEY)||'{}')}catch(_){return{}} }
-  function saveRange(s){ localStorage.setItem(RANGE_KEY, JSON.stringify(s)); }
-  let RANGE=Object.assign({all:true, sections:[], order:'asc', onlyWeak:false}, getRange());
+  // Build section options (All/単一)
+  function initSectionPicker(){ const sel=el.secSel; sel.innerHTML=''; sel.appendChild(new Option('全体','')); const units=[...new Set(window.ALL_ITEMS.map(x=>x.unit).filter(Boolean))].sort((a,b)=>{const na=+String(a).replace(/\D+/g,'')||0, nb=+String(b).replace(/\D+/g,'')||0; return na-nb||String(a).localeCompare(String(b));}); for(const u of units){ sel.appendChild(new Option(u,u)); } const saved=localStorage.getItem('secSel')||''; sel.value=saved; sel.onchange=()=>{ localStorage.setItem('secSel', sel.value); rebuildAndRender(true); };
+    const ordSaved=localStorage.getItem('orderSel')||'asc'; el.orderSel.value=ordSaved; el.orderSel.onchange=()=>{ localStorage.setItem('orderSel', el.orderSel.value); rebuildAndRender(true); };
+    el.chkWeak.checked = localStorage.getItem('onlyWeak')==='1'; el.chkWeak.onchange=()=>{ localStorage.setItem('onlyWeak', el.chkWeak.checked?'1':'0'); rebuildAndRender(true); };
+  }
 
   function isUnlearned(id){ const s=SRS_MAP.get(id); if(!s) return true; if(s.last_result===0) return true; if((s.ease||0)<2.0 && (s.interval_d||0)<3) return true; return false; }
-  function seededShuffle(arr,seed){ let t=seed>>>0; const rnd=()=>{t^=t<<13; t^=t>>>17; t^=t<<5; return (t>>>0)/4294967296}; const a=arr.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(rnd()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+  function buildQueue(){ const sec=el.secSel.value; const order=el.orderSel.value; const onlyWeak=el.chkWeak.checked; let items=(sec?'filter':'all')==='all' ? window.ALL_ITEMS : window.ALL_ITEMS.filter(x=>String(x.unit)===sec); if(onlyWeak) items=items.filter(x=>isUnlearned(x.id)); if(order==='rnd'){ const seed=Math.floor(Date.now()/86400000); let t=seed>>>0; const rnd=()=>{t^=t<<13; t^=t>>>17; t^=t<<5; return (t>>>0)/4294967296}; items=items.slice(); for(let i=items.length-1;i>0;i--){ const j=Math.floor(rnd()*(i+1)); [items[i],items[j]]=[items[j]],items[i]; } } else { items=items.slice().sort((a,b)=>{ const na=+String(a.unit||'').replace(/\D+/g,'')||0, nb=+String(b.unit||'').replace(/\D+/g,'')||0; if(na!==nb) return na-nb; return String(a.id).localeCompare(String(b.id)); }); } return items.map(it=>({ id:it.id,en:it.en,ja:it.ja,tags:it.tags||'',chunks_json:it.chunks||'[]',audio_fn:it.audio_fn||'' })); }
 
-  function buildQueue(){
-    // filter in-memory only（freeze回避）
-    let items = (RANGE.all? window.ALL_ITEMS : window.ALL_ITEMS.filter(x=>RANGE.sections.includes(String(x.unit))));
-    if(RANGE.onlyWeak) items = items.filter(x=>isUnlearned(x.id));
-    if(RANGE.order==='rnd'){ const seed=Math.floor(Date.now()/86400000); items=seededShuffle(items, seed); }
-    else { items=items.slice().sort((a,b)=>{ const na=+String(a.unit||'').replace(/\D+/g,'')||0, nb=+String(b.unit||'').replace(/\D+/g,'')||0; if(na!==nb) return na-nb; return String(a.id).localeCompare(String(b.id)); }); }
-    return items.map(it=>({ id:it.id,en:it.en,ja:it.ja,tags:it.tags||'',chunks_json:it.chunks||'[]',audio_fn:it.audio_fn||'' }));
-  }
-
-  async function initRangeBar(){
-    // Build section chips once
-    const units=[...new Set(window.ALL_ITEMS.map(x=>x.unit).filter(Boolean))].sort((a,b)=>{const na=+String(a).replace(/\D+/g,'')||0, nb=+String(b).replace(/\D+/g,'')||0; return na-nb||String(a).localeCompare(String(b));});
-    el.chipBox.innerHTML='';
-    for(const u of units){
-      const sp=document.createElement('div'); sp.className='chip'; sp.textContent=u; sp.dataset.name=u; sp.dataset.on='0';
-      sp.addEventListener('click', onChipClick, {passive:true});
-      el.chipBox.appendChild(sp);
-    }
-    syncRangeUI();
-    // handlers for static pills
-    el.chipAll.onclick=()=>{ RANGE.all=!RANGE.all; if(RANGE.all) RANGE.sections=[]; saveRange(RANGE); syncRangeUI(); rebuildAndRender(true); };
-    el.chipOrder.onclick=()=>{ RANGE.order=(RANGE.order==='asc'?'rnd':'asc'); saveRange(RANGE); syncRangeUI(); rebuildAndRender(true); };
-    el.chkWeak.onchange=()=>{ RANGE.onlyWeak=!!el.chkWeak.checked; saveRange(RANGE); rebuildAndRender(true); };
-    function onChipClick(ev){ const u=ev.currentTarget.dataset.name; RANGE.all=false; if(RANGE.sections.includes(u)) RANGE.sections=RANGE.sections.filter(x=>x!==u); else RANGE.sections.push(u); saveRange(RANGE); syncRangeUI(); rebuildAndRender(true); }
-  }
-  function syncRangeUI(){
-    el.chipAll.setAttribute('aria-pressed', RANGE.all?'true':'false');
-    el.chipOrder.dataset.order=RANGE.order; el.chipOrder.textContent=(RANGE.order==='asc'?'昇順':'ランダム');
-    el.chkWeak.checked=!!RANGE.onlyWeak;
-    [...el.chipBox.children].forEach(n=>{ const name=n.dataset.name; n.dataset.on=(!RANGE.all && RANGE.sections.includes(name))?'1':'0'; });
-  }
-
-  // ===== Audio resolve with OPFS cache + Base URL =====
-  const audioUrlCache=new Map(); // id -> url string
+  // Audio resolve: DIR (folder) -> OPFS -> base URL
+  const audioUrlCache=new Map();
+  async function resolveFromDir(name){ try{ const d=await ensureDir(); if(!d||!name) return ''; const fh=await d.getFileHandle(name).catch(()=>null); if(!fh) return ''; const f=await fh.getFile(); return URL.createObjectURL(f); }catch(_){ return ''; } }
   async function resolveFromOPFS(name){ if(!name) return ''; try{ if(!(navigator.storage&&navigator.storage.getDirectory)) return ''; const root=await navigator.storage.getDirectory(); const fh=await root.getFileHandle(name).catch(()=>null); if(!fh) return ''; const file=await fh.getFile(); return URL.createObjectURL(file); }catch(_){ return ''; } }
-  async function resolveAudioUrl(name){ if(!name) return ''; // 1) cache by filename as key
-    if(audioUrlCache.has(name)) return audioUrlCache.get(name);
-    const op=await resolveFromOPFS(name); if(op){ audioUrlCache.set(name, op); return op; }
-    // 2) base URL fallback
-    const base=(CFG.audioBase||'./audio').replace(/\/$/,'');
-    const url= base + '/' + encodeURI(name);
-    audioUrlCache.set(name, url);
-    return url;
-  }
+  async function resolveAudioUrl(name){ if(!name) return ''; if(audioUrlCache.has(name)) return audioUrlCache.get(name); let url=await resolveFromDir(name); if(!url) url=await resolveFromOPFS(name); if(!url){ const base=(CFG.audioBase||'./audio').replace(/\/$/,''); url= base + '/' + encodeURI(name); } audioUrlCache.set(name,url); return url; }
 
-  async function primeAudioFor(item){ if(!item||!item.audio_fn) return; try{ await resolveAudioUrl(item.audio_fn); }catch(_){}}
+  async function primeAudio(item){ if(!item||!item.audio_fn) return; await resolveAudioUrl(item.audio_fn); }
 
-  // ===== Player & render =====
+  // Render & navigation
   let QUEUE=[], idx=-1, sessionStart=0, cardStart=0;
-  function stopAudioImmediately(){ try{audio.pause();}catch(_){ } audio.removeAttribute('src'); audio.currentTime=0; }
+  function stopAudio(){ try{audio.pause();}catch(_){ } audio.removeAttribute('src'); audio.currentTime=0; }
   function resetResult(){ el.WER.textContent='—'; el.CER.textContent='—'; }
   function resetTranscript(){ qs('#transcript').innerHTML=''; }
   function toggleJA(){ el.ja.style.display=(el.ja.style.display==='none')?'block':'none'; }
 
-  async function render(i, autoPlay=false){
-    stopAudioImmediately();
-    const it=QUEUE[i]; if(!it){ el.footer.textContent='キューが空です'; return; }
-    el.en.innerHTML=spanify(it.en);
-    el.ja.textContent=it.ja; el.ja.style.display='none';
-    el.chips.innerHTML=''; (it.tags||'').split(',').filter(Boolean).forEach(t=>{ const s=document.createElement('span'); s.className='chip'; s.textContent=t.trim(); el.chips.appendChild(s); });
-    const url = audioUrlCache.get(it.audio_fn) || await resolveAudioUrl(it.audio_fn);
-    if(url) audio.src=url; else audio.removeAttribute('src');
-    cardStart=now(); resetResult(); resetTranscript();
-    // prime next/prev
-    primeAudioFor(QUEUE[i+1]); primeAudioFor(QUEUE[i-1]);
-    if(autoPlay && url){ try{ await audio.play(); }catch(e){ /* user gesture 不足時は無視 */ } }
-  }
+  async function render(i, autoPlay=false){ stopAudio(); const it=QUEUE[i]; if(!it){ el.footer.textContent='キューが空です'; return; } el.en.innerHTML=spanify(it.en); el.ja.textContent=it.ja; el.ja.style.display='none'; el.chips.innerHTML=''; (it.tags||'').split(',').filter(Boolean).forEach(t=>{ const s=document.createElement('span'); s.className='chip'; s.textContent=t.trim(); el.chips.appendChild(s); }); const url=await resolveAudioUrl(it.audio_fn); if(url) audio.src=url; cardStart=now(); resetResult(); resetTranscript(); primeAudio(QUEUE[i+1]); primeAudio(QUEUE[i-1]); if(autoPlay&&url){ try{ await audio.play(); }catch(_){} } }
 
-  async function rebuildAndRender(resetIndex=false){
-    QUEUE = buildQueue();
-    if(resetIndex) idx=-1;
-    el.pbar.max=Math.max(1, QUEUE.length); el.left.textContent=QUEUE.length; el.next.disabled=false;
-    nextCard(true);
-  }
+  async function rebuildAndRender(resetIndex=false){ QUEUE=buildQueue(); if(resetIndex) idx=-1; el.pbar.max=Math.max(1, QUEUE.length); el.left.textContent=QUEUE.length; el.next.disabled=false; nextCard(true); }
 
-  async function boot(){
-    try{
-      await ensureDataLoaded();
-      await initRangeBar();
-      await rebuildAndRender(true);
-    }catch(e){ console.error(e); toast('データ読み込み失敗: '+(e&&e.message||e)); }
-  }
-
-  function nextCard(first=false, autoPlay=false){
-    if(!QUEUE.length){ el.footer.textContent='キューが空です'; return; }
-    idx = first? 0 : Math.min(QUEUE.length-1, idx+1);
-    render(idx, autoPlay);
-    el.pbar.value=idx; el.footer.textContent=`#${idx+1}/${QUEUE.length}`;
-  }
+  function nextCard(first=false, autoPlay=false){ if(!QUEUE.length){ el.footer.textContent='キューが空です'; return; } idx = first? 0 : Math.min(QUEUE.length-1, idx+1); render(idx, autoPlay); el.pbar.value=idx; el.footer.textContent=`#${idx+1}/${QUEUE.length}`; }
   function prevCard(autoPlay=false){ if(!QUEUE.length) return; idx=Math.max(0, idx-1); render(idx, autoPlay); el.pbar.value=idx; el.footer.textContent=`#${idx+1}/${QUEUE.length}`; }
 
-  // ===== Gestures =====
-  let touchStart=null;
-  el.card.addEventListener('touchstart',(ev)=>{ if(ev.touches?.length!==1) return; const t=ev.touches[0]; touchStart={x:t.clientX,y:t.clientY,ts:now()}; },{passive:true});
-  el.card.addEventListener('touchend',(ev)=>{ if(!touchStart) return; const end=ev.changedTouches[0]; const dx=end.clientX-touchStart.x, dy=end.clientY-touchStart.y; const TH=60; if(Math.abs(dx)>Math.abs(dy) && Math.abs(dx)>TH){ if(dx>0) prevCard(true); else nextCard(false,true); } else if(Math.abs(dy)>TH && dy<0){ toggleJA(); } touchStart=null; },{passive:true});
+  // Gestures
+  let touchStart=null; const TH=60;
+  el.card.addEventListener('touchstart',(ev)=>{ if(ev.touches?.length!==1) return; const t=ev.touches[0]; touchStart={x:t.clientX,y:t.clientY}; },{passive:true});
+  el.card.addEventListener('touchend',(ev)=>{ if(!touchStart) return; const end=ev.changedTouches[0]; const dx=end.clientX-touchStart.x, dy=end.clientY-touchStart.y; if(Math.abs(dx)>Math.abs(dy) && Math.abs(dx)>TH){ if(dx>0) prevCard(true); else nextCard(false,true); } else if(Math.abs(dy)>TH && dy<0){ toggleJA(); } touchStart=null; },{passive:true});
   el.en.addEventListener('click', async ()=>{ if(!audio.src) return; try{ if(audio.paused) await audio.play(); else audio.pause(); }catch(_){ } });
   el.en.addEventListener('dblclick', toggleJA);
   el.next.onclick=()=> nextCard(false,true);
 
-  // ===== ASR =====
-  const SR = window.SpeechRecognition||window.webkitSpeechRecognition; let recog=null, recogOn=false, recogBuf='';
+  // ASR（改良：重複抑制・上限・多重一致防止）
+  const SR = window.SpeechRecognition||window.webkitSpeechRecognition; let recog=null, recogOn=false, finalSegments=[]; // 配列に保持
+
   function matchAndHighlight(refText, hypText){
-    const ref=toks(refText).filter(w=>!STOP.has(w)); const hyp=toks(hypText);
-    const hits=new Set(); const matched=[];
-    for(let i=0;i<ref.length;i++){ const w=ref[i]; let ok=hyp.includes(w) || hyp.some(h=>lev1(w,h)); if(ok){ hits.add(i); matched.push(w); } }
-    const spans=[...document.querySelectorAll('.en .tok')].filter(s=>s.dataset.w); let refIdx=0;
-    for(const sp of spans){ const w=norm(sp.dataset.w); if(!w||STOP.has(w)) continue; const hit=hits.has(refIdx); sp.classList.toggle('hit',!!hit); sp.classList.toggle('miss',!hit); refIdx++; }
-    const recall=ref.length? hits.size/ref.length : 1; const precision=hyp.length? hits.size/hyp.length : 1; return {recall, precision, matched, missing: ref.filter((_,i)=>!hits.has(i))};
+    // 1) トークン化
+    const refTokens = toks(refText).filter(w=>!STOP.has(w));
+    const hypTokensRaw = toks(hypText);
+    // 2) 連続重複を圧縮
+    const hypTokens = dedupeConsecutive(hypTokensRaw);
+    // 3) 長さ上限（refの2倍まで評価）
+    const maxLen = Math.max(1, refTokens.length*2);
+    const hypCap = hypTokens.slice(0, maxLen);
+    // 4) 多重一致防止（貪欲）：ref側の残数をカウント
+    const remain = new Map(); for(const w of refTokens) remain.set(w, (remain.get(w)||0)+1);
+    let matched=0; const matchedWords=[];
+    for(const h of hypCap){
+      if(remain.get(h)>0){ remain.set(h, remain.get(h)-1); matched++; matchedWords.push(h); continue; }
+      // 近似（<=1編集）
+      let foundKey=''; for(const [k,c] of remain){ if(c>0){ if(k===h) {foundKey=k; break;} if(Math.abs(k.length-h.length)<=1){
+          let i=0,j=0,d=0; while(i<k.length&&j<h.length){ if(k[i]===h[j]){i++;j++;continue;} if(++d>1){ i=h.length; j=k.length; break;} if(k.length>h.length)i++; else if(h.length>k.length)j++; else {i++;j++;} }
+          if(d<=1) { foundKey=k; break; }
+        }
+      } }
+      if(foundKey){ remain.set(foundKey, remain.get(foundKey)-1); matched++; matchedWords.push(foundKey); }
+    }
+    const recall = refTokens.length? matched/refTokens.length : 1;
+    const precision = hypCap.length? matched/hypCap.length : 1;
+
+    // ハイライト適用
+    const spans=[...document.querySelectorAll('.en .tok')].filter(s=>s.dataset.w);
+    for(const sp of spans){ const w=norm(sp.dataset.w); if(!w || STOP.has(w)) continue; let hit = hypCap.includes(w); if(!hit){ hit = hypCap.some(h=>{ if(h===w) return true; if(Math.abs(h.length-w.length)>1) return false; let i=0,j=0,d=0; while(i<w.length&&j<h.length){ if(w[i]===h[j]){i++;j++;continue;} if(++d>1) return false; if(w.length>h.length)i++; else if(h.length>w.length)j++; else {i++;j++;} } return true; }); }
+      sp.classList.toggle('hit', !!hit);
+      sp.classList.toggle('miss', !hit);
+    }
+    return {recall, precision, matched: matchedWords, missing: []};
   }
-  function resetTranscript(){ qs('#transcript').innerHTML=''; }
+
+  function resetTranscript(){ qs('#transcript').innerHTML=''; finalSegments=[]; }
   function showTranscriptInterim(text){ qs('#transcript').innerHTML=`<span class="interim">${text}</span>`; }
   function showTranscriptFinal(text){ qs('#transcript').textContent=text; }
 
   function startRec(){
-    if(!SR){ toast('この端末では音声認識が使えません'); return; }
+    if(!SR){ toast('この端末は音声認識非対応'); return; }
     recog=new SR(); recog.lang='en-US'; recog.continuous=true; recog.interimResults=true; recog.maxAlternatives=1;
-    recogBuf=''; recogOn=true; el.asr.textContent='録音中…'; resetTranscript();
+    finalSegments=[]; recogOn=true; el.asr.textContent='録音中…'; resetTranscript();
     try{ recog.start(); }catch(_){}
     recog.onresult=(ev)=>{
       let interim='';
       for(let i=ev.resultIndex;i<ev.results.length;i++){
-        const r=ev.results[i]; if(r.isFinal){ recogBuf += (r[0].transcript||'')+' '; } else { interim += r[0].transcript||''; }
+        const r=ev.results[i]; if(r.isFinal){ const seg=(r[0].transcript||'').trim(); if(seg && seg!==finalSegments[finalSegments.length-1]) finalSegments.push(seg); } else { interim += r[0].transcript||''; }
       }
       if(interim) showTranscriptInterim(interim);
-      if(recogBuf){ showTranscriptFinal(recogBuf.trim()); const m=matchAndHighlight(el.en.textContent, recogBuf); el.WER.textContent=(1-m.recall).toFixed(2); el.CER.textContent=(1-m.precision).toFixed(2); }
+      const hyp = finalSegments.join(' ').trim();
+      if(hyp){ showTranscriptFinal(hyp); const m=matchAndHighlight(el.en.textContent, hyp); el.WER.textContent=(1-m.recall).toFixed(2); el.CER.textContent=(1-m.precision).toFixed(2); }
     };
     recog.onerror=(e)=>{ el.asr.textContent='ASRエラー'; console.warn(e); toast('ASRエラー: '+(e&&e.error||'')); };
     recog.onend=()=>{ if(recogOn) stopRec(); };
   }
+
   async function stopRec(){
     if(!recogOn) return; recogOn=false; try{recog&&recog.stop&&recog.stop();}catch(_){}
-    el.asr.textContent='停止'; const it=QUEUE[idx]; if(!it) return; const hyp=(recogBuf||'').trim(); const {recall, precision, matched, missing}=matchAndHighlight(el.en.textContent, hyp);
+    el.asr.textContent='停止'; const it=QUEUE[idx]; if(!it) return; const hyp=(finalSegments.join(' ').trim()); const {recall, precision, matched}=matchAndHighlight(el.en.textContent, hyp);
     const pass=(recall>=0.80 && precision>=0.60); el.next.disabled=!pass; el.footer.textContent= pass? '自動合格（◯推奨）' : '自動不合格：再挑戦 or ×';
-    const payload={ ts:new Date().toISOString(), id:it.id, mode:'read', wer:+(1-recall).toFixed(3), cer:+(1-precision).toFixed(3), latency_ms:0, words_spoken:toks(hyp).length, transcript:hyp, matched_tokens_json:JSON.stringify(matched), missing_tokens_json:JSON.stringify(missing), recall:+recall.toFixed(3), precision:+precision.toFixed(3) };
-    try{ await sendLog('speech', payload); }catch(_){}
+    const payload={ ts:new Date().toISOString(), id:it.id, mode:'read', wer:+(1-recall).toFixed(3), cer:+(1-precision).toFixed(3), latency_ms:0, words_spoken:toks(hyp).length, transcript:hyp, matched_tokens_json:JSON.stringify(matched), missing_tokens_json:'[]', recall:+recall.toFixed(3), precision:+precision.toFixed(3) };
+    try{ await sendLog('speech', payload); }catch(_){ }
   }
+
   el.mic.onclick=()=>{ if(!recogOn) startRec(); else stopRec(); };
   qsa('[data-eval="ok"]').forEach(b=>b.onclick=()=>submitEval(1));
   qsa('[data-eval="ng"]').forEach(b=>b.onclick=()=>submitEval(0));
+  async function submitEval(bin){ const it=QUEUE[idx]; if(!it) return; const payload={ ts:new Date().toISOString(), id:it.id, result:bin, auto_recall:null, auto_precision:null, response_ms:Math.max(0, now()-cardStart), hint_used:(el.ja.style.display==='block'), device:UA }; try{ await sendLog('attempt', payload); }catch(_){ } el.next.disabled=false; nextCard(false,true); }
 
-  async function submitEval(bin){
-    const it=QUEUE[idx]; if(!it) return;
-    const payload={ ts:new Date().toISOString(), id:it.id, result:bin, auto_recall:null, auto_precision:null, response_ms:Math.max(0, now()-cardStart), hint_used:(el.ja.style.display==='block'), device:UA };
-    try{ await sendLog('attempt', payload); }catch(_){}
-    el.next.disabled=false; nextCard(false,true);
-  }
-
-  // ===== Boot
-  boot();
+  // Boot
+  (async()=>{
+    try{ await ensureDataLoaded(); initSectionPicker(); await ensureDir(); refreshDirStatus(); await rebuildAndRender(true); }catch(e){ console.error(e); toast('初期化失敗: '+(e&&e.message||e)); }
+  })();
 })();
 </script>
 </body>
 </html>
-
-
