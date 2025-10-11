@@ -3,17 +3,25 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>英語学習（範囲UI＋ASR）</title>
+<title>英語学習（ホイール選択UI）</title>
 <style>
-  :root{--bg:#0b0e1a;--panel:rgba(20,24,36,.65);--bd:rgba(255,255,255,.12);--txt:#e6e8ef;--muted:#aeb5c6;--accent:#62d5ff;--good:#46d37f;--bad:#ff6b6b}
-  *{box-sizing:border-box} html,body{height:100%;margin:0;background:var(--bg);color:var(--txt);font-family:system-ui,"Segoe UI","Noto Sans JP",sans-serif}
+  :root{
+    --bg:#0b0e1a;--panel:rgba(20,24,36,.65);--bd:rgba(255,255,255,.12);
+    --txt:#e6e8ef;--muted:#aeb5c6;--accent:#62d5ff;--good:#46d37f;--bad:#ff6b6b
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;background:var(--bg);color:var(--txt);font-family:system-ui,"Segoe UI","Noto Sans JP",sans-serif}
   #app{position:fixed;inset:0;display:grid;grid-template-rows:auto auto 1fr auto}
+
   header{padding:10px 12px;display:flex;gap:12px;align-items:center;background:var(--panel);border-bottom:1px solid var(--bd)}
-  .stat{display:flex;gap:6px;align-items:baseline;font-size:14px;color:var(--muted)} .stat b{font-size:18px;color:var(--txt)} .grow{flex:1}
-  .pill{border:1px solid var(--bd);border-radius:999px;padding:6px 10px;background:#111726;color:var(--txt);cursor:pointer;white-space:nowrap}
-  .pill[data-active="1"], .pill[aria-pressed="true"]{outline:2px solid var(--accent)}
-  .chip{font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid var(--bd);color:var(--muted);cursor:pointer;white-space:nowrap}
-  .chip[data-on="1"]{background:#1a2134;color:var(--txt);border-color:#233252}
+  .stat{display:flex;gap:6px;align-items:baseline;font-size:14px;color:var(--muted)}
+  .stat b{font-size:18px;color:var(--txt)} .grow{flex:1}
+  .icon{width:38px;height:38px;border-radius:999px;border:1px solid var(--bd);display:grid;place-items:center;cursor:pointer;background:#111726}
+
+  /* 範囲バー（超省スペース） */
+  #rangeBar{display:flex;gap:8px;align-items:center;padding:6px 12px;background:rgba(20,24,36,.5);border-bottom:1px solid var(--bd)}
+  .pill{border:1px solid var(--bd);border-radius:999px;padding:6px 10px;background:#111726;color:var(--txt);cursor:pointer;white-space:nowrap;max-width:60vw;overflow:hidden;text-overflow:ellipsis}
+
   main{padding:12px;overflow:auto}
   .card{max-width:820px;margin:0 auto;background:var(--panel);border:1px solid var(--bd);border-radius:18px;padding:20px;min-height:52vh;display:flex;flex-direction:column;gap:12px;touch-action:manipulation}
   .en{font-size:24px;line-height:1.6}
@@ -30,7 +38,42 @@
   .btn{border:1px solid var(--bd);border-radius:12px;background:#111726;color:var(--txt);padding:10px 14px;cursor:pointer}
   .btn.ok{background:#10331f;border-color:#1f5c38}
   .btn.ng{background:#331717;border-color:#5c2929}
-  .icon{width:38px;height:38px;border-radius:999px;border:1px solid var(--bd);display:grid;place-items:center;cursor:pointer;background:#111726}
+
+  /* ボトムシート（ホイール選択） */
+  #sheetMask{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;z-index:9998}
+  #rangeSheet{
+    position:fixed;left:0;right:0;bottom:-70%;height:70%;
+    background:#0f1420;border-top:1px solid var(--bd);border-radius:16px 16px 0 0;
+    z-index:9999;transition:transform .25s ease; transform:translateY(100%);
+    display:flex;flex-direction:column;gap:10px;padding:12px
+  }
+  #rangeSheet.open{transform:translateY(0)}
+  #sheetHeader{display:flex;align-items:center;gap:10px}
+  .seg{display:inline-flex;border:1px solid var(--bd);border-radius:999px;overflow:hidden}
+  .seg button{background:#111726;border:0;color:var(--txt);padding:6px 10px}
+  .seg button[aria-pressed="true"]{background:#1a2134;outline:2px solid var(--accent)}
+  .switch{display:inline-flex;align-items:center;gap:8px}
+  .switch input{transform:scale(1.2)}
+
+  .wheelWrap{display:flex;gap:12px;justify-content:center;align-items:center;margin-top:6px}
+  .wheel{
+    width:44%; max-width:300px; height:170px; position:relative;
+    overflow-y:auto; overscroll-behavior:contain; scroll-snap-type:y mandatory;
+    border:1px solid var(--bd); border-radius:12px; background:#0b0f1a;
+  }
+  .wheel ul{list-style:none;margin:0;padding:0}
+  .wheel li{
+    height:36px; display:flex; align-items:center; justify-content:center;
+    scroll-snap-align:center; color:var(--muted); font-size:16px
+  }
+  .wheel li.sel{color:var(--txt); font-weight:600}
+  .wheel .overlay{
+    position:absolute; left:0; right:0; top:50%; height:36px; transform:translateY(-50%);
+    pointer-events:none; border-top:1px solid rgba(255,255,255,.15); border-bottom:1px solid rgba(255,255,255,.15)
+  }
+  .wheel.disabled{opacity:.5; pointer-events:none}
+
+  #sheetFooter{margin-top:auto;display:flex;justify-content:flex-end;gap:8px}
 </style>
 </head>
 <body>
@@ -44,11 +87,9 @@
     <div id="btnCfg" class="icon" title="設定">⚙️</div>
   </header>
 
-  <!-- 出題範囲バー -->
-  <div id="rangeBar" style="display:flex;gap:8px;align-items:center;padding:8px 12px;background:rgba(20,24,36,.5);border-bottom:1px solid rgba(255,255,255,.12)">
-    <div class="pill" id="chipAll" role="button" aria-pressed="true">全体</div>
-    <div id="chipSections" style="display:flex;gap:6px;overflow:auto"></div>
-    <div class="pill" id="chipOrder" role="button" data-order="asc" title="並び順">昇順</div>
+  <!-- 省スペース範囲バー -->
+  <div id="rangeBar">
+    <button id="btnRange" class="pill" title="セクション/順序を選択">範囲: 全体・昇順</button>
     <label class="pill" style="display:flex;gap:6px;align-items:center">
       <input id="chkOnlyWeak" type="checkbox"> 未習得のみ
     </label>
@@ -84,98 +125,213 @@
 
 <audio id="player" crossorigin="anonymous"></audio>
 
+<!-- ボトムシート（ホイール） -->
+<div id="sheetMask"></div>
+<div id="rangeSheet" aria-modal="true" role="dialog" aria-label="出題範囲">
+  <div id="sheetHeader">
+    <div class="switch">
+      <input type="checkbox" id="swAll">
+      <label for="swAll">全体</label>
+    </div>
+    <div class="seg" style="margin-left:auto">
+      <button id="segAsc"  aria-pressed="true">昇順</button>
+      <button id="segRnd"  aria-pressed="false">ランダム</button>
+    </div>
+  </div>
+  <div class="wheelWrap">
+    <div style="text-align:center;width:44%">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:6px">開始</div>
+      <div class="wheel" id="wheelStart"><div class="overlay"></div><ul id="ulStart"></ul></div>
+    </div>
+    <div style="text-align:center;width:44%">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:6px">終了</div>
+      <div class="wheel" id="wheelEnd"><div class="overlay"></div><ul id="ulEnd"></ul></div>
+    </div>
+  </div>
+  <div id="sheetFooter">
+    <button id="btnCancel" class="btn">キャンセル</button>
+    <button id="btnApply" class="btn" style="background:#1a2134;border-color:#233252">適用</button>
+  </div>
+</div>
+
 <script>
 (function(){
   // ===== Utils =====
-  const qs = (s,el=document)=>el.querySelector(s);
-  const now=()=>Date.now(); const UA=(()=>navigator.userAgent||'')();
-  const STOP = new Set(['a','the','to','of','in','on','for','at','is','are','was','were','be','been','being','do','does','did','have','has','had']);
+  const qs=(s,el=document)=>el.querySelector(s);
+  const now=()=>Date.now();
+  const UA=(()=>navigator.userAgent||'')();
   const norm = s => (s||'').toLowerCase().normalize('NFKC').replace(/[\p{P}\p{S}]/gu,' ').replace(/\s+/g,' ').trim();
   const toks = s => norm(s).split(' ').filter(Boolean);
-  function lev1(a,b){ if(a===b) return true; const la=a.length, lb=b.length; if(Math.abs(la-lb)>1) return false; let i=0,j=0,d=0; while(i<la&&j<lb){ if(a[i]===b[j]){i++;j++;continue} if(++d>1)return false; if(la>lb)i++; else if(lb>la)j++; else {i++;j++;} } return true; }
-  function spanify(text){ const parts=(text||'').match(/\S+|\s+/g)||[]; return parts.map(w=>/\s+/.test(w)? w.replace(/ /g,'&nbsp;') : `<span class="tok" data-w="${w.replace(/[^\p{L}\p{N}'-]/gu,'')}">${w}</span>`).join(''); }
+  const STOP = new Set(['a','the','to','of','in','on','for','at','is','are','was','were','be','been','being','do','does','did','have','has','had']);
+  function unitNo(u){ const n=+String(u).replace(/\D+/g,''); return n||0; }
+  function spanify(text){ const parts=(text||'').match(/\S+|\s+/g)||[]; return parts.map(w=>/\s+/.test(w)? w.replace(/ /g,'&nbsp;'):`<span class="tok" data-w="${w.replace(/[^\p{L}\p{N}'-]/gu,'')}">${w}</span>`).join(''); }
+  function seededShuffle(arr,seed){ let t=seed>>>0; const rnd=()=>{t^=t<<13;t^=t>>>17;t^=t<<5;return (t>>>0)/4294967296}; const a=arr.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(rnd()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; }
 
   // ===== Elements =====
-  const el = {
+  const el={
     left:qs('#statLeft'), min:qs('#statMin'), streak:qs('#statStreak'),
     pbar:qs('#pbar'), footer:qs('#footerInfo'),
     en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'),
     asr:qs('#asrState'), WER:qs('#valWER'), CER:qs('#valCER'),
     next:qs('#btnNext'), mic:qs('#btnMic'), card:qs('#card'),
-    chipAll:qs('#chipAll'), chipBox:qs('#chipSections'), chipOrder:qs('#chipOrder'), chkWeak:qs('#chkOnlyWeak'),
+    btnRange:qs('#btnRange'), chkWeak:qs('#chkOnlyWeak'),
   };
-  const audio = qs('#player');
+  const audio=qs('#player');
 
-  // ===== Data loading =====
+  // ===== Range state (新仕様) =====
+  const RANGE_KEY='rangeState2';
+  function getRange(){ try{return JSON.parse(localStorage.getItem(RANGE_KEY)||'{}')}catch(_){return{}} }
+  function saveRange(s){ localStorage.setItem(RANGE_KEY, JSON.stringify(s)); }
+  let RANGE = Object.assign({all:true, range:{start:null,end:null}, order:'asc', onlyWeak:false}, getRange());
+
+  function rangeSummaryText(){
+    if(RANGE.all) return '全体';
+    const s=RANGE.range?.start, e=RANGE.range?.end;
+    if(!s||!e) return '全体';
+    return (s===e)? `Sec ${s}` : `Sec ${s}–${e}`;
+  }
+  function syncRangeBar(){
+    el.btnRange.textContent = `範囲: ${rangeSummaryText()}・${RANGE.order==='asc'?'昇順':'ランダム'}`;
+    el.chkWeak.checked = !!RANGE.onlyWeak;
+  }
+  el.chkWeak.onchange=()=>{ RANGE.onlyWeak=!!el.chkWeak.checked; saveRange(RANGE); reloadQueueFromRange(); };
+
+  // ===== Bottom Sheet / Wheels =====
+  const mask=qs('#sheetMask'); const sheet=qs('#rangeSheet');
+  const swAll=qs('#swAll'); const segAsc=qs('#segAsc'); const segRnd=qs('#segRnd');
+  const wStart=qs('#wheelStart'); const wEnd=qs('#wheelEnd');
+  const ulStart=qs('#ulStart'); const ulEnd=qs('#ulEnd');
+  const btnApply=qs('#btnApply'); const btnCancel=qs('#btnCancel');
+
+  let UNITS_NUM=[]; // [1,2,...]
+  let startIdx=0, endIdx=0;
+  const ROW_H=36, PAD=3; // 上下パディング行数（見栄え）
+
+  function buildWheel(ul, labels){
+    const pad = Array(PAD).fill('<li>&nbsp;</li>').join('');
+    ul.innerHTML = pad + labels.map(t=>`<li>${t}</li>`).join('') + pad;
+  }
+  function setWheelPos(wheel, idx){
+    wheel.scrollTop = Math.max(0, (idx)*ROW_H);
+  }
+  function nearestIndex(wheel){
+    const raw = wheel.scrollTop/ROW_H;
+    return Math.round(raw);
+  }
+  function markSelected(ul, idx){
+    [...ul.children].forEach((li,i)=>li.classList.toggle('sel', i===idx+PAD));
+  }
+  let scrollTimer=null;
+  function snapWheel(wheel, which){
+    const idx = nearestIndex(wheel);
+    wheel.scrollTo({top: idx*ROW_H, behavior:'smooth'});
+    if(which==='start'){ startIdx=idx; markSelected(ulStart, idx); if(endIdx<startIdx){ endIdx=startIdx; setWheelPos(wEnd, endIdx); markSelected(ulEnd,endIdx);} }
+    else { endIdx=idx; markSelected(ulEnd, idx); if(endIdx<startIdx){ startIdx=endIdx; setWheelPos(wStart, startIdx); markSelected(ulStart,startIdx);} }
+  }
+  function bindWheel(wheel, which, ul){
+    wheel.addEventListener('scroll', ()=>{
+      clearTimeout(scrollTimer);
+      scrollTimer=setTimeout(()=>snapWheel(wheel, which), 120);
+      // 一時的なハイライト
+      const idx=nearestIndex(wheel); markSelected(ul, idx);
+    }, {passive:true});
+  }
+
+  function openSheet(){
+    swAll.checked = !!RANGE.all;
+    segAsc.setAttribute('aria-pressed', RANGE.order==='asc'?'true':'false');
+    segRnd.setAttribute('aria-pressed', RANGE.order==='rnd'?'true':'false');
+
+    // enable/disable wheels
+    wStart.classList.toggle('disabled', swAll.checked);
+    wEnd.classList.toggle('disabled', swAll.checked);
+
+    mask.style.display='block'; sheet.classList.add('open');
+  }
+  function closeSheet(){
+    mask.style.display='none'; sheet.classList.remove('open');
+  }
+
+  segAsc.onclick=()=>{ segAsc.setAttribute('aria-pressed','true'); segRnd.setAttribute('aria-pressed','false'); };
+  segRnd.onclick=()=>{ segAsc.setAttribute('aria-pressed','false'); segRnd.setAttribute('aria-pressed','true'); };
+  swAll.onchange=()=>{ const on=swAll.checked; wStart.classList.toggle('disabled', on); wEnd.classList.toggle('disabled', on); };
+
+  el.btnRange.onclick=()=>openSheet();
+  mask.onclick=()=>closeSheet();
+  btnCancel.onclick=()=>closeSheet();
+  btnApply.onclick=()=>{
+    const order = (segRnd.getAttribute('aria-pressed')==='true')?'rnd':'asc';
+    if(swAll.checked){
+      RANGE={all:true, range:{start:null,end:null}, order, onlyWeak:RANGE.onlyWeak};
+    }else{
+      const s = UNITS_NUM[startIdx], e = UNITS_NUM[endIdx];
+      RANGE={all:false, range:{start:Math.min(s,e), end:Math.max(s,e)}, order, onlyWeak:RANGE.onlyWeak};
+    }
+    saveRange(RANGE); syncRangeBar(); closeSheet(); reloadQueueFromRange();
+  };
+
+  // ===== Data / Queue =====
   const DATA_URL='./data/items.json';
   async function loadAllItems(){ const r=await fetch(DATA_URL,{cache:'no-store'}); if(!r.ok) throw new Error('items.json'); return r.json(); }
   async function loadSrsSummary(){ try{ const r=await fetch('./data/srs.json',{cache:'no-store'}); if(!r.ok) return new Map(); const arr=await r.json(); const m=new Map(); for(const x of arr) m.set(x.id,x); return m; }catch(_){ return new Map(); } }
   function isUnlearned(id,srs){ const s=srs.get(id); if(!s) return true; if(s.last_result===0) return true; if((s.ease||0)<2.0 && (s.interval_d||0)<3) return true; return false; }
-  function seededShuffle(arr,seed){ let t=seed>>>0; const rnd=()=>{t^=t<<13; t^=t>>>17; t^=t<<5; return (t>>>0)/4294967296}; const a=arr.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(rnd()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
-  const RANGE_KEY='rangeState';
-  function getRange(){ try{return JSON.parse(localStorage.getItem(RANGE_KEY)||'{}')}catch(_){return{}} }
-  function saveRange(s){ localStorage.setItem(RANGE_KEY, JSON.stringify(s)); }
-  let RANGE = Object.assign({all:true, sections:[], order:'asc', onlyWeak:false}, getRange());
 
-  async function initRangeBar(all){
-    const units=[...new Set(all.map(x=>x.unit).filter(Boolean))].sort((a,b)=>{const na=+String(a).replace(/\D+/g,'')||0, nb=+String(b).replace(/\D+/g,'')||0; return na-nb||String(a).localeCompare(String(b));});
-    el.chipBox.innerHTML='';
-    for(const u of units){
-      const sp=document.createElement('div'); sp.className='chip'; sp.textContent=u; sp.dataset.name=u; sp.dataset.on='0';
-      sp.onclick=()=>{ RANGE.all=false; if(RANGE.sections.includes(u)) RANGE.sections=RANGE.sections.filter(x=>x!==u); else RANGE.sections.push(u); saveRange(RANGE); syncRangeUI(); reloadQueueFromRange(); };
-      el.chipBox.appendChild(sp);
+  function buildQueue(all,srs){
+    // 範囲フィルタ
+    let items = all;
+    if(!RANGE.all){
+      const s=RANGE.range?.start, e=RANGE.range?.end;
+      if(s && e){ items = items.filter(x=>{ const n=unitNo(x.unit); return n>=s && n<=e; }); }
     }
-    el.chipAll.onclick=()=>{ RANGE.all=!RANGE.all; if(RANGE.all) RANGE.sections=[]; saveRange(RANGE); syncRangeUI(); reloadQueueFromRange(); };
-    el.chipOrder.onclick=()=>{ RANGE.order=(RANGE.order==='asc'?'rnd':'asc'); saveRange(RANGE); syncRangeUI(); reloadQueueFromRange(); };
-    el.chkWeak.onchange=()=>{ RANGE.onlyWeak=!!el.chkWeak.checked; saveRange(RANGE); reloadQueueFromRange(); };
-    function syncRangeUI(){
-      el.chipAll.setAttribute('aria-pressed', RANGE.all?'true':'false');
-      el.chipOrder.dataset.order=RANGE.order; el.chipOrder.textContent=(RANGE.order==='asc'?'昇順':'ランダム');
-      el.chkWeak.checked=!!RANGE.onlyWeak;
-      [...el.chipBox.children].forEach(n=>{ const name=n.dataset.name; n.dataset.on=(!RANGE.all && RANGE.sections.includes(name))?'1':'0'; });
-    }
-    syncRangeUI();
+    if(RANGE.onlyWeak) items = items.filter(x=>isUnlearned(x.id,srs));
+    // 並び
+    if(RANGE.order==='rnd'){ const seed=Math.floor(Date.now()/86400000); items=seededShuffle(items,seed); }
+    else { items=items.slice().sort((a,b)=>{const na=unitNo(a.unit), nb=unitNo(b.unit); if(na!==nb) return na-nb; return String(a.id).localeCompare(String(b.id));}); }
+    return items.map(it=>({id:it.id,en:it.en,ja:it.ja,tags:it.tags||'',chunks_json:it.chunks||'[]',audio_fn:it.audio_fn||''}));
   }
 
-  function buildQueue(all,srs,range){
-    let items = (range.all? all : all.filter(x=>range.sections.includes(String(x.unit))));
-    if(range.onlyWeak) items = items.filter(x=>isUnlearned(x.id,srs));
-    if(range.order==='rnd'){ const seed = Math.floor(Date.now()/86400000); items = seededShuffle(items, seed); }
-    else { items = items.slice().sort((a,b)=>{ const na=+String(a.unit||'').replace(/\D+/g,'')||0, nb=+String(b.unit||'').replace(/\D+/g,'')||0; if(na!==nb) return na-nb; return String(a.id).localeCompare(String(b.id)); }); }
-    return items.map(it=>({ id:it.id,en:it.en,ja:it.ja,tags:it.tags||'',chunks_json:it.chunks||'[]',audio_fn:it.audio_fn||'' }));
-  }
-
-  // ===== GAS送信（省略：既存のsendLogを流用 or no-cors/beacon） =====
-  async function sendLog(type, data){ /* 既存の実装を使用 */ }
-
-  const svr = {
+  // ===== GAS送信（既存のsendBeacon/no-cors実装を流用想定） =====
+  async function sendLog(type, data){ /* 既存をそのまま使用 */ }
+  const svr={
     getQueue: async ()=>{
       const all = await loadAllItems();
-      await initRangeBar(all);
-      const srs = await loadSrsSummary();
-      const items = buildQueue(all, srs, RANGE);
-      return { items, left:items.length, streak:0, minutes:0 };
+      // 初回だけホイール構築
+      if(UNITS_NUM.length===0){
+        UNITS_NUM=[...new Set(all.map(x=>unitNo(x.unit)).filter(n=>n>0))].sort((a,b)=>a-b);
+        const labels=UNITS_NUM.map(n=>`Section ${n}`);
+        buildWheel(ulStart, labels); buildWheel(ulEnd, labels);
+        // デフォルト選択
+        startIdx = Math.max(0, UNITS_NUM.indexOf(RANGE.range?.start||UNITS_NUM[0]));
+        endIdx   = Math.max(0, UNITS_NUM.indexOf(RANGE.range?.end  ||UNITS_NUM.at(-1)));
+        setWheelPos(wStart,startIdx); setWheelPos(wEnd,endIdx);
+        markSelected(ulStart,startIdx); markSelected(ulEnd,endIdx);
+        bindWheel(wStart,'start',ulStart); bindWheel(wEnd,'end',ulEnd);
+        syncRangeBar();
+      }
+      const srs=await loadSrsSummary();
+      const items=buildQueue(all,srs);
+      return {items,left:items.length,streak:0,minutes:0};
     },
     postAttempt:(a)=>sendLog('attempt',a),
     postSpeech:(m)=>sendLog('speech',m),
     postSession:(s)=>sendLog('session',s),
   };
 
-  // ===== Player & render =====
+  // ===== Player / Render / Nav (既存機能) =====
   let QUEUE=[], idx=-1, sessionStart=0, cardStart=0;
   function stopAudioImmediately(){ try{audio.pause();}catch(_){ } audio.removeAttribute('src'); audio.currentTime=0; }
-  async function resolveAudioUrl(fn){ if(!fn) return ''; return './audio/'+encodeURI(fn); } // 既存のフォルダ/OPFS解決に差し替え可
+  async function resolveAudioUrl(fn){ if(!fn) return ''; return './audio/'+encodeURI(fn); }
   async function setAudioFor(it){ const url=await resolveAudioUrl(it.audio_fn); if(!url) return; audio.src=url; }
   function resetResult(){ el.WER.textContent='—'; el.CER.textContent='—'; }
   function resetTranscript(){ qs('#transcript').innerHTML=''; }
-  function toggleJA(){ el.ja.style.display = (el.ja.style.display==='none')?'block':'none'; }
+  function toggleJA(){ el.ja.style.display=(el.ja.style.display==='none')?'block':'none'; }
 
   async function render(i){
     stopAudioImmediately();
     const it=QUEUE[i]; if(!it) return;
-    el.en.innerHTML = spanify(it.en);
-    el.ja.textContent = it.ja; el.ja.style.display='none';
-    el.chips.innerHTML=''; (it.tags||'').split(',').filter(Boolean).forEach(t=>{ const s=document.createElement('span'); s.className='chip'; s.textContent=t.trim(); el.chips.appendChild(s); });
+    el.en.innerHTML=spanify(it.en);
+    el.ja.textContent=it.ja; el.ja.style.display='none';
+    el.chips.innerHTML=''; (it.tags||'').split(',').filter(Boolean).forEach(t=>{const s=document.createElement('span'); s.className='chip'; s.textContent=t.trim(); el.chips.appendChild(s);});
     await setAudioFor(it);
     cardStart=now(); resetResult(); resetTranscript();
     audio.play().catch(()=>{});
@@ -183,108 +339,75 @@
 
   async function loadQueue(){ const data=await svr.getQueue(); QUEUE=(data.items||[]); idx=-1; el.pbar.value=0; el.pbar.max=Math.max(1,QUEUE.length); el.left.textContent=QUEUE.length; }
   async function reloadQueueFromRange(){ await loadQueue(); nextCard(true); }
-  function nextCard(first=false){
-    if(!QUEUE.length){ el.footer.textContent='キューが空です'; return; }
-    idx = first? 0 : Math.min(QUEUE.length-1, idx+1);
-    render(idx); el.pbar.value=idx; el.footer.textContent=`#${idx+1}/${QUEUE.length}`;
-  }
-  function prevCard(){ if(!QUEUE.length) return; idx=Math.max(0, idx-1); render(idx); el.pbar.value=idx; el.footer.textContent=`#${idx+1}/${QUEUE.length}`; }
+  function nextCard(first=false){ if(!QUEUE.length){ el.footer.textContent='キューが空です'; return; } idx = first? 0 : Math.min(QUEUE.length-1, idx+1); render(idx); el.pbar.value=idx; el.footer.textContent=`#${idx+1}/${QUEUE.length}`; }
+  function prevCard(){ if(!QUEUE.length) return; idx=Math.max(0,idx-1); render(idx); el.pbar.value=idx; el.footer.textContent=`#${idx+1}/${QUEUE.length}`; }
 
-  // ===== Gestures =====
+  // スワイプ
   let touchStart=null;
-  el.card.addEventListener('touchstart',(ev)=>{ if(ev.touches?.length!==1) return; const t=ev.touches[0]; touchStart={x:t.clientX,y:t.clientY,ts:now()}; },{passive:true});
-  el.card.addEventListener('touchend',(ev)=>{ if(!touchStart) return; const end=ev.changedTouches[0]; const dx=end.clientX-touchStart.x, dy=end.clientY-touchStart.y; const TH=60; if(Math.abs(dx)>Math.abs(dy) && Math.abs(dx)>TH){ if(dx>0) prevCard(); else nextCard(); } else if(Math.abs(dy)>TH && dy<0){ toggleJA(); } touchStart=null; },{passive:true});
+  el.card.addEventListener('touchstart',(ev)=>{ if(ev.touches?.length!==1) return; const t=ev.touches[0]; touchStart={x:t.clientX,y:t.clientY}; },{passive:true});
+  el.card.addEventListener('touchend',(ev)=>{ if(!touchStart) return; const end=ev.changedTouches[0]; const dx=end.clientX-touchStart.x, dy=end.clientY-touchStart.y; const TH=60; if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>TH){ if(dx>0) prevCard(); else nextCard(); } else if(Math.abs(dy)>TH && dy<0){ toggleJA(); } touchStart=null; },{passive:true});
   el.en.addEventListener('click', ()=>{ if(!audio.src) return; (audio.paused? audio.play(): audio.pause()).catch(()=>{}); });
   el.en.addEventListener('dblclick', toggleJA);
-  el.next.onclick = ()=> nextCard();
+  el.next.onclick=()=>nextCard();
 
-  // ===== ASR =====
-  const SR = window.SpeechRecognition||window.webkitSpeechRecognition;
+  // ===== ASR（全文書き起こし＋ハイライト） =====
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   let recog=null, recogOn=false, recogBuf='';
-  function matchAndHighlight(refText, hypText){
-    const ref = toks(refText).filter(w=>!STOP.has(w));
-    const hyp = toks(hypText);
+  function lev1(a,b){ if(a===b) return true; const la=a.length, lb=b.length; if(Math.abs(la-lb)>1) return false; let i=0,j=0,d=0; while(i<la&&j<lb){ if(a[i]===b[j]){i++;j++;continue} if(++d>1)return false; if(la>lb)i++; else if(lb>la)j++; else{i++;j++;} } return true; }
+  function matchAndHighlight(refText,hypText){
+    const ref=toks(refText).filter(w=>!STOP.has(w));
+    const hyp=toks(hypText);
     const hits=new Set(); const matched=[];
-    for(let i=0;i<ref.length;i++){
-      const w=ref[i]; let ok = hyp.includes(w) || hyp.some(h=>lev1(w,h));
-      if(ok){ hits.add(i); matched.push(w); }
-    }
+    for(let i=0;i<ref.length;i++){ const w=ref[i]; const ok = hyp.includes(w) || hyp.some(h=>lev1(w,h)); if(ok){ hits.add(i); matched.push(w);} }
     const spans=[...document.querySelectorAll('.en .tok')].filter(s=>s.dataset.w);
-    let refIdx=0;
-    for(const sp of spans){
-      const w = norm(sp.dataset.w);
-      if(!w || STOP.has(w)) continue;
-      const hit = hits.has(refIdx);
-      sp.classList.toggle('hit', !!hit);
-      sp.classList.toggle('miss', !hit);
-      refIdx++;
-    }
-    const recall = ref.length? hits.size/ref.length : 1;
-    const precision = hyp.length? hits.size/hyp.length : 1;
+    let refIdx=0; for(const sp of spans){ const w=norm(sp.dataset.w); if(!w || STOP.has(w)) continue; const hit=hits.has(refIdx); sp.classList.toggle('hit', !!hit); sp.classList.toggle('miss', !hit); refIdx++; }
+    const recall=ref.length? hits.size/ref.length : 1; const precision=hyp.length? hits.size/hyp.length : 1;
     return {recall, precision, matched, missing: ref.filter((_,i)=>!hits.has(i))};
   }
-  function resetTranscript(){ qs('#transcript').innerHTML=''; }
   function showTranscriptInterim(text){ qs('#transcript').innerHTML=`<span class="interim">${text}</span>`; }
   function showTranscriptFinal(text){ qs('#transcript').textContent=text; }
 
   function startRec(){
     if(!SR) return;
-    recog = new SR(); recog.lang='en-US'; recog.continuous=true; recog.interimResults=true; recog.maxAlternatives=1;
-    recogBuf=''; recogOn=true; el.asr.textContent='録音中…'; resetTranscript();
+    recog=new SR(); recog.lang='en-US'; recog.continuous=true; recog.interimResults=true; recog.maxAlternatives=1;
+    recogBuf=''; recogOn=true; el.asr.textContent='録音中…'; qs('#transcript').innerHTML='';
     try{ recog.start(); }catch(_){}
     recog.onresult=(ev)=>{
-      let interim='';
-      for(let i=ev.resultIndex;i<ev.results.length;i++){
-        const r=ev.results[i];
-        if(r.isFinal){ recogBuf += (r[0].transcript||'') + ' '; }
-        else { interim += r[0].transcript||''; }
-      }
-      if (interim) showTranscriptInterim(interim);
-      if (recogBuf){
-        showTranscriptFinal(recogBuf.trim());
-        const m = matchAndHighlight(el.en.textContent, recogBuf);
-        el.WER.textContent = (1-m.recall).toFixed(2);
-        el.CER.textContent = (1-m.precision).toFixed(2);
-      }
+      let interim=''; for(let i=ev.resultIndex;i<ev.results.length;i++){ const r=ev.results[i]; if(r.isFinal){ recogBuf += (r[0].transcript||'') + ' '; } else { interim += r[0].transcript||''; } }
+      if(interim) showTranscriptInterim(interim);
+      if(recogBuf){ showTranscriptFinal(recogBuf.trim()); const m=matchAndHighlight(el.en.textContent, recogBuf); el.WER.textContent=(1-m.recall).toFixed(2); el.CER.textContent=(1-m.precision).toFixed(2); }
     };
     recog.onerror=(e)=>{ el.asr.textContent='ASRエラー'; console.warn(e); };
     recog.onend=()=>{ if(recogOn) stopRec(); };
   }
-
   async function stopRec(){
     if(!recogOn) return; recogOn=false; try{ recog && recog.stop && recog.stop(); }catch(_){}
     el.asr.textContent='停止';
     const it=QUEUE[idx]; if(!it) return;
-    const hyp = recogBuf.trim();
-    const {recall, precision, matched, missing} = matchAndHighlight(el.en.textContent, hyp);
-    const pass = (recall>=0.80 && precision>=0.60);
-    el.next.disabled = !pass;
-    el.footer.textContent = pass? '自動合格（◯推奨）' : '自動不合格：再挑戦 or ×';
-    const payload={ ts:new Date().toISOString(), id:it.id, mode:'read',
+    const hyp=(recogBuf||'').trim();
+    const {recall,precision,matched,missing}=matchAndHighlight(el.en.textContent,hyp);
+    const pass=(recall>=0.80 && precision>=0.60);
+    el.next.disabled=!pass; el.footer.textContent= pass?'自動合格（◯推奨）':'自動不合格：再挑戦 or ×';
+    const payload={ts:new Date().toISOString(), id:it.id, mode:'read',
       wer:+(1-recall).toFixed(3), cer:+(1-precision).toFixed(3), latency_ms:0, words_spoken:toks(hyp).length,
       transcript:hyp, matched_tokens_json:JSON.stringify(matched), missing_tokens_json:JSON.stringify(missing),
-      recall:+recall.toFixed(3), precision:+precision.toFixed(3)
-    };
-    try{ await svr.postSpeech(payload); }catch(_){}
+      recall:+recall.toFixed(3), precision:+precision.toFixed(3)};
+    try{ await svr.postSpeech(payload);}catch(_){}
   }
 
-  el.mic.onclick = ()=>{ if(!recogOn) startRec(); else stopRec(); };
-  document.querySelector('[data-eval="ok"]').onclick = ()=> submitEval(1);
-  document.querySelector('[data-eval="ng"]').onclick = ()=> submitEval(0);
-
+  el.mic.onclick=()=>{ if(!recogOn) startRec(); else stopRec(); };
+  document.querySelector('[data-eval="ok"]').onclick=()=>submitEval(1);
+  document.querySelector('[data-eval="ng"]').onclick=()=>submitEval(0);
   async function submitEval(bin){
     const it=QUEUE[idx]; if(!it) return;
     const payload={ ts:new Date().toISOString(), id:it.id, result:bin,
-      auto_recall:null, auto_precision:null, response_ms:Math.max(0,now()-cardStart), hint_used:(el.ja.style.display==='block'), device:UA };
-    try{ await svr.postAttempt(payload); }catch(_){}
-    el.next.disabled=false;
-    nextCard();
+      auto_recall:null, auto_precision:null, response_ms:Math.max(0,now()-0), hint_used:(el.ja.style.display==='block'), device:UA };
+    try{ await svr.postAttempt(payload);}catch(_){}
+    el.next.disabled=false; nextCard();
   }
 
   // ===== Boot =====
-  (async ()=>{
-    await loadQueue(); nextCard(true);
-  })();
+  (async ()=>{ await loadQueue(); nextCard(true); })();
 
 })();
 </script>
