@@ -22,7 +22,7 @@
     main{padding:12px;overflow:auto}
     .card{max-width:840px;margin:0 auto;background:var(--panel);border:1px solid var(--bd);border-radius:18px;padding:16px;min-height:50vh;display:flex;flex-direction:column;gap:12px;touch-action:manipulation}
     .chips{display:flex;gap:6px;flex-wrap:wrap}
-    .en{font-size:22px;line-height:1.6;word-break:break-word;overflow-wrap:anywhere}
+    .en{font-size:22px;line-height:1.6;word-break:normal;overflow-wrap:break-word;white-space:normal}
     .en .tok{padding:0 2px;border-radius:4px}
     .en .hit{background:rgba(70,211,127,.18);border-bottom:1px solid rgba(70,211,127,.6)}
     .en .miss{background:rgba(255,107,107,.15);border-bottom:1px dashed rgba(255,107,107,.7)}
@@ -159,7 +159,19 @@
     const merged = (k > 0 || !A.length) ? A.concat(B.slice(k)) : A.concat(B);
     return dedupeRuns(merged).join(' ');
   }
-  function spanify(text){ const parts=(text||'').match(/\S+|\s+/g)||[]; return parts.map(w=>/\s+/.test(w)? w.replace(/ /g,'&nbsp;') : `<span class="tok" data-w="${w.replace(/[^\p{L}\p{N}'-]/gu,'')}">${w}</span>`).join(''); }
+  function spanify(text){
+    const parts=(text||'').match(/\S+|\s+/g)||[];
+    return parts.map(part=>{
+      if(/\s+/.test(part)){
+        const converted=part
+          .replace(/\r?\n/g,'<br>')
+          .replace(/[^\S\r\n]+/g,' ');
+        return converted || ' ';
+      }
+      const clean=part.replace(/[^\p{L}\p{N}'-]/gu,'');
+      return `<span class="tok" data-w="${clean}">${part}</span>`;
+    }).join('');
+  }
   function toast(msg, ms=1500){ const t=qs('#toast'); t.textContent=msg; t.style.display='block'; clearTimeout(toast._t); toast._t=setTimeout(()=>t.style.display='none', ms); }
 
   // ===== Elements =====
@@ -289,6 +301,7 @@
 
   function startRec(){
     if(!SR){ toast('この端末では音声認識が使えません'); return; }
+    const shouldResume = audio && !audio.paused;
     recog = new SR();
     recog.lang = 'en-US';
     recog.continuous = true;
@@ -301,6 +314,10 @@
     resetTranscript();
 
     try{ recog.start(); }catch(_){ }
+
+    if(shouldResume && audio?.src){
+      audio.play().catch(()=>{});
+    }
 
     recog.onresult = (ev)=>{
       let interim = '';
