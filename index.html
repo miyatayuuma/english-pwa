@@ -143,7 +143,22 @@
   const STOP=new Set(['a','the','to','of','in','on','for','at','is','are','was','were','be','been','being','do','does','did','have','has','had']);
   const norm=s=>(s||'').toLowerCase().normalize('NFKC').replace(/[\p{P}\p{S}]/gu,' ').replace(/\s+/g,' ').trim();
   const toks=s=>norm(s).split(' ').filter(Boolean);
-  function dedupeConsecutive(arr){ const out=[]; for(const w of arr){ if(out.length===0||out[out.length-1]!==w) out.push(w); } return out; }
+  // 連続重複を圧縮（a a a → a）
+  function dedupeRuns(arr){
+    const out=[]; for(const w of arr){ if(out.length && out[out.length-1]===w) continue; out.push(w); }
+    return out;
+  }
+  // final 文の“増分”だけを安定テキストに追加
+  function appendStableFinal(stable, fragment){
+    const A = toks(stable);
+    const B = toks(fragment);
+    // 語単位LCP
+    let k = 0;
+    while (k < A.length && k < B.length && A[k] === B[k]) k++;
+    // B が A の拡張なら尾部だけ追加。拡張でなければ新規文として結合。
+    const merged = (k > 0 || !A.length) ? A.concat(B.slice(k)) : A.concat(B);
+    return dedupeRuns(merged).join(' ');
+  }
   function spanify(text){ const parts=(text||'').match(/\S+|\s+/g)||[]; return parts.map(w=>/\s+/.test(w)? w.replace(/ /g,'&nbsp;') : `<span class="tok" data-w="${w.replace(/[^\p{L}\p{N}'-]/gu,'')}">${w}</span>`).join(''); }
   function toast(msg, ms=1500){ const t=qs('#toast'); t.textContent=msg; t.style.display='block'; clearTimeout(toast._t); toast._t=setTimeout(()=>t.style.display='none', ms); }
 
@@ -228,14 +243,16 @@
   el.next.onclick=()=> nextCard(false,true);
 
   // ASR（改良：重複抑制・上限・多重一致防止）
-  const SR = window.SpeechRecognition||window.webkitSpeechRecognition; let recog=null, recogOn=false, finalSegments=[]; // 配列に保持
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  let recog=null, recogOn=false;
+  let stableText=''; // 確定テキスト（評価はこちらのみ使用）
 
   function matchAndHighlight(refText, hypText){
     // 1) トークン化
     const refTokens = toks(refText).filter(w=>!STOP.has(w));
     const hypTokensRaw = toks(hypText);
     // 2) 連続重複を圧縮
-    const hypTokens = dedupeConsecutive(hypTokensRaw);
+    const hypTokens = dedupeRuns(hypTokensRaw);
     // 3) 長さ上限（refの2倍まで評価）
     const maxLen = Math.max(1, refTokens.length*2);
     const hypCap = hypTokens.slice(0, maxLen);
@@ -254,6 +271,8 @@
     }
     const recall = refTokens.length? matched/refTokens.length : 1;
     const precision = hypCap.length? matched/hypCap.length : 1;
+    const missing=[];
+    for(const [w,c] of remain){ for(let i=0;i<(c||0);i++) missing.push(w); }
 
     // ハイライト適用
     const spans=[...document.querySelectorAll('.en .tok')].filter(s=>s.dataset.w);
@@ -261,36 +280,73 @@
       sp.classList.toggle('hit', !!hit);
       sp.classList.toggle('miss', !hit);
     }
-    return {recall, precision, matched: matchedWords, missing: []};
+    return {recall, precision, matched: matchedWords, missing };
   }
 
-  function resetTranscript(){ qs('#transcript').innerHTML=''; finalSegments=[]; }
+  function resetTranscript(){ qs('#transcript').innerHTML=''; }
   function showTranscriptInterim(text){ qs('#transcript').innerHTML=`<span class="interim">${text}</span>`; }
   function showTranscriptFinal(text){ qs('#transcript').textContent=text; }
 
   function startRec(){
-    if(!SR){ toast('この端末は音声認識非対応'); return; }
-    recog=new SR(); recog.lang='en-US'; recog.continuous=true; recog.interimResults=true; recog.maxAlternatives=1;
-    finalSegments=[]; recogOn=true; el.asr.textContent='録音中…'; resetTranscript();
-    try{ recog.start(); }catch(_){}
-    recog.onresult=(ev)=>{
-      let interim='';
-      for(let i=ev.resultIndex;i<ev.results.length;i++){
-        const r=ev.results[i]; if(r.isFinal){ const seg=(r[0].transcript||'').trim(); if(seg && seg!==finalSegments[finalSegments.length-1]) finalSegments.push(seg); } else { interim += r[0].transcript||''; }
+    if(!SR){ toast('この端末では音声認識が使えません'); return; }
+    recog = new SR();
+    recog.lang = 'en-US';
+    recog.continuous = true;
+    recog.interimResults = true;
+    recog.maxAlternatives = 1;
+
+    stableText = '';
+    recogOn = true;
+    el.asr.textContent = '録音中…';
+    resetTranscript();
+
+    try{ recog.start(); }catch(_){ }
+
+    recog.onresult = (ev)=>{
+      let interim = '';
+      for(let i=ev.resultIndex; i<ev.results.length; i++){
+        const r = ev.results[i];
+        const t = r[0].transcript || '';
+        if(r.isFinal){
+          // 尾部のみ追加していく
+          stableText = appendStableFinal(stableText, t);
+          showTranscriptFinal(stableText);
+          const m = matchAndHighlight(el.en.textContent, stableText);
+          el.WER.textContent = (1 - m.recall).toFixed(2);
+          el.CER.textContent = (1 - m.precision).toFixed(2);
+        }else{
+          interim = t;
+        }
       }
-      if(interim) showTranscriptInterim(interim);
-      const hyp = finalSegments.join(' ').trim();
-      if(hyp){ showTranscriptFinal(hyp); const m=matchAndHighlight(el.en.textContent, hyp); el.WER.textContent=(1-m.recall).toFixed(2); el.CER.textContent=(1-m.precision).toFixed(2); }
+      if(interim) showTranscriptInterim(interim); // 画面表示だけ・評価には使わない
     };
-    recog.onerror=(e)=>{ el.asr.textContent='ASRエラー'; console.warn(e); toast('ASRエラー: '+(e&&e.error||'')); };
-    recog.onend=()=>{ if(recogOn) stopRec(); };
+
+    recog.onerror = (e)=>{ el.asr.textContent = 'ASRエラー'; console.warn(e); toast('ASRエラー: '+(e && e.error || '')); };
+    recog.onend = ()=>{ if(recogOn) stopRec(); };
   }
 
   async function stopRec(){
-    if(!recogOn) return; recogOn=false; try{recog&&recog.stop&&recog.stop();}catch(_){}
-    el.asr.textContent='停止'; const it=QUEUE[idx]; if(!it) return; const hyp=(finalSegments.join(' ').trim()); const {recall, precision, matched}=matchAndHighlight(el.en.textContent, hyp);
-    const pass=(recall>=0.80 && precision>=0.60); el.next.disabled=!pass; el.footer.textContent= pass? '自動合格（◯推奨）' : '自動不合格：再挑戦 or ×';
-    const payload={ ts:new Date().toISOString(), id:it.id, mode:'read', wer:+(1-recall).toFixed(3), cer:+(1-precision).toFixed(3), latency_ms:0, words_spoken:toks(hyp).length, transcript:hyp, matched_tokens_json:JSON.stringify(matched), missing_tokens_json:'[]', recall:+recall.toFixed(3), precision:+precision.toFixed(3) };
+    if(!recogOn) return;
+    recogOn=false;
+    try{ recog && recog.stop && recog.stop(); }catch(_){ }
+    el.asr.textContent='停止';
+
+    const it = QUEUE[idx]; if(!it) return;
+    const hyp = stableText.trim();
+    const { recall, precision, matched, missing } = matchAndHighlight(el.en.textContent, hyp);
+
+    const pass = (recall >= 0.80 && precision >= 0.60);
+    el.next.disabled = !pass;
+    el.footer.textContent = pass ? '自動合格（◯推奨）' : '自動不合格：再挑戦 or ×';
+
+    const payload = {
+      ts: new Date().toISOString(), id: it.id, mode: 'read',
+      wer: +(1-recall).toFixed(3), cer: +(1-precision).toFixed(3),
+      latency_ms: 0, words_spoken: toks(hyp).length, transcript: hyp,
+      matched_tokens_json: JSON.stringify(matched),
+      missing_tokens_json: JSON.stringify(missing),
+      recall:+recall.toFixed(3), precision:+precision.toFixed(3)
+    };
     try{ await sendLog('speech', payload); }catch(_){ }
   }
 
