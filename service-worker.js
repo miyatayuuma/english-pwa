@@ -1,4 +1,4 @@
-const CACHE="shell-v16";
+const CACHE="shell-v17";
 const ASSETS=["./","./index.html","./manifest.json"];
 self.addEventListener("install",e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS))));
 self.addEventListener("activate",e=>e.waitUntil(
