@@ -374,6 +374,10 @@
   let remoteStatus=null;
   let localMinutes=0;
   let localStreak=0;
+  let QUEUE=[];
+  let idx=-1;
+  let sessionStart=0;
+  let cardStart=0;
 
   function updateHeaderStats(){
     const queueLen=Array.isArray(QUEUE)?QUEUE.length:0;
@@ -399,8 +403,6 @@
     remoteStatus = status ? Object.assign({}, status) : null;
     updateHeaderStats();
   }
-
-  updateHeaderStats();
 
   refreshWeakWordBar();
   if(el.weak){
@@ -778,7 +780,7 @@
   }
 
   function isUnlearned(id){ const info=getLevelInfo(id); if((info.best||1)<3) return true; const s=SRS_MAP.get(id); if(!s) return true; if(s.last_result===0) return true; if((s.ease||0)<2.0 && (s.interval_d||0)<3) return true; return false; }
-  function buildQueue(){ const sec=el.secSel.value; const order=el.orderSel.value; const onlyWeak=el.chkWeak.checked; let items=(sec?'filter':'all')==='all' ? window.ALL_ITEMS : window.ALL_ITEMS.filter(x=>String(x.unit)===sec); if(onlyWeak) items=items.filter(x=>isUnlearned(x.id)); if(focusWord){ const w=norm(focusWord); if(w) items=items.filter(x=>norm(x.en).includes(w)); } if(order==='rnd'){ const seed=Math.floor(Date.now()/86400000); let t=seed>>>0; const rnd=()=>{t^=t<<13; t^=t>>>17; t^=t<<5; return (t>>>0)/4294967296}; items=items.slice(); for(let i=items.length-1;i>0;i--){ const j=Math.floor(rnd()*(i+1)); [items[i],items[j]]=[items[j]],items[i]; } } else { items=items.slice().sort((a,b)=>{ const na=+String(a.unit||'').replace(/\D+/g,'')||0, nb=+String(b.unit||'').replace(/\D+/g,'')||0; if(na!==nb) return na-nb; return String(a.id).localeCompare(String(b.id)); }); } return items.map(it=>({ id:it.id,en:it.en,ja:it.ja,tags:it.tags||'',chunks_json:it.chunks||'[]',audio_fn:it.audio_fn||'' })); }
+  function buildQueue(){ const sec=el.secSel.value; const order=el.orderSel.value; const onlyWeak=el.chkWeak.checked; let items=(sec?'filter':'all')==='all' ? window.ALL_ITEMS : window.ALL_ITEMS.filter(x=>String(x.unit)===sec); if(onlyWeak) items=items.filter(x=>isUnlearned(x.id)); if(focusWord){ const w=norm(focusWord); if(w) items=items.filter(x=>norm(x.en).includes(w)); } if(order==='rnd'){ const seed=Math.floor(Date.now()/86400000); let t=seed>>>0; const rnd=()=>{t^=t<<13; t^=t>>>17; t^=t<<5; return (t>>>0)/4294967296}; items=items.slice(); for(let i=items.length-1;i>0;i--){ const j=Math.floor(rnd()*(i+1)); [items[i],items[j]]=[items[j]],items[i]; } } else { items=items.slice().sort((a,b)=>{ const na=+String(a.unit||'').replace(/\D+/g,'')||0, nb=+String(b.unit||'').replace(/\D+/g,'')||0; if(na!==nb) return na-nb; return String(a.id).localeCompare(String(b.id)); }); } return items.filter(Boolean).map(it=>({ id:it.id,en:it.en,ja:it.ja,tags:it.tags||'',chunks_json:it.chunks||'[]',audio_fn:it.audio_fn||'' })); }
 
   // Audio resolve: DIR (folder) -> OPFS -> base URL
   const audioUrlCache=new Map();
@@ -804,7 +806,6 @@
   }
 
   // Render & navigation
-  let QUEUE=[], idx=-1, sessionStart=0, cardStart=0;
   function stopAudio(){ try{audio.pause();}catch(_){ } audio.currentTime=0; }
   function resetResult(){ updateMatch(null); }
   function resetTranscript(){ qs('#transcript').innerHTML=''; }
@@ -1234,7 +1235,18 @@
 
   // Boot
   (async()=>{
-    try{ await ensureDir(); await ensureDataLoaded(); initSectionPicker(); refreshDirStatus(); await rebuildAndRender(true); await syncProgressAndStatus(); }catch(e){ console.error(e); toast('初期化失敗: '+(e&&e.message||e)); }
+    try{
+      await ensureDir();
+      await ensureDataLoaded();
+      updateHeaderStats();
+      initSectionPicker();
+      refreshDirStatus();
+      await rebuildAndRender(true);
+      await syncProgressAndStatus();
+    }catch(e){
+      console.error(e);
+      toast('初期化失敗: '+(e&&e.message||e));
+    }
   })();
 })();
 </script>
