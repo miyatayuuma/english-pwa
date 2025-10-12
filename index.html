@@ -38,8 +38,6 @@
     .score-val.bad{color:var(--bad)}
     .score-note{font-size:12px;color:var(--muted);min-height:1.2em}
 
-    footer{border-top:1px solid var(--bd);padding:8px 12px;display:flex;gap:10px;align-items:center;background:var(--panel)}
-    progress{width:160px;height:10px}
     .btn{border:1px solid var(--bd);border-radius:12px;background:#111726;color:var(--txt);padding:10px 14px;cursor:pointer}
     .btn.ok{background:#10331f;border-color:#1f5c38}
     .btn.ng{background:#331717;border-color:#5c2929}
@@ -51,9 +49,11 @@
     #btnMic::after{content:"";position:absolute;inset:-4px;border-radius:20px;border:1px solid rgba(98,213,255,.25);opacity:0;transition:opacity .3s ease}
     #btnMic.listening::after{opacity:1}
     @keyframes micPulse{0%{box-shadow:0 0 0 0 rgba(98,213,255,.45);}70%{box-shadow:0 0 0 10px rgba(98,213,255,0);}100%{box-shadow:0 0 0 0 rgba(98,213,255,0);}}
-    #btnAutoNext{display:none;margin-top:6px;width:100%;padding:12px;font-size:16px;border-radius:14px;background:#215439;border:1px solid #2f7a52;color:#e6ffef;font-weight:600;box-shadow:0 6px 14px -10px rgba(70,211,127,.8);transition:transform .2s ease, box-shadow .2s ease}
+    #btnAutoNext{display:none;margin-top:6px;width:100%;padding:12px;font-size:16px;border-radius:14px;background:#215439;border:1px solid #2f7a52;color:#e6ffef;font-weight:600;box-shadow:0 6px 14px -10px rgba(70,211,127,.8);transition:transform .2s ease,box-shadow .2s ease}
     #btnAutoNext:focus-visible{outline:2px solid rgba(98,213,255,.6)}
     #btnAutoNext:hover{transform:translateY(-1px);box-shadow:0 10px 18px -12px rgba(70,211,127,1)}
+    footer{border-top:1px solid var(--bd);padding:8px 12px;display:flex;gap:10px;align-items:center;background:var(--panel)}
+    progress{width:160px;height:10px}
 
     /* 設定モーダル */
     #cfgModal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.45);z-index:9999}
@@ -217,7 +217,6 @@
   const audio=qs('#player');
   const PREFETCH_POOL=new Map();
   const PREFETCH_LIMIT=6;
-  hideAutoNext();
 
   function waitForAudioReady(el, timeout=2000){
     if(!el) return Promise.resolve();
@@ -381,6 +380,8 @@
       el.score.classList.add('bad');
     }
   }
+  function resetTranscript(){ qs('#transcript').innerHTML=''; }
+  hideAutoNext();
   function toggleJA(){ el.ja.style.display=(el.ja.style.display==='none')?'block':'none'; }
 
   async function render(i, autoPlay=false){
@@ -566,6 +567,7 @@
         setTimeout(()=>submitEval(0), 450);
       }else{
         el.mic.disabled=false;
+        el.mic.setAttribute('aria-label','マイクで再挑戦');
         el.asr.textContent=`70%を目指して再挑戦 (${remain}回残り)`;
         el.footer.textContent='もう一度挑戦してください';
         playTone(460,0.16,'triangle',0.18);
