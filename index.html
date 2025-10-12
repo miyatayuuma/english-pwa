@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <link rel="icon" href="data:," />
   <title>英語学習（範囲UI＋ASR・安定改良版）</title>
   <style>
     :root{ --bg:#0b0e1a; --panel:rgba(20,24,36,.65); --bd:rgba(255,255,255,.12); --txt:#e6e8ef; --muted:#aeb5c6; --accent:#62d5ff; --good:#46d37f; --bad:#ff6b6b; }
@@ -374,6 +375,7 @@
   let remoteStatus=null;
   let localMinutes=0;
   let localStreak=0;
+  let QUEUE=[], idx=-1, sessionStart=0, cardStart=0;
 
   function updateHeaderStats(){
     const queueLen=Array.isArray(QUEUE)?QUEUE.length:0;
@@ -763,7 +765,6 @@
   }
 
   // Render & navigation
-  let QUEUE=[], idx=-1, sessionStart=0, cardStart=0;
   function stopAudio(){ try{audio.pause();}catch(_){ } audio.currentTime=0; }
   function resetResult(){ updateMatch(null); }
   function resetTranscript(){ qs('#transcript').innerHTML=''; }
