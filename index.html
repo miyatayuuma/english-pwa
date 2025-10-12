@@ -419,6 +419,7 @@
       return;
     }
     el.en.innerHTML=spanify(it.en);
+    clearHighlight();
     el.ja.textContent=it.ja;
     el.ja.style.display='none';
     el.chips.innerHTML='';
@@ -459,6 +460,13 @@
   let recog=null, recogOn=false;
   let stableText=''; // 確定テキスト（評価はこちらのみ使用）
   let lastMatchEval=null;
+
+  function clearHighlight(){
+    document.querySelectorAll('.en .tok').forEach(sp=>{
+      sp.classList.remove('hit');
+      sp.classList.remove('miss');
+    });
+  }
 
   function matchAndHighlight(refText, hypText){
     const refTokens = toks(refText);
@@ -584,6 +592,7 @@
     setMicState(true);
     playTone('start');
     resetTranscript();
+    clearHighlight();
 
     try{ recog.start(); }catch(_){ }
 
