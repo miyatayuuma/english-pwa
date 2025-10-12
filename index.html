@@ -688,13 +688,54 @@
       }
     });
   }
-  el.btnPickDir.onclick=async()=>{ if(!window.showDirectoryPicker){ toast('この端末はフォルダピッカー非対応'); return; } try{ const h=await showDirectoryPicker({mode:'read'}); await saveDirHandle(h); DIR=h; refreshDirStatus(); toast('フォルダを保存しました'); }catch(e){ if(e&&e.name!=='AbortError') toast('フォルダ選択に失敗'); }};
-  el.btnClearDir.onclick=async()=>{ await clearDirHandle(); DIR=null; refreshDirStatus(); toast('フォルダ設定を解除'); };
-  function refreshDirStatus(){ el.dirStatus.textContent = DIR? '保存済み':'未設定'; }
+  if(el.btnPickDir){
+    el.btnPickDir.addEventListener('click', async()=>{
+      if(!window.showDirectoryPicker){ toast('この端末はフォルダピッカー非対応'); return; }
+      try{
+        const h=await showDirectoryPicker({mode:'read'});
+        await saveDirHandle(h);
+        DIR=h;
+        refreshDirStatus();
+        toast('フォルダを保存しました');
+      }catch(e){
+        if(e&&e.name!=='AbortError') toast('フォルダ選択に失敗');
+      }
+    });
+  }
+  if(el.btnClearDir){
+    el.btnClearDir.addEventListener('click', async()=>{
+      await clearDirHandle();
+      DIR=null;
+      refreshDirStatus();
+      toast('フォルダ設定を解除');
+    });
+  }
+  function refreshDirStatus(){ if(!el.dirStatus) return; el.dirStatus.textContent = DIR? '保存済み':'未設定'; }
 
   // Import audio (OPFS)
-  el.btnImport.onclick=()=>{ el.filePick.click(); };
-  el.filePick.onchange=async (ev)=>{ const files=[...ev.target.files||[]]; if(!files.length){ toast('ファイル未選択'); return; } try{ if(!(navigator.storage&&navigator.storage.getDirectory)) throw new Error('OPFS未対応'); const root=await navigator.storage.getDirectory(); let ok=0; for(const f of files){ const fh=await root.getFileHandle(f.name,{create:true}); const w=await fh.createWritable(); await w.write(f); await w.close(); ok++; } toast(`${ok} 件をOPFSへ保存`); }catch(e){ console.error(e); toast('OPFS取り込み失敗'); } };
+  if(el.btnImport && el.filePick){
+    el.btnImport.addEventListener('click', ()=>{ el.filePick.click(); });
+    el.filePick.addEventListener('change', async(ev)=>{
+      const files=[...ev.target.files||[]];
+      if(!files.length){ toast('ファイル未選択'); return; }
+      try{
+        if(!(navigator.storage&&navigator.storage.getDirectory)) throw new Error('OPFS未対応');
+        const root=await navigator.storage.getDirectory();
+        let ok=0;
+        for(const f of files){
+          const fh=await root.getFileHandle(f.name,{create:true});
+          const w=await fh.createWritable();
+          await w.write(f);
+          await w.close();
+          ok++;
+        }
+        toast(`${ok} 件をOPFSへ保存`);
+      }catch(e){
+        console.error(e);
+        toast('OPFS取り込み失敗');
+      }
+    });
+  }
 
   // GAS Bridge
   async function refreshRemoteStatus(){
