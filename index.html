@@ -231,6 +231,8 @@
   const audio=qs('#player');
   const PREFETCH_POOL=new Map();
   const PREFETCH_LIMIT=6;
+  let sessionActive=false;
+  let sessionStarting=false;
 
   function waitForAudioReady(el, timeout=2000){
     if(!el) return Promise.resolve();
@@ -410,6 +412,29 @@
   function resetTranscript(){ qs('#transcript').innerHTML=''; }
   function toggleJA(){ el.ja.style.display=(el.ja.style.display==='none')?'block':'none'; }
 
+  function showIdleCard(){
+    sessionActive=false;
+    sessionStarting=false;
+    stopAudio();
+    clearAudioSource();
+    el.en.textContent = QUEUE.length ? 'タップして開始（音声が自動再生されます）' : '出題できる問題がありません';
+    clearHighlight();
+    el.ja.textContent = '—';
+    el.ja.style.display = 'none';
+    el.chips.innerHTML = '';
+    cardStart = now();
+    failCount = 0;
+    resetResult();
+    resetTranscript();
+    updateAttemptInfo();
+    hideNextCta();
+    setMicState(false);
+    el.mic.disabled = true;
+    el.next.hidden = true;
+    el.pbar.value = 0;
+    el.footer.textContent = QUEUE.length ? '問題部分をタップすると第1問が始まります' : 'キューが空です';
+  }
+
   async function render(i, autoPlay=false){
     stopAudio();
     const it=QUEUE[i];
@@ -437,22 +462,74 @@
     updateAttemptInfo();
     hideNextCta();
     setMicState(false);
+    el.mic.disabled=false;
     primeAudio(QUEUE[i+1]);
     primeAudio(QUEUE[i-1]);
     if(autoPlay&&url){ try{ await audio.play(); }catch(_){ } }
   }
 
-  async function rebuildAndRender(resetIndex=false){ QUEUE=buildQueue(); if(resetIndex) idx=-1; el.pbar.max=Math.max(1, QUEUE.length); el.left.textContent=QUEUE.length; hideNextCta(); nextCard(true); }
+  async function rebuildAndRender(resetIndex=false){
+    QUEUE=buildQueue();
+    el.pbar.max=Math.max(1, QUEUE.length);
+    el.left.textContent=QUEUE.length;
+    hideNextCta();
+    if(resetIndex){
+      idx=-1;
+      showIdleCard();
+      return;
+    }
+    if(!sessionActive){
+      showIdleCard();
+      return;
+    }
+    if(!QUEUE.length){
+      showIdleCard();
+      return;
+    }
+    idx=Math.max(0, Math.min(idx, QUEUE.length-1));
+    render(idx,false);
+    el.pbar.value=idx;
+    el.footer.textContent=`#${idx+1}/${QUEUE.length}`;
+  }
 
-  function nextCard(first=false, autoPlay=false){ if(!QUEUE.length){ el.footer.textContent='キューが空です'; clearAudioSource(); stopAudio(); return; } idx = first? 0 : Math.min(QUEUE.length-1, idx+1); render(idx, autoPlay); el.pbar.value=idx; el.footer.textContent=`#${idx+1}/${QUEUE.length}`; }
-  function prevCard(autoPlay=false){ if(!QUEUE.length) return; idx=Math.max(0, idx-1); render(idx, autoPlay); el.pbar.value=idx; el.footer.textContent=`#${idx+1}/${QUEUE.length}`; }
+  function nextCard(first=false, autoPlay=false){
+    if(!QUEUE.length){ el.footer.textContent='キューが空です'; clearAudioSource(); stopAudio(); return; }
+    if(!sessionActive) return;
+    idx = first? 0 : Math.min(QUEUE.length-1, idx+1);
+    render(idx, autoPlay);
+    el.pbar.value=idx;
+    el.footer.textContent=`#${idx+1}/${QUEUE.length}`;
+  }
+  function prevCard(autoPlay=false){
+    if(!QUEUE.length) return;
+    if(!sessionActive) return;
+    idx=Math.max(0, idx-1);
+    render(idx, autoPlay);
+    el.pbar.value=idx;
+    el.footer.textContent=`#${idx+1}/${QUEUE.length}`;
+  }
+
+  async function startSession(autoPlay=true){
+    if(sessionActive || sessionStarting) return;
+    if(!QUEUE.length){ showIdleCard(); return; }
+    sessionStarting=true;
+    try{
+      await ensureDir();
+      sessionActive=true;
+      idx=-1;
+      el.mic.disabled=false;
+      nextCard(true, autoPlay);
+    }finally{
+      sessionStarting=false;
+    }
+  }
 
   // Gestures
   let touchStart=null; const TH=60;
-  el.card.addEventListener('touchstart',(ev)=>{ if(ev.touches?.length!==1) return; const t=ev.touches[0]; touchStart={x:t.clientX,y:t.clientY}; },{passive:true});
-  el.card.addEventListener('touchend',(ev)=>{ if(!touchStart) return; const end=ev.changedTouches[0]; const dx=end.clientX-touchStart.x, dy=end.clientY-touchStart.y; if(Math.abs(dx)>Math.abs(dy) && Math.abs(dx)>TH){ if(dx>0) prevCard(true); else nextCard(false,true); } else if(Math.abs(dy)>TH && dy<0){ toggleJA(); } touchStart=null; },{passive:true});
-  el.en.addEventListener('click', async ()=>{ if(!audio.src) return; try{ if(audio.paused) await audio.play(); else audio.pause(); }catch(_){ } });
-  el.en.addEventListener('dblclick', toggleJA);
+  el.card.addEventListener('touchstart',(ev)=>{ if(!sessionActive){ touchStart=null; return; } if(ev.touches?.length!==1) return; const t=ev.touches[0]; touchStart={x:t.clientX,y:t.clientY}; },{passive:true});
+  el.card.addEventListener('touchend',(ev)=>{ if(!touchStart) return; if(!sessionActive){ touchStart=null; return; } const end=ev.changedTouches[0]; const dx=end.clientX-touchStart.x, dy=end.clientY-touchStart.y; if(Math.abs(dx)>Math.abs(dy) && Math.abs(dx)>TH){ if(dx>0) prevCard(true); else nextCard(false,true); } else if(Math.abs(dy)>TH && dy<0){ toggleJA(); } touchStart=null; },{passive:true});
+  el.en.addEventListener('click', async ()=>{ if(!sessionActive){ await startSession(true); return; } if(!audio.src) return; try{ if(audio.paused) await audio.play(); else audio.pause(); }catch(_){ } });
+  el.en.addEventListener('dblclick', ()=>{ if(!sessionActive) return; toggleJA(); });
   el.next.onclick=()=> nextCard(false,true);
 
   // ASR（改良：重複抑制・上限・多重一致防止）
@@ -681,13 +758,13 @@
   }
 
   el.mic.onclick=()=>{ if(!recogOn) startRec(); else stopRec(); };
-  qsa('[data-eval="ok"]').forEach(b=>b.onclick=()=>submitEval(1));
-  qsa('[data-eval="ng"]').forEach(b=>b.onclick=()=>submitEval(0));
+  qsa('[data-eval="ok"]').forEach(b=>b.onclick=()=>{ if(!sessionActive) return; submitEval(1); });
+  qsa('[data-eval="ng"]').forEach(b=>b.onclick=()=>{ if(!sessionActive) return; submitEval(0); });
   async function submitEval(bin){ const it=QUEUE[idx]; if(!it) return; const payload={ ts:new Date().toISOString(), id:it.id, result:bin, auto_recall:null, auto_precision:null, response_ms:Math.max(0, now()-cardStart), hint_used:(el.ja.style.display==='block'), device:UA }; try{ await sendLog('attempt', payload); }catch(_){ } hideNextCta(); nextCard(false,true); }
 
   // Boot
   (async()=>{
-    try{ await ensureDataLoaded(); initSectionPicker(); await ensureDir(); refreshDirStatus(); await rebuildAndRender(true); }catch(e){ console.error(e); toast('初期化失敗: '+(e&&e.message||e)); }
+    try{ await ensureDir(); await ensureDataLoaded(); initSectionPicker(); refreshDirStatus(); await rebuildAndRender(true); }catch(e){ console.error(e); toast('初期化失敗: '+(e&&e.message||e)); }
   })();
 })();
 </script>
