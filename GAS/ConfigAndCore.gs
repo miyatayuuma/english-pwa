@@ -17,9 +17,9 @@ const SHEETS = {
 };
 
 const HEAD = {
-  attempts: ['ts','id','mode','response_ms','result','hint_used','device'],
-  speech:   ['ts','id','mode','wer','cer','latency_ms','asr_conf','duration_ms','words_spoken'],
-  sessions: ['date','minutes','cards_done','new_introduced','streak'],
+  attempts: ['ts','id','mode','response_ms','result','hint_used','device','client_uid'],
+  speech:   ['ts','id','mode','wer','cer','latency_ms','asr_conf','duration_ms','words_spoken','client_uid'],
+  sessions: ['date','minutes','cards_done','new_introduced','streak','client_uid'],
   items:    ['id','unit','level','en','ja','audio_url','chunks_json','tags','note'],
   srs:      ['id','reps','ease','interval','due','lapses','last_result','updated_at'],
   config:   ['key','value']
@@ -54,6 +54,82 @@ function isoDate_(d=new Date()){
 /** === APIキー取得 === */
 function getApiKey_(){
   return PropertiesService.getScriptProperties().getProperty('API_KEY') || '';
+}
+
+function sanitizeString_(value, max){
+  const str = value==null ? '' : String(value);
+  return max!=null ? str.slice(0, max).replace(/[\r\n]+/g,' ') : str.replace(/[\r\n]+/g,' ');
+}
+
+function sanitizeNumber_(value, def, min, max){
+  let num = Number(value);
+  if(isNaN(num)) num = def;
+  if(min!=null && num<min) num = min;
+  if(max!=null && num>max) num = max;
+  return num;
+}
+
+function numberSafe_(value){
+  const num = Number(value);
+  return isNaN(num) ? 0 : num;
+}
+
+function getConfigMap_(){
+  const map = {};
+  const sh = SPREADSHEET.getSheetByName(SHEETS.config);
+  if(!sh) return map;
+  const values = sh.getDataRange().getValues();
+  for(let i=1;i<values.length;i++){
+    const row = values[i];
+    const key = String(row[0]||'').trim();
+    if(!key) continue;
+    map[key] = row[1];
+  }
+  return map;
+}
+
+function getLearningStatus_(){
+  const tz = Session.getScriptTimeZone() || 'Asia/Tokyo';
+  const today = isoDate_(new Date());
+  const out = {
+    date: today,
+    minutes_today: 0,
+    cards_today: 0,
+    new_today: 0,
+    streak: 0,
+    goal_cards: 0,
+    goal_minutes: 0,
+    remaining_cards: null,
+    remaining_minutes: null
+  };
+  const sessionSheet = SPREADSHEET.getSheetByName(SHEETS.sessions);
+  if(sessionSheet){
+    const values = sessionSheet.getDataRange().getValues();
+    for(let i=1;i<values.length;i++){
+      const row = values[i];
+      const rawDate = row[0];
+      const dateStr = rawDate instanceof Date ? Utilities.formatDate(rawDate, tz, 'yyyy-MM-dd') : String(rawDate||'');
+      if(dateStr === today){
+        out.minutes_today += numberSafe_(row[1]);
+        out.cards_today += numberSafe_(row[2]);
+        out.new_today += numberSafe_(row[3]);
+      }
+      const streakVal = Number(row[4]);
+      if(!isNaN(streakVal)){
+        out.streak = streakVal;
+      }
+    }
+  }
+  const cfg = getConfigMap_();
+  out.goal_cards = numberSafe_(cfg.daily_card_goal);
+  out.goal_minutes = numberSafe_(cfg.daily_minutes_goal);
+  if(out.goal_cards){
+    out.remaining_cards = Math.max(0, out.goal_cards - out.cards_today);
+  }
+  if(out.goal_minutes){
+    out.remaining_minutes = Math.max(0, out.goal_minutes - out.minutes_today);
+  }
+  return out;
 }
 
 /** =========================================================

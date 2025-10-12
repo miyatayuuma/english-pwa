@@ -371,6 +371,36 @@
   const PREFETCH_LIMIT=6;
   let sessionActive=false;
   let sessionStarting=false;
+  let remoteStatus=null;
+  let localMinutes=0;
+  let localStreak=0;
+
+  function updateHeaderStats(){
+    const queueLen=Array.isArray(QUEUE)?QUEUE.length:0;
+    const leftVal = remoteStatus && remoteStatus.remaining_cards!=null ? Number(remoteStatus.remaining_cards) : queueLen;
+    const displayLeft = Number.isFinite(leftVal) ? Math.max(0, Math.round(leftVal)) : queueLen;
+    el.left.textContent = displayLeft!=null ? displayLeft : 0;
+    if(!remoteStatus && sessionActive && sessionStart){
+      localMinutes = Math.max(localMinutes, Math.round((now()-sessionStart)/60000));
+    }
+    let minVal = localMinutes;
+    if(remoteStatus){
+      if(remoteStatus.remaining_minutes!=null) minVal = remoteStatus.remaining_minutes;
+      else if(remoteStatus.minutes_today!=null) minVal = remoteStatus.minutes_today;
+    }
+    if(Number.isFinite(minVal)) minVal = Math.max(0, Math.round(minVal));
+    el.min.textContent = minVal!=null ? minVal : 0;
+    const streakVal = remoteStatus && remoteStatus.streak!=null ? Number(remoteStatus.streak) : localStreak;
+    const displayStreak = Number.isFinite(streakVal) ? Math.max(0, Math.round(streakVal)) : 0;
+    el.streak.textContent = displayStreak;
+  }
+
+  function applyRemoteStatus(status){
+    remoteStatus = status ? Object.assign({}, status) : null;
+    updateHeaderStats();
+  }
+
+  updateHeaderStats();
 
   refreshWeakWordBar();
   if(el.weak){
@@ -533,6 +563,82 @@
   function saveCfg(o){ localStorage.setItem(CFG_KEY, JSON.stringify(o)); }
   let CFG=Object.assign({ apiUrl:'', apiKey:'', audioBase:'./audio' }, loadCfg());
 
+  const PENDING_KEY='pendingLogsV1';
+  function loadPendingLogs(){
+    try{
+      const raw=JSON.parse(localStorage.getItem(PENDING_KEY)||'[]');
+      if(Array.isArray(raw)) return raw.filter(entry=>entry&&entry.type&&entry.url);
+    }catch(_){ }
+    return [];
+  }
+  let PENDING_LOGS=loadPendingLogs();
+  for(const entry of PENDING_LOGS){
+    if(!entry.uid) entry.uid=generateUid();
+    if(entry.data && !entry.data.client_uid) entry.data.client_uid=entry.uid;
+  }
+  rememberPending();
+  function rememberPending(){ try{ localStorage.setItem(PENDING_KEY, JSON.stringify(PENDING_LOGS)); }catch(_){ } }
+  function generateUid(){ if(window.crypto?.randomUUID){ try{ return crypto.randomUUID(); }catch(_){ } } return 'uid-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2); }
+  let flushPromise=null;
+  async function flushPendingLogs(){
+    if(!PENDING_LOGS.length) return;
+    if(flushPromise) return flushPromise;
+    flushPromise=(async()=>{
+      const accepted=new Set();
+      const groups=new Map();
+      for(const entry of PENDING_LOGS){
+        if(!entry || !entry.url || !entry.type) continue;
+        const key=`${entry.url}::${entry.apiKey||''}`;
+        if(!groups.has(key)) groups.set(key,{url:entry.url, apiKey:entry.apiKey, items:[]});
+        const data=Object.assign({}, entry.data||{});
+        if(!data.client_uid) data.client_uid=entry.uid;
+        groups.get(key).items.push({uid:entry.uid, type:entry.type, data});
+      }
+      for(const group of groups.values()){
+        if(!group.items.length) continue;
+        const payload={type:'bulk', apiKey:group.apiKey, entries:group.items};
+        try{
+          const res=await fetch(group.url,{method:'POST',headers:{'Content-Type':'text/plain;charset=UTF-8'},body:JSON.stringify(payload)});
+          if(!res.ok) continue;
+          let json=null;
+          try{ json=await res.json(); }catch(_){ }
+          if(json && json.ok){
+            const ack=Array.isArray(json.accepted)?json.accepted:group.items.map(it=>it.uid);
+            ack.forEach(uid=>accepted.add(uid));
+          }
+        }catch(err){ console.warn('flushPendingLogs', err); }
+      }
+      let changed=false;
+      if(accepted.size){
+        PENDING_LOGS=PENDING_LOGS.filter(entry=>!accepted.has(entry.uid));
+        changed=true;
+      }
+      const cleaned=PENDING_LOGS.filter(entry=>entry && entry.url);
+      if(cleaned.length!==PENDING_LOGS.length){
+        PENDING_LOGS=cleaned;
+        changed=true;
+      }
+      if(changed) rememberPending();
+    })();
+    try{
+      await flushPromise;
+    }finally{
+      flushPromise=null;
+    }
+  }
+
+  async function sendLog(type,data){
+    const url=(CFG.apiUrl||'').trim();
+    if(!url) return;
+    const uid=generateUid();
+    const payload=Object.assign({}, data||{});
+    if(!payload.client_uid) payload.client_uid=uid;
+    const entry={ uid, type, data:payload, url, apiKey:(CFG.apiKey||'')||undefined, createdAt:Date.now() };
+    PENDING_LOGS.push(entry);
+    rememberPending();
+    try{ await flushPendingLogs(); }catch(err){ console.warn('sendLog', err); }
+  }
+
   // ===== IndexedDB for DirectoryHandle =====
   const DB='fs-handles', STORE='dir';
   function idb(){ return new Promise((res,rej)=>{ const r=indexedDB.open(DB,1); r.onupgradeneeded=()=>{ r.result.createObjectStore(STORE); }; r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }); }
@@ -546,7 +652,31 @@
   // Settings modal
   el.cfgBtn.onclick=()=>{ el.cfgUrl.value=CFG.apiUrl||''; el.cfgKey.value=CFG.apiKey||''; el.cfgAudioBase.value=CFG.audioBase||'./audio'; refreshDirStatus(); el.cfgModal.style.display='flex'; };
   el.cfgClose.onclick=()=>{ el.cfgModal.style.display='none'; };
-  el.cfgSave.onclick=()=>{ CFG.apiUrl=(el.cfgUrl.value||'').trim(); CFG.apiKey=(el.cfgKey.value||'').trim(); CFG.audioBase=(el.cfgAudioBase.value||'').trim()||'./audio'; saveCfg(CFG); el.cfgModal.style.display='none'; toast('設定を保存しました'); };
+  el.cfgSave.onclick=()=>{
+    CFG.apiUrl=(el.cfgUrl.value||'').trim();
+    CFG.apiKey=(el.cfgKey.value||'').trim();
+    CFG.audioBase=(el.cfgAudioBase.value||'').trim()||'./audio';
+    saveCfg(CFG);
+    if((CFG.apiUrl||'').trim()){
+      for(const entry of PENDING_LOGS){
+        entry.url=CFG.apiUrl.trim();
+        entry.apiKey=(CFG.apiKey||'')||undefined;
+      }
+    }
+    else{
+      for(const entry of PENDING_LOGS){
+        entry.url='';
+        entry.apiKey=undefined;
+      }
+      applyRemoteStatus(null);
+    }
+    rememberPending();
+    el.cfgModal.style.display='none';
+    toast('設定を保存しました');
+    if((CFG.apiUrl||'').trim()){
+      syncProgressAndStatus().catch(()=>{});
+    }
+  };
   el.btnPickDir.onclick=async()=>{ if(!window.showDirectoryPicker){ toast('この端末はフォルダピッカー非対応'); return; } try{ const h=await showDirectoryPicker({mode:'read'}); await saveDirHandle(h); DIR=h; refreshDirStatus(); toast('フォルダを保存しました'); }catch(e){ if(e&&e.name!=='AbortError') toast('フォルダ選択に失敗'); }};
   el.btnClearDir.onclick=async()=>{ await clearDirHandle(); DIR=null; refreshDirStatus(); toast('フォルダ設定を解除'); };
   function refreshDirStatus(){ el.dirStatus.textContent = DIR? '保存済み':'未設定'; }
@@ -556,7 +686,32 @@
   el.filePick.onchange=async (ev)=>{ const files=[...ev.target.files||[]]; if(!files.length){ toast('ファイル未選択'); return; } try{ if(!(navigator.storage&&navigator.storage.getDirectory)) throw new Error('OPFS未対応'); const root=await navigator.storage.getDirectory(); let ok=0; for(const f of files){ const fh=await root.getFileHandle(f.name,{create:true}); const w=await fh.createWritable(); await w.write(f); await w.close(); ok++; } toast(`${ok} 件をOPFSへ保存`); }catch(e){ console.error(e); toast('OPFS取り込み失敗'); } };
 
   // GAS Bridge
-  async function sendLog(type,data){ const url=(CFG.apiUrl||'').trim(); if(!url) return; const payload={apiKey:CFG.apiKey||undefined,type,data}; const blob=new Blob([JSON.stringify(payload)],{type:'text/plain;charset=UTF-8'}); if('sendBeacon' in navigator){ navigator.sendBeacon(url, blob); return; } try{ await fetch(url,{method:'POST',mode:'no-cors',body:blob}); }catch(_){} }
+  async function refreshRemoteStatus(){
+    const url=(CFG.apiUrl||'').trim();
+    if(!url) return null;
+    try{
+      const payload={type:'status', apiKey:CFG.apiKey||undefined};
+      const res=await fetch(url,{method:'POST',headers:{'Content-Type':'text/plain;charset=UTF-8'},body:JSON.stringify(payload)});
+      if(!res.ok) throw new Error('status '+res.status);
+      const json=await res.json();
+      if(json && json.ok && json.status){
+        applyRemoteStatus(json.status);
+        return json.status;
+      }
+    }catch(err){ console.warn('refreshRemoteStatus', err); }
+    return null;
+  }
+
+  async function syncProgressAndStatus(){
+    const url=(CFG.apiUrl||'').trim();
+    if(!url) return null;
+    try{ await flushPendingLogs(); }catch(err){ console.warn('syncProgressAndStatus', err); }
+    return refreshRemoteStatus();
+  }
+
+  window.addEventListener('online', ()=>{
+    flushPendingLogs().then(()=>refreshRemoteStatus()).catch(()=>{});
+  });
 
   // Data
   const DATA_URL='./data/items.json';
@@ -620,6 +775,7 @@
     maxHintStageUsed=1;
     refreshLevelDisplay(null);
     cardStart = now();
+    sessionStart = 0;
     failCount = 0;
     resetResult();
     resetTranscript();
@@ -630,6 +786,10 @@
     el.next.hidden = true;
     el.pbar.value = 0;
     el.footer.textContent = QUEUE.length ? '問題部分をタップすると第1問が始まります' : 'キューが空です';
+    if(!remoteStatus){
+      localMinutes=0;
+    }
+    updateHeaderStats();
   }
 
   async function render(i, autoPlay=false){
@@ -674,7 +834,7 @@
   async function rebuildAndRender(resetIndex=false){
     QUEUE=buildQueue();
     el.pbar.max=Math.max(1, QUEUE.length);
-    el.left.textContent=QUEUE.length;
+    updateHeaderStats();
     hideNextCta();
     if(resetIndex){
       idx=-1;
@@ -749,8 +909,12 @@
     if(!QUEUE.length){ showIdleCard(); return; }
     sessionStarting=true;
     try{
+      if((CFG.apiUrl||'').trim()){
+        try{ await syncProgressAndStatus(); }catch(err){ console.warn('startSession status', err); }
+      }
       await ensureDir();
       sessionActive=true;
+      sessionStart=now();
       idx=-1;
       el.mic.disabled=false;
       nextCard(true, autoPlay);
@@ -1018,7 +1182,7 @@
 
   // Boot
   (async()=>{
-    try{ await ensureDir(); await ensureDataLoaded(); initSectionPicker(); refreshDirStatus(); await rebuildAndRender(true); }catch(e){ console.error(e); toast('初期化失敗: '+(e&&e.message||e)); }
+    try{ await ensureDir(); await ensureDataLoaded(); initSectionPicker(); refreshDirStatus(); await rebuildAndRender(true); await syncProgressAndStatus(); }catch(e){ console.error(e); toast('初期化失敗: '+(e&&e.message||e)); }
   })();
 })();
 </script>
