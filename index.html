@@ -650,8 +650,7 @@
     (it.tags||'').split(',').filter(Boolean).forEach(t=>{ const s=document.createElement('span'); s.className='chip'; s.textContent=t.trim(); el.chips.appendChild(s); });
     const levelInfo=getLevelInfo(it.id);
     refreshLevelDisplay(levelInfo);
-    const startStage=((levelInfo.best||levelInfo.last||1)>=3)?0:1;
-    setHintStage(startStage,{reset:true});
+    setHintStage(0,{reset:true});
     const url=await resolveAudioUrl(it.audio_fn);
     if(url){
       await setAudioSource(url);
@@ -696,9 +695,41 @@
     el.footer.textContent=`#${idx+1}/${QUEUE.length}`;
   }
 
+  function advanceToNextSection(){
+    if(!el.secSel) return false;
+    const options=[...el.secSel.options];
+    if(!options.length) return false;
+    const currentValue=el.secSel.value;
+    const currentIndex=options.findIndex(opt=>opt.value===currentValue);
+    if(currentIndex<0 || currentIndex>=options.length-1) return false;
+    if(currentIndex===0 && currentValue==='') return false;
+    const nextOpt=options[currentIndex+1];
+    const nextValue=nextOpt.value;
+    el.secSel.value=nextValue;
+    localStorage.setItem('secSel', nextValue);
+    hideNextCta();
+    const label=nextOpt.textContent||nextOpt.label||nextValue||'次のセクション';
+    toast(`セクション「${label}」へ進みます`);
+    rebuildAndRender(true)
+      .then(()=>{
+        if(QUEUE.length){
+          startSession(true);
+        }else{
+          el.footer.textContent='次のセクションに出題がありません';
+        }
+      })
+      .catch(err=>{ console.error(err); toast('次のセクションの読み込みに失敗しました'); });
+    return true;
+  }
+
   function nextCard(first=false, autoPlay=false){
     if(!QUEUE.length){ el.footer.textContent='キューが空です'; clearAudioSource(); stopAudio(); return; }
     if(!sessionActive) return;
+    if(!first && idx>=QUEUE.length-1){
+      if(advanceToNextSection()) return;
+      toast('最後のセクションまで完了しました');
+      return;
+    }
     idx = first? 0 : Math.min(QUEUE.length-1, idx+1);
     render(idx, autoPlay);
     el.pbar.value=idx;
