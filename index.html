@@ -30,16 +30,26 @@
     #transcript{min-height:1.6em}
     #transcript .interim{opacity:.6}
 
-    .kpi{display:flex;gap:12px;color:var(--muted);font-size:12px}
+    .kpi{display:flex;gap:12px;align-items:center;color:var(--muted);font-size:12px;flex-wrap:wrap}
     .kpi .val{color:var(--txt);font-weight:600}
+    .match-val{font-size:18px;transition:color .3s ease}
+    .match-good{color:var(--good)}
+    .match-mid{color:#f6c863}
+    .match-bad{color:var(--bad)}
+    .attempt-info{font-size:12px;color:var(--muted);transition:color .3s ease}
+    .attempt-info.alert{color:var(--bad)}
 
     footer{border-top:1px solid var(--bd);padding:8px 12px;display:flex;gap:10px;align-items:center;background:var(--panel)}
     progress{width:160px;height:10px}
     .btn{border:1px solid var(--bd);border-radius:12px;background:#111726;color:var(--txt);padding:10px 14px;cursor:pointer}
     .btn.ok{background:#10331f;border-color:#1f5c38}
     .btn.ng{background:#331717;border-color:#5c2929}
-    #btnMic{width:100%;font-size:18px;padding:14px;border-radius:14px;background:#1a2134;border-color:#2a3753;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:600}
-    #btnMic span{font-size:22px}
+    #btnMic{width:72px;height:72px;font-size:22px;border-radius:999px;background:#1a2134;border-color:#2a3753;display:grid;place-items:center;font-weight:600;margin-left:auto;margin-right:auto;transition:transform .2s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease}
+    #btnMic.recording{background:var(--accent);border-color:#7de4ff;box-shadow:0 0 0 0 rgba(98,213,255,.55);animation:micPulse 1.4s ease-in-out infinite}
+    #btnMic:disabled{opacity:.35;cursor:not-allowed;animation:none;box-shadow:none}
+    #btnMic .micIcon{font-size:28px}
+    @keyframes micPulse{0%{transform:scale(1);box-shadow:0 0 0 0 rgba(98,213,255,.55);}70%{transform:scale(1.05);box-shadow:0 0 0 16px rgba(98,213,255,0);}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(98,213,255,0);}}
+    .next-cta{margin-top:10px;display:block;width:100%;font-size:18px;padding:14px;border-radius:14px;background:#10331f;border-color:#1f5c38;font-weight:600}
 
     /* 設定モーダル */
     #cfgModal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.45);z-index:9999}
@@ -83,16 +93,16 @@
       <div id="transcript" class="muted"></div>
 
       <div class="kpi">
-        <div>ASR <span class="val" id="asrState">待機</span></div>
-        <div>欠損(Recall) <span class="val" id="valWER">—</span></div>
-        <div>過剰(Precision) <span class="val" id="valCER">—</span></div>
+        <div>一致率 <span class="val match-val" id="valMatch">—</span></div>
+        <div id="attemptInfo" class="attempt-info"></div>
       </div>
 
       <div style="display:flex;gap:8px">
         <button class="btn ok" data-eval="ok">◯ 得意</button>
         <button class="btn ng" data-eval="ng">× 苦手</button>
       </div>
-      <button id="btnMic" class="btn" type="button"><span>🎙️</span> マイク開始/停止</button>
+      <button id="btnMic" class="btn" type="button" aria-label="マイク開始/停止"><span class="micIcon">🎤</span></button>
+      <button id="btnNext" class="btn next-cta" type="button" hidden>次へ</button>
     </section>
   </main>
 
@@ -100,7 +110,6 @@
     <progress id="pbar" value="0" max="1"></progress>
     <span id="footerInfo" class="muted">左右スワイプ：戻る/進む　上：和訳</span>
     <div class="grow"></div>
-    <button id="btnNext" class="btn" disabled>次へ</button>
   </footer>
 </div>
 
@@ -175,8 +184,33 @@
   }
   function toast(msg, ms=1500){ const t=qs('#toast'); t.textContent=msg; t.style.display='block'; clearTimeout(toast._t); toast._t=setTimeout(()=>t.style.display='none', ms); }
 
+  let toneCtx=null;
+  function playTone(type){
+    try{
+      const AC=window.AudioContext||window.webkitAudioContext;
+      if(!AC) return;
+      if(!toneCtx){ toneCtx=new AC(); }
+      if(toneCtx.state==='suspended'){ toneCtx.resume().catch(()=>{}); }
+      const osc=toneCtx.createOscillator();
+      const gain=toneCtx.createGain();
+      const now=toneCtx.currentTime;
+      let freq=440, duration=0.2, peak=0.15;
+      if(type==='success'){ freq=880; duration=0.25; peak=0.2; }
+      else if(type==='fail'){ freq=300; duration=0.3; peak=0.18; }
+      else if(type==='start'){ freq=523.25; duration=0.12; peak=0.12; }
+      osc.frequency.setValueAtTime(freq, now);
+      gain.gain.setValueAtTime(0, now);
+      gain.gain.linearRampToValueAtTime(peak, now+0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now+duration);
+      osc.connect(gain);
+      gain.connect(toneCtx.destination);
+      osc.start(now);
+      osc.stop(now+duration+0.05);
+    }catch(_){ }
+  }
+
   // ===== Elements =====
-  const el={ left:qs('#statLeft'), min:qs('#statMin'), streak:qs('#statStreak'), pbar:qs('#pbar'), footer:qs('#footerInfo'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), asr:qs('#asrState'), WER:qs('#valWER'), CER:qs('#valCER'), next:qs('#btnNext'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), chkWeak:qs('#chkOnlyWeak'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnImport:qs('#btnImport'), filePick:qs('#filePick'), btnTestAudio:qs('#btnTestAudio'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus') };
+  const el={ left:qs('#statLeft'), min:qs('#statMin'), streak:qs('#statStreak'), pbar:qs('#pbar'), footer:qs('#footerInfo'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), attempt:qs('#attemptInfo'), next:qs('#btnNext'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), chkWeak:qs('#chkOnlyWeak'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnImport:qs('#btnImport'), filePick:qs('#filePick'), btnTestAudio:qs('#btnTestAudio'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus') };
   const audio=qs('#player');
   const PREFETCH_POOL=new Map();
   const PREFETCH_LIMIT=6;
@@ -235,6 +269,52 @@
       }
       PREFETCH_POOL.delete(firstKey);
     }
+  }
+
+  const FAIL_LIMIT=3;
+  let failCount=0;
+
+  function updateMatch(rate){
+    el.match.classList.remove('match-good','match-mid','match-bad');
+    if(rate==null || !isFinite(rate)){
+      el.match.textContent='—';
+      return;
+    }
+    const pct=Math.max(0, Math.min(100, Math.round(rate*100)));
+    el.match.textContent=`${pct}%`;
+    if(pct>=85){ el.match.classList.add('match-good'); }
+    else if(pct>=70){ el.match.classList.add('match-mid'); }
+    else { el.match.classList.add('match-bad'); }
+  }
+
+  function updateAttemptInfo(){
+    if(failCount<=0){ el.attempt.textContent=''; el.attempt.classList.remove('alert'); return; }
+    const remain=Math.max(0, FAIL_LIMIT-failCount);
+    el.attempt.textContent = remain>0 ? `リトライ残り ${remain}回` : '規定回数に達しました';
+    if(remain<=1){ el.attempt.classList.add('alert'); }
+    else{ el.attempt.classList.remove('alert'); }
+  }
+
+  function hideNextCta(){
+    el.next.hidden=true;
+    el.next.disabled=true;
+    el.mic.disabled=false;
+  }
+
+  function showNextCta(){
+    el.next.hidden=false;
+    el.next.disabled=false;
+    el.mic.disabled=true;
+  }
+
+  function setMicState(on){
+    el.mic.classList.toggle('recording', !!on);
+  }
+
+  function calcMatchScore(refCount, recall, precision){
+    if(!refCount) return 1;
+    if((recall+precision)<=0) return 0;
+    return (2*recall*precision)/(recall+precision);
   }
 
   // ===== Config =====
@@ -309,7 +389,7 @@
   // Render & navigation
   let QUEUE=[], idx=-1, sessionStart=0, cardStart=0;
   function stopAudio(){ try{audio.pause();}catch(_){ } audio.currentTime=0; }
-  function resetResult(){ el.WER.textContent='—'; el.CER.textContent='—'; }
+  function resetResult(){ updateMatch(null); }
   function resetTranscript(){ qs('#transcript').innerHTML=''; }
   function toggleJA(){ el.ja.style.display=(el.ja.style.display==='none')?'block':'none'; }
 
@@ -335,12 +415,16 @@
     cardStart=now();
     resetResult();
     resetTranscript();
+    failCount=0;
+    updateAttemptInfo();
+    hideNextCta();
+    setMicState(false);
     primeAudio(QUEUE[i+1]);
     primeAudio(QUEUE[i-1]);
     if(autoPlay&&url){ try{ await audio.play(); }catch(_){ } }
   }
 
-  async function rebuildAndRender(resetIndex=false){ QUEUE=buildQueue(); if(resetIndex) idx=-1; el.pbar.max=Math.max(1, QUEUE.length); el.left.textContent=QUEUE.length; el.next.disabled=false; nextCard(true); }
+  async function rebuildAndRender(resetIndex=false){ QUEUE=buildQueue(); if(resetIndex) idx=-1; el.pbar.max=Math.max(1, QUEUE.length); el.left.textContent=QUEUE.length; hideNextCta(); nextCard(true); }
 
   function nextCard(first=false, autoPlay=false){ if(!QUEUE.length){ el.footer.textContent='キューが空です'; clearAudioSource(); stopAudio(); return; } idx = first? 0 : Math.min(QUEUE.length-1, idx+1); render(idx, autoPlay); el.pbar.value=idx; el.footer.textContent=`#${idx+1}/${QUEUE.length}`; }
   function prevCard(autoPlay=false){ if(!QUEUE.length) return; idx=Math.max(0, idx-1); render(idx, autoPlay); el.pbar.value=idx; el.footer.textContent=`#${idx+1}/${QUEUE.length}`; }
@@ -391,7 +475,7 @@
       sp.classList.toggle('hit', !!hit);
       sp.classList.toggle('miss', !hit);
     }
-    return {recall, precision, matched: matchedWords, missing };
+    return {recall, precision, matched: matchedWords, missing, refCount: refTokens.length };
   }
 
   function resetTranscript(){ qs('#transcript').innerHTML=''; }
@@ -400,6 +484,8 @@
 
   function startRec(){
     if(!SR){ toast('この端末では音声認識が使えません'); return; }
+    if(el.mic.disabled) return;
+    if(recogOn) return;
     const shouldResume = audio && !audio.paused;
     recog = new SR();
     recog.lang = 'en-US';
@@ -409,7 +495,8 @@
 
     stableText = '';
     recogOn = true;
-    el.asr.textContent = '録音中…';
+    setMicState(true);
+    playTone('start');
     resetTranscript();
 
     try{ recog.start(); }catch(_){ }
@@ -428,8 +515,8 @@
           stableText = appendStableFinal(stableText, t);
           showTranscriptFinal(stableText);
           const m = matchAndHighlight(el.en.textContent, stableText);
-          el.WER.textContent = (1 - m.recall).toFixed(2);
-          el.CER.textContent = (1 - m.precision).toFixed(2);
+          const score = calcMatchScore(m.refCount, m.recall, m.precision);
+          updateMatch(score);
         }else{
           interim = t;
         }
@@ -437,23 +524,44 @@
       if(interim) showTranscriptInterim(interim); // 画面表示だけ・評価には使わない
     };
 
-    recog.onerror = (e)=>{ el.asr.textContent = 'ASRエラー'; console.warn(e); toast('ASRエラー: '+(e && e.error || '')); };
-    recog.onend = ()=>{ if(recogOn) stopRec(); };
+    recog.onerror = (e)=>{ console.warn(e); toast('ASRエラー: '+(e && e.error || '')); playTone('fail'); setMicState(false); recogOn=false; el.mic.disabled=false; recog=null; };
+    recog.onend = ()=>{ if(recogOn) stopRec(); else setMicState(false); };
   }
 
   async function stopRec(){
     if(!recogOn) return;
     recogOn=false;
     try{ recog && recog.stop && recog.stop(); }catch(_){ }
-    el.asr.textContent='停止';
+    setMicState(false);
 
     const it = QUEUE[idx]; if(!it) return;
     const hyp = stableText.trim();
-    const { recall, precision, matched, missing } = matchAndHighlight(el.en.textContent, hyp);
+    const { recall, precision, matched, missing, refCount } = matchAndHighlight(el.en.textContent, hyp);
+    const matchRate = calcMatchScore(refCount, recall, precision);
+    updateMatch(matchRate);
 
-    const pass = (recall >= 0.80 && precision >= 0.60);
-    el.next.disabled = !pass;
-    el.footer.textContent = pass ? '自動合格（◯推奨）' : '自動不合格：再挑戦 or ×';
+    const pass = matchRate >= 0.70;
+    if(pass){
+      failCount=0;
+      playTone('success');
+      showNextCta();
+      el.footer.textContent = '一致率70%以上！「次へ」で進みましょう';
+      toast('Great! 合格です', 1600);
+    }else{
+      failCount++;
+      playTone('fail');
+      const pct=Math.max(0, Math.round((matchRate||0)*100));
+      if(failCount>=FAIL_LIMIT){
+        el.footer.textContent = '3回失敗。不合格で次へ進みます';
+        toast('不合格で次へ進みます', 1600);
+        el.mic.disabled=true;
+        setTimeout(()=>{ hideNextCta(); nextCard(false,true); }, 900);
+      }else{
+        el.footer.textContent = `一致率${pct}%：70%を目指してもう一度 (${failCount}/${FAIL_LIMIT})`;
+        toast('70%未満。もう一度チャレンジ！', 1600);
+      }
+    }
+    updateAttemptInfo();
 
     const payload = {
       ts: new Date().toISOString(), id: it.id, mode: 'read',
@@ -461,15 +569,18 @@
       latency_ms: 0, words_spoken: toks(hyp).length, transcript: hyp,
       matched_tokens_json: JSON.stringify(matched),
       missing_tokens_json: JSON.stringify(missing),
-      recall:+recall.toFixed(3), precision:+precision.toFixed(3)
+      recall:+recall.toFixed(3), precision:+precision.toFixed(3),
+      match:+(matchRate||0).toFixed(3)
     };
     try{ await sendLog('speech', payload); }catch(_){ }
+    if(!pass && failCount<FAIL_LIMIT){ el.mic.disabled=false; }
+    recog=null;
   }
 
   el.mic.onclick=()=>{ if(!recogOn) startRec(); else stopRec(); };
   qsa('[data-eval="ok"]').forEach(b=>b.onclick=()=>submitEval(1));
   qsa('[data-eval="ng"]').forEach(b=>b.onclick=()=>submitEval(0));
-  async function submitEval(bin){ const it=QUEUE[idx]; if(!it) return; const payload={ ts:new Date().toISOString(), id:it.id, result:bin, auto_recall:null, auto_precision:null, response_ms:Math.max(0, now()-cardStart), hint_used:(el.ja.style.display==='block'), device:UA }; try{ await sendLog('attempt', payload); }catch(_){ } el.next.disabled=false; nextCard(false,true); }
+  async function submitEval(bin){ const it=QUEUE[idx]; if(!it) return; const payload={ ts:new Date().toISOString(), id:it.id, result:bin, auto_recall:null, auto_precision:null, response_ms:Math.max(0, now()-cardStart), hint_used:(el.ja.style.display==='block'), device:UA }; try{ await sendLog('attempt', payload); }catch(_){ } hideNextCta(); nextCard(false,true); }
 
   // Boot
   (async()=>{
