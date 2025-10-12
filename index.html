@@ -571,6 +571,7 @@
     if(!SR){ toast('この端末では音声認識が使えません'); return; }
     if(el.mic.disabled) return;
     if(recogOn) return;
+    hideNextCta();
     const shouldResume = audio && !audio.paused;
     recog = new SR();
     recog.lang = 'en-US';
