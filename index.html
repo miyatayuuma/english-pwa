@@ -38,6 +38,8 @@
     .btn{border:1px solid var(--bd);border-radius:12px;background:#111726;color:var(--txt);padding:10px 14px;cursor:pointer}
     .btn.ok{background:#10331f;border-color:#1f5c38}
     .btn.ng{background:#331717;border-color:#5c2929}
+    #btnMic{width:100%;font-size:18px;padding:14px;border-radius:14px;background:#1a2134;border-color:#2a3753;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:600}
+    #btnMic span{font-size:22px}
 
     /* 設定モーダル */
     #cfgModal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.45);z-index:9999}
@@ -56,7 +58,6 @@
     <div class="stat">分 <b id="statMin">0</b></div>
     <div class="stat">streak <b id="statStreak">0</b></div>
     <div class="grow"></div>
-    <div id="btnMic" class="icon" title="マイク">🎙️</div>
     <div id="btnCfg" class="icon" title="設定">⚙️</div>
   </header>
 
@@ -91,6 +92,7 @@
         <button class="btn ok" data-eval="ok">◯ 得意</button>
         <button class="btn ng" data-eval="ng">× 苦手</button>
       </div>
+      <button id="btnMic" class="btn" type="button"><span>🎙️</span> マイク開始/停止</button>
     </section>
   </main>
 
@@ -102,7 +104,7 @@
   </footer>
 </div>
 
-<audio id="player" crossorigin="anonymous"></audio>
+<audio id="player" preload="auto" crossorigin="anonymous"></audio>
 <div id="toast"></div>
 
 <!-- 設定モーダル -->
@@ -140,7 +142,6 @@
   const qs=(s,el=document)=>el.querySelector(s);
   const qsa=(s,el=document)=>[...el.querySelectorAll(s)];
   const now=()=>Date.now(); const UA=(()=>navigator.userAgent||'')();
-  const STOP=new Set(['a','the','to','of','in','on','for','at','is','are','was','were','be','been','being','do','does','did','have','has','had']);
   const norm=s=>(s||'').toLowerCase().normalize('NFKC').replace(/[\p{P}\p{S}]/gu,' ').replace(/\s+/g,' ').trim();
   const toks=s=>norm(s).split(' ').filter(Boolean);
   // 連続重複を圧縮（a a a → a）
@@ -177,6 +178,64 @@
   // ===== Elements =====
   const el={ left:qs('#statLeft'), min:qs('#statMin'), streak:qs('#statStreak'), pbar:qs('#pbar'), footer:qs('#footerInfo'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), asr:qs('#asrState'), WER:qs('#valWER'), CER:qs('#valCER'), next:qs('#btnNext'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), chkWeak:qs('#chkOnlyWeak'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnImport:qs('#btnImport'), filePick:qs('#filePick'), btnTestAudio:qs('#btnTestAudio'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus') };
   const audio=qs('#player');
+  const PREFETCH_POOL=new Map();
+  const PREFETCH_LIMIT=6;
+
+  function waitForAudioReady(el, timeout=2000){
+    if(!el) return Promise.resolve();
+    if(el.readyState>=2) return Promise.resolve();
+    return new Promise(resolve=>{
+      let settled=false;
+      const finalize=()=>{
+        if(settled) return;
+        settled=true;
+        el.removeEventListener('canplay', onReady);
+        el.removeEventListener('canplaythrough', onReady);
+        el.removeEventListener('loadeddata', onReady);
+        el.removeEventListener('error', onReady);
+        clearTimeout(timer);
+        resolve();
+      };
+      const onReady=()=>finalize();
+      const timer=setTimeout(()=>finalize(), timeout);
+      el.addEventListener('canplay', onReady, {once:true});
+      el.addEventListener('canplaythrough', onReady, {once:true});
+      el.addEventListener('loadeddata', onReady, {once:true});
+      el.addEventListener('error', onReady, {once:true});
+    });
+  }
+
+  async function setAudioSource(url){
+    if(!url){
+      clearAudioSource();
+      return;
+    }
+    if(audio.dataset.srcKey !== url){
+      audio.dataset.srcKey = url;
+      audio.src = url;
+    }
+    try{ audio.load?.(); }catch(_){ }
+    await waitForAudioReady(audio, 2000);
+  }
+
+  function clearAudioSource(){
+    delete audio.dataset.srcKey;
+    audio.removeAttribute('src');
+    try{ audio.load?.(); }catch(_){ }
+  }
+
+  function rememberPrefetch(url, entry){
+    PREFETCH_POOL.set(url, entry);
+    if(PREFETCH_POOL.size>PREFETCH_LIMIT){
+      const firstKey=PREFETCH_POOL.keys().next().value;
+      const old=PREFETCH_POOL.get(firstKey);
+      if(old && old.audio){
+        try{ old.audio.pause?.(); }catch(_){ }
+        old.audio.removeAttribute?.('src');
+      }
+      PREFETCH_POOL.delete(firstKey);
+    }
+  }
 
   // ===== Config =====
   const CFG_KEY='appConfigV3';
@@ -230,20 +289,60 @@
   async function resolveFromOPFS(name){ if(!name) return ''; try{ if(!(navigator.storage&&navigator.storage.getDirectory)) return ''; const root=await navigator.storage.getDirectory(); const fh=await root.getFileHandle(name).catch(()=>null); if(!fh) return ''; const file=await fh.getFile(); return URL.createObjectURL(file); }catch(_){ return ''; } }
   async function resolveAudioUrl(name){ if(!name) return ''; if(audioUrlCache.has(name)) return audioUrlCache.get(name); let url=await resolveFromDir(name); if(!url) url=await resolveFromOPFS(name); if(!url){ const base=(CFG.audioBase||'./audio').replace(/\/$/,''); url= base + '/' + encodeURI(name); } audioUrlCache.set(name,url); return url; }
 
-  async function primeAudio(item){ if(!item||!item.audio_fn) return; await resolveAudioUrl(item.audio_fn); }
+  async function primeAudio(item){
+    if(!item||!item.audio_fn) return;
+    const url=await resolveAudioUrl(item.audio_fn);
+    if(!url) return;
+    if(PREFETCH_POOL.has(url)) return PREFETCH_POOL.get(url).promise;
+    const prefetch=new Audio();
+    prefetch.preload='auto';
+    prefetch.crossOrigin='anonymous';
+    prefetch.src=url;
+    const promise=waitForAudioReady(prefetch, 4000).finally(()=>{
+      try{ prefetch.pause?.(); }catch(_){ }
+    });
+    try{ prefetch.load?.(); }catch(_){ }
+    rememberPrefetch(url,{audio:prefetch,promise});
+    return promise;
+  }
 
   // Render & navigation
   let QUEUE=[], idx=-1, sessionStart=0, cardStart=0;
-  function stopAudio(){ try{audio.pause();}catch(_){ } audio.removeAttribute('src'); audio.currentTime=0; }
+  function stopAudio(){ try{audio.pause();}catch(_){ } audio.currentTime=0; }
   function resetResult(){ el.WER.textContent='—'; el.CER.textContent='—'; }
   function resetTranscript(){ qs('#transcript').innerHTML=''; }
   function toggleJA(){ el.ja.style.display=(el.ja.style.display==='none')?'block':'none'; }
 
-  async function render(i, autoPlay=false){ stopAudio(); const it=QUEUE[i]; if(!it){ el.footer.textContent='キューが空です'; return; } el.en.innerHTML=spanify(it.en); el.ja.textContent=it.ja; el.ja.style.display='none'; el.chips.innerHTML=''; (it.tags||'').split(',').filter(Boolean).forEach(t=>{ const s=document.createElement('span'); s.className='chip'; s.textContent=t.trim(); el.chips.appendChild(s); }); const url=await resolveAudioUrl(it.audio_fn); if(url) audio.src=url; cardStart=now(); resetResult(); resetTranscript(); primeAudio(QUEUE[i+1]); primeAudio(QUEUE[i-1]); if(autoPlay&&url){ try{ await audio.play(); }catch(_){} } }
+  async function render(i, autoPlay=false){
+    stopAudio();
+    const it=QUEUE[i];
+    if(!it){
+      el.footer.textContent='キューが空です';
+      clearAudioSource();
+      return;
+    }
+    el.en.innerHTML=spanify(it.en);
+    el.ja.textContent=it.ja;
+    el.ja.style.display='none';
+    el.chips.innerHTML='';
+    (it.tags||'').split(',').filter(Boolean).forEach(t=>{ const s=document.createElement('span'); s.className='chip'; s.textContent=t.trim(); el.chips.appendChild(s); });
+    const url=await resolveAudioUrl(it.audio_fn);
+    if(url){
+      await setAudioSource(url);
+    }else{
+      clearAudioSource();
+    }
+    cardStart=now();
+    resetResult();
+    resetTranscript();
+    primeAudio(QUEUE[i+1]);
+    primeAudio(QUEUE[i-1]);
+    if(autoPlay&&url){ try{ await audio.play(); }catch(_){ } }
+  }
 
   async function rebuildAndRender(resetIndex=false){ QUEUE=buildQueue(); if(resetIndex) idx=-1; el.pbar.max=Math.max(1, QUEUE.length); el.left.textContent=QUEUE.length; el.next.disabled=false; nextCard(true); }
 
-  function nextCard(first=false, autoPlay=false){ if(!QUEUE.length){ el.footer.textContent='キューが空です'; return; } idx = first? 0 : Math.min(QUEUE.length-1, idx+1); render(idx, autoPlay); el.pbar.value=idx; el.footer.textContent=`#${idx+1}/${QUEUE.length}`; }
+  function nextCard(first=false, autoPlay=false){ if(!QUEUE.length){ el.footer.textContent='キューが空です'; clearAudioSource(); stopAudio(); return; } idx = first? 0 : Math.min(QUEUE.length-1, idx+1); render(idx, autoPlay); el.pbar.value=idx; el.footer.textContent=`#${idx+1}/${QUEUE.length}`; }
   function prevCard(autoPlay=false){ if(!QUEUE.length) return; idx=Math.max(0, idx-1); render(idx, autoPlay); el.pbar.value=idx; el.footer.textContent=`#${idx+1}/${QUEUE.length}`; }
 
   // Gestures
@@ -261,7 +360,7 @@
 
   function matchAndHighlight(refText, hypText){
     // 1) トークン化
-    const refTokens = toks(refText).filter(w=>!STOP.has(w));
+    const refTokens = toks(refText);
     const hypTokensRaw = toks(hypText);
     // 2) 連続重複を圧縮
     const hypTokens = dedupeRuns(hypTokensRaw);
@@ -288,7 +387,7 @@
 
     // ハイライト適用
     const spans=[...document.querySelectorAll('.en .tok')].filter(s=>s.dataset.w);
-    for(const sp of spans){ const w=norm(sp.dataset.w); if(!w || STOP.has(w)) continue; let hit = hypCap.includes(w); if(!hit){ hit = hypCap.some(h=>{ if(h===w) return true; if(Math.abs(h.length-w.length)>1) return false; let i=0,j=0,d=0; while(i<w.length&&j<h.length){ if(w[i]===h[j]){i++;j++;continue;} if(++d>1) return false; if(w.length>h.length)i++; else if(h.length>w.length)j++; else {i++;j++;} } return true; }); }
+    for(const sp of spans){ const w=norm(sp.dataset.w); if(!w) continue; let hit = hypCap.includes(w); if(!hit){ hit = hypCap.some(h=>{ if(h===w) return true; if(Math.abs(h.length-w.length)>1) return false; let i=0,j=0,d=0; while(i<w.length&&j<h.length){ if(w[i]===h[j]){i++;j++;continue;} if(++d>1) return false; if(w.length>h.length)i++; else if(h.length>w.length)j++; else {i++;j++;} } return true; }); }
       sp.classList.toggle('hit', !!hit);
       sp.classList.toggle('miss', !hit);
     }
