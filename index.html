@@ -158,6 +158,23 @@
     const out=[]; for(const w of arr){ if(out.length && out[out.length-1]===w) continue; out.push(w); }
     return out;
   }
+
+  function approxWithin1(a,b){
+    if(!a || !b) return false;
+    if(a===b) return true;
+    const la=a.length, lb=b.length;
+    if(Math.abs(la-lb)>1) return false;
+    let i=0,j=0,diff=0;
+    while(i<la && j<lb){
+      if(a[i]===b[j]){ i++; j++; continue; }
+      if(++diff>1) return false;
+      if(la>lb) i++;
+      else if(lb>la) j++;
+      else { i++; j++; }
+    }
+    diff += (la-i) + (lb-j);
+    return diff<=1;
+  }
   // final 文の“増分”だけを安定テキストに追加
   function appendStableFinal(stable, fragment){
     const A = toks(stable);
@@ -441,41 +458,109 @@
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   let recog=null, recogOn=false;
   let stableText=''; // 確定テキスト（評価はこちらのみ使用）
+  let lastMatchEval=null;
 
   function matchAndHighlight(refText, hypText){
-    // 1) トークン化
     const refTokens = toks(refText);
     const hypTokensRaw = toks(hypText);
-    // 2) 連続重複を圧縮
     const hypTokens = dedupeRuns(hypTokensRaw);
-    // 3) 長さ上限（refの2倍まで評価）
-    const maxLen = Math.max(1, refTokens.length*2);
-    const hypCap = hypTokens.slice(0, maxLen);
-    // 4) 多重一致防止（貪欲）：ref側の残数をカウント
-    const remain = new Map(); for(const w of refTokens) remain.set(w, (remain.get(w)||0)+1);
-    let matched=0; const matchedWords=[];
-    for(const h of hypCap){
-      if(remain.get(h)>0){ remain.set(h, remain.get(h)-1); matched++; matchedWords.push(h); continue; }
-      // 近似（<=1編集）
-      let foundKey=''; for(const [k,c] of remain){ if(c>0){ if(k===h) {foundKey=k; break;} if(Math.abs(k.length-h.length)<=1){
-          let i=0,j=0,d=0; while(i<k.length&&j<h.length){ if(k[i]===h[j]){i++;j++;continue;} if(++d>1){ i=h.length; j=k.length; break;} if(k.length>h.length)i++; else if(h.length>k.length)j++; else {i++;j++;} }
-          if(d<=1) { foundKey=k; break; }
-        }
-      } }
-      if(foundKey){ remain.set(foundKey, remain.get(foundKey)-1); matched++; matchedWords.push(foundKey); }
-    }
-    const recall = refTokens.length? matched/refTokens.length : 1;
-    const precision = hypCap.length? matched/hypCap.length : 1;
-    const missing=[];
-    for(const [w,c] of remain){ for(let i=0;i<(c||0);i++) missing.push(w); }
 
-    // ハイライト適用
+    function evaluateWindow(tokens){
+      const remain=new Map();
+      const matchedCounts=new Map();
+      const matchedWords=[];
+      for(const w of refTokens){ remain.set(w, (remain.get(w)||0)+1); }
+      tokens.forEach((h,idx)=>{
+        if(!h) return;
+        let matchKey='';
+        if(remain.get(h)>0){ matchKey=h; }
+        else{
+          for(const [k,c] of remain){ if(c>0 && approxWithin1(k,h)){ matchKey=k; break; } }
+        }
+        if(matchKey){
+          remain.set(matchKey, remain.get(matchKey)-1);
+          matchedCounts.set(matchKey, (matchedCounts.get(matchKey)||0)+1);
+          matchedWords.push(matchKey);
+        }
+      });
+      const missing=[];
+      for(const [w,c] of remain){ for(let i=0;i<(c||0);i++) missing.push(w); }
+      const matchedCount=matchedWords.length;
+      const recall = refTokens.length? matchedCount/refTokens.length : 1;
+      const precision = tokens.length? matchedCount/tokens.length : 1;
+      return {tokens, recall, precision, missing, matchedWords, matchedCount, matchedCounts};
+    }
+
+    function cloneCountMap(map){
+      const out=new Map();
+      if(map){ for(const [k,v] of map) out.set(k,v); }
+      return out;
+    }
+
+    let best=evaluateWindow(hypTokens);
+    best.start=0; best.end=hypTokens.length;
+    const refLen=refTokens.length;
+    const slack = Math.max(4, Math.ceil(refLen*0.5));
+    const minLen = Math.max(1, refLen ? Math.max(1, refLen - slack) : 1);
+    const maxLen = Math.max(
+      minLen,
+      Math.min(hypTokens.length, Math.max(refLen + slack, refLen * 2 || 1))
+    );
+    for(let start=0; start<hypTokens.length; start++){
+      for(let len=minLen; len<=maxLen; len++){
+        const end=start+len;
+        if(end>hypTokens.length) break;
+        const slice=hypTokens.slice(start,end);
+        const evalRes=evaluateWindow(slice);
+        evalRes.start=start; evalRes.end=end;
+        const bestScore=calcMatchScore(refLen, best.recall, best.precision);
+        const candScore=calcMatchScore(refLen, evalRes.recall, evalRes.precision);
+        if(candScore>bestScore || (candScore===bestScore && (
+          evalRes.recall>best.recall || (evalRes.recall===best.recall && (
+            evalRes.precision>best.precision || (evalRes.precision===best.precision && (
+              Math.abs((evalRes.tokens?.length||0)-refLen) < Math.abs((best.tokens?.length||0)-refLen) || (
+                Math.abs((evalRes.tokens?.length||0)-refLen) === Math.abs((best.tokens?.length||0)-refLen) && (evalRes.start||0)<=(best.start||0)
+              )
+            ))
+          ))
+        ))){
+          best=evalRes;
+        }
+      }
+    }
+
     const spans=[...document.querySelectorAll('.en .tok')].filter(s=>s.dataset.w);
-    for(const sp of spans){ const w=norm(sp.dataset.w); if(!w) continue; let hit = hypCap.includes(w); if(!hit){ hit = hypCap.some(h=>{ if(h===w) return true; if(Math.abs(h.length-w.length)>1) return false; let i=0,j=0,d=0; while(i<w.length&&j<h.length){ if(w[i]===h[j]){i++;j++;continue;} if(++d>1) return false; if(w.length>h.length)i++; else if(h.length>w.length)j++; else {i++;j++;} } return true; }); }
-      sp.classList.toggle('hit', !!hit);
+    const matchMap=cloneCountMap(best.matchedCounts);
+    for(const sp of spans){
+      const w=norm(sp.dataset.w);
+      if(!w){ sp.classList.remove('hit'); sp.classList.add('miss'); continue; }
+      let hit=false;
+      if(matchMap.get(w)>0){
+        hit=true;
+        matchMap.set(w, matchMap.get(w)-1);
+      }else{
+        for(const [k,c] of matchMap){
+          if(c>0 && approxWithin1(k,w)){
+            hit=true;
+            matchMap.set(k, c-1);
+            break;
+          }
+        }
+      }
+      sp.classList.toggle('hit', hit);
       sp.classList.toggle('miss', !hit);
     }
-    return {recall, precision, matched: matchedWords, missing, refCount: refTokens.length };
+
+    return {
+      recall: best.recall,
+      precision: best.precision,
+      matched: best.matchedWords,
+      missing: best.missing,
+      refCount: refLen,
+      hypTokens: best.tokens,
+      transcript: (best.tokens||[]).join(' '),
+      source: (hypText||'').trim()
+    };
   }
 
   function resetTranscript(){ qs('#transcript').innerHTML=''; }
@@ -494,6 +579,7 @@
     recog.maxAlternatives = 1;
 
     stableText = '';
+    lastMatchEval=null;
     recogOn = true;
     setMicState(true);
     playTone('start');
@@ -514,7 +600,9 @@
           // 尾部のみ追加していく
           stableText = appendStableFinal(stableText, t);
           showTranscriptFinal(stableText);
-          const m = matchAndHighlight(el.en.textContent, stableText);
+          const trimmedStable = stableText.trim();
+          const m = matchAndHighlight(el.en.textContent, trimmedStable);
+          lastMatchEval = m;
           const score = calcMatchScore(m.refCount, m.recall, m.precision);
           updateMatch(score);
         }else{
@@ -536,7 +624,9 @@
 
     const it = QUEUE[idx]; if(!it) return;
     const hyp = stableText.trim();
-    const { recall, precision, matched, missing, refCount } = matchAndHighlight(el.en.textContent, hyp);
+    const matchInfo = (lastMatchEval && lastMatchEval.source === hyp) ? lastMatchEval : matchAndHighlight(el.en.textContent, hyp);
+    lastMatchEval = matchInfo;
+    const { recall, precision, matched, missing, refCount, hypTokens, transcript } = matchInfo;
     const matchRate = calcMatchScore(refCount, recall, precision);
     updateMatch(matchRate);
 
@@ -566,7 +656,10 @@
     const payload = {
       ts: new Date().toISOString(), id: it.id, mode: 'read',
       wer: +(1-recall).toFixed(3), cer: +(1-precision).toFixed(3),
-      latency_ms: 0, words_spoken: toks(hyp).length, transcript: hyp,
+      latency_ms: 0,
+      words_spoken: (hypTokens||toks(hyp)).length,
+      transcript: transcript || hyp,
+      transcript_raw: hyp,
       matched_tokens_json: JSON.stringify(matched),
       missing_tokens_json: JSON.stringify(missing),
       recall:+recall.toFixed(3), precision:+precision.toFixed(3),
