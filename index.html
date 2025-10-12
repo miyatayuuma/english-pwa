@@ -30,14 +30,30 @@
     #transcript{min-height:1.6em}
     #transcript .interim{opacity:.6}
 
-    .kpi{display:flex;gap:12px;color:var(--muted);font-size:12px}
-    .kpi .val{color:var(--txt);font-weight:600}
+    .scorebox{display:flex;flex-direction:column;gap:6px;background:rgba(10,14,24,.6);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:10px 12px}
+    .scoreline{display:flex;align-items:baseline;justify-content:space-between;font-size:14px;color:var(--muted)}
+    .score-val{font-size:26px;font-weight:700;color:var(--muted);transition:color .3s ease, transform .3s ease}
+    .score-val.good{color:var(--good);transform:translateY(-1px)}
+    .score-val.warn{color:#f5a524}
+    .score-val.bad{color:var(--bad)}
+    .score-note{font-size:12px;color:var(--muted);min-height:1.2em}
 
     footer{border-top:1px solid var(--bd);padding:8px 12px;display:flex;gap:10px;align-items:center;background:var(--panel)}
     progress{width:160px;height:10px}
     .btn{border:1px solid var(--bd);border-radius:12px;background:#111726;color:var(--txt);padding:10px 14px;cursor:pointer}
     .btn.ok{background:#10331f;border-color:#1f5c38}
     .btn.ng{background:#331717;border-color:#5c2929}
+    #btnMic{width:100%;height:64px;font-size:30px;padding:0;border-radius:18px;background:linear-gradient(135deg,#1a2134,#12192a);border:1px solid #2a3753;display:grid;place-items:center;position:relative;transition:transform .25s ease, box-shadow .25s ease, background .35s ease}
+    #btnMic span{font-size:32px;transform:translateY(1px)}
+    #btnMic.listening{background:radial-gradient(circle at 50% 45%,rgba(98,213,255,.25),rgba(18,25,42,1));box-shadow:0 0 0 0 rgba(98,213,255,.45);animation:micPulse 1.5s ease-in-out infinite}
+    #btnMic.listening span{filter:drop-shadow(0 0 6px rgba(98,213,255,.7))}
+    #btnMic:disabled{opacity:.4;cursor:not-allowed;animation:none;box-shadow:none}
+    #btnMic::after{content:"";position:absolute;inset:-4px;border-radius:20px;border:1px solid rgba(98,213,255,.25);opacity:0;transition:opacity .3s ease}
+    #btnMic.listening::after{opacity:1}
+    @keyframes micPulse{0%{box-shadow:0 0 0 0 rgba(98,213,255,.45);}70%{box-shadow:0 0 0 10px rgba(98,213,255,0);}100%{box-shadow:0 0 0 0 rgba(98,213,255,0);}}
+    #btnAutoNext{display:none;margin-top:6px;width:100%;padding:12px;font-size:16px;border-radius:14px;background:#215439;border:1px solid #2f7a52;color:#e6ffef;font-weight:600;box-shadow:0 6px 14px -10px rgba(70,211,127,.8);transition:transform .2s ease, box-shadow .2s ease}
+    #btnAutoNext:focus-visible{outline:2px solid rgba(98,213,255,.6)}
+    #btnAutoNext:hover{transform:translateY(-1px);box-shadow:0 10px 18px -12px rgba(70,211,127,1)}
 
     /* 設定モーダル */
     #cfgModal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.45);z-index:9999}
@@ -56,7 +72,6 @@
     <div class="stat">分 <b id="statMin">0</b></div>
     <div class="stat">streak <b id="statStreak">0</b></div>
     <div class="grow"></div>
-    <div id="btnMic" class="icon" title="マイク">🎙️</div>
     <div id="btnCfg" class="icon" title="設定">⚙️</div>
   </header>
 
@@ -81,16 +96,17 @@
       <div id="jaText" class="ja">—</div>
       <div id="transcript" class="muted"></div>
 
-      <div class="kpi">
-        <div>ASR <span class="val" id="asrState">待機</span></div>
-        <div>欠損(Recall) <span class="val" id="valWER">—</span></div>
-        <div>過剰(Precision) <span class="val" id="valCER">—</span></div>
+      <div class="scorebox" role="status" aria-live="polite">
+        <div class="scoreline"><span>一致率</span><span class="score-val" id="valScore">—</span></div>
+        <div class="score-note" id="asrState">マイクを押して発声してください</div>
       </div>
 
       <div style="display:flex;gap:8px">
         <button class="btn ok" data-eval="ok">◯ 得意</button>
         <button class="btn ng" data-eval="ng">× 苦手</button>
       </div>
+      <button id="btnMic" class="btn" type="button" aria-label="マイク開始"><span>🎙️</span></button>
+      <button id="btnAutoNext" type="button">次へ</button>
     </section>
   </main>
 
@@ -98,11 +114,11 @@
     <progress id="pbar" value="0" max="1"></progress>
     <span id="footerInfo" class="muted">左右スワイプ：戻る/進む　上：和訳</span>
     <div class="grow"></div>
-    <button id="btnNext" class="btn" disabled>次へ</button>
+    <button id="btnNext" class="btn" disabled style="display:none">次へ</button>
   </footer>
 </div>
 
-<audio id="player" crossorigin="anonymous"></audio>
+<audio id="player" preload="auto" crossorigin="anonymous"></audio>
 <div id="toast"></div>
 
 <!-- 設定モーダル -->
@@ -140,7 +156,6 @@
   const qs=(s,el=document)=>el.querySelector(s);
   const qsa=(s,el=document)=>[...el.querySelectorAll(s)];
   const now=()=>Date.now(); const UA=(()=>navigator.userAgent||'')();
-  const STOP=new Set(['a','the','to','of','in','on','for','at','is','are','was','were','be','been','being','do','does','did','have','has','had']);
   const norm=s=>(s||'').toLowerCase().normalize('NFKC').replace(/[\p{P}\p{S}]/gu,' ').replace(/\s+/g,' ').trim();
   const toks=s=>norm(s).split(' ').filter(Boolean);
   // 連続重複を圧縮（a a a → a）
@@ -173,10 +188,92 @@
     }).join('');
   }
   function toast(msg, ms=1500){ const t=qs('#toast'); t.textContent=msg; t.style.display='block'; clearTimeout(toast._t); toast._t=setTimeout(()=>t.style.display='none', ms); }
+  let AUDIO_CTX=null;
+  function ensureAudioCtx(){
+    if(AUDIO_CTX) return AUDIO_CTX;
+    try{ AUDIO_CTX=new (window.AudioContext||window.webkitAudioContext)(); }
+    catch(_){ AUDIO_CTX=null; }
+    return AUDIO_CTX;
+  }
+  function playTone(freq=880,duration=0.12,type='sine',gain=0.2){
+    const ctx=ensureAudioCtx();
+    if(!ctx) return;
+    if(ctx.state==='suspended'){ try{ ctx.resume(); }catch(_){}}
+    const osc=ctx.createOscillator();
+    const amp=ctx.createGain();
+    osc.type=type;
+    osc.frequency.value=freq;
+    amp.gain.value=gain;
+    osc.connect(amp).connect(ctx.destination);
+    const t=ctx.currentTime;
+    amp.gain.setValueAtTime(gain,t);
+    amp.gain.exponentialRampToValueAtTime(0.001,t+Math.max(0.05,duration));
+    osc.start(t);
+    osc.stop(t+Math.max(0.08,duration));
+  }
 
   // ===== Elements =====
-  const el={ left:qs('#statLeft'), min:qs('#statMin'), streak:qs('#statStreak'), pbar:qs('#pbar'), footer:qs('#footerInfo'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), asr:qs('#asrState'), WER:qs('#valWER'), CER:qs('#valCER'), next:qs('#btnNext'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), chkWeak:qs('#chkOnlyWeak'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnImport:qs('#btnImport'), filePick:qs('#filePick'), btnTestAudio:qs('#btnTestAudio'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus') };
+  const el={ left:qs('#statLeft'), min:qs('#statMin'), streak:qs('#statStreak'), pbar:qs('#pbar'), footer:qs('#footerInfo'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), asr:qs('#asrState'), score:qs('#valScore'), next:qs('#btnNext'), autoNext:qs('#btnAutoNext'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), chkWeak:qs('#chkOnlyWeak'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnImport:qs('#btnImport'), filePick:qs('#filePick'), btnTestAudio:qs('#btnTestAudio'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus') };
   const audio=qs('#player');
+  const PREFETCH_POOL=new Map();
+  const PREFETCH_LIMIT=6;
+  hideAutoNext();
+
+  function waitForAudioReady(el, timeout=2000){
+    if(!el) return Promise.resolve();
+    if(el.readyState>=2) return Promise.resolve();
+    return new Promise(resolve=>{
+      let settled=false;
+      const finalize=()=>{
+        if(settled) return;
+        settled=true;
+        el.removeEventListener('canplay', onReady);
+        el.removeEventListener('canplaythrough', onReady);
+        el.removeEventListener('loadeddata', onReady);
+        el.removeEventListener('error', onReady);
+        clearTimeout(timer);
+        resolve();
+      };
+      const onReady=()=>finalize();
+      const timer=setTimeout(()=>finalize(), timeout);
+      el.addEventListener('canplay', onReady, {once:true});
+      el.addEventListener('canplaythrough', onReady, {once:true});
+      el.addEventListener('loadeddata', onReady, {once:true});
+      el.addEventListener('error', onReady, {once:true});
+    });
+  }
+
+  async function setAudioSource(url){
+    if(!url){
+      clearAudioSource();
+      return;
+    }
+    if(audio.dataset.srcKey !== url){
+      audio.dataset.srcKey = url;
+      audio.src = url;
+    }
+    try{ audio.load?.(); }catch(_){ }
+    await waitForAudioReady(audio, 2000);
+  }
+
+  function clearAudioSource(){
+    delete audio.dataset.srcKey;
+    audio.removeAttribute('src');
+    try{ audio.load?.(); }catch(_){ }
+  }
+
+  function rememberPrefetch(url, entry){
+    PREFETCH_POOL.set(url, entry);
+    if(PREFETCH_POOL.size>PREFETCH_LIMIT){
+      const firstKey=PREFETCH_POOL.keys().next().value;
+      const old=PREFETCH_POOL.get(firstKey);
+      if(old && old.audio){
+        try{ old.audio.pause?.(); }catch(_){ }
+        old.audio.removeAttribute?.('src');
+      }
+      PREFETCH_POOL.delete(firstKey);
+    }
+  }
 
   // ===== Config =====
   const CFG_KEY='appConfigV3';
@@ -230,20 +327,98 @@
   async function resolveFromOPFS(name){ if(!name) return ''; try{ if(!(navigator.storage&&navigator.storage.getDirectory)) return ''; const root=await navigator.storage.getDirectory(); const fh=await root.getFileHandle(name).catch(()=>null); if(!fh) return ''; const file=await fh.getFile(); return URL.createObjectURL(file); }catch(_){ return ''; } }
   async function resolveAudioUrl(name){ if(!name) return ''; if(audioUrlCache.has(name)) return audioUrlCache.get(name); let url=await resolveFromDir(name); if(!url) url=await resolveFromOPFS(name); if(!url){ const base=(CFG.audioBase||'./audio').replace(/\/$/,''); url= base + '/' + encodeURI(name); } audioUrlCache.set(name,url); return url; }
 
-  async function primeAudio(item){ if(!item||!item.audio_fn) return; await resolveAudioUrl(item.audio_fn); }
+  async function primeAudio(item){
+    if(!item||!item.audio_fn) return;
+    const url=await resolveAudioUrl(item.audio_fn);
+    if(!url) return;
+    if(PREFETCH_POOL.has(url)) return PREFETCH_POOL.get(url).promise;
+    const prefetch=new Audio();
+    prefetch.preload='auto';
+    prefetch.crossOrigin='anonymous';
+    prefetch.src=url;
+    const promise=waitForAudioReady(prefetch, 4000).finally(()=>{
+      try{ prefetch.pause?.(); }catch(_){ }
+    });
+    try{ prefetch.load?.(); }catch(_){ }
+    rememberPrefetch(url,{audio:prefetch,promise});
+    return promise;
+  }
 
   // Render & navigation
   let QUEUE=[], idx=-1, sessionStart=0, cardStart=0;
-  function stopAudio(){ try{audio.pause();}catch(_){ } audio.removeAttribute('src'); audio.currentTime=0; }
-  function resetResult(){ el.WER.textContent='—'; el.CER.textContent='—'; }
-  function resetTranscript(){ qs('#transcript').innerHTML=''; }
+  let failCount=0, attemptCount=0;
+  function stopAudio(){ try{audio.pause();}catch(_){ } audio.currentTime=0; }
+  function resetResult(){
+    el.score.textContent='—';
+    el.score.classList.remove('good','warn','bad');
+    el.asr.textContent='マイクを押して発声してください';
+  }
+  function hideAutoNext(){
+    el.autoNext.style.display='none';
+    el.autoNext.disabled=false;
+  }
+  function showAutoNext(){
+    el.autoNext.style.display='block';
+    el.autoNext.disabled=false;
+    if(typeof el.autoNext.focus==='function'){
+      try{ el.autoNext.focus({preventScroll:true}); }
+      catch(_){ try{ el.autoNext.focus(); }catch(_){}}
+    }
+  }
+  function updateScore(rate){
+    el.score.classList.remove('good','warn','bad');
+    if(!isFinite(rate)){
+      el.score.textContent='—';
+      return;
+    }
+    const pct=Math.max(0,Math.min(100,Math.round(rate*100)));
+    el.score.textContent=`${pct}%`;
+    if(pct>=70){
+      el.score.classList.add('good');
+    }else if(pct>=40){
+      el.score.classList.add('warn');
+    }else{
+      el.score.classList.add('bad');
+    }
+  }
   function toggleJA(){ el.ja.style.display=(el.ja.style.display==='none')?'block':'none'; }
 
-  async function render(i, autoPlay=false){ stopAudio(); const it=QUEUE[i]; if(!it){ el.footer.textContent='キューが空です'; return; } el.en.innerHTML=spanify(it.en); el.ja.textContent=it.ja; el.ja.style.display='none'; el.chips.innerHTML=''; (it.tags||'').split(',').filter(Boolean).forEach(t=>{ const s=document.createElement('span'); s.className='chip'; s.textContent=t.trim(); el.chips.appendChild(s); }); const url=await resolveAudioUrl(it.audio_fn); if(url) audio.src=url; cardStart=now(); resetResult(); resetTranscript(); primeAudio(QUEUE[i+1]); primeAudio(QUEUE[i-1]); if(autoPlay&&url){ try{ await audio.play(); }catch(_){} } }
+  async function render(i, autoPlay=false){
+    stopAudio();
+    const it=QUEUE[i];
+    if(!it){
+      el.footer.textContent='キューが空です';
+      clearAudioSource();
+      return;
+    }
+    el.en.innerHTML=spanify(it.en);
+    el.ja.textContent=it.ja;
+    el.ja.style.display='none';
+    el.chips.innerHTML='';
+    (it.tags||'').split(',').filter(Boolean).forEach(t=>{ const s=document.createElement('span'); s.className='chip'; s.textContent=t.trim(); el.chips.appendChild(s); });
+    const url=await resolveAudioUrl(it.audio_fn);
+    if(url){
+      await setAudioSource(url);
+    }else{
+      clearAudioSource();
+    }
+    cardStart=now();
+    failCount=0;
+    attemptCount=0;
+    el.mic.disabled=false;
+    el.mic.classList.remove('listening');
+    el.mic.setAttribute('aria-label','マイク開始');
+    hideAutoNext();
+    resetResult();
+    resetTranscript();
+    primeAudio(QUEUE[i+1]);
+    primeAudio(QUEUE[i-1]);
+    if(autoPlay&&url){ try{ await audio.play(); }catch(_){ } }
+  }
 
   async function rebuildAndRender(resetIndex=false){ QUEUE=buildQueue(); if(resetIndex) idx=-1; el.pbar.max=Math.max(1, QUEUE.length); el.left.textContent=QUEUE.length; el.next.disabled=false; nextCard(true); }
 
-  function nextCard(first=false, autoPlay=false){ if(!QUEUE.length){ el.footer.textContent='キューが空です'; return; } idx = first? 0 : Math.min(QUEUE.length-1, idx+1); render(idx, autoPlay); el.pbar.value=idx; el.footer.textContent=`#${idx+1}/${QUEUE.length}`; }
+  function nextCard(first=false, autoPlay=false){ if(!QUEUE.length){ el.footer.textContent='キューが空です'; clearAudioSource(); stopAudio(); return; } idx = first? 0 : Math.min(QUEUE.length-1, idx+1); render(idx, autoPlay); el.pbar.value=idx; el.footer.textContent=`#${idx+1}/${QUEUE.length}`; }
   function prevCard(autoPlay=false){ if(!QUEUE.length) return; idx=Math.max(0, idx-1); render(idx, autoPlay); el.pbar.value=idx; el.footer.textContent=`#${idx+1}/${QUEUE.length}`; }
 
   // Gestures
@@ -261,7 +436,7 @@
 
   function matchAndHighlight(refText, hypText){
     // 1) トークン化
-    const refTokens = toks(refText).filter(w=>!STOP.has(w));
+    const refTokens = toks(refText);
     const hypTokensRaw = toks(hypText);
     // 2) 連続重複を圧縮
     const hypTokens = dedupeRuns(hypTokensRaw);
@@ -288,7 +463,7 @@
 
     // ハイライト適用
     const spans=[...document.querySelectorAll('.en .tok')].filter(s=>s.dataset.w);
-    for(const sp of spans){ const w=norm(sp.dataset.w); if(!w || STOP.has(w)) continue; let hit = hypCap.includes(w); if(!hit){ hit = hypCap.some(h=>{ if(h===w) return true; if(Math.abs(h.length-w.length)>1) return false; let i=0,j=0,d=0; while(i<w.length&&j<h.length){ if(w[i]===h[j]){i++;j++;continue;} if(++d>1) return false; if(w.length>h.length)i++; else if(h.length>w.length)j++; else {i++;j++;} } return true; }); }
+    for(const sp of spans){ const w=norm(sp.dataset.w); if(!w) continue; let hit = hypCap.includes(w); if(!hit){ hit = hypCap.some(h=>{ if(h===w) return true; if(Math.abs(h.length-w.length)>1) return false; let i=0,j=0,d=0; while(i<w.length&&j<h.length){ if(w[i]===h[j]){i++;j++;continue;} if(++d>1) return false; if(w.length>h.length)i++; else if(h.length>w.length)j++; else {i++;j++;} } return true; }); }
       sp.classList.toggle('hit', !!hit);
       sp.classList.toggle('miss', !hit);
     }
@@ -301,6 +476,7 @@
 
   function startRec(){
     if(!SR){ toast('この端末では音声認識が使えません'); return; }
+    if(el.mic.disabled) return;
     const shouldResume = audio && !audio.paused;
     recog = new SR();
     recog.lang = 'en-US';
@@ -311,6 +487,10 @@
     stableText = '';
     recogOn = true;
     el.asr.textContent = '録音中…';
+    el.mic.classList.add('listening');
+    el.mic.setAttribute('aria-label','録音停止');
+    playTone(820,0.1,'sine',0.18);
+    updateScore(Number.NaN);
     resetTranscript();
 
     try{ recog.start(); }catch(_){ }
@@ -329,8 +509,7 @@
           stableText = appendStableFinal(stableText, t);
           showTranscriptFinal(stableText);
           const m = matchAndHighlight(el.en.textContent, stableText);
-          el.WER.textContent = (1 - m.recall).toFixed(2);
-          el.CER.textContent = (1 - m.precision).toFixed(2);
+          updateScore(m.recall);
         }else{
           interim = t;
         }
@@ -338,7 +517,14 @@
       if(interim) showTranscriptInterim(interim); // 画面表示だけ・評価には使わない
     };
 
-    recog.onerror = (e)=>{ el.asr.textContent = 'ASRエラー'; console.warn(e); toast('ASRエラー: '+(e && e.error || '')); };
+    recog.onerror = (e)=>{
+      recogOn=false;
+      el.mic.classList.remove('listening');
+      el.mic.setAttribute('aria-label','マイク開始');
+      el.asr.textContent = 'ASRエラー';
+      console.warn(e);
+      toast('ASRエラー: '+(e && e.error || ''));
+    };
     recog.onend = ()=>{ if(recogOn) stopRec(); };
   }
 
@@ -346,15 +532,45 @@
     if(!recogOn) return;
     recogOn=false;
     try{ recog && recog.stop && recog.stop(); }catch(_){ }
-    el.asr.textContent='停止';
+    el.mic.classList.remove('listening');
+    el.mic.setAttribute('aria-label','マイク開始');
+    el.asr.textContent='判定中…';
 
     const it = QUEUE[idx]; if(!it) return;
     const hyp = stableText.trim();
     const { recall, precision, matched, missing } = matchAndHighlight(el.en.textContent, hyp);
+    attemptCount++;
+    const accuracy = recall;
+    updateScore(accuracy);
+    const pass = accuracy >= 0.70;
 
-    const pass = (recall >= 0.80 && precision >= 0.60);
-    el.next.disabled = !pass;
-    el.footer.textContent = pass ? '自動合格（◯推奨）' : '自動不合格：再挑戦 or ×';
+    if(pass){
+      el.asr.textContent='合格！';
+      el.footer.textContent='合格！次へ進みましょう';
+      el.mic.disabled=true;
+      el.mic.setAttribute('aria-label','この問題は合格済みです');
+      showAutoNext();
+      playTone(1180,0.18,'sine',0.22);
+      setTimeout(()=>playTone(1580,0.14,'triangle',0.18),120);
+    }else{
+      failCount++;
+      const remain=Math.max(0,3-failCount);
+      if(failCount>=3){
+        el.asr.textContent='不合格：次へ進みます';
+        el.footer.textContent='3回失敗のため次へ進みます';
+        playTone(320,0.25,'square',0.2);
+        setTimeout(()=>playTone(220,0.3,'square',0.16),160);
+        el.mic.disabled=true;
+        el.mic.setAttribute('aria-label','この問題は不合格で終了しました');
+        toast('3回失敗。不合格として次へ進みます');
+        setTimeout(()=>submitEval(0), 450);
+      }else{
+        el.mic.disabled=false;
+        el.asr.textContent=`70%を目指して再挑戦 (${remain}回残り)`;
+        el.footer.textContent='もう一度挑戦してください';
+        playTone(460,0.16,'triangle',0.18);
+      }
+    }
 
     const payload = {
       ts: new Date().toISOString(), id: it.id, mode: 'read',
@@ -362,12 +578,19 @@
       latency_ms: 0, words_spoken: toks(hyp).length, transcript: hyp,
       matched_tokens_json: JSON.stringify(matched),
       missing_tokens_json: JSON.stringify(missing),
-      recall:+recall.toFixed(3), precision:+precision.toFixed(3)
+      recall:+recall.toFixed(3), precision:+precision.toFixed(3),
+      accuracy:+accuracy.toFixed(3), attempts:attemptCount, fails:failCount
     };
     try{ await sendLog('speech', payload); }catch(_){ }
+    recog=null;
   }
 
   el.mic.onclick=()=>{ if(!recogOn) startRec(); else stopRec(); };
+  el.autoNext.onclick=()=>{
+    if(el.autoNext.disabled) return;
+    el.autoNext.disabled=true;
+    nextCard(false,true);
+  };
   qsa('[data-eval="ok"]').forEach(b=>b.onclick=()=>submitEval(1));
   qsa('[data-eval="ng"]').forEach(b=>b.onclick=()=>submitEval(0));
   async function submitEval(bin){ const it=QUEUE[idx]; if(!it) return; const payload={ ts:new Date().toISOString(), id:it.id, result:bin, auto_recall:null, auto_precision:null, response_ms:Math.max(0, now()-cardStart), hint_used:(el.ja.style.display==='block'), device:UA }; try{ await sendLog('attempt', payload); }catch(_){ } el.next.disabled=false; nextCard(false,true); }
