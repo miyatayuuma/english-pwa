@@ -650,33 +650,44 @@
   async function ensureDir(){ if(DIR) return DIR; try{ DIR = await loadDirHandle(); if(!DIR) return null; const q = await DIR.queryPermission?.({mode:'read'}) || 'granted'; if(q!=='granted'){ const r = await DIR.requestPermission?.({mode:'read'}); if(r!=='granted'){ DIR=null; return null; } } return DIR; }catch(_){ DIR=null; return null; } }
 
   // Settings modal
-  el.cfgBtn.onclick=()=>{ el.cfgUrl.value=CFG.apiUrl||''; el.cfgKey.value=CFG.apiKey||''; el.cfgAudioBase.value=CFG.audioBase||'./audio'; refreshDirStatus(); el.cfgModal.style.display='flex'; };
-  el.cfgClose.onclick=()=>{ el.cfgModal.style.display='none'; };
-  el.cfgSave.onclick=()=>{
-    CFG.apiUrl=(el.cfgUrl.value||'').trim();
-    CFG.apiKey=(el.cfgKey.value||'').trim();
-    CFG.audioBase=(el.cfgAudioBase.value||'').trim()||'./audio';
-    saveCfg(CFG);
-    if((CFG.apiUrl||'').trim()){
-      for(const entry of PENDING_LOGS){
-        entry.url=CFG.apiUrl.trim();
-        entry.apiKey=(CFG.apiKey||'')||undefined;
+  if(el.cfgBtn && el.cfgModal && el.cfgUrl && el.cfgKey && el.cfgAudioBase){
+    el.cfgBtn.addEventListener('click', ()=>{
+      el.cfgUrl.value=CFG.apiUrl||'';
+      el.cfgKey.value=CFG.apiKey||'';
+      el.cfgAudioBase.value=CFG.audioBase||'./audio';
+      refreshDirStatus();
+      el.cfgModal.style.display='flex';
+    });
+  }
+  if(el.cfgClose && el.cfgModal){
+    el.cfgClose.addEventListener('click', ()=>{ el.cfgModal.style.display='none'; });
+  }
+  if(el.cfgSave && el.cfgModal && el.cfgUrl && el.cfgKey && el.cfgAudioBase){
+    el.cfgSave.addEventListener('click', ()=>{
+      CFG.apiUrl=(el.cfgUrl.value||'').trim();
+      CFG.apiKey=(el.cfgKey.value||'').trim();
+      CFG.audioBase=(el.cfgAudioBase.value||'').trim()||'./audio';
+      saveCfg(CFG);
+      if((CFG.apiUrl||'').trim()){
+        for(const entry of PENDING_LOGS){
+          entry.url=CFG.apiUrl.trim();
+          entry.apiKey=(CFG.apiKey||'')||undefined;
+        }
+      } else {
+        for(const entry of PENDING_LOGS){
+          entry.url='';
+          entry.apiKey=undefined;
+        }
+        applyRemoteStatus(null);
       }
-    }
-    else{
-      for(const entry of PENDING_LOGS){
-        entry.url='';
-        entry.apiKey=undefined;
+      rememberPending();
+      el.cfgModal.style.display='none';
+      toast('設定を保存しました');
+      if((CFG.apiUrl||'').trim()){
+        syncProgressAndStatus().catch(()=>{});
       }
-      applyRemoteStatus(null);
-    }
-    rememberPending();
-    el.cfgModal.style.display='none';
-    toast('設定を保存しました');
-    if((CFG.apiUrl||'').trim()){
-      syncProgressAndStatus().catch(()=>{});
-    }
-  };
+    });
+  }
   el.btnPickDir.onclick=async()=>{ if(!window.showDirectoryPicker){ toast('この端末はフォルダピッカー非対応'); return; } try{ const h=await showDirectoryPicker({mode:'read'}); await saveDirHandle(h); DIR=h; refreshDirStatus(); toast('フォルダを保存しました'); }catch(e){ if(e&&e.name!=='AbortError') toast('フォルダ選択に失敗'); }};
   el.btnClearDir.onclick=async()=>{ await clearDirHandle(); DIR=null; refreshDirStatus(); toast('フォルダ設定を解除'); };
   function refreshDirStatus(){ el.dirStatus.textContent = DIR? '保存済み':'未設定'; }
