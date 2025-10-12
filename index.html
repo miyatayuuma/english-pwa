@@ -22,13 +22,27 @@
     main{padding:12px;overflow:auto}
     .card{max-width:840px;margin:0 auto;background:var(--panel);border:1px solid var(--bd);border-radius:18px;padding:16px;min-height:50vh;display:flex;flex-direction:column;gap:12px;touch-action:manipulation}
     .chips{display:flex;gap:6px;flex-wrap:wrap}
-    .en{font-size:22px;line-height:1.6;word-break:normal;overflow-wrap:break-word;white-space:normal}
+    .en{font-size:22px;line-height:1.6;word-break:normal;overflow-wrap:break-word;white-space:normal;position:relative}
+    .en[data-hint-state="0"]{color:transparent;text-shadow:none}
+    .en[data-hint-state="0"] .tok{opacity:0}
+    .en[data-hint-state="0"]::after{content:'上にスワイプで英文ヒント';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:16px;text-align:center;color:var(--muted);text-shadow:none}
     .en .tok{padding:0 2px;border-radius:4px}
     .en .hit{background:rgba(70,211,127,.18);border-bottom:1px solid rgba(70,211,127,.6)}
     .en .miss{background:rgba(255,107,107,.15);border-bottom:1px dashed rgba(255,107,107,.7)}
-    .ja{font-size:16px;color:var(--muted);display:none}
+    .ja{font-size:16px;color:var(--muted);display:none;position:relative}
+    .ja[data-hint-state="1"],
+    .ja[data-hint-state="2"]{display:block}
+    .ja[data-hint-state="1"]{color:transparent}
+    .ja[data-hint-state="1"]::before{content:'上にスワイプでもう一度ヒント';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:8px 12px;text-align:center;color:var(--muted);opacity:.6}
     #transcript{min-height:1.6em}
     #transcript .interim{opacity:.6}
+
+    .chip{padding:4px 10px;border-radius:999px;background:#101628;border:1px solid var(--bd);font-size:12px;color:var(--muted)}
+    .chip.lv1{border-color:var(--bad);color:var(--bad)}
+    .chip.lv2{border-color:#f6c863;color:#f6c863}
+    .chip.lv3{border-color:var(--accent);color:var(--accent)}
+    .chip.lv4{border-color:var(--good);color:var(--good)}
+    .chip.lv5{border-color:#ffd166;color:#ffd166}
 
     .kpi{display:flex;gap:12px;align-items:center;color:var(--muted);font-size:12px;flex-wrap:wrap}
     .kpi .val{color:var(--txt);font-weight:600}
@@ -65,8 +79,9 @@
 <div id="app">
   <header>
     <div class="stat">残 <b id="statLeft">0</b></div>
-    <div class="stat">分 <b id="statMin">0</b></div>
-    <div class="stat">streak <b id="statStreak">0</b></div>
+    <div class="stat">LV3+ <b id="statLv3">0%</b></div>
+    <div class="stat">LV4+ <b id="statLv4">0%</b></div>
+    <div class="stat">苦手単語 <b id="statWeakWords">0</b></div>
     <div class="grow"></div>
     <div id="btnCfg" class="icon" title="設定">⚙️</div>
   </header>
@@ -80,6 +95,11 @@
       <select id="orderSel">
         <option value="asc">昇順</option>
         <option value="rnd">ランダム</option>
+      </select>
+    </label>
+    <label>苦手単語
+      <select id="weakWordSel">
+        <option value="">全て</option>
       </select>
     </label>
     <label class="switch"><input id="chkOnlyWeak" type="checkbox"> 未習得のみ</label>
@@ -108,7 +128,7 @@
 
   <footer>
     <progress id="pbar" value="0" max="1"></progress>
-    <span id="footerInfo" class="muted">左右スワイプ：戻る/進む　上：和訳</span>
+    <span id="footerInfo" class="muted">左右スワイプ：戻る/進む　上：ヒント（英文→和訳）</span>
     <div class="grow"></div>
   </footer>
 </div>
@@ -227,7 +247,133 @@
   }
 
   // ===== Elements =====
-  const el={ left:qs('#statLeft'), min:qs('#statMin'), streak:qs('#statStreak'), pbar:qs('#pbar'), footer:qs('#footerInfo'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), attempt:qs('#attemptInfo'), next:qs('#btnNext'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), chkWeak:qs('#chkOnlyWeak'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnImport:qs('#btnImport'), filePick:qs('#filePick'), btnTestAudio:qs('#btnTestAudio'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus') };
+  const el={ left:qs('#statLeft'), lv3:qs('#statLv3'), lv4:qs('#statLv4'), weakStat:qs('#statWeakWords'), pbar:qs('#pbar'), footer:qs('#footerInfo'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), attempt:qs('#attemptInfo'), next:qs('#btnNext'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), weakSel:qs('#weakWordSel'), chkWeak:qs('#chkOnlyWeak'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnImport:qs('#btnImport'), filePick:qs('#filePick'), btnTestAudio:qs('#btnTestAudio'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus') };
+
+  function getWeakWordEntries(minCount=1){
+    const entries=[];
+    for(const [word,data] of Object.entries(WEAK_WORDS||{})){
+      const miss=+(data&&data.miss)||0;
+      if(miss>=minCount){ entries.push([word,data]); }
+    }
+    entries.sort((a,b)=>((b[1]&&b[1].miss)||0)-((a[1]&&a[1].miss)||0));
+    return entries;
+  }
+
+  function refreshWeakWordOptions(entries, preferred){
+    if(!el.weakSel) return;
+    const prev = preferred!==undefined ? preferred : el.weakSel.value;
+    const opts=[new Option('全て','')];
+    entries.slice(0,30).forEach(([word,data])=>{
+      const miss=+(data&&data.miss)||0;
+      const label=`${word} (${miss})`;
+      opts.push(new Option(label, word));
+    });
+    el.weakSel.replaceChildren(...opts);
+    const nextVal = entries.some(([w])=>w===prev) ? prev : '';
+    el.weakSel.value = nextVal;
+    if(prev && !nextVal){ try{ localStorage.setItem('weakWordSel',''); }catch(_){ } }
+  }
+
+  function updateWeakWordStats(){
+    const entries=getWeakWordEntries();
+    if(el.weakStat) el.weakStat.textContent = entries.length;
+    refreshWeakWordOptions(entries);
+  }
+
+  let LATEST_STATS={ total:0, counts:[0,0,0,0,0,0] };
+  function getProficiencyEntry(id){ return PROF_MAP.get(id)||null; }
+  function getCurrentLevel(id){ const e=getProficiencyEntry(id); return e?(e.level||e.bestLevel||1):1; }
+  function getBestLevel(id){ const e=getProficiencyEntry(id); return e?(e.bestLevel||e.level||1):1; }
+  function recomputeStats(){
+    const counts=[0,0,0,0,0,0];
+    const items=window.ALL_ITEMS||[];
+    for(const it of items){
+      const lvl=getBestLevel(it.id);
+      counts[lvl]=(counts[lvl]||0)+1;
+    }
+    LATEST_STATS={ total:items.length, counts };
+    updateStatDisplay();
+  }
+  function updateStatDisplay(){
+    const total=Math.max(1, LATEST_STATS.total||0);
+    const lv3Plus=(LATEST_STATS.counts[3]||0)+(LATEST_STATS.counts[4]||0)+(LATEST_STATS.counts[5]||0);
+    const lv4Plus=(LATEST_STATS.counts[4]||0)+(LATEST_STATS.counts[5]||0);
+    if(el.lv3) el.lv3.textContent=`${Math.round((lv3Plus/total)*100)}%`;
+    if(el.lv4) el.lv4.textContent=`${Math.round((lv4Plus/total)*100)}%`;
+    updateWeakWordStats();
+  }
+
+  function determineProficiencyLevel(matchRate, englishHint, translationHint){
+    const pct=Math.max(0, Math.round((matchRate||0)*100));
+    if(pct<70) return 1;
+    if(translationHint) return 2;
+    if(pct<90) return 2;
+    if(englishHint) return 3;
+    if(matchRate>=0.999) return 5;
+    return 4;
+  }
+
+  function updateProficiencyRecord(id, {level, matchRate, englishHintUsed, translationHintUsed}){
+    if(!id || !level) return;
+    const prev=PROF_MAP.get(id)||{};
+    const prevLevel=prev.level||prev.bestLevel||1;
+    const nextLevel = (prevLevel && level<prevLevel) ? Math.max(level, prevLevel-1) : level;
+    const bestLevel=Math.max(prev.bestLevel||1, level);
+    const bestRate=Math.max(prev.bestRate||0, matchRate||0);
+    const entry={
+      level:nextLevel,
+      bestLevel,
+      bestRate,
+      lastRate:matchRate||0,
+      attempts:(prev.attempts||0)+1,
+      lastTs:Date.now(),
+      englishHintCount:(prev.englishHintCount||0)+(englishHintUsed?1:0),
+      translationHintCount:(prev.translationHintCount||0)+(translationHintUsed?1:0)
+    };
+    PROF_MAP.set(id, entry);
+    scheduleProficiencySave();
+    recomputeStats();
+  }
+
+  function recordWeakWordsForItem(itemId, missingWords){
+    if(!missingWords || !missingWords.length) return;
+    let changed=false;
+    const nowTs=Date.now();
+    for(const raw of missingWords){
+      const word=norm(raw);
+      if(!word) continue;
+      const entry=WEAK_WORDS[word] || {miss:0, hit:0, items:{}};
+      entry.miss=(entry.miss||0)+1;
+      entry.items=entry.items||{};
+      entry.items[itemId]=(entry.items[itemId]||0)+1;
+      entry.updated=nowTs;
+      WEAK_WORDS[word]=entry;
+      changed=true;
+    }
+    if(changed){ scheduleWeakWordSave(); updateWeakWordStats(); }
+  }
+
+  function rewardWordsForItem(words){
+    if(!words || !words.length) return;
+    let changed=false;
+    const nowTs=Date.now();
+    const uniq=[...new Set(words.map(norm))].filter(Boolean);
+    for(const word of uniq){
+      const entry=WEAK_WORDS[word];
+      if(entry && entry.miss>0){
+        entry.miss=Math.max(0,(entry.miss||0)-1);
+        entry.hit=(entry.hit||0)+1;
+        entry.updated=nowTs;
+        if(entry.miss<=0){
+          delete WEAK_WORDS[word];
+        }else{
+          WEAK_WORDS[word]=entry;
+        }
+        changed=true;
+      }
+    }
+    if(changed){ scheduleWeakWordSave(); updateWeakWordStats(); }
+  }
   const audio=qs('#player');
   const PREFETCH_POOL=new Map();
   const PREFETCH_LIMIT=6;
@@ -301,7 +447,7 @@
     }
     const pct=Math.max(0, Math.min(100, Math.round(rate*100)));
     el.match.textContent=`${pct}%`;
-    if(pct>=85){ el.match.classList.add('match-good'); }
+    if(pct>=90){ el.match.classList.add('match-good'); }
     else if(pct>=70){ el.match.classList.add('match-mid'); }
     else { el.match.classList.add('match-bad'); }
   }
@@ -342,6 +488,60 @@
   function saveCfg(o){ localStorage.setItem(CFG_KEY, JSON.stringify(o)); }
   let CFG=Object.assign({ apiUrl:'', apiKey:'', audioBase:'./audio' }, loadCfg());
 
+  const PROF_KEY='proficiencyMapV1';
+  function loadProficiencyMap(){
+    try{
+      const raw=JSON.parse(localStorage.getItem(PROF_KEY)||'{}');
+      const map=new Map();
+      if(raw && typeof raw==='object'){
+        for(const [k,v] of Object.entries(raw)){
+          if(v && typeof v==='object') map.set(k,v);
+        }
+      }
+      return map;
+    }catch(_){ return new Map(); }
+  }
+  let PROF_MAP=loadProficiencyMap();
+  let PROF_SAVE_TIMER=null;
+  function persistProficiency(){
+    try{
+      const obj={};
+      for(const [k,v] of PROF_MAP) obj[k]=v;
+      localStorage.setItem(PROF_KEY, JSON.stringify(obj));
+    }catch(_){ }
+  }
+  function scheduleProficiencySave(){
+    clearTimeout(PROF_SAVE_TIMER);
+    PROF_SAVE_TIMER=setTimeout(()=>{ PROF_SAVE_TIMER=null; persistProficiency(); }, 300);
+  }
+
+  const WEAK_WORD_KEY='weakWordsV1';
+  function loadWeakWords(){
+    try{
+      const raw=JSON.parse(localStorage.getItem(WEAK_WORD_KEY)||'{}');
+      if(raw && typeof raw==='object') return raw;
+    }catch(_){ }
+    return {};
+  }
+  let WEAK_WORDS=loadWeakWords();
+  let WEAK_SAVE_TIMER=null;
+  function persistWeakWords(){
+    try{ localStorage.setItem(WEAK_WORD_KEY, JSON.stringify(WEAK_WORDS)); }catch(_){ }
+  }
+  function scheduleWeakWordSave(){
+    clearTimeout(WEAK_SAVE_TIMER);
+    WEAK_SAVE_TIMER=setTimeout(()=>{ WEAK_SAVE_TIMER=null; persistWeakWords(); }, 300);
+  }
+
+  const ITEM_TOKEN_CACHE=new Map();
+  function getItemTokens(item){
+    if(!item) return [];
+    if(ITEM_TOKEN_CACHE.has(item.id)) return ITEM_TOKEN_CACHE.get(item.id);
+    const tokens=Array.from(new Set(toks(item.en||'')));
+    ITEM_TOKEN_CACHE.set(item.id, tokens);
+    return tokens;
+  }
+
   // ===== IndexedDB for DirectoryHandle =====
   const DB='fs-handles', STORE='dir';
   function idb(){ return new Promise((res,rej)=>{ const r=indexedDB.open(DB,1); r.onupgradeneeded=()=>{ r.result.createObjectStore(STORE); }; r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }); }
@@ -371,16 +571,17 @@
   const DATA_URL='./data/items.json';
   async function fetchJson(url){ const r=await fetch(url,{cache:'no-store'}); if(!r.ok) throw new Error(url+': '+r.status); return r.json(); }
   window.ALL_ITEMS=[]; let SRS_MAP=new Map();
-  async function ensureDataLoaded(){ if(!window.ALL_ITEMS.length){ window.ALL_ITEMS=await fetchJson(DATA_URL); } if(!SRS_MAP.size){ try{ const arr=await fetchJson('./data/srs.json'); const m=new Map(); for(const x of arr) m.set(x.id,x); SRS_MAP=m; }catch(_){ SRS_MAP=new Map(); } } }
+  async function ensureDataLoaded(){ if(!window.ALL_ITEMS.length){ window.ALL_ITEMS=await fetchJson(DATA_URL); ITEM_TOKEN_CACHE.clear(); } if(!SRS_MAP.size){ try{ const arr=await fetchJson('./data/srs.json'); const m=new Map(); for(const x of arr) m.set(x.id,x); SRS_MAP=m; }catch(_){ SRS_MAP=new Map(); } } recomputeStats(); }
 
   // Build section options (All/単一)
   function initSectionPicker(){ const sel=el.secSel; sel.innerHTML=''; sel.appendChild(new Option('全体','')); const units=[...new Set(window.ALL_ITEMS.map(x=>x.unit).filter(Boolean))].sort((a,b)=>{const na=+String(a).replace(/\D+/g,'')||0, nb=+String(b).replace(/\D+/g,'')||0; return na-nb||String(a).localeCompare(String(b));}); for(const u of units){ sel.appendChild(new Option(u,u)); } const saved=localStorage.getItem('secSel')||''; sel.value=saved; sel.onchange=()=>{ localStorage.setItem('secSel', sel.value); rebuildAndRender(true); };
     const ordSaved=localStorage.getItem('orderSel')||'asc'; el.orderSel.value=ordSaved; el.orderSel.onchange=()=>{ localStorage.setItem('orderSel', el.orderSel.value); rebuildAndRender(true); };
+    const weakSaved=localStorage.getItem('weakWordSel')||''; refreshWeakWordOptions(getWeakWordEntries(), weakSaved); if(el.weakSel){ const hasOption=[...el.weakSel.options].some(opt=>opt.value===weakSaved); el.weakSel.value=hasOption?weakSaved:''; el.weakSel.onchange=()=>{ localStorage.setItem('weakWordSel', el.weakSel.value); rebuildAndRender(true); }; }
     el.chkWeak.checked = localStorage.getItem('onlyWeak')==='1'; el.chkWeak.onchange=()=>{ localStorage.setItem('onlyWeak', el.chkWeak.checked?'1':'0'); rebuildAndRender(true); };
   }
 
-  function isUnlearned(id){ const s=SRS_MAP.get(id); if(!s) return true; if(s.last_result===0) return true; if((s.ease||0)<2.0 && (s.interval_d||0)<3) return true; return false; }
-  function buildQueue(){ const sec=el.secSel.value; const order=el.orderSel.value; const onlyWeak=el.chkWeak.checked; let items=(sec?'filter':'all')==='all' ? window.ALL_ITEMS : window.ALL_ITEMS.filter(x=>String(x.unit)===sec); if(onlyWeak) items=items.filter(x=>isUnlearned(x.id)); if(order==='rnd'){ const seed=Math.floor(Date.now()/86400000); let t=seed>>>0; const rnd=()=>{t^=t<<13; t^=t>>>17; t^=t<<5; return (t>>>0)/4294967296}; items=items.slice(); for(let i=items.length-1;i>0;i--){ const j=Math.floor(rnd()*(i+1)); [items[i],items[j]]=[items[j]],items[i]; } } else { items=items.slice().sort((a,b)=>{ const na=+String(a.unit||'').replace(/\D+/g,'')||0, nb=+String(b.unit||'').replace(/\D+/g,'')||0; if(na!==nb) return na-nb; return String(a.id).localeCompare(String(b.id)); }); } return items.map(it=>({ id:it.id,en:it.en,ja:it.ja,tags:it.tags||'',chunks_json:it.chunks||'[]',audio_fn:it.audio_fn||'' })); }
+  function isUnlearned(id){ const prof=getProficiencyEntry(id); if(prof && (prof.bestLevel||prof.level||1)>=3) return false; const s=SRS_MAP.get(id); if(!s) return true; if(s.last_result===0) return true; if((s.ease||0)<2.0 && (s.interval_d||0)<3) return true; return !prof; }
+  function buildQueue(){ const sec=el.secSel.value; const order=el.orderSel.value; const onlyWeak=el.chkWeak.checked; const weakWord=norm(el.weakSel?.value||''); let items=(sec?'filter':'all')==='all' ? window.ALL_ITEMS : window.ALL_ITEMS.filter(x=>String(x.unit)===sec); if(weakWord){ items=items.filter(x=>getItemTokens(x).includes(weakWord)); } if(onlyWeak) items=items.filter(x=>isUnlearned(x.id)); if(order==='rnd'){ const seed=Math.floor(Date.now()/86400000); let t=seed>>>0; const rnd=()=>{t^=t<<13; t^=t>>>17; t^=t<<5; return (t>>>0)/4294967296}; items=items.slice(); for(let i=items.length-1;i>0;i--){ const j=Math.floor(rnd()*(i+1)); [items[i],items[j]]=[items[j]],items[i]; } } else { items=items.slice().sort((a,b)=>{ const na=+String(a.unit||'').replace(/\D+/g,'')||0, nb=+String(b.unit||'').replace(/\D+/g,'')||0; if(na!==nb) return na-nb; return String(a.id).localeCompare(String(b.id)); }); } return items.map(it=>({ id:it.id,en:it.en,ja:it.ja,tags:it.tags||'',chunks_json:it.chunks||'[]',audio_fn:it.audio_fn||'' })); }
 
   // Audio resolve: DIR (folder) -> OPFS -> base URL
   const audioUrlCache=new Map();
@@ -410,7 +611,23 @@
   function stopAudio(){ try{audio.pause();}catch(_){ } audio.currentTime=0; }
   function resetResult(){ updateMatch(null); }
   function resetTranscript(){ qs('#transcript').innerHTML=''; }
-  function toggleJA(){ el.ja.style.display=(el.ja.style.display==='none')?'block':'none'; }
+
+  let hintState=0;
+  function setHintState(state,{silent=false}={}){
+    const prev=hintState;
+    hintState=Math.max(0, Math.min(2, state|0));
+    el.en.dataset.hintState=String(hintState);
+    el.ja.dataset.hintState=String(hintState);
+    el.ja.style.display = hintState>=1 ? 'block' : 'none';
+    if(!silent){
+      if(hintState===1 && prev!==1) toast('英文を表示', 1200);
+      else if(hintState===2 && prev!==2) toast('和訳を表示', 1200);
+    }
+  }
+  function resetHints(){ setHintState(0,{silent:true}); }
+  function advanceHint(){ if(!sessionActive) return; if(hintState>=2) return; setHintState(hintState+1,{}); }
+  function englishHintShown(){ return hintState>=1; }
+  function translationHintShown(){ return hintState>=2; }
 
   function showIdleCard(){
     sessionActive=false;
@@ -420,7 +637,7 @@
     el.en.textContent = QUEUE.length ? 'タップして開始（音声が自動再生されます）' : '出題できる問題がありません';
     clearHighlight();
     el.ja.textContent = '—';
-    el.ja.style.display = 'none';
+    setHintState(1,{silent:true});
     el.chips.innerHTML = '';
     cardStart = now();
     failCount = 0;
@@ -432,7 +649,18 @@
     el.mic.disabled = true;
     el.next.hidden = true;
     el.pbar.value = 0;
-    el.footer.textContent = QUEUE.length ? '問題部分をタップすると第1問が始まります' : 'キューが空です';
+    if(QUEUE.length){
+      const total=LATEST_STATS.total||0;
+      const lv3Rate=total?((LATEST_STATS.counts[3]||0)+(LATEST_STATS.counts[4]||0)+(LATEST_STATS.counts[5]||0))/total:0;
+      const lv4Rate=total?((LATEST_STATS.counts[4]||0)+(LATEST_STATS.counts[5]||0))/total:0;
+      let msg='問題部分をタップすると第1問が始まります';
+      if(lv3Rate<0.7){ msg+='｜まずはLV3(90%)を揃えましょう'; }
+      else if(lv4Rate<0.5){ msg+='｜英文非表示のLV4にも挑戦！'; }
+      else{ msg+='｜高得点を維持できています'; }
+      el.footer.textContent=msg;
+    }else{
+      el.footer.textContent='キューが空です';
+    }
   }
 
   async function render(i, autoPlay=false){
@@ -446,8 +674,32 @@
     el.en.innerHTML=spanify(it.en);
     clearHighlight();
     el.ja.textContent=it.ja;
-    el.ja.style.display='none';
     el.chips.innerHTML='';
+    const profEntry=getProficiencyEntry(it.id);
+    const bestLevel=getBestLevel(it.id);
+    if(bestLevel){
+      const chip=document.createElement('span');
+      chip.className=`chip lv${bestLevel}`;
+      const currentLevel=profEntry?(profEntry.level||bestLevel):bestLevel;
+      chip.textContent=`LV${bestLevel}`;
+      chip.title = profEntry ? `現在LV${currentLevel} / 最高LV${profEntry.bestLevel||bestLevel}` : '習熟度未測定';
+      el.chips.appendChild(chip);
+      if(bestLevel<5){
+        const goal=document.createElement('span');
+        goal.className='chip';
+        if(bestLevel<3){ goal.textContent='次の目標: LV3'; }
+        else if(bestLevel<4){ goal.textContent='次の目標: LV4'; }
+        else { goal.textContent='次の目標: LV5 (任意)'; }
+        el.chips.appendChild(goal);
+      }
+    }
+    if(el.weakSel && el.weakSel.value){
+      const weakChip=document.createElement('span');
+      weakChip.className='chip';
+      weakChip.textContent=`苦手単語: ${el.weakSel.value}`;
+      el.chips.appendChild(weakChip);
+    }
+    resetHints();
     (it.tags||'').split(',').filter(Boolean).forEach(t=>{ const s=document.createElement('span'); s.className='chip'; s.textContent=t.trim(); el.chips.appendChild(s); });
     const url=await resolveAudioUrl(it.audio_fn);
     if(url){
@@ -527,9 +779,9 @@
   // Gestures
   let touchStart=null; const TH=60;
   el.card.addEventListener('touchstart',(ev)=>{ if(!sessionActive){ touchStart=null; return; } if(ev.touches?.length!==1) return; const t=ev.touches[0]; touchStart={x:t.clientX,y:t.clientY}; },{passive:true});
-  el.card.addEventListener('touchend',(ev)=>{ if(!touchStart) return; if(!sessionActive){ touchStart=null; return; } const end=ev.changedTouches[0]; const dx=end.clientX-touchStart.x, dy=end.clientY-touchStart.y; if(Math.abs(dx)>Math.abs(dy) && Math.abs(dx)>TH){ if(dx>0) prevCard(true); else nextCard(false,true); } else if(Math.abs(dy)>TH && dy<0){ toggleJA(); } touchStart=null; },{passive:true});
+  el.card.addEventListener('touchend',(ev)=>{ if(!touchStart) return; if(!sessionActive){ touchStart=null; return; } const end=ev.changedTouches[0]; const dx=end.clientX-touchStart.x, dy=end.clientY-touchStart.y; if(Math.abs(dx)>Math.abs(dy) && Math.abs(dx)>TH){ if(dx>0) prevCard(true); else nextCard(false,true); } else if(Math.abs(dy)>TH && dy<0){ advanceHint(); } touchStart=null; },{passive:true});
   el.en.addEventListener('click', async ()=>{ if(!sessionActive){ await startSession(true); return; } if(!audio.src) return; try{ if(audio.paused) await audio.play(); else audio.pause(); }catch(_){ } });
-  el.en.addEventListener('dblclick', ()=>{ if(!sessionActive) return; toggleJA(); });
+  el.en.addEventListener('dblclick', ()=>{ if(!sessionActive) return; advanceHint(); });
   el.next.onclick=()=> nextCard(false,true);
 
   // ASR（改良：重複抑制・上限・多重一致防止）
@@ -717,13 +969,32 @@
     const matchRate = calcMatchScore(refCount, recall, precision);
     updateMatch(matchRate);
 
+    const englishUsed=englishHintShown();
+    const translationUsed=translationHintShown();
+    const prevBest=getBestLevel(it.id);
+    const levelAchieved=determineProficiencyLevel(matchRate, englishUsed, translationUsed);
     const pass = matchRate >= 0.70;
     if(pass){
       failCount=0;
       playTone('success');
       showNextCta();
-      el.footer.textContent = '一致率70%以上！「次へ」で進みましょう';
-      toast('Great! 合格です', 1600);
+      let footerMsg='一致率70%以上！「次へ」で進みましょう';
+      let toastMsg='Great! 合格です';
+      if(levelAchieved>=5){
+        footerMsg='英文非表示で100%！最高レベルです';
+        toastMsg=prevBest<5?'Perfect! LV5達成！':'Perfect! 素晴らしい精度です';
+      }else if(levelAchieved>=4){
+        footerMsg='英文なしで90%以上！この調子で維持しましょう';
+        toastMsg=prevBest<4?'Great! LV4達成！':'Great! 安定してLV4を維持しています';
+      }else if(levelAchieved>=3){
+        footerMsg='一致率90%以上！次は英文非表示に挑戦してみましょう';
+        toastMsg=prevBest<3?'Great! LV3達成！':'Great! 90%超えをキープしています';
+      }else if(translationUsed){
+        footerMsg='翻訳ヒントありでクリア。英文ヒントだけで90%を目指そう';
+        toastMsg='Good! ヒントを減らしてレベルアップ';
+      }
+      el.footer.textContent = footerMsg;
+      toast(toastMsg, 1600);
     }else{
       failCount++;
       playTone('fail');
@@ -734,7 +1005,8 @@
         el.mic.disabled=true;
         setTimeout(()=>{ hideNextCta(); nextCard(false,true); }, 900);
       }else{
-        el.footer.textContent = `一致率${pct}%：70%を目指してもう一度 (${failCount}/${FAIL_LIMIT})`;
+        const aim = englishUsed ? '英文ヒントを減らして精度を上げましょう' : '英文ヒントを表示して確認しましょう';
+        el.footer.textContent = `一致率${pct}%：${aim} (${failCount}/${FAIL_LIMIT})`;
         toast('70%未満。もう一度チャレンジ！', 1600);
       }
     }
@@ -750,17 +1022,25 @@
       matched_tokens_json: JSON.stringify(matched),
       missing_tokens_json: JSON.stringify(missing),
       recall:+recall.toFixed(3), precision:+precision.toFixed(3),
-      match:+(matchRate||0).toFixed(3)
+      match:+(matchRate||0).toFixed(3),
+      level: levelAchieved,
+      hint_en: englishUsed?1:0,
+      hint_ja: translationUsed?1:0
     };
     try{ await sendLog('speech', payload); }catch(_){ }
     if(!pass && failCount<FAIL_LIMIT){ el.mic.disabled=false; }
+    recordWeakWordsForItem(it.id, missing);
+    if(levelAchieved>=4 && (!missing || !missing.length)){
+      rewardWordsForItem(getItemTokens(it));
+    }
+    updateProficiencyRecord(it.id, { level: levelAchieved, matchRate, englishHintUsed: englishUsed, translationHintUsed: translationUsed });
     recog=null;
   }
 
   el.mic.onclick=()=>{ if(!recogOn) startRec(); else stopRec(); };
   qsa('[data-eval="ok"]').forEach(b=>b.onclick=()=>{ if(!sessionActive) return; submitEval(1); });
   qsa('[data-eval="ng"]').forEach(b=>b.onclick=()=>{ if(!sessionActive) return; submitEval(0); });
-  async function submitEval(bin){ const it=QUEUE[idx]; if(!it) return; const payload={ ts:new Date().toISOString(), id:it.id, result:bin, auto_recall:null, auto_precision:null, response_ms:Math.max(0, now()-cardStart), hint_used:(el.ja.style.display==='block'), device:UA }; try{ await sendLog('attempt', payload); }catch(_){ } hideNextCta(); nextCard(false,true); }
+  async function submitEval(bin){ const it=QUEUE[idx]; if(!it) return; const payload={ ts:new Date().toISOString(), id:it.id, result:bin, auto_recall:null, auto_precision:null, response_ms:Math.max(0, now()-cardStart), hint_used:(englishHintShown()||translationHintShown()), device:UA }; try{ await sendLog('attempt', payload); }catch(_){ } hideNextCta(); nextCard(false,true); }
 
   // Boot
   (async()=>{
