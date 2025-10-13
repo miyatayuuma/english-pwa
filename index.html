@@ -32,10 +32,6 @@
     .en .hit{background:rgba(70,211,127,.18);border-bottom:1px solid rgba(70,211,127,.6)}
     .en .miss{background:rgba(255,107,107,.15);border-bottom:1px dashed rgba(255,107,107,.7)}
     .ja{font-size:16px;color:var(--muted);display:none}
-    .weak-words{display:flex;gap:6px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
-    .weak-words .word{padding:4px 8px;background:rgba(255,255,255,.08);border-radius:999px;border:1px solid rgba(255,255,255,.12);cursor:pointer;transition:all .2s ease}
-    .weak-words .word.active{border-color:var(--accent);color:var(--accent);background:rgba(98,213,255,.12)}
-    .weak-words .label{padding:4px 0;font-weight:600}
     #transcript{min-height:1.6em}
     #transcript .interim{opacity:.6}
 
@@ -97,7 +93,6 @@
   <main>
     <section class="card" id="card" aria-live="polite">
       <div class="chips" id="chips"></div>
-      <div id="weakWords" class="weak-words" hidden></div>
       <div id="enText" class="en">タップで再生 / ダブルタップで和訳</div>
       <div id="jaText" class="ja">—</div>
       <div id="transcript" class="muted"></div>
@@ -249,98 +244,6 @@
     el.level.textContent = best>last ? `${last} / ${best}` : `${last}`;
   }
 
-  const WORD_STATS_KEY='wordStatsV1';
-  function loadWordStats(){ try{ return JSON.parse(localStorage.getItem(WORD_STATS_KEY)||'{}'); }catch(_){ return {}; } }
-  function saveWordStats(state){ try{ localStorage.setItem(WORD_STATS_KEY, JSON.stringify(state)); }catch(_){ } }
-  let WORD_STATS=loadWordStats();
-  const FOCUS_WORD_KEY='focusWordV1';
-  let focusWord=(localStorage.getItem(FOCUS_WORD_KEY)||'').trim();
-  if(!focusWord) focusWord=null;
-  function rememberFocusWord(){
-    try{
-      if(focusWord){ localStorage.setItem(FOCUS_WORD_KEY, focusWord); }
-      else{ localStorage.removeItem(FOCUS_WORD_KEY); }
-    }catch(_){ }
-  }
-  function getTopWeakWords(limit=5){
-    const arr=[];
-    for(const [word,data] of Object.entries(WORD_STATS||{})){
-      if(!data || !data.seen) continue;
-      const missRate = data.miss ? data.miss / Math.max(1, data.seen) : 0;
-      if(data.seen < 2 && missRate <= 0) continue;
-      arr.push({ word, missRate, miss:data.miss||0, seen:data.seen||0, updated:data.updatedAt||0 });
-    }
-    arr.sort((a,b)=>{
-      if(b.missRate!==a.missRate) return b.missRate-a.missRate;
-      if(b.miss!==a.miss) return b.miss-a.miss;
-      if(b.seen!==a.seen) return b.seen-a.seen;
-      return (b.updated||0)-(a.updated||0);
-    });
-    return arr.slice(0, limit);
-  }
-  function refreshWeakWordBar(){
-    if(!el.weak) return;
-    el.weak.innerHTML='';
-    const top=getTopWeakWords(5);
-    const hasFocus = !!focusWord;
-    if(!hasFocus && !top.length){
-      el.weak.hidden=true;
-      return;
-    }
-    if(hasFocus){
-      const chip=document.createElement('span');
-      chip.className='word active';
-      chip.dataset.word=focusWord;
-      chip.dataset.action='clear';
-      chip.textContent=`集中:${focusWord}`;
-      el.weak.appendChild(chip);
-    }
-    if(top.length){
-      const label=document.createElement('span');
-      label.className='label';
-      label.textContent='苦手単語';
-      el.weak.appendChild(label);
-      top.forEach(({word, missRate, miss, seen})=>{
-        const chip=document.createElement('span');
-        chip.className='word';
-        chip.dataset.word=word;
-        chip.textContent=`${word} (${Math.round(missRate*100)}%・${miss}/${seen})`;
-        el.weak.appendChild(chip);
-      });
-    }
-    el.weak.hidden=false;
-  }
-  function recordWordPerformance(item, matchInfo){
-    if(!item) return;
-    const refTokens=toks(item.en||'');
-    const misses=new Set((matchInfo?.missing||[]).map(w=>norm(w)));
-    const nowTs=Date.now();
-    for(const token of refTokens){
-      const key=norm(token);
-      if(!key) continue;
-      const info=WORD_STATS[key] || {seen:0, miss:0};
-      info.seen = (info.seen||0)+1;
-      if(misses.has(key)){ info.miss = (info.miss||0)+1; }
-      info.updatedAt = nowTs;
-      WORD_STATS[key]=info;
-    }
-    saveWordStats(WORD_STATS);
-    refreshWeakWordBar();
-  }
-  function applyFocusWord(word){
-    const next=(word||'').trim();
-    if(next){
-      focusWord=next;
-      rememberFocusWord();
-      toast(`「${focusWord}」を集中練習に設定しました`);
-    }else{
-      focusWord=null;
-      rememberFocusWord();
-      toast('集中練習モードを解除しました');
-    }
-    rebuildAndRender(true);
-    refreshWeakWordBar();
-  }
 
   let toneCtx=null;
   function playTone(type){
@@ -368,7 +271,7 @@
   }
 
   // ===== Elements =====
-  const el={ left:qs('#statLeft'), min:qs('#statMin'), streak:qs('#statStreak'), pbar:qs('#pbar'), footer:qs('#footerInfo'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), weak:qs('#weakWords'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), next:qs('#btnNext'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), chkWeak:qs('#chkOnlyWeak'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnImport:qs('#btnImport'), filePick:qs('#filePick'), btnTestAudio:qs('#btnTestAudio'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus') };
+  const el={ left:qs('#statLeft'), min:qs('#statMin'), streak:qs('#statStreak'), pbar:qs('#pbar'), footer:qs('#footerInfo'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), next:qs('#btnNext'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), chkWeak:qs('#chkOnlyWeak'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnImport:qs('#btnImport'), filePick:qs('#filePick'), btnTestAudio:qs('#btnTestAudio'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus') };
   const audio=qs('#player');
   const PREFETCH_POOL=new Map();
   const PREFETCH_LIMIT=6;
@@ -405,20 +308,6 @@
   function applyRemoteStatus(status){
     remoteStatus = status ? Object.assign({}, status) : null;
     updateHeaderStats();
-  }
-
-  refreshWeakWordBar();
-  if(el.weak){
-    el.weak.addEventListener('click',(ev)=>{
-      const chip=ev.target.closest('.word');
-      if(!chip) return;
-      const action=chip.dataset.action||'';
-      if(action==='clear'){ applyFocusWord(''); return; }
-      const word=(chip.dataset.word||'').trim();
-      if(!word) return;
-      if(focusWord && norm(focusWord)===norm(word)){ applyFocusWord(''); }
-      else{ applyFocusWord(word); }
-    });
   }
 
   function waitForAudioReady(el, timeout=2000){
@@ -783,7 +672,7 @@
   }
 
   function isUnlearned(id){ const info=getLevelInfo(id); if((info.best||1)<3) return true; const s=SRS_MAP.get(id); if(!s) return true; if(s.last_result===0) return true; if((s.ease||0)<2.0 && (s.interval_d||0)<3) return true; return false; }
-  function buildQueue(){ const sec=el.secSel.value; const order=el.orderSel.value; const onlyWeak=el.chkWeak.checked; let items=(sec?'filter':'all')==='all' ? window.ALL_ITEMS : window.ALL_ITEMS.filter(x=>String(x.unit)===sec); if(onlyWeak) items=items.filter(x=>isUnlearned(x.id)); if(focusWord){ const w=norm(focusWord); if(w) items=items.filter(x=>norm(x.en).includes(w)); } if(order==='rnd'){ const seed=Math.floor(Date.now()/86400000); let t=seed>>>0; const rnd=()=>{t^=t<<13; t^=t>>>17; t^=t<<5; return (t>>>0)/4294967296}; items=items.slice(); for(let i=items.length-1;i>0;i--){ const j=Math.floor(rnd()*(i+1)); [items[i],items[j]]=[items[j]],items[i]; } } else { items=items.slice().sort((a,b)=>{ const na=+String(a.unit||'').replace(/\D+/g,'')||0, nb=+String(b.unit||'').replace(/\D+/g,'')||0; if(na!==nb) return na-nb; return String(a.id).localeCompare(String(b.id)); }); } return items.filter(Boolean).map(it=>({ id:it.id,en:it.en,ja:it.ja,tags:it.tags||'',chunks_json:it.chunks||'[]',audio_fn:it.audio_fn||'' })); }
+  function buildQueue(){ const sec=el.secSel.value; const order=el.orderSel.value; const onlyWeak=el.chkWeak.checked; let items=(sec?'filter':'all')==='all' ? window.ALL_ITEMS : window.ALL_ITEMS.filter(x=>String(x.unit)===sec); if(onlyWeak) items=items.filter(x=>isUnlearned(x.id)); if(order==='rnd'){ const seed=Math.floor(Date.now()/86400000); let t=seed>>>0; const rnd=()=>{t^=t<<13; t^=t>>>17; t^=t<<5; return (t>>>0)/4294967296}; items=items.slice(); for(let i=items.length-1;i>0;i--){ const j=Math.floor(rnd()*(i+1)); [items[i],items[j]]=[items[j]],items[i]; } } else { items=items.slice().sort((a,b)=>{ const na=+String(a.unit||'').replace(/\D+/g,'')||0, nb=+String(b.unit||'').replace(/\D+/g,'')||0; if(na!==nb) return na-nb; return String(a.id).localeCompare(String(b.id)); }); } return items.filter(Boolean).map(it=>({ id:it.id,en:it.en,ja:it.ja,tags:it.tags||'',chunks_json:it.chunks||'[]',audio_fn:it.audio_fn||'' })); }
 
   // Audio resolve: DIR (folder) -> OPFS -> base URL
   const audioUrlCache=new Map();
@@ -1179,7 +1068,6 @@
     const levelCandidate = evaluateLevel(matchRate, stageUsed);
     const levelInfo = updateLevelInfo(it.id, levelCandidate, matchRate, stageUsed);
     refreshLevelDisplay(levelInfo);
-    recordWordPerformance(it, matchInfo);
 
     const pct=Math.max(0, Math.round((matchRate||0)*100));
     const levelLabel = levelInfo ? `Lv${levelInfo.last || levelInfo.best || levelCandidate}` : `Lv${levelCandidate}`;
