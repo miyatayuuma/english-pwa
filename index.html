@@ -49,10 +49,15 @@
     .btn{border:1px solid var(--bd);border-radius:12px;background:#111726;color:var(--txt);padding:10px 14px;cursor:pointer}
     .btn.ok{background:#10331f;border-color:#1f5c38}
     .btn.ng{background:#331717;border-color:#5c2929}
-    #btnMic{width:72px;height:72px;font-size:22px;border-radius:999px;background:#1a2134;border-color:#2a3753;display:grid;place-items:center;font-weight:600;margin-left:auto;margin-right:auto;transition:transform .2s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease}
+    .audio-ctrls{display:flex;gap:14px;justify-content:center;align-items:center;margin-top:8px}
+    #btnPlay{width:60px;height:60px;font-size:22px;border-radius:999px;background:#162032;border-color:#2a3753;display:grid;place-items:center;font-weight:600;transition:transform .2s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease}
+    #btnPlay:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}
+    #btnPlay.playing{background:#235179;border-color:#58a3d9;box-shadow:0 0 0 0 rgba(88,163,217,.45);animation:playPulse 1.6s ease-in-out infinite}
+    #btnMic{width:72px;height:72px;font-size:22px;border-radius:999px;background:#1a2134;border-color:#2a3753;display:grid;place-items:center;font-weight:600;transition:transform .2s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease}
     #btnMic.recording{background:var(--accent);border-color:#7de4ff;box-shadow:0 0 0 0 rgba(98,213,255,.55);animation:micPulse 1.4s ease-in-out infinite}
     #btnMic:disabled{opacity:.35;cursor:not-allowed;animation:none;box-shadow:none}
     #btnMic .micIcon{font-size:28px}
+    @keyframes playPulse{0%{transform:scale(1);box-shadow:0 0 0 0 rgba(88,163,217,.45);}70%{transform:scale(1.05);box-shadow:0 0 0 16px rgba(88,163,217,0);}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(88,163,217,0);}}
     @keyframes micPulse{0%{transform:scale(1);box-shadow:0 0 0 0 rgba(98,213,255,.55);}70%{transform:scale(1.05);box-shadow:0 0 0 16px rgba(98,213,255,0);}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(98,213,255,0);}}
     .next-cta{margin-top:10px;display:block;width:100%;font-size:18px;padding:14px;border-radius:14px;background:#10331f;border-color:#1f5c38;font-weight:600}
 
@@ -93,7 +98,7 @@
   <main>
     <section class="card" id="card" aria-live="polite">
       <div class="chips" id="chips"></div>
-      <div id="enText" class="en">タップで再生 / ダブルタップで和訳</div>
+      <div id="enText" class="en">再生ボタンでスタート / ダブルタップで和訳</div>
       <div id="jaText" class="ja">—</div>
       <div id="transcript" class="muted"></div>
 
@@ -107,7 +112,10 @@
         <button class="btn ok" data-eval="ok">◯ 得意</button>
         <button class="btn ng" data-eval="ng">× 苦手</button>
       </div>
-      <button id="btnMic" class="btn" type="button" aria-label="マイク開始/停止"><span class="micIcon">🎤</span></button>
+      <div class="audio-ctrls">
+        <button id="btnPlay" class="btn" type="button" aria-label="音声を再生/一時停止"><span class="playIcon">▶️</span></button>
+        <button id="btnMic" class="btn" type="button" aria-label="マイク開始/停止"><span class="micIcon">🎤</span></button>
+      </div>
       <button id="btnNext" class="btn next-cta" type="button" hidden>次へ</button>
     </section>
   </main>
@@ -271,8 +279,18 @@
   }
 
   // ===== Elements =====
-  const el={ left:qs('#statLeft'), min:qs('#statMin'), streak:qs('#statStreak'), pbar:qs('#pbar'), footer:qs('#footerInfo'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), next:qs('#btnNext'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), chkWeak:qs('#chkOnlyWeak'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnImport:qs('#btnImport'), filePick:qs('#filePick'), btnTestAudio:qs('#btnTestAudio'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus') };
+  const el={ left:qs('#statLeft'), min:qs('#statMin'), streak:qs('#statStreak'), pbar:qs('#pbar'), footer:qs('#footerInfo'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), next:qs('#btnNext'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), chkWeak:qs('#chkOnlyWeak'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnImport:qs('#btnImport'), filePick:qs('#filePick'), btnTestAudio:qs('#btnTestAudio'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus') };
   const audio=qs('#player');
+  function updatePlayButtonAvailability(){ if(!el.play) return; const hasSrc=!!audio.dataset.srcKey; el.play.disabled=!hasSrc; }
+  function updatePlayVisualState(){ if(!el.play) return; const playing=!audio.paused && !audio.ended; el.play.classList.toggle('playing', playing); el.play.setAttribute('aria-pressed', playing?'true':'false'); const icon=el.play.querySelector('.playIcon'); if(icon){ icon.textContent = playing ? '⏸' : '▶️'; } }
+  audio.addEventListener('play', updatePlayVisualState);
+  audio.addEventListener('playing', updatePlayVisualState);
+  audio.addEventListener('pause', updatePlayVisualState);
+  audio.addEventListener('ended', updatePlayVisualState);
+  audio.addEventListener('emptied', ()=>{ updatePlayButtonAvailability(); updatePlayVisualState(); });
+  audio.addEventListener('loadeddata', updatePlayButtonAvailability);
+  updatePlayVisualState();
+  updatePlayButtonAvailability();
   const PREFETCH_POOL=new Map();
   const PREFETCH_LIMIT=6;
   let sessionActive=false;
@@ -284,6 +302,7 @@
   let idx=-1;
   let sessionStart=0;
   let cardStart=0;
+  let autoPlayUnlocked=false;
 
   function updateHeaderStats(){
     const queueLen=Array.isArray(QUEUE)?QUEUE.length:0;
@@ -343,6 +362,7 @@
       audio.dataset.srcKey = url;
       audio.src = url;
     }
+    updatePlayButtonAvailability();
     try{ audio.load?.(); }catch(_){ }
     await waitForAudioReady(audio, 2000);
   }
@@ -351,6 +371,8 @@
     delete audio.dataset.srcKey;
     audio.removeAttribute('src');
     try{ audio.load?.(); }catch(_){ }
+    updatePlayButtonAvailability();
+    updatePlayVisualState();
   }
 
   function rememberPrefetch(url, entry){
@@ -699,6 +721,36 @@
 
   // Render & navigation
   function stopAudio(){ try{audio.pause();}catch(_){ } audio.currentTime=0; }
+  async function tryPlayAudio({userInitiated=false, resetPosition=false}={}){
+    if(!audio?.dataset?.srcKey){
+      if(userInitiated) toast('音声が見つかりません');
+      return false;
+    }
+    if(resetPosition){
+      try{ audio.currentTime=0; }catch(_){ }
+    }
+    try{
+      const playPromise=audio.play();
+      if(playPromise && typeof playPromise.then==='function'){
+        await playPromise;
+      }
+      if(userInitiated){
+        autoPlayUnlocked=true;
+      }
+      return true;
+    }catch(err){
+      console.warn('audio play failed', err);
+      if(userInitiated){
+        let reason='音声を再生できませんでした';
+        if(err){
+          if(err.name==='NotAllowedError'){ reason='ブラウザにブロックされました。端末の音量設定などを確認して再度タップしてください'; }
+          else if(err.message||err.name){ reason=err.message||err.name; }
+        }
+        toast(`音声を再生できません: ${reason}`);
+      }
+      return false;
+    }
+  }
   function resetResult(){ updateMatch(null); }
   function resetTranscript(){ qs('#transcript').innerHTML=''; }
   function toggleJA(){ advanceHintStage(); }
@@ -708,7 +760,11 @@
     sessionStarting=false;
     stopAudio();
     clearAudioSource();
-    el.en.textContent = QUEUE.length ? 'タップして開始（音声が自動再生されます）' : '出題できる問題がありません';
+    autoPlayUnlocked=false;
+    updatePlayVisualState();
+    updatePlayButtonAvailability();
+    if(el.play){ el.play.disabled=true; }
+    el.en.textContent = QUEUE.length ? '再生ボタンで第1問を開始します' : '出題できる問題がありません';
     el.en.classList.remove('concealed');
     clearHighlight();
     el.ja.textContent = '—';
@@ -730,7 +786,7 @@
     el.mic.disabled = true;
     el.next.hidden = true;
     el.pbar.value = 0;
-    el.footer.textContent = QUEUE.length ? '問題部分をタップすると第1問が始まります' : 'キューが空です';
+    el.footer.textContent = QUEUE.length ? '再生ボタンで第1問をスタートできます' : 'キューが空です';
     if(!remoteStatus){
       localMinutes=0;
     }
@@ -762,6 +818,7 @@
     }else{
       clearAudioSource();
     }
+    if(el.play){ el.play.disabled=!url; }
     cardStart=now();
     resetResult();
     resetTranscript();
@@ -773,7 +830,7 @@
     el.mic.disabled=false;
     primeAudio(QUEUE[i+1]);
     primeAudio(QUEUE[i-1]);
-    if(autoPlay&&url){ try{ await audio.play(); }catch(_){ } }
+    if(autoPlay&&url){ await tryPlayAudio({userInitiated:false, resetPosition:true}); }
   }
 
   async function rebuildAndRender(resetIndex=false){
@@ -827,7 +884,7 @@
     return true;
   }
 
-  function nextCard(first=false, autoPlay=false){
+  async function nextCard(first=false, autoPlay=false){
     if(!QUEUE.length){ el.footer.textContent='キューが空です'; clearAudioSource(); stopAudio(); return; }
     if(!sessionActive) return;
     if(!first && idx>=QUEUE.length-1){
@@ -836,20 +893,20 @@
       return;
     }
     idx = first? 0 : Math.min(QUEUE.length-1, idx+1);
-    render(idx, autoPlay);
+    await render(idx, autoPlay && autoPlayUnlocked);
     el.pbar.value=idx;
     el.footer.textContent=`#${idx+1}/${QUEUE.length}`;
   }
-  function prevCard(autoPlay=false){
+  async function prevCard(autoPlay=false){
     if(!QUEUE.length) return;
     if(!sessionActive) return;
     idx=Math.max(0, idx-1);
-    render(idx, autoPlay);
+    await render(idx, autoPlay && autoPlayUnlocked);
     el.pbar.value=idx;
     el.footer.textContent=`#${idx+1}/${QUEUE.length}`;
   }
 
-  async function startSession(autoPlay=true){
+  async function startSession(autoPlay=false){
     if(sessionActive || sessionStarting) return;
     if(!QUEUE.length){ showIdleCard(); return; }
     sessionStarting=true;
@@ -862,7 +919,7 @@
       sessionStart=now();
       idx=-1;
       el.mic.disabled=false;
-      nextCard(true, autoPlay);
+      await nextCard(true, autoPlay);
     }finally{
       sessionStarting=false;
     }
@@ -872,9 +929,22 @@
   let touchStart=null; const TH=60;
   el.card.addEventListener('touchstart',(ev)=>{ if(!sessionActive){ touchStart=null; return; } if(ev.touches?.length!==1) return; const t=ev.touches[0]; touchStart={x:t.clientX,y:t.clientY}; },{passive:true});
   el.card.addEventListener('touchend',(ev)=>{ if(!touchStart) return; if(!sessionActive){ touchStart=null; return; } const end=ev.changedTouches[0]; const dx=end.clientX-touchStart.x, dy=end.clientY-touchStart.y; if(Math.abs(dx)>Math.abs(dy) && Math.abs(dx)>TH){ if(dx>0) prevCard(true); else nextCard(false,true); } else if(Math.abs(dy)>TH && dy<0){ toggleJA(); } touchStart=null; },{passive:true});
-  el.en.addEventListener('click', async ()=>{ if(!sessionActive){ await startSession(true); return; } if(!audio.src) return; try{ if(audio.paused) await audio.play(); else audio.pause(); }catch(_){ } });
+  el.en.addEventListener('click', async ()=>{ if(!sessionActive){ await startSession(false); } });
   el.en.addEventListener('dblclick', ()=>{ if(!sessionActive) return; toggleJA(); });
   el.next.onclick=()=> nextCard(false,true);
+  el.play.addEventListener('click', async ()=>{
+    if(sessionStarting) return;
+    if(!sessionActive){ await startSession(false); }
+    if(sessionStarting) return;
+    if(!sessionActive){ return; }
+    if(!audio.dataset.srcKey){ toast('音声が見つかりません'); return; }
+    if(audio.paused){
+      const shouldReset = audio.ended || audio.currentTime<=0.05;
+      await tryPlayAudio({userInitiated:true, resetPosition:shouldReset});
+    }else{
+      audio.pause();
+    }
+  });
 
   // ASR（改良：重複抑制・上限・多重一致防止）
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
