@@ -4,6 +4,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>英語学習（範囲UI＋ASR・安定改良版）</title>
+  <!-- ★ PWA 追加 -->
+  <link rel="manifest" href="./manifest.webmanifest">
+  <meta name="theme-color" content="#0b0e1a" />
   <style>
     :root{ --bg:#0b0e1a; --panel:rgba(20,24,36,.65); --bd:rgba(255,255,255,.12); --txt:#e6e8ef; --muted:#aeb5c6; --accent:#62d5ff; --good:#46d37f; --bad:#ff6b6b; }
     *{box-sizing:border-box}
@@ -1249,6 +1252,15 @@
     }
   })();
 })();
+</script>
+
+<!-- ★ Service Worker 登録（最小） -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').catch(()=>{});
+    });
+  }
 </script>
 </body>
 </html>
