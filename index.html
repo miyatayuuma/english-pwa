@@ -25,8 +25,11 @@
     @keyframes loaderDots{0%,100%{transform:translateY(0);opacity:.35;}50%{transform:translateY(-6px);opacity:1;}}
     #app{position:fixed;inset:0;display:grid;grid-template-rows:auto auto 1fr auto}
 
-    header{padding:10px 12px;display:flex;gap:12px;align-items:center;background:var(--panel);border-bottom:1px solid var(--bd)}
-    .stat{display:flex;gap:6px;align-items:baseline;font-size:14px;color:var(--muted)} .stat b{font-size:18px;color:var(--txt)} .grow{flex:1}
+    header{padding:10px 12px;display:flex;gap:14px;align-items:center;background:var(--panel);border-bottom:1px solid var(--bd)}
+    .stat{display:flex;gap:4px;align-items:center;font-size:14px;color:var(--muted)}
+    .stat-main{color:var(--txt);font-size:18px;font-weight:600;font-variant-numeric:tabular-nums}
+    .stat-sub{color:var(--muted);font-size:14px;font-weight:500;letter-spacing:.02em}
+    .grow{flex:1}
     .icon{width:38px;height:38px;border-radius:999px;border:1px solid var(--bd);display:grid;place-items:center;cursor:pointer;background:#111726}
 
     /* 範囲UI（ネイティブセレクト中心＝モバイル最適） */
@@ -93,9 +96,18 @@
 </div>
 <div id="app">
   <header>
-    <div class="stat">残 <b id="statLeft">0</b></div>
-    <div class="stat">分 <b id="statMin">0</b></div>
-    <div class="stat">streak <b id="statStreak">0</b></div>
+    <div class="stat">
+      <span class="stat-main" id="statSection">—</span>
+    </div>
+    <div class="stat">
+      <span class="stat-sub">Lv</span>
+      <span class="stat-main" id="statLevelAvg">—</span>
+    </div>
+    <div class="stat">
+      <span class="stat-main" id="statProgressCurrent">0</span>
+      <span class="stat-sub">/</span>
+      <span class="stat-main" id="statProgressTotal">0</span>
+    </div>
     <div class="grow"></div>
     <div id="btnCfg" class="icon" title="設定">⚙️</div>
   </header>
@@ -332,7 +344,7 @@
   }
 
   // ===== Elements =====
-  const el={ left:qs('#statLeft'), min:qs('#statMin'), streak:qs('#statStreak'), pbar:qs('#pbar'), footer:qs('#footerInfo'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), next:qs('#btnNext'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), chkWeak:qs('#chkOnlyWeak'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnImport:qs('#btnImport'), filePick:qs('#filePick'), btnTestAudio:qs('#btnTestAudio'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay') };
+  const el={ headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerInfo'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), next:qs('#btnNext'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), chkWeak:qs('#chkOnlyWeak'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnImport:qs('#btnImport'), filePick:qs('#filePick'), btnTestAudio:qs('#btnTestAudio'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay') };
   const audio=qs('#player');
   const overlayLocks=new Set();
   function updateOverlayState(){ if(!el.overlay) return; const active=overlayLocks.size>0; el.overlay.classList.toggle('hidden', !active); el.overlay.classList.toggle('active', active); }
@@ -353,8 +365,6 @@
   let sessionActive=false;
   let sessionStarting=false;
   let remoteStatus=null;
-  let localMinutes=0;
-  let localStreak=0;
   let QUEUE=[];
   let idx=-1;
   let sessionStart=0;
@@ -362,23 +372,60 @@
   let autoPlayUnlocked=false;
 
   function updateHeaderStats(){
-    const queueLen=Array.isArray(QUEUE)?QUEUE.length:0;
-    const leftVal = remoteStatus && remoteStatus.remaining_cards!=null ? Number(remoteStatus.remaining_cards) : queueLen;
-    const displayLeft = Number.isFinite(leftVal) ? Math.max(0, Math.round(leftVal)) : queueLen;
-    el.left.textContent = displayLeft!=null ? displayLeft : 0;
-    if(!remoteStatus && sessionActive && sessionStart){
-      localMinutes = Math.max(localMinutes, Math.round((now()-sessionStart)/60000));
+    if(el.headerSection){
+      let label='—';
+      const sel=el.secSel;
+      if(sel){
+        const selected = sel.selectedOptions && sel.selectedOptions.length ? sel.selectedOptions[0] : null;
+        if(selected){
+          label=(selected.textContent||selected.label||selected.value||'').trim();
+        }
+        if(!label){
+          if(sel.value){
+            label=String(sel.value).trim();
+          }else if(sel.options.length){
+            const first=sel.options[0];
+            label=(first.textContent||first.label||first.value||'').trim();
+          }
+        }
+        if(!label && sel.value==='') label='全体';
+      }
+      if(!label) label='—';
+      el.headerSection.textContent=label;
     }
-    let minVal = localMinutes;
-    if(remoteStatus){
-      if(remoteStatus.remaining_minutes!=null) minVal = remoteStatus.remaining_minutes;
-      else if(remoteStatus.minutes_today!=null) minVal = remoteStatus.minutes_today;
+
+    if(el.headerLevelAvg){
+      const secKey = el.secSel ? el.secSel.value : '';
+      const pool = secKey ? (ITEMS_BY_SECTION.get(secKey)||[]) : (window.ALL_ITEMS||[]);
+      let sum=0;
+      let count=0;
+      for(const item of pool){
+        if(!item) continue;
+        const info=getLevelInfo(item.id);
+        let val = info ? Number(info.last) : NaN;
+        if(!Number.isFinite(val)) val = info ? Number(info.best) : NaN;
+        if(!Number.isFinite(val) || val<=0) val=1;
+        sum+=val;
+        count++;
+      }
+      if(count>0){
+        const avg=sum/count;
+        let text=avg.toFixed(1);
+        if(text.endsWith('.0')) text=text.slice(0,-2);
+        el.headerLevelAvg.textContent=text;
+      }else{
+        el.headerLevelAvg.textContent='—';
+      }
     }
-    if(Number.isFinite(minVal)) minVal = Math.max(0, Math.round(minVal));
-    el.min.textContent = minVal!=null ? minVal : 0;
-    const streakVal = remoteStatus && remoteStatus.streak!=null ? Number(remoteStatus.streak) : localStreak;
-    const displayStreak = Number.isFinite(streakVal) ? Math.max(0, Math.round(streakVal)) : 0;
-    el.streak.textContent = displayStreak;
+
+    if(el.headerProgressCurrent){
+      const total=Array.isArray(QUEUE)?QUEUE.length:0;
+      const shown=(sessionActive && idx>=0) ? Math.min(idx+1, total) : 0;
+      el.headerProgressCurrent.textContent = shown;
+      if(el.headerProgressTotal){
+        el.headerProgressTotal.textContent = total;
+      }
+    }
   }
 
   function applyRemoteStatus(status){
@@ -868,11 +915,13 @@
     if(!target && !preferSaved){
       localStorage.setItem('secSel','');
     }
+    updateHeaderStats();
   }
   function applyItemsData(items,{refreshPicker=false}={}){
     window.ALL_ITEMS=Array.isArray(items)?items.slice():[];
     rebuildSectionIndex();
     if(refreshPicker) updateSectionOptions();
+    updateHeaderStats();
   }
   async function loadItemsOnce(url){
     let cache=null;
@@ -1023,9 +1072,6 @@
     el.next.hidden = true;
     el.pbar.value = 0;
     el.footer.textContent = QUEUE.length ? '準備が整い次第、自動で開始します' : 'キューが空です';
-    if(!remoteStatus){
-      localMinutes=0;
-    }
     updateHeaderStats();
   }
 
@@ -1105,7 +1151,6 @@
   async function rebuildAndRender(resetIndex=false, {autoStart=true, autoPlay=false}={}){
     QUEUE=buildQueue();
     el.pbar.max=Math.max(1, QUEUE.length);
-    updateHeaderStats();
     hideNextCta();
     if(resetIndex){
       idx=-1;
@@ -1131,6 +1176,7 @@
     render(idx,false);
     el.pbar.value=idx;
     el.footer.textContent=`#${idx+1}/${QUEUE.length}`;
+    updateHeaderStats();
   }
 
   function advanceToNextSection(){
@@ -1170,6 +1216,7 @@
     await render(idx, autoPlay && autoPlayUnlocked);
     el.pbar.value=idx;
     el.footer.textContent=`#${idx+1}/${QUEUE.length}`;
+    updateHeaderStats();
   }
   async function prevCard(autoPlay=false){
     if(!QUEUE.length) return;
@@ -1178,6 +1225,7 @@
     await render(idx, autoPlay && autoPlayUnlocked);
     el.pbar.value=idx;
     el.footer.textContent=`#${idx+1}/${QUEUE.length}`;
+    updateHeaderStats();
   }
 
   async function startSession(autoPlay=false){
@@ -1419,6 +1467,7 @@
     const levelCandidate = evaluateLevel(matchRate, stageUsed);
     const levelInfo = updateLevelInfo(it.id, levelCandidate, matchRate, stageUsed);
     refreshLevelDisplay(levelInfo);
+    updateHeaderStats();
 
     const pct=Math.max(0, Math.round((matchRate||0)*100));
     const levelLabel = levelInfo ? `Lv${levelInfo.last || levelInfo.best || levelCandidate}` : `Lv${levelCandidate}`;
