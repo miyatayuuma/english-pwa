@@ -353,7 +353,7 @@
     });
   }
 
-  async function setAudioSource(url){
+  async function setAudioSource(url,{waitForReady=false}={}){
     if(!url){
       clearAudioSource();
       return;
@@ -364,7 +364,9 @@
     }
     updatePlayButtonAvailability();
     try{ audio.load?.(); }catch(_){ }
-    await waitForAudioReady(audio, 2000);
+    if(waitForReady){
+      await waitForAudioReady(audio, 2000);
+    }
   }
 
   function clearAudioSource(){
@@ -813,8 +815,9 @@
     refreshLevelDisplay(levelInfo);
     setHintStage(0,{reset:true});
     const url=await resolveAudioUrl(it.audio_fn);
+    let readyPromise=Promise.resolve();
     if(url){
-      await setAudioSource(url);
+      readyPromise=setAudioSource(url, {waitForReady:autoPlay});
     }else{
       clearAudioSource();
     }
@@ -830,7 +833,10 @@
     el.mic.disabled=false;
     primeAudio(QUEUE[i+1]);
     primeAudio(QUEUE[i-1]);
-    if(autoPlay&&url){ await tryPlayAudio({userInitiated:false, resetPosition:true}); }
+    if(autoPlay&&url){
+      await readyPromise;
+      await tryPlayAudio({userInitiated:false, resetPosition:true});
+    }
   }
 
   async function rebuildAndRender(resetIndex=false){
