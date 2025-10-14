@@ -11,6 +11,18 @@
     :root{ --bg:#0b0e1a; --panel:rgba(20,24,36,.65); --bd:rgba(255,255,255,.12); --txt:#e6e8ef; --muted:#aeb5c6; --accent:#62d5ff; --good:#46d37f; --bad:#ff6b6b; }
     *{box-sizing:border-box}
     html,body{height:100%;margin:0;background:var(--bg);color:var(--txt);font-family:system-ui,"Segoe UI","Noto Sans JP",sans-serif}
+    #loadingOverlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(120% 120% at 50% 45%,rgba(40,54,94,.88),rgba(11,14,26,.96));z-index:100000;transition:opacity .6s ease,visibility .6s ease;opacity:1;visibility:visible;pointer-events:auto}
+    #loadingOverlay.hidden{opacity:0;visibility:hidden;pointer-events:none}
+    #loadingOverlay .loaderAura{position:relative;width:120px;height:120px;display:flex;align-items:center;justify-content:center}
+    #loadingOverlay .loaderCore{width:78px;height:78px;border-radius:999px;background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.55),rgba(98,213,255,.25) 45%,rgba(11,14,26,0) 75%);box-shadow:0 0 32px rgba(98,213,255,.35);animation:loaderSpin 3.8s linear infinite;filter:blur(.3px)}
+    #loadingOverlay .loaderRing{position:absolute;width:108px;height:108px;border-radius:999px;border:1px solid rgba(255,255,255,.12);animation:loaderPulse 2.6s ease-in-out infinite}
+    #loadingOverlay .loaderDots{position:absolute;bottom:-32px;display:flex;gap:12px}
+    #loadingOverlay .loaderDots span{width:10px;height:10px;border-radius:999px;background:rgba(255,255,255,.28);animation:loaderDots 1.2s ease-in-out infinite}
+    #loadingOverlay .loaderDots span:nth-child(2){animation-delay:.15s}
+    #loadingOverlay .loaderDots span:nth-child(3){animation-delay:.3s}
+    @keyframes loaderSpin{0%{transform:rotate(0deg);}50%{transform:rotate(180deg) scale(1.04);}100%{transform:rotate(360deg);}}
+    @keyframes loaderPulse{0%{transform:scale(.92);opacity:.65;}50%{transform:scale(1.08);opacity:1;}100%{transform:scale(.92);opacity:.65;}}
+    @keyframes loaderDots{0%,100%{transform:translateY(0);opacity:.35;}50%{transform:translateY(-6px);opacity:1;}}
     #app{position:fixed;inset:0;display:grid;grid-template-rows:auto auto 1fr auto}
 
     header{padding:10px 12px;display:flex;gap:12px;align-items:center;background:var(--panel);border-bottom:1px solid var(--bd)}
@@ -72,6 +84,13 @@
   </style>
 </head>
 <body>
+<div id="loadingOverlay" role="presentation" aria-hidden="true">
+  <div class="loaderAura">
+    <div class="loaderRing"></div>
+    <div class="loaderCore"></div>
+    <div class="loaderDots" aria-hidden="true"><span></span><span></span><span></span></div>
+  </div>
+</div>
 <div id="app">
   <header>
     <div class="stat">残 <b id="statLeft">0</b></div>
@@ -309,8 +328,12 @@
   }
 
   // ===== Elements =====
-  const el={ left:qs('#statLeft'), min:qs('#statMin'), streak:qs('#statStreak'), pbar:qs('#pbar'), footer:qs('#footerInfo'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), next:qs('#btnNext'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), chkWeak:qs('#chkOnlyWeak'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnImport:qs('#btnImport'), filePick:qs('#filePick'), btnTestAudio:qs('#btnTestAudio'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus') };
+  const el={ left:qs('#statLeft'), min:qs('#statMin'), streak:qs('#statStreak'), pbar:qs('#pbar'), footer:qs('#footerInfo'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), next:qs('#btnNext'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), chkWeak:qs('#chkOnlyWeak'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnImport:qs('#btnImport'), filePick:qs('#filePick'), btnTestAudio:qs('#btnTestAudio'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay') };
   const audio=qs('#player');
+  const overlayLocks=new Set();
+  function updateOverlayState(){ if(!el.overlay) return; const active=overlayLocks.size>0; el.overlay.classList.toggle('hidden', !active); el.overlay.classList.toggle('active', active); }
+  function acquireOverlay(tag='load'){ if(!el.overlay){ return ()=>{}; } const token=`${tag}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`; overlayLocks.add(token); updateOverlayState(); return ()=>releaseOverlay(token); }
+  function releaseOverlay(token){ if(!el.overlay || token==null) return; if(overlayLocks.delete(token)){ updateOverlayState(); } }
   function updatePlayButtonAvailability(){ if(!el.play) return; const hasSrc=!!audio.dataset.srcKey; el.play.disabled=!hasSrc; }
   function updatePlayVisualState(){ if(!el.play) return; const playing=!audio.paused && !audio.ended; el.play.classList.toggle('playing', playing); el.play.setAttribute('aria-pressed', playing?'true':'false'); const icon=el.play.querySelector('.playIcon'); if(icon){ icon.textContent = playing ? '⏸' : '▶️'; } }
   audio.addEventListener('play', updatePlayVisualState);
@@ -595,7 +618,91 @@
   async function clearDirHandle(){ const db=await idb(); return new Promise((res,rej)=>{ const tx=db.transaction(STORE,'readwrite'); tx.objectStore(STORE).delete('audio'); tx.oncomplete=()=>res(); tx.onerror=()=>rej(tx.error); }); }
 
   let DIR=null; // FileSystemDirectoryHandle
-  async function ensureDir(){ if(DIR) return DIR; try{ DIR = await loadDirHandle(); if(!DIR) return null; const q = await DIR.queryPermission?.({mode:'read'}) || 'granted'; if(q!=='granted'){ const r = await DIR.requestPermission?.({mode:'read'}); if(r!=='granted'){ DIR=null; return null; } } return DIR; }catch(_){ DIR=null; return null; } }
+  let dirNeedsGesture=false;
+  let dirPromptArmed=false;
+  async function ensureDir({prompt=true, forceCheck=false}={}){
+    if(!DIR || forceCheck){
+      if(!DIR){
+        try{
+          DIR = await loadDirHandle();
+        }catch(err){
+          console.warn('loadDirHandle failed', err);
+          DIR=null;
+          dirNeedsGesture=false;
+          refreshDirStatus();
+          return null;
+        }
+      }
+    }
+    if(!DIR){ dirNeedsGesture=false; refreshDirStatus(); return null; }
+    let state='granted';
+    try{
+      state = await DIR.queryPermission?.({mode:'read'}) || 'granted';
+    }catch(_){ state='prompt'; }
+    if(state==='granted'){
+      dirNeedsGesture=false;
+      dirPromptArmed=false;
+      refreshDirStatus();
+      return DIR;
+    }
+    if(!prompt){
+      dirNeedsGesture = state!=='granted';
+      if(dirNeedsGesture) scheduleDirPrompt();
+      refreshDirStatus();
+      return null;
+    }
+    try{
+      state = await DIR.requestPermission?.({mode:'read'});
+    }catch(err){
+      if(err && (err.name==='InvalidStateError' || /user activation/i.test(err.message||''))){
+        dirNeedsGesture=true;
+        scheduleDirPrompt();
+        refreshDirStatus();
+        return null;
+      }
+      console.warn('requestPermission error', err);
+      DIR=null;
+      dirNeedsGesture=false;
+      refreshDirStatus();
+      return null;
+    }
+    if(state==='granted'){
+      dirNeedsGesture=false;
+      dirPromptArmed=false;
+      refreshDirStatus();
+      return DIR;
+    }
+    if(state==='prompt'){
+      dirNeedsGesture=true;
+      scheduleDirPrompt();
+      refreshDirStatus();
+      return null;
+    }
+    // denied or unknown
+    dirNeedsGesture=false;
+    dirPromptArmed=false;
+    DIR=null;
+    try{ await clearDirHandle(); }catch(_){ }
+    refreshDirStatus();
+    return null;
+  }
+  function scheduleDirPrompt(){
+    if(!DIR || !dirNeedsGesture || dirPromptArmed) return;
+    dirPromptArmed=true;
+    const handler=async()=>{
+      window.removeEventListener('pointerdown', handler, true);
+      window.removeEventListener('keydown', handler, true);
+      dirPromptArmed=false;
+      const release=acquireOverlay('dir');
+      try{
+        await ensureDir({prompt:true});
+      }finally{
+        release();
+      }
+    };
+    window.addEventListener('pointerdown', handler, true);
+    window.addEventListener('keydown', handler, true);
+  }
 
   // Settings modal
   if(el.cfgBtn && el.cfgModal && el.cfgUrl && el.cfgKey && el.cfgAudioBase){
@@ -643,8 +750,11 @@
         const h=await showDirectoryPicker({mode:'read'});
         await saveDirHandle(h);
         DIR=h;
+        dirNeedsGesture=false;
         refreshDirStatus();
-        toast('フォルダを保存しました');
+        await ensureDir({prompt:true, forceCheck:true});
+        refreshDirStatus();
+        toast(dirNeedsGesture ? 'フォルダを保存（許可待ち）' : 'フォルダを保存しました');
       }catch(e){
         if(e&&e.name!=='AbortError') toast('フォルダ選択に失敗');
       }
@@ -654,11 +764,13 @@
     el.btnClearDir.addEventListener('click', async()=>{
       await clearDirHandle();
       DIR=null;
+      dirNeedsGesture=false;
+      dirPromptArmed=false;
       refreshDirStatus();
       toast('フォルダ設定を解除');
     });
   }
-  function refreshDirStatus(){ if(!el.dirStatus) return; el.dirStatus.textContent = DIR? '保存済み':'未設定'; }
+  function refreshDirStatus(){ if(!el.dirStatus) return; if(DIR){ el.dirStatus.textContent = dirNeedsGesture ? '許可待ち' : '保存済み'; } else { el.dirStatus.textContent = '未設定'; } }
 
   // Import audio (OPFS)
   if(el.btnImport && el.filePick){
@@ -844,10 +956,21 @@
     const levelInfo=getLevelInfo(it.id);
     refreshLevelDisplay(levelInfo);
     setHintStage(0,{reset:true});
-    const url=await resolveAudioUrl(it.audio_fn);
-    let readyPromise=Promise.resolve();
+    const needsResolveLoader = !!(it.audio_fn && !audioUrlCache.has(it.audio_fn));
+    let url='';
+    const releaseResolve = needsResolveLoader ? acquireOverlay('audio-resolve') : null;
+    try{
+      url=await resolveAudioUrl(it.audio_fn);
+    }finally{
+      releaseResolve?.();
+    }
     if(url){
-      readyPromise=setAudioSource(url, {waitForReady:autoPlay});
+      const releasePrepare = acquireOverlay('audio-prepare');
+      try{
+        await setAudioSource(url, {waitForReady:true});
+      }finally{
+        releasePrepare();
+      }
     }else{
       clearAudioSource();
     }
@@ -864,7 +987,6 @@
     primeAudio(QUEUE[i+1]);
     primeAudio(QUEUE[i-1]);
     if(autoPlay&&url){
-      await readyPromise;
       await tryPlayAudio({userInitiated:false, resetPosition:true});
     }
   }
@@ -1234,8 +1356,9 @@
 
   // Boot
   (async()=>{
+    const releaseBoot=acquireOverlay('boot');
     try{
-      await ensureDir();
+      await ensureDir({prompt:true});
       await ensureDataLoaded();
       updateHeaderStats();
       initSectionPicker();
@@ -1245,6 +1368,8 @@
     }catch(e){
       console.error(e);
       toast('初期化失敗: '+(e&&e.message||e));
+    }finally{
+      releaseBoot();
     }
   })();
 })();
