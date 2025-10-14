@@ -36,6 +36,12 @@
     #rangeBar{display:flex;gap:8px;align-items:center;padding:8px 12px;background:rgba(20,24,36,.5);border-bottom:1px solid rgba(255,255,255,.12);overflow:auto}
     select, .switch{background:#111726;border:1px solid var(--bd);color:var(--txt);border-radius:12px;padding:8px}
     .switch{display:flex;gap:8px;align-items:center}
+    .level-filter{display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:12px;border:1px solid var(--bd);background:#111726;flex-wrap:wrap}
+    .level-filter-label{font-size:12px;color:var(--muted);letter-spacing:.03em}
+    .level-filter-buttons{display:flex;gap:4px;flex-wrap:wrap}
+    .level-chip{min-width:30px;height:28px;border-radius:9px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:var(--txt);font-size:13px;font-weight:600;cursor:pointer;transition:all .18s ease;padding:0 10px;display:flex;align-items:center;justify-content:center}
+    .level-chip.active{background:var(--accent);color:#041019;border-color:rgba(98,213,255,.82);box-shadow:0 0 0 1px rgba(98,213,255,.32)}
+    .level-chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
     main{padding:12px;overflow:auto}
     .card{max-width:840px;margin:0 auto;background:var(--panel);border:1px solid var(--bd);border-radius:18px;padding:16px;min-height:50vh;display:flex;flex-direction:column;gap:12px;touch-action:manipulation}
@@ -140,7 +146,7 @@
         <option value="rnd">ランダム</option>
       </select>
     </label>
-    <label class="switch"><input id="chkOnlyWeak" type="checkbox"> 未習得のみ</label>
+    <div id="levelFilter" class="level-filter" role="group" aria-label="レベル選択"></div>
   </div>
 
   <main>
@@ -293,6 +299,33 @@
   function loadLevelState(){ try{ return JSON.parse(localStorage.getItem(LEVEL_KEY)||'{}'); }catch(_){ return {}; } }
   function saveLevelState(state){ try{ localStorage.setItem(LEVEL_KEY, JSON.stringify(state)); }catch(_){ } }
   let LEVEL_STATE=loadLevelState();
+  const LEVEL_FILTER_KEY='levelFilterV1';
+  const LEVEL_CHOICES=[1,2,3,4,5];
+  function loadLevelFilter(){
+    try{
+      const raw=localStorage.getItem(LEVEL_FILTER_KEY);
+      if(!raw) return new Set(LEVEL_CHOICES);
+      const parsed=JSON.parse(raw);
+      if(Array.isArray(parsed)){
+        const valid=parsed.map(n=>Number(n)).filter(n=>LEVEL_CHOICES.includes(n));
+        if(valid.length) return new Set(valid);
+      }
+    }catch(_){ }
+    return new Set(LEVEL_CHOICES);
+  }
+  function saveLevelFilter(set){
+    if(!(set instanceof Set)) return;
+    const arr=LEVEL_CHOICES.filter(l=>set.has(l));
+    try{ localStorage.setItem(LEVEL_FILTER_KEY, JSON.stringify(arr)); }catch(_){ }
+  }
+  let LEVEL_FILTER=loadLevelFilter();
+  function activeLevelArray(){
+    if(!(LEVEL_FILTER instanceof Set) || LEVEL_FILTER.size===0){
+      LEVEL_FILTER=new Set(LEVEL_CHOICES);
+    }
+    const arr=LEVEL_CHOICES.filter(l=>LEVEL_FILTER.has(l));
+    return arr.length?arr:LEVEL_CHOICES.slice();
+  }
   function evaluateLevel(matchRate, hintStageUsed){
     const rate=Math.max(0, Math.min(1, matchRate||0));
     const stage = Number.isFinite(hintStageUsed) ? Math.max(0, Math.floor(hintStageUsed)) : BASE_HINT_STAGE;
@@ -330,6 +363,70 @@
     el.level.textContent = best>last ? `${last} / ${best}` : `${last}`;
   }
 
+  function lastRecordedLevel(id){
+    const info=getLevelInfo(id);
+    return info.last || info.best || 1;
+  }
+
+  function updateLevelFilterButtons(){
+    if(!el.levelFilter) return;
+    const active=new Set(activeLevelArray());
+    qsa('button[data-level]', el.levelFilter).forEach(btn=>{
+      const level=Number(btn.dataset.level||'0');
+      const on=active.has(level);
+      btn.classList.toggle('active', on);
+      btn.setAttribute('aria-pressed', on?'true':'false');
+    });
+  }
+
+  function initLevelFilterUI(){
+    if(!el.levelFilter) return;
+    el.levelFilter.innerHTML='';
+    const label=document.createElement('span');
+    label.className='level-filter-label';
+    label.textContent='Lv';
+    el.levelFilter.appendChild(label);
+    const btnWrap=document.createElement('div');
+    btnWrap.className='level-filter-buttons';
+    el.levelFilter.appendChild(btnWrap);
+    const activeLevels=new Set(activeLevelArray());
+    for(const level of LEVEL_CHOICES){
+      const btn=document.createElement('button');
+      btn.type='button';
+      btn.className='level-chip';
+      btn.dataset.level=String(level);
+      btn.textContent=String(level);
+      if(activeLevels.has(level)){
+        btn.classList.add('active');
+        btn.setAttribute('aria-pressed','true');
+      }else{
+        btn.setAttribute('aria-pressed','false');
+      }
+      btn.addEventListener('click',()=>{
+        if(!(LEVEL_FILTER instanceof Set)){
+          LEVEL_FILTER=new Set(LEVEL_CHOICES);
+        }
+        if(LEVEL_FILTER.has(level)){
+          if(LEVEL_FILTER.size===1){
+            LEVEL_FILTER=new Set(LEVEL_CHOICES);
+          }else{
+            LEVEL_FILTER.delete(level);
+          }
+        }else{
+          LEVEL_FILTER.add(level);
+        }
+        if(!LEVEL_FILTER.size){
+          LEVEL_FILTER=new Set(LEVEL_CHOICES);
+        }
+        saveLevelFilter(LEVEL_FILTER);
+        updateLevelFilterButtons();
+        rebuildAndRender(true);
+      });
+      btnWrap.appendChild(btn);
+    }
+    updateLevelFilterButtons();
+  }
+
 
   let toneCtx=null;
   function playTone(type){
@@ -357,7 +454,7 @@
   }
 
   // ===== Elements =====
-  const el={ headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerInfo'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), next:qs('#btnNext'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), chkWeak:qs('#chkOnlyWeak'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnImport:qs('#btnImport'), filePick:qs('#filePick'), btnTestAudio:qs('#btnTestAudio'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus') };
+  const el={ headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerInfo'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), next:qs('#btnNext'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), levelFilter:qs('#levelFilter'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnImport:qs('#btnImport'), filePick:qs('#filePick'), btnTestAudio:qs('#btnTestAudio'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus') };
   const audio=qs('#player');
   const overlayLocks=new Set();
   function updateOverlayState(){ if(!el.overlay) return; const active=overlayLocks.size>0; el.overlay.classList.toggle('hidden', !active); el.overlay.classList.toggle('active', active); }
@@ -1065,10 +1162,9 @@
   // Build section options (All/単一)
   function initSectionPicker(){ updateSectionOptions({preferSaved:true}); const sel=el.secSel; sel.onchange=()=>{ localStorage.setItem('secSel', sel.value); rebuildAndRender(true); };
     const ordSaved=localStorage.getItem('orderSel')||'asc'; el.orderSel.value=ordSaved; el.orderSel.onchange=()=>{ localStorage.setItem('orderSel', el.orderSel.value); rebuildAndRender(true); };
-    el.chkWeak.checked = localStorage.getItem('onlyWeak')==='1'; el.chkWeak.onchange=()=>{ localStorage.setItem('onlyWeak', el.chkWeak.checked?'1':'0'); rebuildAndRender(true); };
+    initLevelFilterUI();
   }
 
-  function isUnlearned(id){ const info=getLevelInfo(id); if((info.best||1)<3) return true; const s=SRS_MAP.get(id); if(!s) return true; if(s.last_result===0) return true; if((s.ease||0)<2.0 && (s.interval_d||0)<3) return true; return false; }
   function getRandomIndex(maxExclusive){
     if(maxExclusive<=0) return 0;
     const cryptoObj = (typeof window!=='undefined' && window.crypto && window.crypto.getRandomValues) ? window.crypto : null;
@@ -1093,7 +1189,7 @@
     }
     return copy;
   }
-  function buildQueue(){ const sec=el.secSel.value; const order=el.orderSel.value; const onlyWeak=el.chkWeak.checked; const baseItems=sec ? (ITEMS_BY_SECTION.get(sec)||[]) : window.ALL_ITEMS; let items=baseItems; if(onlyWeak) items=items.filter(x=>isUnlearned(x.id)); if(order==='rnd'){ items=shuffledCopy(items); } else { items=items.slice().sort((a,b)=>{ const na=+String(a.unit||'').replace(/\D+/g,'')||0, nb=+String(b.unit||'').replace(/\D+/g,'')||0; if(na!==nb) return na-nb; return String(a.id).localeCompare(String(b.id)); }); } return items.filter(Boolean).map(it=>({ id:it.id,en:it.en,ja:it.ja,tags:it.tags||'',chunks_json:it.chunks||'[]',audio_fn:it.audio_fn||'' })); }
+  function buildQueue(){ const sec=el.secSel.value; const order=el.orderSel.value; const baseItems=sec ? (ITEMS_BY_SECTION.get(sec)||[]) : window.ALL_ITEMS; let items=baseItems; const levels=activeLevelArray(); if(levels.length && levels.length<LEVEL_CHOICES.length){ const levelSet=new Set(levels); items=items.filter(x=>levelSet.has(lastRecordedLevel(x.id))); } if(order==='rnd'){ items=shuffledCopy(items); } else { items=items.slice().sort((a,b)=>{ const na=+String(a.unit||'').replace(/\D+/g,'')||0, nb=+String(b.unit||'').replace(/\D+/g,'')||0; if(na!==nb) return na-nb; return String(a.id).localeCompare(String(b.id)); }); } return items.filter(Boolean).map(it=>({ id:it.id,en:it.en,ja:it.ja,tags:it.tags||'',chunks_json:it.chunks||'[]',audio_fn:it.audio_fn||'' })); }
 
   // Audio resolve: DIR (folder) -> OPFS -> base URL
   const audioUrlCache=new Map();
@@ -1616,6 +1712,7 @@
     }
     updateAttemptInfo();
 
+    // Persist the locally-tracked level information to the GAS spreadsheet log as well.
     const payload = {
       ts: new Date().toISOString(), id: it.id, mode: 'read',
       wer: +(1-recall).toFixed(3), cer: +(1-precision).toFixed(3),
