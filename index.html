@@ -63,7 +63,6 @@
     progress{width:160px;height:10px}
     .btn{border:1px solid var(--bd);border-radius:12px;background:#111726;color:var(--txt);padding:10px 14px;cursor:pointer}
     .btn.ok{background:#10331f;border-color:#1f5c38}
-    .btn.ng{background:#331717;border-color:#5c2929}
     .audio-ctrls{display:flex;gap:14px;justify-content:center;align-items:center;margin-top:8px}
     #btnPlay{width:60px;height:60px;font-size:22px;border-radius:999px;background:#162032;border-color:#2a3753;display:grid;place-items:center;font-weight:600;transition:transform .2s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease}
     #btnPlay:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}
@@ -157,10 +156,6 @@
         <div id="attemptInfo" class="attempt-info"></div>
       </div>
 
-      <div style="display:flex;gap:8px">
-        <button class="btn ok" data-eval="ok">◯ 得意</button>
-        <button class="btn ng" data-eval="ng">× 苦手</button>
-      </div>
       <div class="audio-ctrls">
         <button id="btnPlay" class="btn" type="button" aria-label="音声を再生/一時停止"><span class="playIcon">▶️</span></button>
         <button id="btnMic" class="btn" type="button" aria-label="マイク開始/停止"><span class="micIcon">🎤</span></button>
@@ -1618,10 +1613,6 @@
   }
 
   el.mic.onclick=()=>{ if(!recogOn) startRec(); else stopRec(); };
-  qsa('[data-eval="ok"]').forEach(b=>b.onclick=()=>{ if(!sessionActive) return; submitEval(1); });
-  qsa('[data-eval="ng"]').forEach(b=>b.onclick=()=>{ if(!sessionActive) return; submitEval(0); });
-  async function submitEval(bin){ const it=QUEUE[idx]; if(!it) return; const payload={ ts:new Date().toISOString(), id:it.id, result:bin, auto_recall:null, auto_precision:null, response_ms:Math.max(0, now()-cardStart), hint_used:(maxHintStageUsed>=2), hint_stage:maxHintStageUsed, hint_en_used:(maxHintStageUsed>=1), device:UA }; try{ await sendLog('attempt', payload); }catch(_){ } hideNextCta(); nextCard(false,true); }
-
   // Boot
   (async()=>{
     const releaseBoot=acquireOverlay('boot');
