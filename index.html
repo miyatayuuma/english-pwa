@@ -825,18 +825,104 @@
 
   // Data
   const DATA_URL='./data/items.json';
+  const ITEM_CACHE_NAME='items-v1';
+  const ITEMS_BY_SECTION=new Map();
+  let itemsLoadPromise=null;
   async function fetchJson(url){ const r=await fetch(url,{cache:'no-store'}); if(!r.ok) throw new Error(url+': '+r.status); return r.json(); }
   window.ALL_ITEMS=[]; let SRS_MAP=new Map();
-  async function ensureDataLoaded(){ if(!window.ALL_ITEMS.length){ window.ALL_ITEMS=await fetchJson(DATA_URL); } if(!SRS_MAP.size){ try{ const arr=await fetchJson('./data/srs.json'); const m=new Map(); for(const x of arr) m.set(x.id,x); SRS_MAP=m; }catch(_){ SRS_MAP=new Map(); } } }
+  function rebuildSectionIndex(){
+    ITEMS_BY_SECTION.clear();
+    for(const it of window.ALL_ITEMS){
+      const key=String((it&& (it.unit ?? it.sec ?? ''))||'').trim();
+      if(!key) continue;
+      if(!ITEMS_BY_SECTION.has(key)) ITEMS_BY_SECTION.set(key, []);
+      ITEMS_BY_SECTION.get(key).push(it);
+    }
+  }
+  function updateSectionOptions({preferSaved=false}={}){
+    const sel=el.secSel;
+    if(!sel) return;
+    const saved=localStorage.getItem('secSel')||'';
+    const desired=preferSaved ? saved : (sel.value || saved || '');
+    const frag=document.createDocumentFragment();
+    frag.appendChild(new Option('全体',''));
+    const units=[...ITEMS_BY_SECTION.keys()].sort((a,b)=>{
+      const na=+String(a).replace(/\D+/g,'')||0;
+      const nb=+String(b).replace(/\D+/g,'')||0;
+      if(na!==nb) return na-nb;
+      return String(a).localeCompare(String(b));
+    });
+    for(const u of units){ frag.appendChild(new Option(u,u)); }
+    sel.innerHTML='';
+    sel.appendChild(frag);
+    const target=units.includes(desired)?desired:'';
+    sel.value=target;
+    if(preferSaved && saved && !units.includes(saved)){
+      localStorage.setItem('secSel','');
+    }
+    if(!target && !preferSaved){
+      localStorage.setItem('secSel','');
+    }
+  }
+  function applyItemsData(items,{refreshPicker=false}={}){
+    window.ALL_ITEMS=Array.isArray(items)?items.slice():[];
+    rebuildSectionIndex();
+    if(refreshPicker) updateSectionOptions();
+  }
+  async function loadItemsOnce(url){
+    let cache=null;
+    if('caches' in window){
+      try{ cache=await caches.open(ITEM_CACHE_NAME); }catch(_){ cache=null; }
+    }
+    let resp=cache?await cache.match(url):null;
+    if(!resp){
+      resp=await fetch(url,{cache:'no-cache'});
+      if(!resp.ok) throw new Error(url+': '+resp.status);
+      if(cache){
+        try{ await cache.put(url, resp.clone()); }catch(_){ }
+      }
+    }
+    const data=await resp.json();
+    if(cache){
+      fetch(url,{cache:'no-cache'}).then(async fresh=>{
+        if(!fresh.ok) return;
+        try{ await cache.put(url, fresh.clone()); }catch(_){ }
+        const latest=await fresh.json();
+        applyItemsData(latest,{refreshPicker:true});
+      }).catch(()=>{});
+    }
+    return data;
+  }
+  async function ensureItemsLoaded(){
+    if(window.ALL_ITEMS.length){
+      if(!ITEMS_BY_SECTION.size) rebuildSectionIndex();
+      return window.ALL_ITEMS;
+    }
+    if(!itemsLoadPromise){
+      itemsLoadPromise=(async()=>{
+        const data=await loadItemsOnce(DATA_URL);
+        applyItemsData(data);
+        return window.ALL_ITEMS;
+      })().catch(err=>{ itemsLoadPromise=null; throw err; });
+    }
+    return itemsLoadPromise;
+  }
+  async function ensureDataLoaded(){
+    await ensureItemsLoaded();
+    if(!SRS_MAP.size){
+      try{ const arr=await fetchJson('./data/srs.json'); const m=new Map(); for(const x of arr) m.set(x.id,x); SRS_MAP=m; }
+      catch(_){ SRS_MAP=new Map(); }
+    }
+  }
 
   // Build section options (All/単一)
-  function initSectionPicker(){ const sel=el.secSel; sel.innerHTML=''; sel.appendChild(new Option('全体','')); const units=[...new Set(window.ALL_ITEMS.map(x=>x.unit).filter(Boolean))].sort((a,b)=>{const na=+String(a).replace(/\D+/g,'')||0, nb=+String(b).replace(/\D+/g,'')||0; return na-nb||String(a).localeCompare(String(b));}); for(const u of units){ sel.appendChild(new Option(u,u)); } const saved=localStorage.getItem('secSel')||''; sel.value=saved; sel.onchange=()=>{ localStorage.setItem('secSel', sel.value); rebuildAndRender(true); };
+  function initSectionPicker(){ updateSectionOptions({preferSaved:true}); const sel=el.secSel; sel.onchange=()=>{ localStorage.setItem('secSel', sel.value); rebuildAndRender(true); };
     const ordSaved=localStorage.getItem('orderSel')||'asc'; el.orderSel.value=ordSaved; el.orderSel.onchange=()=>{ localStorage.setItem('orderSel', el.orderSel.value); rebuildAndRender(true); };
     el.chkWeak.checked = localStorage.getItem('onlyWeak')==='1'; el.chkWeak.onchange=()=>{ localStorage.setItem('onlyWeak', el.chkWeak.checked?'1':'0'); rebuildAndRender(true); };
   }
 
   function isUnlearned(id){ const info=getLevelInfo(id); if((info.best||1)<3) return true; const s=SRS_MAP.get(id); if(!s) return true; if(s.last_result===0) return true; if((s.ease||0)<2.0 && (s.interval_d||0)<3) return true; return false; }
-  function buildQueue(){ const sec=el.secSel.value; const order=el.orderSel.value; const onlyWeak=el.chkWeak.checked; let items=(sec?'filter':'all')==='all' ? window.ALL_ITEMS : window.ALL_ITEMS.filter(x=>String(x.unit)===sec); if(onlyWeak) items=items.filter(x=>isUnlearned(x.id)); if(order==='rnd'){ const seed=Math.floor(Date.now()/86400000); let t=seed>>>0; const rnd=()=>{t^=t<<13; t^=t>>>17; t^=t<<5; return (t>>>0)/4294967296}; items=items.slice(); for(let i=items.length-1;i>0;i--){ const j=Math.floor(rnd()*(i+1)); [items[i],items[j]]=[items[j]],items[i]; } } else { items=items.slice().sort((a,b)=>{ const na=+String(a.unit||'').replace(/\D+/g,'')||0, nb=+String(b.unit||'').replace(/\D+/g,'')||0; if(na!==nb) return na-nb; return String(a.id).localeCompare(String(b.id)); }); } return items.filter(Boolean).map(it=>({ id:it.id,en:it.en,ja:it.ja,tags:it.tags||'',chunks_json:it.chunks||'[]',audio_fn:it.audio_fn||'' })); }
+  function buildQueue(){ const sec=el.secSel.value; const order=el.orderSel.value; const onlyWeak=el.chkWeak.checked; const baseItems=sec ? (ITEMS_BY_SECTION.get(sec)||[]) : window.ALL_ITEMS; let items=baseItems; if(onlyWeak) items=items.filter(x=>isUnlearned(x.id)); if(order==='rnd'){ const seed=Math.floor(Date.now()/86400000); let t=seed>>>0; const rnd=()=>{t^=t<<13; t^=t>>>17; t^=t<<5; return (t>>>0)/4294967296}; items=items.slice(); for(let i=items.length-1;i>0;i--){ const j=Math.floor(rnd()*(i+1)); [items[i],items[j]]=[items[j]],items[i]; } } else { items=items.slice().sort((a,b)=>{ const na=+String(a.unit||'').replace(/\D+/g,'')||0, nb=+String(b.unit||'').replace(/\D+/g,'')||0; if(na!==nb) return na-nb; return String(a.id).localeCompare(String(b.id)); }); } return items.filter(Boolean).map(it=>({ id:it.id,en:it.en,ja:it.ja,tags:it.tags||'',chunks_json:it.chunks||'[]',audio_fn:it.audio_fn||'' })); }
 
   // Audio resolve: DIR (folder) -> OPFS -> base URL
   const audioUrlCache=new Map();
