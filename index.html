@@ -1712,6 +1712,7 @@
     }
     updateAttemptInfo();
 
+    // Persist the locally-tracked level information to the GAS spreadsheet log as well.
     const payload = {
       ts: new Date().toISOString(), id: it.id, mode: 'read',
       wer: +(1-recall).toFixed(3), cer: +(1-precision).toFixed(3),
