@@ -270,11 +270,14 @@
   let LEVEL_STATE=loadLevelState();
   function evaluateLevel(matchRate, hintStageUsed){
     const rate=Math.max(0, Math.min(1, matchRate||0));
-    if(rate < 0.70) return 1;
-    if(rate < 0.90) return 2;
-    const stage = Number.isFinite(hintStageUsed) ? hintStageUsed : 0;
+    const stage = Number.isFinite(hintStageUsed) ? Math.max(0, Math.floor(hintStageUsed)) : BASE_HINT_STAGE;
+    if(rate < 0.70) return 2;
+    if(rate < 0.90) return 3;
     if(stage <= BASE_HINT_STAGE){
-      return rate>=0.999 ? 5 : 4;
+      return 5;
+    }
+    if(stage===BASE_HINT_STAGE+1){
+      return 4;
     }
     return 3;
   }
@@ -445,7 +448,7 @@
   const FAIL_LIMIT=3;
   let failCount=0;
 
-  const BASE_HINT_STAGE=1;
+  const BASE_HINT_STAGE=0;
   let hintStage=BASE_HINT_STAGE;
   let maxHintStageUsed=BASE_HINT_STAGE;
   let currentEnHtml='';
@@ -459,7 +462,7 @@
     else if(next>maxHintStageUsed){ maxHintStageUsed=next; }
     if(next<=0){
       el.en.classList.add('concealed');
-      el.en.innerHTML='<span class="hint-placeholder">上にスワイプして英文ヒントを表示</span>';
+      el.en.innerHTML='<span class="hint-placeholder">上にスワイプして英文を表示（再スワイプで和訳）</span>';
       el.ja.style.display='none';
       clearHighlight();
     }else{
@@ -1043,7 +1046,7 @@
       (it.tags||'').split(',').filter(Boolean).forEach(t=>{ const s=document.createElement('span'); s.className='chip'; s.textContent=t.trim(); el.chips.appendChild(s); });
       const levelInfo=getLevelInfo(it.id);
       refreshLevelDisplay(levelInfo);
-      setHintStage(1,{reset:true});
+      setHintStage(BASE_HINT_STAGE,{reset:true});
       const needsResolveLoader = !!(it.audio_fn && !audioUrlCache.has(it.audio_fn));
       let url='';
       const releaseResolve = needsResolveLoader ? acquireOverlay('audio-resolve') : null;
