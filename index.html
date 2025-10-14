@@ -117,7 +117,7 @@
   <main>
     <section class="card" id="card" aria-live="polite">
       <div class="chips" id="chips"></div>
-      <div id="enText" class="en">再生ボタンでスタート / ダブルタップで和訳</div>
+      <div id="enText" class="en">出題を準備しています…（ダブルタップで和訳）</div>
       <div id="jaText" class="ja">—</div>
       <div id="transcript" class="muted"></div>
 
@@ -272,7 +272,8 @@
     const rate=Math.max(0, Math.min(1, matchRate||0));
     if(rate < 0.70) return 1;
     if(rate < 0.90) return 2;
-    if((hintStageUsed||0) <= 0){
+    const stage = Number.isFinite(hintStageUsed) ? hintStageUsed : 0;
+    if(stage <= BASE_HINT_STAGE){
       return rate>=0.999 ? 5 : 4;
     }
     return 3;
@@ -444,8 +445,9 @@
   const FAIL_LIMIT=3;
   let failCount=0;
 
-  let hintStage=1;
-  let maxHintStageUsed=1;
+  const BASE_HINT_STAGE=1;
+  let hintStage=BASE_HINT_STAGE;
+  let maxHintStageUsed=BASE_HINT_STAGE;
   let currentEnHtml='';
   let currentItem=null;
 
@@ -992,7 +994,7 @@
     updatePlayVisualState();
     updatePlayButtonAvailability();
     if(el.play){ el.play.disabled=true; }
-    el.en.textContent = QUEUE.length ? '再生ボタンで第1問を開始します' : '出題できる問題がありません';
+    el.en.textContent = QUEUE.length ? '出題を準備しています…' : '出題できる問題がありません';
     el.en.classList.remove('concealed');
     clearHighlight();
     el.ja.textContent = '—';
@@ -1000,8 +1002,8 @@
     el.chips.innerHTML = '';
     currentItem=null;
     currentEnHtml='';
-    hintStage=1;
-    maxHintStageUsed=1;
+    hintStage=BASE_HINT_STAGE;
+    maxHintStageUsed=BASE_HINT_STAGE;
     refreshLevelDisplay(null);
     cardStart = now();
     sessionStart = 0;
@@ -1014,7 +1016,7 @@
     el.mic.disabled = true;
     el.next.hidden = true;
     el.pbar.value = 0;
-    el.footer.textContent = QUEUE.length ? '再生ボタンで第1問をスタートできます' : 'キューが空です';
+    el.footer.textContent = QUEUE.length ? '準備が整い次第、自動で開始します' : 'キューが空です';
     if(!remoteStatus){
       localMinutes=0;
     }
@@ -1041,7 +1043,7 @@
       (it.tags||'').split(',').filter(Boolean).forEach(t=>{ const s=document.createElement('span'); s.className='chip'; s.textContent=t.trim(); el.chips.appendChild(s); });
       const levelInfo=getLevelInfo(it.id);
       refreshLevelDisplay(levelInfo);
-      setHintStage(0,{reset:true});
+      setHintStage(1,{reset:true});
       const needsResolveLoader = !!(it.audio_fn && !audioUrlCache.has(it.audio_fn));
       let url='';
       const releaseResolve = needsResolveLoader ? acquireOverlay('audio-resolve') : null;
@@ -1088,7 +1090,7 @@
     }
   }
 
-  async function rebuildAndRender(resetIndex=false){
+  async function rebuildAndRender(resetIndex=false, {autoStart=true, autoPlay=false}={}){
     QUEUE=buildQueue();
     el.pbar.max=Math.max(1, QUEUE.length);
     updateHeaderStats();
@@ -1096,6 +1098,13 @@
     if(resetIndex){
       idx=-1;
       showIdleCard();
+      if(autoStart && QUEUE.length){
+        setTimeout(()=>{
+          if(!sessionActive && !sessionStarting){
+            startSession(autoPlay);
+          }
+        }, 0);
+      }
       return;
     }
     if(!sessionActive){
@@ -1127,11 +1136,9 @@
     hideNextCta();
     const label=nextOpt.textContent||nextOpt.label||nextValue||'次のセクション';
     toast(`セクション「${label}」へ進みます`);
-    rebuildAndRender(true)
+    rebuildAndRender(true,{autoPlay:true})
       .then(()=>{
-        if(QUEUE.length){
-          startSession(true);
-        }else{
+        if(!QUEUE.length){
           el.footer.textContent='次のセクションに出題がありません';
         }
       })
@@ -1167,14 +1174,19 @@
     sessionStarting=true;
     try{
       if((CFG.apiUrl||'').trim()){
-        try{ await syncProgressAndStatus(); }catch(err){ console.warn('startSession status', err); }
+        syncProgressAndStatus().catch(err=>{ console.warn('startSession status', err); });
       }
       await ensureDir();
       sessionActive=true;
       sessionStart=now();
       idx=-1;
       el.mic.disabled=false;
-      await nextCard(true, autoPlay);
+      try{
+        await nextCard(true, autoPlay);
+      }catch(err){
+        sessionActive=false;
+        throw err;
+      }
     }finally{
       sessionStarting=false;
     }
@@ -1461,7 +1473,7 @@
       initSectionPicker();
       refreshDirStatus();
       await rebuildAndRender(true);
-      await syncProgressAndStatus();
+      syncProgressAndStatus().catch(()=>{});
     }catch(e){
       console.error(e);
       toast('初期化失敗: '+(e&&e.message||e));
