@@ -410,12 +410,12 @@
     });
   }
 
-  function setAudioSource(url,{timeout=2000}={}){
+  function setAudioSource(url,{timeout=2000, forceReload=false}={}){
     if(!url){
       clearAudioSource();
       return Promise.resolve();
     }
-    if(audio.dataset.srcKey !== url){
+    if(forceReload || audio.dataset.srcKey !== url){
       audio.dataset.srcKey = url;
       audio.src = url;
     }
@@ -935,9 +935,12 @@
   async function resolveFromOPFS(name){ if(!name) return ''; try{ if(!(navigator.storage&&navigator.storage.getDirectory)) return ''; const root=await navigator.storage.getDirectory(); const fh=await root.getFileHandle(name).catch(()=>null); if(!fh) return ''; const file=await fh.getFile(); return URL.createObjectURL(file); }catch(_){ return ''; } }
   async function resolveAudioUrl(name){ if(!name) return ''; if(audioUrlCache.has(name)) return audioUrlCache.get(name); let url=await resolveFromDir(name); if(!url) url=await resolveFromOPFS(name); if(!url){ const base=(CFG.audioBase||'./audio').replace(/\/$/,''); url= base + '/' + encodeURI(name); } audioUrlCache.set(name,url); return url; }
 
-  async function primeAudio(item){
+  async function primeAudio(item, knownUrl){
     if(!item||!item.audio_fn) return;
-    const url=await resolveAudioUrl(item.audio_fn);
+    let url=knownUrl;
+    if(!url){
+      url=await resolveAudioUrl(item.audio_fn);
+    }
     if(!url) return;
     if(PREFETCH_POOL.has(url)) return PREFETCH_POOL.get(url).promise;
     const prefetch=new Audio();
@@ -1055,16 +1058,23 @@
       }finally{
         releaseResolve?.();
       }
-      let readyPromise=Promise.resolve();
       if(url){
         const releasePrepare = acquireOverlay('audio-prepare');
         try{
-          readyPromise=setAudioSource(url);
-        }catch(err){
+          await setAudioSource(url);
+          if(audio.readyState<2){
+            const retryPrime=primeAudio(it, url);
+            if(retryPrime){
+              try{ await retryPrime; }catch(err){ console.warn('primeAudio retry failed', err); }
+            }
+            await setAudioSource(url,{timeout:4000, forceReload:true});
+            if(audio.readyState<2){
+              console.warn('Audio not ready after retry', it && it.id, url);
+            }
+          }
+        }finally{
           releasePrepare();
-          throw err;
         }
-        readyPromise.finally(()=>releasePrepare());
       }else{
         clearAudioSource();
       }
@@ -1082,7 +1092,6 @@
       primeAudio(QUEUE[i-1]);
       if(autoPlay&&url){
         try{
-          await readyPromise;
           await tryPlayAudio({userInitiated:false, resetPosition:true});
         }catch(err){
           console.warn('auto play failed', err);
