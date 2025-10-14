@@ -193,24 +193,54 @@
   function appendStableFinal(stable, fragment){
     const A = toks(stable);
     const B = toks(fragment);
-    // 語単位LCP
-    let k = 0;
-    while (k < A.length && k < B.length && A[k] === B[k]) k++;
-    // B が A の拡張なら尾部だけ追加。拡張でなければ新規文として結合。
-    const merged = (k > 0 || !A.length) ? A.concat(B.slice(k)) : A.concat(B);
-    return dedupeRuns(merged).join(' ');
+    if(!B.length) return dedupeRuns(A).join(' ');
+    if(!A.length) return dedupeRuns(B).join(' ');
+
+    const strA = A.join(' ');
+    const strB = B.join(' ');
+
+    // 完全包含チェック
+    if(strB.includes(strA)){
+      return dedupeRuns(B).join(' ');
+    }
+    if(strA.includes(strB)){
+      return dedupeRuns(A).join(' ');
+    }
+
+    // 末尾と先頭の最大オーバーラップを探索（1トークンの誤差を許容）
+    let overlap = 0;
+    const maxOverlap = Math.min(A.length, B.length);
+    outer: for(let k=maxOverlap; k>0; k--){
+      for(let i=0; i<k; i++){
+        if(!approxWithin1(A[A.length-k+i], B[i])) continue outer;
+      }
+      overlap = k;
+      break;
+    }
+    if(overlap>0){
+      return dedupeRuns(A.concat(B.slice(overlap))).join(' ');
+    }
+
+    // オーバーラップしない場合はより長い方を優先
+    return dedupeRuns((B.length>=A.length ? B : A)).join(' ');
   }
   function spanify(text){
-    const parts=(text||'').match(/\S+|\s+/g)||[];
+    const parts=(text||'').split(/(\s+)/);
     return parts.map(part=>{
-      if(/\s+/.test(part)){
-        const converted=part
+      if(!part) return '';
+      if(/^[\s]+$/.test(part)){
+        return part
           .replace(/\r?\n/g,'<br>')
           .replace(/[^\S\r\n]+/g,' ');
-        return converted || ' ';
       }
-      const clean=part.replace(/[^\p{L}\p{N}'-]/gu,'');
-      return `<span class="tok" data-w="${clean}">${part}</span>`;
+      const tokens = part.match(/[\p{L}\p{N}'-]+|./gu) || [];
+      return tokens.map(tok=>{
+        if(/^[\p{L}\p{N}'-]+$/u.test(tok) && /[\p{L}\p{N}]/u.test(tok)){
+          const clean = tok.replace(/[^\p{L}\p{N}'-]/gu,'');
+          return `<span class="tok" data-w="${clean}">${tok}</span>`;
+        }
+        return tok;
+      }).join('');
     }).join('');
   }
   function toast(msg, ms=1500){ const t=qs('#toast'); t.textContent=msg; t.style.display='block'; clearTimeout(toast._t); toast._t=setTimeout(()=>t.style.display='none', ms); }
@@ -1103,14 +1133,16 @@
         const r = ev.results[i];
         const t = r[0].transcript || '';
         if(r.isFinal){
-          // 尾部のみ追加していく
+          // 尾部のみ追加していく（過剰蓄積を防止）
           stableText = appendStableFinal(stableText, t);
-          showTranscriptFinal(stableText);
           const trimmedStable = stableText.trim();
           const refItem = QUEUE[idx];
           const refText = refItem ? refItem.en : el.en.textContent;
           const m = matchAndHighlight(refText, trimmedStable);
-          lastMatchEval = m;
+          const normalized = (m.transcript && m.transcript.trim()) || trimmedStable;
+          stableText = normalized;
+          showTranscriptFinal(normalized);
+          lastMatchEval = Object.assign({}, m, { source: normalized, transcript: normalized });
           const score = calcMatchScore(m.refCount, m.recall, m.precision);
           updateMatch(score);
         }else{
