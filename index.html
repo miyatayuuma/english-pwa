@@ -84,6 +84,13 @@
     #cfgBox input[type="text"], #cfgBox input[type="url"]{width:100%;padding:8px;border-radius:10px;border:1px solid var(--bd);background:#0c1221;color:var(--txt)}
     #cfgBox .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
     #toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#0f1422;border:1px solid #24304a;color:#b7c0d6;border-radius:10px;padding:8px 12px;z-index:99999;display:none}
+    #dirPermOverlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(11,14,26,.88);z-index:100002}
+    #dirPermOverlay.show{display:flex}
+    #dirPermBox{max-width:420px;width:100%;background:#111726;border:1px solid var(--bd);border-radius:18px;padding:20px;box-shadow:0 24px 60px rgba(0,0,0,.5)}
+    #dirPermBox h2{margin:0 0 12px 0;font-size:20px}
+    #dirPermBox p{margin:0 0 12px 0;line-height:1.6;color:var(--muted)}
+    #dirPermStatus{min-height:1.2em;font-size:13px;color:var(--bad);margin-bottom:12px}
+    #dirPermBox .actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
   </style>
 </head>
 <body>
@@ -92,6 +99,17 @@
     <div class="loaderRing"></div>
     <div class="loaderCore"></div>
     <div class="loaderDots" aria-hidden="true"><span></span><span></span><span></span></div>
+  </div>
+</div>
+<div id="dirPermOverlay" hidden aria-hidden="true">
+  <div id="dirPermBox" role="dialog" aria-modal="true" aria-labelledby="dirPermTitle">
+    <h2 id="dirPermTitle">音声フォルダへのアクセス許可が必要です</h2>
+    <p>保存済みの音声フォルダにアクセスするには、端末のダイアログで「許可する」を選んでください。アクセスを許可しない場合、音声が再生できないことがあります。</p>
+    <div id="dirPermStatus" aria-live="polite"></div>
+    <div class="actions">
+      <button id="dirPermLater" class="btn" hidden>許可せず続行</button>
+      <button id="dirPermAllow" class="btn ok">許可を開く</button>
+    </div>
   </div>
 </div>
 <div id="app">
@@ -344,7 +362,7 @@
   }
 
   // ===== Elements =====
-  const el={ headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerInfo'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), next:qs('#btnNext'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), chkWeak:qs('#chkOnlyWeak'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnImport:qs('#btnImport'), filePick:qs('#filePick'), btnTestAudio:qs('#btnTestAudio'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay') };
+  const el={ headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerInfo'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), next:qs('#btnNext'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), chkWeak:qs('#chkOnlyWeak'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnImport:qs('#btnImport'), filePick:qs('#filePick'), btnTestAudio:qs('#btnTestAudio'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus') };
   const audio=qs('#player');
   const overlayLocks=new Set();
   function updateOverlayState(){ if(!el.overlay) return; const active=overlayLocks.size>0; el.overlay.classList.toggle('hidden', !active); el.overlay.classList.toggle('active', active); }
@@ -670,7 +688,7 @@
   let DIR=null; // FileSystemDirectoryHandle
   let dirNeedsGesture=false;
   let dirPromptArmed=false;
-  async function ensureDir({prompt=true, forceCheck=false}={}){
+  async function ensureDir({prompt=true, forceCheck=false, allowSchedule=true}={}){
     if(!DIR || forceCheck){
       if(!DIR){
         try{
@@ -697,7 +715,7 @@
     }
     if(!prompt){
       dirNeedsGesture = state!=='granted';
-      if(dirNeedsGesture) scheduleDirPrompt();
+      if(dirNeedsGesture && allowSchedule) scheduleDirPrompt();
       refreshDirStatus();
       return null;
     }
@@ -706,7 +724,7 @@
     }catch(err){
       if(err && (err.name==='InvalidStateError' || /user activation/i.test(err.message||''))){
         dirNeedsGesture=true;
-        scheduleDirPrompt();
+        if(allowSchedule) scheduleDirPrompt();
         refreshDirStatus();
         return null;
       }
@@ -716,25 +734,25 @@
       refreshDirStatus();
       return null;
     }
-    if(state==='granted'){
+      if(state==='granted'){
+        dirNeedsGesture=false;
+        dirPromptArmed=false;
+        refreshDirStatus();
+        return DIR;
+      }
+      if(state==='prompt'){
+        dirNeedsGesture=true;
+        if(allowSchedule) scheduleDirPrompt();
+        refreshDirStatus();
+        return null;
+      }
+      // denied or unknown
       dirNeedsGesture=false;
       dirPromptArmed=false;
-      refreshDirStatus();
-      return DIR;
-    }
-    if(state==='prompt'){
-      dirNeedsGesture=true;
-      scheduleDirPrompt();
+      DIR=null;
+      try{ await clearDirHandle(); }catch(_){ }
       refreshDirStatus();
       return null;
-    }
-    // denied or unknown
-    dirNeedsGesture=false;
-    dirPromptArmed=false;
-    DIR=null;
-    try{ await clearDirHandle(); }catch(_){ }
-    refreshDirStatus();
-    return null;
   }
   function scheduleDirPrompt(){
     if(!DIR || !dirNeedsGesture || dirPromptArmed) return;
@@ -752,6 +770,86 @@
     };
     window.addEventListener('pointerdown', handler, true);
     window.addEventListener('keydown', handler, true);
+  }
+
+  async function gateDirPermissionBeforeBoot(){
+    await ensureDir({prompt:false, forceCheck:true, allowSchedule:false});
+    if(!DIR || !dirNeedsGesture){
+      return;
+    }
+    refreshDirStatus();
+    if(el.dirPermOverlay && el.dirPermAllow){
+      const overlay=el.dirPermOverlay;
+      const statusEl=el.dirPermStatus;
+      const allowBtn=el.dirPermAllow;
+      const laterBtn=el.dirPermLater;
+      function hideOverlay(){
+        overlay.classList.remove('show');
+        overlay.setAttribute('hidden','');
+        overlay.setAttribute('aria-hidden','true');
+      }
+      function showOverlay(){
+        overlay.removeAttribute('hidden');
+        overlay.classList.add('show');
+        overlay.setAttribute('aria-hidden','false');
+        setTimeout(()=>{ try{ allowBtn?.focus?.(); }catch(_){ } }, 0);
+      }
+      await new Promise(resolve=>{
+        if(laterBtn){ laterBtn.hidden=true; }
+        const attempt=async(fromUser=false)=>{
+          statusEl && (statusEl.textContent='');
+          const release=acquireOverlay('dir-permission');
+          try{
+            const handle=await ensureDir({prompt:true, forceCheck:true, allowSchedule:false});
+            if(handle){
+              cleanup();
+              hideOverlay();
+              resolve();
+              return;
+            }
+            if(statusEl){
+              statusEl.textContent = fromUser
+                ? 'アクセスが許可されませんでした。端末のダイアログで「許可する」を選んでください。'
+                : '音声フォルダへのアクセス許可が必要です。「許可を開く」をタップしてください。';
+            }
+            if(fromUser && laterBtn){
+              laterBtn.hidden=false;
+            }
+          }catch(err){
+            console.warn('dir permission attempt failed', err);
+            if(statusEl){
+              statusEl.textContent = fromUser
+                ? 'アクセス許可のリクエストに失敗しました。もう一度お試しください。'
+                : 'アクセス許可のリクエストを開始できませんでした。「許可を開く」をタップしてください。';
+            }
+            if(fromUser && laterBtn){
+              laterBtn.hidden=false;
+            }
+          }finally{
+            release();
+          }
+        };
+        const skip=()=>{
+          cleanup();
+          hideOverlay();
+          resolve();
+        };
+        const onKey=ev=>{ if(ev.key==='Enter'){ ev.preventDefault(); attempt(true); } };
+        const onAllow=()=>{ attempt(true); };
+        function cleanup(){
+          allowBtn.removeEventListener('click', onAllow);
+          laterBtn?.removeEventListener('click', skip);
+          overlay.removeEventListener('keydown', onKey);
+        }
+        showOverlay();
+        allowBtn.addEventListener('click', onAllow);
+        laterBtn?.addEventListener('click', skip);
+        overlay.addEventListener('keydown', onKey);
+        setTimeout(()=>{ attempt(false).catch(()=>{}); }, 0);
+      });
+    }else{
+      await ensureDir({prompt:true, forceCheck:true, allowSchedule:false});
+    }
   }
 
   // Settings modal
@@ -1528,7 +1626,10 @@
   (async()=>{
     const releaseBoot=acquireOverlay('boot');
     try{
-      await ensureDir({prompt:true});
+      await ensureDir({prompt:true, forceCheck:true, allowSchedule:false});
+      if(DIR && dirNeedsGesture){
+        await gateDirPermissionBeforeBoot();
+      }
       await ensureDataLoaded();
       updateHeaderStats();
       initSectionPicker();
