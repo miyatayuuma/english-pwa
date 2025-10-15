@@ -229,6 +229,10 @@
       <button id="cfgClose" class="btn">閉じる</button>
       <button id="cfgSave" class="btn" style="background:#1a2134;border-color:#233252">保存</button>
     </div>
+    <div class="row" style="margin-top:12px">
+      <button id="btnNotifPerm" class="btn">学習リマインド通知を有効化</button>
+      <span id="notifStatus" class="muted" style="font-size:12px"></span>
+    </div>
   </div>
 </div>
 
@@ -317,6 +321,349 @@
     }).join('');
   }
   function toast(msg, ms=1500){ const t=qs('#toast'); t.textContent=msg; t.style.display='block'; clearTimeout(toast._t); toast._t=setTimeout(()=>t.style.display='none', ms); }
+
+  const DAY_MS=86400000;
+  const STUDY_LOG_KEY='studyLogV1';
+  const NOTIF_STATE_KEY='notifStateV1';
+  function localDateKey(time=Date.now()){
+    const d=new Date(time);
+    d.setMinutes(d.getMinutes()-d.getTimezoneOffset());
+    return d.toISOString().slice(0,10);
+  }
+  function loadStudyLog(){
+    try{
+      const raw=localStorage.getItem(STUDY_LOG_KEY);
+      if(!raw) return {};
+      const parsed=JSON.parse(raw);
+      return parsed && typeof parsed==='object'?parsed:{};
+    }catch(_){ return {}; }
+  }
+  function saveStudyLog(log){
+    try{ localStorage.setItem(STUDY_LOG_KEY, JSON.stringify(log||{})); }catch(_){ }
+  }
+  function pruneStudyLog(log){
+    const entries=Object.entries(log||{});
+    if(entries.length<=190) return log;
+    entries.sort((a,b)=>a[0]<b[0]?-1:1);
+    return Object.fromEntries(entries.slice(-190));
+  }
+  let STUDY_LOG=pruneStudyLog(loadStudyLog());
+  function recordStudyProgress({pass=false,newLevel5=false}={}){
+    const key=localDateKey();
+    const entry=STUDY_LOG[key]||{passes:0,level5:0};
+    if(pass) entry.passes=(entry.passes||0)+1;
+    if(newLevel5) entry.level5=(entry.level5||0)+1;
+    STUDY_LOG[key]=entry;
+    STUDY_LOG=pruneStudyLog(STUDY_LOG);
+    saveStudyLog(STUDY_LOG);
+    if(pass||newLevel5) scheduleNotificationCheckSoon();
+  }
+  function getDailyStats(key){
+    const target=key||localDateKey();
+    const entry=STUDY_LOG[target];
+    return {passes:entry?.passes||0, level5:entry?.level5||0};
+  }
+  function sumRange(startKey,endKey){
+    const res={passes:0, level5:0};
+    if(!startKey||!endKey) return res;
+    let cur=startKey;
+    while(cur<=endKey){
+      const st=STUDY_LOG[cur];
+      if(st){
+        res.passes+=st.passes||0;
+        res.level5+=st.level5||0;
+      }
+      const parts=cur.split('-').map(n=>parseInt(n,10));
+      if(parts.length>=3 && parts.every(n=>Number.isFinite(n))){
+        const d=new Date(parts[0], parts[1]-1, parts[2]);
+        d.setDate(d.getDate()+1);
+        cur=localDateKey(d.getTime());
+      }else{
+        break;
+      }
+    }
+    return res;
+  }
+  function loadNotifState(){
+    try{
+      const raw=localStorage.getItem(NOTIF_STATE_KEY);
+      if(!raw) return {};
+      const parsed=JSON.parse(raw);
+      return parsed && typeof parsed==='object'?parsed:{};
+    }catch(_){ return {}; }
+  }
+  function saveNotifState(state){
+    try{ localStorage.setItem(NOTIF_STATE_KEY, JSON.stringify(state||{})); }catch(_){ }
+  }
+  function pruneNotifState(state){
+    const out=Object.assign({dailyZero:{},dailyCompare:{},weeklyCompare:{}}, state||{});
+    const limitDate=localDateKey(Date.now()-DAY_MS*120);
+    for(const [key,value] of Object.entries(out.dailyZero||{})){
+      if(key<limitDate) delete out.dailyZero[key];
+      else if(value && typeof value==='object'){
+        for(const slot of Object.keys(value)){
+          if(!value[slot]) delete value[slot];
+        }
+      }
+    }
+    for(const key of Object.keys(out.dailyCompare||{})){
+      if(key<limitDate) delete out.dailyCompare[key];
+    }
+    const weekLimit=localDateKey(Date.now()-DAY_MS*180);
+    for(const key of Object.keys(out.weeklyCompare||{})){
+      if(key<weekLimit) delete out.weeklyCompare[key];
+    }
+    return out;
+  }
+  let NOTIF_STATE=pruneNotifState(loadNotifState());
+  function markDailyZeroNotified(dateKey, slot){
+    if(!dateKey||!slot) return;
+    if(!NOTIF_STATE.dailyZero) NOTIF_STATE.dailyZero={};
+    const entry=NOTIF_STATE.dailyZero[dateKey]||{};
+    entry[slot]=Date.now();
+    NOTIF_STATE.dailyZero[dateKey]=entry;
+    NOTIF_STATE=pruneNotifState(NOTIF_STATE);
+    saveNotifState(NOTIF_STATE);
+  }
+  function hasDailyZeroNotified(dateKey, slot){
+    return !!(NOTIF_STATE.dailyZero && NOTIF_STATE.dailyZero[dateKey] && NOTIF_STATE.dailyZero[dateKey][slot]);
+  }
+  function markDailyCompareNotified(dateKey){
+    if(!dateKey) return;
+    if(!NOTIF_STATE.dailyCompare) NOTIF_STATE.dailyCompare={};
+    NOTIF_STATE.dailyCompare[dateKey]=Date.now();
+    NOTIF_STATE=pruneNotifState(NOTIF_STATE);
+    saveNotifState(NOTIF_STATE);
+  }
+  function hasDailyCompareNotified(dateKey){
+    return !!(NOTIF_STATE.dailyCompare && NOTIF_STATE.dailyCompare[dateKey]);
+  }
+  function markWeeklyCompareNotified(weekKey){
+    if(!weekKey) return;
+    if(!NOTIF_STATE.weeklyCompare) NOTIF_STATE.weeklyCompare={};
+    NOTIF_STATE.weeklyCompare[weekKey]=Date.now();
+    NOTIF_STATE=pruneNotifState(NOTIF_STATE);
+    saveNotifState(NOTIF_STATE);
+  }
+  function hasWeeklyCompareNotified(weekKey){
+    return !!(NOTIF_STATE.weeklyCompare && NOTIF_STATE.weeklyCompare[weekKey]);
+  }
+
+  function describeStudy(stats){
+    const passes=stats?.passes||0;
+    const level5=stats?.level5||0;
+    const parts=[`合格${passes}`];
+    if(level5>0) parts.push(`Lv5 ${level5}`);
+    return parts.join(' / ');
+  }
+  function startOfWeek(date){
+    const d=new Date(date.getTime());
+    d.setHours(0,0,0,0);
+    const day=d.getDay();
+    const diff=(day+6)%7; // Monday=0
+    d.setDate(d.getDate()-diff);
+    return d;
+  }
+  async function showStudyNotification(title, options){
+    if(!('Notification' in window) || Notification.permission!=='granted') return false;
+    const opts=Object.assign({icon:'./icons/icon-192.png', badge:'./icons/icon-192.png'}, options||{});
+    try{
+      if(navigator.serviceWorker && navigator.serviceWorker.ready){
+        const reg=await navigator.serviceWorker.ready;
+        if(reg && reg.showNotification){
+          await reg.showNotification(title, opts);
+          return true;
+        }
+      }
+    }catch(err){
+      console.warn('showNotification via SW failed', err);
+    }
+    try{
+      new Notification(title, opts);
+      return true;
+    }catch(err){
+      console.warn('Notification constructor failed', err);
+      return false;
+    }
+  }
+  const DAILY_ZERO_SLOTS=[
+    {label:'12:00', hour:12, minute:0},
+    {label:'18:00', hour:18, minute:0},
+    {label:'21:00', hour:21, minute:0}
+  ];
+  async function checkDailyZeroReminders(now, stats){
+    const todayKey=localDateKey(now.getTime());
+    const total=(stats?.passes||0)+(stats?.level5||0);
+    if(total>0) return;
+    for(const slot of DAILY_ZERO_SLOTS){
+      const scheduled=new Date(now.getTime());
+      scheduled.setHours(slot.hour, slot.minute, 0, 0);
+      if(now>=scheduled && !hasDailyZeroNotified(todayKey, slot.label)){
+        const body='今日の合格はまだ0件。サクッと1フレーズだけでも発声しておこう！';
+        await showStudyNotification('今日の学習がまだ始まっていません', {
+          body,
+          tag:`daily-zero-${todayKey}-${slot.label}`
+        });
+        markDailyZeroNotified(todayKey, slot.label);
+        break;
+      }
+    }
+  }
+  async function checkDailyComparison(now, todayStats){
+    if(now.getHours()<18) return;
+    const todayKey=localDateKey(now.getTime());
+    if(hasDailyCompareNotified(todayKey)) return;
+    const yesterdayKey=localDateKey(now.getTime()-DAY_MS);
+    const yesterdayStats=getDailyStats(yesterdayKey);
+    const todayTotal=(todayStats.passes||0)+(todayStats.level5||0);
+    const yTotal=(yesterdayStats.passes||0)+(yesterdayStats.level5||0);
+    if(todayTotal===0 && yTotal===0) return;
+    let title='今日の進捗';
+    let body='';
+    if(todayTotal<yTotal){
+      const diff=yTotal-todayTotal;
+      title='昨日に追いつくチャンス！';
+      body=`昨日は${describeStudy(yesterdayStats)}でしたが、今日はまだ${describeStudy(todayStats)}。あと${diff}件巻き返そう！`;
+    }else if(todayTotal>yTotal){
+      const diff=todayTotal-yTotal;
+      title='昨日を超えるハイペース！';
+      body=`昨日は${describeStudy(yesterdayStats)}。今日は${describeStudy(todayStats)}で${diff}件リード中。このまま締め切ろう！`;
+    }else{
+      title='昨日と互角のペース';
+      body=`昨日は${describeStudy(yesterdayStats)}。今日は今のところ同じだけ進んでいます。ラスト1件で差をつけよう！`;
+    }
+    await showStudyNotification(title, {
+      body,
+      tag:`daily-compare-${todayKey}`
+    });
+    markDailyCompareNotified(todayKey);
+  }
+  async function checkWeeklyComparison(now){
+    if(now.getDay()!==1 || now.getHours()<9) return;
+    const thisWeek=startOfWeek(now);
+    const weekKey=localDateKey(thisWeek.getTime());
+    if(hasWeeklyCompareNotified(weekKey)) return;
+    const lastWeekStart=new Date(thisWeek.getTime()-DAY_MS*7);
+    const lastWeekEnd=new Date(lastWeekStart.getTime()+DAY_MS*6);
+    const prevWeekStart=new Date(lastWeekStart.getTime()-DAY_MS*7);
+    const prevWeekEnd=new Date(prevWeekStart.getTime()+DAY_MS*6);
+    const lastStats=sumRange(localDateKey(lastWeekStart.getTime()), localDateKey(lastWeekEnd.getTime()));
+    const prevStats=sumRange(localDateKey(prevWeekStart.getTime()), localDateKey(prevWeekEnd.getTime()));
+    const lastTotal=(lastStats.passes||0)+(lastStats.level5||0);
+    const prevTotal=(prevStats.passes||0)+(prevStats.level5||0);
+    if(lastTotal===0 && prevTotal===0) return;
+    let title='先週の振り返り';
+    let body='';
+    if(lastTotal<prevTotal){
+      const diff=prevTotal-lastTotal;
+      title='先週は失速気味…';
+      body=`先週は${describeStudy(lastStats)}で、前の週は${describeStudy(prevStats)}。今週は${diff}件取り返して流れを戻そう！`;
+    }else if(lastTotal>prevTotal){
+      const diff=lastTotal-prevTotal;
+      title='先週はしっかり積み上げ！';
+      body=`先週は${describeStudy(lastStats)}で前の週を${diff}件上回りました。この勢いで今週も更新しよう！`;
+    }else{
+      title='先週は横ばいペース';
+      body=`先週は${describeStudy(lastStats)}で、前の週と同じ結果でした。今週はもう一歩攻めてみませんか？`;
+    }
+    await showStudyNotification(title, {
+      body,
+      tag:`weekly-compare-${weekKey}`
+    });
+    markWeeklyCompareNotified(weekKey);
+  }
+  let notifInterval=null;
+  function stopNotificationLoop(){
+    if(notifInterval){
+      clearInterval(notifInterval);
+      notifInterval=null;
+    }
+  }
+  async function runNotificationChecks({force=false}={}){
+    if(!('Notification' in window) || Notification.permission!=='granted'){
+      stopNotificationLoop();
+      return;
+    }
+    const now=new Date();
+    const todayKey=localDateKey(now.getTime());
+    const todayStats=getDailyStats(todayKey);
+    await checkDailyZeroReminders(now, todayStats);
+    await checkDailyComparison(now, todayStats);
+    await checkWeeklyComparison(now);
+  }
+  function ensureNotificationLoop(){
+    if(!('Notification' in window) || Notification.permission!=='granted') return;
+    if(notifInterval) return;
+    notifInterval=setInterval(()=>{ runNotificationChecks().catch(()=>{}); }, 10*60*1000);
+    runNotificationChecks({force:true}).catch(()=>{});
+  }
+  function updateNotificationUi(){
+    if(!el.notifStatus || !el.notifBtn) return;
+    if(!('Notification' in window)){
+      el.notifStatus.textContent='通知非対応のブラウザです';
+      el.notifBtn.disabled=true;
+      return;
+    }
+    const perm=Notification.permission;
+    if(perm==='granted'){
+      el.notifStatus.textContent='通知は許可されています';
+      el.notifBtn.textContent='通知は許可済み';
+      el.notifBtn.disabled=true;
+    }else if(perm==='denied'){
+      el.notifStatus.textContent='ブラウザ設定で通知を許可してください';
+      el.notifBtn.textContent='通知を許可できません';
+      el.notifBtn.disabled=true;
+    }else{
+      el.notifStatus.textContent='未許可：タップで有効化';
+      el.notifBtn.textContent='学習リマインド通知を有効化';
+      el.notifBtn.disabled=false;
+    }
+  }
+  function initNotificationSystem(){
+    if(!el.notifBtn || !el.notifStatus) return;
+    updateNotificationUi();
+    if('Notification' in window && Notification.permission==='granted'){
+      ensureNotificationLoop();
+    }
+    el.notifBtn.addEventListener('click', async()=>{
+      if(!('Notification' in window)){
+        toast('このブラウザは通知に対応していません');
+        return;
+      }
+      if(Notification.permission==='granted'){
+        toast('通知はすでに有効です');
+        return;
+      }
+      try{
+        const result=await Notification.requestPermission();
+        updateNotificationUi();
+        if(result==='granted'){
+          toast('通知を有効にしました');
+          ensureNotificationLoop();
+          runNotificationChecks({force:true}).catch(()=>{});
+        }else{
+          toast('通知は許可されませんでした');
+        }
+      }catch(err){
+        console.warn('Notification permission request failed', err);
+        toast('通知の許可リクエストに失敗しました');
+      }
+    });
+    document.addEventListener('visibilitychange',()=>{
+      if(document.visibilityState==='visible'){
+        updateNotificationUi();
+        runNotificationChecks({force:true}).catch(()=>{});
+      }
+    });
+  }
+  function scheduleNotificationCheckSoon(){
+    if(!('Notification' in window) || Notification.permission!=='granted') return;
+    ensureNotificationLoop();
+    clearTimeout(scheduleNotificationCheckSoon._t);
+    scheduleNotificationCheckSoon._t=setTimeout(()=>{
+      runNotificationChecks({force:true}).catch(()=>{});
+    }, 1000);
+  }
 
   const LEVEL_KEY='itemLevelV1';
   function loadLevelState(){ try{ return JSON.parse(localStorage.getItem(LEVEL_KEY)||'{}'); }catch(_){ return {}; } }
@@ -477,7 +824,7 @@
   }
 
   // ===== Elements =====
-  const el={ headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerInfo'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), next:qs('#btnNext'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), levelFilter:qs('#levelFilter'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnImport:qs('#btnImport'), filePick:qs('#filePick'), btnTestAudio:qs('#btnTestAudio'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue') };
+  const el={ headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerInfo'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), next:qs('#btnNext'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), levelFilter:qs('#levelFilter'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnImport:qs('#btnImport'), filePick:qs('#filePick'), btnTestAudio:qs('#btnTestAudio'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus') };
   const audio=qs('#player');
   let recog=null, recogOn=false;
   let resumeAfterMicStart=false;
@@ -1052,9 +1399,11 @@
       el.cfgKey.value=CFG.apiKey||'';
       el.cfgAudioBase.value=CFG.audioBase||'./audio';
       refreshDirStatus();
+      updateNotificationUi();
       el.cfgModal.style.display='flex';
     });
   }
+  initNotificationSystem();
   if(el.cfgClose && el.cfgModal){
     el.cfgClose.addEventListener('click', ()=>{ el.cfgModal.style.display='none'; });
   }
@@ -1782,9 +2131,16 @@
     const matchRate = calcMatchScore(refCount, recall, precision);
     updateMatch(matchRate);
 
+    const prevInfoSnapshot = getLevelInfo(it.id);
+    let prevBest = Number(prevInfoSnapshot?.best||0);
+    if(!Number.isFinite(prevBest) || prevBest<=0){
+      prevBest = Number(prevInfoSnapshot?.last||0) || 0;
+    }
     const stageUsed = maxHintStageUsed;
     const levelCandidate = evaluateLevel(matchRate, stageUsed);
     const levelInfo = updateLevelInfo(it.id, levelCandidate, matchRate, stageUsed);
+    const levelInfoBest = Number(levelInfo?.best||0) || Number(levelInfo?.last||0) || levelCandidate;
+    const gainedLevel5 = prevBest<5 && levelInfoBest>=5;
     refreshLevelDisplay(levelInfo);
     updateHeaderStats();
 
@@ -1803,6 +2159,7 @@
       }else{
         toast('Great! 合格です', 1600);
       }
+      recordStudyProgress({pass:true, newLevel5:gainedLevel5});
     }else{
       failCount++;
       playTone('fail');
