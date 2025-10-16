@@ -120,6 +120,16 @@
     #cfgBox input[type="text"], #cfgBox input[type="url"], #cfgBox select{width:100%;padding:8px;border-radius:10px;border:1px solid var(--bd);background:#0c1221;color:var(--txt)}
     #cfgBox .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
     #toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#0f1422;border:1px solid #24304a;color:#b7c0d6;border-radius:10px;padding:8px 12px;z-index:99999;display:none}
+    #milestoneEffects{position:fixed;inset:0;pointer-events:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:100001;padding:20px}
+    .milestone-effect{min-width:220px;max-width:min(340px,92vw);padding:18px 24px;border-radius:18px;border:1px solid rgba(255,255,255,.18);background:linear-gradient(135deg,rgba(98,213,255,.18),rgba(255,255,255,.05));box-shadow:0 24px 64px rgba(0,0,0,.45);text-align:center;color:var(--txt);font-weight:600;opacity:0;transform:translateY(24px) scale(.94);transition:opacity .4s ease, transform .4s cubic-bezier(.22,1,.36,1);backdrop-filter:blur(12px)}
+    .milestone-effect.show{opacity:1;transform:translateY(0) scale(1)}
+    .milestone-effect.hide{opacity:0;transform:translateY(-16px) scale(.9)}
+    .milestone-effect .effect-title{font-size:20px;letter-spacing:.04em;margin-bottom:6px;text-shadow:0 0 14px rgba(98,213,255,.35)}
+    .milestone-effect .effect-sub{font-size:14px;font-weight:500;color:var(--muted);letter-spacing:.02em}
+    .milestone-effect.best{background:linear-gradient(140deg,rgba(120,164,255,.32),rgba(255,255,255,.1));border-color:rgba(120,164,255,.5)}
+    .milestone-effect.level4{background:linear-gradient(140deg,rgba(98,213,255,.35),rgba(70,211,127,.18));border-color:rgba(98,213,255,.6)}
+    .milestone-effect.level5{background:linear-gradient(150deg,rgba(255,215,128,.4),rgba(255,255,255,.12));border-color:rgba(255,215,128,.7);color:#fff8e6}
+    .milestone-effect.level5 .effect-title{text-shadow:0 0 18px rgba(255,215,128,.75)}
     #dirPermOverlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(11,14,26,.88);z-index:100002}
     #dirPermOverlay.show{display:flex}
     #dirPermBox{max-width:420px;width:100%;background:#111726;border:1px solid var(--bd);border-radius:18px;padding:20px;box-shadow:0 24px 60px rgba(0,0,0,.5)}
@@ -227,7 +237,8 @@
 </div>
 
 <audio id="player" preload="auto" crossorigin="anonymous"></audio>
-<div id="toast"></div>
+<div id="milestoneEffects" aria-live="polite" aria-atomic="true"></div>
+<div id="toast" role="status" aria-live="polite"></div>
 
 <!-- 設定モーダル -->
 <div id="cfgModal">
@@ -454,6 +465,78 @@
     }).join('');
   }
   function toast(msg, ms=1500){ const t=qs('#toast'); t.textContent=msg; t.style.display='block'; clearTimeout(toast._t); toast._t=setTimeout(()=>t.style.display='none', ms); }
+  const MILESTONE_EFFECT_DURATION=2800;
+  const MILESTONE_EFFECT_LIMIT=3;
+  function ensureMilestoneLayer(){
+    let layer=document.getElementById('milestoneEffects');
+    if(!layer){
+      layer=document.createElement('div');
+      layer.id='milestoneEffects';
+      layer.setAttribute('aria-live','polite');
+      layer.setAttribute('aria-atomic','true');
+      document.body.appendChild(layer);
+    }
+    return layer;
+  }
+  function formatLevelLabel(level){
+    return `Lv${level}`;
+  }
+  function triggerMilestoneEffect(type,{level,previous,matchRate}={}){
+    const layer=ensureMilestoneLayer();
+    if(!layer) return;
+    const effect=document.createElement('div');
+    effect.className=['milestone-effect', type||''].filter(Boolean).join(' ');
+    let title='Great!';
+    let sub='';
+    const hasLevel=Number.isFinite(level);
+    const hasPrev=Number.isFinite(previous);
+    const hasMatch=Number.isFinite(matchRate);
+    switch(type){
+      case 'best':{
+        title='最高レベル更新！';
+        if(hasPrev && hasLevel){
+          sub=`${formatLevelLabel(previous)} → ${formatLevelLabel(level)}`;
+        }else if(hasLevel){
+          sub=formatLevelLabel(level);
+        }
+        break;
+      }
+      case 'level4':{
+        title='Lv4 達成！';
+        if(hasMatch){
+          sub=`一致率${Math.round(matchRate*100)}%`;
+        }else{
+          sub='ノーヒントで高精度！';
+        }
+        break;
+      }
+      case 'level5':{
+        title='Lv5 完璧！';
+        if(hasMatch){
+          sub=`一致率${Math.round(matchRate*100)}%`;
+        }else{
+          sub='100%達成、お見事！';
+        }
+        break;
+      }
+      default:{
+        if(hasLevel){
+          sub=formatLevelLabel(level);
+        }
+      }
+    }
+    if(!sub && hasLevel){
+      sub=formatLevelLabel(level);
+    }
+    effect.innerHTML=`<div class="effect-title">${title}</div>${sub?`<div class="effect-sub">${sub}</div>`:''}`;
+    layer.appendChild(effect);
+    requestAnimationFrame(()=>effect.classList.add('show'));
+    setTimeout(()=>effect.classList.add('hide'), MILESTONE_EFFECT_DURATION-400);
+    setTimeout(()=>{ if(effect.parentNode===layer){ layer.removeChild(effect); } }, MILESTONE_EFFECT_DURATION);
+    while(layer.children.length> MILESTONE_EFFECT_LIMIT){
+      layer.removeChild(layer.firstElementChild);
+    }
+  }
 
   const DAY_MS=86400000;
   const STUDY_LOG_KEY='studyLogV1';
@@ -819,7 +902,8 @@
     const raw=(input && typeof input.value==='string') ? input.value : '';
     return raw.trim();
   }
-  const LEVEL_CHOICES=[1,2,3,4,5];
+  const LEVEL_CHOICES=[0,1,2,3,4,5];
+  const LEGACY_LEVEL_CHOICES=[1,2,3,4,5];
   function loadLevelFilter(){
     try{
       const raw=localStorage.getItem(LEVEL_FILTER_KEY);
@@ -827,7 +911,12 @@
       const parsed=JSON.parse(raw);
       if(Array.isArray(parsed)){
         const valid=parsed.map(n=>Number(n)).filter(n=>LEVEL_CHOICES.includes(n));
-        if(valid.length) return new Set(valid);
+        if(valid.length){
+          const set=new Set(valid);
+          const coversLegacy=LEGACY_LEVEL_CHOICES.every(l=>set.has(l));
+          if(coversLegacy && !set.has(0)) set.add(0);
+          return set;
+        }
       }
     }catch(_){ }
     return new Set(LEVEL_CHOICES);
@@ -847,26 +936,33 @@
   }
   function evaluateLevel(matchRate, hintStageUsed){
     const rate=Math.max(0, Math.min(1, matchRate||0));
-    const stage = Number.isFinite(hintStageUsed) ? Math.max(0, Math.floor(hintStageUsed)) : BASE_HINT_STAGE;
-    if(rate < 0.70) return 2;
+    const stageRaw=Number.isFinite(hintStageUsed)?Math.floor(hintStageUsed):BASE_HINT_STAGE;
+    const stage=Math.max(BASE_HINT_STAGE, stageRaw);
+    if(rate < 0.70) return 1;
+    if(rate < 0.80) return 2;
     if(rate < 0.90) return 3;
-    if(stage <= BASE_HINT_STAGE){
-      return 5;
+    const usedEnglishHint = stage >= BASE_HINT_STAGE + 1;
+    if(usedEnglishHint){
+      return 3;
     }
-    if(stage===BASE_HINT_STAGE+1){
+    if(rate < 1){
       return 4;
     }
-    return 3;
+    return 5;
   }
   function getLevelInfo(id){
-    if(!id) return {best:1,last:1};
-    return LEVEL_STATE[id] || {best:1,last:1};
+    if(!id) return {best:0,last:0};
+    return LEVEL_STATE[id] || {best:0,last:0};
   }
   function updateLevelInfo(id, levelCandidate, matchRate, hintStageUsed){
     if(!id) return {best:levelCandidate,last:levelCandidate};
-    const info=LEVEL_STATE[id] || {best:1,last:1};
-    info.last = levelCandidate;
-    if(levelCandidate > (info.best||1)) info.best = levelCandidate;
+    const info=LEVEL_STATE[id] || {best:0,last:0};
+    const normalizedLast = Number(levelCandidate);
+    info.last = Number.isFinite(normalizedLast) ? normalizedLast : 0;
+    const bestNumeric = Number(info.best);
+    const currentBest = Number.isFinite(bestNumeric) ? bestNumeric : 0;
+    if(!Number.isFinite(bestNumeric)) info.best = currentBest;
+    if(info.last > currentBest) info.best = info.last;
     info.lastMatch = +(matchRate||0);
     info.hintStage = hintStageUsed;
     info.updatedAt = Date.now();
@@ -877,14 +973,21 @@
   function refreshLevelDisplay(info){
     if(!el.level) return;
     if(!info){ el.level.textContent='—'; return; }
-    const last = info.last || info.best || 1;
-    const best = info.best || last;
-    el.level.textContent = best>last ? `${last} / ${best}` : `${last}`;
+    const lastVal = Number(info.last);
+    const bestVal = Number(info.best);
+    const last = Number.isFinite(lastVal) ? lastVal : (Number.isFinite(bestVal) ? bestVal : 0);
+    const best = Number.isFinite(bestVal) ? bestVal : last;
+    el.level.textContent = Number.isFinite(best) && best>last ? `${last} / ${best}` : `${last}`;
   }
 
   function lastRecordedLevel(id){
     const info=getLevelInfo(id);
-    return info.last || info.best || 1;
+    if(!info) return 0;
+    const lastVal=Number(info.last);
+    if(Number.isFinite(lastVal)) return lastVal;
+    const bestVal=Number(info.best);
+    if(Number.isFinite(bestVal)) return bestVal;
+    return 0;
   }
 
   function updateLevelFilterButtons(){
@@ -1138,7 +1241,8 @@
         const info=getLevelInfo(item.id);
         let val = info ? Number(info.last) : NaN;
         if(!Number.isFinite(val)) val = info ? Number(info.best) : NaN;
-        if(!Number.isFinite(val) || val<=0) val=1;
+        if(!Number.isFinite(val)) val = 0;
+        if(val < 0) val = 0;
         sum+=val;
         count++;
       }
@@ -2672,14 +2776,27 @@
     const stageUsed = maxHintStageUsed;
     const levelCandidate = evaluateLevel(matchRate, stageUsed);
     const levelInfo = updateLevelInfo(it.id, levelCandidate, matchRate, stageUsed);
-    const levelInfoBest = Number(levelInfo?.best||0) || Number(levelInfo?.last||0) || levelCandidate;
+    const lastLevelRaw = Number(levelInfo?.last);
+    const bestLevelRaw = Number(levelInfo?.best);
+    const resolvedLastLevel = Number.isFinite(lastLevelRaw) ? lastLevelRaw : (Number.isFinite(bestLevelRaw) ? bestLevelRaw : levelCandidate);
+    const resolvedBestLevel = Number.isFinite(bestLevelRaw) ? bestLevelRaw : resolvedLastLevel;
+    const levelInfoBest = resolvedBestLevel;
     const gainedLevel5 = prevBest<5 && levelInfoBest>=5;
     refreshLevelDisplay(levelInfo);
     updateHeaderStats();
 
+    if(levelInfoBest > prevBest){
+      triggerMilestoneEffect('best',{level:levelInfoBest, previous:prevBest});
+    }
+    if(levelCandidate ===5){
+      triggerMilestoneEffect('level5',{level:levelCandidate, matchRate});
+    }else if(levelCandidate ===4){
+      triggerMilestoneEffect('level4',{level:levelCandidate, matchRate});
+    }
+
     const pct=Math.max(0, Math.round((matchRate||0)*100));
-    const levelLabel = levelInfo ? `Lv${levelInfo.last || levelInfo.best || levelCandidate}` : `Lv${levelCandidate}`;
-    const bestLabel = levelInfo && levelInfo.best>levelInfo.last ? ` (最高${levelInfo.best})` : '';
+    const levelLabel = `Lv${resolvedLastLevel}`;
+    const bestLabel = levelInfoBest>resolvedLastLevel ? ` (最高${levelInfoBest})` : '';
 
     const pass = matchRate >= 0.70;
     if(pass){
