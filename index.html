@@ -982,8 +982,22 @@
   function updateOverlayState(){ if(!el.overlay) return; const active=overlayLocks.size>0; el.overlay.classList.toggle('hidden', !active); el.overlay.classList.toggle('active', active); }
   function acquireOverlay(tag='load'){ if(!el.overlay){ return ()=>{}; } const token=`${tag}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`; overlayLocks.add(token); updateOverlayState(); return ()=>releaseOverlay(token); }
   function releaseOverlay(token){ if(!el.overlay || token==null) return; if(overlayLocks.delete(token)){ updateOverlayState(); } }
-  function updatePlayButtonAvailability(){ if(!el.play) return; const hasSrc=!!audio.dataset.srcKey; el.play.disabled=!hasSrc; }
-  function updatePlayVisualState(){ if(!el.play) return; const playing=!audio.paused && !audio.ended; el.play.classList.toggle('playing', playing); el.play.setAttribute('aria-pressed', playing?'true':'false'); const icon=el.play.querySelector('.playIcon'); if(icon){ icon.textContent = playing ? '⏸' : '▶️'; } }
+  function updatePlayButtonAvailability(){
+    if(!el.play) return;
+    const hasSrc=!!audio.dataset.srcKey;
+    const canSpeak=canSpeakCurrentCard();
+    el.play.disabled=!(hasSrc||canSpeak);
+  }
+  function updatePlayVisualState(){
+    if(!el.play) return;
+    const hasSrc=!!audio.dataset.srcKey;
+    const audioPlaying=hasSrc && !audio.paused && !audio.ended;
+    const playing=audioPlaying || speechPlaying;
+    el.play.classList.toggle('playing', playing);
+    el.play.setAttribute('aria-pressed', playing?'true':'false');
+    const icon=el.play.querySelector('.playIcon');
+    if(icon){ icon.textContent = playing ? '⏸' : '▶️'; }
+  }
   audio.addEventListener('play', ()=>{ resumeAfterMicStart=false; clearResumeTimer(); updatePlayVisualState(); });
   audio.addEventListener('playing', ()=>{ resumeAfterMicStart=false; clearResumeTimer(); updatePlayVisualState(); });
   audio.addEventListener('pause', ()=>{
@@ -1187,6 +1201,7 @@
     clearResumeTimer();
     delete audio.dataset.srcKey;
     audio.removeAttribute('src');
+    currentShouldUseSpeech=false;
     try{ audio.load?.(); }catch(_){ }
     updatePlayButtonAvailability();
     updatePlayVisualState();
@@ -1213,6 +1228,10 @@
   let maxHintStageUsed=BASE_HINT_STAGE;
   let currentEnHtml='';
   let currentItem=null;
+  let currentShouldUseSpeech=false;
+  let currentSpeechUtterance=null;
+  let currentSpeechResolver=null;
+  let speechPlaying=false;
 
   function setHintStage(stage,{reset=false}={}){
     const next=Math.max(0, Math.min(2, Number.isFinite(stage)?Math.floor(stage):0));
@@ -1662,6 +1681,18 @@
       rememberPending();
       el.cfgModal.style.display='none';
       toast('設定を保存しました');
+      if(currentItem){
+        const hasSrc=!!audio.dataset.srcKey;
+        const speechForced=!!currentItem.forceSpeech;
+        const shouldUseSpeechNow=CFG.speechFallback && (speechForced || !hasSrc);
+        if(!shouldUseSpeechNow){
+          cancelSpeech();
+        }
+        currentShouldUseSpeech=!!shouldUseSpeechNow;
+      }else{
+        currentShouldUseSpeech=false;
+      }
+      updatePlayButtonAvailability();
       if((CFG.apiUrl||'').trim()){
         syncProgressAndStatus().catch(()=>{});
       }
@@ -1966,7 +1997,20 @@
         return String(a.id).localeCompare(String(b.id));
       });
     }
-    return items.map(it=>({ id:it.id,en:it.en,ja:it.ja,tags:it.tags||'',chunks_json:it.chunks||'[]',audio_fn:it.audio_fn||'' }));
+    return items.map(it=>{
+      const forceSpeech=!!(it&&(
+        it.forceSpeech || it.force_speech || it.speech_force || it.speechOnly || it.speech_only
+      ));
+      return {
+        id:it.id,
+        en:it.en,
+        ja:it.ja,
+        tags:it.tags||'',
+        chunks_json:it.chunks||'[]',
+        audio_fn:it.audio_fn||'',
+        forceSpeech
+      };
+    });
   }
 
   // Audio resolve: DIR (folder) -> OPFS -> base URL
@@ -1995,16 +2039,120 @@
     return promise;
   }
 
+  function speechSynthesisSupported(){
+    if(typeof window==='undefined') return false;
+    if(typeof window.speechSynthesis==='undefined') return false;
+    const Utterance=window.SpeechSynthesisUtterance||window.webkitSpeechSynthesisUtterance;
+    return typeof Utterance==='function';
+  }
+  function getConfiguredSpeechVoice(){
+    if(!speechSynthesisSupported()) return null;
+    const targetId=CFG.speechVoice||'';
+    if(!targetId) return null;
+    try{
+      const voices=speechSynthesis.getVoices?speechSynthesis.getVoices():[];
+      for(let i=0;i<voices.length;i++){
+        if(getVoiceId(voices[i], i)===targetId){
+          return voices[i];
+        }
+      }
+    }catch(_){ }
+    return null;
+  }
+  function canSpeakCurrentCard(){
+    if(!currentShouldUseSpeech) return false;
+    if(!speechSynthesisSupported()) return false;
+    if(!currentItem) return false;
+    const text=String(currentItem.en||'').replace(/\s+/g,' ').trim();
+    return !!text;
+  }
+  async function speakCurrentCard(){
+    if(!CFG.speechFallback) return false;
+    if(!canSpeakCurrentCard()) return false;
+    cancelSpeech();
+    const Utterance=window.SpeechSynthesisUtterance||window.webkitSpeechSynthesisUtterance;
+    const text=String(currentItem.en||'').replace(/\s+/g,' ').trim();
+    if(!text) return false;
+    return new Promise(resolve=>{
+      let settled=false;
+      const utter=new Utterance(text);
+      currentSpeechUtterance=utter;
+      const finish=(success)=>{
+        if(settled) return;
+        settled=true;
+        if(currentSpeechResolver===finish){ currentSpeechResolver=null; }
+        if(currentSpeechUtterance===utter){ currentSpeechUtterance=null; }
+        if(speechPlaying){ speechPlaying=false; updatePlayVisualState(); }
+        resolve(success);
+      };
+      currentSpeechResolver=finish;
+      const voice=getConfiguredSpeechVoice();
+      if(voice){ utter.voice=voice; }
+      utter.onstart=()=>{
+        speechPlaying=true;
+        updatePlayVisualState();
+      };
+      utter.onend=()=>finish(true);
+      utter.onerror=(ev)=>{
+        console.warn('speech error', ev);
+        finish(false);
+      };
+      try{
+        speechSynthesis.speak(utter);
+        if(typeof speechSynthesis.resume==='function'){
+          try{ speechSynthesis.resume(); }catch(_){ }
+        }
+      }catch(err){
+        console.warn('speech speak failed', err);
+        finish(false);
+      }
+    });
+  }
+  function cancelSpeech(){
+    if(speechSynthesisSupported()){
+      try{ speechSynthesis.cancel(); }catch(_){ }
+    }
+    if(currentSpeechResolver){
+      const finalize=currentSpeechResolver;
+      currentSpeechResolver=null;
+      finalize(false);
+    }else if(speechPlaying){
+      speechPlaying=false;
+      updatePlayVisualState();
+    }
+    currentSpeechUtterance=null;
+  }
+
   // Render & navigation
-  function stopAudio(){ resumeAfterMicStart=false; clearResumeTimer(); try{audio.pause();}catch(_){ } audio.currentTime=0; }
+  function stopAudio(){ resumeAfterMicStart=false; clearResumeTimer(); try{audio.pause();}catch(_){ } audio.currentTime=0; cancelSpeech(); }
   async function tryPlayAudio({userInitiated=false, resetPosition=false}={}){
-    if(!audio?.dataset?.srcKey){
+    const hasSrc=!!(audio?.dataset?.srcKey);
+    const shouldSpeak=currentShouldUseSpeech && CFG.speechFallback;
+    const speechSupported=shouldSpeak && canSpeakCurrentCard();
+    if(shouldSpeak){
+      const speechOk=speechSupported ? await speakCurrentCard() : false;
+      if(speechOk){
+        if(userInitiated){
+          autoPlayUnlocked=true;
+        }
+        return true;
+      }
+      if(!hasSrc){
+        if(userInitiated){
+          if(!speechSynthesisSupported()) toast('音声合成に未対応のため再生できません');
+          else toast('音声合成を開始できませんでした');
+        }
+        return false;
+      }
+    }
+    if(!hasSrc){
       if(userInitiated) toast('音声が見つかりません');
       return false;
     }
     if(resetPosition){
       try{ audio.currentTime=0; }catch(_){ }
     }
+    cancelSpeech();
     try{
       const playPromise=audio.play();
       if(playPromise && typeof playPromise.then==='function'){
@@ -2035,7 +2183,9 @@
     sessionActive=false;
     sessionStarting=false;
     stopAudio();
+    cancelSpeech();
     clearAudioSource();
+    currentShouldUseSpeech=false;
     autoPlayUnlocked=false;
     updatePlayVisualState();
     updatePlayButtonAvailability();
@@ -2082,6 +2232,8 @@
     const releaseCardLoad = acquireOverlay('card-load');
     try{
       stopAudio();
+      currentShouldUseSpeech=false;
+      updatePlayButtonAvailability();
       const it=QUEUE[i];
       if(!it){
         el.footer.textContent='キューが空です';
@@ -2128,7 +2280,9 @@
       }else{
         clearAudioSource();
       }
-      if(el.play){ el.play.disabled=!url; }
+      const shouldUseSpeech=CFG.speechFallback && (!!it.forceSpeech || !url);
+      currentShouldUseSpeech=!!shouldUseSpeech;
+      updatePlayButtonAvailability();
       cardStart=now();
       resetResult();
       resetTranscript();
@@ -2140,7 +2294,7 @@
       el.mic.disabled=false;
       primeAudio(QUEUE[i+1]);
       primeAudio(QUEUE[i-1]);
-      if(autoPlay&&url){
+      if(autoPlay&&(url||currentShouldUseSpeech)){
         try{
           await tryPlayAudio({userInitiated:false, resetPosition:true});
         }catch(err){
@@ -2268,15 +2422,24 @@
     if(!sessionActive){ await startSession(false); }
     if(sessionStarting) return;
     if(!sessionActive){ return; }
-    if(!audio.dataset.srcKey){ toast('音声が見つかりません'); return; }
-    if(audio.paused){
-      const shouldReset = audio.ended || audio.currentTime<=0.05;
-      await tryPlayAudio({userInitiated:true, resetPosition:shouldReset});
-    }else{
+    const hasSrc=!!audio.dataset.srcKey;
+    const canSpeak=canSpeakCurrentCard();
+    const audioPlaying=hasSrc && !audio.paused && !audio.ended;
+    if(audioPlaying){
       resumeAfterMicStart=false;
       clearResumeTimer();
       audio.pause();
+      return;
     }
+    if(speechPlaying){
+      resumeAfterMicStart=false;
+      clearResumeTimer();
+      cancelSpeech();
+      return;
+    }
+    if(!hasSrc && !canSpeak){ toast('音声が見つかりません'); return; }
+    const shouldReset = hasSrc ? (audio.ended || audio.currentTime<=0.05) : false;
+    await tryPlayAudio({userInitiated:true, resetPosition:shouldReset});
   });
 
   // ASR（改良：重複抑制・上限・多重一致防止）
