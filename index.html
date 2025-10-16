@@ -117,6 +117,10 @@
     #cfgBox{width:min(560px,92%);background:#111726;border:1px solid var(--bd);border-radius:14px;padding:16px}
     #cfgBox h3{margin:0 0 8px 0}
     #cfgBox label{display:block;margin:10px 0}
+    .cfg-fieldset{margin:12px 0;padding:10px 12px;border:1px solid var(--bd);border-radius:10px;background:#0c1221}
+    .cfg-fieldset legend{padding:0 6px;font-size:13px;color:var(--muted)}
+    .cfg-radio{display:flex;align-items:center;gap:8px;margin:6px 0;font-size:14px}
+    .cfg-radio input[type="radio"]{width:auto}
     #cfgBox input[type="text"], #cfgBox input[type="url"], #cfgBox select{width:100%;padding:8px;border-radius:10px;border:1px solid var(--bd);background:#0c1221;color:var(--txt)}
     #cfgBox .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
     #toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#0f1422;border:1px solid #24304a;color:#b7c0d6;border-radius:10px;padding:8px 12px;z-index:99999;display:none}
@@ -253,9 +257,11 @@
     <label>音源ベースURL（例: https://example.com/audio または ./audio）
       <input id="cfgAudioBase" type="text" placeholder="./audio">
     </label>
-    <label>
-      <input id="cfgSpeechFallback" type="checkbox"> 合成音声を優先して再生（エラー時も自動切替）
-    </label>
+    <fieldset class="cfg-fieldset">
+      <legend>再生方法</legend>
+      <label class="cfg-radio"><input type="radio" name="cfgPlaybackMode" value="audio"> 音源のみ</label>
+      <label class="cfg-radio"><input type="radio" name="cfgPlaybackMode" value="speech"> 合成音声のみ</label>
+    </fieldset>
     <label>音声合成の声
       <select id="cfgSpeechVoice"></select>
     </label>
@@ -1076,7 +1082,8 @@
   }
 
   // ===== Elements =====
-  const el={ headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerInfo'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), next:qs('#btnNext'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSpeechFallback:qs('#cfgSpeechFallback'), cfgSpeechVoice:qs('#cfgSpeechVoice'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnImport:qs('#btnImport'), filePick:qs('#filePick'), btnTestAudio:qs('#btnTestAudio'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus') };
+  const el={ headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerInfo'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), next:qs('#btnNext'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSpeechVoice:qs('#cfgSpeechVoice'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnImport:qs('#btnImport'), filePick:qs('#filePick'), btnTestAudio:qs('#btnTestAudio'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus') };
+  el.cfgPlaybackMode=qsa('input[name="cfgPlaybackMode"]');
   const audio=qs('#player');
   let recog=null, recogOn=false;
   let resumeAfterMicStart=false;
@@ -1424,9 +1431,27 @@
   const CFG_KEY='appConfigV3';
   function loadCfg(){ try{return JSON.parse(localStorage.getItem(CFG_KEY)||'{}')}catch(_){return{}} }
   function saveCfg(o){ localStorage.setItem(CFG_KEY, JSON.stringify(o)); }
-  let CFG=Object.assign({ apiUrl:'', apiKey:'', audioBase:'./audio', speechFallback:false, speechVoice:'' }, loadCfg());
-  CFG.speechFallback=!!CFG.speechFallback;
+  let CFG=Object.assign({ apiUrl:'', apiKey:'', audioBase:'./audio', speechVoice:'', playbackMode:'audio' }, loadCfg());
   if(typeof CFG.speechVoice!=='string'){ CFG.speechVoice=''; }
+  const legacyFallback=CFG && typeof CFG.speechFallback!=='undefined' ? !!CFG.speechFallback : false;
+  if(CFG && typeof CFG.playbackMode!=='string'){ CFG.playbackMode=''; }
+  const normalizedMode = (CFG.playbackMode||'').toLowerCase();
+  CFG.playbackMode = normalizedMode==='speech' ? 'speech' : (normalizedMode==='audio' ? 'audio' : (legacyFallback ? 'speech' : 'audio'));
+  if(CFG && Object.prototype.hasOwnProperty.call(CFG,'speechFallback')){ delete CFG.speechFallback; }
+
+  function getPlaybackMode(){
+    return CFG.playbackMode==='speech' ? 'speech' : 'audio';
+  }
+  function shouldUseSpeechForItem(item){
+    if(!item) return false;
+    if(item.forceSpeech){ return true; }
+    return getPlaybackMode()==='speech';
+  }
+  function shouldUseAudioForItem(item){
+    if(!item) return false;
+    if(item.forceSpeech){ return false; }
+    return getPlaybackMode()!=='speech';
+  }
 
   function getVoiceId(voice, idx){
     if(!voice) return '';
@@ -1456,7 +1481,7 @@
     }catch(_){
       voices=[];
     }
-    const placeholder=new Option('自動選択', '');
+    const placeholder=new Option('自動選択（英語優先）', '');
     sel.appendChild(placeholder);
     let hasPrior=false;
     let hasStored=false;
@@ -1748,7 +1773,10 @@
       el.cfgUrl.value=CFG.apiUrl||'';
       el.cfgKey.value=CFG.apiKey||'';
       el.cfgAudioBase.value=CFG.audioBase||'./audio';
-      if(el.cfgSpeechFallback){ el.cfgSpeechFallback.checked=!!CFG.speechFallback; }
+      if(el.cfgPlaybackMode && el.cfgPlaybackMode.length){
+        const mode=getPlaybackMode();
+        el.cfgPlaybackMode.forEach(input=>{ input.checked = (input.value===mode); });
+      }
       if(el.cfgSpeechVoice){
         populateVoiceOptions();
         const desired=CFG.speechVoice||'';
@@ -1773,7 +1801,12 @@
       CFG.apiUrl=(el.cfgUrl.value||'').trim();
       CFG.apiKey=(el.cfgKey.value||'').trim();
       CFG.audioBase=(el.cfgAudioBase.value||'').trim()||'./audio';
-      if(el.cfgSpeechFallback){ CFG.speechFallback=!!el.cfgSpeechFallback.checked; }
+      if(el.cfgPlaybackMode && el.cfgPlaybackMode.length){
+        const selected=el.cfgPlaybackMode.find(input=>input.checked);
+        CFG.playbackMode = selected ? (selected.value==='speech' ? 'speech' : 'audio') : 'audio';
+      }else{
+        CFG.playbackMode='audio';
+      }
       if(el.cfgSpeechVoice){ CFG.speechVoice=el.cfgSpeechVoice.value||''; }
       saveCfg(CFG);
       if((CFG.apiUrl||'').trim()){
@@ -1792,14 +1825,28 @@
       el.cfgModal.style.display='none';
       toast('設定を保存しました');
       if(currentItem){
-        const hasSrc=!!audio.dataset.srcKey;
-        const speechForced=!!currentItem.forceSpeech;
-        const preferSpeech=CFG.speechFallback || speechForced;
-        const shouldUseSpeechNow=preferSpeech || !hasSrc;
-        if(!shouldUseSpeechNow){
+        const wantsSpeech=shouldUseSpeechForItem(currentItem);
+        if(wantsSpeech){
+          clearAudioSource();
+          currentShouldUseSpeech=true;
+        }else{
+          currentShouldUseSpeech=false;
           cancelSpeech();
+          if(shouldUseAudioForItem(currentItem) && !audio.dataset.srcKey && currentItem.audio_fn){
+            (async()=>{
+              try{
+                const url=await resolveAudioUrl(currentItem.audio_fn);
+                if(url){
+                  await setAudioSource(url);
+                }else{
+                  clearAudioSource();
+                }
+              }catch(err){
+                console.warn('audio reload after config failed', err);
+              }
+            })();
+          }
         }
-        currentShouldUseSpeech=!!shouldUseSpeechNow;
       }else{
         currentShouldUseSpeech=false;
       }
@@ -2132,6 +2179,7 @@
 
   async function primeAudio(item, knownUrl){
     if(!item||!item.audio_fn) return;
+    if(!shouldUseAudioForItem(item)) return;
     let url=knownUrl;
     if(!url){
       url=await resolveAudioUrl(item.audio_fn);
@@ -2156,17 +2204,39 @@
     const Utterance=window.SpeechSynthesisUtterance||window.webkitSpeechSynthesisUtterance;
     return typeof Utterance==='function';
   }
+  function scoreVoicePreference(voice){
+    if(!voice) return -Infinity;
+    let score=0;
+    const lang=String(voice.lang||'').toLowerCase();
+    if(lang.startsWith('en-us')) score+=6;
+    else if(lang.startsWith('en-gb')) score+=5;
+    else if(lang.startsWith('en-')) score+=4;
+    else if(lang.startsWith('en')) score+=3;
+    if(/english/i.test(String(voice.name||''))){ score+=1.5; }
+    if(voice.default) score+=1;
+    if(voice.localService) score+=0.5;
+    return score;
+  }
+  function pickPreferredVoice(voices){
+    if(!Array.isArray(voices) || !voices.length) return null;
+    const list=[...voices];
+    list.sort((a,b)=>scoreVoicePreference(b)-scoreVoicePreference(a));
+    const top=list.find(v=>/^en(-|$)/i.test(String(v.lang||''))) || list[0];
+    return top || null;
+  }
   function getConfiguredSpeechVoice(){
     if(!speechSynthesisSupported()) return null;
-    const targetId=CFG.speechVoice||'';
-    if(!targetId) return null;
     try{
       const voices=speechSynthesis.getVoices?speechSynthesis.getVoices():[];
-      for(let i=0;i<voices.length;i++){
-        if(getVoiceId(voices[i], i)===targetId){
-          return voices[i];
+      const targetId=CFG.speechVoice||'';
+      if(targetId){
+        for(let i=0;i<voices.length;i++){
+          if(getVoiceId(voices[i], i)===targetId){
+            return voices[i];
+          }
         }
       }
+      return pickPreferredVoice(voices);
     }catch(_){ }
     return null;
   }
@@ -2238,23 +2308,46 @@
   function stopAudio(){ resumeAfterMicStart=false; clearResumeTimer(); try{audio.pause();}catch(_){ } audio.currentTime=0; cancelSpeech(); }
   async function tryPlayAudio({userInitiated=false, resetPosition=false}={}){
     const hasSrc=!!(audio?.dataset?.srcKey);
-    const shouldSpeak=currentShouldUseSpeech;
-    const speechSupported=shouldSpeak && canSpeakCurrentCard();
-    if(shouldSpeak){
-      const speechOk=speechSupported ? await speakCurrentCard() : false;
-      if(speechOk){
-        if(userInitiated){
-          autoPlayUnlocked=true;
-        }
-        return true;
-      }
-      if(!hasSrc){
+    const item=currentItem;
+    const playbackMode=getPlaybackMode();
+    const speechForced=!!(item&&item.forceSpeech);
+    const speechDesired=!!currentShouldUseSpeech;
+    const speechAllowed=speechDesired && (playbackMode==='speech' || speechForced);
+    const audioAllowed=shouldUseAudioForItem(item);
+    if(speechAllowed){
+      if(!canSpeakCurrentCard()){
         if(userInitiated){
           if(!speechSynthesisSupported()) toast('音声合成に未対応のため再生できません');
           else toast('音声合成を開始できませんでした');
         }
         return false;
       }
+      const speechOk=await speakCurrentCard();
+      if(speechOk){
+        if(userInitiated){
+          autoPlayUnlocked=true;
+        }
+        return true;
+      }
+      if(userInitiated){
+        if(!speechSynthesisSupported()) toast('音声合成に未対応のため再生できません');
+        else toast('音声合成を開始できませんでした');
+      }
+      return false;
+    }
+    if(speechDesired && !speechAllowed){
+      if(userInitiated && speechForced){
+        toast('このカードは合成音声のみ対応です');
+      }
+      return false;
+    }
+    if(!audioAllowed){
+      if(userInitiated){
+        if(playbackMode==='speech' || speechForced){
+          if(!canSpeakCurrentCard()){ toast('音声合成に未対応のため再生できません'); }
+        }
+      }
+      return false;
     }
     if(!hasSrc){
       if(userInitiated) toast('音声が見つかりません');
@@ -2364,41 +2457,44 @@
       const levelInfo=getLevelInfo(it.id);
       refreshLevelDisplay(levelInfo);
       setHintStage(BASE_HINT_STAGE,{reset:true});
-      const hasDirAudio=!!DIR;
-      const needsResolveLoader = !!(hasDirAudio && it.audio_fn && !audioUrlCache.has(it.audio_fn));
+      const allowAudio=shouldUseAudioForItem(it);
       let url='';
-      releaseResolve = needsResolveLoader ? acquireOverlay('audio-resolve') : null;
-      try{
-        url=await resolveAudioUrl(it.audio_fn);
-      }finally{
-        releaseResolve?.();
-        releaseResolve=null;
-      }
-      if(url){
-        const needsPrepareLoader = hasDirAudio && (audio.dataset.srcKey !== url || audio.readyState<2);
-        releasePrepare = needsPrepareLoader ? acquireOverlay('audio-prepare') : null;
+      if(allowAudio){
+        const hasDirAudio=!!DIR;
+        const needsResolveLoader = !!(hasDirAudio && it.audio_fn && !audioUrlCache.has(it.audio_fn));
+        releaseResolve = needsResolveLoader ? acquireOverlay('audio-resolve') : null;
         try{
-          await setAudioSource(url);
-          if(audio.readyState<2){
-            const retryPrime=primeAudio(it, url);
-            if(retryPrime){
-              try{ await retryPrime; }catch(err){ console.warn('primeAudio retry failed', err); }
-            }
-            await setAudioSource(url,{timeout:4000, forceReload:true});
-            if(audio.readyState<2){
-              console.warn('Audio not ready after retry', it && it.id, url);
-            }
-          }
+          url=await resolveAudioUrl(it.audio_fn);
         }finally{
-          releasePrepare?.();
-          releasePrepare=null;
+          releaseResolve?.();
+          releaseResolve=null;
+        }
+        if(url){
+          const needsPrepareLoader = hasDirAudio && (audio.dataset.srcKey !== url || audio.readyState<2);
+          releasePrepare = needsPrepareLoader ? acquireOverlay('audio-prepare') : null;
+          try{
+            await setAudioSource(url);
+            if(audio.readyState<2){
+              const retryPrime=primeAudio(it, url);
+              if(retryPrime){
+                try{ await retryPrime; }catch(err){ console.warn('primeAudio retry failed', err); }
+              }
+              await setAudioSource(url,{timeout:4000, forceReload:true});
+              if(audio.readyState<2){
+                console.warn('Audio not ready after retry', it && it.id, url);
+              }
+            }
+          }finally{
+            releasePrepare?.();
+            releasePrepare=null;
+          }
+        }else{
+          clearAudioSource();
         }
       }else{
         clearAudioSource();
       }
-      const speechForced=!!it.forceSpeech;
-      const preferSpeech=CFG.speechFallback || speechForced;
-      currentShouldUseSpeech=!!(preferSpeech || !url);
+      currentShouldUseSpeech=shouldUseSpeechForItem(it);
       updatePlayButtonAvailability();
       cardStart=now();
       resetResult();
@@ -2409,8 +2505,8 @@
       hideNextCta();
       setMicState(false);
       el.mic.disabled=false;
-      primeAudio(QUEUE[i+1]);
-      primeAudio(QUEUE[i-1]);
+      if(shouldUseAudioForItem(QUEUE[i+1])){ primeAudio(QUEUE[i+1]); }
+      if(shouldUseAudioForItem(QUEUE[i-1])){ primeAudio(QUEUE[i-1]); }
       if(autoPlay&&(url||currentShouldUseSpeech)){
         try{
           await tryPlayAudio({userInitiated:false, resetPosition:true});
