@@ -116,7 +116,7 @@
     #cfgBox{width:min(560px,92%);background:#111726;border:1px solid var(--bd);border-radius:14px;padding:16px}
     #cfgBox h3{margin:0 0 8px 0}
     #cfgBox label{display:block;margin:10px 0}
-    #cfgBox input[type="text"], #cfgBox input[type="url"]{width:100%;padding:8px;border-radius:10px;border:1px solid var(--bd);background:#0c1221;color:var(--txt)}
+    #cfgBox input[type="text"], #cfgBox input[type="url"], #cfgBox select{width:100%;padding:8px;border-radius:10px;border:1px solid var(--bd);background:#0c1221;color:var(--txt)}
     #cfgBox .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
     #toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#0f1422;border:1px solid #24304a;color:#b7c0d6;border-radius:10px;padding:8px 12px;z-index:99999;display:none}
     #dirPermOverlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(11,14,26,.88);z-index:100002}
@@ -240,6 +240,12 @@
     </label>
     <label>音源ベースURL（例: https://example.com/audio または ./audio）
       <input id="cfgAudioBase" type="text" placeholder="./audio">
+    </label>
+    <label>
+      <input id="cfgSpeechFallback" type="checkbox"> 音声再生エラー時に音声合成を使用
+    </label>
+    <label>音声合成の声
+      <select id="cfgSpeechVoice"></select>
     </label>
     <div class="row" style="margin-top:8px">
       <button id="btnPickDir" class="btn">音源フォルダを指定（フォルダピッカー）</button>
@@ -966,7 +972,7 @@
   }
 
   // ===== Elements =====
-  const el={ headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerInfo'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), next:qs('#btnNext'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnImport:qs('#btnImport'), filePick:qs('#filePick'), btnTestAudio:qs('#btnTestAudio'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus') };
+  const el={ headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerInfo'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), next:qs('#btnNext'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSpeechFallback:qs('#cfgSpeechFallback'), cfgSpeechVoice:qs('#cfgSpeechVoice'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnImport:qs('#btnImport'), filePick:qs('#filePick'), btnTestAudio:qs('#btnTestAudio'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus') };
   const audio=qs('#player');
   let recog=null, recogOn=false;
   let resumeAfterMicStart=false;
@@ -1289,7 +1295,73 @@
   const CFG_KEY='appConfigV3';
   function loadCfg(){ try{return JSON.parse(localStorage.getItem(CFG_KEY)||'{}')}catch(_){return{}} }
   function saveCfg(o){ localStorage.setItem(CFG_KEY, JSON.stringify(o)); }
-  let CFG=Object.assign({ apiUrl:'', apiKey:'', audioBase:'./audio' }, loadCfg());
+  let CFG=Object.assign({ apiUrl:'', apiKey:'', audioBase:'./audio', speechFallback:false, speechVoice:'' }, loadCfg());
+  CFG.speechFallback=!!CFG.speechFallback;
+  if(typeof CFG.speechVoice!=='string'){ CFG.speechVoice=''; }
+
+  function getVoiceId(voice, idx){
+    if(!voice) return '';
+    if(voice.voiceURI) return voice.voiceURI;
+    const namePart=voice.name ? String(voice.name) : 'voice';
+    const langPart=voice.lang ? String(voice.lang) : String(idx ?? 0);
+    return `${namePart}#${langPart}`;
+  }
+
+  function populateVoiceOptions(){
+    if(!el.cfgSpeechVoice){ return; }
+    const sel=el.cfgSpeechVoice;
+    const priorValue=sel.value;
+    sel.innerHTML='';
+    if(typeof window==='undefined' || typeof speechSynthesis==='undefined' || typeof speechSynthesis.getVoices!=='function'){
+      const opt=new Option('音声合成に未対応', '');
+      opt.disabled=true;
+      sel.appendChild(opt);
+      sel.value='';
+      sel.disabled=true;
+      return;
+    }
+    sel.disabled=false;
+    let voices=[];
+    try{
+      voices=speechSynthesis.getVoices()||[];
+    }catch(_){
+      voices=[];
+    }
+    const placeholder=new Option('自動選択', '');
+    sel.appendChild(placeholder);
+    let hasPrior=false;
+    let hasStored=false;
+    voices.forEach((voice, idx)=>{
+      const id=getVoiceId(voice, idx);
+      if(!id) return;
+      const label=voice.lang ? `${voice.name} (${voice.lang})` : voice.name;
+      const opt=new Option(label, id);
+      sel.appendChild(opt);
+      if(priorValue && id===priorValue){ hasPrior=true; }
+      if(CFG.speechVoice && id===CFG.speechVoice){ hasStored=true; }
+    });
+    if(!voices.length){
+      placeholder.textContent='自動選択（利用可能な音声が見つかりません）';
+    }
+    if(priorValue && hasPrior){
+      sel.value=priorValue;
+    }else if(CFG.speechVoice && hasStored){
+      sel.value=CFG.speechVoice;
+    }else{
+      sel.value='';
+    }
+  }
+
+  if(el.cfgSpeechVoice){
+    populateVoiceOptions();
+    if(typeof speechSynthesis!=='undefined'){
+      if(typeof speechSynthesis.addEventListener==='function'){
+        speechSynthesis.addEventListener('voiceschanged', populateVoiceOptions);
+      }else{
+        speechSynthesis.onvoiceschanged=populateVoiceOptions;
+      }
+    }
+  }
 
   const PENDING_KEY='pendingLogsV1';
   function loadPendingLogs(){
@@ -1547,6 +1619,17 @@
       el.cfgUrl.value=CFG.apiUrl||'';
       el.cfgKey.value=CFG.apiKey||'';
       el.cfgAudioBase.value=CFG.audioBase||'./audio';
+      if(el.cfgSpeechFallback){ el.cfgSpeechFallback.checked=!!CFG.speechFallback; }
+      if(el.cfgSpeechVoice){
+        populateVoiceOptions();
+        const desired=CFG.speechVoice||'';
+        if(desired){
+          el.cfgSpeechVoice.value=desired;
+          if(el.cfgSpeechVoice.value!==desired){ el.cfgSpeechVoice.value=''; }
+        }else{
+          el.cfgSpeechVoice.value='';
+        }
+      }
       refreshDirStatus();
       updateNotificationUi();
       el.cfgModal.style.display='flex';
@@ -1561,6 +1644,8 @@
       CFG.apiUrl=(el.cfgUrl.value||'').trim();
       CFG.apiKey=(el.cfgKey.value||'').trim();
       CFG.audioBase=(el.cfgAudioBase.value||'').trim()||'./audio';
+      if(el.cfgSpeechFallback){ CFG.speechFallback=!!el.cfgSpeechFallback.checked; }
+      if(el.cfgSpeechVoice){ CFG.speechVoice=el.cfgSpeechVoice.value||''; }
       saveCfg(CFG);
       if((CFG.apiUrl||'').trim()){
         for(const entry of PENDING_LOGS){
