@@ -977,6 +977,10 @@
   let recog=null, recogOn=false;
   let resumeAfterMicStart=false;
   let resumeAfterMicTimer=null;
+  let currentSpeechUtterance=null;
+  let currentSpeechResolver=null;
+  let speechPlaying=false;
+  let speechRate=1;
   function clearResumeTimer(){ if(resumeAfterMicTimer){ clearTimeout(resumeAfterMicTimer); resumeAfterMicTimer=null; } }
   const overlayLocks=new Set();
   function updateOverlayState(){ if(!el.overlay) return; const active=overlayLocks.size>0; el.overlay.classList.toggle('hidden', !active); el.overlay.classList.toggle('active', active); }
@@ -1035,6 +1039,7 @@
     try{ localStorage.setItem(SPEED_KEY, String(rate)); }catch(_){ }
   }
   let playbackRate=loadSpeed();
+  speechRate=playbackRate;
   function formatSpeed(rate){
     const rounded=Math.round(rate*100)/100;
     return `${rounded.toFixed(2).replace(/\.?0+$/,'')}×`;
@@ -1051,8 +1056,12 @@
   function applyPlaybackRate(rate,{persist=false}={}){
     const clamped=clampSpeed(rate);
     playbackRate=clamped;
+    speechRate=clamped;
     if(audio){
       try{ audio.playbackRate=clamped; }catch(_){ }
+    }
+    if(currentSpeechUtterance){
+      try{ currentSpeechUtterance.rate=clamped; }catch(_){ }
     }
     syncSpeedUI();
     if(persist){ saveSpeed(clamped); }
@@ -1229,10 +1238,6 @@
   let currentEnHtml='';
   let currentItem=null;
   let currentShouldUseSpeech=false;
-  let currentSpeechUtterance=null;
-  let currentSpeechResolver=null;
-  let speechPlaying=false;
-
   function setHintStage(stage,{reset=false}={}){
     const next=Math.max(0, Math.min(2, Number.isFinite(stage)?Math.floor(stage):0));
     const prev=hintStage;
@@ -2076,6 +2081,7 @@
     return new Promise(resolve=>{
       let settled=false;
       const utter=new Utterance(text);
+      try{ utter.rate = speechRate; }catch(_){ }
       currentSpeechUtterance=utter;
       const finish=(success)=>{
         if(settled) return;
