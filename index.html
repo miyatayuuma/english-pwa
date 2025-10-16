@@ -982,6 +982,7 @@
   let currentSpeechResolver=null;
   let speechPlaying=false;
   let speechRate=1;
+  let currentShouldUseSpeech=false;
   function clearResumeTimer(){ if(resumeAfterMicTimer){ clearTimeout(resumeAfterMicTimer); resumeAfterMicTimer=null; } }
   const overlayLocks=new Set();
   function updateOverlayState(){ if(!el.overlay) return; const active=overlayLocks.size>0; el.overlay.classList.toggle('hidden', !active); el.overlay.classList.toggle('active', active); }
@@ -1238,7 +1239,6 @@
   let maxHintStageUsed=BASE_HINT_STAGE;
   let currentEnHtml='';
   let currentItem=null;
-  let currentShouldUseSpeech=false;
   function setHintStage(stage,{reset=false}={}){
     const next=Math.max(0, Math.min(2, Number.isFinite(stage)?Math.floor(stage):0));
     const prev=hintStage;
@@ -2236,6 +2236,8 @@
   }
 
   async function render(i, autoPlay=false){
+    let releaseResolve=null;
+    let releasePrepare=null;
     try{
       stopAudio();
       currentShouldUseSpeech=false;
@@ -2261,15 +2263,16 @@
       const hasDirAudio=!!DIR;
       const needsResolveLoader = !!(hasDirAudio && it.audio_fn && !audioUrlCache.has(it.audio_fn));
       let url='';
-      const releaseResolve = needsResolveLoader ? acquireOverlay('audio-resolve') : null;
+      releaseResolve = needsResolveLoader ? acquireOverlay('audio-resolve') : null;
       try{
         url=await resolveAudioUrl(it.audio_fn);
       }finally{
         releaseResolve?.();
+        releaseResolve=null;
       }
       if(url){
         const needsPrepareLoader = hasDirAudio && (audio.dataset.srcKey !== url || audio.readyState<2);
-        const releasePrepare = needsPrepareLoader ? acquireOverlay('audio-prepare') : null;
+        releasePrepare = needsPrepareLoader ? acquireOverlay('audio-prepare') : null;
         try{
           await setAudioSource(url);
           if(audio.readyState<2){
@@ -2284,6 +2287,7 @@
           }
         }finally{
           releasePrepare?.();
+          releasePrepare=null;
         }
       }else{
         clearAudioSource();
@@ -2309,6 +2313,16 @@
           console.warn('auto play failed', err);
         }
       }
+    }catch(err){
+      releaseResolve?.();
+      releasePrepare?.();
+      console.error('render failed', err);
+      toast('カードの表示に失敗しました');
+      throw err;
+    }finally{
+      releaseResolve?.();
+      releasePrepare?.();
+    }
   }
 
   async function rebuildAndRender(resetIndex=false, {autoStart=true, autoPlay=false}={}){
