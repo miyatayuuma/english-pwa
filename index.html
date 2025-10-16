@@ -34,15 +34,19 @@
     .icon{width:38px;height:38px;border-radius:999px;border:1px solid var(--bd);display:grid;place-items:center;cursor:pointer;background:#111726}
 
     /* 範囲UI（ネイティブセレクト中心＝モバイル最適） */
-    #rangeBar{display:flex;gap:8px;align-items:center;padding:8px 12px;background:rgba(20,24,36,.5);border-bottom:1px solid rgba(255,255,255,.12);overflow:auto}
+    #rangeBar{display:flex;gap:16px;align-items:stretch;padding:8px 12px;background:rgba(20,24,36,.5);border-bottom:1px solid rgba(255,255,255,.12);flex-wrap:wrap}
+    #rangeBar .range-col{display:flex;flex-direction:column;gap:8px}
+    #rangeBar .range-left{flex:0 0 220px;min-width:180px}
+    #rangeBar .range-right{flex:1;min-width:240px}
     select, .switch{background:#111726;border:1px solid var(--bd);color:var(--txt);border-radius:12px;padding:8px}
-    #rangeBar .search-input{display:flex;align-items:center;height:100%;background:#111726;border:1px solid var(--bd);border-radius:12px;padding:0 8px;min-height:38px;flex:0 0 auto}
-    #rangeBar .search-input input{background:transparent;border:none;color:var(--txt);font-size:14px;padding:8px 4px;min-width:120px;width:120px}
+    #rangeBar select{width:100%}
+    #rangeBar .search-input{display:flex;align-items:center;height:100%;background:#111726;border:1px solid var(--bd);border-radius:12px;padding:0 8px;min-height:38px;flex:1 1 auto;width:100%}
+    #rangeBar .search-input input{background:transparent;border:none;color:var(--txt);font-size:14px;padding:8px 4px;min-width:0;width:100%;flex:1}
     #rangeBar .search-input input::placeholder{color:var(--muted)}
     #rangeBar .search-input input:focus{outline:none}
     #rangeBar .search-input input::-webkit-search-cancel-button{filter:invert(80%)}
     .switch{display:flex;gap:8px;align-items:center}
-    .level-filter{display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:12px;border:1px solid var(--bd);background:#111726;flex-wrap:wrap}
+    .level-filter{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:12px;border:1px solid var(--bd);background:#111726;flex-wrap:wrap;justify-content:flex-start;width:100%}
     .level-filter-label{font-size:12px;color:var(--muted);letter-spacing:.03em}
     .level-filter-buttons{display:flex;gap:4px;flex-wrap:wrap}
     .level-chip{min-width:30px;height:28px;border-radius:9px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:var(--txt);font-size:13px;font-weight:600;cursor:pointer;transition:all .18s ease;padding:0 10px;display:flex;align-items:center;justify-content:center}
@@ -158,20 +162,22 @@
 
   <!-- 出題範囲（ネイティブピッカー） -->
   <div id="rangeBar">
-    <label>セクション
-      <select id="secSel"></select>
-    </label>
-    <label>並び
-      <select id="orderSel">
+    <div class="range-col range-left">
+      <label class="sr-only" for="secSel">セクション</label>
+      <select id="secSel" aria-label="セクション選択"></select>
+      <label class="sr-only" for="orderSel">並び</label>
+      <select id="orderSel" aria-label="並び順">
         <option value="asc">昇順</option>
         <option value="rnd">ランダム</option>
       </select>
-    </label>
-    <label class="search-input">
-      <span class="sr-only">単語検索</span>
-      <input id="rangeSearch" type="search" placeholder="単語検索" autocomplete="off" />
-    </label>
-    <div id="levelFilter" class="level-filter" role="group" aria-label="レベル選択"></div>
+    </div>
+    <div class="range-col range-right">
+      <div id="levelFilter" class="level-filter" role="group" aria-label="レベル選択"></div>
+      <label class="search-input" for="rangeSearch">
+        <span class="sr-only">単語検索</span>
+        <input id="rangeSearch" type="search" placeholder="単語検索" autocomplete="off" />
+      </label>
+    </div>
   </div>
 
   <main>
