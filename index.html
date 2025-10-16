@@ -59,7 +59,9 @@
     main{padding:12px;overflow:auto}
     .card{max-width:840px;margin:0 auto;background:var(--panel);border:1px solid var(--bd);border-radius:18px;padding:16px;min-height:50vh;display:flex;flex-direction:column;gap:12px;touch-action:manipulation}
     .chips{display:flex;gap:6px;flex-wrap:wrap}
-    .en{font-size:22px;line-height:1.6;word-break:normal;overflow-wrap:break-word;white-space:normal}
+    .en{font-size:22px;line-height:1.6;word-break:normal;overflow-wrap:break-word;white-space:normal;position:relative;padding-top:26px}
+    .en::before{content:attr(data-item-id);position:absolute;top:6px;left:10px;font-size:12px;color:var(--muted);letter-spacing:.06em;font-weight:600;opacity:.8}
+    .en[data-item-id=""]::before,.en:not([data-item-id])::before{content:''}
     .en.concealed{display:flex;align-items:center;justify-content:center;min-height:120px;color:var(--muted);font-size:18px;font-style:italic;text-align:center}
     .hint-placeholder{opacity:.7}
     .en .tok{padding:0 2px;border-radius:4px}
@@ -1958,6 +1960,7 @@
     const emptyWithSearch=!!query && !hasQueue;
     el.en.textContent = hasQueue ? '出題を準備しています…' : (emptyWithSearch ? '検索結果がありません' : '出題できる問題がありません');
     el.en.classList.remove('concealed');
+    delete el.en.dataset.itemId;
     clearHighlight();
     el.ja.textContent = '—';
     el.ja.style.display = 'none';
@@ -2003,6 +2006,7 @@
       currentItem=it;
       currentEnHtml=spanify(it.en);
       el.en.classList.remove('concealed');
+      el.en.dataset.itemId = it.id || '';
       el.en.innerHTML=currentEnHtml;
       clearHighlight();
       el.ja.textContent=it.ja;
