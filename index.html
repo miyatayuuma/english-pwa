@@ -2268,7 +2268,12 @@
       };
       currentSpeechResolver=finish;
       const voice=getConfiguredSpeechVoice();
-      if(voice){ utter.voice=voice; }
+      if(voice){
+        utter.voice=voice;
+        try{ utter.lang=voice.lang||'en-US'; }catch(_){ }
+      }else{
+        try{ utter.lang='en-US'; }catch(_){ }
+      }
       utter.onstart=()=>{
         speechPlaying=true;
         updatePlayVisualState();
