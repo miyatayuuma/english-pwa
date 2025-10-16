@@ -4,25 +4,62 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>英語学習（範囲UI＋ASR・安定改良版）</title>
+  <!-- ★ PWA 追加 -->
+  <link rel="manifest" href="./manifest.webmanifest">
+  <meta name="theme-color" content="#0b0e1a" />
   <style>
     :root{ --bg:#0b0e1a; --panel:rgba(20,24,36,.65); --bd:rgba(255,255,255,.12); --txt:#e6e8ef; --muted:#aeb5c6; --accent:#62d5ff; --good:#46d37f; --bad:#ff6b6b; }
     *{box-sizing:border-box}
     html,body{height:100%;margin:0;background:var(--bg);color:var(--txt);font-family:system-ui,"Segoe UI","Noto Sans JP",sans-serif}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    #loadingOverlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(120% 120% at 50% 45%,rgba(40,54,94,.88),rgba(11,14,26,.96));z-index:100000;transition:opacity .6s ease,visibility .6s ease;opacity:1;visibility:visible;pointer-events:auto}
+    #loadingOverlay.hidden{opacity:0;visibility:hidden;pointer-events:none}
+    #loadingOverlay .loaderAura{position:relative;width:120px;height:120px;display:flex;align-items:center;justify-content:center}
+    #loadingOverlay .loaderCore{width:78px;height:78px;border-radius:999px;background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.55),rgba(98,213,255,.25) 45%,rgba(11,14,26,0) 75%);box-shadow:0 0 32px rgba(98,213,255,.35);animation:loaderSpin 3.8s linear infinite;filter:blur(.3px)}
+    #loadingOverlay .loaderRing{position:absolute;width:108px;height:108px;border-radius:999px;border:1px solid rgba(255,255,255,.12);animation:loaderPulse 2.6s ease-in-out infinite}
+    #loadingOverlay .loaderDots{position:absolute;bottom:-32px;display:flex;gap:12px}
+    #loadingOverlay .loaderDots span{width:10px;height:10px;border-radius:999px;background:rgba(255,255,255,.28);animation:loaderDots 1.2s ease-in-out infinite}
+    #loadingOverlay .loaderDots span:nth-child(2){animation-delay:.15s}
+    #loadingOverlay .loaderDots span:nth-child(3){animation-delay:.3s}
+    @keyframes loaderSpin{0%{transform:rotate(0deg);}50%{transform:rotate(180deg) scale(1.04);}100%{transform:rotate(360deg);}}
+    @keyframes loaderPulse{0%{transform:scale(.92);opacity:.65;}50%{transform:scale(1.08);opacity:1;}100%{transform:scale(.92);opacity:.65;}}
+    @keyframes loaderDots{0%,100%{transform:translateY(0);opacity:.35;}50%{transform:translateY(-6px);opacity:1;}}
     #app{position:fixed;inset:0;display:grid;grid-template-rows:auto auto 1fr auto}
 
-    header{padding:10px 12px;display:flex;gap:12px;align-items:center;background:var(--panel);border-bottom:1px solid var(--bd)}
-    .stat{display:flex;gap:6px;align-items:baseline;font-size:14px;color:var(--muted)} .stat b{font-size:18px;color:var(--txt)} .grow{flex:1}
+    header{padding:10px 12px;display:flex;gap:14px;align-items:center;background:var(--panel);border-bottom:1px solid var(--bd)}
+    .stat{display:flex;gap:4px;align-items:center;font-size:14px;color:var(--muted)}
+    .stat-main{color:var(--txt);font-size:18px;font-weight:600;font-variant-numeric:tabular-nums}
+    .stat-sub{color:var(--muted);font-size:14px;font-weight:500;letter-spacing:.02em}
+    .grow{flex:1}
     .icon{width:38px;height:38px;border-radius:999px;border:1px solid var(--bd);display:grid;place-items:center;cursor:pointer;background:#111726}
 
     /* 範囲UI（ネイティブセレクト中心＝モバイル最適） */
-    #rangeBar{display:flex;gap:8px;align-items:center;padding:8px 12px;background:rgba(20,24,36,.5);border-bottom:1px solid rgba(255,255,255,.12);overflow:auto}
-    select, .switch{background:#111726;border:1px solid var(--bd);color:var(--txt);border-radius:12px;padding:8px}
+    #rangeBar{display:grid;grid-template-columns:minmax(96px,clamp(108px,22vw,164px)) minmax(0,1fr);grid-template-rows:repeat(2,auto);gap:8px 14px;align-items:stretch;padding:8px 12px;background:rgba(20,24,36,.5);border-bottom:1px solid rgba(255,255,255,.12)}
+    #rangeBar .range-item{display:flex;flex-direction:column;gap:4px;min-width:0}
+    #rangeBar .range-item select{width:100%}
+    #rangeBar .range-level{justify-content:center}
+    #rangeBar .range-search{justify-content:center}
+    select, .switch{background:#111726;border:1px solid var(--bd);color:var(--txt);border-radius:12px;padding:7px 8px}
+    #rangeBar select{width:100%}
+    #rangeBar .search-input{display:flex;align-items:center;height:100%;background:#111726;border:1px solid var(--bd);border-radius:12px;padding:0 8px;min-height:38px;flex:1 1 auto;width:100%}
+    #rangeBar .search-input input{background:transparent;border:none;color:var(--txt);font-size:14px;padding:8px 4px;min-width:0;width:100%;flex:1}
+    #rangeBar .search-input input::placeholder{color:var(--muted)}
+    #rangeBar .search-input input:focus{outline:none}
+    #rangeBar .search-input input::-webkit-search-cancel-button{filter:invert(80%)}
     .switch{display:flex;gap:8px;align-items:center}
+    .level-filter{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:12px;border:1px solid var(--bd);background:#111726;flex-wrap:nowrap;justify-content:flex-start;width:100%;min-height:36px}
+    .level-filter-label{font-size:12px;color:var(--muted);letter-spacing:.03em;white-space:nowrap}
+    .level-filter-buttons{display:flex;gap:3px;flex-wrap:nowrap;flex:1;justify-content:flex-end}
+    .level-chip{min-width:26px;height:26px;border-radius:8px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:var(--txt);font-size:12px;font-weight:600;cursor:pointer;transition:all .18s ease;padding:0 8px;display:flex;align-items:center;justify-content:center;flex:1 1 36px}
+    .level-chip.active{background:var(--accent);color:#041019;border-color:rgba(98,213,255,.82);box-shadow:0 0 0 1px rgba(98,213,255,.32)}
+    .level-chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
     main{padding:12px;overflow:auto}
     .card{max-width:840px;margin:0 auto;background:var(--panel);border:1px solid var(--bd);border-radius:18px;padding:16px;min-height:50vh;display:flex;flex-direction:column;gap:12px;touch-action:manipulation}
     .chips{display:flex;gap:6px;flex-wrap:wrap}
     .en{font-size:22px;line-height:1.6;word-break:normal;overflow-wrap:break-word;white-space:normal}
+    .en.concealed{display:flex;align-items:center;justify-content:center;min-height:120px;color:var(--muted);font-size:18px;font-style:italic;text-align:center}
+    .hint-placeholder{opacity:.7}
     .en .tok{padding:0 2px;border-radius:4px}
     .en .hit{background:rgba(70,211,127,.18);border-bottom:1px solid rgba(70,211,127,.6)}
     .en .miss{background:rgba(255,107,107,.15);border-bottom:1px dashed rgba(255,107,107,.7)}
@@ -43,11 +80,39 @@
     progress{width:160px;height:10px}
     .btn{border:1px solid var(--bd);border-radius:12px;background:#111726;color:var(--txt);padding:10px 14px;cursor:pointer}
     .btn.ok{background:#10331f;border-color:#1f5c38}
-    .btn.ng{background:#331717;border-color:#5c2929}
-    #btnMic{width:72px;height:72px;font-size:22px;border-radius:999px;background:#1a2134;border-color:#2a3753;display:grid;place-items:center;font-weight:600;margin-left:auto;margin-right:auto;transition:transform .2s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease}
+    .audio-ctrls{display:flex;gap:14px;justify-content:center;align-items:center;margin-top:8px;flex-wrap:wrap}
+    #btnPlay{width:60px;height:60px;font-size:22px;border-radius:999px;background:#162032;border-color:#2a3753;display:grid;place-items:center;font-weight:600;transition:transform .2s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease}
+    #btnPlay:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}
+    #btnPlay.playing{background:#235179;border-color:#58a3d9;box-shadow:0 0 0 0 rgba(88,163,217,.45);animation:playPulse 1.6s ease-in-out infinite}
+    #btnMic{width:72px;height:72px;font-size:22px;border-radius:999px;background:#1a2134;border-color:#2a3753;display:grid;place-items:center;font-weight:600;transition:transform .2s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease}
     #btnMic.recording{background:var(--accent);border-color:#7de4ff;box-shadow:0 0 0 0 rgba(98,213,255,.55);animation:micPulse 1.4s ease-in-out infinite}
     #btnMic:disabled{opacity:.35;cursor:not-allowed;animation:none;box-shadow:none}
     #btnMic .micIcon{font-size:28px}
+    .speed-ctrl{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:rgba(17,23,38,.65);border:1px solid rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px rgba(0,0,0,.35)}
+    .speed-btn{width:32px;height:32px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:#131b2d;color:var(--txt);display:grid;place-items:center;cursor:pointer;font-size:16px;transition:transform .18s ease, background .18s ease, border-color .18s ease}
+    .speed-btn:active{transform:scale(.92)}
+    .speed-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+    .speed-btn:hover{background:#1a2337;border-color:rgba(255,255,255,.24)}
+    .speed-slider{appearance:none;-webkit-appearance:none;width:120px;height:4px;border-radius:999px;background:linear-gradient(90deg,rgba(98,213,255,.65),rgba(98,213,255,.18));position:relative}
+    .speed-slider::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#62d5ff;border:2px solid rgba(10,16,29,.75);box-shadow:0 0 8px rgba(98,213,255,.55);cursor:pointer}
+    .speed-slider::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:#62d5ff;border:2px solid rgba(10,16,29,.75);box-shadow:0 0 8px rgba(98,213,255,.55);cursor:pointer}
+    .speed-slider::-moz-range-track{height:4px;border-radius:999px;background:linear-gradient(90deg,rgba(98,213,255,.65),rgba(98,213,255,.18))}
+    .speed-slider:focus-visible{outline:none;box-shadow:0 0 0 2px rgba(98,213,255,.4)}
+    .speed-bubble{min-width:44px;text-align:center;font-size:13px;color:var(--txt);font-variant-numeric:tabular-nums}
+    @media (max-width:680px){
+      #rangeBar{grid-template-columns:minmax(94px,clamp(104px,32vw,168px)) minmax(0,1fr);gap:8px 12px}
+      #levelFilter{padding:6px 8px}
+    }
+    @media (max-width:480px){
+      #rangeBar{grid-template-columns:minmax(92px,36%) minmax(0,1fr)}
+      #levelFilter{padding:6px 7px}
+      #rangeBar .search-input{padding:0 8px}
+    }
+    @media (max-width:520px){
+      .speed-ctrl{order:3;width:100%;justify-content:center}
+      .speed-slider{width:100px}
+    }
+    @keyframes playPulse{0%{transform:scale(1);box-shadow:0 0 0 0 rgba(88,163,217,.45);}70%{transform:scale(1.05);box-shadow:0 0 0 16px rgba(88,163,217,0);}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(88,163,217,0);}}
     @keyframes micPulse{0%{transform:scale(1);box-shadow:0 0 0 0 rgba(98,213,255,.55);}70%{transform:scale(1.05);box-shadow:0 0 0 16px rgba(98,213,255,0);}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(98,213,255,0);}}
     .next-cta{margin-top:10px;display:block;width:100%;font-size:18px;padding:14px;border-radius:14px;background:#10331f;border-color:#1f5c38;font-weight:600}
 
@@ -59,56 +124,107 @@
     #cfgBox input[type="text"], #cfgBox input[type="url"]{width:100%;padding:8px;border-radius:10px;border:1px solid var(--bd);background:#0c1221;color:var(--txt)}
     #cfgBox .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
     #toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#0f1422;border:1px solid #24304a;color:#b7c0d6;border-radius:10px;padding:8px 12px;z-index:99999;display:none}
+    #dirPermOverlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(11,14,26,.88);z-index:100002}
+    #dirPermOverlay.show{display:flex}
+    #dirPermBox{max-width:420px;width:100%;background:#111726;border:1px solid var(--bd);border-radius:18px;padding:20px;box-shadow:0 24px 60px rgba(0,0,0,.5)}
+    #dirPermBox h2{margin:0 0 12px 0;font-size:20px}
+    #dirPermBox p{margin:0 0 12px 0;line-height:1.6;color:var(--muted)}
+    #dirPermStatus{min-height:1.2em;font-size:13px;color:var(--bad);margin-bottom:12px}
+    #dirPermBox .actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
   </style>
 </head>
 <body>
+<div id="loadingOverlay" role="presentation" aria-hidden="true">
+  <div class="loaderAura">
+    <div class="loaderRing"></div>
+    <div class="loaderCore"></div>
+    <div class="loaderDots" aria-hidden="true"><span></span><span></span><span></span></div>
+  </div>
+</div>
+<div id="dirPermOverlay" hidden aria-hidden="true">
+  <div id="dirPermBox" role="dialog" aria-modal="true" aria-labelledby="dirPermTitle">
+    <h2 id="dirPermTitle">音声フォルダへのアクセス許可が必要です</h2>
+    <p>保存済みの音声フォルダにアクセスするには、端末のダイアログで「許可する」を選んでください。アクセスを許可しない場合、音声が再生できないことがあります。</p>
+    <div id="dirPermStatus" aria-live="polite"></div>
+    <div class="actions">
+      <button id="dirPermLater" class="btn" hidden>許可せず続行</button>
+      <button id="dirPermAllow" class="btn ok">許可を開く</button>
+    </div>
+  </div>
+</div>
 <div id="app">
   <header>
-    <div class="stat">残 <b id="statLeft">0</b></div>
-    <div class="stat">分 <b id="statMin">0</b></div>
-    <div class="stat">streak <b id="statStreak">0</b></div>
+    <div class="stat">
+      <span class="stat-main" id="statSection">—</span>
+    </div>
+    <div class="stat">
+      <span class="stat-sub">Lv</span>
+      <span class="stat-main" id="statLevelAvg">—</span>
+    </div>
+    <div class="stat">
+      <span class="stat-main" id="statProgressCurrent">0</span>
+      <span class="stat-sub">/</span>
+      <span class="stat-main" id="statProgressTotal">0</span>
+    </div>
     <div class="grow"></div>
     <div id="btnCfg" class="icon" title="設定">⚙️</div>
   </header>
 
   <!-- 出題範囲（ネイティブピッカー） -->
   <div id="rangeBar">
-    <label>セクション
-      <select id="secSel"></select>
-    </label>
-    <label>並び
-      <select id="orderSel">
+    <div class="range-item range-sec">
+      <label class="sr-only" for="secSel">セクション</label>
+      <select id="secSel" aria-label="セクション選択"></select>
+    </div>
+    <div class="range-item range-level">
+      <div id="levelFilter" class="level-filter" role="group" aria-label="レベル選択"></div>
+    </div>
+    <div class="range-item range-order">
+      <label class="sr-only" for="orderSel">並び</label>
+      <select id="orderSel" aria-label="並び順">
         <option value="asc">昇順</option>
         <option value="rnd">ランダム</option>
       </select>
-    </label>
-    <label class="switch"><input id="chkOnlyWeak" type="checkbox"> 未習得のみ</label>
+    </div>
+    <div class="range-item range-search">
+      <label class="search-input" for="rangeSearch">
+        <span class="sr-only">単語検索</span>
+        <input id="rangeSearch" type="search" placeholder="単語検索" autocomplete="off" />
+      </label>
+    </div>
   </div>
 
   <main>
     <section class="card" id="card" aria-live="polite">
       <div class="chips" id="chips"></div>
-      <div id="enText" class="en">タップで再生 / ダブルタップで和訳</div>
+      <div id="enText" class="en">出題を準備しています…（ダブルタップで和訳）</div>
       <div id="jaText" class="ja">—</div>
       <div id="transcript" class="muted"></div>
 
       <div class="kpi">
         <div>一致率 <span class="val match-val" id="valMatch">—</span></div>
+        <div>Lv <span class="val" id="valLevel">—</span></div>
         <div id="attemptInfo" class="attempt-info"></div>
       </div>
 
-      <div style="display:flex;gap:8px">
-        <button class="btn ok" data-eval="ok">◯ 得意</button>
-        <button class="btn ng" data-eval="ng">× 苦手</button>
+      <div class="audio-ctrls">
+        <button id="btnPlay" class="btn" type="button" aria-label="音声を再生/一時停止"><span class="playIcon">▶️</span></button>
+        <button id="btnMic" class="btn" type="button" aria-label="マイク開始/停止"><span class="micIcon">🎤</span></button>
+        <div class="speed-ctrl" role="group" aria-labelledby="speedLabel">
+          <span id="speedLabel" class="sr-only">再生速度</span>
+          <button id="speedDown" class="speed-btn" type="button" aria-label="再生速度を下げる"><span aria-hidden="true">🐢</span></button>
+          <input id="speedSlider" class="speed-slider" type="range" min="0.5" max="1.5" step="0.05" value="1" aria-labelledby="speedLabel">
+          <button id="speedUp" class="speed-btn" type="button" aria-label="再生速度を上げる"><span aria-hidden="true">🐇</span></button>
+          <span class="speed-bubble" id="speedValue" aria-live="polite">1.0×</span>
+        </div>
       </div>
-      <button id="btnMic" class="btn" type="button" aria-label="マイク開始/停止"><span class="micIcon">🎤</span></button>
       <button id="btnNext" class="btn next-cta" type="button" hidden>次へ</button>
     </section>
   </main>
 
   <footer>
     <progress id="pbar" value="0" max="1"></progress>
-    <span id="footerInfo" class="muted">左右スワイプ：戻る/進む　上：和訳</span>
+    <span id="footerInfo" class="muted">左右スワイプ：戻る/進む　上：ヒント（英文→和訳）</span>
     <div class="grow"></div>
   </footer>
 </div>
@@ -142,6 +258,10 @@
       <button id="cfgClose" class="btn">閉じる</button>
       <button id="cfgSave" class="btn" style="background:#1a2134;border-color:#233252">保存</button>
     </div>
+    <div class="row" style="margin-top:12px">
+      <button id="btnNotifPerm" class="btn">学習リマインド通知を有効化</button>
+      <span id="notifStatus" class="muted" style="font-size:12px"></span>
+    </div>
   </div>
 </div>
 
@@ -151,8 +271,109 @@
   const qs=(s,el=document)=>el.querySelector(s);
   const qsa=(s,el=document)=>[...el.querySelectorAll(s)];
   const now=()=>Date.now(); const UA=(()=>navigator.userAgent||'')();
-  const norm=s=>(s||'').toLowerCase().normalize('NFKC').replace(/[\p{P}\p{S}]/gu,' ').replace(/\s+/g,' ').trim();
-  const toks=s=>norm(s).split(' ').filter(Boolean);
+  const CONTRACTION_PATTERNS=[
+    {seq:['i','m'], out:'im'},
+    {seq:['i','d'], out:'id'},
+    {seq:['i','ll'], out:'ill'},
+    {seq:['i','ve'], out:'ive'},
+    {seq:['you','re'], out:'youre'},
+    {seq:['you','ve'], out:'youve'},
+    {seq:['you','ll'], out:'youll'},
+    {seq:['you','d'], out:'youd'},
+    {seq:['he','s'], out:'hes'},
+    {seq:['she','s'], out:'shes'},
+    {seq:['it','s'], out:'its'},
+    {seq:['we','re'], out:'were'},
+    {seq:['we','ve'], out:'weve'},
+    {seq:['we','ll'], out:'well'},
+    {seq:['we','d'], out:'wed'},
+    {seq:['they','re'], out:'theyre'},
+    {seq:['they','ve'], out:'theyve'},
+    {seq:['they','ll'], out:'theyll'},
+    {seq:['they','d'], out:'theyd'},
+    {seq:['that','s'], out:'thats'},
+    {seq:['there','s'], out:'theres'},
+    {seq:['here','s'], out:'heres'},
+    {seq:['who','s'], out:'whos'},
+    {seq:['what','s'], out:'whats'},
+    {seq:['where','s'], out:'wheres'},
+    {seq:['when','s'], out:'whens'},
+    {seq:['why','s'], out:'whys'},
+    {seq:['how','s'], out:'hows'},
+    {seq:['let','s'], out:'lets'}
+  ];
+  const NUMBER_WORD_MAP=new Map(Object.entries({
+    zero:'0', one:'1', two:'2', three:'3', four:'4', five:'5', six:'6', seven:'7', eight:'8', nine:'9',
+    ten:'10', eleven:'11', twelve:'12', thirteen:'13', fourteen:'14', fifteen:'15', sixteen:'16', seventeen:'17', eighteen:'18', nineteen:'19',
+    twenty:'20', thirty:'30', forty:'40', fifty:'50', sixty:'60', seventy:'70', eighty:'80', ninety:'90',
+    hundred:'100', thousand:'1000', million:'1000000', billion:'1000000000'
+  }));
+  const CURRENCY_MAP=new Map([
+    ['dollar','usd'], ['dollars','usd'], ['usd','usd']
+  ]);
+  const UNIT_MAP=new Map([
+    ['degrees','degree'], ['degree','degree'],
+    ['celsius','celsius']
+  ]);
+
+  function mergeContractions(tokens){
+    if(!tokens.length) return tokens;
+    const out=[];
+    for(let i=0;i<tokens.length;){
+      let matched=false;
+      for(const {seq,out:outToken} of CONTRACTION_PATTERNS){
+        if(i+seq.length>tokens.length) continue;
+        let ok=true;
+        for(let j=0;j<seq.length;j++){
+          if(tokens[i+j]!==seq[j]){ ok=false; break; }
+        }
+        if(ok){
+          out.push(outToken);
+          i+=seq.length;
+          matched=true;
+          break;
+        }
+      }
+      if(matched) continue;
+      out.push(tokens[i]);
+      i++;
+    }
+    return out;
+  }
+
+  function canonicalizeToken(token){
+    if(!token) return '';
+    const digits=token.replace(/[,]/g,'');
+    if(/^[+-]?\d+(?:\.\d+)?$/.test(digits)){
+      return digits.replace(/^\+/, '');
+    }
+    const num=NUMBER_WORD_MAP.get(token);
+    if(num) return num;
+    const unit=UNIT_MAP.get(token);
+    if(unit) return unit;
+    const curr=CURRENCY_MAP.get(token);
+    if(curr) return curr;
+    return token;
+  }
+
+  function canonicalTokens(input){
+    if(!input) return [];
+    let text=(input||'').toLowerCase().normalize('NFKC');
+    text=text.replace(/℃/g,' degree celsius ');
+    text=text.replace(/°\s*c/g,' degree celsius ');
+    text=text.replace(/\$(\s*\d+(?:\.\d+)?)/g,(_,num)=>` ${num.replace(/\s+/g,'')} usd `);
+    text=text.replace(/\$/g,' usd ');
+    text=text.replace(/(?<=[\p{L}\p{N}])['’](?=[\p{L}\p{N}])/gu,'');
+    text=text.replace(/[-‐‑‒–—−﹘﹣－]/gu,' ');
+    text=text.replace(/[\p{P}\p{S}]/gu,' ');
+    const raw=text.split(/\s+/).filter(Boolean);
+    if(!raw.length) return [];
+    const merged=mergeContractions(raw);
+    return merged.map(canonicalizeToken).filter(Boolean);
+  }
+
+  const norm=s=>canonicalTokens(s).join(' ');
+  const toks=s=>canonicalTokens(s);
   // 連続重複を圧縮（a a a → a）
   function dedupeRuns(arr){
     const out=[]; for(const w of arr){ if(out.length && out[out.length-1]===w) continue; out.push(w); }
@@ -179,27 +400,549 @@
   function appendStableFinal(stable, fragment){
     const A = toks(stable);
     const B = toks(fragment);
-    // 語単位LCP
-    let k = 0;
-    while (k < A.length && k < B.length && A[k] === B[k]) k++;
-    // B が A の拡張なら尾部だけ追加。拡張でなければ新規文として結合。
-    const merged = (k > 0 || !A.length) ? A.concat(B.slice(k)) : A.concat(B);
-    return dedupeRuns(merged).join(' ');
+    if(!B.length) return dedupeRuns(A).join(' ');
+    if(!A.length) return dedupeRuns(B).join(' ');
+
+    const strA = A.join(' ');
+    const strB = B.join(' ');
+
+    // 完全包含チェック
+    if(strB.includes(strA)){
+      return dedupeRuns(B).join(' ');
+    }
+    if(strA.includes(strB)){
+      return dedupeRuns(A).join(' ');
+    }
+
+    // 末尾と先頭の最大オーバーラップを探索（1トークンの誤差を許容）
+    let overlap = 0;
+    const maxOverlap = Math.min(A.length, B.length);
+    outer: for(let k=maxOverlap; k>0; k--){
+      for(let i=0; i<k; i++){
+        if(!approxWithin1(A[A.length-k+i], B[i])) continue outer;
+      }
+      overlap = k;
+      break;
+    }
+    if(overlap>0){
+      return dedupeRuns(A.concat(B.slice(overlap))).join(' ');
+    }
+
+    // オーバーラップしない場合はより長い方を優先
+    return dedupeRuns((B.length>=A.length ? B : A)).join(' ');
   }
   function spanify(text){
-    const parts=(text||'').match(/\S+|\s+/g)||[];
+    const parts=(text||'').split(/(\s+)/);
     return parts.map(part=>{
-      if(/\s+/.test(part)){
-        const converted=part
+      if(!part) return '';
+      if(/^[\s]+$/.test(part)){
+        return part
           .replace(/\r?\n/g,'<br>')
           .replace(/[^\S\r\n]+/g,' ');
-        return converted || ' ';
       }
-      const clean=part.replace(/[^\p{L}\p{N}'-]/gu,'');
-      return `<span class="tok" data-w="${clean}">${part}</span>`;
+      const tokens = part.match(/[\p{L}\p{N}'-]+|./gu) || [];
+      return tokens.map(tok=>{
+        if(/^[\p{L}\p{N}'-]+$/u.test(tok) && /[\p{L}\p{N}]/u.test(tok)){
+          const clean = tok.replace(/[^\p{L}\p{N}'-]/gu,'');
+          return `<span class="tok" data-w="${clean}">${tok}</span>`;
+        }
+        return tok;
+      }).join('');
     }).join('');
   }
   function toast(msg, ms=1500){ const t=qs('#toast'); t.textContent=msg; t.style.display='block'; clearTimeout(toast._t); toast._t=setTimeout(()=>t.style.display='none', ms); }
+
+  const DAY_MS=86400000;
+  const STUDY_LOG_KEY='studyLogV1';
+  const NOTIF_STATE_KEY='notifStateV1';
+  function localDateKey(time=Date.now()){
+    const d=new Date(time);
+    d.setMinutes(d.getMinutes()-d.getTimezoneOffset());
+    return d.toISOString().slice(0,10);
+  }
+  function loadStudyLog(){
+    try{
+      const raw=localStorage.getItem(STUDY_LOG_KEY);
+      if(!raw) return {};
+      const parsed=JSON.parse(raw);
+      return parsed && typeof parsed==='object'?parsed:{};
+    }catch(_){ return {}; }
+  }
+  function saveStudyLog(log){
+    try{ localStorage.setItem(STUDY_LOG_KEY, JSON.stringify(log||{})); }catch(_){ }
+  }
+  function pruneStudyLog(log){
+    const entries=Object.entries(log||{});
+    if(entries.length<=190) return log;
+    entries.sort((a,b)=>a[0]<b[0]?-1:1);
+    return Object.fromEntries(entries.slice(-190));
+  }
+  let STUDY_LOG=pruneStudyLog(loadStudyLog());
+  function recordStudyProgress({pass=false,newLevel5=false}={}){
+    const key=localDateKey();
+    const entry=STUDY_LOG[key]||{passes:0,level5:0};
+    if(pass) entry.passes=(entry.passes||0)+1;
+    if(newLevel5) entry.level5=(entry.level5||0)+1;
+    STUDY_LOG[key]=entry;
+    STUDY_LOG=pruneStudyLog(STUDY_LOG);
+    saveStudyLog(STUDY_LOG);
+    if(pass||newLevel5) scheduleNotificationCheckSoon();
+  }
+  function getDailyStats(key){
+    const target=key||localDateKey();
+    const entry=STUDY_LOG[target];
+    return {passes:entry?.passes||0, level5:entry?.level5||0};
+  }
+  function sumRange(startKey,endKey){
+    const res={passes:0, level5:0};
+    if(!startKey||!endKey) return res;
+    let cur=startKey;
+    while(cur<=endKey){
+      const st=STUDY_LOG[cur];
+      if(st){
+        res.passes+=st.passes||0;
+        res.level5+=st.level5||0;
+      }
+      const parts=cur.split('-').map(n=>parseInt(n,10));
+      if(parts.length>=3 && parts.every(n=>Number.isFinite(n))){
+        const d=new Date(parts[0], parts[1]-1, parts[2]);
+        d.setDate(d.getDate()+1);
+        cur=localDateKey(d.getTime());
+      }else{
+        break;
+      }
+    }
+    return res;
+  }
+  function loadNotifState(){
+    try{
+      const raw=localStorage.getItem(NOTIF_STATE_KEY);
+      if(!raw) return {};
+      const parsed=JSON.parse(raw);
+      return parsed && typeof parsed==='object'?parsed:{};
+    }catch(_){ return {}; }
+  }
+  function saveNotifState(state){
+    try{ localStorage.setItem(NOTIF_STATE_KEY, JSON.stringify(state||{})); }catch(_){ }
+  }
+  function pruneNotifState(state){
+    const out=Object.assign({dailyZero:{},dailyCompare:{},weeklyCompare:{}}, state||{});
+    const limitDate=localDateKey(Date.now()-DAY_MS*120);
+    for(const [key,value] of Object.entries(out.dailyZero||{})){
+      if(key<limitDate) delete out.dailyZero[key];
+      else if(value && typeof value==='object'){
+        for(const slot of Object.keys(value)){
+          if(!value[slot]) delete value[slot];
+        }
+      }
+    }
+    for(const key of Object.keys(out.dailyCompare||{})){
+      if(key<limitDate) delete out.dailyCompare[key];
+    }
+    const weekLimit=localDateKey(Date.now()-DAY_MS*180);
+    for(const key of Object.keys(out.weeklyCompare||{})){
+      if(key<weekLimit) delete out.weeklyCompare[key];
+    }
+    return out;
+  }
+  let NOTIF_STATE=pruneNotifState(loadNotifState());
+  function markDailyZeroNotified(dateKey, slot){
+    if(!dateKey||!slot) return;
+    if(!NOTIF_STATE.dailyZero) NOTIF_STATE.dailyZero={};
+    const entry=NOTIF_STATE.dailyZero[dateKey]||{};
+    entry[slot]=Date.now();
+    NOTIF_STATE.dailyZero[dateKey]=entry;
+    NOTIF_STATE=pruneNotifState(NOTIF_STATE);
+    saveNotifState(NOTIF_STATE);
+  }
+  function hasDailyZeroNotified(dateKey, slot){
+    return !!(NOTIF_STATE.dailyZero && NOTIF_STATE.dailyZero[dateKey] && NOTIF_STATE.dailyZero[dateKey][slot]);
+  }
+  function markDailyCompareNotified(dateKey){
+    if(!dateKey) return;
+    if(!NOTIF_STATE.dailyCompare) NOTIF_STATE.dailyCompare={};
+    NOTIF_STATE.dailyCompare[dateKey]=Date.now();
+    NOTIF_STATE=pruneNotifState(NOTIF_STATE);
+    saveNotifState(NOTIF_STATE);
+  }
+  function hasDailyCompareNotified(dateKey){
+    return !!(NOTIF_STATE.dailyCompare && NOTIF_STATE.dailyCompare[dateKey]);
+  }
+  function markWeeklyCompareNotified(weekKey){
+    if(!weekKey) return;
+    if(!NOTIF_STATE.weeklyCompare) NOTIF_STATE.weeklyCompare={};
+    NOTIF_STATE.weeklyCompare[weekKey]=Date.now();
+    NOTIF_STATE=pruneNotifState(NOTIF_STATE);
+    saveNotifState(NOTIF_STATE);
+  }
+  function hasWeeklyCompareNotified(weekKey){
+    return !!(NOTIF_STATE.weeklyCompare && NOTIF_STATE.weeklyCompare[weekKey]);
+  }
+
+  function describeStudy(stats){
+    const passes=stats?.passes||0;
+    const level5=stats?.level5||0;
+    const parts=[`合格${passes}`];
+    if(level5>0) parts.push(`Lv5 ${level5}`);
+    return parts.join(' / ');
+  }
+  function startOfWeek(date){
+    const d=new Date(date.getTime());
+    d.setHours(0,0,0,0);
+    const day=d.getDay();
+    const diff=(day+6)%7; // Monday=0
+    d.setDate(d.getDate()-diff);
+    return d;
+  }
+  async function showStudyNotification(title, options){
+    if(!('Notification' in window) || Notification.permission!=='granted') return false;
+    const opts=Object.assign({icon:'./icons/icon-192.png', badge:'./icons/icon-192.png'}, options||{});
+    try{
+      if(navigator.serviceWorker && navigator.serviceWorker.ready){
+        const reg=await navigator.serviceWorker.ready;
+        if(reg && reg.showNotification){
+          await reg.showNotification(title, opts);
+          return true;
+        }
+      }
+    }catch(err){
+      console.warn('showNotification via SW failed', err);
+    }
+    try{
+      new Notification(title, opts);
+      return true;
+    }catch(err){
+      console.warn('Notification constructor failed', err);
+      return false;
+    }
+  }
+  const DAILY_ZERO_SLOTS=[
+    {label:'12:00', hour:12, minute:0},
+    {label:'18:00', hour:18, minute:0},
+    {label:'21:00', hour:21, minute:0}
+  ];
+  async function checkDailyZeroReminders(now, stats){
+    const todayKey=localDateKey(now.getTime());
+    const total=(stats?.passes||0)+(stats?.level5||0);
+    if(total>0) return;
+    for(const slot of DAILY_ZERO_SLOTS){
+      const scheduled=new Date(now.getTime());
+      scheduled.setHours(slot.hour, slot.minute, 0, 0);
+      if(now>=scheduled && !hasDailyZeroNotified(todayKey, slot.label)){
+        const body='今日の合格はまだ0件。サクッと1フレーズだけでも発声しておこう！';
+        await showStudyNotification('今日の学習がまだ始まっていません', {
+          body,
+          tag:`daily-zero-${todayKey}-${slot.label}`
+        });
+        markDailyZeroNotified(todayKey, slot.label);
+        break;
+      }
+    }
+  }
+  async function checkDailyComparison(now, todayStats){
+    if(now.getHours()<18) return;
+    const todayKey=localDateKey(now.getTime());
+    if(hasDailyCompareNotified(todayKey)) return;
+    const yesterdayKey=localDateKey(now.getTime()-DAY_MS);
+    const yesterdayStats=getDailyStats(yesterdayKey);
+    const todayTotal=(todayStats.passes||0)+(todayStats.level5||0);
+    const yTotal=(yesterdayStats.passes||0)+(yesterdayStats.level5||0);
+    if(todayTotal===0 && yTotal===0) return;
+    let title='今日の進捗';
+    let body='';
+    if(todayTotal<yTotal){
+      const diff=yTotal-todayTotal;
+      title='昨日に追いつくチャンス！';
+      body=`昨日は${describeStudy(yesterdayStats)}でしたが、今日はまだ${describeStudy(todayStats)}。あと${diff}件巻き返そう！`;
+    }else if(todayTotal>yTotal){
+      const diff=todayTotal-yTotal;
+      title='昨日を超えるハイペース！';
+      body=`昨日は${describeStudy(yesterdayStats)}。今日は${describeStudy(todayStats)}で${diff}件リード中。このまま締め切ろう！`;
+    }else{
+      title='昨日と互角のペース';
+      body=`昨日は${describeStudy(yesterdayStats)}。今日は今のところ同じだけ進んでいます。ラスト1件で差をつけよう！`;
+    }
+    await showStudyNotification(title, {
+      body,
+      tag:`daily-compare-${todayKey}`
+    });
+    markDailyCompareNotified(todayKey);
+  }
+  async function checkWeeklyComparison(now){
+    if(now.getDay()!==1 || now.getHours()<9) return;
+    const thisWeek=startOfWeek(now);
+    const weekKey=localDateKey(thisWeek.getTime());
+    if(hasWeeklyCompareNotified(weekKey)) return;
+    const lastWeekStart=new Date(thisWeek.getTime()-DAY_MS*7);
+    const lastWeekEnd=new Date(lastWeekStart.getTime()+DAY_MS*6);
+    const prevWeekStart=new Date(lastWeekStart.getTime()-DAY_MS*7);
+    const prevWeekEnd=new Date(prevWeekStart.getTime()+DAY_MS*6);
+    const lastStats=sumRange(localDateKey(lastWeekStart.getTime()), localDateKey(lastWeekEnd.getTime()));
+    const prevStats=sumRange(localDateKey(prevWeekStart.getTime()), localDateKey(prevWeekEnd.getTime()));
+    const lastTotal=(lastStats.passes||0)+(lastStats.level5||0);
+    const prevTotal=(prevStats.passes||0)+(prevStats.level5||0);
+    if(lastTotal===0 && prevTotal===0) return;
+    let title='先週の振り返り';
+    let body='';
+    if(lastTotal<prevTotal){
+      const diff=prevTotal-lastTotal;
+      title='先週は失速気味…';
+      body=`先週は${describeStudy(lastStats)}で、前の週は${describeStudy(prevStats)}。今週は${diff}件取り返して流れを戻そう！`;
+    }else if(lastTotal>prevTotal){
+      const diff=lastTotal-prevTotal;
+      title='先週はしっかり積み上げ！';
+      body=`先週は${describeStudy(lastStats)}で前の週を${diff}件上回りました。この勢いで今週も更新しよう！`;
+    }else{
+      title='先週は横ばいペース';
+      body=`先週は${describeStudy(lastStats)}で、前の週と同じ結果でした。今週はもう一歩攻めてみませんか？`;
+    }
+    await showStudyNotification(title, {
+      body,
+      tag:`weekly-compare-${weekKey}`
+    });
+    markWeeklyCompareNotified(weekKey);
+  }
+  let notifInterval=null;
+  function stopNotificationLoop(){
+    if(notifInterval){
+      clearInterval(notifInterval);
+      notifInterval=null;
+    }
+  }
+  async function runNotificationChecks({force=false}={}){
+    if(!('Notification' in window) || Notification.permission!=='granted'){
+      stopNotificationLoop();
+      return;
+    }
+    const now=new Date();
+    const todayKey=localDateKey(now.getTime());
+    const todayStats=getDailyStats(todayKey);
+    await checkDailyZeroReminders(now, todayStats);
+    await checkDailyComparison(now, todayStats);
+    await checkWeeklyComparison(now);
+  }
+  function ensureNotificationLoop(){
+    if(!('Notification' in window) || Notification.permission!=='granted') return;
+    if(notifInterval) return;
+    notifInterval=setInterval(()=>{ runNotificationChecks().catch(()=>{}); }, 10*60*1000);
+    runNotificationChecks({force:true}).catch(()=>{});
+  }
+  function updateNotificationUi(){
+    if(!el.notifStatus || !el.notifBtn) return;
+    if(!('Notification' in window)){
+      el.notifStatus.textContent='通知非対応のブラウザです';
+      el.notifBtn.disabled=true;
+      return;
+    }
+    const perm=Notification.permission;
+    if(perm==='granted'){
+      el.notifStatus.textContent='通知は許可されています';
+      el.notifBtn.textContent='通知は許可済み';
+      el.notifBtn.disabled=true;
+    }else if(perm==='denied'){
+      el.notifStatus.textContent='ブラウザ設定で通知を許可してください';
+      el.notifBtn.textContent='通知を許可できません';
+      el.notifBtn.disabled=true;
+    }else{
+      el.notifStatus.textContent='未許可：タップで有効化';
+      el.notifBtn.textContent='学習リマインド通知を有効化';
+      el.notifBtn.disabled=false;
+    }
+  }
+  function initNotificationSystem(){
+    if(!el.notifBtn || !el.notifStatus) return;
+    updateNotificationUi();
+    if('Notification' in window && Notification.permission==='granted'){
+      ensureNotificationLoop();
+    }
+    el.notifBtn.addEventListener('click', async()=>{
+      if(!('Notification' in window)){
+        toast('このブラウザは通知に対応していません');
+        return;
+      }
+      if(Notification.permission==='granted'){
+        toast('通知はすでに有効です');
+        return;
+      }
+      try{
+        const result=await Notification.requestPermission();
+        updateNotificationUi();
+        if(result==='granted'){
+          toast('通知を有効にしました');
+          ensureNotificationLoop();
+          runNotificationChecks({force:true}).catch(()=>{});
+        }else{
+          toast('通知は許可されませんでした');
+        }
+      }catch(err){
+        console.warn('Notification permission request failed', err);
+        toast('通知の許可リクエストに失敗しました');
+      }
+    });
+    document.addEventListener('visibilitychange',()=>{
+      if(document.visibilityState==='visible'){
+        updateNotificationUi();
+        runNotificationChecks({force:true}).catch(()=>{});
+      }
+    });
+  }
+  function scheduleNotificationCheckSoon(){
+    if(!('Notification' in window) || Notification.permission!=='granted') return;
+    ensureNotificationLoop();
+    clearTimeout(scheduleNotificationCheckSoon._t);
+    scheduleNotificationCheckSoon._t=setTimeout(()=>{
+      runNotificationChecks({force:true}).catch(()=>{});
+    }, 1000);
+  }
+
+  const LEVEL_KEY='itemLevelV1';
+  function loadLevelState(){ try{ return JSON.parse(localStorage.getItem(LEVEL_KEY)||'{}'); }catch(_){ return {}; } }
+  function saveLevelState(state){ try{ localStorage.setItem(LEVEL_KEY, JSON.stringify(state)); }catch(_){ } }
+  let LEVEL_STATE=loadLevelState();
+  const LEVEL_FILTER_KEY='levelFilterV1';
+  const SEARCH_KEY='itemSearchV1';
+  function loadSearchQuery(){
+    try{
+      return localStorage.getItem(SEARCH_KEY)||'';
+    }catch(_){
+      return '';
+    }
+  }
+  function saveSearchQuery(value){
+    try{ localStorage.setItem(SEARCH_KEY, value); }catch(_){ }
+  }
+  function currentSearchQuery(){
+    const input=document.getElementById('rangeSearch');
+    const raw=(input && typeof input.value==='string') ? input.value : '';
+    return raw.trim();
+  }
+  const LEVEL_CHOICES=[1,2,3,4,5];
+  function loadLevelFilter(){
+    try{
+      const raw=localStorage.getItem(LEVEL_FILTER_KEY);
+      if(!raw) return new Set(LEVEL_CHOICES);
+      const parsed=JSON.parse(raw);
+      if(Array.isArray(parsed)){
+        const valid=parsed.map(n=>Number(n)).filter(n=>LEVEL_CHOICES.includes(n));
+        if(valid.length) return new Set(valid);
+      }
+    }catch(_){ }
+    return new Set(LEVEL_CHOICES);
+  }
+  function saveLevelFilter(set){
+    if(!(set instanceof Set)) return;
+    const arr=LEVEL_CHOICES.filter(l=>set.has(l));
+    try{ localStorage.setItem(LEVEL_FILTER_KEY, JSON.stringify(arr)); }catch(_){ }
+  }
+  let LEVEL_FILTER=loadLevelFilter();
+  function activeLevelArray(){
+    if(!(LEVEL_FILTER instanceof Set) || LEVEL_FILTER.size===0){
+      LEVEL_FILTER=new Set(LEVEL_CHOICES);
+    }
+    const arr=LEVEL_CHOICES.filter(l=>LEVEL_FILTER.has(l));
+    return arr.length?arr:LEVEL_CHOICES.slice();
+  }
+  function evaluateLevel(matchRate, hintStageUsed){
+    const rate=Math.max(0, Math.min(1, matchRate||0));
+    const stage = Number.isFinite(hintStageUsed) ? Math.max(0, Math.floor(hintStageUsed)) : BASE_HINT_STAGE;
+    if(rate < 0.70) return 2;
+    if(rate < 0.90) return 3;
+    if(stage <= BASE_HINT_STAGE){
+      return 5;
+    }
+    if(stage===BASE_HINT_STAGE+1){
+      return 4;
+    }
+    return 3;
+  }
+  function getLevelInfo(id){
+    if(!id) return {best:1,last:1};
+    return LEVEL_STATE[id] || {best:1,last:1};
+  }
+  function updateLevelInfo(id, levelCandidate, matchRate, hintStageUsed){
+    if(!id) return {best:levelCandidate,last:levelCandidate};
+    const info=LEVEL_STATE[id] || {best:1,last:1};
+    info.last = levelCandidate;
+    if(levelCandidate > (info.best||1)) info.best = levelCandidate;
+    info.lastMatch = +(matchRate||0);
+    info.hintStage = hintStageUsed;
+    info.updatedAt = Date.now();
+    LEVEL_STATE[id]=info;
+    saveLevelState(LEVEL_STATE);
+    return info;
+  }
+  function refreshLevelDisplay(info){
+    if(!el.level) return;
+    if(!info){ el.level.textContent='—'; return; }
+    const last = info.last || info.best || 1;
+    const best = info.best || last;
+    el.level.textContent = best>last ? `${last} / ${best}` : `${last}`;
+  }
+
+  function lastRecordedLevel(id){
+    const info=getLevelInfo(id);
+    return info.last || info.best || 1;
+  }
+
+  function updateLevelFilterButtons(){
+    if(!el.levelFilter) return;
+    const active=new Set(activeLevelArray());
+    qsa('button[data-level]', el.levelFilter).forEach(btn=>{
+      const level=Number(btn.dataset.level||'0');
+      const on=active.has(level);
+      btn.classList.toggle('active', on);
+      btn.setAttribute('aria-pressed', on?'true':'false');
+    });
+  }
+
+  function initLevelFilterUI(){
+    if(!el.levelFilter) return;
+    el.levelFilter.innerHTML='';
+    const label=document.createElement('span');
+    label.className='level-filter-label';
+    label.textContent='Lv';
+    el.levelFilter.appendChild(label);
+    const btnWrap=document.createElement('div');
+    btnWrap.className='level-filter-buttons';
+    el.levelFilter.appendChild(btnWrap);
+    const activeLevels=new Set(activeLevelArray());
+    for(const level of LEVEL_CHOICES){
+      const btn=document.createElement('button');
+      btn.type='button';
+      btn.className='level-chip';
+      btn.dataset.level=String(level);
+      btn.textContent=String(level);
+      if(activeLevels.has(level)){
+        btn.classList.add('active');
+        btn.setAttribute('aria-pressed','true');
+      }else{
+        btn.setAttribute('aria-pressed','false');
+      }
+      btn.addEventListener('click',()=>{
+        if(!(LEVEL_FILTER instanceof Set)){
+          LEVEL_FILTER=new Set(LEVEL_CHOICES);
+        }
+        if(LEVEL_FILTER.has(level)){
+          if(LEVEL_FILTER.size===1){
+            LEVEL_FILTER=new Set(LEVEL_CHOICES);
+          }else{
+            LEVEL_FILTER.delete(level);
+          }
+        }else{
+          LEVEL_FILTER.add(level);
+        }
+        if(!LEVEL_FILTER.size){
+          LEVEL_FILTER=new Set(LEVEL_CHOICES);
+        }
+        saveLevelFilter(LEVEL_FILTER);
+        updateLevelFilterButtons();
+        rebuildAndRender(true);
+      });
+      btnWrap.appendChild(btn);
+    }
+    updateLevelFilterButtons();
+  }
+
 
   let toneCtx=null;
   function playTone(type){
@@ -227,10 +970,175 @@
   }
 
   // ===== Elements =====
-  const el={ left:qs('#statLeft'), min:qs('#statMin'), streak:qs('#statStreak'), pbar:qs('#pbar'), footer:qs('#footerInfo'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), attempt:qs('#attemptInfo'), next:qs('#btnNext'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), chkWeak:qs('#chkOnlyWeak'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnImport:qs('#btnImport'), filePick:qs('#filePick'), btnTestAudio:qs('#btnTestAudio'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus') };
+  const el={ headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerInfo'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), next:qs('#btnNext'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnImport:qs('#btnImport'), filePick:qs('#filePick'), btnTestAudio:qs('#btnTestAudio'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus') };
   const audio=qs('#player');
+  let recog=null, recogOn=false;
+  let resumeAfterMicStart=false;
+  let resumeAfterMicTimer=null;
+  function clearResumeTimer(){ if(resumeAfterMicTimer){ clearTimeout(resumeAfterMicTimer); resumeAfterMicTimer=null; } }
+  const overlayLocks=new Set();
+  function updateOverlayState(){ if(!el.overlay) return; const active=overlayLocks.size>0; el.overlay.classList.toggle('hidden', !active); el.overlay.classList.toggle('active', active); }
+  function acquireOverlay(tag='load'){ if(!el.overlay){ return ()=>{}; } const token=`${tag}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`; overlayLocks.add(token); updateOverlayState(); return ()=>releaseOverlay(token); }
+  function releaseOverlay(token){ if(!el.overlay || token==null) return; if(overlayLocks.delete(token)){ updateOverlayState(); } }
+  function updatePlayButtonAvailability(){ if(!el.play) return; const hasSrc=!!audio.dataset.srcKey; el.play.disabled=!hasSrc; }
+  function updatePlayVisualState(){ if(!el.play) return; const playing=!audio.paused && !audio.ended; el.play.classList.toggle('playing', playing); el.play.setAttribute('aria-pressed', playing?'true':'false'); const icon=el.play.querySelector('.playIcon'); if(icon){ icon.textContent = playing ? '⏸' : '▶️'; } }
+  audio.addEventListener('play', ()=>{ resumeAfterMicStart=false; clearResumeTimer(); updatePlayVisualState(); });
+  audio.addEventListener('playing', ()=>{ resumeAfterMicStart=false; clearResumeTimer(); updatePlayVisualState(); });
+  audio.addEventListener('pause', ()=>{
+    updatePlayVisualState();
+    if(!resumeAfterMicStart || !recogOn){ return; }
+    if(audio.ended){ resumeAfterMicStart=false; clearResumeTimer(); return; }
+    clearResumeTimer();
+    resumeAfterMicTimer=setTimeout(()=>{
+      resumeAfterMicTimer=null;
+      if(!resumeAfterMicStart || !recogOn || audio.ended){ resumeAfterMicStart=false; return; }
+      audio.play().catch(err=>{ console.warn('resume after mic start failed', err); resumeAfterMicStart=false; });
+    }, 150);
+  });
+  audio.addEventListener('ended', ()=>{ resumeAfterMicStart=false; clearResumeTimer(); updatePlayVisualState(); });
+  audio.addEventListener('emptied', ()=>{ resumeAfterMicStart=false; clearResumeTimer(); updatePlayButtonAvailability(); updatePlayVisualState(); });
+  audio.addEventListener('loadeddata', updatePlayButtonAvailability);
+  updatePlayVisualState();
+  updatePlayButtonAvailability();
+  const SPEED_KEY='audioSpeedV1';
+  function clampSpeed(value){
+    const num=(typeof value==='number')?value:parseFloat(value);
+    if(!Number.isFinite(num)) return 1;
+    return Math.min(1.5, Math.max(0.5, num));
+  }
+  function loadSpeed(){
+    try{
+      const raw=localStorage.getItem(SPEED_KEY);
+      if(raw==null) return 1;
+      return clampSpeed(parseFloat(raw));
+    }catch(_){
+      return 1;
+    }
+  }
+  function saveSpeed(rate){
+    try{ localStorage.setItem(SPEED_KEY, String(rate)); }catch(_){ }
+  }
+  let playbackRate=loadSpeed();
+  function formatSpeed(rate){
+    const rounded=Math.round(rate*100)/100;
+    return `${rounded.toFixed(2).replace(/\.?0+$/,'')}×`;
+  }
+  function syncSpeedUI(){
+    if(el.speed){
+      const val=Math.round(playbackRate*100)/100;
+      el.speed.value=String(val);
+    }
+    if(el.speedValue){
+      el.speedValue.textContent=formatSpeed(playbackRate);
+    }
+  }
+  function applyPlaybackRate(rate,{persist=false}={}){
+    const clamped=clampSpeed(rate);
+    playbackRate=clamped;
+    if(audio){
+      try{ audio.playbackRate=clamped; }catch(_){ }
+    }
+    syncSpeedUI();
+    if(persist){ saveSpeed(clamped); }
+  }
+  function stepPlaybackRate(delta){
+    const stepped=Math.round((playbackRate+delta)*20)/20;
+    applyPlaybackRate(stepped,{persist:true});
+  }
+  applyPlaybackRate(playbackRate);
+  if(el.speed){
+    el.speed.addEventListener('input', ()=>{
+      applyPlaybackRate(parseFloat(el.speed.value), {persist:true});
+    });
+    el.speed.addEventListener('change', ()=>{
+      applyPlaybackRate(parseFloat(el.speed.value), {persist:true});
+    });
+  }
+  if(el.speedDown){
+    el.speedDown.addEventListener('click', ()=>stepPlaybackRate(-0.1));
+  }
+  if(el.speedUp){
+    el.speedUp.addEventListener('click', ()=>stepPlaybackRate(0.1));
+  }
   const PREFETCH_POOL=new Map();
   const PREFETCH_LIMIT=6;
+  let sessionActive=false;
+  let sessionStarting=false;
+  let remoteStatus=null;
+  let QUEUE=[];
+  let idx=-1;
+  let sessionStart=0;
+  let cardStart=0;
+  let autoPlayUnlocked=false;
+  let lastEmptySearchToast='';
+
+  function updateHeaderStats(){
+    if(el.headerSection){
+      let sectionLabel='—';
+      const sel=el.secSel;
+      if(sel){
+        const selected = sel.selectedOptions && sel.selectedOptions.length ? sel.selectedOptions[0] : null;
+        if(selected){
+          sectionLabel=(selected.textContent||selected.label||selected.value||'').trim();
+        }
+        if(!sectionLabel){
+          if(sel.value){
+            sectionLabel=String(sel.value).trim();
+          }else if(sel.options.length){
+            const first=sel.options[0];
+            sectionLabel=(first.textContent||first.label||first.value||'').trim();
+          }
+        }
+        if(!sectionLabel && sel.value==='') sectionLabel='全体';
+      }
+      if(!sectionLabel) sectionLabel='—';
+      const query=currentSearchQuery();
+      if(query){
+        const suffix=(sectionLabel && sectionLabel!=='—') ? ` (${sectionLabel})` : '';
+        el.headerSection.textContent=`検索: ${query}${suffix}`;
+      }else{
+        el.headerSection.textContent=sectionLabel;
+      }
+    }
+
+    if(el.headerLevelAvg){
+      const secKey = el.secSel ? el.secSel.value : '';
+      const pool = secKey ? (ITEMS_BY_SECTION.get(secKey)||[]) : (window.ALL_ITEMS||[]);
+      let sum=0;
+      let count=0;
+      for(const item of pool){
+        if(!item) continue;
+        const info=getLevelInfo(item.id);
+        let val = info ? Number(info.last) : NaN;
+        if(!Number.isFinite(val)) val = info ? Number(info.best) : NaN;
+        if(!Number.isFinite(val) || val<=0) val=1;
+        sum+=val;
+        count++;
+      }
+      if(count>0){
+        const avg=sum/count;
+        let text=avg.toFixed(1);
+        if(text.endsWith('.0')) text=text.slice(0,-2);
+        el.headerLevelAvg.textContent=text;
+      }else{
+        el.headerLevelAvg.textContent='—';
+      }
+    }
+
+    if(el.headerProgressCurrent){
+      const total=Array.isArray(QUEUE)?QUEUE.length:0;
+      const shown=(sessionActive && idx>=0) ? Math.min(idx+1, total) : 0;
+      el.headerProgressCurrent.textContent = shown;
+      if(el.headerProgressTotal){
+        el.headerProgressTotal.textContent = total;
+      }
+    }
+  }
+
+  function applyRemoteStatus(status){
+    remoteStatus = status ? Object.assign({}, status) : null;
+    updateHeaderStats();
+  }
 
   function waitForAudioReady(el, timeout=2000){
     if(!el) return Promise.resolve();
@@ -256,23 +1164,30 @@
     });
   }
 
-  async function setAudioSource(url){
+  function setAudioSource(url,{timeout=2000, forceReload=false}={}){
     if(!url){
       clearAudioSource();
-      return;
+      return Promise.resolve();
     }
-    if(audio.dataset.srcKey !== url){
+    if(forceReload || audio.dataset.srcKey !== url){
       audio.dataset.srcKey = url;
       audio.src = url;
+      try{ audio.playbackRate = playbackRate; }catch(_){ }
     }
+    updatePlayButtonAvailability();
+    try{ audio.playbackRate = playbackRate; }catch(_){ }
     try{ audio.load?.(); }catch(_){ }
-    await waitForAudioReady(audio, 2000);
+    return waitForAudioReady(audio, timeout);
   }
 
   function clearAudioSource(){
+    resumeAfterMicStart=false;
+    clearResumeTimer();
     delete audio.dataset.srcKey;
     audio.removeAttribute('src');
     try{ audio.load?.(); }catch(_){ }
+    updatePlayButtonAvailability();
+    updatePlayVisualState();
   }
 
   function rememberPrefetch(url, entry){
@@ -290,6 +1205,46 @@
 
   const FAIL_LIMIT=3;
   let failCount=0;
+
+  const BASE_HINT_STAGE=0;
+  let hintStage=BASE_HINT_STAGE;
+  let maxHintStageUsed=BASE_HINT_STAGE;
+  let currentEnHtml='';
+  let currentItem=null;
+
+  function setHintStage(stage,{reset=false}={}){
+    const next=Math.max(0, Math.min(2, Number.isFinite(stage)?Math.floor(stage):0));
+    const prev=hintStage;
+    hintStage=next;
+    if(reset){ maxHintStageUsed=next; }
+    else if(next>maxHintStageUsed){ maxHintStageUsed=next; }
+    if(next<=0){
+      el.en.classList.add('concealed');
+      el.en.innerHTML='<span class="hint-placeholder">上にスワイプして英文を表示（再スワイプで和訳）</span>';
+      el.ja.style.display='none';
+      clearHighlight();
+    }else{
+      el.en.classList.remove('concealed');
+      el.en.innerHTML=currentEnHtml||'';
+      el.ja.style.display = next>=2 ? 'block' : 'none';
+      if(currentItem && lastMatchEval && lastMatchEval.source){
+        lastMatchEval = matchAndHighlight(currentItem.en, lastMatchEval.source);
+        const score=calcMatchScore(lastMatchEval.refCount, lastMatchEval.recall, lastMatchEval.precision);
+        updateMatch(score);
+      }
+    }
+    return prev!==next;
+  }
+
+  function advanceHintStage(){
+    if(!sessionActive) return;
+    if(hintStage>=2){ toast('ヒントはすべて表示済みです'); return; }
+    const changed=setHintStage(hintStage+1);
+    if(changed){
+      if(hintStage===1){ el.footer.textContent='英文ヒントを表示しました。もう一度で和訳ヒント。'; }
+      else if(hintStage===2){ el.footer.textContent='和訳ヒントを表示しました'; }
+    }
+  }
 
   function updateMatch(rate){
     el.match.classList.remove('match-good','match-mid','match-bad');
@@ -340,6 +1295,82 @@
   function saveCfg(o){ localStorage.setItem(CFG_KEY, JSON.stringify(o)); }
   let CFG=Object.assign({ apiUrl:'', apiKey:'', audioBase:'./audio' }, loadCfg());
 
+  const PENDING_KEY='pendingLogsV1';
+  function loadPendingLogs(){
+    try{
+      const raw=JSON.parse(localStorage.getItem(PENDING_KEY)||'[]');
+      if(Array.isArray(raw)) return raw.filter(entry=>entry&&entry.type&&entry.url);
+    }catch(_){ }
+    return [];
+  }
+  let PENDING_LOGS=loadPendingLogs();
+  for(const entry of PENDING_LOGS){
+    if(!entry.uid) entry.uid=generateUid();
+    if(entry.data && !entry.data.client_uid) entry.data.client_uid=entry.uid;
+  }
+  rememberPending();
+  function rememberPending(){ try{ localStorage.setItem(PENDING_KEY, JSON.stringify(PENDING_LOGS)); }catch(_){ } }
+  function generateUid(){ if(window.crypto?.randomUUID){ try{ return crypto.randomUUID(); }catch(_){ } } return 'uid-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2); }
+  let flushPromise=null;
+  async function flushPendingLogs(){
+    if(!PENDING_LOGS.length) return;
+    if(flushPromise) return flushPromise;
+    flushPromise=(async()=>{
+      const accepted=new Set();
+      const groups=new Map();
+      for(const entry of PENDING_LOGS){
+        if(!entry || !entry.url || !entry.type) continue;
+        const key=`${entry.url}::${entry.apiKey||''}`;
+        if(!groups.has(key)) groups.set(key,{url:entry.url, apiKey:entry.apiKey, items:[]});
+        const data=Object.assign({}, entry.data||{});
+        if(!data.client_uid) data.client_uid=entry.uid;
+        groups.get(key).items.push({uid:entry.uid, type:entry.type, data});
+      }
+      for(const group of groups.values()){
+        if(!group.items.length) continue;
+        const payload={type:'bulk', apiKey:group.apiKey, entries:group.items};
+        try{
+          const res=await fetch(group.url,{method:'POST',headers:{'Content-Type':'text/plain;charset=UTF-8'},body:JSON.stringify(payload)});
+          if(!res.ok) continue;
+          let json=null;
+          try{ json=await res.json(); }catch(_){ }
+          if(json && json.ok){
+            const ack=Array.isArray(json.accepted)?json.accepted:group.items.map(it=>it.uid);
+            ack.forEach(uid=>accepted.add(uid));
+          }
+        }catch(err){ console.warn('flushPendingLogs', err); }
+      }
+      let changed=false;
+      if(accepted.size){
+        PENDING_LOGS=PENDING_LOGS.filter(entry=>!accepted.has(entry.uid));
+        changed=true;
+      }
+      const cleaned=PENDING_LOGS.filter(entry=>entry && entry.url);
+      if(cleaned.length!==PENDING_LOGS.length){
+        PENDING_LOGS=cleaned;
+        changed=true;
+      }
+      if(changed) rememberPending();
+    })();
+    try{
+      await flushPromise;
+    }finally{
+      flushPromise=null;
+    }
+  }
+
+  async function sendLog(type,data){
+    const url=(CFG.apiUrl||'').trim();
+    if(!url) return;
+    const uid=generateUid();
+    const payload=Object.assign({}, data||{});
+    if(!payload.client_uid) payload.client_uid=uid;
+    const entry={ uid, type, data:payload, url, apiKey:(CFG.apiKey||'')||undefined, createdAt:Date.now() };
+    PENDING_LOGS.push(entry);
+    rememberPending();
+    try{ await flushPendingLogs(); }catch(err){ console.warn('sendLog', err); }
+  }
+
   // ===== IndexedDB for DirectoryHandle =====
   const DB='fs-handles', STORE='dir';
   function idb(){ return new Promise((res,rej)=>{ const r=indexedDB.open(DB,1); r.onupgradeneeded=()=>{ r.result.createObjectStore(STORE); }; r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }); }
@@ -348,37 +1379,514 @@
   async function clearDirHandle(){ const db=await idb(); return new Promise((res,rej)=>{ const tx=db.transaction(STORE,'readwrite'); tx.objectStore(STORE).delete('audio'); tx.oncomplete=()=>res(); tx.onerror=()=>rej(tx.error); }); }
 
   let DIR=null; // FileSystemDirectoryHandle
-  async function ensureDir(){ if(DIR) return DIR; try{ DIR = await loadDirHandle(); if(!DIR) return null; const q = await DIR.queryPermission?.({mode:'read'}) || 'granted'; if(q!=='granted'){ const r = await DIR.requestPermission?.({mode:'read'}); if(r!=='granted'){ DIR=null; return null; } } return DIR; }catch(_){ DIR=null; return null; } }
+  let dirNeedsGesture=false;
+  let dirPromptArmed=false;
+  async function ensureDir({prompt=true, forceCheck=false, allowSchedule=true}={}){
+    if(!DIR || forceCheck){
+      if(!DIR){
+        try{
+          DIR = await loadDirHandle();
+        }catch(err){
+          console.warn('loadDirHandle failed', err);
+          DIR=null;
+          dirNeedsGesture=false;
+          refreshDirStatus();
+          return null;
+        }
+      }
+    }
+    if(!DIR){ dirNeedsGesture=false; refreshDirStatus(); return null; }
+    let state='granted';
+    try{
+      state = await DIR.queryPermission?.({mode:'read'}) || 'granted';
+    }catch(_){ state='prompt'; }
+    if(state==='granted'){
+      dirNeedsGesture=false;
+      dirPromptArmed=false;
+      refreshDirStatus();
+      return DIR;
+    }
+    if(!prompt){
+      dirNeedsGesture = state!=='granted';
+      if(dirNeedsGesture && allowSchedule) scheduleDirPrompt();
+      refreshDirStatus();
+      return null;
+    }
+    try{
+      state = await DIR.requestPermission?.({mode:'read'});
+    }catch(err){
+      if(err && (err.name==='InvalidStateError' || /user activation/i.test(err.message||''))){
+        dirNeedsGesture=true;
+        if(allowSchedule) scheduleDirPrompt();
+        refreshDirStatus();
+        return null;
+      }
+      console.warn('requestPermission error', err);
+      DIR=null;
+      dirNeedsGesture=false;
+      refreshDirStatus();
+      return null;
+    }
+      if(state==='granted'){
+        dirNeedsGesture=false;
+        dirPromptArmed=false;
+        refreshDirStatus();
+        return DIR;
+      }
+      if(state==='prompt'){
+        dirNeedsGesture=true;
+        if(allowSchedule) scheduleDirPrompt();
+        refreshDirStatus();
+        return null;
+      }
+      // denied or unknown
+      dirNeedsGesture=false;
+      dirPromptArmed=false;
+      DIR=null;
+      try{ await clearDirHandle(); }catch(_){ }
+      refreshDirStatus();
+      return null;
+  }
+  function scheduleDirPrompt(){
+    if(!DIR || !dirNeedsGesture || dirPromptArmed) return;
+    dirPromptArmed=true;
+    const handler=async()=>{
+      window.removeEventListener('pointerdown', handler, true);
+      window.removeEventListener('keydown', handler, true);
+      dirPromptArmed=false;
+      const release=acquireOverlay('dir');
+      try{
+        await ensureDir({prompt:true});
+      }finally{
+        release();
+      }
+    };
+    window.addEventListener('pointerdown', handler, true);
+    window.addEventListener('keydown', handler, true);
+  }
+
+  async function gateDirPermissionBeforeBoot(){
+    await ensureDir({prompt:false, forceCheck:true, allowSchedule:false});
+    if(!DIR || !dirNeedsGesture){
+      return;
+    }
+    refreshDirStatus();
+    if(el.dirPermOverlay && el.dirPermAllow){
+      const overlay=el.dirPermOverlay;
+      const statusEl=el.dirPermStatus;
+      const allowBtn=el.dirPermAllow;
+      const laterBtn=el.dirPermLater;
+      function hideOverlay(){
+        overlay.classList.remove('show');
+        overlay.setAttribute('hidden','');
+        overlay.setAttribute('aria-hidden','true');
+      }
+      function showOverlay(){
+        overlay.removeAttribute('hidden');
+        overlay.classList.add('show');
+        overlay.setAttribute('aria-hidden','false');
+        setTimeout(()=>{ try{ allowBtn?.focus?.(); }catch(_){ } }, 0);
+      }
+      await new Promise(resolve=>{
+        if(laterBtn){ laterBtn.hidden=true; }
+        const attempt=async(fromUser=false)=>{
+          statusEl && (statusEl.textContent='');
+          const release=acquireOverlay('dir-permission');
+          try{
+            const handle=await ensureDir({prompt:true, forceCheck:true, allowSchedule:false});
+            if(handle){
+              cleanup();
+              hideOverlay();
+              resolve();
+              return;
+            }
+            if(statusEl){
+              statusEl.textContent = fromUser
+                ? 'アクセスが許可されませんでした。端末のダイアログで「許可する」を選んでください。'
+                : '音声フォルダへのアクセス許可が必要です。「許可を開く」をタップしてください。';
+            }
+            if(fromUser && laterBtn){
+              laterBtn.hidden=false;
+            }
+          }catch(err){
+            console.warn('dir permission attempt failed', err);
+            if(statusEl){
+              statusEl.textContent = fromUser
+                ? 'アクセス許可のリクエストに失敗しました。もう一度お試しください。'
+                : 'アクセス許可のリクエストを開始できませんでした。「許可を開く」をタップしてください。';
+            }
+            if(fromUser && laterBtn){
+              laterBtn.hidden=false;
+            }
+          }finally{
+            release();
+          }
+        };
+        const skip=()=>{
+          cleanup();
+          hideOverlay();
+          resolve();
+        };
+        const onKey=ev=>{ if(ev.key==='Enter'){ ev.preventDefault(); attempt(true); } };
+        const onAllow=()=>{ attempt(true); };
+        function cleanup(){
+          allowBtn.removeEventListener('click', onAllow);
+          laterBtn?.removeEventListener('click', skip);
+          overlay.removeEventListener('keydown', onKey);
+        }
+        showOverlay();
+        allowBtn.addEventListener('click', onAllow);
+        laterBtn?.addEventListener('click', skip);
+        overlay.addEventListener('keydown', onKey);
+        setTimeout(()=>{ attempt(false).catch(()=>{}); }, 0);
+      });
+    }else{
+      await ensureDir({prompt:true, forceCheck:true, allowSchedule:false});
+    }
+  }
 
   // Settings modal
-  el.cfgBtn.onclick=()=>{ el.cfgUrl.value=CFG.apiUrl||''; el.cfgKey.value=CFG.apiKey||''; el.cfgAudioBase.value=CFG.audioBase||'./audio'; refreshDirStatus(); el.cfgModal.style.display='flex'; };
-  el.cfgClose.onclick=()=>{ el.cfgModal.style.display='none'; };
-  el.cfgSave.onclick=()=>{ CFG.apiUrl=(el.cfgUrl.value||'').trim(); CFG.apiKey=(el.cfgKey.value||'').trim(); CFG.audioBase=(el.cfgAudioBase.value||'').trim()||'./audio'; saveCfg(CFG); el.cfgModal.style.display='none'; toast('設定を保存しました'); };
-  el.btnPickDir.onclick=async()=>{ if(!window.showDirectoryPicker){ toast('この端末はフォルダピッカー非対応'); return; } try{ const h=await showDirectoryPicker({mode:'read'}); await saveDirHandle(h); DIR=h; refreshDirStatus(); toast('フォルダを保存しました'); }catch(e){ if(e&&e.name!=='AbortError') toast('フォルダ選択に失敗'); }};
-  el.btnClearDir.onclick=async()=>{ await clearDirHandle(); DIR=null; refreshDirStatus(); toast('フォルダ設定を解除'); };
-  function refreshDirStatus(){ el.dirStatus.textContent = DIR? '保存済み':'未設定'; }
+  if(el.cfgBtn && el.cfgModal && el.cfgUrl && el.cfgKey && el.cfgAudioBase){
+    el.cfgBtn.addEventListener('click', ()=>{
+      el.cfgUrl.value=CFG.apiUrl||'';
+      el.cfgKey.value=CFG.apiKey||'';
+      el.cfgAudioBase.value=CFG.audioBase||'./audio';
+      refreshDirStatus();
+      updateNotificationUi();
+      el.cfgModal.style.display='flex';
+    });
+  }
+  initNotificationSystem();
+  if(el.cfgClose && el.cfgModal){
+    el.cfgClose.addEventListener('click', ()=>{ el.cfgModal.style.display='none'; });
+  }
+  if(el.cfgSave && el.cfgModal && el.cfgUrl && el.cfgKey && el.cfgAudioBase){
+    el.cfgSave.addEventListener('click', ()=>{
+      CFG.apiUrl=(el.cfgUrl.value||'').trim();
+      CFG.apiKey=(el.cfgKey.value||'').trim();
+      CFG.audioBase=(el.cfgAudioBase.value||'').trim()||'./audio';
+      saveCfg(CFG);
+      if((CFG.apiUrl||'').trim()){
+        for(const entry of PENDING_LOGS){
+          entry.url=CFG.apiUrl.trim();
+          entry.apiKey=(CFG.apiKey||'')||undefined;
+        }
+      } else {
+        for(const entry of PENDING_LOGS){
+          entry.url='';
+          entry.apiKey=undefined;
+        }
+        applyRemoteStatus(null);
+      }
+      rememberPending();
+      el.cfgModal.style.display='none';
+      toast('設定を保存しました');
+      if((CFG.apiUrl||'').trim()){
+        syncProgressAndStatus().catch(()=>{});
+      }
+    });
+  }
+  if(el.btnPickDir){
+    el.btnPickDir.addEventListener('click', async()=>{
+      if(!window.showDirectoryPicker){ toast('この端末はフォルダピッカー非対応'); return; }
+      try{
+        const h=await showDirectoryPicker({mode:'read'});
+        await saveDirHandle(h);
+        DIR=h;
+        dirNeedsGesture=false;
+        refreshDirStatus();
+        await ensureDir({prompt:true, forceCheck:true});
+        refreshDirStatus();
+        toast(dirNeedsGesture ? 'フォルダを保存（許可待ち）' : 'フォルダを保存しました');
+      }catch(e){
+        if(e&&e.name!=='AbortError') toast('フォルダ選択に失敗');
+      }
+    });
+  }
+  if(el.btnClearDir){
+    el.btnClearDir.addEventListener('click', async()=>{
+      await clearDirHandle();
+      DIR=null;
+      dirNeedsGesture=false;
+      dirPromptArmed=false;
+      refreshDirStatus();
+      toast('フォルダ設定を解除');
+    });
+  }
+  function refreshDirStatus(){ if(!el.dirStatus) return; if(DIR){ el.dirStatus.textContent = dirNeedsGesture ? '許可待ち' : '保存済み'; } else { el.dirStatus.textContent = '未設定'; } }
 
   // Import audio (OPFS)
-  el.btnImport.onclick=()=>{ el.filePick.click(); };
-  el.filePick.onchange=async (ev)=>{ const files=[...ev.target.files||[]]; if(!files.length){ toast('ファイル未選択'); return; } try{ if(!(navigator.storage&&navigator.storage.getDirectory)) throw new Error('OPFS未対応'); const root=await navigator.storage.getDirectory(); let ok=0; for(const f of files){ const fh=await root.getFileHandle(f.name,{create:true}); const w=await fh.createWritable(); await w.write(f); await w.close(); ok++; } toast(`${ok} 件をOPFSへ保存`); }catch(e){ console.error(e); toast('OPFS取り込み失敗'); } };
+  if(el.btnImport && el.filePick){
+    el.btnImport.addEventListener('click', ()=>{ el.filePick.click(); });
+    el.filePick.addEventListener('change', async(ev)=>{
+      const files=[...ev.target.files||[]];
+      if(!files.length){ toast('ファイル未選択'); return; }
+      try{
+        if(!(navigator.storage&&navigator.storage.getDirectory)) throw new Error('OPFS未対応');
+        const root=await navigator.storage.getDirectory();
+        let ok=0;
+        for(const f of files){
+          const fh=await root.getFileHandle(f.name,{create:true});
+          const w=await fh.createWritable();
+          await w.write(f);
+          await w.close();
+          ok++;
+        }
+        toast(`${ok} 件をOPFSへ保存`);
+      }catch(e){
+        console.error(e);
+        toast('OPFS取り込み失敗');
+      }
+    });
+  }
 
   // GAS Bridge
-  async function sendLog(type,data){ const url=(CFG.apiUrl||'').trim(); if(!url) return; const payload={apiKey:CFG.apiKey||undefined,type,data}; const blob=new Blob([JSON.stringify(payload)],{type:'text/plain;charset=UTF-8'}); if('sendBeacon' in navigator){ navigator.sendBeacon(url, blob); return; } try{ await fetch(url,{method:'POST',mode:'no-cors',body:blob}); }catch(_){} }
+  async function refreshRemoteStatus(){
+    const url=(CFG.apiUrl||'').trim();
+    if(!url) return null;
+    try{
+      const payload={type:'status', apiKey:CFG.apiKey||undefined};
+      const res=await fetch(url,{method:'POST',headers:{'Content-Type':'text/plain;charset=UTF-8'},body:JSON.stringify(payload)});
+      if(!res.ok) throw new Error('status '+res.status);
+      const json=await res.json();
+      if(json && json.ok && json.status){
+        applyRemoteStatus(json.status);
+        return json.status;
+      }
+    }catch(err){ console.warn('refreshRemoteStatus', err); }
+    return null;
+  }
+
+  async function syncProgressAndStatus(){
+    const url=(CFG.apiUrl||'').trim();
+    if(!url) return null;
+    try{ await flushPendingLogs(); }catch(err){ console.warn('syncProgressAndStatus', err); }
+    return refreshRemoteStatus();
+  }
+
+  window.addEventListener('online', ()=>{
+    flushPendingLogs().then(()=>refreshRemoteStatus()).catch(()=>{});
+  });
 
   // Data
   const DATA_URL='./data/items.json';
+  const ITEM_CACHE_NAME='items-v1';
+  const ITEMS_BY_SECTION=new Map();
+  let itemsLoadPromise=null;
   async function fetchJson(url){ const r=await fetch(url,{cache:'no-store'}); if(!r.ok) throw new Error(url+': '+r.status); return r.json(); }
   window.ALL_ITEMS=[]; let SRS_MAP=new Map();
-  async function ensureDataLoaded(){ if(!window.ALL_ITEMS.length){ window.ALL_ITEMS=await fetchJson(DATA_URL); } if(!SRS_MAP.size){ try{ const arr=await fetchJson('./data/srs.json'); const m=new Map(); for(const x of arr) m.set(x.id,x); SRS_MAP=m; }catch(_){ SRS_MAP=new Map(); } } }
-
-  // Build section options (All/単一)
-  function initSectionPicker(){ const sel=el.secSel; sel.innerHTML=''; sel.appendChild(new Option('全体','')); const units=[...new Set(window.ALL_ITEMS.map(x=>x.unit).filter(Boolean))].sort((a,b)=>{const na=+String(a).replace(/\D+/g,'')||0, nb=+String(b).replace(/\D+/g,'')||0; return na-nb||String(a).localeCompare(String(b));}); for(const u of units){ sel.appendChild(new Option(u,u)); } const saved=localStorage.getItem('secSel')||''; sel.value=saved; sel.onchange=()=>{ localStorage.setItem('secSel', sel.value); rebuildAndRender(true); };
-    const ordSaved=localStorage.getItem('orderSel')||'asc'; el.orderSel.value=ordSaved; el.orderSel.onchange=()=>{ localStorage.setItem('orderSel', el.orderSel.value); rebuildAndRender(true); };
-    el.chkWeak.checked = localStorage.getItem('onlyWeak')==='1'; el.chkWeak.onchange=()=>{ localStorage.setItem('onlyWeak', el.chkWeak.checked?'1':'0'); rebuildAndRender(true); };
+  function rebuildSectionIndex(){
+    ITEMS_BY_SECTION.clear();
+    for(const it of window.ALL_ITEMS){
+      const key=String((it&& (it.unit ?? it.sec ?? ''))||'').trim();
+      if(!key) continue;
+      if(!ITEMS_BY_SECTION.has(key)) ITEMS_BY_SECTION.set(key, []);
+      ITEMS_BY_SECTION.get(key).push(it);
+    }
+  }
+  function updateSectionOptions({preferSaved=false}={}){
+    const sel=el.secSel;
+    if(!sel) return;
+    const saved=localStorage.getItem('secSel')||'';
+    const desired=preferSaved ? saved : (sel.value || saved || '');
+    const frag=document.createDocumentFragment();
+    frag.appendChild(new Option('全体',''));
+    const units=[...ITEMS_BY_SECTION.keys()].sort((a,b)=>{
+      const na=+String(a).replace(/\D+/g,'')||0;
+      const nb=+String(b).replace(/\D+/g,'')||0;
+      if(na!==nb) return na-nb;
+      return String(a).localeCompare(String(b));
+    });
+    for(const u of units){ frag.appendChild(new Option(u,u)); }
+    sel.innerHTML='';
+    sel.appendChild(frag);
+    const target=units.includes(desired)?desired:'';
+    sel.value=target;
+    if(preferSaved && saved && !units.includes(saved)){
+      localStorage.setItem('secSel','');
+    }
+    if(!target && !preferSaved){
+      localStorage.setItem('secSel','');
+    }
+    updateHeaderStats();
+  }
+  function applyItemsData(items,{refreshPicker=false}={}){
+    window.ALL_ITEMS=Array.isArray(items)?items.slice():[];
+    rebuildSectionIndex();
+    if(refreshPicker) updateSectionOptions();
+    updateHeaderStats();
+  }
+  async function loadItemsOnce(url){
+    let cache=null;
+    if('caches' in window){
+      try{ cache=await caches.open(ITEM_CACHE_NAME); }catch(_){ cache=null; }
+    }
+    let resp=cache?await cache.match(url):null;
+    if(!resp){
+      resp=await fetch(url,{cache:'no-cache'});
+      if(!resp.ok) throw new Error(url+': '+resp.status);
+      if(cache){
+        try{ await cache.put(url, resp.clone()); }catch(_){ }
+      }
+    }
+    const data=await resp.json();
+    if(cache){
+      fetch(url,{cache:'no-cache'}).then(async fresh=>{
+        if(!fresh.ok) return;
+        try{ await cache.put(url, fresh.clone()); }catch(_){ }
+        const latest=await fresh.json();
+        applyItemsData(latest,{refreshPicker:true});
+      }).catch(()=>{});
+    }
+    return data;
+  }
+  async function ensureItemsLoaded(){
+    if(window.ALL_ITEMS.length){
+      if(!ITEMS_BY_SECTION.size) rebuildSectionIndex();
+      return window.ALL_ITEMS;
+    }
+    if(!itemsLoadPromise){
+      itemsLoadPromise=(async()=>{
+        const data=await loadItemsOnce(DATA_URL);
+        applyItemsData(data);
+        return window.ALL_ITEMS;
+      })().catch(err=>{ itemsLoadPromise=null; throw err; });
+    }
+    return itemsLoadPromise;
+  }
+  async function ensureDataLoaded(){
+    await ensureItemsLoaded();
+    if(!SRS_MAP.size){
+      try{ const arr=await fetchJson('./data/srs.json'); const m=new Map(); for(const x of arr) m.set(x.id,x); SRS_MAP=m; }
+      catch(_){ SRS_MAP=new Map(); }
+    }
   }
 
-  function isUnlearned(id){ const s=SRS_MAP.get(id); if(!s) return true; if(s.last_result===0) return true; if((s.ease||0)<2.0 && (s.interval_d||0)<3) return true; return false; }
-  function buildQueue(){ const sec=el.secSel.value; const order=el.orderSel.value; const onlyWeak=el.chkWeak.checked; let items=(sec?'filter':'all')==='all' ? window.ALL_ITEMS : window.ALL_ITEMS.filter(x=>String(x.unit)===sec); if(onlyWeak) items=items.filter(x=>isUnlearned(x.id)); if(order==='rnd'){ const seed=Math.floor(Date.now()/86400000); let t=seed>>>0; const rnd=()=>{t^=t<<13; t^=t>>>17; t^=t<<5; return (t>>>0)/4294967296}; items=items.slice(); for(let i=items.length-1;i>0;i--){ const j=Math.floor(rnd()*(i+1)); [items[i],items[j]]=[items[j]],items[i]; } } else { items=items.slice().sort((a,b)=>{ const na=+String(a.unit||'').replace(/\D+/g,'')||0, nb=+String(b.unit||'').replace(/\D+/g,'')||0; if(na!==nb) return na-nb; return String(a.id).localeCompare(String(b.id)); }); } return items.map(it=>({ id:it.id,en:it.en,ja:it.ja,tags:it.tags||'',chunks_json:it.chunks||'[]',audio_fn:it.audio_fn||'' })); }
+  // Build section options (All/単一)
+  function initSectionPicker(){
+    updateSectionOptions({preferSaved:true});
+    const sel=el.secSel;
+    sel.onchange=()=>{
+      localStorage.setItem('secSel', sel.value);
+      rebuildAndRender(true);
+    };
+    const ordSaved=localStorage.getItem('orderSel')||'asc';
+    el.orderSel.value=ordSaved;
+    el.orderSel.onchange=()=>{
+      localStorage.setItem('orderSel', el.orderSel.value);
+      rebuildAndRender(true);
+    };
+    if(el.search){
+      const saved=loadSearchQuery();
+      if(saved){
+        el.search.value=saved;
+      }
+      let lastAppliedSearch=currentSearchQuery();
+      let searchTimer=null;
+      const resetSessionForSearch=()=>{
+        if(sessionActive || sessionStarting){
+          stopAudio();
+          if(recogOn){
+            stopRec().catch(()=>{});
+          }
+          setMicState(false);
+          sessionActive=false;
+          sessionStarting=false;
+        }
+      };
+      const applySearchChange=(fromChange=false)=>{
+        if(searchTimer){
+          clearTimeout(searchTimer);
+          searchTimer=null;
+        }
+        const trimmed=currentSearchQuery();
+        if(fromChange && el.search.value!==trimmed){
+          el.search.value=trimmed;
+        }
+        saveSearchQuery(trimmed);
+        if(trimmed===lastAppliedSearch){
+          return;
+        }
+        lastAppliedSearch=trimmed;
+        updateHeaderStats();
+        resetSessionForSearch();
+        lastEmptySearchToast='';
+        rebuildAndRender(true,{autoStart:false});
+      };
+      const scheduleSearchChange=()=>{
+        if(searchTimer){
+          clearTimeout(searchTimer);
+        }
+        searchTimer=setTimeout(()=>{
+          applySearchChange(false);
+        }, 220);
+      };
+      el.search.addEventListener('input', ()=>{
+        saveSearchQuery(el.search.value.trim());
+        scheduleSearchChange();
+      });
+      el.search.addEventListener('change', ()=>{
+        applySearchChange(true);
+      });
+    }
+    initLevelFilterUI();
+  }
+
+  function getRandomIndex(maxExclusive){
+    if(maxExclusive<=0) return 0;
+    const cryptoObj = (typeof window!=='undefined' && window.crypto && window.crypto.getRandomValues) ? window.crypto : null;
+    if(!cryptoObj) return Math.floor(Math.random()*maxExclusive);
+    const randArr=new Uint32Array(1);
+    const limit=Math.floor(0x100000000/maxExclusive)*maxExclusive;
+    let val;
+    do{
+      cryptoObj.getRandomValues(randArr);
+      val=randArr[0];
+    }while(val>=limit);
+    return val%maxExclusive;
+  }
+  function shuffledCopy(arr){
+    if(!Array.isArray(arr)||arr.length<=1) return Array.isArray(arr)?arr.slice():[];
+    const copy=arr.slice();
+    for(let i=copy.length-1;i>0;i--){
+      const j=getRandomIndex(i+1);
+      if(i!==j){
+        [copy[i],copy[j]]=[copy[j],copy[i]];
+      }
+    }
+    return copy;
+  }
+  function buildQueue(){
+    const sec=el.secSel.value;
+    const order=el.orderSel.value;
+    const baseItems=sec ? (ITEMS_BY_SECTION.get(sec)||[]) : window.ALL_ITEMS;
+    let items=Array.isArray(baseItems) ? baseItems.filter(Boolean) : [];
+    const levels=activeLevelArray();
+    if(levels.length && levels.length<LEVEL_CHOICES.length){
+      const levelSet=new Set(levels);
+      items=items.filter(x=>levelSet.has(lastRecordedLevel(x.id)));
+    }
+    const query=currentSearchQuery().toLowerCase();
+    if(query){
+      items=items.filter(it=>{
+        const en=String(it.en||'').toLowerCase();
+        const ja=String(it.ja||'').toLowerCase();
+        const tags=String(it.tags||'').toLowerCase();
+        return en.includes(query) || ja.includes(query) || tags.includes(query);
+      });
+    }
+    if(order==='rnd'){
+      items=shuffledCopy(items);
+    }else{
+      items=items.slice().sort((a,b)=>{
+        const na=+String(a.unit||'').replace(/\D+/g,'')||0;
+        const nb=+String(b.unit||'').replace(/\D+/g,'')||0;
+        if(na!==nb) return na-nb;
+        return String(a.id).localeCompare(String(b.id));
+      });
+    }
+    return items.map(it=>({ id:it.id,en:it.en,ja:it.ja,tags:it.tags||'',chunks_json:it.chunks||'[]',audio_fn:it.audio_fn||'' }));
+  }
 
   // Audio resolve: DIR (folder) -> OPFS -> base URL
   const audioUrlCache=new Map();
@@ -386,9 +1894,12 @@
   async function resolveFromOPFS(name){ if(!name) return ''; try{ if(!(navigator.storage&&navigator.storage.getDirectory)) return ''; const root=await navigator.storage.getDirectory(); const fh=await root.getFileHandle(name).catch(()=>null); if(!fh) return ''; const file=await fh.getFile(); return URL.createObjectURL(file); }catch(_){ return ''; } }
   async function resolveAudioUrl(name){ if(!name) return ''; if(audioUrlCache.has(name)) return audioUrlCache.get(name); let url=await resolveFromDir(name); if(!url) url=await resolveFromOPFS(name); if(!url){ const base=(CFG.audioBase||'./audio').replace(/\/$/,''); url= base + '/' + encodeURI(name); } audioUrlCache.set(name,url); return url; }
 
-  async function primeAudio(item){
+  async function primeAudio(item, knownUrl){
     if(!item||!item.audio_fn) return;
-    const url=await resolveAudioUrl(item.audio_fn);
+    let url=knownUrl;
+    if(!url){
+      url=await resolveAudioUrl(item.audio_fn);
+    }
     if(!url) return;
     if(PREFETCH_POOL.has(url)) return PREFETCH_POOL.get(url).promise;
     const prefetch=new Audio();
@@ -404,60 +1915,289 @@
   }
 
   // Render & navigation
-  let QUEUE=[], idx=-1, sessionStart=0, cardStart=0;
-  function stopAudio(){ try{audio.pause();}catch(_){ } audio.currentTime=0; }
+  function stopAudio(){ resumeAfterMicStart=false; clearResumeTimer(); try{audio.pause();}catch(_){ } audio.currentTime=0; }
+  async function tryPlayAudio({userInitiated=false, resetPosition=false}={}){
+    if(!audio?.dataset?.srcKey){
+      if(userInitiated) toast('音声が見つかりません');
+      return false;
+    }
+    if(resetPosition){
+      try{ audio.currentTime=0; }catch(_){ }
+    }
+    try{
+      const playPromise=audio.play();
+      if(playPromise && typeof playPromise.then==='function'){
+        await playPromise;
+      }
+      if(userInitiated){
+        autoPlayUnlocked=true;
+      }
+      return true;
+    }catch(err){
+      console.warn('audio play failed', err);
+      if(userInitiated){
+        let reason='音声を再生できませんでした';
+        if(err){
+          if(err.name==='NotAllowedError'){ reason='ブラウザにブロックされました。端末の音量設定などを確認して再度タップしてください'; }
+          else if(err.message||err.name){ reason=err.message||err.name; }
+        }
+        toast(`音声を再生できません: ${reason}`);
+      }
+      return false;
+    }
+  }
   function resetResult(){ updateMatch(null); }
   function resetTranscript(){ qs('#transcript').innerHTML=''; }
-  function toggleJA(){ el.ja.style.display=(el.ja.style.display==='none')?'block':'none'; }
+  function toggleJA(){ advanceHintStage(); }
 
-  async function render(i, autoPlay=false){
+  function showIdleCard(){
+    sessionActive=false;
+    sessionStarting=false;
     stopAudio();
-    const it=QUEUE[i];
-    if(!it){
-      el.footer.textContent='キューが空です';
-      clearAudioSource();
-      return;
-    }
-    el.en.innerHTML=spanify(it.en);
+    clearAudioSource();
+    autoPlayUnlocked=false;
+    updatePlayVisualState();
+    updatePlayButtonAvailability();
+    if(el.play){ el.play.disabled=true; }
+    const query=currentSearchQuery();
+    const hasQueue=QUEUE.length>0;
+    const emptyWithSearch=!!query && !hasQueue;
+    el.en.textContent = hasQueue ? '出題を準備しています…' : (emptyWithSearch ? '検索結果がありません' : '出題できる問題がありません');
+    el.en.classList.remove('concealed');
     clearHighlight();
-    el.ja.textContent=it.ja;
-    el.ja.style.display='none';
-    el.chips.innerHTML='';
-    (it.tags||'').split(',').filter(Boolean).forEach(t=>{ const s=document.createElement('span'); s.className='chip'; s.textContent=t.trim(); el.chips.appendChild(s); });
-    const url=await resolveAudioUrl(it.audio_fn);
-    if(url){
-      await setAudioSource(url);
-    }else{
-      clearAudioSource();
-    }
-    cardStart=now();
+    el.ja.textContent = '—';
+    el.ja.style.display = 'none';
+    el.chips.innerHTML = '';
+    currentItem=null;
+    currentEnHtml='';
+    hintStage=BASE_HINT_STAGE;
+    maxHintStageUsed=BASE_HINT_STAGE;
+    refreshLevelDisplay(null);
+    cardStart = now();
+    sessionStart = 0;
+    failCount = 0;
     resetResult();
     resetTranscript();
-    failCount=0;
     updateAttemptInfo();
     hideNextCta();
     setMicState(false);
-    primeAudio(QUEUE[i+1]);
-    primeAudio(QUEUE[i-1]);
-    if(autoPlay&&url){ try{ await audio.play(); }catch(_){ } }
+    el.mic.disabled = true;
+    el.next.hidden = true;
+    el.pbar.value = 0;
+    el.footer.textContent = hasQueue ? '準備が整い次第、自動で開始します' : (emptyWithSearch ? '検索条件に一致する問題がありません' : 'キューが空です');
+    if(emptyWithSearch){
+      if(lastEmptySearchToast!==query){
+        toast('検索条件に一致する項目がありません');
+        lastEmptySearchToast=query;
+      }
+    }else{
+      lastEmptySearchToast='';
+    }
+    updateHeaderStats();
   }
 
-  async function rebuildAndRender(resetIndex=false){ QUEUE=buildQueue(); if(resetIndex) idx=-1; el.pbar.max=Math.max(1, QUEUE.length); el.left.textContent=QUEUE.length; hideNextCta(); nextCard(true); }
+  async function render(i, autoPlay=false){
+    const releaseCardLoad = acquireOverlay('card-load');
+    try{
+      stopAudio();
+      const it=QUEUE[i];
+      if(!it){
+        el.footer.textContent='キューが空です';
+        clearAudioSource();
+        return;
+      }
+      currentItem=it;
+      currentEnHtml=spanify(it.en);
+      el.en.classList.remove('concealed');
+      el.en.innerHTML=currentEnHtml;
+      clearHighlight();
+      el.ja.textContent=it.ja;
+      el.chips.innerHTML='';
+      (it.tags||'').split(',').filter(Boolean).forEach(t=>{ const s=document.createElement('span'); s.className='chip'; s.textContent=t.trim(); el.chips.appendChild(s); });
+      const levelInfo=getLevelInfo(it.id);
+      refreshLevelDisplay(levelInfo);
+      setHintStage(BASE_HINT_STAGE,{reset:true});
+      const needsResolveLoader = !!(it.audio_fn && !audioUrlCache.has(it.audio_fn));
+      let url='';
+      const releaseResolve = needsResolveLoader ? acquireOverlay('audio-resolve') : null;
+      try{
+        url=await resolveAudioUrl(it.audio_fn);
+      }finally{
+        releaseResolve?.();
+      }
+      if(url){
+        const releasePrepare = acquireOverlay('audio-prepare');
+        try{
+          await setAudioSource(url);
+          if(audio.readyState<2){
+            const retryPrime=primeAudio(it, url);
+            if(retryPrime){
+              try{ await retryPrime; }catch(err){ console.warn('primeAudio retry failed', err); }
+            }
+            await setAudioSource(url,{timeout:4000, forceReload:true});
+            if(audio.readyState<2){
+              console.warn('Audio not ready after retry', it && it.id, url);
+            }
+          }
+        }finally{
+          releasePrepare();
+        }
+      }else{
+        clearAudioSource();
+      }
+      if(el.play){ el.play.disabled=!url; }
+      cardStart=now();
+      resetResult();
+      resetTranscript();
+      lastMatchEval=null;
+      failCount=0;
+      updateAttemptInfo();
+      hideNextCta();
+      setMicState(false);
+      el.mic.disabled=false;
+      primeAudio(QUEUE[i+1]);
+      primeAudio(QUEUE[i-1]);
+      if(autoPlay&&url){
+        try{
+          await tryPlayAudio({userInitiated:false, resetPosition:true});
+        }catch(err){
+          console.warn('auto play failed', err);
+        }
+      }
+    }finally{
+      releaseCardLoad();
+    }
+  }
 
-  function nextCard(first=false, autoPlay=false){ if(!QUEUE.length){ el.footer.textContent='キューが空です'; clearAudioSource(); stopAudio(); return; } idx = first? 0 : Math.min(QUEUE.length-1, idx+1); render(idx, autoPlay); el.pbar.value=idx; el.footer.textContent=`#${idx+1}/${QUEUE.length}`; }
-  function prevCard(autoPlay=false){ if(!QUEUE.length) return; idx=Math.max(0, idx-1); render(idx, autoPlay); el.pbar.value=idx; el.footer.textContent=`#${idx+1}/${QUEUE.length}`; }
+  async function rebuildAndRender(resetIndex=false, {autoStart=true, autoPlay=false}={}){
+    QUEUE=buildQueue();
+    el.pbar.max=Math.max(1, QUEUE.length);
+    hideNextCta();
+    if(resetIndex){
+      idx=-1;
+      showIdleCard();
+      if(autoStart && QUEUE.length){
+        setTimeout(()=>{
+          if(!sessionActive && !sessionStarting){
+            startSession(autoPlay);
+          }
+        }, 0);
+      }
+      return;
+    }
+    if(!sessionActive){
+      showIdleCard();
+      return;
+    }
+    if(!QUEUE.length){
+      showIdleCard();
+      return;
+    }
+    idx=Math.max(0, Math.min(idx, QUEUE.length-1));
+    render(idx,false);
+    el.pbar.value=idx;
+    el.footer.textContent=`#${idx+1}/${QUEUE.length}`;
+    updateHeaderStats();
+  }
+
+  function advanceToNextSection(){
+    if(!el.secSel) return false;
+    const options=[...el.secSel.options];
+    if(!options.length) return false;
+    const currentValue=el.secSel.value;
+    const currentIndex=options.findIndex(opt=>opt.value===currentValue);
+    if(currentIndex<0 || currentIndex>=options.length-1) return false;
+    if(currentIndex===0 && currentValue==='') return false;
+    const nextOpt=options[currentIndex+1];
+    const nextValue=nextOpt.value;
+    el.secSel.value=nextValue;
+    localStorage.setItem('secSel', nextValue);
+    hideNextCta();
+    const label=nextOpt.textContent||nextOpt.label||nextValue||'次のセクション';
+    toast(`セクション「${label}」へ進みます`);
+    rebuildAndRender(true,{autoPlay:true})
+      .then(()=>{
+        if(!QUEUE.length){
+          el.footer.textContent='次のセクションに出題がありません';
+        }
+      })
+      .catch(err=>{ console.error(err); toast('次のセクションの読み込みに失敗しました'); });
+    return true;
+  }
+
+  async function nextCard(first=false, autoPlay=false){
+    if(!QUEUE.length){ el.footer.textContent='キューが空です'; clearAudioSource(); stopAudio(); return; }
+    if(!sessionActive) return;
+    if(!first && idx>=QUEUE.length-1){
+      if(advanceToNextSection()) return;
+      toast('最後のセクションまで完了しました');
+      return;
+    }
+    idx = first? 0 : Math.min(QUEUE.length-1, idx+1);
+    await render(idx, autoPlay && autoPlayUnlocked);
+    el.pbar.value=idx;
+    el.footer.textContent=`#${idx+1}/${QUEUE.length}`;
+    updateHeaderStats();
+  }
+  async function prevCard(autoPlay=false){
+    if(!QUEUE.length) return;
+    if(!sessionActive) return;
+    idx=Math.max(0, idx-1);
+    await render(idx, autoPlay && autoPlayUnlocked);
+    el.pbar.value=idx;
+    el.footer.textContent=`#${idx+1}/${QUEUE.length}`;
+    updateHeaderStats();
+  }
+
+  async function startSession(autoPlay=false){
+    if(sessionActive || sessionStarting) return;
+    if(!QUEUE.length){ showIdleCard(); return; }
+    sessionStarting=true;
+    try{
+      if((CFG.apiUrl||'').trim()){
+        syncProgressAndStatus().catch(err=>{ console.warn('startSession status', err); });
+      }
+      await ensureDir();
+      sessionActive=true;
+      sessionStart=now();
+      idx=-1;
+      el.mic.disabled=false;
+      try{
+        await nextCard(true, autoPlay);
+      }catch(err){
+        sessionActive=false;
+        throw err;
+      }
+    }finally{
+      sessionStarting=false;
+    }
+  }
 
   // Gestures
   let touchStart=null; const TH=60;
-  el.card.addEventListener('touchstart',(ev)=>{ if(ev.touches?.length!==1) return; const t=ev.touches[0]; touchStart={x:t.clientX,y:t.clientY}; },{passive:true});
-  el.card.addEventListener('touchend',(ev)=>{ if(!touchStart) return; const end=ev.changedTouches[0]; const dx=end.clientX-touchStart.x, dy=end.clientY-touchStart.y; if(Math.abs(dx)>Math.abs(dy) && Math.abs(dx)>TH){ if(dx>0) prevCard(true); else nextCard(false,true); } else if(Math.abs(dy)>TH && dy<0){ toggleJA(); } touchStart=null; },{passive:true});
-  el.en.addEventListener('click', async ()=>{ if(!audio.src) return; try{ if(audio.paused) await audio.play(); else audio.pause(); }catch(_){ } });
-  el.en.addEventListener('dblclick', toggleJA);
+  el.card.addEventListener('touchstart',(ev)=>{ if(!sessionActive){ touchStart=null; return; } if(ev.touches?.length!==1) return; const t=ev.touches[0]; touchStart={x:t.clientX,y:t.clientY}; },{passive:true});
+  el.card.addEventListener('touchend',(ev)=>{ if(!touchStart) return; if(!sessionActive){ touchStart=null; return; } const end=ev.changedTouches[0]; const dx=end.clientX-touchStart.x, dy=end.clientY-touchStart.y; if(Math.abs(dx)>Math.abs(dy) && Math.abs(dx)>TH){ if(dx>0) prevCard(true); else nextCard(false,true); } else if(Math.abs(dy)>TH && dy<0){ toggleJA(); } touchStart=null; },{passive:true});
+  el.en.addEventListener('click', async ()=>{ if(!sessionActive){ await startSession(false); } });
+  el.en.addEventListener('dblclick', ()=>{ if(!sessionActive) return; toggleJA(); });
   el.next.onclick=()=> nextCard(false,true);
+  el.play.addEventListener('click', async ()=>{
+    if(sessionStarting) return;
+    if(!sessionActive){ await startSession(false); }
+    if(sessionStarting) return;
+    if(!sessionActive){ return; }
+    if(!audio.dataset.srcKey){ toast('音声が見つかりません'); return; }
+    if(audio.paused){
+      const shouldReset = audio.ended || audio.currentTime<=0.05;
+      await tryPlayAudio({userInitiated:true, resetPosition:shouldReset});
+    }else{
+      resumeAfterMicStart=false;
+      clearResumeTimer();
+      audio.pause();
+    }
+  });
 
   // ASR（改良：重複抑制・上限・多重一致防止）
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  let recog=null, recogOn=false;
   let stableText=''; // 確定テキスト（評価はこちらのみ使用）
   let lastMatchEval=null;
 
@@ -540,20 +2280,29 @@
     const spans=[...document.querySelectorAll('.en .tok')].filter(s=>s.dataset.w);
     const matchMap=cloneCountMap(best.matchedCounts);
     for(const sp of spans){
-      const w=norm(sp.dataset.w);
-      if(!w){ sp.classList.remove('hit'); sp.classList.add('miss'); continue; }
-      let hit=false;
-      if(matchMap.get(w)>0){
-        hit=true;
-        matchMap.set(w, matchMap.get(w)-1);
-      }else{
-        for(const [k,c] of matchMap){
-          if(c>0 && approxWithin1(k,w)){
-            hit=true;
-            matchMap.set(k, c-1);
-            break;
+      const wTokens=toks(sp.dataset.w);
+      if(!wTokens.length){ sp.classList.remove('hit'); sp.classList.add('miss'); continue; }
+      const reserved=[];
+      let hit=true;
+      for(const tok of wTokens){
+        let matchKey='';
+        if((matchMap.get(tok)||0)>0){
+          matchKey=tok;
+        }else{
+          for(const [k,c] of matchMap){
+            if(c>0 && approxWithin1(k,tok)){ matchKey=k; break; }
           }
         }
+        if(matchKey){
+          matchMap.set(matchKey, matchMap.get(matchKey)-1);
+          reserved.push(matchKey);
+        }else{
+          hit=false;
+          break;
+        }
+      }
+      if(!hit){
+        for(const key of reserved){ matchMap.set(key, (matchMap.get(key)||0)+1); }
       }
       sp.classList.toggle('hit', hit);
       sp.classList.toggle('miss', !hit);
@@ -571,7 +2320,6 @@
     };
   }
 
-  function resetTranscript(){ qs('#transcript').innerHTML=''; }
   function showTranscriptInterim(text){ qs('#transcript').innerHTML=`<span class="interim">${text}</span>`; }
   function showTranscriptFinal(text){ qs('#transcript').textContent=text; }
 
@@ -580,7 +2328,9 @@
     if(el.mic.disabled) return;
     if(recogOn) return;
     hideNextCta();
-    const shouldResume = audio && !audio.paused;
+    const shouldResume = audio && !audio.paused && !audio.ended;
+    resumeAfterMicStart = shouldResume;
+    clearResumeTimer();
     recog = new SR();
     recog.lang = 'en-US';
     recog.continuous = true;
@@ -607,12 +2357,16 @@
         const r = ev.results[i];
         const t = r[0].transcript || '';
         if(r.isFinal){
-          // 尾部のみ追加していく
+          // 尾部のみ追加していく（過剰蓄積を防止）
           stableText = appendStableFinal(stableText, t);
-          showTranscriptFinal(stableText);
           const trimmedStable = stableText.trim();
-          const m = matchAndHighlight(el.en.textContent, trimmedStable);
-          lastMatchEval = m;
+          const refItem = QUEUE[idx];
+          const refText = refItem ? refItem.en : el.en.textContent;
+          const m = matchAndHighlight(refText, trimmedStable);
+          const normalized = (m.transcript && m.transcript.trim()) || trimmedStable;
+          stableText = normalized;
+          showTranscriptFinal(normalized);
+          lastMatchEval = Object.assign({}, m, { source: normalized, transcript: normalized });
           const score = calcMatchScore(m.refCount, m.recall, m.precision);
           updateMatch(score);
         }else{
@@ -622,47 +2376,73 @@
       if(interim) showTranscriptInterim(interim); // 画面表示だけ・評価には使わない
     };
 
-    recog.onerror = (e)=>{ console.warn(e); toast('ASRエラー: '+(e && e.error || '')); playTone('fail'); setMicState(false); recogOn=false; el.mic.disabled=false; recog=null; };
+    recog.onerror = (e)=>{ console.warn(e); toast('ASRエラー: '+(e && e.error || '')); playTone('fail'); setMicState(false); resumeAfterMicStart=false; clearResumeTimer(); recogOn=false; el.mic.disabled=false; recog=null; };
     recog.onend = ()=>{ if(recogOn) stopRec(); else setMicState(false); };
   }
 
   async function stopRec(){
     if(!recogOn) return;
     recogOn=false;
+    resumeAfterMicStart=false;
+    clearResumeTimer();
     try{ recog && recog.stop && recog.stop(); }catch(_){ }
     setMicState(false);
 
     const it = QUEUE[idx]; if(!it) return;
     const hyp = stableText.trim();
-    const matchInfo = (lastMatchEval && lastMatchEval.source === hyp) ? lastMatchEval : matchAndHighlight(el.en.textContent, hyp);
+    const refItem = QUEUE[idx];
+    const refText = refItem ? refItem.en : el.en.textContent;
+    const matchInfo = (lastMatchEval && lastMatchEval.source === hyp) ? lastMatchEval : matchAndHighlight(refText, hyp);
     lastMatchEval = matchInfo;
     const { recall, precision, matched, missing, refCount, hypTokens, transcript } = matchInfo;
     const matchRate = calcMatchScore(refCount, recall, precision);
     updateMatch(matchRate);
+
+    const prevInfoSnapshot = getLevelInfo(it.id);
+    let prevBest = Number(prevInfoSnapshot?.best||0);
+    if(!Number.isFinite(prevBest) || prevBest<=0){
+      prevBest = Number(prevInfoSnapshot?.last||0) || 0;
+    }
+    const stageUsed = maxHintStageUsed;
+    const levelCandidate = evaluateLevel(matchRate, stageUsed);
+    const levelInfo = updateLevelInfo(it.id, levelCandidate, matchRate, stageUsed);
+    const levelInfoBest = Number(levelInfo?.best||0) || Number(levelInfo?.last||0) || levelCandidate;
+    const gainedLevel5 = prevBest<5 && levelInfoBest>=5;
+    refreshLevelDisplay(levelInfo);
+    updateHeaderStats();
+
+    const pct=Math.max(0, Math.round((matchRate||0)*100));
+    const levelLabel = levelInfo ? `Lv${levelInfo.last || levelInfo.best || levelCandidate}` : `Lv${levelCandidate}`;
+    const bestLabel = levelInfo && levelInfo.best>levelInfo.last ? ` (最高${levelInfo.best})` : '';
 
     const pass = matchRate >= 0.70;
     if(pass){
       failCount=0;
       playTone('success');
       showNextCta();
-      el.footer.textContent = '一致率70%以上！「次へ」で進みましょう';
-      toast('Great! 合格です', 1600);
+      el.footer.textContent = `一致率${pct}% ${levelLabel}${bestLabel}！「次へ」で進みましょう`;
+      if(levelCandidate>=4 && stageUsed<=0){
+        toast(`素晴らしい！${levelLabel}達成`, 1600);
+      }else{
+        toast('Great! 合格です', 1600);
+      }
+      recordStudyProgress({pass:true, newLevel5:gainedLevel5});
     }else{
       failCount++;
       playTone('fail');
-      const pct=Math.max(0, Math.round((matchRate||0)*100));
       if(failCount>=FAIL_LIMIT){
-        el.footer.textContent = '3回失敗。不合格で次へ進みます';
+        el.footer.textContent = `3回失敗。${levelLabel}で次へ進みます`;
         toast('不合格で次へ進みます', 1600);
         el.mic.disabled=true;
         setTimeout(()=>{ hideNextCta(); nextCard(false,true); }, 900);
       }else{
-        el.footer.textContent = `一致率${pct}%：70%を目指してもう一度 (${failCount}/${FAIL_LIMIT})`;
+        el.footer.textContent = `一致率${pct}%：${levelLabel}${bestLabel} 維持のため再挑戦 (${failCount}/${FAIL_LIMIT})`;
         toast('70%未満。もう一度チャレンジ！', 1600);
       }
     }
     updateAttemptInfo();
 
+    // Persist the locally-tracked level information to the GAS spreadsheet log as well.
     const payload = {
       ts: new Date().toISOString(), id: it.id, mode: 'read',
       wer: +(1-recall).toFixed(3), cer: +(1-precision).toFixed(3),
@@ -673,7 +2453,10 @@
       matched_tokens_json: JSON.stringify(matched),
       missing_tokens_json: JSON.stringify(missing),
       recall:+recall.toFixed(3), precision:+precision.toFixed(3),
-      match:+(matchRate||0).toFixed(3)
+      match:+(matchRate||0).toFixed(3),
+      hint_stage:stageUsed,
+      level_last:levelInfo?.last ?? levelCandidate,
+      level_best:levelInfo?.best ?? levelCandidate
     };
     try{ await sendLog('speech', payload); }catch(_){ }
     if(!pass && failCount<FAIL_LIMIT){ el.mic.disabled=false; }
@@ -681,15 +2464,37 @@
   }
 
   el.mic.onclick=()=>{ if(!recogOn) startRec(); else stopRec(); };
-  qsa('[data-eval="ok"]').forEach(b=>b.onclick=()=>submitEval(1));
-  qsa('[data-eval="ng"]').forEach(b=>b.onclick=()=>submitEval(0));
-  async function submitEval(bin){ const it=QUEUE[idx]; if(!it) return; const payload={ ts:new Date().toISOString(), id:it.id, result:bin, auto_recall:null, auto_precision:null, response_ms:Math.max(0, now()-cardStart), hint_used:(el.ja.style.display==='block'), device:UA }; try{ await sendLog('attempt', payload); }catch(_){ } hideNextCta(); nextCard(false,true); }
-
   // Boot
   (async()=>{
-    try{ await ensureDataLoaded(); initSectionPicker(); await ensureDir(); refreshDirStatus(); await rebuildAndRender(true); }catch(e){ console.error(e); toast('初期化失敗: '+(e&&e.message||e)); }
+    const releaseBoot=acquireOverlay('boot');
+    try{
+      await ensureDir({prompt:true, forceCheck:true, allowSchedule:false});
+      if(DIR && dirNeedsGesture){
+        await gateDirPermissionBeforeBoot();
+      }
+      await ensureDataLoaded();
+      updateHeaderStats();
+      initSectionPicker();
+      refreshDirStatus();
+      await rebuildAndRender(true);
+      syncProgressAndStatus().catch(()=>{});
+    }catch(e){
+      console.error(e);
+      toast('初期化失敗: '+(e&&e.message||e));
+    }finally{
+      releaseBoot();
+    }
   })();
 })();
+</script>
+
+<!-- ★ Service Worker 登録（最小） -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').catch(()=>{});
+    });
+  }
 </script>
 </body>
 </html>

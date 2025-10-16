@@ -1,56 +1,209 @@
-/** =========================================================
- * WebApp.gs — API受信・書き込み（汎用テンプレート）
- * =======================================================*/
+/** ---- WebApp.gs ---- **/
 
-// GET: 動作確認用
-function doGet(e){
-  return json_({ok:true, at:new Date().toISOString(), sheets:Object.keys(SHEETS)});
+// ===== 設定 =====
+const SHEETS = {
+  attempts: 'attempts',
+  speech:   'speech_metrics',
+  sessions: 'sessions',
+  items:    'items',
+  srs:      'srs_state',
+  config:   'config',
+};
+
+const SP = PropertiesService.getScriptProperties(); // API_KEY を入れるなら Script properties に保存
+
+// ===== 共通ユーティリティ =====
+function jsonOut(obj) {
+  return ContentService
+    .createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
 }
 
-// POST: API受信・書き込み
-function doPost(e){
-  let body={};
-  try{ body = JSON.parse(e.postData?.contents || '{}'); }catch(_){}
-  const apiKey=getApiKey_();
-  if(apiKey && body.apiKey!==apiKey) return json_({ok:false,error:'Auth failed'});
-
-  const type=String(body.type||'');
-  const d=body.data||{};
-  const now=new Date();
-  const tz=Session.getScriptTimeZone()||'Asia/Tokyo';
-  const S=(s,max)=>String(s||'').slice(0,max).replace(/[\r\n]+/g,' ');
-  const N=(v,def,min,max)=>{v=Number(v);if(isNaN(v))v=def;if(min!=null&&v<min)v=min;if(max!=null&&v>max)v=max;return v;};
-
-  if(type==='attempt'){
-    const row={ts:now.toISOString(),id:S(d.id,32),mode:S(d.mode,16),response_ms:N(d.response_ms,0,0,600000),result:N(d.result,0,0,3),hint_used:!!d.hint_used,device:S(d.device,256)};
-    appendRow_('attempts',HEAD.attempts,row);
-  }else if(type==='speech'){
-    const row={ts:now.toISOString(),id:S(d.id,32),mode:S(d.mode,16),wer:N(d.wer,1,0,1),cer:N(d.cer,1,0,1),latency_ms:N(d.latency_ms,0,0,120000),asr_conf:S(d.asr_conf,32),duration_ms:N(d.duration_ms,0,0,600000),words_spoken:N(d.words_spoken,0,0,1000)};
-    appendRow_('speech_metrics',HEAD.speech,row);
-  }else if(type==='session'){
-    const row={date:Utilities.formatDate(now,tz,'yyyy-MM-dd'),minutes:N(d.minutes,0,0,1440),cards_done:N(d.cards_done,0,0,100000),new_introduced:N(d.new_introduced,0,0,100000),streak:S(d.streak,16)};
-    appendRow_('sessions',HEAD.sessions,row);
-  }else{
-    return json_({ok:false,error:'unknown type'});
-  }
-
-  return json_({ok:true});
+// text/plain で送る前提（sendBeacon 互換）
+function parseBody_(e) {
+  const raw =
+    e && e.postData &&
+    (e.postData.contents ||
+     (e.postData.getDataAsString && e.postData.getDataAsString()));
+  if (!raw) throw new Error('empty_body');
+  try { return JSON.parse(raw); } catch (_) { throw new Error('invalid_json'); }
 }
 
-/** 共通: 行追加（ヘッダ自動整合） */
-function appendRow_(sheetName, headers, obj){
-  const sh = SPREADSHEET.getSheetByName(sheetName);
-  if(!sh) throw new Error('missing sheet: '+sheetName);
-  const curHead = sh.getRange(1,1,1,headers.length).getValues()[0];
-  if(!curHead.every((h,i)=>h===headers[i])){
-    sh.getRange(1,1,1,headers.length).setValues([headers]).setFontWeight('bold');
+function checkApiKey_(body) {
+  const required = (SP.getProperty('API_KEY') || '').trim();
+  if (!required) return true; // キー未設定なら誰でも通す
+  return (body && (body.apiKey||'').trim() === required);
+}
+
+function book(){ return SpreadsheetApp.getActive(); }
+
+/** 1行目が空ならヘッダ敷設（既存データは触らない） */
+function ensureSheet(name, headers){
+  const ss = book();
+  let sh = ss.getSheetByName(name);
+  if (!sh) {
+    sh = ss.insertSheet(name);
+    if (headers && headers.length) sh.getRange(1,1,1,headers.length).setValues([headers]);
+    return sh;
   }
-  const row = headers.map(k=>obj[k]!==undefined?obj[k]:'');
+  if (headers && headers.length) {
+    const lastCol = Math.max(sh.getLastColumn(), headers.length);
+    const row1 = sh.getRange(1,1,1,lastCol).getValues()[0];
+    const hasAny = row1.some(v => String(v).trim() !== '');
+    if (!hasAny) sh.getRange(1,1,1,headers.length).setValues([headers]);
+  }
+  return sh;
+}
+
+// ===== GET: 疎通確認 =====
+function doGet(e) {
+  return jsonOut({ ok:true, at:new Date().toISOString(), sheets:SHEETS });
+}
+
+// ===== POST: ログ受信（attempt/speech/session/bulk/status） =====
+function doPost(e) {
+  let body;
+  try { body = parseBody_(e); }
+  catch (err) { return jsonOut({ ok:false, error:String(err) }); }
+
+  if (!checkApiKey_(body)) return jsonOut({ ok:false, error:'unauthorized' });
+
+  // バルク（オフライン蓄積の一括送信）
+  if (body.type === 'bulk' && Array.isArray(body.entries)) {
+    const accepted = [];
+    body.entries.forEach(entry => {
+      try {
+        handleEntry_(entry.type, entry.data, entry.uid);
+        accepted.push(entry.uid || Utilities.getUuid());
+      } catch (_) { /* 1件失敗しても継続 */ }
+    });
+    return jsonOut({ ok:true, accepted });
+  }
+
+  // 単発
+  try {
+    if (body.type === 'status') {
+      return jsonOut({ ok:true, status: handleStatus_() });
+    }
+    handleEntry_(body.type, body.data, body.uid);
+    return jsonOut({ ok:true });
+  } catch (err) {
+    return jsonOut({ ok:false, error:String(err) });
+  }
+}
+
+function handleEntry_(type, data, uid) {
+  switch (type) {
+    case 'attempt':  appendAttempt_(data, uid); break;
+    case 'speech':   appendSpeech_(data, uid);  break;
+    case 'session':  appendSession_(data, uid); break;
+    default: /* unknown type: 無視 */ ;
+  }
+}
+
+// ===== 行追加 =====
+function appendAttempt_(a, uid) {
+  const sh = ensureSheet(SHEETS.attempts,
+    ['ts','id','result','auto_recall','auto_precision','response_ms',
+     'hint_used','hint_stage','hint_en_used','device','client_uid']);
+  const row = [
+    a?.ts || new Date().toISOString(),
+    a?.id || '',
+    (a?.result ?? ''),
+    (a?.auto_recall ?? ''),
+    (a?.auto_precision ?? ''),
+    (a?.response_ms ?? ''),
+    (a?.hint_used ?? ''),
+    (a?.hint_stage ?? ''),
+    (a?.hint_en_used ?? ''),
+    (a?.device ?? ''),
+    a?.client_uid || uid || ''
+  ];
   sh.appendRow(row);
 }
 
-/** JSONレスポンス */
-function json_(obj){
-  return ContentService.createTextOutput(JSON.stringify(obj))
-    .setMimeType(ContentService.MimeType.JSON);
+function appendSpeech_(s, uid) {
+  const sh = ensureSheet(SHEETS.speech,
+    ['ts','id','mode','wer','cer','latency_ms','words_spoken',
+     'transcript','matched_tokens_json','missing_tokens_json',
+     'recall','precision','match','hint_stage','level_last','level_best','client_uid']);
+  const row = [
+    s?.ts || new Date().toISOString(),
+    s?.id || '',
+    s?.mode || '',
+    (s?.wer ?? ''),
+    (s?.cer ?? ''),
+    (s?.latency_ms ?? ''),
+    (s?.words_spoken ?? ''),
+    (s?.transcript || s?.transcript_raw || ''),
+    (s?.matched_tokens_json ?? ''),
+    (s?.missing_tokens_json ?? ''),
+    (s?.recall ?? ''),
+    (s?.precision ?? ''),
+    (s?.match ?? ''),
+    (s?.hint_stage ?? ''),
+    (s?.level_last ?? ''),
+    (s?.level_best ?? ''),
+    s?.client_uid || uid || ''
+  ];
+  sh.appendRow(row);
+}
+
+function appendSession_(s, uid) {
+  const sh = ensureSheet(SHEETS.sessions,
+    ['date','minutes','cards_done','new_introduced','streak','client_uid','at']);
+  const row = [
+    s?.date || new Date().toISOString().slice(0,10),
+    (s?.minutes ?? ''),
+    (s?.cards_done ?? ''),
+    (s?.new_introduced ?? ''),
+    (s?.streak ?? ''),
+    s?.client_uid || uid || '',
+    new Date().toISOString()
+  ];
+  sh.appendRow(row);
+}
+
+// ===== status（任意：ヘッダ用の簡易集計） =====
+function handleStatus_(){
+  const out = {
+    remaining_cards: null,
+    remaining_minutes: null,
+    minutes_today: 0,
+    streak: 0,
+  };
+
+  try {
+    const ss = book();
+
+    // 今日の学習分数 / streak
+    const sess = ss.getSheetByName(SHEETS.sessions);
+    if (sess) {
+      const lastRow = sess.getLastRow();
+      if (lastRow >= 2) {
+        const vals = sess.getRange(2,1,lastRow-1,5).getValues(); // date,minutes,cards_done,new_introduced,streak
+        const today = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd');
+        let minutesToday = 0;
+        let lastStreak = 0;
+        vals.forEach(r=>{
+          const d = String(r[0]||'').slice(0,10);
+          const m = Number(r[1]||0);
+          const st= Number(r[4]||0);
+          if (d === today) minutesToday += (isFinite(m)?m:0);
+          if (isFinite(st)) lastStreak = Math.max(lastStreak, st);
+        });
+        out.minutes_today = minutesToday;
+        out.streak = lastStreak;
+      }
+    }
+
+    // 残カードは items と srs 状態から簡易推計（なければ null）
+    const items = ss.getSheetByName(SHEETS.items);
+    if (items) {
+      const n = Math.max(0, items.getLastRow()-1);
+      out.remaining_cards = n || null;
+    }
+  } catch(_) {}
+
+  return out;
 }
