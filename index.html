@@ -2235,7 +2235,6 @@
   }
 
   async function render(i, autoPlay=false){
-    const releaseCardLoad = acquireOverlay('card-load');
     try{
       stopAudio();
       currentShouldUseSpeech=false;
@@ -2258,7 +2257,8 @@
       const levelInfo=getLevelInfo(it.id);
       refreshLevelDisplay(levelInfo);
       setHintStage(BASE_HINT_STAGE,{reset:true});
-      const needsResolveLoader = !!(it.audio_fn && !audioUrlCache.has(it.audio_fn));
+      const hasDirAudio=!!DIR;
+      const needsResolveLoader = !!(hasDirAudio && it.audio_fn && !audioUrlCache.has(it.audio_fn));
       let url='';
       const releaseResolve = needsResolveLoader ? acquireOverlay('audio-resolve') : null;
       try{
@@ -2267,7 +2267,8 @@
         releaseResolve?.();
       }
       if(url){
-        const releasePrepare = acquireOverlay('audio-prepare');
+        const needsPrepareLoader = hasDirAudio && (audio.dataset.srcKey !== url || audio.readyState<2);
+        const releasePrepare = needsPrepareLoader ? acquireOverlay('audio-prepare') : null;
         try{
           await setAudioSource(url);
           if(audio.readyState<2){
@@ -2281,7 +2282,7 @@
             }
           }
         }finally{
-          releasePrepare();
+          releasePrepare?.();
         }
       }else{
         clearAudioSource();
@@ -2307,9 +2308,6 @@
           console.warn('auto play failed', err);
         }
       }
-    }finally{
-      releaseCardLoad();
-    }
   }
 
   async function rebuildAndRender(resetIndex=false, {autoStart=true, autoPlay=false}={}){
