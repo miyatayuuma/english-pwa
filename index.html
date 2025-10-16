@@ -242,8 +242,109 @@
   const qs=(s,el=document)=>el.querySelector(s);
   const qsa=(s,el=document)=>[...el.querySelectorAll(s)];
   const now=()=>Date.now(); const UA=(()=>navigator.userAgent||'')();
-  const norm=s=>(s||'').toLowerCase().normalize('NFKC').replace(/[\p{P}\p{S}]/gu,' ').replace(/\s+/g,' ').trim();
-  const toks=s=>norm(s).split(' ').filter(Boolean);
+  const CONTRACTION_PATTERNS=[
+    {seq:['i','m'], out:'im'},
+    {seq:['i','d'], out:'id'},
+    {seq:['i','ll'], out:'ill'},
+    {seq:['i','ve'], out:'ive'},
+    {seq:['you','re'], out:'youre'},
+    {seq:['you','ve'], out:'youve'},
+    {seq:['you','ll'], out:'youll'},
+    {seq:['you','d'], out:'youd'},
+    {seq:['he','s'], out:'hes'},
+    {seq:['she','s'], out:'shes'},
+    {seq:['it','s'], out:'its'},
+    {seq:['we','re'], out:'were'},
+    {seq:['we','ve'], out:'weve'},
+    {seq:['we','ll'], out:'well'},
+    {seq:['we','d'], out:'wed'},
+    {seq:['they','re'], out:'theyre'},
+    {seq:['they','ve'], out:'theyve'},
+    {seq:['they','ll'], out:'theyll'},
+    {seq:['they','d'], out:'theyd'},
+    {seq:['that','s'], out:'thats'},
+    {seq:['there','s'], out:'theres'},
+    {seq:['here','s'], out:'heres'},
+    {seq:['who','s'], out:'whos'},
+    {seq:['what','s'], out:'whats'},
+    {seq:['where','s'], out:'wheres'},
+    {seq:['when','s'], out:'whens'},
+    {seq:['why','s'], out:'whys'},
+    {seq:['how','s'], out:'hows'},
+    {seq:['let','s'], out:'lets'}
+  ];
+  const NUMBER_WORD_MAP=new Map(Object.entries({
+    zero:'0', one:'1', two:'2', three:'3', four:'4', five:'5', six:'6', seven:'7', eight:'8', nine:'9',
+    ten:'10', eleven:'11', twelve:'12', thirteen:'13', fourteen:'14', fifteen:'15', sixteen:'16', seventeen:'17', eighteen:'18', nineteen:'19',
+    twenty:'20', thirty:'30', forty:'40', fifty:'50', sixty:'60', seventy:'70', eighty:'80', ninety:'90',
+    hundred:'100', thousand:'1000', million:'1000000', billion:'1000000000'
+  }));
+  const CURRENCY_MAP=new Map([
+    ['dollar','usd'], ['dollars','usd'], ['usd','usd']
+  ]);
+  const UNIT_MAP=new Map([
+    ['degrees','degree'], ['degree','degree'],
+    ['celsius','celsius']
+  ]);
+
+  function mergeContractions(tokens){
+    if(!tokens.length) return tokens;
+    const out=[];
+    for(let i=0;i<tokens.length;){
+      let matched=false;
+      for(const {seq,out:outToken} of CONTRACTION_PATTERNS){
+        if(i+seq.length>tokens.length) continue;
+        let ok=true;
+        for(let j=0;j<seq.length;j++){
+          if(tokens[i+j]!==seq[j]){ ok=false; break; }
+        }
+        if(ok){
+          out.push(outToken);
+          i+=seq.length;
+          matched=true;
+          break;
+        }
+      }
+      if(matched) continue;
+      out.push(tokens[i]);
+      i++;
+    }
+    return out;
+  }
+
+  function canonicalizeToken(token){
+    if(!token) return '';
+    const digits=token.replace(/[,]/g,'');
+    if(/^[+-]?\d+(?:\.\d+)?$/.test(digits)){
+      return digits.replace(/^\+/, '');
+    }
+    const num=NUMBER_WORD_MAP.get(token);
+    if(num) return num;
+    const unit=UNIT_MAP.get(token);
+    if(unit) return unit;
+    const curr=CURRENCY_MAP.get(token);
+    if(curr) return curr;
+    return token;
+  }
+
+  function canonicalTokens(input){
+    if(!input) return [];
+    let text=(input||'').toLowerCase().normalize('NFKC');
+    text=text.replace(/℃/g,' degree celsius ');
+    text=text.replace(/°\s*c/g,' degree celsius ');
+    text=text.replace(/\$(\s*\d+(?:\.\d+)?)/g,(_,num)=>` ${num.replace(/\s+/g,'')} usd `);
+    text=text.replace(/\$/g,' usd ');
+    text=text.replace(/(?<=[\p{L}\p{N}])['’](?=[\p{L}\p{N}])/gu,'');
+    text=text.replace(/[-‐‑‒–—−﹘﹣－]/gu,' ');
+    text=text.replace(/[\p{P}\p{S}]/gu,' ');
+    const raw=text.split(/\s+/).filter(Boolean);
+    if(!raw.length) return [];
+    const merged=mergeContractions(raw);
+    return merged.map(canonicalizeToken).filter(Boolean);
+  }
+
+  const norm=s=>canonicalTokens(s).join(' ');
+  const toks=s=>canonicalTokens(s);
   // 連続重複を圧縮（a a a → a）
   function dedupeRuns(arr){
     const out=[]; for(const w of arr){ if(out.length && out[out.length-1]===w) continue; out.push(w); }
@@ -2022,20 +2123,29 @@
     const spans=[...document.querySelectorAll('.en .tok')].filter(s=>s.dataset.w);
     const matchMap=cloneCountMap(best.matchedCounts);
     for(const sp of spans){
-      const w=norm(sp.dataset.w);
-      if(!w){ sp.classList.remove('hit'); sp.classList.add('miss'); continue; }
-      let hit=false;
-      if(matchMap.get(w)>0){
-        hit=true;
-        matchMap.set(w, matchMap.get(w)-1);
-      }else{
-        for(const [k,c] of matchMap){
-          if(c>0 && approxWithin1(k,w)){
-            hit=true;
-            matchMap.set(k, c-1);
-            break;
+      const wTokens=toks(sp.dataset.w);
+      if(!wTokens.length){ sp.classList.remove('hit'); sp.classList.add('miss'); continue; }
+      const reserved=[];
+      let hit=true;
+      for(const tok of wTokens){
+        let matchKey='';
+        if((matchMap.get(tok)||0)>0){
+          matchKey=tok;
+        }else{
+          for(const [k,c] of matchMap){
+            if(c>0 && approxWithin1(k,tok)){ matchKey=k; break; }
           }
         }
+        if(matchKey){
+          matchMap.set(matchKey, matchMap.get(matchKey)-1);
+          reserved.push(matchKey);
+        }else{
+          hit=false;
+          break;
+        }
+      }
+      if(!hit){
+        for(const key of reserved){ matchMap.set(key, (matchMap.get(key)||0)+1); }
       }
       sp.classList.toggle('hit', hit);
       sp.classList.toggle('miss', !hit);
