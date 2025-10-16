@@ -1690,7 +1690,8 @@
       if(currentItem){
         const hasSrc=!!audio.dataset.srcKey;
         const speechForced=!!currentItem.forceSpeech;
-        const shouldUseSpeechNow=CFG.speechFallback && (speechForced || !hasSrc);
+        const allowSpeech=CFG.speechFallback || !hasSrc;
+        const shouldUseSpeechNow=allowSpeech && (speechForced || !hasSrc);
         if(!shouldUseSpeechNow){
           cancelSpeech();
         }
@@ -2073,7 +2074,6 @@
     return !!text;
   }
   async function speakCurrentCard(){
-    if(!CFG.speechFallback) return false;
     if(!canSpeakCurrentCard()) return false;
     cancelSpeech();
     const Utterance=window.SpeechSynthesisUtterance||window.webkitSpeechSynthesisUtterance;
@@ -2134,7 +2134,7 @@
   function stopAudio(){ resumeAfterMicStart=false; clearResumeTimer(); try{audio.pause();}catch(_){ } audio.currentTime=0; cancelSpeech(); }
   async function tryPlayAudio({userInitiated=false, resetPosition=false}={}){
     const hasSrc=!!(audio?.dataset?.srcKey);
-    const shouldSpeak=currentShouldUseSpeech && CFG.speechFallback;
+    const shouldSpeak=currentShouldUseSpeech;
     const speechSupported=shouldSpeak && canSpeakCurrentCard();
     if(shouldSpeak){
       const speechOk=speechSupported ? await speakCurrentCard() : false;
@@ -2292,8 +2292,9 @@
       }else{
         clearAudioSource();
       }
-      const shouldUseSpeech=CFG.speechFallback && (!!it.forceSpeech || !url);
-      currentShouldUseSpeech=!!shouldUseSpeech;
+      const wantsSpeech=!!it.forceSpeech || !url;
+      const allowSpeech=CFG.speechFallback || !url;
+      currentShouldUseSpeech=!!(wantsSpeech && allowSpeech);
       updatePlayButtonAvailability();
       cardStart=now();
       resetResult();
