@@ -254,7 +254,7 @@
       <input id="cfgAudioBase" type="text" placeholder="./audio">
     </label>
     <label>
-      <input id="cfgSpeechFallback" type="checkbox"> 音声再生エラー時に音声合成を使用
+      <input id="cfgSpeechFallback" type="checkbox"> 合成音声を優先して再生（エラー時も自動切替）
     </label>
     <label>音声合成の声
       <select id="cfgSpeechVoice"></select>
@@ -1794,8 +1794,8 @@
       if(currentItem){
         const hasSrc=!!audio.dataset.srcKey;
         const speechForced=!!currentItem.forceSpeech;
-        const allowSpeech=CFG.speechFallback || !hasSrc;
-        const shouldUseSpeechNow=allowSpeech && (speechForced || !hasSrc);
+        const preferSpeech=CFG.speechFallback || speechForced;
+        const shouldUseSpeechNow=preferSpeech || !hasSrc;
         if(!shouldUseSpeechNow){
           cancelSpeech();
         }
@@ -2396,9 +2396,9 @@
       }else{
         clearAudioSource();
       }
-      const wantsSpeech=!!it.forceSpeech || !url;
-      const allowSpeech=CFG.speechFallback || !url;
-      currentShouldUseSpeech=!!(wantsSpeech && allowSpeech);
+      const speechForced=!!it.forceSpeech;
+      const preferSpeech=CFG.speechFallback || speechForced;
+      currentShouldUseSpeech=!!(preferSpeech || !url);
       updatePlayButtonAvailability();
       cardStart=now();
       resetResult();
