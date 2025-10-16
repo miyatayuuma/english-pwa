@@ -36,20 +36,26 @@
     /* 範囲UI（ネイティブセレクト中心＝モバイル最適） */
     #rangeBar{display:flex;gap:16px;align-items:stretch;padding:8px 12px;background:rgba(20,24,36,.5);border-bottom:1px solid rgba(255,255,255,.12);flex-wrap:wrap}
     #rangeBar .range-col{display:flex;flex-direction:column;gap:8px}
-    #rangeBar .range-left{flex:0 0 220px;min-width:180px}
-    #rangeBar .range-right{flex:1;min-width:240px}
+    #rangeBar .range-left{flex:0 0 110px;min-width:120px}
+    #rangeBar .range-right{flex:1;min-width:240px;flex-direction:row;align-items:center;gap:12px;flex-wrap:wrap}
     select, .switch{background:#111726;border:1px solid var(--bd);color:var(--txt);border-radius:12px;padding:8px}
     #rangeBar select{width:100%}
-    #rangeBar .search-input{display:flex;align-items:center;height:100%;background:#111726;border:1px solid var(--bd);border-radius:12px;padding:0 8px;min-height:38px;flex:1 1 auto;width:100%}
+    #rangeBar .search-input{display:flex;align-items:center;height:100%;background:#111726;border:1px solid var(--bd);border-radius:12px;padding:0 8px;min-height:38px;flex:1 1 160px;width:100%}
     #rangeBar .search-input input{background:transparent;border:none;color:var(--txt);font-size:14px;padding:8px 4px;min-width:0;width:100%;flex:1}
     #rangeBar .search-input input::placeholder{color:var(--muted)}
     #rangeBar .search-input input:focus{outline:none}
     #rangeBar .search-input input::-webkit-search-cancel-button{filter:invert(80%)}
     .switch{display:flex;gap:8px;align-items:center}
-    .level-filter{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:12px;border:1px solid var(--bd);background:#111726;flex-wrap:wrap;justify-content:flex-start;width:100%}
+    .level-filter{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:12px;border:1px solid var(--bd);background:#111726;flex-wrap:wrap;justify-content:flex-start;flex:0 1 auto}
     .level-filter-label{font-size:12px;color:var(--muted);letter-spacing:.03em}
     .level-filter-buttons{display:flex;gap:4px;flex-wrap:wrap}
-    .level-chip{min-width:30px;height:28px;border-radius:9px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:var(--txt);font-size:13px;font-weight:600;cursor:pointer;transition:all .18s ease;padding:0 10px;display:flex;align-items:center;justify-content:center}
+    .level-chip{min-width:27px;height:28px;border-radius:9px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:var(--txt);font-size:13px;font-weight:600;cursor:pointer;transition:all .18s ease;padding:0 9px;display:flex;align-items:center;justify-content:center}
+    @media (max-width:600px){
+      #rangeBar .range-right{flex:1 1 100%;min-width:0;flex-direction:column;align-items:stretch}
+      #rangeBar .range-right > *{width:100%}
+      .level-filter{width:100%}
+      #rangeBar .search-input{flex:1 1 auto}
+    }
     .level-chip.active{background:var(--accent);color:#041019;border-color:rgba(98,213,255,.82);box-shadow:0 0 0 1px rgba(98,213,255,.32)}
     .level-chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
