@@ -36,6 +36,11 @@
     /* 範囲UI（ネイティブセレクト中心＝モバイル最適） */
     #rangeBar{display:flex;gap:8px;align-items:center;padding:8px 12px;background:rgba(20,24,36,.5);border-bottom:1px solid rgba(255,255,255,.12);overflow:auto}
     select, .switch{background:#111726;border:1px solid var(--bd);color:var(--txt);border-radius:12px;padding:8px}
+    #rangeBar .search-input{display:flex;align-items:center;height:100%;background:#111726;border:1px solid var(--bd);border-radius:12px;padding:0 8px;min-height:38px;flex:0 0 auto}
+    #rangeBar .search-input input{background:transparent;border:none;color:var(--txt);font-size:14px;padding:8px 4px;min-width:120px;width:120px}
+    #rangeBar .search-input input::placeholder{color:var(--muted)}
+    #rangeBar .search-input input:focus{outline:none}
+    #rangeBar .search-input input::-webkit-search-cancel-button{filter:invert(80%)}
     .switch{display:flex;gap:8px;align-items:center}
     .level-filter{display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:12px;border:1px solid var(--bd);background:#111726;flex-wrap:wrap}
     .level-filter-label{font-size:12px;color:var(--muted);letter-spacing:.03em}
@@ -161,6 +166,10 @@
         <option value="asc">昇順</option>
         <option value="rnd">ランダム</option>
       </select>
+    </label>
+    <label class="search-input">
+      <span class="sr-only">単語検索</span>
+      <input id="rangeSearch" type="search" placeholder="単語検索" autocomplete="off" />
     </label>
     <div id="levelFilter" class="level-filter" role="group" aria-label="レベル選択"></div>
   </div>
@@ -771,6 +780,22 @@
   function saveLevelState(state){ try{ localStorage.setItem(LEVEL_KEY, JSON.stringify(state)); }catch(_){ } }
   let LEVEL_STATE=loadLevelState();
   const LEVEL_FILTER_KEY='levelFilterV1';
+  const SEARCH_KEY='itemSearchV1';
+  function loadSearchQuery(){
+    try{
+      return localStorage.getItem(SEARCH_KEY)||'';
+    }catch(_){
+      return '';
+    }
+  }
+  function saveSearchQuery(value){
+    try{ localStorage.setItem(SEARCH_KEY, value); }catch(_){ }
+  }
+  function currentSearchQuery(){
+    const input=document.getElementById('rangeSearch');
+    const raw=(input && typeof input.value==='string') ? input.value : '';
+    return raw.trim();
+  }
   const LEVEL_CHOICES=[1,2,3,4,5];
   function loadLevelFilter(){
     try{
@@ -925,7 +950,7 @@
   }
 
   // ===== Elements =====
-  const el={ headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerInfo'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), next:qs('#btnNext'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), levelFilter:qs('#levelFilter'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnImport:qs('#btnImport'), filePick:qs('#filePick'), btnTestAudio:qs('#btnTestAudio'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus') };
+  const el={ headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerInfo'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), next:qs('#btnNext'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnImport:qs('#btnImport'), filePick:qs('#filePick'), btnTestAudio:qs('#btnTestAudio'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus') };
   const audio=qs('#player');
   let recog=null, recogOn=false;
   let resumeAfterMicStart=false;
@@ -1025,28 +1050,35 @@
   let sessionStart=0;
   let cardStart=0;
   let autoPlayUnlocked=false;
+  let lastEmptySearchToast='';
 
   function updateHeaderStats(){
     if(el.headerSection){
-      let label='—';
+      let sectionLabel='—';
       const sel=el.secSel;
       if(sel){
         const selected = sel.selectedOptions && sel.selectedOptions.length ? sel.selectedOptions[0] : null;
         if(selected){
-          label=(selected.textContent||selected.label||selected.value||'').trim();
+          sectionLabel=(selected.textContent||selected.label||selected.value||'').trim();
         }
-        if(!label){
+        if(!sectionLabel){
           if(sel.value){
-            label=String(sel.value).trim();
+            sectionLabel=String(sel.value).trim();
           }else if(sel.options.length){
             const first=sel.options[0];
-            label=(first.textContent||first.label||first.value||'').trim();
+            sectionLabel=(first.textContent||first.label||first.value||'').trim();
           }
         }
-        if(!label && sel.value==='') label='全体';
+        if(!sectionLabel && sel.value==='') sectionLabel='全体';
       }
-      if(!label) label='—';
-      el.headerSection.textContent=label;
+      if(!sectionLabel) sectionLabel='—';
+      const query=currentSearchQuery();
+      if(query){
+        const suffix=(sectionLabel && sectionLabel!=='—') ? ` (${sectionLabel})` : '';
+        el.headerSection.textContent=`検索: ${query}${suffix}`;
+      }else{
+        el.headerSection.textContent=sectionLabel;
+      }
     }
 
     if(el.headerLevelAvg){
@@ -1711,8 +1743,72 @@
   }
 
   // Build section options (All/単一)
-  function initSectionPicker(){ updateSectionOptions({preferSaved:true}); const sel=el.secSel; sel.onchange=()=>{ localStorage.setItem('secSel', sel.value); rebuildAndRender(true); };
-    const ordSaved=localStorage.getItem('orderSel')||'asc'; el.orderSel.value=ordSaved; el.orderSel.onchange=()=>{ localStorage.setItem('orderSel', el.orderSel.value); rebuildAndRender(true); };
+  function initSectionPicker(){
+    updateSectionOptions({preferSaved:true});
+    const sel=el.secSel;
+    sel.onchange=()=>{
+      localStorage.setItem('secSel', sel.value);
+      rebuildAndRender(true);
+    };
+    const ordSaved=localStorage.getItem('orderSel')||'asc';
+    el.orderSel.value=ordSaved;
+    el.orderSel.onchange=()=>{
+      localStorage.setItem('orderSel', el.orderSel.value);
+      rebuildAndRender(true);
+    };
+    if(el.search){
+      const saved=loadSearchQuery();
+      if(saved){
+        el.search.value=saved;
+      }
+      let lastAppliedSearch=currentSearchQuery();
+      let searchTimer=null;
+      const resetSessionForSearch=()=>{
+        if(sessionActive || sessionStarting){
+          stopAudio();
+          if(recogOn){
+            stopRec().catch(()=>{});
+          }
+          setMicState(false);
+          sessionActive=false;
+          sessionStarting=false;
+        }
+      };
+      const applySearchChange=(fromChange=false)=>{
+        if(searchTimer){
+          clearTimeout(searchTimer);
+          searchTimer=null;
+        }
+        const trimmed=currentSearchQuery();
+        if(fromChange && el.search.value!==trimmed){
+          el.search.value=trimmed;
+        }
+        saveSearchQuery(trimmed);
+        if(trimmed===lastAppliedSearch){
+          return;
+        }
+        lastAppliedSearch=trimmed;
+        updateHeaderStats();
+        resetSessionForSearch();
+        lastEmptySearchToast='';
+        rebuildAndRender(true,{autoStart:false});
+      };
+      const scheduleSearchChange=()=>{
+        if(searchTimer){
+          clearTimeout(searchTimer);
+        }
+        searchTimer=setTimeout(()=>{
+          applySearchChange(false);
+        }, 220);
+      };
+      el.search.addEventListener('input', ()=>{
+        saveSearchQuery(el.search.value.trim());
+        scheduleSearchChange();
+      });
+      el.search.addEventListener('change', ()=>{
+        applySearchChange(true);
+      });
+    }
     initLevelFilterUI();
   }
 
@@ -1740,7 +1836,37 @@
     }
     return copy;
   }
-  function buildQueue(){ const sec=el.secSel.value; const order=el.orderSel.value; const baseItems=sec ? (ITEMS_BY_SECTION.get(sec)||[]) : window.ALL_ITEMS; let items=baseItems; const levels=activeLevelArray(); if(levels.length && levels.length<LEVEL_CHOICES.length){ const levelSet=new Set(levels); items=items.filter(x=>levelSet.has(lastRecordedLevel(x.id))); } if(order==='rnd'){ items=shuffledCopy(items); } else { items=items.slice().sort((a,b)=>{ const na=+String(a.unit||'').replace(/\D+/g,'')||0, nb=+String(b.unit||'').replace(/\D+/g,'')||0; if(na!==nb) return na-nb; return String(a.id).localeCompare(String(b.id)); }); } return items.filter(Boolean).map(it=>({ id:it.id,en:it.en,ja:it.ja,tags:it.tags||'',chunks_json:it.chunks||'[]',audio_fn:it.audio_fn||'' })); }
+  function buildQueue(){
+    const sec=el.secSel.value;
+    const order=el.orderSel.value;
+    const baseItems=sec ? (ITEMS_BY_SECTION.get(sec)||[]) : window.ALL_ITEMS;
+    let items=Array.isArray(baseItems) ? baseItems.filter(Boolean) : [];
+    const levels=activeLevelArray();
+    if(levels.length && levels.length<LEVEL_CHOICES.length){
+      const levelSet=new Set(levels);
+      items=items.filter(x=>levelSet.has(lastRecordedLevel(x.id)));
+    }
+    const query=currentSearchQuery().toLowerCase();
+    if(query){
+      items=items.filter(it=>{
+        const en=String(it.en||'').toLowerCase();
+        const ja=String(it.ja||'').toLowerCase();
+        const tags=String(it.tags||'').toLowerCase();
+        return en.includes(query) || ja.includes(query) || tags.includes(query);
+      });
+    }
+    if(order==='rnd'){
+      items=shuffledCopy(items);
+    }else{
+      items=items.slice().sort((a,b)=>{
+        const na=+String(a.unit||'').replace(/\D+/g,'')||0;
+        const nb=+String(b.unit||'').replace(/\D+/g,'')||0;
+        if(na!==nb) return na-nb;
+        return String(a.id).localeCompare(String(b.id));
+      });
+    }
+    return items.map(it=>({ id:it.id,en:it.en,ja:it.ja,tags:it.tags||'',chunks_json:it.chunks||'[]',audio_fn:it.audio_fn||'' }));
+  }
 
   // Audio resolve: DIR (folder) -> OPFS -> base URL
   const audioUrlCache=new Map();
@@ -1813,7 +1939,10 @@
     updatePlayVisualState();
     updatePlayButtonAvailability();
     if(el.play){ el.play.disabled=true; }
-    el.en.textContent = QUEUE.length ? '出題を準備しています…' : '出題できる問題がありません';
+    const query=currentSearchQuery();
+    const hasQueue=QUEUE.length>0;
+    const emptyWithSearch=!!query && !hasQueue;
+    el.en.textContent = hasQueue ? '出題を準備しています…' : (emptyWithSearch ? '検索結果がありません' : '出題できる問題がありません');
     el.en.classList.remove('concealed');
     clearHighlight();
     el.ja.textContent = '—';
@@ -1835,7 +1964,15 @@
     el.mic.disabled = true;
     el.next.hidden = true;
     el.pbar.value = 0;
-    el.footer.textContent = QUEUE.length ? '準備が整い次第、自動で開始します' : 'キューが空です';
+    el.footer.textContent = hasQueue ? '準備が整い次第、自動で開始します' : (emptyWithSearch ? '検索条件に一致する問題がありません' : 'キューが空です');
+    if(emptyWithSearch){
+      if(lastEmptySearchToast!==query){
+        toast('検索条件に一致する項目がありません');
+        lastEmptySearchToast=query;
+      }
+    }else{
+      lastEmptySearchToast='';
+    }
     updateHeaderStats();
   }
 
