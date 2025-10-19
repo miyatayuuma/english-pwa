@@ -1999,7 +1999,14 @@
         try{ await cache.put(url, resp.clone()); }catch(_){ }
       }
     }
-    const data=await resp.json();
+    let data;
+    try{
+      data=await resp.json();
+    }catch(err){
+      console.error('Failed to parse items data', err);
+      toast('items.json parse failed');
+      throw err;
+    }
     if(cache){
       fetch(url,{cache:'no-cache'}).then(async fresh=>{
         if(!fresh.ok) return;
