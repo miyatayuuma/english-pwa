@@ -242,7 +242,7 @@
 
   <footer>
     <progress id="pbar" value="0" max="1"></progress>
-    <span id="footerInfo" class="muted">左右スワイプ：戻る/進む　上：ヒント（英文→和訳）</span>
+    <span id="footerInfo" class="muted">左右スワイプ：戻る/進む　ダブルタップ：ヒント（英文→和訳）</span>
     <div class="grow"></div>
   </footer>
 </div>
@@ -1367,7 +1367,7 @@
     else if(next>maxHintStageUsed){ maxHintStageUsed=next; }
     if(next<=0){
       el.en.classList.add('concealed');
-      el.en.innerHTML='<span class="hint-placeholder">上にスワイプして英文を表示（再スワイプで和訳）</span>';
+      el.en.innerHTML='<span class="hint-placeholder">カードをダブルタップして英文ヒントを表示（もう一度で和訳）</span>';
       el.ja.style.display='none';
       clearHighlight();
     }else{
