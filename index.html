@@ -2759,7 +2759,6 @@
     const minThreshold=45;
     return {
       horizontal: Math.max(base, width * 0.2, minThreshold),
-      vertical: Math.max(base, height * 0.2, minThreshold),
     };
   }
   function cancelCardDragAnimation(){
@@ -2896,13 +2895,10 @@
     const absDy=Math.abs(dy);
     const dt=Math.max(1, performance.now()-state.time);
     const horizontalVelocity=absDx/dt;
-    const verticalVelocity=absDy/dt;
     const thresholds=state.thresholds || getSwipeThresholds();
     const horizontalThreshold=Math.max(1, thresholds.horizontal || 0);
-    const verticalThreshold=Math.max(1, thresholds.vertical || 0);
     const horizontalDominant=absDx>absDy;
     const reachedHorizontal=absDx>=horizontalThreshold;
-    const verticalSwipe=absDy>verticalThreshold && dy<0 && verticalVelocity>=MIN_SWIPE_VELOCITY && dt<=MAX_SWIPE_DURATION;
     if(state.dragging){
       if(horizontalDominant && reachedHorizontal){
         clearCardDragStyles();
@@ -2918,8 +2914,6 @@
       clearCardDragStyles();
       if(dx>0) prevCard(true);
       else nextCard(false,true);
-    }else if(verticalSwipe){
-      toggleJA();
     }else{
       resetCardDrag({animate:false});
     }
