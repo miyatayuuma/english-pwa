@@ -2643,9 +2643,47 @@
   }
 
   // Gestures
-  let touchStart=null; const TH=60;
-  el.card.addEventListener('touchstart',(ev)=>{ if(!sessionActive){ touchStart=null; return; } if(ev.touches?.length!==1) return; const t=ev.touches[0]; touchStart={x:t.clientX,y:t.clientY}; },{passive:true});
-  el.card.addEventListener('touchend',(ev)=>{ if(!touchStart) return; if(!sessionActive){ touchStart=null; return; } const end=ev.changedTouches[0]; const dx=end.clientX-touchStart.x, dy=end.clientY-touchStart.y; if(Math.abs(dx)>Math.abs(dy) && Math.abs(dx)>TH){ if(dx>0) prevCard(true); else nextCard(false,true); } else if(Math.abs(dy)>TH && dy<0){ toggleJA(); } touchStart=null; },{passive:true});
+  let touchStart=null;
+  const MIN_SWIPE_VELOCITY=0.35; // px/ms
+  const MAX_SWIPE_DURATION=700; // ms
+  function getSwipeThresholds(){
+    const width=window.innerWidth || document.documentElement.clientWidth || 0;
+    const height=window.innerHeight || document.documentElement.clientHeight || 0;
+    const base=Math.min(width, height) * 0.15;
+    const minThreshold=45;
+    return {
+      horizontal: Math.max(base, width * 0.2, minThreshold),
+      vertical: Math.max(base, height * 0.2, minThreshold),
+    };
+  }
+  el.card.addEventListener('touchstart',(ev)=>{
+    if(!sessionActive){ touchStart=null; return; }
+    if(ev.touches?.length!==1) return;
+    const t=ev.touches[0];
+    touchStart={x:t.clientX,y:t.clientY,time:performance.now(),thresholds:getSwipeThresholds()};
+  },{passive:true});
+  el.card.addEventListener('touchend',(ev)=>{
+    if(!touchStart) return;
+    if(!sessionActive){ touchStart=null; return; }
+    const end=ev.changedTouches[0];
+    const dx=end.clientX-touchStart.x;
+    const dy=end.clientY-touchStart.y;
+    const absDx=Math.abs(dx);
+    const absDy=Math.abs(dy);
+    const dt=Math.max(1, performance.now()-touchStart.time);
+    const horizontalVelocity=absDx/dt;
+    const verticalVelocity=absDy/dt;
+    const {horizontal, vertical}=touchStart.thresholds || getSwipeThresholds();
+    const horizontalSwipe=absDx>absDy && absDx>horizontal && horizontalVelocity>=MIN_SWIPE_VELOCITY && dt<=MAX_SWIPE_DURATION;
+    const verticalSwipe=absDy>vertical && dy<0 && verticalVelocity>=MIN_SWIPE_VELOCITY && dt<=MAX_SWIPE_DURATION;
+    if(horizontalSwipe){
+      if(dx>0) prevCard(true);
+      else nextCard(false,true);
+    }else if(verticalSwipe){
+      toggleJA();
+    }
+    touchStart=null;
+  },{passive:true});
   el.en.addEventListener('click', async ()=>{ if(!sessionActive){ await startSession(false); } });
   el.en.addEventListener('dblclick', ()=>{ if(!sessionActive) return; toggleJA(); });
   el.next.onclick=()=> nextCard(false,true);
