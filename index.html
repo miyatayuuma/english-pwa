@@ -58,11 +58,11 @@
     .level-chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
     main{padding:12px;overflow:auto}
-    .card{max-width:840px;margin:0 auto;background:var(--panel);border:1px solid var(--bd);border-radius:18px;padding:16px;min-height:50vh;display:flex;flex-direction:column;gap:12px;touch-action:manipulation;position:relative;transform:translateX(0);transition:transform .36s cubic-bezier(.22,1,.36,1),opacity .36s ease;will-change:transform,opacity}
+    .card{--card-offset:0px;--card-tilt:0deg;--card-opacity:1;max-width:840px;margin:0 auto;background:var(--panel);border:1px solid var(--bd);border-radius:18px;padding:16px;min-height:50vh;display:flex;flex-direction:column;gap:12px;touch-action:manipulation;position:relative;transform:translateX(var(--card-offset)) rotate(var(--card-tilt));opacity:var(--card-opacity);transition:transform .36s cubic-bezier(.22,1,.36,1),opacity .36s ease;will-change:transform,opacity}
     .card.card-sliding{pointer-events:none}
     .card.card-no-transition{transition:none!important}
-    .card.slide-left,.card.slide-in-from-left{transform:translateX(-72px);opacity:0}
-    .card.slide-right,.card.slide-in-from-right{transform:translateX(72px);opacity:0}
+    .card.slide-left,.card.slide-in-from-left{--card-offset:-72px;--card-opacity:0}
+    .card.slide-right,.card.slide-in-from-right{--card-offset:72px;--card-opacity:0}
     @media (prefers-reduced-motion:reduce){
       .card{transition:none!important}
     }
@@ -2747,6 +2747,11 @@
   let touchStart=null;
   const MIN_SWIPE_VELOCITY=0.35; // px/ms
   const MAX_SWIPE_DURATION=700; // ms
+  const MAX_CARD_TILT=10; // deg
+  const CARD_OPACITY_REDUCTION=0.4;
+  let cardDragFrame=0;
+  let cardDragPending=null;
+  let cardDragResetTimer=0;
   function getSwipeThresholds(){
     const width=window.innerWidth || document.documentElement.clientWidth || 0;
     const height=window.innerHeight || document.documentElement.clientHeight || 0;
@@ -2757,34 +2762,170 @@
       vertical: Math.max(base, height * 0.2, minThreshold),
     };
   }
+  function cancelCardDragAnimation(){
+    if(cardDragFrame){
+      cancelAnimationFrame(cardDragFrame);
+      cardDragFrame=0;
+    }
+  }
+  function applyCardDragValues(values){
+    if(!values) return;
+    const card=el.card;
+    if(!card) return;
+    card.style.setProperty('--card-offset', `${values.offset}px`);
+    card.style.setProperty('--card-tilt', `${values.tilt}deg`);
+    card.style.setProperty('--card-opacity', `${values.opacity}`);
+  }
+  function scheduleCardDragValues(values){
+    cardDragPending=values;
+    if(cardDragFrame) return;
+    cardDragFrame=requestAnimationFrame(()=>{
+      cardDragFrame=0;
+      if(!cardDragPending) return;
+      const pending=cardDragPending;
+      cardDragPending=null;
+      applyCardDragValues(pending);
+    });
+  }
+  function clearCardDragValues(){
+    cardDragPending=null;
+    cancelCardDragAnimation();
+  }
+  function removeCardDragProperties(){
+    const card=el.card;
+    if(!card) return;
+    card.style.removeProperty('--card-offset');
+    card.style.removeProperty('--card-tilt');
+    card.style.removeProperty('--card-opacity');
+  }
+  function resetCardDrag({animate=true}={}){
+    const card=el.card;
+    if(!card) return;
+    if(cardDragResetTimer){ clearTimeout(cardDragResetTimer); cardDragResetTimer=0; }
+    if(animate){
+      card.classList.remove('card-no-transition');
+      scheduleCardDragValues({offset:0, tilt:0, opacity:1});
+      cardDragResetTimer=setTimeout(()=>{
+        cardDragResetTimer=0;
+        if(touchStart) return;
+        removeCardDragProperties();
+      }, 400);
+    }else{
+      card.classList.add('card-no-transition');
+      clearCardDragValues();
+      removeCardDragProperties();
+      requestAnimationFrame(()=>{ card.classList.remove('card-no-transition'); });
+    }
+  }
+  function clearCardDragStyles(){
+    const card=el.card;
+    if(!card) return;
+    if(cardDragResetTimer){ clearTimeout(cardDragResetTimer); cardDragResetTimer=0; }
+    clearCardDragValues();
+    card.classList.remove('card-no-transition');
+    removeCardDragProperties();
+  }
   el.card.addEventListener('touchstart',(ev)=>{
     if(!sessionActive){ touchStart=null; return; }
     if(ev.touches?.length!==1) return;
     const t=ev.touches[0];
-    touchStart={x:t.clientX,y:t.clientY,time:performance.now(),thresholds:getSwipeThresholds()};
+    touchStart={
+      x:t.clientX,
+      y:t.clientY,
+      time:performance.now(),
+      thresholds:getSwipeThresholds(),
+      dragging:false,
+      lastDx:0,
+      lastDy:0,
+    };
   },{passive:true});
-  el.card.addEventListener('touchend',(ev)=>{
+  el.card.addEventListener('touchmove',(ev)=>{
     if(!touchStart) return;
-    if(!sessionActive){ touchStart=null; return; }
-    const end=ev.changedTouches[0];
-    const dx=end.clientX-touchStart.x;
-    const dy=end.clientY-touchStart.y;
+    if(!sessionActive){ touchStart=null; resetCardDrag({animate:false}); return; }
+    if(ev.touches?.length!==1){
+      if(touchStart.dragging){ resetCardDrag({animate:false}); }
+      touchStart=null;
+      return;
+    }
+    const t=ev.touches[0];
+    const dx=t.clientX-touchStart.x;
+    const dy=t.clientY-touchStart.y;
     const absDx=Math.abs(dx);
     const absDy=Math.abs(dy);
-    const dt=Math.max(1, performance.now()-touchStart.time);
+    const thresholds=touchStart.thresholds || getSwipeThresholds();
+    const horizontalThreshold=Math.max(1, thresholds.horizontal || 0);
+    const directionLock=6;
+    if(!touchStart.dragging){
+      if(absDx<directionLock && absDy<directionLock){
+        touchStart.lastDx=dx;
+        touchStart.lastDy=dy;
+        return;
+      }
+      if(absDy>absDx){
+        touchStart=null;
+        resetCardDrag({animate:false});
+        return;
+      }
+      touchStart.dragging=true;
+      const card=el.card;
+      if(card){ card.classList.add('card-no-transition'); }
+    }
+    if(ev.cancelable) ev.preventDefault();
+    const maxOffset=horizontalThreshold*1.2;
+    const limitedDx=Math.max(-maxOffset, Math.min(maxOffset, dx));
+    const absLimitedDx=Math.abs(limitedDx);
+    const progress=Math.min(1, absLimitedDx/horizontalThreshold);
+    const direction=limitedDx===0?0:(limitedDx>0?1:-1);
+    const tilt=MAX_CARD_TILT*progress*direction;
+    const opacity=Math.max(1-CARD_OPACITY_REDUCTION*progress, 1-CARD_OPACITY_REDUCTION);
+    touchStart.lastDx=limitedDx;
+    touchStart.lastDy=dy;
+    scheduleCardDragValues({offset:limitedDx, tilt, opacity});
+  },{passive:false});
+  function handleTouchFinish(ev, canceled=false){
+    if(!touchStart) return;
+    const state=touchStart;
+    touchStart=null;
+    if(!sessionActive){ resetCardDrag({animate:false}); return; }
+    if(canceled){ resetCardDrag({animate:state.dragging}); return; }
+    const point=ev.changedTouches && ev.changedTouches[0];
+    if(!point){ resetCardDrag({animate:state.dragging}); return; }
+    const dx=point.clientX-state.x;
+    const dy=point.clientY-state.y;
+    const absDx=Math.abs(dx);
+    const absDy=Math.abs(dy);
+    const dt=Math.max(1, performance.now()-state.time);
     const horizontalVelocity=absDx/dt;
     const verticalVelocity=absDy/dt;
-    const {horizontal, vertical}=touchStart.thresholds || getSwipeThresholds();
-    const horizontalSwipe=absDx>absDy && absDx>horizontal && horizontalVelocity>=MIN_SWIPE_VELOCITY && dt<=MAX_SWIPE_DURATION;
-    const verticalSwipe=absDy>vertical && dy<0 && verticalVelocity>=MIN_SWIPE_VELOCITY && dt<=MAX_SWIPE_DURATION;
+    const thresholds=state.thresholds || getSwipeThresholds();
+    const horizontalThreshold=Math.max(1, thresholds.horizontal || 0);
+    const verticalThreshold=Math.max(1, thresholds.vertical || 0);
+    const horizontalDominant=absDx>absDy;
+    const reachedHorizontal=absDx>=horizontalThreshold;
+    const verticalSwipe=absDy>verticalThreshold && dy<0 && verticalVelocity>=MIN_SWIPE_VELOCITY && dt<=MAX_SWIPE_DURATION;
+    if(state.dragging){
+      if(horizontalDominant && reachedHorizontal){
+        clearCardDragStyles();
+        if(dx>0) prevCard(true);
+        else nextCard(false,true);
+        return;
+      }
+      resetCardDrag({animate:true});
+      return;
+    }
+    const horizontalSwipe=horizontalDominant && reachedHorizontal && horizontalVelocity>=MIN_SWIPE_VELOCITY && dt<=MAX_SWIPE_DURATION;
     if(horizontalSwipe){
+      clearCardDragStyles();
       if(dx>0) prevCard(true);
       else nextCard(false,true);
     }else if(verticalSwipe){
       toggleJA();
+    }else{
+      resetCardDrag({animate:false});
     }
-    touchStart=null;
-  },{passive:true});
+  }
+  el.card.addEventListener('touchend',(ev)=>{ handleTouchFinish(ev,false); },{passive:true});
+  el.card.addEventListener('touchcancel',(ev)=>{ handleTouchFinish(ev,true); },{passive:true});
   el.en.addEventListener('click', async ()=>{ if(!sessionActive){ await startSession(false); } });
   el.en.addEventListener('dblclick', ()=>{ if(!sessionActive) return; toggleJA(); });
   el.next.onclick=()=> nextCard(false,true);
