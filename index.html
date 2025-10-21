@@ -174,9 +174,6 @@ import {
   remove
 } from './scripts/storage/local.js';
 import {
-  dedupeRuns,
-  approxWithin1,
-  appendStableFinal,
   spanify,
   toks
 } from './scripts/utils/text.js';
@@ -190,6 +187,11 @@ import {
   initNotificationSystem
 } from './scripts/state/studyLog.js';
 import { createAudioController } from './scripts/audio/controller.js';
+import {
+  createRecognitionController,
+  calcMatchScore
+} from './scripts/speech/recognition.js';
+import { createSpeechSynthesisController } from './scripts/speech/synthesis.js';
 
 (function(){
   // ===== Utilities =====
@@ -536,11 +538,9 @@ import { createAudioController } from './scripts/audio/controller.js';
   const audio=qs('#player');
   const CARD_TRANSITION_FALLBACK=420;
   let cardTransitionQueue=Promise.resolve();
-  let recog=null, recogOn=false;
-  let currentSpeechUtterance=null;
-  let currentSpeechResolver=null;
-  let speechPlaying=false;
-  let speechRate=1;
+  let recognitionController=null;
+  let speechController=null;
+  let lastMatchEval=null;
   let currentShouldUseSpeech=false;
 
   const audioController=createAudioController({
@@ -555,14 +555,13 @@ import { createAudioController } from './scripts/audio/controller.js';
       return stored==null?1:stored;
     },
     saveSpeed: (rate)=>{ saveNumber(SPEED, rate); },
-    getCanSpeak: ()=>canSpeakCurrentCard(),
+    getCanSpeak: ()=>speechController ? speechController.canSpeakCurrentCard() : false,
     onPlaybackRateChange: (rate)=>{
-      speechRate=rate;
-      if(currentSpeechUtterance){
-        try{ currentSpeechUtterance.rate=rate; }catch(_){ }
+      if(speechController){
+        speechController.setSpeechRate(rate);
       }
     },
-    isRecognitionActive: ()=>recogOn,
+    isRecognitionActive: ()=>recognitionController ? recognitionController.isActive() : false,
   });
 
   const {
@@ -575,9 +574,8 @@ import { createAudioController } from './scripts/audio/controller.js';
     setResumeAfterMicStart,
     resetResumeAfterMicStart,
     clearResumeTimer,
+    setSpeechPlayingState,
   } = audioController;
-
-  speechRate = audioController.getPlaybackRate();
   const overlayLocks=new Set();
   function updateOverlayState(){ if(!el.overlay) return; const active=overlayLocks.size>0; el.overlay.classList.toggle('hidden', !active); el.overlay.classList.toggle('active', active); }
   function acquireOverlay(tag='load'){ if(!el.overlay){ return ()=>{}; } const token=`${tag}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`; overlayLocks.add(token); updateOverlayState(); return ()=>releaseOverlay(token); }
@@ -671,6 +669,13 @@ import { createAudioController } from './scripts/audio/controller.js';
   let currentItem=null;
   let composeNodes=[];
   let composeGuideActive=false;
+
+  speechController = createSpeechSynthesisController({
+    setSpeechPlayingState,
+    getCurrentItem: ()=>currentItem,
+    isSpeechDesired: ()=>currentShouldUseSpeech,
+  });
+  speechController.setSpeechRate(audioController.getPlaybackRate());
   function setHintStage(stage,{reset=false}={}){
     const next=Math.max(0, Math.min(2, Number.isFinite(stage)?Math.floor(stage):0));
     const prev=hintStage;
@@ -681,13 +686,13 @@ import { createAudioController } from './scripts/audio/controller.js';
       el.en.classList.add('concealed');
       el.en.innerHTML='<span class="hint-placeholder">カードをダブルタップして英文ヒントを表示（もう一度で和訳）</span>';
       el.ja.style.display='none';
-      clearHighlight();
+      if(recognitionController){ recognitionController.clearHighlight(); }
     }else{
       el.en.classList.remove('concealed');
       el.en.innerHTML=currentEnHtml||'';
       el.ja.style.display = next>=2 ? 'block' : 'none';
-      if(currentItem && lastMatchEval && lastMatchEval.source){
-        lastMatchEval = matchAndHighlight(currentItem.en, lastMatchEval.source);
+      if(recognitionController && currentItem && lastMatchEval && lastMatchEval.source){
+        lastMatchEval = recognitionController.matchAndHighlight(currentItem.en, lastMatchEval.source);
         const score=calcMatchScore(lastMatchEval.refCount, lastMatchEval.recall, lastMatchEval.precision);
         updateMatch(score);
       }
@@ -791,68 +796,20 @@ import { createAudioController } from './scripts/audio/controller.js';
     return getPlaybackMode()!=='speech';
   }
 
-  function getVoiceId(voice, idx){
-    if(!voice) return '';
-    if(voice.voiceURI) return voice.voiceURI;
-    const namePart=voice.name ? String(voice.name) : 'voice';
-    const langPart=voice.lang ? String(voice.lang) : String(idx ?? 0);
-    return `${namePart}#${langPart}`;
-  }
-
   function populateVoiceOptions(){
     if(!el.cfgSpeechVoice){ return; }
     const sel=el.cfgSpeechVoice;
     const priorValue=sel.value;
-    sel.innerHTML='';
-    if(typeof window==='undefined' || typeof speechSynthesis==='undefined' || typeof speechSynthesis.getVoices!=='function'){
-      const opt=new Option('音声合成に未対応', '');
-      opt.disabled=true;
-      sel.appendChild(opt);
-      sel.value='';
-      sel.disabled=true;
-      return;
-    }
-    sel.disabled=false;
-    let voices=[];
-    try{
-      voices=speechSynthesis.getVoices()||[];
-    }catch(_){
-      voices=[];
-    }
-    const placeholder=new Option('自動選択（英語優先）', '');
-    sel.appendChild(placeholder);
-    let hasPrior=false;
-    let hasStored=false;
-    voices.forEach((voice, idx)=>{
-      const id=getVoiceId(voice, idx);
-      if(!id) return;
-      const label=voice.lang ? `${voice.name} (${voice.lang})` : voice.name;
-      const opt=new Option(label, id);
-      sel.appendChild(opt);
-      if(priorValue && id===priorValue){ hasPrior=true; }
-      if(CFG.speechVoice && id===CFG.speechVoice){ hasStored=true; }
-    });
-    if(!voices.length){
-      placeholder.textContent='自動選択（利用可能な音声が見つかりません）';
-    }
-    if(priorValue && hasPrior){
-      sel.value=priorValue;
-    }else if(CFG.speechVoice && hasStored){
-      sel.value=CFG.speechVoice;
-    }else{
-      sel.value='';
+    const stored=CFG.speechVoice||'';
+    const result = speechController.populateVoiceOptions(sel, { storedVoiceId: stored, currentValue: priorValue });
+    if(result && typeof result.selected==='string'){
+      sel.value = result.selected;
     }
   }
 
   if(el.cfgSpeechVoice){
     populateVoiceOptions();
-    if(typeof speechSynthesis!=='undefined'){
-      if(typeof speechSynthesis.addEventListener==='function'){
-        speechSynthesis.addEventListener('voiceschanged', populateVoiceOptions);
-      }else{
-        speechSynthesis.onvoiceschanged=populateVoiceOptions;
-      }
-    }
+    speechController.attachVoicesChangedListener(populateVoiceOptions);
   }
 
   function loadPendingLogs(){
@@ -1188,7 +1145,7 @@ import { createAudioController } from './scripts/audio/controller.js';
           currentShouldUseSpeech=true;
         }else{
           currentShouldUseSpeech=false;
-          cancelSpeech();
+          speechController.cancelSpeech();
           if(shouldUseAudioForItem(currentItem) && !audio.dataset.srcKey && currentItem.audio_fn){
             (async()=>{
               try{
@@ -1205,10 +1162,10 @@ import { createAudioController } from './scripts/audio/controller.js';
           }
         }
         if(prevStudyMode!==newStudyMode){
-          clearHighlight();
+          if(recognitionController){ recognitionController.clearHighlight(); }
           setupComposeGuide(currentItem);
-          if(lastMatchEval && lastMatchEval.source){
-            const rerun=matchAndHighlight(currentItem.en, lastMatchEval.source);
+          if(recognitionController && lastMatchEval && lastMatchEval.source){
+            const rerun=recognitionController.matchAndHighlight(currentItem.en, lastMatchEval.source);
             lastMatchEval=Object.assign({}, rerun);
             const score=calcMatchScore(rerun.refCount, rerun.recall, rerun.precision);
             updateMatch(score);
@@ -1433,7 +1390,7 @@ import { createAudioController } from './scripts/audio/controller.js';
       const resetSessionForSearch=()=>{
         if(sessionActive || sessionStarting){
           stopAudio();
-          if(recogOn){
+          if(recognitionController && recognitionController.isActive()){
             stopRec().catch(()=>{});
           }
           setMicState(false);
@@ -1687,119 +1644,8 @@ import { createAudioController } from './scripts/audio/controller.js';
   async function resolveFromOPFS(name){ if(!name) return ''; try{ if(!(navigator.storage&&navigator.storage.getDirectory)) return ''; const root=await navigator.storage.getDirectory(); const fh=await root.getFileHandle(name).catch(()=>null); if(!fh) return ''; const file=await fh.getFile(); return URL.createObjectURL(file); }catch(_){ return ''; } }
   async function resolveAudioUrl(name){ if(!name) return ''; if(audioUrlCache.has(name)) return audioUrlCache.get(name); let url=await resolveFromDir(name); if(!url) url=await resolveFromOPFS(name); if(!url){ const base=(CFG.audioBase||'./audio').replace(/\/$/,''); url= base + '/' + encodeURI(name); } audioUrlCache.set(name,url); return url; }
 
-  function speechSynthesisSupported(){
-    if(typeof window==='undefined') return false;
-    if(typeof window.speechSynthesis==='undefined') return false;
-    const Utterance=window.SpeechSynthesisUtterance||window.webkitSpeechSynthesisUtterance;
-    return typeof Utterance==='function';
-  }
-  function scoreVoicePreference(voice){
-    if(!voice) return -Infinity;
-    let score=0;
-    const lang=String(voice.lang||'').toLowerCase();
-    if(lang.startsWith('en-us')) score+=6;
-    else if(lang.startsWith('en-gb')) score+=5;
-    else if(lang.startsWith('en-')) score+=4;
-    else if(lang.startsWith('en')) score+=3;
-    if(/english/i.test(String(voice.name||''))){ score+=1.5; }
-    if(voice.default) score+=1;
-    if(voice.localService) score+=0.5;
-    return score;
-  }
-  function pickPreferredVoice(voices){
-    if(!Array.isArray(voices) || !voices.length) return null;
-    const list=[...voices];
-    list.sort((a,b)=>scoreVoicePreference(b)-scoreVoicePreference(a));
-    const top=list.find(v=>/^en(-|$)/i.test(String(v.lang||''))) || list[0];
-    return top || null;
-  }
-  function getConfiguredSpeechVoice(){
-    if(!speechSynthesisSupported()) return null;
-    try{
-      const voices=speechSynthesis.getVoices?speechSynthesis.getVoices():[];
-      const targetId=CFG.speechVoice||'';
-      if(targetId){
-        for(let i=0;i<voices.length;i++){
-          if(getVoiceId(voices[i], i)===targetId){
-            return voices[i];
-          }
-        }
-      }
-      return pickPreferredVoice(voices);
-    }catch(_){ }
-    return null;
-  }
-  function canSpeakCurrentCard(){
-    if(!currentShouldUseSpeech) return false;
-    if(!speechSynthesisSupported()) return false;
-    if(!currentItem) return false;
-    const text=String(currentItem.en||'').replace(/\s+/g,' ').trim();
-    return !!text;
-  }
-  async function speakCurrentCard(){
-    if(!canSpeakCurrentCard()) return false;
-    cancelSpeech();
-    const Utterance=window.SpeechSynthesisUtterance||window.webkitSpeechSynthesisUtterance;
-    const text=String(currentItem.en||'').replace(/\s+/g,' ').trim();
-    if(!text) return false;
-    return new Promise(resolve=>{
-      let settled=false;
-      const utter=new Utterance(text);
-      try{ utter.rate = speechRate; }catch(_){ }
-      currentSpeechUtterance=utter;
-      const finish=(success)=>{
-        if(settled) return;
-        settled=true;
-        if(currentSpeechResolver===finish){ currentSpeechResolver=null; }
-        if(currentSpeechUtterance===utter){ currentSpeechUtterance=null; }
-        if(speechPlaying){ speechPlaying=false; audioController.setSpeechPlayingState(false); }
-        resolve(success);
-      };
-      currentSpeechResolver=finish;
-      const voice=getConfiguredSpeechVoice();
-      if(voice){
-        utter.voice=voice;
-        try{ utter.lang=voice.lang||'en-US'; }catch(_){ }
-      }else{
-        try{ utter.lang='en-US'; }catch(_){ }
-      }
-      utter.onstart=()=>{
-        speechPlaying=true;
-        audioController.setSpeechPlayingState(true);
-      };
-      utter.onend=()=>finish(true);
-      utter.onerror=(ev)=>{
-        console.warn('speech error', ev);
-        finish(false);
-      };
-      try{
-        speechSynthesis.speak(utter);
-        if(typeof speechSynthesis.resume==='function'){
-          try{ speechSynthesis.resume(); }catch(_){ }
-        }
-      }catch(err){
-        console.warn('speech speak failed', err);
-        finish(false);
-      }
-    });
-  }
-  function cancelSpeech(){
-    if(speechSynthesisSupported()){
-      try{ speechSynthesis.cancel(); }catch(_){ }
-    }
-    if(currentSpeechResolver){
-      const finalize=currentSpeechResolver;
-      currentSpeechResolver=null;
-      finalize(false);
-    }else if(speechPlaying){
-      speechPlaying=false;
-      audioController.setSpeechPlayingState(false);
-    }
-    currentSpeechUtterance=null;
-  }
-
   // Render & navigation
-  function stopAudio(){ resetResumeAfterMicStart(); try{audio.pause();}catch(_){ } audio.currentTime=0; cancelSpeech(); }
+  function stopAudio(){ resetResumeAfterMicStart(); try{audio.pause();}catch(_){ } audio.currentTime=0; speechController.cancelSpeech(); }
   async function tryPlayAudio({userInitiated=false, resetPosition=false}={}){
     const hasSrc=!!(audio?.dataset?.srcKey);
     const item=currentItem;
@@ -1809,14 +1655,15 @@ import { createAudioController } from './scripts/audio/controller.js';
     const speechAllowed=speechDesired && (playbackMode==='speech' || speechForced);
     const audioAllowed=shouldUseAudioForItem(item);
     if(speechAllowed){
-      if(!canSpeakCurrentCard()){
+      const controllerCanSpeak = speechController ? speechController.canSpeakCurrentCard() : false;
+      if(!controllerCanSpeak){
         if(userInitiated){
-          if(!speechSynthesisSupported()) toast('音声合成に未対応のため再生できません');
+          if(!speechController || !speechController.supported()) toast('音声合成に未対応のため再生できません');
           else toast('音声合成を開始できませんでした');
         }
         return false;
       }
-      const speechOk=await speakCurrentCard();
+      const speechOk=await speechController.speakCurrentCard({ preferredVoiceId: CFG.speechVoice });
       if(speechOk){
         if(userInitiated){
           autoPlayUnlocked=true;
@@ -1824,7 +1671,7 @@ import { createAudioController } from './scripts/audio/controller.js';
         return true;
       }
       if(userInitiated){
-        if(!speechSynthesisSupported()) toast('音声合成に未対応のため再生できません');
+        if(!speechController || !speechController.supported()) toast('音声合成に未対応のため再生できません');
         else toast('音声合成を開始できませんでした');
       }
       return false;
@@ -1838,7 +1685,7 @@ import { createAudioController } from './scripts/audio/controller.js';
     if(!audioAllowed){
       if(userInitiated){
         if(playbackMode==='speech' || speechForced){
-          if(!canSpeakCurrentCard()){ toast('音声合成に未対応のため再生できません'); }
+          if(!speechController || !speechController.supported()){ toast('音声合成に未対応のため再生できません'); }
         }
       }
       return false;
@@ -1850,7 +1697,7 @@ import { createAudioController } from './scripts/audio/controller.js';
     if(resetPosition){
       try{ audio.currentTime=0; }catch(_){ }
     }
-    cancelSpeech();
+    speechController.cancelSpeech();
     try{
       const playPromise=audio.play();
       if(playPromise && typeof playPromise.then==='function'){
@@ -1881,7 +1728,7 @@ import { createAudioController } from './scripts/audio/controller.js';
     sessionActive=false;
     sessionStarting=false;
     stopAudio();
-    cancelSpeech();
+    speechController.cancelSpeech();
     clearAudioSource();
     currentShouldUseSpeech=false;
     autoPlayUnlocked=false;
@@ -1894,7 +1741,7 @@ import { createAudioController } from './scripts/audio/controller.js';
     el.en.textContent = hasQueue ? '出題を準備しています…' : (emptyWithSearch ? '検索結果がありません' : '出題できる問題がありません');
     el.en.classList.remove('concealed');
     delete el.en.dataset.itemId;
-    clearHighlight();
+    if(recognitionController){ recognitionController.clearHighlight(); }
     el.ja.textContent = '—';
     el.ja.style.display = 'none';
     el.chips.innerHTML = '';
@@ -1945,7 +1792,7 @@ import { createAudioController } from './scripts/audio/controller.js';
       el.en.classList.remove('concealed');
       el.en.dataset.itemId = it.id || '';
       el.en.innerHTML=currentEnHtml;
-      clearHighlight();
+      if(recognitionController){ recognitionController.clearHighlight(); }
       setupComposeGuide(it);
       el.ja.textContent=it.ja;
       el.chips.innerHTML='';
@@ -2404,16 +2251,16 @@ import { createAudioController } from './scripts/audio/controller.js';
     if(sessionStarting) return;
     if(!sessionActive){ return; }
     const hasSrc=!!audio.dataset.srcKey;
-    const canSpeak=canSpeakCurrentCard();
+    const canSpeak=speechController ? speechController.canSpeakCurrentCard() : false;
     const audioPlaying=hasSrc && !audio.paused && !audio.ended;
     if(audioPlaying){
       resetResumeAfterMicStart();
       audio.pause();
       return;
     }
-    if(speechPlaying){
+    if(speechController && speechController.isSpeaking()){
       resetResumeAfterMicStart();
-      cancelSpeech();
+      speechController.cancelSpeech();
       return;
     }
     if(!hasSrc && !canSpeak){ toast('音声が見つかりません'); return; }
@@ -2422,253 +2269,81 @@ import { createAudioController } from './scripts/audio/controller.js';
   });
 
   // ASR（改良：重複抑制・上限・多重一致防止）
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  let stableText=''; // 確定テキスト（評価はこちらのみ使用）
-  let lastMatchEval=null;
-
-  function clearHighlight(){
-    document.querySelectorAll('.en .tok').forEach(sp=>{
-      sp.classList.remove('hit');
-      sp.classList.remove('miss');
-    });
-    if(Array.isArray(composeNodes)){
-      for(const node of composeNodes){
-        if(node && node.el){
-          node.el.classList.remove('hit');
-          node.el.classList.remove('miss');
-        }
-      }
-    }
-  }
-
-  function matchAndHighlight(refText, hypText){
-    const refTokens = toks(refText);
-    const hypTokensRaw = toks(hypText);
-    const hypTokens = dedupeRuns(hypTokensRaw);
-
-    function evaluateWindow(tokens){
-      const remain=new Map();
-      const matchedCounts=new Map();
-      const matchedWords=[];
-      for(const w of refTokens){ remain.set(w, (remain.get(w)||0)+1); }
-      tokens.forEach((h,idx)=>{
-        if(!h) return;
-        let matchKey='';
-        if(remain.get(h)>0){ matchKey=h; }
-        else{
-          for(const [k,c] of remain){ if(c>0 && approxWithin1(k,h)){ matchKey=k; break; } }
-        }
-        if(matchKey){
-          remain.set(matchKey, remain.get(matchKey)-1);
-          matchedCounts.set(matchKey, (matchedCounts.get(matchKey)||0)+1);
-          matchedWords.push(matchKey);
-        }
-      });
-      const missing=[];
-      for(const [w,c] of remain){ for(let i=0;i<(c||0);i++) missing.push(w); }
-      const matchedCount=matchedWords.length;
-      const recall = refTokens.length? matchedCount/refTokens.length : 1;
-      const precision = tokens.length? matchedCount/tokens.length : 1;
-      return {tokens, recall, precision, missing, matchedWords, matchedCount, matchedCounts};
-    }
-
-    function cloneCountMap(map){
-      const out=new Map();
-      if(map){ for(const [k,v] of map) out.set(k,v); }
-      return out;
-    }
-
-    let best=evaluateWindow(hypTokens);
-    best.start=0; best.end=hypTokens.length;
-    const refLen=refTokens.length;
-    const slack = Math.max(4, Math.ceil(refLen*0.5));
-    const minLen = Math.max(1, refLen ? Math.max(1, refLen - slack) : 1);
-    const maxLen = Math.max(
-      minLen,
-      Math.min(hypTokens.length, Math.max(refLen + slack, refLen * 2 || 1))
-    );
-    for(let start=0; start<hypTokens.length; start++){
-      for(let len=minLen; len<=maxLen; len++){
-        const end=start+len;
-        if(end>hypTokens.length) break;
-        const slice=hypTokens.slice(start,end);
-        const evalRes=evaluateWindow(slice);
-        evalRes.start=start; evalRes.end=end;
-        const bestScore=calcMatchScore(refLen, best.recall, best.precision);
-        const candScore=calcMatchScore(refLen, evalRes.recall, evalRes.precision);
-        if(candScore>bestScore || (candScore===bestScore && (
-          evalRes.recall>best.recall || (evalRes.recall===best.recall && (
-            evalRes.precision>best.precision || (evalRes.precision===best.precision && (
-              Math.abs((evalRes.tokens?.length||0)-refLen) < Math.abs((best.tokens?.length||0)-refLen) || (
-                Math.abs((evalRes.tokens?.length||0)-refLen) === Math.abs((best.tokens?.length||0)-refLen) && (evalRes.start||0)<=(best.start||0)
-              )
-            ))
-          ))
-        ))){
-          best=evalRes;
-        }
-      }
-    }
-
-    const spans=[...document.querySelectorAll('.en .tok')].filter(s=>s.dataset.w);
-    const matchMap=cloneCountMap(best.matchedCounts);
-    for(const sp of spans){
-      const wTokens=toks(sp.dataset.w);
-      if(!wTokens.length){ sp.classList.remove('hit'); sp.classList.add('miss'); continue; }
-      const reserved=[];
-      let hit=true;
-      for(const tok of wTokens){
-        let matchKey='';
-        if((matchMap.get(tok)||0)>0){
-          matchKey=tok;
-        }else{
-          for(const [k,c] of matchMap){
-            if(c>0 && approxWithin1(k,tok)){ matchKey=k; break; }
-          }
-        }
-        if(matchKey){
-          matchMap.set(matchKey, matchMap.get(matchKey)-1);
-          reserved.push(matchKey);
-        }else{
-          hit=false;
-          break;
-        }
-      }
-      if(!hit){
-        for(const key of reserved){ matchMap.set(key, (matchMap.get(key)||0)+1); }
-      }
-      sp.classList.toggle('hit', hit);
-      sp.classList.toggle('miss', !hit);
-    }
-
-    if(composeGuideActive && Array.isArray(composeNodes) && composeNodes.length){
-      const composeMap=cloneCountMap(best.matchedCounts);
-      for(const node of composeNodes){
-        const nodeEl=node && node.el;
-        const nodeTokens=Array.isArray(node && node.tokens) ? node.tokens : [];
-        if(!nodeEl){ continue; }
-        if(!nodeTokens.length){
-          nodeEl.classList.remove('hit');
-          nodeEl.classList.remove('miss');
-          continue;
-        }
-        const reserved=[];
-        let chunkHit=true;
-        for(const tok of nodeTokens){
-          let matchKey='';
-          if((composeMap.get(tok)||0)>0){
-            matchKey=tok;
-          }else{
-            for(const [k,c] of composeMap){
-              if(c>0 && approxWithin1(k,tok)){ matchKey=k; break; }
-            }
-          }
-          if(matchKey){
-            composeMap.set(matchKey, composeMap.get(matchKey)-1);
-            reserved.push(matchKey);
-          }else{
-            chunkHit=false;
-            break;
-          }
-        }
-        if(!chunkHit){
-          for(const key of reserved){ composeMap.set(key, (composeMap.get(key)||0)+1); }
-        }
-        nodeEl.classList.toggle('hit', chunkHit);
-        nodeEl.classList.toggle('miss', !chunkHit);
-      }
-    }
-
-    return {
-      recall: best.recall,
-      precision: best.precision,
-      matched: best.matchedWords,
-      missing: best.missing,
-      refCount: refLen,
-      hypTokens: best.tokens,
-      transcript: (best.tokens||[]).join(' '),
-      source: (hypText||'').trim()
-    };
-  }
 
   function showTranscriptInterim(text){ qs('#transcript').innerHTML=`<span class="interim">${text}</span>`; }
   function showTranscriptFinal(text){ qs('#transcript').textContent=text; }
 
+  recognitionController = createRecognitionController({
+    enElement: el.en,
+    getComposeNodes: ()=>composeNodes,
+    getReferenceText: ()=>{
+      const refItem=QUEUE[idx];
+      return refItem ? refItem.en : el.en.textContent;
+    },
+    onTranscriptReset: resetTranscript,
+    onTranscriptInterim: showTranscriptInterim,
+    onTranscriptFinal: (text)=>{ showTranscriptFinal(text); },
+    onMatchEvaluated: (info)=>{
+      if(!info) return;
+      lastMatchEval=Object.assign({}, info);
+      const score=calcMatchScore(info.refCount, info.recall, info.precision);
+      updateMatch(score);
+    },
+    onUnsupported: ()=>toast('この端末では音声認識が使えません'),
+    onError: (e)=>{
+      toast('ASRエラー: '+(e && e.error || ''));
+      el.mic.disabled=false;
+    },
+    onStart: ()=>{ setMicState(true); },
+    onStop: ()=>{ setMicState(false); },
+    onAutoStop: (result)=>{ stopRec(result).catch(()=>{}); },
+    setMicState,
+    playTone,
+    setResumeAfterMicStart,
+    clearResumeTimer,
+    resetResumeAfterMicStart,
+    shouldResumeAudio: ()=> audio && !audio.paused && !audio.ended,
+    resumeAudio: ()=>{ if(audio?.src){ audio.play().catch(()=>{}); } },
+  });
+
   function startRec(){
-    if(!SR){ toast('この端末では音声認識が使えません'); return; }
     if(el.mic.disabled) return;
-    if(recogOn) return;
+    if(!recognitionController) return;
+    if(recognitionController.isActive()) return;
     hideNextCta();
-    const shouldResume = audio && !audio.paused && !audio.ended;
-    setResumeAfterMicStart(shouldResume);
-    clearResumeTimer();
-    recog = new SR();
-    recog.lang = 'en-US';
-    recog.continuous = true;
-    recog.interimResults = true;
-    recog.maxAlternatives = 1;
-
-    stableText = '';
     lastMatchEval=null;
-    recogOn = true;
-    setMicState(true);
-    playTone('start');
-    resetTranscript();
-    clearHighlight();
-
-    try{ recog.start(); }catch(_){ }
-
-    if(shouldResume && audio?.src){
-      audio.play().catch(()=>{});
+    const result=recognitionController.start();
+    if(result && result.reason==='unsupported'){
+      el.mic.disabled=false;
     }
-
-    recog.onresult = (ev)=>{
-      let interim = '';
-      for(let i=ev.resultIndex; i<ev.results.length; i++){
-        const r = ev.results[i];
-        const t = r[0].transcript || '';
-        if(r.isFinal){
-          // 尾部のみ追加していく（過剰蓄積を防止）
-          stableText = appendStableFinal(stableText, t);
-          const trimmedStable = stableText.trim();
-          const refItem = QUEUE[idx];
-          const refText = refItem ? refItem.en : el.en.textContent;
-          const m = matchAndHighlight(refText, trimmedStable);
-          const normalized = (m.transcript && m.transcript.trim()) || trimmedStable;
-          stableText = normalized;
-          showTranscriptFinal(normalized);
-          lastMatchEval = Object.assign({}, m, { source: normalized, transcript: normalized });
-          const score = calcMatchScore(m.refCount, m.recall, m.precision);
-          updateMatch(score);
-        }else{
-          interim = t;
-        }
-      }
-      if(interim) showTranscriptInterim(interim); // 画面表示だけ・評価には使わない
-    };
-
-    recog.onerror = (e)=>{ console.warn(e); toast('ASRエラー: '+(e && e.error || '')); playTone('fail'); setMicState(false); resetResumeAfterMicStart(); clearResumeTimer(); recogOn=false; el.mic.disabled=false; recog=null; };
-    recog.onend = ()=>{ if(recogOn) stopRec(); else setMicState(false); };
   }
 
-  async function stopRec(){
-    if(!recogOn) return;
-    recogOn=false;
-    resetResumeAfterMicStart();
-    try{ recog && recog.stop && recog.stop(); }catch(_){ }
-    setMicState(false);
-
-    const it = QUEUE[idx]; if(!it) return;
-    const hyp = stableText.trim();
+  async function stopRec(result){
+    if(!recognitionController) return;
+    const outcome = result && result.ok ? result : recognitionController.stop();
+    if(!outcome || !outcome.ok) return;
+    const it = QUEUE[idx];
+    if(!it){
+      updateMatch(null);
+      return;
+    }
+    const hyp = (outcome.transcript || '').trim();
     const refItem = QUEUE[idx];
     const refText = refItem ? refItem.en : el.en.textContent;
     const studyMode = getStudyMode();
-    const matchInfo = (lastMatchEval && lastMatchEval.source === hyp) ? lastMatchEval : matchAndHighlight(refText, hyp);
+    let matchInfo = outcome.matchInfo;
+    if(!matchInfo || matchInfo.source !== hyp){
+      matchInfo = recognitionController.matchAndHighlight(refText, hyp);
+    }
+    if(!matchInfo){
+      lastMatchEval=null;
+      updateMatch(null);
+      return;
+    }
     lastMatchEval = matchInfo;
     const { recall, precision, matched, missing, refCount, hypTokens, transcript } = matchInfo;
     const matchRate = calcMatchScore(refCount, recall, precision);
     updateMatch(matchRate);
-
     const prevInfoSnapshot = getLevelInfo(it.id);
     let prevBest = Number(prevInfoSnapshot?.best||0);
     if(!Number.isFinite(prevBest) || prevBest<=0){
@@ -2764,10 +2439,13 @@ import { createAudioController } from './scripts/audio/controller.js';
     };
     try{ await sendLog('speech', payload); }catch(_){ }
     if(!pass && failCount<FAIL_LIMIT){ el.mic.disabled=false; }
-    recog=null;
   }
 
-  el.mic.onclick=()=>{ if(!recogOn) startRec(); else stopRec(); };
+  el.mic.onclick=()=>{
+    const active=recognitionController && recognitionController.isActive();
+    if(!active){ startRec(); }
+    else{ stopRec(); }
+  };
   // Boot
   (async()=>{
     const releaseBoot=acquireOverlay('boot');
