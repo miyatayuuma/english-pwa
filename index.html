@@ -189,6 +189,7 @@ import {
   updateNotificationUi,
   initNotificationSystem
 } from './scripts/state/studyLog.js';
+import { createAudioController } from './scripts/audio/controller.js';
 
 (function(){
   // ===== Utilities =====
@@ -527,31 +528,6 @@ import {
   }
 
 
-  let toneCtx=null;
-  function playTone(type){
-    try{
-      const AC=window.AudioContext||window.webkitAudioContext;
-      if(!AC) return;
-      if(!toneCtx){ toneCtx=new AC(); }
-      if(toneCtx.state==='suspended'){ toneCtx.resume().catch(()=>{}); }
-      const osc=toneCtx.createOscillator();
-      const gain=toneCtx.createGain();
-      const now=toneCtx.currentTime;
-      let freq=440, duration=0.2, peak=0.15;
-      if(type==='success'){ freq=880; duration=0.25; peak=0.2; }
-      else if(type==='fail'){ freq=300; duration=0.3; peak=0.18; }
-      else if(type==='start'){ freq=523.25; duration=0.12; peak=0.12; }
-      osc.frequency.setValueAtTime(freq, now);
-      gain.gain.setValueAtTime(0, now);
-      gain.gain.linearRampToValueAtTime(peak, now+0.02);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now+duration);
-      osc.connect(gain);
-      gain.connect(toneCtx.destination);
-      osc.start(now);
-      osc.stop(now+duration+0.05);
-    }catch(_){ }
-  }
-
   // ===== Elements =====
   const el={ headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerInfo'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), next:qs('#btnNext'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), composeGuide:qs('#composeGuide'), composeTokens:qs('#composeTokens'), composeNote:qs('#composeNote'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSpeechVoice:qs('#cfgSpeechVoice'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnImport:qs('#btnImport'), filePick:qs('#filePick'), btnTestAudio:qs('#btnTestAudio'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus') };
   el.cfgPlaybackMode=qsa('input[name="cfgPlaybackMode"]');
@@ -561,113 +537,51 @@ import {
   const CARD_TRANSITION_FALLBACK=420;
   let cardTransitionQueue=Promise.resolve();
   let recog=null, recogOn=false;
-  let resumeAfterMicStart=false;
-  let resumeAfterMicTimer=null;
   let currentSpeechUtterance=null;
   let currentSpeechResolver=null;
   let speechPlaying=false;
   let speechRate=1;
   let currentShouldUseSpeech=false;
-  function clearResumeTimer(){ if(resumeAfterMicTimer){ clearTimeout(resumeAfterMicTimer); resumeAfterMicTimer=null; } }
+
+  const audioController=createAudioController({
+    audioElement: audio,
+    playButton: el.play,
+    speedSlider: el.speed,
+    speedDownButton: el.speedDown,
+    speedUpButton: el.speedUp,
+    speedValueElement: el.speedValue,
+    loadSpeed: ()=>{
+      const stored=loadNumber(SPEED, 1);
+      return stored==null?1:stored;
+    },
+    saveSpeed: (rate)=>{ saveNumber(SPEED, rate); },
+    getCanSpeak: ()=>canSpeakCurrentCard(),
+    onPlaybackRateChange: (rate)=>{
+      speechRate=rate;
+      if(currentSpeechUtterance){
+        try{ currentSpeechUtterance.rate=rate; }catch(_){ }
+      }
+    },
+    isRecognitionActive: ()=>recogOn,
+  });
+
+  const {
+    playTone,
+    updatePlayButtonAvailability,
+    updatePlayVisualState,
+    setAudioSource,
+    clearAudioSource,
+    primeAudio,
+    setResumeAfterMicStart,
+    resetResumeAfterMicStart,
+    clearResumeTimer,
+  } = audioController;
+
+  speechRate = audioController.getPlaybackRate();
   const overlayLocks=new Set();
   function updateOverlayState(){ if(!el.overlay) return; const active=overlayLocks.size>0; el.overlay.classList.toggle('hidden', !active); el.overlay.classList.toggle('active', active); }
   function acquireOverlay(tag='load'){ if(!el.overlay){ return ()=>{}; } const token=`${tag}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`; overlayLocks.add(token); updateOverlayState(); return ()=>releaseOverlay(token); }
   function releaseOverlay(token){ if(!el.overlay || token==null) return; if(overlayLocks.delete(token)){ updateOverlayState(); } }
-  function updatePlayButtonAvailability(){
-    if(!el.play) return;
-    const hasSrc=!!audio.dataset.srcKey;
-    const canSpeak=canSpeakCurrentCard();
-    el.play.disabled=!(hasSrc||canSpeak);
-  }
-  function updatePlayVisualState(){
-    if(!el.play) return;
-    const hasSrc=!!audio.dataset.srcKey;
-    const audioPlaying=hasSrc && !audio.paused && !audio.ended;
-    const playing=audioPlaying || speechPlaying;
-    el.play.classList.toggle('playing', playing);
-    el.play.setAttribute('aria-pressed', playing?'true':'false');
-    const icon=el.play.querySelector('.playIcon');
-    if(icon){ icon.textContent = playing ? '⏸' : '▶️'; }
-  }
-  audio.addEventListener('play', ()=>{ resumeAfterMicStart=false; clearResumeTimer(); updatePlayVisualState(); });
-  audio.addEventListener('playing', ()=>{ resumeAfterMicStart=false; clearResumeTimer(); updatePlayVisualState(); });
-  audio.addEventListener('pause', ()=>{
-    updatePlayVisualState();
-    if(!resumeAfterMicStart || !recogOn){ return; }
-    if(audio.ended){ resumeAfterMicStart=false; clearResumeTimer(); return; }
-    clearResumeTimer();
-    resumeAfterMicTimer=setTimeout(()=>{
-      resumeAfterMicTimer=null;
-      if(!resumeAfterMicStart || !recogOn || audio.ended){ resumeAfterMicStart=false; return; }
-      audio.play().catch(err=>{ console.warn('resume after mic start failed', err); resumeAfterMicStart=false; });
-    }, 150);
-  });
-  audio.addEventListener('ended', ()=>{ resumeAfterMicStart=false; clearResumeTimer(); updatePlayVisualState(); });
-  audio.addEventListener('emptied', ()=>{ resumeAfterMicStart=false; clearResumeTimer(); updatePlayButtonAvailability(); updatePlayVisualState(); });
-  audio.addEventListener('loadeddata', updatePlayButtonAvailability);
-  updatePlayVisualState();
-  updatePlayButtonAvailability();
-  function clampSpeed(value){
-    const num=(typeof value==='number')?value:parseFloat(value);
-    if(!Number.isFinite(num)) return 1;
-    return Math.min(1.5, Math.max(0.5, num));
-  }
-  function loadSpeed(){
-    const stored=loadNumber(SPEED, 1);
-    return clampSpeed(stored==null?1:stored);
-  }
-  function saveSpeed(rate){
-    saveNumber(SPEED, clampSpeed(rate));
-  }
-  let playbackRate=loadSpeed();
-  speechRate=playbackRate;
-  function formatSpeed(rate){
-    const rounded=Math.round(rate*100)/100;
-    return `${rounded.toFixed(2).replace(/\.?0+$/,'')}×`;
-  }
-  function syncSpeedUI(){
-    if(el.speed){
-      const val=Math.round(playbackRate*100)/100;
-      el.speed.value=String(val);
-    }
-    if(el.speedValue){
-      el.speedValue.textContent=formatSpeed(playbackRate);
-    }
-  }
-  function applyPlaybackRate(rate,{persist=false}={}){
-    const clamped=clampSpeed(rate);
-    playbackRate=clamped;
-    speechRate=clamped;
-    if(audio){
-      try{ audio.playbackRate=clamped; }catch(_){ }
-    }
-    if(currentSpeechUtterance){
-      try{ currentSpeechUtterance.rate=clamped; }catch(_){ }
-    }
-    syncSpeedUI();
-    if(persist){ saveSpeed(clamped); }
-  }
-  function stepPlaybackRate(delta){
-    const stepped=Math.round((playbackRate+delta)*20)/20;
-    applyPlaybackRate(stepped,{persist:true});
-  }
-  applyPlaybackRate(playbackRate);
-  if(el.speed){
-    el.speed.addEventListener('input', ()=>{
-      applyPlaybackRate(parseFloat(el.speed.value), {persist:true});
-    });
-    el.speed.addEventListener('change', ()=>{
-      applyPlaybackRate(parseFloat(el.speed.value), {persist:true});
-    });
-  }
-  if(el.speedDown){
-    el.speedDown.addEventListener('click', ()=>stepPlaybackRate(-0.1));
-  }
-  if(el.speedUp){
-    el.speedUp.addEventListener('click', ()=>stepPlaybackRate(0.1));
-  }
-  const PREFETCH_POOL=new Map();
-  const PREFETCH_LIMIT=6;
   let sessionActive=false;
   let sessionStarting=false;
   let remoteStatus=null;
@@ -745,70 +659,6 @@ import {
   function applyRemoteStatus(status){
     remoteStatus = status ? Object.assign({}, status) : null;
     updateHeaderStats();
-  }
-
-  function waitForAudioReady(el, timeout=2000){
-    if(!el) return Promise.resolve();
-    if(el.readyState>=2) return Promise.resolve();
-    return new Promise(resolve=>{
-      let settled=false;
-      const finalize=()=>{
-        if(settled) return;
-        settled=true;
-        el.removeEventListener('canplay', onReady);
-        el.removeEventListener('canplaythrough', onReady);
-        el.removeEventListener('loadeddata', onReady);
-        el.removeEventListener('error', onReady);
-        clearTimeout(timer);
-        resolve();
-      };
-      const onReady=()=>finalize();
-      const timer=setTimeout(()=>finalize(), timeout);
-      el.addEventListener('canplay', onReady, {once:true});
-      el.addEventListener('canplaythrough', onReady, {once:true});
-      el.addEventListener('loadeddata', onReady, {once:true});
-      el.addEventListener('error', onReady, {once:true});
-    });
-  }
-
-  function setAudioSource(url,{timeout=2000, forceReload=false}={}){
-    if(!url){
-      clearAudioSource();
-      return Promise.resolve();
-    }
-    if(forceReload || audio.dataset.srcKey !== url){
-      audio.dataset.srcKey = url;
-      audio.src = url;
-      try{ audio.playbackRate = playbackRate; }catch(_){ }
-    }
-    updatePlayButtonAvailability();
-    try{ audio.playbackRate = playbackRate; }catch(_){ }
-    try{ audio.load?.(); }catch(_){ }
-    return waitForAudioReady(audio, timeout);
-  }
-
-  function clearAudioSource(){
-    resumeAfterMicStart=false;
-    clearResumeTimer();
-    delete audio.dataset.srcKey;
-    audio.removeAttribute('src');
-    currentShouldUseSpeech=false;
-    try{ audio.load?.(); }catch(_){ }
-    updatePlayButtonAvailability();
-    updatePlayVisualState();
-  }
-
-  function rememberPrefetch(url, entry){
-    PREFETCH_POOL.set(url, entry);
-    if(PREFETCH_POOL.size>PREFETCH_LIMIT){
-      const firstKey=PREFETCH_POOL.keys().next().value;
-      const old=PREFETCH_POOL.get(firstKey);
-      if(old && old.audio){
-        try{ old.audio.pause?.(); }catch(_){ }
-        old.audio.removeAttribute?.('src');
-      }
-      PREFETCH_POOL.delete(firstKey);
-    }
   }
 
   const FAIL_LIMIT=3;
@@ -1837,27 +1687,6 @@ import {
   async function resolveFromOPFS(name){ if(!name) return ''; try{ if(!(navigator.storage&&navigator.storage.getDirectory)) return ''; const root=await navigator.storage.getDirectory(); const fh=await root.getFileHandle(name).catch(()=>null); if(!fh) return ''; const file=await fh.getFile(); return URL.createObjectURL(file); }catch(_){ return ''; } }
   async function resolveAudioUrl(name){ if(!name) return ''; if(audioUrlCache.has(name)) return audioUrlCache.get(name); let url=await resolveFromDir(name); if(!url) url=await resolveFromOPFS(name); if(!url){ const base=(CFG.audioBase||'./audio').replace(/\/$/,''); url= base + '/' + encodeURI(name); } audioUrlCache.set(name,url); return url; }
 
-  async function primeAudio(item, knownUrl){
-    if(!item||!item.audio_fn) return;
-    if(!shouldUseAudioForItem(item)) return;
-    let url=knownUrl;
-    if(!url){
-      url=await resolveAudioUrl(item.audio_fn);
-    }
-    if(!url) return;
-    if(PREFETCH_POOL.has(url)) return PREFETCH_POOL.get(url).promise;
-    const prefetch=new Audio();
-    prefetch.preload='auto';
-    prefetch.crossOrigin='anonymous';
-    prefetch.src=url;
-    const promise=waitForAudioReady(prefetch, 4000).finally(()=>{
-      try{ prefetch.pause?.(); }catch(_){ }
-    });
-    try{ prefetch.load?.(); }catch(_){ }
-    rememberPrefetch(url,{audio:prefetch,promise});
-    return promise;
-  }
-
   function speechSynthesisSupported(){
     if(typeof window==='undefined') return false;
     if(typeof window.speechSynthesis==='undefined') return false;
@@ -1923,7 +1752,7 @@ import {
         settled=true;
         if(currentSpeechResolver===finish){ currentSpeechResolver=null; }
         if(currentSpeechUtterance===utter){ currentSpeechUtterance=null; }
-        if(speechPlaying){ speechPlaying=false; updatePlayVisualState(); }
+        if(speechPlaying){ speechPlaying=false; audioController.setSpeechPlayingState(false); }
         resolve(success);
       };
       currentSpeechResolver=finish;
@@ -1936,7 +1765,7 @@ import {
       }
       utter.onstart=()=>{
         speechPlaying=true;
-        updatePlayVisualState();
+        audioController.setSpeechPlayingState(true);
       };
       utter.onend=()=>finish(true);
       utter.onerror=(ev)=>{
@@ -1964,13 +1793,13 @@ import {
       finalize(false);
     }else if(speechPlaying){
       speechPlaying=false;
-      updatePlayVisualState();
+      audioController.setSpeechPlayingState(false);
     }
     currentSpeechUtterance=null;
   }
 
   // Render & navigation
-  function stopAudio(){ resumeAfterMicStart=false; clearResumeTimer(); try{audio.pause();}catch(_){ } audio.currentTime=0; cancelSpeech(); }
+  function stopAudio(){ resetResumeAfterMicStart(); try{audio.pause();}catch(_){ } audio.currentTime=0; cancelSpeech(); }
   async function tryPlayAudio({userInitiated=false, resetPosition=false}={}){
     const hasSrc=!!(audio?.dataset?.srcKey);
     const item=currentItem;
@@ -2142,7 +1971,7 @@ import {
           try{
             await setAudioSource(url);
             if(audio.readyState<2){
-              const retryPrime=primeAudio(it, url);
+              const retryPrime=primeAudio(it, url, {shouldUseAudioForItem, resolveAudioUrl});
               if(retryPrime){
                 try{ await retryPrime; }catch(err){ console.warn('primeAudio retry failed', err); }
               }
@@ -2172,8 +2001,8 @@ import {
       hideNextCta();
       setMicState(false);
       el.mic.disabled=false;
-      if(shouldUseAudioForItem(QUEUE[i+1])){ primeAudio(QUEUE[i+1]); }
-      if(shouldUseAudioForItem(QUEUE[i-1])){ primeAudio(QUEUE[i-1]); }
+      if(shouldUseAudioForItem(QUEUE[i+1])){ primeAudio(QUEUE[i+1], undefined, {shouldUseAudioForItem, resolveAudioUrl}); }
+      if(shouldUseAudioForItem(QUEUE[i-1])){ primeAudio(QUEUE[i-1], undefined, {shouldUseAudioForItem, resolveAudioUrl}); }
       if(autoPlay&&(url||currentShouldUseSpeech)){
         try{
           await tryPlayAudio({userInitiated:false, resetPosition:true});
@@ -2578,14 +2407,12 @@ import {
     const canSpeak=canSpeakCurrentCard();
     const audioPlaying=hasSrc && !audio.paused && !audio.ended;
     if(audioPlaying){
-      resumeAfterMicStart=false;
-      clearResumeTimer();
+      resetResumeAfterMicStart();
       audio.pause();
       return;
     }
     if(speechPlaying){
-      resumeAfterMicStart=false;
-      clearResumeTimer();
+      resetResumeAfterMicStart();
       cancelSpeech();
       return;
     }
@@ -2773,7 +2600,7 @@ import {
     if(recogOn) return;
     hideNextCta();
     const shouldResume = audio && !audio.paused && !audio.ended;
-    resumeAfterMicStart = shouldResume;
+    setResumeAfterMicStart(shouldResume);
     clearResumeTimer();
     recog = new SR();
     recog.lang = 'en-US';
@@ -2820,15 +2647,14 @@ import {
       if(interim) showTranscriptInterim(interim); // 画面表示だけ・評価には使わない
     };
 
-    recog.onerror = (e)=>{ console.warn(e); toast('ASRエラー: '+(e && e.error || '')); playTone('fail'); setMicState(false); resumeAfterMicStart=false; clearResumeTimer(); recogOn=false; el.mic.disabled=false; recog=null; };
+    recog.onerror = (e)=>{ console.warn(e); toast('ASRエラー: '+(e && e.error || '')); playTone('fail'); setMicState(false); resetResumeAfterMicStart(); clearResumeTimer(); recogOn=false; el.mic.disabled=false; recog=null; };
     recog.onend = ()=>{ if(recogOn) stopRec(); else setMicState(false); };
   }
 
   async function stopRec(){
     if(!recogOn) return;
     recogOn=false;
-    resumeAfterMicStart=false;
-    clearResumeTimer();
+    resetResumeAfterMicStart();
     try{ recog && recog.stop && recog.stop(); }catch(_){ }
     setMicState(false);
 
