@@ -1165,7 +1165,7 @@ function createAppRuntime(){
     const order=el.orderSel.value;
     const baseItems=sec ? (ITEMS_BY_SECTION.get(sec)||[]) : window.ALL_ITEMS;
     let items=Array.isArray(baseItems) ? baseItems.filter(Boolean) : [];
-    const levels=activeLevelArray();
+    const levels=getActiveLevelArray();
     if(levels.length && levels.length<LEVEL_CHOICES.length){
       const levelSet=new Set(levels);
       items=items.filter(x=>levelSet.has(lastRecordedLevel(x.id)));
