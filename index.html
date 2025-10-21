@@ -162,8 +162,18 @@
   </div>
 </div>
 
-<script src="scripts/storage/local.js"></script>
-<script>
+<script type="module">
+import {
+  STORAGE_KEYS,
+  loadJson,
+  saveJson,
+  loadString,
+  saveString,
+  loadNumber,
+  saveNumber,
+  remove
+} from './scripts/storage/local.js';
+
 (function(){
   // ===== Utilities =====
   const qs=(s,el=document)=>el.querySelector(s);
@@ -422,7 +432,6 @@
     }
   }
 
-  const {keys: STORAGE_KEYS, loadJson, saveJson, loadString, saveString, loadNumber, saveNumber}=LocalStorageUtil;
   const {STUDY_LOG: STUDY_LOG_KEY, NOTIF_STATE, LEVEL_STATE, LEVEL_FILTER, SEARCH, SPEED, CONFIG, PENDING_LOGS: PENDING_LOGS_KEY, SECTION_SELECTION, ORDER_SELECTION}=STORAGE_KEYS;
   const DAY_MS=86400000;
   function localDateKey(time=Date.now()){
