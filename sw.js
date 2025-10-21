@@ -1,11 +1,12 @@
 // sw.js（抜粋）：キャッシュ名は更新ごとに変える
-const CACHE = 'v5';
+const CACHE = 'v6';
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll([
     './',
     './index.html',
     './manifest.webmanifest',
+    './styles/app.css',
     './data/items.json',
     './icons/icon-192.png',
     './icons/icon-512.png',
