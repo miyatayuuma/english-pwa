@@ -126,7 +126,8 @@ function appendSpeech_(s, uid) {
   const sh = ensureSheet(SHEETS.speech,
     ['ts','id','mode','wer','cer','latency_ms','words_spoken',
      'transcript','matched_tokens_json','missing_tokens_json',
-     'recall','precision','match','hint_stage','level_last','level_best','client_uid']);
+     'recall','precision','match','hint_stage','level_last','level_best',
+     'level5_count','streak','no_hint_successes','next_level_target','next_level_remaining','next_level_available_at','client_uid']);
   const row = [
     s?.ts || new Date().toISOString(),
     s?.id || '',
@@ -144,6 +145,12 @@ function appendSpeech_(s, uid) {
     (s?.hint_stage ?? ''),
     (s?.level_last ?? ''),
     (s?.level_best ?? ''),
+    (s?.level5_count ?? ''),
+    (s?.streak ?? ''),
+    (s?.no_hint_successes ?? ''),
+    (s?.next_level_target ?? ''),
+    (s?.next_level_remaining ?? ''),
+    (s?.next_level_available_at ?? ''),
     s?.client_uid || uid || ''
   ];
   sh.appendRow(row);
