@@ -192,6 +192,10 @@ async function initApp(){
     const rate=Math.max(0, Math.min(1, Number(matchRate)||0));
     const stageRaw=Number.isFinite(hintStageUsed)?Math.floor(hintStageUsed):BASE_HINT_STAGE;
     const stage=Math.max(BASE_HINT_STAGE, stageRaw);
+    const firstHintStage=getFirstHintStage();
+    const englishRevealStage=getEnglishRevealStage();
+    const usedHint=stage>=firstHintStage;
+    const revealedEnglishHint=stage>=englishRevealStage;
     let candidate=1;
     if(rate<0.70){
       candidate=1;
@@ -200,8 +204,7 @@ async function initApp(){
     }else if(rate<0.90){
       candidate=3;
     }else{
-      const usedEnglishHint=stage>=BASE_HINT_STAGE+1;
-      if(usedEnglishHint){
+      if(usedHint){
         candidate=3;
       }else if(rate<1){
         candidate=4;
@@ -209,11 +212,11 @@ async function initApp(){
         candidate=5;
       }
     }
-    const usedEnglishHint = stage >= BASE_HINT_STAGE + 1;
-    const noHintSuccess=!usedEnglishHint && rate>=NO_HINT_RATE_THRESHOLD;
+    const usedEnglishHint = usedHint;
+    const noHintSuccess=!usedHint && rate>=NO_HINT_RATE_THRESHOLD;
     const perfectNoHint=noHintSuccess && rate>=PERFECT_MATCH_THRESHOLD;
     const pass=rate>=0.70;
-    return {candidate, rate, stage, noHintSuccess, perfectNoHint, usedEnglishHint, pass};
+    return {candidate, rate, stage, noHintSuccess, perfectNoHint, usedEnglishHint, revealedEnglishHint, pass};
   }
   function getLevelInfo(id){
     if(!id) return {best:0,last:0};
@@ -410,7 +413,7 @@ async function initApp(){
 
   const {
     playTone,
-    updatePlayButtonAvailability,
+    updatePlayButtonAvailability: baseUpdatePlayButtonAvailability,
     updatePlayVisualState,
     setAudioSource,
     clearAudioSource,
@@ -508,10 +511,40 @@ async function initApp(){
   let failCount=0;
 
   const BASE_HINT_STAGE=0;
+  const COMPOSE_HINT_STAGE_JA=BASE_HINT_STAGE+1;
+  const COMPOSE_HINT_STAGE_AUDIO=BASE_HINT_STAGE+2;
+  const COMPOSE_HINT_STAGE_EN=BASE_HINT_STAGE+3;
+
   let hintStage=BASE_HINT_STAGE;
   let maxHintStageUsed=BASE_HINT_STAGE;
   let currentEnHtml='';
   let currentItem=null;
+
+  function getMaxHintStage(){
+    return isComposeMode() ? COMPOSE_HINT_STAGE_EN : BASE_HINT_STAGE+2;
+  }
+
+  function getFirstHintStage(){
+    return BASE_HINT_STAGE+1;
+  }
+
+  function getJapaneseHintStage(){
+    return isComposeMode() ? COMPOSE_HINT_STAGE_JA : BASE_HINT_STAGE+2;
+  }
+
+  function getAudioUnlockStage(){
+    return isComposeMode() ? COMPOSE_HINT_STAGE_AUDIO : BASE_HINT_STAGE;
+  }
+
+  function getEnglishRevealStage(){
+    return isComposeMode() ? COMPOSE_HINT_STAGE_EN : BASE_HINT_STAGE+1;
+  }
+
+  function isAudioHintUnlocked(stage=hintStage){
+    const unlockStage=getAudioUnlockStage();
+    if(unlockStage<=BASE_HINT_STAGE) return true;
+    return stage>=unlockStage;
+  }
 
   speechController = createSpeechSynthesisController({
     setSpeechPlayingState,
@@ -519,38 +552,81 @@ async function initApp(){
     isSpeechDesired: ()=>currentShouldUseSpeech,
   });
   speechController.setSpeechRate(audioController.getPlaybackRate());
+  function updatePlayButtonAvailability(){
+    baseUpdatePlayButtonAvailability();
+    if(!el.play) return;
+    const locked=!isAudioHintUnlocked();
+    if(locked){
+      el.play.disabled=true;
+      el.play.classList.add('hint-locked');
+      el.play.setAttribute('aria-disabled','true');
+    }else{
+      el.play.classList.remove('hint-locked');
+      el.play.removeAttribute('aria-disabled');
+    }
+  }
+
+  function composeHintPlaceholder(stage){
+    if(stage<=BASE_HINT_STAGE){
+      return '<span class="hint-placeholder">カードをダブルタップして和訳ヒントを表示（もう一度で音声、さらにもう一度で英文）</span>';
+    }
+    if(stage<COMPOSE_HINT_STAGE_AUDIO){
+      return '<span class="hint-placeholder">英文はまだ非表示です。もう一度ダブルタップで音声ヒントを有効化（さらにもう一度で英文）</span>';
+    }
+    if(stage<COMPOSE_HINT_STAGE_EN){
+      return '<span class="hint-placeholder">英文はまだ非表示です。もう一度ダブルタップで英文ヒントを表示</span>';
+    }
+    return '';
+  }
+
+  function defaultHintPlaceholder(){
+    return '<span class="hint-placeholder">カードをダブルタップして英文ヒントを表示（もう一度で和訳）</span>';
+  }
+
   function setHintStage(stage,{reset=false}={}){
-    const next=Math.max(0, Math.min(2, Number.isFinite(stage)?Math.floor(stage):0));
+    const maxStage=Math.max(BASE_HINT_STAGE, getMaxHintStage());
+    const next=Math.max(BASE_HINT_STAGE, Math.min(maxStage, Number.isFinite(stage)?Math.floor(stage):BASE_HINT_STAGE));
     const prev=hintStage;
     hintStage=next;
     if(reset){ maxHintStageUsed=next; }
     else if(next>maxHintStageUsed){ maxHintStageUsed=next; }
-    if(next<=0){
-      el.en.classList.add('concealed');
-      el.en.innerHTML='<span class="hint-placeholder">カードをダブルタップして英文ヒントを表示（もう一度で和訳）</span>';
-      el.ja.style.display='none';
-      if(recognitionController){ recognitionController.clearHighlight(); }
-    }else{
+    const compose=isComposeMode();
+    const showEnglish=next>=getEnglishRevealStage();
+    const showJapanese=next>=getJapaneseHintStage();
+    if(showEnglish){
       el.en.classList.remove('concealed');
       el.en.innerHTML=currentEnHtml||'';
-      el.ja.style.display = next>=2 ? 'block' : 'none';
       if(recognitionController && currentItem && lastMatchEval && lastMatchEval.source){
         lastMatchEval = recognitionController.matchAndHighlight(currentItem.en, lastMatchEval.source);
         const score=calcMatchScore(lastMatchEval.refCount, lastMatchEval.recall, lastMatchEval.precision);
         updateMatch(score);
       }
+    }else{
+      el.en.classList.add('concealed');
+      el.en.innerHTML=compose ? composeHintPlaceholder(next) : defaultHintPlaceholder();
+      if(recognitionController){ recognitionController.clearHighlight(); }
     }
+    el.ja.style.display = showJapanese ? 'block' : 'none';
+    updatePlayButtonAvailability();
     return prev!==next;
   }
 
   function advanceHintStage(){
     if(!sessionActive) return;
-    const nextStage=(hintStage+1)%3;
+    const maxStage=Math.max(BASE_HINT_STAGE, getMaxHintStage());
+    const nextStage=hintStage>=maxStage ? BASE_HINT_STAGE : hintStage+1;
     const changed=setHintStage(nextStage);
     if(changed){
-      if(hintStage===1){ el.footer.textContent='英文ヒントを表示しました。もう一度で和訳ヒント。'; }
-      else if(hintStage===2){ el.footer.textContent='和訳ヒントを表示しました'; }
-      else if(hintStage===0){ el.footer.textContent='ヒントを非表示に戻しました。ダブルタップで再表示できます。'; }
+      if(isComposeMode()){
+        if(hintStage===COMPOSE_HINT_STAGE_JA){ el.footer.textContent='和訳ヒントを表示しました。もう一度で音声ヒント（再生ボタン）が使えます。さらにもう一度で英文ヒント。'; }
+        else if(hintStage===COMPOSE_HINT_STAGE_AUDIO){ el.footer.textContent='音声ヒントを有効化しました。再生ボタンが使えます。さらにもう一度で英文ヒント。'; }
+        else if(hintStage===COMPOSE_HINT_STAGE_EN){ el.footer.textContent='英文ヒントを表示しました。'; }
+        else if(hintStage===BASE_HINT_STAGE){ el.footer.textContent='ヒントを非表示に戻しました。ダブルタップで再表示できます。'; }
+      }else{
+        if(hintStage===BASE_HINT_STAGE+1){ el.footer.textContent='英文ヒントを表示しました。もう一度で和訳ヒント。'; }
+        else if(hintStage===BASE_HINT_STAGE+2){ el.footer.textContent='和訳ヒントを表示しました'; }
+        else if(hintStage===BASE_HINT_STAGE){ el.footer.textContent='ヒントを非表示に戻しました。ダブルタップで再表示できます。'; }
+      }
     }
   }
 
@@ -621,6 +697,9 @@ async function initApp(){
   }
   function isComposeMode(){
     return getStudyMode()===STUDY_MODE_COMPOSE;
+  }
+  function isAutoPlayAllowed(){
+    return !isComposeMode();
   }
   function shouldUseSpeechForItem(item){
     if(!item) return false;
@@ -1560,7 +1639,7 @@ async function initApp(){
       el.mic.disabled=false;
       if(shouldUseAudioForItem(QUEUE[i+1])){ primeAudio(QUEUE[i+1], undefined, {shouldUseAudioForItem, resolveAudioUrl}); }
       if(shouldUseAudioForItem(QUEUE[i-1])){ primeAudio(QUEUE[i-1], undefined, {shouldUseAudioForItem, resolveAudioUrl}); }
-      if(autoPlay&&(url||currentShouldUseSpeech)){
+      if(autoPlay && isAutoPlayAllowed() && (url||currentShouldUseSpeech)){
         try{
           await tryPlayAudio({userInitiated:false, resetPosition:true});
         }catch(err){
@@ -1583,13 +1662,14 @@ async function initApp(){
     QUEUE=buildQueue();
     el.pbar.max=Math.max(1, QUEUE.length);
     hideNextCta();
+    const allowAutoPlay=autoPlay && isAutoPlayAllowed();
     if(resetIndex){
       idx=-1;
       showIdleCard();
       if(autoStart && QUEUE.length){
         setTimeout(()=>{
           if(!sessionActive && !sessionStarting){
-            startSession(autoPlay);
+            startSession(allowAutoPlay);
           }
         }, 0);
       }
@@ -1645,7 +1725,8 @@ async function initApp(){
     }
     const task=async ()=>{
       idx = first? 0 : Math.min(QUEUE.length-1, idx+1);
-      await render(idx, autoPlay && autoPlayUnlocked);
+      const allowAutoPlay=autoPlay && autoPlayUnlocked && isAutoPlayAllowed();
+      await render(idx, allowAutoPlay);
       el.pbar.value=idx;
       el.footer.textContent=`#${idx+1}/${QUEUE.length}`;
       updateHeaderStats();
@@ -1659,7 +1740,8 @@ async function initApp(){
     const animate=idx>0;
     const task=async ()=>{
       idx=targetIdx;
-      await render(idx, autoPlay && autoPlayUnlocked);
+      const allowAutoPlay=autoPlay && autoPlayUnlocked && isAutoPlayAllowed();
+      await render(idx, allowAutoPlay);
       el.pbar.value=idx;
       el.footer.textContent=`#${idx+1}/${QUEUE.length}`;
       updateHeaderStats();
@@ -1681,7 +1763,8 @@ async function initApp(){
       idx=-1;
       el.mic.disabled=false;
       try{
-        await nextCard(true, autoPlay);
+        const allowAutoPlay=autoPlay && isAutoPlayAllowed();
+        await nextCard(true, allowAutoPlay);
       }catch(err){
         sessionActive=false;
         throw err;
@@ -1850,8 +1933,9 @@ async function initApp(){
     if(state.dragging){
       if(horizontalDominant && reachedHorizontal){
         clearCardDragStyles();
-        if(dx>0) prevCard(true);
-        else nextCard(false,true);
+        const allowAuto=isAutoPlayAllowed();
+        if(dx>0) prevCard(allowAuto);
+        else nextCard(false, allowAuto);
         return;
       }
       resetCardDrag({animate:true});
@@ -1860,8 +1944,9 @@ async function initApp(){
     const horizontalSwipe=horizontalDominant && reachedHorizontal && horizontalVelocity>=MIN_SWIPE_VELOCITY && dt<=MAX_SWIPE_DURATION;
     if(horizontalSwipe){
       clearCardDragStyles();
-      if(dx>0) prevCard(true);
-      else nextCard(false,true);
+      const allowAuto=isAutoPlayAllowed();
+      if(dx>0) prevCard(allowAuto);
+      else nextCard(false, allowAuto);
     }else{
       resetCardDrag({animate:false});
     }
@@ -1870,7 +1955,7 @@ async function initApp(){
   el.card.addEventListener('touchcancel',(ev)=>{ handleTouchFinish(ev,true); },{passive:true});
   el.en.addEventListener('click', async ()=>{ if(!sessionActive){ await startSession(false); } });
   el.card.addEventListener('dblclick', ()=>{ if(!sessionActive) return; toggleJA(); });
-  el.next.onclick=()=> nextCard(false,true);
+  el.next.onclick=()=> nextCard(false, isAutoPlayAllowed());
   el.play.addEventListener('click', async ()=>{
     if(sessionStarting) return;
     if(!sessionActive){ await startSession(false); }
@@ -2032,7 +2117,7 @@ async function initApp(){
         el.footer.textContent = `3回失敗。${levelLabel}で次へ進みます`;
         toast('不合格で次へ進みます', 1600);
         el.mic.disabled=true;
-        setTimeout(()=>{ hideNextCta(); nextCard(false,true); }, 900);
+        setTimeout(()=>{ hideNextCta(); nextCard(false, isAutoPlayAllowed()); }, 900);
       }else{
         el.footer.textContent = `一致率${pct}%：${levelLabel}${bestLabel} 維持のため再挑戦 (${failCount}/${FAIL_LIMIT})`;
         toast('70%未満。もう一度チャレンジ！', 1600);
