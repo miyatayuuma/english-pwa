@@ -467,7 +467,7 @@ async function initApp(){
 
     if(el.headerLevelAvg){
       const secKey = el.secSel ? el.secSel.value : '';
-      const pool = secKey ? (ITEMS_BY_SECTION.get(secKey)||[]) : (window.ALL_ITEMS||[]);
+      const pool = secKey ? (ITEMS_BY_SECTION.get(secKey)||[]) : ALL_ITEMS;
       let sum=0;
       let count=0;
       for(const item of pool){
@@ -1109,10 +1109,10 @@ async function initApp(){
   const ITEMS_BY_SECTION=new Map();
   let itemsLoadPromise=null;
   async function fetchJson(url){ const r=await fetch(url,{cache:'no-store'}); if(!r.ok) throw new Error(url+': '+r.status); return r.json(); }
-  window.ALL_ITEMS=[]; let SRS_MAP=new Map();
+  let ALL_ITEMS=[]; let SRS_MAP=new Map();
   function rebuildSectionIndex(){
     ITEMS_BY_SECTION.clear();
-    for(const it of window.ALL_ITEMS){
+    for(const it of ALL_ITEMS){
       const key=String((it&& (it.unit ?? it.sec ?? ''))||'').trim();
       if(!key) continue;
       if(!ITEMS_BY_SECTION.has(key)) ITEMS_BY_SECTION.set(key, []);
@@ -1146,7 +1146,7 @@ async function initApp(){
     updateHeaderStats();
   }
   function applyItemsData(items,{refreshPicker=false}={}){
-    window.ALL_ITEMS=Array.isArray(items)?items.slice():[];
+    ALL_ITEMS=Array.isArray(items)?items.slice():[];
     rebuildSectionIndex();
     if(refreshPicker) updateSectionOptions();
     updateHeaderStats();
@@ -1183,15 +1183,15 @@ async function initApp(){
     return data;
   }
   async function ensureItemsLoaded(){
-    if(window.ALL_ITEMS.length){
+    if(ALL_ITEMS.length){
       if(!ITEMS_BY_SECTION.size) rebuildSectionIndex();
-      return window.ALL_ITEMS;
+      return ALL_ITEMS;
     }
     if(!itemsLoadPromise){
       itemsLoadPromise=(async()=>{
         const data=await loadItemsOnce(DATA_URL);
         applyItemsData(data);
-        return window.ALL_ITEMS;
+        return ALL_ITEMS;
       })().catch(err=>{ itemsLoadPromise=null; throw err; });
     }
     return itemsLoadPromise;
@@ -1307,7 +1307,7 @@ async function initApp(){
   function buildQueue(){
     const sec=el.secSel.value;
     const order=el.orderSel.value;
-    const baseItems=sec ? (ITEMS_BY_SECTION.get(sec)||[]) : window.ALL_ITEMS;
+    const baseItems=sec ? (ITEMS_BY_SECTION.get(sec)||[]) : ALL_ITEMS;
     let items=Array.isArray(baseItems) ? baseItems.filter(Boolean) : [];
     const levels=activeLevelArray();
     if(levels.length && levels.length<LEVEL_CHOICES.length){
@@ -2073,8 +2073,7 @@ async function initApp(){
     if(!active){ startRec(); }
     else{ stopRec(); }
   };
-  // Boot
-  (async()=>{
+  async function bootApp(){
     const releaseBoot=acquireOverlay('boot');
     try{
       await ensureDir({prompt:true, forceCheck:true, allowSchedule:false});
@@ -2093,7 +2092,9 @@ async function initApp(){
     }finally{
       releaseBoot();
     }
-  })();
+  }
+
+  await bootApp();
 }
 
 function attachInit() {
