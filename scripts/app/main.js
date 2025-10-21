@@ -31,16 +31,19 @@ import { createOverlayController } from './overlay.js';
 import { createCardTransitionQueue } from './cardTransitions.js';
 import { createComposeGuide } from './composeGuide.js';
 import { qs, qsa } from './dom.js';
+import { createLevelStateManager, LEVEL_CHOICES } from './levelState.js';
 
-async function initApp(){
+function createAppRuntime(){
   // ===== Utilities =====
   const now=()=>Date.now(); const UA=(()=>navigator.userAgent||'')();
 
-  const {LEVEL_STATE, LEVEL_FILTER, SEARCH, SPEED, CONFIG, PENDING_LOGS: PENDING_LOGS_KEY, SECTION_SELECTION, ORDER_SELECTION}=STORAGE_KEYS;
+  const { SEARCH, SPEED, CONFIG, PENDING_LOGS: PENDING_LOGS_KEY, SECTION_SELECTION, ORDER_SELECTION } = STORAGE_KEYS;
 
-  function loadLevelState(){ return loadJson(LEVEL_STATE, {}) || {}; }
-  function saveLevelState(state){ saveJson(LEVEL_STATE, state||{}); }
-  let levelStateMap=loadLevelState();
+  const BASE_HINT_STAGE=0;
+  const COMPOSE_HINT_STAGE_JA=BASE_HINT_STAGE+1;
+  const COMPOSE_HINT_STAGE_AUDIO=BASE_HINT_STAGE+2;
+  const COMPOSE_HINT_STAGE_EN=BASE_HINT_STAGE+3;
+
   function loadSearchQuery(){
     return loadString(SEARCH, '');
   }
@@ -52,244 +55,23 @@ async function initApp(){
     const raw=(input && typeof input.value==='string') ? input.value : '';
     return raw.trim();
   }
-  const LEVEL_CHOICES=[0,1,2,3,4,5];
-  const LEGACY_LEVEL_CHOICES=[1,2,3,4,5];
-  const NO_HINT_RATE_THRESHOLD=0.90;
-  const PERFECT_MATCH_THRESHOLD=0.999;
-  const PROMOTION_RULES={
-    4:{required:2,minIntervalMs:12*60*60*1000},
-    5:{required:3,minIntervalMs:24*60*60*1000}
-  };
-  const NO_HINT_HISTORY_LIMIT=24;
-  function normalizeNoHintHistory(raw){
-    if(!Array.isArray(raw)) return [];
-    return raw
-      .map(v=>Number(v)||0)
-      .filter(v=>Number.isFinite(v) && v>0)
-      .sort((a,b)=>a-b)
-      .slice(-NO_HINT_HISTORY_LIMIT);
-  }
-  function computeNoHintProgress(history, rule, now){
-    const normalizedHistory=normalizeNoHintHistory(history);
-    if(!rule){
-      return {qualified:normalizedHistory.length,required:0,remaining:0,met:true,lastQualifiedAt:null,nextEligibleAt:null,countedThisAttempt:false};
-    }
-    const minInterval=Math.max(0, Number(rule.minIntervalMs)||0);
-    const selected=[];
-    let lastIncluded=-Infinity;
-    for(const ts of normalizedHistory){
-      if(!selected.length || ts-lastIncluded>=minInterval){
-        selected.push(ts);
-        lastIncluded=ts;
-      }
-    }
-    const qualified=selected.length;
-    const required=Math.max(0, Number(rule.required)||0);
-    const met=qualified>=required && required>0 ? true : qualified>=required;
-    const lastQualifiedAt=selected.length?selected[selected.length-1]:null;
-    let nextEligibleAt=null;
-    if(lastQualifiedAt && minInterval>0){
-      const candidateTs=lastQualifiedAt+minInterval;
-      if(!Number.isFinite(now) || candidateTs>now){
-        nextEligibleAt=candidateTs;
-      }
-    }
-    const countedThisAttempt=Number.isFinite(now) && lastQualifiedAt===now;
-    const remaining=Math.max(0, required-qualified);
-    return {qualified,required,remaining,met,lastQualifiedAt,nextEligibleAt,countedThisAttempt};
-  }
-  function determineNextTarget(info, candidate, finalLevel, promotionBlocked, now){
-    if(!info) return null;
-    const lastLevel=Number(info.last);
-    const bestLevel=Number(info.best);
-    const normalizedLast=Number.isFinite(lastLevel)?lastLevel:0;
-    const normalizedBest=Number.isFinite(bestLevel)?bestLevel:0;
-    let target=null;
-    if(promotionBlocked && promotionBlocked.target){
-      target=promotionBlocked.target;
-    }else if(normalizedLast>=4){
-      if(normalizedLast===4){
-        target=5;
-      }
-    }else{
-      const refLevel=Math.max(normalizedLast, normalizedBest);
-      if(refLevel>=3){
-        target=4;
-      }
-    }
-    if(!target && normalizedLast===4){
-      target=5;
-    }
-    if(!target || !PROMOTION_RULES[target]) return null;
-    const rule=PROMOTION_RULES[target];
-    const progress=computeNoHintProgress(info.noHintHistory, rule, now);
-    const cooldownMs=progress.nextEligibleAt?Math.max(0, progress.nextEligibleAt-now):0;
-    return {
-      target,
-      required:rule.required,
-      qualified:progress.qualified,
-      remaining:progress.remaining,
-      minIntervalMs:rule.minIntervalMs,
-      nextEligibleAt:progress.nextEligibleAt||null,
-      cooldownMs,
-      countedThisAttempt:progress.countedThisAttempt,
-      met:progress.met
-    };
-  }
-  function formatDurationMs(ms){
-    if(!Number.isFinite(ms) || ms<=0) return '';
-    const totalMinutes=Math.ceil(ms/60000);
-    if(totalMinutes>=60){
-      const hours=Math.floor(totalMinutes/60);
-      const minutes=totalMinutes%60;
-      if(minutes>0) return `${hours}時間${minutes}分`;
-      return `${hours}時間`;
-    }
-    return `${Math.max(1,totalMinutes)}分`;
-  }
-  function buildNoHintProgressNote(goal){
-    if(!goal) return '';
-    const levelLabel=`Lv${goal.target}`;
-    if((goal.remaining||0)<=0){
-      return `${levelLabel}のノーヒント条件は準備OK！`;
-    }
-    let msg=`あと${goal.remaining}回ノーヒント合格で${levelLabel}`;
-    if(goal.cooldownMs>0){
-      const waitLabel=formatDurationMs(goal.cooldownMs);
-      if(waitLabel){
-        msg+=`（${waitLabel}後にカウント可）`;
-      }
-    }
-    return msg;
-  }
-  function loadLevelFilter(){
-    const parsed=loadJson(LEVEL_FILTER, null);
-    if(Array.isArray(parsed)){
-      const valid=parsed.map(n=>Number(n)).filter(n=>LEVEL_CHOICES.includes(n));
-      if(valid.length){
-        const set=new Set(valid);
-        const coversLegacy=LEGACY_LEVEL_CHOICES.every(l=>set.has(l));
-        if(coversLegacy && !set.has(0)) set.add(0);
-        return set;
-      }
-    }
-    return new Set(LEVEL_CHOICES);
-  }
-  function saveLevelFilter(set){
-    if(!(set instanceof Set)) return;
-    const arr=LEVEL_CHOICES.filter(l=>set.has(l));
-    saveJson(LEVEL_FILTER, arr);
-  }
-  let levelFilterSet=loadLevelFilter();
-  function activeLevelArray(){
-    if(!(levelFilterSet instanceof Set) || levelFilterSet.size===0){
-      levelFilterSet=new Set(LEVEL_CHOICES);
-    }
-    const arr=LEVEL_CHOICES.filter(l=>levelFilterSet.has(l));
-    return arr.length?arr:LEVEL_CHOICES.slice();
-  }
-  function evaluateLevel(matchRate, hintStageUsed){
-    const rate=Math.max(0, Math.min(1, Number(matchRate)||0));
-    const stageRaw=Number.isFinite(hintStageUsed)?Math.floor(hintStageUsed):BASE_HINT_STAGE;
-    const stage=Math.max(BASE_HINT_STAGE, stageRaw);
-    const firstHintStage=getFirstHintStage();
-    const englishRevealStage=getEnglishRevealStage();
-    const usedHint=stage>=firstHintStage;
-    const revealedEnglishHint=stage>=englishRevealStage;
-    let candidate=1;
-    if(rate<0.70){
-      candidate=1;
-    }else if(rate<0.80){
-      candidate=2;
-    }else if(rate<0.90){
-      candidate=3;
-    }else{
-      if(usedHint){
-        candidate=3;
-      }else if(rate<1){
-        candidate=4;
-      }else{
-        candidate=5;
-      }
-    }
-    const usedEnglishHint = usedHint;
-    const noHintSuccess=!usedHint && rate>=NO_HINT_RATE_THRESHOLD;
-    const perfectNoHint=noHintSuccess && rate>=PERFECT_MATCH_THRESHOLD;
-    const pass=rate>=0.70;
-    return {candidate, rate, stage, noHintSuccess, perfectNoHint, usedEnglishHint, revealedEnglishHint, pass};
-  }
-  function getLevelInfo(id){
-    if(!id) return {best:0,last:0};
-    return levelStateMap[id] || {best:0,last:0};
-  }
-  function updateLevelInfo(id, evaluation, {now=Date.now()}={}){
-    const fallbackCandidate=Number.isFinite(Number(evaluation?.candidate))?Number(evaluation.candidate):0;
-    if(!id){
-      const fallback={best:fallbackCandidate,last:fallbackCandidate};
-      return {info:fallback,candidate:fallbackCandidate,finalLevel:fallbackCandidate,best:fallbackCandidate,promotionBlocked:null,nextTarget:null,evaluation};
-    }
-    const info=levelStateMap[id] || {best:0,last:0};
-    const prevLastRaw=Number(info.last);
-    const prevBestRaw=Number(info.best);
-    const prevLast=Number.isFinite(prevLastRaw)?prevLastRaw:0;
-    const prevBest=Number.isFinite(prevBestRaw)?prevBestRaw:0;
-    const stage=Number.isFinite(evaluation?.stage)?Number(evaluation.stage):BASE_HINT_STAGE;
-    const rate=Number(evaluation?.rate)||0;
-    if(!Array.isArray(info.noHintHistory)) info.noHintHistory=[];
-    const history=info.noHintHistory.slice();
-    const noHintSuccess=!!evaluation?.noHintSuccess;
-    if(noHintSuccess){
-      history.push(now);
-      const prevStreak=Number(info.noHintStreak)||0;
-      info.noHintStreak=prevStreak+1;
-      info.lastNoHintAt=now;
-    }else{
-      info.noHintStreak=0;
-    }
-    const perfectNoHint=!!evaluation?.perfectNoHint;
-    let level5CountNumeric=Number(info.level5Count);
-    if(!Number.isFinite(level5CountNumeric) || level5CountNumeric<0){
-      level5CountNumeric=0;
-    }
-    if(perfectNoHint){
-      level5CountNumeric+=1;
-    }
-    info.level5Count=level5CountNumeric;
-    const normalizedHistory=normalizeNoHintHistory(history);
-    info.noHintHistory=normalizedHistory;
-    const candidate=Math.max(0, Math.floor(fallbackCandidate));
-    let finalLevel=candidate;
-    let promotionBlocked=null;
-    if(candidate>prevLast && candidate>=4){
-      const rule=PROMOTION_RULES[candidate];
-      if(rule){
-        const progress=computeNoHintProgress(normalizedHistory, rule, now);
-        if(!progress.met || progress.remaining>0){
-          finalLevel=prevLast;
-          promotionBlocked=Object.assign({target:candidate,minIntervalMs:rule.minIntervalMs}, progress);
-        }
-      }
-    }
-    if(!Number.isFinite(finalLevel)) finalLevel=0;
-    info.last=finalLevel;
-    if(!Number.isFinite(prevBestRaw)) info.best=prevBest;
-    if(info.last>prevBest) info.best=info.last;
-    info.lastMatch=rate;
-    info.hintStage=stage;
-    info.updatedAt=now;
-    levelStateMap[id]=info;
-    saveLevelState(levelStateMap);
-    const nextTarget=determineNextTarget(info, candidate, finalLevel, promotionBlocked, now);
-    return {
-      info,
-      candidate,
-      finalLevel:info.last,
-      best:info.best,
-      promotionBlocked,
-      nextTarget,
-      evaluation
-    };
-  }
+
+  const levelStateManager=createLevelStateManager({
+    baseHintStage: BASE_HINT_STAGE,
+    getFirstHintStage,
+    getEnglishRevealStage,
+  });
+  const {
+    evaluateLevel,
+    getLevelInfo,
+    updateLevelInfo,
+    buildNoHintProgressNote,
+    getActiveLevelArray,
+    getLevelFilterSet,
+    setLevelFilterSet,
+    lastRecordedLevel,
+  }=levelStateManager;
+
   function refreshLevelDisplay(info){
     if(!el.level) return;
     if(!info){ el.level.textContent='—'; return; }
@@ -300,19 +82,9 @@ async function initApp(){
     el.level.textContent = Number.isFinite(best) && best>last ? `${last} / ${best}` : `${last}`;
   }
 
-  function lastRecordedLevel(id){
-    const info=getLevelInfo(id);
-    if(!info) return 0;
-    const lastVal=Number(info.last);
-    if(Number.isFinite(lastVal)) return lastVal;
-    const bestVal=Number(info.best);
-    if(Number.isFinite(bestVal)) return bestVal;
-    return 0;
-  }
-
   function updateLevelFilterButtons(){
     if(!el.levelFilter) return;
-    const active=new Set(activeLevelArray());
+    const active=new Set(getActiveLevelArray());
     qsa('button[data-level]', el.levelFilter).forEach(btn=>{
       const level=Number(btn.dataset.level||'0');
       const on=active.has(level);
@@ -331,7 +103,7 @@ async function initApp(){
     const btnWrap=document.createElement('div');
     btnWrap.className='level-filter-buttons';
     el.levelFilter.appendChild(btnWrap);
-    const activeLevels=new Set(activeLevelArray());
+    const activeLevels=new Set(getActiveLevelArray());
     for(const level of LEVEL_CHOICES){
       const btn=document.createElement('button');
       btn.type='button';
@@ -345,22 +117,23 @@ async function initApp(){
         btn.setAttribute('aria-pressed','false');
       }
       btn.addEventListener('click',()=>{
-        if(!(levelFilterSet instanceof Set)){
-          levelFilterSet=new Set(LEVEL_CHOICES);
+        let nextLevels=getLevelFilterSet();
+        if(!(nextLevels instanceof Set)){
+          nextLevels=new Set();
         }
-        if(levelFilterSet.has(level)){
-          if(levelFilterSet.size===1){
-            levelFilterSet=new Set(LEVEL_CHOICES);
+        if(nextLevels.has(level)){
+          if(nextLevels.size===1){
+            nextLevels=new Set(LEVEL_CHOICES);
           }else{
-            levelFilterSet.delete(level);
+            nextLevels.delete(level);
           }
         }else{
-          levelFilterSet.add(level);
+          nextLevels.add(level);
         }
-        if(!levelFilterSet.size){
-          levelFilterSet=new Set(LEVEL_CHOICES);
+        if(!nextLevels.size){
+          nextLevels=new Set(LEVEL_CHOICES);
         }
-        saveLevelFilter(levelFilterSet);
+        setLevelFilterSet(nextLevels);
         updateLevelFilterButtons();
         rebuildAndRender(true);
       });
@@ -389,27 +162,38 @@ async function initApp(){
   let speechController=null;
   let lastMatchEval=null;
   let currentShouldUseSpeech=false;
+  function initializeMediaControllers(){
+    const controller=createAudioController({
+      audioElement: audio,
+      playButton: el.play,
+      speedSlider: el.speed,
+      speedDownButton: el.speedDown,
+      speedUpButton: el.speedUp,
+      speedValueElement: el.speedValue,
+      loadSpeed: ()=>{
+        const stored=loadNumber(SPEED, 1);
+        return stored==null?1:stored;
+      },
+      saveSpeed: (rate)=>{ saveNumber(SPEED, rate); },
+      getCanSpeak: ()=>speechController ? speechController.canSpeakCurrentCard() : false,
+      onPlaybackRateChange: (rate)=>{
+        if(speechController){
+          speechController.setSpeechRate(rate);
+        }
+      },
+      isRecognitionActive: ()=>recognitionController ? recognitionController.isActive() : false,
+    });
+    const speech=createSpeechSynthesisController({
+      setSpeechPlayingState: controller.setSpeechPlayingState,
+      getCurrentItem: ()=>currentItem,
+      isSpeechDesired: ()=>currentShouldUseSpeech,
+    });
+    speech.setSpeechRate(controller.getPlaybackRate());
+    return { controller, speech };
+  }
 
-  const audioController=createAudioController({
-    audioElement: audio,
-    playButton: el.play,
-    speedSlider: el.speed,
-    speedDownButton: el.speedDown,
-    speedUpButton: el.speedUp,
-    speedValueElement: el.speedValue,
-    loadSpeed: ()=>{
-      const stored=loadNumber(SPEED, 1);
-      return stored==null?1:stored;
-    },
-    saveSpeed: (rate)=>{ saveNumber(SPEED, rate); },
-    getCanSpeak: ()=>speechController ? speechController.canSpeakCurrentCard() : false,
-    onPlaybackRateChange: (rate)=>{
-      if(speechController){
-        speechController.setSpeechRate(rate);
-      }
-    },
-    isRecognitionActive: ()=>recognitionController ? recognitionController.isActive() : false,
-  });
+  const { controller: audioController, speech } = initializeMediaControllers();
+  speechController=speech;
 
   const {
     playTone,
@@ -510,11 +294,6 @@ async function initApp(){
   const FAIL_LIMIT=3;
   let failCount=0;
 
-  const BASE_HINT_STAGE=0;
-  const COMPOSE_HINT_STAGE_JA=BASE_HINT_STAGE+1;
-  const COMPOSE_HINT_STAGE_AUDIO=BASE_HINT_STAGE+2;
-  const COMPOSE_HINT_STAGE_EN=BASE_HINT_STAGE+3;
-
   let hintStage=BASE_HINT_STAGE;
   let maxHintStageUsed=BASE_HINT_STAGE;
   let currentEnHtml='';
@@ -546,12 +325,6 @@ async function initApp(){
     return stage>=unlockStage;
   }
 
-  speechController = createSpeechSynthesisController({
-    setSpeechPlayingState,
-    getCurrentItem: ()=>currentItem,
-    isSpeechDesired: ()=>currentShouldUseSpeech,
-  });
-  speechController.setSpeechRate(audioController.getPlaybackRate());
   function updatePlayButtonAvailability(){
     baseUpdatePlayButtonAvailability();
     if(!el.play) return;
@@ -1004,17 +777,22 @@ async function initApp(){
       el.cfgModal.style.display='flex';
     });
   }
-  const notifHandlers = initNotificationSystem({
-    statusEl: el.notifStatus,
-    buttonEl: el.notifBtn,
-    toast
-  });
-  if(el.notifBtn && notifHandlers?.handleClick){
-    el.notifBtn.addEventListener('click', notifHandlers.handleClick);
+  function setupNotifications(){
+    const handlers=initNotificationSystem({
+      statusEl: el.notifStatus,
+      buttonEl: el.notifBtn,
+      toast
+    });
+    if(el.notifBtn && handlers?.handleClick){
+      el.notifBtn.addEventListener('click', handlers.handleClick);
+    }
+    if(typeof document!=='undefined' && handlers?.handleVisibilityChange){
+      document.addEventListener('visibilitychange', handlers.handleVisibilityChange);
+    }
+    return handlers;
   }
-  if(typeof document!=='undefined' && notifHandlers?.handleVisibilityChange){
-    document.addEventListener('visibilitychange', notifHandlers.handleVisibilityChange);
-  }
+
+  const notifHandlers=setupNotifications();
   if(el.cfgClose && el.cfgModal){
     el.cfgClose.addEventListener('click', ()=>{ el.cfgModal.style.display='none'; });
   }
@@ -1984,38 +1762,42 @@ async function initApp(){
   function showTranscriptInterim(text){ qs('#transcript').innerHTML=`<span class="interim">${text}</span>`; }
   function showTranscriptFinal(text){ qs('#transcript').textContent=text; }
 
-  recognitionController = createRecognitionController({
-    enElement: el.en,
-    getComposeNodes: ()=>composeGuide.getNodes(),
-    getReferenceText: ()=>{
-      const refItem=QUEUE[idx];
-      return refItem ? refItem.en : el.en.textContent;
-    },
-    onTranscriptReset: resetTranscript,
-    onTranscriptInterim: showTranscriptInterim,
-    onTranscriptFinal: (text)=>{ showTranscriptFinal(text); },
-    onMatchEvaluated: (info)=>{
-      if(!info) return;
-      lastMatchEval=Object.assign({}, info);
-      const score=calcMatchScore(info.refCount, info.recall, info.precision);
-      updateMatch(score);
-    },
-    onUnsupported: ()=>toast('この端末では音声認識が使えません'),
-    onError: (e)=>{
-      toast('ASRエラー: '+(e && e.error || ''));
-      el.mic.disabled=false;
-    },
-    onStart: ()=>{ setMicState(true); },
-    onStop: ()=>{ setMicState(false); },
-    onAutoStop: (result)=>{ stopRec(result).catch(()=>{}); },
-    setMicState,
-    playTone,
-    setResumeAfterMicStart,
-    clearResumeTimer,
-    resetResumeAfterMicStart,
-    shouldResumeAudio: ()=> audio && !audio.paused && !audio.ended,
-    resumeAudio: ()=>{ if(audio?.src){ audio.play().catch(()=>{}); } },
-  });
+  function initializeRecognitionController(){
+    return createRecognitionController({
+      enElement: el.en,
+      getComposeNodes: ()=>composeGuide.getNodes(),
+      getReferenceText: ()=>{
+        const refItem=QUEUE[idx];
+        return refItem ? refItem.en : el.en.textContent;
+      },
+      onTranscriptReset: resetTranscript,
+      onTranscriptInterim: showTranscriptInterim,
+      onTranscriptFinal: (text)=>{ showTranscriptFinal(text); },
+      onMatchEvaluated: (info)=>{
+        if(!info) return;
+        lastMatchEval=Object.assign({}, info);
+        const score=calcMatchScore(info.refCount, info.recall, info.precision);
+        updateMatch(score);
+      },
+      onUnsupported: ()=>toast('この端末では音声認識が使えません'),
+      onError: (e)=>{
+        toast('ASRエラー: '+(e && e.error || ''));
+        el.mic.disabled=false;
+      },
+      onStart: ()=>{ setMicState(true); },
+      onStop: ()=>{ setMicState(false); },
+      onAutoStop: (result)=>{ stopRec(result).catch(()=>{}); },
+      setMicState,
+      playTone,
+      setResumeAfterMicStart,
+      clearResumeTimer,
+      resetResumeAfterMicStart,
+      shouldResumeAudio: ()=> audio && !audio.paused && !audio.ended,
+      resumeAudio: ()=>{ if(audio?.src){ audio.play().catch(()=>{}); } },
+    });
+  }
+
+  recognitionController=initializeRecognitionController();
 
   function startRec(){
     if(el.mic.disabled) return;
@@ -2179,7 +1961,14 @@ async function initApp(){
     }
   }
 
-  bootApp();
+  return {
+    boot: bootApp,
+  };
+}
+
+async function initApp(){
+  const runtime=createAppRuntime();
+  await runtime.boot();
 }
 
 function registerServiceWorker() {
