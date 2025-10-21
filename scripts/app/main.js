@@ -61,16 +61,14 @@ function createAppRuntime(){
     getFirstHintStage,
     getEnglishRevealStage,
   });
-  const {
-    evaluateLevel,
-    getLevelInfo,
-    updateLevelInfo,
-    buildNoHintProgressNote,
-    getActiveLevelArray,
-    getLevelFilterSet,
-    setLevelFilterSet,
-    lastRecordedLevel,
-  }=levelStateManager;
+  const evaluateLevel=(...args)=>levelStateManager.evaluateLevel(...args);
+  const getLevelInfo=(...args)=>levelStateManager.getLevelInfo(...args);
+  const updateLevelInfo=(...args)=>levelStateManager.updateLevelInfo(...args);
+  const buildNoHintProgressNote=(...args)=>levelStateManager.buildNoHintProgressNote(...args);
+  const getActiveLevelArray=()=>levelStateManager.getActiveLevelArray();
+  const getLevelFilterSet=()=>levelStateManager.getLevelFilterSet();
+  const setLevelFilterSet=(...args)=>levelStateManager.setLevelFilterSet(...args);
+  const lastRecordedLevel=(...args)=>levelStateManager.lastRecordedLevel(...args);
 
   function refreshLevelDisplay(info){
     if(!el.level) return;
