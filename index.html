@@ -88,6 +88,15 @@
     .attempt-info{font-size:12px;color:var(--muted);transition:color .3s ease}
     .attempt-info.alert{color:var(--bad)}
 
+    .compose-guide{margin-top:6px;padding:12px;border-radius:12px;border:1px dashed rgba(98,213,255,.28);background:rgba(16,24,40,.6);display:none;flex-direction:column;gap:8px}
+    .compose-guide.show{display:flex}
+    .compose-guide h4{margin:0;font-size:13px;color:var(--muted);letter-spacing:.04em;font-weight:600}
+    .compose-guide p{margin:0;font-size:12px;color:var(--muted);line-height:1.5}
+    .compose-token-list{display:flex;flex-wrap:wrap;gap:8px}
+    .compose-token{padding:6px 12px;border-radius:10px;border:1px solid rgba(98,213,255,.26);background:rgba(98,213,255,.08);color:var(--txt);font-size:14px;letter-spacing:.01em;cursor:default;transition:background .18s ease,border-color .18s ease,box-shadow .18s ease}
+    .compose-token.hit{background:rgba(70,211,127,.18);border-color:rgba(70,211,127,.55);box-shadow:0 0 0 1px rgba(70,211,127,.25)}
+    .compose-token.miss{background:rgba(255,107,107,.12);border-color:rgba(255,107,107,.45)}
+
     footer{border-top:1px solid var(--bd);padding:8px 12px;display:flex;gap:10px;align-items:center;background:var(--panel)}
     progress{width:160px;height:10px}
     .btn{border:1px solid var(--bd);border-radius:12px;background:#111726;color:var(--txt);padding:10px 14px;cursor:pointer}
@@ -128,6 +137,7 @@
     .cfg-fieldset legend{padding:0 6px;font-size:13px;color:var(--muted)}
     .cfg-radio{display:flex;align-items:center;gap:8px;margin:6px 0;font-size:14px}
     .cfg-radio input[type="radio"]{width:auto}
+    .cfg-note{margin:4px 0 0;font-size:12px;color:var(--muted);line-height:1.5}
     #cfgBox input[type="text"], #cfgBox input[type="url"], #cfgBox select{width:100%;padding:8px;border-radius:10px;border:1px solid var(--bd);background:#0c1221;color:var(--txt)}
     #cfgBox .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
     #toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#0f1422;border:1px solid #24304a;color:#b7c0d6;border-radius:10px;padding:8px 12px;z-index:99999;display:none}
@@ -217,6 +227,11 @@
       <div class="chips" id="chips"></div>
       <div id="enText" class="en">出題を準備しています…（ダブルタップで和訳）</div>
       <div id="jaText" class="ja">—</div>
+      <div id="composeGuide" class="compose-guide" aria-hidden="true">
+        <h4>並び替えガイド</h4>
+        <p id="composeNote">表示された語句をヒントに英作文モードで発話してください。</p>
+        <div id="composeTokens" class="compose-token-list" role="list"></div>
+      </div>
       <div id="transcript" class="muted"></div>
 
       <div class="kpi">
@@ -268,6 +283,12 @@
       <legend>再生方法</legend>
       <label class="cfg-radio"><input type="radio" name="cfgPlaybackMode" value="audio"> 音源のみ</label>
       <label class="cfg-radio"><input type="radio" name="cfgPlaybackMode" value="speech"> 合成音声のみ</label>
+    </fieldset>
+    <fieldset class="cfg-fieldset">
+      <legend>学習モード</legend>
+      <label class="cfg-radio"><input type="radio" name="cfgStudyMode" value="read"> 通常モード（音読・リピーティング）</label>
+      <label class="cfg-radio"><input type="radio" name="cfgStudyMode" value="compose"> 整序英作文ガイド（語順ヒントを表示）</label>
+      <p class="cfg-note">整序英作文を有効化すると、英文ヒントの代わりにランダムな語句タグが表示されます。設定を保存すると次のカードから適用されます。</p>
     </fieldset>
     <label>音声合成の声
       <select id="cfgSpeechVoice"></select>
@@ -577,14 +598,24 @@
     return Object.fromEntries(entries.slice(-190));
   }
   let STUDY_LOG=pruneStudyLog(loadStudyLog());
-  function recordStudyProgress({pass=false,newLevel5=false,noHint=false,perfect=false,streak=0}={}){
+  function recordStudyProgress({pass=false,newLevel5=false,noHint=false,perfect=false,streak=0,mode=STUDY_MODE_READ}={}){
+    const modeKey = mode===STUDY_MODE_COMPOSE ? STUDY_MODE_COMPOSE : STUDY_MODE_READ;
     const key=localDateKey();
-    const entry=STUDY_LOG[key]||{passes:0,level5:0,level5_count:0,no_hint:0,streak:0};
+    const entry=STUDY_LOG[key]||{passes:0,level5:0,level5_count:0,no_hint:0,streak:0,modes:{}};
+    if(!entry.modes || typeof entry.modes!=='object'){ entry.modes={}; }
     if(pass) entry.passes=(entry.passes||0)+1;
     if(newLevel5) entry.level5=(entry.level5||0)+1;
     if(noHint) entry.no_hint=(entry.no_hint||0)+1;
     if(perfect) entry.level5_count=(entry.level5_count||0)+1;
     if(Number.isFinite(streak)) entry.streak=Math.max(entry.streak||0, streak||0);
+    entry.last_mode=modeKey;
+    const modeEntry=entry.modes[modeKey]||{passes:0,level5:0,level5_count:0,no_hint:0,streak:0};
+    if(pass) modeEntry.passes=(modeEntry.passes||0)+1;
+    if(newLevel5) modeEntry.level5=(modeEntry.level5||0)+1;
+    if(noHint) modeEntry.no_hint=(modeEntry.no_hint||0)+1;
+    if(perfect) modeEntry.level5_count=(modeEntry.level5_count||0)+1;
+    if(Number.isFinite(streak)) modeEntry.streak=Math.max(modeEntry.streak||0, streak||0);
+    entry.modes[modeKey]=modeEntry;
     STUDY_LOG[key]=entry;
     STUDY_LOG=pruneStudyLog(STUDY_LOG);
     saveStudyLog(STUDY_LOG);
@@ -593,16 +624,30 @@
   function getDailyStats(key){
     const target=key||localDateKey();
     const entry=STUDY_LOG[target];
+    const modeStats={};
+    if(entry && entry.modes && typeof entry.modes==='object'){
+      for(const [mk,mv] of Object.entries(entry.modes)){
+        if(!mv || typeof mv!=='object') continue;
+        modeStats[mk]={
+          passes:mv.passes||0,
+          level5:mv.level5||0,
+          level5_count:mv.level5_count||0,
+          no_hint:mv.no_hint||0,
+          streak:mv.streak||0
+        };
+      }
+    }
     return {
       passes:entry?.passes||0,
       level5:entry?.level5||0,
       level5_count:entry?.level5_count||0,
       no_hint:entry?.no_hint||0,
-      streak:entry?.streak||0
+      streak:entry?.streak||0,
+      modes:modeStats
     };
   }
   function sumRange(startKey,endKey){
-    const res={passes:0, level5:0, level5_count:0, no_hint:0, streak:0};
+    const res={passes:0, level5:0, level5_count:0, no_hint:0, streak:0, modes:{}};
     if(!startKey||!endKey) return res;
     let cur=startKey;
     while(cur<=endKey){
@@ -613,6 +658,19 @@
         res.level5_count+=st.level5_count||0;
         res.no_hint+=st.no_hint||0;
         res.streak=Math.max(res.streak||0, st.streak||0);
+        if(st.modes && typeof st.modes==='object'){
+          for(const [mk,mv] of Object.entries(st.modes)){
+            if(!res.modes[mk]){
+              res.modes[mk]={passes:0, level5:0, level5_count:0, no_hint:0, streak:0};
+            }
+            const target=res.modes[mk];
+            target.passes+=mv?.passes||0;
+            target.level5+=mv?.level5||0;
+            target.level5_count+=mv?.level5_count||0;
+            target.no_hint+=mv?.no_hint||0;
+            target.streak=Math.max(target.streak||0, mv?.streak||0);
+          }
+        }
       }
       const parts=cur.split('-').map(n=>parseInt(n,10));
       if(parts.length>=3 && parts.every(n=>Number.isFinite(n))){
@@ -1278,8 +1336,10 @@
   }
 
   // ===== Elements =====
-  const el={ headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerInfo'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), next:qs('#btnNext'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSpeechVoice:qs('#cfgSpeechVoice'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnImport:qs('#btnImport'), filePick:qs('#filePick'), btnTestAudio:qs('#btnTestAudio'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus') };
+  const el={ headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerInfo'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), next:qs('#btnNext'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), composeGuide:qs('#composeGuide'), composeTokens:qs('#composeTokens'), composeNote:qs('#composeNote'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSpeechVoice:qs('#cfgSpeechVoice'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnImport:qs('#btnImport'), filePick:qs('#filePick'), btnTestAudio:qs('#btnTestAudio'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus') };
   el.cfgPlaybackMode=qsa('input[name="cfgPlaybackMode"]');
+  el.cfgStudyMode=qsa('input[name="cfgStudyMode"]');
+  const composeNoteDefault = el.composeNote ? el.composeNote.textContent : '';
   const audio=qs('#player');
   const CARD_TRANSITION_FALLBACK=420;
   let cardTransitionQueue=Promise.resolve();
@@ -1548,6 +1608,8 @@
   let maxHintStageUsed=BASE_HINT_STAGE;
   let currentEnHtml='';
   let currentItem=null;
+  let composeNodes=[];
+  let composeGuideActive=false;
   function setHintStage(stage,{reset=false}={}){
     const next=Math.max(0, Math.min(2, Number.isFinite(stage)?Math.floor(stage):0));
     const prev=hintStage;
@@ -1626,19 +1688,32 @@
   }
 
   // ===== Config =====
+  const STUDY_MODE_READ='read';
+  const STUDY_MODE_COMPOSE='compose';
   const CFG_KEY='appConfigV3';
   function loadCfg(){ try{return JSON.parse(localStorage.getItem(CFG_KEY)||'{}')}catch(_){return{}} }
   function saveCfg(o){ localStorage.setItem(CFG_KEY, JSON.stringify(o)); }
-  let CFG=Object.assign({ apiUrl:'', apiKey:'', audioBase:'./audio', speechVoice:'', playbackMode:'audio' }, loadCfg());
+  let CFG=Object.assign({ apiUrl:'', apiKey:'', audioBase:'./audio', speechVoice:'', playbackMode:'audio', studyMode:STUDY_MODE_READ }, loadCfg());
   if(typeof CFG.speechVoice!=='string'){ CFG.speechVoice=''; }
   const legacyFallback=CFG && typeof CFG.speechFallback!=='undefined' ? !!CFG.speechFallback : false;
   if(CFG && typeof CFG.playbackMode!=='string'){ CFG.playbackMode=''; }
   const normalizedMode = (CFG.playbackMode||'').toLowerCase();
   CFG.playbackMode = normalizedMode==='speech' ? 'speech' : (normalizedMode==='audio' ? 'audio' : (legacyFallback ? 'speech' : 'audio'));
   if(CFG && Object.prototype.hasOwnProperty.call(CFG,'speechFallback')){ delete CFG.speechFallback; }
+  if(typeof CFG.studyMode!=='string'){ CFG.studyMode=STUDY_MODE_READ; }
+  else {
+    const normalizedStudy=(CFG.studyMode||'').toLowerCase();
+    CFG.studyMode = normalizedStudy===STUDY_MODE_COMPOSE ? STUDY_MODE_COMPOSE : STUDY_MODE_READ;
+  }
 
   function getPlaybackMode(){
     return CFG.playbackMode==='speech' ? 'speech' : 'audio';
+  }
+  function getStudyMode(){
+    return CFG.studyMode===STUDY_MODE_COMPOSE ? STUDY_MODE_COMPOSE : STUDY_MODE_READ;
+  }
+  function isComposeMode(){
+    return getStudyMode()===STUDY_MODE_COMPOSE;
   }
   function shouldUseSpeechForItem(item){
     if(!item) return false;
@@ -1975,6 +2050,10 @@
         const mode=getPlaybackMode();
         el.cfgPlaybackMode.forEach(input=>{ input.checked = (input.value===mode); });
       }
+      if(el.cfgStudyMode && el.cfgStudyMode.length){
+        const studyMode=getStudyMode();
+        el.cfgStudyMode.forEach(input=>{ input.checked = (input.value===studyMode); });
+      }
       if(el.cfgSpeechVoice){
         populateVoiceOptions();
         const desired=CFG.speechVoice||'';
@@ -1996,6 +2075,7 @@
   }
   if(el.cfgSave && el.cfgModal && el.cfgUrl && el.cfgKey && el.cfgAudioBase){
     el.cfgSave.addEventListener('click', ()=>{
+      const prevStudyMode=getStudyMode();
       CFG.apiUrl=(el.cfgUrl.value||'').trim();
       CFG.apiKey=(el.cfgKey.value||'').trim();
       CFG.audioBase=(el.cfgAudioBase.value||'').trim()||'./audio';
@@ -2005,8 +2085,15 @@
       }else{
         CFG.playbackMode='audio';
       }
+      if(el.cfgStudyMode && el.cfgStudyMode.length){
+        const selectedStudy=el.cfgStudyMode.find(input=>input.checked);
+        CFG.studyMode = selectedStudy && selectedStudy.value===STUDY_MODE_COMPOSE ? STUDY_MODE_COMPOSE : STUDY_MODE_READ;
+      }else{
+        CFG.studyMode=STUDY_MODE_READ;
+      }
       if(el.cfgSpeechVoice){ CFG.speechVoice=el.cfgSpeechVoice.value||''; }
       saveCfg(CFG);
+      const newStudyMode=getStudyMode();
       if((CFG.apiUrl||'').trim()){
         for(const entry of PENDING_LOGS){
           entry.url=CFG.apiUrl.trim();
@@ -2045,8 +2132,21 @@
             })();
           }
         }
+        if(prevStudyMode!==newStudyMode){
+          clearHighlight();
+          setupComposeGuide(currentItem);
+          if(lastMatchEval && lastMatchEval.source){
+            const rerun=matchAndHighlight(currentItem.en, lastMatchEval.source);
+            lastMatchEval=Object.assign({}, rerun);
+            const score=calcMatchScore(rerun.refCount, rerun.recall, rerun.precision);
+            updateMatch(score);
+          }
+        }
       }else{
         currentShouldUseSpeech=false;
+        if(prevStudyMode!==newStudyMode){
+          resetComposeGuide();
+        }
       }
       updatePlayButtonAvailability();
       if((CFG.apiUrl||'').trim()){
@@ -2331,6 +2431,139 @@
     }
     return copy;
   }
+  function parseChunkSpecs(raw){
+    if(!raw) return [];
+    let source=raw;
+    if(typeof source==='string'){
+      const trimmed=source.trim();
+      if(!trimmed){ return []; }
+      try{ source=JSON.parse(trimmed); }
+      catch(_){ return []; }
+    }
+    if(!Array.isArray(source)) return [];
+    const specs=[];
+    for(const entry of source){
+      let text='';
+      if(typeof entry==='string'){ text=entry; }
+      else if(Array.isArray(entry)){ text=entry.filter(Boolean).join(' '); }
+      else if(entry && typeof entry==='object'){
+        if(Array.isArray(entry.tokens)){ text=entry.tokens.filter(Boolean).join(' '); }
+        else if(typeof entry.text==='string'){ text=entry.text; }
+      }
+      text=String(text||'').trim();
+      if(!text) continue;
+      const tokens=toks(text);
+      if(tokens.length){ specs.push({text, tokens}); }
+    }
+    specs.sort((a,b)=>b.tokens.length-a.tokens.length);
+    return specs;
+  }
+  function getItemChunkSpecs(item){
+    if(!item) return [];
+    if(Array.isArray(item._chunkSpecs)) return item._chunkSpecs;
+    const specs=parseChunkSpecs(item.chunks_json||item.chunks||'[]');
+    item._chunkSpecs=specs;
+    return specs;
+  }
+  function extractWordUnits(text){
+    if(!text) return [];
+    const units=[];
+    const re=/[\p{L}\p{N}'-]+/gu;
+    let m;
+    while((m=re.exec(text))){
+      const raw=m[0];
+      const tokens=toks(raw);
+      if(!tokens.length) continue;
+      units.push({text:raw, tokens});
+    }
+    return units;
+  }
+  function buildComposeChunks(item){
+    if(!item) return [];
+    const words=extractWordUnits(item.en||'');
+    if(!words.length) return [];
+    const chunkSpecs=getItemChunkSpecs(item);
+    const result=[];
+    let i=0;
+    while(i<words.length){
+      let matched=null;
+      if(chunkSpecs.length){
+        for(const spec of chunkSpecs){
+          const needed=spec.tokens.length;
+          if(!needed) continue;
+          let collected=[];
+          let wordCount=0;
+          let j=i;
+          while(j<words.length && collected.length<needed){
+            collected=collected.concat(words[j].tokens);
+            wordCount++;
+            j++;
+          }
+          if(collected.length<needed) continue;
+          let ok=true;
+          for(let k=0;k<needed;k++){
+            if(collected[k]!==spec.tokens[k]){ ok=false; break; }
+          }
+          if(ok){
+            matched={display:words.slice(i,i+wordCount).map(w=>w.text).join(' '), tokens:spec.tokens.slice(), wordCount};
+            break;
+          }
+        }
+      }
+      if(matched){
+        result.push({display:matched.display, tokens:matched.tokens});
+        i+=matched.wordCount;
+      }else{
+        const word=words[i];
+        result.push({display:word.text, tokens:word.tokens.slice()});
+        i++;
+      }
+    }
+    return result;
+  }
+  function resetComposeGuide(){
+    composeGuideActive=false;
+    composeNodes=[];
+    if(el.composeTokens){ el.composeTokens.innerHTML=''; }
+    if(el.composeGuide){
+      el.composeGuide.classList.remove('show');
+      el.composeGuide.setAttribute('aria-hidden','true');
+    }
+    if(el.composeNote){ el.composeNote.textContent=composeNoteDefault; }
+  }
+  function setupComposeGuide(item){
+    if(!el.composeGuide || !el.composeTokens){
+      composeGuideActive=false;
+      composeNodes=[];
+      return;
+    }
+    if(!isComposeMode() || !item){
+      resetComposeGuide();
+      return;
+    }
+    const chunks=buildComposeChunks(item);
+    if(!chunks.length){
+      resetComposeGuide();
+      return;
+    }
+    composeGuideActive=true;
+    composeNodes=[];
+    el.composeTokens.innerHTML='';
+    const displayList=shuffledCopy(chunks);
+    for(const chunk of displayList){
+      const tokenEl=document.createElement('span');
+      tokenEl.className='compose-token';
+      tokenEl.setAttribute('role','listitem');
+      tokenEl.textContent=chunk.display;
+      el.composeTokens.appendChild(tokenEl);
+      composeNodes.push({el:tokenEl, tokens:Array.isArray(chunk.tokens)?chunk.tokens.slice():[]});
+    }
+    if(el.composeNote){
+      el.composeNote.textContent=`シャッフルされた ${chunks.length} 個の語句を参考に、正しい語順を意識して発話しましょう。`;
+    }
+    el.composeGuide.classList.add('show');
+    el.composeGuide.setAttribute('aria-hidden','false');
+  }
   function buildQueue(){
     const sec=el.secSel.value;
     const order=el.orderSel.value;
@@ -2614,6 +2847,7 @@
     el.ja.textContent = '—';
     el.ja.style.display = 'none';
     el.chips.innerHTML = '';
+    resetComposeGuide();
     currentItem=null;
     currentEnHtml='';
     hintStage=BASE_HINT_STAGE;
@@ -2661,6 +2895,7 @@
       el.en.dataset.itemId = it.id || '';
       el.en.innerHTML=currentEnHtml;
       clearHighlight();
+      setupComposeGuide(it);
       el.ja.textContent=it.ja;
       el.chips.innerHTML='';
       (it.tags||'').split(',').filter(Boolean).forEach(t=>{ const s=document.createElement('span'); s.className='chip'; s.textContent=t.trim(); el.chips.appendChild(s); });
@@ -3147,6 +3382,14 @@
       sp.classList.remove('hit');
       sp.classList.remove('miss');
     });
+    if(Array.isArray(composeNodes)){
+      for(const node of composeNodes){
+        if(node && node.el){
+          node.el.classList.remove('hit');
+          node.el.classList.remove('miss');
+        }
+      }
+    }
   }
 
   function matchAndHighlight(refText, hypText){
@@ -3249,6 +3492,44 @@
       sp.classList.toggle('miss', !hit);
     }
 
+    if(composeGuideActive && Array.isArray(composeNodes) && composeNodes.length){
+      const composeMap=cloneCountMap(best.matchedCounts);
+      for(const node of composeNodes){
+        const nodeEl=node && node.el;
+        const nodeTokens=Array.isArray(node && node.tokens) ? node.tokens : [];
+        if(!nodeEl){ continue; }
+        if(!nodeTokens.length){
+          nodeEl.classList.remove('hit');
+          nodeEl.classList.remove('miss');
+          continue;
+        }
+        const reserved=[];
+        let chunkHit=true;
+        for(const tok of nodeTokens){
+          let matchKey='';
+          if((composeMap.get(tok)||0)>0){
+            matchKey=tok;
+          }else{
+            for(const [k,c] of composeMap){
+              if(c>0 && approxWithin1(k,tok)){ matchKey=k; break; }
+            }
+          }
+          if(matchKey){
+            composeMap.set(matchKey, composeMap.get(matchKey)-1);
+            reserved.push(matchKey);
+          }else{
+            chunkHit=false;
+            break;
+          }
+        }
+        if(!chunkHit){
+          for(const key of reserved){ composeMap.set(key, (composeMap.get(key)||0)+1); }
+        }
+        nodeEl.classList.toggle('hit', chunkHit);
+        nodeEl.classList.toggle('miss', !chunkHit);
+      }
+    }
+
     return {
       recall: best.recall,
       precision: best.precision,
@@ -3333,6 +3614,7 @@
     const hyp = stableText.trim();
     const refItem = QUEUE[idx];
     const refText = refItem ? refItem.en : el.en.textContent;
+    const studyMode = getStudyMode();
     const matchInfo = (lastMatchEval && lastMatchEval.source === hyp) ? lastMatchEval : matchAndHighlight(refText, hyp);
     lastMatchEval = matchInfo;
     const { recall, precision, matched, missing, refCount, hypTokens, transcript } = matchInfo;
@@ -3391,7 +3673,8 @@
         newLevel5:gainedLevel5,
         noHint:!!evaluation?.noHintSuccess,
         perfect:!!evaluation?.perfectNoHint,
-        streak:Number(levelInfo?.noHintStreak)||0
+        streak:Number(levelInfo?.noHintStreak)||0,
+        mode:studyMode
       });
     }else{
       failCount++;
@@ -3410,7 +3693,7 @@
 
     // Persist the locally-tracked level information to the GAS spreadsheet log as well.
     const payload = {
-      ts: new Date().toISOString(), id: it.id, mode: 'read',
+      ts: new Date().toISOString(), id: it.id, mode: studyMode,
       wer: +(1-recall).toFixed(3), cer: +(1-precision).toFixed(3),
       latency_ms: 0,
       words_spoken: (hypTokens||toks(hyp)).length,
@@ -3428,7 +3711,8 @@
       no_hint_successes:Array.isArray(levelInfo?.noHintHistory)?levelInfo.noHintHistory.length:0,
       next_level_target:levelUpdate?.nextTarget?.target||null,
       next_level_remaining:levelUpdate?.nextTarget?.remaining ?? null,
-      next_level_available_at:levelUpdate?.nextTarget?.nextEligibleAt ? new Date(levelUpdate.nextTarget.nextEligibleAt).toISOString() : null
+      next_level_available_at:levelUpdate?.nextTarget?.nextEligibleAt ? new Date(levelUpdate.nextTarget.nextEligibleAt).toISOString() : null,
+      study_mode: studyMode
     };
     try{ await sendLog('speech', payload); }catch(_){ }
     if(!pass && failCount<FAIL_LIMIT){ el.mic.disabled=false; }
