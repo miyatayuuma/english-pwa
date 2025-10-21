@@ -423,7 +423,7 @@
   }
 
   const {keys: STORAGE_KEYS, loadJson, saveJson, loadString, saveString, loadNumber, saveNumber}=LocalStorageUtil;
-  const {STUDY_LOG, NOTIF_STATE, LEVEL_STATE, LEVEL_FILTER, SEARCH, SPEED, CONFIG, PENDING_LOGS: PENDING_LOGS_KEY, SECTION_SELECTION, ORDER_SELECTION}=STORAGE_KEYS;
+  const {STUDY_LOG: STUDY_LOG_KEY, NOTIF_STATE: NOTIF_STATE_KEY, LEVEL_STATE: LEVEL_STATE_KEY, LEVEL_FILTER: LEVEL_FILTER_KEY, SEARCH, SPEED, CONFIG, PENDING_LOGS: PENDING_LOGS_KEY, SECTION_SELECTION, ORDER_SELECTION}=STORAGE_KEYS;
   const DAY_MS=86400000;
   function localDateKey(time=Date.now()){
     const d=new Date(time);
@@ -431,11 +431,11 @@
     return d.toISOString().slice(0,10);
   }
   function loadStudyLog(){
-    const parsed=loadJson(STUDY_LOG, {});
+    const parsed=loadJson(STUDY_LOG_KEY, {});
     return parsed && typeof parsed==='object'?parsed:{};
   }
   function saveStudyLog(log){
-    saveJson(STUDY_LOG, log||{});
+    saveJson(STUDY_LOG_KEY, log||{});
   }
   function pruneStudyLog(log){
     const entries=Object.entries(log||{});
@@ -530,11 +530,11 @@
     return res;
   }
   function loadNotifState(){
-    const parsed=loadJson(NOTIF_STATE, {});
+    const parsed=loadJson(NOTIF_STATE_KEY, {});
     return parsed && typeof parsed==='object'?parsed:{};
   }
   function saveNotifState(state){
-    saveJson(NOTIF_STATE, state||{});
+    saveJson(NOTIF_STATE_KEY, state||{});
   }
   function pruneNotifState(state){
     const out=Object.assign({dailyZero:{},dailyCompare:{},weeklyCompare:{}}, state||{});
@@ -812,8 +812,8 @@
     }, 1000);
   }
 
-  function loadLevelState(){ return loadJson(LEVEL_STATE, {}) || {}; }
-  function saveLevelState(state){ saveJson(LEVEL_STATE, state||{}); }
+  function loadLevelState(){ return loadJson(LEVEL_STATE_KEY, {}) || {}; }
+  function saveLevelState(state){ saveJson(LEVEL_STATE_KEY, state||{}); }
   let LEVEL_STATE=loadLevelState();
   function loadSearchQuery(){
     return loadString(SEARCH, '');
@@ -937,7 +937,7 @@
     return msg;
   }
   function loadLevelFilter(){
-    const parsed=loadJson(LEVEL_FILTER, null);
+    const parsed=loadJson(LEVEL_FILTER_KEY, null);
     if(Array.isArray(parsed)){
       const valid=parsed.map(n=>Number(n)).filter(n=>LEVEL_CHOICES.includes(n));
       if(valid.length){
@@ -952,7 +952,7 @@
   function saveLevelFilter(set){
     if(!(set instanceof Set)) return;
     const arr=LEVEL_CHOICES.filter(l=>set.has(l));
-    saveJson(LEVEL_FILTER, arr);
+    saveJson(LEVEL_FILTER_KEY, arr);
   }
   let LEVEL_FILTER=loadLevelFilter();
   function activeLevelArray(){
