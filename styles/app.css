@@ -21,8 +21,11 @@
     .stat-main{color:var(--txt);font-size:18px;font-weight:600;font-variant-numeric:tabular-nums}
     .stat-sub{color:var(--muted);font-size:14px;font-weight:500;letter-spacing:.02em}
     .grow{flex:1}
-    .icon{width:38px;height:38px;border-radius:999px;border:1px solid var(--bd);display:grid;place-items:center;cursor:pointer;background:#111726}
-    #btnCfg{position:relative;z-index:100001}
+    .icon-btn{width:38px;height:38px;border-radius:999px;border:1px solid var(--bd);display:grid;place-items:center;cursor:pointer;background:#111726;color:var(--txt);padding:0;font:inherit;line-height:1}
+    .icon-btn:hover{background:#161d2c}
+    .icon-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+    .icon-btn::-moz-focus-inner{border:0}
+    #btnCfg{position:relative;z-index:100001;-webkit-appearance:none;appearance:none}
 
     /* 範囲UI（ネイティブセレクト中心＝モバイル最適） */
     #rangeBar{display:grid;grid-template-columns:3fr 7fr;gap:16px;padding:12px;background:rgba(20,24,36,.5);border-bottom:1px solid rgba(255,255,255,.12)}
