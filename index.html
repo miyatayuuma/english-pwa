@@ -423,7 +423,7 @@
   }
 
   const {keys: STORAGE_KEYS, loadJson, saveJson, loadString, saveString, loadNumber, saveNumber}=LocalStorageUtil;
-  const {STUDY_LOG, NOTIF_STATE, LEVEL_STATE, LEVEL_FILTER, SEARCH, SPEED, CONFIG, PENDING_LOGS: PENDING_LOGS_KEY, SECTION_SELECTION, ORDER_SELECTION}=STORAGE_KEYS;
+  const {STUDY_LOG: STUDY_LOG_KEY, NOTIF_STATE, LEVEL_STATE, LEVEL_FILTER, SEARCH, SPEED, CONFIG, PENDING_LOGS: PENDING_LOGS_KEY, SECTION_SELECTION, ORDER_SELECTION}=STORAGE_KEYS;
   const DAY_MS=86400000;
   function localDateKey(time=Date.now()){
     const d=new Date(time);
@@ -431,11 +431,11 @@
     return d.toISOString().slice(0,10);
   }
   function loadStudyLog(){
-    const parsed=loadJson(STUDY_LOG, {});
+    const parsed=loadJson(STUDY_LOG_KEY, {});
     return parsed && typeof parsed==='object'?parsed:{};
   }
   function saveStudyLog(log){
-    saveJson(STUDY_LOG, log||{});
+    saveJson(STUDY_LOG_KEY, log||{});
   }
   function pruneStudyLog(log){
     const entries=Object.entries(log||{});
