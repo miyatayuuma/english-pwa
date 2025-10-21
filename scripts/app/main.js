@@ -591,12 +591,6 @@ async function initApp(){
     el.mic.classList.toggle('recording', !!on);
   }
 
-  function calcMatchScore(refCount, recall, precision){
-    if(!refCount) return 1;
-    if((recall+precision)<=0) return 0;
-    return (2*recall*precision)/(recall+precision);
-  }
-
   // ===== Config =====
   const STUDY_MODE_READ='read';
   const STUDY_MODE_COMPOSE='compose';
