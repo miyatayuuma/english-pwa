@@ -162,6 +162,7 @@
   </div>
 </div>
 
+<script src="scripts/storage/local.js"></script>
 <script>
 (function(){
   // ===== Utilities =====
@@ -421,24 +422,20 @@
     }
   }
 
+  const {keys: STORAGE_KEYS, loadJson, saveJson, loadString, saveString, loadNumber, saveNumber}=LocalStorageUtil;
+  const {STUDY_LOG, NOTIF_STATE, LEVEL_STATE, LEVEL_FILTER, SEARCH, SPEED, CONFIG, PENDING_LOGS: PENDING_LOGS_KEY, SECTION_SELECTION, ORDER_SELECTION}=STORAGE_KEYS;
   const DAY_MS=86400000;
-  const STUDY_LOG_KEY='studyLogV1';
-  const NOTIF_STATE_KEY='notifStateV1';
   function localDateKey(time=Date.now()){
     const d=new Date(time);
     d.setMinutes(d.getMinutes()-d.getTimezoneOffset());
     return d.toISOString().slice(0,10);
   }
   function loadStudyLog(){
-    try{
-      const raw=localStorage.getItem(STUDY_LOG_KEY);
-      if(!raw) return {};
-      const parsed=JSON.parse(raw);
-      return parsed && typeof parsed==='object'?parsed:{};
-    }catch(_){ return {}; }
+    const parsed=loadJson(STUDY_LOG, {});
+    return parsed && typeof parsed==='object'?parsed:{};
   }
   function saveStudyLog(log){
-    try{ localStorage.setItem(STUDY_LOG_KEY, JSON.stringify(log||{})); }catch(_){ }
+    saveJson(STUDY_LOG, log||{});
   }
   function pruneStudyLog(log){
     const entries=Object.entries(log||{});
@@ -533,15 +530,11 @@
     return res;
   }
   function loadNotifState(){
-    try{
-      const raw=localStorage.getItem(NOTIF_STATE_KEY);
-      if(!raw) return {};
-      const parsed=JSON.parse(raw);
-      return parsed && typeof parsed==='object'?parsed:{};
-    }catch(_){ return {}; }
+    const parsed=loadJson(NOTIF_STATE, {});
+    return parsed && typeof parsed==='object'?parsed:{};
   }
   function saveNotifState(state){
-    try{ localStorage.setItem(NOTIF_STATE_KEY, JSON.stringify(state||{})); }catch(_){ }
+    saveJson(NOTIF_STATE, state||{});
   }
   function pruneNotifState(state){
     const out=Object.assign({dailyZero:{},dailyCompare:{},weeklyCompare:{}}, state||{});
@@ -819,21 +812,14 @@
     }, 1000);
   }
 
-  const LEVEL_KEY='itemLevelV1';
-  function loadLevelState(){ try{ return JSON.parse(localStorage.getItem(LEVEL_KEY)||'{}'); }catch(_){ return {}; } }
-  function saveLevelState(state){ try{ localStorage.setItem(LEVEL_KEY, JSON.stringify(state)); }catch(_){ } }
+  function loadLevelState(){ return loadJson(LEVEL_STATE, {}) || {}; }
+  function saveLevelState(state){ saveJson(LEVEL_STATE, state||{}); }
   let LEVEL_STATE=loadLevelState();
-  const LEVEL_FILTER_KEY='levelFilterV1';
-  const SEARCH_KEY='itemSearchV1';
   function loadSearchQuery(){
-    try{
-      return localStorage.getItem(SEARCH_KEY)||'';
-    }catch(_){
-      return '';
-    }
+    return loadString(SEARCH, '');
   }
   function saveSearchQuery(value){
-    try{ localStorage.setItem(SEARCH_KEY, value); }catch(_){ }
+    saveString(SEARCH, value||'');
   }
   function currentSearchQuery(){
     const input=document.getElementById('rangeSearch');
@@ -951,26 +937,22 @@
     return msg;
   }
   function loadLevelFilter(){
-    try{
-      const raw=localStorage.getItem(LEVEL_FILTER_KEY);
-      if(!raw) return new Set(LEVEL_CHOICES);
-      const parsed=JSON.parse(raw);
-      if(Array.isArray(parsed)){
-        const valid=parsed.map(n=>Number(n)).filter(n=>LEVEL_CHOICES.includes(n));
-        if(valid.length){
-          const set=new Set(valid);
-          const coversLegacy=LEGACY_LEVEL_CHOICES.every(l=>set.has(l));
-          if(coversLegacy && !set.has(0)) set.add(0);
-          return set;
-        }
+    const parsed=loadJson(LEVEL_FILTER, null);
+    if(Array.isArray(parsed)){
+      const valid=parsed.map(n=>Number(n)).filter(n=>LEVEL_CHOICES.includes(n));
+      if(valid.length){
+        const set=new Set(valid);
+        const coversLegacy=LEGACY_LEVEL_CHOICES.every(l=>set.has(l));
+        if(coversLegacy && !set.has(0)) set.add(0);
+        return set;
       }
-    }catch(_){ }
+    }
     return new Set(LEVEL_CHOICES);
   }
   function saveLevelFilter(set){
     if(!(set instanceof Set)) return;
     const arr=LEVEL_CHOICES.filter(l=>set.has(l));
-    try{ localStorage.setItem(LEVEL_FILTER_KEY, JSON.stringify(arr)); }catch(_){ }
+    saveJson(LEVEL_FILTER, arr);
   }
   let LEVEL_FILTER=loadLevelFilter();
   function activeLevelArray(){
@@ -1239,23 +1221,17 @@
   audio.addEventListener('loadeddata', updatePlayButtonAvailability);
   updatePlayVisualState();
   updatePlayButtonAvailability();
-  const SPEED_KEY='audioSpeedV1';
   function clampSpeed(value){
     const num=(typeof value==='number')?value:parseFloat(value);
     if(!Number.isFinite(num)) return 1;
     return Math.min(1.5, Math.max(0.5, num));
   }
   function loadSpeed(){
-    try{
-      const raw=localStorage.getItem(SPEED_KEY);
-      if(raw==null) return 1;
-      return clampSpeed(parseFloat(raw));
-    }catch(_){
-      return 1;
-    }
+    const stored=loadNumber(SPEED, 1);
+    return clampSpeed(stored==null?1:stored);
   }
   function saveSpeed(rate){
-    try{ localStorage.setItem(SPEED_KEY, String(rate)); }catch(_){ }
+    saveNumber(SPEED, clampSpeed(rate));
   }
   let playbackRate=loadSpeed();
   speechRate=playbackRate;
@@ -1539,9 +1515,13 @@
   // ===== Config =====
   const STUDY_MODE_READ='read';
   const STUDY_MODE_COMPOSE='compose';
-  const CFG_KEY='appConfigV3';
-  function loadCfg(){ try{return JSON.parse(localStorage.getItem(CFG_KEY)||'{}')}catch(_){return{}} }
-  function saveCfg(o){ localStorage.setItem(CFG_KEY, JSON.stringify(o)); }
+  function loadCfg(){
+    const cfg=loadJson(CONFIG, {});
+    return cfg && typeof cfg==='object'?cfg:{};
+  }
+  function saveCfg(o){
+    saveJson(CONFIG, o||{});
+  }
   let CFG=Object.assign({ apiUrl:'', apiKey:'', audioBase:'./audio', speechVoice:'', playbackMode:'audio', studyMode:STUDY_MODE_READ }, loadCfg());
   if(typeof CFG.speechVoice!=='string'){ CFG.speechVoice=''; }
   const legacyFallback=CFG && typeof CFG.speechFallback!=='undefined' ? !!CFG.speechFallback : false;
@@ -1639,12 +1619,9 @@
     }
   }
 
-  const PENDING_KEY='pendingLogsV1';
   function loadPendingLogs(){
-    try{
-      const raw=JSON.parse(localStorage.getItem(PENDING_KEY)||'[]');
-      if(Array.isArray(raw)) return raw.filter(entry=>entry&&entry.type&&entry.url);
-    }catch(_){ }
+    const raw=loadJson(PENDING_LOGS_KEY, []);
+    if(Array.isArray(raw)) return raw.filter(entry=>entry&&entry.type&&entry.url);
     return [];
   }
   let PENDING_LOGS=loadPendingLogs();
@@ -1653,7 +1630,7 @@
     if(entry.data && !entry.data.client_uid) entry.data.client_uid=entry.uid;
   }
   rememberPending();
-  function rememberPending(){ try{ localStorage.setItem(PENDING_KEY, JSON.stringify(PENDING_LOGS)); }catch(_){ } }
+  function rememberPending(){ saveJson(PENDING_LOGS_KEY, PENDING_LOGS); }
   function generateUid(){ if(window.crypto?.randomUUID){ try{ return crypto.randomUUID(); }catch(_){ } } return 'uid-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2); }
   let flushPromise=null;
   async function flushPendingLogs(){
@@ -2104,7 +2081,7 @@
   function updateSectionOptions({preferSaved=false}={}){
     const sel=el.secSel;
     if(!sel) return;
-    const saved=localStorage.getItem('secSel')||'';
+    const saved=loadString(SECTION_SELECTION, '');
     const desired=preferSaved ? saved : (sel.value || saved || '');
     const frag=document.createDocumentFragment();
     frag.appendChild(new Option('全体',''));
@@ -2120,10 +2097,10 @@
     const target=units.includes(desired)?desired:'';
     sel.value=target;
     if(preferSaved && saved && !units.includes(saved)){
-      localStorage.setItem('secSel','');
+      saveString(SECTION_SELECTION, '');
     }
     if(!target && !preferSaved){
-      localStorage.setItem('secSel','');
+      saveString(SECTION_SELECTION, '');
     }
     updateHeaderStats();
   }
@@ -2191,13 +2168,13 @@
     updateSectionOptions({preferSaved:true});
     const sel=el.secSel;
     sel.onchange=()=>{
-      localStorage.setItem('secSel', sel.value);
+      saveString(SECTION_SELECTION, sel.value);
       rebuildAndRender(true);
     };
-    const ordSaved=localStorage.getItem('orderSel')||'asc';
+    const ordSaved=loadString(ORDER_SELECTION, 'asc')||'asc';
     el.orderSel.value=ordSaved;
     el.orderSel.onchange=()=>{
-      localStorage.setItem('orderSel', el.orderSel.value);
+      saveString(ORDER_SELECTION, el.orderSel.value);
       rebuildAndRender(true);
     };
     if(el.search){
@@ -2946,7 +2923,7 @@
     const nextOpt=options[currentIndex+1];
     const nextValue=nextOpt.value;
     el.secSel.value=nextValue;
-    localStorage.setItem('secSel', nextValue);
+    saveString(SECTION_SELECTION, nextValue);
     hideNextCta();
     const label=nextOpt.textContent||nextOpt.label||nextValue||'次のセクション';
     toast(`セクション「${label}」へ進みます`);
