@@ -577,23 +577,32 @@
     return Object.fromEntries(entries.slice(-190));
   }
   let STUDY_LOG=pruneStudyLog(loadStudyLog());
-  function recordStudyProgress({pass=false,newLevel5=false}={}){
+  function recordStudyProgress({pass=false,newLevel5=false,noHint=false,perfect=false,streak=0}={}){
     const key=localDateKey();
-    const entry=STUDY_LOG[key]||{passes:0,level5:0};
+    const entry=STUDY_LOG[key]||{passes:0,level5:0,level5_count:0,no_hint:0,streak:0};
     if(pass) entry.passes=(entry.passes||0)+1;
     if(newLevel5) entry.level5=(entry.level5||0)+1;
+    if(noHint) entry.no_hint=(entry.no_hint||0)+1;
+    if(perfect) entry.level5_count=(entry.level5_count||0)+1;
+    if(Number.isFinite(streak)) entry.streak=Math.max(entry.streak||0, streak||0);
     STUDY_LOG[key]=entry;
     STUDY_LOG=pruneStudyLog(STUDY_LOG);
     saveStudyLog(STUDY_LOG);
-    if(pass||newLevel5) scheduleNotificationCheckSoon();
+    if(pass||newLevel5||noHint||perfect) scheduleNotificationCheckSoon();
   }
   function getDailyStats(key){
     const target=key||localDateKey();
     const entry=STUDY_LOG[target];
-    return {passes:entry?.passes||0, level5:entry?.level5||0};
+    return {
+      passes:entry?.passes||0,
+      level5:entry?.level5||0,
+      level5_count:entry?.level5_count||0,
+      no_hint:entry?.no_hint||0,
+      streak:entry?.streak||0
+    };
   }
   function sumRange(startKey,endKey){
-    const res={passes:0, level5:0};
+    const res={passes:0, level5:0, level5_count:0, no_hint:0, streak:0};
     if(!startKey||!endKey) return res;
     let cur=startKey;
     while(cur<=endKey){
@@ -601,6 +610,9 @@
       if(st){
         res.passes+=st.passes||0;
         res.level5+=st.level5||0;
+        res.level5_count+=st.level5_count||0;
+        res.no_hint+=st.no_hint||0;
+        res.streak=Math.max(res.streak||0, st.streak||0);
       }
       const parts=cur.split('-').map(n=>parseInt(n,10));
       if(parts.length>=3 && parts.every(n=>Number.isFinite(n))){
@@ -680,9 +692,15 @@
 
   function describeStudy(stats){
     const passes=stats?.passes||0;
-    const level5=stats?.level5||0;
+    const level5New=stats?.level5||0;
+    const level5Perfect=stats?.level5_count||0;
+    const noHint=stats?.no_hint||0;
+    const streak=stats?.streak||0;
     const parts=[`合格${passes}`];
-    if(level5>0) parts.push(`Lv5 ${level5}`);
+    if(noHint>0) parts.push(`ノーヒント${noHint}`);
+    if(level5Perfect>0) parts.push(`Lv5完璧${level5Perfect}`);
+    if(level5New>0) parts.push(`Lv5新${level5New}`);
+    if(streak>0) parts.push(`連続${streak}`);
     return parts.join(' / ');
   }
   function startOfWeek(date){
@@ -917,6 +935,114 @@
   }
   const LEVEL_CHOICES=[0,1,2,3,4,5];
   const LEGACY_LEVEL_CHOICES=[1,2,3,4,5];
+  const NO_HINT_RATE_THRESHOLD=0.90;
+  const PERFECT_MATCH_THRESHOLD=0.999;
+  const PROMOTION_RULES={
+    4:{required:2,minIntervalMs:12*60*60*1000},
+    5:{required:3,minIntervalMs:24*60*60*1000}
+  };
+  const NO_HINT_HISTORY_LIMIT=24;
+  function normalizeNoHintHistory(raw){
+    if(!Array.isArray(raw)) return [];
+    return raw
+      .map(v=>Number(v)||0)
+      .filter(v=>Number.isFinite(v) && v>0)
+      .sort((a,b)=>a-b)
+      .slice(-NO_HINT_HISTORY_LIMIT);
+  }
+  function computeNoHintProgress(history, rule, now){
+    const normalizedHistory=normalizeNoHintHistory(history);
+    if(!rule){
+      return {qualified:normalizedHistory.length,required:0,remaining:0,met:true,lastQualifiedAt:null,nextEligibleAt:null,countedThisAttempt:false};
+    }
+    const minInterval=Math.max(0, Number(rule.minIntervalMs)||0);
+    const selected=[];
+    let lastIncluded=-Infinity;
+    for(const ts of normalizedHistory){
+      if(!selected.length || ts-lastIncluded>=minInterval){
+        selected.push(ts);
+        lastIncluded=ts;
+      }
+    }
+    const qualified=selected.length;
+    const required=Math.max(0, Number(rule.required)||0);
+    const met=qualified>=required && required>0 ? true : qualified>=required;
+    const lastQualifiedAt=selected.length?selected[selected.length-1]:null;
+    let nextEligibleAt=null;
+    if(lastQualifiedAt && minInterval>0){
+      const candidateTs=lastQualifiedAt+minInterval;
+      if(!Number.isFinite(now) || candidateTs>now){
+        nextEligibleAt=candidateTs;
+      }
+    }
+    const countedThisAttempt=Number.isFinite(now) && lastQualifiedAt===now;
+    const remaining=Math.max(0, required-qualified);
+    return {qualified,required,remaining,met,lastQualifiedAt,nextEligibleAt,countedThisAttempt};
+  }
+  function determineNextTarget(info, candidate, finalLevel, promotionBlocked, now){
+    if(!info) return null;
+    const lastLevel=Number(info.last);
+    const bestLevel=Number(info.best);
+    const normalizedLast=Number.isFinite(lastLevel)?lastLevel:0;
+    const normalizedBest=Number.isFinite(bestLevel)?bestLevel:0;
+    let target=null;
+    if(promotionBlocked && promotionBlocked.target){
+      target=promotionBlocked.target;
+    }else if(normalizedLast>=4){
+      if(normalizedLast===4){
+        target=5;
+      }
+    }else{
+      const refLevel=Math.max(normalizedLast, normalizedBest);
+      if(refLevel>=3){
+        target=4;
+      }
+    }
+    if(!target && normalizedLast===4){
+      target=5;
+    }
+    if(!target || !PROMOTION_RULES[target]) return null;
+    const rule=PROMOTION_RULES[target];
+    const progress=computeNoHintProgress(info.noHintHistory, rule, now);
+    const cooldownMs=progress.nextEligibleAt?Math.max(0, progress.nextEligibleAt-now):0;
+    return {
+      target,
+      required:rule.required,
+      qualified:progress.qualified,
+      remaining:progress.remaining,
+      minIntervalMs:rule.minIntervalMs,
+      nextEligibleAt:progress.nextEligibleAt||null,
+      cooldownMs,
+      countedThisAttempt:progress.countedThisAttempt,
+      met:progress.met
+    };
+  }
+  function formatDurationMs(ms){
+    if(!Number.isFinite(ms) || ms<=0) return '';
+    const totalMinutes=Math.ceil(ms/60000);
+    if(totalMinutes>=60){
+      const hours=Math.floor(totalMinutes/60);
+      const minutes=totalMinutes%60;
+      if(minutes>0) return `${hours}時間${minutes}分`;
+      return `${hours}時間`;
+    }
+    return `${Math.max(1,totalMinutes)}分`;
+  }
+  function buildNoHintProgressNote(goal){
+    if(!goal) return '';
+    const levelLabel=`Lv${goal.target}`;
+    if((goal.remaining||0)<=0){
+      return `${levelLabel}のノーヒント条件は準備OK！`;
+    }
+    let msg=`あと${goal.remaining}回ノーヒント合格で${levelLabel}`;
+    if(goal.cooldownMs>0){
+      const waitLabel=formatDurationMs(goal.cooldownMs);
+      if(waitLabel){
+        msg+=`（${waitLabel}後にカウント可）`;
+      }
+    }
+    return msg;
+  }
   function loadLevelFilter(){
     try{
       const raw=localStorage.getItem(LEVEL_FILTER_KEY);
@@ -948,40 +1074,103 @@
     return arr.length?arr:LEVEL_CHOICES.slice();
   }
   function evaluateLevel(matchRate, hintStageUsed){
-    const rate=Math.max(0, Math.min(1, matchRate||0));
+    const rate=Math.max(0, Math.min(1, Number(matchRate)||0));
     const stageRaw=Number.isFinite(hintStageUsed)?Math.floor(hintStageUsed):BASE_HINT_STAGE;
     const stage=Math.max(BASE_HINT_STAGE, stageRaw);
-    if(rate < 0.70) return 1;
-    if(rate < 0.80) return 2;
-    if(rate < 0.90) return 3;
+    let candidate=1;
+    if(rate<0.70){
+      candidate=1;
+    }else if(rate<0.80){
+      candidate=2;
+    }else if(rate<0.90){
+      candidate=3;
+    }else{
+      const usedEnglishHint=stage>=BASE_HINT_STAGE+1;
+      if(usedEnglishHint){
+        candidate=3;
+      }else if(rate<1){
+        candidate=4;
+      }else{
+        candidate=5;
+      }
+    }
     const usedEnglishHint = stage >= BASE_HINT_STAGE + 1;
-    if(usedEnglishHint){
-      return 3;
-    }
-    if(rate < 1){
-      return 4;
-    }
-    return 5;
+    const noHintSuccess=!usedEnglishHint && rate>=NO_HINT_RATE_THRESHOLD;
+    const perfectNoHint=noHintSuccess && rate>=PERFECT_MATCH_THRESHOLD;
+    const pass=rate>=0.70;
+    return {candidate, rate, stage, noHintSuccess, perfectNoHint, usedEnglishHint, pass};
   }
   function getLevelInfo(id){
     if(!id) return {best:0,last:0};
     return LEVEL_STATE[id] || {best:0,last:0};
   }
-  function updateLevelInfo(id, levelCandidate, matchRate, hintStageUsed){
-    if(!id) return {best:levelCandidate,last:levelCandidate};
+  function updateLevelInfo(id, evaluation, {now=Date.now()}={}){
+    const fallbackCandidate=Number.isFinite(Number(evaluation?.candidate))?Number(evaluation.candidate):0;
+    if(!id){
+      const fallback={best:fallbackCandidate,last:fallbackCandidate};
+      return {info:fallback,candidate:fallbackCandidate,finalLevel:fallbackCandidate,best:fallbackCandidate,promotionBlocked:null,nextTarget:null,evaluation};
+    }
     const info=LEVEL_STATE[id] || {best:0,last:0};
-    const normalizedLast = Number(levelCandidate);
-    info.last = Number.isFinite(normalizedLast) ? normalizedLast : 0;
-    const bestNumeric = Number(info.best);
-    const currentBest = Number.isFinite(bestNumeric) ? bestNumeric : 0;
-    if(!Number.isFinite(bestNumeric)) info.best = currentBest;
-    if(info.last > currentBest) info.best = info.last;
-    info.lastMatch = +(matchRate||0);
-    info.hintStage = hintStageUsed;
-    info.updatedAt = Date.now();
+    const prevLastRaw=Number(info.last);
+    const prevBestRaw=Number(info.best);
+    const prevLast=Number.isFinite(prevLastRaw)?prevLastRaw:0;
+    const prevBest=Number.isFinite(prevBestRaw)?prevBestRaw:0;
+    const stage=Number.isFinite(evaluation?.stage)?Number(evaluation.stage):BASE_HINT_STAGE;
+    const rate=Number(evaluation?.rate)||0;
+    if(!Array.isArray(info.noHintHistory)) info.noHintHistory=[];
+    const history=info.noHintHistory.slice();
+    const noHintSuccess=!!evaluation?.noHintSuccess;
+    if(noHintSuccess){
+      history.push(now);
+      const prevStreak=Number(info.noHintStreak)||0;
+      info.noHintStreak=prevStreak+1;
+      info.lastNoHintAt=now;
+    }else{
+      info.noHintStreak=0;
+    }
+    const perfectNoHint=!!evaluation?.perfectNoHint;
+    let level5CountNumeric=Number(info.level5Count);
+    if(!Number.isFinite(level5CountNumeric) || level5CountNumeric<0){
+      level5CountNumeric=0;
+    }
+    if(perfectNoHint){
+      level5CountNumeric+=1;
+    }
+    info.level5Count=level5CountNumeric;
+    const normalizedHistory=normalizeNoHintHistory(history);
+    info.noHintHistory=normalizedHistory;
+    const candidate=Math.max(0, Math.floor(fallbackCandidate));
+    let finalLevel=candidate;
+    let promotionBlocked=null;
+    if(candidate>prevLast && candidate>=4){
+      const rule=PROMOTION_RULES[candidate];
+      if(rule){
+        const progress=computeNoHintProgress(normalizedHistory, rule, now);
+        if(!progress.met || progress.remaining>0){
+          finalLevel=prevLast;
+          promotionBlocked=Object.assign({target:candidate,minIntervalMs:rule.minIntervalMs}, progress);
+        }
+      }
+    }
+    if(!Number.isFinite(finalLevel)) finalLevel=0;
+    info.last=finalLevel;
+    if(!Number.isFinite(prevBestRaw)) info.best=prevBest;
+    if(info.last>prevBest) info.best=info.last;
+    info.lastMatch=rate;
+    info.hintStage=stage;
+    info.updatedAt=now;
     LEVEL_STATE[id]=info;
     saveLevelState(LEVEL_STATE);
-    return info;
+    const nextTarget=determineNextTarget(info, candidate, finalLevel, promotionBlocked, now);
+    return {
+      info,
+      candidate,
+      finalLevel:info.last,
+      best:info.best,
+      promotionBlocked,
+      nextTarget,
+      evaluation
+    };
   }
   function refreshLevelDisplay(info){
     if(!el.level) return;
@@ -3156,9 +3345,12 @@
       prevBest = Number(prevInfoSnapshot?.last||0) || 0;
     }
     const stageUsed = maxHintStageUsed;
-    const levelCandidate = evaluateLevel(matchRate, stageUsed);
-    const levelInfo = updateLevelInfo(it.id, levelCandidate, matchRate, stageUsed);
-    const lastLevelRaw = Number(levelInfo?.last);
+    const evaluation = evaluateLevel(matchRate, stageUsed);
+    const updateTs = Date.now();
+    const levelUpdate = updateLevelInfo(it.id, evaluation, {now:updateTs});
+    const levelInfo = levelUpdate?.info;
+    const levelCandidate = Number.isFinite(Number(evaluation?.candidate)) ? Number(evaluation.candidate) : 0;
+    const lastLevelRaw = Number(levelUpdate?.finalLevel);
     const bestLevelRaw = Number(levelInfo?.best);
     const resolvedLastLevel = Number.isFinite(lastLevelRaw) ? lastLevelRaw : (Number.isFinite(bestLevelRaw) ? bestLevelRaw : levelCandidate);
     const resolvedBestLevel = Number.isFinite(bestLevelRaw) ? bestLevelRaw : resolvedLastLevel;
@@ -3180,18 +3372,27 @@
     const levelLabel = `Lv${resolvedLastLevel}`;
     const bestLabel = levelInfoBest>resolvedLastLevel ? ` (最高${levelInfoBest})` : '';
 
-    const pass = matchRate >= 0.70;
+    const pass = !!evaluation?.pass;
+    const progressNote = buildNoHintProgressNote(levelUpdate?.nextTarget);
     if(pass){
       failCount=0;
       playTone('success');
       showNextCta();
-      el.footer.textContent = `一致率${pct}% ${levelLabel}${bestLabel}！「次へ」で進みましょう`;
-      if(levelCandidate>=4 && stageUsed<=0){
-        toast(`素晴らしい！${levelLabel}達成`, 1600);
+      const baseFooter = `一致率${pct}% ${levelLabel}${bestLabel}！「次へ」で進みましょう`;
+      el.footer.textContent = progressNote ? `${baseFooter} ${progressNote}` : baseFooter;
+      if(levelCandidate>=4 && evaluation?.noHintSuccess){
+        const baseToast = evaluation?.perfectNoHint ? 'ノーヒントで満点クリア！' : '素晴らしい！ノーヒント合格';
+        toast(progressNote ? `${baseToast} ${progressNote}` : `${baseToast}`, 2000);
       }else{
         toast('Great! 合格です', 1600);
       }
-      recordStudyProgress({pass:true, newLevel5:gainedLevel5});
+      recordStudyProgress({
+        pass:true,
+        newLevel5:gainedLevel5,
+        noHint:!!evaluation?.noHintSuccess,
+        perfect:!!evaluation?.perfectNoHint,
+        streak:Number(levelInfo?.noHintStreak)||0
+      });
     }else{
       failCount++;
       playTone('fail');
@@ -3221,7 +3422,13 @@
       match:+(matchRate||0).toFixed(3),
       hint_stage:stageUsed,
       level_last:levelInfo?.last ?? levelCandidate,
-      level_best:levelInfo?.best ?? levelCandidate
+      level_best:levelInfo?.best ?? levelCandidate,
+      level5_count:levelInfo?.level5Count||0,
+      streak:levelInfo?.noHintStreak||0,
+      no_hint_successes:Array.isArray(levelInfo?.noHintHistory)?levelInfo.noHintHistory.length:0,
+      next_level_target:levelUpdate?.nextTarget?.target||null,
+      next_level_remaining:levelUpdate?.nextTarget?.remaining ?? null,
+      next_level_available_at:levelUpdate?.nextTarget?.nextEligibleAt ? new Date(levelUpdate.nextTarget.nextEligibleAt).toISOString() : null
     };
     try{ await sendLog('speech', payload); }catch(_){ }
     if(!pass && failCount<FAIL_LIMIT){ el.mic.disabled=false; }
