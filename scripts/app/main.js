@@ -30,11 +30,10 @@ import { createSpeechSynthesisController } from '../speech/synthesis.js';
 import { createOverlayController } from './overlay.js';
 import { createCardTransitionQueue } from './cardTransitions.js';
 import { createComposeGuide } from './composeGuide.js';
+import { qs, qsa } from './dom.js';
 
 async function initApp(){
   // ===== Utilities =====
-  const qs=(s,el=document)=>el.querySelector(s);
-  const qsa=(s,el=document)=>[...el.querySelectorAll(s)];
   const now=()=>Date.now(); const UA=(()=>navigator.userAgent||'')();
 
   const {LEVEL_STATE, LEVEL_FILTER, SEARCH, SPEED, CONFIG, PENDING_LOGS: PENDING_LOGS_KEY, SECTION_SELECTION, ORDER_SELECTION}=STORAGE_KEYS;
@@ -2098,16 +2097,6 @@ async function initApp(){
   bootApp();
 }
 
-function attachInit() {
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", () => {
-      initApp().catch(err => console.error("App init failed", err));
-    });
-  } else {
-    initApp().catch(err => console.error("App init failed", err));
-  }
-}
-
 function registerServiceWorker() {
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
@@ -2116,5 +2105,25 @@ function registerServiceWorker() {
   }
 }
 
-attachInit();
-registerServiceWorker();
+async function waitForDomReady() {
+  if (document.readyState === 'loading') {
+    await new Promise((resolve) => {
+      document.addEventListener('DOMContentLoaded', resolve, { once: true });
+    });
+  }
+}
+
+async function bootstrap() {
+  try {
+    await waitForDomReady();
+    await initApp();
+  } catch (err) {
+    console.error('App init failed', err);
+  } finally {
+    registerServiceWorker();
+  }
+}
+
+bootstrap().catch((err) => {
+  console.error('Bootstrap failed', err);
+});
