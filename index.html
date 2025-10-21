@@ -162,15 +162,6 @@
   </div>
 </div>
 
-<script type="module" src="./scripts/app/main.js"></script>
-
-<!-- ★ Service Worker 登録（最小） -->
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js').catch(()=>{});
-    });
-  }
-</script>
+<script type="module" src="scripts/app/main.js"></script>
 </body>
 </html>
