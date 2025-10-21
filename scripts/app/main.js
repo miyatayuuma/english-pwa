@@ -2074,7 +2074,7 @@ async function initApp(){
     else{ stopRec(); }
   };
   // Boot
-  (async()=>{
+  async function bootApp(){
     const releaseBoot=acquireOverlay('boot');
     try{
       await ensureDir({prompt:true, forceCheck:true, allowSchedule:false});
@@ -2093,7 +2093,9 @@ async function initApp(){
     }finally{
       releaseBoot();
     }
-  })();
+  }
+
+  bootApp();
 }
 
 function attachInit() {
