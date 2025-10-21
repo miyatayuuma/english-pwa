@@ -61,6 +61,12 @@ function doGet(e) {
 }
 
 // ===== POST: ログ受信（attempt/speech/session/bulk/status） =====
+const ENTRY_HANDLERS = Object.freeze({
+  attempt: appendAttempt_,
+  speech:  appendSpeech_,
+  session: appendSession_,
+});
+const SUPPORTED_ENTRY_TYPES = Object.freeze(Object.keys(ENTRY_HANDLERS));
 function doPost(e) {
   let body;
   try { body = parseBody_(e); }
@@ -73,9 +79,16 @@ function doPost(e) {
     const accepted = [];
     body.entries.forEach(entry => {
       try {
-        handleEntry_(entry.type, entry.data, entry.uid);
-        accepted.push(entry.uid || Utilities.getUuid());
-      } catch (_) { /* 1件失敗しても継続 */ }
+        const handled = handleEntry_(entry.type, entry.data, entry.uid);
+        if (handled) {
+          accepted.push(entry.uid || Utilities.getUuid());
+        } else {
+          Logger.log('Unsupported entry type in bulk: %s (uid=%s, supported=%s)', entry && entry.type, entry && entry.uid, SUPPORTED_ENTRY_TYPES.join(','));
+        }
+      } catch (err) {
+        Logger.log('Failed to handle bulk entry: %s', err);
+        /* 1件失敗しても継続 */
+      }
     });
     return jsonOut({ ok:true, accepted });
   }
@@ -85,7 +98,10 @@ function doPost(e) {
     if (body.type === 'status') {
       return jsonOut({ ok:true, status: handleStatus_() });
     }
-    handleEntry_(body.type, body.data, body.uid);
+    if (!handleEntry_(body.type, body.data, body.uid)) {
+      Logger.log('Unsupported entry type: %s (uid=%s, supported=%s)', body && body.type, body && body.uid, SUPPORTED_ENTRY_TYPES.join(','));
+      return jsonOut({ ok:false, error:'unsupported_type' });
+    }
     return jsonOut({ ok:true });
   } catch (err) {
     return jsonOut({ ok:false, error:String(err) });
@@ -93,12 +109,10 @@ function doPost(e) {
 }
 
 function handleEntry_(type, data, uid) {
-  switch (type) {
-    case 'attempt':  appendAttempt_(data, uid); break;
-    case 'speech':   appendSpeech_(data, uid);  break;
-    case 'session':  appendSession_(data, uid); break;
-    default: /* unknown type: 無視 */ ;
-  }
+  const handler = ENTRY_HANDLERS[type];
+  if (!handler) return false; /* unknown type: 無視 */
+  handler(data, uid);
+  return true;
 }
 
 // ===== 行追加 =====
