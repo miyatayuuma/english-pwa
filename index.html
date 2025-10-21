@@ -180,85 +180,16 @@ import {
   spanify,
   toks
 } from './scripts/utils/text.js';
+import {
+  toast,
+  triggerMilestoneEffect
+} from './scripts/ui/milestones.js';
 
 (function(){
   // ===== Utilities =====
   const qs=(s,el=document)=>el.querySelector(s);
   const qsa=(s,el=document)=>[...el.querySelectorAll(s)];
   const now=()=>Date.now(); const UA=(()=>navigator.userAgent||'')();
-  function toast(msg, ms=1500){ const t=qs('#toast'); t.textContent=msg; t.style.display='block'; clearTimeout(toast._t); toast._t=setTimeout(()=>t.style.display='none', ms); }
-  const MILESTONE_EFFECT_DURATION=2800;
-  const MILESTONE_EFFECT_LIMIT=3;
-  function ensureMilestoneLayer(){
-    let layer=document.getElementById('milestoneEffects');
-    if(!layer){
-      layer=document.createElement('div');
-      layer.id='milestoneEffects';
-      layer.setAttribute('aria-live','polite');
-      layer.setAttribute('aria-atomic','true');
-      document.body.appendChild(layer);
-    }
-    return layer;
-  }
-  function formatLevelLabel(level){
-    return `Lv${level}`;
-  }
-  function triggerMilestoneEffect(type,{level,previous,matchRate}={}){
-    const layer=ensureMilestoneLayer();
-    if(!layer) return;
-    const effect=document.createElement('div');
-    effect.className=['milestone-effect', type||''].filter(Boolean).join(' ');
-    let title='Great!';
-    let sub='';
-    const hasLevel=Number.isFinite(level);
-    const hasPrev=Number.isFinite(previous);
-    const hasMatch=Number.isFinite(matchRate);
-    switch(type){
-      case 'best':{
-        title='最高レベル更新！';
-        if(hasPrev && hasLevel){
-          sub=`${formatLevelLabel(previous)} → ${formatLevelLabel(level)}`;
-        }else if(hasLevel){
-          sub=formatLevelLabel(level);
-        }
-        break;
-      }
-      case 'level4':{
-        title='Lv4 達成！';
-        if(hasMatch){
-          sub=`一致率${Math.round(matchRate*100)}%`;
-        }else{
-          sub='ノーヒントで高精度！';
-        }
-        break;
-      }
-      case 'level5':{
-        title='Lv5 完璧！';
-        if(hasMatch){
-          sub=`一致率${Math.round(matchRate*100)}%`;
-        }else{
-          sub='100%達成、お見事！';
-        }
-        break;
-      }
-      default:{
-        if(hasLevel){
-          sub=formatLevelLabel(level);
-        }
-      }
-    }
-    if(!sub && hasLevel){
-      sub=formatLevelLabel(level);
-    }
-    effect.innerHTML=`<div class="effect-title">${title}</div>${sub?`<div class="effect-sub">${sub}</div>`:''}`;
-    layer.appendChild(effect);
-    requestAnimationFrame(()=>effect.classList.add('show'));
-    setTimeout(()=>effect.classList.add('hide'), MILESTONE_EFFECT_DURATION-400);
-    setTimeout(()=>{ if(effect.parentNode===layer){ layer.removeChild(effect); } }, MILESTONE_EFFECT_DURATION);
-    while(layer.children.length> MILESTONE_EFFECT_LIMIT){
-      layer.removeChild(layer.firstElementChild);
-    }
-  }
 
   const {STUDY_LOG: STUDY_LOG_KEY, NOTIF_STATE, LEVEL_STATE, LEVEL_FILTER, SEARCH, SPEED, CONFIG, PENDING_LOGS: PENDING_LOGS_KEY, SECTION_SELECTION, ORDER_SELECTION}=STORAGE_KEYS;
   const DAY_MS=86400000;
