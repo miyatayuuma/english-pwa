@@ -1636,11 +1636,12 @@
 
   function advanceHintStage(){
     if(!sessionActive) return;
-    if(hintStage>=2){ toast('ヒントはすべて表示済みです'); return; }
-    const changed=setHintStage(hintStage+1);
+    const nextStage=(hintStage+1)%3;
+    const changed=setHintStage(nextStage);
     if(changed){
       if(hintStage===1){ el.footer.textContent='英文ヒントを表示しました。もう一度で和訳ヒント。'; }
       else if(hintStage===2){ el.footer.textContent='和訳ヒントを表示しました'; }
+      else if(hintStage===0){ el.footer.textContent='ヒントを非表示に戻しました。ダブルタップで再表示できます。'; }
     }
   }
 
@@ -1674,7 +1675,6 @@
   function showNextCta(){
     el.next.hidden=false;
     el.next.disabled=false;
-    el.mic.disabled=true;
   }
 
   function setMicState(on){
