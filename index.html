@@ -2855,6 +2855,11 @@
     const thresholds=touchStart.thresholds || getSwipeThresholds();
     const horizontalThreshold=Math.max(1, thresholds.horizontal || 0);
     const directionLock=6;
+    if(touchStart.verticalDominant){
+      touchStart.lastDx=dx;
+      touchStart.lastDy=dy;
+      return;
+    }
     if(!touchStart.dragging){
       if(absDx<directionLock && absDy<directionLock){
         touchStart.lastDx=dx;
@@ -2862,8 +2867,9 @@
         return;
       }
       if(absDy>absDx){
-        touchStart=null;
-        resetCardDrag({animate:false});
+        touchStart.verticalDominant=true;
+        touchStart.lastDx=dx;
+        touchStart.lastDy=dy;
         return;
       }
       touchStart.dragging=true;
