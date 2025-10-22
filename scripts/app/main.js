@@ -180,6 +180,73 @@ function createAppRuntime(){
   let speechController=null;
   let lastMatchEval=null;
   let currentShouldUseSpeech=false;
+  let lastProgressNote='';
+
+  function setLastProgressNote(note){
+    lastProgressNote = typeof note==='string' ? note.trim() : '';
+  }
+
+  function clearLastProgressNote(){
+    setLastProgressNote('');
+  }
+
+  function ensureProgressNoteModalStyles(){
+    if(typeof document==='undefined') return;
+    const styleId='progress-note-dialog-style';
+    if(document.getElementById(styleId)) return;
+    const style=document.createElement('style');
+    style.id=styleId;
+    style.textContent=`.progress-note-dialog{background:#111726;color:var(--txt,#e6e8ef);border:1px solid var(--bd,rgba(255,255,255,.12));border-radius:16px;padding:18px 20px;min-width:min(320px,90vw);max-width:min(420px,92vw);box-shadow:0 24px 60px rgba(0,0,0,.55);} .progress-note-dialog::backdrop{background:rgba(11,14,26,.65);} .progress-note-dialog__message{margin:0 0 14px 0;line-height:1.6;font-size:14px;color:var(--muted,#aeb5c6);} .progress-note-dialog__actions{display:flex;justify-content:flex-end;gap:8px;}`;
+    document.head?.appendChild(style);
+  }
+
+  function showProgressNoteModal(message){
+    if(typeof document==='undefined') return false;
+    ensureProgressNoteModalStyles();
+    let dialog=document.getElementById('progressNoteDialog');
+    if(!dialog){
+      dialog=document.createElement('dialog');
+      dialog.id='progressNoteDialog';
+      dialog.className='progress-note-dialog';
+      dialog.setAttribute('aria-label','進捗メモ');
+      dialog.innerHTML='<form method="dialog" class="progress-note-dialog__form"><p class="progress-note-dialog__message"></p><div class="progress-note-dialog__actions"><button value="close" class="btn">閉じる</button></div></form>';
+      dialog.addEventListener('cancel',()=>{ dialog.close(); });
+      document.body.appendChild(dialog);
+    }
+    const messageEl=dialog.querySelector('.progress-note-dialog__message');
+    if(messageEl){
+      messageEl.textContent=message;
+    }else{
+      dialog.textContent=message;
+    }
+    try{
+      if(typeof dialog.showModal==='function'){
+        if(dialog.open) dialog.close();
+        dialog.showModal();
+        const closeBtn=dialog.querySelector('button[value="close"]');
+        try{ closeBtn?.focus?.({preventScroll:true}); }catch(_){ }
+        return true;
+      }
+    }catch(err){
+      console.warn('progress note modal failed', err);
+    }
+    if(dialog.open){
+      dialog.close();
+    }
+    return false;
+  }
+
+  function showLastProgressNote({mode='toast', duration=2000}={}){
+    const note=(lastProgressNote||'').trim();
+    if(!note) return false;
+    const normalized=(mode||'toast').toLowerCase();
+    if(normalized==='modal'){
+      const shown=showProgressNoteModal(note);
+      if(shown) return true;
+    }
+    toast(note, duration==null?2000:duration);
+    return true;
+  }
   function initializeMediaControllers(){
     const controller=createAudioController({
       audioElement: audio,
@@ -1363,6 +1430,7 @@ function createAppRuntime(){
   function toggleJA(){ advanceHintStage(); }
 
   function showIdleCard(){
+    clearLastProgressNote();
     finalizeSessionMetrics();
     sessionActive=false;
     sessionStarting=false;
@@ -1414,6 +1482,7 @@ function createAppRuntime(){
   }
 
   async function render(i, autoPlay=false){
+    clearLastProgressNote();
     let releaseResolve=null;
     let releasePrepare=null;
     try{
@@ -1991,6 +2060,7 @@ function createAppRuntime(){
     try{ await sendLog('attempt', attemptPayload); }catch(_){ }
     const progressNote = buildNoHintProgressNote(levelUpdate?.nextTarget);
     if(pass){
+      setLastProgressNote(progressNote);
       if(sessionMetrics && sessionMetrics.startMs){
         sessionMetrics.cardsDone+=1;
         sessionMetrics.currentStreak+=1;
@@ -2004,11 +2074,10 @@ function createAppRuntime(){
       failCount=0;
       playTone('success');
       showNextCta();
-      const baseFooter = `一致率${pct}% ${levelLabel}${bestLabel}！「次へ」で進みましょう`;
-      el.footer.textContent = progressNote ? `${baseFooter} ${progressNote}` : baseFooter;
+      el.footer.textContent='';
       if(levelCandidate>=4 && evaluation?.noHintSuccess){
         const baseToast = evaluation?.perfectNoHint ? 'ノーヒントで満点クリア！' : '素晴らしい！ノーヒント合格';
-        toast(progressNote ? `${baseToast} ${progressNote}` : `${baseToast}`, 2000);
+        toast(baseToast, 2000);
       }else{
         toast('Great! 合格です', 1600);
       }
@@ -2021,6 +2090,7 @@ function createAppRuntime(){
         mode:studyMode
       });
     }else{
+      clearLastProgressNote();
       if(sessionMetrics && sessionMetrics.startMs){
         sessionMetrics.currentStreak=0;
       }
