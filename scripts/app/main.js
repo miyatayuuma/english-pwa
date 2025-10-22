@@ -37,6 +37,26 @@ function createAppRuntime(){
   // ===== Utilities =====
   const now=()=>Date.now(); const UA=(()=>navigator.userAgent||'')();
 
+  function toIsoString(value){
+    if(value instanceof Date){
+      return value.toISOString();
+    }
+    if(typeof value==='number'){
+      if(!Number.isFinite(value) || value<=0) return '';
+      try{ return new Date(value).toISOString(); }catch(_){ return ''; }
+    }
+    if(typeof value==='string'){
+      const trimmed=value.trim();
+      return trimmed;
+    }
+    return '';
+  }
+
+  function numericOrEmpty(value){
+    const num=Number(value);
+    return Number.isFinite(num)?num:'';
+  }
+
   const { SEARCH, SPEED, CONFIG, PENDING_LOGS: PENDING_LOGS_KEY, SECTION_SELECTION, ORDER_SELECTION } = STORAGE_KEYS;
 
   const BASE_HINT_STAGE=0;
@@ -1912,6 +1932,35 @@ function createAppRuntime(){
 
     const pass = !!evaluation?.pass;
     const responseMs = cardStart>0 ? Math.max(0, now()-cardStart) : '';
+    const srsPayload = (()=>{
+      const info=levelInfo||{};
+      const historyRaw=Array.isArray(info.noHintHistory)?info.noHintHistory:[];
+      const history=historyRaw
+        .map(v=>Number(v))
+        .filter(v=>Number.isFinite(v) && v>0);
+      const promotionBlockedRaw=levelUpdate?.promotionBlocked || null;
+      const promotionBlocked=promotionBlockedRaw?Object.assign({}, promotionBlockedRaw):null;
+      const nextTargetRaw=levelUpdate?.nextTarget || null;
+      const nextTarget=nextTargetRaw?Object.assign({}, nextTargetRaw):null;
+      return {
+        ts: toIsoString(updateTs) || new Date().toISOString(),
+        id: it.id,
+        level_candidate: numericOrEmpty(levelCandidate),
+        level_final: numericOrEmpty(levelUpdate?.finalLevel),
+        level_last: numericOrEmpty(info.last),
+        level_best: numericOrEmpty(info.best),
+        hint_stage: numericOrEmpty(info.hintStage),
+        last_match: numericOrEmpty(info.lastMatch),
+        no_hint_streak: numericOrEmpty(info.noHintStreak),
+        no_hint_history: history,
+        last_no_hint_at: toIsoString(info.lastNoHintAt),
+        level5_count: numericOrEmpty(info.level5Count),
+        level_updated_at: toIsoString(info.updatedAt),
+        promotion_blocked: promotionBlocked,
+        next_target: nextTarget,
+      };
+    })();
+    try{ await sendLog('srs', srsPayload); }catch(_){ }
     const attemptPayload = {
       ts: new Date().toISOString(),
       id: it.id,
