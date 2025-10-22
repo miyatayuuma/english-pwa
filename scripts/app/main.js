@@ -30,6 +30,7 @@ import { createSpeechSynthesisController } from '../speech/synthesis.js';
 import { createOverlayController } from './overlay.js';
 import { createCardTransitionQueue } from './cardTransitions.js';
 import { createComposeGuide } from './composeGuide.js';
+import { createLogManager } from './logManager.js';
 import { qs, qsa } from './dom.js';
 import { createLevelStateManager, LEVEL_CHOICES } from './levelState.js';
 
@@ -765,78 +766,13 @@ function createAppRuntime(){
     speechController.attachVoicesChangedListener(populateVoiceOptions);
   }
 
-  function loadPendingLogs(){
-    const raw=loadJson(PENDING_LOGS_KEY, []);
-    if(Array.isArray(raw)) return raw.filter(entry=>entry&&entry.type&&entry.url);
-    return [];
-  }
-  let PENDING_LOGS=loadPendingLogs();
-  for(const entry of PENDING_LOGS){
-    if(!entry.uid) entry.uid=generateUid();
-    if(entry.data && !entry.data.client_uid) entry.data.client_uid=entry.uid;
-  }
-  rememberPending();
-  function rememberPending(){ saveJson(PENDING_LOGS_KEY, PENDING_LOGS); }
-  function generateUid(){ if(window.crypto?.randomUUID){ try{ return crypto.randomUUID(); }catch(_){ } } return 'uid-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2); }
-  let flushPromise=null;
-  async function flushPendingLogs(){
-    if(!PENDING_LOGS.length) return;
-    if(flushPromise) return flushPromise;
-    flushPromise=(async()=>{
-      const accepted=new Set();
-      const groups=new Map();
-      for(const entry of PENDING_LOGS){
-        if(!entry || !entry.url || !entry.type) continue;
-        const key=`${entry.url}::${entry.apiKey||''}`;
-        if(!groups.has(key)) groups.set(key,{url:entry.url, apiKey:entry.apiKey, items:[]});
-        const data=Object.assign({}, entry.data||{});
-        if(!data.client_uid) data.client_uid=entry.uid;
-        groups.get(key).items.push({uid:entry.uid, type:entry.type, data});
-      }
-      for(const group of groups.values()){
-        if(!group.items.length) continue;
-        const payload={type:'bulk', apiKey:group.apiKey, entries:group.items};
-        try{
-          const res=await fetch(group.url,{method:'POST',headers:{'Content-Type':'text/plain;charset=UTF-8'},body:JSON.stringify(payload)});
-          if(!res.ok) continue;
-          let json=null;
-          try{ json=await res.json(); }catch(_){ }
-          if(json && json.ok){
-            const ack=Array.isArray(json.accepted)?json.accepted:group.items.map(it=>it.uid);
-            ack.forEach(uid=>accepted.add(uid));
-          }
-        }catch(err){ console.warn('flushPendingLogs', err); }
-      }
-      let changed=false;
-      if(accepted.size){
-        PENDING_LOGS=PENDING_LOGS.filter(entry=>!accepted.has(entry.uid));
-        changed=true;
-      }
-      const cleaned=PENDING_LOGS.filter(entry=>entry && entry.url);
-      if(cleaned.length!==PENDING_LOGS.length){
-        PENDING_LOGS=cleaned;
-        changed=true;
-      }
-      if(changed) rememberPending();
-    })();
-    try{
-      await flushPromise;
-    }finally{
-      flushPromise=null;
-    }
-  }
-
-  async function sendLog(type,data){
-    const url=(CFG.apiUrl||'').trim();
-    if(!url) return;
-    const uid=generateUid();
-    const payload=Object.assign({}, data||{});
-    if(!payload.client_uid) payload.client_uid=uid;
-    const entry={ uid, type, data:payload, url, apiKey:(CFG.apiKey||'')||undefined, createdAt:Date.now() };
-    PENDING_LOGS.push(entry);
-    rememberPending();
-    try{ await flushPendingLogs(); }catch(err){ console.warn('sendLog', err); }
-  }
+  const logManager=createLogManager({
+    loadJson,
+    saveJson,
+    storageKey: PENDING_LOGS_KEY,
+    getConfig: ()=>CFG,
+  });
+  const { sendLog, flushPendingLogs, setEndpointForPending, clearPendingEndpoints } = logManager;
 
   // ===== IndexedDB for DirectoryHandle =====
   const DB='fs-handles', STORE='dir';
@@ -1082,18 +1018,11 @@ function createAppRuntime(){
       saveCfg(CFG);
       const newStudyMode=getStudyMode();
       if((CFG.apiUrl||'').trim()){
-        for(const entry of PENDING_LOGS){
-          entry.url=CFG.apiUrl.trim();
-          entry.apiKey=(CFG.apiKey||'')||undefined;
-        }
+        setEndpointForPending(CFG.apiUrl.trim(), (CFG.apiKey||'')||undefined);
       } else {
-        for(const entry of PENDING_LOGS){
-          entry.url='';
-          entry.apiKey=undefined;
-        }
+        clearPendingEndpoints();
         applyRemoteStatus(null);
       }
-      rememberPending();
       el.cfgModal.style.display='none';
       toast('設定を保存しました');
       if(currentItem){
@@ -2189,7 +2118,6 @@ function createAppRuntime(){
         next_target: nextTarget,
       };
     })();
-    try{ await sendLog('srs', srsPayload); }catch(_){ }
     const attemptPayload = {
       ts: new Date().toISOString(),
       id: it.id,
@@ -2202,7 +2130,6 @@ function createAppRuntime(){
       hint_en_used: stageUsed>=getEnglishRevealStage() ? 1 : 0,
       device: UA
     };
-    try{ await sendLog('attempt', attemptPayload); }catch(_){ }
     const progressNote = buildNoHintProgressNote(levelUpdate?.nextTarget);
     if(pass){
       setLastProgressNote(progressNote);
@@ -2276,8 +2203,10 @@ function createAppRuntime(){
       next_level_available_at:levelUpdate?.nextTarget?.nextEligibleAt ? new Date(levelUpdate.nextTarget.nextEligibleAt).toISOString() : null,
       study_mode: studyMode
     };
-    try{ await sendLog('speech', payload); }catch(_){ }
     if(!pass && failCount<FAIL_LIMIT){ el.mic.disabled=false; }
+    sendLog('srs', srsPayload);
+    sendLog('attempt', attemptPayload);
+    sendLog('speech', payload);
   }
 
   el.mic.onclick=()=>{
