@@ -1990,7 +1990,6 @@ function createAppRuntime(){
   el.card.addEventListener('touchend',(ev)=>{ handleTouchFinish(ev,false); },{passive:true});
   el.card.addEventListener('touchcancel',(ev)=>{ handleTouchFinish(ev,true); },{passive:true});
   el.en.addEventListener('click', async ()=>{ if(!sessionActive){ await startSession(false); } });
-  el.card.addEventListener('dblclick', ()=>{ if(!sessionActive) return; toggleJA(); });
   el.next.onclick=()=> nextCard(false, isAutoPlayAllowed());
   el.play.addEventListener('click', async ()=>{
     if(sessionStarting) return;
