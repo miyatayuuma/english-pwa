@@ -1869,6 +1869,20 @@ function createAppRuntime(){
     const bestLabel = levelInfoBest>resolvedLastLevel ? ` (最高${levelInfoBest})` : '';
 
     const pass = !!evaluation?.pass;
+    const responseMs = cardStart>0 ? Math.max(0, now()-cardStart) : '';
+    const attemptPayload = {
+      ts: new Date().toISOString(),
+      id: it.id,
+      result: pass ? 'pass' : 'fail',
+      auto_recall: +recall.toFixed(3),
+      auto_precision: +precision.toFixed(3),
+      response_ms: responseMs,
+      hint_used: stageUsed>BASE_HINT_STAGE ? 1 : 0,
+      hint_stage: stageUsed,
+      hint_en_used: stageUsed>=getEnglishRevealStage() ? 1 : 0,
+      device: UA
+    };
+    try{ await sendLog('attempt', attemptPayload); }catch(_){ }
     const progressNote = buildNoHintProgressNote(levelUpdate?.nextTarget);
     if(pass){
       failCount=0;
