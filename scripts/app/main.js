@@ -58,7 +58,7 @@ function createAppRuntime(){
     return Number.isFinite(num)?num:'';
   }
 
-  const DEFAULT_FOOTER_HINT='左右スワイプ：戻る/進む　ダブルタップ：ヒント（英文→和訳）';
+  const DEFAULT_FOOTER_HINT='左右スワイプ：戻る/進む　上スワイプ：ヒント（英文→和訳／PCはダブルクリック）';
   const LEVEL_DESCRIPTIONS={
     0:'Lv0: これから練習を始めるカードです。ヒントを使って流れを確認しましょう。',
     1:'Lv1: 音声や和訳ヒントを頼りに正しい形を身に付けていく段階です。',
@@ -174,7 +174,7 @@ function createAppRuntime(){
 
 
   // ===== Elements =====
-  const el={ headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerMessage'), footerInfoContainer:qs('#footerInfo'), footerInfoBtn:qs('#footerInfoBtn'), footerInfoDialog:qs('#footerInfoDialog'), footerInfoDialogBody:qs('#footerInfoDialogBody'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), next:qs('#btnNext'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), composeGuide:qs('#composeGuide'), composeTokens:qs('#composeTokens'), composeNote:qs('#composeNote'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSpeechVoice:qs('#cfgSpeechVoice'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnImport:qs('#btnImport'), filePick:qs('#filePick'), btnTestAudio:qs('#btnTestAudio'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus') };
+  const el={ headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerMessage'), footerInfoContainer:qs('#footerInfo'), footerInfoBtn:qs('#footerInfoBtn'), footerInfoDialog:qs('#footerInfoDialog'), footerInfoDialogBody:qs('#footerInfoDialogBody'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), next:qs('#btnNext'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), composeGuide:qs('#composeGuide'), composeTokens:qs('#composeTokens'), composeNote:qs('#composeNote'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSpeechVoice:qs('#cfgSpeechVoice'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnImport:qs('#btnImport'), filePick:qs('#filePick'), btnTestAudio:qs('#btnTestAudio'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speedCtrl:qs('.speed-ctrl'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus') };
   el.cfgPlaybackMode=qsa('input[name="cfgPlaybackMode"]');
   el.cfgStudyMode=qsa('input[name="cfgStudyMode"]');
   const composeNoteDefault = el.composeNote ? el.composeNote.textContent : '';
@@ -606,19 +606,19 @@ function createAppRuntime(){
 
   function composeHintPlaceholder(stage){
     if(stage<=BASE_HINT_STAGE){
-      return '<span class="hint-placeholder">カードをダブルタップして和訳ヒントを表示（もう一度で音声、さらにもう一度で英文）</span>';
+      return '<span class="hint-placeholder">カードを上スワイプ（PCはダブルクリック）して和訳ヒントを表示（もう一度で音声、さらにもう一度で英文）</span>';
     }
     if(stage<COMPOSE_HINT_STAGE_AUDIO){
-      return '<span class="hint-placeholder">英文はまだ非表示です。もう一度ダブルタップで音声ヒントを有効化（さらにもう一度で英文）</span>';
+      return '<span class="hint-placeholder">英文はまだ非表示です。もう一度上スワイプ（PCはダブルクリック）で音声ヒントを有効化（さらにもう一度で英文）</span>';
     }
     if(stage<COMPOSE_HINT_STAGE_EN){
-      return '<span class="hint-placeholder">英文はまだ非表示です。もう一度ダブルタップで英文ヒントを表示</span>';
+      return '<span class="hint-placeholder">英文はまだ非表示です。もう一度上スワイプ（PCはダブルクリック）で英文ヒントを表示</span>';
     }
     return '';
   }
 
   function defaultHintPlaceholder(){
-    return '<span class="hint-placeholder">カードをダブルタップして英文ヒントを表示（もう一度で和訳）</span>';
+    return '<span class="hint-placeholder">カードを上スワイプ（PCはダブルクリック）して英文ヒントを表示（もう一度で和訳）</span>';
   }
 
   function setHintStage(stage,{reset=false}={}){
@@ -656,14 +656,14 @@ function createAppRuntime(){
     const changed=setHintStage(nextStage);
     if(changed){
       if(isComposeMode()){
-        if(hintStage===COMPOSE_HINT_STAGE_JA){ el.footer.textContent='和訳ヒントを表示しました。もう一度で音声ヒント（再生ボタン）が使えます。さらにもう一度で英文ヒント。'; }
-        else if(hintStage===COMPOSE_HINT_STAGE_AUDIO){ el.footer.textContent='音声ヒントを有効化しました。再生ボタンが使えます。さらにもう一度で英文ヒント。'; }
+        if(hintStage===COMPOSE_HINT_STAGE_JA){ el.footer.textContent='和訳ヒントを表示しました。もう一度上スワイプ（PCはダブルクリック）で音声ヒント（再生ボタン）が使えます。さらにもう一度で英文ヒント。'; }
+        else if(hintStage===COMPOSE_HINT_STAGE_AUDIO){ el.footer.textContent='音声ヒントを有効化しました。再生ボタンが使えます。さらにもう一度上スワイプ（PCはダブルクリック）で英文ヒント。'; }
         else if(hintStage===COMPOSE_HINT_STAGE_EN){ el.footer.textContent='英文ヒントを表示しました。'; }
-        else if(hintStage===BASE_HINT_STAGE){ el.footer.textContent='ヒントを非表示に戻しました。ダブルタップで再表示できます。'; }
+        else if(hintStage===BASE_HINT_STAGE){ el.footer.textContent='ヒントを非表示に戻しました。上スワイプで再表示できます（PCはダブルクリック）。'; }
       }else{
-        if(hintStage===BASE_HINT_STAGE+1){ el.footer.textContent='英文ヒントを表示しました。もう一度で和訳ヒント。'; }
-        else if(hintStage===BASE_HINT_STAGE+2){ el.footer.textContent='和訳ヒントを表示しました'; }
-        else if(hintStage===BASE_HINT_STAGE){ el.footer.textContent='ヒントを非表示に戻しました。ダブルタップで再表示できます。'; }
+        if(hintStage===BASE_HINT_STAGE+1){ el.footer.textContent='英文ヒントを表示しました。もう一度上スワイプ（PCはダブルクリック）で和訳ヒント。'; }
+        else if(hintStage===BASE_HINT_STAGE+2){ el.footer.textContent='和訳ヒントを表示しました。'; }
+        else if(hintStage===BASE_HINT_STAGE){ el.footer.textContent='ヒントを非表示に戻しました。上スワイプで再表示できます（PCはダブルクリック）。'; }
       }
     }
   }
@@ -1783,8 +1783,11 @@ function createAppRuntime(){
     const height=window.innerHeight || document.documentElement.clientHeight || 0;
     const base=Math.min(width, height) * 0.15;
     const minThreshold=45;
+    const horizontal=Math.max(base, width * 0.2, minThreshold);
+    const vertical=Math.max(base, height * 0.2, minThreshold);
     return {
-      horizontal: Math.max(base, width * 0.2, minThreshold),
+      horizontal,
+      vertical,
     };
   }
   function cancelCardDragAnimation(){
@@ -1850,16 +1853,32 @@ function createAppRuntime(){
     card.classList.remove('card-no-transition');
     removeCardDragProperties();
   }
+  function isSwipeExcludedTarget(target){
+    if(!target) return false;
+    let element=target;
+    if(element.nodeType!==1){
+      element=element.parentElement || null;
+    }
+    while(element){
+      if(el.speedCtrl && element===el.speedCtrl) return true;
+      if(element.classList && element.classList.contains('speed-ctrl')) return true;
+      element=element.parentElement || null;
+    }
+    return false;
+  }
   el.card.addEventListener('touchstart',(ev)=>{
     if(!sessionActive){ touchStart=null; return; }
-    if(ev.touches?.length!==1) return;
+    if(ev.touches?.length!==1){ touchStart=null; return; }
     const t=ev.touches[0];
+    const originTarget=(t && t.target) || ev.target;
+    if(isSwipeExcludedTarget(originTarget)){ touchStart=null; return; }
     touchStart={
       x:t.clientX,
       y:t.clientY,
       time:performance.now(),
       thresholds:getSwipeThresholds(),
       dragging:false,
+      axis:null,
       lastDx:0,
       lastDy:0,
     };
@@ -1877,21 +1896,31 @@ function createAppRuntime(){
     const dy=t.clientY-touchStart.y;
     const absDx=Math.abs(dx);
     const absDy=Math.abs(dy);
-    const thresholds=touchStart.thresholds || getSwipeThresholds();
+    const state=touchStart;
+    const thresholds=state.thresholds || getSwipeThresholds();
     const horizontalThreshold=Math.max(1, thresholds.horizontal || 0);
     const directionLock=6;
-    if(!touchStart.dragging){
+    if(!state.axis){
       if(absDx<directionLock && absDy<directionLock){
-        touchStart.lastDx=dx;
-        touchStart.lastDy=dy;
+        state.lastDx=dx;
+        state.lastDy=dy;
         return;
       }
       if(absDy>absDx){
-        touchStart=null;
-        resetCardDrag({animate:false});
+        state.axis='vertical';
+        state.lastDx=dx;
+        state.lastDy=dy;
         return;
       }
-      touchStart.dragging=true;
+      state.axis='horizontal';
+    }
+    if(state.axis==='vertical'){
+      state.lastDx=dx;
+      state.lastDy=dy;
+      return;
+    }
+    if(!state.dragging){
+      state.dragging=true;
       const card=el.card;
       if(card){ card.classList.add('card-no-transition'); }
     }
@@ -1903,8 +1932,8 @@ function createAppRuntime(){
     const direction=limitedDx===0?0:(limitedDx>0?1:-1);
     const tilt=MAX_CARD_TILT*progress*direction;
     const opacity=Math.max(1-CARD_OPACITY_REDUCTION*progress, 1-CARD_OPACITY_REDUCTION);
-    touchStart.lastDx=limitedDx;
-    touchStart.lastDy=dy;
+    state.lastDx=limitedDx;
+    state.lastDy=dy;
     scheduleCardDragValues({offset:limitedDx, tilt, opacity});
   },{passive:false});
   function handleTouchFinish(ev, canceled=false){
@@ -1923,10 +1952,13 @@ function createAppRuntime(){
     const horizontalVelocity=absDx/dt;
     const thresholds=state.thresholds || getSwipeThresholds();
     const horizontalThreshold=Math.max(1, thresholds.horizontal || 0);
+    const verticalThreshold=Math.max(1, thresholds.vertical || thresholds.horizontal || 0);
+    const axis=state.axis;
+    const verticalPreferred=axis==='vertical';
     const horizontalDominant=absDx>absDy;
     const reachedHorizontal=absDx>=horizontalThreshold;
     if(state.dragging){
-      if(horizontalDominant && reachedHorizontal){
+      if(!verticalPreferred && horizontalDominant && reachedHorizontal){
         clearCardDragStyles();
         const allowAuto=isAutoPlayAllowed();
         if(dx>0) prevCard(allowAuto);
@@ -1936,15 +1968,24 @@ function createAppRuntime(){
       resetCardDrag({animate:true});
       return;
     }
-    const horizontalSwipe=horizontalDominant && reachedHorizontal && horizontalVelocity>=MIN_SWIPE_VELOCITY && dt<=MAX_SWIPE_DURATION;
+    const horizontalSwipe=!verticalPreferred && horizontalDominant && reachedHorizontal && horizontalVelocity>=MIN_SWIPE_VELOCITY && dt<=MAX_SWIPE_DURATION;
     if(horizontalSwipe){
       clearCardDragStyles();
       const allowAuto=isAutoPlayAllowed();
       if(dx>0) prevCard(allowAuto);
       else nextCard(false, allowAuto);
-    }else{
-      resetCardDrag({animate:false});
+      return;
     }
+    const verticalVelocity=absDy/dt;
+    const reachedVertical=absDy>=verticalThreshold;
+    const verticalCandidate=verticalPreferred || !horizontalDominant;
+    const upwardSwipe=verticalCandidate && reachedVertical && verticalVelocity>=MIN_SWIPE_VELOCITY && dt<=MAX_SWIPE_DURATION && dy<0;
+    if(upwardSwipe){
+      resetCardDrag({animate:false});
+      toggleJA();
+      return;
+    }
+    resetCardDrag({animate:false});
   }
   el.card.addEventListener('touchend',(ev)=>{ handleTouchFinish(ev,false); },{passive:true});
   el.card.addEventListener('touchcancel',(ev)=>{ handleTouchFinish(ev,true); },{passive:true});
