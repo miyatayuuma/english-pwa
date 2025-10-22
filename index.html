@@ -107,7 +107,10 @@
 
   <footer>
     <progress id="pbar" value="0" max="1"></progress>
-    <span id="footerInfo" class="muted">左右スワイプ：戻る/進む　ダブルタップ：ヒント（英文→和訳）</span>
+    <div id="footerInfo" class="footer-info" data-dialog="footer-info">
+      <span id="footerMessage" class="muted" aria-live="polite"></span>
+      <button id="footerInfoBtn" type="button" aria-label="学習ルールの詳細" title="学習ルールの詳細">ℹ️</button>
+    </div>
     <div class="grow"></div>
   </footer>
 </div>
@@ -115,6 +118,15 @@
 <audio id="player" preload="auto" crossorigin="anonymous"></audio>
 <div id="milestoneEffects" aria-live="polite" aria-atomic="true"></div>
 <div id="toast" role="status" aria-live="polite"></div>
+<dialog id="footerInfoDialog" class="info-dialog" data-dialog="footer-info" aria-labelledby="footerInfoDialogTitle">
+  <form method="dialog" class="info-dialog__form">
+    <h3 id="footerInfoDialogTitle">学習ルール</h3>
+    <div id="footerInfoDialogBody" class="info-dialog__body"></div>
+    <div class="info-dialog__actions">
+      <button value="close" class="btn">閉じる</button>
+    </div>
+  </form>
+</dialog>
 
 <!-- 設定モーダル -->
 <div id="cfgModal">
