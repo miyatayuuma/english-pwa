@@ -120,7 +120,48 @@ export function canonicalizeToken(token) {
   return token;
 }
 
-export function canonicalTokens(input) {
+export function mergeCompoundWords(tokens, comparisonTokens) {
+  if (!Array.isArray(tokens)) return [];
+  if (tokens.length <= 1) return [...tokens];
+
+  let comparisonSet;
+  if (comparisonTokens instanceof Set) {
+    comparisonSet = comparisonTokens;
+  } else if (Array.isArray(comparisonTokens)) {
+    comparisonSet = new Set(comparisonTokens);
+  } else if (comparisonTokens && typeof comparisonTokens[Symbol.iterator] === 'function') {
+    comparisonSet = new Set(comparisonTokens);
+  } else {
+    comparisonSet = new Set();
+  }
+
+  if (!comparisonSet.size) {
+    return [...tokens];
+  }
+
+  const out = [];
+  for (let i = 0; i < tokens.length; i++) {
+    let bestEnd = -1;
+    let bestValue = '';
+    let combined = tokens[i];
+    for (let j = i + 1; j < tokens.length; j++) {
+      combined += tokens[j];
+      if (comparisonSet.has(combined)) {
+        bestEnd = j;
+        bestValue = combined;
+      }
+    }
+    if (bestEnd >= 0) {
+      out.push(bestValue);
+      i = bestEnd;
+    } else {
+      out.push(tokens[i]);
+    }
+  }
+  return out;
+}
+
+export function canonicalTokens(input, comparisonTokens) {
   if (!input) return [];
   let text = (input || '').toLowerCase().normalize('NFKC');
   text = text.replace(/℃/g, ' degree celsius ');
@@ -133,12 +174,16 @@ export function canonicalTokens(input) {
   const raw = text.split(/\s+/).filter(Boolean);
   if (!raw.length) return [];
   const merged = mergeContractions(raw);
-  return merged.map(canonicalizeToken).filter(Boolean);
+  const canonical = merged.map(canonicalizeToken).filter(Boolean);
+  if (!comparisonTokens) {
+    return canonical;
+  }
+  return mergeCompoundWords(canonical, comparisonTokens);
 }
 
-export const toks = (input) => canonicalTokens(input);
+export const toks = (input, comparisonTokens) => canonicalTokens(input, comparisonTokens);
 
-export const norm = (input) => canonicalTokens(input).join(' ');
+export const norm = (input, comparisonTokens) => canonicalTokens(input, comparisonTokens).join(' ');
 
 export function dedupeRuns(arr) {
   const out = [];

@@ -1,4 +1,4 @@
-import { appendStableFinal, dedupeRuns, approxWithin1, toks } from '../utils/text.js';
+import { appendStableFinal, dedupeRuns, approxWithin1, toks, mergeCompoundWords } from '../utils/text.js';
 
 const SR = typeof window !== 'undefined'
   ? (window.SpeechRecognition || window.webkitSpeechRecognition)
@@ -56,9 +56,11 @@ function clearHighlightInternal(enElement, getComposeNodesFn) {
 }
 
 function matchAndHighlightInternal(refText, hypText, enElement, getComposeNodesFn) {
-  const refTokens = toks(refText);
+  const refTokensRaw = toks(refText);
   const hypTokensRaw = toks(hypText);
-  const hypTokens = dedupeRuns(hypTokensRaw);
+  const refTokens = mergeCompoundWords(refTokensRaw, new Set(hypTokensRaw));
+  const hypTokensMerged = mergeCompoundWords(hypTokensRaw, new Set(refTokens));
+  const hypTokens = dedupeRuns(hypTokensMerged);
 
   const refCounts = new Map();
   const refOrder = [];
