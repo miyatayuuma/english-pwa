@@ -1,5 +1,5 @@
 // sw.js（抜粋）：キャッシュ名は更新ごとに変える
-const CACHE = 'v2.8';
+const CACHE = 'v2.9';
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll([
