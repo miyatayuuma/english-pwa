@@ -217,6 +217,8 @@ function createAppRuntime(){
   let idx=-1;
   let sessionStart=0;
   let cardStart=0;
+  const createEmptySessionMetrics=()=>({ startMs:0, cardsDone:0, newIntroduced:0, currentStreak:0, highestStreak:0 });
+  let sessionMetrics=createEmptySessionMetrics();
   let autoPlayUnlocked=false;
   let lastEmptySearchToast='';
 
@@ -282,6 +284,38 @@ function createAppRuntime(){
         el.headerProgressTotal.textContent = total;
       }
     }
+  }
+
+  function finalizeSessionMetrics(){
+    if(!sessionMetrics || !sessionMetrics.startMs){
+      sessionMetrics=createEmptySessionMetrics();
+      return;
+    }
+    const finishedAt=now();
+    const elapsedMinutes=Math.max(0, (finishedAt-sessionMetrics.startMs)/60000);
+    const roundedMinutes=Math.round(elapsedMinutes*100)/100;
+    const payload={
+      date:new Date(sessionMetrics.startMs).toISOString(),
+      minutes:roundedMinutes,
+      cards_done:sessionMetrics.cardsDone,
+      new_introduced:sessionMetrics.newIntroduced,
+      streak:sessionMetrics.highestStreak,
+    };
+    try{
+      const maybePromise=sendLog('session', payload);
+      if(maybePromise && typeof maybePromise.catch==='function'){
+        maybePromise.catch(()=>{});
+      }
+    }catch(_){ }
+    if((CFG.apiUrl||'').trim()){
+      Promise.resolve(syncProgressAndStatus()).catch(()=>{});
+    }
+    sessionMetrics=createEmptySessionMetrics();
+  }
+
+  function beginSessionMetrics(){
+    sessionMetrics=createEmptySessionMetrics();
+    sessionMetrics.startMs=now();
   }
 
   function applyRemoteStatus(status){
@@ -1079,16 +1113,17 @@ function createAppRuntime(){
       }
       let lastAppliedSearch=currentSearchQuery();
       let searchTimer=null;
-      const resetSessionForSearch=()=>{
-        if(sessionActive || sessionStarting){
-          stopAudio();
-          if(recognitionController && recognitionController.isActive()){
-            stopRec().catch(()=>{});
-          }
-          setMicState(false);
-          sessionActive=false;
-          sessionStarting=false;
+      const resetSessionForSearch=async()=>{
+        if(!(sessionActive || sessionStarting)) return;
+        stopAudio();
+        if(recognitionController && recognitionController.isActive()){
+          try{ await stopRec(); }
+          catch(_){ }
         }
+        setMicState(false);
+        finalizeSessionMetrics();
+        sessionActive=false;
+        sessionStarting=false;
       };
       const applySearchChange=(fromChange=false)=>{
         if(searchTimer){
@@ -1105,9 +1140,12 @@ function createAppRuntime(){
         }
         lastAppliedSearch=trimmed;
         updateHeaderStats();
-        resetSessionForSearch();
+        const resetPromise=resetSessionForSearch();
         lastEmptySearchToast='';
-        rebuildAndRender(true,{autoStart:false});
+        Promise.resolve(resetPromise)
+          .catch(()=>{})
+          .finally(()=>{ rebuildAndRender(true,{autoStart:false}); });
+        return;
       };
       const scheduleSearchChange=()=>{
         if(searchTimer){
@@ -1290,6 +1328,7 @@ function createAppRuntime(){
   function toggleJA(){ advanceHintStage(); }
 
   function showIdleCard(){
+    finalizeSessionMetrics();
     sessionActive=false;
     sessionStarting=false;
     stopAudio();
@@ -1536,12 +1575,14 @@ function createAppRuntime(){
       await ensureDir();
       sessionActive=true;
       sessionStart=now();
+      beginSessionMetrics();
       idx=-1;
       el.mic.disabled=false;
       try{
         const allowAutoPlay=autoPlay && isAutoPlayAllowed();
         await nextCard(true, allowAutoPlay);
       }catch(err){
+        finalizeSessionMetrics();
         sessionActive=false;
         throw err;
       }
@@ -1836,6 +1877,7 @@ function createAppRuntime(){
     const matchRate = calcMatchScore(refCount, recall, precision);
     updateMatch(matchRate);
     const prevInfoSnapshot = getLevelInfo(it.id);
+    const hadPriorProgress = Number(prevInfoSnapshot?.best)>0 || Number(prevInfoSnapshot?.last)>0;
     let prevBest = Number(prevInfoSnapshot?.best||0);
     if(!Number.isFinite(prevBest) || prevBest<=0){
       prevBest = Number(prevInfoSnapshot?.last||0) || 0;
@@ -1885,6 +1927,16 @@ function createAppRuntime(){
     try{ await sendLog('attempt', attemptPayload); }catch(_){ }
     const progressNote = buildNoHintProgressNote(levelUpdate?.nextTarget);
     if(pass){
+      if(sessionMetrics && sessionMetrics.startMs){
+        sessionMetrics.cardsDone+=1;
+        sessionMetrics.currentStreak+=1;
+        if(!hadPriorProgress){
+          sessionMetrics.newIntroduced+=1;
+        }
+        if(sessionMetrics.currentStreak>sessionMetrics.highestStreak){
+          sessionMetrics.highestStreak=sessionMetrics.currentStreak;
+        }
+      }
       failCount=0;
       playTone('success');
       showNextCta();
@@ -1905,6 +1957,9 @@ function createAppRuntime(){
         mode:studyMode
       });
     }else{
+      if(sessionMetrics && sessionMetrics.startMs){
+        sessionMetrics.currentStreak=0;
+      }
       failCount++;
       playTone('fail');
       if(failCount>=FAIL_LIMIT){
