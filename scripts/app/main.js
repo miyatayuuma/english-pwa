@@ -1113,6 +1113,32 @@ function createAppRuntime(){
   }
 
   // Build section options (All/単一)
+  async function finalizeActiveSession({ flushLogs=false }={}){
+    if(!(sessionActive || sessionStarting)) return false;
+    stopAudio();
+    if(recognitionController && recognitionController.isActive()){
+      try{ await stopRec(); }
+      catch(_){ }
+    }
+    setMicState(false);
+    finalizeSessionMetrics();
+    sessionActive=false;
+    sessionStarting=false;
+    if(flushLogs){
+      try{ await flushPendingLogs(); }
+      catch(err){ console.warn('finalizeActiveSession', err); }
+    }
+    return true;
+  }
+
+  if(typeof document!=='undefined'){
+    const handleVisibilityExit=()=>{
+      if(document.visibilityState !== 'hidden') return;
+      finalizeActiveSession({ flushLogs:true }).catch(()=>{});
+    };
+    document.addEventListener('visibilitychange', handleVisibilityExit);
+  }
+
   function initSectionPicker(){
     updateSectionOptions({preferSaved:true});
     const sel=el.secSel;
@@ -1133,18 +1159,7 @@ function createAppRuntime(){
       }
       let lastAppliedSearch=currentSearchQuery();
       let searchTimer=null;
-      const resetSessionForSearch=async()=>{
-        if(!(sessionActive || sessionStarting)) return;
-        stopAudio();
-        if(recognitionController && recognitionController.isActive()){
-          try{ await stopRec(); }
-          catch(_){ }
-        }
-        setMicState(false);
-        finalizeSessionMetrics();
-        sessionActive=false;
-        sessionStarting=false;
-      };
+      const resetSessionForSearch=()=>finalizeActiveSession();
       const applySearchChange=(fromChange=false)=>{
         if(searchTimer){
           clearTimeout(searchTimer);
