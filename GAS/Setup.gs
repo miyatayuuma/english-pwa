@@ -58,8 +58,8 @@ function checkSheets(){
     // WebApp.appendSpeech_ の列順に合わせる
     [SHEETS_SETUP.SPEECH,   ['ts','id','mode','wer','cer','latency_ms','words_spoken','transcript','matched_tokens_json','missing_tokens_json','recall','precision','match','hint_stage','level_last','level_best','level5_count','streak','no_hint_successes','next_level_target','next_level_remaining','next_level_available_at','client_uid']],
 
-    // SRS は将来用（現状は任意）
-    [SHEETS_SETUP.SRS,      ['id','ease','interval_d','due_utc','reps','lapses','last_result','last_ts','difficulty','stability']],
+    // SRS state sync
+    [SHEETS_SETUP.SRS,      ['ts','id','level_candidate','level_final','level_last','level_best','hint_stage','last_match','no_hint_streak','no_hint_history','last_no_hint_at','level5_count','level_updated_at','promotion_blocked','next_target','client_uid']],
 
     // WebApp.appendSession_ に合わせる
     [SHEETS_SETUP.SESS,     ['date','minutes','cards_done','new_introduced','streak','client_uid','at']],
@@ -86,7 +86,7 @@ function setupSheets(){
   ensureSheetSafe_(SHEETS_SETUP.ITEMS,    ['id','unit','en','ja','audio_fn','tags']);
   ensureSheetSafe_(SHEETS_SETUP.ATTEMPTS, ['ts','id','result','auto_recall','auto_precision','response_ms','hint_used','hint_stage','hint_en_used','device','client_uid']);
   ensureSheetSafe_(SHEETS_SETUP.SPEECH,   ['ts','id','mode','wer','cer','latency_ms','words_spoken','transcript','matched_tokens_json','missing_tokens_json','recall','precision','match','hint_stage','level_last','level_best','level5_count','streak','no_hint_successes','next_level_target','next_level_remaining','next_level_available_at','client_uid']);
-  ensureSheetSafe_(SHEETS_SETUP.SRS,      ['id','ease','interval_d','due_utc','reps','lapses','last_result','last_ts','difficulty','stability']);
+  ensureSheetSafe_(SHEETS_SETUP.SRS,      ['ts','id','level_candidate','level_final','level_last','level_best','hint_stage','last_match','no_hint_streak','no_hint_history','last_no_hint_at','level5_count','level_updated_at','promotion_blocked','next_target','client_uid']);
   ensureSheetSafe_(SHEETS_SETUP.SESS,     ['date','minutes','cards_done','new_introduced','streak','client_uid','at']);
   SpreadsheetApp.getUi().alert('非破壊セットアップ完了：既存データは保持されました。');
 }

@@ -65,6 +65,7 @@ const ENTRY_HANDLERS = Object.freeze({
   attempt: appendAttempt_,
   speech:  appendSpeech_,
   session: appendSession_,
+  srs:     upsertSrsState_,
 });
 const SUPPORTED_ENTRY_TYPES = Object.freeze(Object.keys(ENTRY_HANDLERS));
 function doPost(e) {
@@ -183,6 +184,134 @@ function appendSession_(s, uid) {
     new Date().toISOString()
   ];
   sh.appendRow(row);
+}
+
+function upsertSrsState_(state, uid) {
+  const headers = [
+    'ts','id','level_candidate','level_final','level_last','level_best','hint_stage',
+    'last_match','no_hint_streak','no_hint_history','last_no_hint_at','level5_count',
+    'level_updated_at','promotion_blocked','next_target','client_uid'
+  ];
+  const sh = ensureSheet(SHEETS.srs, headers);
+  const idRaw = state && state.id;
+  const id = String(idRaw || '').trim();
+  if (!id) return;
+
+  const lastCol = Math.max(sh.getLastColumn(), headers.length);
+  let headerRow = sh.getRange(1, 1, 1, lastCol).getValues()[0];
+  let normalized = headerRow.map(v => String(v || '').trim());
+  const headerIndex = new Map();
+  normalized.forEach((name, idx) => { if (name) headerIndex.set(name, idx); });
+  let appended = 0;
+  headers.forEach(name => {
+    if (!headerIndex.has(name)) {
+      const targetCol = normalized.length + 1;
+      sh.getRange(1, targetCol, 1, 1).setValue(name);
+      normalized.push(name);
+      headerIndex.set(name, targetCol - 1);
+      appended++;
+    }
+  });
+  if (appended > 0) {
+    const updatedLastCol = Math.max(sh.getLastColumn(), normalized.length);
+    headerRow = sh.getRange(1, 1, 1, updatedLastCol).getValues()[0];
+    normalized = headerRow.map(v => String(v || '').trim());
+  }
+  const finalHeaderIndex = new Map();
+  normalized.forEach((name, idx) => { if (name) finalHeaderIndex.set(name, idx); });
+
+  const idColIndex = finalHeaderIndex.get('id');
+  if (idColIndex == null) return;
+
+  const lastRow = sh.getLastRow();
+  let targetRow = lastRow >= 2 ? 0 : 2;
+  if (lastRow >= 2) {
+    const idValues = sh.getRange(2, idColIndex + 1, lastRow - 1, 1).getValues();
+    for (let i = 0; i < idValues.length; i++) {
+      if (String(idValues[i][0] || '').trim() === id) {
+        targetRow = 2 + i;
+        break;
+      }
+    }
+  }
+  if (!targetRow || targetRow < 2) {
+    targetRow = lastRow + 1;
+    if (targetRow < 2) targetRow = 2;
+  }
+
+  const totalCols = Math.max(sh.getLastColumn(), normalized.length);
+  let rowValues;
+  if (targetRow <= lastRow) {
+    rowValues = sh.getRange(targetRow, 1, 1, totalCols).getValues()[0];
+  } else {
+    rowValues = new Array(totalCols).fill('');
+  }
+
+  function setColumn(name, value) {
+    const idx = finalHeaderIndex.get(name);
+    if (idx == null) return;
+    if (idx >= rowValues.length) {
+      const fillCount = idx - rowValues.length + 1;
+      rowValues = rowValues.concat(new Array(fillCount).fill(''));
+    }
+    rowValues[idx] = value;
+  }
+
+  const isoOrEmpty = (value) => {
+    if (value instanceof Date) return value.toISOString();
+    if (typeof value === 'number') {
+      if (!Number.isFinite(value) || value <= 0) return '';
+      return new Date(value).toISOString();
+    }
+    if (typeof value === 'string') {
+      const trimmed = value.trim();
+      return trimmed;
+    }
+    return '';
+  };
+
+  const numericOrBlank = (value) => {
+    const num = Number(value);
+    return Number.isFinite(num) ? num : '';
+  };
+
+  const jsonOrEmpty = (value) => {
+    if (!value && value !== 0) return '';
+    if (typeof value === 'string') return value;
+    if (Array.isArray(value) && value.length === 0) return '[]';
+    try {
+      return JSON.stringify(value);
+    } catch (err) {
+      return String(value);
+    }
+  };
+
+  const tsValue = isoOrEmpty(state?.ts) || new Date().toISOString();
+  setColumn('ts', tsValue);
+  setColumn('id', id);
+  setColumn('level_candidate', numericOrBlank(state?.level_candidate));
+  setColumn('level_final', numericOrBlank(state?.level_final));
+  setColumn('level_last', numericOrBlank(state?.level_last));
+  setColumn('level_best', numericOrBlank(state?.level_best));
+  setColumn('hint_stage', numericOrBlank(state?.hint_stage));
+  setColumn('last_match', numericOrBlank(state?.last_match));
+  setColumn('no_hint_streak', numericOrBlank(state?.no_hint_streak));
+  const historyValue = Array.isArray(state?.no_hint_history)
+    ? jsonOrEmpty(state.no_hint_history)
+    : jsonOrEmpty(state?.no_hint_history);
+  setColumn('no_hint_history', historyValue);
+  setColumn('last_no_hint_at', isoOrEmpty(state?.last_no_hint_at));
+  setColumn('level5_count', numericOrBlank(state?.level5_count));
+  const updatedAt = isoOrEmpty(state?.level_updated_at || state?.updated_at);
+  setColumn('level_updated_at', updatedAt);
+  setColumn('promotion_blocked', jsonOrEmpty(state?.promotion_blocked));
+  setColumn('next_target', jsonOrEmpty(state?.next_target));
+  setColumn('client_uid', state?.client_uid || uid || '');
+
+  if (rowValues.length < totalCols) {
+    rowValues = rowValues.concat(new Array(totalCols - rowValues.length).fill(''));
+  }
+  sh.getRange(targetRow, 1, 1, Math.max(totalCols, rowValues.length)).setValues([rowValues]);
 }
 
 // ===== status（任意：ヘッダ用の簡易集計） =====
