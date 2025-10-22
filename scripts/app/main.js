@@ -57,6 +57,17 @@ function createAppRuntime(){
     return Number.isFinite(num)?num:'';
   }
 
+  const DEFAULT_FOOTER_HINT='左右スワイプ：戻る/進む　ダブルタップ：ヒント（英文→和訳）';
+  const LEVEL_DESCRIPTIONS={
+    0:'Lv0: これから練習を始めるカードです。ヒントを使って流れを確認しましょう。',
+    1:'Lv1: 音声や和訳ヒントを頼りに正しい形を身に付けていく段階です。',
+    2:'Lv2: ノーヒントで通せる回数を増やし、聞き取り精度を上げましょう。',
+    3:'Lv3: 安定してきました。ノーヒント合格を重ねて次のレベルを目指します。',
+    4:'Lv4: ノーヒント連続合格でLv5が開放されます。リズムを崩さず復習しましょう。',
+    5:'Lv5: 定着済みです。定期的な復習で維持しつつ新しいカードに挑戦しましょう。'
+  };
+  let footerInfoIntroShown=false;
+
   const { SEARCH, SPEED, CONFIG, PENDING_LOGS: PENDING_LOGS_KEY, SECTION_SELECTION, ORDER_SELECTION } = STORAGE_KEYS;
 
   const BASE_HINT_STAGE=0;
@@ -162,7 +173,7 @@ function createAppRuntime(){
 
 
   // ===== Elements =====
-  const el={ headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerInfo'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), next:qs('#btnNext'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), composeGuide:qs('#composeGuide'), composeTokens:qs('#composeTokens'), composeNote:qs('#composeNote'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSpeechVoice:qs('#cfgSpeechVoice'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnImport:qs('#btnImport'), filePick:qs('#filePick'), btnTestAudio:qs('#btnTestAudio'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus') };
+  const el={ headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerMessage'), footerInfoContainer:qs('#footerInfo'), footerInfoBtn:qs('#footerInfoBtn'), footerInfoDialog:qs('#footerInfoDialog'), footerInfoDialogBody:qs('#footerInfoDialogBody'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), next:qs('#btnNext'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), composeGuide:qs('#composeGuide'), composeTokens:qs('#composeTokens'), composeNote:qs('#composeNote'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSpeechVoice:qs('#cfgSpeechVoice'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnImport:qs('#btnImport'), filePick:qs('#filePick'), btnTestAudio:qs('#btnTestAudio'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus') };
   el.cfgPlaybackMode=qsa('input[name="cfgPlaybackMode"]');
   el.cfgStudyMode=qsa('input[name="cfgStudyMode"]');
   const composeNoteDefault = el.composeNote ? el.composeNote.textContent : '';
@@ -188,6 +199,10 @@ function createAppRuntime(){
 
   function clearLastProgressNote(){
     setLastProgressNote('');
+  }
+
+  function getLastProgressNote(){
+    return (lastProgressNote||'').trim();
   }
 
   function ensureProgressNoteModalStyles(){
@@ -237,7 +252,7 @@ function createAppRuntime(){
   }
 
   function showLastProgressNote({mode='toast', duration=2000}={}){
-    const note=(lastProgressNote||'').trim();
+    const note=getLastProgressNote();
     if(!note) return false;
     const normalized=(mode||'toast').toLowerCase();
     if(normalized==='modal'){
@@ -246,6 +261,134 @@ function createAppRuntime(){
     }
     toast(note, duration==null?2000:duration);
     return true;
+  }
+
+  function buildLevelSummary(){
+    const item=currentItem;
+    if(!item) return null;
+    const info=getLevelInfo(item.id);
+    if(!info) return null;
+    const lastVal=Number(info.last);
+    const bestVal=Number(info.best);
+    const resolved=Number.isFinite(lastVal)?lastVal:(Number.isFinite(bestVal)?bestVal:0);
+    const safeLevel=Number.isFinite(resolved)?resolved:0;
+    const description=LEVEL_DESCRIPTIONS.hasOwnProperty(safeLevel)?LEVEL_DESCRIPTIONS[safeLevel]:LEVEL_DESCRIPTIONS[0];
+    const best=Number.isFinite(bestVal)?bestVal:null;
+    return { level:safeLevel, best, description };
+  }
+
+  function collectFooterInfoSections(){
+    const sections=[];
+    const note=getLastProgressNote();
+    if(note){
+      sections.push({ title:'進捗メモ', lines:[note] });
+    }
+    const summary=buildLevelSummary();
+    if(summary){
+      const lines=[];
+      let label=`現在の目安レベル: Lv${summary.level}`;
+      if(typeof summary.best==='number' && Number.isFinite(summary.best) && summary.best>summary.level){
+        label+=`（最高Lv${summary.best}）`;
+      }
+      lines.push(label);
+      if(summary.description){
+        lines.push(summary.description);
+      }
+      sections.push({ title:'レベル説明', lines });
+    }
+    sections.push({ title:'操作ヒント', lines:[DEFAULT_FOOTER_HINT] });
+    return sections;
+  }
+
+  function buildFooterInfoFallbackText(sections){
+    if(!Array.isArray(sections)) return '';
+    const chunks=[];
+    for(const section of sections){
+      if(!section || !Array.isArray(section.lines)) continue;
+      const lines=section.lines.map(line=>typeof line==='string'?line.trim():'').filter(Boolean);
+      if(lines.length){
+        chunks.push(lines.join(' '));
+      }
+    }
+    return chunks.join(' / ');
+  }
+
+  function openFooterInfoDialog(sections){
+    const dialog=el.footerInfoDialog;
+    const body=el.footerInfoDialogBody;
+    if(!dialog || !body || typeof dialog.showModal!=='function') return false;
+    const infoSections=Array.isArray(sections) && sections.length ? sections : collectFooterInfoSections();
+    body.innerHTML='';
+    const effectiveSections=infoSections.length ? infoSections : [{ title:'操作ヒント', lines:[DEFAULT_FOOTER_HINT] }];
+    for(const section of effectiveSections){
+      const sectionEl=document.createElement('section');
+      sectionEl.className='info-dialog__section';
+      const titleText=typeof section.title==='string' ? section.title.trim() : '';
+      if(titleText){
+        const titleEl=document.createElement('p');
+        titleEl.className='info-dialog__section-title';
+        titleEl.textContent=titleText;
+        sectionEl.appendChild(titleEl);
+      }
+      const lines=Array.isArray(section.lines) ? section.lines : [];
+      if(lines.length){
+        for(const rawLine of lines){
+          const text=typeof rawLine==='string' ? rawLine.trim() : '';
+          if(!text) continue;
+          const p=document.createElement('p');
+          p.textContent=text;
+          sectionEl.appendChild(p);
+        }
+      }
+      body.appendChild(sectionEl);
+    }
+    try{
+      if(dialog.open) dialog.close();
+      dialog.showModal();
+      const closeBtn=dialog.querySelector('button[value="close"]');
+      try{ closeBtn?.focus?.({preventScroll:true}); }catch(_){ }
+      return true;
+    }catch(err){
+      console.warn('footer info dialog failed', err);
+    }
+    if(dialog.open){
+      dialog.close();
+    }
+    return false;
+  }
+
+  function presentFooterInfo(){
+    const sections=collectFooterInfoSections();
+    if(openFooterInfoDialog(sections)) return true;
+    const note=getLastProgressNote();
+    if(note){
+      toast(note, 2600);
+      return true;
+    }
+    const fallback=buildFooterInfoFallbackText(sections);
+    if(fallback){
+      toast(fallback, 2600);
+      return true;
+    }
+    toast(DEFAULT_FOOTER_HINT, 2400);
+    return false;
+  }
+
+  function maybeShowFooterInfoIntroToast(){
+    if(footerInfoIntroShown) return;
+    footerInfoIntroShown=true;
+    setTimeout(()=>{ toast('ℹ️ ボタンから詳細を確認できます', 2200); }, 500);
+  }
+
+  function initFooterInfoButton(){
+    if(el.footer && !el.footer.textContent){
+      el.footer.textContent=DEFAULT_FOOTER_HINT;
+    }
+    if(el.footerInfoDialog){
+      el.footerInfoDialog.addEventListener('cancel',()=>{ el.footerInfoDialog.close(); });
+    }
+    if(!el.footerInfoBtn) return;
+    el.footerInfoBtn.addEventListener('click',()=>{ presentFooterInfo(); });
   }
   function initializeMediaControllers(){
     const controller=createAudioController({
@@ -279,6 +422,8 @@ function createAppRuntime(){
 
   const { controller: audioController, speech } = initializeMediaControllers();
   speechController=speech;
+
+  initFooterInfoButton();
 
   const {
     playTone,
@@ -2153,6 +2298,7 @@ function createAppRuntime(){
       initSectionPicker();
       refreshDirStatus();
       await rebuildAndRender(true);
+      maybeShowFooterInfoIntroToast();
       syncProgressAndStatus().catch(()=>{});
     }catch(e){
       console.error(e);
