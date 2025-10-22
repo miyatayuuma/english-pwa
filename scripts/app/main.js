@@ -58,7 +58,7 @@ function createAppRuntime(){
     return Number.isFinite(num)?num:'';
   }
 
-  const DEFAULT_FOOTER_HINT='左右スワイプ：戻る/進む　上スワイプ：ヒント（英文→和訳／PCはダブルクリック）';
+  const DEFAULT_FOOTER_HINT='左右スワイプ：戻る/進む　上スワイプ：ヒント切替（英文・和訳・音声）';
   const LEVEL_DESCRIPTIONS={
     0:'Lv0: これから練習を始めるカードです。ヒントを使って流れを確認しましょう。',
     1:'Lv1: 音声や和訳ヒントを頼りに正しい形を身に付けていく段階です。',
@@ -606,19 +606,19 @@ function createAppRuntime(){
 
   function composeHintPlaceholder(stage){
     if(stage<=BASE_HINT_STAGE){
-      return '<span class="hint-placeholder">カードを上スワイプ（PCはダブルクリック）して和訳ヒントを表示（もう一度で音声、さらにもう一度で英文）</span>';
+      return '<span class="hint-placeholder">カードを上スワイプして和訳ヒントを表示（もう一度で音声、さらにもう一度で英文）</span>';
     }
     if(stage<COMPOSE_HINT_STAGE_AUDIO){
-      return '<span class="hint-placeholder">英文はまだ非表示です。もう一度上スワイプ（PCはダブルクリック）で音声ヒントを有効化（さらにもう一度で英文）</span>';
+      return '<span class="hint-placeholder">英文はまだ非表示です。もう一度上スワイプで音声ヒントを有効化（さらにもう一度で英文）</span>';
     }
     if(stage<COMPOSE_HINT_STAGE_EN){
-      return '<span class="hint-placeholder">英文はまだ非表示です。もう一度上スワイプ（PCはダブルクリック）で英文ヒントを表示</span>';
+      return '<span class="hint-placeholder">英文はまだ非表示です。もう一度上スワイプで英文ヒントを表示</span>';
     }
     return '';
   }
 
   function defaultHintPlaceholder(){
-    return '<span class="hint-placeholder">カードを上スワイプ（PCはダブルクリック）して英文ヒントを表示（もう一度で和訳）</span>';
+    return '<span class="hint-placeholder">カードを上スワイプして英文ヒントを表示（もう一度で和訳）</span>';
   }
 
   function setHintStage(stage,{reset=false}={}){
@@ -656,14 +656,14 @@ function createAppRuntime(){
     const changed=setHintStage(nextStage);
     if(changed){
       if(isComposeMode()){
-        if(hintStage===COMPOSE_HINT_STAGE_JA){ el.footer.textContent='和訳ヒントを表示しました。もう一度上スワイプ（PCはダブルクリック）で音声ヒント（再生ボタン）が使えます。さらにもう一度で英文ヒント。'; }
-        else if(hintStage===COMPOSE_HINT_STAGE_AUDIO){ el.footer.textContent='音声ヒントを有効化しました。再生ボタンが使えます。さらにもう一度上スワイプ（PCはダブルクリック）で英文ヒント。'; }
+        if(hintStage===COMPOSE_HINT_STAGE_JA){ el.footer.textContent='和訳ヒントを表示しました。もう一度上スワイプで音声ヒント（再生ボタン）が使えます。さらにもう一度で英文ヒント。'; }
+        else if(hintStage===COMPOSE_HINT_STAGE_AUDIO){ el.footer.textContent='音声ヒントを有効化しました。再生ボタンが使えます。さらにもう一度上スワイプで英文ヒント。'; }
         else if(hintStage===COMPOSE_HINT_STAGE_EN){ el.footer.textContent='英文ヒントを表示しました。'; }
-        else if(hintStage===BASE_HINT_STAGE){ el.footer.textContent='ヒントを非表示に戻しました。上スワイプで再表示できます（PCはダブルクリック）。'; }
+        else if(hintStage===BASE_HINT_STAGE){ el.footer.textContent='ヒントを非表示に戻しました。上スワイプで再表示できます。'; }
       }else{
-        if(hintStage===BASE_HINT_STAGE+1){ el.footer.textContent='英文ヒントを表示しました。もう一度上スワイプ（PCはダブルクリック）で和訳ヒント。'; }
+        if(hintStage===BASE_HINT_STAGE+1){ el.footer.textContent='英文ヒントを表示しました。もう一度上スワイプで和訳ヒント。'; }
         else if(hintStage===BASE_HINT_STAGE+2){ el.footer.textContent='和訳ヒントを表示しました。'; }
-        else if(hintStage===BASE_HINT_STAGE){ el.footer.textContent='ヒントを非表示に戻しました。上スワイプで再表示できます（PCはダブルクリック）。'; }
+        else if(hintStage===BASE_HINT_STAGE){ el.footer.textContent='ヒントを非表示に戻しました。上スワイプで再表示できます。'; }
       }
     }
   }
