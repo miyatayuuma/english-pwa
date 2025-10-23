@@ -11,7 +11,21 @@ self.addEventListener('install', e => {
     './icons/icon-192.png',
     './icons/icon-512.png',
     './icons/maskable-192.png',
-    './icons/maskable-512.png'
+    './icons/maskable-512.png',
+    './scripts/app/main.js',
+    './scripts/app/dom.js',
+    './scripts/app/levelState.js',
+    './scripts/app/overlay.js',
+    './scripts/app/cardTransitions.js',
+    './scripts/app/composeGuide.js',
+    './scripts/app/logManager.js',
+    './scripts/audio/controller.js',
+    './scripts/speech/recognition.js',
+    './scripts/speech/synthesis.js',
+    './scripts/state/studyLog.js',
+    './scripts/storage/local.js',
+    './scripts/ui/milestones.js',
+    './scripts/utils/text.js'
   ])));
 });
 
@@ -30,8 +44,11 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  // icons はキャッシュ優先（任意）
-  if (url.pathname.includes('/icons/')) {
+  const isIconRequest = url.pathname.includes('/icons/');
+  const isScriptRequest = url.pathname.includes('/scripts/') && url.pathname.endsWith('.js');
+
+  // icons と scripts はキャッシュ優先（任意）
+  if (isIconRequest || isScriptRequest) {
     e.respondWith(caches.open(CACHE).then(async cache => {
       const cached = await cache.match(e.request);
       if (cached) return cached;
