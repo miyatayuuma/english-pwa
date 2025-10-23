@@ -1,5 +1,5 @@
 // sw.js（抜粋）：キャッシュ名は更新ごとに変える
-const CACHE = 'v3.3';
+const CACHE = 'v3.4';
 
 const PRECACHE_ASSETS = [
   './',
