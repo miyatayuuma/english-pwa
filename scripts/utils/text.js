@@ -170,7 +170,7 @@ export function canonicalTokens(input, comparisonTokens) {
   text = text.replace(/°\s*c/g, ' degree celsius ');
   text = text.replace(/\$(\s*\d+(?:\.\d+)?)/g, (_, num) => ` ${num.replace(/\s+/g, '')} usd `);
   text = text.replace(/\$/g, ' usd ');
-  text = text.replace(/(?<=[\p{L}\p{N}])['’](?=[\p{L}\p{N}])/gu, '');
+  text = text.replace(/([\p{L}\p{N}])['’]([\p{L}\p{N}])/gu, '$1$2');
   text = text.replace(/[-‐‑‒–—−﹘﹣－]/gu, ' ');
   text = text.replace(/[\p{P}\p{S}]/gu, ' ');
   const raw = text.split(/\s+/).filter(Boolean);
