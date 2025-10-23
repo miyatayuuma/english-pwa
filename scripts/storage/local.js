@@ -10,7 +10,9 @@ const STORAGE_KEYS = Object.freeze({
   CONFIG: 'appConfigV3',
   PENDING_LOGS: 'pendingLogsV1',
   SECTION_SELECTION: 'secSel',
-  ORDER_SELECTION: 'orderSel'
+  ORDER_SELECTION: 'orderSel',
+  DIFFICULTY_STATE: 'difficultyStateV1',
+  DICTIONARY_CACHE: 'dictionaryCacheV1'
 });
 
 const storage = (() => {

@@ -83,6 +83,7 @@
         <div id="composeTokens" class="compose-token-list" role="list"></div>
       </div>
       <div id="transcript" class="muted"></div>
+      <div id="drillPanel" class="drill-panel" hidden aria-hidden="true"></div>
 
       <div class="kpi">
         <div>一致率 <span class="val match-val" id="valMatch">—</span></div>
@@ -150,6 +151,7 @@
       <legend>学習モード</legend>
       <label class="cfg-radio"><input type="radio" name="cfgStudyMode" value="read"> 通常モード（音読・リピーティング）</label>
       <label class="cfg-radio"><input type="radio" name="cfgStudyMode" value="compose"> 整序英作文ガイド（語順ヒントを表示）</label>
+      <label class="cfg-radio"><input type="radio" name="cfgStudyMode" value="drill"> 復習ドリル（苦手語彙を優先）</label>
       <p class="cfg-note">整序英作文を有効化すると、英文ヒントの代わりにランダムな語句タグが表示されます。設定を保存すると次のカードから適用されます。</p>
     </fieldset>
     <label>音声合成の声

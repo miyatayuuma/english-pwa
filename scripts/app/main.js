@@ -8,6 +8,7 @@ import {
   saveNumber,
   remove
 } from '../storage/local.js';
+import { createDictionaryClient } from '../api/dictionary.js';
 import {
   spanify,
   toks
@@ -33,6 +34,8 @@ import { createComposeGuide } from './composeGuide.js';
 import { createLogManager } from './logManager.js';
 import { qs, qsa } from './dom.js';
 import { createLevelStateManager, LEVEL_CHOICES } from './levelState.js';
+import { createDrillPanel } from './drill.js';
+import { createDifficultyTracker } from '../state/difficulty.js';
 
 function createAppRuntime(){
   // ===== Utilities =====
@@ -423,6 +426,24 @@ function createAppRuntime(){
 
   const { controller: audioController, speech } = initializeMediaControllers();
   speechController=speech;
+  const drillPanel = createDrillPanel({
+    root: qs('#drillPanel'),
+    dictionaryClient,
+    speakFallback: async () => {
+      if(!speechController) return false;
+      const prevState=currentShouldUseSpeech;
+      currentShouldUseSpeech=true;
+      try{
+        const spoken=await speechController.speakCurrentCard({ preferredVoiceId: CFG.speechVoice });
+        return !!spoken;
+      }catch(err){
+        console.warn('drill fallback speech failed', err);
+        return false;
+      }finally{
+        currentShouldUseSpeech=prevState;
+      }
+    }
+  });
 
   initFooterInfoButton();
 
@@ -707,6 +728,7 @@ function createAppRuntime(){
   // ===== Config =====
   const STUDY_MODE_READ='read';
   const STUDY_MODE_COMPOSE='compose';
+  const STUDY_MODE_DRILL='drill';
   function loadCfg(){
     const cfg=loadJson(CONFIG, {});
     return cfg && typeof cfg==='object'?cfg:{};
@@ -724,20 +746,28 @@ function createAppRuntime(){
   if(typeof CFG.studyMode!=='string'){ CFG.studyMode=STUDY_MODE_READ; }
   else {
     const normalizedStudy=(CFG.studyMode||'').toLowerCase();
-    CFG.studyMode = normalizedStudy===STUDY_MODE_COMPOSE ? STUDY_MODE_COMPOSE : STUDY_MODE_READ;
+    if(normalizedStudy===STUDY_MODE_COMPOSE){ CFG.studyMode=STUDY_MODE_COMPOSE; }
+    else if(normalizedStudy===STUDY_MODE_DRILL){ CFG.studyMode=STUDY_MODE_DRILL; }
+    else { CFG.studyMode=STUDY_MODE_READ; }
   }
 
   function getPlaybackMode(){
     return CFG.playbackMode==='speech' ? 'speech' : 'audio';
   }
   function getStudyMode(){
-    return CFG.studyMode===STUDY_MODE_COMPOSE ? STUDY_MODE_COMPOSE : STUDY_MODE_READ;
+    const normalized=(CFG.studyMode||'').toLowerCase();
+    if(normalized===STUDY_MODE_COMPOSE) return STUDY_MODE_COMPOSE;
+    if(normalized===STUDY_MODE_DRILL) return STUDY_MODE_DRILL;
+    return STUDY_MODE_READ;
   }
   function isComposeMode(){
     return getStudyMode()===STUDY_MODE_COMPOSE;
   }
+  function isDrillMode(){
+    return getStudyMode()===STUDY_MODE_DRILL;
+  }
   function isAutoPlayAllowed(){
-    return !isComposeMode();
+    return !(isComposeMode() || isDrillMode());
   }
   function shouldUseSpeechForItem(item){
     if(!item) return false;
@@ -773,6 +803,8 @@ function createAppRuntime(){
     getConfig: ()=>CFG,
   });
   const { sendLog, flushPendingLogs, setEndpointForPending, clearPendingEndpoints } = logManager;
+  const difficultyTracker = createDifficultyTracker({ load: loadJson, save: saveJson });
+  const dictionaryClient = createDictionaryClient({ load: loadJson, save: saveJson });
 
   // ===== IndexedDB for DirectoryHandle =====
   const DB='fs-handles', STORE='dir';
@@ -1010,7 +1042,13 @@ function createAppRuntime(){
       }
       if(el.cfgStudyMode && el.cfgStudyMode.length){
         const selectedStudy=el.cfgStudyMode.find(input=>input.checked);
-        CFG.studyMode = selectedStudy && selectedStudy.value===STUDY_MODE_COMPOSE ? STUDY_MODE_COMPOSE : STUDY_MODE_READ;
+        if(selectedStudy){
+          if(selectedStudy.value===STUDY_MODE_COMPOSE){ CFG.studyMode=STUDY_MODE_COMPOSE; }
+          else if(selectedStudy.value===STUDY_MODE_DRILL){ CFG.studyMode=STUDY_MODE_DRILL; }
+          else { CFG.studyMode=STUDY_MODE_READ; }
+        }else{
+          CFG.studyMode=STUDY_MODE_READ;
+        }
       }else{
         CFG.studyMode=STUDY_MODE_READ;
       }
@@ -1377,6 +1415,7 @@ function createAppRuntime(){
     const order=el.orderSel.value;
     const baseItems=sec ? (ITEMS_BY_SECTION.get(sec)||[]) : window.ALL_ITEMS;
     let items=Array.isArray(baseItems) ? baseItems.filter(Boolean) : [];
+    const drillMode=isDrillMode();
     const levels=getActiveLevelArray();
     if(levels.length && levels.length<LEVEL_CHOICES.length){
       const levelSet=new Set(levels);
@@ -1391,7 +1430,9 @@ function createAppRuntime(){
         return en.includes(query) || ja.includes(query) || tags.includes(query);
       });
     }
-    if(order==='rnd'){
+    if(drillMode){
+      items=difficultyTracker.sortByDifficulty(items);
+    }else if(order==='rnd'){
       items=shuffledCopy(items);
     }else{
       items=items.slice().sort((a,b)=>{
@@ -1508,6 +1549,7 @@ function createAppRuntime(){
     finalizeSessionMetrics();
     sessionActive=false;
     sessionStarting=false;
+    drillPanel.hide();
     stopAudio();
     speechController.cancelSpeech();
     clearAudioSource();
@@ -1576,6 +1618,11 @@ function createAppRuntime(){
       el.en.innerHTML=currentEnHtml;
       if(recognitionController){ recognitionController.clearHighlight(); }
       setupComposeGuide(it);
+      if(isDrillMode()){
+        await drillPanel.loadItem(it);
+      }else{
+        drillPanel.hide();
+      }
       el.ja.textContent=it.ja;
       el.chips.innerHTML='';
       (it.tags||'').split(',').filter(Boolean).forEach(t=>{ const s=document.createElement('span'); s.className='chip'; s.textContent=t.trim(); el.chips.appendChild(s); });
@@ -2130,6 +2177,22 @@ function createAppRuntime(){
     const bestLabel = levelInfoBest>resolvedLastLevel ? ` (最高${levelInfoBest})` : '';
 
     const pass = !!evaluation?.pass;
+    const missingCount = Array.isArray(missing) ? missing.length : 0;
+    difficultyTracker.registerAttempt(it.id, { missingTokens: missingCount, failed: !pass, passed: pass });
+    if(isDrillMode()){
+      drillPanel.handleResult({ pass, missingTokens: missing });
+      if(Array.isArray(QUEUE) && QUEUE.length){
+        const currentId=it.id;
+        const sorted=difficultyTracker.sortByDifficulty(QUEUE);
+        const newIndex=sorted.findIndex(entry=>entry && entry.id===currentId);
+        QUEUE=sorted;
+        if(newIndex>=0){
+          idx=newIndex;
+          el.pbar.value=idx;
+          el.footer.textContent=`#${idx+1}/${QUEUE.length}`;
+        }
+      }
+    }
     const responseMs = cardStart>0 ? Math.max(0, now()-cardStart) : '';
     const srsPayload = (()=>{
       const info=levelInfo||{};
