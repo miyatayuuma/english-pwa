@@ -25,7 +25,8 @@ import {
 import { createAudioController } from '../audio/controller.js';
 import {
   createRecognitionController,
-  calcMatchScore
+  calcMatchScore,
+  isRecognitionSupported,
 } from '../speech/recognition.js';
 import { createSpeechSynthesisController } from '../speech/synthesis.js';
 import { createOverlayController } from './overlay.js';
@@ -61,7 +62,10 @@ function createAppRuntime(){
     return Number.isFinite(num)?num:'';
   }
 
-  const DEFAULT_FOOTER_HINT='左右スワイプ：戻る/進む　上スワイプ：ヒント切替（英文・和訳・音声）';
+  const RECOGNITION_SUPPORTED = isRecognitionSupported();
+  const DEFAULT_FOOTER_HINT_BASE='左右スワイプ：戻る/進む　上スワイプ：ヒント切替（英文・和訳・音声）';
+  const DEFAULT_FOOTER_HINT_UNSUPPORTED=`${DEFAULT_FOOTER_HINT_BASE}　マイクによる音声入力はこの端末では利用できません。`;
+  const DEFAULT_FOOTER_HINT = RECOGNITION_SUPPORTED ? DEFAULT_FOOTER_HINT_BASE : DEFAULT_FOOTER_HINT_UNSUPPORTED;
   const LEVEL_DESCRIPTIONS={
     0:'Lv0: これから練習を始めるカードです。ヒントを使って流れを確認しましょう。',
     1:'Lv1: 音声や和訳ヒントを頼りに正しい形を身に付けていく段階です。',
@@ -178,6 +182,12 @@ function createAppRuntime(){
 
   // ===== Elements =====
   const el={ headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerMessage'), footerInfoContainer:qs('#footerInfo'), footerInfoBtn:qs('#footerInfoBtn'), footerInfoDialog:qs('#footerInfoDialog'), footerInfoDialogBody:qs('#footerInfoDialogBody'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), next:qs('#btnNext'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), composeGuide:qs('#composeGuide'), composeTokens:qs('#composeTokens'), composeNote:qs('#composeNote'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSpeechVoice:qs('#cfgSpeechVoice'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnImport:qs('#btnImport'), filePick:qs('#filePick'), btnTestAudio:qs('#btnTestAudio'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speedCtrl:qs('.speed-ctrl'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus') };
+  if(el.mic && !RECOGNITION_SUPPORTED){
+    el.mic.disabled=true;
+    el.mic.setAttribute('aria-disabled','true');
+    el.mic.setAttribute('aria-label','マイク（この端末では利用できません）');
+    el.mic.title='この端末では音声入力を利用できません';
+  }
   el.cfgPlaybackMode=qsa('input[name="cfgPlaybackMode"]');
   el.cfgStudyMode=qsa('input[name="cfgStudyMode"]');
   const composeNoteDefault = el.composeNote ? el.composeNote.textContent : '';
@@ -713,7 +723,9 @@ function createAppRuntime(){
   function hideNextCta(){
     el.next.hidden=true;
     el.next.disabled=true;
-    el.mic.disabled=false;
+    if(RECOGNITION_SUPPORTED){
+      el.mic.disabled=false;
+    }
   }
 
   function showNextCta(){
@@ -1541,7 +1553,15 @@ function createAppRuntime(){
     }
   }
   function resetResult(){ updateMatch(null); }
-  function resetTranscript(){ qs('#transcript').innerHTML=''; }
+  function resetTranscript(){
+    const transcriptEl=qs('#transcript');
+    if(!transcriptEl) return;
+    if(RECOGNITION_SUPPORTED){
+      transcriptEl.innerHTML='';
+    }else{
+      transcriptEl.textContent='この端末では音声入力を利用できません。';
+    }
+  }
   function toggleJA(){ advanceHintStage(); }
 
   function showIdleCard(){
@@ -1676,7 +1696,7 @@ function createAppRuntime(){
       updateAttemptInfo();
       hideNextCta();
       setMicState(false);
-      el.mic.disabled=false;
+      el.mic.disabled=!RECOGNITION_SUPPORTED;
       if(shouldUseAudioForItem(QUEUE[i+1])){ primeAudio(QUEUE[i+1], undefined, {shouldUseAudioForItem, resolveAudioUrl}); }
       if(shouldUseAudioForItem(QUEUE[i-1])){ primeAudio(QUEUE[i-1], undefined, {shouldUseAudioForItem, resolveAudioUrl}); }
       if(autoPlay && isAutoPlayAllowed() && (url||currentShouldUseSpeech)){
@@ -1802,7 +1822,9 @@ function createAppRuntime(){
       sessionStart=now();
       beginSessionMetrics();
       idx=-1;
-      el.mic.disabled=false;
+      if(RECOGNITION_SUPPORTED){
+        el.mic.disabled=false;
+      }
       try{
         const allowAutoPlay=autoPlay && isAutoPlayAllowed();
         await nextCard(true, allowAutoPlay);
@@ -2087,7 +2109,9 @@ function createAppRuntime(){
       onUnsupported: ()=>toast('この端末では音声認識が使えません'),
       onError: (e)=>{
         toast('ASRエラー: '+(e && e.error || ''));
-        el.mic.disabled=false;
+        if(RECOGNITION_SUPPORTED){
+          el.mic.disabled=false;
+        }
       },
       onStart: ()=>{ setMicState(true); },
       onStop: ()=>{ setMicState(false); },
@@ -2102,18 +2126,16 @@ function createAppRuntime(){
     });
   }
 
-  recognitionController=initializeRecognitionController();
+  recognitionController=RECOGNITION_SUPPORTED ? initializeRecognitionController() : null;
 
   function startRec(){
+    if(!RECOGNITION_SUPPORTED) return;
     if(el.mic.disabled) return;
     if(!recognitionController) return;
     if(recognitionController.isActive()) return;
     hideNextCta();
     lastMatchEval=null;
-    const result=recognitionController.start();
-    if(result && result.reason==='unsupported'){
-      el.mic.disabled=false;
-    }
+    recognitionController.start();
   }
 
   async function stopRec(result){
@@ -2307,13 +2329,14 @@ function createAppRuntime(){
       next_level_available_at:levelUpdate?.nextTarget?.nextEligibleAt ? new Date(levelUpdate.nextTarget.nextEligibleAt).toISOString() : null,
       study_mode: studyMode
     };
-    if(!pass && failCount<FAIL_LIMIT){ el.mic.disabled=false; }
+    if(!pass && failCount<FAIL_LIMIT && RECOGNITION_SUPPORTED){ el.mic.disabled=false; }
     sendLog('srs', srsPayload);
     sendLog('attempt', attemptPayload);
     sendLog('speech', payload);
   }
 
   el.mic.onclick=()=>{
+    if(!RECOGNITION_SUPPORTED) return;
     const active=recognitionController && recognitionController.isActive();
     if(!active){ startRec(); }
     else{ stopRec(); }
