@@ -1,3 +1,5 @@
+import { getPhoneticKey } from './phonetics.js';
+
 const CONTRACTION_PATTERNS = [
   { seq: ['i', 'm'], out: 'im' },
   { seq: ['i', 'd'], out: 'id' },
@@ -194,9 +196,8 @@ export function dedupeRuns(arr) {
   return out;
 }
 
-export function approxWithin1(a, b) {
+function editDistanceWithin1(a, b) {
   if (!a || !b) return false;
-  if (a === b) return true;
   const la = a.length;
   const lb = b.length;
   if (Math.abs(la - lb) > 1) return false;
@@ -219,6 +220,51 @@ export function approxWithin1(a, b) {
   }
   diff += (la - i) + (lb - j);
   return diff <= 1;
+}
+
+export function approxWithin1Meta(a, b) {
+  if (!a || !b) {
+    return { matched: false, strategy: 'none', phonetic: false, phonemeKey: null, phoneticConfidence: false };
+  }
+  if (a === b) {
+    return { matched: true, strategy: 'exact', phonetic: false, phonemeKey: null, phoneticConfidence: true };
+  }
+  if (editDistanceWithin1(a, b)) {
+    return { matched: true, strategy: 'edit', phonetic: false, phonemeKey: null, phoneticConfidence: true };
+  }
+
+  const la = a.length;
+  const lb = b.length;
+  const minLen = Math.min(la, lb);
+  const maxLen = Math.max(la, lb);
+  if (!minLen) {
+    return { matched: false, strategy: 'none', phonetic: false, phonemeKey: null, phoneticConfidence: false };
+  }
+  const lengthDiff = Math.abs(la - lb);
+  const maxAllowedDiff = Math.max(3, Math.ceil(minLen * 0.75));
+  if (maxLen / minLen > 2.5 || lengthDiff > maxAllowedDiff) {
+    return { matched: false, strategy: 'none', phonetic: false, phonemeKey: null, phoneticConfidence: false };
+  }
+
+  const left = getPhoneticKey(a);
+  const right = getPhoneticKey(b);
+  if (!left?.key || !right?.key) {
+    return { matched: false, strategy: 'none', phonetic: false, phonemeKey: null, phoneticConfidence: false };
+  }
+  if (left.key !== right.key) {
+    return { matched: false, strategy: 'none', phonetic: false, phonemeKey: null, phoneticConfidence: false };
+  }
+  return {
+    matched: true,
+    strategy: 'phonetic',
+    phonetic: true,
+    phonemeKey: left.key,
+    phoneticConfidence: !!(left.confident && right.confident),
+  };
+}
+
+export function approxWithin1(a, b) {
+  return approxWithin1Meta(a, b).matched;
 }
 
 export function appendStableFinal(stable, fragment) {

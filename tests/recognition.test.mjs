@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { createRecognitionController } from '../scripts/speech/recognition.js';
+import { createRecognitionController, calcMatchScore } from '../scripts/speech/recognition.js';
 
 test('matchAndHighlight treats split and fused compound words as equivalent', () => {
   const controller = createRecognitionController();
@@ -74,4 +74,51 @@ test('trailing hypothesis words remain in transcript while mismatches are report
     spoken,
     'highlight tokens still include the unmatched trailing hypothesis token'
   );
+});
+
+test('phonetic matches earn full credit but are tracked separately', () => {
+  const controller = createRecognitionController();
+  const match = controller.matchAndHighlight('their boat is here', 'there boat is here');
+
+  assert.equal(match.missing.length, 0, 'homophones count toward recall');
+  assert.ok(match.phoneticMatches.length >= 1, 'phonetic matches are recorded');
+  assert.equal(
+    match.phoneticMatches[0].reference,
+    'their',
+    'reference token logged for phonetic match'
+  );
+  assert.equal(
+    match.phoneticMatches[0].hypothesis,
+    'there',
+    'hypothesis token logged for phonetic match'
+  );
+
+  const score = calcMatchScore(match.refCount, match.recall, match.precision, match.matchWindow);
+  assert.equal(score, 1, 'phonetic matches still deliver perfect scores');
+});
+
+test('dialectal homophones resolve phonetically without masking real errors', () => {
+  const controller = createRecognitionController();
+  const dialectMatch = controller.matchAndHighlight('caught the fish', 'cot the fish');
+  assert.equal(dialectMatch.missing.length, 0, 'dialectal pair counted as match');
+  assert.equal(
+    dialectMatch.phoneticMatches.length,
+    1,
+    'dialectal homophone recorded exactly once'
+  );
+
+  const dialectScore = calcMatchScore(
+    dialectMatch.refCount,
+    dialectMatch.recall,
+    dialectMatch.precision,
+    dialectMatch.matchWindow
+  );
+  assert.equal(dialectScore, 1, 'dialectal phonetic alignment yields full credit');
+
+  const mismatch = controller.matchAndHighlight('caught the fish', 'coat the fish');
+  assert.ok(
+    mismatch.missing.includes('caught'),
+    'non-homophone variant is still reported as missing'
+  );
+  assert.equal(mismatch.phoneticMatches.length, 0, 'no phonetic matches are recorded');
 });

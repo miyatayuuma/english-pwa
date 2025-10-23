@@ -1,4 +1,11 @@
-import { appendStableFinal, dedupeRuns, approxWithin1, toks, mergeCompoundWords } from '../utils/text.js';
+import {
+  appendStableFinal,
+  dedupeRuns,
+  approxWithin1,
+  approxWithin1Meta,
+  toks,
+  mergeCompoundWords,
+} from '../utils/text.js';
 
 const SR = typeof window !== 'undefined'
   ? (window.SpeechRecognition || window.webkitSpeechRecognition)
@@ -88,26 +95,57 @@ function matchAndHighlightInternal(refText, hypText, enElement, getComposeNodesF
     refCounts.set(token, (refCounts.get(token) || 0) + 1);
   }
 
+  function findMatchForToken(token, remainMap) {
+    if (!token) return null;
+    const exactRemain = remainMap.get(token) || 0;
+    if (exactRemain > 0) {
+      return {
+        reference: token,
+        hypothesis: token,
+        phonetic: false,
+        phoneticConfidence: true,
+        phonemeKey: null,
+        strategy: 'exact',
+      };
+    }
+    for (const key of refOrder) {
+      const available = remainMap.get(key) || 0;
+      if (!available) continue;
+      if (key === token) {
+        return {
+          reference: key,
+          hypothesis: token,
+          phonetic: false,
+          phoneticConfidence: true,
+          phonemeKey: null,
+          strategy: 'exact',
+        };
+      }
+      const meta = approxWithin1Meta(key, token);
+      if (!meta.matched) continue;
+      return {
+        reference: key,
+        hypothesis: token,
+        phonetic: !!meta.phonetic,
+        phoneticConfidence: !!meta.phoneticConfidence,
+        phonemeKey: meta.phonemeKey || null,
+        strategy: meta.strategy,
+      };
+    }
+    return null;
+  }
+
   function evaluateRangeStatic(start, end) {
     const remainLocal = new Map(refCounts);
     const matchedCountsLocal = new Map();
     const matchedWordsLocal = [];
+    const phoneticMatchesLocal = [];
     let matchedCountLocal = 0;
     for (let i = start; i < end; i++) {
       const token = hypTokens[i];
-      if (!token) continue;
-      let matchKey = '';
-      if ((remainLocal.get(token) || 0) > 0) {
-        matchKey = token;
-      } else {
-        for (const key of refOrder) {
-          if ((remainLocal.get(key) || 0) > 0 && approxWithin1(key, token)) {
-            matchKey = key;
-            break;
-          }
-        }
-      }
-      if (matchKey) {
+      const match = findMatchForToken(token, remainLocal);
+      if (match?.reference) {
+        const matchKey = match.reference;
         const nextRemain = (remainLocal.get(matchKey) || 0) - 1;
         if (nextRemain > 0) {
           remainLocal.set(matchKey, nextRemain);
@@ -117,6 +155,14 @@ function matchAndHighlightInternal(refText, hypText, enElement, getComposeNodesF
         matchedCountsLocal.set(matchKey, (matchedCountsLocal.get(matchKey) || 0) + 1);
         matchedWordsLocal.push(matchKey);
         matchedCountLocal += 1;
+        if (match.phonetic) {
+          phoneticMatchesLocal.push({
+            reference: matchKey,
+            hypothesis: token,
+            phonemeKey: match.phonemeKey,
+            confident: match.phoneticConfidence,
+          });
+        }
       }
     }
     const missingLocal = [];
@@ -138,6 +184,7 @@ function matchAndHighlightInternal(refText, hypText, enElement, getComposeNodesF
       matchedCount: matchedCountLocal,
       matchedCounts: matchedCountsLocal,
       length: windowLen,
+      phoneticMatches: phoneticMatchesLocal,
     };
   }
 
@@ -150,6 +197,7 @@ function matchAndHighlightInternal(refText, hypText, enElement, getComposeNodesF
     Math.min(hypTokens.length, Math.max(refLen + slack, refLen * 2 || 1))
   );
   const assignments = new Array(hypTokens.length).fill(null);
+  const assignmentMeta = new Array(hypTokens.length).fill(null);
   const remain = new Map();
   const matchedCountsRolling = new Map();
   let matchedCountRolling = 0;
@@ -175,25 +223,16 @@ function matchAndHighlightInternal(refText, hypText, enElement, getComposeNodesF
     const token = hypTokens[index];
     if (!token) {
       assignments[index] = null;
+      assignmentMeta[index] = null;
       return false;
     }
-    let matchKey = '';
-    const exactRemain = remain.get(token) || 0;
-    if (exactRemain > 0) {
-      matchKey = token;
-    } else {
-      for (const key of refOrder) {
-        const available = remain.get(key) || 0;
-        if (available > 0 && approxWithin1(key, token)) {
-          matchKey = key;
-          break;
-        }
-      }
-    }
-    if (!matchKey) {
+    const match = findMatchForToken(token, remain);
+    if (!match?.reference) {
       assignments[index] = null;
+      assignmentMeta[index] = null;
       return false;
     }
+    const matchKey = match.reference;
     const prevRemain = remain.get(matchKey) || 0;
     const nextRemain = prevRemain - 1;
     if (nextRemain > 0) {
@@ -204,6 +243,13 @@ function matchAndHighlightInternal(refText, hypText, enElement, getComposeNodesF
     const prevMatched = matchedCountsRolling.get(matchKey) || 0;
     matchedCountsRolling.set(matchKey, prevMatched + 1);
     assignments[index] = matchKey;
+    assignmentMeta[index] = {
+      reference: matchKey,
+      hypothesis: token,
+      phonetic: !!match.phonetic,
+      phonemeKey: match.phonemeKey,
+      confident: !!match.phoneticConfidence,
+    };
     matchedCountRolling += 1;
     if (unmatchedSet.has(index)) {
       unmatchedSet.delete(index);
@@ -245,6 +291,7 @@ function matchAndHighlightInternal(refText, hypText, enElement, getComposeNodesF
 
   function releaseIndex(index) {
     const matchKey = assignments[index];
+    const meta = assignmentMeta[index];
     if (matchKey) {
       const prevMatched = matchedCountsRolling.get(matchKey) || 0;
       const nextMatched = prevMatched - 1;
@@ -258,6 +305,7 @@ function matchAndHighlightInternal(refText, hypText, enElement, getComposeNodesF
       matchedCountRolling -= 1;
     }
     assignments[index] = null;
+    assignmentMeta[index] = null;
     if (unmatchedSet.has(index)) {
       unmatchedSet.delete(index);
     }
@@ -287,9 +335,21 @@ function matchAndHighlightInternal(refText, hypText, enElement, getComposeNodesF
       }
     }
     const matchedWords = [];
+    const phoneticMatches = [];
     for (let i = start; i < end; i++) {
       const key = assignments[i];
-      if (key) matchedWords.push(key);
+      if (key) {
+        matchedWords.push(key);
+        const meta = assignmentMeta[i];
+        if (meta?.phonetic) {
+          phoneticMatches.push({
+            reference: meta.reference,
+            hypothesis: meta.hypothesis,
+            phonemeKey: meta.phonemeKey,
+            confident: meta.confident,
+          });
+        }
+      }
     }
     const windowLen = Math.max(0, end - start);
     const recall = refTokens.length ? matchedCountRolling / refTokens.length : 1;
@@ -304,6 +364,7 @@ function matchAndHighlightInternal(refText, hypText, enElement, getComposeNodesF
       matchedCount: matchedCountRolling,
       matchedCounts: cloneCountMap(matchedCountsRolling),
       length: windowLen,
+      phoneticMatches,
     };
   }
 
@@ -505,6 +566,8 @@ function matchAndHighlightInternal(refText, hypText, enElement, getComposeNodesF
     nodeEl.classList.toggle('miss', !chunkHit);
   }
 
+  const phoneticMatches = Array.isArray(best.phoneticMatches) ? best.phoneticMatches : [];
+
   return {
     recall: best.recall,
     precision: best.precision,
@@ -515,6 +578,8 @@ function matchAndHighlightInternal(refText, hypText, enElement, getComposeNodesF
     transcript: (best.tokens || []).join(' '),
     source: (hypText || '').trim(),
     matchedCounts: best.matchedCounts,
+    phoneticMatches,
+    phonetic_matches: phoneticMatches,
     matchWindow: {
       start: best.start,
       end: best.end,
@@ -571,6 +636,8 @@ export function createRecognitionController(options = {}) {
         source: '',
         matchedCounts: new Map(),
         matchWindow: null,
+        phoneticMatches: [],
+        phonetic_matches: [],
       };
     }
     return matchAndHighlightInternal(refText, hypText, enElement, getComposeNodes);
@@ -597,6 +664,9 @@ export function createRecognitionController(options = {}) {
         source: transcript,
         transcript,
         matchWindow,
+        phonetic_matches: Array.isArray(matchInfo?.phoneticMatches)
+          ? matchInfo.phoneticMatches
+          : [],
       });
     } else {
       clearHighlight();
@@ -670,6 +740,9 @@ export function createRecognitionController(options = {}) {
             source: published,
             transcript: published,
             matchWindow,
+            phonetic_matches: Array.isArray(match?.phoneticMatches)
+              ? match.phoneticMatches
+              : [],
           });
           lastMatch = enriched;
           onTranscriptFinal?.(published, enriched);
