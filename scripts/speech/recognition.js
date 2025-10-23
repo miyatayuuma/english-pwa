@@ -8,10 +8,27 @@ export function isRecognitionSupported() {
   return !!SR;
 }
 
-export function calcMatchScore(refCount, recall, precision) {
+function computeWindowRetentionFactor(windowMeta) {
+  if (!windowMeta) return 1;
+  const hypLengthRaw = Number(windowMeta.hypLength);
+  const hypLength = Number.isFinite(hypLengthRaw) ? Math.max(0, hypLengthRaw) : 0;
+  if (!hypLength) return 1;
+  const startRaw = Number(windowMeta.start);
+  const start = Number.isFinite(startRaw) ? Math.max(0, Math.min(startRaw, hypLength)) : 0;
+  const available = Math.max(0, hypLength - start);
+  const lengthRaw = Number(windowMeta.length);
+  const normalizedLength = Number.isFinite(lengthRaw) ? Math.max(0, lengthRaw) : available;
+  const windowLength = Math.max(0, Math.min(normalizedLength, available));
+  if (!windowLength) return 0;
+  return windowLength / hypLength;
+}
+
+export function calcMatchScore(refCount, recall, precision, windowMeta) {
   if (!refCount) return 1;
   if ((recall + precision) <= 0) return 0;
-  return (2 * recall * precision) / (recall + precision);
+  const baseScore = (2 * recall * precision) / (recall + precision);
+  const retention = computeWindowRetentionFactor(windowMeta);
+  return baseScore * retention;
 }
 
 function cloneCountMap(map) {
@@ -290,20 +307,58 @@ function matchAndHighlightInternal(refText, hypText, enElement, getComposeNodesF
     };
   }
 
+  function candidateLengthValue(candidate) {
+    if (!candidate) return 0;
+    const lenRaw = Number(candidate.length);
+    if (Number.isFinite(lenRaw)) {
+      return Math.max(0, lenRaw);
+    }
+    const startRaw = Number(candidate.start);
+    const endRaw = Number(candidate.end);
+    if (Number.isFinite(startRaw) && Number.isFinite(endRaw)) {
+      return Math.max(0, endRaw - startRaw);
+    }
+    return 0;
+  }
+
+  function buildWindowMeta(candidate) {
+    if (!candidate) {
+      return { start: 0, length: 0, hypLength: hypTokens.length };
+    }
+    const startRaw = Number(candidate.start);
+    const start = Number.isFinite(startRaw) ? Math.max(0, startRaw) : 0;
+    return {
+      start,
+      length: candidateLengthValue(candidate),
+      hypLength: hypTokens.length,
+    };
+  }
+
   function isBetterCandidate(candidate, currentBest) {
-    const bestScore = calcMatchScore(refLen, currentBest.recall, currentBest.precision);
-    const candScore = calcMatchScore(refLen, candidate.recall, candidate.precision);
+    const bestMeta = buildWindowMeta(currentBest);
+    const candMeta = buildWindowMeta(candidate);
+    const bestScore = calcMatchScore(
+      refLen,
+      currentBest.recall,
+      currentBest.precision,
+      bestMeta
+    );
+    const candScore = calcMatchScore(refLen, candidate.recall, candidate.precision, candMeta);
     if (candScore > bestScore) return true;
     if (candScore < bestScore) return false;
+    const bestRetention = computeWindowRetentionFactor(bestMeta);
+    const candRetention = computeWindowRetentionFactor(candMeta);
+    if (candRetention > bestRetention) return true;
+    if (candRetention < bestRetention) return false;
     if (candidate.recall > currentBest.recall) return true;
     if (candidate.recall < currentBest.recall) return false;
     if (candidate.precision > currentBest.precision) return true;
     if (candidate.precision < currentBest.precision) return false;
-    const candDiff = Math.abs((candidate.length || 0) - refLen);
-    const bestDiff = Math.abs((currentBest.length || 0) - refLen);
+    const candDiff = Math.abs((candMeta.length || 0) - refLen);
+    const bestDiff = Math.abs((bestMeta.length || 0) - refLen);
     if (candDiff < bestDiff) return true;
     if (candDiff > bestDiff) return false;
-    return (candidate.start || 0) <= (currentBest.start || 0);
+    return (candMeta.start || 0) <= (bestMeta.start || 0);
   }
 
   function considerCandidate(candidate) {
@@ -365,6 +420,7 @@ function matchAndHighlightInternal(refText, hypText, enElement, getComposeNodesF
 
   best.tokens = hypTokens.slice(best.start, best.end);
   best.length = best.tokens.length;
+  best.hypLength = hypTokens.length;
 
   const spans = getTokenSpans(enElement);
   const matchMap = cloneCountMap(best.matchedCounts);
@@ -459,6 +515,12 @@ function matchAndHighlightInternal(refText, hypText, enElement, getComposeNodesF
     transcript: (best.tokens || []).join(' '),
     source: (hypText || '').trim(),
     matchedCounts: best.matchedCounts,
+    matchWindow: {
+      start: best.start,
+      end: best.end,
+      length: best.length,
+      hypLength: best.hypLength,
+    },
   };
 }
 
@@ -508,6 +570,7 @@ export function createRecognitionController(options = {}) {
         transcript: '',
         source: '',
         matchedCounts: new Map(),
+        matchWindow: null,
       };
     }
     return matchAndHighlightInternal(refText, hypText, enElement, getComposeNodes);
@@ -527,9 +590,13 @@ export function createRecognitionController(options = {}) {
     let matchInfo = null;
     if (refText || transcript) {
       matchInfo = matchAndHighlight(refText, transcript);
+      const matchWindow = matchInfo?.matchWindow
+        ? Object.assign({}, matchInfo.matchWindow)
+        : null;
       lastMatch = Object.assign({}, matchInfo, {
         source: transcript,
-        transcript: transcript || matchInfo?.transcript || '',
+        transcript,
+        matchWindow,
       });
     } else {
       clearHighlight();
@@ -592,17 +659,20 @@ export function createRecognitionController(options = {}) {
         const transcriptPiece = res[0]?.transcript || '';
         if (res.isFinal) {
           stableText = appendStableFinal(stableText, transcriptPiece);
-          const trimmedStable = stableText.trim();
+          const published = (stableText || '').trim();
           const refTextCurrent = getReferenceText?.() ?? '';
-          const match = matchAndHighlight(refTextCurrent, trimmedStable);
-          const normalized = (match?.transcript && match.transcript.trim()) || trimmedStable;
-          stableText = normalized;
+          const match = matchAndHighlight(refTextCurrent, published);
+          const matchWindow = match?.matchWindow
+            ? Object.assign({}, match.matchWindow)
+            : null;
+          stableText = published;
           const enriched = Object.assign({}, match, {
-            source: normalized,
-            transcript: normalized,
+            source: published,
+            transcript: published,
+            matchWindow,
           });
           lastMatch = enriched;
-          onTranscriptFinal?.(normalized, enriched);
+          onTranscriptFinal?.(published, enriched);
           onMatchEvaluated?.(enriched);
         } else {
           interim = transcriptPiece;
