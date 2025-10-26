@@ -44,3 +44,25 @@ test('matchAndHighlight treats common homophones as matches', () => {
   assert.equal(hearHere.missing.length, 0, 'hear matched homophonic here token');
   assert.equal(hearHere.matchedCounts.get('hear'), 1, 'hear token counted despite homophone spelling');
 });
+
+test('homophone matches normalize UI transcript to reference spelling', () => {
+  const controller = createRecognitionController();
+
+  const sweetSuite = controller.matchAndHighlight('book the suite now', 'book the sweet now');
+
+  assert.equal(sweetSuite.transcript, 'book the sweet now', 'raw transcript preserves recognition output');
+  assert.equal(
+    sweetSuite.normalizedTranscript,
+    'book the suite now',
+    'normalized transcript aligns UI text to reference spelling'
+  );
+
+  const hearHere = controller.matchAndHighlight('hear the bell', 'here the bell');
+
+  assert.equal(hearHere.transcript, 'here the bell', 'raw transcript keeps homophone spelling');
+  assert.equal(
+    hearHere.normalizedTranscript,
+    'hear the bell',
+    'normalized transcript replaces homophone with reference spelling'
+  );
+});
