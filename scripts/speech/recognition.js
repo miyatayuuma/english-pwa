@@ -1,4 +1,4 @@
-import { appendStableFinal, dedupeRuns, approxWithin1, toks, mergeCompoundWords } from '../utils/text.js';
+import { appendStableFinal, dedupeRuns, approxTokensMatch, toks, mergeCompoundWords } from '../utils/text.js';
 
 const SR = typeof window !== 'undefined'
   ? (window.SpeechRecognition || window.webkitSpeechRecognition)
@@ -84,7 +84,7 @@ function matchAndHighlightInternal(refText, hypText, enElement, getComposeNodesF
         matchKey = token;
       } else {
         for (const key of refOrder) {
-          if ((remainLocal.get(key) || 0) > 0 && approxWithin1(key, token)) {
+          if ((remainLocal.get(key) || 0) > 0 && approxTokensMatch(key, token)) {
             matchKey = key;
             break;
           }
@@ -167,7 +167,7 @@ function matchAndHighlightInternal(refText, hypText, enElement, getComposeNodesF
     } else {
       for (const key of refOrder) {
         const available = remain.get(key) || 0;
-        if (available > 0 && approxWithin1(key, token)) {
+        if (available > 0 && approxTokensMatch(key, token)) {
           matchKey = key;
           break;
         }
@@ -384,7 +384,7 @@ function matchAndHighlightInternal(refText, hypText, enElement, getComposeNodesF
         matchKey = tok;
       } else {
         for (const [k, c] of matchMap) {
-          if (c > 0 && approxWithin1(k, tok)) {
+          if (c > 0 && approxTokensMatch(k, tok)) {
             matchKey = k;
             break;
           }
@@ -426,7 +426,7 @@ function matchAndHighlightInternal(refText, hypText, enElement, getComposeNodesF
         matchKey = tok;
       } else {
         for (const [k, c] of composeMap) {
-          if (c > 0 && approxWithin1(k, tok)) {
+          if (c > 0 && approxTokensMatch(k, tok)) {
             matchKey = k;
             break;
           }

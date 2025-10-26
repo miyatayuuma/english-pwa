@@ -77,6 +77,50 @@ const UNIT_MAP = new Map([
   ['celsius', 'celsius']
 ]);
 
+const SOUNDEX_MAP = new Map([
+  ['B', '1'],
+  ['F', '1'],
+  ['P', '1'],
+  ['V', '1'],
+  ['C', '2'],
+  ['G', '2'],
+  ['J', '2'],
+  ['K', '2'],
+  ['Q', '2'],
+  ['S', '2'],
+  ['X', '2'],
+  ['Z', '2'],
+  ['D', '3'],
+  ['T', '3'],
+  ['L', '4'],
+  ['M', '5'],
+  ['N', '5'],
+  ['R', '6'],
+]);
+
+export function phoneticKey(token) {
+  if (!token) return '';
+  const cleaned = token
+    .toUpperCase()
+    .normalize('NFKD')
+    .replace(/[^A-Z]/g, '');
+  if (!cleaned) return '';
+  let key = cleaned[0];
+  let prevCode = SOUNDEX_MAP.get(key) || '';
+  for (let i = 1; i < cleaned.length && key.length < 4; i++) {
+    const letter = cleaned[i];
+    const code = SOUNDEX_MAP.get(letter) || '';
+    if (!code) {
+      prevCode = '';
+      continue;
+    }
+    if (code === prevCode) continue;
+    key += code;
+    prevCode = code;
+  }
+  return key.padEnd(4, '0').slice(0, 4);
+}
+
 export function mergeContractions(tokens) {
   if (!tokens.length) return tokens;
   const out = [];
@@ -219,6 +263,15 @@ export function approxWithin1(a, b) {
   }
   diff += (la - i) + (lb - j);
   return diff <= 1;
+}
+
+export function approxTokensMatch(a, b) {
+  if (approxWithin1(a, b)) return true;
+  const keyA = phoneticKey(a);
+  if (!keyA) return false;
+  const keyB = phoneticKey(b);
+  if (!keyB) return false;
+  return keyA === keyB;
 }
 
 export function appendStableFinal(stable, fragment) {

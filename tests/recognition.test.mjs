@@ -30,3 +30,17 @@ test('matchAndHighlight treats split and fused compound words as equivalent', ()
     'rainforest recognized from rain forest tokens'
   );
 });
+
+test('matchAndHighlight treats common homophones as matches', () => {
+  const controller = createRecognitionController();
+
+  const sweetSuite = controller.matchAndHighlight('book the suite now', 'book the sweet now');
+
+  assert.equal(sweetSuite.missing.length, 0, 'suite matched sweet in hypothesis');
+  assert.equal(sweetSuite.matchedCounts.get('suite'), 1, 'suite counted as matched token');
+
+  const hearHere = controller.matchAndHighlight('hear the bell', 'here the bell');
+
+  assert.equal(hearHere.missing.length, 0, 'hear matched homophonic here token');
+  assert.equal(hearHere.matchedCounts.get('hear'), 1, 'hear token counted despite homophone spelling');
+});
