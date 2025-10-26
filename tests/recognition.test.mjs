@@ -66,3 +66,24 @@ test('homophone matches normalize UI transcript to reference spelling', () => {
     'normalized transcript replaces homophone with reference spelling'
   );
 });
+
+test('matchAndHighlight preserves consecutive duplicate tokens', () => {
+  const controller = createRecognitionController();
+
+  const repeated = controller.matchAndHighlight(
+    'you you can do it',
+    'you you can do it'
+  );
+
+  assert.equal(repeated.missing.length, 0, 'all reference tokens matched despite repetition');
+  assert.equal(
+    repeated.matchedCounts.get('you'),
+    2,
+    'both repeated you tokens counted in matches'
+  );
+  assert.deepEqual(
+    repeated.hypTokens,
+    ['you', 'you', 'can', 'do', 'it'],
+    'hypothesis tokens retain consecutive duplicates'
+  );
+});

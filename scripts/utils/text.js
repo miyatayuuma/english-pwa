@@ -277,17 +277,17 @@ export function approxTokensMatch(a, b) {
 export function appendStableFinal(stable, fragment) {
   const A = canonicalTokens(stable);
   const B = canonicalTokens(fragment);
-  if (!B.length) return dedupeRuns(A).join(' ');
-  if (!A.length) return dedupeRuns(B).join(' ');
+  if (!B.length) return A.join(' ');
+  if (!A.length) return B.join(' ');
 
   const strA = A.join(' ');
   const strB = B.join(' ');
 
   if (strB.includes(strA)) {
-    return dedupeRuns(B).join(' ');
+    return B.join(' ');
   }
   if (strA.includes(strB)) {
-    return dedupeRuns(A).join(' ');
+    return A.join(' ');
   }
 
   let overlap = 0;
@@ -300,10 +300,10 @@ export function appendStableFinal(stable, fragment) {
     break;
   }
   if (overlap > 0) {
-    return dedupeRuns(A.concat(B.slice(overlap))).join(' ');
+    return A.concat(B.slice(overlap)).join(' ');
   }
 
-  return dedupeRuns((B.length >= A.length ? B : A)).join(' ');
+  return (B.length >= A.length ? B : A).join(' ');
 }
 
 export function spanify(text) {
