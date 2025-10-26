@@ -274,6 +274,7 @@ function matchAndHighlightInternal(refText, hypText, enElement, getComposeNodesF
       const key = assignments[i];
       if (key) matchedWords.push(key);
     }
+    const assignmentSlice = assignments.slice(start, end);
     const windowLen = Math.max(0, end - start);
     const recall = refTokens.length ? matchedCountRolling / refTokens.length : 1;
     const precision = windowLen ? matchedCountRolling / windowLen : 1;
@@ -287,6 +288,7 @@ function matchAndHighlightInternal(refText, hypText, enElement, getComposeNodesF
       matchedCount: matchedCountRolling,
       matchedCounts: cloneCountMap(matchedCountsRolling),
       length: windowLen,
+      assignments: assignmentSlice,
     };
   }
 
@@ -365,6 +367,21 @@ function matchAndHighlightInternal(refText, hypText, enElement, getComposeNodesF
 
   best.tokens = hypTokens.slice(best.start, best.end);
   best.length = best.tokens.length;
+  if (!Array.isArray(best.assignments)) {
+    best.assignments = new Array(best.length).fill(null);
+  }
+
+  const normalizedTokens = [];
+  if (Array.isArray(best.assignments) && best.assignments.length) {
+    for (let i = 0; i < best.tokens.length; i++) {
+      const assigned = best.assignments[i];
+      const hypToken = best.tokens[i];
+      normalizedTokens.push(assigned || hypToken);
+    }
+  } else {
+    normalizedTokens.push(...best.tokens);
+  }
+  const normalizedTranscript = normalizedTokens.join(' ');
 
   const spans = getTokenSpans(enElement);
   const matchMap = cloneCountMap(best.matchedCounts);
@@ -457,6 +474,7 @@ function matchAndHighlightInternal(refText, hypText, enElement, getComposeNodesF
     refCount: refTokens.length,
     hypTokens: best.tokens,
     transcript: (best.tokens || []).join(' '),
+    normalizedTranscript,
     source: (hypText || '').trim(),
     matchedCounts: best.matchedCounts,
   };
@@ -506,6 +524,7 @@ export function createRecognitionController(options = {}) {
         refCount: 0,
         hypTokens: [],
         transcript: '',
+        normalizedTranscript: '',
         source: '',
         matchedCounts: new Map(),
       };
@@ -595,7 +614,9 @@ export function createRecognitionController(options = {}) {
           const trimmedStable = stableText.trim();
           const refTextCurrent = getReferenceText?.() ?? '';
           const match = matchAndHighlight(refTextCurrent, trimmedStable);
-          const normalized = (match?.transcript && match.transcript.trim()) || trimmedStable;
+          const normalized =
+            (match?.normalizedTranscript && match.normalizedTranscript.trim()) ||
+            trimmedStable;
           stableText = normalized;
           const enriched = Object.assign({}, match, {
             source: normalized,
