@@ -1775,7 +1775,7 @@ function createAppRuntime(){
   const MAX_SWIPE_DURATION=700; // ms
   const MAX_CARD_TILT=10; // deg
   const CARD_OPACITY_REDUCTION=0.4;
-  const VERTICAL_SWIPE_THRESHOLD_SCALE=0.8; // allow shorter vertical swipes
+  const VERTICAL_SWIPE_THRESHOLD_SCALE=0.5; // allow shorter vertical swipes
   let cardDragFrame=0;
   let cardDragPending=null;
   let cardDragResetTimer=0;
