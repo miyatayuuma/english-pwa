@@ -1827,9 +1827,31 @@ function createAppRuntime(){
     card.style.removeProperty('--card-tilt');
     card.style.removeProperty('--card-opacity');
   }
+  function clearHintSwipeState(){
+    const card=el.card;
+    if(!card) return;
+    card.classList.remove('hint-swipe-ready');
+    card.style.removeProperty('--hint-progress');
+  }
+  function updateHintSwipeProgress(progress){
+    const card=el.card;
+    if(!card) return;
+    const clamped=Math.max(0, Math.min(1, progress||0));
+    if(clamped>0){
+      card.style.setProperty('--hint-progress', `${clamped}`);
+    }else{
+      card.style.removeProperty('--hint-progress');
+    }
+    if(clamped>=1){
+      card.classList.add('hint-swipe-ready');
+    }else{
+      card.classList.remove('hint-swipe-ready');
+    }
+  }
   function resetCardDrag({animate=true}={}){
     const card=el.card;
     if(!card) return;
+    clearHintSwipeState();
     if(cardDragResetTimer){ clearTimeout(cardDragResetTimer); cardDragResetTimer=0; }
     if(animate){
       card.classList.remove('card-no-transition');
@@ -1853,6 +1875,7 @@ function createAppRuntime(){
     clearCardDragValues();
     card.classList.remove('card-no-transition');
     removeCardDragProperties();
+    clearHintSwipeState();
   }
   function isSwipeExcludedTarget(target){
     if(!target) return false;
@@ -1873,6 +1896,7 @@ function createAppRuntime(){
     const t=ev.touches[0];
     const originTarget=(t && t.target) || ev.target;
     if(isSwipeExcludedTarget(originTarget)){ touchStart=null; return; }
+    clearHintSwipeState();
     touchStart={
       x:t.clientX,
       y:t.clientY,
@@ -1900,6 +1924,7 @@ function createAppRuntime(){
     const state=touchStart;
     const thresholds=state.thresholds || getSwipeThresholds();
     const horizontalThreshold=Math.max(1, thresholds.horizontal || 0);
+    const verticalThreshold=Math.max(1, thresholds.vertical || thresholds.horizontal || 0);
     const directionLock=6;
     if(!state.axis){
       if(absDx<directionLock && absDy<directionLock){
@@ -1918,8 +1943,11 @@ function createAppRuntime(){
     if(state.axis==='vertical'){
       state.lastDx=dx;
       state.lastDy=dy;
+      const progress=dy<0 ? Math.min(1, Math.max(0, -dy/verticalThreshold)) : 0;
+      updateHintSwipeProgress(progress);
       return;
     }
+    updateHintSwipeProgress(0);
     if(!state.dragging){
       state.dragging=true;
       const card=el.card;
@@ -1941,6 +1969,7 @@ function createAppRuntime(){
     if(!touchStart) return;
     const state=touchStart;
     touchStart=null;
+    clearHintSwipeState();
     if(!sessionActive){ resetCardDrag({animate:false}); return; }
     if(canceled){ resetCardDrag({animate:state.dragging}); return; }
     const point=ev.changedTouches && ev.changedTouches[0];

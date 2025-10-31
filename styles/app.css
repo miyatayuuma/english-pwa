@@ -52,6 +52,8 @@
 
     main{padding:12px;overflow:auto}
     .card{--card-offset:0px;--card-tilt:0deg;--card-opacity:1;max-width:840px;margin:0 auto;background:var(--panel);border:1px solid var(--bd);border-radius:18px;padding:16px;min-height:50vh;display:flex;flex-direction:column;gap:12px;touch-action:manipulation;position:relative;transform:translateX(var(--card-offset)) rotate(var(--card-tilt));opacity:var(--card-opacity);transition:transform .36s cubic-bezier(.22,1,.36,1),opacity .36s ease;will-change:transform,opacity}
+    .card::after{content:"";position:absolute;left:0;right:0;top:0;height:52%;background:linear-gradient(180deg,rgba(98,213,255,.46),rgba(98,213,255,0));border-radius:inherit;opacity:calc(var(--hint-progress,0)*.8);pointer-events:none;transition:opacity .2s ease,filter .2s ease}
+    .card.hint-swipe-ready::after{opacity:1;filter:brightness(1.12)}
     .card.card-sliding{pointer-events:none}
     .card.card-no-transition{transition:none!important}
     .card.slide-left,.card.slide-in-from-left{--card-offset:-72px;--card-opacity:0}
