@@ -167,3 +167,20 @@
     #dirPermBox p{margin:0 0 12px 0;line-height:1.6;color:var(--muted)}
     #dirPermStatus{min-height:1.2em;font-size:13px;color:var(--bad);margin-bottom:12px}
     #dirPermBox .actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+
+/* Signup form styles */
+.signup-body{background:#0b0e1a;color:var(--txt);min-height:100vh;font-family:'Inter','Noto Sans JP',system-ui,sans-serif;margin:0;display:flex;align-items:center;justify-content:center;padding:24px}
+.signup{background:var(--panel);border:1px solid var(--bd);border-radius:16px;max-width:520px;width:min(100%,520px);padding:28px;box-shadow:0 28px 72px rgba(0,0,0,.4);display:flex;flex-direction:column;gap:12px}
+.signup h1{margin:0 0 4px;font-size:26px;letter-spacing:.02em}
+.signup form{display:flex;flex-direction:column;gap:14px;margin-top:6px}
+.form-field{display:flex;flex-direction:column;gap:6px}
+.form-field label{font-weight:600;font-size:14px;letter-spacing:.01em}
+.form-field input{border:1px solid var(--bd);background:#0f1626;color:var(--txt);border-radius:10px;padding:10px 12px;font-size:15px;outline:none;transition:border-color .16s ease, box-shadow .16s ease}
+.form-field input:focus{border-color:#61b4ff;box-shadow:0 0 0 3px rgba(97,180,255,.18)}
+.form-field input.is-invalid{border-color:#ff6b6b;box-shadow:0 0 0 3px rgba(255,107,107,.14)}
+.form-field input.is-valid{border-color:#58d197;box-shadow:0 0 0 3px rgba(88,209,151,.12)}
+.field-help{margin:0;font-size:12px;color:#98a3bc}
+.field-error{margin:0;font-size:13px;color:#ff8484;min-height:18px}
+.field-error[data-visible="false"]{opacity:.35}
+.signup .btn{align-self:flex-end;padding:12px 18px;font-size:15px;border-radius:12px}
+.signup .btn:disabled{opacity:.5;cursor:not-allowed}

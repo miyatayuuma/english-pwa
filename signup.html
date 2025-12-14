@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>サインアップ | 英語学習アプリ</title>
+  <link rel="stylesheet" href="styles/app.css">
+</head>
+<body class="signup-body">
+  <main class="signup">
+    <h1>サインアップ</h1>
+    <p class="muted">アカウントを作成して学習進捗をクラウドに同期しましょう。</p>
+    <form id="signupForm" novalidate>
+      <div class="form-field">
+        <label for="signupName">お名前</label>
+        <input id="signupName" name="name" type="text" autocomplete="name" required />
+        <p class="field-error" data-error-for="name" aria-live="polite"></p>
+      </div>
+      <div class="form-field">
+        <label for="signupEmail">メールアドレス</label>
+        <input id="signupEmail" name="email" type="email" autocomplete="email" required />
+        <p class="field-error" data-error-for="email" aria-live="polite"></p>
+      </div>
+      <div class="form-field">
+        <label for="signupPassword">パスワード</label>
+        <input id="signupPassword" name="password" type="password" autocomplete="new-password" required minlength="8" />
+        <p class="field-help">8文字以上で英字と数字を含めてください。</p>
+        <p class="field-error" data-error-for="password" aria-live="polite"></p>
+      </div>
+      <div class="form-field">
+        <label for="signupConfirm">パスワード（確認）</label>
+        <input id="signupConfirm" name="confirmPassword" type="password" autocomplete="new-password" required />
+        <p class="field-error" data-error-for="confirmPassword" aria-live="polite"></p>
+      </div>
+      <button type="submit" class="btn" disabled>アカウントを作成</button>
+    </form>
+  </main>
+
+  <script type="module">
+    import { attachSignupValidation } from './scripts/app/signupValidation.js';
+    const form = document.getElementById('signupForm');
+    const validate = attachSignupValidation(form);
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const result = validate();
+      if (result.valid) {
+        alert('サインアップを受け付けました！');
+      }
+    });
+  </script>
+</body>
+</html>
