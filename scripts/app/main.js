@@ -24,7 +24,8 @@ import {
 import { createAudioController } from '../audio/controller.js';
 import {
   createRecognitionController,
-  calcMatchScore
+  calcMatchScore,
+  isRecognitionSupported
 } from '../speech/recognition.js';
 import { createSpeechSynthesisController } from '../speech/synthesis.js';
 import { createOverlayController } from './overlay.js';
@@ -452,6 +453,8 @@ function createAppRuntime(){
   let cardStart=0;
   const createEmptySessionMetrics=()=>({ startMs:0, cardsDone:0, newIntroduced:0, currentStreak:0, highestStreak:0 });
   let sessionMetrics=createEmptySessionMetrics();
+  const createEmptySpeechSessionStats=()=>({ submissions:new Map(), correct:new Map() });
+  let speechSessionStats=createEmptySpeechSessionStats();
   let autoPlayUnlocked=false;
   let lastEmptySearchToast='';
 
@@ -549,6 +552,36 @@ function createAppRuntime(){
   function beginSessionMetrics(){
     sessionMetrics=createEmptySessionMetrics();
     sessionMetrics.startMs=now();
+    resetSpeechSessionStats();
+  }
+
+  function resetSpeechSessionStats(){
+    speechSessionStats=createEmptySpeechSessionStats();
+  }
+
+  function recordSpeechAttempt(itemId, isCorrect=false){
+    if(!itemId) return { submissions:0, correct:0 };
+    const key=String(itemId);
+    const submissions=speechSessionStats.submissions;
+    const correct=speechSessionStats.correct;
+    const nextSub=(submissions.get(key)||0)+1;
+    submissions.set(key, nextSub);
+    if(isCorrect){
+      correct.set(key, (correct.get(key)||0)+1);
+    }
+    return {
+      submissions: nextSub,
+      correct: correct.get(key)||0
+    };
+  }
+
+  function getSpeechAttemptStats(itemId){
+    if(!itemId) return { submissions:0, correct:0 };
+    const key=String(itemId);
+    return {
+      submissions: speechSessionStats.submissions.get(key)||0,
+      correct: speechSessionStats.correct.get(key)||0
+    };
   }
 
   function applyRemoteStatus(status){
@@ -999,7 +1032,9 @@ function createAppRuntime(){
   if(el.cfgSave && el.cfgModal && el.cfgUrl && el.cfgKey && el.cfgAudioBase){
     el.cfgSave.addEventListener('click', ()=>{
       const prevStudyMode=getStudyMode();
-      CFG.apiUrl=(el.cfgUrl.value||'').trim();
+      const prevApiUrl=(CFG.apiUrl||'').trim();
+      const nextApiUrl=(el.cfgUrl.value||'').trim();
+      CFG.apiUrl=nextApiUrl;
       CFG.apiKey=(el.cfgKey.value||'').trim();
       CFG.audioBase=(el.cfgAudioBase.value||'').trim()||'./audio';
       if(el.cfgPlaybackMode && el.cfgPlaybackMode.length){
@@ -1016,6 +1051,9 @@ function createAppRuntime(){
       }
       if(el.cfgSpeechVoice){ CFG.speechVoice=el.cfgSpeechVoice.value||''; }
       saveCfg(CFG);
+      if((nextApiUrl && nextApiUrl!==prevApiUrl) || (!nextApiUrl && prevApiUrl)){
+        resetSpeechSessionStats();
+      }
       const newStudyMode=getStudyMode();
       if((CFG.apiUrl||'').trim()){
         setEndpointForPending(CFG.apiUrl.trim(), (CFG.apiKey||'')||undefined);
@@ -2160,6 +2198,9 @@ function createAppRuntime(){
 
     const pass = !!evaluation?.pass;
     const responseMs = cardStart>0 ? Math.max(0, now()-cardStart) : '';
+    const nativeSpeechStats = isRecognitionSupported()
+      ? recordSpeechAttempt(it.id, pass)
+      : getSpeechAttemptStats(it.id);
     const srsPayload = (()=>{
       const info=levelInfo||{};
       const historyRaw=Array.isArray(info.noHintHistory)?info.noHintHistory:[];
@@ -2271,7 +2312,9 @@ function createAppRuntime(){
       next_level_target:levelUpdate?.nextTarget?.target||null,
       next_level_remaining:levelUpdate?.nextTarget?.remaining ?? null,
       next_level_available_at:levelUpdate?.nextTarget?.nextEligibleAt ? new Date(levelUpdate.nextTarget.nextEligibleAt).toISOString() : null,
-      study_mode: studyMode
+      study_mode: studyMode,
+      native_sr_submissions: numericOrEmpty(nativeSpeechStats?.submissions),
+      native_sr_successes: numericOrEmpty(nativeSpeechStats?.correct)
     };
     if(!pass && failCount<FAIL_LIMIT){ el.mic.disabled=false; }
     sendLog('srs', srsPayload);
