@@ -94,7 +94,13 @@ export function createLogManager({
             ack.forEach((uid) => accepted.add(uid));
           }
         } catch (err) {
-          console.warn('flushPendingLogs', err);
+          const message = String(err && err.message ? err.message : err || '')
+            .toLowerCase();
+          const expectedNetworkError =
+            /network|offline|fetch/.test(message);
+          if (!expectedNetworkError) {
+            console.warn('flushPendingLogs', err);
+          }
         }
       }
       let changed = false;

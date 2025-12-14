@@ -60,3 +60,46 @@ test('deferred logs flush after connectivity resumes', async () => {
     }
   }
 });
+
+test('network failures do not spam console warnings', async () => {
+  const storage = new Map();
+  const loadJson = (key, fallback) => {
+    if (storage.has(key)) {
+      return JSON.parse(storage.get(key));
+    }
+    return fallback;
+  };
+  const saveJson = (key, value) => {
+    storage.set(key, JSON.stringify(value));
+  };
+
+  const manager = createLogManager({
+    loadJson,
+    saveJson,
+    storageKey: 'log-test',
+    getConfig: () => ({ apiUrl: 'https://example.test/log', apiKey: 'abc123' }),
+  });
+
+  const originalFetch = globalThis.fetch;
+  const originalWarn = console.warn;
+  const warnings = [];
+
+  try {
+    console.warn = (...args) => warnings.push(args.join(' '));
+    globalThis.fetch = async () => {
+      throw new Error('Failed to fetch');
+    };
+
+    await manager.sendLog('attempt', { id: 'card-1' });
+
+    assert.equal(warnings.length, 0, 'expected network errors are muted');
+    assert.equal(manager.getPendingEntries().length, 1, 'failed logs stay pending');
+  } finally {
+    if (originalFetch) {
+      globalThis.fetch = originalFetch;
+    } else {
+      delete globalThis.fetch;
+    }
+    console.warn = originalWarn;
+  }
+});
