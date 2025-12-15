@@ -1826,9 +1826,39 @@ function createAppRuntime(){
   const MAX_CARD_TILT=10; // deg
   const CARD_OPACITY_REDUCTION=0.4;
   const VERTICAL_SWIPE_THRESHOLD_SCALE=0.5; // allow shorter vertical swipes
+  const LONG_PRESS_DURATION=600; // ms
+  const LONG_PRESS_MOVE_THRESHOLD=12; // px
   let cardDragFrame=0;
   let cardDragPending=null;
   let cardDragResetTimer=0;
+  function clearLongPressState(state){
+    if(!state) return;
+    if(state.longPressTimer){
+      clearTimeout(state.longPressTimer);
+      state.longPressTimer=0;
+    }
+    const card=el.card;
+    if(card && state.longPressLock){
+      card.classList.remove('card-longpress-active');
+    }
+    state.longPressLock=false;
+  }
+  function startLongPressTimer(state){
+    clearLongPressState(state);
+    const card=el.card;
+    if(card){
+      card.classList.add('card-longpress-active');
+      state.longPressLock=true;
+    }
+    state.longPressTimer=setTimeout(()=>{
+      state.longPressTimer=0;
+      state.longPressTriggered=true;
+      clearLongPressState(state);
+      clearCardDragStyles();
+      advanceHintStage();
+      touchStart=null;
+    }, LONG_PRESS_DURATION);
+  }
   function getSwipeThresholds(){
     const width=window.innerWidth || document.documentElement.clientWidth || 0;
     const height=window.innerHeight || document.documentElement.clientHeight || 0;
@@ -1956,13 +1986,18 @@ function createAppRuntime(){
       axis:null,
       lastDx:0,
       lastDy:0,
+      longPressTimer:0,
+      longPressTriggered:false,
+      longPressLock:false,
     };
+    startLongPressTimer(touchStart);
   },{passive:true});
   el.card.addEventListener('touchmove',(ev)=>{
     if(!touchStart) return;
-    if(!sessionActive){ touchStart=null; resetCardDrag({animate:false}); return; }
+    if(!sessionActive){ clearLongPressState(touchStart); touchStart=null; resetCardDrag({animate:false}); return; }
     if(ev.touches?.length!==1){
       if(touchStart.dragging){ resetCardDrag({animate:false}); }
+      clearLongPressState(touchStart);
       touchStart=null;
       return;
     }
@@ -1975,6 +2010,12 @@ function createAppRuntime(){
     const thresholds=state.thresholds || getSwipeThresholds();
     const horizontalThreshold=Math.max(1, thresholds.horizontal || 0);
     const verticalThreshold=Math.max(1, thresholds.vertical || thresholds.horizontal || 0);
+    if(!state.longPressTriggered){
+      const exceededLongPress=Math.abs(dx)>LONG_PRESS_MOVE_THRESHOLD || Math.abs(dy)>LONG_PRESS_MOVE_THRESHOLD;
+      if(exceededLongPress){
+        clearLongPressState(state);
+      }
+    }
     const directionLock=6;
     if(!state.axis){
       if(absDx<directionLock && absDy<directionLock){
@@ -2019,8 +2060,10 @@ function createAppRuntime(){
     if(!touchStart) return;
     const state=touchStart;
     touchStart=null;
+    clearLongPressState(state);
     clearHintSwipeState();
     if(!sessionActive){ resetCardDrag({animate:false}); return; }
+    if(state.longPressTriggered){ resetCardDrag({animate:false}); return; }
     if(canceled){ resetCardDrag({animate:state.dragging}); return; }
     const point=ev.changedTouches && ev.changedTouches[0];
     if(!point){ resetCardDrag({animate:state.dragging}); return; }
