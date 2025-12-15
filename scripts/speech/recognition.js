@@ -63,221 +63,77 @@ function matchAndHighlightInternal(refText, hypText, enElement, getComposeNodesF
   const hypTokens = hypTokensMerged;
 
   const refCounts = new Map();
-  const refOrder = [];
   for (const token of refTokens) {
-    if (!refCounts.has(token)) {
-      refOrder.push(token);
-    }
     refCounts.set(token, (refCounts.get(token) || 0) + 1);
   }
 
-  function evaluateRangeStatic(start, end) {
-    const remainLocal = new Map(refCounts);
-    const matchedCountsLocal = new Map();
-    const matchedWordsLocal = [];
-    let matchedCountLocal = 0;
-    for (let i = start; i < end; i++) {
-      const token = hypTokens[i];
-      if (!token) continue;
-      let matchKey = '';
-      if ((remainLocal.get(token) || 0) > 0) {
-        matchKey = token;
+  function alignWindow(start, end) {
+    const windowTokens = hypTokens.slice(start, end);
+    const refLen = refTokens.length;
+    const winLen = windowTokens.length;
+    const dp = Array.from({ length: refLen + 1 }, () => new Array(winLen + 1).fill(0));
+    const back = Array.from({ length: refLen + 1 }, () => new Array(winLen + 1).fill(''));
+
+    for (let i = 1; i <= refLen; i++) {
+      for (let j = 1; j <= winLen; j++) {
+        const refTok = refTokens[i - 1];
+        const hypTok = windowTokens[j - 1];
+        const match = refTok === hypTok || approxTokensMatch(refTok, hypTok);
+        const diagScore = match ? dp[i - 1][j - 1] + 1 : -Infinity;
+        const upScore = dp[i - 1][j];
+        const leftScore = dp[i][j - 1];
+        let bestScore = upScore;
+        let dir = 'up';
+        if (leftScore > bestScore) {
+          bestScore = leftScore;
+          dir = 'left';
+        }
+        if (diagScore >= bestScore) {
+          bestScore = diagScore;
+          dir = 'diag';
+        }
+        dp[i][j] = bestScore;
+        back[i][j] = dir;
+      }
+    }
+
+    const assignments = new Array(winLen).fill(null);
+    const matchedWords = [];
+    const matchedCounts = new Map();
+    let matchedCount = 0;
+    let i = refLen;
+    let j = winLen;
+    while (i > 0 && j > 0) {
+      const dir = back[i][j];
+      if (dir === 'diag') {
+        const refTok = refTokens[i - 1];
+        const hypTok = windowTokens[j - 1];
+        if (refTok === hypTok || approxTokensMatch(refTok, hypTok)) {
+          assignments[j - 1] = refTok;
+          matchedWords.unshift(refTok);
+          matchedCounts.set(refTok, (matchedCounts.get(refTok) || 0) + 1);
+          matchedCount += 1;
+        }
+        i -= 1;
+        j -= 1;
+      } else if (dir === 'up') {
+        i -= 1;
       } else {
-        for (const key of refOrder) {
-          if ((remainLocal.get(key) || 0) > 0 && approxTokensMatch(key, token)) {
-            matchKey = key;
-            break;
-          }
-        }
-      }
-      if (matchKey) {
-        const nextRemain = (remainLocal.get(matchKey) || 0) - 1;
-        if (nextRemain > 0) {
-          remainLocal.set(matchKey, nextRemain);
-        } else {
-          remainLocal.delete(matchKey);
-        }
-        matchedCountsLocal.set(matchKey, (matchedCountsLocal.get(matchKey) || 0) + 1);
-        matchedWordsLocal.push(matchKey);
-        matchedCountLocal += 1;
+        j -= 1;
       }
     }
-    const missingLocal = [];
-    for (const [key, count] of remainLocal) {
-      for (let i = 0; i < count; i++) {
-        missingLocal.push(key);
-      }
-    }
-    const windowLen = Math.max(0, end - start);
-    const recall = refTokens.length ? matchedCountLocal / refTokens.length : 1;
-    const precision = windowLen ? matchedCountLocal / windowLen : 1;
-    return {
-      start,
-      end,
-      recall,
-      precision,
-      missing: missingLocal,
-      matchedWords: matchedWordsLocal,
-      matchedCount: matchedCountLocal,
-      matchedCounts: matchedCountsLocal,
-      length: windowLen,
-    };
-  }
 
-  let best = evaluateRangeStatic(0, hypTokens.length);
-  const refLen = refTokens.length;
-  const slack = Math.max(4, Math.ceil(refLen * 0.5));
-  const minLen = Math.max(1, refLen ? Math.max(1, refLen - slack) : 1);
-  const maxLen = Math.max(
-    minLen,
-    Math.min(hypTokens.length, Math.max(refLen + slack, refLen * 2 || 1))
-  );
-  const assignments = new Array(hypTokens.length).fill(null);
-  const remain = new Map();
-  const matchedCountsRolling = new Map();
-  let matchedCountRolling = 0;
-  let currentStart = 0;
-  let currentEnd = 0;
-  let unmatchedQueue = [];
-  const unmatchedSet = new Set();
-
-  function resetRemain() {
-    remain.clear();
-    for (const [key, count] of refCounts) {
-      remain.set(key, count);
-    }
-  }
-
-  function addToUnmatched(index) {
-    if (unmatchedSet.has(index)) return;
-    unmatchedSet.add(index);
-    unmatchedQueue.push(index);
-  }
-
-  function assignMatch(index) {
-    const token = hypTokens[index];
-    if (!token) {
-      assignments[index] = null;
-      return false;
-    }
-    let matchKey = '';
-    const exactRemain = remain.get(token) || 0;
-    if (exactRemain > 0) {
-      matchKey = token;
-    } else {
-      for (const key of refOrder) {
-        const available = remain.get(key) || 0;
-        if (available > 0 && approxTokensMatch(key, token)) {
-          matchKey = key;
-          break;
-        }
-      }
-    }
-    if (!matchKey) {
-      assignments[index] = null;
-      return false;
-    }
-    const prevRemain = remain.get(matchKey) || 0;
-    const nextRemain = prevRemain - 1;
-    if (nextRemain > 0) {
-      remain.set(matchKey, nextRemain);
-    } else {
-      remain.delete(matchKey);
-    }
-    const prevMatched = matchedCountsRolling.get(matchKey) || 0;
-    matchedCountsRolling.set(matchKey, prevMatched + 1);
-    assignments[index] = matchKey;
-    matchedCountRolling += 1;
-    if (unmatchedSet.has(index)) {
-      unmatchedSet.delete(index);
-    }
-    return true;
-  }
-
-  function retryUnmatched() {
-    if (!unmatchedQueue.length) return;
-    const nextQueue = [];
-    for (const idx of unmatchedQueue) {
-      if (!unmatchedSet.has(idx)) continue;
-      if (idx < currentStart || idx >= currentEnd) {
-        unmatchedSet.delete(idx);
-        continue;
-      }
-      if (assignments[idx]) {
-        unmatchedSet.delete(idx);
-        continue;
-      }
-      if (assignMatch(idx)) {
-        continue;
-      }
-      nextQueue.push(idx);
-    }
-    unmatchedQueue = nextQueue;
-  }
-
-  function addTokenToEnd(index) {
-    if (index !== currentEnd) {
-      currentEnd = index;
-    }
-    const matched = assignMatch(index);
-    if (!matched) {
-      addToUnmatched(index);
-    }
-    currentEnd = index + 1;
-  }
-
-  function releaseIndex(index) {
-    const matchKey = assignments[index];
-    if (matchKey) {
-      const prevMatched = matchedCountsRolling.get(matchKey) || 0;
-      const nextMatched = prevMatched - 1;
-      if (nextMatched > 0) {
-        matchedCountsRolling.set(matchKey, nextMatched);
-      } else {
-        matchedCountsRolling.delete(matchKey);
-      }
-      const remainVal = (remain.get(matchKey) || 0) + 1;
-      remain.set(matchKey, remainVal);
-      matchedCountRolling -= 1;
-    }
-    assignments[index] = null;
-    if (unmatchedSet.has(index)) {
-      unmatchedSet.delete(index);
-    }
-  }
-
-  function removeFromStart() {
-    if (currentStart >= currentEnd) return;
-    const index = currentStart;
-    releaseIndex(index);
-    currentStart += 1;
-    retryUnmatched();
-  }
-
-  function removeFromEnd() {
-    if (currentEnd <= currentStart) return;
-    const index = currentEnd - 1;
-    releaseIndex(index);
-    currentEnd -= 1;
-    retryUnmatched();
-  }
-
-  function snapshotCurrentWindow(start, end) {
     const missing = [];
-    for (const [key, count] of remain) {
-      for (let i = 0; i < count; i++) {
+    for (const [key, count] of refCounts) {
+      const matched = matchedCounts.get(key) || 0;
+      const remaining = count - matched;
+      for (let k = 0; k < remaining; k++) {
         missing.push(key);
       }
     }
-    const matchedWords = [];
-    for (let i = start; i < end; i++) {
-      const key = assignments[i];
-      if (key) matchedWords.push(key);
-    }
-    const assignmentSlice = assignments.slice(start, end);
-    const windowLen = Math.max(0, end - start);
-    const recall = refTokens.length ? matchedCountRolling / refTokens.length : 1;
-    const precision = windowLen ? matchedCountRolling / windowLen : 1;
+
+    const recall = refLen ? matchedCount / refLen : 1;
+    const precision = winLen ? matchedCount / winLen : 1;
     return {
       start,
       end,
@@ -285,13 +141,22 @@ function matchAndHighlightInternal(refText, hypText, enElement, getComposeNodesF
       precision,
       missing,
       matchedWords,
-      matchedCount: matchedCountRolling,
-      matchedCounts: cloneCountMap(matchedCountsRolling),
-      length: windowLen,
-      assignments: assignmentSlice,
+      matchedCount,
+      matchedCounts,
+      length: winLen,
+      assignments,
+      tokens: windowTokens,
     };
   }
 
+  let best = alignWindow(0, hypTokens.length);
+  const refLen = refTokens.length;
+  const slack = Math.max(4, Math.ceil(refLen * 0.5));
+  const minLen = Math.max(1, refLen ? Math.max(1, refLen - slack) : 1);
+  const maxLen = Math.max(
+    minLen,
+    Math.min(hypTokens.length, Math.max(refLen + slack, refLen * 2 || 1))
+  );
   function isBetterCandidate(candidate, currentBest) {
     const bestScore = calcMatchScore(refLen, currentBest.recall, currentBest.precision);
     const candScore = calcMatchScore(refLen, candidate.recall, candidate.precision);
@@ -315,57 +180,16 @@ function matchAndHighlightInternal(refText, hypText, enElement, getComposeNodesF
   }
 
   if (hypTokens.length && minLen <= hypTokens.length) {
-    assignments.fill(null);
-    resetRemain();
-    matchedCountsRolling.clear();
-    matchedCountRolling = 0;
-    currentStart = 0;
-    currentEnd = 0;
-    unmatchedQueue = [];
-    unmatchedSet.clear();
-
-    for (let i = 0; i < minLen; i++) {
-      addTokenToEnd(i);
-    }
-
-    considerCandidate(snapshotCurrentWindow(currentStart, currentEnd));
-
-    const addedIndicesInitial = [];
-    for (let len = minLen + 1; len <= maxLen; len++) {
-      const idx = len - 1;
-      if (idx >= hypTokens.length) break;
-      addTokenToEnd(idx);
-      addedIndicesInitial.push(idx);
-      considerCandidate(snapshotCurrentWindow(currentStart, currentEnd));
-    }
-    for (let i = addedIndicesInitial.length - 1; i >= 0; i--) {
-      removeFromEnd();
-    }
-
-    const maxStart = hypTokens.length - minLen;
-    for (let start = 1; start <= maxStart; start++) {
-      removeFromStart();
-      const baseIdx = start + minLen - 1;
-      if (baseIdx < hypTokens.length) {
-        addTokenToEnd(baseIdx);
-      }
-      considerCandidate(snapshotCurrentWindow(currentStart, currentEnd));
-
-      const added = [];
-      for (let len = minLen + 1; len <= maxLen; len++) {
-        const idx = start + len - 1;
-        if (idx >= hypTokens.length) break;
-        addTokenToEnd(idx);
-        added.push(idx);
-        considerCandidate(snapshotCurrentWindow(currentStart, currentEnd));
-      }
-      for (let i = added.length - 1; i >= 0; i--) {
-        removeFromEnd();
+    for (let start = 0; start < hypTokens.length; start++) {
+      for (let len = minLen; len <= maxLen; len++) {
+        const end = start + len;
+        if (end > hypTokens.length) break;
+        considerCandidate(alignWindow(start, end));
       }
     }
   }
 
-  best.tokens = hypTokens.slice(best.start, best.end);
+  best.tokens = best.tokens || hypTokens.slice(best.start, best.end);
   best.length = best.tokens.length;
   if (!Array.isArray(best.assignments)) {
     best.assignments = new Array(best.length).fill(null);
