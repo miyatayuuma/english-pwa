@@ -676,6 +676,13 @@ function createAppRuntime(){
     const compose=isComposeMode();
     const showEnglish=next>=getEnglishRevealStage();
     const showJapanese=next>=getJapaneseHintStage();
+    const card=el.card;
+    const hintActive=next>BASE_HINT_STAGE;
+    const audioUnlocked=isAudioHintUnlocked(next);
+    if(card){
+      card.classList.toggle('card-hint-active', hintActive);
+      card.classList.toggle('card-hint-audio', audioUnlocked);
+    }
     if(showEnglish){
       el.en.classList.remove('concealed');
       el.en.innerHTML=currentEnHtml||'';
