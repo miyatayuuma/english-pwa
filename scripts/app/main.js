@@ -35,6 +35,8 @@ import { createLogManager } from './logManager.js';
 import { qs, qsa } from './dom.js';
 import { createLevelStateManager, LEVEL_CHOICES } from './levelState.js';
 
+export const APP_VERSION = 'v4.6';
+
 function createAppRuntime(){
   // ===== Utilities =====
   const now=()=>Date.now(); const UA=(()=>navigator.userAgent||'')();
@@ -178,6 +180,15 @@ function createAppRuntime(){
   const el={ headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerMessage'), footerInfoContainer:qs('#footerInfo'), footerInfoBtn:qs('#footerInfoBtn'), footerInfoDialog:qs('#footerInfoDialog'), footerInfoDialogBody:qs('#footerInfoDialogBody'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), next:qs('#btnNext'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), composeGuide:qs('#composeGuide'), composeTokens:qs('#composeTokens'), composeNote:qs('#composeNote'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSpeechVoice:qs('#cfgSpeechVoice'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnImport:qs('#btnImport'), filePick:qs('#filePick'), btnTestAudio:qs('#btnTestAudio'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speedCtrl:qs('.speed-ctrl'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus') };
   el.cfgPlaybackMode=qsa('input[name="cfgPlaybackMode"]');
   el.cfgStudyMode=qsa('input[name="cfgStudyMode"]');
+  const versionTargets=qsa('[data-app-version]');
+  const appVersionText=`バージョン: ${APP_VERSION}`;
+  function initAppVersion(){
+    versionTargets.forEach(node=>{
+      if(node){
+        node.textContent=appVersionText;
+      }
+    });
+  }
   const composeNoteDefault = el.composeNote ? el.composeNote.textContent : '';
   const audio=qs('#player');
   const composeGuide = createComposeGuide({
@@ -189,6 +200,7 @@ function createAppRuntime(){
     toks,
     shuffledCopy
   });
+  initAppVersion();
   let recognitionController=null;
   let speechController=null;
   let lastMatchEval=null;
