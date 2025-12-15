@@ -187,7 +187,7 @@ function createAppRuntime(){
 
 
   // ===== Elements =====
-  const el={ headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerMessage'), footerInfoContainer:qs('#footerInfo'), footerInfoBtn:qs('#footerInfoBtn'), footerInfoDialog:qs('#footerInfoDialog'), footerInfoDialogBody:qs('#footerInfoDialogBody'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), next:qs('#btnNext'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), composeGuide:qs('#composeGuide'), composeTokens:qs('#composeTokens'), composeNote:qs('#composeNote'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSpeechVoice:qs('#cfgSpeechVoice'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnImport:qs('#btnImport'), filePick:qs('#filePick'), btnTestAudio:qs('#btnTestAudio'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speedCtrl:qs('.speed-ctrl'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus'), updateCheckBtn:qs('#btnUpdateCheck') };
+  const el={ headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerMessage'), footerInfoContainer:qs('#footerInfo'), footerInfoBtn:qs('#footerInfoBtn'), footerInfoDialog:qs('#footerInfoDialog'), footerInfoDialogBody:qs('#footerInfoDialogBody'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), composeGuide:qs('#composeGuide'), composeTokens:qs('#composeTokens'), composeNote:qs('#composeNote'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSpeechVoice:qs('#cfgSpeechVoice'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnImport:qs('#btnImport'), filePick:qs('#filePick'), btnTestAudio:qs('#btnTestAudio'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speedCtrl:qs('.speed-ctrl'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus'), updateCheckBtn:qs('#btnUpdateCheck') };
   el.cfgPlaybackMode=qsa('input[name="cfgPlaybackMode"]');
   el.cfgStudyMode=qsa('input[name="cfgStudyMode"]');
   const versionTargets=qsa('[data-app-version]');
@@ -216,6 +216,7 @@ function createAppRuntime(){
   let lastMatchEval=null;
   let currentShouldUseSpeech=false;
   let lastProgressNote='';
+  let autoAdvanceTimer=0;
 
   function setLastProgressNote(note){
     lastProgressNote = typeof note==='string' ? note.trim() : '';
@@ -749,17 +750,6 @@ function createAppRuntime(){
     el.attempt.textContent = remain>0 ? `リトライ残り ${remain}回` : '規定回数に達しました';
     if(remain<=1){ el.attempt.classList.add('alert'); }
     else{ el.attempt.classList.remove('alert'); }
-  }
-
-  function hideNextCta(){
-    el.next.hidden=true;
-    el.next.disabled=true;
-    el.mic.disabled=false;
-  }
-
-  function showNextCta(){
-    el.next.hidden=false;
-    el.next.disabled=false;
   }
 
   function setMicState(on){
@@ -1580,6 +1570,7 @@ function createAppRuntime(){
     finalizeSessionMetrics();
     sessionActive=false;
     sessionStarting=false;
+    cancelAutoAdvance();
     stopAudio();
     speechController.cancelSpeech();
     clearAudioSource();
@@ -1610,10 +1601,8 @@ function createAppRuntime(){
     resetResult();
     resetTranscript();
     updateAttemptInfo();
-    hideNextCta();
     setMicState(false);
     el.mic.disabled = true;
-    el.next.hidden = true;
     el.pbar.value = 0;
     el.footer.textContent = hasQueue ? '準備が整い次第、自動で開始します' : (emptyWithSearch ? '検索条件に一致する問題がありません' : 'キューが空です');
     if(emptyWithSearch){
@@ -1699,7 +1688,6 @@ function createAppRuntime(){
       lastMatchEval=null;
       failCount=0;
       updateAttemptInfo();
-      hideNextCta();
       setMicState(false);
       el.mic.disabled=false;
       if(shouldUseAudioForItem(QUEUE[i+1])){ primeAudio(QUEUE[i+1], undefined, {shouldUseAudioForItem, resolveAudioUrl}); }
@@ -1726,7 +1714,6 @@ function createAppRuntime(){
   async function rebuildAndRender(resetIndex=false, {autoStart=true, autoPlay=false}={}){
     QUEUE=buildQueue();
     el.pbar.max=Math.max(1, QUEUE.length);
-    hideNextCta();
     const allowAutoPlay=autoPlay && isAutoPlayAllowed();
     if(resetIndex){
       idx=-1;
@@ -1767,7 +1754,6 @@ function createAppRuntime(){
     const nextValue=nextOpt.value;
     el.secSel.value=nextValue;
     saveString(SECTION_SELECTION, nextValue);
-    hideNextCta();
     const label=nextOpt.textContent||nextOpt.label||nextValue||'次のセクション';
     toast(`セクション「${label}」へ進みます`);
     rebuildAndRender(true,{autoPlay:true})
@@ -1781,6 +1767,7 @@ function createAppRuntime(){
   }
 
   async function nextCard(first=false, autoPlay=false){
+    cancelAutoAdvance();
     if(!QUEUE.length){ el.footer.textContent='キューが空です'; clearAudioSource(); stopAudio(); return; }
     if(!sessionActive) return;
     if(!first && idx>=QUEUE.length-1){
@@ -1799,6 +1786,7 @@ function createAppRuntime(){
     return queueCardTransition('next', task, {animate:!first});
   }
   async function prevCard(autoPlay=false){
+    cancelAutoAdvance();
     if(!QUEUE.length) return;
     if(!sessionActive) return;
     const targetIdx=Math.max(0, idx-1);
@@ -1812,6 +1800,24 @@ function createAppRuntime(){
       updateHeaderStats();
     };
     return queueCardTransition('prev', task, {animate});
+  }
+
+  function cancelAutoAdvance(){
+    if(autoAdvanceTimer){
+      clearTimeout(autoAdvanceTimer);
+      autoAdvanceTimer=0;
+    }
+  }
+
+  function scheduleAutoAdvance(delayMs=900){
+    cancelAutoAdvance();
+    if(!sessionActive) return;
+    const allowAuto=isAutoPlayAllowed();
+    autoAdvanceTimer=setTimeout(()=>{
+      autoAdvanceTimer=0;
+      if(!sessionActive) return;
+      nextCard(false, allowAuto);
+    }, delayMs);
   }
 
   async function startSession(autoPlay=false){
@@ -2092,7 +2098,6 @@ function createAppRuntime(){
   el.card.addEventListener('touchend',(ev)=>{ handleTouchFinish(ev,false); },{passive:true});
   el.card.addEventListener('touchcancel',(ev)=>{ handleTouchFinish(ev,true); },{passive:true});
   el.en.addEventListener('click', async ()=>{ if(!sessionActive){ await startSession(false); } });
-  el.next.onclick=()=> nextCard(false, isAutoPlayAllowed());
   el.play.addEventListener('click', async ()=>{
     if(sessionStarting) return;
     if(!sessionActive){ await startSession(false); }
@@ -2162,7 +2167,6 @@ function createAppRuntime(){
     if(el.mic.disabled) return;
     if(!recognitionController) return;
     if(recognitionController.isActive()) return;
-    hideNextCta();
     lastMatchEval=null;
     const result=recognitionController.start();
     if(result && result.reason==='unsupported'){
@@ -2290,7 +2294,6 @@ function createAppRuntime(){
       }
       failCount=0;
       playTone('success');
-      showNextCta();
       el.footer.textContent='';
       if(levelCandidate>=4 && evaluation?.noHintSuccess){
         const baseToast = evaluation?.perfectNoHint ? 'ノーヒントで満点クリア！' : '素晴らしい！ノーヒント合格';
@@ -2298,6 +2301,7 @@ function createAppRuntime(){
       }else{
         toast('Great! 合格です', 1600);
       }
+      scheduleAutoAdvance(900);
       recordStudyProgress({
         pass:true,
         newLevel5:gainedLevel5,
@@ -2317,7 +2321,7 @@ function createAppRuntime(){
         el.footer.textContent = `3回失敗。${levelLabel}で次へ進みます`;
         toast('不合格で次へ進みます', 1600);
         el.mic.disabled=true;
-        setTimeout(()=>{ hideNextCta(); nextCard(false, isAutoPlayAllowed()); }, 900);
+        scheduleAutoAdvance(900);
       }else{
         el.footer.textContent = `一致率${pct}%：${levelLabel}${bestLabel} 維持のため再挑戦 (${failCount}/${FAIL_LIMIT})`;
         toast('70%未満。もう一度チャレンジ！', 1600);
