@@ -2374,8 +2374,52 @@ async function initApp(){
 
 function registerServiceWorker() {
   if ('serviceWorker' in navigator) {
+    const waitForControllerChange = () => new Promise((resolve) => {
+      navigator.serviceWorker.addEventListener('controllerchange', resolve, { once: true });
+    });
+
+    const shouldPromptReload = () => !!navigator.serviceWorker.controller;
+
+    const promptToReload = (registration, worker) => {
+      if (!shouldPromptReload() || promptToReload.shown) return;
+      promptToReload.shown = true;
+
+      const message = '新バージョンがあります。再読み込みしますか？';
+      toast(message, 3200);
+      const approved = window.confirm(message);
+      if (!approved) return;
+
+      if (registration.waiting) {
+        registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+        waitForControllerChange().then(() => window.location.reload());
+      } else if (worker?.state === 'activated') {
+        // Already activated (e.g., update fetched quietly)
+        window.location.reload();
+      }
+    };
+
+    const handleWorker = (registration, worker) => {
+      if (!worker) return;
+
+      const onStateChange = () => {
+        if ((worker.state === 'installed' || worker.state === 'activated') && shouldPromptReload()) {
+          promptToReload(registration, worker);
+        }
+      };
+
+      worker.addEventListener('statechange', onStateChange);
+      onStateChange();
+    };
+
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js').catch(() => {});
+      navigator.serviceWorker
+        .register('./sw.js')
+        .then((registration) => {
+          handleWorker(registration, registration.installing || registration.waiting);
+          registration.addEventListener('updatefound', () => handleWorker(registration, registration.installing));
+          registration.update().catch(() => {});
+        })
+        .catch(() => {});
     });
   }
 }
