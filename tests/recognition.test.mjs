@@ -87,3 +87,16 @@ test('matchAndHighlight preserves consecutive duplicate tokens', () => {
     'hypothesis tokens retain consecutive duplicates'
   );
 });
+
+test('matchAndHighlight requires tokens to appear in order', () => {
+  const controller = createRecognitionController();
+
+  const outOfOrder = controller.matchAndHighlight('say hello world', 'world say hello');
+
+  assert.equal(outOfOrder.matchedCounts.get('say'), 1, 'matched later tokens still counted when aligned');
+  assert.equal(outOfOrder.matchedCounts.get('hello'), 1, 'hello recognized despite earlier misplaced word');
+  assert.equal(outOfOrder.matchedCounts.get('world') || 0, 0, 'world before say is ignored for ordered matching');
+  assert.ok(outOfOrder.missing.includes('world'), 'world missing when tokens spoken out of order');
+  assert.ok(outOfOrder.recall < 1, 'recall reduced when hypothesis order mismatches reference');
+  assert.deepEqual(outOfOrder.hypTokens, ['say', 'hello'], 'best match window trims out-of-order prefix');
+});
