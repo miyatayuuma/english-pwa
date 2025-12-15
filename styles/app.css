@@ -1,6 +1,6 @@
     :root{ --bg:#0b0e1a; --panel:rgba(20,24,36,.65); --bd:rgba(255,255,255,.12); --txt:#e6e8ef; --muted:#aeb5c6; --accent:#62d5ff; --good:#46d37f; --bad:#ff6b6b; }
     *{box-sizing:border-box}
-    html,body{height:100%;margin:0;background:var(--bg);color:var(--txt);font-family:system-ui,"Segoe UI","Noto Sans JP",sans-serif}
+    html,body{height:100%;margin:0;background:var(--bg);color:var(--txt);font-family:system-ui,"Segoe UI","Noto Sans JP",sans-serif;overscroll-behavior-y:contain}
     .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
     #loadingOverlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(120% 120% at 50% 45%,rgba(40,54,94,.88),rgba(11,14,26,.96));z-index:100000;transition:opacity .6s ease,visibility .6s ease;opacity:1;visibility:visible;pointer-events:auto}
     #loadingOverlay.hidden{opacity:0;visibility:hidden;pointer-events:none}
@@ -14,7 +14,7 @@
     @keyframes loaderSpin{0%{transform:rotate(0deg);}50%{transform:rotate(180deg) scale(1.04);}100%{transform:rotate(360deg);}}
     @keyframes loaderPulse{0%{transform:scale(.92);opacity:.65;}50%{transform:scale(1.08);opacity:1;}100%{transform:scale(.92);opacity:.65;}}
     @keyframes loaderDots{0%,100%{transform:translateY(0);opacity:.35;}50%{transform:translateY(-6px);opacity:1;}}
-    #app{position:fixed;inset:0;display:grid;grid-template-rows:auto auto 1fr auto}
+    #app{position:fixed;inset:0;display:grid;grid-template-rows:auto auto 1fr auto;height:100%}
 
     header{padding:10px 12px;display:flex;gap:14px;align-items:center;background:var(--panel);border-bottom:1px solid var(--bd)}
     .stat{display:flex;gap:4px;align-items:center;font-size:14px;color:var(--muted)}
@@ -50,8 +50,8 @@
     .level-chip.active{background:var(--accent);color:#041019;border-color:rgba(98,213,255,.82);box-shadow:0 0 0 1px rgba(98,213,255,.32)}
     .level-chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
-    main{padding:12px;overflow:auto}
-    .card{--card-offset:0px;--card-tilt:0deg;--card-opacity:1;max-width:840px;margin:0 auto;background:var(--panel);border:1px solid var(--bd);border-radius:18px;padding:16px;min-height:50vh;display:flex;flex-direction:column;gap:12px;touch-action:manipulation;position:relative;transform:translateX(var(--card-offset)) rotate(var(--card-tilt));opacity:var(--card-opacity);transition:transform .36s cubic-bezier(.22,1,.36,1),opacity .36s ease;will-change:transform,opacity}
+    main{padding:12px;overflow:hidden;overscroll-behavior-y:contain;min-height:0;height:100%;display:flex;align-items:stretch}
+    .card{--card-offset:0px;--card-tilt:0deg;--card-opacity:1;max-width:840px;margin:0 auto;background:var(--panel);border:1px solid var(--bd);border-radius:18px;padding:16px;min-height:min(72vh,100%);max-height:100%;display:flex;flex-direction:column;gap:12px;touch-action:manipulation;position:relative;transform:translateX(var(--card-offset)) rotate(var(--card-tilt));opacity:var(--card-opacity);transition:transform .36s cubic-bezier(.22,1,.36,1),opacity .36s ease;will-change:transform,opacity;overflow:auto;-webkit-overflow-scrolling:touch}
     .card::after{content:"";position:absolute;left:0;right:0;top:0;height:52%;background:linear-gradient(180deg,rgba(98,213,255,.46),rgba(98,213,255,0));border-radius:inherit;opacity:calc(var(--hint-progress,0)*.8);pointer-events:none;transition:opacity .2s ease,filter .2s ease}
     .card.hint-swipe-ready::after{opacity:1;filter:brightness(1.12)}
     .card.card-sliding{pointer-events:none}
