@@ -35,7 +35,7 @@ import { createLogManager } from './logManager.js';
 import { qs, qsa } from './dom.js';
 import { createLevelStateManager, LEVEL_CHOICES } from './levelState.js';
 
-export const APP_VERSION = 'v4.6';
+export const APP_VERSION = 'v4.62';
 
 let swRegistration=null;
 let swRegistrationPromise=null;
