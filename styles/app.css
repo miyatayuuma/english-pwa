@@ -15,6 +15,9 @@
     @keyframes loaderPulse{0%{transform:scale(.92);opacity:.65;}50%{transform:scale(1.08);opacity:1;}100%{transform:scale(.92);opacity:.65;}}
     @keyframes loaderDots{0%,100%{transform:translateY(0);opacity:.35;}50%{transform:translateY(-6px);opacity:1;}}
     #app{position:fixed;inset:0;display:grid;grid-template-rows:auto auto auto 1fr auto auto;height:100%}
+    #app.session-active .goal-row,#app.session-active #dailyOverviewCard{display:none}
+    #app.session-active main{padding-block:16px}
+    #app.session-active main .card{min-height:calc(100vh - 180px)}
 
     header{padding:10px 12px;display:flex;gap:14px;align-items:center;background:var(--panel);border-bottom:1px solid var(--bd)}
     .stat{display:flex;gap:4px;align-items:center;font-size:14px;color:var(--muted)}
