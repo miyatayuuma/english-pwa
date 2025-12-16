@@ -36,9 +36,11 @@
     .goal-card{display:flex;flex-direction:column;gap:10px;border:1px solid var(--bd);border-radius:14px;padding:12px;background:rgba(16,23,38,.7);box-shadow:0 16px 48px rgba(0,0,0,.32);backdrop-filter:blur(6px)}
     .goal-card__header{display:flex;align-items:center;gap:8px;justify-content:space-between}
     .goal-card__header-main{display:flex;align-items:center;gap:8px;min-width:0}
+    .goal-card__header-actions{display:flex;align-items:center;gap:8px}
     .goal-card__title{margin:0;font-size:13px;color:var(--muted);letter-spacing:.03em;font-weight:700}
     .goal-card__tag{font-size:12px;color:var(--accent);padding:5px 10px;border-radius:999px;border:1px solid rgba(98,213,255,.4);background:rgba(98,213,255,.1);font-weight:600;letter-spacing:.03em}
     .goal-card__body{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+    .goal-card__body[hidden]{display:none}
     .goal-card__body--session{align-items:flex-start}
     .goal-card__meta{display:flex;flex-direction:column;gap:6px;flex:1;min-width:0}
     .goal-card__meta--session{gap:10px}

@@ -644,6 +644,9 @@ function createAppRuntime(){
       card.classList.toggle('is-collapsed', nextCollapsed);
     }
     if(toggle){
+      if(body && body.id){
+        toggle.setAttribute('aria-controls', body.id);
+      }
       toggle.classList.toggle('is-collapsed', nextCollapsed);
       toggle.setAttribute('aria-expanded', nextCollapsed?'false':'true');
       toggle.setAttribute('aria-label', nextCollapsed ? (isDaily?'今日の目標を展開する':'セッション目標を展開する') : (isDaily?'今日の目標を折りたたむ':'セッション目標を折りたたむ'));
