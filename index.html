@@ -50,10 +50,13 @@
   <div class="goal-row goal-row--top">
     <div class="goal-card" id="dailyGoalCard">
       <div class="goal-card__header">
-        <span class="goal-card__title">今日の目標</span>
-        <span class="goal-card__tag" id="dailyGoalTag">—</span>
+        <div class="goal-card__header-main">
+          <span class="goal-card__title">今日の目標</span>
+          <span class="goal-card__tag" id="dailyGoalTag">—</span>
+        </div>
+        <button id="dailyGoalToggle" class="goal-toggle" type="button" aria-expanded="true" aria-controls="dailyGoalBody" aria-label="今日の目標を折りたたむ">⌄</button>
       </div>
-      <div class="goal-card__body">
+      <div class="goal-card__body" id="dailyGoalBody">
         <div class="goal-ring" id="dailyGoalRing" aria-hidden="true">
           <div class="goal-ring__center" id="dailyGoalPercent">0%</div>
         </div>
@@ -169,10 +172,13 @@
   <div class="goal-row goal-row--footer">
     <div class="goal-card goal-card--session" id="sessionGoalCard">
       <div class="goal-card__header">
-        <span class="goal-card__title">セッション目標</span>
-        <span class="goal-card__tag" id="sessionGoalTag">—</span>
+        <div class="goal-card__header-main">
+          <span class="goal-card__title">セッション目標</span>
+          <span class="goal-card__tag" id="sessionGoalTag">—</span>
+        </div>
+        <button id="sessionGoalToggle" class="goal-toggle" type="button" aria-expanded="true" aria-controls="sessionGoalBody" aria-label="セッション目標を折りたたむ">⌄</button>
       </div>
-      <div class="goal-card__body goal-card__body--session">
+      <div class="goal-card__body goal-card__body--session" id="sessionGoalBody">
         <div class="goal-ring goal-ring--sm" id="sessionGoalRing" aria-hidden="true">
           <div class="goal-ring__center" id="sessionGoalPercent">0%</div>
         </div>

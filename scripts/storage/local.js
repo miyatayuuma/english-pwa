@@ -14,7 +14,9 @@ const STORAGE_KEYS = Object.freeze({
   PENDING_LOGS: 'pendingLogsV1',
   SECTION_SELECTION: 'secSel',
   ORDER_SELECTION: 'orderSel',
-  DAILY_OVERVIEW: 'dailyOverviewCollapsedV1'
+  DAILY_OVERVIEW: 'dailyOverviewCollapsedV1',
+  DAILY_GOAL_COLLAPSE: 'dailyGoalCollapsedV1',
+  SESSION_GOAL_COLLAPSE: 'sessionGoalCollapsedV1'
 });
 
 const storage = (() => {
