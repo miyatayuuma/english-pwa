@@ -493,6 +493,10 @@ function createAppRuntime(){
   function buildProgressInfoSummary(){
     const sections=[];
     ensureDailyGoalFresh();
+    const todayKey=localDateKey();
+    const yesterdayKey=localDateKey(Date.now()-DAY_MS);
+    const todayStats=getDailyStats(todayKey);
+    const yesterdayStats=getDailyStats(yesterdayKey);
     goalState.sessionDone=Math.max(goalState.sessionDone, sessionMetrics?.cardsDone||0);
     const dailyRatio=goalState.dailyTarget>0 ? goalState.dailyDone/goalState.dailyTarget : 0;
     const sessionRatio=goalState.sessionTarget>0 ? goalState.sessionDone/goalState.sessionTarget : 0;
@@ -512,6 +516,10 @@ function createAppRuntime(){
         remaining:sessionRemaining
       }
     };
+    const todayStreak=Math.max(0, todayStats?.streak||0);
+    const yesterdayStreak=Math.max(0, yesterdayStats?.streak||0);
+    const streakDiff=todayStreak-yesterdayStreak;
+    const streakDiffLabel=streakDiff>0?`+${streakDiff}`:(streakDiff<0?`${streakDiff}`:'±0');
     const goalLines=[
       `今日の目標: ${goalState.dailyDone}/${goalState.dailyTarget}件（達成率${Math.min(100, Math.round(dailyRatio*100))}%）`,
       dailyRemaining>0 ? `あと${dailyRemaining}件で達成` : '今日の目標を達成済み',
@@ -519,6 +527,10 @@ function createAppRuntime(){
       sessionRemaining>0 ? `あと${sessionRemaining}件で到達` : 'セッション目標クリア'
     ];
     sections.push({ title:'目標と達成状況', lines:goalLines });
+    sections.push({
+      title:'モチベーション',
+      lines:[`連続合格: ${todayStreak}回（昨日${yesterdayStreak}回、昨日比${streakDiffLabel}回）`]
+    });
     const note=resolvePromotionNoteText();
     if(note){
       sections.push({ title:'進捗メモ', lines:[note] });
@@ -537,7 +549,7 @@ function createAppRuntime(){
       sections.push({ title:'レベル説明', lines });
     }
     sections.push({ title:'操作ヒント', lines:[DEFAULT_FOOTER_HINT] });
-    return { sections, goalSnapshot, note, levelSummary: summary };
+    return { sections, goalSnapshot, note, levelSummary: summary, streakSnapshot:{ today:todayStreak, yesterday:yesterdayStreak, diff:streakDiff } };
   }
 
   function collectFooterInfoSections(){
@@ -599,6 +611,17 @@ function createAppRuntime(){
       tone: trendTone,
       text: `今日${todayTotal}件 / 昨日${yesterdayTotal}件`
     });
+    const todayStreak=Math.max(0, todayStats?.streak||0);
+    const yesterdayStreak=Math.max(0, yesterdayStats?.streak||0);
+    const streakDiff=todayStreak-yesterdayStreak;
+    const streakTone=streakDiff>0?'good':(streakDiff<0?'warn':'muted');
+    const streakIcon=streakDiff>0?'🔥':(streakDiff<0?'🧊':'⏸️');
+    const streakLabel=streakDiff>0?`+${streakDiff}`:(streakDiff<0?`${streakDiff}`:'±0');
+    list.push({
+      icon: streakIcon,
+      tone: streakTone,
+      text: `連続合格: ${todayStreak}回（昨日比${streakLabel}回）`
+    });
     const todayNoHint=Math.max(0, todayStats?.no_hint||0);
     list.push({
       icon: todayNoHint>0 ? '🎯' : '🧭',
@@ -634,7 +657,7 @@ function createAppRuntime(){
         });
       }
     }
-    return list.slice(0, 4);
+    return list.slice(0, 5);
   }
 
   function buildDailyOverviewModel(){
@@ -648,6 +671,10 @@ function createAppRuntime(){
     const maxValue=Math.max(1, todayTotal, yesterdayTotal);
     const diff=todayTotal-yesterdayTotal;
     const trendStatus=diff>0?'up':(diff<0?'down':'even');
+    const todayStreak=Math.max(0, todayStats?.streak||0);
+    const yesterdayStreak=Math.max(0, yesterdayStats?.streak||0);
+    const streakDiff=todayStreak-yesterdayStreak;
+    const streakStatus=streakDiff>0?'up':(streakDiff<0?'down':'even');
     const promotionGoal=getLastPromotionGoal();
     const promotionNote=resolvePromotionNoteText();
     let promotionTone='muted';
@@ -670,6 +697,12 @@ function createAppRuntime(){
         diff,
         status:trendStatus,
         label:diff>0?`+${diff}件`:diff<0?`${diff}件`:'±0件'
+      },
+      streak:{
+        today:todayStreak,
+        yesterday:yesterdayStreak,
+        diff:streakDiff,
+        status:streakStatus
       },
       promotion:{ note:promotionNote, tone:promotionTone },
       milestones:buildRecentLevelMilestones(4),
@@ -846,7 +879,15 @@ function createAppRuntime(){
     const model=buildDailyOverviewModel();
     renderOverviewTrend(model);
     if(el.dailyOverviewNote){
-      el.dailyOverviewNote.textContent=model.promotion.note || 'ノーヒント合格を重ねて昇格を目指しましょう';
+      const streakNote=model?.streak?.diff>0 ? `連続合格が${model.streak.today}回に伸びました` : '';
+      let noteText=model.promotion.note || '';
+      if(streakNote){
+        noteText=noteText ? `${noteText} / ${streakNote}` : streakNote;
+      }
+      if(!noteText){
+        noteText='ノーヒント合格を重ねて昇格を目指しましょう';
+      }
+      el.dailyOverviewNote.textContent=noteText;
     }
     if(el.overviewPromotionStatus){
       el.overviewPromotionStatus.textContent=model.promotion.note || '昇格条件のメモはまだありません';
