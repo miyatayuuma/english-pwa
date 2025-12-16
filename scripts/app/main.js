@@ -878,14 +878,34 @@ function createAppRuntime(){
     if(!el.dailyOverviewCard) return;
     const model=buildDailyOverviewModel();
     renderOverviewTrend(model);
-    if(el.dailyOverviewNote){
-      const streakNote=model?.streak?.diff>0 ? `連続合格が${model.streak.today}回に伸びました` : '';
-      let noteText=model.promotion.note || '';
-      if(streakNote){
-        noteText=noteText ? `${noteText} / ${streakNote}` : streakNote;
+    const goalSnapshot=model.goalSnapshot||{};
+    const dailyRemaining=Math.max(0, goalSnapshot?.daily?.remaining ?? 0);
+    const sessionRemaining=Math.max(0, goalSnapshot?.session?.remaining ?? 0);
+    const remainingTargets=[
+      { type:'daily', label:'今日の目標', remaining:dailyRemaining, done:goalSnapshot?.daily?.done, target:goalSnapshot?.daily?.target },
+      { type:'session', label:'セッション目標', remaining:sessionRemaining, done:goalSnapshot?.session?.done, target:goalSnapshot?.session?.target }
+    ].filter(entry=>entry.remaining>0);
+    const nextTarget=remainingTargets.length ? remainingTargets.reduce((best, cur)=>cur.remaining<best.remaining?cur:best) : null;
+    if(el.overviewQuickStart){
+      let ctaText='復習を続ける';
+      let ariaLabel='目標は達成済みです。復習を続けましょう';
+      if(nextTarget){
+        ctaText=`あと${nextTarget.remaining}件で${nextTarget.label}`;
+        ariaLabel=`${ctaText}に到達`;
       }
-      if(!noteText){
-        noteText='ノーヒント合格を重ねて昇格を目指しましょう';
+      el.overviewQuickStart.textContent=ctaText;
+      el.overviewQuickStart.setAttribute('aria-label', ariaLabel);
+    }
+    if(el.dailyOverviewNote){
+      const dailyProgressLabel=goalSnapshot?.daily?.target>0 ? `${Math.max(0, goalSnapshot.daily.done||0)}/${goalSnapshot.daily.target}件` : `${Math.max(0, goalSnapshot?.daily?.done||0)}件`;
+      const sessionProgressLabel=goalSnapshot?.session?.target>0 ? `${Math.max(0, goalSnapshot.session.done||0)}/${goalSnapshot.session.target}件` : `${Math.max(0, goalSnapshot?.session?.done||0)}件`;
+      let noteText='';
+      if(nextTarget){
+        const estimatedMinutes=Math.max(1, Math.ceil(nextTarget.remaining));
+        const progressLabel=nextTarget.type==='daily' ? dailyProgressLabel : sessionProgressLabel;
+        noteText=`${nextTarget.label}まであと${nextTarget.remaining}件（現在${progressLabel}）。すぐ始めれば${estimatedMinutes}分で達成ペース`;
+      }else{
+        noteText=`今日の目標(${dailyProgressLabel})とセッション目標(${sessionProgressLabel})はクリア済み。復習で定着をキープしましょう`;
       }
       el.dailyOverviewNote.textContent=noteText;
     }
