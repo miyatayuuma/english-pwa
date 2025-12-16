@@ -99,6 +99,19 @@
     .overview-toggle.is-collapsed{transform:rotate(-90deg)}
     .overview-card__body{margin-top:12px;display:flex;flex-direction:column;gap:14px}
     .overview-card.is-collapsed .overview-card__body{display:none}
+    .overview-insights{display:flex;flex-direction:column;gap:8px;margin-bottom:2px}
+    .overview-highlight{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);box-shadow:inset 0 0 0 1px rgba(0,0,0,.28);font-size:13px;letter-spacing:.01em;line-height:1.5}
+    .overview-highlight__icon{width:28px;height:28px;border-radius:10px;display:grid;place-items:center;background:rgba(255,255,255,.05);color:var(--txt);font-weight:700;font-size:14px}
+    .overview-highlight__text{margin:0;color:var(--txt);flex:1;min-width:0;word-break:break-word}
+    .overview-highlight.tone-good{background:rgba(70,211,127,.12);border-color:rgba(70,211,127,.38)}
+    .overview-highlight.tone-good .overview-highlight__icon{background:rgba(70,211,127,.18);color:var(--good);box-shadow:0 0 0 1px rgba(70,211,127,.28)}
+    .overview-highlight.tone-warn{background:rgba(255,200,99,.12);border-color:rgba(255,200,99,.4)}
+    .overview-highlight.tone-warn .overview-highlight__icon{background:rgba(255,200,99,.18);color:#f6c863;box-shadow:0 0 0 1px rgba(255,200,99,.28)}
+    .overview-highlight.tone-alert{background:rgba(255,107,107,.12);border-color:rgba(255,107,107,.4)}
+    .overview-highlight.tone-alert .overview-highlight__icon{background:rgba(255,107,107,.18);color:var(--bad);box-shadow:0 0 0 1px rgba(255,107,107,.28)}
+    .overview-highlight.tone-muted{color:var(--muted);border-style:dashed}
+    .overview-highlight.tone-muted .overview-highlight__text{color:var(--muted)}
+    .overview-highlight.tone-muted .overview-highlight__icon{background:rgba(255,255,255,.04);color:var(--muted)}
     .overview-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
     .overview-section{border:1px solid var(--bd);border-radius:12px;padding:12px;background:rgba(16,23,38,.72);display:flex;flex-direction:column;gap:10px;min-height:0}
     .overview-section__title{margin:0;font-size:13px;color:var(--muted);letter-spacing:.03em;font-weight:700}

@@ -355,7 +355,7 @@ function createAppRuntime(){
 
 
   // ===== Elements =====
-  const el={ app:qs('#app'), headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerMessage'), footerInfoContainer:qs('#footerInfo'), footerInfoBtn:qs('#footerInfoBtn'), footerInfoDialog:qs('#footerInfoDialog'), footerInfoDialogBody:qs('#footerInfoDialogBody'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), composeGuide:qs('#composeGuide'), composeTokens:qs('#composeTokens'), composeNote:qs('#composeNote'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSpeechVoice:qs('#cfgSpeechVoice'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speedCtrl:qs('.speed-ctrl'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus'), notifTimeList:qs('#notifTimeList'), notifTimeAdd:qs('#notifTimeAdd'), notifTriggerDailyZero:qs('#notifTriggerDailyZero'), notifTriggerDailyCompare:qs('#notifTriggerDailyCompare'), notifTriggerWeekly:qs('#notifTriggerWeekly'), notifHelp:qs('#notifHelp'), dailyGoalCard:qs('#dailyGoalCard'), dailyGoalBody:qs('#dailyGoalBody'), dailyGoalToggle:qs('#dailyGoalToggle'), dailyGoalRing:qs('#dailyGoalRing'), dailyGoalPercent:qs('#dailyGoalPercent'), dailyGoalTag:qs('#dailyGoalTag'), dailyGoalDone:qs('#dailyGoalDone'), dailyGoalTarget:qs('#dailyGoalTarget'), dailyGoalHint:qs('#dailyGoalHint'), sessionGoalCard:qs('#sessionGoalCard'), sessionGoalBody:qs('#sessionGoalBody'), sessionGoalToggle:qs('#sessionGoalToggle'), sessionGoalRing:qs('#sessionGoalRing'), sessionGoalPercent:qs('#sessionGoalPercent'), sessionGoalTag:qs('#sessionGoalTag'), sessionGoalDone:qs('#sessionGoalDone'), sessionGoalTarget:qs('#sessionGoalTarget'), sessionGoalSlider:qs('#sessionGoalSlider'), sessionGoalBarFill:qs('#sessionGoalBarFill'), dailyOverviewCard:qs('#dailyOverviewCard'), dailyOverviewBody:qs('#dailyOverviewBody'), dailyOverviewToggle:qs('#dailyOverviewToggle'), dailyOverviewDiff:qs('#dailyOverviewDiff'), dailyOverviewTrendStatus:qs('#dailyOverviewTrendStatus'), dailyOverviewNote:qs('#dailyOverviewNote'), overviewTodayFill:qs('#overviewTodayFill'), overviewYesterdayFill:qs('#overviewYesterdayFill'), overviewTodayValue:qs('#overviewTodayValue'), overviewYesterdayValue:qs('#overviewYesterdayValue'), overviewPromotionStatus:qs('#overviewPromotionStatus'), overviewMilestones:qs('#overviewMilestones'), overviewQuickStart:qs('#overviewQuickStart') };
+  const el={ app:qs('#app'), headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerMessage'), footerInfoContainer:qs('#footerInfo'), footerInfoBtn:qs('#footerInfoBtn'), footerInfoDialog:qs('#footerInfoDialog'), footerInfoDialogBody:qs('#footerInfoDialogBody'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), composeGuide:qs('#composeGuide'), composeTokens:qs('#composeTokens'), composeNote:qs('#composeNote'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSpeechVoice:qs('#cfgSpeechVoice'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speedCtrl:qs('.speed-ctrl'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus'), notifTimeList:qs('#notifTimeList'), notifTimeAdd:qs('#notifTimeAdd'), notifTriggerDailyZero:qs('#notifTriggerDailyZero'), notifTriggerDailyCompare:qs('#notifTriggerDailyCompare'), notifTriggerWeekly:qs('#notifTriggerWeekly'), notifHelp:qs('#notifHelp'), dailyGoalCard:qs('#dailyGoalCard'), dailyGoalBody:qs('#dailyGoalBody'), dailyGoalToggle:qs('#dailyGoalToggle'), dailyGoalRing:qs('#dailyGoalRing'), dailyGoalPercent:qs('#dailyGoalPercent'), dailyGoalTag:qs('#dailyGoalTag'), dailyGoalDone:qs('#dailyGoalDone'), dailyGoalTarget:qs('#dailyGoalTarget'), dailyGoalHint:qs('#dailyGoalHint'), sessionGoalCard:qs('#sessionGoalCard'), sessionGoalBody:qs('#sessionGoalBody'), sessionGoalToggle:qs('#sessionGoalToggle'), sessionGoalRing:qs('#sessionGoalRing'), sessionGoalPercent:qs('#sessionGoalPercent'), sessionGoalTag:qs('#sessionGoalTag'), sessionGoalDone:qs('#sessionGoalDone'), sessionGoalTarget:qs('#sessionGoalTarget'), sessionGoalSlider:qs('#sessionGoalSlider'), sessionGoalBarFill:qs('#sessionGoalBarFill'), dailyOverviewCard:qs('#dailyOverviewCard'), dailyOverviewBody:qs('#dailyOverviewBody'), dailyOverviewToggle:qs('#dailyOverviewToggle'), dailyOverviewDiff:qs('#dailyOverviewDiff'), dailyOverviewTrendStatus:qs('#dailyOverviewTrendStatus'), dailyOverviewNote:qs('#dailyOverviewNote'), overviewHighlights:qs('#dailyOverviewHighlights'), overviewTodayFill:qs('#overviewTodayFill'), overviewYesterdayFill:qs('#overviewYesterdayFill'), overviewTodayValue:qs('#overviewTodayValue'), overviewYesterdayValue:qs('#overviewYesterdayValue'), overviewPromotionStatus:qs('#overviewPromotionStatus'), overviewMilestones:qs('#overviewMilestones'), overviewQuickStart:qs('#overviewQuickStart') };
   el.cfgPlaybackMode=qsa('input[name="cfgPlaybackMode"]');
   el.cfgStudyMode=qsa('input[name="cfgStudyMode"]');
   const versionTargets=qsa('[data-app-version]');
@@ -587,6 +587,56 @@ function createAppRuntime(){
     }));
   }
 
+  function buildOverviewHighlightItems({ summary, todayStats, yesterdayStats, promotion }){
+    const list=[];
+    const todayTotal=Math.max(0, (todayStats?.passes||0)+(todayStats?.level5||0));
+    const yesterdayTotal=Math.max(0, (yesterdayStats?.passes||0)+(yesterdayStats?.level5||0));
+    const diff=todayTotal-yesterdayTotal;
+    const trendTone=diff>0?'good':(diff<0?'alert':'muted');
+    const trendIcon=diff>0?'📈':(diff<0?'📉':'⏸️');
+    list.push({
+      icon: trendIcon,
+      tone: trendTone,
+      text: `今日${todayTotal}件 / 昨日${yesterdayTotal}件`
+    });
+    const todayNoHint=Math.max(0, todayStats?.no_hint||0);
+    list.push({
+      icon: todayNoHint>0 ? '🎯' : '🧭',
+      tone: todayNoHint>0 ? 'good' : 'warn',
+      text: todayNoHint>0 ? `ノーヒント合格${todayNoHint}件` : 'ノーヒント合格はまだありません'
+    });
+    const dailyRemaining=Math.max(0, summary?.goalSnapshot?.daily?.remaining ?? 0);
+    list.push({
+      icon: dailyRemaining>0 ? '🎯' : '🏁',
+      tone: dailyRemaining>0 ? 'warn' : 'good',
+      text: dailyRemaining>0 ? `今日の目標まであと${dailyRemaining}件` : '今日の目標を達成しました'
+    });
+    const promotionNote=promotion?.note || summary?.note || '';
+    if(promotionNote){
+      let tone='warn';
+      if(promotion?.tone==='ready') tone='good';
+      else if(promotion?.tone==='cooldown') tone='warn';
+      else if(promotion?.tone==='progress') tone='warn';
+      const icon=promotion?.tone==='ready' ? '🚀' : (promotion?.tone==='cooldown' ? '⏳' : '🔖');
+      list.push({
+        icon,
+        tone,
+        text: promotionNote
+      });
+    }else{
+      const progressSection=(summary?.sections||[]).find(sec=>Array.isArray(sec.lines) && sec.title?.includes('進捗'));
+      const fallbackLine=progressSection?.lines?.find(Boolean);
+      if(fallbackLine){
+        list.push({
+          icon:'✨',
+          tone:'muted',
+          text:fallbackLine
+        });
+      }
+    }
+    return list.slice(0, 4);
+  }
+
   function buildDailyOverviewModel(){
     const summary=buildProgressInfoSummary();
     const todayKey=localDateKey();
@@ -624,7 +674,8 @@ function createAppRuntime(){
       promotion:{ note:promotionNote, tone:promotionTone },
       milestones:buildRecentLevelMilestones(4),
       goalSnapshot: summary.goalSnapshot,
-      sections: summary.sections
+      sections: summary.sections,
+      highlights: buildOverviewHighlightItems({ summary, todayStats, yesterdayStats, promotion:{ note:promotionNote, tone:promotionTone } })
     };
   }
 
@@ -730,6 +781,34 @@ function createAppRuntime(){
     }
   }
 
+  function renderOverviewHighlights(list){
+    if(!el.overviewHighlights) return;
+    el.overviewHighlights.innerHTML='';
+    if(!Array.isArray(list) || !list.length){
+      const empty=document.createElement('p');
+      empty.className='overview-empty';
+      empty.textContent='ハイライトはまだありません';
+      el.overviewHighlights.appendChild(empty);
+      return;
+    }
+    for(const item of list){
+      const row=document.createElement('div');
+      row.className='overview-highlight';
+      if(item.tone){
+        row.classList.add(`tone-${item.tone}`);
+      }
+      const icon=document.createElement('span');
+      icon.className='overview-highlight__icon';
+      icon.textContent=item.icon||'•';
+      const text=document.createElement('p');
+      text.className='overview-highlight__text';
+      text.textContent=item.text||'';
+      row.appendChild(icon);
+      row.appendChild(text);
+      el.overviewHighlights.appendChild(row);
+    }
+  }
+
   function renderOverviewMilestones(list){
     if(!el.overviewMilestones) return;
     el.overviewMilestones.innerHTML='';
@@ -776,6 +855,7 @@ function createAppRuntime(){
       else if(model.promotion.tone==='cooldown') el.overviewPromotionStatus.classList.add('is-cooldown');
       else if(model.promotion.tone==='progress') el.overviewPromotionStatus.classList.add('is-wait');
     }
+    renderOverviewHighlights(model.highlights);
     renderOverviewMilestones(model.milestones);
   }
 
