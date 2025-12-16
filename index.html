@@ -47,6 +47,24 @@
     <button id="btnCfg" class="icon-btn" type="button" aria-label="設定を開く" title="設定">⚙️</button>
   </header>
 
+  <div class="goal-row goal-row--top">
+    <div class="goal-card" id="dailyGoalCard">
+      <div class="goal-card__header">
+        <span class="goal-card__title">今日の目標</span>
+        <span class="goal-card__tag" id="dailyGoalTag">—</span>
+      </div>
+      <div class="goal-card__body">
+        <div class="goal-ring" id="dailyGoalRing" aria-hidden="true">
+          <div class="goal-ring__center" id="dailyGoalPercent">0%</div>
+        </div>
+        <div class="goal-card__meta">
+          <div class="goal-card__value"><span id="dailyGoalDone">0</span>/<span id="dailyGoalTarget">10</span>件</div>
+          <div class="goal-card__sub" id="dailyGoalHint">目標まであと10件</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- 出題範囲（ネイティブピッカー） -->
   <div id="rangeBar">
     <div class="range-item">
@@ -103,6 +121,30 @@
       </div>
     </section>
   </main>
+
+  <div class="goal-row goal-row--footer">
+    <div class="goal-card goal-card--session" id="sessionGoalCard">
+      <div class="goal-card__header">
+        <span class="goal-card__title">セッション目標</span>
+        <span class="goal-card__tag" id="sessionGoalTag">—</span>
+      </div>
+      <div class="goal-card__body goal-card__body--session">
+        <div class="goal-ring goal-ring--sm" id="sessionGoalRing" aria-hidden="true">
+          <div class="goal-ring__center" id="sessionGoalPercent">0%</div>
+        </div>
+        <div class="goal-card__meta goal-card__meta--session">
+          <div class="goal-card__value"><span id="sessionGoalDone">0</span>/<span id="sessionGoalTarget">5</span>件</div>
+          <div class="session-goal__controls">
+            <label class="sr-only" for="sessionGoalSlider">セッション目標の件数</label>
+            <input id="sessionGoalSlider" type="range" min="1" max="30" step="1" value="5">
+            <div class="session-goal__bar">
+              <div class="session-goal__bar-fill" id="sessionGoalBarFill"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <footer>
     <progress id="pbar" value="0" max="1"></progress>
