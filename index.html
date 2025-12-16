@@ -131,47 +131,51 @@
 <!-- 設定モーダル -->
 <div id="cfgModal">
   <div id="cfgBox">
-    <h3>接続設定</h3>
-    <p class="muted version-tag" data-app-version aria-live="polite"></p>
-    <label>GAS Web App URL（/exec）
-      <input id="cfgUrl" type="url" placeholder="https://script.google.com/macros/s/.../exec">
-    </label>
-    <label>API Key（未設定でも可）
-      <input id="cfgKey" type="text" placeholder="（空でも可）">
-    </label>
-    <label>音源ベースURL（例: https://example.com/audio または ./audio）
-      <input id="cfgAudioBase" type="text" placeholder="./audio">
-    </label>
-    <fieldset class="cfg-fieldset">
-      <legend>再生方法</legend>
-      <label class="cfg-radio"><input type="radio" name="cfgPlaybackMode" value="audio"> 音源のみ</label>
-      <label class="cfg-radio"><input type="radio" name="cfgPlaybackMode" value="speech"> 合成音声のみ</label>
-    </fieldset>
-    <fieldset class="cfg-fieldset">
-      <legend>学習モード</legend>
-      <label class="cfg-radio"><input type="radio" name="cfgStudyMode" value="read"> 通常モード（音読・リピーティング）</label>
-      <label class="cfg-radio"><input type="radio" name="cfgStudyMode" value="compose"> 整序英作文ガイド（語順ヒントを表示）</label>
-      <p class="cfg-note">整序英作文を有効化すると、英文ヒントの代わりにランダムな語句タグが表示されます。設定を保存すると次のカードから適用されます。</p>
-    </fieldset>
-    <label>音声合成の声
-      <select id="cfgSpeechVoice"></select>
-    </label>
-    <div class="row">
-      <button id="btnUpdateCheck" class="btn">更新チェック</button>
+    <div class="cfg-header">
+      <h3>接続設定</h3>
+      <p class="muted version-tag" data-app-version aria-live="polite"></p>
     </div>
-    <div class="row">
-      <button id="btnPickDir" class="btn">音源フォルダを指定（フォルダピッカー）</button>
-      <button id="btnClearDir" class="btn">フォルダ解除</button>
-      <span id="dirStatus" class="muted" style="font-size:12px"></span>
+    <div class="cfg-scroll">
+      <label>GAS Web App URL（/exec）
+        <input id="cfgUrl" type="url" placeholder="https://script.google.com/macros/s/.../exec">
+      </label>
+      <label>API Key（未設定でも可）
+        <input id="cfgKey" type="text" placeholder="（空でも可）">
+      </label>
+      <label>音源ベースURL（例: https://example.com/audio または ./audio）
+        <input id="cfgAudioBase" type="text" placeholder="./audio">
+      </label>
+      <fieldset class="cfg-fieldset">
+        <legend>再生方法</legend>
+        <label class="cfg-radio"><input type="radio" name="cfgPlaybackMode" value="audio"> 音源のみ</label>
+        <label class="cfg-radio"><input type="radio" name="cfgPlaybackMode" value="speech"> 合成音声のみ</label>
+      </fieldset>
+      <fieldset class="cfg-fieldset">
+        <legend>学習モード</legend>
+        <label class="cfg-radio"><input type="radio" name="cfgStudyMode" value="read"> 通常モード（音読・リピーティング）</label>
+        <label class="cfg-radio"><input type="radio" name="cfgStudyMode" value="compose"> 整序英作文ガイド（語順ヒントを表示）</label>
+        <p class="cfg-note">整序英作文を有効化すると、英文ヒントの代わりにランダムな語句タグが表示されます。設定を保存すると次のカードから適用されます。</p>
+      </fieldset>
+      <label>音声合成の声
+        <select id="cfgSpeechVoice"></select>
+      </label>
+      <div class="row">
+        <button id="btnUpdateCheck" class="btn">更新チェック</button>
+      </div>
+      <div class="row">
+        <button id="btnPickDir" class="btn">音源フォルダを指定（フォルダピッカー）</button>
+        <button id="btnClearDir" class="btn">フォルダ解除</button>
+        <span id="dirStatus" class="muted" style="font-size:12px"></span>
+      </div>
+      <div class="row">
+        <button id="btnNotifPerm" class="btn">学習リマインド通知を有効化</button>
+        <span id="notifStatus" class="muted" style="font-size:12px"></span>
+      </div>
     </div>
-    <div class="row cfg-actions">
+    <div class="cfg-actions-bar row cfg-actions">
       <div class="grow"></div>
       <button id="cfgClose" class="btn">閉じる</button>
       <button id="cfgSave" class="btn" style="background:#1a2134;border-color:#233252">保存</button>
-    </div>
-    <div class="row">
-      <button id="btnNotifPerm" class="btn">学習リマインド通知を有効化</button>
-      <span id="notifStatus" class="muted" style="font-size:12px"></span>
     </div>
   </div>
 </div>
