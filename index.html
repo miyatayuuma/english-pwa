@@ -156,23 +156,20 @@
     <label>音声合成の声
       <select id="cfgSpeechVoice"></select>
     </label>
-    <div class="row" style="margin-top:8px">
+    <div class="row">
       <button id="btnUpdateCheck" class="btn">更新チェック</button>
     </div>
-    <div class="row" style="margin-top:8px">
+    <div class="row">
       <button id="btnPickDir" class="btn">音源フォルダを指定（フォルダピッカー）</button>
       <button id="btnClearDir" class="btn">フォルダ解除</button>
       <span id="dirStatus" class="muted" style="font-size:12px"></span>
     </div>
-    <div class="row" style="margin-top:8px">
-      <input id="filePick" type="file" accept="audio/*" multiple style="display:none">
-      <button id="btnImport" class="btn">音源ファイルをOPFSへ取り込み</button>
-      <button id="btnTestAudio" class="btn">テスト再生</button>
+    <div class="row cfg-actions">
       <div class="grow"></div>
       <button id="cfgClose" class="btn">閉じる</button>
       <button id="cfgSave" class="btn" style="background:#1a2134;border-color:#233252">保存</button>
     </div>
-    <div class="row" style="margin-top:12px">
+    <div class="row">
       <button id="btnNotifPerm" class="btn">学習リマインド通知を有効化</button>
       <span id="notifStatus" class="muted" style="font-size:12px"></span>
     </div>

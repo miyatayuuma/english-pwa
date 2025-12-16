@@ -135,7 +135,7 @@
     @keyframes micPulse{0%{transform:scale(1);box-shadow:0 0 0 0 rgba(98,213,255,.55);}70%{transform:scale(1.05);box-shadow:0 0 0 16px rgba(98,213,255,0);}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(98,213,255,0);}}
     /* 設定モーダル */
     #cfgModal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.45);z-index:100003}
-    #cfgBox{width:min(560px,92%);background:#111726;border:1px solid var(--bd);border-radius:14px;padding:16px}
+    #cfgBox{width:min(560px,92%);background:#111726;border:1px solid var(--bd);border-radius:14px;padding:18px 16px 20px}
     #cfgBox h3{margin:0 0 8px 0}
     #cfgBox label{display:block;margin:10px 0}
     .cfg-fieldset{margin:12px 0;padding:10px 12px;border:1px solid var(--bd);border-radius:10px;background:#0c1221}
@@ -145,6 +145,8 @@
     .cfg-note{margin:4px 0 0;font-size:12px;color:var(--muted);line-height:1.5}
     #cfgBox input[type="text"], #cfgBox input[type="url"], #cfgBox select{width:100%;padding:8px;border-radius:10px;border:1px solid var(--bd);background:#0c1221;color:var(--txt)}
     #cfgBox .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    #cfgBox .row + .row{margin-top:10px}
+    #cfgBox .cfg-actions{margin-top:14px;justify-content:flex-end;gap:10px}
     #toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#0f1422;border:1px solid #24304a;color:#b7c0d6;border-radius:10px;padding:8px 12px;z-index:99999;display:none}
     .info-dialog{border:none;border-radius:18px;background:#111726;color:var(--txt);padding:0;max-width:min(360px,92vw);width:100%;box-shadow:0 24px 60px rgba(0,0,0,.55)}
     .info-dialog::backdrop{background:rgba(11,14,26,.68)}
