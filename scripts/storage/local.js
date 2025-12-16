@@ -13,7 +13,8 @@ const STORAGE_KEYS = Object.freeze({
   SESSION_GOAL: 'sessionGoalV1',
   PENDING_LOGS: 'pendingLogsV1',
   SECTION_SELECTION: 'secSel',
-  ORDER_SELECTION: 'orderSel'
+  ORDER_SELECTION: 'orderSel',
+  DAILY_OVERVIEW: 'dailyOverviewCollapsedV1'
 });
 
 const storage = (() => {
