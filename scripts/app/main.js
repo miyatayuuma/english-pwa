@@ -58,6 +58,7 @@ const shouldPromptReload=()=>!!navigator.serviceWorker.controller;
 function createAppRuntime(){
   // ===== Utilities =====
   const now=()=>Date.now(); const UA=(()=>navigator.userAgent||'')();
+  const DAY_MS=86400000;
 
   function toIsoString(value){
     if(value instanceof Date){
@@ -94,8 +95,10 @@ function createAppRuntime(){
   const goalState={ dailyTarget:DEFAULT_DAILY_GOAL, sessionTarget:DEFAULT_SESSION_GOAL, dailyDone:0, sessionDone:0, todayKey:'' };
   const goalMilestones={ daily:false, session:false };
   let goalOverviewShown=false;
+  let lastPromotionGoal=null;
+  let overviewCollapsed=false;
 
-  const { SEARCH, SPEED, CONFIG, DAILY_GOAL: DAILY_GOAL_KEY, SESSION_GOAL: SESSION_GOAL_KEY, PENDING_LOGS: PENDING_LOGS_KEY, SECTION_SELECTION, ORDER_SELECTION } = STORAGE_KEYS;
+  const { SEARCH, SPEED, CONFIG, DAILY_GOAL: DAILY_GOAL_KEY, SESSION_GOAL: SESSION_GOAL_KEY, PENDING_LOGS: PENDING_LOGS_KEY, SECTION_SELECTION, ORDER_SELECTION, DAILY_OVERVIEW } = STORAGE_KEYS;
 
   const BASE_HINT_STAGE=0;
   const COMPOSE_HINT_STAGE_JA=BASE_HINT_STAGE+1;
@@ -302,6 +305,7 @@ function createAppRuntime(){
       goalMilestones.daily = dailyRatio>=1 && goalState.dailyTarget>0;
       goalMilestones.session = sessionRatio>=1 && goalState.sessionTarget>0;
     }
+    updateDailyOverview();
   }
 
   function handleSessionGoalInput(ev){
@@ -346,7 +350,7 @@ function createAppRuntime(){
 
 
   // ===== Elements =====
-  const el={ headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerMessage'), footerInfoContainer:qs('#footerInfo'), footerInfoBtn:qs('#footerInfoBtn'), footerInfoDialog:qs('#footerInfoDialog'), footerInfoDialogBody:qs('#footerInfoDialogBody'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), composeGuide:qs('#composeGuide'), composeTokens:qs('#composeTokens'), composeNote:qs('#composeNote'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSpeechVoice:qs('#cfgSpeechVoice'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speedCtrl:qs('.speed-ctrl'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus'), notifTimeList:qs('#notifTimeList'), notifTimeAdd:qs('#notifTimeAdd'), notifTriggerDailyZero:qs('#notifTriggerDailyZero'), notifTriggerDailyCompare:qs('#notifTriggerDailyCompare'), notifTriggerWeekly:qs('#notifTriggerWeekly'), notifHelp:qs('#notifHelp'), dailyGoalCard:qs('#dailyGoalCard'), dailyGoalRing:qs('#dailyGoalRing'), dailyGoalPercent:qs('#dailyGoalPercent'), dailyGoalTag:qs('#dailyGoalTag'), dailyGoalDone:qs('#dailyGoalDone'), dailyGoalTarget:qs('#dailyGoalTarget'), dailyGoalHint:qs('#dailyGoalHint'), sessionGoalCard:qs('#sessionGoalCard'), sessionGoalRing:qs('#sessionGoalRing'), sessionGoalPercent:qs('#sessionGoalPercent'), sessionGoalTag:qs('#sessionGoalTag'), sessionGoalDone:qs('#sessionGoalDone'), sessionGoalTarget:qs('#sessionGoalTarget'), sessionGoalSlider:qs('#sessionGoalSlider'), sessionGoalBarFill:qs('#sessionGoalBarFill') };
+  const el={ headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerMessage'), footerInfoContainer:qs('#footerInfo'), footerInfoBtn:qs('#footerInfoBtn'), footerInfoDialog:qs('#footerInfoDialog'), footerInfoDialogBody:qs('#footerInfoDialogBody'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), composeGuide:qs('#composeGuide'), composeTokens:qs('#composeTokens'), composeNote:qs('#composeNote'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSpeechVoice:qs('#cfgSpeechVoice'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speedCtrl:qs('.speed-ctrl'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus'), notifTimeList:qs('#notifTimeList'), notifTimeAdd:qs('#notifTimeAdd'), notifTriggerDailyZero:qs('#notifTriggerDailyZero'), notifTriggerDailyCompare:qs('#notifTriggerDailyCompare'), notifTriggerWeekly:qs('#notifTriggerWeekly'), notifHelp:qs('#notifHelp'), dailyGoalCard:qs('#dailyGoalCard'), dailyGoalRing:qs('#dailyGoalRing'), dailyGoalPercent:qs('#dailyGoalPercent'), dailyGoalTag:qs('#dailyGoalTag'), dailyGoalDone:qs('#dailyGoalDone'), dailyGoalTarget:qs('#dailyGoalTarget'), dailyGoalHint:qs('#dailyGoalHint'), sessionGoalCard:qs('#sessionGoalCard'), sessionGoalRing:qs('#sessionGoalRing'), sessionGoalPercent:qs('#sessionGoalPercent'), sessionGoalTag:qs('#sessionGoalTag'), sessionGoalDone:qs('#sessionGoalDone'), sessionGoalTarget:qs('#sessionGoalTarget'), sessionGoalSlider:qs('#sessionGoalSlider'), sessionGoalBarFill:qs('#sessionGoalBarFill'), dailyOverviewCard:qs('#dailyOverviewCard'), dailyOverviewBody:qs('#dailyOverviewBody'), dailyOverviewToggle:qs('#dailyOverviewToggle'), dailyOverviewDiff:qs('#dailyOverviewDiff'), dailyOverviewTrendStatus:qs('#dailyOverviewTrendStatus'), dailyOverviewNote:qs('#dailyOverviewNote'), overviewTodayFill:qs('#overviewTodayFill'), overviewYesterdayFill:qs('#overviewYesterdayFill'), overviewTodayValue:qs('#overviewTodayValue'), overviewYesterdayValue:qs('#overviewYesterdayValue'), overviewPromotionStatus:qs('#overviewPromotionStatus'), overviewMilestones:qs('#overviewMilestones'), overviewQuickStart:qs('#overviewQuickStart') };
   el.cfgPlaybackMode=qsa('input[name="cfgPlaybackMode"]');
   el.cfgStudyMode=qsa('input[name="cfgStudyMode"]');
   const versionTargets=qsa('[data-app-version]');
@@ -370,6 +374,7 @@ function createAppRuntime(){
     shuffledCopy
   });
   initAppVersion();
+  const itemLabelCache=new Map();
   let recognitionController=null;
   let speechController=null;
   let lastMatchEval=null;
@@ -377,16 +382,23 @@ function createAppRuntime(){
   let lastProgressNote='';
   let autoAdvanceTimer=0;
 
-  function setLastProgressNote(note){
+  function setLastProgressNote(note, goal){
     lastProgressNote = typeof note==='string' ? note.trim() : '';
+    lastPromotionGoal = goal || null;
+    updateDailyOverview();
   }
 
   function clearLastProgressNote(){
+    lastPromotionGoal=null;
     setLastProgressNote('');
   }
 
   function getLastProgressNote(){
     return (lastProgressNote||'').trim();
+  }
+
+  function getLastPromotionGoal(){
+    return lastPromotionGoal;
   }
 
   function ensureProgressNoteModalStyles(){
@@ -461,7 +473,19 @@ function createAppRuntime(){
     return { level:safeLevel, best, description };
   }
 
-  function collectFooterInfoSections(){
+  function resolvePromotionNoteText(){
+    const goal=getLastPromotionGoal();
+    const noteFromGoal=buildNoHintProgressNote(goal);
+    if(noteFromGoal) return noteFromGoal;
+    const note=getLastProgressNote();
+    if(note) return note;
+    if(goal && goal.target){
+      return `Lv${goal.target}を目指して継続しましょう`;
+    }
+    return '';
+  }
+
+  function buildProgressInfoSummary(){
     const sections=[];
     ensureDailyGoalFresh();
     goalState.sessionDone=Math.max(goalState.sessionDone, sessionMetrics?.cardsDone||0);
@@ -469,6 +493,20 @@ function createAppRuntime(){
     const sessionRatio=goalState.sessionTarget>0 ? goalState.sessionDone/goalState.sessionTarget : 0;
     const dailyRemaining=Math.max(0, goalState.dailyTarget-goalState.dailyDone);
     const sessionRemaining=Math.max(0, goalState.sessionTarget-goalState.sessionDone);
+    const goalSnapshot={
+      daily:{
+        done:goalState.dailyDone,
+        target:goalState.dailyTarget,
+        ratio:dailyRatio,
+        remaining:dailyRemaining
+      },
+      session:{
+        done:goalState.sessionDone,
+        target:goalState.sessionTarget,
+        ratio:sessionRatio,
+        remaining:sessionRemaining
+      }
+    };
     const goalLines=[
       `今日の目標: ${goalState.dailyDone}/${goalState.dailyTarget}件（達成率${Math.min(100, Math.round(dailyRatio*100))}%）`,
       dailyRemaining>0 ? `あと${dailyRemaining}件で達成` : '今日の目標を達成済み',
@@ -476,7 +514,7 @@ function createAppRuntime(){
       sessionRemaining>0 ? `あと${sessionRemaining}件で到達` : 'セッション目標クリア'
     ];
     sections.push({ title:'目標と達成状況', lines:goalLines });
-    const note=getLastProgressNote();
+    const note=resolvePromotionNoteText();
     if(note){
       sections.push({ title:'進捗メモ', lines:[note] });
     }
@@ -494,7 +532,204 @@ function createAppRuntime(){
       sections.push({ title:'レベル説明', lines });
     }
     sections.push({ title:'操作ヒント', lines:[DEFAULT_FOOTER_HINT] });
-    return sections;
+    return { sections, goalSnapshot, note, levelSummary: summary };
+  }
+
+  function collectFooterInfoSections(){
+    const info=buildProgressInfoSummary();
+    return info.sections;
+  }
+
+  function formatOverviewDate(ts){
+    if(!Number.isFinite(ts) || ts<=0) return '';
+    const todayKey=localDateKey();
+    const targetKey=localDateKey(ts);
+    const yesterdayKey=localDateKey(Date.now()-DAY_MS);
+    if(targetKey===todayKey) return '今日';
+    if(targetKey===yesterdayKey) return '昨日';
+    const d=new Date(ts);
+    return `${d.getMonth()+1}/${d.getDate()}`;
+  }
+
+  function getItemLabel(id){
+    const key=String(id);
+    if(itemLabelCache.has(key)) return itemLabelCache.get(key);
+    const found=(window.ALL_ITEMS||[]).find(it=>String(it?.id)===key);
+    const label=(found?.ja || found?.en || `#${key}`).trim();
+    itemLabelCache.set(key, label);
+    return label;
+  }
+
+  function buildRecentLevelMilestones(limit=4){
+    const state=levelStateManager.refreshLevelState?.() || {};
+    const entries=[];
+    for(const [id, info] of Object.entries(state||{})){
+      if(!info || typeof info!=='object') continue;
+      const best=Number(info.best);
+      const last=Number(info.last);
+      const level=Number.isFinite(best)&&best>0?best:(Number.isFinite(last)?last:0);
+      if(level<4) continue;
+      const updated=Number(info.updatedAt)||0;
+      entries.push({ id, level:Math.min(5, level), updatedAt:updated });
+    }
+    entries.sort((a,b)=> (b.updatedAt||0) - (a.updatedAt||0));
+    const maxItems=Math.max(1, limit||0);
+    return entries.slice(0, maxItems).map(entry=>({
+      id:entry.id,
+      level:entry.level>=5?5:4,
+      label:getItemLabel(entry.id),
+      when:formatOverviewDate(entry.updatedAt)
+    }));
+  }
+
+  function buildDailyOverviewModel(){
+    const summary=buildProgressInfoSummary();
+    const todayKey=localDateKey();
+    const yesterdayKey=localDateKey(Date.now()-DAY_MS);
+    const todayStats=getDailyStats(todayKey);
+    const yesterdayStats=getDailyStats(yesterdayKey);
+    const todayTotal=Math.max(0, (todayStats?.passes||0)+(todayStats?.level5||0));
+    const yesterdayTotal=Math.max(0, (yesterdayStats?.passes||0)+(yesterdayStats?.level5||0));
+    const maxValue=Math.max(1, todayTotal, yesterdayTotal);
+    const diff=todayTotal-yesterdayTotal;
+    const trendStatus=diff>0?'up':(diff<0?'down':'even');
+    const promotionGoal=getLastPromotionGoal();
+    const promotionNote=resolvePromotionNoteText();
+    let promotionTone='muted';
+    if(promotionGoal){
+      if(promotionGoal.met || (promotionGoal.remaining||0)<=0){
+        promotionTone='ready';
+      }else if(promotionGoal.cooldownMs>0){
+        promotionTone='cooldown';
+      }else{
+        promotionTone='progress';
+      }
+    }else if(promotionNote){
+      promotionTone='progress';
+    }
+    return {
+      trend:{
+        today:todayTotal,
+        yesterday:yesterdayTotal,
+        maxValue,
+        diff,
+        status:trendStatus,
+        label:diff>0?`+${diff}件`:diff<0?`${diff}件`:'±0件'
+      },
+      promotion:{ note:promotionNote, tone:promotionTone },
+      milestones:buildRecentLevelMilestones(4),
+      goalSnapshot: summary.goalSnapshot,
+      sections: summary.sections
+    };
+  }
+
+  function applyOverviewCollapsed(collapsed){
+    overviewCollapsed=!!collapsed;
+    saveString(DAILY_OVERVIEW, overviewCollapsed?'1':'0');
+    if(el.dailyOverviewBody){
+      el.dailyOverviewBody.hidden=overviewCollapsed;
+    }
+    if(el.dailyOverviewCard){
+      el.dailyOverviewCard.classList.toggle('is-collapsed', overviewCollapsed);
+    }
+    if(el.dailyOverviewToggle){
+      el.dailyOverviewToggle.classList.toggle('is-collapsed', overviewCollapsed);
+      el.dailyOverviewToggle.setAttribute('aria-expanded', overviewCollapsed?'false':'true');
+      el.dailyOverviewToggle.setAttribute('aria-label', overviewCollapsed?'今日の概要を展開する':'今日の概要を折りたたむ');
+    }
+  }
+
+  function initOverviewCollapseState(){
+    const stored=loadString(DAILY_OVERVIEW, '0');
+    overviewCollapsed=stored==='1';
+    applyOverviewCollapsed(overviewCollapsed);
+    if(el.dailyOverviewToggle){
+      el.dailyOverviewToggle.addEventListener('click',()=>{
+        applyOverviewCollapsed(!overviewCollapsed);
+      });
+    }
+  }
+
+  function renderOverviewTrend(model){
+    if(el.dailyOverviewDiff){
+      const prefix=model.trend.status==='up'?'▲':(model.trend.status==='down'?'▼':'→');
+      el.dailyOverviewDiff.textContent=`${prefix} ${model.trend.label||'—'}`;
+      el.dailyOverviewDiff.classList.remove('is-up','is-down','is-even');
+      if(model.trend.status==='up') el.dailyOverviewDiff.classList.add('is-up');
+      else if(model.trend.status==='down') el.dailyOverviewDiff.classList.add('is-down');
+      else el.dailyOverviewDiff.classList.add('is-even');
+    }
+    if(el.dailyOverviewTrendStatus){
+      el.dailyOverviewTrendStatus.textContent=`今日${model.trend.today}件 / 昨日${model.trend.yesterday}件`;
+      el.dailyOverviewTrendStatus.classList.remove('is-up','is-down','is-even');
+      if(model.trend.status==='up') el.dailyOverviewTrendStatus.classList.add('is-up');
+      else if(model.trend.status==='down') el.dailyOverviewTrendStatus.classList.add('is-down');
+      else el.dailyOverviewTrendStatus.classList.add('is-even');
+    }
+    const maxBar=Math.max(1, model.trend.maxValue||1);
+    const todayPct=Math.max(6, Math.round(Math.min(100, (model.trend.today/maxBar)*100)));
+    const yesterdayPct=Math.max(6, Math.round(Math.min(100, (model.trend.yesterday/maxBar)*100)));
+    if(el.overviewTodayFill){
+      el.overviewTodayFill.style.width=`${todayPct}%`;
+    }
+    if(el.overviewYesterdayFill){
+      el.overviewYesterdayFill.style.width=`${yesterdayPct}%`;
+    }
+    if(el.overviewTodayValue){
+      el.overviewTodayValue.textContent=`${model.trend.today}件`;
+    }
+    if(el.overviewYesterdayValue){
+      el.overviewYesterdayValue.textContent=`${model.trend.yesterday}件`;
+    }
+  }
+
+  function renderOverviewMilestones(list){
+    if(!el.overviewMilestones) return;
+    el.overviewMilestones.innerHTML='';
+    if(!Array.isArray(list) || !list.length){
+      const empty=document.createElement('p');
+      empty.className='overview-empty';
+      empty.textContent='Lv4/Lv5の達成履歴はまだありません';
+      el.overviewMilestones.appendChild(empty);
+      return;
+    }
+    for(const item of list){
+      const pill=document.createElement('div');
+      pill.className=`overview-pill level-${item.level>=5?5:4}`;
+      const icon=document.createElement('div');
+      icon.className='overview-pill__icon';
+      icon.textContent=item.level>=5?'Lv5':'Lv4';
+      const content=document.createElement('div');
+      content.className='overview-pill__content';
+      const title=document.createElement('p');
+      title.className='overview-pill__title';
+      title.textContent=item.label||`#${item.id}`;
+      const meta=document.createElement('p');
+      meta.className='overview-pill__meta';
+      meta.textContent=item.when ? `${item.when}更新` : '更新日不明';
+      content.appendChild(title);
+      content.appendChild(meta);
+      pill.appendChild(icon);
+      pill.appendChild(content);
+      el.overviewMilestones.appendChild(pill);
+    }
+  }
+
+  function updateDailyOverview(){
+    if(!el.dailyOverviewCard) return;
+    const model=buildDailyOverviewModel();
+    renderOverviewTrend(model);
+    if(el.dailyOverviewNote){
+      el.dailyOverviewNote.textContent=model.promotion.note || 'ノーヒント合格を重ねて昇格を目指しましょう';
+    }
+    if(el.overviewPromotionStatus){
+      el.overviewPromotionStatus.textContent=model.promotion.note || '昇格条件のメモはまだありません';
+      el.overviewPromotionStatus.classList.remove('is-ready','is-wait','is-cooldown');
+      if(model.promotion.tone==='ready') el.overviewPromotionStatus.classList.add('is-ready');
+      else if(model.promotion.tone==='cooldown') el.overviewPromotionStatus.classList.add('is-cooldown');
+      else if(model.promotion.tone==='progress') el.overviewPromotionStatus.classList.add('is-wait');
+    }
+    renderOverviewMilestones(model.milestones);
   }
 
   function buildFooterInfoFallbackText(sections){
@@ -621,6 +856,10 @@ function createAppRuntime(){
   speechController=speech;
 
   initFooterInfoButton();
+  initOverviewCollapseState();
+  if(el.overviewQuickStart){
+    el.overviewQuickStart.addEventListener('click', handleQuickStart);
+  }
 
   const {
     playTone,
@@ -1546,6 +1785,7 @@ function createAppRuntime(){
   }
   function applyItemsData(items,{refreshPicker=false}={}){
     window.ALL_ITEMS=Array.isArray(items)?items.slice():[];
+    itemLabelCache.clear();
     rebuildSectionIndex();
     if(refreshPicker) updateSectionOptions();
     updateHeaderStats();
@@ -2052,6 +2292,24 @@ function createAppRuntime(){
       })
       .catch(err=>{ console.error(err); toast('次のセクションの読み込みに失敗しました'); });
     return true;
+  }
+
+  function handleQuickStart(){
+    if(sessionStarting) return;
+    const allowAuto=isAutoPlayAllowed();
+    if(!QUEUE.length){
+      rebuildAndRender(true,{autoStart:true, autoPlay:allowAuto}).then(()=>{
+        if(!QUEUE.length){
+          toast('出題範囲にカードがありません');
+        }
+      }).catch(()=>{});
+      return;
+    }
+    if(sessionActive){
+      nextCard(false, allowAuto);
+      return;
+    }
+    startSession(allowAuto);
   }
 
   async function nextCard(first=false, autoPlay=false){
@@ -2569,7 +2827,7 @@ function createAppRuntime(){
     };
     const progressNote = buildNoHintProgressNote(levelUpdate?.nextTarget);
     if(pass){
-      setLastProgressNote(progressNote);
+      setLastProgressNote(progressNote, levelUpdate?.nextTarget);
       if(sessionMetrics && sessionMetrics.startMs){
         sessionMetrics.cardsDone+=1;
         sessionMetrics.currentStreak+=1;
