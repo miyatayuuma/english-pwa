@@ -1,5 +1,6 @@
 // sw.js（抜粋）：キャッシュ名は更新ごとに変える
-const CACHE = 'v4.62';
+importScripts('./scripts/version.js');
+const CACHE = self.APP_VERSION;
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll([
