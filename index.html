@@ -207,6 +207,18 @@
           <button id="btnNotifPerm" class="btn">学習リマインド通知を有効化</button>
           <span id="notifStatus" class="muted cfg-status"></span>
         </div>
+        <p id="notifHelp" class="cfg-note"></p>
+        <div class="cfg-subsection">
+          <p class="cfg-subtitle">リマインダー時間</p>
+          <div id="notifTimeList" class="notif-time-list"></div>
+          <button id="notifTimeAdd" type="button" class="btn btn-ghost">時刻を追加</button>
+        </div>
+        <fieldset class="cfg-fieldset cfg-fieldset-inline">
+          <legend>通知トリガー</legend>
+          <label class="cfg-check"><input type="checkbox" id="notifTriggerDailyZero"> 未学習リマインド（合格0件をお知らせ）</label>
+          <label class="cfg-check"><input type="checkbox" id="notifTriggerDailyCompare"> 昨日との進捗比較</label>
+          <label class="cfg-check"><input type="checkbox" id="notifTriggerWeekly"> 週次振り返り</label>
+        </fieldset>
       </div>
       <div class="cfg-divider" role="presentation"></div>
       <div class="cfg-section">

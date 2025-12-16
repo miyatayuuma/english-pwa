@@ -21,7 +21,12 @@ import {
   updateNotificationUi,
   initNotificationSystem,
   getDailyStats,
-  localDateKey
+  localDateKey,
+  getNotificationSettings,
+  saveNotificationSettings,
+  normalizeNotificationSettings,
+  computeNextNotificationCheckTime,
+  ensureNotificationLoop
 } from '../state/studyLog.js';
 import { createAudioController } from '../audio/controller.js';
 import {
@@ -341,7 +346,7 @@ function createAppRuntime(){
 
 
   // ===== Elements =====
-  const el={ headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerMessage'), footerInfoContainer:qs('#footerInfo'), footerInfoBtn:qs('#footerInfoBtn'), footerInfoDialog:qs('#footerInfoDialog'), footerInfoDialogBody:qs('#footerInfoDialogBody'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), composeGuide:qs('#composeGuide'), composeTokens:qs('#composeTokens'), composeNote:qs('#composeNote'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSpeechVoice:qs('#cfgSpeechVoice'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speedCtrl:qs('.speed-ctrl'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus'), dailyGoalCard:qs('#dailyGoalCard'), dailyGoalRing:qs('#dailyGoalRing'), dailyGoalPercent:qs('#dailyGoalPercent'), dailyGoalTag:qs('#dailyGoalTag'), dailyGoalDone:qs('#dailyGoalDone'), dailyGoalTarget:qs('#dailyGoalTarget'), dailyGoalHint:qs('#dailyGoalHint'), sessionGoalCard:qs('#sessionGoalCard'), sessionGoalRing:qs('#sessionGoalRing'), sessionGoalPercent:qs('#sessionGoalPercent'), sessionGoalTag:qs('#sessionGoalTag'), sessionGoalDone:qs('#sessionGoalDone'), sessionGoalTarget:qs('#sessionGoalTarget'), sessionGoalSlider:qs('#sessionGoalSlider'), sessionGoalBarFill:qs('#sessionGoalBarFill') };
+  const el={ headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerMessage'), footerInfoContainer:qs('#footerInfo'), footerInfoBtn:qs('#footerInfoBtn'), footerInfoDialog:qs('#footerInfoDialog'), footerInfoDialogBody:qs('#footerInfoDialogBody'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), composeGuide:qs('#composeGuide'), composeTokens:qs('#composeTokens'), composeNote:qs('#composeNote'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSpeechVoice:qs('#cfgSpeechVoice'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speedCtrl:qs('.speed-ctrl'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus'), notifTimeList:qs('#notifTimeList'), notifTimeAdd:qs('#notifTimeAdd'), notifTriggerDailyZero:qs('#notifTriggerDailyZero'), notifTriggerDailyCompare:qs('#notifTriggerDailyCompare'), notifTriggerWeekly:qs('#notifTriggerWeekly'), notifHelp:qs('#notifHelp'), dailyGoalCard:qs('#dailyGoalCard'), dailyGoalRing:qs('#dailyGoalRing'), dailyGoalPercent:qs('#dailyGoalPercent'), dailyGoalTag:qs('#dailyGoalTag'), dailyGoalDone:qs('#dailyGoalDone'), dailyGoalTarget:qs('#dailyGoalTarget'), dailyGoalHint:qs('#dailyGoalHint'), sessionGoalCard:qs('#sessionGoalCard'), sessionGoalRing:qs('#sessionGoalRing'), sessionGoalPercent:qs('#sessionGoalPercent'), sessionGoalTag:qs('#sessionGoalTag'), sessionGoalDone:qs('#sessionGoalDone'), sessionGoalTarget:qs('#sessionGoalTarget'), sessionGoalSlider:qs('#sessionGoalSlider'), sessionGoalBarFill:qs('#sessionGoalBarFill') };
   el.cfgPlaybackMode=qsa('input[name="cfgPlaybackMode"]');
   el.cfgStudyMode=qsa('input[name="cfgStudyMode"]');
   const versionTargets=qsa('[data-app-version]');
@@ -989,6 +994,99 @@ function createAppRuntime(){
     speechController.attachVoicesChangedListener(populateVoiceOptions);
   }
 
+  // ===== Notification settings =====
+  let notifSettings=getNotificationSettings();
+
+  function reminderValueFromSlot(slot){
+    if(!slot) return '';
+    if(typeof slot==='string'){
+      const match=slot.match?.(/^(\d{1,2}):(\d{2})$/);
+      if(match){
+        const h=String(Math.max(0, Math.min(23, Number(match[1])||0))).padStart(2,'0');
+        const m=String(Math.max(0, Math.min(59, Number(match[2])||0))).padStart(2,'0');
+        return `${h}:${m}`;
+      }
+    }
+    const hour=Number.isFinite(slot.hour)?slot.hour:0;
+    const minute=Number.isFinite(slot.minute)?slot.minute:0;
+    return `${String(hour).padStart(2,'0')}:${String(minute).padStart(2,'0')}`;
+  }
+
+  function renderNotificationTimes(times){
+    if(!el.notifTimeList) return;
+    el.notifTimeList.innerHTML='';
+    const normalized=normalizeNotificationSettings({ reminderTimes: times }).reminderTimes;
+    normalized.sort((a,b)=> (a.hour||0)*60+(a.minute||0) - ((b.hour||0)*60+(b.minute||0)));
+    if(!normalized.length){
+      addReminderRow('');
+      return;
+    }
+    normalized.forEach(slot=>{ addReminderRow(reminderValueFromSlot(slot)); });
+  }
+
+  function addReminderRow(value){
+    if(!el.notifTimeList) return;
+    const row=document.createElement('div');
+    row.className='notif-time-row';
+    const input=document.createElement('input');
+    input.type='time';
+    input.inputMode='numeric';
+    input.dataset.reminderTime='1';
+    if(value) input.value=value;
+    const remove=document.createElement('button');
+    remove.type='button';
+    remove.className='btn btn-ghost';
+    remove.textContent='削除';
+    remove.addEventListener('click',()=>{ row.remove(); previewNotificationSettings(); });
+    row.appendChild(input);
+    row.appendChild(remove);
+    el.notifTimeList.appendChild(row);
+  }
+
+  function suggestReminderTime(){
+    const now=new Date();
+    const nextHour=(now.getHours()+1)%24;
+    return `${String(nextHour).padStart(2,'0')}:00`;
+  }
+
+  function applyNotificationToggles(settings){
+    const triggers=settings?.triggers||{};
+    if(el.notifTriggerDailyZero){ el.notifTriggerDailyZero.checked = triggers.dailyZero!==false; }
+    if(el.notifTriggerDailyCompare){ el.notifTriggerDailyCompare.checked = triggers.dailyCompare!==false; }
+    if(el.notifTriggerWeekly){ el.notifTriggerWeekly.checked = triggers.weeklyCompare!==false; }
+  }
+
+  function readNotificationSettingsFromForm(){
+    const times=[];
+    if(el.notifTimeList){
+      qsa('input[data-reminder-time]', el.notifTimeList).forEach(input=>{
+        const val=(input && typeof input.value==='string') ? input.value.trim() : '';
+        if(val) times.push(val);
+      });
+    }
+    return normalizeNotificationSettings({
+      reminderTimes: times,
+      triggers:{
+        dailyZero: !el.notifTriggerDailyZero || el.notifTriggerDailyZero.checked,
+        dailyCompare: !el.notifTriggerDailyCompare || el.notifTriggerDailyCompare.checked,
+        weeklyCompare: !el.notifTriggerWeekly || el.notifTriggerWeekly.checked
+      }
+    });
+  }
+
+  function previewNotificationSettings(){
+    const draft=readNotificationSettingsFromForm();
+    const plannedAt=computeNextNotificationCheckTime(draft);
+    updateNotificationUi({
+      statusEl: el.notifStatus,
+      buttonEl: el.notifBtn,
+      nextLabelEl: el.notifHelp,
+      plannedAt,
+      settings: draft,
+      message: '未保存の通知設定があります'
+    });
+  }
+
   const logManager=createLogManager({
     loadJson,
     saveJson,
@@ -1195,8 +1293,17 @@ function createAppRuntime(){
           el.cfgSpeechVoice.value='';
         }
       }
+      notifSettings=getNotificationSettings();
+      renderNotificationTimes(notifSettings.reminderTimes);
+      applyNotificationToggles(notifSettings);
       refreshDirStatus();
-      updateNotificationUi({ statusEl: el.notifStatus, buttonEl: el.notifBtn });
+      updateNotificationUi({
+        statusEl: el.notifStatus,
+        buttonEl: el.notifBtn,
+        nextLabelEl: el.notifHelp,
+        plannedAt: computeNextNotificationCheckTime(notifSettings),
+        settings: notifSettings
+      });
       el.cfgModal.style.display='flex';
     });
   }
@@ -1204,6 +1311,8 @@ function createAppRuntime(){
     const handlers=initNotificationSystem({
       statusEl: el.notifStatus,
       buttonEl: el.notifBtn,
+      nextLabelEl: el.notifHelp,
+      settings: notifSettings,
       toast
     });
     if(el.notifBtn && handlers?.handleClick){
@@ -1216,6 +1325,26 @@ function createAppRuntime(){
   }
 
   const notifHandlers=setupNotifications();
+  if(el.notifTimeAdd){
+    el.notifTimeAdd.addEventListener('click',()=>{
+      addReminderRow(suggestReminderTime());
+      previewNotificationSettings();
+      const lastInput=el.notifTimeList?.querySelector('input[data-reminder-time]:last-of-type');
+      if(lastInput){ try{ lastInput.focus(); }catch(_){ } }
+    });
+  }
+  if(el.notifTimeList){
+    el.notifTimeList.addEventListener('input', previewNotificationSettings);
+  }
+  if(el.notifTriggerDailyZero){
+    el.notifTriggerDailyZero.addEventListener('change', previewNotificationSettings);
+  }
+  if(el.notifTriggerDailyCompare){
+    el.notifTriggerDailyCompare.addEventListener('change', previewNotificationSettings);
+  }
+  if(el.notifTriggerWeekly){
+    el.notifTriggerWeekly.addEventListener('change', previewNotificationSettings);
+  }
   if(el.cfgClose && el.cfgModal){
     el.cfgClose.addEventListener('click', ()=>{ el.cfgModal.style.display='none'; });
   }
@@ -1240,6 +1369,24 @@ function createAppRuntime(){
         CFG.studyMode=STUDY_MODE_READ;
       }
       if(el.cfgSpeechVoice){ CFG.speechVoice=el.cfgSpeechVoice.value||''; }
+      const nextNotifSettings=readNotificationSettingsFromForm();
+      const appliedNotif=notifHandlers?.applySettings
+        ? notifHandlers.applySettings(nextNotifSettings, { persist:true })
+        : null;
+      if(appliedNotif && appliedNotif.settings){
+        notifSettings=appliedNotif.settings;
+      }else if(!appliedNotif){
+        notifSettings=saveNotificationSettings(nextNotifSettings);
+        const plannedAt=ensureNotificationLoop(notifSettings, { resetInterval:true }) || computeNextNotificationCheckTime(notifSettings);
+        updateNotificationUi({
+          statusEl: el.notifStatus,
+          buttonEl: el.notifBtn,
+          nextLabelEl: el.notifHelp,
+          plannedAt,
+          settings: notifSettings,
+          message: '通知設定を保存しました'
+        });
+      }
       saveCfg(CFG);
       if((nextApiUrl && nextApiUrl!==prevApiUrl) || (!nextApiUrl && prevApiUrl)){
         resetSpeechSessionStats();
