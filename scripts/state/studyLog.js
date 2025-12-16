@@ -42,43 +42,59 @@ function clampNumber(value, min, max, fallback) {
 }
 
 function padTime(num) {
-  return String(Math.max(0, Math.min(59, Number(num) || 0))).padStart(2, '0');
+  const safe = Number.isFinite(num) ? num : 0;
+  return String(Math.max(0, safe)).padStart(2, '0');
 }
 
 function normalizeReminderSlot(value) {
-  if (!value) return null;
+  const buildSlot = (hour, minute, label) => ({
+    slot: {
+      label,
+      hour,
+      minute
+    },
+    reason: null,
+    raw: label
+  });
+  if (!value) return { slot: null, reason: 'empty', raw: value };
   if (typeof value === 'string') {
     const trimmed = value.trim();
+    if (!trimmed) return { slot: null, reason: 'empty', raw: value };
     const match = trimmed.match(/^(\d{1,2}):(\d{2})$/);
-    if (!match) return null;
-    const hour = clampNumber(parseInt(match[1], 10), 0, 23, 0);
-    const minute = clampNumber(parseInt(match[2], 10), 0, 59, 0);
-    return {
-      label: `${padTime(hour)}:${padTime(minute)}`,
-      hour,
-      minute
-    };
+    if (!match) return { slot: null, reason: 'format', raw: value };
+    const hour = parseInt(match[1], 10);
+    const minute = parseInt(match[2], 10);
+    const inRange = Number.isFinite(hour) && Number.isFinite(minute) && hour >= 0 && hour <= 23 && minute >= 0 && minute <= 59;
+    if (!inRange) return { slot: null, reason: 'range', raw: value };
+    const label = `${padTime(hour)}:${padTime(minute)}`;
+    return buildSlot(hour, minute, label);
   }
   if (typeof value === 'object') {
-    const hour = clampNumber(value.hour, 0, 23, 0);
-    const minute = clampNumber(value.minute, 0, 59, 0);
-    return {
-      label: value.label || `${padTime(hour)}:${padTime(minute)}`,
-      hour,
-      minute
-    };
+    const hour = Number(value.hour);
+    const minute = Number(value.minute);
+    const inRange = Number.isFinite(hour) && Number.isFinite(minute) && hour >= 0 && hour <= 23 && minute >= 0 && minute <= 59;
+    if (!inRange) return { slot: null, reason: 'range', raw: value?.label || `${padTime(hour)}:${padTime(minute)}` };
+    const label = value.label || `${padTime(hour)}:${padTime(minute)}`;
+    return buildSlot(hour, minute, label);
   }
-  return null;
+  return { slot: null, reason: 'invalid', raw: value };
 }
 
 function normalizeNotificationSettings(raw) {
   const base = raw && typeof raw === 'object' ? raw : {};
   const reminderTimes = [];
+  const discardedReminderTimes = [];
+  const seen = new Set();
   if (Array.isArray(base.reminderTimes)) {
     for (const v of base.reminderTimes) {
-      const slot = normalizeReminderSlot(v);
-      if (slot && !reminderTimes.find((s) => s.label === slot.label)) {
+      const { slot, reason, raw } = normalizeReminderSlot(v);
+      if (slot && !seen.has(slot.label)) {
         reminderTimes.push(slot);
+        seen.add(slot.label);
+      } else if (slot && seen.has(slot.label)) {
+        discardedReminderTimes.push({ value: raw, reason: 'duplicate' });
+      } else if (reason && reason !== 'empty') {
+        discardedReminderTimes.push({ value: raw, reason });
       }
     }
   }
@@ -101,7 +117,7 @@ function normalizeNotificationSettings(raw) {
     weekly.hour = clampNumber(base.weekly.hour, 0, 23, weekly.hour);
     weekly.minute = clampNumber(base.weekly.minute, 0, 59, weekly.minute);
   }
-  return { reminderTimes, triggers, weekly };
+  return { reminderTimes, triggers, weekly, discardedReminderTimes };
 }
 
 function loadStudyLog() {
@@ -725,18 +741,28 @@ function initNotificationSystem({ statusEl, buttonEl, toast, nextLabelEl, settin
       runNotificationChecks({ force: true, settings: NOTIF_SETTINGS }).catch(() => {});
     }
   };
-  const applySettings = (nextSettings, { persist = false } = {}) => {
+  const applySettings = (nextSettings, { persist = false, message } = {}) => {
     const normalized = persist
       ? saveNotificationSettings(nextSettings)
       : setNotificationSettings(nextSettings);
     const nextAt = ensureNotificationLoop(normalized, { resetInterval: true });
+    const discardedCount = Array.isArray(normalized.discardedReminderTimes)
+      ? normalized.discardedReminderTimes.length
+      : 0;
+    const statusMessage =
+      message ||
+      (discardedCount
+        ? '無効な時刻を除外しました'
+        : persist
+        ? '通知設定を保存しました'
+        : undefined);
     updateNotificationUi({
       statusEl,
       buttonEl,
       nextLabelEl,
       plannedAt: nextAt,
       settings: normalized,
-      message: persist ? '通知設定を保存しました' : undefined
+      message: statusMessage
     });
     return { settings: normalized, plannedAt: nextAt };
   };
