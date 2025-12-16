@@ -34,8 +34,9 @@ import { createComposeGuide } from './composeGuide.js';
 import { createLogManager } from './logManager.js';
 import { qs, qsa } from './dom.js';
 import { createLevelStateManager, LEVEL_CHOICES } from './levelState.js';
+import '../version.js';
 
-export const APP_VERSION = 'v4.62';
+const APP_VERSION = globalThis.APP_VERSION;
 
 let swRegistration=null;
 let swRegistrationPromise=null;
