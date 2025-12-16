@@ -4,14 +4,104 @@ import {
   saveJson
 } from '../storage/local.js';
 
-const { STUDY_LOG: STUDY_LOG_KEY, NOTIF_STATE: NOTIF_STATE_KEY } = STORAGE_KEYS;
+const {
+  STUDY_LOG: STUDY_LOG_KEY,
+  NOTIF_STATE: NOTIF_STATE_KEY,
+  NOTIF_SETTINGS: NOTIF_SETTINGS_KEY
+} = STORAGE_KEYS;
 
 const DAY_MS = 86400000;
+const DAILY_COMPARE_HOUR = 18;
+const WEEKLY_DEFAULT_DAY = 1;
+const WEEKLY_DEFAULT_HOUR = 9;
+const WEEKLY_DEFAULT_MINUTE = 0;
+
+const DEFAULT_REMINDER_TIMES = [
+  { label: '12:00', hour: 12, minute: 0 },
+  { label: '18:00', hour: 18, minute: 0 },
+  { label: '21:00', hour: 21, minute: 0 }
+];
+
+const DEFAULT_NOTIFICATION_SETTINGS = {
+  reminderTimes: DEFAULT_REMINDER_TIMES,
+  triggers: { dailyZero: true, dailyCompare: true, weeklyCompare: true },
+  weekly: { day: WEEKLY_DEFAULT_DAY, hour: WEEKLY_DEFAULT_HOUR, minute: WEEKLY_DEFAULT_MINUTE }
+};
 
 function localDateKey(time = Date.now()) {
   const d = new Date(time);
   d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
   return d.toISOString().slice(0, 10);
+}
+
+function clampNumber(value, min, max, fallback) {
+  if (Number.isFinite(value)) {
+    return Math.min(max, Math.max(min, value));
+  }
+  return fallback;
+}
+
+function padTime(num) {
+  return String(Math.max(0, Math.min(59, Number(num) || 0))).padStart(2, '0');
+}
+
+function normalizeReminderSlot(value) {
+  if (!value) return null;
+  if (typeof value === 'string') {
+    const trimmed = value.trim();
+    const match = trimmed.match(/^(\d{1,2}):(\d{2})$/);
+    if (!match) return null;
+    const hour = clampNumber(parseInt(match[1], 10), 0, 23, 0);
+    const minute = clampNumber(parseInt(match[2], 10), 0, 59, 0);
+    return {
+      label: `${padTime(hour)}:${padTime(minute)}`,
+      hour,
+      minute
+    };
+  }
+  if (typeof value === 'object') {
+    const hour = clampNumber(value.hour, 0, 23, 0);
+    const minute = clampNumber(value.minute, 0, 59, 0);
+    return {
+      label: value.label || `${padTime(hour)}:${padTime(minute)}`,
+      hour,
+      minute
+    };
+  }
+  return null;
+}
+
+function normalizeNotificationSettings(raw) {
+  const base = raw && typeof raw === 'object' ? raw : {};
+  const reminderTimes = [];
+  if (Array.isArray(base.reminderTimes)) {
+    for (const v of base.reminderTimes) {
+      const slot = normalizeReminderSlot(v);
+      if (slot && !reminderTimes.find((s) => s.label === slot.label)) {
+        reminderTimes.push(slot);
+      }
+    }
+  }
+  if (!reminderTimes.length) reminderTimes.push(...DEFAULT_REMINDER_TIMES);
+  const triggers = Object.assign({}, DEFAULT_NOTIFICATION_SETTINGS.triggers);
+  if (base.triggers && typeof base.triggers === 'object') {
+    if (typeof base.triggers.dailyZero !== 'undefined') {
+      triggers.dailyZero = !!base.triggers.dailyZero;
+    }
+    if (typeof base.triggers.dailyCompare !== 'undefined') {
+      triggers.dailyCompare = !!base.triggers.dailyCompare;
+    }
+    if (typeof base.triggers.weeklyCompare !== 'undefined') {
+      triggers.weeklyCompare = !!base.triggers.weeklyCompare;
+    }
+  }
+  const weekly = Object.assign({}, DEFAULT_NOTIFICATION_SETTINGS.weekly);
+  if (base.weekly && typeof base.weekly === 'object') {
+    weekly.day = clampNumber(base.weekly.day, 0, 6, weekly.day);
+    weekly.hour = clampNumber(base.weekly.hour, 0, 23, weekly.hour);
+    weekly.minute = clampNumber(base.weekly.minute, 0, 59, weekly.minute);
+  }
+  return { reminderTimes, triggers, weekly };
 }
 
 function loadStudyLog() {
@@ -31,6 +121,29 @@ function pruneStudyLog(log) {
 }
 
 let STUDY_LOG = pruneStudyLog(loadStudyLog());
+
+function loadNotificationSettings() {
+  const parsed = loadJson(NOTIF_SETTINGS_KEY, {});
+  return normalizeNotificationSettings(parsed || {});
+}
+
+function getNotificationSettings() {
+  return JSON.parse(JSON.stringify(NOTIF_SETTINGS));
+}
+
+function setNotificationSettings(settings, { persist = false } = {}) {
+  NOTIF_SETTINGS = normalizeNotificationSettings(settings);
+  if (persist) {
+    saveJson(NOTIF_SETTINGS_KEY, NOTIF_SETTINGS);
+  }
+  return NOTIF_SETTINGS;
+}
+
+function saveNotificationSettings(settings) {
+  return setNotificationSettings(settings, { persist: true });
+}
+
+let NOTIF_SETTINGS = loadNotificationSettings();
 
 function recordStudyProgress({
   pass = false,
@@ -240,6 +353,67 @@ function startOfWeek(date) {
   return d;
 }
 
+function computeNextNotificationCheckTime(settings = NOTIF_SETTINGS, now = new Date()) {
+  if (!settings || !(now instanceof Date)) return null;
+  const candidates = [];
+  const base = new Date(now.getTime());
+  const addCandidate = (dt) => {
+    if (dt && dt > now) candidates.push(dt);
+  };
+  if (settings.triggers?.dailyZero !== false) {
+    const slots = Array.isArray(settings.reminderTimes) ? settings.reminderTimes : DEFAULT_NOTIFICATION_SETTINGS.reminderTimes;
+    for (const slot of slots) {
+      const candidate = new Date(base.getTime());
+      candidate.setHours(slot?.hour || 0, slot?.minute || 0, 0, 0);
+      if (candidate <= now) {
+        candidate.setDate(candidate.getDate() + 1);
+      }
+      addCandidate(candidate);
+    }
+  }
+  if (settings.triggers?.dailyCompare !== false) {
+    const candidate = new Date(base.getTime());
+    const compareHour = clampNumber(settings.dailyCompareHour, 0, 23, DAILY_COMPARE_HOUR);
+    candidate.setHours(compareHour, 0, 0, 0);
+    if (candidate <= now) {
+      candidate.setDate(candidate.getDate() + 1);
+    }
+    addCandidate(candidate);
+  }
+  if (settings.triggers?.weeklyCompare !== false) {
+    const weekly = settings.weekly || {};
+    const targetDay = clampNumber(weekly.day, 0, 6, WEEKLY_DEFAULT_DAY);
+    const targetHour = clampNumber(weekly.hour, 0, 23, WEEKLY_DEFAULT_HOUR);
+    const targetMinute = clampNumber(weekly.minute, 0, 59, WEEKLY_DEFAULT_MINUTE);
+    const candidate = new Date(base.getTime());
+    const currentDay = candidate.getDay();
+    let diff = (targetDay - currentDay + 7) % 7;
+    if (diff === 0) {
+      const nowMinutes = candidate.getHours() * 60 + candidate.getMinutes();
+      const targetMinutes = targetHour * 60 + targetMinute;
+      if (nowMinutes >= targetMinutes) diff = 7;
+    }
+    candidate.setDate(candidate.getDate() + diff);
+    candidate.setHours(targetHour, targetMinute, 0, 0);
+    addCandidate(candidate);
+  }
+  if (!candidates.length) return null;
+  candidates.sort((a, b) => a - b);
+  return candidates[0];
+}
+
+function formatNotificationTimeLabel(at, now = new Date()) {
+  if (!(at instanceof Date) || Number.isNaN(at.getTime())) return '';
+  const todayKey = localDateKey(now.getTime());
+  const targetKey = localDateKey(at.getTime());
+  const tomorrowKey = localDateKey(now.getTime() + DAY_MS);
+  const h = padTime(at.getHours());
+  const m = padTime(at.getMinutes());
+  if (targetKey === todayKey) return `今日 ${h}:${m}`;
+  if (targetKey === tomorrowKey) return `明日 ${h}:${m}`;
+  return `${at.getMonth() + 1}/${at.getDate()} ${h}:${m}`;
+}
+
 async function showStudyNotification(title, options) {
   if (!('Notification' in window) || Notification.permission !== 'granted') return false;
   const opts = Object.assign({ icon: './icons/icon-192.png', badge: './icons/icon-192.png' }, options || {});
@@ -263,17 +437,13 @@ async function showStudyNotification(title, options) {
   }
 }
 
-const DAILY_ZERO_SLOTS = [
-  { label: '12:00', hour: 12, minute: 0 },
-  { label: '18:00', hour: 18, minute: 0 },
-  { label: '21:00', hour: 21, minute: 0 }
-];
-
-async function checkDailyZeroReminders(now, stats) {
+async function checkDailyZeroReminders(now, stats, slots) {
   const todayKey = localDateKey(now.getTime());
   const total = (stats?.passes || 0) + (stats?.level5 || 0);
   if (total > 0) return;
-  for (const slot of DAILY_ZERO_SLOTS) {
+  const reminderSlots =
+    Array.isArray(slots) && slots.length ? slots : DEFAULT_NOTIFICATION_SETTINGS.reminderTimes;
+  for (const slot of reminderSlots) {
     const scheduled = new Date(now.getTime());
     scheduled.setHours(slot.hour, slot.minute, 0, 0);
     if (now >= scheduled && !hasDailyZeroNotified(todayKey, slot.label)) {
@@ -288,8 +458,9 @@ async function checkDailyZeroReminders(now, stats) {
   }
 }
 
-async function checkDailyComparison(now, todayStats) {
-  if (now.getHours() < 18) return;
+async function checkDailyComparison(now, todayStats, compareHour = DAILY_COMPARE_HOUR) {
+  const targetHour = clampNumber(compareHour, 0, 23, DAILY_COMPARE_HOUR);
+  if (now.getHours() < targetHour) return;
   const todayKey = localDateKey(now.getTime());
   if (hasDailyCompareNotified(todayKey)) return;
   const yesterdayKey = localDateKey(now.getTime() - DAY_MS);
@@ -318,8 +489,13 @@ async function checkDailyComparison(now, todayStats) {
   markDailyCompareNotified(todayKey);
 }
 
-async function checkWeeklyComparison(now) {
-  if (now.getDay() !== 1 || now.getHours() < 9) return;
+async function checkWeeklyComparison(now, weeklyConfig) {
+  const targetDay = clampNumber(weeklyConfig?.day, 0, 6, WEEKLY_DEFAULT_DAY);
+  const targetHour = clampNumber(weeklyConfig?.hour, 0, 23, WEEKLY_DEFAULT_HOUR);
+  const targetMinute = clampNumber(weeklyConfig?.minute, 0, 59, WEEKLY_DEFAULT_MINUTE);
+  if (now.getDay() !== targetDay) return;
+  if (now.getHours() < targetHour) return;
+  if (now.getHours() === targetHour && now.getMinutes() < targetMinute) return;
   const thisWeek = startOfWeek(now);
   const weekKey = localDateKey(thisWeek.getTime());
   if (hasWeeklyCompareNotified(weekKey)) return;
@@ -355,79 +531,154 @@ async function checkWeeklyComparison(now) {
 
 let notifInterval = null;
 let scheduleTimeoutId = null;
+let plannedCheckTimeoutId = null;
+let NEXT_NOTIFICATION_CHECK_AT = null;
 
 function stopNotificationLoop() {
   if (notifInterval) {
     clearInterval(notifInterval);
     notifInterval = null;
   }
+  if (plannedCheckTimeoutId) {
+    clearTimeout(plannedCheckTimeoutId);
+    plannedCheckTimeoutId = null;
+  }
+  if (scheduleTimeoutId) {
+    clearTimeout(scheduleTimeoutId);
+    scheduleTimeoutId = null;
+  }
 }
 
-async function runNotificationChecks({ force = false } = {}) {
+function schedulePlannedNotificationCheck(settings = NOTIF_SETTINGS) {
+  NEXT_NOTIFICATION_CHECK_AT = computeNextNotificationCheckTime(settings);
+  if (plannedCheckTimeoutId) {
+    clearTimeout(plannedCheckTimeoutId);
+    plannedCheckTimeoutId = null;
+  }
+  if (!('Notification' in window) || Notification.permission !== 'granted') {
+    return NEXT_NOTIFICATION_CHECK_AT;
+  }
+  if (!NEXT_NOTIFICATION_CHECK_AT) return null;
+  const delay = Math.max(0, Math.min(NEXT_NOTIFICATION_CHECK_AT.getTime() - Date.now(), 2147483647));
+  plannedCheckTimeoutId = setTimeout(() => {
+    plannedCheckTimeoutId = null;
+    runNotificationChecks({ force: true, settings }).catch(() => {});
+  }, delay);
+  return NEXT_NOTIFICATION_CHECK_AT;
+}
+
+async function runNotificationChecks({ force = false, settings } = {}) {
+  const activeSettings = settings ? setNotificationSettings(settings) : NOTIF_SETTINGS;
   if (!('Notification' in window) || Notification.permission !== 'granted') {
     stopNotificationLoop();
+    schedulePlannedNotificationCheck(activeSettings);
     return;
   }
   const now = new Date();
   const todayKey = localDateKey(now.getTime());
   const todayStats = getDailyStats(todayKey);
-  await checkDailyZeroReminders(now, todayStats);
-  await checkDailyComparison(now, todayStats);
-  await checkWeeklyComparison(now);
+  if (activeSettings?.triggers?.dailyZero !== false) {
+    await checkDailyZeroReminders(now, todayStats, activeSettings?.reminderTimes);
+  }
+  if (activeSettings?.triggers?.dailyCompare !== false) {
+    const compareHour = clampNumber(activeSettings?.dailyCompareHour, 0, 23, DAILY_COMPARE_HOUR);
+    await checkDailyComparison(now, todayStats, compareHour);
+  }
+  if (activeSettings?.triggers?.weeklyCompare !== false) {
+    await checkWeeklyComparison(now, activeSettings?.weekly);
+  }
   if (force) {
     scheduleTimeoutId = null;
   }
+  schedulePlannedNotificationCheck(activeSettings);
 }
 
-function ensureNotificationLoop() {
-  if (!('Notification' in window) || Notification.permission !== 'granted') return;
-  if (notifInterval) return;
-  notifInterval = setInterval(() => {
-    runNotificationChecks().catch(() => {});
-  }, 10 * 60 * 1000);
-  runNotificationChecks({ force: true }).catch(() => {});
+function ensureNotificationLoop(settings, { resetInterval = false } = {}) {
+  const activeSettings = settings ? setNotificationSettings(settings) : NOTIF_SETTINGS;
+  if (!('Notification' in window) || Notification.permission !== 'granted') {
+    stopNotificationLoop();
+    return schedulePlannedNotificationCheck(activeSettings);
+  }
+  if (resetInterval && notifInterval) {
+    clearInterval(notifInterval);
+    notifInterval = null;
+  }
+  if (!notifInterval) {
+    notifInterval = setInterval(() => {
+      runNotificationChecks({ settings: activeSettings }).catch(() => {});
+    }, 10 * 60 * 1000);
+  }
+  runNotificationChecks({ force: true, settings: activeSettings }).catch(() => {});
+  return schedulePlannedNotificationCheck(activeSettings);
 }
 
-function scheduleNotificationCheckSoon() {
+function scheduleNotificationCheckSoon(settings) {
+  const activeSettings = settings ? setNotificationSettings(settings) : NOTIF_SETTINGS;
   if (!('Notification' in window) || Notification.permission !== 'granted') return;
-  ensureNotificationLoop();
+  ensureNotificationLoop(activeSettings);
   if (scheduleTimeoutId) {
     clearTimeout(scheduleTimeoutId);
   }
+  NEXT_NOTIFICATION_CHECK_AT = new Date(Date.now() + 1000);
   scheduleTimeoutId = setTimeout(() => {
-    runNotificationChecks({ force: true }).catch(() => {});
+    runNotificationChecks({ force: true, settings: activeSettings }).catch(() => {});
   }, 1000);
 }
 
-function updateNotificationUi({ statusEl, buttonEl } = {}) {
+function updateNotificationUi({ statusEl, buttonEl, nextLabelEl, plannedAt, settings, message } = {}) {
   if (!statusEl || !buttonEl) return;
+  const statusParts = [];
   if (!('Notification' in window)) {
-    statusEl.textContent = '通知非対応のブラウザです';
+    statusParts.push('通知非対応のブラウザです');
     buttonEl.textContent = '通知を許可できません';
     buttonEl.disabled = true;
+    statusEl.textContent = message ? `${message} / ${statusParts[0]}` : statusParts[0];
+    if (nextLabelEl) {
+      nextLabelEl.textContent = 'このブラウザでは通知を設定できません';
+    }
     return;
   }
   const perm = Notification.permission;
+  let permText = '';
   if (perm === 'granted') {
-    statusEl.textContent = '通知は許可されています';
+    permText = '通知は許可されています';
     buttonEl.textContent = '通知は許可済み';
     buttonEl.disabled = true;
   } else if (perm === 'denied') {
-    statusEl.textContent = 'ブラウザ設定で通知を許可してください';
+    permText = 'ブラウザ設定で通知を許可してください';
     buttonEl.textContent = '通知を許可できません';
     buttonEl.disabled = true;
   } else {
-    statusEl.textContent = '未許可：タップで有効化';
+    permText = '未許可：タップで有効化';
     buttonEl.textContent = '学習リマインド通知を有効化';
     buttonEl.disabled = false;
   }
+  if (message) statusParts.push(message);
+  statusParts.push(permText);
+  statusEl.textContent = statusParts.filter(Boolean).join(' / ');
+  if (nextLabelEl) {
+    const nextAt = plannedAt || computeNextNotificationCheckTime(settings || NOTIF_SETTINGS);
+    if (nextAt) {
+      const formatted = formatNotificationTimeLabel(nextAt);
+      nextLabelEl.textContent =
+        perm === 'granted'
+          ? `次の予定通知：${formatted}`
+          : `次の予定通知：${formatted}（通知許可が必要です）`;
+    } else {
+      nextLabelEl.textContent = '通知スケジュール：設定されたリマインダーがありません';
+    }
+  }
 }
 
-function initNotificationSystem({ statusEl, buttonEl, toast } = {}) {
+function initNotificationSystem({ statusEl, buttonEl, toast, nextLabelEl, settings } = {}) {
   const notify = typeof toast === 'function' ? toast : () => {};
-  updateNotificationUi({ statusEl, buttonEl });
+  if (settings) {
+    setNotificationSettings(settings);
+  }
+  const plannedAt = schedulePlannedNotificationCheck(NOTIF_SETTINGS);
+  updateNotificationUi({ statusEl, buttonEl, nextLabelEl, plannedAt, settings: NOTIF_SETTINGS });
   if ('Notification' in window && Notification.permission === 'granted') {
-    ensureNotificationLoop();
+    ensureNotificationLoop(NOTIF_SETTINGS, { resetInterval: true });
   }
   const handleClick = async () => {
     if (!('Notification' in window)) {
@@ -440,11 +691,19 @@ function initNotificationSystem({ statusEl, buttonEl, toast } = {}) {
     }
     try {
       const result = await Notification.requestPermission();
-      updateNotificationUi({ statusEl, buttonEl });
+      updateNotificationUi({ statusEl, buttonEl, nextLabelEl, settings: NOTIF_SETTINGS });
       if (result === 'granted') {
         notify('通知を有効にしました');
-        ensureNotificationLoop();
-        runNotificationChecks({ force: true }).catch(() => {});
+        const nextAt = ensureNotificationLoop(NOTIF_SETTINGS, { resetInterval: true });
+        updateNotificationUi({
+          statusEl,
+          buttonEl,
+          nextLabelEl,
+          plannedAt: nextAt,
+          settings: NOTIF_SETTINGS,
+          message: '通知設定を保存しました'
+        });
+        runNotificationChecks({ force: true, settings: NOTIF_SETTINGS }).catch(() => {});
       } else {
         notify('通知は許可されませんでした');
       }
@@ -455,11 +714,33 @@ function initNotificationSystem({ statusEl, buttonEl, toast } = {}) {
   };
   const handleVisibilityChange = () => {
     if (typeof document !== 'undefined' && document.visibilityState === 'visible') {
-      updateNotificationUi({ statusEl, buttonEl });
-      runNotificationChecks({ force: true }).catch(() => {});
+      const nextAt = schedulePlannedNotificationCheck(NOTIF_SETTINGS);
+      updateNotificationUi({
+        statusEl,
+        buttonEl,
+        nextLabelEl,
+        plannedAt: nextAt,
+        settings: NOTIF_SETTINGS
+      });
+      runNotificationChecks({ force: true, settings: NOTIF_SETTINGS }).catch(() => {});
     }
   };
-  return { handleClick, handleVisibilityChange };
+  const applySettings = (nextSettings, { persist = false } = {}) => {
+    const normalized = persist
+      ? saveNotificationSettings(nextSettings)
+      : setNotificationSettings(nextSettings);
+    const nextAt = ensureNotificationLoop(normalized, { resetInterval: true });
+    updateNotificationUi({
+      statusEl,
+      buttonEl,
+      nextLabelEl,
+      plannedAt: nextAt,
+      settings: normalized,
+      message: persist ? '通知設定を保存しました' : undefined
+    });
+    return { settings: normalized, plannedAt: nextAt };
+  };
+  return { handleClick, handleVisibilityChange, applySettings };
 }
 
 export {
@@ -473,6 +754,11 @@ export {
   recordStudyProgress,
   getDailyStats,
   sumRange,
+  getNotificationSettings,
+  saveNotificationSettings,
+  normalizeNotificationSettings,
+  computeNextNotificationCheckTime,
+  formatNotificationTimeLabel,
   runNotificationChecks,
   ensureNotificationLoop,
   scheduleNotificationCheckSoon,
