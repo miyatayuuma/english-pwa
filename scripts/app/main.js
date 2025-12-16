@@ -19,7 +19,9 @@ import {
 import {
   recordStudyProgress,
   updateNotificationUi,
-  initNotificationSystem
+  initNotificationSystem,
+  getDailyStats,
+  localDateKey
 } from '../state/studyLog.js';
 import { createAudioController } from '../audio/controller.js';
 import {
@@ -82,8 +84,13 @@ function createAppRuntime(){
     5:'Lv5: 定着済みです。定期的な復習で維持しつつ新しいカードに挑戦しましょう。'
   };
   let footerInfoIntroShown=false;
+  const DEFAULT_DAILY_GOAL=10;
+  const DEFAULT_SESSION_GOAL=5;
+  const goalState={ dailyTarget:DEFAULT_DAILY_GOAL, sessionTarget:DEFAULT_SESSION_GOAL, dailyDone:0, sessionDone:0, todayKey:'' };
+  const goalMilestones={ daily:false, session:false };
+  let goalOverviewShown=false;
 
-  const { SEARCH, SPEED, CONFIG, PENDING_LOGS: PENDING_LOGS_KEY, SECTION_SELECTION, ORDER_SELECTION } = STORAGE_KEYS;
+  const { SEARCH, SPEED, CONFIG, DAILY_GOAL: DAILY_GOAL_KEY, SESSION_GOAL: SESSION_GOAL_KEY, PENDING_LOGS: PENDING_LOGS_KEY, SECTION_SELECTION, ORDER_SELECTION } = STORAGE_KEYS;
 
   const BASE_HINT_STAGE=0;
   const COMPOSE_HINT_STAGE_JA=BASE_HINT_STAGE+1;
@@ -186,9 +193,155 @@ function createAppRuntime(){
     updateLevelFilterButtons();
   }
 
+  function normalizeGoalValue(raw, fallback){
+    const num=Number(raw);
+    if(Number.isFinite(num) && num>0){
+      return Math.max(1, Math.min(999, Math.round(num)));
+    }
+    return fallback;
+  }
+
+  function ensureDailyGoalFresh(){
+    const today=localDateKey();
+    if(goalState.todayKey===today) return;
+    goalState.todayKey=today;
+    const todayStats=getDailyStats(today);
+    goalState.dailyDone=Math.max(0, Number(todayStats?.passes)||0);
+    goalMilestones.daily = goalState.dailyDone>=goalState.dailyTarget && goalState.dailyTarget>0;
+  }
+
+  function syncGoalTargets(){
+    const storedDaily=loadNumber(DAILY_GOAL_KEY, NaN);
+    const storedSession=loadNumber(SESSION_GOAL_KEY, NaN);
+    goalState.dailyTarget=normalizeGoalValue(storedDaily, DEFAULT_DAILY_GOAL);
+    goalState.sessionTarget=normalizeGoalValue(storedSession, DEFAULT_SESSION_GOAL);
+    if(!Number.isFinite(storedDaily) || storedDaily<=0){
+      saveNumber(DAILY_GOAL_KEY, goalState.dailyTarget);
+    }
+    if(!Number.isFinite(storedSession) || storedSession<=0){
+      saveNumber(SESSION_GOAL_KEY, goalState.sessionTarget);
+    }
+  }
+
+  function applyGoalTargetsToControls(){
+    if(el.sessionGoalSlider){
+      el.sessionGoalSlider.value=String(goalState.sessionTarget);
+      el.sessionGoalSlider.setAttribute('aria-valuenow', String(goalState.sessionTarget));
+    }
+    if(el.sessionGoalTarget){
+      el.sessionGoalTarget.textContent=goalState.sessionTarget;
+    }
+    if(el.dailyGoalTarget){
+      el.dailyGoalTarget.textContent=goalState.dailyTarget;
+    }
+  }
+
+  function updateGoalMilestones(dailyRatio, sessionRatio){
+    const dailyReached=dailyRatio>=1 && goalState.dailyTarget>0;
+    const sessionReached=sessionRatio>=1 && goalState.sessionTarget>0;
+    if(dailyReached && !goalMilestones.daily){
+      goalMilestones.daily=true;
+      toast('今日の目標を達成！', 2200);
+    }
+    if(sessionReached && !goalMilestones.session){
+      goalMilestones.session=true;
+      toast('セッション目標クリア！', 2200);
+    }
+    if(!dailyReached) goalMilestones.daily=false;
+    if(!sessionReached) goalMilestones.session=false;
+  }
+
+  function updateGoalProgressFromMetrics({ notify=false }={}){
+    ensureDailyGoalFresh();
+    goalState.sessionDone=Math.max(0, sessionMetrics?.cardsDone||0);
+    applyGoalTargetsToControls();
+    if(el.dailyGoalDone){
+      el.dailyGoalDone.textContent=goalState.dailyDone;
+    }
+    if(el.sessionGoalDone){
+      el.sessionGoalDone.textContent=goalState.sessionDone;
+    }
+    const dailyRatio=goalState.dailyTarget>0 ? goalState.dailyDone/goalState.dailyTarget : 0;
+    const sessionRatio=goalState.sessionTarget>0 ? goalState.sessionDone/goalState.sessionTarget : 0;
+    const dailyPct=Math.min(100, Math.round(dailyRatio*100));
+    const sessionPct=Math.min(100, Math.round(sessionRatio*100));
+    if(el.dailyGoalRing){
+      el.dailyGoalRing.style.setProperty('--goal-ratio', Math.min(1, dailyRatio));
+    }
+    if(el.sessionGoalRing){
+      el.sessionGoalRing.style.setProperty('--goal-ratio', Math.min(1, sessionRatio));
+    }
+    if(el.dailyGoalPercent){
+      el.dailyGoalPercent.textContent=`${dailyPct}%`;
+    }
+    if(el.sessionGoalPercent){
+      el.sessionGoalPercent.textContent=`${sessionPct}%`;
+    }
+    const dailyRemaining=Math.max(0, goalState.dailyTarget-goalState.dailyDone);
+    const sessionRemaining=Math.max(0, goalState.sessionTarget-goalState.sessionDone);
+    if(el.dailyGoalHint){
+      el.dailyGoalHint.textContent = dailyRemaining>0 ? `目標まであと${dailyRemaining}件` : '今日の目標を達成しました';
+    }
+    if(el.dailyGoalTag){
+      el.dailyGoalTag.textContent = dailyRemaining>0 ? `あと${dailyRemaining}件` : '達成';
+    }
+    if(el.sessionGoalTag){
+      el.sessionGoalTag.textContent = sessionRemaining>0 ? `あと${sessionRemaining}件` : '達成';
+    }
+    if(el.sessionGoalBarFill){
+      el.sessionGoalBarFill.style.width=`${Math.min(100, Math.max(0, sessionRatio*100))}%`;
+    }
+    if(notify){
+      updateGoalMilestones(dailyRatio, sessionRatio);
+    }else{
+      goalMilestones.daily = dailyRatio>=1 && goalState.dailyTarget>0;
+      goalMilestones.session = sessionRatio>=1 && goalState.sessionTarget>0;
+    }
+  }
+
+  function handleSessionGoalInput(ev){
+    const value=normalizeGoalValue(ev?.target?.value, goalState.sessionTarget);
+    goalState.sessionTarget=value;
+    saveNumber(SESSION_GOAL_KEY, value);
+    applyGoalTargetsToControls();
+    updateGoalProgressFromMetrics();
+  }
+
+  function bindGoalControls(){
+    if(el.sessionGoalSlider){
+      el.sessionGoalSlider.addEventListener('input', handleSessionGoalInput);
+      el.sessionGoalSlider.addEventListener('change', handleSessionGoalInput);
+    }
+  }
+
+  function initGoals(){
+    syncGoalTargets();
+    ensureDailyGoalFresh();
+    applyGoalTargetsToControls();
+    updateGoalProgressFromMetrics();
+    bindGoalControls();
+  }
+
+  function incrementGoalProgressForPass(){
+    ensureDailyGoalFresh();
+    goalState.dailyDone+=1;
+    goalState.sessionDone=Math.max(0, sessionMetrics?.cardsDone||goalState.sessionDone);
+    updateGoalProgressFromMetrics({ notify:true });
+  }
+
+  function maybeShowGoalOverview(){
+    if(goalOverviewShown) return;
+    ensureDailyGoalFresh();
+    const dailyRemaining=Math.max(0, goalState.dailyTarget-goalState.dailyDone);
+    const dailyText=dailyRemaining>0 ? `今日の目標まであと${dailyRemaining}件` : '今日の目標は達成済み';
+    const sessionText=`今回のセッション目標は${goalState.sessionTarget}件`;
+    toast(`${dailyText} / ${sessionText}`, 3200);
+    goalOverviewShown=true;
+  }
+
 
   // ===== Elements =====
-  const el={ headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerMessage'), footerInfoContainer:qs('#footerInfo'), footerInfoBtn:qs('#footerInfoBtn'), footerInfoDialog:qs('#footerInfoDialog'), footerInfoDialogBody:qs('#footerInfoDialogBody'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), composeGuide:qs('#composeGuide'), composeTokens:qs('#composeTokens'), composeNote:qs('#composeNote'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSpeechVoice:qs('#cfgSpeechVoice'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speedCtrl:qs('.speed-ctrl'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus') };
+  const el={ headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerMessage'), footerInfoContainer:qs('#footerInfo'), footerInfoBtn:qs('#footerInfoBtn'), footerInfoDialog:qs('#footerInfoDialog'), footerInfoDialogBody:qs('#footerInfoDialogBody'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), composeGuide:qs('#composeGuide'), composeTokens:qs('#composeTokens'), composeNote:qs('#composeNote'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSpeechVoice:qs('#cfgSpeechVoice'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speedCtrl:qs('.speed-ctrl'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus'), dailyGoalCard:qs('#dailyGoalCard'), dailyGoalRing:qs('#dailyGoalRing'), dailyGoalPercent:qs('#dailyGoalPercent'), dailyGoalTag:qs('#dailyGoalTag'), dailyGoalDone:qs('#dailyGoalDone'), dailyGoalTarget:qs('#dailyGoalTarget'), dailyGoalHint:qs('#dailyGoalHint'), sessionGoalCard:qs('#sessionGoalCard'), sessionGoalRing:qs('#sessionGoalRing'), sessionGoalPercent:qs('#sessionGoalPercent'), sessionGoalTag:qs('#sessionGoalTag'), sessionGoalDone:qs('#sessionGoalDone'), sessionGoalTarget:qs('#sessionGoalTarget'), sessionGoalSlider:qs('#sessionGoalSlider'), sessionGoalBarFill:qs('#sessionGoalBarFill') };
   el.cfgPlaybackMode=qsa('input[name="cfgPlaybackMode"]');
   el.cfgStudyMode=qsa('input[name="cfgStudyMode"]');
   const versionTargets=qsa('[data-app-version]');
@@ -305,6 +458,19 @@ function createAppRuntime(){
 
   function collectFooterInfoSections(){
     const sections=[];
+    ensureDailyGoalFresh();
+    goalState.sessionDone=Math.max(goalState.sessionDone, sessionMetrics?.cardsDone||0);
+    const dailyRatio=goalState.dailyTarget>0 ? goalState.dailyDone/goalState.dailyTarget : 0;
+    const sessionRatio=goalState.sessionTarget>0 ? goalState.sessionDone/goalState.sessionTarget : 0;
+    const dailyRemaining=Math.max(0, goalState.dailyTarget-goalState.dailyDone);
+    const sessionRemaining=Math.max(0, goalState.sessionTarget-goalState.sessionDone);
+    const goalLines=[
+      `今日の目標: ${goalState.dailyDone}/${goalState.dailyTarget}件（達成率${Math.min(100, Math.round(dailyRatio*100))}%）`,
+      dailyRemaining>0 ? `あと${dailyRemaining}件で達成` : '今日の目標を達成済み',
+      `セッション目標: ${goalState.sessionDone}/${goalState.sessionTarget}件（達成率${Math.min(100, Math.round(sessionRatio*100))}%）`,
+      sessionRemaining>0 ? `あと${sessionRemaining}件で到達` : 'セッション目標クリア'
+    ];
+    sections.push({ title:'目標と達成状況', lines:goalLines });
     const note=getLastProgressNote();
     if(note){
       sections.push({ title:'進捗メモ', lines:[note] });
@@ -571,12 +737,16 @@ function createAppRuntime(){
       Promise.resolve(syncProgressAndStatus()).catch(()=>{});
     }
     sessionMetrics=createEmptySessionMetrics();
+    updateGoalProgressFromMetrics();
   }
 
   function beginSessionMetrics(){
     sessionMetrics=createEmptySessionMetrics();
     sessionMetrics.startMs=now();
     resetSpeechSessionStats();
+    goalState.sessionDone=0;
+    goalMilestones.session=false;
+    updateGoalProgressFromMetrics();
   }
 
   function resetSpeechSessionStats(){
@@ -2263,6 +2433,7 @@ function createAppRuntime(){
           sessionMetrics.highestStreak=sessionMetrics.currentStreak;
         }
       }
+      incrementGoalProgressForPass();
       failCount=0;
       playTone('success');
       el.footer.textContent='';
@@ -2345,11 +2516,13 @@ function createAppRuntime(){
         await gateDirPermissionBeforeBoot();
       }
       await ensureDataLoaded();
+      initGoals();
       updateHeaderStats();
       initSectionPicker();
       refreshDirStatus();
       await rebuildAndRender(true);
       maybeShowFooterInfoIntroToast();
+      maybeShowGoalOverview();
       syncProgressAndStatus().catch(()=>{});
     }catch(e){
       console.error(e);

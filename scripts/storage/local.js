@@ -8,6 +8,8 @@ const STORAGE_KEYS = Object.freeze({
   SEARCH: 'itemSearchV1',
   SPEED: 'audioSpeedV1',
   CONFIG: 'appConfigV3',
+  DAILY_GOAL: 'dailyGoalV1',
+  SESSION_GOAL: 'sessionGoalV1',
   PENDING_LOGS: 'pendingLogsV1',
   SECTION_SELECTION: 'secSel',
   ORDER_SELECTION: 'orderSel'
