@@ -146,8 +146,13 @@
     .cfg-note{margin:4px 0 0;font-size:12px;color:var(--muted);line-height:1.5}
     #cfgBox input[type="text"], #cfgBox input[type="url"], #cfgBox select{width:100%;padding:8px;border-radius:10px;border:1px solid var(--bd);background:#0c1221;color:var(--txt)}
     .cfg-scroll{padding:0 18px 18px;overflow-y:auto;max-height:calc(80vh - 150px);-webkit-overflow-scrolling:touch}
-    #cfgBox .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-    #cfgBox .row + .row{margin-top:10px}
+    #cfgBox .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    #cfgBox .cfg-row{gap:12px;margin-top:8px}
+    #cfgBox .cfg-row+.cfg-row{margin-top:6px}
+    #cfgBox .cfg-section{padding:10px 0}
+    #cfgBox .cfg-section-title{margin:0 0 8px;font-size:13px;color:var(--muted);letter-spacing:.03em;font-weight:600}
+    #cfgBox .cfg-divider{height:1px;margin:4px 0 12px;border:0;background:linear-gradient(90deg,rgba(255,255,255,.14),rgba(255,255,255,.04),rgba(255,255,255,.14));opacity:.7}
+    #cfgBox .cfg-status{font-size:12px;color:var(--muted);flex:1 1 auto;min-height:1.2em}
     #cfgBox .cfg-actions-bar{position:sticky;bottom:0;padding:12px 16px;border-top:1px solid var(--bd);background:linear-gradient(180deg,rgba(17,23,38,.9),rgba(17,23,38,.94));backdrop-filter:blur(8px)}
     #cfgBox .cfg-actions{margin-top:0;justify-content:flex-end;gap:10px}
     #toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#0f1422;border:1px solid #24304a;color:#b7c0d6;border-radius:10px;padding:8px 12px;z-index:99999;display:none}

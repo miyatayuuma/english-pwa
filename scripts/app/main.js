@@ -188,7 +188,7 @@ function createAppRuntime(){
 
 
   // ===== Elements =====
-  const el={ headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerMessage'), footerInfoContainer:qs('#footerInfo'), footerInfoBtn:qs('#footerInfoBtn'), footerInfoDialog:qs('#footerInfoDialog'), footerInfoDialogBody:qs('#footerInfoDialogBody'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), composeGuide:qs('#composeGuide'), composeTokens:qs('#composeTokens'), composeNote:qs('#composeNote'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSpeechVoice:qs('#cfgSpeechVoice'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speedCtrl:qs('.speed-ctrl'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus'), updateCheckBtn:qs('#btnUpdateCheck') };
+  const el={ headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerMessage'), footerInfoContainer:qs('#footerInfo'), footerInfoBtn:qs('#footerInfoBtn'), footerInfoDialog:qs('#footerInfoDialog'), footerInfoDialogBody:qs('#footerInfoDialogBody'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), composeGuide:qs('#composeGuide'), composeTokens:qs('#composeTokens'), composeNote:qs('#composeNote'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSpeechVoice:qs('#cfgSpeechVoice'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speedCtrl:qs('.speed-ctrl'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus') };
   el.cfgPlaybackMode=qsa('input[name="cfgPlaybackMode"]');
   el.cfgStudyMode=qsa('input[name="cfgStudyMode"]');
   const versionTargets=qsa('[data-app-version]');
@@ -1048,11 +1048,6 @@ function createAppRuntime(){
   const notifHandlers=setupNotifications();
   if(el.cfgClose && el.cfgModal){
     el.cfgClose.addEventListener('click', ()=>{ el.cfgModal.style.display='none'; });
-  }
-  if(el.updateCheckBtn){
-    el.updateCheckBtn.addEventListener('click', ()=>{
-      triggerManualServiceWorkerUpdate();
-    });
   }
   if(el.cfgSave && el.cfgModal && el.cfgUrl && el.cfgKey && el.cfgAudioBase){
     el.cfgSave.addEventListener('click', ()=>{
@@ -2403,94 +2398,6 @@ const handleServiceWorker=(registration, worker)=>{
   worker.addEventListener('statechange', onStateChange);
   onStateChange();
 };
-
-const getServiceWorkerRegistration=async()=>{
-  if(swRegistration){ return swRegistration; }
-  if(swRegistrationPromise){
-    const reg=await swRegistrationPromise.catch(()=>null);
-    swRegistration=reg||null;
-    return swRegistration;
-  }
-  return null;
-};
-
-const watchForInstalledWorker=(registration)=>new Promise(resolve=>{
-  let resolved=false;
-  const resolveOnce=(worker)=>{
-    if(resolved) return;
-    resolved=true;
-    cleanup();
-    resolve(worker||null);
-  };
-  const isReady=(worker)=>worker && (worker.state==='installed' || worker.state==='activated');
-  let tracked=registration.waiting || registration.installing;
-
-  const handleTrackedChange=()=>{
-    if(isReady(tracked)){
-      resolveOnce(tracked);
-    }
-  };
-
-  const onUpdateFound=()=>{
-    if(tracked){ tracked.removeEventListener('statechange', handleTrackedChange); }
-    tracked=registration.installing;
-    if(tracked){
-      tracked.addEventListener('statechange', handleTrackedChange);
-      handleTrackedChange();
-    }
-  };
-
-  function cleanup(){
-    if(tracked){ tracked.removeEventListener('statechange', handleTrackedChange); }
-    registration.removeEventListener('updatefound', onUpdateFound);
-  }
-
-  if(tracked){
-    tracked.addEventListener('statechange', handleTrackedChange);
-    handleTrackedChange();
-  }
-  registration.addEventListener('updatefound', onUpdateFound);
-  setTimeout(()=>resolveOnce(null), 5000);
-});
-
-async function triggerManualServiceWorkerUpdate(){
-  if(!('serviceWorker' in navigator)){
-    toast('更新チェックは利用できません');
-    return;
-  }
-
-  toast('更新を確認しています…');
-  const registration=await getServiceWorkerRegistration();
-  if(!registration){
-    toast('サービスワーカーの初期化を待機しています。少し待ってから再試行してください');
-    return;
-  }
-
-  const workerPromise=watchForInstalledWorker(registration);
-  try{
-    await registration.update();
-  }catch(_){
-    // Ignore update failures; fallback to existing worker state
-  }
-  const worker=await workerPromise;
-
-  if(worker){
-    toast('新バージョンを適用しています…');
-    if(worker.state==='activated' && navigator.serviceWorker.controller){
-      toast('再読み込みしています…');
-      window.location.reload();
-      return;
-    }
-    const controllerChanged=waitForControllerChange();
-    try{ (registration.waiting || worker)?.postMessage({ type:'SKIP_WAITING' }); }catch(_){ }
-    await controllerChanged;
-    toast('再読み込みしています…');
-    window.location.reload();
-    return;
-  }
-
-  toast('新しいバージョンは見つかりませんでした');
-}
 
 function registerServiceWorker() {
   if ('serviceWorker' in navigator) {
