@@ -91,6 +91,50 @@
   </div>
 
   <main>
+    <section class="overview-card" id="dailyOverviewCard">
+      <div class="overview-card__header">
+        <div class="overview-card__title-group">
+          <p class="overview-card__title">今日の概要</p>
+          <p class="overview-card__subtitle" id="dailyOverviewNote">学習の流れをさっと確認しましょう</p>
+        </div>
+        <div class="overview-card__header-actions">
+          <span class="overview-chip" id="dailyOverviewDiff" aria-live="polite">—</span>
+          <button id="dailyOverviewToggle" class="overview-toggle" type="button" aria-expanded="true" aria-controls="dailyOverviewBody" aria-label="今日の概要を折りたたむ">⌄</button>
+        </div>
+      </div>
+      <div class="overview-card__body" id="dailyOverviewBody">
+        <div class="overview-grid">
+          <div class="overview-section overview-section--trend">
+            <div class="overview-section__title">昨日比</div>
+            <div class="trend-bars">
+              <div class="trend-bar">
+                <span class="trend-bar__label">今日</span>
+                <div class="trend-bar__track"><div class="trend-bar__fill" id="overviewTodayFill"></div></div>
+                <span class="trend-bar__value" id="overviewTodayValue">0件</span>
+              </div>
+              <div class="trend-bar">
+                <span class="trend-bar__label">昨日</span>
+                <div class="trend-bar__track"><div class="trend-bar__fill trend-bar__fill--muted" id="overviewYesterdayFill"></div></div>
+                <span class="trend-bar__value" id="overviewYesterdayValue">0件</span>
+              </div>
+            </div>
+            <div class="trend-diff" id="dailyOverviewTrendStatus">—</div>
+          </div>
+          <div class="overview-section overview-section--promotion">
+            <div class="overview-section__title">次の昇格条件</div>
+            <div class="overview-status" id="overviewPromotionStatus">—</div>
+          </div>
+          <div class="overview-section overview-section--milestones">
+            <div class="overview-section__title">最新のLv4/Lv5達成履歴</div>
+            <div class="overview-list" id="overviewMilestones"></div>
+          </div>
+        </div>
+        <div class="overview-actions">
+          <button class="btn btn-primary" id="overviewQuickStart" type="button">すぐ始める</button>
+        </div>
+      </div>
+    </section>
+
     <section class="card" id="card" aria-live="polite">
       <div class="chips" id="chips"></div>
       <div id="enText" class="en">出題を準備しています…（下スワイプで和訳）</div>
