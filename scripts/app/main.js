@@ -1464,35 +1464,125 @@ function createAppRuntime(){
     if(el.notifTriggerWeekly){ el.notifTriggerWeekly.checked = triggers.weeklyCompare!==false; }
   }
 
-  function readNotificationSettingsFromForm(){
+  function setReminderRowError(row, message){
+    if(!row) return;
+    const input=row.querySelector('input[data-reminder-time]');
+    row.classList.toggle('has-error', !!message);
+    if(input){
+      input.classList.toggle('input-error', !!message);
+      input.setAttribute('aria-invalid', message ? 'true' : 'false');
+    }
+    let note=row.querySelector('.notif-time-error');
+    if(!note && message){
+      note=document.createElement('div');
+      note.className='notif-time-error';
+      row.appendChild(note);
+    }
+    if(note){
+      if(message){
+        note.textContent=message;
+      }else{
+        note.remove();
+      }
+    }
+  }
+
+  function validateNotificationTimeInputs(){
     const times=[];
+    const entries=[];
+    const seen=new Map();
     if(el.notifTimeList){
       qsa('input[data-reminder-time]', el.notifTimeList).forEach(input=>{
-        const val=(input && typeof input.value==='string') ? input.value.trim() : '';
-        if(val) times.push(val);
+        const row=input.closest('.notif-time-row');
+        setReminderRowError(row, '');
+        const raw=(input && typeof input.value==='string') ? input.value.trim() : '';
+        const entry={ input, row, raw, errors:[], label:'' };
+        if(raw){
+          const match=raw.match(/^(\d{1,2}):(\d{2})$/);
+          if(!match){
+            entry.errors.push('時刻はHH:MM形式で入力してください');
+          }else{
+            const hour=Number(match[1]);
+            const minute=Number(match[2]);
+            const inRange=Number.isFinite(hour) && Number.isFinite(minute) && hour>=0 && hour<=23 && minute>=0 && minute<=59;
+            if(!inRange){
+              entry.errors.push('0〜23時、0〜59分で入力してください');
+            }else{
+              entry.label=`${String(hour).padStart(2,'0')}:${String(minute).padStart(2,'0')}`;
+              if(!seen.has(entry.label)) seen.set(entry.label, []);
+              seen.get(entry.label).push(entry);
+            }
+          }
+        }
+        entries.push(entry);
       });
     }
-    return normalizeNotificationSettings({
-      reminderTimes: times,
+    let duplicateCount=0;
+    seen.forEach(group=>{
+      if(group.length>1){
+        duplicateCount++;
+        group.forEach(entry=>entry.errors.push('同じ時刻が重複しています'));
+      }
+    });
+    let invalidCount=0;
+    entries.forEach(entry=>{
+      const message=entry.errors[0]||'';
+      if(message && message!=='同じ時刻が重複しています') invalidCount++;
+      setReminderRowError(entry.row, message);
+      if(!entry.errors.length && entry.label){
+        times.push(entry.label);
+      }
+    });
+    const hasErrors=entries.some(entry=>entry.errors.length>0);
+    const errorParts=[];
+    if(invalidCount) errorParts.push('時刻の形式を確認してください');
+    if(duplicateCount) errorParts.push('同じ時刻が重複しています');
+    const errorMessage=errorParts.join(' / ');
+    if(el.cfgSave){ el.cfgSave.disabled=hasErrors; }
+    if(el.notifHelp && hasErrors){
+      el.notifHelp.textContent=errorMessage || '通知時刻にエラーがあります';
+    }
+    return { validTimes: times, hasErrors, invalidCount, duplicateCount, errorMessage };
+  }
+
+  function readNotificationSettingsFromForm(){
+    const validation=validateNotificationTimeInputs();
+    const settings=normalizeNotificationSettings({
+      reminderTimes: validation.validTimes,
       triggers:{
         dailyZero: !el.notifTriggerDailyZero || el.notifTriggerDailyZero.checked,
         dailyCompare: !el.notifTriggerDailyCompare || el.notifTriggerDailyCompare.checked,
         weeklyCompare: !el.notifTriggerWeekly || el.notifTriggerWeekly.checked
       }
     });
+    return {
+      settings,
+      validation: Object.assign({}, validation, {
+        discardedReminderTimes: settings.discardedReminderTimes || []
+      })
+    };
   }
 
   function previewNotificationSettings(){
-    const draft=readNotificationSettingsFromForm();
+    const { settings: draft, validation } = readNotificationSettingsFromForm();
+    if(validation.hasErrors){
+      if(el.notifStatus){ el.notifStatus.textContent='通知時刻を修正してください'; }
+      return;
+    }
+    if(el.notifHelp){ el.notifHelp.textContent=''; }
     const plannedAt=computeNextNotificationCheckTime(draft);
+    const hasDiscarded=(validation.discardedReminderTimes||[]).length>0;
+    const messageParts=['未保存の通知設定があります'];
+    if(hasDiscarded) messageParts.push('無効な時刻を除外しました');
     updateNotificationUi({
       statusEl: el.notifStatus,
       buttonEl: el.notifBtn,
       nextLabelEl: el.notifHelp,
       plannedAt,
       settings: draft,
-      message: '未保存の通知設定があります'
+      message: messageParts.join(' / ')
     });
+    if(el.cfgSave){ el.cfgSave.disabled=false; }
   }
 
   const logManager=createLogManager({
@@ -1712,6 +1802,7 @@ function createAppRuntime(){
         plannedAt: computeNextNotificationCheckTime(notifSettings),
         settings: notifSettings
       });
+      if(el.cfgSave){ el.cfgSave.disabled=false; }
       el.cfgModal.style.display='flex';
     });
   }
@@ -1777,9 +1868,17 @@ function createAppRuntime(){
         CFG.studyMode=STUDY_MODE_READ;
       }
       if(el.cfgSpeechVoice){ CFG.speechVoice=el.cfgSpeechVoice.value||''; }
-      const nextNotifSettings=readNotificationSettingsFromForm();
+      const { settings: nextNotifSettings, validation: notifValidation } = readNotificationSettingsFromForm();
+      if(notifValidation.hasErrors){
+        toast('通知時刻を修正してください');
+        previewNotificationSettings();
+        return;
+      }
+      const notifMessage=(notifValidation.discardedReminderTimes||[]).length
+        ? '通知設定を保存しました（無効な時刻を除外しました）'
+        : '通知設定を保存しました';
       const appliedNotif=notifHandlers?.applySettings
-        ? notifHandlers.applySettings(nextNotifSettings, { persist:true })
+        ? notifHandlers.applySettings(nextNotifSettings, { persist:true, message: notifMessage })
         : null;
       if(appliedNotif && appliedNotif.settings){
         notifSettings=appliedNotif.settings;
@@ -1792,7 +1891,7 @@ function createAppRuntime(){
           nextLabelEl: el.notifHelp,
           plannedAt,
           settings: notifSettings,
-          message: '通知設定を保存しました'
+          message: notifMessage
         });
       }
       saveCfg(CFG);
