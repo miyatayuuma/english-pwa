@@ -68,13 +68,9 @@ function renderFieldState({ form, errors, submitButton, statusEl }) {
   });
 
   if (submitButton) {
-    const isLoading = statusEl?.dataset.state === 'loading';
+    const submitState = form.dataset.submitState ?? statusEl?.dataset.state;
+    const isLoading = submitState === 'loading';
     submitButton.disabled = isLoading || Object.keys(errors).length > 0;
-  }
-
-  if (statusEl?.dataset.state !== 'loading') {
-    statusEl.dataset.state = 'idle';
-    statusEl.textContent = '';
   }
 }
 
@@ -88,6 +84,8 @@ export function setSignupSubmitState(formElement, state, message = '') {
     statusEl.textContent = message;
   }
 
+  formElement.dataset.submitState = state;
+
   if (submitButton) {
     submitButton.disabled = state === 'loading';
   }
@@ -98,6 +96,10 @@ export function attachSignupValidation(formElement) {
 
   const submitButton = formElement.querySelector('[type="submit"]');
   const statusEl = formElement.querySelector('#signupStatus');
+
+  if (!formElement.dataset.submitState) {
+    formElement.dataset.submitState = statusEl?.dataset.state ?? 'idle';
+  }
 
   const handler = () => {
     const formData = {
