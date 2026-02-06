@@ -19,3 +19,14 @@
 項目ごとの `level_last` / `level_best` はブラウザの `localStorage` に保存され、同じ端末・同じブラウザで学習再開時に引き継がれます。
 
 さらに、Apps Script へ送信される学習ログには `level_last` と `level_best` が含まれ、Google スプレッドシートにも履歴として蓄積されます（`GAS/WebApp.gs`）。
+
+## まとめて実行（タスク1〜4）
+
+UI/品質改善タスク（1〜4）の実装状態を一発で確認するには、以下を実行してください。
+
+```bash
+bash scripts/run-task-1-4.sh
+```
+
+成功すると、各タスクのチェックが `[PASS]` で表示されます。
+
