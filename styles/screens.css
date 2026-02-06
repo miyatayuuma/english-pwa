@@ -215,6 +215,10 @@
     #footerInfoBtn{width:28px;height:28px;border-radius:50%;border:1px solid transparent;background:rgba(255,255,255,.04);color:var(--muted);display:grid;place-items:center;cursor:pointer;padding:0;font-size:16px;transition:background .18s ease,border-color .18s ease,color .18s ease}
     #footerInfoBtn:hover{background:rgba(98,213,255,.12);color:var(--txt)}
     #footerInfoBtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-color:rgba(98,213,255,.45)}
+
+    .footer-trust-links{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .footer-trust-links a{font-size:12px;color:var(--muted);text-decoration:none}
+    .footer-trust-links a:hover,.footer-trust-links a:focus-visible{color:var(--txt);text-decoration:underline}
     .version-tag{font-size:12px;color:var(--muted)}
     footer .version-tag{padding-left:6px;white-space:nowrap}
     #cfgBox .version-tag{margin:0 0 6px 0}
@@ -328,3 +332,8 @@
 .field-error[data-visible="false"]{opacity:.35}
 .signup .btn{align-self:flex-end;padding:12px 18px;font-size:15px;border-radius:12px}
 .signup .btn:disabled{opacity:.5;cursor:not-allowed}
+
+
+.signup-footer{display:flex;gap:14px;justify-content:center;margin-top:16px}
+.signup-footer a{font-size:12px;color:var(--muted);text-decoration:none}
+.signup-footer a:hover,.signup-footer a:focus-visible{color:var(--txt);text-decoration:underline}

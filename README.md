@@ -1,13 +1,21 @@
 # english-pwa
-A personal app for tracking English learning progress
+毎日の音読と発話練習を、短時間で積み上げるための英語学習アプリです。
 
-## Recent updates
+## このプロダクトで得られる価値
 
-- Added staged hinting for reading cards (no hint → English → Japanese) controlled by upward swipes.
-- Introduced proficiency tracking (Lv1–Lv5) based on match accuracy and hint usage, with a per-item dashboard.
+- **話せる実感が続く**: 1問ごとに一致率やヒント活用状況を確認でき、次の改善ポイントが明確になります。
+- **学習が途切れにくい**: セッション目標・日次目標・進捗サマリーで、今日やるべき量がひと目でわかります。
+- **復習の優先度がわかる**: 習熟レベル（Lv1–Lv5）に基づいて、定着が必要な項目を効率よく練習できます。
 
-## Level data persistence
+## 主な機能
 
-The last recorded level and best level for each item are stored locally in the browser via `localStorage`. The front-end keeps this copy so that level filters and level displays can resume where the learner left off on the same browser profile.
+- 段階ヒント（ノーヒント → 英文ヒント → 和訳ヒント）
+- 発話一致率をもとにしたレベル判定（Lv1–Lv5）
+- 日次・セッション目標の可視化
+- Google Apps Script 連携による学習ログ保存
 
-In addition, each practice attempt that is sent to Apps Script includes the current `level_last` and `level_best` values. The GAS backend appends those fields to the Google Spreadsheet (see `GAS/WebApp.gs`), so the spreadsheet retains a history of the level information alongside the other speech log metrics.
+## データ保存について
+
+項目ごとの `level_last` / `level_best` はブラウザの `localStorage` に保存され、同じ端末・同じブラウザで学習再開時に引き継がれます。
+
+さらに、Apps Script へ送信される学習ログには `level_last` と `level_best` が含まれ、Google スプレッドシートにも履歴として蓄積されます（`GAS/WebApp.gs`）。

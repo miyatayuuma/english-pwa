@@ -272,11 +272,11 @@ function createAppRuntime(){
     const sessionReached=sessionRatio>=1 && goalState.sessionTarget>0;
     if(dailyReached && !goalMilestones.daily){
       goalMilestones.daily=true;
-      toast('今日の目標を達成！', 2200);
+      toast('今日の目標達成！学習成果がしっかり積み上がっています。', 2200);
     }
     if(sessionReached && !goalMilestones.session){
       goalMilestones.session=true;
-      toast('セッション目標クリア！', 2200);
+      toast('セッション目標をクリア！この調子で定着を進めましょう。', 2200);
     }
     if(!dailyReached) goalMilestones.daily=false;
     if(!sessionReached) goalMilestones.session=false;
@@ -381,8 +381,8 @@ function createAppRuntime(){
     if(goalOverviewShown) return;
     ensureDailyGoalFresh();
     const dailyRemaining=Math.max(0, goalState.dailyTarget-goalState.dailyDone);
-    const dailyText=dailyRemaining>0 ? `今日の目標まであと${dailyRemaining}件` : '今日の目標は達成済み';
-    const sessionText=`今回のセッション目標は${goalState.sessionTarget}件`;
+    const dailyText=dailyRemaining>0 ? `今日の目標まであと${dailyRemaining}件です` : '今日の目標は達成済みです';
+    const sessionText=`今回の学習目標は${goalState.sessionTarget}件です`;
     toast(`${dailyText} / ${sessionText}`, 3200);
     goalOverviewShown=true;
   }
@@ -1109,7 +1109,7 @@ function createAppRuntime(){
   function maybeShowFooterInfoIntroToast(){
     if(footerInfoIntroShown) return;
     footerInfoIntroShown=true;
-    setTimeout(()=>{ toast('ℹ️ ボタンから詳細を確認できます', 2200); }, 500);
+    setTimeout(()=>{ toast('ℹ️ ボタンから学習ルールを確認できます', 2200); }, 500);
   }
 
   function initFooterInfoButton(){
@@ -2852,10 +2852,10 @@ function createAppRuntime(){
     setMicState(false);
     el.mic.disabled = true;
     el.pbar.value = 0;
-    el.footer.textContent = hasQueue ? '準備が整い次第、自動で開始します' : (emptyWithSearch ? '検索条件に一致する問題がありません' : 'キューが空です');
+    el.footer.textContent = hasQueue ? '準備ができ次第、学習を自動で開始します' : (emptyWithSearch ? '検索条件に一致する学習項目がありません' : '出題できる学習項目がありません');
     if(emptyWithSearch){
       if(lastEmptySearchToast!==query){
-        toast('検索条件に一致する項目がありません');
+        toast('検索条件に一致する学習項目がありません');
         lastEmptySearchToast=query;
       }
     }else{
@@ -2874,7 +2874,7 @@ function createAppRuntime(){
       updatePlayButtonAvailability();
       const it=QUEUE[i];
       if(!it){
-        el.footer.textContent='キューが空です';
+        el.footer.textContent='出題できる学習項目がありません';
         clearAudioSource();
         return;
       }
@@ -3010,7 +3010,7 @@ function createAppRuntime(){
     rebuildAndRender(true,{autoPlay:true})
       .then(()=>{
         if(!QUEUE.length){
-          el.footer.textContent='次のセクションに出題がありません';
+          el.footer.textContent='次のセクションに学習項目がありません';
         }
       })
       .catch(err=>{ console.error(err); toast('次のセクションの読み込みに失敗しました'); });
@@ -3028,7 +3028,7 @@ function createAppRuntime(){
       rebuildAndRender(true,{autoStart:true, autoPlay:allowAuto}).then(()=>{
         if(!QUEUE.length){
           clearRecoverySessionTarget();
-          toast('出題範囲にカードがありません');
+          toast('この条件で学習できる項目がありません');
         }
       }).catch(()=>{ clearRecoverySessionTarget(); });
       return;
@@ -3042,11 +3042,11 @@ function createAppRuntime(){
 
   async function nextCard(first=false, autoPlay=false){
     cancelAutoAdvance();
-    if(!QUEUE.length){ el.footer.textContent='キューが空です'; clearAudioSource(); stopAudio(); return; }
+    if(!QUEUE.length){ el.footer.textContent='出題できる学習項目がありません'; clearAudioSource(); stopAudio(); return; }
     if(!sessionActive) return;
     if(!first && idx>=QUEUE.length-1){
       if(advanceToNextSection()) return;
-      toast('最後のセクションまで完了しました');
+      toast('すべてのセクションを完了しました！お疲れさまでした。');
       await finalizeActiveSession({ reason:'completed' });
       return;
     }
@@ -3611,7 +3611,7 @@ function createAppRuntime(){
         const baseToast = evaluation?.perfectNoHint ? 'ノーヒントで満点クリア！' : '素晴らしい！ノーヒント合格';
         toast(baseToast, 2000);
       }else{
-        toast('Great! 合格です', 1600);
+        toast('合格です！着実にスピーキング力が伸びています。', 1600);
       }
       scheduleAutoAdvance(900);
       recordStudyProgress({
@@ -3638,20 +3638,20 @@ function createAppRuntime(){
         const optimizedStage=optimizeHintStageForError(primaryErrorType);
         if(optimizedStage>BASE_HINT_STAGE){
           setHintStage(optimizedStage);
-          el.footer.textContent = `同じエラーが続いたためヒントを最適化しました（${sameErrorStreak}回）`;
+          el.footer.textContent = `つまずきに合わせてヒントを最適化しました（${sameErrorStreak}回）`;
         }
       }
       playTone('fail');
       if(failCount>=FAIL_LIMIT){
-        el.footer.textContent = `3回失敗。${levelLabel}で次へ進みます`;
-        toast('不合格で次へ進みます', 1600);
+        el.footer.textContent = `3回チャレンジしたため、${levelLabel}で次の学習へ進みます`;
+        toast('次の問題へ進んでリズムよく学習を続けましょう。', 1600);
         el.mic.disabled=true;
         scheduleAutoAdvance(900);
       }else if(!el.footer.textContent){
-        el.footer.textContent = `一致率${pct}%：${levelLabel}${bestLabel} 維持のため再挑戦 (${failCount}/${FAIL_LIMIT})`;
-        toast('70%未満。もう一度チャレンジ！', 1600);
+        el.footer.textContent = `一致率${pct}%：${levelLabel}${bestLabel} 定着のため再チャレンジ (${failCount}/${FAIL_LIMIT})`;
+        toast('もう一度チャレンジして、正確さを高めましょう。', 1600);
       }else{
-        toast('70%未満。もう一度チャレンジ！', 1600);
+        toast('もう一度チャレンジして、正確さを高めましょう。', 1600);
       }
     }
     updateAttemptInfo();
