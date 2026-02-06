@@ -49,6 +49,45 @@
 
   <main>
     <section id="homeView">
+      <section class="onboarding-card" id="onboardingCard" aria-labelledby="onboardingTitle" hidden>
+        <div class="onboarding-card__header">
+          <p class="onboarding-card__eyebrow">初回セットアップ</p>
+          <h2 id="onboardingTitle">3ステップ診断で学習プランを作成</h2>
+        </div>
+        <p class="onboarding-card__note" id="onboardingStepLabel">ステップ1/3：現在の英語レベルを選んでください</p>
+        <div class="onboarding-step" data-step="1">
+          <label for="onboardingLevel">自己申告レベル</label>
+          <select id="onboardingLevel">
+            <option value="">選択してください</option>
+            <option value="beginner">これから始める</option>
+            <option value="intermediate">基礎はあるが会話が不安</option>
+            <option value="advanced">日常会話はできる</option>
+          </select>
+        </div>
+        <div class="onboarding-step" data-step="2" hidden>
+          <label for="onboardingPurpose">学習目的</label>
+          <select id="onboardingPurpose">
+            <option value="">選択してください</option>
+            <option value="travel">旅行・日常会話</option>
+            <option value="business">仕事・ミーティング</option>
+            <option value="exam">試験・資格対策</option>
+          </select>
+        </div>
+        <div class="onboarding-step" data-step="3" hidden>
+          <label for="onboardingMinutes">1日の学習可能時間</label>
+          <select id="onboardingMinutes">
+            <option value="">選択してください</option>
+            <option value="10">10分以内</option>
+            <option value="20">20分前後</option>
+            <option value="30">30分以上</option>
+          </select>
+        </div>
+        <div class="onboarding-card__actions">
+          <button class="btn" id="onboardingBack" type="button">戻る</button>
+          <button class="btn btn--primary" id="onboardingNext" type="button">次へ</button>
+        </div>
+      </section>
+
       <div class="home-cta-wrap">
         <button class="btn btn--primary home-cta" id="startStudyCta" type="button">いまの実力に合った学習を始める</button>
       </div>
@@ -103,6 +142,14 @@
           </div>
         </div>
       </div>
+
+      <section class="personal-plan" id="personalPlanSummary" hidden>
+        <div class="personal-plan__header">
+          <p class="personal-plan__title">あなた向けプラン</p>
+          <button id="personalPlanToggle" class="overview-toggle" type="button" aria-expanded="true" aria-controls="personalPlanBody" aria-label="あなた向けプランを折りたたむ">⌄</button>
+        </div>
+        <div class="personal-plan__body" id="personalPlanBody"></div>
+      </section>
 
       <section class="overview-card" id="dailyOverviewCard">
       <div class="overview-card__header">
