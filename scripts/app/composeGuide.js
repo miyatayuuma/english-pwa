@@ -3,7 +3,7 @@ export function createComposeGuide({
   composeTokensEl,
   composeNoteEl,
   defaultNote = '',
-  isComposeMode = () => false,
+  getTaskType = () => 'read',
   toks,
   shuffledCopy
 } = {}) {
@@ -146,34 +146,73 @@ export function createComposeGuide({
     return result;
   };
 
+  const getPartialHints = (item) => {
+    const hints = [];
+    if (item && typeof item.prompt_ja === 'string' && item.prompt_ja.trim()) {
+      hints.push(`和文プロンプト: ${item.prompt_ja.trim()}`);
+    }
+    if (item && Array.isArray(item.paraphrases) && item.paraphrases.length) {
+      hints.push(`言い換え: ${item.paraphrases.slice(0, 2).join(' / ')}`);
+    }
+    if (item && typeof item.focus_grammar === 'string' && item.focus_grammar.trim()) {
+      hints.push(`文法フォーカス: ${item.focus_grammar.trim()}`);
+    }
+    return hints;
+  };
+
   const setup = (item) => {
     if (!composeGuideEl || !composeTokensEl) {
       nodes.length = 0;
       active = false;
       return;
     }
-    if (!isComposeMode() || !item) {
+    const taskType = typeof getTaskType === 'function' ? getTaskType(item) : 'read';
+    const isComposeTask = taskType === 'compose';
+    const isGenerateTask = taskType === 'generate';
+    if ((!isComposeTask && !isGenerateTask) || !item) {
       reset();
       return;
     }
+
     const chunks = buildComposeChunks(item);
-    if (!chunks.length) {
+    const partialHints = getPartialHints(item);
+    const wordBankEnabled = isComposeTask || !!item?.generate_word_bank;
+    if (!chunks.length && wordBankEnabled) {
       reset();
       return;
     }
+
     active = true;
     clearTokens();
-    const list = typeof shuffledCopy === 'function' ? shuffledCopy(chunks) : chunks.slice();
-    for (const chunk of list) {
-      const tokenEl = document.createElement('span');
-      tokenEl.className = 'compose-token';
-      tokenEl.setAttribute('role', 'listitem');
-      tokenEl.textContent = chunk.display;
-      composeTokensEl.appendChild(tokenEl);
-      nodes.push({ el: tokenEl, tokens: Array.isArray(chunk.tokens) ? chunk.tokens.slice() : [] });
+    if (wordBankEnabled) {
+      const list = typeof shuffledCopy === 'function' ? shuffledCopy(chunks) : chunks.slice();
+      for (const chunk of list) {
+        const tokenEl = document.createElement('span');
+        tokenEl.className = 'compose-token';
+        tokenEl.setAttribute('role', 'listitem');
+        tokenEl.textContent = chunk.display;
+        composeTokensEl.appendChild(tokenEl);
+        nodes.push({ el: tokenEl, tokens: Array.isArray(chunk.tokens) ? chunk.tokens.slice() : [] });
+      }
     }
+
+    if (!wordBankEnabled) {
+      const ghost = document.createElement('span');
+      ghost.className = 'compose-token';
+      ghost.setAttribute('role', 'listitem');
+      ghost.textContent = '語群なしモード';
+      composeTokensEl.appendChild(ghost);
+    }
+
     if (composeNoteEl) {
-      composeNoteEl.textContent = `シャッフルされた ${chunks.length} 個の語句を参考に、正しい語順を意識して発話しましょう。`;
+      if (isComposeTask) {
+        composeNoteEl.textContent = `整序英作文: シャッフルされた ${chunks.length} 個の語句を使って語順を整えましょう。`;
+      } else {
+        const baseNote = wordBankEnabled
+          ? `和文→英文生成: 語群ありで英作文を組み立てましょう。`
+          : '和文→英文生成: 語群なし。自力で英文を組み立てましょう。';
+        composeNoteEl.textContent = partialHints.length ? `${baseNote} / ${partialHints.join(' / ')}` : baseNote;
+      }
     }
     composeGuideEl.classList.add('show');
     composeGuideEl.setAttribute('aria-hidden', 'false');

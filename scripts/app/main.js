@@ -355,7 +355,7 @@ function createAppRuntime(){
 
 
   // ===== Elements =====
-  const el={ app:qs('#app'), headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerMessage'), nextAction:qs('#nextActionMessage'), footerInfoContainer:qs('#footerInfo'), footerInfoBtn:qs('#footerInfoBtn'), footerInfoDialog:qs('#footerInfoDialog'), footerInfoDialogBody:qs('#footerInfoDialogBody'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), composeGuide:qs('#composeGuide'), composeTokens:qs('#composeTokens'), composeNote:qs('#composeNote'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSpeechVoice:qs('#cfgSpeechVoice'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speedCtrl:qs('.speed-ctrl'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus'), notifTimeList:qs('#notifTimeList'), notifTimeAdd:qs('#notifTimeAdd'), notifTriggerDailyZero:qs('#notifTriggerDailyZero'), notifTriggerDailyCompare:qs('#notifTriggerDailyCompare'), notifTriggerWeekly:qs('#notifTriggerWeekly'), notifHelp:qs('#notifHelp'), dailyGoalCard:qs('#dailyGoalCard'), dailyGoalBody:qs('#dailyGoalBody'), dailyGoalToggle:qs('#dailyGoalToggle'), dailyGoalRing:qs('#dailyGoalRing'), dailyGoalPercent:qs('#dailyGoalPercent'), dailyGoalTag:qs('#dailyGoalTag'), dailyGoalDone:qs('#dailyGoalDone'), dailyGoalTarget:qs('#dailyGoalTarget'), dailyGoalHint:qs('#dailyGoalHint'), sessionGoalCard:qs('#sessionGoalCard'), sessionGoalBody:qs('#sessionGoalBody'), sessionGoalToggle:qs('#sessionGoalToggle'), sessionGoalRing:qs('#sessionGoalRing'), sessionGoalPercent:qs('#sessionGoalPercent'), sessionGoalTag:qs('#sessionGoalTag'), sessionGoalDone:qs('#sessionGoalDone'), sessionGoalTarget:qs('#sessionGoalTarget'), sessionGoalSlider:qs('#sessionGoalSlider'), sessionGoalBarFill:qs('#sessionGoalBarFill'), dailyOverviewCard:qs('#dailyOverviewCard'), dailyOverviewBody:qs('#dailyOverviewBody'), dailyOverviewToggle:qs('#dailyOverviewToggle'), dailyOverviewDiff:qs('#dailyOverviewDiff'), dailyOverviewTrendStatus:qs('#dailyOverviewTrendStatus'), dailyOverviewNote:qs('#dailyOverviewNote'), overviewHighlights:qs('#dailyOverviewHighlights'), overviewTodayFill:qs('#overviewTodayFill'), overviewYesterdayFill:qs('#overviewYesterdayFill'), overviewTodayValue:qs('#overviewTodayValue'), overviewYesterdayValue:qs('#overviewYesterdayValue'), overviewPromotionStatus:qs('#overviewPromotionStatus'), overviewMilestones:qs('#overviewMilestones'), overviewQuickStart:qs('#overviewQuickStart') };
+  const el={ app:qs('#app'), headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerMessage'), nextAction:qs('#nextActionMessage'), footerInfoContainer:qs('#footerInfo'), footerInfoBtn:qs('#footerInfoBtn'), footerInfoDialog:qs('#footerInfoDialog'), footerInfoDialogBody:qs('#footerInfoDialogBody'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), composeGuide:qs('#composeGuide'), composeTokens:qs('#composeTokens'), composeNote:qs('#composeNote'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSpeechVoice:qs('#cfgSpeechVoice'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speedCtrl:qs('.speed-ctrl'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus'), notifTimeList:qs('#notifTimeList'), notifTimeAdd:qs('#notifTimeAdd'), notifTriggerDailyZero:qs('#notifTriggerDailyZero'), notifTriggerDailyCompare:qs('#notifTriggerDailyCompare'), notifTriggerWeekly:qs('#notifTriggerWeekly'), notifHelp:qs('#notifHelp'), dailyGoalCard:qs('#dailyGoalCard'), dailyGoalBody:qs('#dailyGoalBody'), dailyGoalToggle:qs('#dailyGoalToggle'), dailyGoalRing:qs('#dailyGoalRing'), dailyGoalPercent:qs('#dailyGoalPercent'), dailyGoalTag:qs('#dailyGoalTag'), dailyGoalDone:qs('#dailyGoalDone'), dailyGoalTarget:qs('#dailyGoalTarget'), dailyGoalHint:qs('#dailyGoalHint'), sessionGoalCard:qs('#sessionGoalCard'), sessionGoalBody:qs('#sessionGoalBody'), sessionGoalToggle:qs('#sessionGoalToggle'), sessionGoalRing:qs('#sessionGoalRing'), sessionGoalPercent:qs('#sessionGoalPercent'), sessionGoalTag:qs('#sessionGoalTag'), sessionGoalDone:qs('#sessionGoalDone'), sessionGoalTarget:qs('#sessionGoalTarget'), sessionGoalSlider:qs('#sessionGoalSlider'), sessionGoalBarFill:qs('#sessionGoalBarFill'), dailyOverviewCard:qs('#dailyOverviewCard'), dailyOverviewBody:qs('#dailyOverviewBody'), dailyOverviewToggle:qs('#dailyOverviewToggle'), dailyOverviewDiff:qs('#dailyOverviewDiff'), dailyOverviewTrendStatus:qs('#dailyOverviewTrendStatus'), dailyOverviewNote:qs('#dailyOverviewNote'), overviewHighlights:qs('#dailyOverviewHighlights'), overviewTodayFill:qs('#overviewTodayFill'), overviewYesterdayFill:qs('#overviewYesterdayFill'), overviewTodayValue:qs('#overviewTodayValue'), overviewYesterdayValue:qs('#overviewYesterdayValue'), overviewPromotionStatus:qs('#overviewPromotionStatus'), overviewTaskBalance:qs('#overviewTaskBalance'), overviewMilestones:qs('#overviewMilestones'), overviewQuickStart:qs('#overviewQuickStart') };
   el.cfgPlaybackMode=qsa('input[name="cfgPlaybackMode"]');
   el.cfgStudyMode=qsa('input[name="cfgStudyMode"]');
   const versionTargets=qsa('[data-app-version]');
@@ -374,7 +374,7 @@ function createAppRuntime(){
     composeTokensEl: el.composeTokens,
     composeNoteEl: el.composeNote,
     defaultNote: composeNoteDefault,
-    isComposeMode,
+    getTaskType: () => getCurrentTaskType(),
     toks,
     shuffledCopy
   });
@@ -718,6 +718,17 @@ function createAppRuntime(){
       },
       promotion:{ note:promotionNote, tone:promotionTone },
       review:{ dueCount, completionRate, completionLabel:`${Math.round(completionRate*100)}%` },
+      taskBalance:(()=>{
+        const counts={ read:0, compose:0, generate:0 };
+        for(const entry of (Array.isArray(QUEUE)?QUEUE:[])){
+          const type=String(entry?.taskType||'read').toLowerCase();
+          if(Object.prototype.hasOwnProperty.call(counts,type)) counts[type]+=1;
+          else counts.read+=1;
+        }
+        const total=Math.max(0, counts.read+counts.compose+counts.generate);
+        const dominant=total>0 ? Math.max(counts.read,counts.compose,counts.generate)/total : 0;
+        return { counts, total, dominant };
+      })(),
       milestones:buildRecentLevelMilestones(4),
       goalSnapshot: summary.goalSnapshot,
       sections: summary.sections,
@@ -935,6 +946,22 @@ function createAppRuntime(){
       if(model.promotion.tone==='ready') el.overviewPromotionStatus.classList.add('is-ready');
       else if(model.promotion.tone==='cooldown') el.overviewPromotionStatus.classList.add('is-cooldown');
       else if(model.promotion.tone==='progress') el.overviewPromotionStatus.classList.add('is-wait');
+    }
+    if(el.overviewTaskBalance){
+      const bal=model.taskBalance||{};
+      const c=bal.counts||{};
+      const read=Math.max(0, Number(c.read)||0);
+      const compose=Math.max(0, Number(c.compose)||0);
+      const generate=Math.max(0, Number(c.generate)||0);
+      const total=Math.max(0, Number(bal.total)||0);
+      const dominant=Math.max(0, Number(bal.dominant)||0);
+      el.overviewTaskBalance.textContent=`read ${read} / compose ${compose} / generate ${generate}${total>0?`（計${total}）`:''}`;
+      el.overviewTaskBalance.classList.remove('is-ready','is-wait','is-cooldown');
+      if(total>0 && dominant>=0.7){
+        el.overviewTaskBalance.classList.add('is-wait');
+      }else{
+        el.overviewTaskBalance.classList.add('is-ready');
+      }
     }
     renderOverviewHighlights(model.highlights);
     renderOverviewMilestones(model.milestones);
@@ -1247,7 +1274,7 @@ function createAppRuntime(){
   let sameErrorStreak=0;
 
   function getMaxHintStage(){
-    return isComposeMode() ? COMPOSE_HINT_STAGE_EN : BASE_HINT_STAGE+2;
+    return isProductionTask() ? COMPOSE_HINT_STAGE_EN : BASE_HINT_STAGE+2;
   }
 
   function getFirstHintStage(){
@@ -1255,15 +1282,15 @@ function createAppRuntime(){
   }
 
   function getJapaneseHintStage(){
-    return isComposeMode() ? COMPOSE_HINT_STAGE_JA : BASE_HINT_STAGE+2;
+    return isProductionTask() ? COMPOSE_HINT_STAGE_JA : BASE_HINT_STAGE+2;
   }
 
   function getAudioUnlockStage(){
-    return isComposeMode() ? COMPOSE_HINT_STAGE_AUDIO : BASE_HINT_STAGE;
+    return isProductionTask() ? COMPOSE_HINT_STAGE_AUDIO : BASE_HINT_STAGE;
   }
 
   function getEnglishRevealStage(){
-    return isComposeMode() ? COMPOSE_HINT_STAGE_EN : BASE_HINT_STAGE+1;
+    return isProductionTask() ? COMPOSE_HINT_STAGE_EN : BASE_HINT_STAGE+1;
   }
 
   function isAudioHintUnlocked(stage=hintStage){
@@ -1310,7 +1337,7 @@ function createAppRuntime(){
     hintStage=next;
     if(reset){ maxHintStageUsed=next; }
     else if(next>maxHintStageUsed){ maxHintStageUsed=next; }
-    const compose=isComposeMode();
+    const compose=isProductionTask();
     const showEnglish=next>=getEnglishRevealStage();
     const showJapanese=next>=getJapaneseHintStage();
     const card=el.card;
@@ -1344,7 +1371,7 @@ function createAppRuntime(){
     const nextStage=hintStage>=maxStage ? BASE_HINT_STAGE : hintStage+1;
     const changed=setHintStage(nextStage);
     if(changed){
-      if(isComposeMode()){
+      if(isProductionTask()){
         if(hintStage===COMPOSE_HINT_STAGE_JA){ el.footer.textContent='和訳ヒントを表示しました。もう一度下スワイプで音声ヒント（再生ボタン）が使えます。さらにもう一度で英文ヒント。'; }
         else if(hintStage===COMPOSE_HINT_STAGE_AUDIO){ el.footer.textContent='音声ヒントを有効化しました。再生ボタンが使えます。さらにもう一度下スワイプで英文ヒント。'; }
         else if(hintStage===COMPOSE_HINT_STAGE_EN){ el.footer.textContent='英文ヒントを表示しました。'; }
@@ -1458,6 +1485,11 @@ function createAppRuntime(){
   }
 
   // ===== Config =====
+  const TASK_TYPE_READ='read';
+  const TASK_TYPE_COMPOSE='compose';
+  const TASK_TYPE_GENERATE='generate';
+  const TASK_TYPE_ROTATION=[TASK_TYPE_READ,TASK_TYPE_COMPOSE,TASK_TYPE_GENERATE];
+
   const STUDY_MODE_READ='read';
   const STUDY_MODE_COMPOSE='compose';
   function loadCfg(){
@@ -1486,8 +1518,16 @@ function createAppRuntime(){
   function getStudyMode(){
     return CFG.studyMode===STUDY_MODE_COMPOSE ? STUDY_MODE_COMPOSE : STUDY_MODE_READ;
   }
+  function getCurrentTaskType(item=currentItem){
+    const type=String(item?.taskType||'').toLowerCase();
+    return TASK_TYPE_ROTATION.includes(type) ? type : TASK_TYPE_READ;
+  }
   function isComposeMode(){
     return getStudyMode()===STUDY_MODE_COMPOSE;
+  }
+  function isProductionTask(item=currentItem){
+    const type=getCurrentTaskType(item);
+    return type===TASK_TYPE_COMPOSE || type===TASK_TYPE_GENERATE;
   }
   function isAutoPlayAllowed(){
     return !isComposeMode();
@@ -2399,20 +2439,49 @@ function createAppRuntime(){
         return String(a.id).localeCompare(String(b.id));
       });
     }
-    return items.map(it=>{
+    const daySeed=Math.floor(Date.now()/DAY_MS);
+    const hashId=(raw)=>{
+      const text=String(raw||'');
+      let h=0;
+      for(let i=0;i<text.length;i+=1){ h=((h<<5)-h)+text.charCodeAt(i); h|=0; }
+      return Math.abs(h);
+    };
+    const normalizeTaskTypes=(raw)=>{
+      if(!Array.isArray(raw) || !raw.length) return TASK_TYPE_ROTATION.slice();
+      const list=[];
+      for(const entry of raw){
+        const t=String(entry||'').toLowerCase().trim();
+        if(TASK_TYPE_ROTATION.includes(t) && !list.includes(t)) list.push(t);
+      }
+      return list.length ? list : TASK_TYPE_ROTATION.slice();
+    };
+    const queue=[];
+    for(const it of items){
       const forceSpeech=!!(it&&(
         it.forceSpeech || it.force_speech || it.speech_force || it.speechOnly || it.speech_only
       ));
-      return {
+      const base={
         id:it.id,
         en:it.en,
         ja:it.ja,
         tags:it.tags||'',
         chunks_json:it.chunks||'[]',
         audio_fn:it.audio_fn||'',
-        forceSpeech
+        forceSpeech,
+        paraphrases:Array.isArray(it.paraphrases)?it.paraphrases.filter(Boolean):[],
+        prompt_ja:typeof it.prompt_ja==='string'?it.prompt_ja:'',
+        focus_grammar:typeof it.focus_grammar==='string'?it.focus_grammar:'',
+        generate_word_bank:!!it.generate_word_bank
       };
-    });
+      if(isComposeMode()){
+        const types=normalizeTaskTypes(it.task_types);
+        const idxStart=(hashId(it.id)+daySeed)%types.length;
+        queue.push({ ...base, taskType:types[idxStart] });
+      }else{
+        queue.push({ ...base, taskType:TASK_TYPE_READ });
+      }
+    }
+    return queue;
   }
 
   // Audio resolve: DIR (folder) -> OPFS -> base URL
