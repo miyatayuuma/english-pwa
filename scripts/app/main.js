@@ -26,7 +26,8 @@ import {
   saveNotificationSettings,
   normalizeNotificationSettings,
   computeNextNotificationCheckTime,
-  ensureNotificationLoop
+  ensureNotificationLoop,
+  getConsecutiveNoStudyDays
 } from '../state/studyLog.js';
 import { createAudioController } from '../audio/controller.js';
 import {
@@ -92,7 +93,9 @@ function createAppRuntime(){
   let footerInfoIntroShown=false;
   const DEFAULT_DAILY_GOAL=10;
   const DEFAULT_SESSION_GOAL=5;
+  const RECOVERY_SESSION_TARGET=3;
   const goalState={ dailyTarget:DEFAULT_DAILY_GOAL, sessionTarget:DEFAULT_SESSION_GOAL, dailyDone:0, sessionDone:0, todayKey:'' };
+  let recoverySessionBackupTarget=null;
   const goalMilestones={ daily:false, session:false };
   let goalOverviewShown=false;
   let lastPromotionGoal=null;
@@ -313,6 +316,22 @@ function createAppRuntime(){
     updateDailyOverview();
   }
 
+  function activateRecoverySessionTarget(){
+    if(recoverySessionBackupTarget!==null) return;
+    recoverySessionBackupTarget=goalState.sessionTarget;
+    goalState.sessionTarget=RECOVERY_SESSION_TARGET;
+    applyGoalTargetsToControls();
+    updateGoalProgressFromMetrics();
+  }
+
+  function clearRecoverySessionTarget(){
+    if(recoverySessionBackupTarget===null) return;
+    goalState.sessionTarget=recoverySessionBackupTarget;
+    recoverySessionBackupTarget=null;
+    applyGoalTargetsToControls();
+    updateGoalProgressFromMetrics();
+  }
+
   function handleSessionGoalInput(ev){
     const value=normalizeGoalValue(ev?.target?.value, goalState.sessionTarget);
     goalState.sessionTarget=value;
@@ -355,7 +374,7 @@ function createAppRuntime(){
 
 
   // ===== Elements =====
-  const el={ app:qs('#app'), headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerMessage'), nextAction:qs('#nextActionMessage'), footerInfoContainer:qs('#footerInfo'), footerInfoBtn:qs('#footerInfoBtn'), footerInfoDialog:qs('#footerInfoDialog'), footerInfoDialogBody:qs('#footerInfoDialogBody'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), composeGuide:qs('#composeGuide'), composeTokens:qs('#composeTokens'), composeNote:qs('#composeNote'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSpeechVoice:qs('#cfgSpeechVoice'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speedCtrl:qs('.speed-ctrl'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus'), notifTimeList:qs('#notifTimeList'), notifTimeAdd:qs('#notifTimeAdd'), notifTriggerDailyZero:qs('#notifTriggerDailyZero'), notifTriggerDailyCompare:qs('#notifTriggerDailyCompare'), notifTriggerWeekly:qs('#notifTriggerWeekly'), notifHelp:qs('#notifHelp'), dailyGoalCard:qs('#dailyGoalCard'), dailyGoalBody:qs('#dailyGoalBody'), dailyGoalToggle:qs('#dailyGoalToggle'), dailyGoalRing:qs('#dailyGoalRing'), dailyGoalPercent:qs('#dailyGoalPercent'), dailyGoalTag:qs('#dailyGoalTag'), dailyGoalDone:qs('#dailyGoalDone'), dailyGoalTarget:qs('#dailyGoalTarget'), dailyGoalHint:qs('#dailyGoalHint'), sessionGoalCard:qs('#sessionGoalCard'), sessionGoalBody:qs('#sessionGoalBody'), sessionGoalToggle:qs('#sessionGoalToggle'), sessionGoalRing:qs('#sessionGoalRing'), sessionGoalPercent:qs('#sessionGoalPercent'), sessionGoalTag:qs('#sessionGoalTag'), sessionGoalDone:qs('#sessionGoalDone'), sessionGoalTarget:qs('#sessionGoalTarget'), sessionGoalSlider:qs('#sessionGoalSlider'), sessionGoalBarFill:qs('#sessionGoalBarFill'), dailyOverviewCard:qs('#dailyOverviewCard'), dailyOverviewBody:qs('#dailyOverviewBody'), dailyOverviewToggle:qs('#dailyOverviewToggle'), dailyOverviewDiff:qs('#dailyOverviewDiff'), dailyOverviewTrendStatus:qs('#dailyOverviewTrendStatus'), dailyOverviewNote:qs('#dailyOverviewNote'), overviewHighlights:qs('#dailyOverviewHighlights'), overviewTodayFill:qs('#overviewTodayFill'), overviewYesterdayFill:qs('#overviewYesterdayFill'), overviewTodayValue:qs('#overviewTodayValue'), overviewYesterdayValue:qs('#overviewYesterdayValue'), overviewPromotionStatus:qs('#overviewPromotionStatus'), overviewTaskBalance:qs('#overviewTaskBalance'), overviewMilestones:qs('#overviewMilestones'), overviewQuickStart:qs('#overviewQuickStart') };
+  const el={ app:qs('#app'), headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerMessage'), nextAction:qs('#nextActionMessage'), footerInfoContainer:qs('#footerInfo'), footerInfoBtn:qs('#footerInfoBtn'), footerInfoDialog:qs('#footerInfoDialog'), footerInfoDialogBody:qs('#footerInfoDialogBody'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), composeGuide:qs('#composeGuide'), composeTokens:qs('#composeTokens'), composeNote:qs('#composeNote'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSpeechVoice:qs('#cfgSpeechVoice'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speedCtrl:qs('.speed-ctrl'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus'), notifTimeList:qs('#notifTimeList'), notifTimeAdd:qs('#notifTimeAdd'), notifTriggerDailyZero:qs('#notifTriggerDailyZero'), notifTriggerDailyCompare:qs('#notifTriggerDailyCompare'), notifTriggerWeekly:qs('#notifTriggerWeekly'), notifTriggerRestartTone:qs('#notifTriggerRestartTone'), notifHelp:qs('#notifHelp'), dailyGoalCard:qs('#dailyGoalCard'), dailyGoalBody:qs('#dailyGoalBody'), dailyGoalToggle:qs('#dailyGoalToggle'), dailyGoalRing:qs('#dailyGoalRing'), dailyGoalPercent:qs('#dailyGoalPercent'), dailyGoalTag:qs('#dailyGoalTag'), dailyGoalDone:qs('#dailyGoalDone'), dailyGoalTarget:qs('#dailyGoalTarget'), dailyGoalHint:qs('#dailyGoalHint'), sessionGoalCard:qs('#sessionGoalCard'), sessionGoalBody:qs('#sessionGoalBody'), sessionGoalToggle:qs('#sessionGoalToggle'), sessionGoalRing:qs('#sessionGoalRing'), sessionGoalPercent:qs('#sessionGoalPercent'), sessionGoalTag:qs('#sessionGoalTag'), sessionGoalDone:qs('#sessionGoalDone'), sessionGoalTarget:qs('#sessionGoalTarget'), sessionGoalSlider:qs('#sessionGoalSlider'), sessionGoalBarFill:qs('#sessionGoalBarFill'), dailyOverviewCard:qs('#dailyOverviewCard'), dailyOverviewBody:qs('#dailyOverviewBody'), dailyOverviewToggle:qs('#dailyOverviewToggle'), dailyOverviewDiff:qs('#dailyOverviewDiff'), dailyOverviewTrendStatus:qs('#dailyOverviewTrendStatus'), dailyOverviewNote:qs('#dailyOverviewNote'), overviewHighlights:qs('#dailyOverviewHighlights'), overviewTodayFill:qs('#overviewTodayFill'), overviewYesterdayFill:qs('#overviewYesterdayFill'), overviewTodayValue:qs('#overviewTodayValue'), overviewYesterdayValue:qs('#overviewYesterdayValue'), overviewPromotionStatus:qs('#overviewPromotionStatus'), overviewTaskBalance:qs('#overviewTaskBalance'), overviewMilestones:qs('#overviewMilestones'), overviewQuickStart:qs('#overviewQuickStart') };
   el.cfgPlaybackMode=qsa('input[name="cfgPlaybackMode"]');
   el.cfgStudyMode=qsa('input[name="cfgStudyMode"]');
   const versionTargets=qsa('[data-app-version]');
@@ -1619,6 +1638,7 @@ function createAppRuntime(){
     if(el.notifTriggerDailyZero){ el.notifTriggerDailyZero.checked = triggers.dailyZero!==false; }
     if(el.notifTriggerDailyCompare){ el.notifTriggerDailyCompare.checked = triggers.dailyCompare!==false; }
     if(el.notifTriggerWeekly){ el.notifTriggerWeekly.checked = triggers.weeklyCompare!==false; }
+    if(el.notifTriggerRestartTone){ el.notifTriggerRestartTone.checked = settings?.restartModeGentle !== false; }
   }
 
   function setReminderRowError(row, message){
@@ -1710,7 +1730,8 @@ function createAppRuntime(){
         dailyZero: !el.notifTriggerDailyZero || el.notifTriggerDailyZero.checked,
         dailyCompare: !el.notifTriggerDailyCompare || el.notifTriggerDailyCompare.checked,
         weeklyCompare: !el.notifTriggerWeekly || el.notifTriggerWeekly.checked
-      }
+      },
+      restartModeGentle: !el.notifTriggerRestartTone || el.notifTriggerRestartTone.checked
     });
     return {
       settings,
@@ -2001,6 +2022,9 @@ function createAppRuntime(){
   if(el.notifTriggerWeekly){
     el.notifTriggerWeekly.addEventListener('change', previewNotificationSettings);
   }
+  if(el.notifTriggerRestartTone){
+    el.notifTriggerRestartTone.addEventListener('change', previewNotificationSettings);
+  }
   if(el.cfgClose && el.cfgModal){
     el.cfgClose.addEventListener('click', ()=>{ el.cfgModal.style.display='none'; });
   }
@@ -2281,6 +2305,7 @@ function createAppRuntime(){
     finalizeSessionMetrics();
     sessionActive=false;
     sessionStarting=false;
+    clearRecoverySessionTarget();
     if(flushLogs){
       try{ await flushPendingLogs(); }
       catch(err){ console.warn('finalizeActiveSession', err); }
@@ -2781,12 +2806,17 @@ function createAppRuntime(){
   function handleQuickStart(){
     if(sessionStarting) return;
     const allowAuto=isAutoPlayAllowed();
+    const shouldRecovery=!sessionActive && getConsecutiveNoStudyDays()>=2;
+    if(shouldRecovery){
+      activateRecoverySessionTarget();
+    }
     if(!QUEUE.length){
       rebuildAndRender(true,{autoStart:true, autoPlay:allowAuto}).then(()=>{
         if(!QUEUE.length){
+          clearRecoverySessionTarget();
           toast('出題範囲にカードがありません');
         }
-      }).catch(()=>{});
+      }).catch(()=>{ clearRecoverySessionTarget(); });
       return;
     }
     if(sessionActive){
