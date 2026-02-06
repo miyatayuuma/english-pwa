@@ -25,7 +25,8 @@ const DEFAULT_REMINDER_TIMES = [
 const DEFAULT_NOTIFICATION_SETTINGS = {
   reminderTimes: DEFAULT_REMINDER_TIMES,
   triggers: { dailyZero: true, dailyCompare: true, weeklyCompare: true },
-  weekly: { day: WEEKLY_DEFAULT_DAY, hour: WEEKLY_DEFAULT_HOUR, minute: WEEKLY_DEFAULT_MINUTE }
+  weekly: { day: WEEKLY_DEFAULT_DAY, hour: WEEKLY_DEFAULT_HOUR, minute: WEEKLY_DEFAULT_MINUTE },
+  restartModeGentle: true
 };
 
 function localDateKey(time = Date.now()) {
@@ -117,7 +118,11 @@ function normalizeNotificationSettings(raw) {
     weekly.hour = clampNumber(base.weekly.hour, 0, 23, weekly.hour);
     weekly.minute = clampNumber(base.weekly.minute, 0, 59, weekly.minute);
   }
-  return { reminderTimes, triggers, weekly, discardedReminderTimes };
+  const restartModeGentle =
+    typeof base.restartModeGentle === 'boolean'
+      ? base.restartModeGentle
+      : DEFAULT_NOTIFICATION_SETTINGS.restartModeGentle;
+  return { reminderTimes, triggers, weekly, restartModeGentle, discardedReminderTimes };
 }
 
 function loadStudyLog() {
@@ -360,6 +365,21 @@ function describeStudy(stats) {
   return parts.join(' / ');
 }
 
+function getConsecutiveNoStudyDays(now = Date.now()) {
+  const baseMs =
+    now instanceof Date ? now.getTime() : Number.isFinite(now) ? now : Date.now();
+  let count = 0;
+  const maxDays = 190;
+  for (let i = 0; i < maxDays; i += 1) {
+    const key = localDateKey(baseMs - DAY_MS * i);
+    const stats = getDailyStats(key);
+    const total = (stats?.passes || 0) + (stats?.level5 || 0);
+    if (total > 0) break;
+    count += 1;
+  }
+  return count;
+}
+
 function startOfWeek(date) {
   const d = new Date(date.getTime());
   d.setHours(0, 0, 0, 0);
@@ -453,7 +473,7 @@ async function showStudyNotification(title, options) {
   }
 }
 
-async function checkDailyZeroReminders(now, stats, slots) {
+async function checkDailyZeroReminders(now, stats, slots, { consecutiveNoStudyDays = 0, restartModeGentle = true } = {}) {
   const todayKey = localDateKey(now.getTime());
   const total = (stats?.passes || 0) + (stats?.level5 || 0);
   if (total > 0) return;
@@ -463,7 +483,17 @@ async function checkDailyZeroReminders(now, stats, slots) {
     const scheduled = new Date(now.getTime());
     scheduled.setHours(slot.hour, slot.minute, 0, 0);
     if (now >= scheduled && !hasDailyZeroNotified(todayKey, slot.label)) {
-      const body = '今日の合格はまだ0件。サクッと1フレーズだけでも発声しておこう！';
+      const gapDays = Math.max(1, Number(consecutiveNoStudyDays) || 1);
+      let body = '';
+      if (gapDays >= 2) {
+        body = restartModeGentle
+          ? 'お休みが続いても大丈夫。まずは1件だけでOK。今から1分だけ、最初の1件を完了しよう。'
+          : '2日以上空いています。まずは1件だけでOK。今から1分だけ、最初の1件を完了しよう。';
+      } else {
+        body = restartModeGentle
+          ? '1日ぶりの再開を軽めに。今から1分だけ、最初の1件を完了しよう。'
+          : '1日空きました。今から1分だけ、最初の1件を完了しよう。';
+      }
       await showStudyNotification('今日の学習がまだ始まっていません', {
         body,
         tag: `daily-zero-${todayKey}-${slot.label}`
@@ -489,14 +519,14 @@ async function checkDailyComparison(now, todayStats, compareHour = DAILY_COMPARE
   if (todayTotal < yTotal) {
     const diff = yTotal - todayTotal;
     title = '昨日に追いつくチャンス！';
-    body = `昨日は${describeStudy(yesterdayStats)}でしたが、今日はまだ${describeStudy(todayStats)}。あと${diff}件巻き返そう！`;
+    body = `昨日は${describeStudy(yesterdayStats)}でしたが、今日はまだ${describeStudy(todayStats)}。あと${diff}件巻き返そう！今から1分だけ、最初の1件を完了しよう。`;
   } else if (todayTotal > yTotal) {
     const diff = todayTotal - yTotal;
     title = '昨日を超えるハイペース！';
-    body = `昨日は${describeStudy(yesterdayStats)}。今日は${describeStudy(todayStats)}で${diff}件リード中。このまま締め切ろう！`;
+    body = `昨日は${describeStudy(yesterdayStats)}。今日は${describeStudy(todayStats)}で${diff}件リード中。このまま締め切ろう！今から1分だけ、最初の1件を完了しよう。`;
   } else {
     title = '昨日と互角のペース';
-    body = `昨日は${describeStudy(yesterdayStats)}。今日は今のところ同じだけ進んでいます。ラスト1件で差をつけよう！`;
+    body = `昨日は${describeStudy(yesterdayStats)}。今日は今のところ同じだけ進んでいます。ラスト1件で差をつけよう！今から1分だけ、最初の1件を完了しよう。`;
   }
   await showStudyNotification(title, {
     body,
@@ -529,14 +559,14 @@ async function checkWeeklyComparison(now, weeklyConfig) {
   if (lastTotal < prevTotal) {
     const diff = prevTotal - lastTotal;
     title = '先週は失速気味…';
-    body = `先週は${describeStudy(lastStats)}で、前の週は${describeStudy(prevStats)}。今週は${diff}件取り返して流れを戻そう！`;
+    body = `先週は${describeStudy(lastStats)}で、前の週は${describeStudy(prevStats)}。今週は${diff}件取り返して流れを戻そう！今から1分だけ、最初の1件を完了しよう。`;
   } else if (lastTotal > prevTotal) {
     const diff = lastTotal - prevTotal;
     title = '先週はしっかり積み上げ！';
-    body = `先週は${describeStudy(lastStats)}で前の週を${diff}件上回りました。この勢いで今週も更新しよう！`;
+    body = `先週は${describeStudy(lastStats)}で前の週を${diff}件上回りました。この勢いで今週も更新しよう！今から1分だけ、最初の1件を完了しよう。`;
   } else {
     title = '先週は横ばいペース';
-    body = `先週は${describeStudy(lastStats)}で、前の週と同じ結果でした。今週はもう一歩攻めてみませんか？`;
+    body = `先週は${describeStudy(lastStats)}で、前の週と同じ結果でした。今週はもう一歩攻めてみませんか？今から1分だけ、最初の1件を完了しよう。`;
   }
   await showStudyNotification(title, {
     body,
@@ -594,7 +624,11 @@ async function runNotificationChecks({ force = false, settings } = {}) {
   const todayKey = localDateKey(now.getTime());
   const todayStats = getDailyStats(todayKey);
   if (activeSettings?.triggers?.dailyZero !== false) {
-    await checkDailyZeroReminders(now, todayStats, activeSettings?.reminderTimes);
+    const consecutiveNoStudyDays = getConsecutiveNoStudyDays(now);
+    await checkDailyZeroReminders(now, todayStats, activeSettings?.reminderTimes, {
+      consecutiveNoStudyDays,
+      restartModeGentle: activeSettings?.restartModeGentle !== false
+    });
   }
   if (activeSettings?.triggers?.dailyCompare !== false) {
     const compareHour = clampNumber(activeSettings?.dailyCompareHour, 0, 23, DAILY_COMPARE_HOUR);
@@ -789,5 +823,6 @@ export {
   ensureNotificationLoop,
   scheduleNotificationCheckSoon,
   updateNotificationUi,
-  initNotificationSystem
+  initNotificationSystem,
+  getConsecutiveNoStudyDays
 };
