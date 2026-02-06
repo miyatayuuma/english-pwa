@@ -1,0 +1,76 @@
+.btn {
+  border: 1px solid var(--bd);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--txt);
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: background var(--motion-fast), border-color var(--motion-fast), box-shadow var(--motion-fast), transform var(--motion-fast);
+}
+.btn:hover { background: #161d2c; border-color: var(--bd-strong); }
+.btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.btn:disabled { opacity: .45; cursor: not-allowed; box-shadow: none; }
+.btn--primary,
+.btn-primary { background: #1a2134; border-color: #233252; }
+.btn--success,
+.btn.ok { background: #10331f; border-color: #1f5c38; }
+
+.icon-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--bd);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  background: var(--surface);
+  color: var(--txt);
+  padding: 0;
+  font: inherit;
+  line-height: 1;
+  transition: background var(--motion-fast), border-color var(--motion-fast);
+}
+.icon-btn:hover { background: #161d2c; border-color: var(--bd-strong); }
+.icon-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.icon-btn:disabled { opacity: .45; cursor: not-allowed; }
+
+.goal-card,
+.overview-card {
+  border: 1px solid var(--bd);
+  border-radius: var(--radius-lg);
+  background: var(--panel);
+  box-shadow: var(--shadow-md);
+}
+.goal-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  backdrop-filter: blur(6px);
+}
+.overview-card {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 14px;
+}
+
+.goal-toggle,
+.overview-toggle {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--bd);
+  background: var(--surface-soft);
+  color: var(--txt);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  font-size: 16px;
+  transition: transform var(--motion-fast), background var(--motion-fast), border-color var(--motion-fast);
+}
+.goal-toggle:hover,
+.overview-toggle:hover { background: #1a2337; border-color: var(--bd-strong); }
+.goal-toggle:focus-visible,
+.overview-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.signup .btn { align-self: flex-end; padding: 12px 18px; font-size: 15px; }
