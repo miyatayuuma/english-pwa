@@ -675,6 +675,18 @@ function createAppRuntime(){
     const yesterdayStreak=Math.max(0, yesterdayStats?.streak||0);
     const streakDiff=todayStreak-yesterdayStreak;
     const streakStatus=streakDiff>0?'up':(streakDiff<0?'down':'even');
+    const levelState=levelStateManager.refreshLevelState?.() || {};
+    const nowTs=Date.now();
+    let dueCount=0;
+    for(const info of Object.values(levelState)){
+      const dueAt=Number(info?.review?.nextDueAt ?? info?.nextDueAt);
+      if(Number.isFinite(dueAt) && dueAt>0 && dueAt<=nowTs){
+        dueCount+=1;
+      }
+    }
+    const dayGoal=Math.max(0, Number(summary?.goalSnapshot?.daily?.target)||0);
+    const dayDone=Math.max(0, Number(summary?.goalSnapshot?.daily?.done)||0);
+    const completionRate=dayGoal>0 ? Math.min(1, dayDone/dayGoal) : 0;
     const promotionGoal=getLastPromotionGoal();
     const promotionNote=resolvePromotionNoteText();
     let promotionTone='muted';
@@ -705,6 +717,7 @@ function createAppRuntime(){
         status:streakStatus
       },
       promotion:{ note:promotionNote, tone:promotionTone },
+      review:{ dueCount, completionRate, completionLabel:`${Math.round(completionRate*100)}%` },
       milestones:buildRecentLevelMilestones(4),
       goalSnapshot: summary.goalSnapshot,
       sections: summary.sections,
@@ -889,7 +902,11 @@ function createAppRuntime(){
     if(el.overviewQuickStart){
       let ctaText='復習を続ける';
       let ariaLabel='目標は達成済みです。復習を続けましょう';
-      if(nextTarget){
+      const reviewDue=Math.max(0, Number(model?.review?.dueCount)||0);
+      if(reviewDue>0){
+        ctaText=`期限切れ${reviewDue}件を先に復習`;
+        ariaLabel=`期限切れカード${reviewDue}件を優先して取り組む`;
+      }else if(nextTarget){
         ctaText=`あと${nextTarget.remaining}件で${nextTarget.label}`;
         ariaLabel=`${ctaText}に到達`;
       }
@@ -907,6 +924,9 @@ function createAppRuntime(){
       }else{
         noteText=`今日の目標(${dailyProgressLabel})とセッション目標(${sessionProgressLabel})はクリア済み。復習で定着をキープしましょう`;
       }
+      const reviewDue=Math.max(0, Number(model?.review?.dueCount)||0);
+      const completionLabel=model?.review?.completionLabel||'0%';
+      noteText+=` / 期限切れカード${reviewDue}件 / 本日消化率${completionLabel}`;
       el.dailyOverviewNote.textContent=noteText;
     }
     if(el.overviewPromotionStatus){
@@ -2167,7 +2187,7 @@ function createAppRuntime(){
       rebuildAndRender(true);
     };
     const ordSaved=loadString(ORDER_SELECTION, 'asc')||'asc';
-    el.orderSel.value=ordSaved;
+    el.orderSel.value=['asc','rnd','srs'].includes(ordSaved) ? ordSaved : 'asc';
     el.orderSel.onchange=()=>{
       saveString(ORDER_SELECTION, el.orderSel.value);
       rebuildAndRender(true);
@@ -2272,6 +2292,28 @@ function createAppRuntime(){
     }
     if(order==='rnd'){
       items=shuffledCopy(items);
+    }else if(order==='srs'){
+      const nowTs=Date.now();
+      const due=[];
+      const notDue=[];
+      for(const it of items){
+        const info=getLevelInfo(it?.id);
+        const dueAt=Number(info?.review?.nextDueAt ?? info?.nextDueAt);
+        if(Number.isFinite(dueAt) && dueAt>0 && dueAt<=nowTs){
+          due.push(it);
+        }else{
+          notDue.push(it);
+        }
+      }
+      const sorter=(a,b)=>{
+        const na=+String(a.unit||'').replace(/\D+/g,'')||0;
+        const nb=+String(b.unit||'').replace(/\D+/g,'')||0;
+        if(na!==nb) return na-nb;
+        return String(a.id).localeCompare(String(b.id));
+      };
+      due.sort(sorter);
+      notDue.sort(sorter);
+      items=[...due, ...notDue];
     }else{
       items=items.slice().sort((a,b)=>{
         const na=+String(a.unit||'').replace(/\D+/g,'')||0;

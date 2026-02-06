@@ -9,11 +9,35 @@ const PROMOTION_RULES = {
   5: { required: 3, minIntervalMs: 24 * 60 * 60 * 1000 },
 };
 const NO_HINT_HISTORY_LIMIT = 24;
+const DEFAULT_REVIEW_STATE = Object.freeze({
+  nextDueAt: 0,
+  stability: 1,
+  difficulty: 5,
+  intervalMs: 0,
+});
 
 const { LEVEL_STATE, LEVEL_FILTER } = STORAGE_KEYS;
 
 function loadLevelStateFromStorage() {
-  return loadJson(LEVEL_STATE, {}) || {};
+  const parsed = loadJson(LEVEL_STATE, {}) || {};
+  if (!parsed || typeof parsed !== 'object') return {};
+  const normalized = {};
+  for (const [id, rawInfo] of Object.entries(parsed)) {
+    if (!rawInfo || typeof rawInfo !== 'object') continue;
+    const info = { ...rawInfo };
+    const legacyReview = {
+      nextDueAt: info.nextDueAt,
+      stability: info.stability,
+      difficulty: info.difficulty,
+      intervalMs: info.intervalMs,
+    };
+    info.review = normalizeReviewState(info.review || legacyReview);
+    info.nextDueAt = info.review.nextDueAt;
+    info.stability = info.review.stability;
+    info.difficulty = info.review.difficulty;
+    normalized[id] = info;
+  }
+  return normalized;
 }
 
 function saveLevelStateToStorage(state) {
@@ -27,6 +51,62 @@ function normalizeNoHintHistory(raw) {
     .filter((value) => Number.isFinite(value) && value > 0)
     .sort((a, b) => a - b)
     .slice(-NO_HINT_HISTORY_LIMIT);
+}
+
+function normalizeReviewState(raw) {
+  const src = raw && typeof raw === 'object' ? raw : {};
+  const nextDueAt = Math.max(0, Number(src.nextDueAt) || 0);
+  const stabilityRaw = Number(src.stability);
+  const difficultyRaw = Number(src.difficulty);
+  const intervalRaw = Number(src.intervalMs);
+  return {
+    nextDueAt,
+    stability: Number.isFinite(stabilityRaw) ? Math.max(0.2, Math.min(12, stabilityRaw)) : DEFAULT_REVIEW_STATE.stability,
+    difficulty: Number.isFinite(difficultyRaw) ? Math.max(1, Math.min(10, difficultyRaw)) : DEFAULT_REVIEW_STATE.difficulty,
+    intervalMs: Number.isFinite(intervalRaw) ? Math.max(0, intervalRaw) : DEFAULT_REVIEW_STATE.intervalMs,
+  };
+}
+
+function computeReviewState(prevReview, evaluation, now) {
+  const prev = normalizeReviewState(prevReview);
+  const rate = Math.max(0, Math.min(1, Number(evaluation?.rate) || 0));
+  const pass = !!evaluation?.pass;
+  const noHintSuccess = !!evaluation?.noHintSuccess;
+  const usedHint = Number.isFinite(evaluation?.stage) ? Number(evaluation.stage) > 0 : false;
+  const previousInterval = Math.max(prev.intervalMs || 0, prev.nextDueAt > now ? prev.nextDueAt - now : 0);
+
+  let intervalMs = 12 * 60 * 60 * 1000;
+  let stability = prev.stability;
+  let difficulty = prev.difficulty;
+
+  if (!pass || rate < 0.7) {
+    intervalMs = Math.max(10 * 60 * 1000, Math.round(previousInterval * 0.3));
+    stability = Math.max(0.2, prev.stability * 0.7);
+    difficulty = Math.min(10, prev.difficulty + 0.7);
+  } else if (rate < 0.8) {
+    intervalMs = Math.max(2 * 60 * 60 * 1000, Math.round(previousInterval * 0.6));
+    stability = Math.max(0.3, prev.stability * 0.9);
+    difficulty = Math.min(10, prev.difficulty + 0.4);
+  } else if (usedHint) {
+    intervalMs = Math.max(8 * 60 * 60 * 1000, Math.round(previousInterval * 1.05));
+    stability = Math.min(12, prev.stability * 1.05);
+    difficulty = Math.max(1, Math.min(10, prev.difficulty + 0.15));
+  } else if (noHintSuccess && rate >= 0.95) {
+    intervalMs = Math.max(24 * 60 * 60 * 1000, Math.round(previousInterval * 1.8));
+    stability = Math.min(12, prev.stability * 1.35);
+    difficulty = Math.max(1, prev.difficulty - 0.5);
+  } else if (noHintSuccess) {
+    intervalMs = Math.max(12 * 60 * 60 * 1000, Math.round(previousInterval * 1.4));
+    stability = Math.min(12, prev.stability * 1.2);
+    difficulty = Math.max(1, prev.difficulty - 0.25);
+  }
+
+  return {
+    nextDueAt: now + intervalMs,
+    intervalMs,
+    stability,
+    difficulty,
+  };
 }
 
 function computeNoHintProgress(history, rule, now) {
@@ -283,6 +363,12 @@ export function createLevelStateManager({ baseHintStage, getFirstHintStage, getE
     info.last = finalLevel;
     if (!Number.isFinite(prevBestRaw)) info.best = prevBest;
     if (info.last > prevBest) info.best = info.last;
+    const nextReview = computeReviewState(info.review, evaluation, now);
+    info.review = nextReview;
+    info.nextDueAt = nextReview.nextDueAt;
+    info.stability = nextReview.stability;
+    info.difficulty = nextReview.difficulty;
+    info.intervalMs = nextReview.intervalMs;
     info.lastMatch = rate;
     info.hintStage = stage;
     info.updatedAt = now;
