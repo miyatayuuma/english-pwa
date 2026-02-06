@@ -1059,6 +1059,7 @@ function createAppRuntime(){
     const dialog=el.footerInfoDialog;
     const body=el.footerInfoDialogBody;
     if(!dialog || !body || typeof dialog.showModal!=='function') return false;
+    const closeButton=qs('#footerInfoDialogClose', dialog);
     const infoSections=Array.isArray(sections) && sections.length ? sections : collectFooterInfoSections();
     body.innerHTML='';
     const effectiveSections=infoSections.length ? infoSections : [{ title:'操作ヒント', lines:[DEFAULT_FOOTER_HINT] }];
@@ -1087,8 +1088,10 @@ function createAppRuntime(){
     try{
       if(dialog.open) dialog.close();
       dialog.showModal();
-      const closeBtn=dialog.querySelector('button[value="close"]');
-      try{ closeBtn?.focus?.({preventScroll:true}); }catch(_){ }
+      const focusTarget=closeButton || qs('button[value="close"]', dialog);
+      if(focusTarget){
+        try{ focusTarget.focus({preventScroll:true}); }catch(_){ focusTarget.focus(); }
+      }
       return true;
     }catch(err){
       console.warn('footer info dialog failed', err);
