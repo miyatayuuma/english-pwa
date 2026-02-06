@@ -68,7 +68,8 @@ function renderFieldState({ form, errors, submitButton, statusEl }) {
   });
 
   if (submitButton) {
-    submitButton.disabled = Object.keys(errors).length > 0;
+    const isLoading = statusEl?.dataset.state === 'loading';
+    submitButton.disabled = isLoading || Object.keys(errors).length > 0;
   }
 
   if (statusEl?.dataset.state !== 'loading') {
