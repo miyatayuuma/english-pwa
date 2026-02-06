@@ -6,6 +6,7 @@ function normalizeFields(fields) {
     email: (fields.email ?? '').trim(),
     password: fields.password ?? '',
     confirmPassword: fields.confirmPassword ?? '',
+    termsAccepted: Boolean(fields.termsAccepted),
   };
 }
 
@@ -39,6 +40,10 @@ export function validateSignupFields(fields) {
     errors.confirmPassword = 'パスワードが一致しません';
   }
 
+  if (!normalized.termsAccepted) {
+    errors.termsAccepted = '利用規約とプライバシーポリシーへの同意が必要です';
+  }
+
   return {
     valid: Object.keys(errors).length === 0,
     errors,
@@ -46,9 +51,9 @@ export function validateSignupFields(fields) {
   };
 }
 
-function renderFieldState({ form, errors, submitButton }) {
+function renderFieldState({ form, errors, submitButton, statusEl }) {
   if (!form) return;
-  const fields = ['name', 'email', 'password', 'confirmPassword'];
+  const fields = ['name', 'email', 'password', 'confirmPassword', 'termsAccepted'];
   fields.forEach((field) => {
     const input = form.querySelector(`[name="${field}"]`);
     const errorEl = form.querySelector(`[data-error-for="${field}"]`);
@@ -57,16 +62,41 @@ function renderFieldState({ form, errors, submitButton }) {
     errorEl.textContent = message;
     errorEl.dataset.visible = message ? 'true' : 'false';
     input.classList.toggle('is-invalid', Boolean(message));
-    input.classList.toggle('is-valid', !message && input.value.length > 0);
+
+    const hasValue = input.type === 'checkbox' ? input.checked : input.value.length > 0;
+    input.classList.toggle('is-valid', !message && hasValue);
   });
+
   if (submitButton) {
     submitButton.disabled = Object.keys(errors).length > 0;
+  }
+
+  if (statusEl?.dataset.state !== 'loading') {
+    statusEl.dataset.state = 'idle';
+    statusEl.textContent = '';
+  }
+}
+
+export function setSignupSubmitState(formElement, state, message = '') {
+  if (!formElement) return;
+  const submitButton = formElement.querySelector('[type="submit"]');
+  const statusEl = formElement.querySelector('#signupStatus');
+
+  if (statusEl) {
+    statusEl.dataset.state = state;
+    statusEl.textContent = message;
+  }
+
+  if (submitButton) {
+    submitButton.disabled = state === 'loading';
   }
 }
 
 export function attachSignupValidation(formElement) {
-  if (!formElement) return () => {};
+  if (!formElement) return () => ({ valid: false, errors: {}, values: {} });
+
   const submitButton = formElement.querySelector('[type="submit"]');
+  const statusEl = formElement.querySelector('#signupStatus');
 
   const handler = () => {
     const formData = {
@@ -74,13 +104,15 @@ export function attachSignupValidation(formElement) {
       email: formElement.querySelector('[name="email"]')?.value,
       password: formElement.querySelector('[name="password"]')?.value,
       confirmPassword: formElement.querySelector('[name="confirmPassword"]')?.value,
+      termsAccepted: formElement.querySelector('[name="termsAccepted"]')?.checked,
     };
     const result = validateSignupFields(formData);
-    renderFieldState({ form: formElement, errors: result.errors, submitButton });
+    renderFieldState({ form: formElement, errors: result.errors, submitButton, statusEl });
     return result;
   };
 
   formElement.addEventListener('input', handler);
+  formElement.addEventListener('change', handler);
   handler();
 
   return handler;
