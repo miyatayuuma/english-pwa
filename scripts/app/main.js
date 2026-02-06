@@ -154,6 +154,12 @@ function createAppRuntime(){
   const el={ app:qs('#app'), homeView:qs('#homeView'), studyView:qs('#studyView'), reviewCompleteView:qs('#reviewCompleteView'), startStudyCta:qs('#startStudyCta'), reviewCompleteMessage:qs('#reviewCompleteMessage'), reviewActionContinue:qs('#reviewActionContinue'), reviewActionFocusReview:qs('#reviewActionFocusReview'), reviewActionFinish:qs('#reviewActionFinish'), headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerMessage'), nextAction:qs('#nextActionMessage'), footerInfoContainer:qs('#footerInfo'), footerInfoBtn:qs('#footerInfoBtn'), footerInfoDialog:qs('#footerInfoDialog'), footerInfoDialogBody:qs('#footerInfoDialogBody'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), studySecSel:qs('#studySecSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), composeGuide:qs('#composeGuide'), composeTokens:qs('#composeTokens'), composeNote:qs('#composeNote'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSpeechVoice:qs('#cfgSpeechVoice'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speedCtrl:qs('.speed-ctrl'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus'), notifTimeList:qs('#notifTimeList'), notifTimeAdd:qs('#notifTimeAdd'), notifTriggerDailyZero:qs('#notifTriggerDailyZero'), notifTriggerDailyCompare:qs('#notifTriggerDailyCompare'), notifTriggerWeekly:qs('#notifTriggerWeekly'), notifTriggerRestartTone:qs('#notifTriggerRestartTone'), milestoneIntensity:qs('#cfgMilestoneIntensity'), notifHelp:qs('#notifHelp'), dailyGoalCard:qs('#dailyGoalCard'), dailyGoalBody:qs('#dailyGoalBody'), dailyGoalToggle:qs('#dailyGoalToggle'), dailyGoalToggleState:qs('#dailyGoalToggleState'), dailyGoalRing:qs('#dailyGoalRing'), dailyGoalPercent:qs('#dailyGoalPercent'), dailyGoalTag:qs('#dailyGoalTag'), dailyGoalDone:qs('#dailyGoalDone'), dailyGoalTarget:qs('#dailyGoalTarget'), dailyGoalHint:qs('#dailyGoalHint'), sessionGoalCard:qs('#sessionGoalCard'), sessionGoalBody:qs('#sessionGoalBody'), sessionGoalToggle:qs('#sessionGoalToggle'), sessionGoalRing:qs('#sessionGoalRing'), sessionGoalPercent:qs('#sessionGoalPercent'), sessionGoalTag:qs('#sessionGoalTag'), sessionGoalDone:qs('#sessionGoalDone'), sessionGoalTarget:qs('#sessionGoalTarget'), sessionGoalSlider:qs('#sessionGoalSlider'), sessionGoalBarFill:qs('#sessionGoalBarFill'), dailyOverviewCard:qs('#dailyOverviewCard'), dailyOverviewBody:qs('#dailyOverviewBody'), dailyOverviewToggle:qs('#dailyOverviewToggle'), dailyOverviewToggleState:qs('#dailyOverviewToggleState'), dailyOverviewDiff:qs('#dailyOverviewDiff'), dailyOverviewTrendStatus:qs('#dailyOverviewTrendStatus'), dailyOverviewNote:qs('#dailyOverviewNote'), overviewHighlights:qs('#dailyOverviewHighlights'), overviewTodayFill:qs('#overviewTodayFill'), overviewYesterdayFill:qs('#overviewYesterdayFill'), overviewTodayValue:qs('#overviewTodayValue'), overviewYesterdayValue:qs('#overviewYesterdayValue'), overviewPromotionStatus:qs('#overviewPromotionStatus'), overviewTaskBalance:qs('#overviewTaskBalance'), overviewMilestones:qs('#overviewMilestones'), overviewQuickStart:qs('#overviewQuickStart'), onboardingCard:qs('#onboardingCard'), onboardingStepLabel:qs('#onboardingStepLabel'), onboardingLevel:qs('#onboardingLevel'), onboardingPurpose:qs('#onboardingPurpose'), onboardingMinutes:qs('#onboardingMinutes'), onboardingBack:qs('#onboardingBack'), onboardingNext:qs('#onboardingNext'), personalPlanSummary:qs('#personalPlanSummary'), personalPlanBody:qs('#personalPlanBody'), personalPlanToggle:qs('#personalPlanToggle') };
   const viewStateController=createViewStateController({ el });
   const applyViewState=(...args)=>viewStateController.applyViewState(...args);
+  const getCurrentViewState=(...args)=>viewStateController.getCurrentViewState(...args);
+  function setViewState(...args){
+    const nextView=applyViewState(...args);
+    swUpdatePrompt?.handleViewStateChange?.(nextView);
+    return nextView;
+  }
 
   const goalController=createGoalController({
     el,
@@ -1169,7 +1175,7 @@ function createAppRuntime(){
   }
   if(el.reviewActionContinue){
     el.reviewActionContinue.addEventListener('click', ()=>{
-      applyViewState(VIEW_HOME);
+      setViewState(VIEW_HOME);
       handleQuickStart();
     });
   }
@@ -1179,17 +1185,17 @@ function createAppRuntime(){
         el.orderSel.value='srs';
         saveString(ORDER_SELECTION, 'srs');
       }
-      applyViewState(VIEW_HOME);
+      setViewState(VIEW_HOME);
       rebuildAndRender(true,{autoStart:true, autoPlay:isAutoPlayAllowed()}).catch(()=>{});
     });
   }
   if(el.reviewActionFinish){
     el.reviewActionFinish.addEventListener('click', ()=>{
-      applyViewState(VIEW_HOME);
+      setViewState(VIEW_HOME);
       showIdleCard();
     });
   }
-  applyViewState(VIEW_HOME);
+  setViewState(VIEW_HOME);
 
   const {
     playTone,
@@ -1347,7 +1353,7 @@ function createAppRuntime(){
     if(el.reviewCompleteMessage){
       el.reviewCompleteMessage.textContent=`${summary.message}（失敗率${failRateLabel} / 新規${Math.max(0, Number(summary.newIntroduced)||0)}件）`;
     }
-    applyViewState(VIEW_REVIEW_COMPLETE);
+    setViewState(VIEW_REVIEW_COMPLETE);
   }
 
   function finalizeSessionMetrics(reason='manual'){
@@ -2464,7 +2470,7 @@ function createAppRuntime(){
   // Build section options (All/単一)
   async function finalizeActiveSession({ flushLogs=false, reason='manual' }={}){
     if(!(sessionActive || sessionStarting)){
-      applyViewState(VIEW_HOME);
+      setViewState(VIEW_HOME);
       return false;
     }
     stopAudio();
@@ -2480,7 +2486,7 @@ function createAppRuntime(){
     if(reason==='completed' && latestSessionClosureSummary){
       presentReviewCompleteView(latestSessionClosureSummary);
     }else{
-      applyViewState(VIEW_HOME);
+      setViewState(VIEW_HOME);
     }
     if(flushLogs){
       try{ await flushPendingLogs(); }
@@ -2761,7 +2767,7 @@ function createAppRuntime(){
     finalizeSessionMetrics('idle');
     sessionActive=false;
     sessionStarting=false;
-    applyViewState(VIEW_HOME);
+    setViewState(VIEW_HOME);
     cancelAutoAdvance();
     stopAudio();
     speechController.cancelSpeech();
@@ -3052,7 +3058,7 @@ function createAppRuntime(){
       }
       await ensureDir();
       sessionActive=true;
-      applyViewState(VIEW_STUDYING);
+      setViewState(VIEW_STUDYING);
       sessionStart=now();
       beginSessionMetrics();
       idx=-1;
@@ -3063,7 +3069,7 @@ function createAppRuntime(){
       }catch(err){
         finalizeSessionMetrics('start-error');
         sessionActive=false;
-        applyViewState(VIEW_HOME);
+        setViewState(VIEW_HOME);
         throw err;
       }
     }finally{
@@ -3670,12 +3676,14 @@ function createAppRuntime(){
 
   return {
     boot: bootApp,
+    getCurrentViewState,
   };
 }
 
+let appRuntime=null;
 async function initApp(){
-  const runtime=createAppRuntime();
-  await runtime.boot();
+  appRuntime=createAppRuntime();
+  await appRuntime.boot();
 }
 
 
@@ -3697,7 +3705,10 @@ async function bootstrap() {
   } catch (err) {
     console.error('App init failed', err);
   } finally {
-    swUpdatePrompt.registerServiceWorker({ toastFn: toast });
+    swUpdatePrompt.registerServiceWorker({
+      toastFn: toast,
+      getCurrentViewState: ()=>appRuntime?.getCurrentViewState?.() || VIEW_HOME,
+    });
   }
 }
 
