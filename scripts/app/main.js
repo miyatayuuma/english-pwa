@@ -2636,8 +2636,7 @@ function createAppRuntime(){
       return false;
     }
     if(baseKey && !audioBaseAvailabilityCache.has(baseKey) && audioBaseProbeInFlight.has(baseKey)){
-      const baseReady=await audioBaseProbeInFlight.get(baseKey);
-      if(!baseReady) return false;
+      await audioBaseProbeInFlight.get(baseKey);
     }
     if(audioBaseProbeCache.has(url)) return audioBaseProbeCache.get(url);
     const probePromise=(async()=>{
