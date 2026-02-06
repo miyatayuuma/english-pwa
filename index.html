@@ -47,57 +47,61 @@
     <button id="btnCfg" class="icon-btn" type="button" aria-label="設定を開く" title="設定">⚙️</button>
   </header>
 
-  <div class="goal-row goal-row--top">
-    <div class="goal-card" id="dailyGoalCard">
-      <div class="goal-card__header">
-        <div class="goal-card__header-main">
-          <span class="goal-card__title">今日の目標</span>
-          <span class="goal-card__tag" id="dailyGoalTag">—</span>
-        </div>
-        <div class="goal-card__header-actions">
-          <button id="dailyGoalToggle" class="goal-toggle" type="button" aria-expanded="true" aria-controls="dailyGoalBody" aria-label="今日の目標を折りたたむ">⌄</button>
-        </div>
-      </div>
-      <div class="goal-card__body" id="dailyGoalBody">
-        <div class="goal-ring" id="dailyGoalRing" aria-hidden="true">
-          <div class="goal-ring__center" id="dailyGoalPercent">0%</div>
-        </div>
-        <div class="goal-card__meta">
-          <div class="goal-card__value"><span id="dailyGoalDone">0</span>/<span id="dailyGoalTarget">10</span>件</div>
-          <div class="goal-card__sub" id="dailyGoalHint">目標まであと10件</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 出題範囲（ネイティブピッカー） -->
-  <div id="rangeBar">
-    <div class="range-item">
-      <label class="sr-only" for="secSel">セクション</label>
-      <select id="secSel" aria-label="セクション選択"></select>
-    </div>
-    <div class="range-item">
-      <span class="sr-only" id="levelFilterLabel">レベル</span>
-      <div id="levelFilter" class="level-filter" role="group" aria-labelledby="levelFilterLabel"></div>
-    </div>
-    <div class="range-item">
-      <label class="sr-only" for="orderSel">並び</label>
-      <select id="orderSel" aria-label="並び順">
-        <option value="asc">昇順</option>
-        <option value="srs">復習優先</option>
-        <option value="rnd">ランダム</option>
-      </select>
-    </div>
-    <div class="range-item">
-      <label class="sr-only" for="rangeSearch">検索</label>
-      <div class="search-input">
-        <input id="rangeSearch" type="search" placeholder="単語検索" autocomplete="off" />
-      </div>
-    </div>
-  </div>
-
   <main>
-    <section class="overview-card" id="dailyOverviewCard">
+    <section id="homeView">
+      <div class="home-cta-wrap">
+        <button class="btn btn-primary home-cta" id="startStudyCta" type="button">今日の学習を開始</button>
+      </div>
+
+      <div class="goal-row goal-row--top">
+        <div class="goal-card" id="dailyGoalCard">
+          <div class="goal-card__header">
+            <div class="goal-card__header-main">
+              <span class="goal-card__title">今日の目標</span>
+              <span class="goal-card__tag" id="dailyGoalTag">—</span>
+            </div>
+            <div class="goal-card__header-actions">
+              <button id="dailyGoalToggle" class="goal-toggle" type="button" aria-expanded="true" aria-controls="dailyGoalBody" aria-label="今日の目標を折りたたむ">⌄</button>
+            </div>
+          </div>
+          <div class="goal-card__body" id="dailyGoalBody">
+            <div class="goal-ring" id="dailyGoalRing" aria-hidden="true">
+              <div class="goal-ring__center" id="dailyGoalPercent">0%</div>
+            </div>
+            <div class="goal-card__meta">
+              <div class="goal-card__value"><span id="dailyGoalDone">0</span>/<span id="dailyGoalTarget">10</span>件</div>
+              <div class="goal-card__sub" id="dailyGoalHint">目標まであと10件</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="rangeBar">
+        <div class="range-item">
+          <label class="sr-only" for="secSel">セクション</label>
+          <select id="secSel" aria-label="セクション選択"></select>
+        </div>
+        <div class="range-item">
+          <span class="sr-only" id="levelFilterLabel">レベル</span>
+          <div id="levelFilter" class="level-filter" role="group" aria-labelledby="levelFilterLabel"></div>
+        </div>
+        <div class="range-item">
+          <label class="sr-only" for="orderSel">並び</label>
+          <select id="orderSel" aria-label="並び順">
+            <option value="asc">昇順</option>
+            <option value="srs">復習優先</option>
+            <option value="rnd">ランダム</option>
+          </select>
+        </div>
+        <div class="range-item">
+          <label class="sr-only" for="rangeSearch">検索</label>
+          <div class="search-input">
+            <input id="rangeSearch" type="search" placeholder="単語検索" autocomplete="off" />
+          </div>
+        </div>
+      </div>
+
+      <section class="overview-card" id="dailyOverviewCard">
       <div class="overview-card__header">
         <div class="overview-card__title-group">
           <p class="overview-card__title">今日の概要</p>
@@ -144,9 +148,40 @@
           <button class="btn btn-primary" id="overviewQuickStart" type="button">すぐ始める</button>
         </div>
       </div>
+      </section>
+
+      <div class="goal-row goal-row--footer">
+        <div class="goal-card goal-card--session" id="sessionGoalCard">
+          <div class="goal-card__header">
+            <div class="goal-card__header-main">
+              <span class="goal-card__title">セッション目標</span>
+              <span class="goal-card__tag" id="sessionGoalTag">—</span>
+            </div>
+            <div class="goal-card__header-actions">
+              <button id="sessionGoalToggle" class="goal-toggle" type="button" aria-expanded="true" aria-controls="sessionGoalBody" aria-label="セッション目標を折りたたむ">⌄</button>
+            </div>
+          </div>
+          <div class="goal-card__body goal-card__body--session" id="sessionGoalBody">
+            <div class="goal-ring goal-ring--sm" id="sessionGoalRing" aria-hidden="true">
+              <div class="goal-ring__center" id="sessionGoalPercent">0%</div>
+            </div>
+            <div class="goal-card__meta goal-card__meta--session">
+              <div class="goal-card__value"><span id="sessionGoalDone">0</span>/<span id="sessionGoalTarget">5</span>件</div>
+              <div class="session-goal__controls">
+                <label class="sr-only" for="sessionGoalSlider">セッション目標の件数</label>
+                <input id="sessionGoalSlider" type="range" min="1" max="30" step="1" value="5">
+                <div class="session-goal__bar">
+                  <div class="session-goal__bar-fill" id="sessionGoalBarFill"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
-    <section class="card" id="card" aria-live="polite">
+    <section id="studyView" hidden>
+      <section class="card" id="card" aria-live="polite">
       <div class="chips" id="chips"></div>
       <div id="enText" class="en">出題を準備しています…（下スワイプで和訳）</div>
       <div id="jaText" class="ja">—</div>
@@ -174,37 +209,19 @@
           <span class="speed-bubble" id="speedValue" aria-live="polite">1.0×</span>
         </div>
       </div>
+      </section>
+    </section>
+
+    <section id="reviewCompleteView" class="review-complete" hidden>
+      <h2>セッション完了</h2>
+      <p id="reviewCompleteMessage">結果をまとめています…</p>
+      <div class="review-complete-actions">
+        <button class="btn btn-primary" id="reviewActionContinue" type="button">このまま継続</button>
+        <button class="btn" id="reviewActionFocusReview" type="button">復習優先で再開</button>
+        <button class="btn" id="reviewActionFinish" type="button">ホームへ戻る</button>
+      </div>
     </section>
   </main>
-
-  <div class="goal-row goal-row--footer">
-    <div class="goal-card goal-card--session" id="sessionGoalCard">
-      <div class="goal-card__header">
-        <div class="goal-card__header-main">
-          <span class="goal-card__title">セッション目標</span>
-          <span class="goal-card__tag" id="sessionGoalTag">—</span>
-        </div>
-        <div class="goal-card__header-actions">
-          <button id="sessionGoalToggle" class="goal-toggle" type="button" aria-expanded="true" aria-controls="sessionGoalBody" aria-label="セッション目標を折りたたむ">⌄</button>
-        </div>
-      </div>
-      <div class="goal-card__body goal-card__body--session" id="sessionGoalBody">
-        <div class="goal-ring goal-ring--sm" id="sessionGoalRing" aria-hidden="true">
-          <div class="goal-ring__center" id="sessionGoalPercent">0%</div>
-        </div>
-        <div class="goal-card__meta goal-card__meta--session">
-          <div class="goal-card__value"><span id="sessionGoalDone">0</span>/<span id="sessionGoalTarget">5</span>件</div>
-          <div class="session-goal__controls">
-            <label class="sr-only" for="sessionGoalSlider">セッション目標の件数</label>
-            <input id="sessionGoalSlider" type="range" min="1" max="30" step="1" value="5">
-            <div class="session-goal__bar">
-              <div class="session-goal__bar-fill" id="sessionGoalBarFill"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <footer>
     <progress id="pbar" value="0" max="1"></progress>

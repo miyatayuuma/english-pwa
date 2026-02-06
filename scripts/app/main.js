@@ -124,9 +124,20 @@ function createAppRuntime(){
     const raw=(input && typeof input.value==='string') ? input.value : '';
     return raw.trim();
   }
-  function setSessionLayoutActive(active){
-    if(!el.app) return;
-    el.app.classList.toggle('session-active', !!active);
+  const VIEW_HOME='home';
+  const VIEW_STUDYING='studying';
+  const VIEW_REVIEW_COMPLETE='review-complete';
+  let currentViewState=VIEW_HOME;
+
+  function applyViewState(nextView){
+    const view=(nextView===VIEW_STUDYING || nextView===VIEW_REVIEW_COMPLETE) ? nextView : VIEW_HOME;
+    currentViewState=view;
+    if(el.homeView){ el.homeView.hidden=view!==VIEW_HOME; }
+    if(el.studyView){ el.studyView.hidden=view!==VIEW_STUDYING; }
+    if(el.reviewCompleteView){ el.reviewCompleteView.hidden=view!==VIEW_REVIEW_COMPLETE; }
+    if(el.app){
+      el.app.dataset.viewState=view;
+    }
   }
 
   const levelStateManager=createLevelStateManager({
@@ -378,7 +389,7 @@ function createAppRuntime(){
 
 
   // ===== Elements =====
-  const el={ app:qs('#app'), headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerMessage'), nextAction:qs('#nextActionMessage'), footerInfoContainer:qs('#footerInfo'), footerInfoBtn:qs('#footerInfoBtn'), footerInfoDialog:qs('#footerInfoDialog'), footerInfoDialogBody:qs('#footerInfoDialogBody'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), composeGuide:qs('#composeGuide'), composeTokens:qs('#composeTokens'), composeNote:qs('#composeNote'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSpeechVoice:qs('#cfgSpeechVoice'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speedCtrl:qs('.speed-ctrl'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus'), notifTimeList:qs('#notifTimeList'), notifTimeAdd:qs('#notifTimeAdd'), notifTriggerDailyZero:qs('#notifTriggerDailyZero'), notifTriggerDailyCompare:qs('#notifTriggerDailyCompare'), notifTriggerWeekly:qs('#notifTriggerWeekly'), notifTriggerRestartTone:qs('#notifTriggerRestartTone'), milestoneIntensity:qs('#cfgMilestoneIntensity'), notifHelp:qs('#notifHelp'), dailyGoalCard:qs('#dailyGoalCard'), dailyGoalBody:qs('#dailyGoalBody'), dailyGoalToggle:qs('#dailyGoalToggle'), dailyGoalRing:qs('#dailyGoalRing'), dailyGoalPercent:qs('#dailyGoalPercent'), dailyGoalTag:qs('#dailyGoalTag'), dailyGoalDone:qs('#dailyGoalDone'), dailyGoalTarget:qs('#dailyGoalTarget'), dailyGoalHint:qs('#dailyGoalHint'), sessionGoalCard:qs('#sessionGoalCard'), sessionGoalBody:qs('#sessionGoalBody'), sessionGoalToggle:qs('#sessionGoalToggle'), sessionGoalRing:qs('#sessionGoalRing'), sessionGoalPercent:qs('#sessionGoalPercent'), sessionGoalTag:qs('#sessionGoalTag'), sessionGoalDone:qs('#sessionGoalDone'), sessionGoalTarget:qs('#sessionGoalTarget'), sessionGoalSlider:qs('#sessionGoalSlider'), sessionGoalBarFill:qs('#sessionGoalBarFill'), dailyOverviewCard:qs('#dailyOverviewCard'), dailyOverviewBody:qs('#dailyOverviewBody'), dailyOverviewToggle:qs('#dailyOverviewToggle'), dailyOverviewDiff:qs('#dailyOverviewDiff'), dailyOverviewTrendStatus:qs('#dailyOverviewTrendStatus'), dailyOverviewNote:qs('#dailyOverviewNote'), overviewHighlights:qs('#dailyOverviewHighlights'), overviewTodayFill:qs('#overviewTodayFill'), overviewYesterdayFill:qs('#overviewYesterdayFill'), overviewTodayValue:qs('#overviewTodayValue'), overviewYesterdayValue:qs('#overviewYesterdayValue'), overviewPromotionStatus:qs('#overviewPromotionStatus'), overviewTaskBalance:qs('#overviewTaskBalance'), overviewMilestones:qs('#overviewMilestones'), overviewQuickStart:qs('#overviewQuickStart') };
+  const el={ app:qs('#app'), homeView:qs('#homeView'), studyView:qs('#studyView'), reviewCompleteView:qs('#reviewCompleteView'), startStudyCta:qs('#startStudyCta'), reviewCompleteMessage:qs('#reviewCompleteMessage'), reviewActionContinue:qs('#reviewActionContinue'), reviewActionFocusReview:qs('#reviewActionFocusReview'), reviewActionFinish:qs('#reviewActionFinish'), headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerMessage'), nextAction:qs('#nextActionMessage'), footerInfoContainer:qs('#footerInfo'), footerInfoBtn:qs('#footerInfoBtn'), footerInfoDialog:qs('#footerInfoDialog'), footerInfoDialogBody:qs('#footerInfoDialogBody'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), composeGuide:qs('#composeGuide'), composeTokens:qs('#composeTokens'), composeNote:qs('#composeNote'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSpeechVoice:qs('#cfgSpeechVoice'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speedCtrl:qs('.speed-ctrl'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus'), notifTimeList:qs('#notifTimeList'), notifTimeAdd:qs('#notifTimeAdd'), notifTriggerDailyZero:qs('#notifTriggerDailyZero'), notifTriggerDailyCompare:qs('#notifTriggerDailyCompare'), notifTriggerWeekly:qs('#notifTriggerWeekly'), notifTriggerRestartTone:qs('#notifTriggerRestartTone'), milestoneIntensity:qs('#cfgMilestoneIntensity'), notifHelp:qs('#notifHelp'), dailyGoalCard:qs('#dailyGoalCard'), dailyGoalBody:qs('#dailyGoalBody'), dailyGoalToggle:qs('#dailyGoalToggle'), dailyGoalRing:qs('#dailyGoalRing'), dailyGoalPercent:qs('#dailyGoalPercent'), dailyGoalTag:qs('#dailyGoalTag'), dailyGoalDone:qs('#dailyGoalDone'), dailyGoalTarget:qs('#dailyGoalTarget'), dailyGoalHint:qs('#dailyGoalHint'), sessionGoalCard:qs('#sessionGoalCard'), sessionGoalBody:qs('#sessionGoalBody'), sessionGoalToggle:qs('#sessionGoalToggle'), sessionGoalRing:qs('#sessionGoalRing'), sessionGoalPercent:qs('#sessionGoalPercent'), sessionGoalTag:qs('#sessionGoalTag'), sessionGoalDone:qs('#sessionGoalDone'), sessionGoalTarget:qs('#sessionGoalTarget'), sessionGoalSlider:qs('#sessionGoalSlider'), sessionGoalBarFill:qs('#sessionGoalBarFill'), dailyOverviewCard:qs('#dailyOverviewCard'), dailyOverviewBody:qs('#dailyOverviewBody'), dailyOverviewToggle:qs('#dailyOverviewToggle'), dailyOverviewDiff:qs('#dailyOverviewDiff'), dailyOverviewTrendStatus:qs('#dailyOverviewTrendStatus'), dailyOverviewNote:qs('#dailyOverviewNote'), overviewHighlights:qs('#dailyOverviewHighlights'), overviewTodayFill:qs('#overviewTodayFill'), overviewYesterdayFill:qs('#overviewYesterdayFill'), overviewTodayValue:qs('#overviewTodayValue'), overviewYesterdayValue:qs('#overviewYesterdayValue'), overviewPromotionStatus:qs('#overviewPromotionStatus'), overviewTaskBalance:qs('#overviewTaskBalance'), overviewMilestones:qs('#overviewMilestones'), overviewQuickStart:qs('#overviewQuickStart') };
   el.cfgPlaybackMode=qsa('input[name="cfgPlaybackMode"]');
   el.cfgStudyMode=qsa('input[name="cfgStudyMode"]');
   const versionTargets=qsa('[data-app-version]');
@@ -1150,6 +1161,32 @@ function createAppRuntime(){
   if(el.overviewQuickStart){
     el.overviewQuickStart.addEventListener('click', handleQuickStart);
   }
+  if(el.startStudyCta){
+    el.startStudyCta.addEventListener('click', handleQuickStart);
+  }
+  if(el.reviewActionContinue){
+    el.reviewActionContinue.addEventListener('click', ()=>{
+      applyViewState(VIEW_HOME);
+      handleQuickStart();
+    });
+  }
+  if(el.reviewActionFocusReview){
+    el.reviewActionFocusReview.addEventListener('click', ()=>{
+      if(el.orderSel){
+        el.orderSel.value='srs';
+        saveString(ORDER_SELECTION, 'srs');
+      }
+      applyViewState(VIEW_HOME);
+      rebuildAndRender(true,{autoStart:true, autoPlay:isAutoPlayAllowed()}).catch(()=>{});
+    });
+  }
+  if(el.reviewActionFinish){
+    el.reviewActionFinish.addEventListener('click', ()=>{
+      applyViewState(VIEW_HOME);
+      showIdleCard();
+    });
+  }
+  applyViewState(VIEW_HOME);
 
   const {
     playTone,
@@ -1299,6 +1336,15 @@ function createAppRuntime(){
     if(el.dailyOverviewNote){
       el.dailyOverviewNote.textContent=`${summary.message}（失敗率${failRateLabel}）`;
     }
+  }
+
+  function presentReviewCompleteView(summary){
+    if(!summary) return;
+    const failRateLabel=`${Math.round(Math.max(0, Number(summary.failRate)||0)*100)}%`;
+    if(el.reviewCompleteMessage){
+      el.reviewCompleteMessage.textContent=`${summary.message}（失敗率${failRateLabel} / 新規${Math.max(0, Number(summary.newIntroduced)||0)}件）`;
+    }
+    applyViewState(VIEW_REVIEW_COMPLETE);
   }
 
   function finalizeSessionMetrics(reason='manual'){
@@ -2410,8 +2456,10 @@ function createAppRuntime(){
 
   // Build section options (All/単一)
   async function finalizeActiveSession({ flushLogs=false, reason='manual' }={}){
-    setSessionLayoutActive(false);
-    if(!(sessionActive || sessionStarting)) return false;
+    if(!(sessionActive || sessionStarting)){
+      applyViewState(VIEW_HOME);
+      return false;
+    }
     stopAudio();
     if(recognitionController && recognitionController.isActive()){
       try{ await stopRec(); }
@@ -2422,6 +2470,11 @@ function createAppRuntime(){
     sessionActive=false;
     sessionStarting=false;
     clearRecoverySessionTarget();
+    if(reason==='completed' && latestSessionClosureSummary){
+      presentReviewCompleteView(latestSessionClosureSummary);
+    }else{
+      applyViewState(VIEW_HOME);
+    }
     if(flushLogs){
       try{ await flushPendingLogs(); }
       catch(err){ console.warn('finalizeActiveSession', err); }
@@ -2761,7 +2814,7 @@ function createAppRuntime(){
     finalizeSessionMetrics('idle');
     sessionActive=false;
     sessionStarting=false;
-    setSessionLayoutActive(false);
+    applyViewState(VIEW_HOME);
     cancelAutoAdvance();
     stopAudio();
     speechController.cancelSpeech();
@@ -2995,7 +3048,6 @@ function createAppRuntime(){
       if(advanceToNextSection()) return;
       toast('最後のセクションまで完了しました');
       await finalizeActiveSession({ reason:'completed' });
-      showIdleCard();
       return;
     }
     const task=async ()=>{
@@ -3053,7 +3105,7 @@ function createAppRuntime(){
       }
       await ensureDir();
       sessionActive=true;
-      setSessionLayoutActive(true);
+      applyViewState(VIEW_STUDYING);
       sessionStart=now();
       beginSessionMetrics();
       idx=-1;
@@ -3064,7 +3116,7 @@ function createAppRuntime(){
       }catch(err){
         finalizeSessionMetrics('start-error');
         sessionActive=false;
-        setSessionLayoutActive(false);
+        applyViewState(VIEW_HOME);
         throw err;
       }
     }finally{
