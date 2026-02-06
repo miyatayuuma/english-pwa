@@ -46,20 +46,13 @@ import { createComposeGuide } from './composeGuide.js';
 import { createLogManager } from './logManager.js';
 import { qs, qsa } from './dom.js';
 import { createLevelStateManager, LEVEL_CHOICES } from './levelState.js';
+import { createViewStateController, VIEW_HOME, VIEW_STUDYING, VIEW_REVIEW_COMPLETE } from './viewState.js';
+import { createGoalController, normalizeGoalValue } from './goalController.js';
+import { createFilterController } from './filterController.js';
+import { createSwUpdatePrompt } from './swUpdatePrompt.js';
 import '../version.js';
 
 const APP_VERSION = globalThis.APP_VERSION;
-
-let swRegistration=null;
-let swRegistrationPromise=null;
-let hasPromptedReload=false;
-
-const waitForControllerChange=()=>new Promise(resolve=>{
-  navigator.serviceWorker.addEventListener('controllerchange', resolve, { once:true });
-});
-
-const shouldPromptReload=()=>!!navigator.serviceWorker.controller;
-
 function createAppRuntime(){
   // ===== Utilities =====
   const now=()=>Date.now(); const UA=(()=>navigator.userAgent||'')();
@@ -99,9 +92,7 @@ function createAppRuntime(){
   const DEFAULT_SESSION_GOAL=5;
   const RECOVERY_SESSION_TARGET=3;
   const goalState={ dailyTarget:DEFAULT_DAILY_GOAL, sessionTarget:DEFAULT_SESSION_GOAL, dailyDone:0, sessionDone:0, todayKey:'' };
-  let recoverySessionBackupTarget=null;
   const goalMilestones={ daily:false, session:false };
-  let goalOverviewShown=false;
   let lastPromotionGoal=null;
   let overviewCollapsed=false;
   const goalCollapsed={ daily:false, session:false };
@@ -127,21 +118,8 @@ function createAppRuntime(){
     const raw=(input && typeof input.value==='string') ? input.value : '';
     return raw.trim();
   }
-  const VIEW_HOME='home';
-  const VIEW_STUDYING='studying';
-  const VIEW_REVIEW_COMPLETE='review-complete';
-  let currentViewState=VIEW_HOME;
 
-  function applyViewState(nextView){
-    const view=(nextView===VIEW_STUDYING || nextView===VIEW_REVIEW_COMPLETE) ? nextView : VIEW_HOME;
-    currentViewState=view;
-    if(el.homeView){ el.homeView.hidden=view!==VIEW_HOME; }
-    if(el.studyView){ el.studyView.hidden=view!==VIEW_STUDYING; }
-    if(el.reviewCompleteView){ el.reviewCompleteView.hidden=view!==VIEW_REVIEW_COMPLETE; }
-    if(el.app){
-      el.app.dataset.viewState=view;
-    }
-  }
+
 
   const levelStateManager=createLevelStateManager({
     baseHintStage: BASE_HINT_STAGE,
@@ -167,232 +145,64 @@ function createAppRuntime(){
     el.level.textContent = Number.isFinite(best) && best>last ? `${last} / ${best}` : `${last}`;
   }
 
-  function updateLevelFilterButtons(){
-    if(!el.levelFilter) return;
-    const active=new Set(getActiveLevelArray());
-    qsa('button[data-level]', el.levelFilter).forEach(btn=>{
-      const level=Number(btn.dataset.level||'0');
-      const on=active.has(level);
-      btn.classList.toggle('active', on);
-      btn.setAttribute('aria-pressed', on?'true':'false');
-    });
-  }
 
-  function initLevelFilterUI(){
-    if(!el.levelFilter) return;
-    el.levelFilter.innerHTML='';
-    const label=document.createElement('span');
-    label.className='level-filter-label';
-    label.textContent='Lv';
-    el.levelFilter.appendChild(label);
-    const btnWrap=document.createElement('div');
-    btnWrap.className='level-filter-buttons';
-    el.levelFilter.appendChild(btnWrap);
-    const activeLevels=new Set(getActiveLevelArray());
-    for(const level of LEVEL_CHOICES){
-      const btn=document.createElement('button');
-      btn.type='button';
-      btn.className='level-chip';
-      btn.dataset.level=String(level);
-      btn.textContent=String(level);
-      if(activeLevels.has(level)){
-        btn.classList.add('active');
-        btn.setAttribute('aria-pressed','true');
-      }else{
-        btn.setAttribute('aria-pressed','false');
-      }
-      btn.addEventListener('click',()=>{
-        let nextLevels=getLevelFilterSet();
-        if(!(nextLevels instanceof Set)){
-          nextLevels=new Set();
-        }
-        if(nextLevels.has(level)){
-          if(nextLevels.size===1){
-            nextLevels=new Set(LEVEL_CHOICES);
-          }else{
-            nextLevels.delete(level);
-          }
-        }else{
-          nextLevels.add(level);
-        }
-        if(!nextLevels.size){
-          nextLevels=new Set(LEVEL_CHOICES);
-        }
-        setLevelFilterSet(nextLevels);
-        updateLevelFilterButtons();
-        rebuildAndRender(true);
-      });
-      btnWrap.appendChild(btn);
-    }
-    updateLevelFilterButtons();
-  }
 
-  function normalizeGoalValue(raw, fallback){
-    const num=Number(raw);
-    if(Number.isFinite(num) && num>0){
-      return Math.max(1, Math.min(999, Math.round(num)));
-    }
-    return fallback;
-  }
 
-  function ensureDailyGoalFresh(){
-    const today=localDateKey();
-    if(goalState.todayKey===today) return;
-    goalState.todayKey=today;
-    const todayStats=getDailyStats(today);
-    goalState.dailyDone=Math.max(0, Number(todayStats?.passes)||0);
-    goalMilestones.daily = goalState.dailyDone>=goalState.dailyTarget && goalState.dailyTarget>0;
-  }
-
-  function syncGoalTargets(){
-    const storedDaily=loadNumber(DAILY_GOAL_KEY, NaN);
-    const storedSession=loadNumber(SESSION_GOAL_KEY, NaN);
-    goalState.dailyTarget=normalizeGoalValue(storedDaily, DEFAULT_DAILY_GOAL);
-    goalState.sessionTarget=normalizeGoalValue(storedSession, DEFAULT_SESSION_GOAL);
-    if(!Number.isFinite(storedDaily) || storedDaily<=0){
-      saveNumber(DAILY_GOAL_KEY, goalState.dailyTarget);
-    }
-    if(!Number.isFinite(storedSession) || storedSession<=0){
-      saveNumber(SESSION_GOAL_KEY, goalState.sessionTarget);
-    }
-  }
-
-  function applyGoalTargetsToControls(){
-    if(el.sessionGoalSlider){
-      el.sessionGoalSlider.value=String(goalState.sessionTarget);
-      el.sessionGoalSlider.setAttribute('aria-valuenow', String(goalState.sessionTarget));
-    }
-    if(el.sessionGoalTarget){
-      el.sessionGoalTarget.textContent=goalState.sessionTarget;
-    }
-    if(el.dailyGoalTarget){
-      el.dailyGoalTarget.textContent=goalState.dailyTarget;
-    }
-  }
-
-  function updateGoalMilestones(dailyRatio, sessionRatio){
-    const dailyReached=dailyRatio>=1 && goalState.dailyTarget>0;
-    const sessionReached=sessionRatio>=1 && goalState.sessionTarget>0;
-    if(dailyReached && !goalMilestones.daily){
-      goalMilestones.daily=true;
-      toast('今日の目標達成！学習成果がしっかり積み上がっています。', 2200);
-    }
-    if(sessionReached && !goalMilestones.session){
-      goalMilestones.session=true;
-      toast('セッション目標をクリア！この調子で定着を進めましょう。', 2200);
-    }
-    if(!dailyReached) goalMilestones.daily=false;
-    if(!sessionReached) goalMilestones.session=false;
-  }
-
-  function updateGoalProgressFromMetrics({ notify=false }={}){
-    ensureDailyGoalFresh();
-    goalState.sessionDone=Math.max(0, sessionMetrics?.cardsDone||0);
-    applyGoalTargetsToControls();
-    if(el.dailyGoalDone){
-      el.dailyGoalDone.textContent=goalState.dailyDone;
-    }
-    if(el.sessionGoalDone){
-      el.sessionGoalDone.textContent=goalState.sessionDone;
-    }
-    const dailyRatio=goalState.dailyTarget>0 ? goalState.dailyDone/goalState.dailyTarget : 0;
-    const sessionRatio=goalState.sessionTarget>0 ? goalState.sessionDone/goalState.sessionTarget : 0;
-    const dailyPct=Math.min(100, Math.round(dailyRatio*100));
-    const sessionPct=Math.min(100, Math.round(sessionRatio*100));
-    if(el.dailyGoalRing){
-      el.dailyGoalRing.style.setProperty('--goal-ratio', Math.min(1, dailyRatio));
-    }
-    if(el.sessionGoalRing){
-      el.sessionGoalRing.style.setProperty('--goal-ratio', Math.min(1, sessionRatio));
-    }
-    if(el.dailyGoalPercent){
-      el.dailyGoalPercent.textContent=`${dailyPct}%`;
-    }
-    if(el.sessionGoalPercent){
-      el.sessionGoalPercent.textContent=`${sessionPct}%`;
-    }
-    const dailyRemaining=Math.max(0, goalState.dailyTarget-goalState.dailyDone);
-    const sessionRemaining=Math.max(0, goalState.sessionTarget-goalState.sessionDone);
-    if(el.dailyGoalHint){
-      el.dailyGoalHint.textContent = dailyRemaining>0 ? `目標まであと${dailyRemaining}件` : '今日の目標を達成しました';
-    }
-    if(el.dailyGoalTag){
-      el.dailyGoalTag.textContent = dailyRemaining>0 ? `あと${dailyRemaining}件` : '達成';
-    }
-    if(el.sessionGoalTag){
-      el.sessionGoalTag.textContent = sessionRemaining>0 ? `あと${sessionRemaining}件` : '達成';
-    }
-    if(el.sessionGoalBarFill){
-      el.sessionGoalBarFill.style.width=`${Math.min(100, Math.max(0, sessionRatio*100))}%`;
-    }
-    if(notify){
-      updateGoalMilestones(dailyRatio, sessionRatio);
-    }else{
-      goalMilestones.daily = dailyRatio>=1 && goalState.dailyTarget>0;
-      goalMilestones.session = sessionRatio>=1 && goalState.sessionTarget>0;
-    }
-    updateDailyOverview();
-  }
-
-  function activateRecoverySessionTarget(){
-    if(recoverySessionBackupTarget!==null) return;
-    recoverySessionBackupTarget=goalState.sessionTarget;
-    goalState.sessionTarget=RECOVERY_SESSION_TARGET;
-    applyGoalTargetsToControls();
-    updateGoalProgressFromMetrics();
-  }
-
-  function clearRecoverySessionTarget(){
-    if(recoverySessionBackupTarget===null) return;
-    goalState.sessionTarget=recoverySessionBackupTarget;
-    recoverySessionBackupTarget=null;
-    applyGoalTargetsToControls();
-    updateGoalProgressFromMetrics();
-  }
-
-  function handleSessionGoalInput(ev){
-    const value=normalizeGoalValue(ev?.target?.value, goalState.sessionTarget);
-    goalState.sessionTarget=value;
-    saveNumber(SESSION_GOAL_KEY, value);
-    applyGoalTargetsToControls();
-    updateGoalProgressFromMetrics();
-  }
-
-  function bindGoalControls(){
-    if(el.sessionGoalSlider){
-      el.sessionGoalSlider.addEventListener('input', handleSessionGoalInput);
-      el.sessionGoalSlider.addEventListener('change', handleSessionGoalInput);
-    }
-  }
-
-  function initGoals(){
-    syncGoalTargets();
-    ensureDailyGoalFresh();
-    applyGoalTargetsToControls();
-    updateGoalProgressFromMetrics();
-    bindGoalControls();
-  }
-
-  function incrementGoalProgressForPass(){
-    ensureDailyGoalFresh();
-    goalState.dailyDone+=1;
-    goalState.sessionDone=Math.max(0, sessionMetrics?.cardsDone||goalState.sessionDone);
-    updateGoalProgressFromMetrics({ notify:true });
-  }
-
-  function maybeShowGoalOverview(){
-    if(goalOverviewShown) return;
-    ensureDailyGoalFresh();
-    const dailyRemaining=Math.max(0, goalState.dailyTarget-goalState.dailyDone);
-    const dailyText=dailyRemaining>0 ? `今日の目標まであと${dailyRemaining}件です` : '今日の目標は達成済みです';
-    const sessionText=`今回の学習目標は${goalState.sessionTarget}件です`;
-    toast(`${dailyText} / ${sessionText}`, 3200);
-    goalOverviewShown=true;
-  }
 
 
   // ===== Elements =====
   const el={ app:qs('#app'), homeView:qs('#homeView'), studyView:qs('#studyView'), reviewCompleteView:qs('#reviewCompleteView'), startStudyCta:qs('#startStudyCta'), reviewCompleteMessage:qs('#reviewCompleteMessage'), reviewActionContinue:qs('#reviewActionContinue'), reviewActionFocusReview:qs('#reviewActionFocusReview'), reviewActionFinish:qs('#reviewActionFinish'), headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerMessage'), nextAction:qs('#nextActionMessage'), footerInfoContainer:qs('#footerInfo'), footerInfoBtn:qs('#footerInfoBtn'), footerInfoDialog:qs('#footerInfoDialog'), footerInfoDialogBody:qs('#footerInfoDialogBody'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), studySecSel:qs('#studySecSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), composeGuide:qs('#composeGuide'), composeTokens:qs('#composeTokens'), composeNote:qs('#composeNote'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSpeechVoice:qs('#cfgSpeechVoice'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speedCtrl:qs('.speed-ctrl'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus'), notifTimeList:qs('#notifTimeList'), notifTimeAdd:qs('#notifTimeAdd'), notifTriggerDailyZero:qs('#notifTriggerDailyZero'), notifTriggerDailyCompare:qs('#notifTriggerDailyCompare'), notifTriggerWeekly:qs('#notifTriggerWeekly'), notifTriggerRestartTone:qs('#notifTriggerRestartTone'), milestoneIntensity:qs('#cfgMilestoneIntensity'), notifHelp:qs('#notifHelp'), dailyGoalCard:qs('#dailyGoalCard'), dailyGoalBody:qs('#dailyGoalBody'), dailyGoalToggle:qs('#dailyGoalToggle'), dailyGoalToggleState:qs('#dailyGoalToggleState'), dailyGoalRing:qs('#dailyGoalRing'), dailyGoalPercent:qs('#dailyGoalPercent'), dailyGoalTag:qs('#dailyGoalTag'), dailyGoalDone:qs('#dailyGoalDone'), dailyGoalTarget:qs('#dailyGoalTarget'), dailyGoalHint:qs('#dailyGoalHint'), sessionGoalCard:qs('#sessionGoalCard'), sessionGoalBody:qs('#sessionGoalBody'), sessionGoalToggle:qs('#sessionGoalToggle'), sessionGoalRing:qs('#sessionGoalRing'), sessionGoalPercent:qs('#sessionGoalPercent'), sessionGoalTag:qs('#sessionGoalTag'), sessionGoalDone:qs('#sessionGoalDone'), sessionGoalTarget:qs('#sessionGoalTarget'), sessionGoalSlider:qs('#sessionGoalSlider'), sessionGoalBarFill:qs('#sessionGoalBarFill'), dailyOverviewCard:qs('#dailyOverviewCard'), dailyOverviewBody:qs('#dailyOverviewBody'), dailyOverviewToggle:qs('#dailyOverviewToggle'), dailyOverviewToggleState:qs('#dailyOverviewToggleState'), dailyOverviewDiff:qs('#dailyOverviewDiff'), dailyOverviewTrendStatus:qs('#dailyOverviewTrendStatus'), dailyOverviewNote:qs('#dailyOverviewNote'), overviewHighlights:qs('#dailyOverviewHighlights'), overviewTodayFill:qs('#overviewTodayFill'), overviewYesterdayFill:qs('#overviewYesterdayFill'), overviewTodayValue:qs('#overviewTodayValue'), overviewYesterdayValue:qs('#overviewYesterdayValue'), overviewPromotionStatus:qs('#overviewPromotionStatus'), overviewTaskBalance:qs('#overviewTaskBalance'), overviewMilestones:qs('#overviewMilestones'), overviewQuickStart:qs('#overviewQuickStart'), onboardingCard:qs('#onboardingCard'), onboardingStepLabel:qs('#onboardingStepLabel'), onboardingLevel:qs('#onboardingLevel'), onboardingPurpose:qs('#onboardingPurpose'), onboardingMinutes:qs('#onboardingMinutes'), onboardingBack:qs('#onboardingBack'), onboardingNext:qs('#onboardingNext'), personalPlanSummary:qs('#personalPlanSummary'), personalPlanBody:qs('#personalPlanBody'), personalPlanToggle:qs('#personalPlanToggle') };
+  const viewStateController=createViewStateController({ el });
+  const applyViewState=(...args)=>viewStateController.applyViewState(...args);
+
+  const goalController=createGoalController({
+    el,
+    goalState,
+    goalMilestones,
+    defaults:{ DEFAULT_DAILY_GOAL, DEFAULT_SESSION_GOAL, RECOVERY_SESSION_TARGET },
+    storage:{ DAILY_GOAL_KEY, SESSION_GOAL_KEY },
+    deps:{
+      loadNumber,
+      saveNumber,
+      localDateKey,
+      getDailyStats,
+      toast,
+      getSessionCardsDone:()=>sessionMetrics?.cardsDone||0,
+      updateDailyOverview,
+    },
+  });
+  const initGoals=(...args)=>goalController.initGoals(...args);
+  const ensureDailyGoalFresh=(...args)=>goalController.ensureDailyGoalFresh(...args);
+  const applyGoalTargetsToControls=(...args)=>goalController.applyGoalTargetsToControls(...args);
+  const updateGoalProgressFromMetrics=(...args)=>goalController.updateGoalProgressFromMetrics(...args);
+  const activateRecoverySessionTarget=(...args)=>goalController.activateRecoverySessionTarget(...args);
+  const clearRecoverySessionTarget=(...args)=>goalController.clearRecoverySessionTarget(...args);
+  const incrementGoalProgressForPass=(...args)=>goalController.incrementGoalProgressForPass(...args);
+  const maybeShowGoalOverview=(...args)=>goalController.maybeShowGoalOverview(...args);
+
+  const filterController=createFilterController({
+    el,
+    levelChoices:LEVEL_CHOICES,
+    qsa,
+    storage:{ SECTION_SELECTION, ORDER_SELECTION },
+    deps:{
+      loadSearchQuery,
+      saveSearchQuery,
+      currentSearchQuery,
+      loadOrderSelection:loadString,
+      saveOrderSelection:saveString,
+      saveSectionSelection:saveString,
+      getActiveLevelArray,
+      getLevelFilterSet,
+      setLevelFilterSet,
+      rebuildAndRender,
+      updateHeaderStats,
+      finalizeActiveSession,
+      updateSectionOptions,
+    },
+  });
+  const initSectionPicker=(...args)=>filterController.initSectionPicker(...args);
+  const updateLevelFilterButtons=(...args)=>filterController.updateLevelFilterButtons(...args);
   el.cfgPlaybackMode=qsa('input[name="cfgPlaybackMode"]');
   el.cfgStudyMode=qsa('input[name="cfgStudyMode"]');
   const versionTargets=qsa('[data-app-version]');
@@ -2687,74 +2497,7 @@ function createAppRuntime(){
     document.addEventListener('visibilitychange', handleVisibilityExit);
   }
 
-  function initSectionPicker(){
-    updateSectionOptions({preferSaved:true});
-    const handleSectionChange=(value)=>{
-      if(el.secSel && el.secSel.value!==value) el.secSel.value=value;
-      if(el.studySecSel && el.studySecSel.value!==value) el.studySecSel.value=value;
-      saveString(SECTION_SELECTION, value);
-      rebuildAndRender(true);
-    };
-    if(el.secSel){
-      el.secSel.onchange=()=>{ handleSectionChange(el.secSel.value); };
-    }
-    if(el.studySecSel){
-      el.studySecSel.onchange=()=>{ handleSectionChange(el.studySecSel.value); };
-    }
-    const ordSaved=loadString(ORDER_SELECTION, 'asc')||'asc';
-    el.orderSel.value=['asc','rnd','srs'].includes(ordSaved) ? ordSaved : 'asc';
-    el.orderSel.onchange=()=>{
-      saveString(ORDER_SELECTION, el.orderSel.value);
-      rebuildAndRender(true);
-    };
-    if(el.search){
-      const saved=loadSearchQuery();
-      if(saved){
-        el.search.value=saved;
-      }
-      let lastAppliedSearch=currentSearchQuery();
-      let searchTimer=null;
-      const resetSessionForSearch=()=>finalizeActiveSession();
-      const applySearchChange=(fromChange=false)=>{
-        if(searchTimer){
-          clearTimeout(searchTimer);
-          searchTimer=null;
-        }
-        const trimmed=currentSearchQuery();
-        if(fromChange && el.search.value!==trimmed){
-          el.search.value=trimmed;
-        }
-        saveSearchQuery(trimmed);
-        if(trimmed===lastAppliedSearch){
-          return;
-        }
-        lastAppliedSearch=trimmed;
-        updateHeaderStats();
-        const resetPromise=resetSessionForSearch();
-        lastEmptySearchToast='';
-        Promise.resolve(resetPromise)
-          .catch(()=>{})
-          .finally(()=>{ rebuildAndRender(true,{autoStart:false}); });
-        return;
-      };
-      const scheduleSearchChange=()=>{
-        if(searchTimer){
-          clearTimeout(searchTimer);
-        }
-        searchTimer=setTimeout(()=>{
-          applySearchChange(false);
-        }, 220);
-      };
-      el.search.addEventListener('input', ()=>{
-        saveSearchQuery(el.search.value.trim());
-        scheduleSearchChange();
-      });
-      el.search.addEventListener('change', ()=>{
-        applySearchChange(true);
-      });
-    }
-    initLevelFilterUI();
-  }
+
 
   function getRandomIndex(maxExclusive){
     if(maxExclusive<=0) return 0;
@@ -3935,55 +3678,9 @@ async function initApp(){
   await runtime.boot();
 }
 
-const promptToReload=(registration, worker)=>{
-  if(!shouldPromptReload() || hasPromptedReload) return;
-  hasPromptedReload=true;
 
-  const message='新バージョンがあります。再読み込みしますか？';
-  toast(message, 3200);
-  const approved=window.confirm(message);
-  if(!approved) return;
 
-  if(registration.waiting){
-    registration.waiting.postMessage({ type:'SKIP_WAITING' });
-    waitForControllerChange().then(()=>window.location.reload());
-  }else if(worker?.state==='activated'){
-    window.location.reload();
-  }
-};
-
-const handleServiceWorker=(registration, worker)=>{
-  if(!worker) return;
-
-  const onStateChange=()=>{
-    if((worker.state==='installed' || worker.state==='activated') && shouldPromptReload()){
-      promptToReload(registration, worker);
-    }
-  };
-
-  worker.addEventListener('statechange', onStateChange);
-  onStateChange();
-};
-
-function registerServiceWorker() {
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      swRegistrationPromise = navigator.serviceWorker
-        .register('./sw.js')
-        .then((registration) => {
-          swRegistration = registration;
-          handleServiceWorker(registration, registration.installing || registration.waiting);
-          registration.addEventListener('updatefound', () => handleServiceWorker(registration, registration.installing));
-          registration.update().catch(() => {});
-          return registration;
-        })
-        .catch(() => {
-          swRegistration=null;
-          return null;
-        });
-    });
-  }
-}
+const swUpdatePrompt=createSwUpdatePrompt();
 
 async function waitForDomReady() {
   if (document.readyState === 'loading') {
@@ -4000,7 +3697,7 @@ async function bootstrap() {
   } catch (err) {
     console.error('App init failed', err);
   } finally {
-    registerServiceWorker();
+    swUpdatePrompt.registerServiceWorker({ toastFn: toast });
   }
 }
 
