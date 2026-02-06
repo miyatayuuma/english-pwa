@@ -61,7 +61,8 @@
               <span class="goal-card__tag" id="dailyGoalTag">—</span>
             </div>
             <div class="goal-card__header-actions">
-              <button id="dailyGoalToggle" class="goal-toggle" type="button" aria-expanded="true" aria-controls="dailyGoalBody" aria-label="今日の目標を折りたたむ">⌄</button>
+              <span id="dailyGoalToggleState" class="sr-only">現在は展開中です。ボタンを押すと折りたたみます。</span>
+              <button id="dailyGoalToggle" class="goal-toggle" type="button" aria-expanded="true" aria-controls="dailyGoalBody" aria-describedby="dailyGoalToggleState" aria-label="今日の目標を折りたたむ">⌄</button>
             </div>
           </div>
           <div class="goal-card__body" id="dailyGoalBody">
@@ -78,25 +79,27 @@
 
       <div id="rangeBar">
         <div class="range-item">
-          <label class="sr-only" for="secSel">セクション</label>
-          <select id="secSel" aria-label="セクション選択"></select>
+          <label class="sr-only" id="secSelLabel" for="secSel">セクション</label>
+          <select id="secSel" aria-labelledby="secSelLabel"></select>
         </div>
         <div class="range-item">
-          <span class="sr-only" id="levelFilterLabel">レベル</span>
-          <div id="levelFilter" class="level-filter" role="group" aria-labelledby="levelFilterLabel"></div>
+          <span class="sr-only" id="levelFilterLabel">レベルフィルタ</span>
+          <span class="sr-only" id="levelFilterHint">選択中のレベルのみを出題します</span>
+          <div id="levelFilter" class="level-filter" role="group" aria-labelledby="levelFilterLabel" aria-describedby="levelFilterHint"></div>
         </div>
         <div class="range-item">
-          <label class="sr-only" for="orderSel">並び</label>
-          <select id="orderSel" aria-label="並び順">
+          <label class="sr-only" id="orderSelLabel" for="orderSel">並び順</label>
+          <select id="orderSel" aria-labelledby="orderSelLabel">
             <option value="asc">昇順</option>
             <option value="srs">復習優先</option>
             <option value="rnd">ランダム</option>
           </select>
         </div>
         <div class="range-item">
-          <label class="sr-only" for="rangeSearch">検索</label>
+          <label class="sr-only" id="rangeSearchLabel" for="rangeSearch">学習項目を検索</label>
+          <span class="sr-only" id="rangeSearchHint">英単語やフレーズで絞り込みできます</span>
           <div class="search-input">
-            <input id="rangeSearch" type="search" placeholder="単語検索" autocomplete="off" />
+            <input id="rangeSearch" type="search" placeholder="単語検索" autocomplete="off" aria-labelledby="rangeSearchLabel" aria-describedby="rangeSearchHint" />
           </div>
         </div>
       </div>
@@ -108,12 +111,13 @@
           <p class="overview-card__subtitle" id="dailyOverviewNote">学習の流れをさっと確認しましょう</p>
         </div>
         <div class="overview-card__header-actions">
-          <span class="overview-chip" id="dailyOverviewDiff" aria-live="polite">—</span>
-          <button id="dailyOverviewToggle" class="overview-toggle" type="button" aria-expanded="true" aria-controls="dailyOverviewBody" aria-label="今日の概要を折りたたむ">⌄</button>
+          <span class="overview-chip" id="dailyOverviewDiff" aria-live="off">—</span>
+          <span id="dailyOverviewToggleState" class="sr-only">現在は展開中です。ボタンを押すと折りたたみます。</span>
+          <button id="dailyOverviewToggle" class="overview-toggle" type="button" aria-expanded="true" aria-controls="dailyOverviewBody" aria-describedby="dailyOverviewToggleState" aria-label="今日の概要を折りたたむ">⌄</button>
         </div>
       </div>
       <div class="overview-card__body" id="dailyOverviewBody">
-        <div class="overview-insights" id="dailyOverviewHighlights" aria-live="polite"></div>
+        <div class="overview-insights" id="dailyOverviewHighlights" aria-live="off"></div>
         <div class="overview-grid">
           <div class="overview-section overview-section--trend">
             <div class="overview-section__title">昨日比</div>
@@ -181,7 +185,7 @@
     </section>
 
     <section id="studyView" hidden>
-      <section class="card" id="card" aria-live="polite">
+      <section class="card" id="card" aria-live="off">
       <div class="chips" id="chips"></div>
       <div id="enText" class="en">出題を準備しています…（下スワイプで和訳）</div>
       <div id="jaText" class="ja">—</div>
@@ -226,8 +230,8 @@
   <footer>
     <progress id="pbar" value="0" max="1"></progress>
     <div id="footerInfo" class="footer-info" data-dialog="footer-info">
-      <span id="footerMessage" class="muted" aria-live="polite"></span>
-      <span id="nextActionMessage" class="muted" aria-live="polite"></span>
+      <span id="footerMessage" class="muted" role="status" aria-live="polite" aria-atomic="true"></span>
+      <span id="nextActionMessage" class="muted" role="alert" aria-live="assertive" aria-atomic="true"></span>
       <button id="footerInfoBtn" type="button" aria-label="学習ルールの詳細" title="学習ルールの詳細">ℹ️</button>
     </div>
     <div class="grow"></div>
@@ -241,8 +245,8 @@
 </div>
 
 <audio id="player" preload="auto" crossorigin="anonymous"></audio>
-<div id="milestoneEffects" aria-live="polite" aria-atomic="true"></div>
-<div id="toast" role="status" aria-live="polite"></div>
+<div id="milestoneEffects" aria-live="off" aria-atomic="true"></div>
+<div id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 <dialog id="footerInfoDialog" class="info-dialog" data-dialog="footer-info" aria-labelledby="footerInfoDialogTitle">
   <form method="dialog" class="info-dialog__form">
     <h3 id="footerInfoDialogTitle">学習ルール</h3>

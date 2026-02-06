@@ -2,3 +2,48 @@
 @import url('./base.css');
 @import url('./screens.css');
 @import url('./components.css');
+
+:where(
+  a[href],
+  button,
+  input,
+  select,
+  textarea,
+  summary,
+  [role="button"],
+  [role="tab"],
+  [tabindex]:not([tabindex="-1"])
+):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+#footerInfoBtn:focus-visible,
+.speed-btn:focus-visible,
+.btn:focus-visible,
+.icon-btn:focus-visible,
+.goal-toggle:focus-visible,
+.overview-toggle:focus-visible,
+.level-chip:focus-visible,
+.btn-primary:focus-visible {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+.goal-toggle:focus-visible,
+.overview-toggle:focus-visible,
+.speed-btn:focus-visible,
+#footerInfoBtn:focus-visible,
+.btn-primary:focus-visible {
+  background: #1a2337;
+  border-color: var(--bd-strong);
+}
+
+.search-input:focus-within,
+select:focus-visible,
+#cfgBox input[type="text"]:focus-visible,
+#cfgBox input[type="url"]:focus-visible,
+#cfgBox input[type="time"]:focus-visible,
+#cfgBox select:focus-visible {
+  border-color: var(--bd-strong);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 28%, transparent);
+}
