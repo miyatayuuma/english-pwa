@@ -10,6 +10,25 @@
   <main class="signup">
     <h1>話せる英語を、今日から積み上げよう</h1>
     <p class="muted">アカウントを作成して、学習成果をいつでも確認・継続できる状態にしましょう。</p>
+    <section class="signup-onboarding" aria-label="登録メリット">
+      <p class="signup-onboarding__lead">最短1分で登録して、今日の学習をそのまま成長記録に変えられます。</p>
+      <ul class="signup-onboarding__benefits">
+        <li>毎日の学習ログと達成率を自動で見える化</li>
+        <li>復習タイミングを最適化して、忘却を防止</li>
+        <li>いつでも学習再開できるクラウド同期（今後対応）</li>
+      </ul>
+      <p class="signup-onboarding__trust">入力データは暗号化して保護し、いつでも解約・退会できます。</p>
+    </section>
+
+    <section class="social-signin" aria-label="ソーシャルサインイン">
+      <p class="social-signin__title">ソーシャルアカウントで続ける（準備中）</p>
+      <div class="social-signin__actions" role="group" aria-label="ソーシャルサインイン候補">
+        <button type="button" class="btn social-signin__btn" disabled aria-disabled="true">Google で続ける</button>
+        <button type="button" class="btn social-signin__btn" disabled aria-disabled="true">Apple で続ける</button>
+      </div>
+      <p class="field-help">現在はメール登録をご利用いただけます。ソーシャル連携は順次対応予定です。</p>
+    </section>
+
     <form id="signupForm" novalidate>
       <div class="form-field">
         <label for="signupName">お名前</label>
@@ -32,6 +51,19 @@
         <input id="signupConfirm" name="confirmPassword" type="password" autocomplete="new-password" required aria-describedby="signupConfirmError" />
         <p class="field-error" id="signupConfirmError" data-error-for="confirmPassword" aria-live="polite"></p>
       </div>
+      <div class="form-field form-field--checkbox">
+        <label for="signupConsent" class="checkbox-label">
+          <input id="signupConsent" name="termsAccepted" type="checkbox" aria-describedby="signupConsentError" />
+          <span><a href="#" aria-label="利用規約">利用規約</a> と <a href="#" aria-label="プライバシーポリシー">プライバシーポリシー</a> に同意する</span>
+        </label>
+        <p class="field-error" id="signupConsentError" data-error-for="termsAccepted" aria-live="polite"></p>
+      </div>
+      <p class="signup-status" id="signupStatus" aria-live="polite" data-state="idle"></p>
+      <section class="signup-success" id="signupSuccess" hidden aria-live="polite">
+        <h2>登録が完了しました！</h2>
+        <p>ようこそ。最初の学習セッションを開始して、学習履歴を作りましょう。</p>
+        <a class="btn btn--success" href="index.html">学習をスタートする</a>
+      </section>
       <button type="submit" class="btn btn--primary" disabled>無料で学習をはじめる</button>
     </form>
   </main>
@@ -44,15 +76,29 @@
   </footer>
 
   <script type="module">
-    import { attachSignupValidation } from './scripts/app/signupValidation.js';
+    import { attachSignupValidation, setSignupSubmitState } from './scripts/app/signupValidation.js';
     const form = document.getElementById('signupForm');
     const validate = attachSignupValidation(form);
+    const successEl = document.getElementById('signupSuccess');
 
-    form.addEventListener('submit', (event) => {
+    form.addEventListener('submit', async (event) => {
       event.preventDefault();
       const result = validate();
-      if (result.valid) {
-        alert('登録が完了しました。学習をスタートしましょう！');
+      if (!result.valid) {
+        return;
+      }
+
+      successEl.hidden = true;
+      setSignupSubmitState(form, 'loading', '登録処理中です…');
+
+      try {
+        await new Promise((resolve) => setTimeout(resolve, 600));
+        form.reset();
+        validate();
+        setSignupSubmitState(form, 'success', '登録が完了しました。次のステップに進みましょう。');
+        successEl.hidden = false;
+      } catch {
+        setSignupSubmitState(form, 'fail', '登録に失敗しました。時間をおいてもう一度お試しください。');
       }
     });
   </script>
