@@ -355,7 +355,7 @@ function createAppRuntime(){
 
 
   // ===== Elements =====
-  const el={ app:qs('#app'), headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerMessage'), footerInfoContainer:qs('#footerInfo'), footerInfoBtn:qs('#footerInfoBtn'), footerInfoDialog:qs('#footerInfoDialog'), footerInfoDialogBody:qs('#footerInfoDialogBody'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), composeGuide:qs('#composeGuide'), composeTokens:qs('#composeTokens'), composeNote:qs('#composeNote'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSpeechVoice:qs('#cfgSpeechVoice'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speedCtrl:qs('.speed-ctrl'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus'), notifTimeList:qs('#notifTimeList'), notifTimeAdd:qs('#notifTimeAdd'), notifTriggerDailyZero:qs('#notifTriggerDailyZero'), notifTriggerDailyCompare:qs('#notifTriggerDailyCompare'), notifTriggerWeekly:qs('#notifTriggerWeekly'), notifHelp:qs('#notifHelp'), dailyGoalCard:qs('#dailyGoalCard'), dailyGoalBody:qs('#dailyGoalBody'), dailyGoalToggle:qs('#dailyGoalToggle'), dailyGoalRing:qs('#dailyGoalRing'), dailyGoalPercent:qs('#dailyGoalPercent'), dailyGoalTag:qs('#dailyGoalTag'), dailyGoalDone:qs('#dailyGoalDone'), dailyGoalTarget:qs('#dailyGoalTarget'), dailyGoalHint:qs('#dailyGoalHint'), sessionGoalCard:qs('#sessionGoalCard'), sessionGoalBody:qs('#sessionGoalBody'), sessionGoalToggle:qs('#sessionGoalToggle'), sessionGoalRing:qs('#sessionGoalRing'), sessionGoalPercent:qs('#sessionGoalPercent'), sessionGoalTag:qs('#sessionGoalTag'), sessionGoalDone:qs('#sessionGoalDone'), sessionGoalTarget:qs('#sessionGoalTarget'), sessionGoalSlider:qs('#sessionGoalSlider'), sessionGoalBarFill:qs('#sessionGoalBarFill'), dailyOverviewCard:qs('#dailyOverviewCard'), dailyOverviewBody:qs('#dailyOverviewBody'), dailyOverviewToggle:qs('#dailyOverviewToggle'), dailyOverviewDiff:qs('#dailyOverviewDiff'), dailyOverviewTrendStatus:qs('#dailyOverviewTrendStatus'), dailyOverviewNote:qs('#dailyOverviewNote'), overviewHighlights:qs('#dailyOverviewHighlights'), overviewTodayFill:qs('#overviewTodayFill'), overviewYesterdayFill:qs('#overviewYesterdayFill'), overviewTodayValue:qs('#overviewTodayValue'), overviewYesterdayValue:qs('#overviewYesterdayValue'), overviewPromotionStatus:qs('#overviewPromotionStatus'), overviewMilestones:qs('#overviewMilestones'), overviewQuickStart:qs('#overviewQuickStart') };
+  const el={ app:qs('#app'), headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerMessage'), nextAction:qs('#nextActionMessage'), footerInfoContainer:qs('#footerInfo'), footerInfoBtn:qs('#footerInfoBtn'), footerInfoDialog:qs('#footerInfoDialog'), footerInfoDialogBody:qs('#footerInfoDialogBody'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), composeGuide:qs('#composeGuide'), composeTokens:qs('#composeTokens'), composeNote:qs('#composeNote'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSpeechVoice:qs('#cfgSpeechVoice'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speedCtrl:qs('.speed-ctrl'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus'), notifTimeList:qs('#notifTimeList'), notifTimeAdd:qs('#notifTimeAdd'), notifTriggerDailyZero:qs('#notifTriggerDailyZero'), notifTriggerDailyCompare:qs('#notifTriggerDailyCompare'), notifTriggerWeekly:qs('#notifTriggerWeekly'), notifHelp:qs('#notifHelp'), dailyGoalCard:qs('#dailyGoalCard'), dailyGoalBody:qs('#dailyGoalBody'), dailyGoalToggle:qs('#dailyGoalToggle'), dailyGoalRing:qs('#dailyGoalRing'), dailyGoalPercent:qs('#dailyGoalPercent'), dailyGoalTag:qs('#dailyGoalTag'), dailyGoalDone:qs('#dailyGoalDone'), dailyGoalTarget:qs('#dailyGoalTarget'), dailyGoalHint:qs('#dailyGoalHint'), sessionGoalCard:qs('#sessionGoalCard'), sessionGoalBody:qs('#sessionGoalBody'), sessionGoalToggle:qs('#sessionGoalToggle'), sessionGoalRing:qs('#sessionGoalRing'), sessionGoalPercent:qs('#sessionGoalPercent'), sessionGoalTag:qs('#sessionGoalTag'), sessionGoalDone:qs('#sessionGoalDone'), sessionGoalTarget:qs('#sessionGoalTarget'), sessionGoalSlider:qs('#sessionGoalSlider'), sessionGoalBarFill:qs('#sessionGoalBarFill'), dailyOverviewCard:qs('#dailyOverviewCard'), dailyOverviewBody:qs('#dailyOverviewBody'), dailyOverviewToggle:qs('#dailyOverviewToggle'), dailyOverviewDiff:qs('#dailyOverviewDiff'), dailyOverviewTrendStatus:qs('#dailyOverviewTrendStatus'), dailyOverviewNote:qs('#dailyOverviewNote'), overviewHighlights:qs('#dailyOverviewHighlights'), overviewTodayFill:qs('#overviewTodayFill'), overviewYesterdayFill:qs('#overviewYesterdayFill'), overviewTodayValue:qs('#overviewTodayValue'), overviewYesterdayValue:qs('#overviewYesterdayValue'), overviewPromotionStatus:qs('#overviewPromotionStatus'), overviewMilestones:qs('#overviewMilestones'), overviewQuickStart:qs('#overviewQuickStart') };
   el.cfgPlaybackMode=qsa('input[name="cfgPlaybackMode"]');
   el.cfgStudyMode=qsa('input[name="cfgStudyMode"]');
   const versionTargets=qsa('[data-app-version]');
@@ -1243,6 +1243,8 @@ function createAppRuntime(){
   let maxHintStageUsed=BASE_HINT_STAGE;
   let currentEnHtml='';
   let currentItem=null;
+  let lastErrorType='';
+  let sameErrorStreak=0;
 
   function getMaxHintStage(){
     return isComposeMode() ? COMPOSE_HINT_STAGE_EN : BASE_HINT_STAGE+2;
@@ -1353,6 +1355,81 @@ function createAppRuntime(){
         else if(hintStage===BASE_HINT_STAGE){ el.footer.textContent='ヒントを非表示に戻しました。下スワイプで再表示できます。'; }
       }
     }
+  }
+
+
+  const ARTICLE_TOKENS=new Set(['a','an','the']);
+  const PREPOSITION_TOKENS=new Set(['in','on','at','to','for','from','with','of','by','about','into','through','after','before','over','under','between','around','during','without','within']);
+
+  function toTokenCounts(tokens){
+    const map=new Map();
+    for(const token of (Array.isArray(tokens)?tokens:[])){
+      if(!token) continue;
+      map.set(token, (map.get(token)||0)+1);
+    }
+    return map;
+  }
+
+  function stripMorphSuffix(token){
+    const raw=(token||'').toLowerCase();
+    if(raw.length<=3) return raw;
+    if(raw.endsWith('ies') && raw.length>4) return `${raw.slice(0,-3)}y`;
+    if(raw.endsWith('ing') && raw.length>5) return raw.slice(0,-3);
+    if(raw.endsWith('ed') && raw.length>4) return raw.slice(0,-2);
+    if(raw.endsWith('es') && raw.length>4) return raw.slice(0,-2);
+    if(raw.endsWith('s') && raw.length>3) return raw.slice(0,-1);
+    return raw;
+  }
+
+  function classifySpeechErrors(matchInfo, refText){
+    const refTokens=toks(refText||'');
+    const spokenTokens=Array.isArray(matchInfo?.hypTokens)?matchInfo.hypTokens:toks(matchInfo?.source||'');
+    const missingTokens=Array.isArray(matchInfo?.missing)?matchInfo.missing:[];
+    const missingCounts=toTokenCounts(missingTokens);
+    const refCounts=toTokenCounts(refTokens);
+    const spokenCounts=toTokenCounts(spokenTokens);
+    const refBagEquals=refTokens.length===spokenTokens.length && refCounts.size===spokenCounts.size && [...refCounts].every(([k,v])=>spokenCounts.get(k)===v);
+
+    const hasArticlePrepMissing=[...missingCounts.keys()].some(tok=>ARTICLE_TOKENS.has(tok) || PREPOSITION_TOKENS.has(tok));
+    const hasOrderIssue=refBagEquals && (refTokens.join(' ')!==spokenTokens.join(' '));
+
+    const spokenSet=new Set(spokenTokens.map(stripMorphSuffix));
+    const hasMorphIssue=missingTokens.some(tok=>spokenSet.has(stripMorphSuffix(tok)));
+
+    const errorTypes=[];
+    if(hasOrderIssue) errorTypes.push('word_order');
+    if(hasArticlePrepMissing) errorTypes.push('article_or_preposition_missing');
+    if(hasMorphIssue) errorTypes.push('morphology');
+    if(!errorTypes.length && missingTokens.length>0) errorTypes.push('other');
+
+    const primaryType=errorTypes[0]||'none';
+    return {
+      primaryType,
+      errorTypes,
+      missingTokens,
+      spokenTokens,
+      refTokens,
+      actionMessage: primaryType==='article_or_preposition_missing'
+        ? '次回の1アクション：冠詞・前置詞を意識して再挑戦。'
+        : primaryType==='word_order'
+          ? '次回の1アクション：語順を固定して言い直そう。'
+          : primaryType==='morphology'
+            ? '次回の1アクション：時制・語尾変化を確認して再挑戦。'
+            : (primaryType==='other' ? '次回の1アクション：抜けた語を補って再挑戦。' : '次回の1アクション：この調子で次へ進もう。')
+    };
+  }
+
+  function optimizeHintStageForError(errorType){
+    if(errorType==='article_or_preposition_missing'){
+      return getJapaneseHintStage();
+    }
+    if(errorType==='word_order'){
+      return getEnglishRevealStage();
+    }
+    if(errorType==='morphology'){
+      return Math.max(getEnglishRevealStage(), getAudioUnlockStage());
+    }
+    return BASE_HINT_STAGE;
   }
 
   function updateMatch(rate){
@@ -2458,6 +2535,9 @@ function createAppRuntime(){
     cardStart = now();
     sessionStart = 0;
     failCount = 0;
+    lastErrorType='';
+    sameErrorStreak=0;
+    if(el.nextAction){ el.nextAction.textContent=''; }
     resetResult();
     resetTranscript();
     updateAttemptInfo();
@@ -2547,6 +2627,9 @@ function createAppRuntime(){
       resetTranscript();
       lastMatchEval=null;
       failCount=0;
+      lastErrorType='';
+      sameErrorStreak=0;
+      if(el.nextAction){ el.nextAction.textContent=''; }
       updateAttemptInfo();
       setMicState(false);
       el.mic.disabled=false;
@@ -3114,7 +3197,10 @@ function createAppRuntime(){
     const levelLabel = `Lv${resolvedLastLevel}`;
     const bestLabel = levelInfoBest>resolvedLastLevel ? ` (最高${levelInfoBest})` : '';
 
+    const errorAnalysis=classifySpeechErrors(matchInfo, refText);
+    const primaryErrorType=errorAnalysis.primaryType;
     const pass = !!evaluation?.pass;
+
     const responseMs = cardStart>0 ? Math.max(0, now()-cardStart) : '';
     const nativeSpeechStats = isRecognitionSupported()
       ? recordSpeechAttempt(it.id, pass)
@@ -3157,6 +3243,10 @@ function createAppRuntime(){
       hint_used: stageUsed>BASE_HINT_STAGE ? 1 : 0,
       hint_stage: stageUsed,
       hint_en_used: stageUsed>=getEnglishRevealStage() ? 1 : 0,
+      error_type: primaryErrorType,
+      error_types_json: JSON.stringify(errorAnalysis.errorTypes),
+      missing_tokens_json: JSON.stringify(errorAnalysis.missingTokens),
+      spoken_tokens_json: JSON.stringify(errorAnalysis.spokenTokens),
       device: UA
     };
     const progressNote = buildNoHintProgressNote(levelUpdate?.nextTarget);
@@ -3174,6 +3264,9 @@ function createAppRuntime(){
       }
       incrementGoalProgressForPass();
       failCount=0;
+      lastErrorType='';
+      sameErrorStreak=0;
+      if(el.nextAction){ el.nextAction.textContent=''; }
       playTone('success');
       el.footer.textContent='';
       if(levelCandidate>=4 && evaluation?.noHintSuccess){
@@ -3197,14 +3290,28 @@ function createAppRuntime(){
         sessionMetrics.currentStreak=0;
       }
       failCount++;
+      sameErrorStreak = primaryErrorType && primaryErrorType!=='none' && primaryErrorType===lastErrorType ? sameErrorStreak+1 : 1;
+      lastErrorType = primaryErrorType;
+      if(el.nextAction){
+        el.nextAction.textContent = errorAnalysis.actionMessage;
+      }
+      if(sameErrorStreak>=3){
+        const optimizedStage=optimizeHintStageForError(primaryErrorType);
+        if(optimizedStage>BASE_HINT_STAGE){
+          setHintStage(optimizedStage);
+          el.footer.textContent = `同じエラーが続いたためヒントを最適化しました（${sameErrorStreak}回）`;
+        }
+      }
       playTone('fail');
       if(failCount>=FAIL_LIMIT){
         el.footer.textContent = `3回失敗。${levelLabel}で次へ進みます`;
         toast('不合格で次へ進みます', 1600);
         el.mic.disabled=true;
         scheduleAutoAdvance(900);
-      }else{
+      }else if(!el.footer.textContent){
         el.footer.textContent = `一致率${pct}%：${levelLabel}${bestLabel} 維持のため再挑戦 (${failCount}/${FAIL_LIMIT})`;
+        toast('70%未満。もう一度チャレンジ！', 1600);
+      }else{
         toast('70%未満。もう一度チャレンジ！', 1600);
       }
     }
@@ -3232,6 +3339,9 @@ function createAppRuntime(){
       next_level_remaining:levelUpdate?.nextTarget?.remaining ?? null,
       next_level_available_at:levelUpdate?.nextTarget?.nextEligibleAt ? new Date(levelUpdate.nextTarget.nextEligibleAt).toISOString() : null,
       study_mode: studyMode,
+      error_type: primaryErrorType,
+      error_types_json: JSON.stringify(errorAnalysis.errorTypes),
+      next_action: errorAnalysis.actionMessage,
       native_sr_submissions: numericOrEmpty(nativeSpeechStats?.submissions),
       native_sr_successes: numericOrEmpty(nativeSpeechStats?.correct)
     };
