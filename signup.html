@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>サインアップ | 英語学習アプリ</title>
+  <title>学習をはじめる | English PWA</title>
   <link rel="stylesheet" href="styles/app.css">
 </head>
 <body class="signup-body">
   <main class="signup">
-    <h1>サインアップ</h1>
-    <p class="muted">アカウントを作成して学習進捗をクラウドに同期しましょう。</p>
+    <h1>話せる英語を、今日から積み上げよう</h1>
+    <p class="muted">アカウントを作成して、学習成果をいつでも確認・継続できる状態にしましょう。</p>
     <form id="signupForm" novalidate>
       <div class="form-field">
         <label for="signupName">お名前</label>
@@ -32,9 +32,16 @@
         <input id="signupConfirm" name="confirmPassword" type="password" autocomplete="new-password" required />
         <p class="field-error" data-error-for="confirmPassword" aria-live="polite"></p>
       </div>
-      <button type="submit" class="btn btn--primary" disabled>アカウントを作成</button>
+      <button type="submit" class="btn btn--primary" disabled>無料で学習をはじめる</button>
     </form>
   </main>
+
+
+  <footer class="signup-footer" aria-label="サポート情報">
+    <a href="#" aria-label="プライバシーポリシー">プライバシー</a>
+    <a href="#" aria-label="利用規約">利用規約</a>
+    <a href="#" aria-label="お問い合わせ">お問い合わせ</a>
+  </footer>
 
   <script type="module">
     import { attachSignupValidation } from './scripts/app/signupValidation.js';
@@ -45,7 +52,7 @@
       event.preventDefault();
       const result = validate();
       if (result.valid) {
-        alert('サインアップを受け付けました！');
+        alert('登録が完了しました。学習をスタートしましょう！');
       }
     });
   </script>
