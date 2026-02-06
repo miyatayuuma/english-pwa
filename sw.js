@@ -8,6 +8,10 @@ self.addEventListener('install', e => {
     './index.html',
     './manifest.webmanifest',
     './styles/app.css',
+    './styles/tokens.css',
+    './styles/base.css',
+    './styles/screens.css',
+    './styles/components.css',
     './data/items.json',
     './icons/icon-192.png',
     './icons/icon-512.png',
@@ -30,6 +34,18 @@ self.addEventListener('install', e => {
   ])));
 });
 
+self.addEventListener('activate', e => {
+  e.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(
+      keys
+        .filter(key => key !== CACHE)
+        .map(key => caches.delete(key))
+    );
+    await self.clients.claim();
+  })());
+});
+
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
 
@@ -47,6 +63,30 @@ self.addEventListener('fetch', e => {
 
   const isIconRequest = url.pathname.includes('/icons/');
   const isScriptRequest = url.pathname.includes('/scripts/') && url.pathname.endsWith('.js');
+  const isStyleRequest = e.request.destination === 'style' || url.pathname.endsWith('.css');
+
+  // styles は stale-while-revalidate
+  if (isStyleRequest) {
+    e.respondWith(caches.open(CACHE).then(async cache => {
+      const cached = await cache.match(e.request);
+      const networkFetch = fetch(e.request)
+        .then(res => {
+          if (res.ok) cache.put(e.request, res.clone());
+          return res;
+        })
+        .catch(() => null);
+
+      if (cached) {
+        e.waitUntil(networkFetch);
+        return cached;
+      }
+
+      const networkRes = await networkFetch;
+      if (networkRes) return networkRes;
+      return Response.error();
+    }));
+    return;
+  }
 
   // icons と scripts はキャッシュ優先（任意）
   if (isIconRequest || isScriptRequest) {
