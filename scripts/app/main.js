@@ -14,7 +14,8 @@ import {
 } from '../utils/text.js';
 import {
   toast,
-  triggerMilestoneEffect
+  triggerMilestoneEffect,
+  setMilestoneEffectIntensity
 } from '../ui/milestones.js';
 import {
   recordStudyProgress,
@@ -27,7 +28,8 @@ import {
   normalizeNotificationSettings,
   computeNextNotificationCheckTime,
   ensureNotificationLoop,
-  getConsecutiveNoStudyDays
+  getConsecutiveNoStudyDays,
+  computeWeeklyHighlights
 } from '../state/studyLog.js';
 import { createAudioController } from '../audio/controller.js';
 import {
@@ -374,7 +376,7 @@ function createAppRuntime(){
 
 
   // ===== Elements =====
-  const el={ app:qs('#app'), headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerMessage'), nextAction:qs('#nextActionMessage'), footerInfoContainer:qs('#footerInfo'), footerInfoBtn:qs('#footerInfoBtn'), footerInfoDialog:qs('#footerInfoDialog'), footerInfoDialogBody:qs('#footerInfoDialogBody'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), composeGuide:qs('#composeGuide'), composeTokens:qs('#composeTokens'), composeNote:qs('#composeNote'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSpeechVoice:qs('#cfgSpeechVoice'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speedCtrl:qs('.speed-ctrl'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus'), notifTimeList:qs('#notifTimeList'), notifTimeAdd:qs('#notifTimeAdd'), notifTriggerDailyZero:qs('#notifTriggerDailyZero'), notifTriggerDailyCompare:qs('#notifTriggerDailyCompare'), notifTriggerWeekly:qs('#notifTriggerWeekly'), notifTriggerRestartTone:qs('#notifTriggerRestartTone'), notifHelp:qs('#notifHelp'), dailyGoalCard:qs('#dailyGoalCard'), dailyGoalBody:qs('#dailyGoalBody'), dailyGoalToggle:qs('#dailyGoalToggle'), dailyGoalRing:qs('#dailyGoalRing'), dailyGoalPercent:qs('#dailyGoalPercent'), dailyGoalTag:qs('#dailyGoalTag'), dailyGoalDone:qs('#dailyGoalDone'), dailyGoalTarget:qs('#dailyGoalTarget'), dailyGoalHint:qs('#dailyGoalHint'), sessionGoalCard:qs('#sessionGoalCard'), sessionGoalBody:qs('#sessionGoalBody'), sessionGoalToggle:qs('#sessionGoalToggle'), sessionGoalRing:qs('#sessionGoalRing'), sessionGoalPercent:qs('#sessionGoalPercent'), sessionGoalTag:qs('#sessionGoalTag'), sessionGoalDone:qs('#sessionGoalDone'), sessionGoalTarget:qs('#sessionGoalTarget'), sessionGoalSlider:qs('#sessionGoalSlider'), sessionGoalBarFill:qs('#sessionGoalBarFill'), dailyOverviewCard:qs('#dailyOverviewCard'), dailyOverviewBody:qs('#dailyOverviewBody'), dailyOverviewToggle:qs('#dailyOverviewToggle'), dailyOverviewDiff:qs('#dailyOverviewDiff'), dailyOverviewTrendStatus:qs('#dailyOverviewTrendStatus'), dailyOverviewNote:qs('#dailyOverviewNote'), overviewHighlights:qs('#dailyOverviewHighlights'), overviewTodayFill:qs('#overviewTodayFill'), overviewYesterdayFill:qs('#overviewYesterdayFill'), overviewTodayValue:qs('#overviewTodayValue'), overviewYesterdayValue:qs('#overviewYesterdayValue'), overviewPromotionStatus:qs('#overviewPromotionStatus'), overviewTaskBalance:qs('#overviewTaskBalance'), overviewMilestones:qs('#overviewMilestones'), overviewQuickStart:qs('#overviewQuickStart') };
+  const el={ app:qs('#app'), headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerMessage'), nextAction:qs('#nextActionMessage'), footerInfoContainer:qs('#footerInfo'), footerInfoBtn:qs('#footerInfoBtn'), footerInfoDialog:qs('#footerInfoDialog'), footerInfoDialogBody:qs('#footerInfoDialogBody'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), composeGuide:qs('#composeGuide'), composeTokens:qs('#composeTokens'), composeNote:qs('#composeNote'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSpeechVoice:qs('#cfgSpeechVoice'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speedCtrl:qs('.speed-ctrl'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus'), notifTimeList:qs('#notifTimeList'), notifTimeAdd:qs('#notifTimeAdd'), notifTriggerDailyZero:qs('#notifTriggerDailyZero'), notifTriggerDailyCompare:qs('#notifTriggerDailyCompare'), notifTriggerWeekly:qs('#notifTriggerWeekly'), notifTriggerRestartTone:qs('#notifTriggerRestartTone'), milestoneIntensity:qs('#cfgMilestoneIntensity'), notifHelp:qs('#notifHelp'), dailyGoalCard:qs('#dailyGoalCard'), dailyGoalBody:qs('#dailyGoalBody'), dailyGoalToggle:qs('#dailyGoalToggle'), dailyGoalRing:qs('#dailyGoalRing'), dailyGoalPercent:qs('#dailyGoalPercent'), dailyGoalTag:qs('#dailyGoalTag'), dailyGoalDone:qs('#dailyGoalDone'), dailyGoalTarget:qs('#dailyGoalTarget'), dailyGoalHint:qs('#dailyGoalHint'), sessionGoalCard:qs('#sessionGoalCard'), sessionGoalBody:qs('#sessionGoalBody'), sessionGoalToggle:qs('#sessionGoalToggle'), sessionGoalRing:qs('#sessionGoalRing'), sessionGoalPercent:qs('#sessionGoalPercent'), sessionGoalTag:qs('#sessionGoalTag'), sessionGoalDone:qs('#sessionGoalDone'), sessionGoalTarget:qs('#sessionGoalTarget'), sessionGoalSlider:qs('#sessionGoalSlider'), sessionGoalBarFill:qs('#sessionGoalBarFill'), dailyOverviewCard:qs('#dailyOverviewCard'), dailyOverviewBody:qs('#dailyOverviewBody'), dailyOverviewToggle:qs('#dailyOverviewToggle'), dailyOverviewDiff:qs('#dailyOverviewDiff'), dailyOverviewTrendStatus:qs('#dailyOverviewTrendStatus'), dailyOverviewNote:qs('#dailyOverviewNote'), overviewHighlights:qs('#dailyOverviewHighlights'), overviewTodayFill:qs('#overviewTodayFill'), overviewYesterdayFill:qs('#overviewYesterdayFill'), overviewTodayValue:qs('#overviewTodayValue'), overviewYesterdayValue:qs('#overviewYesterdayValue'), overviewPromotionStatus:qs('#overviewPromotionStatus'), overviewTaskBalance:qs('#overviewTaskBalance'), overviewMilestones:qs('#overviewMilestones'), overviewQuickStart:qs('#overviewQuickStart') };
   el.cfgPlaybackMode=qsa('input[name="cfgPlaybackMode"]');
   el.cfgStudyMode=qsa('input[name="cfgStudyMode"]');
   const versionTargets=qsa('[data-app-version]');
@@ -618,7 +620,7 @@ function createAppRuntime(){
     }));
   }
 
-  function buildOverviewHighlightItems({ summary, todayStats, yesterdayStats, promotion }){
+  function buildOverviewHighlightItems({ summary, todayStats, yesterdayStats, promotion, weeklyHighlights }){
     const list=[];
     const todayTotal=Math.max(0, (todayStats?.passes||0)+(todayStats?.level5||0));
     const yesterdayTotal=Math.max(0, (yesterdayStats?.passes||0)+(yesterdayStats?.level5||0));
@@ -642,11 +644,32 @@ function createAppRuntime(){
       text: `連続合格: ${todayStreak}回（昨日比${streakLabel}回）`
     });
     const todayNoHint=Math.max(0, todayStats?.no_hint||0);
+    const weekNoHintGrowth=Number(weeklyHighlights?.noHint?.growthRate);
+    const weekNoHintTrend=weeklyHighlights?.noHint?.trend||'even';
+    const weekNoHintLabel=Number.isFinite(weekNoHintGrowth)
+      ? `${weekNoHintGrowth>=0?'+':''}${Math.round(weekNoHintGrowth*100)}%`
+      : '±0%';
     list.push({
       icon: todayNoHint>0 ? '🎯' : '🧭',
       tone: todayNoHint>0 ? 'good' : 'warn',
       text: todayNoHint>0 ? `ノーヒント合格${todayNoHint}件` : 'ノーヒント合格はまだありません'
     });
+    list.push({
+      icon: weekNoHintTrend==='up' ? '🟢' : (weekNoHintTrend==='down' ? '🟠' : '⚪'),
+      tone: weekNoHintTrend==='up' ? 'good' : (weekNoHintTrend==='down' ? 'warn' : 'muted'),
+      text: `今週ノーヒント増加率 ${weekNoHintLabel}（${Math.max(0, Number(weeklyHighlights?.noHint?.current)||0)}件）`
+    });
+    const weekBest=weeklyHighlights?.bestDay;
+    if(weekBest && weekBest.score>0){
+      const weekBestMessage=weeklyHighlights?.records?.updatedThisWeek
+        ? `今週の自己ベスト更新：${weekBest.dateKey}に${weekBest.score}件`
+        : `今週のベスト日：${weekBest.dateKey}に${weekBest.score}件`;
+      list.push({
+        icon: weeklyHighlights?.records?.updatedThisWeek ? '🏆' : '📅',
+        tone: weeklyHighlights?.records?.updatedThisWeek ? 'good' : 'muted',
+        text: weekBestMessage
+      });
+    }
     const dailyRemaining=Math.max(0, summary?.goalSnapshot?.daily?.remaining ?? 0);
     list.push({
       icon: dailyRemaining>0 ? '🎯' : '🏁',
@@ -676,7 +699,7 @@ function createAppRuntime(){
         });
       }
     }
-    return list.slice(0, 5);
+    return list.slice(0, 6);
   }
 
   function buildDailyOverviewModel(){
@@ -706,6 +729,7 @@ function createAppRuntime(){
     const dayGoal=Math.max(0, Number(summary?.goalSnapshot?.daily?.target)||0);
     const dayDone=Math.max(0, Number(summary?.goalSnapshot?.daily?.done)||0);
     const completionRate=dayGoal>0 ? Math.min(1, dayDone/dayGoal) : 0;
+    const weeklyHighlights=computeWeeklyHighlights();
     const promotionGoal=getLastPromotionGoal();
     const promotionNote=resolvePromotionNoteText();
     let promotionTone='muted';
@@ -751,7 +775,8 @@ function createAppRuntime(){
       milestones:buildRecentLevelMilestones(4),
       goalSnapshot: summary.goalSnapshot,
       sections: summary.sections,
-      highlights: buildOverviewHighlightItems({ summary, todayStats, yesterdayStats, promotion:{ note:promotionNote, tone:promotionTone } })
+      weeklyHighlights,
+      highlights: buildOverviewHighlightItems({ summary, todayStats, yesterdayStats, promotion:{ note:promotionNote, tone:promotionTone }, weeklyHighlights })
     };
   }
 
@@ -1518,7 +1543,7 @@ function createAppRuntime(){
   function saveCfg(o){
     saveJson(CONFIG, o||{});
   }
-  let CFG=Object.assign({ apiUrl:'', apiKey:'', audioBase:'./audio', speechVoice:'', playbackMode:'audio', studyMode:STUDY_MODE_READ }, loadCfg());
+  let CFG=Object.assign({ apiUrl:'', apiKey:'', audioBase:'./audio', speechVoice:'', playbackMode:'audio', studyMode:STUDY_MODE_READ, milestoneIntensity:'normal' }, loadCfg());
   if(typeof CFG.speechVoice!=='string'){ CFG.speechVoice=''; }
   const legacyFallback=CFG && typeof CFG.speechFallback!=='undefined' ? !!CFG.speechFallback : false;
   if(CFG && typeof CFG.playbackMode!=='string'){ CFG.playbackMode=''; }
@@ -1530,12 +1555,19 @@ function createAppRuntime(){
     const normalizedStudy=(CFG.studyMode||'').toLowerCase();
     CFG.studyMode = normalizedStudy===STUDY_MODE_COMPOSE ? STUDY_MODE_COMPOSE : STUDY_MODE_READ;
   }
+  CFG.milestoneIntensity=getMilestoneIntensity();
+  setMilestoneEffectIntensity(CFG.milestoneIntensity);
 
   function getPlaybackMode(){
     return CFG.playbackMode==='speech' ? 'speech' : 'audio';
   }
   function getStudyMode(){
     return CFG.studyMode===STUDY_MODE_COMPOSE ? STUDY_MODE_COMPOSE : STUDY_MODE_READ;
+  }
+  function getMilestoneIntensity(){
+    const value=(CFG.milestoneIntensity||'').toLowerCase();
+    if(value==='subtle' || value==='strong') return value;
+    return 'normal';
   }
   function getCurrentTaskType(item=currentItem){
     const type=String(item?.taskType||'').toLowerCase();
@@ -1969,6 +2001,9 @@ function createAppRuntime(){
           el.cfgSpeechVoice.value='';
         }
       }
+      if(el.milestoneIntensity){
+        el.milestoneIntensity.value=getMilestoneIntensity();
+      }
       notifSettings=getNotificationSettings();
       renderNotificationTimes(notifSettings.reminderTimes);
       applyNotificationToggles(notifSettings);
@@ -2049,6 +2084,11 @@ function createAppRuntime(){
         CFG.studyMode=STUDY_MODE_READ;
       }
       if(el.cfgSpeechVoice){ CFG.speechVoice=el.cfgSpeechVoice.value||''; }
+      if(el.milestoneIntensity){
+        const value=(el.milestoneIntensity.value||'normal').toLowerCase();
+        CFG.milestoneIntensity = (value==='subtle' || value==='strong') ? value : 'normal';
+      }
+      setMilestoneEffectIntensity(getMilestoneIntensity());
       const { settings: nextNotifSettings, validation: notifValidation } = readNotificationSettingsFromForm();
       if(notifValidation.hasErrors){
         toast('通知時刻を修正してください');
@@ -3283,13 +3323,30 @@ function createAppRuntime(){
     refreshLevelDisplay(levelInfo);
     updateHeaderStats();
 
+    const streakUpdated=Boolean(evaluation?.noHintSuccess && Number(levelInfo?.noHintStreak||0)>Number(prevInfoSnapshot?.noHintStreak||0));
     if(levelInfoBest > prevBest){
-      triggerMilestoneEffect('best',{level:levelInfoBest, previous:prevBest});
+      triggerMilestoneEffect('best',{
+        level:levelInfoBest,
+        previous:prevBest,
+        hasPriorProgress:hadPriorProgress,
+        bestUpdated:true,
+        streakUpdated
+      });
     }
     if(levelCandidate ===5){
-      triggerMilestoneEffect('level5',{level:levelCandidate, matchRate});
+      triggerMilestoneEffect('level5',{
+        level:levelCandidate,
+        matchRate,
+        hasPriorProgress:hadPriorProgress,
+        streakUpdated
+      });
     }else if(levelCandidate ===4){
-      triggerMilestoneEffect('level4',{level:levelCandidate, matchRate});
+      triggerMilestoneEffect('level4',{
+        level:levelCandidate,
+        matchRate,
+        hasPriorProgress:hadPriorProgress,
+        streakUpdated
+      });
     }
 
     const pct=Math.max(0, Math.round((matchRate||0)*100));
