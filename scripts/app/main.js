@@ -2138,6 +2138,7 @@ function createAppRuntime(){
     el.cfgSave.addEventListener('click', ()=>{
       const prevStudyMode=getStudyMode();
       const prevApiUrl=(CFG.apiUrl||'').trim();
+      const prevAudioBase=(CFG.audioBase||'').trim()||'./audio';
       const nextApiUrl=(el.cfgUrl.value||'').trim();
       CFG.apiUrl=nextApiUrl;
       CFG.apiKey=(el.cfgKey.value||'').trim();
@@ -2185,6 +2186,10 @@ function createAppRuntime(){
           settings: notifSettings,
           message: notifMessage
         });
+      }
+      if(CFG.audioBase!==prevAudioBase){
+        audioUrlCache.clear();
+        audioBaseProbeCache.clear();
       }
       saveCfg(CFG);
       if((nextApiUrl && nextApiUrl!==prevApiUrl) || (!nextApiUrl && prevApiUrl)){
@@ -2622,9 +2627,23 @@ function createAppRuntime(){
 
   // Audio resolve: DIR (folder) -> OPFS -> base URL
   const audioUrlCache=new Map();
+  const audioBaseProbeCache=new Map();
+  async function canFetchAudioFromBase(url){
+    if(!url) return false;
+    if(audioBaseProbeCache.has(url)) return audioBaseProbeCache.get(url);
+    let ok=false;
+    try{
+      const res=await fetch(url,{method:'HEAD'});
+      ok=!!(res&&res.ok);
+    }catch(_){
+      ok=false;
+    }
+    audioBaseProbeCache.set(url,ok);
+    return ok;
+  }
   async function resolveFromDir(name){ try{ const d=await ensureDir(); if(!d||!name) return ''; const fh=await d.getFileHandle(name).catch(()=>null); if(!fh) return ''; const f=await fh.getFile(); return URL.createObjectURL(f); }catch(_){ return ''; } }
   async function resolveFromOPFS(name){ if(!name) return ''; try{ if(!(navigator.storage&&navigator.storage.getDirectory)) return ''; const root=await navigator.storage.getDirectory(); const fh=await root.getFileHandle(name).catch(()=>null); if(!fh) return ''; const file=await fh.getFile(); return URL.createObjectURL(file); }catch(_){ return ''; } }
-  async function resolveAudioUrl(name){ if(!name) return ''; if(audioUrlCache.has(name)) return audioUrlCache.get(name); let url=await resolveFromDir(name); if(!url) url=await resolveFromOPFS(name); if(!url){ const base=(CFG.audioBase||'./audio').replace(/\/$/,''); url= base + '/' + encodeURI(name); } audioUrlCache.set(name,url); return url; }
+  async function resolveAudioUrl(name){ if(!name) return ''; if(audioUrlCache.has(name)) return audioUrlCache.get(name); let url=await resolveFromDir(name); if(!url) url=await resolveFromOPFS(name); if(!url){ const base=(CFG.audioBase||'./audio').replace(/\/$/,''); const candidate= base + '/' + encodeURI(name); if(await canFetchAudioFromBase(candidate)){ url=candidate; } } audioUrlCache.set(name,url||''); return url||''; }
 
   // Render & navigation
   function stopAudio(){ resetResumeAfterMicStart(); try{audio.pause();}catch(_){ } audio.currentTime=0; speechController.cancelSpeech(); }
