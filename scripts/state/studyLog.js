@@ -234,8 +234,45 @@ function getDailyStats(key) {
     level5_count: entry?.level5_count || 0,
     no_hint: entry?.no_hint || 0,
     streak: entry?.streak || 0,
-    modes: modeStats
+    modes: modeStats,
+    sessionClosure: entry?.session_closure || null
   };
+}
+
+function recordSessionClosureSummary({
+  dateKey,
+  summary
+} = {}) {
+  const targetKey = dateKey || localDateKey();
+  if (!targetKey || !summary || typeof summary !== 'object') return null;
+  const entry = STUDY_LOG[targetKey] || {
+    passes: 0,
+    level5: 0,
+    level5_count: 0,
+    no_hint: 0,
+    streak: 0,
+    modes: {}
+  };
+  entry.session_closure = Object.assign({}, summary, {
+    updatedAt: new Date().toISOString()
+  });
+  STUDY_LOG[targetKey] = entry;
+  STUDY_LOG = pruneStudyLog(STUDY_LOG);
+  saveStudyLog(STUDY_LOG);
+  return entry.session_closure;
+}
+
+function getLatestSessionClosureSummaryBefore(dateKey) {
+  const targetKey = dateKey || localDateKey();
+  const keys = Object.keys(STUDY_LOG || {}).sort((a, b) => (a < b ? 1 : -1));
+  for (const key of keys) {
+    if (targetKey && key >= targetKey) continue;
+    const closure = STUDY_LOG[key]?.session_closure;
+    if (closure && typeof closure === 'object') {
+      return Object.assign({ dateKey: key }, closure);
+    }
+  }
+  return null;
 }
 
 function sumRange(startKey, endKey) {
@@ -895,7 +932,9 @@ export {
   saveStudyLog,
   pruneStudyLog,
   recordStudyProgress,
+  recordSessionClosureSummary,
   getDailyStats,
+  getLatestSessionClosureSummaryBefore,
   sumRange,
   computeWeeklyHighlights,
   getNotificationSettings,

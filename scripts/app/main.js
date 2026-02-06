@@ -29,7 +29,9 @@ import {
   computeNextNotificationCheckTime,
   ensureNotificationLoop,
   getConsecutiveNoStudyDays,
-  computeWeeklyHighlights
+  computeWeeklyHighlights,
+  recordSessionClosureSummary,
+  getLatestSessionClosureSummaryBefore
 } from '../state/studyLog.js';
 import { createAudioController } from '../audio/controller.js';
 import {
@@ -730,6 +732,10 @@ function createAppRuntime(){
     const dayDone=Math.max(0, Number(summary?.goalSnapshot?.daily?.done)||0);
     const completionRate=dayGoal>0 ? Math.min(1, dayDone/dayGoal) : 0;
     const weeklyHighlights=computeWeeklyHighlights();
+    const latestClosure=getLatestSessionClosureSummaryBefore(todayKey);
+    const resumeTriggerNote=latestClosure
+      ? `昨日の締めメモ: ${latestClosure.message || `達成${Math.max(0, Number(latestClosure.cardsDone)||0)}件`}（再開は最小${Math.max(1, Number(latestClosure.nextDayMinimumGoal)||1)}件でOK）`
+      : '';
     const promotionGoal=getLastPromotionGoal();
     const promotionNote=resolvePromotionNoteText();
     let promotionTone='muted';
@@ -776,6 +782,7 @@ function createAppRuntime(){
       goalSnapshot: summary.goalSnapshot,
       sections: summary.sections,
       weeklyHighlights,
+      resumeTriggerNote,
       highlights: buildOverviewHighlightItems({ summary, todayStats, yesterdayStats, promotion:{ note:promotionNote, tone:promotionTone }, weeklyHighlights })
     };
   }
@@ -982,6 +989,9 @@ function createAppRuntime(){
       const reviewDue=Math.max(0, Number(model?.review?.dueCount)||0);
       const completionLabel=model?.review?.completionLabel||'0%';
       noteText+=` / 期限切れカード${reviewDue}件 / 本日消化率${completionLabel}`;
+      if(model?.resumeTriggerNote){
+        noteText+=` / ${model.resumeTriggerNote}`;
+      }
       el.dailyOverviewNote.textContent=noteText;
     }
     if(el.overviewPromotionStatus){
@@ -1165,8 +1175,12 @@ function createAppRuntime(){
   let idx=-1;
   let sessionStart=0;
   let cardStart=0;
-  const createEmptySessionMetrics=()=>({ startMs:0, cardsDone:0, newIntroduced:0, currentStreak:0, highestStreak:0 });
+  const FATIGUE_CONSECUTIVE_THRESHOLD=8;
+  const FATIGUE_FAIL_RATE_THRESHOLD=0.45;
+  const FATIGUE_MIN_ATTEMPTS=6;
+  const createEmptySessionMetrics=()=>({ startMs:0, cardsDone:0, newIntroduced:0, currentStreak:0, highestStreak:0, attempts:0, failures:0, fatigueAlerted:false });
   let sessionMetrics=createEmptySessionMetrics();
+  let latestSessionClosureSummary=null;
   const createEmptySpeechSessionStats=()=>({ submissions:new Map(), correct:new Map() });
   let speechSessionStats=createEmptySpeechSessionStats();
   let autoPlayUnlocked=false;
@@ -1236,7 +1250,58 @@ function createAppRuntime(){
     }
   }
 
-  function finalizeSessionMetrics(){
+
+  function buildFatigueGuidanceMessage(){
+    const failRate=sessionMetrics && sessionMetrics.attempts>0 ? sessionMetrics.failures/sessionMetrics.attempts : 0;
+    const failRateLabel=`${Math.round(failRate*100)}%`;
+    return `集中負荷が上がっています（連続${Math.max(0, sessionMetrics?.cardsDone||0)}件 / 失敗率${failRateLabel}）。2分休憩 or 軽め3件で終了がおすすめです`;
+  }
+
+  function maybeNotifyFatigue(){
+    if(!sessionMetrics || !sessionMetrics.startMs || sessionMetrics.fatigueAlerted) return;
+    const attempts=Math.max(0, Number(sessionMetrics.attempts)||0);
+    const cardsDone=Math.max(0, Number(sessionMetrics.cardsDone)||0);
+    const failures=Math.max(0, Number(sessionMetrics.failures)||0);
+    const failRate=attempts>0 ? failures/attempts : 0;
+    const thresholdReached = cardsDone>=FATIGUE_CONSECUTIVE_THRESHOLD && attempts>=FATIGUE_MIN_ATTEMPTS && failRate>=FATIGUE_FAIL_RATE_THRESHOLD;
+    if(!thresholdReached) return;
+    sessionMetrics.fatigueAlerted=true;
+    const msg=buildFatigueGuidanceMessage();
+    toast(msg, 3600);
+    if(el.dailyOverviewNote){
+      el.dailyOverviewNote.textContent=`🧠 ${msg}`;
+    }
+  }
+
+  function buildSessionClosureSummary(reason='manual'){
+    const cardsDone=Math.max(0, Number(sessionMetrics?.cardsDone)||0);
+    const attempts=Math.max(0, Number(sessionMetrics?.attempts)||0);
+    const failures=Math.max(0, Number(sessionMetrics?.failures)||0);
+    const failRate=attempts>0 ? failures/attempts : 0;
+    const nextGoal=Math.max(1, Math.min(3, cardsDone>0 ? 1 : 2));
+    return {
+      reason,
+      cardsDone,
+      newIntroduced:Math.max(0, Number(sessionMetrics?.newIntroduced)||0),
+      highestStreak:Math.max(0, Number(sessionMetrics?.highestStreak)||0),
+      failRate:Math.round(failRate*1000)/1000,
+      nextDayMinimumGoal:nextGoal,
+      message:`今日の達成: ${cardsDone}件 / 最高連続${Math.max(0, Number(sessionMetrics?.highestStreak)||0)}件。明日は最小${nextGoal}件だけでOK。`
+    };
+  }
+
+  function presentSessionClosureSummary(summary){
+    if(!summary) return;
+    latestSessionClosureSummary=summary;
+    const failRateLabel=`${Math.round(Math.max(0, Number(summary.failRate)||0)*100)}%`;
+    const toastMessage=`🎉 ${summary.message}`;
+    toast(toastMessage, 3600);
+    if(el.dailyOverviewNote){
+      el.dailyOverviewNote.textContent=`${summary.message}（失敗率${failRateLabel}）`;
+    }
+  }
+
+  function finalizeSessionMetrics(reason='manual'){
     if(!sessionMetrics || !sessionMetrics.startMs){
       sessionMetrics=createEmptySessionMetrics();
       return;
@@ -1250,6 +1315,8 @@ function createAppRuntime(){
       cards_done:sessionMetrics.cardsDone,
       new_introduced:sessionMetrics.newIntroduced,
       streak:sessionMetrics.highestStreak,
+      attempts:sessionMetrics.attempts,
+      failures:sessionMetrics.failures,
     };
     try{
       const maybePromise=sendLog('session', payload);
@@ -1260,8 +1327,12 @@ function createAppRuntime(){
     if((CFG.apiUrl||'').trim()){
       Promise.resolve(syncProgressAndStatus()).catch(()=>{});
     }
+    const closureSummary=buildSessionClosureSummary(reason);
+    recordSessionClosureSummary({ summary:closureSummary });
+    presentSessionClosureSummary(closureSummary);
     sessionMetrics=createEmptySessionMetrics();
     updateGoalProgressFromMetrics();
+    updateDailyOverview();
   }
 
   function beginSessionMetrics(){
@@ -2333,7 +2404,7 @@ function createAppRuntime(){
   }
 
   // Build section options (All/単一)
-  async function finalizeActiveSession({ flushLogs=false }={}){
+  async function finalizeActiveSession({ flushLogs=false, reason='manual' }={}){
     setSessionLayoutActive(false);
     if(!(sessionActive || sessionStarting)) return false;
     stopAudio();
@@ -2342,7 +2413,7 @@ function createAppRuntime(){
       catch(_){ }
     }
     setMicState(false);
-    finalizeSessionMetrics();
+    finalizeSessionMetrics(reason);
     sessionActive=false;
     sessionStarting=false;
     clearRecoverySessionTarget();
@@ -2356,7 +2427,7 @@ function createAppRuntime(){
   if(typeof document!=='undefined'){
     const handleVisibilityExit=()=>{
       if(document.visibilityState !== 'hidden') return;
-      finalizeActiveSession({ flushLogs:true }).catch(()=>{});
+      finalizeActiveSession({ flushLogs:true, reason:'background' }).catch(()=>{});
     };
     document.addEventListener('visibilitychange', handleVisibilityExit);
   }
@@ -2637,7 +2708,7 @@ function createAppRuntime(){
 
   function showIdleCard(){
     clearLastProgressNote();
-    finalizeSessionMetrics();
+    finalizeSessionMetrics('idle');
     sessionActive=false;
     sessionStarting=false;
     setSessionLayoutActive(false);
@@ -2873,6 +2944,8 @@ function createAppRuntime(){
     if(!first && idx>=QUEUE.length-1){
       if(advanceToNextSection()) return;
       toast('最後のセクションまで完了しました');
+      await finalizeActiveSession({ reason:'completed' });
+      showIdleCard();
       return;
     }
     const task=async ()=>{
@@ -2939,7 +3012,7 @@ function createAppRuntime(){
         const allowAutoPlay=autoPlay && isAutoPlayAllowed();
         await nextCard(true, allowAutoPlay);
       }catch(err){
-        finalizeSessionMetrics();
+        finalizeSessionMetrics('start-error');
         sessionActive=false;
         setSessionLayoutActive(false);
         throw err;
@@ -3356,6 +3429,12 @@ function createAppRuntime(){
     const errorAnalysis=classifySpeechErrors(matchInfo, refText);
     const primaryErrorType=errorAnalysis.primaryType;
     const pass = !!evaluation?.pass;
+    if(sessionMetrics && sessionMetrics.startMs){
+      sessionMetrics.attempts+=1;
+      if(!pass){
+        sessionMetrics.failures+=1;
+      }
+    }
 
     const responseMs = cardStart>0 ? Math.max(0, now()-cardStart) : '';
     const nativeSpeechStats = isRecognitionSupported()
@@ -3418,6 +3497,7 @@ function createAppRuntime(){
           sessionMetrics.highestStreak=sessionMetrics.currentStreak;
         }
       }
+      maybeNotifyFatigue();
       incrementGoalProgressForPass();
       failCount=0;
       lastErrorType='';
@@ -3451,6 +3531,7 @@ function createAppRuntime(){
       if(el.nextAction){
         el.nextAction.textContent = errorAnalysis.actionMessage;
       }
+      maybeNotifyFatigue();
       if(sameErrorStreak>=3){
         const optimizedStage=optimizeHintStageForError(primaryErrorType);
         if(optimizedStage>BASE_HINT_STAGE){
