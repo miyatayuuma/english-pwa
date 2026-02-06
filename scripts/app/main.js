@@ -2629,28 +2629,46 @@ function createAppRuntime(){
   const audioUrlCache=new Map();
   const audioBaseProbeCache=new Map();
   const audioBaseAvailabilityCache=new Map();
+  const audioBaseProbeInFlight=new Map();
   async function canFetchAudioFromBase(url, baseKey=''){
     if(!url) return false;
     if(baseKey && audioBaseAvailabilityCache.has(baseKey) && !audioBaseAvailabilityCache.get(baseKey)){
       return false;
     }
-    if(audioBaseProbeCache.has(url)) return audioBaseProbeCache.get(url);
-    let ok=false;
-    try{
-      const res=await fetch(url,{method:'HEAD'});
-      ok=!!(res&&res.ok);
-      if(baseKey && res && !res.ok && res.status===404){
-        audioBaseAvailabilityCache.set(baseKey,false);
-      }
-    }catch(_){
-      ok=false;
-      if(baseKey){
-        audioBaseAvailabilityCache.set(baseKey,false);
-      }
+    if(baseKey && !audioBaseAvailabilityCache.has(baseKey) && audioBaseProbeInFlight.has(baseKey)){
+      const baseReady=await audioBaseProbeInFlight.get(baseKey);
+      if(!baseReady) return false;
     }
-    audioBaseProbeCache.set(url,ok);
-    if(baseKey && ok){
-      audioBaseAvailabilityCache.set(baseKey,true);
+    if(audioBaseProbeCache.has(url)) return audioBaseProbeCache.get(url);
+    const probePromise=(async()=>{
+      let ok=false;
+      try{
+        const res=await fetch(url,{method:'HEAD'});
+        ok=!!(res&&res.ok);
+        if(baseKey && res && !res.ok && res.status===404){
+          audioBaseAvailabilityCache.set(baseKey,false);
+        }
+      }catch(_){
+        ok=false;
+        if(baseKey){
+          audioBaseAvailabilityCache.set(baseKey,false);
+        }
+      }
+      audioBaseProbeCache.set(url,ok);
+      if(baseKey && ok){
+        audioBaseAvailabilityCache.set(baseKey,true);
+      }
+      return ok;
+    })();
+    if(baseKey && !audioBaseAvailabilityCache.has(baseKey)){
+      audioBaseProbeInFlight.set(baseKey,probePromise);
+    }
+    const ok=await probePromise;
+    if(baseKey){
+      const inflight=audioBaseProbeInFlight.get(baseKey);
+      if(inflight===probePromise){
+        audioBaseProbeInFlight.delete(baseKey);
+      }
     }
     return ok;
   }
