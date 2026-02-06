@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { validateSignupFields } from '../scripts/app/signupValidation.js';
+import { attachSignupValidation, setSignupSubmitState, validateSignupFields } from '../scripts/app/signupValidation.js';
 
 test('requires all fields before enabling submission', () => {
   const result = validateSignupFields({
@@ -90,4 +90,88 @@ test('requires policy consent to submit', () => {
 
   assert.equal(unconsented.valid, false);
   assert.equal(unconsented.errors.termsAccepted, '利用規約とプライバシーポリシーへの同意が必要です');
+});
+
+
+function createMockSignupForm() {
+  const classList = () => {
+    const classes = new Set();
+    return {
+      toggle(name, force) {
+        if (force) classes.add(name);
+        else classes.delete(name);
+      },
+      contains(name) {
+        return classes.has(name);
+      },
+    };
+  };
+
+  const createInput = ({ type = 'text', value = '', checked = false } = {}) => ({
+    type,
+    value,
+    checked,
+    classList: classList(),
+  });
+
+  const createError = () => ({
+    textContent: '',
+    dataset: {},
+  });
+
+  const fields = {
+    name: createInput({ value: 'User' }),
+    email: createInput({ value: 'user@example.com' }),
+    password: createInput({ value: 'abc12345' }),
+    confirmPassword: createInput({ value: 'abc12345' }),
+    termsAccepted: createInput({ type: 'checkbox', checked: true }),
+  };
+
+  const errors = {
+    name: createError(),
+    email: createError(),
+    password: createError(),
+    confirmPassword: createError(),
+    termsAccepted: createError(),
+  };
+
+  const submitButton = { disabled: false };
+  const statusEl = { dataset: { state: 'idle' }, textContent: '' };
+  const listeners = new Map();
+
+  const form = {
+    dataset: {},
+    querySelector(selector) {
+      if (selector === '[type="submit"]') return submitButton;
+      if (selector === '#signupStatus') return statusEl;
+
+      const fieldMatch = selector.match(/^\[name="(.+)"\]$/);
+      if (fieldMatch) return fields[fieldMatch[1]] ?? null;
+
+      const errorMatch = selector.match(/^\[data-error-for="(.+)"\]$/);
+      if (errorMatch) return errors[errorMatch[1]] ?? null;
+
+      return null;
+    },
+    addEventListener(type, callback) {
+      listeners.set(type, callback);
+    },
+  };
+
+  return { form, fields, submitButton, statusEl, listeners };
+}
+
+test('keeps submit button disabled while loading even when inputs change', () => {
+  const { form, listeners, submitButton, statusEl } = createMockSignupForm();
+
+  attachSignupValidation(form);
+  assert.equal(submitButton.disabled, false);
+
+  setSignupSubmitState(form, 'loading', '登録処理中です…');
+  assert.equal(submitButton.disabled, true);
+  assert.equal(form.dataset.submitState, 'loading');
+  assert.equal(statusEl.dataset.state, 'loading');
+
+  listeners.get('input')();
+  assert.equal(submitButton.disabled, true);
 });
