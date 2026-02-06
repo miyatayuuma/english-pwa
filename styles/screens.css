@@ -159,6 +159,18 @@
     #homeView[hidden],#studyView[hidden],#reviewCompleteView[hidden]{display:none!important}
     .home-cta-wrap{position:sticky;top:0;z-index:3;padding:2px 0 6px;background:linear-gradient(180deg,var(--bg),rgba(11,14,26,.72) 70%,rgba(11,14,26,0))}
     .home-cta{width:100%;max-width:840px;margin:0 auto;display:block}
+
+    .onboarding-card,.personal-plan{max-width:840px;margin:0 auto;border:1px solid var(--bd);border-radius:16px;padding:14px;background:linear-gradient(180deg,rgba(17,23,38,.88),rgba(11,14,26,.94));box-shadow:0 14px 34px rgba(0,0,0,.28)}
+    .onboarding-card__header h2{margin:2px 0 0;font-size:18px}
+    .onboarding-card__eyebrow{margin:0;color:var(--accent);font-size:12px;letter-spacing:.05em}
+    .onboarding-card__note{margin:10px 0 12px;color:var(--muted);font-size:13px}
+    .onboarding-step{display:flex;flex-direction:column;gap:8px}
+    .onboarding-step label{font-size:13px;color:#d8deee}
+    .onboarding-step select{background:#111726;border:1px solid var(--bd);color:var(--txt);border-radius:12px;padding:10px}
+    .onboarding-card__actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}
+    .personal-plan__header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .personal-plan__title{margin:0;font-size:14px;font-weight:700;color:#d8deee}
+    .personal-plan__body{margin-top:8px;color:var(--muted);font-size:13px;line-height:1.5}
     .study-stage-access{max-width:840px;margin:0 auto;width:100%;display:flex;justify-content:flex-end}
     .study-stage-access select{width:min(320px,100%);background:#111726;border:1px solid var(--bd);color:var(--txt);border-radius:12px;padding:8px}
     #studyView .card{min-height:calc(100vh - 170px)}

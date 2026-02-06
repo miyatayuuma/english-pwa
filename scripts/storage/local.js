@@ -16,7 +16,10 @@ const STORAGE_KEYS = Object.freeze({
   ORDER_SELECTION: 'orderSel',
   DAILY_OVERVIEW: 'dailyOverviewCollapsedV1',
   DAILY_GOAL_COLLAPSE: 'dailyGoalCollapsedV1',
-  SESSION_GOAL_COLLAPSE: 'sessionGoalCollapsedV1'
+  SESSION_GOAL_COLLAPSE: 'sessionGoalCollapsedV1',
+  ONBOARDING_COMPLETED: 'hasCompletedOnboardingV1',
+  ONBOARDING_PLAN: 'onboardingPlanV1',
+  ONBOARDING_PLAN_COLLAPSE_DATE: 'onboardingPlanCollapseDateV1'
 });
 
 const storage = (() => {
