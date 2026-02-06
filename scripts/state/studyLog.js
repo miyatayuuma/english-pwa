@@ -276,6 +276,89 @@ function sumRange(startKey, endKey) {
   return res;
 }
 
+function computeWeeklyHighlights(referenceTime = Date.now()) {
+  const baseMs =
+    referenceTime instanceof Date
+      ? referenceTime.getTime()
+      : Number.isFinite(referenceTime)
+      ? referenceTime
+      : Date.now();
+  const weekStart = startOfWeek(new Date(baseMs));
+  const weekEnd = new Date(weekStart.getTime() + DAY_MS * 6);
+  const prevWeekStart = new Date(weekStart.getTime() - DAY_MS * 7);
+  const prevWeekEnd = new Date(prevWeekStart.getTime() + DAY_MS * 6);
+  const weekStartKey = localDateKey(weekStart.getTime());
+  const weekEndKey = localDateKey(weekEnd.getTime());
+  const prevWeekStartKey = localDateKey(prevWeekStart.getTime());
+  const prevWeekEndKey = localDateKey(prevWeekEnd.getTime());
+  const thisWeek = sumRange(weekStartKey, weekEndKey);
+  const previousWeek = sumRange(prevWeekStartKey, prevWeekEndKey);
+
+  let bestDay = null;
+  let weekBestScore = 0;
+  for (let i = 0; i < 7; i += 1) {
+    const key = localDateKey(weekStart.getTime() + DAY_MS * i);
+    const dayStats = getDailyStats(key);
+    const dayScore = Math.max(0, (dayStats?.passes || 0) + (dayStats?.level5 || 0));
+    if (!bestDay || dayScore > weekBestScore) {
+      weekBestScore = dayScore;
+      bestDay = {
+        dateKey: key,
+        score: dayScore,
+        passes: Math.max(0, dayStats?.passes || 0),
+        level5: Math.max(0, dayStats?.level5 || 0),
+        noHint: Math.max(0, dayStats?.no_hint || 0),
+        streak: Math.max(0, dayStats?.streak || 0)
+      };
+    }
+  }
+
+  let allTimeBestScore = 0;
+  let previousBestScoreBeforeWeek = 0;
+  for (const [key, raw] of Object.entries(STUDY_LOG || {})) {
+    const score = Math.max(0, (raw?.passes || 0) + (raw?.level5 || 0));
+    if (score > allTimeBestScore) {
+      allTimeBestScore = score;
+    }
+    if (key < weekStartKey && score > previousBestScoreBeforeWeek) {
+      previousBestScoreBeforeWeek = score;
+    }
+  }
+  const weekPersonalBestUpdated = weekBestScore > 0 && weekBestScore > previousBestScoreBeforeWeek;
+
+  const thisNoHint = Math.max(0, thisWeek?.no_hint || 0);
+  const prevNoHint = Math.max(0, previousWeek?.no_hint || 0);
+  const noHintGrowthRate =
+    prevNoHint > 0 ? (thisNoHint - prevNoHint) / prevNoHint : thisNoHint > 0 ? 1 : 0;
+  const noHintTrend = thisNoHint > prevNoHint ? 'up' : thisNoHint < prevNoHint ? 'down' : 'even';
+
+  return {
+    week: {
+      startKey: weekStartKey,
+      endKey: weekEndKey,
+      totals: thisWeek
+    },
+    previousWeek: {
+      startKey: prevWeekStartKey,
+      endKey: prevWeekEndKey,
+      totals: previousWeek
+    },
+    bestDay,
+    noHint: {
+      current: thisNoHint,
+      previous: prevNoHint,
+      growthRate: noHintGrowthRate,
+      trend: noHintTrend
+    },
+    records: {
+      weekBestScore,
+      previousBestScoreBeforeWeek,
+      allTimeBestScore,
+      updatedThisWeek: weekPersonalBestUpdated
+    }
+  };
+}
+
 function loadNotifState() {
   const parsed = loadJson(NOTIF_STATE_KEY, {});
   return parsed && typeof parsed === 'object' ? parsed : {};
@@ -814,6 +897,7 @@ export {
   recordStudyProgress,
   getDailyStats,
   sumRange,
+  computeWeeklyHighlights,
   getNotificationSettings,
   saveNotificationSettings,
   normalizeNotificationSettings,
