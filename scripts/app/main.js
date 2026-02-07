@@ -88,6 +88,11 @@ function createAppRuntime(){
     5:'Lv5: 定着済みです。定期的な復習で維持しつつ新しいカードに挑戦しましょう。'
   };
   let footerInfoIntroShown=false;
+  const MOBILE_MEDIA_QUERY='(max-width:640px)';
+  const LONG_HINT_MESSAGE_COMPOSE_JA='和訳ヒントを表示しました。もう一度下スワイプで音声ヒント（再生ボタン）が使えます。さらにもう一度で英文ヒント。';
+  const LONG_HINT_MESSAGE_COMPOSE_AUDIO='音声ヒントを有効化しました。再生ボタンが使えます。さらにもう一度下スワイプで英文ヒント。';
+  const LONG_HINT_MESSAGE_READ_EN='英文ヒントを表示しました。もう一度下スワイプで和訳ヒント。';
+
   const DEFAULT_DAILY_GOAL=10;
   const DEFAULT_SESSION_GOAL=5;
   const RECOVERY_SESSION_TARGET=3;
@@ -1150,9 +1155,63 @@ function createAppRuntime(){
     setTimeout(()=>{ toast('ℹ️ ボタンから学習ルールを確認できます', 2200); }, 500);
   }
 
+  function isMobileViewport(){
+    try{ return !!(globalThis.matchMedia && globalThis.matchMedia(MOBILE_MEDIA_QUERY).matches); }catch(_){ return false; }
+  }
+
+  function truncateMessage(text, maxLength){
+    const raw=typeof text==='string' ? text.trim() : '';
+    if(!raw || raw.length<=maxLength) return raw;
+    return `${raw.slice(0, Math.max(1, maxLength-1)).trimEnd()}…`;
+  }
+
+  function shortenStatusMessage(status, {lowPriority=false}={}){
+    const raw=typeof status==='string' ? status.trim() : '';
+    if(!raw) return '';
+    if(!isMobileViewport()) return raw;
+    if(raw===DEFAULT_FOOTER_HINT) return '左右スワイプで移動、下スワイプでヒント切替。';
+    if(raw===LONG_HINT_MESSAGE_COMPOSE_JA) return lowPriority ? '和訳ヒント表示。' : '和訳ヒント表示。次は音声ヒント。';
+    if(raw===LONG_HINT_MESSAGE_COMPOSE_AUDIO) return lowPriority ? '音声ヒントON。' : '音声ヒントON。次は英文ヒント。';
+    if(raw===LONG_HINT_MESSAGE_READ_EN) return lowPriority ? '英文ヒント表示。' : '英文ヒント表示。次は和訳ヒント。';
+    if(raw==='ヒントを非表示に戻しました。下スワイプで再表示できます。') return 'ヒントを非表示にしました。';
+    if(raw==='準備ができ次第、学習を自動で開始します') return '準備中。まもなく開始します。';
+    if(raw.startsWith('一致率') && lowPriority) return truncateMessage(raw, 28);
+    return truncateMessage(raw, lowPriority?30:44);
+  }
+
+  function shortenActionMessage(action, {lowPriority=false}={}){
+    const raw=typeof action==='string' ? action.trim() : '';
+    if(!raw) return '';
+    if(!isMobileViewport()) return raw;
+    if(raw==='次回の1アクション：冠詞・前置詞を意識して再挑戦。') return lowPriority ? '次: 冠詞/前置詞を意識。' : '次: 冠詞・前置詞を意識して再挑戦。';
+    if(raw==='次回の1アクション：語順を固定して言い直そう。') return lowPriority ? '次: 語順を固定。' : '次: 語順を固定して言い直そう。';
+    if(raw==='次回の1アクション：時制・語尾変化を確認して再挑戦。') return lowPriority ? '次: 時制と語尾を確認。' : '次: 時制・語尾変化を確認して再挑戦。';
+    if(raw==='次回の1アクション：抜けた語を補って再挑戦。') return lowPriority ? '次: 抜け語を補う。' : '次: 抜けた語を補って再挑戦。';
+    return truncateMessage(raw, lowPriority?22:34);
+  }
+
+  function setLiveRegionText(node, message){
+    if(!node) return false;
+    const next=typeof message==='string' ? message : '';
+    if(node.textContent===next) return false;
+    node.textContent=next;
+    return true;
+  }
+
+  function setFooterMessages(status, action, {actionPriority=false}={}){
+    const hasStatus=typeof status==='string' && !!status.trim();
+    const hasAction=typeof action==='string' && !!action.trim();
+    const compactStatus=shortenStatusMessage(status, {lowPriority:hasAction && actionPriority});
+    const compactAction=shortenActionMessage(action, {lowPriority:hasStatus && !actionPriority});
+    const statusText=hasStatus ? compactStatus : '';
+    const actionText=hasAction ? compactAction : '';
+    setLiveRegionText(el.footer, statusText);
+    setLiveRegionText(el.nextAction, actionText);
+  }
+
   function initFooterInfoButton(){
     if(el.footer && !el.footer.textContent){
-      el.footer.textContent=DEFAULT_FOOTER_HINT;
+      setFooterMessages(DEFAULT_FOOTER_HINT, '');
     }
     if(el.footerInfoDialog){
       el.footerInfoDialog.addEventListener('cancel',()=>{ el.footerInfoDialog.close(); });
@@ -1573,14 +1632,14 @@ function createAppRuntime(){
     const changed=setHintStage(nextStage);
     if(changed){
       if(isProductionTask()){
-        if(hintStage===COMPOSE_HINT_STAGE_JA){ el.footer.textContent='和訳ヒントを表示しました。もう一度下スワイプで音声ヒント（再生ボタン）が使えます。さらにもう一度で英文ヒント。'; }
-        else if(hintStage===COMPOSE_HINT_STAGE_AUDIO){ el.footer.textContent='音声ヒントを有効化しました。再生ボタンが使えます。さらにもう一度下スワイプで英文ヒント。'; }
-        else if(hintStage===COMPOSE_HINT_STAGE_EN){ el.footer.textContent='英文ヒントを表示しました。'; }
-        else if(hintStage===BASE_HINT_STAGE){ el.footer.textContent='ヒントを非表示に戻しました。下スワイプで再表示できます。'; }
+        if(hintStage===COMPOSE_HINT_STAGE_JA){ setFooterMessages(LONG_HINT_MESSAGE_COMPOSE_JA, ''); }
+        else if(hintStage===COMPOSE_HINT_STAGE_AUDIO){ setFooterMessages(LONG_HINT_MESSAGE_COMPOSE_AUDIO, ''); }
+        else if(hintStage===COMPOSE_HINT_STAGE_EN){ setFooterMessages('英文ヒントを表示しました。', ''); }
+        else if(hintStage===BASE_HINT_STAGE){ setFooterMessages('ヒントを非表示に戻しました。下スワイプで再表示できます。', ''); }
       }else{
-        if(hintStage===BASE_HINT_STAGE+1){ el.footer.textContent='英文ヒントを表示しました。もう一度下スワイプで和訳ヒント。'; }
-        else if(hintStage===BASE_HINT_STAGE+2){ el.footer.textContent='和訳ヒントを表示しました。'; }
-        else if(hintStage===BASE_HINT_STAGE){ el.footer.textContent='ヒントを非表示に戻しました。下スワイプで再表示できます。'; }
+        if(hintStage===BASE_HINT_STAGE+1){ setFooterMessages(LONG_HINT_MESSAGE_READ_EN, ''); }
+        else if(hintStage===BASE_HINT_STAGE+2){ setFooterMessages('和訳ヒントを表示しました。', ''); }
+        else if(hintStage===BASE_HINT_STAGE){ setFooterMessages('ヒントを非表示に戻しました。下スワイプで再表示できます。', ''); }
       }
     }
   }
@@ -2829,14 +2888,14 @@ function createAppRuntime(){
     failCount = 0;
     lastErrorType='';
     sameErrorStreak=0;
-    if(el.nextAction){ el.nextAction.textContent=''; }
+    setFooterMessages('', '');
     resetResult();
     resetTranscript();
     updateAttemptInfo();
     setMicState(false);
     el.mic.disabled = true;
     el.pbar.value = 0;
-    el.footer.textContent = hasQueue ? '準備ができ次第、学習を自動で開始します' : (emptyWithSearch ? '検索条件に一致する学習項目がありません' : '出題できる学習項目がありません');
+    setFooterMessages(hasQueue ? '準備ができ次第、学習を自動で開始します' : (emptyWithSearch ? '検索条件に一致する学習項目がありません' : '出題できる学習項目がありません'), '');
     if(emptyWithSearch){
       if(lastEmptySearchToast!==query){
         toast('検索条件に一致する学習項目がありません');
@@ -2858,7 +2917,7 @@ function createAppRuntime(){
       updatePlayButtonAvailability();
       const it=QUEUE[i];
       if(!it){
-        el.footer.textContent='出題できる学習項目がありません';
+        setFooterMessages('出題できる学習項目がありません', '');
         clearAudioSource();
         return;
       }
@@ -2921,7 +2980,7 @@ function createAppRuntime(){
       failCount=0;
       lastErrorType='';
       sameErrorStreak=0;
-      if(el.nextAction){ el.nextAction.textContent=''; }
+      setFooterMessages('', '');
       updateAttemptInfo();
       setMicState(false);
       el.mic.disabled=false;
@@ -2973,7 +3032,7 @@ function createAppRuntime(){
     idx=Math.max(0, Math.min(idx, QUEUE.length-1));
     render(idx,false);
     el.pbar.value=idx;
-    el.footer.textContent=`#${idx+1}/${QUEUE.length}`;
+    setFooterMessages(`#${idx+1}/${QUEUE.length}`, '');
     updateHeaderStats();
   }
 
@@ -2994,7 +3053,7 @@ function createAppRuntime(){
     rebuildAndRender(true,{autoPlay:true})
       .then(()=>{
         if(!QUEUE.length){
-          el.footer.textContent='次のセクションに学習項目がありません';
+          setFooterMessages('次のセクションに学習項目がありません', '');
         }
       })
       .catch(err=>{ console.error(err); toast('次のセクションの読み込みに失敗しました'); });
@@ -3026,7 +3085,7 @@ function createAppRuntime(){
 
   async function nextCard(first=false, autoPlay=false){
     cancelAutoAdvance();
-    if(!QUEUE.length){ el.footer.textContent='出題できる学習項目がありません'; clearAudioSource(); stopAudio(); return; }
+    if(!QUEUE.length){ setFooterMessages('出題できる学習項目がありません', ''); clearAudioSource(); stopAudio(); return; }
     if(!sessionActive) return;
     if(!first && idx>=QUEUE.length-1){
       if(advanceToNextSection()) return;
@@ -3039,7 +3098,7 @@ function createAppRuntime(){
       const allowAutoPlay=autoPlay && autoPlayUnlocked && isAutoPlayAllowed();
       await render(idx, allowAutoPlay);
       el.pbar.value=idx;
-      el.footer.textContent=`#${idx+1}/${QUEUE.length}`;
+      setFooterMessages(`#${idx+1}/${QUEUE.length}`, '');
       updateHeaderStats();
     };
     return queueCardTransition('next', task, {animate:!first});
@@ -3055,7 +3114,7 @@ function createAppRuntime(){
       const allowAutoPlay=autoPlay && autoPlayUnlocked && isAutoPlayAllowed();
       await render(idx, allowAutoPlay);
       el.pbar.value=idx;
-      el.footer.textContent=`#${idx+1}/${QUEUE.length}`;
+      setFooterMessages(`#${idx+1}/${QUEUE.length}`, '');
       updateHeaderStats();
     };
     return queueCardTransition('prev', task, {animate});
@@ -3588,9 +3647,8 @@ function createAppRuntime(){
       failCount=0;
       lastErrorType='';
       sameErrorStreak=0;
-      if(el.nextAction){ el.nextAction.textContent=''; }
+      setFooterMessages('', '');
       playTone('success');
-      el.footer.textContent='';
       if(levelCandidate>=4 && evaluation?.noHintSuccess){
         const baseToast = evaluation?.perfectNoHint ? 'ノーヒントで満点クリア！' : '素晴らしい！ノーヒント合格';
         toast(baseToast, 2000);
@@ -3614,25 +3672,23 @@ function createAppRuntime(){
       failCount++;
       sameErrorStreak = primaryErrorType && primaryErrorType!=='none' && primaryErrorType===lastErrorType ? sameErrorStreak+1 : 1;
       lastErrorType = primaryErrorType;
-      if(el.nextAction){
-        el.nextAction.textContent = errorAnalysis.actionMessage;
-      }
+      setFooterMessages('', errorAnalysis.actionMessage);
       maybeNotifyFatigue();
       if(sameErrorStreak>=3){
         const optimizedStage=optimizeHintStageForError(primaryErrorType);
         if(optimizedStage>BASE_HINT_STAGE){
           setHintStage(optimizedStage);
-          el.footer.textContent = `つまずきに合わせてヒントを最適化しました（${sameErrorStreak}回）`;
+          setFooterMessages(`つまずきに合わせてヒントを最適化しました（${sameErrorStreak}回）`, errorAnalysis.actionMessage, {actionPriority:true});
         }
       }
       playTone('fail');
       if(failCount>=FAIL_LIMIT){
-        el.footer.textContent = `3回チャレンジしたため、${levelLabel}で次の学習へ進みます`;
+        setFooterMessages(`3回チャレンジしたため、${levelLabel}で次の学習へ進みます`, errorAnalysis.actionMessage, {actionPriority:true});
         toast('次の問題へ進んでリズムよく学習を続けましょう。', 1600);
         el.mic.disabled=true;
         scheduleAutoAdvance(900);
-      }else if(!el.footer.textContent){
-        el.footer.textContent = `一致率${pct}%：${levelLabel}${bestLabel} 定着のため再チャレンジ (${failCount}/${FAIL_LIMIT})`;
+      }else if(!(el.footer && el.footer.textContent)){
+        setFooterMessages(`一致率${pct}%：${levelLabel}${bestLabel} 定着のため再チャレンジ (${failCount}/${FAIL_LIMIT})`, errorAnalysis.actionMessage, {actionPriority:true});
         toast('もう一度チャレンジして、正確さを高めましょう。', 1600);
       }else{
         toast('もう一度チャレンジして、正確さを高めましょう。', 1600);
