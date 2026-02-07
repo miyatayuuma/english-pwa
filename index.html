@@ -256,12 +256,17 @@
       <div class="audio-ctrls">
         <button id="btnPlay" class="btn" type="button" aria-label="音声を再生/一時停止"><span class="playIcon">▶️</span></button>
         <button id="btnMic" class="btn" type="button" aria-label="マイク開始/停止"><span class="micIcon">🎤</span></button>
-        <div class="speed-ctrl" role="group" aria-labelledby="speedLabel">
+        <div class="speed-ctrl" id="speedCtrl" role="group" aria-labelledby="speedLabel">
           <span id="speedLabel" class="sr-only">再生速度</span>
-          <button id="speedDown" class="speed-btn" type="button" aria-label="再生速度を下げる"><span aria-hidden="true">🐢</span></button>
-          <input id="speedSlider" class="speed-slider" type="range" min="0.5" max="1.5" step="0.05" value="1" aria-labelledby="speedLabel">
-          <button id="speedUp" class="speed-btn" type="button" aria-label="再生速度を上げる"><span aria-hidden="true">🐇</span></button>
-          <span class="speed-bubble" id="speedValue" aria-live="polite">1.0×</span>
+          <button id="speedToggle" class="speed-toggle" type="button" aria-expanded="false" aria-controls="speedCtrlBody" aria-label="再生速度コントロールを展開する">
+            <span class="speed-toggle__label">速度</span>
+            <span class="speed-bubble" id="speedValue" aria-live="polite">1.0×</span>
+          </button>
+          <div class="speed-ctrl__body" id="speedCtrlBody">
+            <button id="speedDown" class="speed-btn" type="button" aria-label="再生速度を下げる"><span aria-hidden="true">🐢</span></button>
+            <input id="speedSlider" class="speed-slider" type="range" min="0.5" max="1.5" step="0.05" value="1" aria-labelledby="speedLabel">
+            <button id="speedUp" class="speed-btn" type="button" aria-label="再生速度を上げる"><span aria-hidden="true">🐇</span></button>
+          </div>
         </div>
       </div>
       </section>
