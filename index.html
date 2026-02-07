@@ -4,6 +4,26 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>毎日続く英語スピーキング | English PWA</title>
+  <script>
+    (function suppressSesLockdownNoise(){
+      const blockedPatterns=[
+        'SES Removing unpermitted intrinsics',
+        'Removing intrinsics.%MapPrototype%.getOrInsert',
+        'Removing intrinsics.%MapPrototype%.getOrInsertComputed',
+        'Removing intrinsics.%WeakMapPrototype%.getOrInsert',
+        'Removing intrinsics.%WeakMapPrototype%.getOrInsertComputed',
+        'Removing intrinsics.%DatePrototype%.toTemporalInstant'
+      ];
+      const shouldBlock=(args)=>args.some((value)=>{
+        if(typeof value!=='string') return false;
+        return blockedPatterns.some((pattern)=>value.includes(pattern));
+      });
+      const originalError=console.error.bind(console);
+      const originalWarn=console.warn.bind(console);
+      console.error=(...args)=>{ if(shouldBlock(args)) return; originalError(...args); };
+      console.warn=(...args)=>{ if(shouldBlock(args)) return; originalWarn(...args); };
+    })();
+  </script>
   <!-- ★ PWA 追加 -->
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png">
