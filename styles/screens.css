@@ -10,7 +10,7 @@
     @keyframes loaderSpin{0%{transform:rotate(0deg);}50%{transform:rotate(180deg) scale(1.04);}100%{transform:rotate(360deg);}}
     @keyframes loaderPulse{0%{transform:scale(.92);opacity:.65;}50%{transform:scale(1.08);opacity:1;}100%{transform:scale(.92);opacity:.65;}}
     @keyframes loaderDots{0%,100%{transform:translateY(0);opacity:.35;}50%{transform:translateY(-6px);opacity:1;}}
-    #app{position:fixed;inset:0;display:grid;grid-template-rows:auto 1fr auto;height:100%}
+    #app{position:fixed;inset:0;display:grid;grid-template-rows:auto 1fr auto;min-height:100vh;min-height:100svh;min-height:100dvh}
 
     header{padding:10px 12px;display:flex;gap:14px;align-items:center;background:var(--panel);border-bottom:1px solid var(--bd)}
     .stat{display:flex;gap:4px;align-items:center;font-size:14px;color:var(--muted)}
@@ -154,8 +154,8 @@
     .level-chip.active{background:var(--accent);color:#041019;border-color:rgba(98,213,255,.82);box-shadow:0 0 0 1px rgba(98,213,255,.32)}
     .level-chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
-    main{padding:12px;overflow:auto;overscroll-behavior-y:contain;min-height:0;height:100%;display:flex;flex-direction:column;align-items:stretch;gap:12px}
-    #homeView,#studyView,#reviewCompleteView{display:flex;flex-direction:column;gap:12px}
+    main{padding:12px;overflow-y:auto;overflow-x:hidden;overscroll-behavior-y:contain;min-height:0;display:flex;flex-direction:column;align-items:stretch;gap:12px}
+    #homeView,#studyView,#reviewCompleteView{display:flex;flex-direction:column;gap:12px;min-height:0}
     #homeView[hidden],#studyView[hidden],#reviewCompleteView[hidden]{display:none!important}
     .home-cta-wrap{position:sticky;top:0;z-index:3;padding:2px 0 6px;background:linear-gradient(180deg,var(--bg),rgba(11,14,26,.72) 70%,rgba(11,14,26,0))}
     .home-cta{width:100%;max-width:840px;margin:0 auto;display:block}
@@ -173,12 +173,13 @@
     .personal-plan__body{margin-top:8px;color:var(--muted);font-size:13px;line-height:1.5}
     .study-stage-access{max-width:840px;margin:0 auto;width:100%;display:flex;justify-content:flex-end}
     .study-stage-access select{width:min(320px,100%);background:#111726;border:1px solid var(--bd);color:var(--txt);border-radius:12px;padding:8px}
-    #studyView .card{min-height:calc(100vh - 170px)}
+    /* iPhone SE〜Pro Max (320-430px / portrait) の縦収まり確認ポイント: home・study・reviewComplete の主要CTAが初期表示で見えること */
+    #studyView .card{min-height:calc(100vh - 170px);min-height:calc(100svh - 170px);min-height:calc(100dvh - 170px);max-height:100%;overflow-y:auto;overflow-x:hidden}
     .review-complete{max-width:840px;margin:0 auto;padding:20px;border:1px solid var(--bd);border-radius:18px;background:var(--panel);box-shadow:0 20px 60px rgba(0,0,0,.42)}
     .review-complete h2{margin:0 0 8px;font-size:22px}
     .review-complete p{margin:0 0 14px;color:var(--muted);line-height:1.5}
     .review-complete-actions{display:flex;flex-wrap:wrap;gap:8px}
-    .card{--card-offset:0px;--card-tilt:0deg;--card-opacity:1;max-width:840px;margin:0 auto;background:var(--panel);border:1px solid var(--bd);border-radius:18px;padding:16px;min-height:min(72vh,100%);max-height:100%;flex:1 1 auto;display:flex;flex-direction:column;gap:12px;touch-action:manipulation;position:relative;transform:translateX(var(--card-offset)) rotate(var(--card-tilt));opacity:var(--card-opacity);transition:transform .36s cubic-bezier(.22,1,.36,1),opacity .36s ease, box-shadow .35s ease, border-color .35s ease;will-change:transform,opacity;overflow:auto;-webkit-overflow-scrolling:touch;box-shadow:0 20px 60px rgba(0,0,0,.42)}
+    .card{--card-offset:0px;--card-tilt:0deg;--card-opacity:1;max-width:840px;margin:0 auto;background:var(--panel);border:1px solid var(--bd);border-radius:18px;padding:16px;min-height:min(72vh,100%);min-height:min(72svh,100%);min-height:min(72dvh,100%);max-height:100%;flex:1 1 auto;display:flex;flex-direction:column;gap:12px;touch-action:manipulation;position:relative;transform:translateX(var(--card-offset)) rotate(var(--card-tilt));opacity:var(--card-opacity);transition:transform .36s cubic-bezier(.22,1,.36,1),opacity .36s ease, box-shadow .35s ease, border-color .35s ease;will-change:transform,opacity;overflow:visible;-webkit-overflow-scrolling:touch;box-shadow:0 20px 60px rgba(0,0,0,.42)}
     .card.card-hint-active{border-color:rgba(98,213,255,.3);box-shadow:0 0 0 1px rgba(98,213,255,.22),0 22px 68px rgba(0,0,0,.46),0 0 28px rgba(98,213,255,.12)}
     .card.card-hint-audio{border-color:rgba(98,213,255,.46);box-shadow:0 0 0 1px rgba(98,213,255,.32),0 0 42px rgba(98,213,255,.18),0 24px 76px rgba(0,0,0,.5)}
     .card.card-longpress-active{touch-action:none;overflow:hidden}
@@ -223,7 +224,7 @@
     .compose-token.hit{background:rgba(70,211,127,.18);border-color:rgba(70,211,127,.55);box-shadow:0 0 0 1px rgba(70,211,127,.25)}
     .compose-token.miss{background:rgba(255,107,107,.12);border-color:rgba(255,107,107,.45)}
 
-    footer{border-top:1px solid var(--bd);padding:8px 12px;display:flex;gap:10px;align-items:center;background:var(--panel)}
+    footer{border-top:1px solid var(--bd);padding:8px 12px;display:flex;gap:10px;align-items:center;background:var(--panel);padding-bottom:calc(8px + env(safe-area-inset-bottom,0px))}
     .footer-info{display:flex;align-items:center;gap:6px;min-width:0}
     #footerMessage{flex:1;min-width:0;min-height:1.4em;font-size:12px;color:var(--muted);letter-spacing:.02em;line-height:1.4}
     #footerInfoBtn{width:28px;height:28px;border-radius:50%;border:1px solid transparent;background:rgba(255,255,255,.04);color:var(--muted);display:grid;place-items:center;cursor:pointer;padding:0;font-size:16px;transition:background .18s ease,border-color .18s ease,color .18s ease}
