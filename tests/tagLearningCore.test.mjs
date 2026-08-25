@@ -34,17 +34,20 @@ test('character matching can exclude medium-confidence contextual items',()=>{
   assert.equal(matchesTag(items[2],'character','bob',{includeMedium:true}),true);
 });
 
-test('catalog derives progress from existing level state instead of duplicating progress',()=>{
+test('character catalog progress uses core items while retaining related metadata',()=>{
   const catalog=buildTagCatalog(items,characters,levels,now);
   const bob=catalog.character.find(x=>x.id==='bob');
-  assert.equal(bob.total,3);
+  assert.equal(bob.total,2);
   assert.equal(bob.coreTotal,2);
   assert.equal(bob.relatedTotal,1);
+  assert.equal(bob.relatedOrCoreTotal,3);
   assert.equal(bob.mastered,1);
   assert.equal(bob.learning,1);
-  assert.equal(bob.fresh,1);
+  assert.equal(bob.fresh,0);
   assert.equal(bob.due,1);
-  assert.equal(bob.mastery,33);
+  assert.equal(bob.mastery,50);
+  assert.equal(bob.allFresh,1);
+  assert.equal(bob.allMastery,33);
 });
 
 test('tag search tokens match the namespaced flat tags stored in items.json',()=>{
@@ -61,5 +64,5 @@ test('recommendations prioritize due and in-progress learning',()=>{
   const catalog=buildTagCatalog(items,characters,levels,now);
   const recommendations=recommendTags(catalog,{limit:2});
   assert.ok(recommendations.length>0);
-  assert.ok(recommendations.some(x=>x.id==='bob' || x.id==='romance_relationship'));
+  assert.ok(recommendations.some(x=>x.id==='romance_relationship' || x.id==='question'));
 });
