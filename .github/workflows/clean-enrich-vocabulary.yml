@@ -1,0 +1,89 @@
+name: Clean and enrich vocabulary
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/data/clean-items.mjs'
+      - 'scripts/vocabulary/enrich-vocabulary-meanings.mjs'
+      - '.github/workflows/clean-enrich-vocabulary.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Clean example data
+        run: node scripts/data/clean-items.mjs
+
+      - name: Install vocabulary parser
+        run: npm install --no-save --ignore-scripts wink-pos-tagger@2.2.2
+
+      - name: Fetch open dictionaries and public DUO indexes
+        run: |
+          mkdir -p .tmp
+          git clone --depth 1 https://github.com/kujirahand/EJDict.git .tmp/EJDict
+          curl -L --fail --retry 3 -A 'Mozilla/5.0' 'https://english4ed.blog.jp/archives/9673172.html' -o .tmp/duo-index-1.html
+          curl -L --fail --retry 3 -A 'Mozilla/5.0' 'https://english4ed.blog.jp/archives/9673230.html' -o .tmp/duo-index-2.html
+          python - <<'PY'
+          import re
+          from pathlib import Path
+          for name in ('.tmp/duo-index-1.html','.tmp/duo-index-2.html'):
+              p=Path(name)
+              s=p.read_text(encoding='utf-8',errors='ignore')
+              s=re.sub(r'(?i)<br\s*/?>','\n',s)
+              s=re.sub(r'(?i)</(?:p|div|li|tr|td|h[1-6])>','\n',s)
+              p.write_text(s,encoding='utf-8')
+          PY
+          curl -L --fail --retry 3 -A 'Mozilla/5.0' 'https://kaikki.org/jawiktionary/%E8%8B%B1%E8%AA%9E/kaikki.org-dictionary-%E8%8B%B1%E8%AA%9E.jsonl' -o .tmp/kaikki-en-ja.jsonl
+
+      - name: Rebuild vocabulary from cleaned examples
+        env:
+          EJDICT_DIR: .tmp/EJDict/src
+        run: node scripts/vocabulary/build-duo-vocabulary-v2.mjs
+
+      - name: Fill missing meanings and compact senses
+        env:
+          KAIKKI_PATH: .tmp/kaikki-en-ja.jsonl
+        run: node scripts/vocabulary/enrich-vocabulary-meanings.mjs
+
+      - name: Validate cleaned data
+        run: |
+          node <<'NODE'
+          const fs=require('fs');
+          const items=JSON.parse(fs.readFileSync('data/items.json','utf8'));
+          const db=JSON.parse(fs.readFileSync('data/vocabulary-v2.json','utf8'));
+          const r=JSON.parse(fs.readFileSync('data/vocabulary-v2-report.json','utf8'));
+          if(items.length!==560) throw new Error(`expected 560 items, got ${items.length}`);
+          if(items.some(x=>/\bnobel\b/i.test(x.en))) throw new Error('known novel/nobel typo remains');
+          if(items.some(x=>/[｡､]/.test(x.ja))) throw new Error('half-width Japanese punctuation remains');
+          if(items.some(x=>/紫敵|さらさせてきた/.test(x.ja))) throw new Error('known Japanese typo remains');
+          if(r.source_index_rows!==2569) throw new Error(`expected 2569 public-index rows, got ${r.source_index_rows}`);
+          if(r.matched_entries<2400) throw new Error(`coverage regressed: ${r.matched_entries}`);
+          if(r.phrases<950) throw new Error(`phrase coverage regressed: ${r.phrases}`);
+          if(r.ready_for_cards<1500) throw new Error(`too few usable cards: ${r.ready_for_cards}`);
+          if(db.entries.some(e=>e.meaning_ja && e.meaning_ja.length>60)) throw new Error('meaning gloss too verbose');
+          console.log(r);
+          NODE
+
+      - name: Run application tests
+        run: node --experimental-default-type=module --test tests/*.test.mjs
+
+      - name: Commit cleaned and enriched data
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/items.json data/vocabulary-v2.json data/vocabulary-v2-report.json
+          if git diff --cached --quiet; then
+            echo 'No generated changes.'
+            exit 0
+          fi
+          git commit -m 'data: clean examples and simplify vocabulary meanings'
+          git push
