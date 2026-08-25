@@ -1,0 +1,56 @@
+name: Build vocabulary v2
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/vocabulary/build-duo-vocabulary-v2.mjs'
+      - '.github/workflows/build-vocabulary-v2.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install parser dependencies
+        run: npm install --no-save --ignore-scripts wink-pos-tagger@2.2.2 cheerio@1.0.0
+      - name: Fetch CC0 dictionary and public index pages
+        run: |
+          mkdir -p .tmp
+          git clone --depth 1 https://github.com/kujirahand/EJDict.git .tmp/EJDict
+          curl -L --fail --retry 3 -A 'Mozilla/5.0' 'https://english4ed.blog.jp/archives/9673172.html' -o .tmp/duo-index-1.html
+          curl -L --fail --retry 3 -A 'Mozilla/5.0' 'https://english4ed.blog.jp/archives/9673230.html' -o .tmp/duo-index-2.html
+      - name: Build v2 database
+        env:
+          EJDICT_DIR: .tmp/EJDict/src
+        run: node scripts/vocabulary/build-duo-vocabulary-v2.mjs
+      - name: Validate
+        run: |
+          node <<'NODE'
+          const fs=require('fs');
+          const db=JSON.parse(fs.readFileSync('data/vocabulary-v2.json','utf8'));
+          const r=JSON.parse(fs.readFileSync('data/vocabulary-v2-report.json','utf8'));
+          if(db.schema_version!==2||!Array.isArray(db.entries)) throw new Error('invalid v2 schema');
+          if(r.source_index_rows<2000) throw new Error(`index parse too small: ${r.source_index_rows}`);
+          if(r.matched_entries<1500) throw new Error(`too few matches: ${r.matched_entries}`);
+          if(r.phrases<400) throw new Error(`too few phrases: ${r.phrases}`);
+          if(db.entries.some(x=>!x.headword||!x.section||!x.example_ids?.length)) throw new Error('incomplete entry');
+          console.log(r);
+          NODE
+      - name: Commit generated database
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -f data/vocabulary-v2.json data/vocabulary-v2-report.json
+          if git diff --cached --quiet; then
+            echo 'No generated changes.'
+            exit 0
+          fi
+          git commit -m 'data: build DUO-aligned vocabulary database v2'
+          git push
