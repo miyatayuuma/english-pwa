@@ -13,7 +13,8 @@ const items=[
   {id:'E1',character_tags:[{id:'bob',certainty:'explicit'}],situation_tags:['romance_relationship'],grammar_tags:['present_perfect'],function_tags:[]},
   {id:'E2',character_tags:[{id:'bob',certainty:'inferred_high'}],situation_tags:['romance_relationship'],grammar_tags:['question'],function_tags:['asking']},
   {id:'E3',character_tags:[{id:'bob',certainty:'inferred_medium'}],situation_tags:['general'],grammar_tags:['question'],function_tags:['asking']},
-  {id:'E4',character_tags:[{id:'jane',certainty:'explicit'}],situation_tags:['family_home'],grammar_tags:[],function_tags:[]}
+  {id:'E4',character_tags:[{id:'jane',certainty:'explicit'}],situation_tags:['family_home'],grammar_tags:[],function_tags:[]},
+  {id:'E5',character_tags:[],situation_tags:['romance_relationship'],grammar_tags:['question'],function_tags:[]}
 ];
 const characters=[
   {id:'bob',name:'Bob',name_ja:'ボブ',tier:'main'},
@@ -24,7 +25,8 @@ const levels={
   E1:{last:5,review:{nextDueAt:now-1}},
   E2:{last:2,review:{nextDueAt:now+1000}},
   E3:{last:0},
-  E4:{last:4,review:{nextDueAt:now+1000}}
+  E4:{last:4,review:{nextDueAt:now+1000}},
+  E5:{last:1,review:{nextDueAt:now+2000}}
 };
 
 test('character matching can exclude medium-confidence contextual items',()=>{
@@ -60,7 +62,7 @@ test('due calculation ignores never-studied items',()=>{
   assert.equal(itemIsDue(levels,'E3',now),false);
 });
 
-test('recommendations prioritize due and in-progress learning',()=>{
+test('recommendations prioritize sufficiently populated due and in-progress tags',()=>{
   const catalog=buildTagCatalog(items,characters,levels,now);
   const recommendations=recommendTags(catalog,{limit:2});
   assert.ok(recommendations.length>0);
