@@ -1,0 +1,26 @@
+name: Application tests
+
+on:
+  push:
+    paths:
+      - 'scripts/**'
+      - 'tests/**'
+      - '.github/workflows/test.yml'
+  pull_request:
+    paths:
+      - 'scripts/**'
+      - 'tests/**'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run unit tests
+        run: node --experimental-default-type=module --test tests/*.test.mjs
