@@ -105,19 +105,18 @@ export function buildTagCatalog(items,characters,levelState={},now=Date.now()){
   const profileMap=new Map(profiles.map(profile=>[profile.id,profile]));
   const result={ character:[], situation:[], grammar:[], function:[] };
 
-  const charIds=new Set();
-  for(const item of safeItems){
-    for(const tag of Array.isArray(item.character_tags)?item.character_tags:[]){
-      if(tag?.id) charIds.add(tag.id);
-    }
-  }
-  for(const id of charIds){
+  // Character mode intentionally exposes only curated profiles. items.json also
+  // contains one-off proper names whose single sentence does not support a useful
+  // character identity; those remain searchable but are not promoted to the mode.
+  for(const profile of profiles){
+    const id=profile?.id;
+    if(!id) continue;
     const matched=safeItems.filter(item=>matchesTag(item,'character',id,{includeMedium:true}));
+    if(!matched.length) continue;
     const core=matched.filter(item=>matchesTag(item,'character',id,{includeMedium:false}));
     const medium=matched.length-core.length;
-    const profile=profileMap.get(id)||null;
     result.character.push({
-      type:'character', id, label:profile?.name||humanize(id), labelJa:profile?.name_ja||'',
+      type:'character', id, label:profile.name||humanize(id), labelJa:profile.name_ja||'',
       profile, coreTotal:core.length, relatedTotal:medium, ...summarizeItems(matched,levelState,now)
     });
   }
