@@ -46,7 +46,7 @@ jobs:
           NODE
       - name: Commit generated database
         run: |
-          if git diff --quiet -- data/vocabulary.json data/vocabulary-report.json; then
+          if [ -z "$(git status --porcelain -- data/vocabulary.json data/vocabulary-report.json)" ]; then
             echo 'No generated changes.'
             exit 0
           fi
