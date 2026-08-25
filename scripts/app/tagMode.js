@@ -73,7 +73,8 @@ async function loadCharacters(){
     const res=await fetch('./data/characters.json',{cache:'no-cache'});
     if(!res.ok) return [];
     const data=await res.json();
-    return Array.isArray(data)?data:[];
+    if(Array.isArray(data)) return data;
+    return Array.isArray(data?.characters)?data.characters:[];
   }catch(_){ return []; }
 }
 
