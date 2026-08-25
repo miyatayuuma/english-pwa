@@ -96,17 +96,16 @@ function selectInterleaved(metas,size){
     let bestScore=-Infinity;
     for(let i=0;i<remaining.length;i+=1){
       const meta=remaining[i];
-      if(meta.kind==='fresh' && freshUsed>=freshCap){
-        const hasAlternative=remaining.some((other,j)=>j!==i && other.kind!=='fresh');
-        if(hasAlternative) continue;
-      }
+      if(meta.kind==='fresh' && freshUsed>=freshCap) continue;
       let score=meta.base;
       if(meta.signature && recent.includes(meta.signature)) score-=950;
       if(meta.signature && recent.length===2 && recent[0]===meta.signature && recent[1]===meta.signature) score-=900;
       score-=meta.index*0.0001;
       if(score>bestScore){ bestScore=score; bestIndex=i; }
     }
-    if(bestIndex<0) bestIndex=0;
+    // Do not pad a session with excess unseen material just to hit a target
+    // count. A shorter, better-balanced session is preferable.
+    if(bestIndex<0) break;
     const [chosen]=remaining.splice(bestIndex,1);
     if(chosen.kind==='fresh') freshUsed+=1;
     selected.push(chosen);
