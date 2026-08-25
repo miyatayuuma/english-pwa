@@ -102,12 +102,11 @@ function summarizeItems(items,levelState,now){
 export function buildTagCatalog(items,characters,levelState={},now=Date.now()){
   const safeItems=Array.isArray(items)?items:[];
   const profiles=Array.isArray(characters)?characters:[];
-  const profileMap=new Map(profiles.map(profile=>[profile.id,profile]));
   const result={ character:[], situation:[], grammar:[], function:[] };
 
-  // Character mode intentionally exposes only curated profiles. items.json also
-  // contains one-off proper names whose single sentence does not support a useful
-  // character identity; those remain searchable but are not promoted to the mode.
+  // Only curated character profiles become browseable characters. Progress and
+  // recommendations intentionally use explicit + inferred_high items; medium
+  // associations remain available as related metadata but never inflate mastery.
   for(const profile of profiles){
     const id=profile?.id;
     if(!id) continue;
@@ -115,9 +114,20 @@ export function buildTagCatalog(items,characters,levelState={},now=Date.now()){
     if(!matched.length) continue;
     const core=matched.filter(item=>matchesTag(item,'character',id,{includeMedium:false}));
     const medium=matched.length-core.length;
+    const coreSummary=summarizeItems(core,levelState,now);
+    const allSummary=summarizeItems(matched,levelState,now);
     result.character.push({
       type:'character', id, label:profile.name||humanize(id), labelJa:profile.name_ja||'',
-      profile, coreTotal:core.length, relatedTotal:medium, ...summarizeItems(matched,levelState,now)
+      profile,
+      coreTotal:core.length,
+      relatedTotal:medium,
+      relatedOrCoreTotal:matched.length,
+      allMastered:allSummary.mastered,
+      allLearning:allSummary.learning,
+      allFresh:allSummary.fresh,
+      allDue:allSummary.due,
+      allMastery:allSummary.mastery,
+      ...coreSummary,
     });
   }
 
