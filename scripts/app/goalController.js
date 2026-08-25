@@ -166,13 +166,11 @@ export function createGoalController({
     updateGoalProgressFromMetrics({ notify:true });
   }
 
+  // Goals still influence the engine and milestone feedback, but starting a
+  // session should not require the learner to read an explanation of targets.
   function maybeShowGoalOverview(){
     if(goalOverviewShown) return;
     ensureDailyGoalFresh();
-    const dailyRemaining=Math.max(0, goalState.dailyTarget-goalState.dailyDone);
-    const dailyText=dailyRemaining>0 ? `今日の目標まであと${dailyRemaining}件です` : '今日の目標は達成済みです';
-    const sessionText=`今回の学習目標は${goalState.sessionTarget}件です`;
-    toast(`${dailyText} / ${sessionText}`, 3200);
     goalOverviewShown=true;
   }
 
