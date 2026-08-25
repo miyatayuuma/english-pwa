@@ -1,0 +1,356 @@
+{
+  "schema_version": 1,
+  "source": "data/items.json",
+  "notes": {
+    "purpose": "Character metadata for character-based learning, filtering, icons, and story views.",
+    "certainty": {
+      "explicit": "Directly stated in the example sentence.",
+      "inferred_high": "Strongly supported by adjacent or repeated examples.",
+      "inferred_medium": "Plausible across the local story cluster, but should not be treated as canon fact."
+    },
+    "chronology_warning": "DUO example sentences are not guaranteed to form one continuous chronology. Repeated character arcs, especially Bob/Jennifer, are grouped for learning utility without asserting a single canonical timeline.",
+    "appearance_warning": "No physical appearance is invented unless explicitly supported by an example. Character icons should therefore use app-original visual designs rather than claim canonical appearances."
+  },
+  "characters": [
+    {
+      "id": "bob",
+      "name": "Bob",
+      "name_ja": "ボブ",
+      "tier": "main",
+      "profile_confidence": "high",
+      "archetype_ja": "善人寄りだが不器用で、恋愛や対人関係で空回りしやすい人物",
+      "summary_ja": "臆病で女性の前では赤面する一方、怠け癖や失敗の多さも描かれる。反面、道徳的信条と正直さを重視する面が明示されている。Jenniferとの恋愛エピソードが繰り返し登場する。",
+      "traits": [
+        {"id": "timid_with_women", "label_ja": "女性相手では臆病で照れやすい", "certainty": "explicit", "evidence": ["E0500", "E0502"]},
+        {"id": "lazy", "label_ja": "怠け癖があり仕事を怠ることがある", "certainty": "explicit", "evidence": ["E0195"]},
+        {"id": "mistake_prone", "label_ja": "失敗を繰り返し懲りにくい", "certainty": "inferred_high", "evidence": ["E0187", "E0188"]},
+        {"id": "principled", "label_ja": "道徳的信条を重視し、正直さは報われると考える", "certainty": "explicit", "evidence": ["E0210"]},
+        {"id": "socially_clumsy", "label_ja": "会話や対人場面で空回りしやすい", "certainty": "inferred_high", "evidence": ["E0146", "E0147", "E0369", "E0370", "E0371", "E0372"]}
+      ],
+      "relationships": [
+        {"character_id": "jennifer", "type": "recurring_romantic_arc", "label_ja": "長期にわたり付き合ったり別れたりする恋愛相手として繰り返し描かれる", "certainty": "inferred_high", "evidence": ["E0179", "E0181", "E0196", "E0204", "E0531", "E0534", "E0535", "E0538", "E0539", "E0540", "E0541", "E0545", "E0556", "E0557"]},
+        {"character_id": "jane", "type": "social_acquaintance", "label_ja": "近況や結婚を報告する程度の友人・知人圏", "certainty": "inferred_medium", "evidence": ["E0520", "E0541"]}
+      ],
+      "source_item_ids": ["E0010", "E0124", "E0146", "E0147", "E0179", "E0181", "E0182", "E0183", "E0186", "E0187", "E0188", "E0195", "E0196", "E0197", "E0204", "E0210", "E0283", "E0355", "E0366", "E0369", "E0370", "E0371", "E0372", "E0500", "E0501", "E0502", "E0507", "E0508", "E0520", "E0531", "E0534", "E0535", "E0536", "E0538", "E0539", "E0540", "E0541", "E0544", "E0545", "E0546", "E0556", "E0557"]
+    },
+    {
+      "id": "jennifer",
+      "name": "Jennifer",
+      "name_ja": "ジェニファー",
+      "tier": "main",
+      "profile_confidence": "medium",
+      "archetype_ja": "Bobを振り回す恋愛上の中心人物",
+      "summary_ja": "Bobとの恋愛文脈で繰り返し登場する。作中人物からは、だました、傲慢、利用しているなど否定的に評される例があるが、これは語り手側の評価であり客観的性格とは断定しない。",
+      "traits": [
+        {"id": "soap_opera_fan", "label_ja": "メロドラマに夢中になる", "certainty": "explicit", "evidence": ["E0196"]},
+        {"id": "perceived_as_deceptive", "label_ja": "Bobや周囲から『だました・利用している』と見られる", "certainty": "explicit", "evidence": ["E0531", "E0539", "E0545"]},
+        {"id": "romantically_independent", "label_ja": "Bob以外の男性との交際・婚約が語られる", "certainty": "explicit", "evidence": ["E0534", "E0540", "E0556"]}
+      ],
+      "relationships": [
+        {"character_id": "bob", "type": "recurring_romantic_arc", "label_ja": "付き合ったり別れたりする複雑な恋愛関係として繰り返し描かれる", "certainty": "inferred_high", "evidence": ["E0179", "E0181", "E0196", "E0204", "E0531", "E0534", "E0535", "E0538", "E0539", "E0540", "E0541", "E0545", "E0556", "E0557"]}
+      ],
+      "source_item_ids": ["E0179", "E0196", "E0204", "E0531", "E0534", "E0535", "E0538", "E0539", "E0540", "E0541", "E0545", "E0556", "E0557"]
+    },
+    {
+      "id": "nick",
+      "name": "Nick",
+      "name_ja": "ニック",
+      "tier": "main",
+      "profile_confidence": "high",
+      "archetype_ja": "頭は回るが打算的で権威的な人物",
+      "summary_ja": "カンニングで処分を免れる、上司の前だけ熱心なふりをする、同僚を踏み台にして出世する、地方出身者を見下すなど、要領の良さと自己中心性を示す描写が多い。Lisaの夫であることは明示されている。",
+      "traits": [
+        {"id": "opportunistic", "label_ja": "要領がよく、自分に有利な立ち回りをする", "certainty": "explicit", "evidence": ["E0149", "E0286", "E0287"]},
+        {"id": "authoritarian", "label_ja": "独裁者のようだと評される", "certainty": "explicit", "evidence": ["E0373", "E0374"]},
+        {"id": "elitist", "label_ja": "地方出身者を見下す", "certainty": "explicit", "evidence": ["E0503"]},
+        {"id": "rationalist", "label_ja": "迷信を非合理的だと考える", "certainty": "explicit", "evidence": ["E0193"]}
+      ],
+      "relationships": [
+        {"character_id": "lisa", "type": "spouse", "label_ja": "夫婦。Lisaは時々離婚を考えると明言している", "certainty": "explicit", "evidence": ["E0529"]},
+        {"character_id": "lisa", "type": "relationship_conflict", "label_ja": "喧嘩・裏切り・女性問題を含む不安定な関係", "certainty": "inferred_high", "evidence": ["E0199", "E0200", "E0207", "E0524", "E0529", "E0530"]}
+      ],
+      "source_item_ids": ["E0149", "E0161", "E0193", "E0199", "E0200", "E0207", "E0282", "E0285", "E0286", "E0287", "E0373", "E0374", "E0375", "E0503", "E0524", "E0529", "E0530"]
+    },
+    {
+      "id": "lisa",
+      "name": "Lisa",
+      "name_ja": "リサ",
+      "tier": "main",
+      "profile_confidence": "high",
+      "archetype_ja": "我慢するが限界を超えると感情を強く表す人物",
+      "summary_ja": "Nickの妻。普段は仲良くやっているという描写もあるが、喧嘩、裏切りへの怒り、離婚を考える発言など関係の激しさが繰り返される。",
+      "traits": [
+        {"id": "emotionally_expressive", "label_ja": "怒りや傷つきを強く表現する", "certainty": "explicit", "evidence": ["E0205", "E0206", "E0526", "E0530"]},
+        {"id": "low_tolerance_for_betrayal", "label_ja": "裏切りに対して強く反応する", "certainty": "inferred_high", "evidence": ["E0207", "E0524", "E0529", "E0530"]}
+      ],
+      "relationships": [
+        {"character_id": "nick", "type": "spouse", "label_ja": "Nickの妻", "certainty": "explicit", "evidence": ["E0529"]},
+        {"character_id": "nick", "type": "relationship_conflict", "label_ja": "口論はあるが普段は良好ともされ、後には裏切りや離婚問題が描かれる", "certainty": "inferred_high", "evidence": ["E0199", "E0200", "E0205", "E0206", "E0207", "E0524", "E0529", "E0530"]}
+      ],
+      "source_item_ids": ["E0199", "E0200", "E0205", "E0206", "E0207", "E0524", "E0526", "E0528", "E0529", "E0530"]
+    },
+    {
+      "id": "jane",
+      "name": "Jane",
+      "name_ja": "ジェーン",
+      "tier": "main",
+      "profile_confidence": "high",
+      "archetype_ja": "慎重で落ち着いた常識人",
+      "summary_ja": "Bobとは対照的に慎重派と明示される。親族の死を経験する場面では悲しみを受け止めつつ乗り越えようとし、幼少期の思い出を大切にする描写が続く。",
+      "traits": [
+        {"id": "cautious", "label_ja": "とても慎重", "certainty": "explicit", "evidence": ["E0520"]},
+        {"id": "resilient", "label_ja": "悲しみを抱えながらも乗り越えようとする", "certainty": "explicit", "evidence": ["E0554"]},
+        {"id": "sentimental", "label_ja": "幼少期の大切な思い出を慈しむ", "certainty": "inferred_high", "evidence": ["E0555"]}
+      ],
+      "relationships": [
+        {"character_id": "bob", "type": "social_acquaintance", "label_ja": "近況や結婚を報告する友人・知人圏", "certainty": "inferred_medium", "evidence": ["E0520", "E0541"]}
+      ],
+      "source_item_ids": ["E0212", "E0218", "E0520", "E0541", "E0552", "E0553", "E0554", "E0555"]
+    },
+    {
+      "id": "ken",
+      "name": "Ken",
+      "name_ja": "ケン",
+      "tier": "supporting",
+      "profile_confidence": "high",
+      "archetype_ja": "勇敢で自信があり、リスクを恐れない人物",
+      "summary_ja": "勇敢、自信家、危険を冒すことを恐れないと明示的に評され、ある話者から強い恋愛感情を向けられている。",
+      "traits": [
+        {"id": "brave", "label_ja": "勇敢", "certainty": "explicit", "evidence": ["E0537"]},
+        {"id": "self_confident", "label_ja": "自信がある", "certainty": "explicit", "evidence": ["E0537"]},
+        {"id": "risk_taking", "label_ja": "危険を冒すことを恐れない", "certainty": "explicit", "evidence": ["E0537"]}
+      ],
+      "relationships": [
+        {"character_id": null, "type": "unnamed_romantic_interest", "label_ja": "名前不明の話者から強く好意を持たれている", "certainty": "explicit", "evidence": ["E0537"]}
+      ],
+      "source_item_ids": ["E0069", "E0117", "E0537"]
+    },
+    {
+      "id": "tom",
+      "name": "Tom",
+      "name_ja": "トム",
+      "tier": "supporting",
+      "profile_confidence": "high",
+      "archetype_ja": "頑固で荒っぽい面があり、後悔も抱える人物",
+      "summary_ja": "生まれつき頑固で絶対に折れず、酔うと下品で攻撃的になる。人生の多くを無駄にしたことを後悔する描写もある。",
+      "traits": [
+        {"id": "stubborn", "label_ja": "生まれつき頑固で折れない", "certainty": "explicit", "evidence": ["E0341"]},
+        {"id": "offensive_when_drunk", "label_ja": "酔うと下品で人を不快にさせる", "certainty": "explicit", "evidence": ["E0498"]},
+        {"id": "regretful", "label_ja": "人生を無駄にしたことを後悔している", "certainty": "explicit", "evidence": ["E0532"]}
+      ],
+      "relationships": [
+        {"character_id": null, "type": "family_uncle", "label_ja": "性格が叔父に似ている", "certainty": "explicit", "evidence": ["E0341"]}
+      ],
+      "source_item_ids": ["E0341", "E0498", "E0532"]
+    },
+    {
+      "id": "dave",
+      "name": "Dave",
+      "name_ja": "デイブ",
+      "tier": "supporting",
+      "profile_confidence": "medium",
+      "archetype_ja": "不器用で臆病、消極的な人物",
+      "summary_ja": "不器用さは明示。直後の高所恐怖症の会話はDaveを指す可能性が高く、さらに消極的な男性の描写まで同一人物と読むことは可能だが、最後は推定に留める。",
+      "traits": [
+        {"id": "clumsy", "label_ja": "不器用でドジ", "certainty": "explicit", "evidence": ["E0190"]},
+        {"id": "afraid_of_heights", "label_ja": "高所恐怖症", "certainty": "inferred_high", "evidence": ["E0191"]},
+        {"id": "passive", "label_ja": "人前で自己表現をほとんどしない消極的な人物", "certainty": "inferred_medium", "evidence": ["E0192"]}
+      ],
+      "relationships": [],
+      "source_item_ids": ["E0190", "E0191", "E0192"]
+    },
+    {
+      "id": "joe",
+      "name": "Joe",
+      "name_ja": "ジョー",
+      "tier": "supporting",
+      "profile_confidence": "high",
+      "archetype_ja": "勉強嫌いでやや短気な人物",
+      "summary_ja": "勤勉ではなく数学を再び落としたと明示される。渋滞では熱くなり、同行者になだめられている。",
+      "traits": [
+        {"id": "not_diligent", "label_ja": "勤勉ではなく、数学を繰り返し落としている", "certainty": "explicit", "evidence": ["E0157"]},
+        {"id": "impatient", "label_ja": "渋滞で苛立ちやすい", "certainty": "inferred_high", "evidence": ["E0221"]}
+      ],
+      "relationships": [],
+      "source_item_ids": ["E0157", "E0221"]
+    },
+    {
+      "id": "mike",
+      "name": "Mike",
+      "name_ja": "マイク",
+      "tier": "supporting",
+      "profile_confidence": "high",
+      "archetype_ja": "時間に正確で逆境に強い優等生タイプ",
+      "summary_ja": "普段から時間に正確で、逆境の中でも並外れた成果を挙げる人物として描かれる。",
+      "traits": [
+        {"id": "punctual", "label_ja": "いつも時間に正確", "certainty": "explicit", "evidence": ["E0213"]},
+        {"id": "resilient_achiever", "label_ja": "逆境の中で大きな成果を成し遂げる", "certainty": "explicit", "evidence": ["E0349"]}
+      ],
+      "relationships": [],
+      "source_item_ids": ["E0213", "E0349"]
+    },
+    {
+      "id": "naomi",
+      "name": "Naomi",
+      "name_ja": "ナオミ",
+      "tier": "supporting",
+      "profile_confidence": "high",
+      "archetype_ja": "容姿に自信があり、周囲から注目される人物",
+      "summary_ja": "別の話者から、完璧なスタイルを見せびらかしたがると評される。また別の人物から一目惚れされ、求婚されたが断っている。",
+      "traits": [
+        {"id": "appearance_confident", "label_ja": "自分のスタイルを見せることに積極的だと評される", "certainty": "explicit", "evidence": ["E0177"]},
+        {"id": "admired", "label_ja": "周囲から羨望や恋愛感情を向けられる", "certainty": "explicit", "evidence": ["E0177", "E0178"]}
+      ],
+      "relationships": [
+        {"character_id": null, "type": "rejected_proposal", "label_ja": "名前不明の人物から求婚され、断った", "certainty": "explicit", "evidence": ["E0178"]}
+      ],
+      "source_item_ids": ["E0177", "E0178"]
+    },
+    {
+      "id": "bill",
+      "name": "Bill",
+      "name_ja": "ビル",
+      "tier": "supporting",
+      "profile_confidence": "high",
+      "archetype_ja": "善意が恋愛感情と誤解される人物",
+      "summary_ja": "Monicaを慰めようとしただけだったが、Monicaから恋愛感情だと受け取られた。前後の例文も二人の連続場面と読む可能性が高い。",
+      "traits": [
+        {"id": "comforting", "label_ja": "Monicaを慰めようとする", "certainty": "explicit", "evidence": ["E0522"]}
+      ],
+      "relationships": [
+        {"character_id": "monica", "type": "misunderstood_romantic_signal", "label_ja": "慰める意図が恋愛感情だと誤解された", "certainty": "explicit", "evidence": ["E0522"]},
+        {"character_id": "monica", "type": "shared_scene", "label_ja": "前後の場面も二人の連続エピソードである可能性が高い", "certainty": "inferred_high", "evidence": ["E0521", "E0522", "E0523"]}
+      ],
+      "source_item_ids": ["E0521", "E0522", "E0523"]
+    },
+    {
+      "id": "monica",
+      "name": "Monica",
+      "name_ja": "モニカ",
+      "tier": "supporting",
+      "profile_confidence": "medium",
+      "archetype_ja": "Billの善意を恋愛感情だと受け取った人物",
+      "summary_ja": "Billから慰められ、その行為を自分への恋愛感情だと解釈したことが明示される。",
+      "traits": [
+        {"id": "romantic_interpretation", "label_ja": "Billの慰めを恋愛的な好意だと解釈した", "certainty": "explicit", "evidence": ["E0522"]}
+      ],
+      "relationships": [
+        {"character_id": "bill", "type": "misunderstood_romantic_signal", "label_ja": "Billの慰めを恋愛感情だと受け取った", "certainty": "explicit", "evidence": ["E0522"]},
+        {"character_id": "bill", "type": "shared_scene", "label_ja": "前後の場面も二人の連続エピソードである可能性が高い", "certainty": "inferred_high", "evidence": ["E0521", "E0522", "E0523"]}
+      ],
+      "source_item_ids": ["E0522", "E0523"]
+    },
+    {
+      "id": "ted",
+      "name": "Ted",
+      "name_ja": "テッド",
+      "tier": "cameo",
+      "profile_confidence": "high",
+      "archetype_ja": "高潔さで知られる政治家候補",
+      "summary_ja": "高潔な人物とたびたび称され、市長選への立候補を予定している。",
+      "traits": [
+        {"id": "integrity", "label_ja": "高潔な人物として知られる", "certainty": "explicit", "evidence": ["E0388"]},
+        {"id": "mayoral_candidate", "label_ja": "市長選に立候補する予定", "certainty": "explicit", "evidence": ["E0388"]}
+      ],
+      "relationships": [],
+      "source_item_ids": ["E0388"]
+    },
+    {
+      "id": "teresa",
+      "name": "Teresa",
+      "name_ja": "テレサ",
+      "tier": "cameo",
+      "profile_confidence": "high",
+      "archetype_ja": "引退後を社会奉仕に捧げる人物",
+      "summary_ja": "引退後、孤児の世話に身を捧げた。",
+      "traits": [
+        {"id": "altruistic", "label_ja": "孤児の世話に身を捧げる", "certainty": "explicit", "evidence": ["E0384"]}
+      ],
+      "relationships": [],
+      "source_item_ids": ["E0384"]
+    },
+    {
+      "id": "starr",
+      "name": "Starr",
+      "name_ja": "スター",
+      "tier": "cameo",
+      "profile_confidence": "high",
+      "archetype_ja": "地域で最も著名な弁護士",
+      "summary_ja": "地域で群を抜いて著名な弁護士として紹介される。",
+      "traits": [
+        {"id": "prominent_attorney", "label_ja": "地域で非常に著名な弁護士", "certainty": "explicit", "evidence": ["E0043"]}
+      ],
+      "relationships": [],
+      "source_item_ids": ["E0043"]
+    },
+    {
+      "id": "phil",
+      "name": "Phil",
+      "name_ja": "フィル",
+      "tier": "cameo",
+      "profile_confidence": "high",
+      "archetype_ja": "実務より学問を好むアカデミック志向",
+      "summary_ja": "実用的な技能より学問的なテーマに強く興味を持つ。",
+      "traits": [
+        {"id": "academic", "label_ja": "実用技能より学問的テーマを好む", "certainty": "explicit", "evidence": ["E0170"]}
+      ],
+      "relationships": [],
+      "source_item_ids": ["E0170"]
+    },
+    {
+      "id": "molly",
+      "name": "Molly",
+      "name_ja": "モリー",
+      "tier": "cameo",
+      "profile_confidence": "high",
+      "archetype_ja": "クラシック音楽好き",
+      "summary_ja": "クラシック音楽に完全にはまっていると明示される。",
+      "traits": [
+        {"id": "classical_music_fan", "label_ja": "クラシック音楽が大好き", "certainty": "explicit", "evidence": ["E0511"]}
+      ],
+      "relationships": [],
+      "source_item_ids": ["E0511"]
+    },
+    {
+      "id": "dolly",
+      "name": "Dolly",
+      "name_ja": "ドリー",
+      "tier": "cameo",
+      "profile_confidence": "high",
+      "archetype_ja": "姉と見分けがつかないほどよく似た人物",
+      "summary_ja": "姉とあらゆる面でそっくりで、見分けがつかないとされる。",
+      "traits": [
+        {"id": "resembles_older_sister", "label_ja": "姉と非常によく似ている", "certainty": "explicit", "evidence": ["E0119"]}
+      ],
+      "relationships": [
+        {"character_id": null, "type": "older_sister", "label_ja": "名前不明の姉がいる", "certainty": "explicit", "evidence": ["E0119"]}
+      ],
+      "source_item_ids": ["E0119"]
+    },
+    {
+      "id": "senator_ford",
+      "name": "Senator Ford",
+      "name_ja": "フォード上院議員",
+      "tier": "supporting",
+      "profile_confidence": "high",
+      "archetype_ja": "論争の渦中で中立を保とうとする上院議員",
+      "summary_ja": "激しい論争の中で中立を保ったが、その後一週間にわたり困難な状況に置かれ、対処できなくなっている。",
+      "traits": [
+        {"id": "neutral_in_controversy", "label_ja": "激しい論争でも中立を保つ", "certainty": "explicit", "evidence": ["E0437"]},
+        {"id": "overwhelmed", "label_ja": "長引く困難な状況に対処できなくなっている", "certainty": "explicit", "evidence": ["E0438"]}
+      ],
+      "relationships": [],
+      "source_item_ids": ["E0437", "E0438"]
+    }
+  ],
+  "excluded_named_characters": [
+    {
+      "ids": ["richie", "brian", "lucy"],
+      "reason": "Named examples exist, but the available evidence describes a one-off circumstance more than a stable personality or relationship. Keep them in item-level character tags, but do not promote them to character-profile cards yet."
+    },
+    {
+      "ids": ["ando", "giotto", "jason", "john", "johnson", "michael", "ms_yamada", "richard"],
+      "reason": "Currently too little evidence for a useful recurring character profile. They remain available through item-level character tags."
+    }
+  ]
+}
