@@ -426,9 +426,15 @@ function handleMatchChange(){
   if(rate<0.7){
     state.sessionFailures.add(id); metrics.markFailure(id);
     if(!state.fallbackUsed.has(id)){
-      state.fallbackUsed.add(id);
+    state.fallbackUsed.add(id);
+    const en=document.getElementById('enText');
+    const ja=document.getElementById('jaText');
+    const englishHidden=!!en?.classList.contains('concealed');
+    const japaneseHidden=!ja || ja.style.display==='none' || getComputedStyle(ja).display==='none';
+    if(englishHidden || japaneseHidden){
       setTimeout(()=>{ if(state.currentItemId===id) dispatchDownSwipe({automatic:true}); },130);
     }
+  }
   }
 }
 
