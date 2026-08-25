@@ -6,6 +6,7 @@ const ITEMS_PATH = path.join(ROOT, 'data/items.json');
 
 const items = JSON.parse(fs.readFileSync(ITEMS_PATH, 'utf8'));
 
+// Only fixes with very high confidence: obvious OCR/input errors or malformed spacing/quotes.
 const explicitFixes = new Map([
   ['E0011', {
     en: s => s.replace(/\bnobel\b/g, 'novel'),
@@ -15,6 +16,37 @@ const explicitFixes = new Map([
   }],
   ['E0038', {
     ja: s => s.replace(/さらさせてきた/g, 'さらされてきた'),
+  }],
+  ['E0062', {
+    ja: s => s.replace(/骨蓮品/g, '骨董品'),
+  }],
+  ['E0063', {
+    en: s => s.replace(/^"Anything else\?\s+"That's it\."/, '"Anything else?" "That\'s it."'),
+  }],
+  ['E0102', {
+    en: s => s.replace(/faucet off! mom yelled/g, 'faucet off! Mom yelled'),
+  }],
+  ['E0172', {
+    en: s => s.replace(/"What is 'an instrument\?"/, '"What is \'an instrument\'?"'),
+  }],
+  ['E0177', {
+    ja: s => s.replace(/完壁/g, '完璧'),
+  }],
+  ['E0178', {
+    ja: s => s.replace(/3ケ月/g, '3ヶ月'),
+  }],
+  ['E0340', {
+    en: s => s.replace(/\bTrting\b/g, 'Trying'),
+    ja: s => s.replace(/^Trying to fit into a mold gets me nowhere!\s*/, ''),
+  }],
+  ['E0366', {
+    en: s => s.replace(/Couldn't be better! i did/g, "Couldn't be better! I did"),
+  }],
+  ['E0526', {
+    en: s => s.replace(/\banytmore\b/g, 'anymore'),
+  }],
+  ['E0559', {
+    en: s => s.replace(/Let's see \.\./g, "Let's see..."),
   }],
 ]);
 
@@ -32,11 +64,18 @@ function cleanEnglish(s) {
 }
 
 function cleanJapanese(s) {
+  // Do not NFKC-normalize the whole Japanese string: that needlessly turns
+  // Japanese full-width punctuation into ASCII. Normalize only known noise.
   let out = String(s || '')
-    .normalize('NFKC')
     .replace(/[\u200B-\u200D\u2060\uFEFF]/g, '')
     .replace(/｡/g, '。')
     .replace(/､/g, '、')
+    .replace(/｢/g, '「')
+    .replace(/｣/g, '」')
+    .replace(/\?/g, '？')
+    .replace(/!/g, '！')
+    .replace(/\(/g, '（')
+    .replace(/\)/g, '）')
     .replace(/[ \t]+/g, ' ')
     .replace(/\s+([。、！？）」』】])/g, '$1')
     .replace(/([「『（【])\s+/g, '$1')
