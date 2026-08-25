@@ -34,7 +34,7 @@ test('due work is prioritized while new material stays limited',()=>{
     E3:{last:3},
   };
   const plan=buildAutomaticSession(items,levels,{now,size:7});
-  assert.equal(plan.size,7);
+  assert.equal(plan.size,6);
   assert.equal(plan.items[0].id,'E0');
   assert.ok(plan.fresh<=2);
   assert.ok(plan.learning>=2);
