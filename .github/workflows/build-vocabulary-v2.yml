@@ -18,8 +18,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Install parser dependencies
-        run: npm install --no-save --ignore-scripts wink-pos-tagger@2.2.2 cheerio@1.0.0
+      - name: Install parser dependency
+        run: npm install --no-save --ignore-scripts wink-pos-tagger@2.2.2
       - name: Fetch CC0 dictionary and public index pages
         run: |
           mkdir -p .tmp
@@ -40,16 +40,17 @@ jobs:
         env:
           EJDICT_DIR: .tmp/EJDict/src
         run: node scripts/vocabulary/build-duo-vocabulary-v2.mjs
-      - name: Validate
+      - name: Validate coverage
         run: |
           node <<'NODE'
           const fs=require('fs');
           const db=JSON.parse(fs.readFileSync('data/vocabulary-v2.json','utf8'));
           const r=JSON.parse(fs.readFileSync('data/vocabulary-v2-report.json','utf8'));
           if(db.schema_version!==2||!Array.isArray(db.entries)) throw new Error('invalid v2 schema');
-          if(r.source_index_rows<2500) throw new Error(`index parse too small: ${r.source_index_rows}`);
-          if(r.matched_entries<1500) throw new Error(`too few matches: ${r.matched_entries}`);
-          if(r.phrases<400) throw new Error(`too few phrases: ${r.phrases}`);
+          if(r.source_index_rows!==2569) throw new Error(`expected 2569 public-index rows, got ${r.source_index_rows}`);
+          if(r.matched_entries<2400) throw new Error(`DUO/example coverage regressed: ${r.matched_entries}`);
+          if(r.phrases<950) throw new Error(`phrase coverage regressed: ${r.phrases}`);
+          if(r.ready_for_cards<1500) throw new Error(`too few immediately usable cards: ${r.ready_for_cards}`);
           if(db.entries.some(x=>!x.headword||!x.section||!x.example_ids?.length)) throw new Error('incomplete entry');
           console.log(r);
           NODE
