@@ -4,7 +4,6 @@ import { createRequire } from 'node:module';
 
 const require=createRequire(import.meta.url);
 const posTagger=require('wink-pos-tagger');
-const { load }=require('cheerio');
 const tagger=posTagger();
 
 const ROOT=process.cwd();
@@ -28,6 +27,16 @@ function norm(s){
 }
 function lower(s){ return norm(s).toLowerCase(); }
 function sectionNumber(unit){ const m=String(unit||'').match(/Section\s*(\d+)/i); return m?Number(m[1]):null; }
+
+function decodeHtml(s){
+  return String(s||'')
+    .replace(/&nbsp;|&#160;/gi,' ')
+    .replace(/&lt;/gi,'<').replace(/&gt;/gi,'>')
+    .replace(/&amp;/gi,'&').replace(/&quot;/gi,'"')
+    .replace(/&#39;|&apos;/gi,"'")
+    .replace(/&#(\d+);/g,(_,n)=>String.fromCodePoint(Number(n)||32))
+    .replace(/&#x([0-9a-f]+);/gi,(_,n)=>String.fromCodePoint(parseInt(n,16)||32));
+}
 
 function parseDictionary(){
   const map=new Map();
@@ -72,8 +81,12 @@ function chooseMeaning(raw,ja){
 }
 
 function extractIndexRows(html){
-  const $=load(html);
-  const text=$('body').text().replace(/\u00a0/g,' ');
+  let text=String(html||'')
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,'\n')
+    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,'\n')
+    .replace(/<!--([\s\S]*?)-->/g,'\n')
+    .replace(/<[^>]+>/g,'');
+  text=decodeHtml(text).replace(/\u00a0/g,' ');
   const lines=text.split(/\r?\n/).map(norm).filter(Boolean);
   const rows=[];
   for(let i=1;i<lines.length;i++){
@@ -83,7 +96,7 @@ function extractIndexRows(html){
     const section=Number(sm[1]||sm[2]);
     if(!(section>=1&&section<=45)) continue;
     const head=norm(lines[i-1]);
-    if(!/[A-Za-z]/.test(head)||head.length>150||/DUO 3\.0|SECTION/i.test(head)) continue;
+    if(!/[A-Za-z]/.test(head)||head.length>150||/DUO 3\.0|SECTION|permalink|Comment\(/i.test(head)) continue;
     rows.push({headword_raw:head,section});
   }
   const seen=new Set();
@@ -94,7 +107,7 @@ function extractIndexRows(html){
 }
 
 function firstVariant(raw){
-  let s=lower(raw)
+  return lower(raw)
     .replace(/[［【]/g,'[').replace(/[］】]/g,']')
     .replace(/～/g,' … ')
     .replace(/\[[^\]]+\]/g,'')
@@ -104,7 +117,6 @@ function firstVariant(raw){
     .replace(/[,.!?;:]/g,' ')
     .replace(/[=<>]/g,' ')
     .replace(/\s+/g,' ').trim();
-  return s;
 }
 function canonicalDisplay(raw){
   return norm(raw)
@@ -137,7 +149,7 @@ function anchorsFor(raw){
   return out;
 }
 function sentenceLemmas(en){ return tagWords(en).map(t=>t.lemma||t.surface); }
-function orderedSubsequence(anchors,tokens,maxGap=7){
+function orderedSubsequence(anchors,tokens,maxGap=8){
   if(!anchors.length) return false;
   let pos=-1;
   for(const anchor of anchors){
@@ -240,7 +252,7 @@ const db={
   purpose:'DUO-like vocabulary/phrase database aligned to the existing 560 example sentences.',
   policy:{
     index_usage:'Third-party public indexes are used only to verify likely English headwords/phrases and section placement. Japanese glosses from those pages are not copied.',
-    meanings:'Japanese meanings come from CC0 EJDict-hand selected against the existing Japanese example translation.',
+    meanings:'Japanese meanings come from CC0 EJDict-hand selected against the existing Japanese example translation.'
   },
   stats:report,
   entries:finalEntries
