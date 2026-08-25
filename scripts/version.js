@@ -1,14 +1,28 @@
-const APP_VERSION = 'v4.83';
+const APP_VERSION = 'v5.0';
 
 if (typeof globalThis !== 'undefined') {
   globalThis.APP_VERSION = APP_VERSION;
 }
 
-// main.js already imports this file. Load optional learning surfaces here so the
-// legacy app runtime stays isolated from feature-specific UI code. In the
-// service worker there is no document, so importScripts() remains synchronous.
+// The learner no longer needs to choose an internal task model. Keep the
+// legacy engine on its unified read/speak path; adaptiveLearning decides how
+// much support each sentence receives from the learner's current state.
 if (typeof document !== 'undefined') {
+  try {
+    const raw = globalThis.localStorage?.getItem('appConfigV3');
+    const cfg = raw ? JSON.parse(raw) : {};
+    if (!cfg || typeof cfg !== 'object') throw new Error('invalid config');
+    if (cfg.studyMode !== 'read') {
+      cfg.studyMode = 'read';
+      globalThis.localStorage?.setItem('appConfigV3', JSON.stringify(cfg));
+    }
+  } catch (_) {
+    try {
+      globalThis.localStorage?.setItem('appConfigV3', JSON.stringify({ studyMode: 'read' }));
+    } catch (_) {}
+  }
+
   import('./app/tagMode.js').catch((error) => {
-    console.warn('Tag learning mode failed to load', error);
+    console.warn('Adaptive learning surface failed to load', error);
   });
 }
