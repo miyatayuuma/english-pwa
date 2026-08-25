@@ -13,6 +13,7 @@ self.addEventListener('install', e => {
     './styles/screens.css',
     './styles/components.css',
     './data/items.json',
+    './data/characters.json',
     './icons/icon-192.png',
     './icons/icon-512.png',
     './icons/maskable-192.png',
@@ -24,6 +25,8 @@ self.addEventListener('install', e => {
     './scripts/app/cardTransitions.js',
     './scripts/app/composeGuide.js',
     './scripts/app/logManager.js',
+    './scripts/app/tagLearningCore.js',
+    './scripts/app/tagMode.js',
     './scripts/audio/controller.js',
     './scripts/speech/recognition.js',
     './scripts/speech/synthesis.js',
@@ -62,6 +65,7 @@ self.addEventListener('fetch', e => {
   }
 
   const isIconRequest = url.pathname.includes('/icons/');
+  const isCharacterImageRequest = url.pathname.endsWith('.png') && !isIconRequest;
   const isScriptRequest = url.pathname.includes('/scripts/') && url.pathname.endsWith('.js');
   const isStyleRequest = e.request.destination === 'style' || url.pathname.endsWith('.css');
 
@@ -88,8 +92,9 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  // icons と scripts はキャッシュ優先（任意）
-  if (isIconRequest || isScriptRequest) {
+  // icons / character art / scripts are cached on first use. Character PNGs are
+  // intentionally not all precached because the source artwork is relatively large.
+  if (isIconRequest || isCharacterImageRequest || isScriptRequest) {
     e.respondWith(caches.open(CACHE).then(async cache => {
       const cached = await cache.match(e.request);
       if (cached) return cached;
