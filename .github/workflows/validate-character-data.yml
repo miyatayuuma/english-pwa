@@ -1,0 +1,20 @@
+name: Validate character data
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'data/characters.json'
+      - 'scripts/tagging/validate-characters.mjs'
+      - '.github/workflows/validate-character-data.yml'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate character profiles
+        run: node scripts/tagging/validate-characters.mjs
