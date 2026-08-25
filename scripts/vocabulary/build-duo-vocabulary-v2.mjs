@@ -153,12 +153,16 @@ function sentenceLemmas(en){ return tagWords(en).map(t=>t.lemma||t.surface); }
 function orderedSubsequence(anchors,tokens,maxGap=8){
   if(!anchors.length) return false;
   let pos=-1;
-  for(const anchor of anchors){
+  for(let ai=0;ai<anchors.length;ai+=1){
+    const anchor=anchors[ai];
     let found=-1;
-    for(let i=pos+1;i<tokens.length&&i<=pos+1+maxGap;i++){
+    const start=pos+1;
+    const end=ai===0 ? tokens.length-1 : Math.min(tokens.length-1,pos+maxGap+1);
+    for(let i=start;i<=end;i+=1){
       if(tokens[i]===anchor){ found=i; break; }
     }
-    if(found<0) return false; pos=found;
+    if(found<0) return false;
+    pos=found;
   }
   return true;
 }
