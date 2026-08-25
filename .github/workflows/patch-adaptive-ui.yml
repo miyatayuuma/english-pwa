@@ -1,0 +1,39 @@
+name: Patch adaptive UI data loader
+
+on:
+  push:
+    paths:
+      - '.github/trigger-adaptive-ui-patch'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Patch character loader
+        run: |
+          node <<'NODE'
+          const fs=require('fs');
+          const path='scripts/app/tagMode.js';
+          let src=fs.readFileSync(path,'utf8');
+          const from="    const data=await res.json();\n    return Array.isArray(data)?data:[];";
+          const to="    const data=await res.json();\n    if(Array.isArray(data)) return data;\n    return Array.isArray(data?.characters)?data.characters:[];";
+          if(!src.includes(from)) throw new Error('Expected character loader snippet not found');
+          src=src.replace(from,to);
+          fs.writeFileSync(path,src);
+          NODE
+      - name: Smoke tests
+        run: node --experimental-default-type=module --test tests/*.test.mjs
+      - name: Commit patch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/app/tagMode.js
+          git commit -m "fix: load structured character metadata" || exit 0
+          git push
