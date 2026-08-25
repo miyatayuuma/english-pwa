@@ -22,15 +22,15 @@ jobs:
         run: node scripts/tagging/enrich-items.mjs
       - name: Validate output
         run: |
-          node -e "const fs=require('fs');const x=JSON.parse(fs.readFileSync('data/items.json','utf8'));if(x.length!==560)throw new Error('item count');if(x.some(i=>i.tagging_version!==1||!Array.isArray(i.situation_tags)||!Array.isArray(i.grammar_tags)||!Array.isArray(i.character_tags)))throw new Error('tag schema');console.log('validated',x.length)"
+          node -e "const fs=require('fs');const x=JSON.parse(fs.readFileSync('data/items.json','utf8'));const r=JSON.parse(fs.readFileSync('data/tagging-report.json','utf8'));if(x.length!==560)throw new Error('item count');if(x.some(i=>i.tagging_version!==2||!Array.isArray(i.situation_tags)||!Array.isArray(i.grammar_tags)||!Array.isArray(i.character_tags)||!Array.isArray(i.function_tags)))throw new Error('tag schema');if(r.tagging_version!==2||r.total_items!==560)throw new Error('report schema');console.log('validated',x.length)"
       - name: Commit enriched data
         run: |
-          if git diff --quiet -- data/items.json; then
+          if git diff --quiet -- data/items.json data/tagging-report.json; then
             echo 'No changes to commit.'
             exit 0
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add data/items.json
-          git commit -m 'data: apply DUO learning tags to all items'
+          git add data/items.json data/tagging-report.json
+          git commit -m 'data: apply DUO learning tags v2 to all items'
           git push
