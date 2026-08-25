@@ -1,0 +1,36 @@
+name: Enrich item tags
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/tagging/enrich-items.mjs'
+      - '.github/workflows/enrich-item-tags.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  enrich:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Enrich all DUO items
+        run: node scripts/tagging/enrich-items.mjs
+      - name: Validate output
+        run: |
+          node -e "const fs=require('fs');const x=JSON.parse(fs.readFileSync('data/items.json','utf8'));if(x.length!==560)throw new Error('item count');if(x.some(i=>i.tagging_version!==1||!Array.isArray(i.situation_tags)||!Array.isArray(i.grammar_tags)||!Array.isArray(i.character_tags)))throw new Error('tag schema');console.log('validated',x.length)"
+      - name: Commit enriched data
+        run: |
+          if git diff --quiet -- data/items.json; then
+            echo 'No changes to commit.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/items.json
+          git commit -m 'data: apply DUO learning tags to all items'
+          git push
