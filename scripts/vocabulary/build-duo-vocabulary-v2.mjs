@@ -20,7 +20,8 @@ const FUNCTION_WORDS=new Set(['a','an','the','be','am','is','are','was','were','
 const PLACEHOLDERS=new Set(['a','b','c','x','y','z']);
 
 function norm(s){
-  return String(s||'')
+  return String(s||'').normalize('NFKC')
+    .replace(/[\u200B-\u200D\u2060\uFEFF]/g,'')
     .replace(/[“”]/g,'"').replace(/[’]/g,"'")
     .replace(/〜/g,'～').replace(/…+/g,'…')
     .replace(/\s+/g,' ').trim();
@@ -164,8 +165,8 @@ function orderedSubsequence(anchors,tokens,maxGap=8){
 function matchScore(raw,itemTokens){
   const anchors=anchorsFor(raw); if(!anchors.length) return -1;
   if(!orderedSubsequence(anchors,itemTokens,8)) return -1;
-  let score=anchors.length*10;
-  if(anchors.length>=2) score+=8;
+  if(anchors.length===1) return 30;
+  let score=anchors.length*10+8;
   const particles=anchors.filter(x=>FUNCTION_WORDS.has(x)); score+=particles.length*2;
   return score;
 }
