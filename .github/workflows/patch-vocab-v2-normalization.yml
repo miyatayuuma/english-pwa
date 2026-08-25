@@ -1,0 +1,56 @@
+name: Patch vocabulary v2 normalization
+
+on:
+  push:
+    paths:
+      - '.github/workflows/patch-vocab-v2-normalization.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch matcher
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('scripts/vocabulary/build-duo-vocabulary-v2.mjs')
+          s=p.read_text()
+          old="""function norm(s){
+            return String(s||'')
+              .replace(/[“”]/g,'\"').replace(/[’]/g,\"'\")
+              .replace(/〜/g,'～').replace(/…+/g,'…')
+              .replace(/\\s+/g,' ').trim();
+          }"""
+          new="""function norm(s){
+            return String(s||'').normalize('NFKC')
+              .replace(/[\\u200B-\\u200D\\u2060\\uFEFF]/g,'')
+              .replace(/[“”]/g,'\"').replace(/[’]/g,\"'\")
+              .replace(/〜/g,'～').replace(/…+/g,'…')
+              .replace(/\\s+/g,' ').trim();
+          }"""
+          if old not in s:
+              raise SystemExit('norm block not found')
+          s=s.replace(old,new)
+          old2="""  let score=anchors.length*10;
+            if(anchors.length>=2) score+=8;
+            const particles=anchors.filter(x=>FUNCTION_WORDS.has(x)); score+=particles.length*2;
+            return score;"""
+          new2="""  if(anchors.length===1) return 30;
+            let score=anchors.length*10+8;
+            const particles=anchors.filter(x=>FUNCTION_WORDS.has(x)); score+=particles.length*2;
+            return score;"""
+          if old2 not in s:
+              raise SystemExit('score block not found')
+          p.write_text(s.replace(old2,new2))
+          PY
+      - name: Commit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/vocabulary/build-duo-vocabulary-v2.mjs
+          git commit -m 'fix: normalize public index headwords before matching'
+          git push
