@@ -47,7 +47,7 @@ jobs:
           const db=JSON.parse(fs.readFileSync('data/vocabulary-v2.json','utf8'));
           const r=JSON.parse(fs.readFileSync('data/vocabulary-v2-report.json','utf8'));
           if(db.schema_version!==2||!Array.isArray(db.entries)) throw new Error('invalid v2 schema');
-          if(r.source_index_rows<2000) throw new Error(`index parse too small: ${r.source_index_rows}`);
+          if(r.source_index_rows<2500) throw new Error(`index parse too small: ${r.source_index_rows}`);
           if(r.matched_entries<1500) throw new Error(`too few matches: ${r.matched_entries}`);
           if(r.phrases<400) throw new Error(`too few phrases: ${r.phrases}`);
           if(db.entries.some(x=>!x.headword||!x.section||!x.example_ids?.length)) throw new Error('incomplete entry');
