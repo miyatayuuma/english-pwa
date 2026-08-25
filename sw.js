@@ -1,4 +1,4 @@
-// sw.js（抜粋）：キャッシュ名は更新ごとに変える
+// sw.js: cache name follows the app version.
 importScripts('./scripts/version.js');
 const CACHE = self.APP_VERSION;
 
@@ -18,6 +18,7 @@ self.addEventListener('install', e => {
     './icons/icon-512.png',
     './icons/maskable-192.png',
     './icons/maskable-512.png',
+    './scripts/version.js',
     './scripts/app/main.js',
     './scripts/app/dom.js',
     './scripts/app/levelState.js',
@@ -26,6 +27,8 @@ self.addEventListener('install', e => {
     './scripts/app/composeGuide.js',
     './scripts/app/logManager.js',
     './scripts/app/tagLearningCore.js',
+    './scripts/app/adaptiveLearning.js',
+    './scripts/app/uxMetrics.js',
     './scripts/app/tagMode.js',
     './scripts/audio/controller.js',
     './scripts/speech/recognition.js',
@@ -40,11 +43,7 @@ self.addEventListener('install', e => {
 self.addEventListener('activate', e => {
   e.waitUntil((async () => {
     const keys = await caches.keys();
-    await Promise.all(
-      keys
-        .filter(key => key !== CACHE)
-        .map(key => caches.delete(key))
-    );
+    await Promise.all(keys.filter(key => key !== CACHE).map(key => caches.delete(key)));
     await self.clients.claim();
   })());
 });
@@ -52,7 +51,6 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
 
-  // srs.json が 404 / オフラインでも空配列を返す
   if (url.pathname.endsWith('/data/srs.json')) {
     e.respondWith((async () => {
       try {
@@ -69,7 +67,6 @@ self.addEventListener('fetch', e => {
   const isScriptRequest = url.pathname.includes('/scripts/') && url.pathname.endsWith('.js');
   const isStyleRequest = e.request.destination === 'style' || url.pathname.endsWith('.css');
 
-  // styles は stale-while-revalidate
   if (isStyleRequest) {
     e.respondWith(caches.open(CACHE).then(async cache => {
       const cached = await cache.match(e.request);
@@ -79,12 +76,10 @@ self.addEventListener('fetch', e => {
           return res;
         })
         .catch(() => null);
-
       if (cached) {
         e.waitUntil(networkFetch);
         return cached;
       }
-
       const networkRes = await networkFetch;
       if (networkRes) return networkRes;
       return Response.error();
@@ -92,8 +87,7 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  // icons / character art / scripts are cached on first use. Character PNGs are
-  // intentionally not all precached because the source artwork is relatively large.
+  // Character art is intentionally cached lazily; the source PNGs are large.
   if (isIconRequest || isCharacterImageRequest || isScriptRequest) {
     e.respondWith(caches.open(CACHE).then(async cache => {
       const cached = await cache.match(e.request);
@@ -106,7 +100,5 @@ self.addEventListener('fetch', e => {
 });
 
 self.addEventListener('message', (event) => {
-  if (event?.data?.type === 'SKIP_WAITING') {
-    self.skipWaiting();
-  }
+  if (event?.data?.type === 'SKIP_WAITING') self.skipWaiting();
 });
