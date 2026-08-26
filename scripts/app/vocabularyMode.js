@@ -21,6 +21,8 @@ const state={
   hintUsed:false,
   processing:false,
   timer:0,
+  gradeTimer:0,
+  pendingTranscript:'',
   recognition:null,
   dialog:null,
   screen:null,
@@ -94,9 +96,16 @@ function makeDialog(){
   return dialog;
 }
 
+function clearGradeTimer(){
+  clearTimeout(state.gradeTimer);
+  state.gradeTimer=0;
+}
+
 function stopListening(){
   clearTimeout(state.timer);
   state.timer=0;
+  clearGradeTimer();
+  state.pendingTranscript='';
   if(state.recognition?.isActive?.()) state.recognition.stop();
 }
 
@@ -122,7 +131,7 @@ function renderLobby(){
   const plan=buildVocabularySession(entries,levelState,{size:12,kind:'all'});
   state.screen.innerHTML=`
     <section class="vocab-lobby">
-      <div class="vocab-lead"><h2>意味を見て、すぐ英語</h2><p>日本語 → 発話 → 判定。復習期限のカードを優先し、残りは新しい語を出します。</p></div>
+      <div class="vocab-lead"><h2>意味から即答</h2><p>日本語を見て英語を発話。復習を優先し、新しい語は一度に増やしすぎません。</p></div>
       <div class="vocab-stats">
         <div class="vocab-stat"><b>${stats.due}</b><span>復習</span></div>
         <div class="vocab-stat"><b>${stats.fresh}</b><span>未学習</span></div>
@@ -134,7 +143,7 @@ function renderLobby(){
         <button type="button" data-kind="phrase" class="${state.kind==='phrase'?'is-active':''}">熟語</button>
       </div>
       <button type="button" class="vocab-start" ${plan.size?'':'disabled'}>${plan.size?`${plan.size}枚で始める`:'対象カードなし'}</button>
-      <div class="vocab-note">音声認識を優先。答えを見た場合は自己判定に切り替わります。</div>
+      <div class="vocab-note">答えを見た時だけ自己判定に切り替わります。</div>
     </section>`;
   state.screen.querySelectorAll('[data-kind]').forEach(button=>button.addEventListener('click',()=>{
     state.kind=button.dataset.kind||'all';
@@ -155,32 +164,49 @@ function startSession(){
   showNextCard();
 }
 
+function scheduleTranscriptGrade(text){
+  if(state.processing||!state.current) return;
+  state.pendingTranscript=String(text||'').trim();
+  if(!state.pendingTranscript) return;
+  clearGradeTimer();
+  const delay=state.current.kind==='phrase'?720:320;
+  state.gradeTimer=setTimeout(()=>{
+    state.gradeTimer=0;
+    const pending=state.pendingTranscript;
+    state.pendingTranscript='';
+    if(pending&&!state.processing&&state.current) gradeTranscript(pending);
+  },delay);
+}
+
 function setupRecognition(){
   const answerEl=state.screen.querySelector('.vocab-answer');
   state.recognition=createRecognitionController({
     enElement:answerEl,
     getReferenceText:()=>state.variants[0]||'',
-    onTranscriptReset:()=>setTranscript(''),
+    onTranscriptReset:()=>{state.pendingTranscript='';clearGradeTimer();setTranscript('');},
     onTranscriptInterim:text=>setTranscript(text),
     onTranscriptFinal:text=>{
       if(state.processing||!state.current) return;
-      gradeTranscript(text);
+      setTranscript(text);
+      scheduleTranscriptGrade(text);
     },
     onAutoStop:result=>{
       if(state.processing||!state.current) return;
-      const text=String(result?.transcript||'').trim();
+      clearGradeTimer();
+      const text=String(result?.transcript||state.pendingTranscript||'').trim();
+      state.pendingTranscript='';
       if(text) gradeTranscript(text);
       else setListening(false);
     },
     onUnsupported:()=>{
       setListening(false);
       const prompt=state.screen.querySelector('.vocab-prompt');
-      if(prompt) prompt.textContent='音声認識非対応です。答えを見て自己判定してください';
+      if(prompt) prompt.textContent='音声認識非対応。答えを見て自己判定';
     },
     onError:()=>{
       setListening(false);
       const prompt=state.screen.querySelector('.vocab-prompt');
-      if(prompt) prompt.textContent='認識できませんでした。タップして再試行できます';
+      if(prompt) prompt.textContent='認識できませんでした。タップして再試行';
     },
     setMicState:setListening,
   });
@@ -202,8 +228,10 @@ function setTranscript(text){
 function startListening(){
   if(!state.current||state.processing||state.hintUsed||!state.recognition) return;
   if(state.recognition.isActive()){
+    clearGradeTimer();
     const result=state.recognition.stop();
-    const text=String(result?.transcript||'').trim();
+    const text=String(result?.transcript||state.pendingTranscript||'').trim();
+    state.pendingTranscript='';
     if(text&&!state.processing) gradeTranscript(text);
     return;
   }
@@ -229,6 +257,8 @@ function updateVocabularyLevel(rate,hintUsed){
 function gradeTranscript(text){
   if(state.processing||!state.current) return;
   state.processing=true;
+  clearGradeTimer();
+  state.pendingTranscript='';
   const best=bestMatchFor(text);
   if(state.recognition?.isActive()) state.recognition.stop();
   setListening(false);
@@ -244,7 +274,7 @@ function revealFeedback(pass,score,answer){
   const feedback=state.screen.querySelector('.vocab-feedback');
   if(feedback){
     feedback.className=`vocab-feedback ${pass?'is-ok':'is-miss'}`;
-    feedback.textContent=pass?`✓ ${Math.round(score*100)}%`:`↺ あとでもう一度`;
+    feedback.textContent=pass?'✓':`↺ もう一度`;
   }
   if(pass) state.correct+=1;
   else if(!state.retried.has(state.current.id)){
@@ -255,7 +285,7 @@ function revealFeedback(pass,score,answer){
   state.timer=setTimeout(()=>{
     state.position+=1;
     showNextCard();
-  },pass?480:760);
+  },pass?520:820);
 }
 
 function revealAnswer(){
@@ -269,7 +299,7 @@ function revealAnswer(){
   if(prompt) prompt.textContent='自己判定';
   const controls=state.screen.querySelector('.vocab-controls');
   if(controls){
-    controls.innerHTML=`<div class="vocab-manual"><button type="button" class="vocab-manual__miss" data-grade="miss">まだ</button><button type="button" class="vocab-manual__ok" data-grade="ok">言えた</button></div>`;
+    controls.innerHTML=`<div class="vocab-manual"><button type="button" class="vocab-manual__miss" data-grade="miss">思い出せなかった</button><button type="button" class="vocab-manual__ok" data-grade="ok">言えていた</button></div>`;
     controls.querySelector('[data-grade="miss"]').addEventListener('click',()=>manualGrade(false));
     controls.querySelector('[data-grade="ok"]').addEventListener('click',()=>manualGrade(true));
   }
@@ -286,13 +316,15 @@ function manualGrade(ok){
   }
   state.completed+=1;
   const feedback=state.screen.querySelector('.vocab-feedback');
-  if(feedback){feedback.className=`vocab-feedback ${ok?'is-ok':'is-miss'}`;feedback.textContent=ok?'✓ 記録':'↺ あとでもう一度';}
-  state.timer=setTimeout(()=>{state.position+=1;showNextCard();},ok?420:650);
+  if(feedback){feedback.className=`vocab-feedback ${ok?'is-ok':'is-miss'}`;feedback.textContent=ok?'✓ 記録':'↺ もう一度';}
+  state.timer=setTimeout(()=>{state.position+=1;showNextCard();},ok?460:700);
 }
 
 function showNextCard(){
   clearTimeout(state.timer);
+  clearGradeTimer();
   state.timer=0;
+  state.pendingTranscript='';
   if(state.position>=state.queue.length){ renderDone(); return; }
   state.current=state.queue[state.position];
   state.variants=answerVariants(state.current);
@@ -305,7 +337,7 @@ function showNextCard(){
     <section class="vocab-study">
       <div class="vocab-progress"><span>${Math.min(basePosition,initialLength)}/${initialLength}</span><div class="vocab-progress__bar"><i style="width:${progress}%"></i></div><span>${state.correct}正解</span></div>
       <div class="vocab-card">
-        <div class="vocab-badge">${state.current.kind==='phrase'?'PHRASE · 熟語':'WORD · 単語'} · SECTION ${Number(state.current.section)||''}</div>
+        <div class="vocab-badge">${state.current.kind==='phrase'?'熟語':'単語'} · SECTION ${Number(state.current.section)||''}</div>
         <div class="vocab-meaning">${escapeHtml(state.current.meaning_ja)}</div>
         <div class="vocab-prompt">英語で言う</div>
         <div class="vocab-answer" hidden></div>
@@ -320,7 +352,7 @@ function showNextCard(){
   setupRecognition();
   state.screen.querySelector('.vocab-mic')?.addEventListener('click',startListening);
   state.screen.querySelector('.vocab-reveal')?.addEventListener('click',revealAnswer);
-  if(isRecognitionSupported()) state.timer=setTimeout(startListening,260);
+  if(isRecognitionSupported()) state.timer=setTimeout(startListening,500);
 }
 
 function renderDone(){
@@ -329,7 +361,7 @@ function renderDone(){
   state.processing=false;
   const total=state.completed;
   state.screen.innerHTML=`<section class="vocab-done"><h2>完了</h2><p>${total}回答 · ${state.correct}正解</p><button type="button">続ける</button><button type="button" class="vocab-reveal" data-back>戻る</button></section>`;
-  state.screen.querySelector('.vocab-done>button:not([data-back])')?.addEventListener('click',()=>{renderLobby();});
+  state.screen.querySelector('.vocab-done>button:not([data-back])')?.addEventListener('click',renderLobby);
   state.screen.querySelector('[data-back]')?.addEventListener('click',renderLobby);
 }
 
@@ -363,4 +395,4 @@ async function init(){
   makeDialog();
 }
 
-init().catch(error=>console.warn('Vocabulary mode failed to initialize',error));
+if(typeof document!=='undefined') init().catch(error=>console.warn('Vocabulary mode failed to initialize',error));
