@@ -1,19 +1,14 @@
-const APP_VERSION = 'v5.24';
+const APP_VERSION = 'v5.25';
 
 if (typeof globalThis !== 'undefined') {
   globalThis.APP_VERSION = APP_VERSION;
 }
 
-// appConfigV3 is the runtime source of truth used by main.js. Mirror the old
-// preference key at boot so older UI helpers cannot disagree about the active
-// sentence game after migrations or stale cached sessions.
+// appConfigV3.studyMode is the only sentence-game source of truth now.
+// Remove the old duplicate preference once so stale installations cannot
+// reintroduce split mode state after the legacy runtime was retired.
 if (typeof localStorage !== 'undefined') {
-  try {
-    const cfg=JSON.parse(localStorage.getItem('appConfigV3')||'{}');
-    if(cfg?.studyMode==='read'||cfg?.studyMode==='compose') {
-      localStorage.setItem('preferredSentenceMethodV1',cfg.studyMode);
-    }
-  } catch (_) {}
+  try { localStorage.removeItem('preferredSentenceMethodV1'); } catch (_) {}
 }
 
 if (typeof document !== 'undefined') {
@@ -28,9 +23,6 @@ if (typeof document !== 'undefined') {
   });
   import('./app/vocabularyFeedbackUx.js').catch((error) => {
     console.warn('Vocabulary feedback UX failed to load', error);
-  });
-  import('./app/gameModeBridge.js').catch((error) => {
-    console.warn('Game mode bridge failed to load', error);
   });
   import('./app/learningMenu.js').catch((error) => {
     console.warn('Learning navigation failed to load', error);
