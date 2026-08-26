@@ -13,26 +13,34 @@ export function getVoiceId(voice, idx) {
   return `${namePart}#${langPart}`;
 }
 
-function scoreVoicePreference(voice) {
+function normalizeVoiceLang(value) {
+  return String(value || '').trim().toLowerCase().replace(/_/g, '-');
+}
+
+export function scoreVoicePreference(voice) {
   if (!voice) return -Infinity;
   let score = 0;
-  const lang = String(voice.lang || '').toLowerCase();
-  if (lang.startsWith('en-us')) score += 6;
-  else if (lang.startsWith('en-gb')) score += 5;
-  else if (lang.startsWith('en-')) score += 4;
-  else if (lang.startsWith('en')) score += 3;
-  if (/english/i.test(String(voice.name || ''))) score += 1.5;
-  if (voice.default) score += 1;
+  const lang = normalizeVoiceLang(voice.lang);
+  // Locale is the primary criterion. An en-US voice must always outrank
+  // en-GB/default/local English voices when American English is available.
+  if (lang === 'en-us' || lang.startsWith('en-us-')) score += 100;
+  else if (lang === 'en-ca' || lang.startsWith('en-ca-')) score += 70;
+  else if (lang === 'en-au' || lang.startsWith('en-au-')) score += 65;
+  else if (lang === 'en-gb' || lang.startsWith('en-gb-')) score += 60;
+  else if (lang.startsWith('en-')) score += 50;
+  else if (lang === 'en') score += 45;
+  if (/american|united states|\bus\b/i.test(String(voice.name || ''))) score += 8;
+  if (/english/i.test(String(voice.name || ''))) score += 2;
   if (voice.localService) score += 0.5;
+  if (voice.default) score += 0.25;
   return score;
 }
 
-function pickPreferredVoice(voices) {
+export function pickPreferredVoice(voices) {
   if (!Array.isArray(voices) || !voices.length) return null;
   const list = [...voices];
   list.sort((a, b) => scoreVoicePreference(b) - scoreVoicePreference(a));
-  const top = list.find((v) => /^en(-|$)/i.test(String(v.lang || ''))) || list[0];
-  return top || null;
+  return list.find((v) => normalizeVoiceLang(v.lang).startsWith('en')) || list[0] || null;
 }
 
 export function createSpeechSynthesisController(options = {}) {
@@ -198,7 +206,7 @@ export function createSpeechSynthesisController(options = {}) {
     } catch (_) {
       voices = [];
     }
-    const placeholder = new Option('自動選択（英語優先）', '');
+    const placeholder = new Option('自動選択（米国英語優先）', '');
     selectEl.appendChild(placeholder);
     let hasStored = false;
     let hasCurrent = false;
