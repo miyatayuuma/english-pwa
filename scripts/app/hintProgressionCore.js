@@ -26,6 +26,6 @@ export function readHintCopy(stage){
   return {
     label:'全文表示',
     placeholder:'',
-    footer:'全文表示 · 次のカードでは再び英文非表示から開始',
+    footer:'全文表示 · ↓ 英文非表示に戻す',
   };
 }
