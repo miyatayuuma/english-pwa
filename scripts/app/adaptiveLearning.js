@@ -101,7 +101,7 @@ function selectInterleaved(metas,size){
   const selected=[];
   const remaining=metas.slice();
   let freshUsed=0;
-  const freshCap=Math.min(2,Math.max(0,size-1));
+  const freshCap=Math.min(2,Math.max(0,size));
   while(selected.length<size && remaining.length){
     const recent=selected.slice(-2).map(meta=>meta.signature).filter(Boolean);
     let bestIndex=-1;
