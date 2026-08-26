@@ -1,4 +1,4 @@
-const APP_VERSION = 'v5.15';
+const APP_VERSION = 'v5.16';
 
 if (typeof globalThis !== 'undefined') {
   globalThis.APP_VERSION = APP_VERSION;
@@ -16,6 +16,9 @@ if (typeof document !== 'undefined') {
   });
   import('./app/learningMenu.js').catch((error) => {
     console.warn('Learning navigation failed to load', error);
+  });
+  import('./app/sentencePracticeUx.js').catch((error) => {
+    console.warn('Sentence practice UX failed to load', error);
   });
   import('./app/clozeMode.js').catch((error) => {
     console.warn('Progressive hint surface failed to load', error);
