@@ -41,7 +41,19 @@ Goal: make the grammar browser pedagogically coherent.
 
 Exit criteria: no construction tag remains in the grammar axis and sparse tags are reachable through useful parent groups.
 
-## P3 — Five sentence patterns
+## P3 — Cast all remaining examples
+
+Goal: give every learning card a stable episodic speaker cue before the UI starts depending on speaker identity.
+
+- Assign an app-original speaker to examples whose canonical speaker cannot be inferred.
+- Use semantic fit, character profile fit, situation fit, and distribution balance.
+- Never present `app_cast` assignments as source canon.
+- Balance character frequency so a few main characters do not dominate all 560 examples.
+- Keep provenance on every assignment so natural/contextual speakers remain distinguishable from app casting.
+
+Exit criteria: every example has at least one speaker assignment, with provenance retained.
+
+## P4 — Five sentence patterns
 
 Goal: add structural sentence-pattern retrieval without pretending every example is a single simple clause.
 
@@ -51,17 +63,6 @@ Goal: add structural sentence-pattern retrieval without pretending every example
 - Validate detector quality on a representative sample before full propagation.
 
 Exit criteria: pattern tags are accurate enough to browse and to support future structural hints.
-
-## P4 — Cast all remaining examples
-
-Goal: give every learning card a stable episodic speaker cue.
-
-- Assign an app-original speaker to examples whose canonical speaker cannot be inferred.
-- Use semantic fit, character profile fit, situation fit, and distribution balance.
-- Never present `app_cast` assignments as source canon.
-- Balance character frequency so a few main characters do not dominate all 560 examples.
-
-Exit criteria: every example has at least one speaker assignment, with provenance retained.
 
 ## P5 — Runtime/UI migration
 
