@@ -11,8 +11,6 @@ const state={
 
 function currentStudyMode(){
   try{
-    const preferred=localStorage.getItem('preferredSentenceMethodV1');
-    if(preferred==='compose'||preferred==='read') return preferred;
     const cfg=JSON.parse(localStorage.getItem('appConfigV3')||'{}');
     return cfg?.studyMode==='compose'?'compose':'read';
   }catch(_){ return 'read'; }
@@ -69,20 +67,26 @@ function syncComposeDefaults(){
 
   state.syncing=true;
   try{
-    // Japanese and chunk cards are the baseline information for the ordering
-    // game, not an extra hint level.
     if(ja.textContent!==String(item.ja||'')) ja.textContent=String(item.ja||'');
     if(ja.style.display!=='block') ja.style.display='block';
 
-    const alreadyReady=guide.classList.contains('show')
-      && tokens.children.length>0
-      && tokens.dataset.composeDefaultItem===itemId;
-    if(!alreadyReady){
+    // main.js owns the primary compose guide. If it already rendered chunks,
+    // adopt that DOM instead of rebuilding it with a second controller.
+    const primaryReady=guide.classList.contains('show')&&tokens.children.length>0;
+    if(primaryReady){
+      tokens.dataset.composeDefaultItem=itemId;
+      return;
+    }
+
+    const alreadyFallback=tokens.dataset.composeDefaultItem===itemId&&tokens.children.length>0;
+    if(!alreadyFallback){
       const fallback=ensureFallbackGuide();
       fallback?.setup(item);
+      if(tokens.children.length>0) tokens.dataset.composeDefaultItem=itemId;
+    }
+    if(tokens.children.length>0){
       guide.classList.add('show');
       guide.setAttribute('aria-hidden','false');
-      tokens.dataset.composeDefaultItem=itemId;
     }
   }finally{
     state.syncing=false;
