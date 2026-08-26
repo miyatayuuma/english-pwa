@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildClozeCard, desiredClozeCount, selectClozeTargets } from '../scripts/app/clozeLearningCore.js';
+import { adaptiveClozeCount, buildClozeCard, desiredClozeCount, selectClozeTargets } from '../scripts/app/clozeLearningCore.js';
 
 const e2={id:'E0002',en:'Take it easy. I can assure you that everything will turn out fine.',ja:'気楽にいけよ。大丈夫、すべてうまくいくさ。'};
 const vocab=[
@@ -14,6 +14,17 @@ test('cloze density increases with sentence length but stays capped',()=>{
   assert.equal(desiredClozeCount('I agree.'),1);
   assert.equal(desiredClozeCount('Take it easy. I can assure you that everything is fine.'),2);
   assert.equal(desiredClozeCount('This is a deliberately longer example sentence with several important expressions that should receive more than one blank.'),3);
+});
+
+test('learning level increases cloze load gradually',()=>{
+  const sentence='Take it easy. I can assure you that everything will turn out fine.';
+  assert.equal(adaptiveClozeCount(sentence,0),1);
+  assert.equal(adaptiveClozeCount(sentence,1),1);
+  assert.equal(adaptiveClozeCount(sentence,2),2);
+  assert.equal(adaptiveClozeCount(sentence,5),2);
+  const long='This is a deliberately longer example sentence with several important expressions that should receive more than one blank.';
+  assert.equal(adaptiveClozeCount(long,2),2);
+  assert.equal(adaptiveClozeCount(long,3),3);
 });
 
 test('phrase targets are preferred and overlapping weaker word targets are removed',()=>{
@@ -41,7 +52,16 @@ test('buildClozeCard preserves the original sentence around blanks',()=>{
   assert.ok(card.segments.some(seg=>seg.type==='blank'));
 });
 
-test('entries not linked to the example are never blanked',()=>{
+test('a sentence still gets one useful blank when vocabulary linkage is missing',()=>{
+  const item={id:'X',en:'The committee rejected the proposal immediately.',ja:''};
+  const targets=selectClozeTargets(item,[]);
+  assert.equal(targets.length,1);
+  assert.equal(targets[0].fallback,true);
+  assert.ok(targets[0].surface.length>=3);
+});
+
+test('entries not linked to the example do not become vocabulary-derived blanks',()=>{
   const targets=selectClozeTargets(e2,[{...vocab[0],example_ids:['E9999']}]);
-  assert.deepEqual(targets,[]);
+  assert.equal(targets.length,1);
+  assert.equal(targets[0].fallback,true);
 });
