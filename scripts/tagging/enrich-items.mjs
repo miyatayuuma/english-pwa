@@ -1,8 +1,15 @@
 import fs from 'node:fs';
+import {
+  TAGGING_SCHEMA_VERSION,
+  normalizeSentencePatterns,
+  normalizeSpeakerTags,
+  splitGrammarAndConstructionTags,
+  validateTaggingV3Item,
+} from './tagTaxonomy.mjs';
 
 const ITEMS_PATH = new URL('../../data/items.json', import.meta.url);
 const REPORT_PATH = new URL('../../data/tagging-report.json', import.meta.url);
-const TAGGING_VERSION = 2;
+const TAGGING_VERSION = TAGGING_SCHEMA_VERSION;
 
 const PERSON_NAMES = {
   bob: ['Bob'],
@@ -37,8 +44,8 @@ const PERSON_NAMES = {
   johnson: ['Johnson'],
 };
 
-// Contextual assignments are intentionally distinct from explicit-name matches.
-// Only high/medium-confidence links are retained. Low-confidence story guesses are excluded.
+// Legacy character context remains temporarily for the current character browser.
+// It is deliberately separate from v3 speaker_tags and mentioned_character_tags.
 const INFERRED_CHARACTERS = {
   E0147: [{ id: 'bob', certainty: 'inferred_high', reason: 'immediate_pronoun_after_E0146' }],
   E0179: [
@@ -64,7 +71,7 @@ const INFERRED_CHARACTERS = {
   ],
   E0286: [{ id: 'nick', certainty: 'inferred_high', reason: 'workplace_chain_E0282_E0287' }],
   E0287: [{ id: 'nick', certainty: 'inferred_high', reason: 'workplace_chain_E0282_E0287' }],
-  E0370: [{ id: 'bob', certainty: 'inferred_high', reason: 'direct_continuation_of_E0369' }],
+  E0370: [{ id: 'bob', certainty: 'inferred_high', reason: 'direct_context_after_E0369' }],
   E0371: [{ id: 'bob', certainty: 'inferred_high', reason: 'same_behavior_chain_E0369_E0372' }],
   E0372: [{ id: 'bob', certainty: 'inferred_high', reason: 'same_behavior_chain_E0369_E0372' }],
   E0374: [{ id: 'nick', certainty: 'inferred_high', reason: 'direct_context_after_E0373' }],
@@ -218,26 +225,40 @@ function baseTags(raw) {
     .split(',')
     .map(x => x.trim())
     .filter(Boolean)
-    .filter(x => !/^(character|situation|grammar|function):/.test(x));
+    .filter(x => !/^(character|mentioned_character|speaker|situation|grammar|construction|pattern|function):/.test(x));
 }
 
 function enrich(item) {
   const combined = `${item.en || ''} ${item.ja || ''}`;
-  const chars = mergeCharacters(explicitCharacters(item), INFERRED_CHARACTERS[item.id]);
+  const mentionedCharacters = explicitCharacters(item);
+  const chars = mergeCharacters(mentionedCharacters, INFERRED_CHARACTERS[item.id]);
   const situations = situationTags(combined);
-  const grammar = grammarTags(item.en || '');
+  const detectedGrammar = grammarTags(item.en || '');
+  const { grammar, construction } = splitGrammarAndConstructionTags(detectedGrammar);
   const functions = functionTags(item.en || '');
+  const speakers = normalizeSpeakerTags(item.speaker_tags);
+  const sentencePatterns = normalizeSentencePatterns(item.sentence_patterns);
   const flat = new Set(baseTags(item.tags));
+
+  // character:* is retained only for the current browser until speaker migration is complete.
   for (const c of chars) flat.add(`character:${c.id}`);
+  for (const speaker of speakers) flat.add(`speaker:${speaker.id}`);
   for (const s of situations) flat.add(`situation:${s}`);
   for (const g of grammar) flat.add(`grammar:${g}`);
+  for (const c of construction) flat.add(`construction:${c}`);
+  for (const p of [sentencePatterns.main, ...sentencePatterns.clauses].filter(Boolean)) flat.add(`pattern:${p}`);
   for (const f of functions) flat.add(`function:${f}`);
+
   return {
     ...item,
     tags: [...flat].join(','),
     character_tags: chars,
+    mentioned_character_tags: mentionedCharacters,
+    speaker_tags: speakers,
     situation_tags: situations,
     grammar_tags: grammar,
+    construction_tags: construction,
+    sentence_patterns: sentencePatterns,
     function_tags: functions,
     tagging_version: TAGGING_VERSION,
   };
@@ -247,9 +268,18 @@ function countTags(items, field) {
   const counts = {};
   for (const item of items) {
     for (const tag of item[field] || []) {
-      const key = typeof tag === 'string' ? tag : `${tag.id}:${tag.certainty}`;
+      const key = typeof tag === 'string' ? tag : `${tag.id}:${tag.certainty || tag.source || 'unknown'}`;
       counts[key] = (counts[key] || 0) + 1;
     }
+  }
+  return Object.fromEntries(Object.entries(counts).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])));
+}
+
+function countSentencePatterns(items) {
+  const counts = {};
+  for (const item of items) {
+    const patterns = new Set([item?.sentence_patterns?.main, ...(item?.sentence_patterns?.clauses || [])].filter(Boolean));
+    for (const pattern of patterns) counts[pattern] = (counts[pattern] || 0) + 1;
   }
   return Object.fromEntries(Object.entries(counts).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])));
 }
@@ -260,22 +290,27 @@ if (!Array.isArray(items) || items.length !== 560) {
 }
 const enriched = items.map(enrich);
 for (const item of enriched) {
-  if (!item.id || !Array.isArray(item.character_tags) || !Array.isArray(item.situation_tags) || !Array.isArray(item.grammar_tags)) {
-    throw new Error(`Tagging invariant failed for ${item?.id || 'unknown item'}`);
-  }
+  const errors = validateTaggingV3Item(item);
+  if (errors.length) throw new Error(`Tagging invariant failed for ${item?.id || 'unknown item'}: ${errors.join('; ')}`);
 }
 
 const report = {
   tagging_version: TAGGING_VERSION,
   total_items: enriched.length,
-  character_tagged_items: enriched.filter(x => x.character_tags.length).length,
+  legacy_character_tagged_items: enriched.filter(x => x.character_tags.length).length,
+  mentioned_character_items: enriched.filter(x => x.mentioned_character_tags.length).length,
+  speaker_tagged_items: enriched.filter(x => x.speaker_tags.length).length,
   explicit_character_items: enriched.filter(x => x.character_tags.some(c => c.certainty === 'explicit')).length,
   inferred_high_items: enriched.filter(x => x.character_tags.some(c => c.certainty === 'inferred_high')).length,
   inferred_medium_items: enriched.filter(x => x.character_tags.some(c => c.certainty === 'inferred_medium')).length,
   generic_situation_items: enriched.filter(x => x.situation_tags.length === 1 && x.situation_tags[0] === 'general').length,
-  character_counts: countTags(enriched, 'character_tags'),
+  legacy_character_counts: countTags(enriched, 'character_tags'),
+  mentioned_character_counts: countTags(enriched, 'mentioned_character_tags'),
+  speaker_counts: countTags(enriched, 'speaker_tags'),
   situation_counts: countTags(enriched, 'situation_tags'),
   grammar_counts: countTags(enriched, 'grammar_tags'),
+  construction_counts: countTags(enriched, 'construction_tags'),
+  sentence_pattern_counts: countSentencePatterns(enriched),
   function_counts: countTags(enriched, 'function_tags'),
   inferred_item_ids: enriched
     .filter(x => x.character_tags.some(c => c.certainty !== 'explicit'))
