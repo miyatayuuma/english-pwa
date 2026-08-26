@@ -1,4 +1,11 @@
 import { adaptiveClozeCount, buildClozeCard } from './clozeLearningCore.js';
+import {
+  inferReadHintStage,
+  readHintCopy,
+  READ_HINT_STAGE_HIDDEN,
+  READ_HINT_STAGE_CLOZE,
+  READ_HINT_STAGE_FULL,
+} from './hintProgressionCore.js';
 import { spanify } from '../utils/text.js';
 
 const state={
@@ -6,6 +13,7 @@ const state={
   vocabByExample:new Map(),
   ready:false,
   rendering:false,
+  scheduled:false,
 };
 
 function currentStudyMode(){
@@ -31,7 +39,7 @@ function injectStyles(){
   const style=document.createElement('style');
   style.id='clozeModeStyles';
   style.textContent=`
-    .en.cloze-active.concealed{
+    .en.cloze-active{
       display:block;
       min-height:0;
       color:var(--txt);
@@ -87,10 +95,19 @@ async function loadData(){
 }
 
 function clearCloze(en){
-  if(!en) return;
-  en.classList.remove('cloze-active');
-  delete en.dataset.clozeRendered;
-  delete en.dataset.clozeCount;
+  if(!en) return false;
+  let changed=false;
+  if(en.classList.contains('cloze-active')){
+    en.classList.remove('cloze-active');
+    changed=true;
+  }
+  for(const key of ['clozeRendered','clozeCount']){
+    if(key in en.dataset){
+      delete en.dataset[key];
+      changed=true;
+    }
+  }
+  return changed;
 }
 
 function applyMasks(en,targets){
@@ -112,22 +129,22 @@ function applyMasks(en,targets){
   return masked;
 }
 
-function renderCloze(){
-  if(!state.ready||state.rendering) return;
-  const en=document.getElementById('enText');
-  const study=document.getElementById('studyView');
-  if(!en||!study||study.hidden) return;
-  if(currentStudyMode()!=='read'){
-    clearCloze(en);
-    return;
+function setFooterForStage(stage){
+  const footer=document.getElementById('footerMessage');
+  if(!footer) return;
+  footer.textContent=readHintCopy(stage).footer;
+}
+
+function renderHidden(en){
+  clearCloze(en);
+  const copy=readHintCopy(READ_HINT_STAGE_HIDDEN);
+  const current=en.querySelector('.hint-placeholder')?.textContent||'';
+  if(current!==copy.placeholder){
+    en.innerHTML=`<span class="hint-placeholder">${copy.placeholder}</span>`;
   }
-  if(!en.classList.contains('concealed')){
-    clearCloze(en);
-    return;
-  }
-  const itemId=String(en.dataset.itemId||'');
-  const item=state.items.get(itemId);
-  if(!item?.en) return;
+}
+
+function renderCloze(en,item,itemId){
   const level=currentLevel(itemId);
   const targetCount=adaptiveClozeCount(item.en,level);
   const alreadyRendered=en.dataset.clozeRendered===itemId
@@ -135,34 +152,86 @@ function renderCloze(){
     && en.classList.contains('cloze-active')
     && !!en.querySelector('.cloze-mask');
   if(alreadyRendered) return;
+  const card=buildClozeCard(item,state.vocabByExample.get(itemId)||[],{count:targetCount});
+  en.innerHTML=spanify(item.en);
+  applyMasks(en,card.targets||[]);
+  en.classList.add('cloze-active');
+  en.dataset.clozeRendered=itemId;
+  en.dataset.clozeCount=String(targetCount);
+}
+
+function isJapaneseVisible(ja){
+  if(!ja||ja.hidden) return false;
+  return ja.style.display!=='none';
+}
+
+function syncPresentation(){
+  state.scheduled=false;
+  if(!state.ready||state.rendering) return;
+  const en=document.getElementById('enText');
+  const ja=document.getElementById('jaText');
+  const study=document.getElementById('studyView');
+  if(!en||!study||study.hidden) return;
+  if(currentStudyMode()!=='read'){
+    clearCloze(en);
+    delete en.dataset.readHintStage;
+    return;
+  }
+
+  const itemId=String(en.dataset.itemId||'');
+  const item=state.items.get(itemId);
+  if(!item?.en) return;
+
+  const stage=inferReadHintStage({
+    concealed:en.classList.contains('concealed'),
+    japaneseVisible:isJapaneseVisible(ja),
+  });
+  en.dataset.readHintStage=String(stage);
+
   state.rendering=true;
   try{
-    const card=buildClozeCard(item,state.vocabByExample.get(itemId)||[],{count:targetCount});
-    en.innerHTML=spanify(item.en);
-    applyMasks(en,card.targets||[]);
-    en.classList.add('cloze-active');
-    en.dataset.clozeRendered=itemId;
-    en.dataset.clozeCount=String(targetCount);
+    if(stage===READ_HINT_STAGE_HIDDEN){
+      renderHidden(en);
+    }else if(stage===READ_HINT_STAGE_CLOZE){
+      renderCloze(en,item,itemId);
+    }else if(stage===READ_HINT_STAGE_FULL){
+      clearCloze(en);
+      // main.js has already restored the canonical full sentence for this stage.
+      // Do not rewrite it here; this keeps ASR highlighting and swipe state stable.
+    }
+    setFooterForStage(stage);
   }finally{
     state.rendering=false;
   }
 }
 
-function scheduleRender(){
-  queueMicrotask(renderCloze);
+function scheduleSync(){
+  if(state.scheduled) return;
+  state.scheduled=true;
+  requestAnimationFrame(syncPresentation);
 }
 
 async function init(){
   injectStyles();
   const en=document.getElementById('enText');
+  const ja=document.getElementById('jaText');
   const study=document.getElementById('studyView');
   if(!en||!study) return;
-  const observer=new MutationObserver(scheduleRender);
-  observer.observe(en,{attributes:true,attributeFilter:['data-item-id','class'],childList:true});
-  const viewObserver=new MutationObserver(scheduleRender);
+
+  // Only observe state-bearing attributes. The previous implementation also
+  // observed childList while rewriting innerHTML itself, which could cause
+  // repeated redraws during a downward hint swipe.
+  const enObserver=new MutationObserver(scheduleSync);
+  enObserver.observe(en,{attributes:true,attributeFilter:['data-item-id','class']});
+  if(ja){
+    const jaObserver=new MutationObserver(scheduleSync);
+    jaObserver.observe(ja,{attributes:true,attributeFilter:['style','hidden']});
+  }
+  const viewObserver=new MutationObserver(scheduleSync);
   viewObserver.observe(study,{attributes:true,attributeFilter:['hidden']});
+
   await loadData();
-  scheduleRender();
+  scheduleSync();
 }
 
 if(typeof document!=='undefined'){
