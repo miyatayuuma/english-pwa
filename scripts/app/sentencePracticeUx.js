@@ -13,6 +13,10 @@ function currentMethod(){
   }catch(_){ return 'read'; }
 }
 
+export function shouldAutoplaySentence(method){
+  return method==='read';
+}
+
 function injectStyles(){
   if(document.getElementById('sentencePracticeUxStyles')) return;
   const style=document.createElement('style');
@@ -98,11 +102,9 @@ function fallbackSpeak(text){
 function attemptPlayback(expectedKey,attempt=0){
   if(!studyActive()||cardKey()!==expectedKey) return;
   syncModeClass();
+  if(!shouldAutoplaySentence(currentMethod())) return;
   if(mediaAlreadyPlaying()) return;
   const button=document.getElementById('btnPlay');
-  const player=document.getElementById('player');
-  const compose=composeActive();
-  const sourceReady=!!player?.dataset?.srcKey;
   const reference=fullSentenceForCurrentCard();
   if(!button){
     if(attempt<12){ state.timer=setTimeout(()=>attemptPlayback(expectedKey,attempt+1),90); return; }
@@ -110,18 +112,14 @@ function attemptPlayback(expectedKey,attempt=0){
     return;
   }
   if(button.disabled){
-    if(compose){
-      if(!sourceReady&&attempt<7){ state.timer=setTimeout(()=>attemptPlayback(expectedKey,attempt+1),100); return; }
-      button.disabled=false;
-    }else{
-      if(attempt<12){ state.timer=setTimeout(()=>attemptPlayback(expectedKey,attempt+1),90); return; }
-      fallbackSpeak(reference);
-      return;
-    }
+    if(attempt<12){ state.timer=setTimeout(()=>attemptPlayback(expectedKey,attempt+1),90); return; }
+    fallbackSpeak(reference);
+    return;
   }
   button.click();
   state.fallbackTimer=setTimeout(()=>{
     if(!studyActive()||cardKey()!==expectedKey||mediaAlreadyPlaying()) return;
+    if(!shouldAutoplaySentence(currentMethod())) return;
     fallbackSpeak(fullSentenceForCurrentCard());
   },1000);
 }
@@ -129,11 +127,17 @@ function attemptPlayback(expectedKey,attempt=0){
 function scheduleAutoplay(){
   syncModeClass();
   if(!studyActive()) return;
+  const player=document.getElementById('player');
+  if(!shouldAutoplaySentence(currentMethod())){
+    cancelTimers();
+    state.lastKey='';
+    if(player) player.autoplay=false;
+    return;
+  }
   const key=cardKey();
   if(!key||key===state.lastKey) return;
   state.lastKey=key;
   cancelTimers();
-  const player=document.getElementById('player');
   if(player) player.autoplay=true;
   state.timer=setTimeout(()=>attemptPlayback(key),160);
 }
