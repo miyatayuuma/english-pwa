@@ -35,9 +35,10 @@ export function determineLearningStage(info){
   return 'maintenance';
 }
 
-export function hintSwipesForStage(stage){
-  if(stage==='acquisition') return 2;
-  if(stage==='assisted_recall') return 1;
+// The selected learning surface itself is now the baseline support. Do not
+// silently advance the hint stack when a card opens; learners can request
+// stronger support themselves, while failure recovery remains available.
+export function hintSwipesForStage(_stage){
   return 0;
 }
 
@@ -103,8 +104,6 @@ function selectInterleaved(metas,size){
       score-=meta.index*0.0001;
       if(score>bestScore){ bestScore=score; bestIndex=i; }
     }
-    // Do not pad a session with excess unseen material just to hit a target
-    // count. A shorter, better-balanced session is preferable.
     if(bestIndex<0) break;
     const [chosen]=remaining.splice(bestIndex,1);
     if(chosen.kind==='fresh') freshUsed+=1;
