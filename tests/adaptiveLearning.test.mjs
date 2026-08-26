@@ -13,14 +13,14 @@ function item(id,extra={}){
   return {id,en:id,ja:id,character_tags:[],situation_tags:['general'],grammar_tags:[],function_tags:[],...extra};
 }
 
-test('adaptive stages progressively remove visible support',()=>{
+test('learning stages are descriptive while hint escalation stays user-controlled',()=>{
   assert.equal(determineLearningStage({last:0}),'acquisition');
   assert.equal(determineLearningStage({last:1}),'assisted_recall');
   assert.equal(determineLearningStage({last:2}),'recall');
   assert.equal(determineLearningStage({last:3,noHintStreak:1}),'fluency');
   assert.equal(determineLearningStage({last:5}),'maintenance');
-  assert.equal(hintSwipesForStage('acquisition'),2);
-  assert.equal(hintSwipesForStage('assisted_recall'),1);
+  assert.equal(hintSwipesForStage('acquisition'),0);
+  assert.equal(hintSwipesForStage('assisted_recall'),0);
   assert.equal(hintSwipesForStage('maintenance'),0);
 });
 
