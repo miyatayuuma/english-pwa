@@ -6,6 +6,7 @@ const state={
   vocabByExample:new Map(),
   ready:false,
   rendering:false,
+  currentItemId:'',
   blockSyntheticUntil:0,
 };
 
@@ -125,16 +126,25 @@ function renderCloze(){
     applyMasks(en,card.targets||[]);
     en.classList.add('cloze-active');
     en.dataset.clozeRendered=itemId;
-    // tagMode used to auto-swipe new read cards into stronger hints. The cloze
-    // surface is now the default support, so suppress only those immediate
-    // synthetic swipes. Manual swipes and later failure recovery still work.
-    state.blockSyntheticUntil=performance.now()+700;
   }finally{
     state.rendering=false;
   }
 }
 
+function noteCurrentItem(){
+  const en=document.getElementById('enText');
+  const itemId=String(en?.dataset?.itemId||'');
+  if(itemId && itemId!==state.currentItemId){
+    state.currentItemId=itemId;
+    // Block only the old adaptive auto-swipes that fire immediately after a
+    // new card appears. Manual swipes are trusted events, and failure recovery
+    // happens later, so both remain available.
+    state.blockSyntheticUntil=performance.now()+900;
+  }
+}
+
 function scheduleRender(){
+  noteCurrentItem();
   queueMicrotask(renderCloze);
 }
 
@@ -148,17 +158,22 @@ function blockInitialSyntheticSwipe(event){
 
 async function init(){
   injectStyles();
-  await loadData();
   const en=document.getElementById('enText');
   const card=document.getElementById('card');
   const study=document.getElementById('studyView');
   if(!en||!card||!study) return;
+
+  // Register navigation guards before the vocabulary database finishes loading
+  // so an immediate study start cannot jump past the cloze stage.
   const observer=new MutationObserver(scheduleRender);
   observer.observe(en,{attributes:true,attributeFilter:['data-item-id','class'],childList:true});
   const viewObserver=new MutationObserver(scheduleRender);
   viewObserver.observe(study,{attributes:true,attributeFilter:['hidden']});
   card.addEventListener('touchstart',blockInitialSyntheticSwipe,true);
   card.addEventListener('touchend',blockInitialSyntheticSwipe,true);
+  noteCurrentItem();
+
+  await loadData();
   scheduleRender();
 }
 
