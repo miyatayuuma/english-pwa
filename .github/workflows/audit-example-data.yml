@@ -1,0 +1,45 @@
+name: Audit example text
+
+on:
+  push:
+    paths:
+      - '.github/workflows/audit-example-data.yml'
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install wordfreq
+      - name: Audit English examples
+        run: |
+          python - <<'PY'
+          import json,re
+          from wordfreq import zipf_frequency
+          items=json.load(open('data/items.json'))
+          suspects=[]
+          for x in items:
+              en=x['en']
+              # structural checks
+              flags=[]
+              if re.search(r'\b i\b',en): flags.append('lowercase_i')
+              if re.search(r'[a-z]\.(?=[A-Z])|[!?](?=[A-Z])',en): flags.append('missing_space')
+              if re.search(r'\.\.(?!\.)',en): flags.append('double_dot')
+              if en.count('"')%2: flags.append('odd_double_quotes')
+              if re.search(r'\s{2,}',en): flags.append('double_space')
+              # lexical checks: lower-case tokens only, so proper names are mostly excluded
+              low=[]
+              for m in re.finditer(r"[A-Za-z]+(?:'[A-Za-z]+)?",en):
+                  w=m.group(0)
+                  if w[0].isupper(): continue
+                  lw=w.lower()
+                  if len(lw)<4 or lw in {'gonna','wanna','yeah','okay','oops','natto'}: continue
+                  z=zipf_frequency(lw,'en')
+                  if z<1.7: low.append((w,round(z,2)))
+              if flags or low:
+                  suspects.append({'id':x['id'],'flags':flags,'low':low,'en':en})
+          print(json.dumps({'count':len(suspects),'suspects':suspects},ensure_ascii=False,indent=2))
+          PY
