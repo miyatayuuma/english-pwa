@@ -1,5 +1,4 @@
 const CONFIG_KEY='appConfigV3';
-const PREF_METHOD_KEY='preferredSentenceMethodV1';
 
 const state={
   timer:0,
@@ -9,8 +8,6 @@ const state={
 
 function currentMethod(){
   try{
-    const preferred=localStorage.getItem(PREF_METHOD_KEY);
-    if(preferred==='compose'||preferred==='read') return preferred;
     const cfg=JSON.parse(localStorage.getItem(CONFIG_KEY)||'{}');
     return cfg?.studyMode==='compose'?'compose':'read';
   }catch(_){ return 'read'; }
@@ -40,18 +37,27 @@ function syncModeClass(){
   document.body?.classList.toggle('sentence-compose-mode',composeActive());
 }
 
-function sentenceText(){
+function visibleSentenceText(){
   return String(document.getElementById('enText')?.textContent||'')
     .replace(/\s+/g,' ')
     .trim();
 }
 
+export function fullSentenceForCurrentCard(){
+  const en=document.getElementById('enText');
+  const itemId=String(en?.dataset?.itemId||'').trim();
+  if(itemId&&Array.isArray(window.ALL_ITEMS)){
+    const item=window.ALL_ITEMS.find(entry=>String(entry?.id||'')===itemId);
+    if(item?.en) return String(item.en).trim();
+  }
+  return visibleSentenceText();
+}
+
 function cardKey(){
   const en=document.getElementById('enText');
   const itemId=String(en?.dataset?.itemId||'').trim();
-  const text=sentenceText();
-  if(!itemId&&!text) return '';
-  return `${currentMethod()}|${itemId||text}`;
+  if(!itemId) return '';
+  return `${currentMethod()}|${itemId}`;
 }
 
 function cancelTimers(){
@@ -68,6 +74,10 @@ function mediaAlreadyPlaying(){
   return false;
 }
 
+function isUsEnglishVoice(voice){
+  return String(voice?.lang||'').replace('_','-').toLowerCase().startsWith('en-us');
+}
+
 function fallbackSpeak(text){
   if(!text||typeof SpeechSynthesisUtterance==='undefined'||!window.speechSynthesis) return false;
   try{
@@ -77,7 +87,9 @@ function fallbackSpeak(text){
     const speed=Number(document.getElementById('speedSlider')?.value);
     utterance.rate=Number.isFinite(speed)?Math.max(.7,Math.min(1.25,speed)):.95;
     const voices=window.speechSynthesis.getVoices?.()||[];
-    utterance.voice=voices.find(v=>/^en(-|_)/i.test(v.lang||''))||null;
+    utterance.voice=voices.find(isUsEnglishVoice)
+      ||voices.find(voice=>/^en(?:-|_)/i.test(String(voice?.lang||'')))
+      ||null;
     window.speechSynthesis.speak(utterance);
     return true;
   }catch(_){ return false; }
@@ -91,9 +103,10 @@ function attemptPlayback(expectedKey,attempt=0){
   const player=document.getElementById('player');
   const compose=composeActive();
   const sourceReady=!!player?.dataset?.srcKey;
+  const reference=fullSentenceForCurrentCard();
   if(!button){
     if(attempt<12){ state.timer=setTimeout(()=>attemptPlayback(expectedKey,attempt+1),90); return; }
-    fallbackSpeak(sentenceText());
+    fallbackSpeak(reference);
     return;
   }
   if(button.disabled){
@@ -102,14 +115,14 @@ function attemptPlayback(expectedKey,attempt=0){
       button.disabled=false;
     }else{
       if(attempt<12){ state.timer=setTimeout(()=>attemptPlayback(expectedKey,attempt+1),90); return; }
-      fallbackSpeak(sentenceText());
+      fallbackSpeak(reference);
       return;
     }
   }
   button.click();
   state.fallbackTimer=setTimeout(()=>{
     if(!studyActive()||cardKey()!==expectedKey||mediaAlreadyPlaying()) return;
-    fallbackSpeak(sentenceText());
+    fallbackSpeak(fullSentenceForCurrentCard());
   },1000);
 }
 
@@ -128,23 +141,10 @@ function scheduleAutoplay(){
 function observe(){
   const study=document.getElementById('studyView');
   const en=document.getElementById('enText');
-  const card=document.getElementById('card');
   if(!study||!en) return;
-  const observer=new MutationObserver(()=>scheduleAutoplay());
+  const observer=new MutationObserver(scheduleAutoplay);
   observer.observe(study,{attributes:true,attributeFilter:['hidden']});
-  observer.observe(en,{attributes:true,attributeFilter:['data-item-id'],childList:true,subtree:true,characterData:true});
-  if(card) observer.observe(card,{attributes:true,attributeFilter:['class']});
-  document.addEventListener('english-pwa:study-method-changed',()=>{
-    state.lastKey='';
-    syncModeClass();
-    scheduleAutoplay();
-  });
-  document.addEventListener('change',event=>{
-    if(event.target?.matches?.('input[name="cfgStudyMode"]')){
-      state.lastKey='';
-      setTimeout(()=>{syncModeClass();scheduleAutoplay();},0);
-    }
-  });
+  observer.observe(en,{attributes:true,attributeFilter:['data-item-id']});
   document.addEventListener('visibilitychange',()=>{
     if(document.hidden){ cancelTimers(); return; }
     state.lastKey='';
