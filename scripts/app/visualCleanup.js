@@ -28,7 +28,7 @@ function injectCleanupStyles(){
       backdrop-filter:blur(8px);
     }
     body.focus-home-view main{padding-top:0!important}
-    body.focus-home-view .home-cta-wrap.focus-home{margin-top:clamp(76px,11vh,118px)}
+    body.focus-home-view .home-cta-wrap.focus-home{margin-top:clamp(76px,11vh,118px)!important}
 
     body.focus-home-view #app>footer{
       display:flex!important;
@@ -56,7 +56,7 @@ function injectCleanupStyles(){
     body.focus-home-view #app>footer .footer-trust-links a{font-size:9px}
 
     @media(max-width:430px){
-      body.focus-home-view .home-cta-wrap.focus-home{margin-top:clamp(70px,9vh,96px)}
+      body.focus-home-view .home-cta-wrap.focus-home{margin-top:clamp(70px,9vh,96px)!important}
     }
   `;
   document.head.appendChild(style);
