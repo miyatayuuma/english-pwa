@@ -1,0 +1,31 @@
+name: One-time dataset cleanup
+
+on:
+  push:
+    paths:
+      - '.github/workflows/data-fix-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Patch dataset
+        run: node tools/fix-dialogue-punctuation-once.mjs
+      - name: Remove one-time helpers
+        run: rm tools/fix-dialogue-punctuation-once.mjs .github/workflows/data-fix-once.yml
+      - name: Commit cleanup
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/items.json scripts/version.js sw.js tools/fix-dialogue-punctuation-once.mjs .github/workflows/data-fix-once.yml
+          git commit -m "fix: clean dialogue punctuation and E0340 translation"
+          git push
