@@ -62,16 +62,8 @@ function injectCleanupStyles(){
   document.head.appendChild(style);
 }
 
-function removeClosedLegacyTagDialog(){
-  const legacy=document.getElementById('focusTagDialog');
-  if(legacy&&!legacy.open) legacy.remove();
-}
-
 function init(){
   injectCleanupStyles();
-  removeClosedLegacyTagDialog();
-  const observer=new MutationObserver(()=>removeClosedLegacyTagDialog());
-  observer.observe(document.body,{childList:true});
 }
 
 if(typeof document!=='undefined'){
