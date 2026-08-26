@@ -14,8 +14,9 @@ test('read hint stages resolve hidden cloze full in order',()=>{
   assert.equal(inferReadHintStage({concealed:false,japaneseVisible:true}),READ_HINT_STAGE_FULL);
 });
 
-test('progressive hint copy tells the learner what the next swipe does',()=>{
-  assert.match(readHintCopy(READ_HINT_STAGE_HIDDEN).footer,/虫食い/);
-  assert.match(readHintCopy(READ_HINT_STAGE_CLOZE).footer,/全文/);
-  assert.match(readHintCopy(READ_HINT_STAGE_FULL).footer,/全文表示/);
+test('hint copy stays unobtrusive during repeated play',()=>{
+  assert.equal(readHintCopy(READ_HINT_STAGE_HIDDEN).placeholder,'…');
+  assert.equal(readHintCopy(READ_HINT_STAGE_HIDDEN).footer,'');
+  assert.equal(readHintCopy(READ_HINT_STAGE_CLOZE).footer,'');
+  assert.equal(readHintCopy(READ_HINT_STAGE_FULL).footer,'');
 });
