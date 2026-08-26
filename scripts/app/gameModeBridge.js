@@ -34,11 +34,6 @@ function persistMethod(method){
   }catch(_){}
 }
 
-function enforcePreferredMethod(){
-  const preferred=preferredMethod();
-  if(preferred && storedMethod()!==preferred) persistMethod(preferred);
-}
-
 function injectCleanupStyles(){
   if(document.getElementById('gameModeBridgeStyles')) return;
   const style=document.createElement('style');
@@ -52,6 +47,31 @@ function injectCleanupStyles(){
   document.head.appendChild(style);
 }
 
+function clickExplore(){
+  const nav=document.getElementById('focusHomeNav');
+  const button=[...(nav?.querySelectorAll('button')||[])].find(node=>node.textContent?.trim()==='探す');
+  if(button){button.click();return true;}
+  return false;
+}
+
+function runCourse(course,attempt=0){
+  if(course==='tag'){
+    if(typeof globalThis.__OPEN_ENGLISH_TAG_BROWSER__==='function'){
+      globalThis.__OPEN_ENGLISH_TAG_BROWSER__();
+      return true;
+    }
+  }else if(course==='explore'){
+    if(clickExplore()) return true;
+  }else{
+    const cta=document.getElementById('startStudyCta');
+    if(cta){cta.click();return true;}
+  }
+  if(attempt<20){
+    setTimeout(()=>runCourse(course,attempt+1),80);
+  }
+  return false;
+}
+
 function handleStartCapture(event){
   const start=event.target?.closest?.('.learning-choice__start');
   if(!start) return;
@@ -60,30 +80,38 @@ function handleStartCapture(event){
   const method=pendingMethod(dialog);
   if(method==='vocabulary') return;
 
-  persistMethod(method);
-  if(method===BOOT_METHOD) return;
-
-  // main.js reads studyMode into its in-memory CFG during boot. When the game
-  // changes, start only after one reload so the very first card uses the new
-  // mode instead of briefly starting with the previous one.
+  // Sentence game launches are owned here. This prevents the older menu code
+  // from opening the settings modal and clicking Save as an indirect way to
+  // switch modes, which could trigger unrelated validation and side effects.
   event.preventDefault();
   event.stopImmediatePropagation();
+
+  const course=pendingCourse(dialog);
+  persistMethod(method);
+  try{dialog.close();}catch(_){}
+
+  if(method!==BOOT_METHOD){
+    try{sessionStorage.setItem('englishPwaPendingGameAction',course);}catch(_){}
+    location.reload();
+    return;
+  }
+  setTimeout(()=>runCourse(course),0);
+}
+
+function consumePendingAction(){
+  let action='';
   try{
-    sessionStorage.setItem('englishPwaPendingGameAction',pendingCourse(dialog));
+    action=sessionStorage.getItem('englishPwaPendingGameAction')||'';
+    if(action) sessionStorage.removeItem('englishPwaPendingGameAction');
+    sessionStorage.removeItem('englishPwaModeReloadNeeded');
   }catch(_){}
-  try{ dialog.close(); }catch(_){}
-  location.reload();
+  if(action) setTimeout(()=>runCourse(action),80);
 }
 
 function init(){
   injectCleanupStyles();
-  // Legacy tag code used to force studyMode back to read during startup.
-  // Restore the explicit game selection after those modules initialize.
-  enforcePreferredMethod();
-  setTimeout(enforcePreferredMethod,0);
-  setTimeout(enforcePreferredMethod,200);
-  setTimeout(enforcePreferredMethod,1000);
   document.addEventListener('click',handleStartCapture,true);
+  consumePendingAction();
 }
 
 if(typeof document!=='undefined'){
