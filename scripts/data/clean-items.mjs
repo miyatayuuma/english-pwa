@@ -45,6 +45,9 @@ const explicitFixes = new Map([
   ['E0526', {
     en: s => s.replace(/\banytmore\b/g, 'anymore'),
   }],
+  ['E0528', {
+    en: s => s.replace(/\bYeah \.\./g, 'Yeah...'),
+  }],
   ['E0559', {
     en: s => s.replace(/Let's see \.\./g, "Let's see..."),
   }],
