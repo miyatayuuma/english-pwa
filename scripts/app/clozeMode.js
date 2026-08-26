@@ -1,4 +1,4 @@
-import { buildClozeCard } from './clozeLearningCore.js';
+import { adaptiveClozeCount, buildClozeCard } from './clozeLearningCore.js';
 import { spanify } from '../utils/text.js';
 
 const state={
@@ -6,8 +6,6 @@ const state={
   vocabByExample:new Map(),
   ready:false,
   rendering:false,
-  currentItemId:'',
-  blockSyntheticUntil:0,
 };
 
 function currentStudyMode(){
@@ -15,6 +13,17 @@ function currentStudyMode(){
     const cfg=JSON.parse(localStorage.getItem('appConfigV3')||'{}');
     return cfg?.studyMode==='compose'?'compose':'read';
   }catch(_){ return 'read'; }
+}
+
+function currentLevel(itemId){
+  try{
+    const map=JSON.parse(localStorage.getItem('itemLevelV1')||'{}');
+    const info=map?.[itemId]||{};
+    const last=Number(info.last);
+    const best=Number(info.best);
+    const level=Number.isFinite(last)?last:(Number.isFinite(best)?best:0);
+    return Math.max(0,Math.min(5,Number.isFinite(level)?level:0));
+  }catch(_){ return 0; }
 }
 
 function injectStyles(){
@@ -81,6 +90,7 @@ function clearCloze(en){
   if(!en) return;
   en.classList.remove('cloze-active');
   delete en.dataset.clozeRendered;
+  delete en.dataset.clozeCount;
 }
 
 function applyMasks(en,targets){
@@ -118,61 +128,39 @@ function renderCloze(){
   const itemId=String(en.dataset.itemId||'');
   const item=state.items.get(itemId);
   if(!item?.en) return;
-  if(en.dataset.clozeRendered===itemId && en.classList.contains('cloze-active') && en.querySelector('.tok')) return;
+  const level=currentLevel(itemId);
+  const targetCount=adaptiveClozeCount(item.en,level);
+  const alreadyRendered=en.dataset.clozeRendered===itemId
+    && Number(en.dataset.clozeCount)===targetCount
+    && en.classList.contains('cloze-active')
+    && !!en.querySelector('.cloze-mask');
+  if(alreadyRendered) return;
   state.rendering=true;
   try{
-    const card=buildClozeCard(item,state.vocabByExample.get(itemId)||[]);
+    const card=buildClozeCard(item,state.vocabByExample.get(itemId)||[],{count:targetCount});
     en.innerHTML=spanify(item.en);
     applyMasks(en,card.targets||[]);
     en.classList.add('cloze-active');
     en.dataset.clozeRendered=itemId;
+    en.dataset.clozeCount=String(targetCount);
   }finally{
     state.rendering=false;
   }
 }
 
-function noteCurrentItem(){
-  const en=document.getElementById('enText');
-  const itemId=String(en?.dataset?.itemId||'');
-  if(itemId && itemId!==state.currentItemId){
-    state.currentItemId=itemId;
-    // Block only the old adaptive auto-swipes that fire immediately after a
-    // new card appears. Manual swipes are trusted events, and failure recovery
-    // happens later, so both remain available.
-    state.blockSyntheticUntil=performance.now()+900;
-  }
-}
-
 function scheduleRender(){
-  noteCurrentItem();
   queueMicrotask(renderCloze);
-}
-
-function blockInitialSyntheticSwipe(event){
-  if(currentStudyMode()!=='read') return;
-  if(event.isTrusted) return;
-  if(performance.now()>state.blockSyntheticUntil) return;
-  event.preventDefault();
-  event.stopImmediatePropagation();
 }
 
 async function init(){
   injectStyles();
   const en=document.getElementById('enText');
-  const card=document.getElementById('card');
   const study=document.getElementById('studyView');
-  if(!en||!card||!study) return;
-
-  // Register navigation guards before the vocabulary database finishes loading
-  // so an immediate study start cannot jump past the cloze stage.
+  if(!en||!study) return;
   const observer=new MutationObserver(scheduleRender);
   observer.observe(en,{attributes:true,attributeFilter:['data-item-id','class'],childList:true});
   const viewObserver=new MutationObserver(scheduleRender);
   viewObserver.observe(study,{attributes:true,attributeFilter:['hidden']});
-  card.addEventListener('touchstart',blockInitialSyntheticSwipe,true);
-  card.addEventListener('touchend',blockInitialSyntheticSwipe,true);
-  noteCurrentItem();
-
   await loadData();
   scheduleRender();
 }
