@@ -16,6 +16,19 @@ Goal: prevent later retagging from mixing concepts again.
 
 Exit criteria: the enrichment pipeline can produce v3-compatible items without changing the current learning UI.
 
+## P0.5 — Audio voice audit
+
+Goal: classify the recorded game audio before assigning character speakers, so visual casting does not conflict with the voice actually heard.
+
+- Keep voice analysis separate from character identity. Store perceived voice presentation, not a claim about the actor's gender identity.
+- Classify each example audio as `masculine`, `feminine`, `mixed`, or `ambiguous` with confidence.
+- For dialogue audio, preserve speaking order with turn-level `masculine`, `feminine`, or `ambiguous` labels.
+- Use acoustic evidence such as F0 distribution together with the sentence/dialogue structure; do not classify from pitch alone.
+- Store analysis in a separately editable dataset so a manual correction does not require retagging the sentence taxonomy.
+- Send only ambiguous/low-confidence filenames and item IDs for manual listening review.
+
+Exit criteria: every available example recording has a voice-presentation record or is explicitly queued for manual review.
+
 ## P1 — Speaker model and character cleanup
 
 Goal: make character metadata mean who speaks, not who is merely discussed.
@@ -25,6 +38,7 @@ Goal: make character metadata mean who speaks, not who is merely discussed.
 - Populate `mentioned_character_tags` only from actual mentions.
 - Allow two speakers for multi-party dialogue examples.
 - Record source as `explicit`, `contextual`, or `app_cast` and confidence as `high` or `medium`.
+- Constrain character assignment by the P0.5 audio voice presentation when recorded audio exists.
 - Keep uncertain speaker slots empty rather than inventing canon.
 
 Exit criteria: all high-confidence natural speaker assignments are separated from mentions and legacy character context.
@@ -46,7 +60,7 @@ Exit criteria: no construction tag remains in the grammar axis and sparse tags a
 Goal: give every learning card a stable episodic speaker cue before the UI starts depending on speaker identity.
 
 - Assign an app-original speaker to examples whose canonical speaker cannot be inferred.
-- Use semantic fit, character profile fit, situation fit, and distribution balance.
+- Use semantic fit, character profile fit, situation fit, audio voice presentation, and distribution balance.
 - Never present `app_cast` assignments as source canon.
 - Balance character frequency so a few main characters do not dominate all 560 examples.
 - Keep provenance on every assignment so natural/contextual speakers remain distinguishable from app casting.
