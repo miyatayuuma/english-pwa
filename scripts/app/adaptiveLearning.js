@@ -23,24 +23,6 @@ export function isDue(levelState,itemId,now=Date.now()){
   return dueAt>0 && dueAt<=now;
 }
 
-export function determineLearningStage(info){
-  const last=Number(info?.last);
-  const best=Number(info?.best);
-  const level=Number.isFinite(last) ? last : (Number.isFinite(best) ? best : 0);
-  const noHintStreak=Math.max(0,Number(info?.noHintStreak)||0);
-  if(level<=0) return 'acquisition';
-  if(level===1) return 'assisted_recall';
-  if(level===2) return 'recall';
-  if(level===3) return noHintStreak>0 ? 'fluency' : 'recall';
-  return 'maintenance';
-}
-
-// Kept for compatibility with older tests/imports. Hint progression is now
-// exclusively user-driven; session planning must never synthesize swipes.
-export function hintSwipesForStage(_stage){
-  return 0;
-}
-
 export function desiredSessionSize(items,levelState={},now=Date.now(),{min=6,max=8}={}){
   const safe=Array.isArray(items)?items:[];
   const due=safe.reduce((count,item)=>count+(isDue(levelState,item?.id,now)?1:0),0);
@@ -145,7 +127,7 @@ export function buildAutomaticSession(items,levelState={},options={}){
   };
 }
 
-export function buildLegacyQueueItems(planItems){
+export function buildSessionQueueItems(planItems){
   return (Array.isArray(planItems)?planItems:[]).map((item,index)=>({
     ...item,
     unit:`AUTO-${String(index+1).padStart(3,'0')}`,
