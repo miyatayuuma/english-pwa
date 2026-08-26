@@ -4,6 +4,18 @@ if (typeof globalThis !== 'undefined') {
   globalThis.APP_VERSION = APP_VERSION;
 }
 
+// appConfigV3 is the runtime source of truth used by main.js. Mirror the old
+// preference key at boot so older UI helpers cannot disagree about the active
+// sentence game after migrations or stale cached sessions.
+if (typeof localStorage !== 'undefined') {
+  try {
+    const cfg=JSON.parse(localStorage.getItem('appConfigV3')||'{}');
+    if(cfg?.studyMode==='read'||cfg?.studyMode==='compose') {
+      localStorage.setItem('preferredSentenceMethodV1',cfg.studyMode);
+    }
+  } catch (_) {}
+}
+
 if (typeof document !== 'undefined') {
   import('./app/sessionShell.js').catch((error) => {
     console.warn('Session shell failed to load', error);
