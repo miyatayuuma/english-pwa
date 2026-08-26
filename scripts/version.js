@@ -1,4 +1,4 @@
-const APP_VERSION = 'v5.11';
+const APP_VERSION = 'v5.12';
 
 if (typeof globalThis !== 'undefined') {
   globalThis.APP_VERSION = APP_VERSION;
@@ -7,6 +7,9 @@ if (typeof globalThis !== 'undefined') {
 if (typeof document !== 'undefined') {
   import('./app/tagMode.js').catch((error) => {
     console.warn('Adaptive learning surface failed to load', error);
+  });
+  import('./app/tagBrowser.js').catch((error) => {
+    console.warn('Tag browser failed to load', error);
   });
   import('./app/vocabularyMode.js').catch((error) => {
     console.warn('Vocabulary learning surface failed to load', error);
