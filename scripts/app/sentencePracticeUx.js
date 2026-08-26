@@ -47,9 +47,11 @@ function sentenceText(){
 }
 
 function cardKey(){
-  const progress=String(document.getElementById('statProgressCurrent')?.textContent||'').trim();
+  const en=document.getElementById('enText');
+  const itemId=String(en?.dataset?.itemId||'').trim();
   const text=sentenceText();
-  return text?`${currentMethod()}|${progress}|${text}`:'';
+  if(!itemId&&!text) return '';
+  return `${currentMethod()}|${itemId||text}`;
 }
 
 function cancelTimers(){
@@ -126,13 +128,11 @@ function scheduleAutoplay(){
 function observe(){
   const study=document.getElementById('studyView');
   const en=document.getElementById('enText');
-  const progress=document.getElementById('statProgressCurrent');
   const card=document.getElementById('card');
   if(!study||!en) return;
   const observer=new MutationObserver(()=>scheduleAutoplay());
   observer.observe(study,{attributes:true,attributeFilter:['hidden']});
-  observer.observe(en,{childList:true,subtree:true,characterData:true});
-  if(progress) observer.observe(progress,{childList:true,subtree:true,characterData:true});
+  observer.observe(en,{attributes:true,attributeFilter:['data-item-id'],childList:true,subtree:true,characterData:true});
   if(card) observer.observe(card,{attributes:true,attributeFilter:['class']});
   document.addEventListener('english-pwa:study-method-changed',()=>{
     state.lastKey='';
