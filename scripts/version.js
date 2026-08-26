@@ -1,4 +1,4 @@
-const APP_VERSION = 'v5.07';
+const APP_VERSION = 'v5.08';
 
 if (typeof globalThis !== 'undefined') {
   globalThis.APP_VERSION = APP_VERSION;
@@ -15,6 +15,6 @@ if (typeof document !== 'undefined') {
     console.warn('Learning navigation failed to load', error);
   });
   import('./app/clozeMode.js').catch((error) => {
-    console.warn('Cloze reading surface failed to load', error);
+    console.warn('Cloze recall surface failed to load', error);
   });
 }
