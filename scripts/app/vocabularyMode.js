@@ -79,7 +79,7 @@ function injectStyles(){
     .vocab-transcript{min-height:19px;margin-top:7px;font-size:11px;line-height:1.4;opacity:.5;max-width:500px;word-break:normal;overflow-wrap:break-word}
     .vocab-feedback{flex:0 0 auto;min-height:22px;text-align:center;font-size:12px;font-weight:750}.vocab-feedback.is-ok{color:#86efac}.vocab-feedback.is-miss{color:#fca5a5}
     .vocab-controls{display:flex;flex:0 0 auto;flex-direction:column;align-items:stretch;gap:7px;margin-top:6px}.vocab-mic{width:78px;height:78px;align-self:center;border:0;border-radius:50%;background:#6366f1;color:#fff;font:inherit;font-size:14px;font-weight:850;cursor:pointer;box-shadow:0 12px 28px rgba(99,102,241,.28);transition:transform .12s ease,box-shadow .12s ease}.vocab-mic.is-listening{transform:scale(1.05);box-shadow:0 0 0 8px rgba(99,102,241,.14),0 12px 28px rgba(99,102,241,.28)}
-    .vocab-reveal{align-self:center;border:0;background:transparent;color:inherit;font:inherit;font-size:11px;opacity:.56;padding:7px 12px;cursor:pointer}.vocab-manual{display:grid;grid-template-columns:1fr 1fr;gap:8px}.vocab-manual button{min-height:48px;border-radius:13px;font:inherit;font-size:12px;font-weight:800;cursor:pointer}.vocab-manual button:disabled{opacity:.45;cursor:default}.vocab-manual__miss{border:1px solid rgba(148,163,184,.18);background:rgba(148,163,184,.06);color:inherit}.vocab-manual__ok{border:0;background:#6366f1;color:#fff}.vocab-pronounce-row{display:flex;justify-content:center;margin-bottom:1px}
+    .vocab-reveal{align-self:center;border:0;background:transparent;color:inherit;font:inherit;font-size:11px;opacity:.56;padding:7px 12px;cursor:pointer}.vocab-manual{display:grid;grid-template-columns:1fr 1fr;gap:8px}.vocab-manual button{min-height:48px;border-radius:13px;font:inherit;font-size:12px;font-weight:800;cursor:pointer}.vocab-manual button:disabled{opacity:.45;cursor:default}.vocab-manual__miss{border:1px solid rgba(148,163,184,.18);background:rgba(148,163,184,.06);color:inherit}.vocab-manual__ok{border:0;background:#6366f1;color:#fff}
     .vocab-done{display:flex;flex:1;min-height:0;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:11px}.vocab-done h2{font-size:29px;margin:0}.vocab-done p{margin:0;opacity:.62}.vocab-done small{opacity:.48}.vocab-done button{min-width:210px;min-height:50px;border:0;border-radius:14px;background:#6366f1;color:white;font:inherit;font-weight:850;cursor:pointer;margin-top:7px}.vocab-done .vocab-reveal{min-width:0;min-height:0;background:transparent;color:inherit;margin-top:0}
     @media(max-width:390px){.vocab-body{padding:12px}.vocab-shell{border-radius:18px}.vocab-card{padding-inline:3px}.vocab-meta{margin-bottom:10px}.vocab-meaning{font-size:26px}.vocab-meaning.is-long{font-size:22px}.vocab-meaning.is-xlong{font-size:19px}.vocab-mic{width:72px;height:72px}}
     @media(max-height:650px){.vocab-head{padding-block:9px}.vocab-body{padding-block:10px}.vocab-card{padding-block:10px 5px}.vocab-meta{margin-bottom:8px}.vocab-meaning{font-size:clamp(22px,6vw,31px)}.vocab-prompt{margin-top:7px}.vocab-answer-wrap{margin-top:10px}.vocab-mic{width:66px;height:66px}.vocab-controls{gap:4px;margin-top:3px}}
@@ -327,7 +327,8 @@ function speakAnswer(text=canonicalAnswer()){
 
 function bindPronunciationButton(){
   const button=state.screen?.querySelector('.vocab-audio');
-  if(!button) return;
+  if(!button||button.dataset.boundPronunciation==='true') return;
+  button.dataset.boundPronunciation='true';
   button.addEventListener('click',()=>{
     clearTimeout(state.timer);
     state.timer=0;
@@ -369,6 +370,8 @@ function gradeTranscript(text){
 function revealFeedback(pass,_score){
   const answer=canonicalAnswer();
   setAnswerVisible(answer);
+  const controls=state.screen.querySelector('.vocab-controls');
+  if(controls) controls.replaceChildren();
   const feedback=state.screen.querySelector('.vocab-feedback');
   if(feedback){
     feedback.className=`vocab-feedback ${pass?'is-ok':'is-miss'}`;
@@ -396,7 +399,7 @@ function revealAnswer(){
   if(prompt) prompt.textContent='聞いて確認してから自己判定';
   const controls=state.screen.querySelector('.vocab-controls');
   if(controls){
-    controls.innerHTML=`<div class="vocab-pronounce-row"><button type="button" class="vocab-audio">発音</button></div><div class="vocab-manual"><button type="button" class="vocab-manual__miss" data-grade="miss">思い出せなかった</button><button type="button" class="vocab-manual__ok" data-grade="ok">言えていた</button></div>`;
+    controls.innerHTML=`<div class="vocab-manual"><button type="button" class="vocab-manual__miss" data-grade="miss">思い出せなかった</button><button type="button" class="vocab-manual__ok" data-grade="ok">言えていた</button></div>`;
     controls.querySelector('[data-grade="miss"]').addEventListener('click',()=>manualGrade(false));
     controls.querySelector('[data-grade="ok"]').addEventListener('click',()=>manualGrade(true));
   }
