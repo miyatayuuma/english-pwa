@@ -1,5 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 
 import {
   TAGGING_SCHEMA_VERSION,
@@ -69,4 +71,9 @@ test('v3 validation rejects mixed grammar/construction semantics',()=>{
   assert.deepEqual(validateTaggingV3Item(base),[]);
   const bad={...base,grammar_tags:['there_be']};
   assert.ok(validateTaggingV3Item(bad).some(error=>error.includes('construction tag remains')));
+});
+
+test('tagging enrichment script remains syntactically valid without executing data writes',()=>{
+  const path=fileURLToPath(new URL('../scripts/tagging/enrich-items.mjs',import.meta.url));
+  execFileSync(process.execPath,['--check',path],{stdio:'pipe'});
 });
