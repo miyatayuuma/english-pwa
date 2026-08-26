@@ -39,6 +39,9 @@ function injectStyles(){
   const style=document.createElement('style');
   style.id='clozeModeStyles';
   style.textContent=`
+    .en.concealed[data-read-hint-stage="0"]{
+      min-height:0;
+    }
     .en.cloze-active{
       display:block;
       min-height:0;
