@@ -1,5 +1,4 @@
 const CONFIG_KEY='appConfigV3';
-const PREF_METHOD_KEY='preferredSentenceMethodV1';
 
 function sleep(ms){ return new Promise(resolve=>setTimeout(resolve,ms)); }
 
@@ -18,7 +17,6 @@ function persistMethod(method){
     const cfg=JSON.parse(localStorage.getItem(CONFIG_KEY)||'{}');
     cfg.studyMode=method;
     localStorage.setItem(CONFIG_KEY,JSON.stringify(cfg));
-    localStorage.setItem(PREF_METHOD_KEY,method);
   }catch(_){}
 }
 
