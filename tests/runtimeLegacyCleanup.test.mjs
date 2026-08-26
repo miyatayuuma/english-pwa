@@ -43,3 +43,13 @@ test('game switching never clicks the settings form as an indirect bridge',async
   const menu=await text('scripts/app/learningMenu.js');
   assert.doesNotMatch(menu,/cfgSave|btnCfg|cfgButton\.click|cfgSave\.click/);
 });
+
+test('hidden read cards override the legacy 120px minimum height',async()=>{
+  const cloze=await text('scripts/app/clozeMode.js');
+  assert.match(cloze,/\.en\.concealed\[data-read-hint-stage="0"\][\s\S]*?min-height:0/);
+});
+
+test('compose autoplay never force-enables the audio control',async()=>{
+  const practice=await text('scripts/app/sentencePracticeUx.js');
+  assert.doesNotMatch(practice,/button\.disabled\s*=\s*false/);
+});
