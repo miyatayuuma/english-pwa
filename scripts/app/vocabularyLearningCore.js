@@ -73,7 +73,7 @@ function candidate(entry,levelState,now,index){
 export function buildVocabularySession(entries,levelState={},options={}){
   const now=Number(options.now)||Date.now();
   const kind=options.kind==='word'||options.kind==='phrase'?options.kind:'all';
-  const requested=Math.max(1,Math.min(30,Math.round(Number(options.size)||12)));
+  const requested=Math.max(1,Math.min(30,Math.round(Number(options.size)||12));
   const newCapRaw=Number(options.newCap);
   const newCap=Number.isFinite(newCapRaw)
     ? Math.max(0,Math.min(requested,Math.round(newCapRaw)))
@@ -185,4 +185,12 @@ export function answerVariants(entry){
 export function displayAnswer(entry){
   const variants=answerVariants(entry);
   return variants[0]||String(entry?.headword||'').trim();
+}
+
+export function displayMeaning(entry){
+  return String(entry?.meaning_ja||'')
+    .replace(/[\u200B-\u200D\uFEFF]/g,'')
+    .replace(/[ \t\r\n]+/g,' ')
+    .replace(/\s*([、。！？：；])\s*/g,'$1')
+    .trim();
 }
