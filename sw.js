@@ -33,6 +33,8 @@ self.addEventListener('install', e => {
     './scripts/app/tagMode.js',
     './scripts/app/vocabularyLearningCore.js',
     './scripts/app/vocabularyMode.js',
+    './scripts/app/learningMenu.js',
+    './scripts/app/clozeLearningCore.js',
     './scripts/audio/controller.js',
     './scripts/speech/recognition.js',
     './scripts/speech/synthesis.js',
