@@ -1,4 +1,5 @@
 const FUNCTION_WORDS=new Set(['a','an','the','to','of','in','on','at','for','from','with','as','and','or','but','that','this','these','those','is','are','was','were','be','been','being','do','does','did','have','has','had','will','would','can','could','may','might','should','must']);
+const FALLBACK_STOPWORDS=new Set([...FUNCTION_WORDS,'i','you','he','she','it','we','they','me','him','her','us','them','my','your','his','its','our','their','who','what','when','where','why','how','not','no','yes','very','just','so','too']);
 const PLACEHOLDERS=new Set(['a','b','c','x','y','z','one','ones','someone','somebody','something']);
 
 function norm(text){
@@ -105,6 +106,42 @@ export function desiredClozeCount(sentence,{max=3}={}){
   return Math.min(max,3);
 }
 
+export function adaptiveClozeCount(sentence,level=0){
+  const maxForSentence=desiredClozeCount(sentence,{max:3});
+  const safeLevel=Math.max(0,Math.min(5,Number(level)||0));
+  if(safeLevel<=1) return Math.min(maxForSentence,1);
+  if(safeLevel===2) return Math.min(maxForSentence,2);
+  return maxForSentence;
+}
+
+function fallbackTarget(tokens,sentence){
+  const candidates=tokens
+    .filter(token=>token.norm.length>=3&&!FALLBACK_STOPWORDS.has(token.norm))
+    .filter(token=>!(token.index>0&&/^[A-Z]/.test(token.surface)))
+    .sort((a,b)=>{
+      const len=b.norm.length-a.norm.length;
+      if(len) return len;
+      const aCenter=Math.abs(a.index-(tokens.length-1)/2);
+      const bCenter=Math.abs(b.index-(tokens.length-1)/2);
+      return aCenter-bCenter;
+    });
+  const token=candidates[0]||tokens.find(t=>!FALLBACK_STOPWORDS.has(t.norm))||tokens[0];
+  if(!token) return null;
+  return {
+    entry_id:'fallback',
+    kind:'word',
+    headword:token.surface,
+    meaning_ja:'',
+    tokenStart:token.index,
+    tokenEnd:token.index,
+    start:token.start,
+    end:token.end,
+    surface:sentence.slice(token.start,token.end),
+    score:1,
+    fallback:true,
+  };
+}
+
 export function selectClozeTargets(item,vocabularyEntries,options={}){
   const sentence=String(item?.en||'');
   const itemId=String(item?.id||'');
@@ -135,6 +172,10 @@ export function selectClozeTargets(item,vocabularyEntries,options={}){
     if(selected.some(target=>overlaps(target,candidate))) continue;
     selected.push(candidate);
     if(selected.length>=targetCount) break;
+  }
+  if(!selected.length){
+    const fallback=fallbackTarget(tokens,sentence);
+    if(fallback) selected.push(fallback);
   }
   return selected.sort((a,b)=>a.start-b.start);
 }
