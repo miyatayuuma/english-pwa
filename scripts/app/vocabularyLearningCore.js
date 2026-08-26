@@ -66,7 +66,6 @@ function candidate(entry,levelState,now,index){
   else if(fresh){ bucket='fresh'; score=6000; }
   else if(meta.level>=4){ bucket='stable'; score=300; }
   else{ bucket='learning'; score=700; }
-  // Deterministic daily jitter avoids always introducing cards in source order.
   score+=(stableHash(`${entry?.id}|${Math.floor(now/DAY_MS)}`)%1000)/1000;
   return {entry,index,...meta,due,fresh,bucket,score};
 }
@@ -74,7 +73,11 @@ function candidate(entry,levelState,now,index){
 export function buildVocabularySession(entries,levelState={},options={}){
   const now=Number(options.now)||Date.now();
   const kind=options.kind==='word'||options.kind==='phrase'?options.kind:'all';
-  const requested=Math.max(1,Math.min(30,Math.round(Number(options.size)||12)));
+  const requested=Math.max(1,Math.min(30,Math.round(Number(options.size)||12));
+  const newCapRaw=Number(options.newCap);
+  const newCap=Number.isFinite(newCapRaw)
+    ? Math.max(0,Math.min(requested,Math.round(newCapRaw)))
+    : Math.min(8,requested);
   const source=(Array.isArray(entries)?entries:[]).filter(entry=>kind==='all'||entry?.kind===kind);
   const metas=source.map((entry,index)=>candidate(entry,levelState,now,index));
   const due=metas.filter(x=>x.bucket==='due').sort((a,b)=>b.score-a.score);
@@ -82,22 +85,26 @@ export function buildVocabularySession(entries,levelState={},options={}){
   const early=metas.filter(x=>x.bucket==='learning').sort((a,b)=>b.score-a.score);
   const stable=metas.filter(x=>x.bucket==='stable').sort((a,b)=>b.score-a.score);
   const selected=[];
-  const pushFrom=(list)=>{
-    while(selected.length<requested&&list.length) selected.push(list.shift());
+  const pushFrom=(list,limit=Infinity)=>{
+    let used=0;
+    while(selected.length<requested&&list.length&&used<limit){
+      selected.push(list.shift());
+      used+=1;
+    }
+    return used;
   };
   pushFrom(due);
-  pushFrom(fresh);
-  // Only study cards before their due time when the selected scope has no
-  // enough due/new material. This keeps the SRS spacing intact.
+  const freshUsed=pushFrom(fresh,newCap);
   pushFrom(early);
   pushFrom(stable);
   return {
     entries:selected.map(x=>x.entry),
     size:selected.length,
     due:selected.filter(x=>x.bucket==='due').length,
-    fresh:selected.filter(x=>x.bucket==='fresh').length,
+    fresh:freshUsed,
     early:selected.filter(x=>x.bucket==='learning'||x.bucket==='stable').length,
     kind,
+    newCap,
   };
 }
 
@@ -171,8 +178,6 @@ export function answerVariants(entry){
       if(normalized) variants.push(normalized);
     }
   }
-  // Inflection notation such as "shrink-shrank-shrunk" is accepted as any
-  // listed form rather than requiring the learner to pronounce punctuation.
   if(/^[A-Za-z]+(?:-[A-Za-z]+){2,}$/.test(raw)) variants.push(...raw.split('-'));
   return [...new Set(variants)].slice(0,18);
 }
