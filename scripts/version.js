@@ -1,4 +1,4 @@
-const APP_VERSION = 'v5.14';
+const APP_VERSION = 'v5.15';
 
 if (typeof globalThis !== 'undefined') {
   globalThis.APP_VERSION = APP_VERSION;
@@ -19,5 +19,8 @@ if (typeof document !== 'undefined') {
   });
   import('./app/clozeMode.js').catch((error) => {
     console.warn('Progressive hint surface failed to load', error);
+  });
+  import('./app/visualCleanup.js').catch((error) => {
+    console.warn('Visual cleanup failed to load', error);
   });
 }
