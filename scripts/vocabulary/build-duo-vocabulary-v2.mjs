@@ -27,6 +27,7 @@ function norm(s){
     .replace(/\s+/g,' ').trim();
 }
 function lower(s){ return norm(s).toLowerCase(); }
+function tokenNorm(s){ return lower(s).replace(/^'+|'+$/g,''); }
 function sectionNumber(unit){ const m=String(unit||'').match(/Section\s*(\d+)/i); return m?Number(m[1]):null; }
 
 function decodeHtml(s){
@@ -133,7 +134,7 @@ function isPhraseHead(raw){
 function tagWords(text){
   return tagger.tagSentence(String(text||''))
     .filter(t=>t.tag==='word')
-    .map(t=>({surface:lower(t.value),lemma:lower(t.lemma||t.normal||t.value),pos:String(t.pos||'')}));
+    .map(t=>({surface:tokenNorm(t.value),lemma:tokenNorm(t.lemma||t.normal||t.value),pos:String(t.pos||'')}));
 }
 function anchorsFor(raw){
   const variant=firstVariant(raw);
