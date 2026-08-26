@@ -4,6 +4,7 @@ import {
   answerVariants,
   buildVocabularySession,
   displayAnswer,
+  displayMeaning,
   readyVocabularyEntries,
   vocabularyStats,
 } from '../scripts/app/vocabularyLearningCore.js';
@@ -54,6 +55,23 @@ test('answer variants turn dictionary notation into speakable alternatives',()=>
   assert.equal(displayAnswer({headword:'geographic(al)'}),'geographic');
   assert.ok(answerVariants({headword:'geographic(al)'}).includes('geographical'));
   assert.ok(answerVariants({headword:'shrink-shrank-shrunk'}).includes('shrink'));
+});
+
+test('bracket alternatives replace the preceding choice instead of concatenating labels',()=>{
+  assert.ok(answerVariants({headword:"on the[one's] way"}).includes("on one's way"));
+  assert.ok(answerVariants({headword:"break one's promise[word]"}).includes("break one's word"));
+  assert.ok(answerVariants({headword:'get [be] lost'}).includes('be lost'));
+  assert.ok(!answerVariants({headword:"on the[one's] way"}).some(x=>x.includes("theone's")));
+});
+
+test('inflection chains display one clean base form while true compounds stay intact',()=>{
+  assert.equal(displayAnswer({headword:'shrink-shrank-shrunk'}),'shrink');
+  assert.deepEqual(answerVariants({headword:'lay-laid-laid'}),['lay','laid']);
+  assert.equal(displayAnswer({headword:'mother-in-law'}),'mother-in-law');
+});
+
+test('Japanese meaning labels remove invisible and accidental spacing without rewriting meaning',()=>{
+  assert.equal(displayMeaning({meaning_ja:'  ～を尊重する \u200b 、 大切にする  '}),'～を尊重する、大切にする');
 });
 
 test('vocabulary stats distinguish due, new, learning, and stable cards',()=>{
