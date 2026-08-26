@@ -141,8 +141,15 @@ function expandBracketChoice(text){
   const s=String(text);
   const start=s.indexOf('['),end=start>=0?s.indexOf(']',start+1):-1;
   if(start<0||end<0) return [s];
-  const before=s.slice(0,start),inside=s.slice(start+1,end),after=s.slice(end+1);
-  return [`${before}${after}`,`${before}${inside}${after}`];
+  const before=s.slice(0,start);
+  const inside=s.slice(start+1,end).trim();
+  const after=s.slice(end+1);
+  const withoutChoice=`${before}${after}`;
+  const prior=before.match(/^(.*?)([A-Za-z][A-Za-z'’.-]*)\s*$/);
+  if(prior&&/^[A-Za-z][A-Za-z'’.-]*$/.test(inside)){
+    return [withoutChoice,`${prior[1]}${inside}${after}`];
+  }
+  return [withoutChoice,`${before}${inside}${after}`];
 }
 
 function pronounVariants(text){
@@ -159,10 +166,19 @@ function pronounVariants(text){
   return out;
 }
 
+function inflectionChainParts(raw){
+  const parts=String(raw||'').split('-');
+  if(parts.length!==3||!parts.every(part=>/^[A-Za-z]+$/.test(part))) return null;
+  const connector=new Set(['a','an','and','as','at','by','for','from','in','of','on','or','the','to','up','with']);
+  if(parts.some(part=>connector.has(part.toLowerCase()))) return null;
+  return parts;
+}
+
 export function answerVariants(entry){
   const raw=String(entry?.headword||'').trim();
   if(!raw) return [];
-  const pieces=raw.split(/\s*\/\s*/).filter(Boolean);
+  const inflections=inflectionChainParts(raw);
+  const pieces=inflections||raw.split(/\s*\/\s*/).filter(Boolean);
   const seeds=pieces.length>1?pieces:[raw];
   const variants=[];
   for(const seed of seeds){
@@ -178,7 +194,6 @@ export function answerVariants(entry){
       if(normalized) variants.push(normalized);
     }
   }
-  if(/^[A-Za-z]+(?:-[A-Za-z]+){2,}$/.test(raw)) variants.push(...raw.split('-'));
   return [...new Set(variants)].slice(0,18);
 }
 
