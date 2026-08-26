@@ -43,7 +43,7 @@ export function hintSwipesForStage(_stage){
 
 export function desiredSessionSize(items,levelState={},now=Date.now(),{min=6,max=8}={}){
   const safe=Array.isArray(items)?items:[];
-  const due=safe.reduce((count,item)=>count+(isDue(levelState,item?.id,now)?1:0),0;
+  const due=safe.reduce((count,item)=>count+(isDue(levelState,item?.id,now)?1:0),0);
   let size=due>=8?8:(due>=3?7:6);
   size=Math.max(min,Math.min(max,size));
   return Math.min(safe.length,size);
