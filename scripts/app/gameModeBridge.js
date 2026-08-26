@@ -5,6 +5,13 @@ function storedMethod(){
   }catch(_){ return 'read'; }
 }
 
+function preferredMethod(){
+  try{
+    const value=localStorage.getItem('preferredSentenceMethodV1');
+    return value==='compose'||value==='read'?value:'';
+  }catch(_){ return ''; }
+}
+
 const BOOT_METHOD=typeof localStorage!=='undefined'?storedMethod():'read';
 
 function pendingMethod(dialog){
@@ -25,6 +32,11 @@ function persistMethod(method){
     cfg.studyMode=method;
     localStorage.setItem('appConfigV3',JSON.stringify(cfg));
   }catch(_){}
+}
+
+function enforcePreferredMethod(){
+  const preferred=preferredMethod();
+  if(preferred && storedMethod()!==preferred) persistMethod(preferred);
 }
 
 function injectCleanupStyles(){
@@ -65,6 +77,12 @@ function handleStartCapture(event){
 
 function init(){
   injectCleanupStyles();
+  // Legacy tag code used to force studyMode back to read during startup.
+  // Restore the explicit game selection after those modules initialize.
+  enforcePreferredMethod();
+  setTimeout(enforcePreferredMethod,0);
+  setTimeout(enforcePreferredMethod,200);
+  setTimeout(enforcePreferredMethod,1000);
   document.addEventListener('click',handleStartCapture,true);
 }
 
@@ -73,4 +91,4 @@ if(typeof document!=='undefined'){
   else init();
 }
 
-export { storedMethod, pendingMethod, pendingCourse };
+export { storedMethod, preferredMethod, pendingMethod, pendingCourse };
