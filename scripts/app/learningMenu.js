@@ -14,10 +14,12 @@ function injectStyles(){
     .learning-choice__section{display:grid;gap:8px}
     .learning-choice__title{font-size:11px;font-weight:800;letter-spacing:.06em;opacity:.48;padding-left:2px}
     .learning-choice__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-    .learning-choice__button{min-height:64px;border:1px solid rgba(148,163,184,.14);background:rgba(148,163,184,.05);color:inherit;border-radius:14px;padding:10px 8px;font:inherit;font-size:13px;font-weight:760;cursor:pointer;text-align:center}
-    .learning-choice__button small{display:block;margin-top:4px;font-size:9px;font-weight:500;opacity:.45}
-    .learning-choice__button.is-active{border-color:rgba(129,140,248,.58);background:rgba(99,102,241,.13)}
-    @media(max-width:430px){.learning-home-return span{display:none}.learning-home-return{padding-inline:10px}.learning-choice__grid{grid-template-columns:1fr}.learning-choice__button{min-height:54px}}
+    .learning-choice__button{position:relative;min-height:72px;border:1px solid rgba(148,163,184,.14);background:rgba(148,163,184,.05);color:inherit;border-radius:14px;padding:11px 8px;font:inherit;font-size:13px;font-weight:760;cursor:pointer;text-align:center;line-height:1.25}
+    .learning-choice__button small{display:block;margin-top:5px;font-size:9px;line-height:1.35;font-weight:500;opacity:.5}
+    .learning-choice__button.is-active{border-color:rgba(129,140,248,.62);background:rgba(99,102,241,.14)}
+    .learning-choice__button[data-recommended]::after{content:'基本';position:absolute;top:6px;right:7px;font-size:8px;font-weight:800;letter-spacing:.06em;padding:2px 5px;border-radius:999px;background:rgba(99,102,241,.2);color:#c7d2fe}
+    .learning-choice__note{font-size:10px;line-height:1.5;opacity:.48;text-align:center;margin-top:1px}
+    @media(max-width:430px){.learning-home-return span{display:none}.learning-home-return{padding-inline:10px}.learning-choice__grid{grid-template-columns:1fr}.learning-choice__button{min-height:58px}}
   `;
   document.head.appendChild(style);
 }
@@ -41,6 +43,12 @@ function currentMethod(){
   }catch(_){ return 'read'; }
 }
 
+function syncPrimaryCta(){
+  const cta=document.getElementById('startStudyCta');
+  if(!cta) return;
+  cta.textContent=currentMethod()==='compose'?'語順組立を始める':'今日の例文を始める';
+}
+
 function applyStudyMethod(method,{remember=true}={}){
   const next=method==='compose'?'compose':'read';
   if(remember) localStorage.setItem(PREF_METHOD_KEY,next);
@@ -55,12 +63,14 @@ function applyStudyMethod(method,{remember=true}={}){
       localStorage.setItem('appConfigV3',JSON.stringify(cfg));
     }catch(_){}
   }
+  syncPrimaryCta();
   return next;
 }
 
 function restorePreferredMethod(){
   const preferred=localStorage.getItem(PREF_METHOD_KEY);
   if(preferred==='compose'||preferred==='read') applyStudyMethod(preferred,{remember:false});
+  else syncPrimaryCta();
 }
 
 function returnHome(){
@@ -116,7 +126,7 @@ function makeDialog(nav){
   dialog=document.createElement('dialog');
   dialog.id='learningChoiceDialog';
   dialog.className='focus-dialog';
-  dialog.innerHTML=`<section class="focus-sheet"><header class="focus-sheet__head"><h2>学び方・コース</h2><button class="focus-sheet__close" type="button" aria-label="閉じる">×</button></header><div class="focus-sheet__body"><div class="learning-choice"><section class="learning-choice__section"><div class="learning-choice__title">学び方</div><div class="learning-choice__grid"><button type="button" class="learning-choice__button" data-method="read">例文・音読<small>英文を使って発話</small></button><button type="button" class="learning-choice__button" data-method="compose">整序ヒント<small>語順の手掛かりから発話</small></button><button type="button" class="learning-choice__button" data-method="vocabulary">単語・熟語<small>日本語から即答</small></button></div></section><section class="learning-choice__section"><div class="learning-choice__title">例文コース</div><div class="learning-choice__grid"><button type="button" class="learning-choice__button" data-course="auto">おまかせ<small>復習と新規を自動調整</small></button><button type="button" class="learning-choice__button" data-course="tag">キャラ・タグ<small>人物・場面・文法から</small></button><button type="button" class="learning-choice__button" data-course="explore">セクション・状態<small>範囲を自分で指定</small></button></div></section></div></div></section>`;
+  dialog.innerHTML=`<section class="focus-sheet"><header class="focus-sheet__head"><h2>学び方を選ぶ</h2><button class="focus-sheet__close" type="button" aria-label="閉じる">×</button></header><div class="focus-sheet__body"><div class="learning-choice"><section class="learning-choice__section"><div class="learning-choice__title">学習モード</div><div class="learning-choice__grid"><button type="button" class="learning-choice__button" data-method="read" data-recommended>例文リコール<small>重要語・熟語を虫食いにして、全文を発話</small></button><button type="button" class="learning-choice__button" data-method="compose">語順組立<small>語句ブロックを手掛かりに、正しい語順で全文を発話</small></button><button type="button" class="learning-choice__button" data-method="vocabulary">単語・熟語<small>日本語の意味から、英語をすぐ発話</small></button></div><div class="learning-choice__note">基本は例文リコール。語順組立は、語順が曖昧な文を立て直す補助練習です。</div></section><section class="learning-choice__section"><div class="learning-choice__title">例文の範囲</div><div class="learning-choice__grid"><button type="button" class="learning-choice__button" data-course="auto">おまかせ<small>復習を優先し、新規は少量</small></button><button type="button" class="learning-choice__button" data-course="tag">キャラ・タグ<small>人物・場面・文法から選ぶ</small></button><button type="button" class="learning-choice__button" data-course="explore">セクション・状態<small>範囲や習得状態を指定</small></button></div></section></div></div></section>`;
   document.body.appendChild(dialog);
   dialog.querySelector('.focus-sheet__close')?.addEventListener('click',()=>dialog.close());
   dialog.addEventListener('cancel',event=>{event.preventDefault();dialog.close();});
@@ -145,10 +155,11 @@ function syncNav(nav){
     button=document.createElement('button');
     button.id='openLearningChoice';
     button.type='button';
-    button.textContent='学び方・コース';
+    button.textContent='学び方を選ぶ';
     button.addEventListener('click',()=>{const dialog=makeDialog(nav);refreshMethodState(dialog);dialog.showModal();});
     nav.insertBefore(button,nav.firstChild);
   }
+  syncPrimaryCta();
 }
 
 async function init(){
