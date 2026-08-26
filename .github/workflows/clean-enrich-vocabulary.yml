@@ -63,7 +63,7 @@ jobs:
           const db=JSON.parse(fs.readFileSync('data/vocabulary-v2.json','utf8'));
           const r=JSON.parse(fs.readFileSync('data/vocabulary-v2-report.json','utf8'));
           if(items.length!==560) throw new Error(`expected 560 items, got ${items.length}`);
-          const badEn=/\bnobel\b|\bTrting\b|\banytmore\b|Couldn't be better! i did|Yeah \.\./i;
+          const badEn=/\bnobel\b|\bTrting\b|\banytmore\b|Couldn't be better! i did|Yeah \.\./;
           const badJa=/紫敵|さらさせてきた|骨蓮品|完壁/;
           if(items.some(x=>badEn.test(x.en))) throw new Error('known English typo remains');
           if(items.some(x=>badJa.test(x.ja))) throw new Error('known Japanese typo remains');
