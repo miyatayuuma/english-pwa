@@ -34,8 +34,15 @@ function studyActive(){
   return !!view&&!view.hidden;
 }
 
+function composeActive(){ return studyActive()&&currentMethod()==='compose'; }
+
 function syncModeClass(){
-  document.body?.classList.toggle('sentence-compose-mode',currentMethod()==='compose'&&studyActive());
+  const compose=composeActive();
+  document.body?.classList.toggle('sentence-compose-mode',compose);
+  if(compose){
+    const play=document.getElementById('btnPlay');
+    if(play) play.disabled=false;
+  }
 }
 
 function sentenceText(){
@@ -81,17 +88,23 @@ function fallbackSpeak(text){
 
 function attemptPlayback(expectedKey,attempt=0){
   if(!studyActive()||cardKey()!==expectedKey) return;
-  const button=document.getElementById('btnPlay');
+  syncModeClass();
   if(mediaAlreadyPlaying()) return;
+  const button=document.getElementById('btnPlay');
+  if(button&&composeActive()) button.disabled=false;
   if(!button||button.disabled){
-    if(attempt<12) state.timer=setTimeout(()=>attemptPlayback(expectedKey,attempt+1),90);
+    if(attempt<12){
+      state.timer=setTimeout(()=>attemptPlayback(expectedKey,attempt+1),90);
+      return;
+    }
+    fallbackSpeak(sentenceText());
     return;
   }
   button.click();
   state.fallbackTimer=setTimeout(()=>{
     if(!studyActive()||cardKey()!==expectedKey||mediaAlreadyPlaying()) return;
     fallbackSpeak(sentenceText());
-  },650);
+  },900);
 }
 
 function scheduleAutoplay(){
