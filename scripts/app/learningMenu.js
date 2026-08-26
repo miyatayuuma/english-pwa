@@ -11,14 +11,20 @@ function injectStyles(){
     .learning-home-return{display:none;border:1px solid rgba(148,163,184,.18);background:rgba(148,163,184,.08);color:inherit;border-radius:11px;padding:8px 10px;font:inherit;font-size:12px;font-weight:750;cursor:pointer;white-space:nowrap;margin-right:8px}
     body.focus-study-view .learning-home-return,body.focus-review-view .learning-home-return{display:inline-flex;align-items:center;gap:5px}
     .learning-choice{display:grid;gap:16px}
+    .learning-choice__intro{margin:0;text-align:center;font-size:11px;line-height:1.55;opacity:.55}
     .learning-choice__section{display:grid;gap:8px}
+    .learning-choice__section[hidden]{display:none!important}
     .learning-choice__title{font-size:11px;font-weight:800;letter-spacing:.06em;opacity:.48;padding-left:2px}
     .learning-choice__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
     .learning-choice__button{position:relative;min-height:72px;border:1px solid rgba(148,163,184,.14);background:rgba(148,163,184,.05);color:inherit;border-radius:14px;padding:11px 8px;font:inherit;font-size:13px;font-weight:760;cursor:pointer;text-align:center;line-height:1.25}
     .learning-choice__button small{display:block;margin-top:5px;font-size:9px;line-height:1.35;font-weight:500;opacity:.5}
-    .learning-choice__button.is-active{border-color:rgba(129,140,248,.62);background:rgba(99,102,241,.14)}
+    .learning-choice__button.is-active{border-color:rgba(129,140,248,.68);background:rgba(99,102,241,.16);box-shadow:inset 0 0 0 1px rgba(129,140,248,.14)}
+    .learning-choice__button.is-active::before{content:'✓';position:absolute;top:7px;left:8px;font-size:10px;color:#c7d2fe}
     .learning-choice__button[data-recommended]::after{content:'基本';position:absolute;top:6px;right:7px;font-size:8px;font-weight:800;letter-spacing:.06em;padding:2px 5px;border-radius:999px;background:rgba(99,102,241,.2);color:#c7d2fe}
     .learning-choice__note{font-size:10px;line-height:1.5;opacity:.48;text-align:center;margin-top:1px}
+    .learning-choice__footer{display:grid;gap:8px;padding-top:2px;border-top:1px solid rgba(148,163,184,.1)}
+    .learning-choice__summary{text-align:center;font-size:11px;line-height:1.5;opacity:.62;min-height:17px}
+    .learning-choice__start{width:100%;min-height:52px;border:0;border-radius:14px;background:#6366f1;color:#fff;font:inherit;font-size:15px;font-weight:850;cursor:pointer;box-shadow:0 10px 24px rgba(99,102,241,.2)}
     @media(max-width:430px){.learning-home-return span{display:none}.learning-home-return{padding-inline:10px}.learning-choice__grid{grid-template-columns:1fr}.learning-choice__button{min-height:58px}}
   `;
   document.head.appendChild(style);
@@ -43,6 +49,18 @@ function currentMethod(){
   }catch(_){ return 'read'; }
 }
 
+function methodLabel(method){
+  if(method==='compose') return '語順組立';
+  if(method==='vocabulary') return '単語・熟語';
+  return '例文リコール';
+}
+
+function courseLabel(course){
+  if(course==='tag') return 'キャラ・タグ';
+  if(course==='explore') return 'セクション・状態';
+  return 'おまかせ';
+}
+
 function syncPrimaryCta(){
   const cta=document.getElementById('startStudyCta');
   if(!cta) return;
@@ -64,6 +82,7 @@ function applyStudyMethod(method,{remember=true}={}){
     }catch(_){}
   }
   syncPrimaryCta();
+  try{ document.dispatchEvent(new CustomEvent('english-pwa:study-method-changed',{detail:{method:next}})); }catch(_){}
   return next;
 }
 
@@ -110,14 +129,79 @@ function getLegacyButtons(nav){
 async function openVocabulary(){
   for(let i=0;i<25;i+=1){
     const button=document.getElementById('openVocabularyMode');
-    if(button){ button.click(); return; }
+    if(button){ button.click(); return true; }
     await sleep(80);
+  }
+  return false;
+}
+
+function pendingMethod(dialog){ return dialog?.dataset?.pendingMethod||currentMethod(); }
+function pendingCourse(dialog){ return dialog?.dataset?.pendingCourse||'auto'; }
+
+function setPendingMethod(dialog,method){
+  dialog.dataset.pendingMethod=['read','compose','vocabulary'].includes(method)?method:'read';
+  refreshChoiceState(dialog);
+}
+
+function setPendingCourse(dialog,course){
+  dialog.dataset.pendingCourse=['auto','tag','explore'].includes(course)?course:'auto';
+  refreshChoiceState(dialog);
+}
+
+function refreshChoiceState(dialog){
+  if(!dialog) return;
+  const method=pendingMethod(dialog);
+  const course=pendingCourse(dialog);
+  dialog.querySelectorAll('[data-method]').forEach(button=>{
+    const active=button.dataset.method===method;
+    button.classList.toggle('is-active',active);
+    button.setAttribute('aria-pressed',active?'true':'false');
+  });
+  dialog.querySelectorAll('[data-course]').forEach(button=>{
+    const active=button.dataset.course===course;
+    button.classList.toggle('is-active',active);
+    button.setAttribute('aria-pressed',active?'true':'false');
+  });
+  const courseSection=dialog.querySelector('[data-course-section]');
+  if(courseSection) courseSection.hidden=method==='vocabulary';
+  const summary=dialog.querySelector('.learning-choice__summary');
+  const start=dialog.querySelector('.learning-choice__start');
+  if(summary){
+    summary.textContent=method==='vocabulary'
+      ? `選択中：${methodLabel(method)}`
+      : `選択中：${methodLabel(method)} · ${courseLabel(course)}`;
+  }
+  if(start){
+    if(method==='vocabulary') start.textContent='単語・熟語を開く';
+    else if(course==='tag') start.textContent='タグを選ぶ';
+    else if(course==='explore') start.textContent='条件を選ぶ';
+    else start.textContent='この設定で始める';
   }
 }
 
-function chooseSentenceMethod(method,dialog){
+async function executeChoice(dialog,nav){
+  const method=pendingMethod(dialog);
+  const course=pendingCourse(dialog);
+  if(method==='vocabulary'){
+    dialog.close();
+    await openVocabulary();
+    return;
+  }
   applyStudyMethod(method);
-  refreshMethodState(dialog);
+  dialog.close();
+  if(course==='tag'){
+    if(typeof globalThis.__OPEN_ENGLISH_TAG_BROWSER__==='function'){
+      globalThis.__OPEN_ENGLISH_TAG_BROWSER__();
+      return;
+    }
+    getLegacyButtons(nav).tags?.click();
+    return;
+  }
+  if(course==='explore'){
+    getLegacyButtons(nav).explore?.click();
+    return;
+  }
+  setTimeout(()=>document.getElementById('startStudyCta')?.click(),20);
 }
 
 function makeDialog(nav){
@@ -126,23 +210,21 @@ function makeDialog(nav){
   dialog=document.createElement('dialog');
   dialog.id='learningChoiceDialog';
   dialog.className='focus-dialog';
-  dialog.innerHTML=`<section class="focus-sheet"><header class="focus-sheet__head"><h2>学び方を選ぶ</h2><button class="focus-sheet__close" type="button" aria-label="閉じる">×</button></header><div class="focus-sheet__body"><div class="learning-choice"><section class="learning-choice__section"><div class="learning-choice__title">学習モード</div><div class="learning-choice__grid"><button type="button" class="learning-choice__button" data-method="read" data-recommended>例文リコール<small>重要語・熟語を虫食いにして、全文を発話</small></button><button type="button" class="learning-choice__button" data-method="compose">語順組立<small>語句ブロックを手掛かりに、正しい語順で全文を発話</small></button><button type="button" class="learning-choice__button" data-method="vocabulary">単語・熟語<small>日本語の意味から、英語をすぐ発話</small></button></div><div class="learning-choice__note">基本は例文リコール。語順組立は、語順が曖昧な文を立て直す補助練習です。</div></section><section class="learning-choice__section"><div class="learning-choice__title">例文の範囲</div><div class="learning-choice__grid"><button type="button" class="learning-choice__button" data-course="auto">おまかせ<small>復習を優先し、新規は少量</small></button><button type="button" class="learning-choice__button" data-course="tag">キャラ・タグ<small>人物・場面・文法から選ぶ</small></button><button type="button" class="learning-choice__button" data-course="explore">セクション・状態<small>範囲や習得状態を指定</small></button></div></section></div></div></section>`;
+  dialog.innerHTML=`<section class="focus-sheet"><header class="focus-sheet__head"><h2>学び方を選ぶ</h2><button class="focus-sheet__close" type="button" aria-label="閉じる">×</button></header><div class="focus-sheet__body"><div class="learning-choice"><p class="learning-choice__intro">各ボタンは選択だけです。学習開始や次の画面への移動は、一番下のボタンから行います。</p><section class="learning-choice__section"><div class="learning-choice__title">学習モード</div><div class="learning-choice__grid"><button type="button" class="learning-choice__button" data-method="read" aria-pressed="false" data-recommended>例文リコール<small>核表現を手掛かりに、全文を発話</small></button><button type="button" class="learning-choice__button" data-method="compose" aria-pressed="false">語順組立<small>日本語訳と語句ブロックから、全文を発話</small></button><button type="button" class="learning-choice__button" data-method="vocabulary" aria-pressed="false">単語・熟語<small>日本語の意味から、英語をすぐ発話</small></button></div><div class="learning-choice__note">タップしても学習は始まりません。選択状態だけが変わります。</div></section><section class="learning-choice__section" data-course-section><div class="learning-choice__title">例文の範囲</div><div class="learning-choice__grid"><button type="button" class="learning-choice__button" data-course="auto" aria-pressed="false">おまかせ<small>復習を優先し、新規は少量</small></button><button type="button" class="learning-choice__button" data-course="tag" aria-pressed="false">キャラ・タグ<small>人物・場面・文法から指定</small></button><button type="button" class="learning-choice__button" data-course="explore" aria-pressed="false">セクション・状態<small>範囲や習得状態を指定</small></button></div></section><div class="learning-choice__footer"><div class="learning-choice__summary"></div><button type="button" class="learning-choice__start">この設定で始める</button></div></div></div></section>`;
   document.body.appendChild(dialog);
   dialog.querySelector('.focus-sheet__close')?.addEventListener('click',()=>dialog.close());
   dialog.addEventListener('cancel',event=>{event.preventDefault();dialog.close();});
   dialog.addEventListener('click',event=>{if(event.target===dialog) dialog.close();});
-  dialog.querySelector('[data-method="read"]')?.addEventListener('click',()=>chooseSentenceMethod('read',dialog));
-  dialog.querySelector('[data-method="compose"]')?.addEventListener('click',()=>chooseSentenceMethod('compose',dialog));
-  dialog.querySelector('[data-method="vocabulary"]')?.addEventListener('click',()=>{dialog.close();openVocabulary();});
-  dialog.querySelector('[data-course="auto"]')?.addEventListener('click',()=>{dialog.close();setTimeout(()=>document.getElementById('startStudyCta')?.click(),20);});
-  dialog.querySelector('[data-course="tag"]')?.addEventListener('click',()=>{dialog.close();getLegacyButtons(nav).tags?.click();});
-  dialog.querySelector('[data-course="explore"]')?.addEventListener('click',()=>{dialog.close();getLegacyButtons(nav).explore?.click();});
+  dialog.querySelectorAll('[data-method]').forEach(button=>button.addEventListener('click',()=>setPendingMethod(dialog,button.dataset.method)));
+  dialog.querySelectorAll('[data-course]').forEach(button=>button.addEventListener('click',()=>setPendingCourse(dialog,button.dataset.course)));
+  dialog.querySelector('.learning-choice__start')?.addEventListener('click',()=>executeChoice(dialog,nav));
   return dialog;
 }
 
-function refreshMethodState(dialog){
-  const method=currentMethod();
-  dialog.querySelectorAll('[data-method]').forEach(button=>button.classList.toggle('is-active',button.dataset.method===method));
+function prepareDialog(dialog){
+  dialog.dataset.pendingMethod=currentMethod();
+  dialog.dataset.pendingCourse='auto';
+  refreshChoiceState(dialog);
 }
 
 function syncNav(nav){
@@ -156,7 +238,11 @@ function syncNav(nav){
     button.id='openLearningChoice';
     button.type='button';
     button.textContent='学び方を選ぶ';
-    button.addEventListener('click',()=>{const dialog=makeDialog(nav);refreshMethodState(dialog);dialog.showModal();});
+    button.addEventListener('click',()=>{
+      const dialog=makeDialog(nav);
+      prepareDialog(dialog);
+      dialog.showModal();
+    });
     nav.insertBefore(button,nav.firstChild);
   }
   syncPrimaryCta();
