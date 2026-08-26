@@ -33,3 +33,13 @@ test('duplicate sentence mode preference is retired',async()=>{
   ]);
   runtimeFiles.forEach(source=>assert.doesNotMatch(source,/preferredSentenceMethodV1/));
 });
+
+test('automatic hint escalation APIs cannot return through adaptive runtime',async()=>{
+  const adaptive=await text('scripts/app/adaptiveLearning.js');
+  assert.doesNotMatch(adaptive,/dispatchDownSwipe|applyAdaptiveAssistance|hintSwipesForStage|autoHinting/);
+});
+
+test('game switching never clicks the settings form as an indirect bridge',async()=>{
+  const menu=await text('scripts/app/learningMenu.js');
+  assert.doesNotMatch(menu,/cfgSave|btnCfg|cfgButton\.click|cfgSave\.click/);
+});
