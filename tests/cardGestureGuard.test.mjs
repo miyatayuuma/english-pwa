@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { isCardControlTarget } from '../scripts/app/cardGestureGuard.js';
+import { isCardControlTarget, shouldBlockSyntheticCardGesture } from '../scripts/app/cardGestureGuard.js';
 
 function node(tagName, { parent = null, attrs = {} } = {}) {
   return {
@@ -27,7 +27,15 @@ test('plain card content remains swipeable', () => {
   assert.equal(isCardControlTarget(text, card), false);
 });
 
+test('synthetic touch gestures are blocked but real swipes are not', () => {
+  assert.equal(shouldBlockSyntheticCardGesture({ type: 'touchstart', isTrusted: false }), true);
+  assert.equal(shouldBlockSyntheticCardGesture({ type: 'touchend', isTrusted: false }), true);
+  assert.equal(shouldBlockSyntheticCardGesture({ type: 'touchstart', isTrusted: true }), false);
+  assert.equal(shouldBlockSyntheticCardGesture({ type: 'click', isTrusted: false }), false);
+});
+
 test('gesture guard module imports safely outside browser', async () => {
   const mod = await import('../scripts/app/cardGestureGuard.js');
   assert.equal(typeof mod.isCardControlTarget, 'function');
+  assert.equal(typeof mod.shouldBlockSyntheticCardGesture, 'function');
 });
