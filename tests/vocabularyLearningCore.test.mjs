@@ -34,6 +34,13 @@ test('session prioritizes due cards, then unseen cards, without early-reviewing 
   assert.equal(plan.early,0);
 });
 
+test('a new-only vocabulary session stays small enough for acquisition',()=>{
+  const entries=Array.from({length:20},(_,i)=>({id:`n${i}`,kind:'word'}));
+  const plan=buildVocabularySession(entries,{}, {size:12,now:1_800_000_000_000});
+  assert.equal(plan.size,8);
+  assert.equal(plan.fresh,8);
+});
+
 test('kind filter builds a word-only or phrase-only queue',()=>{
   const entries=[{id:'w',kind:'word'},{id:'p',kind:'phrase'}];
   const plan=buildVocabularySession(entries,{}, {kind:'phrase',size:12,now:1_800_000_000_000});
