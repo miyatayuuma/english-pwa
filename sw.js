@@ -1,4 +1,4 @@
-// sw.js: cache name follows the app version. v5.18
+// sw.js: cache name follows the app version. v5.19
 importScripts('./scripts/version.js');
 const CACHE = self.APP_VERSION;
 
@@ -34,6 +34,7 @@ self.addEventListener('install', e => {
     './scripts/app/tagBrowser.js',
     './scripts/app/vocabularyLearningCore.js',
     './scripts/app/vocabularyMode.js',
+    './scripts/app/vocabularyFeedbackUx.js',
     './scripts/app/learningMenu.js',
     './scripts/app/sentencePracticeUx.js',
     './scripts/app/clozeLearningCore.js',
