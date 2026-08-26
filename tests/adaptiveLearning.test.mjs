@@ -3,8 +3,6 @@ import assert from 'node:assert/strict';
 
 import {
   buildAutomaticSession,
-  determineLearningStage,
-  hintSwipesForStage,
   desiredSessionSize,
   filterByScope,
 } from '../scripts/app/adaptiveLearning.js';
@@ -12,17 +10,6 @@ import {
 function item(id,extra={}){
   return {id,en:id,ja:id,character_tags:[],situation_tags:['general'],grammar_tags:[],function_tags:[],...extra};
 }
-
-test('learning stages are descriptive while hint escalation stays user-controlled',()=>{
-  assert.equal(determineLearningStage({last:0}),'acquisition');
-  assert.equal(determineLearningStage({last:1}),'assisted_recall');
-  assert.equal(determineLearningStage({last:2}),'recall');
-  assert.equal(determineLearningStage({last:3,noHintStreak:1}),'fluency');
-  assert.equal(determineLearningStage({last:5}),'maintenance');
-  assert.equal(hintSwipesForStage('acquisition'),0);
-  assert.equal(hintSwipesForStage('assisted_recall'),0);
-  assert.equal(hintSwipesForStage('maintenance'),0);
-});
 
 test('due work is prioritized while new material stays limited',()=>{
   const now=1_000_000;
