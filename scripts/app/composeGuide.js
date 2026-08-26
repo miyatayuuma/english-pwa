@@ -1,3 +1,43 @@
+export function compactComposeChunks(chunks,{minChunks=2,maxChunks=6,wordsPerChunk=3}={}){
+  const safe=(Array.isArray(chunks)?chunks:[])
+    .filter(chunk=>chunk&&Array.isArray(chunk.tokens)&&chunk.tokens.length)
+    .map(chunk=>({display:String(chunk.display||'').trim(),tokens:chunk.tokens.slice()}));
+  if(safe.length<=1) return safe;
+  const totalTokens=safe.reduce((sum,chunk)=>sum+chunk.tokens.length,0);
+  const desired=Math.max(minChunks,Math.min(maxChunks,Math.round(totalTokens/Math.max(2,wordsPerChunk))));
+  if(safe.length<=desired) return safe;
+  const out=[];
+  let current=[];
+  let currentTokenCount=0;
+  let consumedTokens=0;
+  for(let i=0;i<safe.length;i+=1){
+    const chunk=safe[i];
+    current.push(chunk);
+    currentTokenCount+=chunk.tokens.length;
+    consumedTokens+=chunk.tokens.length;
+    const groupsLeft=desired-out.length-1;
+    const tokensLeft=totalTokens-consumedTokens;
+    const targetSize=Math.max(1,Math.ceil(tokensLeft/Math.max(1,groupsLeft)));
+    const enough=currentTokenCount>=Math.max(2,Math.min(wordsPerChunk,targetSize));
+    const mustLeaveEnough=(safe.length-i-1)>=groupsLeft;
+    if(out.length<desired-1 && enough && mustLeaveEnough){
+      out.push({
+        display:current.map(part=>part.display).filter(Boolean).join(' '),
+        tokens:current.flatMap(part=>part.tokens),
+      });
+      current=[];
+      currentTokenCount=0;
+    }
+  }
+  if(current.length){
+    out.push({
+      display:current.map(part=>part.display).filter(Boolean).join(' '),
+      tokens:current.flatMap(part=>part.tokens),
+    });
+  }
+  return out;
+}
+
 export function createComposeGuide({
   composeGuideEl,
   composeTokensEl,
@@ -12,9 +52,7 @@ export function createComposeGuide({
 
   const clearTokens = () => {
     nodes.length = 0;
-    if (composeTokensEl) {
-      composeTokensEl.innerHTML = '';
-    }
+    if (composeTokensEl) composeTokensEl.innerHTML = '';
   };
 
   const hideGuide = () => {
@@ -22,9 +60,7 @@ export function createComposeGuide({
       composeGuideEl.classList.remove('show');
       composeGuideEl.setAttribute('aria-hidden', 'true');
     }
-    if (composeNoteEl) {
-      composeNoteEl.textContent = defaultNote || '';
-    }
+    if (composeNoteEl) composeNoteEl.textContent = defaultNote || '';
   };
 
   const reset = () => {
@@ -38,36 +74,23 @@ export function createComposeGuide({
     let source = raw;
     if (typeof source === 'string') {
       const trimmed = source.trim();
-      if (!trimmed) {
-        return [];
-      }
-      try {
-        source = JSON.parse(trimmed);
-      } catch (_err) {
-        return [];
-      }
+      if (!trimmed) return [];
+      try { source = JSON.parse(trimmed); } catch (_err) { return []; }
     }
     if (!Array.isArray(source)) return [];
     const specs = [];
     for (const entry of source) {
       let text = '';
-      if (typeof entry === 'string') {
-        text = entry;
-      } else if (Array.isArray(entry)) {
-        text = entry.filter(Boolean).join(' ');
-      } else if (entry && typeof entry === 'object') {
-        if (Array.isArray(entry.tokens)) {
-          text = entry.tokens.filter(Boolean).join(' ');
-        } else if (typeof entry.text === 'string') {
-          text = entry.text;
-        }
+      if (typeof entry === 'string') text = entry;
+      else if (Array.isArray(entry)) text = entry.filter(Boolean).join(' ');
+      else if (entry && typeof entry === 'object') {
+        if (Array.isArray(entry.tokens)) text = entry.tokens.filter(Boolean).join(' ');
+        else if (typeof entry.text === 'string') text = entry.text;
       }
       text = String(text || '').trim();
       if (!text) continue;
       const tokens = typeof toks === 'function' ? toks(text) : [];
-      if (tokens.length) {
-        specs.push({ text, tokens });
-      }
+      if (tokens.length) specs.push({ text, tokens });
     }
     specs.sort((a, b) => b.tokens.length - a.tokens.length);
     return specs;
@@ -119,10 +142,7 @@ export function createComposeGuide({
           if (collected.length < needed) continue;
           let ok = true;
           for (let k = 0; k < needed; k += 1) {
-            if (collected[k] !== spec.tokens[k]) {
-              ok = false;
-              break;
-            }
+            if (collected[k] !== spec.tokens[k]) { ok = false; break; }
           }
           if (ok) {
             matched = {
@@ -143,20 +163,14 @@ export function createComposeGuide({
         i += 1;
       }
     }
-    return result;
+    return compactComposeChunks(result);
   };
 
   const getPartialHints = (item) => {
     const hints = [];
-    if (item && typeof item.prompt_ja === 'string' && item.prompt_ja.trim()) {
-      hints.push(`和文プロンプト: ${item.prompt_ja.trim()}`);
-    }
-    if (item && Array.isArray(item.paraphrases) && item.paraphrases.length) {
-      hints.push(`言い換え: ${item.paraphrases.slice(0, 2).join(' / ')}`);
-    }
-    if (item && typeof item.focus_grammar === 'string' && item.focus_grammar.trim()) {
-      hints.push(`文法フォーカス: ${item.focus_grammar.trim()}`);
-    }
+    if (item && typeof item.prompt_ja === 'string' && item.prompt_ja.trim()) hints.push(`和文: ${item.prompt_ja.trim()}`);
+    if (item && Array.isArray(item.paraphrases) && item.paraphrases.length) hints.push(`言い換え: ${item.paraphrases.slice(0, 2).join(' / ')}`);
+    if (item && typeof item.focus_grammar === 'string' && item.focus_grammar.trim()) hints.push(`文法: ${item.focus_grammar.trim()}`);
     return hints;
   };
 
@@ -200,18 +214,16 @@ export function createComposeGuide({
       const ghost = document.createElement('span');
       ghost.className = 'compose-token';
       ghost.setAttribute('role', 'listitem');
-      ghost.textContent = '語群なしモード';
+      ghost.textContent = '語群なし';
       composeTokensEl.appendChild(ghost);
     }
 
     if (composeNoteEl) {
       if (isComposeTask) {
-        composeNoteEl.textContent = `整序英作文: シャッフルされた ${chunks.length} 個の語句を使って語順を整えましょう。`;
+        composeNoteEl.textContent = `語順組立: ${chunks.length}個の語句ブロックを手掛かりに、正しい語順で全文を発話。`;
       } else {
-        const baseNote = wordBankEnabled
-          ? `和文→英文生成: 語群ありで英作文を組み立てましょう。`
-          : '和文→英文生成: 語群なし。自力で英文を組み立てましょう。';
-        composeNoteEl.textContent = partialHints.length ? `${baseNote} / ${partialHints.join(' / ')}` : baseNote;
+        const baseNote = wordBankEnabled ? '和文から英文を組み立てて発話。' : '和文から自力で英文を発話。';
+        composeNoteEl.textContent = partialHints.length ? `${baseNote} ${partialHints.join(' / ')}` : baseNote;
       }
     }
     composeGuideEl.classList.add('show');
@@ -219,13 +231,7 @@ export function createComposeGuide({
   };
 
   const getNodes = () => nodes;
-
   const isActive = () => active;
 
-  return {
-    reset,
-    setup,
-    getNodes,
-    isActive
-  };
+  return { reset, setup, getNodes, isActive };
 }
