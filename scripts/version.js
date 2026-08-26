@@ -1,12 +1,12 @@
-const APP_VERSION = 'v5.23';
+const APP_VERSION = 'v5.24';
 
 if (typeof globalThis !== 'undefined') {
   globalThis.APP_VERSION = APP_VERSION;
 }
 
 if (typeof document !== 'undefined') {
-  import('./app/tagMode.js').catch((error) => {
-    console.warn('Adaptive learning surface failed to load', error);
+  import('./app/sessionShell.js').catch((error) => {
+    console.warn('Session shell failed to load', error);
   });
   import('./app/tagBrowser.js').catch((error) => {
     console.warn('Tag browser failed to load', error);
