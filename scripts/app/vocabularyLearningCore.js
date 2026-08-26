@@ -73,7 +73,7 @@ function candidate(entry,levelState,now,index){
 export function buildVocabularySession(entries,levelState={},options={}){
   const now=Number(options.now)||Date.now();
   const kind=options.kind==='word'||options.kind==='phrase'?options.kind:'all';
-  const requested=Math.max(1,Math.min(30,Math.round(Number(options.size)||12));
+  const requested=Math.max(1,Math.min(30,Math.round(Number(options.size)||12)));
   const newCapRaw=Number(options.newCap);
   const newCap=Number.isFinite(newCapRaw)
     ? Math.max(0,Math.min(requested,Math.round(newCapRaw)))
