@@ -1,4 +1,4 @@
-const APP_VERSION = 'v5.21';
+const APP_VERSION = 'v5.22';
 
 if (typeof globalThis !== 'undefined') {
   globalThis.APP_VERSION = APP_VERSION;
@@ -16,6 +16,9 @@ if (typeof document !== 'undefined') {
   });
   import('./app/vocabularyFeedbackUx.js').catch((error) => {
     console.warn('Vocabulary feedback UX failed to load', error);
+  });
+  import('./app/gameModeBridge.js').catch((error) => {
+    console.warn('Game mode bridge failed to load', error);
   });
   import('./app/learningMenu.js').catch((error) => {
     console.warn('Learning navigation failed to load', error);
