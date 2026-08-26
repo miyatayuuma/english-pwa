@@ -133,3 +133,7 @@ export function buildSessionQueueItems(planItems){
     unit:`AUTO-${String(index+1).padStart(3,'0')}`,
   }));
 }
+
+// SessionShell still imports the old adapter name; keep this data-only alias
+// until that bridge is absorbed into main.js. It has no hint or UI behavior.
+export const buildLegacyQueueItems=buildSessionQueueItems;
