@@ -37,12 +37,7 @@ function studyActive(){
 function composeActive(){ return studyActive()&&currentMethod()==='compose'; }
 
 function syncModeClass(){
-  const compose=composeActive();
-  document.body?.classList.toggle('sentence-compose-mode',compose);
-  if(compose){
-    const play=document.getElementById('btnPlay');
-    if(play) play.disabled=false;
-  }
+  document.body?.classList.toggle('sentence-compose-mode',composeActive());
 }
 
 function sentenceText(){
@@ -91,20 +86,29 @@ function attemptPlayback(expectedKey,attempt=0){
   syncModeClass();
   if(mediaAlreadyPlaying()) return;
   const button=document.getElementById('btnPlay');
-  if(button&&composeActive()) button.disabled=false;
-  if(!button||button.disabled){
-    if(attempt<12){
-      state.timer=setTimeout(()=>attemptPlayback(expectedKey,attempt+1),90);
-      return;
-    }
+  const player=document.getElementById('player');
+  const compose=composeActive();
+  const sourceReady=!!player?.dataset?.srcKey;
+  if(!button){
+    if(attempt<12){ state.timer=setTimeout(()=>attemptPlayback(expectedKey,attempt+1),90); return; }
     fallbackSpeak(sentenceText());
     return;
+  }
+  if(button.disabled){
+    if(compose){
+      if(!sourceReady&&attempt<7){ state.timer=setTimeout(()=>attemptPlayback(expectedKey,attempt+1),100); return; }
+      button.disabled=false;
+    }else{
+      if(attempt<12){ state.timer=setTimeout(()=>attemptPlayback(expectedKey,attempt+1),90); return; }
+      fallbackSpeak(sentenceText());
+      return;
+    }
   }
   button.click();
   state.fallbackTimer=setTimeout(()=>{
     if(!studyActive()||cardKey()!==expectedKey||mediaAlreadyPlaying()) return;
     fallbackSpeak(sentenceText());
-  },900);
+  },1000);
 }
 
 function scheduleAutoplay(){
@@ -116,7 +120,7 @@ function scheduleAutoplay(){
   cancelTimers();
   const player=document.getElementById('player');
   if(player) player.autoplay=true;
-  state.timer=setTimeout(()=>attemptPlayback(key),140);
+  state.timer=setTimeout(()=>attemptPlayback(key),160);
 }
 
 function observe(){
