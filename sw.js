@@ -1,4 +1,4 @@
-// sw.js: cache name follows the app version. v5.07
+// sw.js: cache name follows the app version. v5.08
 importScripts('./scripts/version.js');
 const CACHE = self.APP_VERSION;
 
@@ -93,7 +93,6 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  // Character art is intentionally cached lazily; the source PNGs are large.
   if (isIconRequest || isCharacterImageRequest || isScriptRequest) {
     e.respondWith(caches.open(CACHE).then(async cache => {
       const cached = await cache.match(e.request);
