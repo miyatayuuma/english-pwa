@@ -35,16 +35,15 @@ export function determineLearningStage(info){
   return 'maintenance';
 }
 
-// The selected learning surface itself is now the baseline support. Do not
-// silently advance the hint stack when a card opens; learners can request
-// stronger support themselves, while failure recovery remains available.
+// Kept for compatibility with older tests/imports. Hint progression is now
+// exclusively user-driven; session planning must never synthesize swipes.
 export function hintSwipesForStage(_stage){
   return 0;
 }
 
 export function desiredSessionSize(items,levelState={},now=Date.now(),{min=6,max=8}={}){
   const safe=Array.isArray(items)?items:[];
-  const due=safe.reduce((count,item)=>count+(isDue(levelState,item?.id,now)?1:0),0);
+  const due=safe.reduce((count,item)=>count+(isDue(levelState,item?.id,now)?1:0),0;
   let size=due>=8?8:(due>=3?7:6);
   size=Math.max(min,Math.min(max,size));
   return Math.min(safe.length,size);
@@ -125,7 +124,8 @@ function selectInterleaved(metas,size){
 
 export function buildAutomaticSession(items,levelState={},options={}){
   const now=Number(options.now)||Date.now();
-  const scope=options.scope || consumeRequestedTagScope();
+  const hasExplicitScope=Object.prototype.hasOwnProperty.call(options,'scope');
+  const scope=hasExplicitScope ? options.scope : consumeRequestedTagScope();
   const scoped=filterByScope(items,scope);
   const requested=Number(options.size);
   const size=Number.isFinite(requested) && requested>0
