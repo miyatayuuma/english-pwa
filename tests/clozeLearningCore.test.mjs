@@ -21,7 +21,7 @@ test('learning level increases cloze load gradually',()=>{
   assert.equal(adaptiveClozeCount(sentence,0),1);
   assert.equal(adaptiveClozeCount(sentence,1),1);
   assert.equal(adaptiveClozeCount(sentence,2),2);
-  assert.equal(adaptiveClozeCount(sentence,5),2);
+  assert.equal(adaptiveClozeCount(sentence,5),3);
   const long='This is a deliberately longer example sentence with several important expressions that should receive more than one blank.';
   assert.equal(adaptiveClozeCount(long,2),2);
   assert.equal(adaptiveClozeCount(long,3),3);
