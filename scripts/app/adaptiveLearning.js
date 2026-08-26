@@ -57,6 +57,17 @@ export function filterByScope(items,scope){
   return safe.filter(item=>matchesTag(item,scope.type,scope.id,{includeMedium}));
 }
 
+export function consumeRequestedTagScope(host=globalThis){
+  const scope=host?.__ENGLISH_PWA_TAG_SCOPE_REQUEST__;
+  if(!scope?.type || !scope?.id) return null;
+  try{ delete host.__ENGLISH_PWA_TAG_SCOPE_REQUEST__; }catch(_){ host.__ENGLISH_PWA_TAG_SCOPE_REQUEST__=null; }
+  return {
+    type:String(scope.type),
+    id:String(scope.id),
+    includeMedium:scope.includeMedium!==false,
+  };
+}
+
 function signature(item){
   const character=(Array.isArray(item?.character_tags)?item.character_tags:[])
     .find(tag=>tag?.id && tag.certainty!=='inferred_medium')?.id;
@@ -114,7 +125,8 @@ function selectInterleaved(metas,size){
 
 export function buildAutomaticSession(items,levelState={},options={}){
   const now=Number(options.now)||Date.now();
-  const scoped=filterByScope(items,options.scope);
+  const scope=options.scope || consumeRequestedTagScope();
+  const scoped=filterByScope(items,scope);
   const requested=Number(options.size);
   const size=Number.isFinite(requested) && requested>0
     ? Math.min(scoped.length,Math.max(1,Math.round(requested)))
@@ -129,7 +141,7 @@ export function buildAutomaticSession(items,levelState={},options={}){
     learning:selected.filter(meta=>meta.kind==='learning').length,
     fresh:selected.filter(meta=>meta.kind==='fresh').length,
     maintenance:selected.filter(meta=>meta.kind==='maintenance').length,
-    scope:options.scope||null,
+    scope:scope||null,
   };
 }
 
