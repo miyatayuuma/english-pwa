@@ -1,10 +1,11 @@
-name: Clean and enrich vocabulary
+name: Build cleaned vocabulary database
 
 on:
   workflow_dispatch:
   push:
     paths:
       - 'scripts/data/clean-items.mjs'
+      - 'scripts/vocabulary/build-duo-vocabulary-v2.mjs'
       - 'scripts/vocabulary/enrich-vocabulary-meanings.mjs'
       - '.github/workflows/clean-enrich-vocabulary.yml'
 
@@ -62,13 +63,16 @@ jobs:
           const db=JSON.parse(fs.readFileSync('data/vocabulary-v2.json','utf8'));
           const r=JSON.parse(fs.readFileSync('data/vocabulary-v2-report.json','utf8'));
           if(items.length!==560) throw new Error(`expected 560 items, got ${items.length}`);
-          if(items.some(x=>/\bnobel\b/i.test(x.en))) throw new Error('known novel/nobel typo remains');
-          if(items.some(x=>/[｡､]/.test(x.ja))) throw new Error('half-width Japanese punctuation remains');
-          if(items.some(x=>/紫敵|さらさせてきた/.test(x.ja))) throw new Error('known Japanese typo remains');
+          const badEn=/\bnobel\b|\bTrting\b|\banytmore\b|Couldn't be better! i did|Yeah \.\./i;
+          const badJa=/紫敵|さらさせてきた|骨蓮品|完壁/;
+          if(items.some(x=>badEn.test(x.en))) throw new Error('known English typo remains');
+          if(items.some(x=>badJa.test(x.ja))) throw new Error('known Japanese typo remains');
+          if(items.some(x=>/[｡､｢｣]/.test(x.ja))) throw new Error('half-width Japanese punctuation remains');
+          if(items.some(x=>/[a-z]\.(?=[A-Z])|[!?](?=[A-Z])/.test(x.en))) throw new Error('obvious missing sentence space remains');
           if(r.source_index_rows!==2569) throw new Error(`expected 2569 public-index rows, got ${r.source_index_rows}`);
           if(r.matched_entries<2400) throw new Error(`coverage regressed: ${r.matched_entries}`);
           if(r.phrases<950) throw new Error(`phrase coverage regressed: ${r.phrases}`);
-          if(r.ready_for_cards<1500) throw new Error(`too few usable cards: ${r.ready_for_cards}`);
+          if(r.ready_for_cards<1750) throw new Error(`too few usable cards: ${r.ready_for_cards}`);
           if(db.entries.some(e=>e.meaning_ja && e.meaning_ja.length>60)) throw new Error('meaning gloss too verbose');
           console.log(r);
           NODE
