@@ -26,6 +26,9 @@ const explicitFixes = new Map([
   ['E0102', {
     en: s => s.replace(/faucet off! mom yelled/g, 'faucet off! Mom yelled'),
   }],
+  ['E0163', {
+    ja: s => s.replace(/完壁/g, '完璧'),
+  }],
   ['E0172', {
     en: s => s.replace(/"What is 'an instrument\?"/, '"What is \'an instrument\'?"'),
   }],
