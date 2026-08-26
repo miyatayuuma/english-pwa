@@ -32,3 +32,19 @@ test('automatic session honors a tag browser scope request',()=>{
     else globalThis.__ENGLISH_PWA_TAG_SCOPE_REQUEST__=previous;
   }
 });
+
+test('explicit null scope does not consume a pending tag request',()=>{
+  const previous=globalThis.__ENGLISH_PWA_TAG_SCOPE_REQUEST__;
+  try{
+    const pending={type:'grammar',id:'question',includeMedium:true};
+    globalThis.__ENGLISH_PWA_TAG_SCOPE_REQUEST__=pending;
+    const items=[item('Q1',{grammar_tags:['question']}),item('P1',{grammar_tags:['passive_voice']})];
+    const preview=buildAutomaticSession(items,{}, {now:1000,size:2,scope:null});
+    assert.equal(preview.scope,null);
+    assert.equal(preview.items.length,2);
+    assert.equal(globalThis.__ENGLISH_PWA_TAG_SCOPE_REQUEST__,pending);
+  }finally{
+    if(previous===undefined) delete globalThis.__ENGLISH_PWA_TAG_SCOPE_REQUEST__;
+    else globalThis.__ENGLISH_PWA_TAG_SCOPE_REQUEST__=previous;
+  }
+});
