@@ -1,4 +1,4 @@
-// sw.js: cache name follows the app version. v5.08
+// sw.js: cache name follows the app version. v5.09
 importScripts('./scripts/version.js');
 const CACHE = self.APP_VERSION;
 
