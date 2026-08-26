@@ -23,6 +23,15 @@ test('phrase targets are preferred and overlapping weaker word targets are remov
   assert.equal(targets.filter(x=>x.entry_id==='w2').length,0);
 });
 
+test('split phrasal verbs include intervening objects in one cloze span',()=>{
+  const item={id:'E-SPLIT',en:'Please turn the light out before you leave.',ja:'出る前に明かりを消してください。'};
+  const entries=[{id:'split',kind:'phrase',headword:'turn ... out',meaning_ja:'消す',example_ids:['E-SPLIT'],match_confidence:'high',meaning_confidence:'aligned_high'}];
+  const targets=selectClozeTargets(item,entries,{count:1});
+  assert.equal(targets.length,1);
+  assert.equal(targets[0].surface,'turn the light out');
+  assert.equal(targets[0].tokenEnd-targets[0].tokenStart+1,4);
+});
+
 test('buildClozeCard preserves the original sentence around blanks',()=>{
   const card=buildClozeCard(e2,vocab,{count:2});
   assert.equal(card.usable,true);
