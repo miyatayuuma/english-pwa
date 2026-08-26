@@ -45,56 +45,93 @@ async function waitForNav(timeout=12000){
   return null;
 }
 
-function currentMethod(){
+function storedConfigMethod(){
   try{
-    const preferred=localStorage.getItem(PREF_METHOD_KEY);
-    if(preferred==='compose'||preferred==='read') return preferred;
     const cfg=JSON.parse(localStorage.getItem('appConfigV3')||'{}');
     return cfg?.studyMode==='compose'?'compose':'read';
   }catch(_){ return 'read'; }
 }
 
+function currentMethod(){
+  try{
+    const preferred=localStorage.getItem(PREF_METHOD_KEY);
+    if(preferred==='compose'||preferred==='read') return preferred;
+    return storedConfigMethod();
+  }catch(_){ return 'read'; }
+}
+
 function methodLabel(method){
-  if(method==='compose') return '語順組立';
-  if(method==='vocabulary') return '単語・熟語';
-  return '例文リコール';
+  if(method==='compose') return '並べ替えチャレンジ';
+  if(method==='vocabulary') return '単語チャレンジ';
+  return '穴あきチャレンジ';
 }
 
 function courseLabel(course){
-  if(course==='tag') return 'キャラ・タグ';
-  if(course==='explore') return 'セクション・状態';
+  if(course==='tag') return 'テーマから';
+  if(course==='explore') return '範囲から';
   return 'おまかせ';
 }
 
 function syncPrimaryCta(){
   const cta=document.getElementById('startStudyCta');
   if(!cta) return;
-  cta.textContent=currentMethod()==='compose'?'語順組立を始める':'今日の例文を始める';
+  cta.textContent=currentMethod()==='compose'?'並べ替えチャレンジを始める':'今日のチャレンジを始める';
+}
+
+function persistStudyMethod(next){
+  try{
+    const cfg=JSON.parse(localStorage.getItem('appConfigV3')||'{}');
+    cfg.studyMode=next;
+    localStorage.setItem('appConfigV3',JSON.stringify(cfg));
+  }catch(_){}
 }
 
 function applyStudyMethod(method,{remember=true}={}){
   const next=method==='compose'?'compose':'read';
   if(remember) localStorage.setItem(PREF_METHOD_KEY,next);
-  const radios=[...document.querySelectorAll('input[name="cfgStudyMode"]')];
-  if(radios.length){
-    radios.forEach(input=>{ input.checked=input.value===next; });
-    document.getElementById('cfgSave')?.click();
-  }else{
+
+  // main.js owns the live CFG object. Its settings-save handler is the public
+  // path that updates that runtime object. Open settings first so the form is
+  // hydrated and the save button is enabled, then change only studyMode.
+  let runtimeSynced=false;
+  const cfgButton=document.getElementById('btnCfg');
+  const cfgSave=document.getElementById('cfgSave');
+  if(cfgButton&&cfgSave){
     try{
-      const cfg=JSON.parse(localStorage.getItem('appConfigV3')||'{}');
-      cfg.studyMode=next;
-      localStorage.setItem('appConfigV3',JSON.stringify(cfg));
-    }catch(_){}
+      cfgButton.click();
+      const radios=[...document.querySelectorAll('input[name="cfgStudyMode"]')];
+      if(radios.length){
+        radios.forEach(input=>{ input.checked=input.value===next; });
+        if(cfgSave.disabled) cfgSave.disabled=false;
+        cfgSave.click();
+        runtimeSynced=true;
+      }
+    }catch(_){ runtimeSynced=false; }
   }
+
+  // Persistence is kept independent from the settings form so an unrelated
+  // validation problem cannot make the next launch revert to the old game.
+  persistStudyMethod(next);
+
+  // If the runtime form is unavailable, record a reload request. This is only
+  // a fallback for unusual partial-load states; normal starts stay seamless.
+  if(!runtimeSynced){
+    try{ sessionStorage.setItem('englishPwaModeReloadNeeded','1'); }catch(_){}
+  }else{
+    try{ sessionStorage.removeItem('englishPwaModeReloadNeeded'); }catch(_){}
+  }
+
   syncPrimaryCta();
   try{ document.dispatchEvent(new CustomEvent('english-pwa:study-method-changed',{detail:{method:next}})); }catch(_){}
-  return next;
+  return {method:next,runtimeSynced};
 }
 
 function restorePreferredMethod(){
   const preferred=localStorage.getItem(PREF_METHOD_KEY);
-  if(preferred==='compose'||preferred==='read') applyStudyMethod(preferred,{remember:false});
-  else syncPrimaryCta();
+  if(preferred==='compose'||preferred==='read'){
+    if(storedConfigMethod()!==preferred) applyStudyMethod(preferred,{remember:false});
+    else syncPrimaryCta();
+  }else syncPrimaryCta();
 }
 
 function returnHome(){
@@ -180,14 +217,14 @@ function refreshChoiceState(dialog){
   const start=dialog.querySelector('.learning-choice__start');
   if(summary){
     summary.textContent=method==='vocabulary'
-      ? `${methodLabel(method)}を選択しました`
+      ? `${methodLabel(method)}を選択中`
       : `${methodLabel(method)} × ${courseLabel(course)}`;
   }
   if(start){
-    if(method==='vocabulary') start.textContent='単語・熟語を開く';
-    else if(course==='tag') start.textContent='タグを選ぶ';
-    else if(course==='explore') start.textContent='条件を選ぶ';
-    else start.textContent=`${methodLabel(method)}を始める`;
+    if(method==='vocabulary') start.textContent='単語チャレンジを開く';
+    else if(course==='tag') start.textContent='テーマを選ぶ';
+    else if(course==='explore') start.textContent='範囲を選ぶ';
+    else start.textContent=`${methodLabel(method)}で遊ぶ`;
   }
 }
 
@@ -199,8 +236,17 @@ async function executeChoice(dialog,nav){
     await openVocabulary();
     return;
   }
-  applyStudyMethod(method);
+  const applied=applyStudyMethod(method);
   dialog.close();
+
+  if(!applied.runtimeSynced){
+    try{
+      sessionStorage.setItem('englishPwaPendingGameAction',course);
+      location.reload();
+      return;
+    }catch(_){}
+  }
+
   if(course==='tag'){
     if(typeof globalThis.__OPEN_ENGLISH_TAG_BROWSER__==='function'){
       globalThis.__OPEN_ENGLISH_TAG_BROWSER__();
@@ -213,7 +259,7 @@ async function executeChoice(dialog,nav){
     getLegacyButtons(nav).explore?.click();
     return;
   }
-  setTimeout(()=>document.getElementById('startStudyCta')?.click(),20);
+  setTimeout(()=>document.getElementById('startStudyCta')?.click(),30);
 }
 
 function makeChoiceButton({method='',course='',label,detail,recommended=false}){
@@ -228,7 +274,7 @@ function makeDialog(nav){
   dialog=document.createElement('dialog');
   dialog.id='learningChoiceDialog';
   dialog.className='focus-dialog';
-  dialog.innerHTML=`<section class="focus-sheet"><header class="focus-sheet__head"><h2>学び方を選ぶ</h2><button class="focus-sheet__close" type="button" aria-label="閉じる">×</button></header><div class="focus-sheet__body"><div class="learning-choice"><p class="learning-choice__intro">上のボタンは「選択」、一番下の大きいボタンだけが「開始」です。</p><section class="learning-choice__section"><div class="learning-choice__title-row"><div class="learning-choice__title">学習モード</div><div class="learning-choice__current" data-method-current></div></div><div class="learning-choice__grid">${makeChoiceButton({method:'read',label:'例文リコール',detail:'核表現を手掛かりに、全文を発話',recommended:true})}${makeChoiceButton({method:'compose',label:'語順組立',detail:'日本語訳と語句ブロックから、全文を発話'})}${makeChoiceButton({method:'vocabulary',label:'単語・熟語',detail:'日本語の意味から、英語をすぐ発話'})}</div><div class="learning-choice__note">タップすると丸印と枠が切り替わります。ここではまだ開始しません。</div></section><section class="learning-choice__section" data-course-section><div class="learning-choice__title-row"><div class="learning-choice__title">例文の範囲</div><div class="learning-choice__current" data-course-current></div></div><div class="learning-choice__grid">${makeChoiceButton({course:'auto',label:'おまかせ',detail:'復習を優先し、新規は少量'})}${makeChoiceButton({course:'tag',label:'キャラ・タグ',detail:'人物・場面・文法から指定'})}${makeChoiceButton({course:'explore',label:'セクション・状態',detail:'範囲や習得状態を指定'})}</div></section><div class="learning-choice__footer"><div class="learning-choice__summary"></div><button type="button" class="learning-choice__start">例文リコールを始める</button></div></div></div></section>`;
+  dialog.innerHTML=`<section class="focus-sheet"><header class="focus-sheet__head"><h2>遊び方を選ぶ</h2><button class="focus-sheet__close" type="button" aria-label="閉じる">×</button></header><div class="focus-sheet__body"><div class="learning-choice"><p class="learning-choice__intro">ゲームとステージを選んで、最後の大きいボタンからスタートします。</p><section class="learning-choice__section"><div class="learning-choice__title-row"><div class="learning-choice__title">ゲーム</div><div class="learning-choice__current" data-method-current></div></div><div class="learning-choice__grid">${makeChoiceButton({method:'read',label:'穴あきチャレンジ',detail:'一部が隠れた英文を手掛かりに、全文を言えたらクリア',recommended:true})}${makeChoiceButton({method:'compose',label:'並べ替えチャレンジ',detail:'語句ブロックを並べて、全文を言えたらクリア'})}${makeChoiceButton({method:'vocabulary',label:'単語チャレンジ',detail:'日本語を見て、英語をすばやく言えたらクリア'})}</div><div class="learning-choice__note">ここでは選ぶだけ。ゲームはまだ始まりません。</div></section><section class="learning-choice__section" data-course-section><div class="learning-choice__title-row"><div class="learning-choice__title">ステージ</div><div class="learning-choice__current" data-course-current></div></div><div class="learning-choice__grid">${makeChoiceButton({course:'auto',label:'おまかせ',detail:'今やるカードを自動でミックス'})}${makeChoiceButton({course:'tag',label:'テーマから',detail:'キャラ・場面・文法・表現から選ぶ'})}${makeChoiceButton({course:'explore',label:'範囲から',detail:'セクションや進み具合から選ぶ'})}</div></section><div class="learning-choice__footer"><div class="learning-choice__summary"></div><button type="button" class="learning-choice__start">穴あきチャレンジで遊ぶ</button></div></div></div></section>`;
   document.body.appendChild(dialog);
   dialog.querySelector('.focus-sheet__close')?.addEventListener('click',()=>dialog.close());
   dialog.addEventListener('cancel',event=>{event.preventDefault();dialog.close();});
@@ -255,7 +301,7 @@ function syncNav(nav){
     button=document.createElement('button');
     button.id='openLearningChoice';
     button.type='button';
-    button.textContent='学び方を選ぶ';
+    button.textContent='遊び方を選ぶ';
     button.addEventListener('click',()=>{
       const dialog=makeDialog(nav);
       prepareDialog(dialog);
@@ -264,6 +310,26 @@ function syncNav(nav){
     nav.insertBefore(button,nav.firstChild);
   }
   syncPrimaryCta();
+}
+
+function resumePendingAction(nav){
+  let action='';
+  try{
+    action=sessionStorage.getItem('englishPwaPendingGameAction')||'';
+    sessionStorage.removeItem('englishPwaPendingGameAction');
+    sessionStorage.removeItem('englishPwaModeReloadNeeded');
+  }catch(_){}
+  if(!action) return;
+  setTimeout(()=>{
+    if(action==='tag'){
+      if(typeof globalThis.__OPEN_ENGLISH_TAG_BROWSER__==='function') globalThis.__OPEN_ENGLISH_TAG_BROWSER__();
+      else getLegacyButtons(nav).tags?.click();
+    }else if(action==='explore'){
+      getLegacyButtons(nav).explore?.click();
+    }else{
+      document.getElementById('startStudyCta')?.click();
+    }
+  },120);
 }
 
 async function init(){
@@ -276,6 +342,7 @@ async function init(){
   const observer=new MutationObserver(()=>syncNav(nav));
   observer.observe(nav,{childList:true,subtree:false});
   makeDialog(nav);
+  resumePendingAction(nav);
 }
 
 if(typeof document!=='undefined'){
