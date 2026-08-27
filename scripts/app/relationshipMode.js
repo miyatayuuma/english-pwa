@@ -2,6 +2,7 @@ import {
   buildRelationshipCatalog,
   compareRelationshipSnapshots,
   nextWorldMilestone,
+  RELATIONSHIP_RANKS,
   reachedMilestones,
   recommendCharacter,
   snapshotRelationships,
@@ -23,6 +24,7 @@ const state={
   liveSnapshot:null,
   skipDefaultScopeOnce:false,
   currentItemId:'',
+  sessionSummary:null,
   initialized:false,
 };
 
@@ -58,6 +60,47 @@ export function characterTheme(characterId=''){
 
 export function lobbyConversationCopy(name,size){
   return `今日は${name}と${Math.max(1,Number(size)||1)}つ話そう`;
+}
+
+export function buildExchangeResult({beforeSnapshot={},relationships=[],activeCharacterId='',summary={},freshMilestones=[]}={}){
+  const safeRelationships=Array.isArray(relationships)?relationships.filter(Boolean):[];
+  const deltas=compareRelationshipSnapshots(beforeSnapshot,safeRelationships);
+  const leadDelta=deltas.find(delta=>delta.id===activeCharacterId)||deltas[0]||null;
+  const relationship=safeRelationships.find(entry=>entry.id===activeCharacterId)
+    ||safeRelationships.find(entry=>entry.id===leadDelta?.id)
+    ||null;
+  const activeDelta=relationship?deltas.find(delta=>delta.id===relationship.id)||null:null;
+  const before=relationship?beforeSnapshot?.[relationship.id]||{}:{};
+  const beforeRank=RELATIONSHIP_RANKS.find(rank=>rank.id===before.rankId)||RELATIONSHIP_RANKS[0];
+  const afterRank=relationship?.rank||beforeRank;
+  const intimacyBefore=Math.max(0,Math.min(100,Number(before.intimacy)||0));
+  const intimacyAfter=Math.max(0,Math.min(100,Number(relationship?.intimacy)||0));
+  const conversationCount=Math.max(0,Number(summary?.conversationCount??summary?.cardsDone)||0);
+  const revisitCount=Math.max(0,Number(summary?.retryConversationCount)||0);
+  const shouldRest=Number(summary?.failRate)>=.45||conversationCount>=8;
+  const secondaryDeltas=deltas.filter(delta=>delta.id!==relationship?.id&&(delta.pointGain>0||delta.rankUp||delta.intimacyGain>0));
+  const notices=[];
+  if(activeDelta?.rankUp) notices.push({kind:'rank',text:`${relationship.name}と${afterRank.label}になった！`});
+  const milestone=Array.isArray(freshMilestones)?freshMilestones[0]:null;
+  if(milestone?.label) notices.push({kind:'milestone',text:`${milestone.label}を達成！`});
+  if(secondaryDeltas.length) notices.push({kind:'shared',text:`${secondaryDeltas.slice(0,2).map(delta=>delta.name).join('・')}との関係も進んだ`});
+  return {
+    title:'今日の交流結果',
+    headline:relationship?`${relationship.name}と、今日はよく話せたね`:'今日はよく話せたね',
+    conversationCount,
+    revisitCount,
+    relationship,
+    rankUp:!!activeDelta?.rankUp,
+    rankBefore:beforeRank,
+    rankAfter:afterRank,
+    intimacyBefore,
+    intimacyAfter,
+    notices,
+    primaryAction:shouldRest?'finish':'continue',
+    primaryLabel:shouldRest?'今日はここまで':'もう少し話す',
+    secondaryAction:shouldRest?'continue':'finish',
+    secondaryLabel:shouldRest?'もう少し話す':'今日はここまで',
+  };
 }
 
 async function loadCharacters(){
@@ -98,9 +141,13 @@ function injectStyles(){
     .friendship-session{display:flex;align-items:center;gap:9px;min-height:44px;margin:0 0 8px;padding:7px 9px;border:1px solid rgba(129,140,248,.16);border-radius:14px;background:rgba(99,102,241,.055)}.friendship-session[hidden]{display:none!important}.friendship-session img{width:36px;height:36px;border-radius:11px;object-fit:cover}.friendship-session__copy{min-width:0}.friendship-session__title{font-size:12px;font-weight:850}.friendship-session__prompt{font-size:10px;opacity:.6;margin-top:2px}
     .friendship-float{position:fixed;left:50%;top:18%;z-index:1200;transform:translate(-50%,-10px);padding:10px 14px;border:1px solid rgba(129,140,248,.25);border-radius:999px;background:rgba(16,21,34,.96);box-shadow:0 14px 36px rgba(0,0,0,.35);font-size:13px;font-weight:850;opacity:0;pointer-events:none;animation:friendshipFloat 1.8s ease forwards}.friendship-float--rank{border-radius:16px;font-size:15px;padding:13px 18px}
     @keyframes friendshipFloat{0%{opacity:0;transform:translate(-50%,8px) scale(.96)}18%{opacity:1;transform:translate(-50%,0) scale(1)}75%{opacity:1}100%{opacity:0;transform:translate(-50%,-18px) scale(.98)}}
-    .friendship-review{margin:0 auto 12px;max-width:520px;padding:13px;border:1px solid rgba(129,140,248,.2);border-radius:16px;background:rgba(99,102,241,.06);text-align:left}.friendship-review__title{font-size:13px;font-weight:900}.friendship-review__line{font-size:11px;opacity:.7;margin-top:5px;line-height:1.5}
+    .focus-review-view main{padding:8px 10px}.focus-review-view #reviewCompleteView.review-complete{max-width:560px;margin:0 auto;padding:5px 0 12px;border:0;background:transparent;box-shadow:none}.focus-review-view .review-complete>h2{margin:0 0 10px;text-align:center;font-size:25px;letter-spacing:-.025em}.focus-review-view #reviewCompleteView>#reviewCompleteMessage{display:none}.friendship-review{--result-accent:#7dd3fc;margin:0 0 12px;padding:14px;border:1px solid color-mix(in srgb,var(--result-accent) 27%,transparent);border-radius:25px;background:radial-gradient(110% 65% at 82% 0,color-mix(in srgb,var(--result-accent) 18%,transparent),transparent 65%),#101522;text-align:left;box-shadow:0 20px 48px rgba(0,0,0,.28)}
+    .friendship-review__hero{display:grid;grid-template-columns:90px minmax(0,1fr);gap:13px;align-items:center}.friendship-review__portrait{width:90px;height:104px;border-radius:19px;overflow:hidden;background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}.friendship-review__portrait img{width:100%;height:100%;object-fit:cover;object-position:center 28%}.friendship-review__portrait--fallback{display:grid;place-items:center;font-size:36px}.friendship-review__headline{font-size:19px;font-weight:950;line-height:1.35}.friendship-review__rank{display:inline-flex;margin-top:8px;padding:5px 9px;border-radius:999px;background:color-mix(in srgb,var(--result-accent) 13%,transparent);color:var(--result-accent);font-size:10px;font-weight:900}.friendship-review__rank[data-rank-up=true]{box-shadow:0 0 18px color-mix(in srgb,var(--result-accent) 24%,transparent)}
+    .friendship-review__stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:13px}.friendship-review__stat{padding:10px;border-radius:14px;background:rgba(255,255,255,.045);text-align:center}.friendship-review__stat strong{display:block;font-size:24px;line-height:1;color:var(--result-accent)}.friendship-review__stat span{display:block;margin-top:5px;font-size:9px;opacity:.62}.friendship-review__relation{margin-top:11px;padding:10px;border-radius:14px;background:rgba(255,255,255,.035)}.friendship-review__relation-head{display:flex;justify-content:space-between;gap:10px;font-size:10px;font-weight:850}.friendship-review__relation-head strong{color:var(--result-accent)}.friendship-review__track{height:6px;margin-top:7px;border-radius:999px;overflow:hidden;background:rgba(255,255,255,.1)}.friendship-review__fill{height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--result-accent),#86efac)}.friendship-review__change{margin-top:5px;font-size:9px;opacity:.6}.friendship-review__notices{display:grid;gap:5px;margin-top:10px}.friendship-review__notice{padding:8px 10px;border:1px solid rgba(255,255,255,.08);border-radius:11px;background:rgba(255,255,255,.035);font-size:11px;font-weight:850}.friendship-review__notice--rank,.friendship-review__notice--milestone{color:#fde68a}.friendship-review__details{margin-top:10px;text-align:center}.friendship-review__details summary{display:inline-flex;padding:6px 10px;color:var(--muted);font-size:10px;cursor:pointer;list-style:none}.friendship-review__details summary::-webkit-details-marker{display:none}.friendship-review__details-body{margin-top:6px;padding:10px;border-radius:12px;background:rgba(255,255,255,.035);text-align:left}.friendship-review__details #reviewCompleteMessage{margin:0;font-size:10px;line-height:1.55}
+    .focus-review-view .review-complete-actions{display:grid!important;grid-template-columns:1fr auto;gap:8px}.focus-review-view .review-complete-actions .btn{min-height:50px}.focus-review-view .review-complete-actions .btn--primary{border:0;background:var(--accent);font-weight:900}.focus-review-view .review-complete-actions .friendship-review__secondary{min-width:112px;border-color:transparent;background:transparent;opacity:.7}#reviewActionFocusReview{display:none!important}
     .friendship-ending{border:0;padding:0;background:transparent;color:inherit;width:min(100% - 28px,520px)}.friendship-ending::backdrop{background:rgba(3,6,16,.82);backdrop-filter:blur(7px)}.friendship-ending__card{padding:24px;border:1px solid rgba(129,140,248,.25);border-radius:25px;background:#101522;text-align:center;box-shadow:0 26px 70px rgba(0,0,0,.5)}.friendship-ending__title{font-size:25px;font-weight:950}.friendship-ending__text{font-size:13px;line-height:1.7;opacity:.72;margin:10px 0 18px}.friendship-ending button{width:100%;min-height:48px;border:0;border-radius:14px;background:#6366f1;color:#fff;font:inherit;font-weight:850;cursor:pointer}
-    @media(max-width:430px){.friendship-hero{padding:12px;border-radius:24px}.friendship-hero__person{grid-template-columns:minmax(124px,42%) minmax(0,1fr);min-height:166px;gap:11px}.friendship-hero__portrait,.friendship-hero__portrait img{min-height:166px}.friendship-talk-plan{font-size:13px}.friendship-hero__cta{margin-top:11px}.friendship-next{font-size:9px}}
+    @media(prefers-reduced-motion:reduce){.friendship-float{animation:none;opacity:1;transform:translate(-50%,0)}.friendship-review__rank{box-shadow:none!important}}
+    @media(max-width:430px){.friendship-hero{padding:12px;border-radius:24px}.friendship-hero__person{grid-template-columns:minmax(124px,42%) minmax(0,1fr);min-height:166px;gap:11px}.friendship-hero__portrait,.friendship-hero__portrait img{min-height:166px}.friendship-talk-plan{font-size:13px}.friendship-hero__cta{margin-top:11px}.friendship-next{font-size:9px}.friendship-review{padding:12px;border-radius:22px}.friendship-review__hero{grid-template-columns:78px minmax(0,1fr);gap:10px}.friendship-review__portrait{width:78px;height:92px}.friendship-review__headline{font-size:17px}.focus-review-view .review-complete-actions{grid-template-columns:1fr auto}.focus-review-view .review-complete-actions .friendship-review__secondary{min-width:100px;padding-inline:8px}}
     @media(max-width:370px){.friendship-hero__person{grid-template-columns:118px minmax(0,1fr);min-height:154px}.friendship-hero__portrait,.friendship-hero__portrait img{min-height:154px}.friendship-intimacy-row{margin-top:9px}.friendship-talk-plan{margin-top:10px}.friendship-hero__cta{min-height:50px}.friendship-nav button{min-height:42px}}
   `;
   document.head.appendChild(style);
@@ -211,6 +258,8 @@ function startEveryone(){
 function clearActiveCharacter(){
   state.activeCharacterId='';
   globalThis.__ENGLISH_PWA_ACTIVE_CHARACTER_ID__='';
+  state.beforeSnapshot=snapshotRelationships(refreshModel().relationships);
+  state.liveSnapshot=state.beforeSnapshot;
 }
 
 function captureStarts(event){
@@ -218,13 +267,11 @@ function captureStarts(event){
   if(!target) return;
   if(target.closest('.explore-start')){
     state.skipDefaultScopeOnce=true;
+    clearActiveCharacter();
     return;
   }
   if(target.closest('#reviewActionContinue')&&state.activeCharacterId){
     beginCharacterSession(state.activeCharacterId);
-    if(!globalThis.__ENGLISH_PWA_TAG_SCOPE_REQUEST__){
-      globalThis.__ENGLISH_PWA_TAG_SCOPE_REQUEST__={type:'character',id:state.activeCharacterId};
-    }
     return;
   }
   if(!target.closest('#startStudyCta')) return;
@@ -292,25 +339,40 @@ function inspectLiveProgress(){
 function renderReviewSummary(){
   const view=document.getElementById('reviewCompleteView');
   if(!view||!state.beforeSnapshot) return;
-  const existing=document.getElementById('friendshipReview');existing?.remove();
+  const existing=document.getElementById('friendshipReview');
+  const detailMessage=document.getElementById('reviewCompleteMessage');
+  if(existing&&detailMessage&&existing.contains(detailMessage)) view.insertBefore(detailMessage,existing);
+  existing?.remove();
   const {relationships}=refreshModel();
-  const deltas=compareRelationshipSnapshots(state.beforeSnapshot,relationships);
-  const rel=activeRelationship();
-  const panel=document.createElement('div');panel.id='friendshipReview';panel.className='friendship-review';
-  const title=document.createElement('div');title.className='friendship-review__title';
-  title.textContent=rel?`${rel.name}との時間`:'みんなとの時間';
-  panel.appendChild(title);
-  const activeDelta=rel?deltas.find(delta=>delta.id===rel.id):null;
-  const lines=[];
-  if(activeDelta?.rankUp) lines.push(`${rel.name}と${activeDelta.rank.label}になった！`);
-  if(activeDelta?.pointGain>0) lines.push(`友情 +${activeDelta.pointGain}`);
-  if(rel) lines.push(`親密度 ${rel.intimacy} · ${rel.intimacyStatus.label}`);
-  const secondary=deltas.filter(delta=>delta.id!==rel?.id&&delta.pointGain>0).slice(0,2);
-  if(secondary.length) lines.push(`${secondary.map(delta=>delta.name).join('・')}との友情も進んだ`);
-  if(!lines.length) lines.push('復習を重ねると、親密度を保ちやすくなります。');
-  for(const text of lines){const line=document.createElement('div');line.className='friendship-review__line';line.textContent=text;panel.appendChild(line);}
+  const savedMilestones=loadJsonStorage(MILESTONE_KEY,{})||{};
+  const freshMilestones=reachedMilestones(state.world).filter(milestone=>!savedMilestones[milestone.id]);
+  const result=buildExchangeResult({beforeSnapshot:state.beforeSnapshot,relationships,activeCharacterId:state.activeCharacterId,summary:state.sessionSummary||{},freshMilestones});
+  const heading=view.querySelector('h2');if(heading) heading.textContent=result.title;
+  const panel=document.createElement('article');panel.id='friendshipReview';panel.className='friendship-review';
+  if(result.relationship) panel.style.setProperty('--result-accent',characterTheme(result.relationship.id).accent);
+  const hero=document.createElement('div');hero.className='friendship-review__hero';
+  const portrait=document.createElement('div');portrait.className='friendship-review__portrait';
+  if(result.relationship?.character){const image=document.createElement('img');image.src=iconPath(result.relationship.character);image.alt='';portrait.appendChild(image);}
+  else{portrait.classList.add('friendship-review__portrait--fallback');portrait.textContent='💬';}
+  const heroCopy=document.createElement('div');const headline=document.createElement('div');headline.className='friendship-review__headline';headline.textContent=result.headline;heroCopy.appendChild(headline);
+  if(result.relationship){const rank=document.createElement('div');rank.className='friendship-review__rank';rank.dataset.rankUp=String(result.rankUp);rank.textContent=result.rankUp?`${result.rankBefore.label} → ${result.rankAfter.label}`:result.rankAfter.label;heroCopy.appendChild(rank);}hero.append(portrait,heroCopy);panel.appendChild(hero);
+  const stats=document.createElement('div');stats.className='friendship-review__stats';
+  for(const [value,label] of [[result.conversationCount,'話した会話'],[result.revisitCount,'もう一度会いたい会話']]){const stat=document.createElement('div');stat.className='friendship-review__stat';const strong=document.createElement('strong');strong.textContent=String(value);const span=document.createElement('span');span.textContent=label;stat.append(strong,span);stats.appendChild(stat);}panel.appendChild(stats);
+  if(result.relationship){
+    const relation=document.createElement('div');relation.className='friendship-review__relation';const relationHead=document.createElement('div');relationHead.className='friendship-review__relation-head';const relationLabel=document.createElement('span');relationLabel.textContent='親密度';const relationValue=document.createElement('strong');relationValue.textContent=String(Math.round(result.intimacyAfter));relationHead.append(relationLabel,relationValue);
+    const track=document.createElement('div');track.className='friendship-review__track';track.setAttribute('role','progressbar');track.setAttribute('aria-label',`${result.relationship.name}との親密度`);track.setAttribute('aria-valuemin','0');track.setAttribute('aria-valuemax','100');track.setAttribute('aria-valuenow',String(Math.round(result.intimacyAfter)));const fill=document.createElement('div');fill.className='friendship-review__fill';fill.style.width=`${result.intimacyAfter}%`;track.appendChild(fill);
+    const change=document.createElement('div');change.className='friendship-review__change';change.textContent=`きょうの変化 ${Math.round(result.intimacyBefore)} → ${Math.round(result.intimacyAfter)} · ${result.relationship.intimacyStatus?.label||''}`;relation.append(relationHead,track,change);panel.appendChild(relation);
+  }
+  if(result.notices.length){const notices=document.createElement('div');notices.className='friendship-review__notices';for(const notice of result.notices){const line=document.createElement('div');line.className=`friendship-review__notice friendship-review__notice--${notice.kind}`;line.textContent=notice.text;notices.appendChild(line);}panel.appendChild(notices);}
+  const details=document.createElement('details');details.className='friendship-review__details';const detailsSummary=document.createElement('summary');detailsSummary.textContent='記録を見る';const detailsBody=document.createElement('div');detailsBody.className='friendship-review__details-body';if(detailMessage) detailsBody.appendChild(detailMessage);details.append(detailsSummary,detailsBody);panel.appendChild(details);
   const anchor=view.querySelector('.review-complete-actions')||view.firstChild;
   if(anchor?.parentNode) anchor.parentNode.insertBefore(panel,anchor); else view.appendChild(panel);
+  const continueAction=document.getElementById('reviewActionContinue');const finishAction=document.getElementById('reviewActionFinish');const actions=view.querySelector('.review-complete-actions');
+  const actionById={continue:continueAction,finish:finishAction};const primary=actionById[result.primaryAction];const secondary=actionById[result.secondaryAction];
+  for(const action of [continueAction,finishAction]) action?.classList.remove('btn--primary','friendship-review__secondary');
+  if(primary){primary.textContent=result.primaryLabel;primary.classList.add('btn--primary');}
+  if(secondary){secondary.textContent=result.secondaryLabel;secondary.classList.add('friendship-review__secondary');}
+  if(actions&&primary&&secondary) actions.append(primary,secondary);
   state.liveSnapshot=snapshotRelationships(relationships);
   checkMilestones({show:true});
 }
@@ -377,6 +439,7 @@ function handleViewChange(){
 
 function bindObservers(){
   document.addEventListener('click',captureStarts,true);
+  document.addEventListener('english-pwa:session-result',event=>{state.sessionSummary=event.detail||null;});
   const en=document.getElementById('enText');
   if(en){new MutationObserver(()=>onItemChanged(String(en.dataset.itemId||''))).observe(en,{attributes:true,attributeFilter:['data-item-id']});}
   const views=['homeView','studyView','reviewCompleteView'].map(id=>document.getElementById(id)).filter(Boolean);

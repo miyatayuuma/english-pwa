@@ -174,9 +174,9 @@ function setBodyViewClass(){
 function simplifyReview(){
   const view=document.getElementById('reviewCompleteView');
   if(!view) return;
-  const title=view.querySelector('h2');if(title) title.textContent='完了';
-  const cont=document.getElementById('reviewActionContinue');if(cont) cont.textContent='続ける';
-  const finish=document.getElementById('reviewActionFinish');if(finish) finish.textContent='終了';
+  const title=view.querySelector('h2');if(title) title.textContent='今日の交流結果';
+  const cont=document.getElementById('reviewActionContinue');if(cont) cont.textContent='もう少し話す';
+  const finish=document.getElementById('reviewActionFinish');if(finish) finish.textContent='今日はここまで';
 }
 
 function setupCompactHome(){
@@ -494,8 +494,10 @@ function prepareStart(){
     return setLegacyPlan(plan);
   }
   const requestedScope=consumeRequestedTagScope();
+  const activeCharacterId=String(globalThis.__ENGLISH_PWA_ACTIVE_CHARACTER_ID__||'').trim();
+  const automaticScope=requestedScope||(activeCharacterId?{type:'character',id:activeCharacterId}:null);
   const pool=state.manualPool||state.items;
-  const plan=buildAutomaticSession(pool,loadLevelState(),{scope:requestedScope||null,recentItemIds});
+  const plan=buildAutomaticSession(pool,loadLevelState(),{scope:automaticScope,recentItemIds});
   state.manualPool=null;
   return setLegacyPlan(plan);
 }
