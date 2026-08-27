@@ -78,7 +78,7 @@ export function normalizeSpeakerTags(raw){
     if(!id||!SPEAKER_SOURCE_SET.has(source)||!SPEAKER_CONFIDENCE_SET.has(confidence)) continue;
     const normalized={id,source,confidence};
     const existing=byId.get(id);
-    if(!existing){ byId.set(id,normalized); continue; }
+    if(!existing){byId.set(id,normalized);continue;}
     const sourceRank={explicit:3,contextual:2,app_cast:1};
     const confidenceRank={high:2,medium:1};
     const nextRank=sourceRank[source]*10+confidenceRank[confidence];
@@ -97,9 +97,10 @@ export function normalizeSentencePatterns(raw){
 export function validateTaggingV3Item(item){
   const errors=[];
   if(!item?.id) errors.push('missing id');
-  for(const field of ['character_tags','mentioned_character_tags','speaker_tags','situation_tags','grammar_tags','construction_tags','function_tags']){
+  for(const field of ['mentioned_character_tags','speaker_tags','situation_tags','grammar_tags','construction_tags','function_tags']){
     if(!Array.isArray(item?.[field])) errors.push(`${field} must be an array`);
   }
+  if('character_tags' in (item||{})) errors.push('legacy character_tags must be removed');
   if(item?.grammar_tags?.some(id=>CONSTRUCTION_IDS.has(id))) errors.push('construction tag remains in grammar_tags');
   for(const speaker of item?.speaker_tags||[]){
     if(!speaker?.id) errors.push('speaker tag missing id');
