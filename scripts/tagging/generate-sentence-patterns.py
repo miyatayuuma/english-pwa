@@ -60,20 +60,28 @@ def child_list(token: Any, deps: set[str]) -> list[Any]:
     return [child for child in token.children if child.dep_ in deps]
 
 
-def is_finite_clause_head(token: Any) -> bool:
-    if token.dep_ == "ROOT":
-        return True
-    if token.pos_ not in {"VERB", "AUX", "ADJ", "NOUN"}:
-        return False
-    if token.tag_ in FINITE_TAGS:
-        return True
-    if "Fin" in token.morph.get("VerbForm"):
+def has_finite_marking(token: Any) -> bool:
+    if token.tag_ in FINITE_TAGS or "Fin" in token.morph.get("VerbForm"):
         return True
     return any(
         child.dep_ in {"aux", "auxpass", "cop"}
         and (child.tag_ in FINITE_TAGS or "Fin" in child.morph.get("VerbForm"))
         for child in token.children
     )
+
+
+def is_finite_clause_head(token: Any) -> bool:
+    if token.dep_ == "ROOT":
+        return True
+    if token.pos_ not in {"VERB", "AUX", "ADJ", "NOUN"}:
+        return False
+    if has_finite_marking(token):
+        return True
+    # The small English model occasionally tags the second verb in a past-tense
+    # coordination as VBN. It still inherits tense from the finite conjunct.
+    if token.dep_ == "conj" and token.pos_ == "VERB" and has_finite_marking(token.head):
+        return True
+    return False
 
 
 def clause_text(token: Any, sentence: Any) -> str:
@@ -89,14 +97,15 @@ def clause_text(token: Any, sentence: Any) -> str:
 
 def clause_heads(sentence: Any) -> list[Any]:
     root = sentence.root
-    heads = [root]
+    extras: dict[int, Any] = {}
     for token in sentence:
         if token is root or token.dep_ not in CLAUSE_DEPS:
             continue
         if is_finite_clause_head(token):
-            heads.append(token)
-    unique = {token.i: token for token in heads}
-    return [unique[index] for index in sorted(unique)]
+            extras[token.i] = token
+    # The grammatical main clause is the sentence ROOT even when a relative or
+    # adverbial clause appears earlier in token order.
+    return [root, *[extras[index] for index in sorted(extras)]]
 
 
 def analysis_record(pattern: str | None, confidence: str, reason: str, head: Any, sentence: Any) -> dict[str, Any]:
@@ -118,8 +127,6 @@ def is_small_clause_complement(token: Any) -> bool:
     subjects = child_list(token, SUBJECT_DEPS)
     if not subjects:
         return False
-    # A finite copula/auxiliary would indicate a full clause (e.g. think he is honest),
-    # not the surface O+C relation used by the traditional fifth pattern.
     return not any(
         child.dep_ in {"cop", "aux", "auxpass"}
         and (child.tag_ in FINITE_TAGS or "Fin" in child.morph.get("VerbForm"))
@@ -131,6 +138,24 @@ def is_bare_object_complement(token: Any) -> bool:
     if token.dep_ not in {"ccomp", "xcomp"} or token.pos_ not in {"ADJ", "NOUN", "PROPN"}:
         return False
     return not child_list(token, SUBJECT_DEPS)
+
+
+def is_beside_oneself(preps: list[Any]) -> bool:
+    for prep in preps:
+        if prep.text.lower() != "beside":
+            continue
+        for child in prep.children:
+            if child.dep_ == "pobj" and "Yes" in child.morph.get("Reflex"):
+                return True
+    return False
+
+
+def wrap_periphrastic(record: dict[str, Any], head: Any, sentence: Any, reason_prefix: str) -> dict[str, Any]:
+    result = dict(record)
+    result["reason"] = f"{reason_prefix}:{record.get('reason', '')}"
+    result["relation"] = head.dep_
+    result["text"] = clause_text(head, sentence)
+    return result
 
 
 def classify_clause(head: Any, sentence: Any) -> dict[str, Any]:
@@ -155,11 +180,16 @@ def classify_clause(head: Any, sentence: Any) -> dict[str, Any]:
     if lemma in LINKING_LEMMAS and predicatives and not direct_objects and not indirect_objects:
         return analysis_record("SVC", "high", "linking_verb_predicative_complement", head, sentence)
 
+    # be going to + lexical predicate is a future periphrasis; classify from the
+    # lexical xcomp rather than treating 'going' as a low-confidence control verb.
+    if lemma == "go" and head.tag_ == "VBG" and xcomps and any(
+        child.dep_ == "aux" and (child.lemma_ or child.text).lower() == "be" for child in head.children
+    ):
+        return wrap_periphrastic(classify_clause(xcomps[0], sentence), head, sentence, "be_going_to")
+
     if direct_objects and indirect_objects:
         return analysis_record("SVOO", "high", "direct_and_indirect_objects", head, sentence)
 
-    # spaCy can analyse the O+C pair as an adjective/noun ccomp whose own subject
-    # is the surface object: make [him happy], consider [him a fool].
     if small_clauses:
         return analysis_record("SVOC", "high", "small_clause_object_complement", head, sentence)
 
@@ -185,6 +215,9 @@ def classify_clause(head: Any, sentence: Any) -> dict[str, Any]:
         if lemma in INFINITIVE_OBJECT_LEMMAS:
             return analysis_record("SVO", "medium", "infinitival_object_candidate", head, sentence)
         return analysis_record(None, "low", "unresolved_xcomp_valency", head, sentence)
+
+    if lemma == "be" and is_beside_oneself(preps):
+        return analysis_record("SVC", "high", "predicative_idiom_beside_oneself", head, sentence)
 
     if lemma == "be" and (preps or advmods):
         return analysis_record("SVC", "medium", "be_with_prepositional_or_adverbial_complement", head, sentence)
