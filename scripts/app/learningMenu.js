@@ -27,7 +27,7 @@ function injectStyles(){
   style.textContent=`
     .focus-home-nav.learning-nav{grid-template-columns:1fr 1fr!important}
     .learning-home-return{display:none;border:1px solid rgba(148,163,184,.18);background:rgba(148,163,184,.08);color:inherit;border-radius:11px;padding:8px 10px;font:inherit;font-size:12px;font-weight:750;cursor:pointer;white-space:nowrap;margin-right:8px}
-    body.focus-study-view .learning-home-return,body.focus-review-view .learning-home-return{display:inline-flex;align-items:center;gap:5px}
+    .learning-home-return.is-visible,body.focus-study-view .learning-home-return,body.focus-review-view .learning-home-return{display:inline-flex;align-items:center;gap:5px}
     .learning-choice{display:grid;gap:16px}
     .learning-choice__section{display:grid;gap:8px}.learning-choice__section[hidden]{display:none!important}
     .learning-choice__title-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 2px}
@@ -50,14 +50,12 @@ function injectStyles(){
   document.head.appendChild(style);
 }
 
-async function waitForNav(timeout=12000){
-  const started=Date.now();
-  while(Date.now()-started<timeout){
+async function waitForNav(){
+  while(true){
     const nav=document.getElementById('focusHomeNav');
     if(nav) return nav;
     await sleep(80);
   }
-  return null;
 }
 
 function methodLabel(method){
@@ -89,8 +87,32 @@ function returnHome(){
   if(review) review.hidden=true;
 }
 
+export function isSecondaryLearningView(documentObj=globalThis.document){
+  const study=documentObj?.getElementById?.('studyView');
+  const review=documentObj?.getElementById?.('reviewCompleteView');
+  return !!((study&&!study.hidden)||(review&&!review.hidden));
+}
+
+function syncHomeReturnVisibility(){
+  const button=document.getElementById('learningHomeReturn');
+  if(!button) return;
+  button.classList.toggle('is-visible',isSecondaryLearningView());
+}
+
+function bindHomeReturnVisibility(){
+  const views=['studyView','reviewCompleteView'].map(id=>document.getElementById(id)).filter(Boolean);
+  if(views.length){
+    const observer=new MutationObserver(syncHomeReturnVisibility);
+    views.forEach(view=>observer.observe(view,{attributes:true,attributeFilter:['hidden']}));
+  }
+  syncHomeReturnVisibility();
+}
+
 function setupHomeReturn(){
-  if(document.getElementById('learningHomeReturn')) return;
+  if(document.getElementById('learningHomeReturn')){
+    syncHomeReturnVisibility();
+    return;
+  }
   const header=document.querySelector('#app>header');
   if(!header) return;
   const firstStat=header.querySelector('.stat');
@@ -102,6 +124,7 @@ function setupHomeReturn(){
   button.innerHTML='← <span>ホーム</span>';
   button.addEventListener('click',returnHome);
   header.insertBefore(button,firstStat||header.firstChild);
+  bindHomeReturnVisibility();
 }
 
 async function openVocabulary(){
@@ -267,7 +290,6 @@ async function init(){
   injectStyles();
   setupHomeReturn();
   const nav=await waitForNav();
-  if(!nav) return;
   syncNav(nav);
   const observer=new MutationObserver(()=>syncNav(nav));
   observer.observe(nav,{childList:true,subtree:false});

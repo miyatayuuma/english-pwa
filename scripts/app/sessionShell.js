@@ -35,21 +35,24 @@ function iconPath(profile){
   return name ? `./${encodeURIComponent(name)}.png` : '';
 }
 
-async function waitForMainReady(timeout=9000){
-  const started=Date.now();
-  while(Date.now()-started<timeout){
-    if(Array.isArray(window.ALL_ITEMS)
-      && window.ALL_ITEMS.length
-      && document.getElementById('startStudyCta')
-      && document.querySelector('#levelFilter button[data-level]')) return true;
-    await sleep(60);
+export function isMainRuntimeReady(windowObj=globalThis.window,documentObj=globalThis.document){
+  return !!(
+    Array.isArray(windowObj?.ALL_ITEMS)
+    && windowObj.ALL_ITEMS.length
+    && documentObj?.getElementById?.('startStudyCta')
+  );
+}
+
+async function waitForMainReady(){
+  while(!isMainRuntimeReady()){
+    await sleep(80);
   }
-  return false;
+  return true;
 }
 
 async function loadCharacters(){
   try{
-    const res=await fetch('./data/characters.json',{cache:'no-cache'});
+    const res=await fetch('./data/characters.json',{cache:'default'});
     if(!res.ok) return [];
     const raw=await res.json();
     return Array.isArray(raw)?raw:(Array.isArray(raw?.characters)?raw.characters:[]);
@@ -352,19 +355,19 @@ function bindObservers(){
 }
 
 async function init(){
-  injectStyles();
-  const ready=await waitForMainReady();
-  if(!ready) return;
+  const charactersPromise=loadCharacters();
+  await waitForMainReady();
   state.items=window.ALL_ITEMS.slice();
-  const characters=await loadCharacters();
+  const characters=await charactersPromise;
   state.characters=new Map(characters.filter(profile=>profile?.id).map(profile=>[profile.id,profile]));
   setupCompactHome();
-  createExploreDialog();
   hideInternalSettings();
   bindStartInterceptors();
   bindObservers();
   ensureMemoryCue();
   refreshHomeMeta();
+  injectStyles();
+  document.dispatchEvent(new CustomEvent('english-pwa:session-shell-ready'));
 }
 
 if(typeof document!=='undefined'){
