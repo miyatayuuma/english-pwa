@@ -9,9 +9,12 @@ on:
       - 'scripts/tagging/speakerCastApplication.mjs'
       - 'scripts/tagging/speakerCasting.mjs'
       - 'scripts/tagging/audioVoiceTaxonomy.mjs'
+      - 'scripts/tagging/apply-sentence-patterns.mjs'
+      - 'scripts/tagging/sentencePatternApplication.mjs'
       - 'data/character-casting.json'
       - 'data/audio-voice-tags.json'
       - 'data/characters.json'
+      - 'data/sentence-pattern-analysis.json'
       - '.github/workflows/enrich-item-tags.yml'
 
 permissions:
@@ -29,6 +32,8 @@ jobs:
         run: node scripts/tagging/enrich-items.mjs
       - name: Apply reviewed voice-constrained speaker casting
         run: node scripts/tagging/apply-speaker-cast.mjs
+      - name: Apply reviewed five-sentence-pattern analysis
+        run: node scripts/tagging/apply-sentence-patterns.mjs
       - name: Validate output
         run: |
           node - <<'NODE'
@@ -36,11 +41,24 @@ jobs:
           const items=JSON.parse(fs.readFileSync('data/items.json','utf8'));
           const report=JSON.parse(fs.readFileSync('data/tagging-report.json','utf8'));
           const plan=JSON.parse(fs.readFileSync('data/speaker-cast-plan.json','utf8'));
+          const analysis=JSON.parse(fs.readFileSync('data/sentence-pattern-analysis.json','utf8'));
           if(items.length!==560) throw new Error('item count');
           if(items.some(item=>item.tagging_version!==3||!Array.isArray(item.situation_tags)||!Array.isArray(item.grammar_tags)||!Array.isArray(item.construction_tags)||!Array.isArray(item.mentioned_character_tags)||!Array.isArray(item.speaker_tags)||item.speaker_tags.length===0)) throw new Error('tag schema or speaker coverage');
           if(report.tagging_version!==3||report.total_items!==560||report.speaker_tagged_items!==560) throw new Error('report schema or speaker coverage');
           if(plan.entries.length!==560||plan.diagnostics.speaker_slot_count<560) throw new Error('speaker cast plan coverage');
-          console.log('validated',items.length,'items and',plan.diagnostics.speaker_slot_count,'speaker slots');
+          if(analysis.entries.length!==560||analysis.summary.item_count!==560) throw new Error('sentence-pattern analysis coverage');
+          const allowed=new Set(['SV','SVC','SVO','SVOO','SVOC']);
+          for(const item of items){
+            const p=item.sentence_patterns;
+            if(!p||!Array.isArray(p.clauses)) throw new Error(`missing sentence patterns ${item.id}`);
+            if(p.main!==null&&!allowed.has(p.main)) throw new Error(`bad main pattern ${item.id}`);
+            if(p.clauses.some(value=>!allowed.has(value))) throw new Error(`bad clause pattern ${item.id}`);
+          }
+          if(report.sentence_pattern_main_tagged_items!==analysis.summary.main_accepted) throw new Error('sentence-pattern main coverage mismatch');
+          if(report.sentence_pattern_main_unresolved!==analysis.summary.main_unresolved) throw new Error('sentence-pattern unresolved mismatch');
+          if(report.sentence_pattern_review_items!==analysis.summary.review_item_count) throw new Error('sentence-pattern review mismatch');
+          if(report.sentence_pattern_gold_accuracy<0.9) throw new Error('sentence-pattern gold regression');
+          console.log('validated',items.length,'items,',plan.diagnostics.speaker_slot_count,'speaker slots, and',report.sentence_pattern_main_tagged_items,'main sentence patterns');
           NODE
       - name: Commit enriched data
         run: |
@@ -51,5 +69,5 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add data/items.json data/tagging-report.json data/speaker-cast-plan.json
-          git commit -m 'data: apply tagging v3 and speaker cast'
+          git commit -m 'data: apply tagging v3, speaker cast, and sentence patterns'
           git push
