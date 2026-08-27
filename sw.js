@@ -1,4 +1,4 @@
-// sw.js: cache name follows the app version. v5.40
+// sw.js: cache name follows the app version. v5.41
 importScripts('./scripts/version.js');
 const CACHE = self.APP_VERSION;
 
@@ -21,6 +21,8 @@ self.addEventListener('install', e => {
     './icons/maskable-512.png',
     './scripts/version.js',
     './scripts/app/main.js',
+    './scripts/app/swBootstrap.js?v=5.41',
+    './scripts/app/swUpdatePrompt.js?v=5.41',
     './scripts/app/dom.js',
     './scripts/app/levelState.js',
     './scripts/app/overlay.js',
