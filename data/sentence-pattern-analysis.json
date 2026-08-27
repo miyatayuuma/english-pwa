@@ -6,15 +6,15 @@
   "spacy_version": "3.8.16",
   "summary": {
     "item_count": 560,
-    "main_accepted": 446,
-    "main_unresolved": 114,
-    "main_coverage": 0.7964,
+    "main_accepted": 447,
+    "main_unresolved": 113,
+    "main_coverage": 0.7982,
     "clause_total": 479,
     "clause_accepted": 377,
-    "review_item_count": 168,
+    "review_item_count": 167,
     "main_pattern_counts": {
       "SV": 164,
-      "SVC": 103,
+      "SVC": 104,
       "SVO": 171,
       "SVOC": 3,
       "SVOO": 5
@@ -27,32 +27,16 @@
       "SVOO": 6
     },
     "confidence_counts": {
-      "high": 814,
+      "high": 815,
       "low": 86,
       "manual": 9,
-      "medium": 130
+      "medium": 129
     },
     "gold": {
       "total": 10,
-      "matches": 8,
-      "accuracy": 0.8,
+      "matches": 9,
+      "accuracy": 0.9,
       "mismatches": [
-        {
-          "id": "E0010",
-          "expected": {
-            "main": "SVC",
-            "clauses": [
-              "SVO"
-            ]
-          },
-          "actual": {
-            "main": null,
-            "clauses": [
-              "SVO"
-            ]
-          },
-          "en": "Bob was so beside himself that he could scarcely tell fact from fiction."
-        },
         {
           "id": "E0011",
           "expected": {
@@ -302,10 +286,10 @@
       "id": "E0010",
       "en": "Bob was so beside himself that he could scarcely tell fact from fiction.",
       "main": {
-        "pattern": "SVO",
-        "confidence": "medium",
-        "accepted": false,
-        "reason": "finite_clausal_complement",
+        "pattern": "SVC",
+        "confidence": "high",
+        "accepted": true,
+        "reason": "predicative_idiom_beside_oneself",
         "relation": "ROOT",
         "predicate": "be",
         "text": "Bob was so beside himself that he could scarcely tell fact from fiction."
@@ -321,7 +305,7 @@
           "text": "that he could scarcely tell fact from fiction"
         }
       ],
-      "review_required": true
+      "review_required": false
     },
     {
       "id": "E0011",
