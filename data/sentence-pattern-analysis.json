@@ -20,16 +20,16 @@
       "SVOO": 5
     },
     "clause_pattern_counts": {
-      "SV": 168,
+      "SV": 167,
       "SVC": 99,
-      "SVO": 102,
+      "SVO": 103,
       "SVOC": 2,
       "SVOO": 6
     },
     "confidence_counts": {
-      "high": 815,
+      "high": 813,
       "low": 86,
-      "manual": 9,
+      "manual": 11,
       "medium": 129
     },
     "gold": {
@@ -312,25 +312,26 @@
       "en": "His new novel, which combines prose with his gift for poetry, is going to be published.",
       "main": {
         "pattern": "SV",
-        "confidence": "high",
+        "confidence": "manual",
         "accepted": true,
-        "reason": "be_going_to:no_object_or_predicative_complement",
-        "relation": "ROOT",
-        "predicate": "publish",
+        "reason": "manual_review: spaCy misparses combines prose as a verbal head; the relative clause which combines prose with his gift for poetry is SVO",
+        "relation": "manual",
+        "predicate": "",
         "text": "His new novel, which combines prose with his gift for poetry, is going to be published."
       },
       "clauses": [
         {
-          "pattern": "SV",
-          "confidence": "high",
+          "pattern": "SVO",
+          "confidence": "manual",
           "accepted": true,
-          "reason": "no_object_or_predicative_complement",
-          "relation": "relcl",
-          "predicate": "prose",
-          "text": "which combines prose with his gift for poetry"
+          "reason": "manual_review: spaCy misparses combines prose as a verbal head; the relative clause which combines prose with his gift for poetry is SVO",
+          "relation": "manual",
+          "predicate": "",
+          "text": ""
         }
       ],
-      "review_required": false
+      "review_required": false,
+      "override_applied": true
     },
     {
       "id": "E0012",
