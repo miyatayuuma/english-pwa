@@ -26,4 +26,6 @@ test('raw metrics are collapsed and the scene covers narrow and reduced-motion l
   assert.match(shell,/summary\.textContent='記録・速度'/);
   assert.match(shell,/@media\(max-width:390px\)/);
   assert.match(shell,/@media\(prefers-reduced-motion:reduce\)/);
+  assert.match(shell,/\.focus-study-view #studyView \.conversation-card\{[^}]*min-height:0!important/);
+  assert.match(shell,/flex:0 1 auto/);
 });
