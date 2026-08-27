@@ -20,11 +20,19 @@ test('production browse catalog exposes only curated speakers and English skills
   assert.ok(catalog.skill.every(entry=>entry.id&&entry.label&&entry.total>0));
 });
 
-test('runtime character catalog is driven by speaker tags, not legacy character context',()=>{
+test('runtime character catalog is driven by speaker tags',()=>{
   const catalog=buildTagCatalog(items,characters,{},Date.now());
   for(const entry of catalog.character){
     const expected=items.filter(item=>(item.speaker_tags||[]).some(tag=>tag.id===entry.id)).length;
     assert.equal(entry.total,expected,`${entry.id}: speaker count mismatch`);
+  }
+});
+
+test('retired character context fields and flat tags are absent from production items',()=>{
+  for(const item of items){
+    assert.equal(Object.hasOwn(item,'character_tags'),false,`${item.id}: legacy character_tags remains`);
+    const flat=String(item.tags||'').split(',').map(x=>x.trim()).filter(Boolean);
+    assert.equal(flat.some(tag=>tag.startsWith('character:')),false,`${item.id}: legacy character:* tag remains`);
   }
 });
 
