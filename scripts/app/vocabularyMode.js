@@ -178,6 +178,14 @@ function renderLobby(){
   state.screen.querySelector('.vocab-start')?.addEventListener('click',startSession);
 }
 
+function openVocabularyMode(){
+  if(!state.entries.length) return false;
+  makeDialog();
+  renderLobby();
+  if(!state.dialog.open) state.dialog.showModal();
+  return true;
+}
+
 function startSession(){
   stopListening();
   cancelPronunciation();
@@ -495,6 +503,7 @@ async function init(){
   injectStyles();
   const [entries,nav]=await Promise.all([loadVocabulary(),waitForHomeNav()]);
   state.entries=entries;
+  globalThis.__OPEN_VOCABULARY_MODE__=openVocabularyMode;
   if(!nav||!entries.length) return;
   if(document.getElementById('openVocabularyMode')) return;
   nav.classList.add('has-vocab-mode');
@@ -502,11 +511,7 @@ async function init(){
   button.type='button';
   button.id='openVocabularyMode';
   button.textContent='単語・熟語';
-  button.addEventListener('click',()=>{
-    makeDialog();
-    renderLobby();
-    state.dialog.showModal();
-  });
+  button.addEventListener('click',openVocabularyMode);
   nav.appendChild(button);
   makeDialog();
 }

@@ -128,7 +128,15 @@ function setupHomeReturn(){
 }
 
 async function openVocabulary(){
+  if(typeof globalThis.__OPEN_VOCABULARY_MODE__==='function'){
+    globalThis.__OPEN_VOCABULARY_MODE__();
+    return true;
+  }
   for(let i=0;i<25;i+=1){
+    if(typeof globalThis.__OPEN_VOCABULARY_MODE__==='function'){
+      globalThis.__OPEN_VOCABULARY_MODE__();
+      return true;
+    }
     const button=document.getElementById('openVocabularyMode');
     if(button){button.click();return true;}
     await sleep(80);
@@ -149,6 +157,10 @@ function runCourse(course,nav,attempt=0){
       return true;
     }
   }else if(course==='explore'){
+    if(typeof globalThis.__OPEN_ENGLISH_RANGE_BROWSER__==='function'){
+      globalThis.__OPEN_ENGLISH_RANGE_BROWSER__();
+      return true;
+    }
     if(clickExplore(nav)) return true;
   }else{
     const cta=document.getElementById('startStudyCta');

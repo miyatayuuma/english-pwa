@@ -38,6 +38,10 @@ export function compactComposeChunks(chunks,{minChunks=2,maxChunks=6,wordsPerChu
   return out;
 }
 
+export function taskUsesComposeWordBank(taskType){
+  return taskType==='compose'||taskType==='generate';
+}
+
 export function createComposeGuide({
   composeGuideEl,
   composeTokensEl,
@@ -190,7 +194,10 @@ export function createComposeGuide({
 
     const chunks = buildComposeChunks(item);
     const partialHints = getPartialHints(item);
-    const wordBankEnabled = isComposeTask || !!item?.generate_word_bank;
+    // The user selected the word-order game, so every production task needs
+    // manipulable phrase blocks. A generate task remains harder through its
+    // hints and evaluation; removing the bank turns it into a different game.
+    const wordBankEnabled = taskUsesComposeWordBank(taskType);
     if (!chunks.length && wordBankEnabled) {
       reset();
       return;
@@ -210,19 +217,11 @@ export function createComposeGuide({
       }
     }
 
-    if (!wordBankEnabled) {
-      const ghost = document.createElement('span');
-      ghost.className = 'compose-token';
-      ghost.setAttribute('role', 'listitem');
-      ghost.textContent = '語群なし';
-      composeTokensEl.appendChild(ghost);
-    }
-
     if (composeNoteEl) {
       if (isComposeTask) {
         composeNoteEl.textContent = `語順組立: ${chunks.length}個の語句ブロックを手掛かりに、正しい語順で全文を発話。`;
       } else {
-        const baseNote = wordBankEnabled ? '和文から英文を組み立てて発話。' : '和文から自力で英文を発話。';
+        const baseNote = '語句ブロックを正しい語順に並べ、英文を発話。';
         composeNoteEl.textContent = partialHints.length ? `${baseNote} ${partialHints.join(' / ')}` : baseNote;
       }
     }
