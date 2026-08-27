@@ -83,6 +83,7 @@ export function consumeRequestedTagScope(host=globalThis){
 
 function signatures(item){
   const values=[];
+  if(item?.unit) values.push(`s:${String(item.unit).toLowerCase()}`);
   for(const tag of Array.isArray(item?.speaker_tags)?item.speaker_tags:[]){ if(tag?.id) values.push(`c:${tag.id}`); }
   for(const id of Array.isArray(item?.grammar_tags)?item.grammar_tags:[]){ if(id) values.push(`g:${id}`); }
   for(const id of Array.isArray(item?.construction_tags)?item.construction_tags:[]){ if(id) values.push(`x:${id}`); }

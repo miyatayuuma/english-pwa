@@ -169,3 +169,16 @@ test('recommendation favors due relationship work and postgame maintenance',()=>
   const relationships=buildRelationshipCatalog(items,chars,levels,now);
   assert.equal(recommendCharacter(relationships)?.id,'joe');
 });
+
+test('recommendation rotates recent partners unless their review load is urgent',()=>{
+  const fresh=buildRelationshipCatalog(items,chars,{},now);
+  const first=recommendCharacter(fresh);
+  const rotated=recommendCharacter(fresh,{recentCharacterIds:[first.id]});
+  assert.notEqual(rotated.id,first.id);
+
+  const urgent=buildRelationshipCatalog(items,chars,{
+    A:review(2,{due:now-DAY,interval:DAY}),
+    C:review(2,{due:now-DAY,interval:DAY}),
+  },now);
+  assert.equal(recommendCharacter(urgent,{recentCharacterIds:['joe']})?.id,'joe');
+});

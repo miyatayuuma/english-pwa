@@ -27,6 +27,20 @@ const state={
   sessionSummary:null,
   initialized:false,
 };
+const RECENT_CHARACTER_KEY='recentCharacterSessionsV1';
+
+function recentCharacterIds(){
+  try{
+    const value=JSON.parse(localStorage.getItem(RECENT_CHARACTER_KEY)||'[]');
+    return Array.isArray(value)?[...new Set(value.map(String).filter(Boolean))].slice(0,4):[];
+  }catch(_){ return []; }
+}
+
+function rememberCharacter(characterId){
+  const id=String(characterId||'').trim();
+  if(!id) return;
+  try{ localStorage.setItem(RECENT_CHARACTER_KEY,JSON.stringify([id,...recentCharacterIds().filter(value=>value!==id)].slice(0,4))); }catch(_){}
+}
 
 function loadJsonStorage(key,fallback){
   try{
@@ -185,7 +199,7 @@ function renderHome(){
     hero=document.createElement('section');hero.id='friendshipHero';hero.className='friendship-hero';
     wrap.insertBefore(hero,cta);
   }
-  const recommended=recommendCharacter(state.relationships)||state.relationships[0];
+  const recommended=recommendCharacter(state.relationships,{recentCharacterIds:recentCharacterIds()})||state.relationships[0];
   const rel=recommended;
   const plan=buildAutomaticSession(state.items,loadLevelState(),{scope:{type:'character',id:rel.id}});
   const theme=characterTheme(rel.id);
@@ -234,6 +248,7 @@ function beginCharacterSession(characterId){
   globalThis.__ENGLISH_PWA_ACTIVE_CHARACTER_ID__=characterId;
   state.beforeSnapshot=snapshotRelationships(state.relationships);
   state.liveSnapshot=state.beforeSnapshot;
+  rememberCharacter(characterId);
 }
 
 function startCharacter(characterId){
@@ -281,7 +296,7 @@ function captureStarts(event){
   }
   if(globalThis.__ENGLISH_PWA_TAG_SCOPE_REQUEST__) return;
   if(state.skipDefaultScopeOnce){state.skipDefaultScopeOnce=false;return;}
-  const recommended=recommendCharacter(refreshModel().relationships);
+  const recommended=recommendCharacter(refreshModel().relationships,{recentCharacterIds:recentCharacterIds()});
   if(!recommended) return;
   beginCharacterSession(recommended.id);
   globalThis.__ENGLISH_PWA_TAG_SCOPE_REQUEST__={type:'character',id:recommended.id};

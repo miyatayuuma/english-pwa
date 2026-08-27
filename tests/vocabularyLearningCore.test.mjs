@@ -48,6 +48,28 @@ test('kind filter builds a word-only or phrase-only queue',()=>{
   assert.deepEqual(plan.entries.map(x=>x.id),['p']);
 });
 
+test('consecutive vocabulary sessions rotate non-due cards but keep due reviews',()=>{
+  const now=1_800_000_000_000;
+  const entries=Array.from({length:20},(_,i)=>({id:`v${i}`,kind:'word'}));
+  const first=buildVocabularySession(entries,{}, {size:6,newCap:6,now,rotationSeed:1});
+  const second=buildVocabularySession(entries,{}, {
+    size:6,newCap:6,now,rotationSeed:2,recentItemIds:first.entries.map(entry=>entry.id),
+  });
+  assert.equal(second.entries.filter(entry=>first.entries.some(previous=>previous.id===entry.id)).length,0);
+  assert.equal(second.recentExcluded,first.size);
+
+  const dueId=first.entries[0].id;
+  const levels={[dueId]:{last:2,updatedAt:now-1000,review:{nextDueAt:now-1}}};
+  const withDue=buildVocabularySession(entries,levels,{size:6,newCap:6,now,recentItemIds:first.entries.map(entry=>entry.id)});
+  assert.equal(withDue.entries[0].id,dueId);
+
+  const small=entries.slice(0,3);
+  const smallPlan=buildVocabularySession(small,{}, {
+    size:3,newCap:3,now,recentItemIds:small.map(entry=>entry.id),
+  });
+  assert.equal(smallPlan.size,3);
+});
+
 test('answer variants turn dictionary notation into speakable alternatives',()=>{
   const variants=answerVariants({headword:"shake one's head"});
   assert.ok(variants.includes('shake my head'));
