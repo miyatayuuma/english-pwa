@@ -8,7 +8,7 @@ import {
 } from '../scripts/app/adaptiveLearning.js';
 
 function item(id,extra={}){
-  return {id,en:id,ja:id,character_tags:[],situation_tags:['general'],grammar_tags:[],function_tags:[],...extra};
+  return {id,en:id,ja:id,speaker_tags:[],situation_tags:['general'],grammar_tags:[],construction_tags:[],function_tags:[],sentence_patterns:{main:null,clauses:[]},...extra};
 }
 
 test('due work is prioritized while new material stays limited',()=>{
@@ -34,26 +34,35 @@ test('session size grows modestly when many reviews are due',()=>{
   assert.equal(desiredSessionSize(items,levels,now),8);
 });
 
-test('character scope can exclude medium-confidence associations',()=>{
+test('character scope follows actual speaker assignment',()=>{
   const items=[
-    item('A',{character_tags:[{id:'bob',certainty:'explicit'}]}),
-    item('B',{character_tags:[{id:'bob',certainty:'inferred_high'}]}),
-    item('C',{character_tags:[{id:'bob',certainty:'inferred_medium'}]}),
-    item('D',{character_tags:[{id:'jane',certainty:'explicit'}]}),
+    item('A',{speaker_tags:[{id:'bob',source:'app_cast',confidence:'high'}]}),
+    item('B',{speaker_tags:[{id:'bob',source:'app_cast',confidence:'medium'}]}),
+    item('C',{speaker_tags:[{id:'jane',source:'app_cast',confidence:'high'}]}),
   ];
-  assert.deepEqual(filterByScope(items,{type:'character',id:'bob',includeMedium:false}).map(x=>x.id),['A','B']);
-  assert.deepEqual(filterByScope(items,{type:'character',id:'bob',includeMedium:true}).map(x=>x.id),['A','B','C']);
+  assert.deepEqual(filterByScope(items,{type:'character',id:'bob'}).map(x=>x.id),['A','B']);
 });
 
-test('interleaving avoids repeating the same strong tag when alternatives exist',()=>{
+test('skill scope can target grammar, construction, and sentence pattern',()=>{
+  const items=[
+    item('Q',{grammar_tags:['question']}),
+    item('X',{construction_tags:['there_be']}),
+    item('P',{sentence_patterns:{main:'SVO',clauses:[]}}),
+  ];
+  assert.deepEqual(filterByScope(items,{type:'skill',id:'grammar:question'}).map(x=>x.id),['Q']);
+  assert.deepEqual(filterByScope(items,{type:'skill',id:'construction:there_be'}).map(x=>x.id),['X']);
+  assert.deepEqual(filterByScope(items,{type:'skill',id:'sentence_pattern:SVO'}).map(x=>x.id),['P']);
+});
+
+test('interleaving avoids repeating the same speaker when alternatives exist',()=>{
   const now=1000;
   const items=[
-    item('A',{grammar_tags:['passive_voice']}),
-    item('B',{grammar_tags:['passive_voice']}),
-    item('C',{grammar_tags:['question']}),
-    item('D',{grammar_tags:['present_perfect']}),
-    item('E',{grammar_tags:['modal_can']}),
-    item('F',{grammar_tags:['relative_clause']}),
+    item('A',{speaker_tags:[{id:'bob'}]}),
+    item('B',{speaker_tags:[{id:'bob'}]}),
+    item('C',{speaker_tags:[{id:'jane'}]}),
+    item('D',{speaker_tags:[{id:'mike'}]}),
+    item('E',{speaker_tags:[{id:'ken'}]}),
+    item('F',{speaker_tags:[{id:'phil'}]}),
   ];
   const levels=Object.fromEntries(items.map(x=>[x.id,{last:2}]));
   const plan=buildAutomaticSession(items,levels,{now,size:6});
