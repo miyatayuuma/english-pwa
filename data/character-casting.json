@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "purpose": "App-original speaker casting constraints. This controls which existing character is a plausible narrator/dialogue role; it does not assert DUO source canon.",
+  "tier_weights": {"main": 1.2, "supporting": 1.0, "cameo": 0.8},
+  "characters": [
+    {"id":"bob","voice_presentation":"masculine","tier":"main","situation_affinity":{"romance_relationship":4,"social_communication":3,"personality_emotion":3,"leisure_hobby":2,"family_home":1,"workplace_career":1},"function_affinity":{"apology":2,"gratitude":1,"complaint_or_protest":1}},
+    {"id":"nick","voice_presentation":"masculine","tier":"main","situation_affinity":{"workplace_career":4,"shopping_money":2,"personality_emotion":3,"social_communication":2,"politics_government":1,"law_crime":1},"function_affinity":{"opinion":2,"complaint_or_protest":1}},
+    {"id":"ken","voice_presentation":"masculine","tier":"supporting","situation_affinity":{"danger_disaster":4,"travel_transport":3,"leisure_hobby":3,"personality_emotion":3,"environment_geography":2},"function_affinity":{"encouragement":3,"advising":1}},
+    {"id":"tom","voice_presentation":"masculine","tier":"supporting","situation_affinity":{"personality_emotion":4,"social_communication":2,"romance_relationship":1,"leisure_hobby":1},"function_affinity":{"complaint_or_protest":3,"opinion":1}},
+    {"id":"dave","voice_presentation":"masculine","tier":"supporting","situation_affinity":{"danger_disaster":3,"health_medical":3,"personality_emotion":4,"leisure_hobby":1},"function_affinity":{"complaint_or_protest":1,"requesting":1}},
+    {"id":"joe","voice_presentation":"masculine","tier":"supporting","situation_affinity":{"school_education":4,"travel_transport":4,"personality_emotion":2,"social_communication":1},"function_affinity":{"complaint_or_protest":2,"asking":1}},
+    {"id":"mike","voice_presentation":"masculine","tier":"supporting","situation_affinity":{"workplace_career":4,"travel_transport":2,"shopping_money":2,"values_society":1,"personality_emotion":2},"function_affinity":{"encouragement":3,"gratitude":2,"requesting":1}},
+    {"id":"bill","voice_presentation":"masculine","tier":"supporting","situation_affinity":{"romance_relationship":4,"social_communication":4,"personality_emotion":3,"family_home":1},"function_affinity":{"apology":3,"encouragement":2,"requesting":1}},
+    {"id":"ted","voice_presentation":"masculine","tier":"cameo","situation_affinity":{"politics_government":5,"values_society":4,"workplace_career":1,"social_communication":1},"function_affinity":{"opinion":3,"encouragement":1}},
+    {"id":"starr","voice_presentation":"masculine","tier":"cameo","situation_affinity":{"law_crime":5,"workplace_career":3,"politics_government":1,"shopping_money":1},"function_affinity":{"advising":2,"opinion":1}},
+    {"id":"phil","voice_presentation":"masculine","tier":"cameo","situation_affinity":{"school_education":5,"science_technology":5,"arts_culture":3},"function_affinity":{"opinion":2,"advising":2,"asking":1}},
+    {"id":"senator_ford","voice_presentation":"masculine","tier":"supporting","situation_affinity":{"politics_government":5,"war_conflict":4,"values_society":3,"social_communication":1},"function_affinity":{"opinion":3,"advising":1}},
+
+    {"id":"jennifer","voice_presentation":"feminine","tier":"main","situation_affinity":{"romance_relationship":5,"social_communication":4,"personality_emotion":3,"shopping_money":3,"workplace_career":2,"arts_culture":1},"function_affinity":{"opinion":2,"asking":2,"complaint_or_protest":1}},
+    {"id":"lisa","voice_presentation":"feminine","tier":"main","situation_affinity":{"romance_relationship":5,"social_communication":4,"personality_emotion":5,"family_home":2},"function_affinity":{"complaint_or_protest":4,"apology":1,"asking":1}},
+    {"id":"jane","voice_presentation":"feminine","tier":"main","situation_affinity":{"family_home":4,"social_communication":3,"health_medical":3,"religion_funeral":4,"travel_transport":3,"values_society":3,"personality_emotion":3},"function_affinity":{"advising":3,"encouragement":3,"gratitude":2,"requesting":2}},
+    {"id":"naomi","voice_presentation":"feminine","tier":"supporting","situation_affinity":{"romance_relationship":4,"shopping_money":4,"social_communication":3,"personality_emotion":3,"leisure_hobby":2},"function_affinity":{"asking":2,"opinion":1}},
+    {"id":"monica","voice_presentation":"feminine","tier":"supporting","situation_affinity":{"romance_relationship":5,"social_communication":4,"personality_emotion":4,"family_home":1},"function_affinity":{"apology":2,"requesting":2,"gratitude":1}},
+    {"id":"teresa","voice_presentation":"feminine","tier":"cameo","situation_affinity":{"values_society":5,"family_home":4,"religion_funeral":5,"health_medical":2,"politics_government":2,"war_conflict":2},"function_affinity":{"encouragement":3,"advising":2,"gratitude":1}},
+    {"id":"molly","voice_presentation":"feminine","tier":"cameo","situation_affinity":{"arts_culture":5,"leisure_hobby":5,"science_technology":2,"school_education":2,"social_communication":1},"function_affinity":{"opinion":2,"asking":1}},
+    {"id":"dolly","voice_presentation":"feminine","tier":"cameo","situation_affinity":{"family_home":5,"social_communication":3,"school_education":2,"shopping_money":2,"leisure_hobby":2},"function_affinity":{"asking":2,"requesting":1,"gratitude":1}}
+  ],
+  "relationship_hints": {
+    "jennifer": {"masculine":{"bob":4}},
+    "bob": {"feminine":{"jennifer":2,"jane":1}},
+    "nick": {"feminine":{"lisa":4}},
+    "lisa": {"masculine":{"nick":4}},
+    "monica": {"masculine":{"bill":5}},
+    "bill": {"feminine":{"monica":5}},
+    "jane": {"masculine":{"bob":1}}
+  }
+}
