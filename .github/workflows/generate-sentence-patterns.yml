@@ -30,12 +30,7 @@ jobs:
           python -m spacy download en_core_web_sm
       - name: Inspect parser contract
         run: |
-          python - <<'PY'
-          import spacy
-          nlp=spacy.load('en_core_web_sm')
-          doc=nlp('They made him happy.')
-          print([(t.text,t.pos_,t.tag_,t.dep_,t.head.text) for t in doc])
-          PY
+          python -c "import spacy; nlp=spacy.load('en_core_web_sm'); samples=['They made him happy.','He leaned against the pillar and gazed at the Statue of Liberty.','Bob was so beside himself that he could scarcely tell fact from fiction.','His new novel, which combines prose with his gift for poetry, is going to be published.']; [print(text, [(t.text,t.pos_,t.tag_,t.dep_,t.head.text,str(t.morph)) for t in nlp(text)]) for text in samples]"
       - name: Generate auditable sentence-pattern analysis
         run: python scripts/tagging/generate-sentence-patterns.py
       - uses: actions/setup-node@v4
