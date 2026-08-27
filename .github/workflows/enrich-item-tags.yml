@@ -5,6 +5,13 @@ on:
   push:
     paths:
       - 'scripts/tagging/enrich-items.mjs'
+      - 'scripts/tagging/apply-speaker-cast.mjs'
+      - 'scripts/tagging/speakerCastApplication.mjs'
+      - 'scripts/tagging/speakerCasting.mjs'
+      - 'scripts/tagging/audioVoiceTaxonomy.mjs'
+      - 'data/character-casting.json'
+      - 'data/audio-voice-tags.json'
+      - 'data/characters.json'
       - '.github/workflows/enrich-item-tags.yml'
 
 permissions:
@@ -20,17 +27,29 @@ jobs:
           node-version: '22'
       - name: Enrich all DUO items
         run: node scripts/tagging/enrich-items.mjs
+      - name: Apply reviewed voice-constrained speaker casting
+        run: node scripts/tagging/apply-speaker-cast.mjs
       - name: Validate output
         run: |
-          node -e "const fs=require('fs');const x=JSON.parse(fs.readFileSync('data/items.json','utf8'));const r=JSON.parse(fs.readFileSync('data/tagging-report.json','utf8'));if(x.length!==560)throw new Error('item count');if(x.some(i=>i.tagging_version!==2||!Array.isArray(i.situation_tags)||!Array.isArray(i.grammar_tags)||!Array.isArray(i.character_tags)||!Array.isArray(i.function_tags)))throw new Error('tag schema');if(r.tagging_version!==2||r.total_items!==560)throw new Error('report schema');console.log('validated',x.length)"
+          node - <<'NODE'
+          const fs=require('fs');
+          const items=JSON.parse(fs.readFileSync('data/items.json','utf8'));
+          const report=JSON.parse(fs.readFileSync('data/tagging-report.json','utf8'));
+          const plan=JSON.parse(fs.readFileSync('data/speaker-cast-plan.json','utf8'));
+          if(items.length!==560) throw new Error('item count');
+          if(items.some(item=>item.tagging_version!==3||!Array.isArray(item.situation_tags)||!Array.isArray(item.grammar_tags)||!Array.isArray(item.construction_tags)||!Array.isArray(item.mentioned_character_tags)||!Array.isArray(item.speaker_tags)||item.speaker_tags.length===0)) throw new Error('tag schema or speaker coverage');
+          if(report.tagging_version!==3||report.total_items!==560||report.speaker_tagged_items!==560) throw new Error('report schema or speaker coverage');
+          if(plan.entries.length!==560||plan.diagnostics.speaker_slot_count<560) throw new Error('speaker cast plan coverage');
+          console.log('validated',items.length,'items and',plan.diagnostics.speaker_slot_count,'speaker slots');
+          NODE
       - name: Commit enriched data
         run: |
-          if git diff --quiet -- data/items.json data/tagging-report.json; then
+          if git diff --quiet -- data/items.json data/tagging-report.json data/speaker-cast-plan.json; then
             echo 'No changes to commit.'
             exit 0
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add data/items.json data/tagging-report.json
-          git commit -m 'data: apply DUO learning tags v2 to all items'
+          git add data/items.json data/tagging-report.json data/speaker-cast-plan.json
+          git commit -m 'data: apply tagging v3 and speaker cast'
           git push
