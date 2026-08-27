@@ -1591,19 +1591,19 @@ function createAppRuntime(){
 
   function composeHintPlaceholder(stage){
     if(stage<=BASE_HINT_STAGE){
-      return '<span class="hint-placeholder">カードを下スワイプして和訳ヒントを表示（もう一度で音声、さらにもう一度で英文）</span>';
+      return '<span class="hint-placeholder">ヒントを押すか、下にスワイプして和訳を表示（次は音声、さらに次は英文）</span>';
     }
     if(stage<COMPOSE_HINT_STAGE_AUDIO){
-      return '<span class="hint-placeholder">英文はまだ非表示です。もう一度下スワイプで音声ヒントを有効化（さらにもう一度で英文）</span>';
+      return '<span class="hint-placeholder">英文はまだ非表示です。ヒントをもう一度押すと音声、その次に英文を表示します</span>';
     }
     if(stage<COMPOSE_HINT_STAGE_EN){
-      return '<span class="hint-placeholder">英文はまだ非表示です。もう一度下スワイプで英文ヒントを表示</span>';
+      return '<span class="hint-placeholder">英文はまだ非表示です。ヒントをもう一度押すと英文を表示します</span>';
     }
     return '';
   }
 
   function defaultHintPlaceholder(){
-    return '<span class="hint-placeholder">カードを下スワイプして英文ヒントを表示（もう一度で和訳）</span>';
+    return '<span class="hint-placeholder">ヒントを押すか、下にスワイプして英文を表示（次は和訳）</span>';
   }
 
   function setHintStage(stage,{reset=false}={}){
@@ -1659,6 +1659,8 @@ function createAppRuntime(){
       }
     }
   }
+
+  document.addEventListener('english-pwa:request-hint',advanceHintStage);
 
 
   const ARTICLE_TOKENS=new Set(['a','an','the']);

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { filterExploreItems } from '../scripts/app/sessionShell.js';
+import { conversationProgressFor, filterExploreItems, orderedSpeakerIds } from '../scripts/app/sessionShell.js';
 
 test('session shell imports safely outside browser', async()=>{
   const mod=await import('../scripts/app/sessionShell.js');
@@ -18,4 +18,15 @@ test('explore filtering does not mutate source items',()=>{
   assert.deepEqual(fresh.map(item=>item.id),['a']);
   assert.deepEqual(stable.map(item=>item.id),['b']);
   assert.equal(items.length,2);
+});
+
+test('conversation speakers keep source order and remove duplicates',()=>{
+  assert.deepEqual(orderedSpeakerIds({speaker_tags:[{id:'bob'},{id:'jane'},{id:'bob'},{}]}),['bob','jane']);
+  assert.deepEqual(orderedSpeakerIds({}),[]);
+});
+
+test('conversation progress follows the generated session plan',()=>{
+  const plan=[{id:'a'},{id:'b'},{id:'c'}];
+  assert.deepEqual(conversationProgressFor('b',plan),{current:2,total:3});
+  assert.deepEqual(conversationProgressFor('missing',plan),{current:1,total:3});
 });
