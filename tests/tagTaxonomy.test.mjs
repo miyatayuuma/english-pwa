@@ -56,10 +56,9 @@ test('sentence patterns allow a main clause plus multiple embedded clause patter
   assert.deepEqual(normalizeSentencePatterns(null),{main:null,clauses:[]});
 });
 
-test('v3 validation rejects mixed grammar/construction semantics',()=>{
+test('v3 validation rejects mixed grammar/construction semantics and retired character context',()=>{
   const base={
     id:'E0001',
-    character_tags:[],
     mentioned_character_tags:[],
     speaker_tags:[],
     situation_tags:['general'],
@@ -69,8 +68,10 @@ test('v3 validation rejects mixed grammar/construction semantics',()=>{
     function_tags:[],
   };
   assert.deepEqual(validateTaggingV3Item(base),[]);
-  const bad={...base,grammar_tags:['there_be']};
-  assert.ok(validateTaggingV3Item(bad).some(error=>error.includes('construction tag remains')));
+  const badGrammar={...base,grammar_tags:['there_be']};
+  assert.ok(validateTaggingV3Item(badGrammar).some(error=>error.includes('construction tag remains')));
+  const legacy={...base,character_tags:[]};
+  assert.ok(validateTaggingV3Item(legacy).some(error=>error.includes('legacy character_tags')));
 });
 
 test('tagging enrichment script remains syntactically valid without executing data writes',()=>{
