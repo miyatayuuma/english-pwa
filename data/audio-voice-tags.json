@@ -1,91 +1,14 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "scope": "game audio voice presentation; not actor gender identity",
-  "analysis_method": "acoustic F0 distribution plus dialogue structure; ambiguous cases require manual listening review",
-  "entries": [
-    {
-      "item_id": "E0001",
-      "audio_fn": "01 Section 1_01.m4a",
-      "voice_presentation": "masculine",
-      "confidence": "high",
-      "source": "audio_analysis",
-      "turns": [{"order": 1, "presentation": "masculine", "confidence": "high"}],
-      "metrics": {"duration_s": 2.299, "f0_median_hz": 107.2, "f0_p10_hz": 85.3, "f0_p90_hz": 143.1}
-    },
-    {
-      "item_id": "E0002",
-      "audio_fn": "01 Section 1_02.m4a",
-      "voice_presentation": "masculine",
-      "confidence": "high",
-      "source": "audio_analysis",
-      "turns": [{"order": 1, "presentation": "masculine", "confidence": "high"}],
-      "metrics": {"duration_s": 3.715, "f0_median_hz": 117.2, "f0_p10_hz": 79.6, "f0_p90_hz": 190.4}
-    },
-    {
-      "item_id": "E0003",
-      "audio_fn": "01 Section 1_03.m4a",
-      "voice_presentation": "masculine",
-      "confidence": "high",
-      "source": "audio_analysis",
-      "turns": [{"order": 1, "presentation": "masculine", "confidence": "high"}],
-      "metrics": {"duration_s": 5.317, "f0_median_hz": 123.8, "f0_p10_hz": 86.8, "f0_p90_hz": 162.9}
-    },
-    {
-      "item_id": "E0004",
-      "audio_fn": "01 Section 1_04.m4a",
-      "voice_presentation": "masculine",
-      "confidence": "high",
-      "source": "audio_analysis",
-      "turns": [{"order": 1, "presentation": "masculine", "confidence": "high"}],
-      "metrics": {"duration_s": 4.876, "f0_median_hz": 135.8, "f0_p10_hz": 97.2, "f0_p90_hz": 178.2}
-    },
-    {
-      "item_id": "E0005",
-      "audio_fn": "01 Section 1_05.m4a",
-      "voice_presentation": "masculine",
-      "confidence": "high",
-      "source": "audio_analysis",
-      "turns": [{"order": 1, "presentation": "masculine", "confidence": "high"}],
-      "metrics": {"duration_s": 2.694, "f0_median_hz": 120.6, "f0_p10_hz": 91.8, "f0_p90_hz": 149.1}
-    },
-    {
-      "item_id": "E0006",
-      "audio_fn": "01 Section 1_06.m4a",
-      "voice_presentation": "masculine",
-      "confidence": "high",
-      "source": "audio_analysis",
-      "turns": [{"order": 1, "presentation": "masculine", "confidence": "high"}],
-      "metrics": {"duration_s": 3.506, "f0_median_hz": 124.8, "f0_p10_hz": 88.7, "f0_p90_hz": 172.1}
-    },
-    {
-      "item_id": "E0007",
-      "audio_fn": "01 Section 1_07.m4a",
-      "voice_presentation": "masculine",
-      "confidence": "high",
-      "source": "audio_analysis",
-      "turns": [{"order": 1, "presentation": "masculine", "confidence": "high"}],
-      "metrics": {"duration_s": 6.130, "f0_median_hz": 127.3, "f0_p10_hz": 88.9, "f0_p90_hz": 171.6}
-    },
-    {
-      "item_id": "E0008",
-      "audio_fn": "01 Section 1_08.m4a",
-      "voice_presentation": "masculine",
-      "confidence": "high",
-      "source": "audio_analysis",
-      "turns": [{"order": 1, "presentation": "masculine", "confidence": "high"}],
-      "metrics": {"duration_s": 2.740, "f0_median_hz": 108.3, "f0_p10_hz": 87.8, "f0_p90_hz": 150.0}
-    },
-    {
-      "item_id": "E0009",
-      "audio_fn": "01 Section 1_09.m4a",
-      "voice_presentation": "mixed",
-      "confidence": "high",
-      "source": "audio_analysis",
-      "turns": [
-        {"order": 1, "presentation": "masculine", "confidence": "high", "metrics": {"f0_median_hz": 133.7, "f0_p10_hz": 97.2, "f0_p90_hz": 176.7}},
-        {"order": 2, "presentation": "feminine", "confidence": "high", "metrics": {"f0_median_hz": 261.0, "f0_p10_hz": 177.1, "f0_p90_hz": 418.9}}
-      ],
-      "metrics": {"duration_s": 4.783}
-    }
-  ]
+  "source": "manual_review",
+  "confidence": "high",
+  "code_legend": {
+    "m": "single masculine-presenting recording voice",
+    "f": "single feminine-presenting recording voice",
+    "mf": "two-person dialogue, first role masculine-presenting then feminine-presenting",
+    "fm": "two-person dialogue, first role feminine-presenting then masculine-presenting"
+  },
+  "dialogue_rule": "mf/fm records the first two alternating roles. For three or more dialogue turns, continue alternating those same two roles; no example uses three distinct speakers.",
+  "codes_by_item": {"E0001":"m","E0002":"m","E0003":"m","E0004":"m","E0005":"m","E0006":"m","E0007":"m","E0008":"m","E0009":"mf","E0010":"f","E0011":"f","E0012":"f","E0013":"f","E0014":"f","E0015":"fm","E0016":"f","E0017":"f","E0018":"f","E0019":"f","E0020":"fm","E0021":"fm","E0022":"m","E0023":"mf","E0024":"m","E0025":"m","E0026":"m","E0027":"m","E0028":"m","E0029":"m","E0030":"m","E0031":"m","E0032":"m","E0033":"m","E0034":"m","E0035":"m","E0036":"f","E0037":"f","E0038":"f","E0039":"f","E0040":"f","E0041":"f","E0042":"f","E0043":"f","E0044":"f","E0045":"f","E0046":"m","E0047":"m","E0048":"m","E0049":"m","E0050":"m","E0051":"m","E0052":"m","E0053":"m","E0054":"m","E0055":"m","E0056":"m","E0057":"m","E0058":"m","E0059":"m","E0060":"m","E0061":"m","E0062":"mf","E0063":"fm","E0064":"fm","E0065":"f","E0066":"f","E0067":"f","E0068":"mf","E0069":"f","E0070":"f","E0071":"f","E0072":"fm","E0073":"f","E0074":"f","E0075":"f","E0076":"m","E0077":"m","E0078":"fm","E0079":"m","E0080":"m","E0081":"m","E0082":"mf","E0083":"m","E0084":"m","E0085":"m","E0086":"m","E0087":"m","E0088":"m","E0089":"m","E0090":"m","E0091":"m","E0092":"f","E0093":"f","E0094":"f","E0095":"f","E0096":"f","E0097":"f","E0098":"f","E0099":"f","E0100":"f","E0101":"m","E0102":"m","E0103":"m","E0104":"mf","E0105":"m","E0106":"m","E0107":"m","E0108":"m","E0109":"fm","E0110":"m","E0111":"m","E0112":"m","E0113":"m","E0114":"f","E0115":"f","E0116":"f","E0117":"fm","E0118":"f","E0119":"f","E0120":"f","E0121":"f","E0122":"f","E0123":"fm","E0124":"fm","E0125":"f","E0126":"m","E0127":"m","E0128":"m","E0129":"m","E0130":"m","E0131":"m","E0132":"m","E0133":"m","E0134":"m","E0135":"m","E0136":"m","E0137":"f","E0138":"f","E0139":"f","E0140":"f","E0141":"f","E0142":"f","E0143":"f","E0144":"f","E0145":"f","E0146":"m","E0147":"m","E0148":"m","E0149":"m","E0150":"m","E0151":"f","E0152":"m","E0153":"m","E0154":"m","E0155":"mf","E0156":"f","E0157":"f","E0158":"f","E0159":"f","E0160":"fm","E0161":"fm","E0162":"fm","E0163":"f","E0164":"f","E0165":"f","E0166":"m","E0167":"m","E0168":"m","E0169":"m","E0170":"m","E0171":"fm","E0172":"fm","E0173":"m","E0174":"m","E0175":"m","E0176":"m","E0177":"fm","E0178":"m","E0179":"f","E0180":"f","E0181":"f","E0182":"f","E0183":"f","E0184":"f","E0185":"f","E0186":"m","E0187":"m","E0188":"m","E0189":"m","E0190":"m","E0191":"mf","E0192":"m","E0193":"m","E0194":"m","E0195":"m","E0196":"m","E0197":"m","E0198":"f","E0199":"f","E0200":"f","E0201":"mf","E0202":"f","E0203":"f","E0204":"f","E0205":"mf","E0206":"m","E0207":"fm","E0208":"f","E0209":"f","E0210":"f","E0211":"fm","E0212":"mf","E0213":"m","E0214":"m","E0215":"m","E0216":"m","E0217":"m","E0218":"mf","E0219":"m","E0220":"m","E0221":"mf","E0222":"mf","E0223":"m","E0224":"f","E0225":"f","E0226":"f","E0227":"f","E0228":"f","E0229":"f","E0230":"f","E0231":"f","E0232":"f","E0233":"f","E0234":"f","E0235":"f","E0236":"f","E0237":"f","E0238":"f","E0239":"f","E0240":"f","E0241":"m","E0242":"m","E0243":"m","E0244":"m","E0245":"m","E0246":"m","E0247":"m","E0248":"m","E0249":"m","E0250":"m","E0251":"m","E0252":"m","E0253":"m","E0254":"mf","E0255":"mf","E0256":"f","E0257":"f","E0258":"f","E0259":"f","E0260":"f","E0261":"f","E0262":"f","E0263":"f","E0264":"f","E0265":"f","E0266":"f","E0267":"f","E0268":"f","E0269":"f","E0270":"f","E0271":"f","E0272":"fm","E0273":"m","E0274":"m","E0275":"m","E0276":"m","E0277":"m","E0278":"m","E0279":"m","E0280":"mf","E0281":"m","E0282":"f","E0283":"f","E0284":"fm","E0285":"fm","E0286":"f","E0287":"f","E0288":"f","E0289":"f","E0290":"f","E0291":"f","E0292":"f","E0293":"f","E0294":"m","E0295":"m","E0296":"m","E0297":"m","E0298":"mf","E0299":"m","E0300":"m","E0301":"m","E0302":"m","E0303":"m","E0304":"f","E0305":"f","E0306":"f","E0307":"f","E0308":"f","E0309":"fm","E0310":"f","E0311":"fm","E0312":"f","E0313":"f","E0314":"m","E0315":"mf","E0316":"m","E0317":"mf","E0318":"m","E0319":"m","E0320":"m","E0321":"m","E0322":"m","E0323":"m","E0324":"m","E0325":"m","E0326":"m","E0327":"m","E0328":"m","E0329":"f","E0330":"f","E0331":"f","E0332":"fm","E0333":"f","E0334":"fm","E0335":"f","E0336":"f","E0337":"f","E0338":"f","E0339":"f","E0340":"m","E0341":"f","E0342":"m","E0343":"m","E0344":"mf","E0345":"m","E0346":"m","E0347":"m","E0348":"m","E0349":"m","E0350":"m","E0351":"m","E0352":"m","E0353":"m","E0354":"f","E0355":"fm","E0356":"f","E0357":"f","E0358":"f","E0359":"f","E0360":"f","E0361":"f","E0362":"f","E0363":"f","E0364":"f","E0365":"f","E0366":"fm","E0367":"m","E0368":"m","E0369":"m","E0370":"m","E0371":"m","E0372":"m","E0373":"m","E0374":"m","E0375":"mf","E0376":"m","E0377":"f","E0378":"m","E0379":"m","E0380":"m","E0381":"m","E0382":"m","E0383":"f","E0384":"f","E0385":"f","E0386":"f","E0387":"f","E0388":"f","E0389":"f","E0390":"f","E0391":"f","E0392":"f","E0393":"m","E0394":"m","E0395":"m","E0396":"m","E0397":"m","E0398":"m","E0399":"m","E0400":"m","E0401":"m","E0402":"m","E0403":"m","E0404":"f","E0405":"f","E0406":"f","E0407":"f","E0408":"f","E0409":"f","E0410":"f","E0411":"f","E0412":"f","E0413":"f","E0414":"f","E0415":"f","E0416":"f","E0417":"f","E0418":"f","E0419":"m","E0420":"m","E0421":"m","E0422":"m","E0423":"m","E0424":"m","E0425":"m","E0426":"m","E0427":"m","E0428":"m","E0429":"m","E0430":"m","E0431":"m","E0432":"m","E0433":"f","E0434":"f","E0435":"f","E0436":"f","E0437":"f","E0438":"f","E0439":"f","E0440":"f","E0441":"f","E0442":"f","E0443":"f","E0444":"f","E0445":"f","E0446":"f","E0447":"f","E0448":"f","E0449":"m","E0450":"m","E0451":"m","E0452":"m","E0453":"m","E0454":"m","E0455":"m","E0456":"m","E0457":"f","E0458":"f","E0459":"f","E0460":"f","E0461":"f","E0462":"f","E0463":"f","E0464":"f","E0465":"f","E0466":"f","E0467":"m","E0468":"m","E0469":"m","E0470":"m","E0471":"m","E0472":"m","E0473":"m","E0474":"m","E0475":"m","E0476":"m","E0477":"f","E0478":"f","E0479":"f","E0480":"f","E0481":"f","E0482":"f","E0483":"f","E0484":"f","E0485":"f","E0486":"f","E0487":"f","E0488":"f","E0489":"f","E0490":"f","E0491":"fm","E0492":"m","E0493":"m","E0494":"m","E0495":"m","E0496":"m","E0497":"m","E0498":"m","E0499":"m","E0500":"m","E0501":"m","E0502":"m","E0503":"m","E0504":"fm","E0505":"m","E0506":"mf","E0507":"f","E0508":"f","E0509":"f","E0510":"f","E0511":"f","E0512":"f","E0513":"fm","E0514":"fm","E0515":"f","E0516":"fm","E0517":"f","E0518":"m","E0519":"m","E0520":"m","E0521":"m","E0522":"m","E0523":"m","E0524":"m","E0525":"m","E0526":"fm","E0527":"m","E0528":"fm","E0529":"mf","E0530":"m","E0531":"mf","E0532":"f","E0533":"f","E0534":"mf","E0535":"mf","E0536":"f","E0537":"fm","E0538":"mf","E0539":"mf","E0540":"m","E0541":"mf","E0542":"f","E0543":"f","E0544":"mf","E0545":"fm","E0546":"f","E0547":"f","E0548":"m","E0549":"m","E0550":"m","E0551":"m","E0552":"mf","E0553":"m","E0554":"mf","E0555":"m","E0556":"mf","E0557":"m","E0558":"m","E0559":"fm","E0560":"fm"}
 }
