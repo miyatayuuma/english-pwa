@@ -6,6 +6,7 @@ import {
   buildRelationshipCatalog,
   compareRelationshipSnapshots,
   freshnessOf,
+  RELATIONSHIP_INTIMACY_CAPS,
   reachedMilestones,
   recommendCharacter,
   snapshotRelationships,
@@ -51,6 +52,44 @@ test('relationship ranks map directly to durable learning progress',()=>{
   assert.equal(joe.rank.id,'best_friend');
 });
 
+test('intimacy is capped by the current durable relationship rank',()=>{
+  assert.deepEqual(RELATIONSHIP_INTIMACY_CAPS,{
+    acquaintance:24,
+    familiar:49,
+    friend:69,
+    close_friend:89,
+    best_friend:100,
+  });
+
+  const cases=[
+    [{A:review(4)},'acquaintance',24],
+    [{A:review(4),B:review(4)},'familiar',49],
+    [{A:review(4),B:review(3),C:review(3)},'friend',69],
+    [{A:review(4),B:review(4),C:review(3)},'close_friend',89],
+    [{A:review(4),B:review(4),C:review(4)},'best_friend',100],
+  ];
+  for(const [state,rankId,cap] of cases){
+    const joe=buildCharacterRelationship(items,chars[0],state,now);
+    assert.equal(joe.rank.id,rankId);
+    assert.equal(joe.intimacyCap,cap);
+    assert.ok(joe.rawIntimacy>=joe.intimacy);
+    assert.ok(joe.intimacy<=cap);
+  }
+});
+
+test('rank-up unlocks the next intimacy ceiling without inventing progress',()=>{
+  const friend=buildCharacterRelationship(items,chars[0],{
+    A:review(4),B:review(3),C:review(3),
+  },now);
+  const close=buildCharacterRelationship(items,chars[0],{
+    A:review(4),B:review(4),C:review(3),
+  },now);
+  assert.equal(friend.intimacy,69);
+  assert.equal(close.intimacy,89);
+  assert.equal(friend.rawIntimacy,83);
+  assert.equal(close.rawIntimacy,92);
+});
+
 test('rank uses best achievement and never decays with current performance',()=>{
   const state={
     A:{best:4,last:1,review:{nextDueAt:now-DAY,intervalMs:DAY}},
@@ -60,6 +99,20 @@ test('rank uses best achievement and never decays with current performance',()=>
   const joe=buildCharacterRelationship(items,chars[0],state,now);
   assert.equal(joe.rank.id,'best_friend');
   assert.ok(joe.intimacy<100);
+});
+
+test('overdue decay lowers capped intimacy while preserving rank',()=>{
+  const fresh={A:review(4),B:review(4),C:review(4)};
+  const stale={
+    A:review(4,{due:now-8*DAY,interval:DAY}),
+    B:review(4,{due:now-8*DAY,interval:DAY}),
+    C:review(4,{due:now-8*DAY,interval:DAY}),
+  };
+  const before=buildCharacterRelationship(items,chars[0],fresh,now);
+  const after=buildCharacterRelationship(items,chars[0],stale,now);
+  assert.equal(before.rank.id,'best_friend');
+  assert.equal(after.rank.id,'best_friend');
+  assert.ok(after.intimacy<before.intimacy);
 });
 
 test('intimacy stays full before due and decays only after the SRS deadline',()=>{
@@ -79,6 +132,18 @@ test('shared dialogue progress advances both speakers',()=>{
   const deltas=compareRelationshipSnapshots(snapshot,after);
   assert.equal(deltas.find(x=>x.id==='joe')?.pointGain,2);
   assert.equal(deltas.find(x=>x.id==='jane')?.pointGain,2);
+});
+
+test('shared-speaker intimacy deltas use the same capped display value',()=>{
+  const before=buildRelationshipCatalog(items,chars,{B:review(3)},now);
+  const snapshot=snapshotRelationships(before);
+  const after=buildRelationshipCatalog(items,chars,{B:review(4)},now);
+  const deltas=compareRelationshipSnapshots(snapshot,after);
+  for(const entry of after){
+    assert.ok(entry.intimacy<=entry.intimacyCap);
+    const delta=deltas.find(candidate=>candidate.id===entry.id);
+    if(delta) assert.equal(delta.intimacy,entry.intimacy);
+  }
 });
 
 test('world milestones unlock full-coverage and mastery goals',()=>{
