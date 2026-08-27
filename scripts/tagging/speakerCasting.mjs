@@ -55,37 +55,57 @@ function directAddresseeLocks(item,roles,nameMap,profileById){
   return locks;
 }
 
+function contextualOverrideLocks(itemId,roles,castingData,profileById){
+  const locks=new Map();
+  const raw=castingData?.contextual_speaker_overrides?.[itemId]||{};
+  for(const [rawIndex,rawId] of Object.entries(raw)){
+    const roleIndex=Number(rawIndex);
+    const characterId=String(rawId||'').trim();
+    if(!Number.isInteger(roleIndex)||roleIndex<0||roleIndex>=roles.length) continue;
+    const profile=profileById.get(characterId);
+    if(profile?.voice_presentation===roles[roleIndex]) locks.set(roleIndex,characterId);
+  }
+  return locks;
+}
+
 function explicitMentionIds(item){
   return new Set((item?.character_tags||[]).filter(entry=>entry?.certainty==='explicit').map(entry=>entry.id).filter(Boolean));
 }
 
-function contextualCharacterStrength(item,characterId){
-  let score=0;
-  for(const entry of item?.character_tags||[]){
-    if(entry?.id!==characterId) continue;
-    if(entry.certainty==='inferred_high') score=Math.max(score,4);
-    else if(entry.certainty==='inferred_medium') score=Math.max(score,2);
-  }
-  return score;
+function numeric(value,fallback){
+  const parsed=Number(value);
+  return Number.isFinite(parsed)?parsed:fallback;
 }
 
-function affinityScore(profile,item){
-  let score=0;
-  for(const situation of item?.situation_tags||[]){
-    score+=(profile?.situation_affinity?.[situation]||0)*1.8;
+function situationScore(profile,item,castingData){
+  const weight=numeric(castingData?.scoring?.situation_weight,1.8);
+  return (item?.situation_tags||[]).reduce((sum,id)=>sum+(profile?.situation_affinity?.[id]||0)*weight,0);
+}
+
+function functionScore(profile,item,castingData){
+  const weight=numeric(castingData?.scoring?.function_weight,0.4);
+  return (item?.function_tags||[]).reduce((sum,id)=>sum+(profile?.function_affinity?.[id]||0)*weight,0);
+}
+
+function cueScore(profile,item,castingData){
+  const weight=numeric(castingData?.scoring?.cue_weight,3);
+  const text=String(item?.en||'');
+  let matches=0;
+  for(const source of profile?.cue_patterns||[]){
+    try{
+      if(new RegExp(source,'i').test(text)) matches+=1;
+    }catch(_){ /* invalid profile cue is ignored; config validation catches missing utility later */ }
   }
-  for(const fn of item?.function_tags||[]){
-    score+=(profile?.function_affinity?.[fn]||0)*1.2;
-  }
-  return score;
+  return matches*weight;
 }
 
 function relationshipScore(castingData,mentionIds,rolePresentation,candidateId){
-  let score=0;
+  const weight=numeric(castingData?.scoring?.relationship_weight,2.2);
+  let raw=0;
   for(const mentionedId of mentionIds){
-    score+=castingData?.relationship_hints?.[mentionedId]?.[rolePresentation]?.[candidateId]||0;
+    raw+=castingData?.relationship_hints?.[mentionedId]?.[rolePresentation]?.[candidateId]||0;
   }
-  return score;
+  return raw*weight;
 }
 
 function targetCounts(items,voiceCodes,castingData){
@@ -108,25 +128,36 @@ function targetCounts(items,voiceCodes,castingData){
   return result;
 }
 
-function balanceScore(candidateId,counts,targets){
+function balanceScore(candidateId,counts,targets,castingData){
+  const weight=numeric(castingData?.scoring?.balance_weight,3);
   const current=counts.get(candidateId)||0;
   const target=Math.max(1,targets.get(candidateId)||1);
   const ratio=current/target;
-  return 5*(1-ratio)-2*Math.max(0,ratio-1);
+  return weight*((1-ratio)-0.5*Math.max(0,ratio-1));
 }
 
-function rankCandidates({item,rolePresentation,profiles,counts,targets,castingData,mentionIds,lockedIds}){
-  return profiles
-    .filter(profile=>profile.voice_presentation===rolePresentation&&!lockedIds.has(profile.id))
-    .map(profile=>{
-      let score=affinityScore(profile,item);
-      score+=relationshipScore(castingData,mentionIds,rolePresentation,profile.id)*2;
-      score+=contextualCharacterStrength(item,profile.id);
-      score+=balanceScore(profile.id,counts,targets);
-      if(mentionIds.has(profile.id)) score-=5;
-      score+=stableJitter(item?.id,profile.id);
-      return {id:profile.id,score};
-    })
+function rankedCandidates({item,rolePresentation,profiles,counts,targets,castingData,mentionIds,lockedIds}){
+  const candidates=[];
+  for(const profile of profiles){
+    if(profile.voice_presentation!==rolePresentation||lockedIds.has(profile.id)||mentionIds.has(profile.id)) continue;
+    const situation=situationScore(profile,item,castingData);
+    const fn=functionScore(profile,item,castingData);
+    const cue=cueScore(profile,item,castingData);
+    const relationship=relationshipScore(castingData,mentionIds,rolePresentation,profile.id);
+    const semantic=situation+fn+cue+relationship;
+    const topical=situation>0||cue>0||relationship>0;
+    if(profile.generalist===false&&!topical) continue;
+    candidates.push({id:profile.id,semantic,topical});
+  }
+  if(!candidates.length) return [];
+  const positive=candidates.filter(candidate=>candidate.semantic>0);
+  let eligible=positive.length?positive:candidates.filter(candidate=>profiles.find(profile=>profile.id===candidate.id)?.generalist!==false);
+  if(!eligible.length) eligible=candidates;
+  return eligible
+    .map(candidate=>({
+      ...candidate,
+      score:candidate.semantic+balanceScore(candidate.id,counts,targets,castingData)+stableJitter(item?.id,candidate.id),
+    }))
     .sort((a,b)=>b.score-a.score||a.id.localeCompare(b.id));
 }
 
@@ -145,6 +176,9 @@ export function buildSpeakerCastPlan(items,voiceDataset,castingData,characterDat
     const roles=voiceRolesFromCode(audioCode);
     if(!roles.length) throw new Error(`${item.id}: missing valid audio voice code`);
     const locks=directAddresseeLocks(item,roles,nameMap,profileById);
+    for(const [roleIndex,characterId] of contextualOverrideLocks(item.id,roles,castingData,profileById)){
+      locks.set(roleIndex,characterId);
+    }
     const mentionIds=explicitMentionIds(item);
     const selected=[];
     const lockedIds=new Set();
@@ -158,13 +192,14 @@ export function buildSpeakerCastPlan(items,voiceDataset,castingData,characterDat
         counts.set(lockedId,(counts.get(lockedId)||0)+1);
         continue;
       }
-      const ranked=rankCandidates({
+      const ranked=rankedCandidates({
         item,rolePresentation,profiles,counts,targets,castingData,mentionIds,lockedIds,
       });
       if(!ranked.length) throw new Error(`${item.id}: no ${rolePresentation} casting candidate`);
       const best=ranked[0];
       const runnerUp=ranked[1];
-      const confidence=!runnerUp||best.score-runnerUp.score>=2.5?'high':'medium';
+      const margin=numeric(castingData?.scoring?.high_confidence_margin,2.5);
+      const confidence=!runnerUp||best.score-runnerUp.score>=margin?'high':'medium';
       selected.push({id:best.id,source:'app_cast',confidence});
       lockedIds.add(best.id);
       counts.set(best.id,(counts.get(best.id)||0)+1);
@@ -221,6 +256,7 @@ export function validateSpeakerCastPlan(plan,items,voiceDataset,castingData){
     seen.add(entry.item_id);
     const item=itemById.get(entry.item_id);
     if(!item){ errors.push(`${entry.item_id}: missing item`); continue; }
+    const explicitMentions=explicitMentionIds(item);
     const roles=voiceRolesFromCode(voiceDataset?.codes_by_item?.[entry.item_id]);
     if(entry.speaker_tags?.length!==roles.length) errors.push(`${entry.item_id}: speaker count does not match voice roles`);
     for(let index=0;index<roles.length;index+=1){
@@ -230,6 +266,7 @@ export function validateSpeakerCastPlan(plan,items,voiceDataset,castingData){
       else if(profile.voice_presentation!==roles[index]) errors.push(`${entry.item_id}: ${speaker.id} conflicts with ${roles[index]} audio role`);
       if(!['contextual','app_cast','explicit'].includes(speaker?.source)) errors.push(`${entry.item_id}: invalid speaker source`);
       if(!['high','medium'].includes(speaker?.confidence)) errors.push(`${entry.item_id}: invalid speaker confidence`);
+      if(speaker?.source==='app_cast'&&explicitMentions.has(speaker.id)) errors.push(`${entry.item_id}: app-cast speaker duplicates an explicitly mentioned character`);
     }
   }
   return errors;
