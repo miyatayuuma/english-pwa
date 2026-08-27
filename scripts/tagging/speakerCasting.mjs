@@ -45,7 +45,7 @@ function directAddresseeLocks(item,roles,nameMap,profileById){
       const matched=names.some(name=>{
         if(!/^[A-Za-z .'-]+$/.test(name)) return false;
         const escaped=name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-        return new RegExp(`(?:^|[^A-Za-z])${escaped}(?:[,!.;:]|\\?|\\s|$)`,'i').test(turn);
+        return new RegExp(`(?:^|[,;]\\s*)${escaped}(?:[,!.;:]|\\?|$)`,'i').test(turn);
       });
       if(!matched) continue;
       const profile=profileById.get(characterId);
