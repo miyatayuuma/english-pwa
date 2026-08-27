@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { compactComposeChunks } from '../scripts/app/composeGuide.js';
+import { compactComposeChunks, taskUsesComposeWordBank } from '../scripts/app/composeGuide.js';
 
 function singles(words){
   return words.map(word=>({display:word,tokens:[word.toLowerCase()]}));
@@ -20,4 +20,10 @@ test('existing multiword chunks are preserved when the bank is already compact',
     {display:'turn out fine',tokens:['turn','out','fine']},
   ];
   assert.deepEqual(compactComposeChunks(source),source);
+});
+
+test('every word-order production task keeps a phrase bank',()=>{
+  assert.equal(taskUsesComposeWordBank('compose'),true);
+  assert.equal(taskUsesComposeWordBank('generate'),true);
+  assert.equal(taskUsesComposeWordBank('read'),false);
 });
