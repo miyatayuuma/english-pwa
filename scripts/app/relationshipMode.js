@@ -7,6 +7,7 @@ import {
   snapshotRelationships,
   summarizeRelationshipWorld,
 } from './relationshipCore.js';
+import { buildAutomaticSession } from './adaptiveLearning.js';
 
 const LEVEL_KEY='itemLevelV1';
 const MILESTONE_KEY='relationshipMilestonesV1';
@@ -42,6 +43,23 @@ function iconPath(profile){
 function activeRelationship(){ return state.relationships.find(entry=>entry.id===state.activeCharacterId)||null; }
 function relationshipById(id){ return state.relationships.find(entry=>entry.id===id)||null; }
 
+const CHARACTER_THEMES=Object.freeze([
+  Object.freeze({accent:'#7dd3fc',deep:'#164e63',soft:'rgba(14,116,144,.28)'}),
+  Object.freeze({accent:'#c4b5fd',deep:'#4c1d95',soft:'rgba(109,40,217,.25)'}),
+  Object.freeze({accent:'#f9a8d4',deep:'#831843',soft:'rgba(190,24,93,.23)'}),
+  Object.freeze({accent:'#86efac',deep:'#14532d',soft:'rgba(22,101,52,.24)'}),
+  Object.freeze({accent:'#fcd34d',deep:'#78350f',soft:'rgba(180,83,9,.23)'}),
+]);
+
+export function characterTheme(characterId=''){
+  const index=[...String(characterId)].reduce((sum,char)=>sum+char.codePointAt(0),0)%CHARACTER_THEMES.length;
+  return CHARACTER_THEMES[index];
+}
+
+export function lobbyConversationCopy(name,size){
+  return `今日は${name}と${Math.max(1,Number(size)||1)}つ話そう`;
+}
+
 async function loadCharacters(){
   try{
     const response=await fetch('./data/characters.json',{cache:'default'});
@@ -64,23 +82,26 @@ function injectStyles(){
   const style=document.createElement('style');
   style.id='relationshipModeStyles';
   style.textContent=`
-    .home-cta-wrap.focus-home.friendship-home{margin-top:4vh;max-width:540px;gap:10px}
+    body.focus-home-view main{padding:6px 12px 10px}
+    .home-cta-wrap.focus-home.friendship-home{position:relative;top:auto;z-index:1;width:100%;margin:0 auto;max-width:580px;gap:9px;padding:0 2px 4px;background:none}
     #startStudyCta.friendship-hidden-start{display:none!important}
     #focusHomeMeta.friendship-replaced{display:none!important}
-    .friendship-hero{border:1px solid rgba(129,140,248,.22);border-radius:24px;padding:18px;background:linear-gradient(145deg,rgba(99,102,241,.12),rgba(148,163,184,.035));box-shadow:0 16px 42px rgba(0,0,0,.18)}
-    .friendship-hero__eyebrow{font-size:11px;font-weight:850;letter-spacing:.08em;opacity:.55;margin-bottom:11px}
-    .friendship-hero__person{display:grid;grid-template-columns:76px minmax(0,1fr);gap:14px;align-items:center}.friendship-hero__person img{width:76px;height:76px;border-radius:21px;object-fit:cover;background:rgba(148,163,184,.1)}
-    .friendship-hero__name{font-size:25px;font-weight:900;line-height:1.15}.friendship-rank{display:inline-flex;margin-top:6px;padding:4px 9px;border-radius:999px;background:rgba(99,102,241,.17);font-size:11px;font-weight:850}
-    .friendship-next{font-size:12px;opacity:.68;margin-top:8px}.friendship-intimacy-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:15px;font-size:11px}.friendship-intimacy-row strong{font-size:12px}.friendship-intimacy-track{height:9px;border-radius:999px;overflow:hidden;background:rgba(148,163,184,.13);margin-top:6px}.friendship-intimacy-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#818cf8,#34d399);transition:width .35s ease}
-    .friendship-hero__hint{min-height:18px;font-size:11px;opacity:.62;margin-top:8px}.friendship-hero__cta{width:100%;min-height:54px;border:0;border-radius:16px;background:#6366f1;color:#fff;font:inherit;font-size:17px;font-weight:900;margin-top:14px;cursor:pointer;box-shadow:0 10px 28px rgba(99,102,241,.24)}
-    .friendship-world{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:2px 4px;font-size:11px;opacity:.68}.friendship-world__goal{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:right}
-    #focusHomeNav.friendship-nav{grid-template-columns:1fr 1fr}.friendship-nav button{min-height:48px}.friendship-all{grid-column:1/-1!important;border-color:rgba(52,211,153,.22)!important;background:rgba(52,211,153,.07)!important}
+    .friendship-hero{--character-accent:#7dd3fc;--character-deep:#164e63;--character-soft:rgba(14,116,144,.28);position:relative;isolation:isolate;overflow:hidden;border:1px solid color-mix(in srgb,var(--character-accent) 30%,transparent);border-radius:28px;padding:14px;background:radial-gradient(110% 75% at 82% 8%,var(--character-soft),transparent 62%),linear-gradient(155deg,color-mix(in srgb,var(--character-deep) 42%,#101522),#101522 68%);box-shadow:0 22px 54px rgba(0,0,0,.3)}
+    .friendship-hero::before{content:"";position:absolute;inset:-20% -35% 46% 35%;z-index:-1;border-radius:50%;background:var(--character-soft);filter:blur(30px);opacity:.8}
+    .friendship-hero__eyebrow{display:flex;align-items:center;gap:7px;font-size:10px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--character-accent);margin:1px 2px 9px}.friendship-hero__eyebrow::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--character-accent);box-shadow:0 0 14px var(--character-accent)}
+    .friendship-hero__person{display:grid;grid-template-columns:minmax(132px,42%) minmax(0,1fr);gap:14px;align-items:center;min-height:178px}.friendship-hero__portrait{align-self:stretch;min-height:178px;border-radius:22px;overflow:hidden;background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),0 16px 30px rgba(0,0,0,.22)}.friendship-hero__portrait img{width:100%;height:100%;min-height:178px;object-fit:cover;object-position:center 28%;transform:scale(1.04)}
+    .friendship-hero__copy{min-width:0}.friendship-hero__name{font-size:clamp(28px,9vw,38px);font-weight:950;letter-spacing:-.035em;line-height:1}.friendship-rank{display:inline-flex;margin-top:8px;padding:5px 10px;border:1px solid color-mix(in srgb,var(--character-accent) 28%,transparent);border-radius:999px;background:color-mix(in srgb,var(--character-accent) 11%,transparent);color:color-mix(in srgb,var(--character-accent) 84%,white);font-size:11px;font-weight:900}
+    .friendship-talk-plan{margin-top:13px;font-size:14px;font-weight:850;line-height:1.45}.friendship-next{font-size:10px;opacity:.62;margin-top:6px;line-height:1.4}.friendship-intimacy-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:13px;font-size:10px;opacity:.8}.friendship-intimacy-row strong{font-size:11px;color:var(--character-accent)}.friendship-intimacy-track{height:6px;border-radius:999px;overflow:hidden;background:rgba(255,255,255,.1);margin-top:5px}.friendship-intimacy-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--character-accent),#a7f3d0);transition:width .35s ease}
+    .friendship-hero__cta{width:100%;min-height:54px;border:0;border-radius:16px;background:var(--character-accent);color:#07111c;font:inherit;font-size:16px;font-weight:950;margin-top:13px;cursor:pointer;box-shadow:0 13px 28px color-mix(in srgb,var(--character-accent) 24%,transparent)}
+    .friendship-world{display:none!important}
+    #focusHomeNav.friendship-nav{display:grid;grid-template-columns:1fr auto;gap:8px}.friendship-nav button{min-height:45px}.friendship-nav__choose{border-color:rgba(255,255,255,.14)!important;background:rgba(255,255,255,.055)!important}.friendship-nav__options{border-color:transparent!important;background:transparent!important;opacity:.68;padding-inline:12px!important}.friendship-all{display:none!important}
     .friendship-session{display:flex;align-items:center;gap:9px;min-height:44px;margin:0 0 8px;padding:7px 9px;border:1px solid rgba(129,140,248,.16);border-radius:14px;background:rgba(99,102,241,.055)}.friendship-session[hidden]{display:none!important}.friendship-session img{width:36px;height:36px;border-radius:11px;object-fit:cover}.friendship-session__copy{min-width:0}.friendship-session__title{font-size:12px;font-weight:850}.friendship-session__prompt{font-size:10px;opacity:.6;margin-top:2px}
     .friendship-float{position:fixed;left:50%;top:18%;z-index:1200;transform:translate(-50%,-10px);padding:10px 14px;border:1px solid rgba(129,140,248,.25);border-radius:999px;background:rgba(16,21,34,.96);box-shadow:0 14px 36px rgba(0,0,0,.35);font-size:13px;font-weight:850;opacity:0;pointer-events:none;animation:friendshipFloat 1.8s ease forwards}.friendship-float--rank{border-radius:16px;font-size:15px;padding:13px 18px}
     @keyframes friendshipFloat{0%{opacity:0;transform:translate(-50%,8px) scale(.96)}18%{opacity:1;transform:translate(-50%,0) scale(1)}75%{opacity:1}100%{opacity:0;transform:translate(-50%,-18px) scale(.98)}}
     .friendship-review{margin:0 auto 12px;max-width:520px;padding:13px;border:1px solid rgba(129,140,248,.2);border-radius:16px;background:rgba(99,102,241,.06);text-align:left}.friendship-review__title{font-size:13px;font-weight:900}.friendship-review__line{font-size:11px;opacity:.7;margin-top:5px;line-height:1.5}
     .friendship-ending{border:0;padding:0;background:transparent;color:inherit;width:min(100% - 28px,520px)}.friendship-ending::backdrop{background:rgba(3,6,16,.82);backdrop-filter:blur(7px)}.friendship-ending__card{padding:24px;border:1px solid rgba(129,140,248,.25);border-radius:25px;background:#101522;text-align:center;box-shadow:0 26px 70px rgba(0,0,0,.5)}.friendship-ending__title{font-size:25px;font-weight:950}.friendship-ending__text{font-size:13px;line-height:1.7;opacity:.72;margin:10px 0 18px}.friendship-ending button{width:100%;min-height:48px;border:0;border-radius:14px;background:#6366f1;color:#fff;font:inherit;font-weight:850;cursor:pointer}
-    @media(max-width:390px){.home-cta-wrap.focus-home.friendship-home{margin-top:2vh}.friendship-hero{padding:15px}.friendship-hero__person{grid-template-columns:66px minmax(0,1fr)}.friendship-hero__person img{width:66px;height:66px;border-radius:18px}.friendship-hero__name{font-size:22px}}
+    @media(max-width:430px){.friendship-hero{padding:12px;border-radius:24px}.friendship-hero__person{grid-template-columns:minmax(124px,42%) minmax(0,1fr);min-height:166px;gap:11px}.friendship-hero__portrait,.friendship-hero__portrait img{min-height:166px}.friendship-talk-plan{font-size:13px}.friendship-hero__cta{margin-top:11px}.friendship-next{font-size:9px}}
+    @media(max-width:370px){.friendship-hero__person{grid-template-columns:118px minmax(0,1fr);min-height:154px}.friendship-hero__portrait,.friendship-hero__portrait img{min-height:154px}.friendship-intimacy-row{margin-top:9px}.friendship-talk-plan{margin-top:10px}.friendship-hero__cta{min-height:50px}.friendship-nav button{min-height:42px}}
   `;
   document.head.appendChild(style);
 }
@@ -119,25 +140,27 @@ function renderHome(){
   }
   const recommended=recommendCharacter(state.relationships)||state.relationships[0];
   const rel=recommended;
-  const dueText=rel.due>0?`復習したい英文 ${rel.due}文`:(rel.intimacyStatus?.label||'');
+  const plan=buildAutomaticSession(state.items,loadLevelState(),{scope:{type:'character',id:rel.id}});
+  const theme=characterTheme(rel.id);
+  hero.style.setProperty('--character-accent',theme.accent);hero.style.setProperty('--character-deep',theme.deep);hero.style.setProperty('--character-soft',theme.soft);
   hero.replaceChildren();
-  const eyebrow=document.createElement('div');eyebrow.className='friendship-hero__eyebrow';eyebrow.textContent=state.world?.allBestFriends?'友情を保とう':'今日の相手';
+  const eyebrow=document.createElement('div');eyebrow.className='friendship-hero__eyebrow';eyebrow.textContent='今日の相手';
   const person=document.createElement('div');person.className='friendship-hero__person';
-  const image=document.createElement('img');image.alt='';image.src=iconPath(rel.character);
-  const copy=document.createElement('div');
+  const portrait=document.createElement('div');portrait.className='friendship-hero__portrait';const image=document.createElement('img');image.alt='';image.src=iconPath(rel.character);portrait.appendChild(image);
+  const copy=document.createElement('div');copy.className='friendship-hero__copy';
   const name=document.createElement('div');name.className='friendship-hero__name';name.textContent=rel.name;
   const rank=document.createElement('div');rank.className='friendship-rank';rank.textContent=rel.rank.label;
+  const talkPlan=document.createElement('div');talkPlan.className='friendship-talk-plan';talkPlan.textContent=lobbyConversationCopy(rel.name,plan.size);
   const next=document.createElement('div');next.className='friendship-next';next.textContent=nextGoalText(rel);
-  copy.append(name,rank,next);person.append(image,copy);
+  copy.append(name,rank,talkPlan,next);person.append(portrait,copy);
   const intimacyRow=document.createElement('div');intimacyRow.className='friendship-intimacy-row';
   const intimacyLabel=document.createElement('span');intimacyLabel.textContent='親密度';
   const intimacyValue=document.createElement('strong');intimacyValue.textContent=`${rel.intimacy}`;
   intimacyRow.append(intimacyLabel,intimacyValue);
   const track=document.createElement('div');track.className='friendship-intimacy-track';
   const fill=document.createElement('div');fill.className='friendship-intimacy-fill';fill.style.width=`${rel.intimacy}%`;track.appendChild(fill);
-  const hint=document.createElement('div');hint.className='friendship-hero__hint';hint.textContent=dueText;
-  const play=document.createElement('button');play.type='button';play.className='friendship-hero__cta';play.textContent=`${rel.name}と遊ぶ`;play.addEventListener('click',()=>startCharacter(rel.id));
-  hero.append(eyebrow,person,intimacyRow,track,hint,play);
+  const play=document.createElement('button');play.type='button';play.className='friendship-hero__cta';play.textContent=`${rel.name}に会いに行く`;play.addEventListener('click',()=>startCharacter(rel.id));
+  hero.append(eyebrow,person,intimacyRow,track,play);
 
   let world=document.getElementById('friendshipWorld');
   if(!world){world=document.createElement('div');world.id='friendshipWorld';world.className='friendship-world';wrap.insertBefore(world,cta);}
@@ -149,8 +172,8 @@ function renderHome(){
   const nav=document.getElementById('focusHomeNav');
   if(nav){
     nav.classList.add('friendship-nav');nav.replaceChildren();
-    const chars=document.createElement('button');chars.type='button';chars.textContent='キャラを選ぶ';chars.addEventListener('click',()=>globalThis.__OPEN_ENGLISH_LEARNING_BROWSER__?.('character'));
-    const options=document.createElement('button');options.type='button';options.textContent='遊び方を変える';options.addEventListener('click',()=>globalThis.__OPEN_SESSION_OPTIONS__?.({characterId:rel.id}));
+    const chars=document.createElement('button');chars.type='button';chars.className='friendship-nav__choose';chars.textContent='相手を選ぶ';chars.addEventListener('click',()=>globalThis.__OPEN_ENGLISH_LEARNING_BROWSER__?.('character'));
+    const options=document.createElement('button');options.type='button';options.className='friendship-nav__options';options.textContent='遊び方を変える';options.addEventListener('click',()=>globalThis.__OPEN_SESSION_OPTIONS__?.({characterId:rel.id}));
     nav.append(chars,options);
     if(state.world.allFriends){
       const everyone=document.createElement('button');everyone.type='button';everyone.className='friendship-all';everyone.textContent='みんなと遊ぶ';everyone.addEventListener('click',startEveryone);nav.appendChild(everyone);
