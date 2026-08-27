@@ -1,9 +1,10 @@
-// sw.js: cache name follows the app version. v5.42
-importScripts('./scripts/version.js');
+// sw.js: cache name follows the app version. v5.43
+// Version the import itself so the browser cannot reuse an older worker import.
+importScripts('./scripts/version.js?v=5.43');
 const CACHE = self.APP_VERSION;
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll([
+  const assets=[
     './',
     './index.html',
     './manifest.webmanifest',
@@ -21,8 +22,8 @@ self.addEventListener('install', e => {
     './icons/maskable-512.png',
     './scripts/version.js',
     './scripts/app/main.js',
-    './scripts/app/swBootstrap.js?v=5.42',
-    './scripts/app/swUpdatePrompt.js?v=5.42',
+    './scripts/app/swBootstrap.js?v=5.43',
+    './scripts/app/swUpdatePrompt.js?v=5.43',
     './scripts/app/dom.js',
     './scripts/app/levelState.js',
     './scripts/app/overlay.js',
@@ -54,7 +55,12 @@ self.addEventListener('install', e => {
     './scripts/storage/local.js',
     './scripts/ui/milestones.js',
     './scripts/utils/text.js'
-  ])));
+  ];
+  e.waitUntil(caches.open(CACHE).then(cache=>Promise.all(assets.map(async asset=>{
+    const response=await fetch(new Request(asset,{cache:'reload'}));
+    if(!response.ok) throw new Error(`Precache failed: ${asset}`);
+    await cache.put(asset,response);
+  }))));
 });
 
 self.addEventListener('activate', e => {
