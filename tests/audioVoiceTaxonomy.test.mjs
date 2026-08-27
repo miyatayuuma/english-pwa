@@ -4,36 +4,42 @@ import fs from 'node:fs';
 
 import {
   AUDIO_VOICE_SCHEMA_VERSION,
-  needsManualVoiceReview,
+  alternatingTurnPresentations,
+  expandReviewedVoiceDataset,
   validateAudioVoiceEntry,
+  validateReviewedVoiceDataset,
+  voiceRolesFromCode,
 } from '../scripts/tagging/audioVoiceTaxonomy.mjs';
 
 const voiceData=JSON.parse(fs.readFileSync(new URL('../data/audio-voice-tags.json',import.meta.url),'utf8'));
 const items=JSON.parse(fs.readFileSync(new URL('../data/items.json',import.meta.url),'utf8'));
-const itemById=new Map(items.map(item=>[item.id,item]));
 
-test('audio voice dataset uses the current schema and valid records',()=>{
+test('reviewed audio voice dataset covers every example exactly once',()=>{
   assert.equal(voiceData.schema_version,AUDIO_VOICE_SCHEMA_VERSION);
-  assert.ok(Array.isArray(voiceData.entries));
-  assert.ok(voiceData.entries.length>0);
-  for(const entry of voiceData.entries){
-    assert.deepEqual(validateAudioVoiceEntry(entry),[],`${entry.item_id} must be valid`);
-    const item=itemById.get(entry.item_id);
-    assert.ok(item,`${entry.item_id} must exist in items.json`);
-    assert.equal(entry.audio_fn,item.audio_fn,`${entry.item_id} audio filename must match items.json`);
-  }
+  assert.deepEqual(validateReviewedVoiceDataset(voiceData,items),[]);
+  assert.equal(Object.keys(voiceData.codes_by_item).length,560);
+  const entries=expandReviewedVoiceDataset(voiceData,items);
+  assert.equal(entries.length,560);
+  for(const entry of entries) assert.deepEqual(validateAudioVoiceEntry(entry),[],`${entry.item_id} must be valid`);
 });
 
-test('voice analysis records are unique by item and filename',()=>{
-  const itemIds=voiceData.entries.map(entry=>entry.item_id);
-  const audioFns=voiceData.entries.map(entry=>entry.audio_fn);
-  assert.equal(new Set(itemIds).size,itemIds.length);
-  assert.equal(new Set(audioFns).size,audioFns.length);
+test('reviewed voice code totals match the completed sheet audit',()=>{
+  const counts={m:0,f:0,mf:0,fm:0};
+  for(const code of Object.values(voiceData.codes_by_item)) counts[code]+=1;
+  assert.deepEqual(counts,{m:255,f:232,mf:34,fm:39});
 });
 
-test('mixed dialogue preserves ordered turn-level voice presentation',()=>{
-  const dialogue=voiceData.entries.find(entry=>entry.item_id==='E0009');
-  assert.equal(dialogue.voice_presentation,'mixed');
-  assert.deepEqual(dialogue.turns.map(turn=>turn.presentation),['masculine','feminine']);
-  assert.equal(needsManualVoiceReview(dialogue),false);
+test('dialogue codes preserve role order and alternate after the second turn',()=>{
+  assert.deepEqual(voiceRolesFromCode('mf'),['masculine','feminine']);
+  assert.deepEqual(voiceRolesFromCode('fm'),['feminine','masculine']);
+  assert.deepEqual(alternatingTurnPresentations('mf',4),['masculine','feminine','masculine','feminine']);
+  assert.deepEqual(alternatingTurnPresentations('fm',3),['feminine','masculine','feminine']);
+});
+
+test('manually corrected audit exceptions stay fixed',()=>{
+  const expected={
+    E0063:'fm',E0064:'fm',E0206:'m',E0272:'fm',E0280:'mf',E0303:'m',
+    E0332:'fm',E0334:'fm',E0369:'m',E0372:'m',E0466:'f',E0536:'f',
+  };
+  for(const [id,code] of Object.entries(expected)) assert.equal(voiceData.codes_by_item[id],code,id);
 });
