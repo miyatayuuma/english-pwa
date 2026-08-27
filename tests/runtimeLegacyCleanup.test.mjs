@@ -68,3 +68,15 @@ test('boot and focused starts cannot revive a saved legacy section',async()=>{
     assert.match(version,new RegExp(`removeItem\\('${key}'\\)`));
   }
 });
+
+test('play option changes wait for the explicit submit and bypass legacy defaults',async()=>{
+  const [sessionShell,relationship]=await Promise.all([
+    text('scripts/app/sessionShell.js'),
+    text('scripts/app/relationshipMode.js'),
+  ]);
+  assert.match(sessionShell,/playOptionsForm[\s\S]*addEventListener\('submit'/);
+  assert.match(sessionShell,/__ENGLISH_PWA_CUSTOM_SESSION_PENDING__/);
+  assert.match(relationship,/__ENGLISH_PWA_CUSTOM_SESSION_PENDING__/);
+  assert.match(sessionShell,/resetSessionOptions/);
+  assert.doesNotMatch(sessionShell,/localStorage\.setItem\([^\n]*(playOptions|sessionOptions)/);
+});

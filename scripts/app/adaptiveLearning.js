@@ -117,19 +117,24 @@ function takeHighest(bucket,count){
   return bucket.slice().sort(byPriority).slice(0,Math.max(0,count));
 }
 
-function chooseComposition(metas,size){
+function chooseComposition(metas,size,mode='auto'){
   const buckets={review:[],weak:[],new:[],maintenance:[]};
   for(const meta of metas) buckets[meta.reason].push(meta);
   const dueAvailable=buckets.review.length;
   const heavyReview=dueAvailable>=6;
-  const reviewTarget=Math.min(dueAvailable,heavyReview
-    ?Math.max(4,Math.ceil(size*0.57))
-    :Math.min(4,size));
+  const autoReviewTarget=heavyReview?Math.max(4,Math.ceil(size*0.57)):Math.min(4,size);
+  const reviewTarget=Math.min(dueAvailable,
+    mode==='new'?Math.min(2,size):
+    mode==='review'?Math.max(3,Math.ceil(size*0.6)):
+    autoReviewTarget);
   let remaining=Math.max(0,size-reviewTarget);
-  const reserveNew=buckets.new.length&&remaining?1:0;
+  const newCap=mode==='review'?1:(mode==='new'?Math.max(2,Math.ceil(size*0.5)):2);
+  const reserveNew=buckets.new.length&&remaining&&mode!=='review'
+    ?Math.min(remaining,mode==='new'?Math.min(newCap,buckets.new.length):1)
+    :0;
   const weakTarget=Math.min(buckets.weak.length,3,Math.max(0,remaining-reserveNew));
   remaining-=weakTarget;
-  const newTarget=Math.min(buckets.new.length,2,remaining);
+  const newTarget=Math.min(buckets.new.length,newCap,remaining);
   remaining-=newTarget;
   const maintenanceTarget=Math.min(buckets.maintenance.length,remaining);
 
@@ -147,7 +152,7 @@ function chooseComposition(metas,size){
   });
   for(const meta of fallback){
     if(chosen.length>=size) break;
-    if(meta.reason==='new'&&newUsed>=2) continue;
+    if(meta.reason==='new'&&newUsed>=newCap) continue;
     chosen.push(meta);
     if(meta.reason==='new') newUsed+=1;
   }
@@ -204,7 +209,8 @@ export function buildAutomaticSession(items,levelState={},options={}){
   const allMetas=scoped.map((item,index)=>candidateMeta(item,levelState,now,index));
   const metas=allMetas.filter(meta=>!recentIds.has(String(meta.item?.id))||meta.due||meta.failedRecently);
   const recentExcluded=allMetas.length-metas.length;
-  const selected=interleave(chooseComposition(metas,target));
+  const mode=['auto','review','new'].includes(options.mode)?options.mode:'auto';
+  const selected=interleave(chooseComposition(metas,target,mode));
   const itemsOut=selected.map(meta=>meta.item);
   const counts={review:0,weak:0,new:0,maintenance:0};
   for(const meta of selected) counts[meta.reason]+=1;
@@ -237,6 +243,7 @@ export function buildAutomaticSession(items,levelState={},options={}){
       shortfallReason,
       shortfallLabel:shortfallReason?SHORTFALL_LABELS[shortfallReason]:'',
     },
+    mode,
     scope:scope||null,
   };
 }
