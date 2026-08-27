@@ -65,7 +65,7 @@ function methodLabel(method){
 }
 
 function courseLabel(course){
-  if(course==='tag') return 'テーマから';
+  if(course==='tag') return 'キャラ・スキル';
   if(course==='explore') return '範囲から';
   return 'おまかせ';
 }
@@ -144,8 +144,8 @@ function clickExplore(nav){
 
 function runCourse(course,nav,attempt=0){
   if(course==='tag'){
-    if(typeof globalThis.__OPEN_ENGLISH_TAG_BROWSER__==='function'){
-      globalThis.__OPEN_ENGLISH_TAG_BROWSER__();
+    if(typeof globalThis.__OPEN_ENGLISH_LEARNING_BROWSER__==='function'){
+      globalThis.__OPEN_ENGLISH_LEARNING_BROWSER__();
       return true;
     }
   }else if(course==='explore'){
@@ -203,7 +203,7 @@ function refreshChoiceState(dialog){
   const start=dialog.querySelector('.learning-choice__start');
   if(start){
     if(method==='vocabulary') start.textContent='単語チャレンジを開く';
-    else if(course==='tag') start.textContent='テーマを選ぶ';
+    else if(course==='tag') start.textContent='キャラ・スキルを選ぶ';
     else if(course==='explore') start.textContent='範囲を選ぶ';
     else start.textContent=`${methodLabel(method)}で遊ぶ`;
   }
@@ -241,7 +241,7 @@ function makeDialog(nav){
   dialog=document.createElement('dialog');
   dialog.id='learningChoiceDialog';
   dialog.className='focus-dialog';
-  dialog.innerHTML=`<section class="focus-sheet"><header class="focus-sheet__head"><h2>遊び方を選ぶ</h2><button class="focus-sheet__close" type="button" aria-label="閉じる">×</button></header><div class="focus-sheet__body"><div class="learning-choice"><section class="learning-choice__section"><div class="learning-choice__title-row"><div class="learning-choice__title">ゲーム</div><div class="learning-choice__current" data-method-current></div></div><div class="learning-choice__grid">${choiceButton({method:'read',label:'穴あきチャレンジ',detail:'隠れた部分を補って全文を言う',recommended:true})}${choiceButton({method:'compose',label:'並べ替えチャレンジ',detail:'語句ブロックから全文を組み立てる'})}${choiceButton({method:'vocabulary',label:'単語チャレンジ',detail:'日本語から英語をすばやく言う'})}</div></section><section class="learning-choice__section" data-course-section><div class="learning-choice__title-row"><div class="learning-choice__title">ステージ</div><div class="learning-choice__current" data-course-current></div></div><div class="learning-choice__grid">${choiceButton({course:'auto',label:'おまかせ',detail:'今やるカードを自動で選ぶ'})}${choiceButton({course:'tag',label:'テーマから',detail:'キャラ・場面・文法・表現から選ぶ'})}${choiceButton({course:'explore',label:'範囲から',detail:'セクションや進み具合から選ぶ'})}</div></section><div class="learning-choice__footer"><div class="learning-choice__summary"></div><button type="button" class="learning-choice__start">穴あきチャレンジで遊ぶ</button></div></div></div></section>`;
+  dialog.innerHTML=`<section class="focus-sheet"><header class="focus-sheet__head"><h2>遊び方を選ぶ</h2><button class="focus-sheet__close" type="button" aria-label="閉じる">×</button></header><div class="focus-sheet__body"><div class="learning-choice"><section class="learning-choice__section"><div class="learning-choice__title-row"><div class="learning-choice__title">ゲーム</div><div class="learning-choice__current" data-method-current></div></div><div class="learning-choice__grid">${choiceButton({method:'read',label:'穴あきチャレンジ',detail:'隠れた部分を補って全文を言う',recommended:true})}${choiceButton({method:'compose',label:'並べ替えチャレンジ',detail:'語句ブロックから全文を組み立てる'})}${choiceButton({method:'vocabulary',label:'単語チャレンジ',detail:'日本語から英語をすばやく言う'})}</div></section><section class="learning-choice__section" data-course-section><div class="learning-choice__title-row"><div class="learning-choice__title">ステージ</div><div class="learning-choice__current" data-course-current></div></div><div class="learning-choice__grid">${choiceButton({course:'auto',label:'おまかせ',detail:'今やるカードを自動で選ぶ'})}${choiceButton({course:'tag',label:'キャラ・スキル',detail:'話者キャラや文法・構文・5文型から選ぶ'})}${choiceButton({course:'explore',label:'範囲から',detail:'セクションや進み具合から選ぶ'})}</div></section><div class="learning-choice__footer"><div class="learning-choice__summary"></div><button type="button" class="learning-choice__start">穴あきチャレンジで遊ぶ</button></div></div></div></section>`;
   document.body.appendChild(dialog);
   dialog.querySelector('.focus-sheet__close')?.addEventListener('click',()=>dialog.close());
   dialog.addEventListener('cancel',event=>{event.preventDefault();dialog.close();});
@@ -302,4 +302,4 @@ if(typeof document!=='undefined'){
   else init();
 }
 
-export { storedMethod, pendingMethod, pendingCourse };
+export { storedMethod,pendingMethod,pendingCourse };

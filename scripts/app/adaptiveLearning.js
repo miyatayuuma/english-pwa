@@ -4,7 +4,7 @@ const HOUR_MS=60*60*1000;
 
 export function levelOf(levelState,itemId){
   const info=levelState?.[itemId];
-  if(!info || typeof info!=='object') return 0;
+  if(!info||typeof info!=='object') return 0;
   const last=Number(info.last);
   const best=Number(info.best);
   if(Number.isFinite(last)) return Math.max(0,Math.min(5,last));
@@ -14,13 +14,13 @@ export function levelOf(levelState,itemId){
 
 export function dueAtOf(levelState,itemId){
   const info=levelState?.[itemId];
-  const value=Number(info?.review?.nextDueAt ?? info?.nextDueAt ?? 0);
-  return Number.isFinite(value) && value>0 ? value : 0;
+  const value=Number(info?.review?.nextDueAt??info?.nextDueAt??0);
+  return Number.isFinite(value)&&value>0?value:0;
 }
 
 export function isDue(levelState,itemId,now=Date.now()){
   const dueAt=dueAtOf(levelState,itemId);
-  return dueAt>0 && dueAt<=now;
+  return dueAt>0&&dueAt<=now;
 }
 
 export function desiredSessionSize(items,levelState={},now=Date.now(),{min=6,max=8}={}){
@@ -33,29 +33,27 @@ export function desiredSessionSize(items,levelState={},now=Date.now(),{min=6,max
 
 export function filterByScope(items,scope){
   const safe=Array.isArray(items)?items:[];
-  if(!scope?.type || !scope?.id) return safe.slice();
-  const includeMedium=scope.includeMedium!==false;
-  return safe.filter(item=>matchesTag(item,scope.type,scope.id,{includeMedium}));
+  if(!scope?.type||!scope?.id) return safe.slice();
+  return safe.filter(item=>matchesTag(item,scope.type,scope.id));
 }
 
 export function consumeRequestedTagScope(host=globalThis){
   const scope=host?.__ENGLISH_PWA_TAG_SCOPE_REQUEST__;
-  if(!scope?.type || !scope?.id) return null;
-  try{ delete host.__ENGLISH_PWA_TAG_SCOPE_REQUEST__; }catch(_){ host.__ENGLISH_PWA_TAG_SCOPE_REQUEST__=null; }
-  return {
-    type:String(scope.type),
-    id:String(scope.id),
-    includeMedium:scope.includeMedium!==false,
-  };
+  if(!scope?.type||!scope?.id) return null;
+  try{delete host.__ENGLISH_PWA_TAG_SCOPE_REQUEST__;}catch(_){host.__ENGLISH_PWA_TAG_SCOPE_REQUEST__=null;}
+  return {type:String(scope.type),id:String(scope.id)};
 }
 
 function signature(item){
-  const character=(Array.isArray(item?.character_tags)?item.character_tags:[])
-    .find(tag=>tag?.id && tag.certainty!=='inferred_medium')?.id;
-  if(character) return `c:${character}`;
+  const speaker=(Array.isArray(item?.speaker_tags)?item.speaker_tags:[]).find(tag=>tag?.id)?.id;
+  if(speaker) return `c:${speaker}`;
   const grammar=Array.isArray(item?.grammar_tags)?item.grammar_tags[0]:'';
   if(grammar) return `g:${grammar}`;
-  const situation=(Array.isArray(item?.situation_tags)?item.situation_tags:[]).find(id=>id && id!=='general');
+  const construction=Array.isArray(item?.construction_tags)?item.construction_tags[0]:'';
+  if(construction) return `x:${construction}`;
+  const pattern=item?.sentence_patterns?.main;
+  if(pattern) return `p:${pattern}`;
+  const situation=(Array.isArray(item?.situation_tags)?item.situation_tags:[]).find(id=>id&&id!=='general');
   if(situation) return `s:${situation}`;
   return '';
 }
@@ -64,17 +62,17 @@ function candidateMeta(item,levelState,now,index){
   const level=levelOf(levelState,item?.id);
   const info=levelState?.[item?.id]||{};
   const dueAt=dueAtOf(levelState,item?.id);
-  const due=dueAt>0 && dueAt<=now;
-  const difficulty=Math.max(1,Math.min(10,Number(info?.review?.difficulty ?? info?.difficulty ?? 5)||5));
-  const recentRate=Number(info?.lastRate ?? info?.lastMatch ?? info?.lastScore);
-  const weakBonus=Number.isFinite(recentRate) && recentRate<0.8 ? 500 : 0;
-  const overdueHours=due ? Math.min(240,Math.max(0,(now-dueAt)/HOUR_MS)) : 0;
+  const due=dueAt>0&&dueAt<=now;
+  const difficulty=Math.max(1,Math.min(10,Number(info?.review?.difficulty??info?.difficulty??5)||5));
+  const recentRate=Number(info?.lastRate??info?.lastMatch??info?.lastScore);
+  const weakBonus=Number.isFinite(recentRate)&&recentRate<0.8?500:0;
+  const overdueHours=due?Math.min(240,Math.max(0,(now-dueAt)/HOUR_MS)):0;
   let base=0;
   let kind='mastered';
-  if(due){ base=10000+overdueHours*3+difficulty*15; kind='due'; }
-  else if(level>=1 && level<=3){ base=6500+(4-level)*260+difficulty*20+weakBonus; kind='learning'; }
-  else if(level===0){ base=3600; kind='fresh'; }
-  else{ base=900+difficulty*8; kind='maintenance'; }
+  if(due){base=10000+overdueHours*3+difficulty*15;kind='due';}
+  else if(level>=1&&level<=3){base=6500+(4-level)*260+difficulty*20+weakBonus;kind='learning';}
+  else if(level===0){base=3600;kind='fresh';}
+  else{base=900+difficulty*8;kind='maintenance';}
   return {item,index,level,due,dueAt,difficulty,kind,signature:signature(item),base};
 }
 
@@ -83,18 +81,18 @@ function selectInterleaved(metas,size){
   const remaining=metas.slice();
   let freshUsed=0;
   const freshCap=Math.min(2,Math.max(0,size));
-  while(selected.length<size && remaining.length){
+  while(selected.length<size&&remaining.length){
     const recent=selected.slice(-2).map(meta=>meta.signature).filter(Boolean);
     let bestIndex=-1;
     let bestScore=-Infinity;
     for(let i=0;i<remaining.length;i+=1){
       const meta=remaining[i];
-      if(meta.kind==='fresh' && freshUsed>=freshCap) continue;
+      if(meta.kind==='fresh'&&freshUsed>=freshCap) continue;
       let score=meta.base;
-      if(meta.signature && recent.includes(meta.signature)) score-=950;
-      if(meta.signature && recent.length===2 && recent[0]===meta.signature && recent[1]===meta.signature) score-=900;
+      if(meta.signature&&recent.includes(meta.signature)) score-=950;
+      if(meta.signature&&recent.length===2&&recent[0]===meta.signature&&recent[1]===meta.signature) score-=900;
       score-=meta.index*0.0001;
-      if(score>bestScore){ bestScore=score; bestIndex=i; }
+      if(score>bestScore){bestScore=score;bestIndex=i;}
     }
     if(bestIndex<0) break;
     const [chosen]=remaining.splice(bestIndex,1);
@@ -107,12 +105,12 @@ function selectInterleaved(metas,size){
 export function buildAutomaticSession(items,levelState={},options={}){
   const now=Number(options.now)||Date.now();
   const hasExplicitScope=Object.prototype.hasOwnProperty.call(options,'scope');
-  const scope=hasExplicitScope ? options.scope : consumeRequestedTagScope();
+  const scope=hasExplicitScope?options.scope:consumeRequestedTagScope();
   const scoped=filterByScope(items,scope);
   const requested=Number(options.size);
-  const size=Number.isFinite(requested) && requested>0
-    ? Math.min(scoped.length,Math.max(1,Math.round(requested)))
-    : desiredSessionSize(scoped,levelState,now,options);
+  const size=Number.isFinite(requested)&&requested>0
+    ?Math.min(scoped.length,Math.max(1,Math.round(requested)))
+    :desiredSessionSize(scoped,levelState,now,options);
   const metas=scoped.map((item,index)=>candidateMeta(item,levelState,now,index));
   const selected=selectInterleaved(metas,size);
   const itemsOut=selected.map(meta=>meta.item);
@@ -134,6 +132,6 @@ export function buildSessionQueueItems(planItems){
   }));
 }
 
-// SessionShell still imports the old adapter name; keep this data-only alias
-// until that bridge is absorbed into main.js. It has no hint or UI behavior.
+// SessionShell still bridges the focused queue into the legacy study runtime.
+// Keep this data-only alias until that bridge is absorbed into main.js.
 export const buildLegacyQueueItems=buildSessionQueueItems;
