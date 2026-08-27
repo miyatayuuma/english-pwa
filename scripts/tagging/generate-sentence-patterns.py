@@ -110,47 +110,49 @@ def analysis_record(pattern: str | None, confidence: str, reason: str, head: Any
     }
 
 
+def is_nonfinite_object_complement(token: Any) -> bool:
+    if token.dep_ not in {"ccomp", "xcomp"}:
+        return False
+    if token.pos_ in {"ADJ", "NOUN", "PROPN"}:
+        return not any(child.dep_ in {"nsubj", "nsubjpass", "csubj", "csubjpass"} for child in token.children)
+    return False
+
+
 def classify_clause(head: Any, sentence: Any) -> dict[str, Any]:
     direct_objects = child_list(head, DIRECT_OBJECT_DEPS)
     indirect_objects = child_list(head, INDIRECT_OBJECT_DEPS)
     predicatives = child_list(head, PREDICATIVE_DEPS)
     xcomps = child_list(head, {"xcomp"})
     ccomps = child_list(head, {"ccomp"})
+    object_complements = predicatives + [child for child in (*xcomps, *ccomps) if is_nonfinite_object_complement(child)]
     copulas = child_list(head, {"cop"})
     preps = child_list(head, {"prep"})
     advmods = child_list(head, {"advmod"})
     passive = bool(child_list(head, {"auxpass"}) or child_list(head, {"nsubjpass", "csubjpass"}))
     lemma = (head.lemma_ or head.text).lower()
 
-    # Universal-dependencies-style copular parses can make the complement the head.
     if copulas and head.pos_ in {"ADJ", "NOUN", "PROPN", "ADV"}:
         return analysis_record("SVC", "high", "copular_predicate_head", head, sentence)
 
-    # Clear predicative complements with a linking verb.
     if lemma in LINKING_LEMMAS and predicatives and not direct_objects and not indirect_objects:
         return analysis_record("SVC", "high", "linking_verb_predicative_complement", head, sentence)
 
-    # Direct + indirect object is the clearest fourth-pattern signal.
     if direct_objects and indirect_objects:
         return analysis_record("SVOO", "high", "direct_and_indirect_objects", head, sentence)
 
-    # Object plus bare predicative/xcomp is a fifth-pattern signal.
     object_like = direct_objects or indirect_objects
-    if object_like and (predicatives or xcomps):
+    if object_like and object_complements:
         return analysis_record("SVOC", "high", "object_plus_object_complement", head, sentence)
 
-    # Passive of an SVOC construction leaves a subject complement on the surface.
-    if passive and (predicatives or xcomps) and not object_like:
+    if passive and object_complements and not object_like:
         return analysis_record("SVC", "medium", "passive_with_remaining_predicative_complement", head, sentence)
 
     if direct_objects:
         return analysis_record("SVO", "high", "direct_object", head, sentence)
 
-    # A remaining dative/indirect object after passivization behaves as the sole surface object.
     if indirect_objects:
         return analysis_record("SVO", "medium", "single_indirect_object_surface_complement", head, sentence)
 
-    # Clausal complements often function as O, but traditional five-pattern analyses vary.
     if ccomps:
         return analysis_record("SVO", "medium", "finite_clausal_complement", head, sentence)
 
@@ -161,12 +163,10 @@ def classify_clause(head: Any, sentence: Any) -> dict[str, Any]:
             return analysis_record("SVO", "medium", "infinitival_object_candidate", head, sentence)
         return analysis_record(None, "low", "unresolved_xcomp_valency", head, sentence)
 
-    # Be + obligatory location/state phrases are commonly taught as SVC, but are kept for review.
     if lemma == "be" and (preps or advmods):
         return analysis_record("SVC", "medium", "be_with_prepositional_or_adverbial_complement", head, sentence)
 
     if lemma in LINKING_LEMMAS and not object_like:
-        # Without an overt predicative complement, many of these verbs are ordinary intransitives.
         return analysis_record("SV", "high", "linking_lexeme_used_without_complement", head, sentence)
 
     if head.pos_ in {"VERB", "AUX"} or copulas:
