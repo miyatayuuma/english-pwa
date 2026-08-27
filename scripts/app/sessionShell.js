@@ -6,6 +6,16 @@ import {
   levelOf,
   markFocusedSessionPending,
 } from './adaptiveLearning.js';
+import { buildTagCatalog, SKILL_GROUP_META } from './tagLearningCore.js';
+import {
+  buildSessionPlanFromOptions,
+  createDefaultSessionOptions,
+  diagnoseEmptySessionOptions,
+  eligibleItemsForSessionOptions,
+  normalizeSessionOptions,
+  requestedCountForSessionOptions,
+  resetSessionOptions,
+} from './sessionOptionsCore.js';
 
 const LEVEL_KEY='itemLevelV1';
 const ALL_LEVELS=[0,1,2,3,4,5];
@@ -21,6 +31,8 @@ const state={
   exploreStatus:'all',
   currentItemId:'',
   lastView:'',
+  optionsDraft:createDefaultSessionOptions(),
+  pendingOptions:null,
 };
 
 function sleep(ms){ return new Promise(resolve=>setTimeout(resolve,ms)); }
@@ -92,6 +104,14 @@ function injectStyles(){
     .explore-actions{display:grid;grid-template-columns:auto 1fr;gap:8px;margin-top:12px}.explore-actions button{min-height:48px;border-radius:13px;font:inherit;font-weight:750;cursor:pointer}
     .explore-tag-link{border:1px solid rgba(148,163,184,.15);background:rgba(148,163,184,.05);color:inherit;padding:0 14px}.explore-start{border:0;background:#6366f1;color:#fff}
     .explore-count{text-align:center;font-size:11px;opacity:.55;margin-top:8px}.cfg-fieldset[data-focus-hidden=true]{display:none!important}
+    #playOptionsDialog{width:min(100%,720px);height:100dvh;max-height:100dvh;margin:0 auto}
+    #playOptionsDialog .focus-sheet{height:100dvh;max-height:100dvh;border-radius:0}
+    #playOptionsDialog .focus-sheet__body{padding:0;display:flex;flex-direction:column;min-height:0}
+    .play-options{display:flex;flex-direction:column;min-height:100%;margin:0}.play-options__fields{padding:14px 16px 120px;display:grid;gap:14px}
+    .play-options__field{display:grid;gap:7px}.play-options__label{font-size:12px;font-weight:850;letter-spacing:.02em}.play-options__select,.play-options__custom,.play-options__search{width:100%;min-height:48px;border:1px solid rgba(148,163,184,.17);border-radius:13px;background:rgba(148,163,184,.055);color:inherit;padding:10px 12px;font:inherit}
+    .play-options__choices{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.play-options__choices--mode{grid-template-columns:repeat(2,minmax(0,1fr))}.play-options__choice{min-height:43px;border:1px solid rgba(148,163,184,.14);border-radius:12px;background:rgba(148,163,184,.04);color:inherit;font:inherit;font-size:12px;font-weight:700;cursor:pointer}.play-options__choice.is-active{border-color:rgba(129,140,248,.65);background:rgba(99,102,241,.18);color:#e0e7ff}
+    .play-options__manual{display:grid;gap:8px}.play-options__manual-list{display:grid;gap:5px;max-height:270px;overflow:auto;padding-right:2px}.play-options__manual-row{display:grid;grid-template-columns:auto minmax(0,1fr);gap:9px;align-items:start;padding:9px;border:1px solid rgba(148,163,184,.11);border-radius:11px;background:rgba(148,163,184,.025);font-size:11px}.play-options__manual-row input{margin-top:3px}.play-options__manual-en{display:block;font-weight:750;line-height:1.35}.play-options__manual-ja{display:block;opacity:.58;line-height:1.35;margin-top:3px}.play-options__manual-note{font-size:10px;opacity:.52}
+    .play-options__footer{position:sticky;bottom:0;margin-top:auto;padding:12px 16px calc(12px + env(safe-area-inset-bottom));border-top:1px solid rgba(148,163,184,.12);background:rgba(16,21,34,.97);backdrop-filter:blur(12px)}.play-options__summary{font-size:12px;font-weight:800;line-height:1.45}.play-options__count{font-size:10px;opacity:.6;margin-top:3px}.play-options__causes{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}.play-options__cause{border:1px solid rgba(248,113,113,.28);border-radius:999px;background:rgba(248,113,113,.08);color:#fecaca;padding:6px 9px;font:inherit;font-size:10px;cursor:pointer}.play-options__start{width:100%;min-height:52px;border:0;border-radius:15px;background:#6366f1;color:#fff;font:inherit;font-size:16px;font-weight:900;margin-top:10px;cursor:pointer}.play-options__start:disabled{opacity:.38;cursor:not-allowed}
     @media(max-width:390px){.home-cta-wrap.focus-home{margin-top:7vh}.focus-sheet__body{padding-inline:12px}}
   `;
   document.head.appendChild(style);
@@ -119,6 +139,10 @@ function setBodyViewClass(){
     refreshHomeMeta();
   }else if(view==='home'&&previous==='study'){
     restoreAllItems();
+  }
+  if(view==='home'&&(previous==='study'||previous==='review')){
+    state.optionsDraft=resetSessionOptions({...state.optionsDraft,characterId:globalThis.__ENGLISH_PWA_ACTIVE_CHARACTER_ID__||state.optionsDraft.characterId});
+    state.pendingOptions=null;
   }
 }
 
@@ -148,8 +172,8 @@ function setupCompactHome(){
     nav.className='focus-home-nav';
     const explore=document.createElement('button');
     explore.type='button';
-    explore.textContent='探す';
-    explore.addEventListener('click',openExploreDialog);
+    explore.textContent='遊び方を変える';
+    explore.addEventListener('click',()=>openSessionOptions());
     nav.appendChild(explore);
     wrap.appendChild(nav);
   }
@@ -183,6 +207,148 @@ function makeDialog(id,title){
   dialog.addEventListener('click',event=>{if(event.target===dialog) dialog.close();});
   document.body.appendChild(dialog);
   return dialog;
+}
+
+function optionCatalog(){
+  return buildTagCatalog(state.items,[...state.characters.values()],loadLevelState(),Date.now());
+}
+
+function fillSelect(select,entries,{emptyLabel='おまかせ',groups=false}={}){
+  if(!select) return;
+  select.replaceChildren();
+  const empty=document.createElement('option');empty.value='';empty.textContent=emptyLabel;select.appendChild(empty);
+  if(groups){
+    for(const group of Object.keys(SKILL_GROUP_META)){
+      const matched=entries.filter(entry=>entry.group===group);
+      if(!matched.length) continue;
+      const optgroup=document.createElement('optgroup');optgroup.label=SKILL_GROUP_META[group].label;
+      for(const entry of matched){const option=document.createElement('option');option.value=entry.id;option.textContent=entry.label;optgroup.appendChild(option);}
+      select.appendChild(optgroup);
+    }
+    return;
+  }
+  for(const entry of entries){const option=document.createElement('option');option.value=entry.value??entry.id;option.textContent=entry.label??entry.name??entry.id;select.appendChild(option);}
+}
+
+function optionsLabelMaps(){
+  const catalog=optionCatalog();
+  return {
+    catalog,
+    characters:new Map(catalog.character.map(entry=>[entry.id,entry.label])),
+    skills:new Map(catalog.skill.map(entry=>[entry.id,entry.label])),
+  };
+}
+
+function populateOptionsSelects(dialog){
+  const {catalog}=optionsLabelMaps();
+  fillSelect(dialog.querySelector('#playOptionsCharacter'),catalog.character,{emptyLabel:'誰でも'});
+  fillSelect(dialog.querySelector('#playOptionsSkill'),catalog.skill,{emptyLabel:'おまかせ',groups:true});
+  const sections=[...new Set(state.items.map(item=>String(item?.unit||'')).filter(Boolean))]
+    .sort((a,b)=>(Number(a.match(/\d+/)?.[0])||0)-(Number(b.match(/\d+/)?.[0])||0)||a.localeCompare(b));
+  fillSelect(dialog.querySelector('#playOptionsSection'),sections.map(value=>({value,label:value.replace(/^Section/i,'Chapter ')})),{emptyLabel:'おまかせ'});
+}
+
+function renderManualChoices(dialog,eligible){
+  const panel=dialog.querySelector('#playOptionsManual');
+  if(!panel||panel.hidden) return;
+  const list=panel.querySelector('.play-options__manual-list');
+  const note=panel.querySelector('.play-options__manual-note');
+  const query=String(panel.querySelector('.play-options__search')?.value||'').trim().toLowerCase();
+  const matched=eligible.filter(item=>!query||String(item?.en||'').toLowerCase().includes(query)||String(item?.ja||'').toLowerCase().includes(query));
+  const shown=matched.slice(0,60);list.replaceChildren();
+  for(const item of shown){
+    const label=document.createElement('label');label.className='play-options__manual-row';
+    const input=document.createElement('input');input.type='checkbox';input.value=String(item.id);input.checked=state.optionsDraft.manualItemIds.includes(String(item.id));
+    input.addEventListener('change',()=>{
+      const selected=new Set(state.optionsDraft.manualItemIds);
+      if(input.checked) selected.add(input.value);else selected.delete(input.value);
+      state.optionsDraft={...state.optionsDraft,manualItemIds:[...selected]};
+      updateOptionsSheet(dialog,{renderManual:false});
+    });
+    const copy=document.createElement('span');const en=document.createElement('span');en.className='play-options__manual-en';en.textContent=item.en||item.id;const ja=document.createElement('span');ja.className='play-options__manual-ja';ja.textContent=item.ja||'';copy.append(en,ja);label.append(input,copy);list.appendChild(label);
+  }
+  note.textContent=matched.length>shown.length?`${matched.length}文中、先頭${shown.length}文を表示`:`${matched.length}文から選択`;
+}
+
+function updateOptionsSheet(dialog,{renderManual=true}={}){
+  state.optionsDraft=normalizeSessionOptions(state.optionsDraft);
+  const options=state.optionsDraft;
+  const character=dialog.querySelector('#playOptionsCharacter');if(character) character.value=options.characterId;
+  const skill=dialog.querySelector('#playOptionsSkill');if(skill) skill.value=options.skillId;
+  const section=dialog.querySelector('#playOptionsSection');if(section) section.value=options.section;
+  dialog.querySelectorAll('[data-session-count]').forEach(button=>button.classList.toggle('is-active',button.dataset.sessionCount===options.count));
+  dialog.querySelectorAll('[data-session-mode]').forEach(button=>button.classList.toggle('is-active',button.dataset.sessionMode===options.mode));
+  const custom=dialog.querySelector('#playOptionsCustomCount');custom.hidden=options.count!=='custom';custom.value=String(options.customCount);
+  const manual=dialog.querySelector('#playOptionsManual');manual.hidden=options.mode!=='manual';
+  const eligible=eligibleItemsForSessionOptions(state.items,options);
+  if(renderManual&&options.mode==='manual') renderManualChoices(dialog,eligible);
+  const {characters,skills}=optionsLabelMaps();
+  const labels=[characters.get(options.characterId)||'誰でも',skills.get(options.skillId)||'テーマおまかせ',options.section?options.section.replace(/^Section/i,'Chapter '):'チャプターおまかせ'];
+  const summary=dialog.querySelector('#playOptionsSummary');summary.textContent=`${labels.join(' × ')}：対象 ${eligible.length}文`;
+  const count=requestedCountForSessionOptions(options);
+  const selectedManual=options.manualItemIds.filter(id=>eligible.some(item=>String(item.id)===id)).length;
+  dialog.querySelector('#playOptionsCount').textContent=options.mode==='manual'
+    ?`例文指定 ${selectedManual}文${count?` · 今回は最大${count}会話`:''}`
+    :(count?`今回は ${count}会話`:'会話数は自動で6〜8');
+  const causes=dialog.querySelector('#playOptionsCauses');causes.replaceChildren();
+  if(!eligible.length){
+    for(const cause of diagnoseEmptySessionOptions(state.items,options)){
+      const button=document.createElement('button');button.type='button';button.className='play-options__cause';button.textContent=`${cause.label}を解除（${cause.available}文）`;
+      button.addEventListener('click',()=>{state.optionsDraft={...state.optionsDraft,[cause.key]:''};updateOptionsSheet(dialog);});causes.appendChild(button);
+    }
+  }
+  const start=dialog.querySelector('#playOptionsStart');
+  start.disabled=!eligible.length||(options.mode==='manual'&&selectedManual===0);
+  start.textContent=options.mode==='manual'?`${selectedManual}文で始める`:(count?`${count}会話を始める`:'おまかせで始める');
+}
+
+function createOptionsDialog(){
+  const dialog=makeDialog('playOptionsDialog','遊び方を変える');
+  const body=dialog.querySelector('.focus-sheet__body');
+  if(body.dataset.ready==='true') return dialog;
+  body.dataset.ready='true';
+  body.innerHTML=`<form class="play-options" id="playOptionsForm">
+    <div class="play-options__fields">
+      <label class="play-options__field"><span class="play-options__label">相手</span><select class="play-options__select" id="playOptionsCharacter"></select></label>
+      <label class="play-options__field"><span class="play-options__label">特訓テーマ</span><select class="play-options__select" id="playOptionsSkill"></select></label>
+      <label class="play-options__field"><span class="play-options__label">チャプター</span><select class="play-options__select" id="playOptionsSection"></select></label>
+      <div class="play-options__field"><span class="play-options__label">今回の会話数</span><div class="play-options__choices">
+        <button class="play-options__choice" type="button" data-session-count="auto">おまかせ</button><button class="play-options__choice" type="button" data-session-count="5">5</button><button class="play-options__choice" type="button" data-session-count="8">8</button><button class="play-options__choice" type="button" data-session-count="12">12</button>
+      </div><button class="play-options__choice" type="button" data-session-count="custom">任意</button><input class="play-options__custom" id="playOptionsCustomCount" type="number" inputmode="numeric" min="1" max="50" aria-label="任意の会話数"></div>
+      <div class="play-options__field"><span class="play-options__label">選び方</span><div class="play-options__choices play-options__choices--mode">
+        <button class="play-options__choice" type="button" data-session-mode="auto">おまかせ</button><button class="play-options__choice" type="button" data-session-mode="review">復習優先</button><button class="play-options__choice" type="button" data-session-mode="new">新規多め</button><button class="play-options__choice" type="button" data-session-mode="manual">例文指定</button>
+      </div></div>
+      <div class="play-options__manual" id="playOptionsManual" hidden><input class="play-options__search" type="search" placeholder="英文・和訳を検索" aria-label="指定する例文を検索"><div class="play-options__manual-note"></div><div class="play-options__manual-list"></div></div>
+    </div>
+    <footer class="play-options__footer"><div class="play-options__summary" id="playOptionsSummary"></div><div class="play-options__count" id="playOptionsCount"></div><div class="play-options__causes" id="playOptionsCauses"></div><button class="play-options__start" id="playOptionsStart" type="submit"></button></footer>
+  </form>`;
+  body.querySelector('#playOptionsCharacter').addEventListener('change',event=>{state.optionsDraft={...state.optionsDraft,characterId:event.target.value};updateOptionsSheet(dialog);});
+  body.querySelector('#playOptionsSkill').addEventListener('change',event=>{state.optionsDraft={...state.optionsDraft,skillId:event.target.value};updateOptionsSheet(dialog);});
+  body.querySelector('#playOptionsSection').addEventListener('change',event=>{state.optionsDraft={...state.optionsDraft,section:event.target.value};updateOptionsSheet(dialog);});
+  body.querySelectorAll('[data-session-count]').forEach(button=>button.addEventListener('click',()=>{state.optionsDraft={...state.optionsDraft,count:button.dataset.sessionCount};updateOptionsSheet(dialog);}));
+  body.querySelectorAll('[data-session-mode]').forEach(button=>button.addEventListener('click',()=>{state.optionsDraft={...state.optionsDraft,mode:button.dataset.sessionMode};updateOptionsSheet(dialog);}));
+  body.querySelector('#playOptionsCustomCount').addEventListener('input',event=>{state.optionsDraft={...state.optionsDraft,customCount:event.target.value};updateOptionsSheet(dialog,{renderManual:false});});
+  body.querySelector('.play-options__search').addEventListener('input',()=>renderManualChoices(dialog,eligibleItemsForSessionOptions(state.items,state.optionsDraft)));
+  body.querySelector('#playOptionsForm').addEventListener('submit',event=>{
+    event.preventDefault();
+    const options=normalizeSessionOptions(state.optionsDraft);
+    if(!eligibleItemsForSessionOptions(state.items,options).length) return;
+    state.pendingOptions=options;
+    state.optionsDraft=resetSessionOptions(options);
+    dialog.close();
+    if(options.characterId) globalThis.__PREPARE_CHARACTER_SESSION__?.(options.characterId);
+    else globalThis.__CLEAR_ACTIVE_CHARACTER_SESSION__?.();
+    globalThis.__ENGLISH_PWA_CUSTOM_SESSION_PENDING__=true;
+    setTimeout(()=>document.getElementById('startStudyCta')?.click(),0);
+  });
+  return dialog;
+}
+
+function openSessionOptions(initial={}){
+  state.optionsDraft=normalizeSessionOptions({...state.optionsDraft,...initial});
+  const dialog=createOptionsDialog();
+  populateOptionsSelects(dialog);updateOptionsSheet(dialog);
+  if(!dialog.open) dialog.showModal();
 }
 
 export function filterExploreItems(items,levelState,{section='',query='',status='all'}={}){
@@ -293,9 +459,18 @@ function setLegacyPlan(plan){
 }
 
 function prepareStart(){
+  const recentItemIds=state.sessionPlan?.items?.map(item=>item.id)||[];
+  if(state.pendingOptions){
+    const options=state.pendingOptions;
+    state.pendingOptions=null;
+    consumeRequestedTagScope();
+    const plan=buildSessionPlanFromOptions(state.items,loadLevelState(),options,{recentItemIds});
+    state.manualPool=null;
+    return setLegacyPlan(plan);
+  }
   const requestedScope=consumeRequestedTagScope();
   const pool=state.manualPool||state.items;
-  const plan=buildAutomaticSession(pool,loadLevelState(),{scope:requestedScope||null});
+  const plan=buildAutomaticSession(pool,loadLevelState(),{scope:requestedScope||null,recentItemIds});
   state.manualPool=null;
   return setLegacyPlan(plan);
 }
@@ -354,6 +529,7 @@ async function init(){
   state.items=window.ALL_ITEMS.slice();
   const characters=await charactersPromise;
   state.characters=new Map(characters.filter(profile=>profile?.id).map(profile=>[profile.id,profile]));
+  state.optionsDraft=createDefaultSessionOptions(globalThis.__ENGLISH_PWA_ACTIVE_CHARACTER_ID__||'');
   setupCompactHome();
   hideInternalSettings();
   bindStartInterceptors();
@@ -361,6 +537,7 @@ async function init(){
   ensureMemoryCue();
   refreshHomeMeta();
   injectStyles();
+  globalThis.__OPEN_SESSION_OPTIONS__=openSessionOptions;
   document.dispatchEvent(new CustomEvent('english-pwa:session-shell-ready'));
 }
 

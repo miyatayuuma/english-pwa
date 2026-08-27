@@ -150,8 +150,8 @@ function renderHome(){
   if(nav){
     nav.classList.add('friendship-nav');nav.replaceChildren();
     const chars=document.createElement('button');chars.type='button';chars.textContent='キャラを選ぶ';chars.addEventListener('click',()=>globalThis.__OPEN_ENGLISH_LEARNING_BROWSER__?.('character'));
-    const training=document.createElement('button');training.type='button';training.textContent='トレーニング';training.addEventListener('click',()=>globalThis.__OPEN_ENGLISH_LEARNING_BROWSER__?.('skill'));
-    nav.append(chars,training);
+    const options=document.createElement('button');options.type='button';options.textContent='遊び方を変える';options.addEventListener('click',()=>globalThis.__OPEN_SESSION_OPTIONS__?.({characterId:rel.id}));
+    nav.append(chars,options);
     if(state.world.allFriends){
       const everyone=document.createElement('button');everyone.type='button';everyone.className='friendship-all';everyone.textContent='みんなと遊ぶ';everyone.addEventListener('click',startEveryone);nav.appendChild(everyone);
     }
@@ -205,6 +205,10 @@ function captureStarts(event){
     return;
   }
   if(!target.closest('#startStudyCta')) return;
+  if(globalThis.__ENGLISH_PWA_CUSTOM_SESSION_PENDING__){
+    try{delete globalThis.__ENGLISH_PWA_CUSTOM_SESSION_PENDING__;}catch(_){globalThis.__ENGLISH_PWA_CUSTOM_SESSION_PENDING__=false;}
+    return;
+  }
   if(globalThis.__ENGLISH_PWA_TAG_SCOPE_REQUEST__) return;
   if(state.skipDefaultScopeOnce){state.skipDefaultScopeOnce=false;return;}
   const recommended=recommendCharacter(refreshModel().relationships);
@@ -363,6 +367,7 @@ async function init(){
   state.characters=await loadCharacters();
   injectStyles();refreshModel();
   globalThis.__START_CHARACTER_STUDY__=startCharacter;
+  globalThis.__PREPARE_CHARACTER_SESSION__=beginCharacterSession;
   globalThis.__CLEAR_ACTIVE_CHARACTER_SESSION__=clearActiveCharacter;
   globalThis.__RELATIONSHIP_GAME_STATE__=()=>({relationships:state.relationships,world:state.world,activeCharacterId:state.activeCharacterId});
   bindObservers();renderHome();ensureSessionHeader();checkMilestones({show:true});handleViewChange();
