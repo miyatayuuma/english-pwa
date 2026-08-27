@@ -1,4 +1,4 @@
-// sw.js: cache name follows the app version. v5.31
+// sw.js: cache name follows the app version. v5.32
 importScripts('./scripts/version.js');
 const CACHE = self.APP_VERSION;
 
@@ -29,8 +29,10 @@ self.addEventListener('install', e => {
     './scripts/app/composeDefaults.js',
     './scripts/app/logManager.js',
     './scripts/app/tagLearningCore.js',
+    './scripts/app/relationshipCore.js',
     './scripts/app/adaptiveLearning.js',
     './scripts/app/sessionShell.js',
+    './scripts/app/relationshipMode.js',
     './scripts/app/tagBrowser.js',
     './scripts/app/vocabularyLearningCore.js',
     './scripts/app/vocabularyMode.js',
