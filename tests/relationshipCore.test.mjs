@@ -35,21 +35,32 @@ test('relationship ranks map directly to durable learning progress',()=>{
   let joe=buildCharacterRelationship(items,chars[0],state,now);
   assert.equal(joe.rank.id,'acquaintance');
 
-  state={A:review(1),B:review(1)};
+  state={A:review(2),B:review(2)};
   joe=buildCharacterRelationship(items,chars[0],state,now);
   assert.equal(joe.rank.id,'familiar');
 
-  state={A:review(1),B:review(1),C:review(1)};
+  state={A:review(2),B:review(2),C:review(2)};
   joe=buildCharacterRelationship(items,chars[0],state,now);
   assert.equal(joe.rank.id,'friend');
 
-  state={A:review(4),B:review(4),C:review(1)};
+  state={A:review(4),B:review(4),C:review(2)};
   joe=buildCharacterRelationship(items,chars[0],state,now);
   assert.equal(joe.rank.id,'close_friend');
 
   state={A:review(4),B:review(4),C:review(4)};
   joe=buildCharacterRelationship(items,chars[0],state,now);
   assert.equal(joe.rank.id,'best_friend');
+});
+
+test('relationship coverage counts only sentences that have passed 70 percent',()=>{
+  const joe=buildCharacterRelationship(items,chars[0],{
+    A:review(1),
+    B:review(2),
+    C:{best:1,last:4,review:{nextDueAt:now+DAY,intervalMs:DAY}},
+  },now);
+  assert.equal(joe.started,2);
+  assert.equal(joe.rank.id,'familiar');
+  assert.equal(joe.next.remaining,1);
 });
 
 test('intimacy is capped by the current durable relationship rank',()=>{
@@ -149,7 +160,7 @@ test('shared-speaker intimacy deltas use the same capped display value',()=>{
 test('world milestones unlock full-coverage and mastery goals',()=>{
   const five=Array.from({length:5},(_,i)=>({id:`c${i}`,name:`C${i}`}));
   const fiveItems=five.map((c,i)=>({id:`I${i}`,speaker_tags:[{id:c.id}]}));
-  const friendLevels=Object.fromEntries(fiveItems.map(item=>[item.id,review(1)]));
+  const friendLevels=Object.fromEntries(fiveItems.map(item=>[item.id,review(2)]));
   const friendWorld=summarizeRelationshipWorld(fiveItems,buildRelationshipCatalog(fiveItems,five,friendLevels,now));
   assert.equal(friendWorld.friendCount,5);
   assert.ok(reachedMilestones(friendWorld).some(x=>x.id==='friends_all'));

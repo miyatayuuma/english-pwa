@@ -324,7 +324,9 @@ export function createRecognitionController(options = {}) {
     clearResumeTimer = () => {},
     resetResumeAfterMicStart = () => {},
     shouldResumeAudio = () => false,
+    pauseAudioBeforeMicStart = () => {},
     resumeAudio = () => {},
+    micAudioResumeDelayMs = 180,
   } = options;
 
   let recognition = null;
@@ -332,6 +334,14 @@ export function createRecognitionController(options = {}) {
   let finalized = false;
   let stableText = '';
   let lastMatch = null;
+  let micAudioResumeTimer = null;
+
+  function clearMicAudioResumeTimer() {
+    if (micAudioResumeTimer) {
+      clearTimeout(micAudioResumeTimer);
+      micAudioResumeTimer = null;
+    }
+  }
 
   function clearHighlight() {
     clearHighlightInternal(enElement, getComposeNodes);
@@ -362,6 +372,7 @@ export function createRecognitionController(options = {}) {
     }
     active = false;
     finalized = true;
+    clearMicAudioResumeTimer();
     resetResumeAfterMicStart?.();
     setMicState?.(false);
     onStop?.();
@@ -399,6 +410,14 @@ export function createRecognitionController(options = {}) {
     const shouldResume = !!shouldResumeAudio?.();
     setResumeAfterMicStart?.(shouldResume);
     clearResumeTimer?.();
+    clearMicAudioResumeTimer();
+    if (shouldResume) {
+      try {
+        pauseAudioBeforeMicStart?.();
+      } catch (_) {
+        // ignore playback pause failures
+      }
+    }
     recognition = new SR();
     recognition.lang = 'en-US';
     recognition.continuous = true;
@@ -414,19 +433,19 @@ export function createRecognitionController(options = {}) {
     onTranscriptReset?.();
     clearHighlight();
 
-    try {
-      recognition.start();
-    } catch (_) {
-      // noop
-    }
-
-    if (shouldResume) {
-      try {
-        resumeAudio?.();
-      } catch (_) {
-        // ignore resume failures
-      }
-    }
+    recognition.onstart = () => {
+      if (!shouldResume || !active || finalized) return;
+      const delay = Math.max(0, Number(micAudioResumeDelayMs) || 0);
+      micAudioResumeTimer = setTimeout(() => {
+        micAudioResumeTimer = null;
+        if (!active || finalized) return;
+        try {
+          resumeAudio?.();
+        } catch (_) {
+          // ignore resume failures
+        }
+      }, delay);
+    };
 
     recognition.onresult = (event) => {
       let interim = '';
@@ -462,6 +481,7 @@ export function createRecognitionController(options = {}) {
       console.warn('recognition error', ev);
       playTone?.('fail');
       setMicState?.(false);
+      clearMicAudioResumeTimer();
       resetResumeAfterMicStart?.();
       clearResumeTimer?.();
       active = false;
@@ -476,6 +496,18 @@ export function createRecognitionController(options = {}) {
       }
       handleAutoStop();
     };
+
+    try {
+      recognition.start();
+    } catch (_) {
+      clearMicAudioResumeTimer();
+      resetResumeAfterMicStart?.();
+      active = false;
+      finalized = true;
+      recognition = null;
+      setMicState?.(false);
+      return { ok: false, reason: 'start-failed' };
+    }
 
     return { ok: true };
   }

@@ -3509,6 +3509,7 @@ function createAppRuntime(){
       clearResumeTimer,
       resetResumeAfterMicStart,
       shouldResumeAudio: ()=> audio && !audio.paused && !audio.ended,
+      pauseAudioBeforeMicStart: ()=>{ try{audio?.pause?.();}catch(_){} },
       resumeAudio: ()=>{ if(audio?.src){ audio.play().catch(()=>{}); } },
     });
   }

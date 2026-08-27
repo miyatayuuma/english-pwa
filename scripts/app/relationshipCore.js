@@ -100,7 +100,10 @@ export function buildCharacterRelationship(items,character,levelState={},now=Dat
   let overdueRatioSum=0;
   for(const item of matched){
     const best=bestLevelOf(levelState,item.id);
-    if(best>0) started+=1;
+    // Lv2 is the first passing level and represents a best speech match of at
+    // least 70%. Keep the highest achievement durable, so a later weak retry
+    // does not take an already-cleared sentence away from relationship progress.
+    if(best>=2) started+=1;
     if(best>=4) mastered+=1;
     if(best>=5) stable+=1;
     friendshipPoints+=Math.min(4,best);
