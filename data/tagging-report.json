@@ -1,12 +1,14 @@
 {
-  "tagging_version": 2,
+  "tagging_version": 3,
   "total_items": 560,
-  "character_tagged_items": 115,
+  "legacy_character_tagged_items": 115,
+  "mentioned_character_items": 85,
+  "speaker_tagged_items": 560,
   "explicit_character_items": 85,
   "inferred_high_items": 26,
   "inferred_medium_items": 15,
   "generic_situation_items": 267,
-  "character_counts": {
+  "legacy_character_counts": {
     "bob:explicit": 26,
     "bob:inferred_high": 14,
     "nick:explicit": 11,
@@ -51,6 +53,67 @@
     "ted:explicit": 1,
     "teresa:explicit": 1
   },
+  "mentioned_character_counts": {
+    "bob:explicit": 26,
+    "nick:explicit": 11,
+    "jennifer:explicit": 10,
+    "jane:explicit": 5,
+    "lisa:explicit": 5,
+    "ken:explicit": 3,
+    "tom:explicit": 3,
+    "bill:explicit": 2,
+    "joe:explicit": 2,
+    "mike:explicit": 2,
+    "naomi:explicit": 2,
+    "senator_ford:explicit": 2,
+    "ando:explicit": 1,
+    "brian:explicit": 1,
+    "dave:explicit": 1,
+    "dolly:explicit": 1,
+    "giotto:explicit": 1,
+    "jason:explicit": 1,
+    "john:explicit": 1,
+    "johnson:explicit": 1,
+    "lucy:explicit": 1,
+    "michael:explicit": 1,
+    "molly:explicit": 1,
+    "monica:explicit": 1,
+    "ms_yamada:explicit": 1,
+    "phil:explicit": 1,
+    "richard:explicit": 1,
+    "richie:explicit": 1,
+    "starr:explicit": 1,
+    "ted:explicit": 1,
+    "teresa:explicit": 1
+  },
+  "speaker_counts": {
+    "jennifer:app_cast": 48,
+    "lisa:app_cast": 46,
+    "jane:app_cast": 43,
+    "monica:app_cast": 40,
+    "ken:app_cast": 39,
+    "naomi:app_cast": 39,
+    "bill:app_cast": 35,
+    "bob:app_cast": 35,
+    "molly:app_cast": 34,
+    "dolly:app_cast": 31,
+    "nick:app_cast": 29,
+    "tom:app_cast": 29,
+    "dave:app_cast": 28,
+    "joe:app_cast": 28,
+    "mike:app_cast": 28,
+    "phil:app_cast": 19,
+    "teresa:app_cast": 17,
+    "bob:contextual": 14,
+    "starr:app_cast": 14,
+    "senator_ford:app_cast": 12,
+    "ted:app_cast": 11,
+    "nick:contextual": 5,
+    "jane:contextual": 4,
+    "lisa:contextual": 3,
+    "dave:contextual": 1,
+    "joe:contextual": 1
+  },
   "situation_counts": {
     "general": 267,
     "personality_emotion": 28,
@@ -89,21 +152,24 @@
     "modal_could": 13,
     "relative_clause": 12,
     "modal_must": 11,
-    "there_be": 11,
     "have_to": 8,
     "past_progressive": 8,
     "modal_would": 6,
     "participial_or_reduced_clause": 5,
     "past_perfect": 5,
     "be_going_to": 4,
-    "it_that_structure": 4,
     "modal_may_might": 4,
-    "subjunctive": 4,
+    "subjunctive": 4
+  },
+  "construction_counts": {
+    "there_be": 11,
+    "it_that_structure": 4,
     "causative_have": 1,
     "correlative_comparative": 1,
     "inversion_no_sooner": 1,
     "not_so_much_as": 1
   },
+  "sentence_pattern_counts": {},
   "function_counts": {
     "asking": 46,
     "complaint_or_protest": 26,
@@ -262,7 +328,7 @@
         {
           "id": "bob",
           "certainty": "inferred_high",
-          "reason": "direct_continuation_of_E0369"
+          "reason": "direct_context_after_E0369"
         }
       ]
     },
@@ -541,5 +607,61 @@
         }
       ]
     }
-  ]
+  ],
+  "speaker_cast_diagnostics": {
+    "item_count": 560,
+    "speaker_slot_count": 633,
+    "character_counts": {
+      "bob": 49,
+      "lisa": 49,
+      "jennifer": 48,
+      "jane": 47,
+      "monica": 40,
+      "ken": 39,
+      "naomi": 39,
+      "bill": 35,
+      "molly": 34,
+      "nick": 34,
+      "dolly": 31,
+      "dave": 29,
+      "joe": 29,
+      "tom": 29,
+      "mike": 28,
+      "phil": 19,
+      "teresa": 17,
+      "starr": 14,
+      "senator_ford": 12,
+      "ted": 11
+    },
+    "target_counts": {
+      "bob": 33.36,
+      "nick": 33.36,
+      "ken": 27.8,
+      "tom": 27.8,
+      "dave": 27.8,
+      "joe": 27.8,
+      "mike": 27.8,
+      "bill": 27.8,
+      "ted": 22.24,
+      "starr": 22.24,
+      "phil": 22.24,
+      "senator_ford": 27.8,
+      "jennifer": 45.75,
+      "lisa": 45.75,
+      "jane": 45.75,
+      "naomi": 38.13,
+      "monica": 38.13,
+      "teresa": 30.5,
+      "molly": 30.5,
+      "dolly": 30.5
+    },
+    "source_counts": {
+      "app_cast": 605,
+      "contextual": 28
+    },
+    "confidence_counts": {
+      "medium": 406,
+      "high": 227
+    }
+  }
 }
