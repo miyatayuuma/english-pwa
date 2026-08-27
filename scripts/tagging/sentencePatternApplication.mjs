@@ -25,15 +25,29 @@ export function validateSentencePatternAnalysis(items,analysis){
   }
   const byId=new Map(entries.map(entry=>[String(entry?.id||''),entry]));
   if(byId.size!==entries.length) errors.push('duplicate or missing analysis ids');
+
+  let acceptedMainCount=0;
+  let reviewCount=0;
   for(const item of sourceItems){
     const id=String(item?.id||'');
     const entry=byId.get(id);
     if(!entry){ errors.push(`missing analysis for ${id}`); continue; }
+    const itemText=String(item?.en||'').trim();
+    const analysisText=String(entry?.en||'').trim();
+    if(itemText!==analysisText) errors.push(`analysis text mismatch ${id}`);
+    if(!entry.main || typeof entry.main!=='object') errors.push(`missing main analysis ${id}`);
+    if(!Array.isArray(entry.clauses)) errors.push(`missing clause analysis ${id}`);
+    if(acceptedPattern(entry.main)) acceptedMainCount+=1;
+    if(entry.review_required===true) reviewCount+=1;
     for(const record of [entry.main,...(Array.isArray(entry.clauses)?entry.clauses:[])]){
       if(record?.pattern!=null && !PATTERN_SET.has(record.pattern)) errors.push(`invalid pattern ${id}: ${record.pattern}`);
       if(record?.accepted===true && !PATTERN_SET.has(record?.pattern)) errors.push(`accepted invalid pattern ${id}`);
     }
   }
+
+  if(Number(analysis?.summary?.item_count)!==entries.length) errors.push('analysis summary item count mismatch');
+  if(Number(analysis?.summary?.main_accepted)!==acceptedMainCount) errors.push('analysis summary main coverage mismatch');
+  if(Number(analysis?.summary?.review_item_count)!==reviewCount) errors.push('analysis summary review count mismatch');
   return errors;
 }
 
