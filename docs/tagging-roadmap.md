@@ -86,16 +86,16 @@ Exit criteria: pattern tags are accurate enough to browse and to support future 
 
 Goal: expose the trustworthy v3 data with low cognitive load rather than mirroring every internal taxonomy axis in the UI.
 
-- Character browsing uses `speaker_tags` only. Legacy `character_tags` never determines the learner-facing character deck.
+- Character browsing uses `speaker_tags` only.
 - Characters act as episodic/theme anchors. Their compact theme labels are derived from hidden `situation_tags` rather than exposing a separate situation browser.
 - The learner-facing **English skills** surface combines grammar, construction, and five-sentence-pattern training in one browser, grouped as 文法 / 構文 / 5文型.
 - `situation_tags` and `function_tags` remain internal metadata for casting, recommendation, sequencing, and QA; they are not top-level learner controls.
 - Study-card memory cues show the assigned speaker artwork only; mentioned characters and raw situation labels are not shown as speaker cues.
 - Dialogue examples may show two assigned speakers.
 - Old tag-browser tab/selection state is removed during migration so retired UI choices cannot reappear.
-- Retire legacy `character_tags` from persisted item data only after tagging/report tooling no longer needs the compatibility field.
+- Legacy `character_tags`, inferred character-context payloads, and flat `character:*` tags are retired from generated item data and reports. Explicit mentions remain only in `mentioned_character_tags`.
 
-Status: learner-facing browse/runtime migration implemented on the P5 branch. Remaining work is live UI verification and post-migration cleanup/QA before declaring the phase complete.
+Status: learner-facing browse/runtime migration and legacy character-context cleanup are implemented. Remaining work is live UI verification before declaring the phase complete.
 
 Exit criteria: the app presents only characters and English skills as taxonomy choices, while internal axes remain available for recommendation and QA without increasing learner-facing complexity.
 
