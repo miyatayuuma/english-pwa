@@ -33,6 +33,26 @@ const state={
   speechPromise:null,
   advanceToken:0,
 };
+const RECENT_VOCAB_KEY='recentVocabularySessionIdsV1';
+const VOCAB_ROTATION_KEY='vocabularyRotationSeedV1';
+
+function loadRecentVocabularyIds(){
+  try{
+    const value=JSON.parse(localStorage.getItem(RECENT_VOCAB_KEY)||'[]');
+    return Array.isArray(value)?[...new Set(value.map(String).filter(Boolean))].slice(0,30):[];
+  }catch(_){ return []; }
+}
+
+function nextVocabularyRotationSeed(){
+  let value=0;
+  try{ value=Math.max(0,Number(localStorage.getItem(VOCAB_ROTATION_KEY))||0)+1;localStorage.setItem(VOCAB_ROTATION_KEY,String(value)); }catch(_){ value=Date.now(); }
+  return value;
+}
+
+function rememberVocabularySession(entries){
+  const ids=(Array.isArray(entries)?entries:[]).map(entry=>String(entry?.id||'')).filter(Boolean).slice(0,30);
+  try{ localStorage.setItem(RECENT_VOCAB_KEY,JSON.stringify(ids)); }catch(_){}
+}
 
 const levels=createLevelStateManager({
   baseHintStage:0,
@@ -190,7 +210,13 @@ function startSession(){
   stopListening();
   cancelPronunciation();
   const levelState=JSON.parse(localStorage.getItem('itemLevelV1')||'{}');
-  const plan=buildVocabularySession(state.entries,levelState,{size:12,kind:state.kind});
+  const plan=buildVocabularySession(state.entries,levelState,{
+    size:12,
+    kind:state.kind,
+    recentItemIds:loadRecentVocabularyIds(),
+    rotationSeed:nextVocabularyRotationSeed(),
+  });
+  rememberVocabularySession(plan.entries);
   state.queue=plan.entries.slice();
   state.position=0;
   state.initialCount=plan.size;

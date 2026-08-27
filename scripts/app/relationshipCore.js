@@ -184,20 +184,25 @@ export function nextWorldMilestone(world){
   return RELATIONSHIP_MILESTONES.find(x=>!reached.has(x.id))||null;
 }
 
-export function recommendCharacter(relationships){
+export function recommendCharacter(relationships,{recentCharacterIds=[]}={}){
   const safe=Array.isArray(relationships)?relationships.filter(Boolean):[];
   if(!safe.length) return null;
   const allBest=safe.every(entry=>entry.rank.order>=4);
+  const recent=[...new Set(Array.from(recentCharacterIds||[],String).filter(Boolean))].slice(0,4);
   return safe.slice().sort((a,b)=>{
     const score=(entry)=>{
       const dueRate=entry.total?entry.due/entry.total:0;
       const tier=entry.character?.tier==='main'?8:(entry.character?.tier==='supporting'?4:0);
-      if(allBest) return dueRate*70+(100-entry.intimacy)*0.55+entry.overdueRatio*8+tier*0.1;
+      const recentIndex=recent.indexOf(String(entry.id));
+      // Rotate ordinary recommendations, but never suppress genuinely urgent
+      // reviews. The most recent partner receives the largest soft penalty.
+      const rotationPenalty=dueRate>=0.35||recentIndex<0?0:[24,12,6,3][recentIndex];
+      if(allBest) return dueRate*70+(100-entry.intimacy)*0.55+entry.overdueRatio*8+tier*0.1-rotationPenalty;
       const inProgress=entry.started>0&&entry.rank.order<4?22:0;
       const coveragePriority=entry.rank.order<2?18:0;
       const nextCloseness=entry.next?.progress?entry.next.progress*18:0;
       const stale=entry.started>0?(100-entry.intimacy)*0.12:0;
-      return dueRate*55+inProgress+coveragePriority+nextCloseness+stale+tier;
+      return dueRate*55+inProgress+coveragePriority+nextCloseness+stale+tier-rotationPenalty;
     };
     return score(b)-score(a)||b.rank.order-a.rank.order||b.total-a.total||String(a.name).localeCompare(String(b.name));
   })[0];

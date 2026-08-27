@@ -113,6 +113,19 @@ test('section and AND scopes reuse the same selection pipeline',()=>{
   assert.deepEqual(plan.scope,scope);
 });
 
+test('automatic sessions alternate sections when equally useful reviews are available',()=>{
+  const now=9000;
+  const items=[
+    item('A',{unit:'Section23',speaker_tags:[{id:'starr'}]}),
+    item('B',{unit:'Section23',speaker_tags:[{id:'starr'}]}),
+    item('C',{unit:'Section1',speaker_tags:[{id:'starr'}]}),
+    item('D',{unit:'Section2',speaker_tags:[{id:'starr'}]}),
+  ];
+  const levels=Object.fromEntries(items.map(entry=>[entry.id,{last:2,review:{nextDueAt:now-100}}]));
+  const plan=buildAutomaticSession(items,levels,{now,size:4,scope:{type:'character',id:'starr'}});
+  assert.notEqual(plan.items[0].unit,plan.items[1].unit);
+});
+
 test('fixed time and data always produce the same session and reasons',()=>{
   const now=9000;
   const items=Array.from({length:9},(_,i)=>item(`R${i}`,{

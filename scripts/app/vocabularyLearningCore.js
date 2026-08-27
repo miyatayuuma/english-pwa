@@ -55,7 +55,7 @@ function stableHash(text){
   return h>>>0;
 }
 
-function candidate(entry,levelState,now,index){
+function candidate(entry,levelState,now,index,rotationSeed=0){
   const meta=vocabularyLevelInfo(levelState,entry);
   const due=meta.dueAt>0&&meta.dueAt<=now;
   const fresh=!meta.updatedAt&&!meta.dueAt;
@@ -66,7 +66,7 @@ function candidate(entry,levelState,now,index){
   else if(fresh){ bucket='fresh'; score=6000; }
   else if(meta.level>=4){ bucket='stable'; score=300; }
   else{ bucket='learning'; score=700; }
-  score+=(stableHash(`${entry?.id}|${Math.floor(now/DAY_MS)}`)%1000)/1000;
+  score+=(stableHash(`${entry?.id}|${Math.floor(now/DAY_MS)}|${rotationSeed}`)%1000)/1000;
   return {entry,index,...meta,due,fresh,bucket,score};
 }
 
@@ -79,7 +79,17 @@ export function buildVocabularySession(entries,levelState={},options={}){
     ? Math.max(0,Math.min(requested,Math.round(newCapRaw)))
     : Math.min(8,requested);
   const source=(Array.isArray(entries)?entries:[]).filter(entry=>kind==='all'||entry?.kind===kind);
-  const metas=source.map((entry,index)=>candidate(entry,levelState,now,index));
+  const rotationSeed=Math.max(0,Math.round(Number(options.rotationSeed)||0));
+  const recentIds=new Set(Array.from(options.recentItemIds||[],String));
+  const allMetas=source.map((entry,index)=>candidate(entry,levelState,now,index,rotationSeed));
+  // Due cards remain eligible because spaced review is more important than
+  // variety. Other cards from the immediately preceding set move to the back,
+  // while remaining available when a filtered pool is very small.
+  for(const meta of allMetas){
+    if(!meta.due&&recentIds.has(String(meta.entry?.id))) meta.score-=20000;
+  }
+  const metas=allMetas;
+  const recentDeferred=allMetas.filter(meta=>!meta.due&&recentIds.has(String(meta.entry?.id))).length;
   const due=metas.filter(x=>x.bucket==='due').sort((a,b)=>b.score-a.score);
   const fresh=metas.filter(x=>x.bucket==='fresh').sort((a,b)=>b.score-a.score);
   const early=metas.filter(x=>x.bucket==='learning').sort((a,b)=>b.score-a.score);
@@ -105,6 +115,8 @@ export function buildVocabularySession(entries,levelState={},options={}){
     early:selected.filter(x=>x.bucket==='learning'||x.bucket==='stable').length,
     kind,
     newCap,
+    rotationSeed,
+    recentExcluded:recentDeferred,
   };
 }
 

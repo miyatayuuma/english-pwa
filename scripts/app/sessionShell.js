@@ -18,6 +18,7 @@ import {
 } from './sessionOptionsCore.js';
 
 const LEVEL_KEY='itemLevelV1';
+const RECENT_SESSION_KEY='recentSentenceSessionIdsV1';
 const ALL_LEVELS=[0,1,2,3,4,5];
 const STATUS_LEVELS={all:ALL_LEVELS,fresh:[0],learning:[1,2,3],stable:[4,5]};
 
@@ -43,6 +44,14 @@ function loadJsonStorage(key,fallback){
   }catch(_){ return fallback; }
 }
 function loadLevelState(){ return loadJsonStorage(LEVEL_KEY,{}); }
+function loadRecentSessionIds(){
+  const value=loadJsonStorage(RECENT_SESSION_KEY,[]);
+  return Array.isArray(value)?[...new Set(value.map(String).filter(Boolean))].slice(0,12):[];
+}
+function rememberSessionItems(items){
+  const ids=(Array.isArray(items)?items:[]).map(item=>String(item?.id||'')).filter(Boolean).slice(0,12);
+  try{ localStorage.setItem(RECENT_SESSION_KEY,JSON.stringify(ids)); }catch(_){}
+}
 function iconPath(profile){
   const name=String(profile?.name||'').trim();
   return name?`./${encodeURIComponent(name)}.png`:'';
@@ -476,6 +485,7 @@ function setLegacyPlan(plan){
   state.originalAllItems=window.ALL_ITEMS;
   window.ALL_ITEMS=buildLegacyQueueItems(plan.items);
   state.sessionPlan=plan;
+  rememberSessionItems(plan.items);
   // The legacy CTA reuses its existing QUEUE when it is non-empty. Tell its
   // bubble-phase handler that window.ALL_ITEMS has just been replaced and a
   // rebuild is mandatory before starting.
@@ -484,7 +494,7 @@ function setLegacyPlan(plan){
 }
 
 function prepareStart(){
-  const recentItemIds=state.sessionPlan?.items?.map(item=>item.id)||[];
+  const recentItemIds=state.sessionPlan?.items?.map(item=>item.id)||loadRecentSessionIds();
   if(state.pendingOptions){
     const options=state.pendingOptions;
     state.pendingOptions=null;
