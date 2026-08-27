@@ -22,8 +22,8 @@ test('all app characters participate in the friendship game and cover all senten
   assert.ok(recommendCharacter(relationships));
 });
 
-test('touching every sentence makes every character a friend',()=>{
-  const relationships=buildRelationshipCatalog(itemList,characterList,levelsAt(1),Date.now());
+test('passing every sentence at 70 percent makes every character a friend',()=>{
+  const relationships=buildRelationshipCatalog(itemList,characterList,levelsAt(2),Date.now());
   const world=summarizeRelationshipWorld(itemList,relationships);
   assert.equal(world.friendCount,20);
   assert.equal(world.allFriends,true);

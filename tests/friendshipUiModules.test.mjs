@@ -30,7 +30,14 @@ test('character selection uses the same two-stage profile flow in both entrances
   assert.match(source,/if\(!state\.characterOnly\)/);
   assert.match(source,/会いどき/);
   assert.match(source,/の詳細を見る/);
-  assert.match(source,/← 一覧に戻る/);
+  assert.match(source,/一覧へ戻る/);
+  assert.match(source,/前のキャラ/);
+  assert.match(source,/次のキャラ/);
+  assert.match(source,/touchstart/);
+  assert.match(source,/touchend/);
+  assert.match(source,/dy>=90/);
+  assert.match(source,/合格済み/);
+  assert.match(source,/一致率70%以上で1文クリア/);
   assert.match(source,/人物紹介/);
   assert.match(source,/性格・会話テーマ/);
   assert.match(source,/次の関係目標/);
