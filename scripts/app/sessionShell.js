@@ -98,7 +98,7 @@ function injectStyles(){
     .memory-cue{min-height:30px;display:flex;align-items:center;gap:6px;margin:0 0 7px;opacity:.82}
     .memory-cue:empty{display:none}.memory-cue__person{width:29px;height:29px;border-radius:9px;object-fit:cover;background:rgba(148,163,184,.12)}
     body.focus-study-view main{padding:5px 8px 7px}.focus-study-view #studyView{gap:0}.focus-study-view .study-stage-access,.focus-study-view .friendship-session,.focus-study-view .memory-cue{display:none!important}
-    .conversation-card{--scene-accent:#7dd3fc;padding:10px 12px 12px!important;gap:8px!important;border-radius:22px!important;background:radial-gradient(120% 80% at 50% 0,rgba(30,64,175,.16),transparent 68%),#101522!important}
+    .focus-study-view #studyView .conversation-card{--scene-accent:#7dd3fc;min-height:0!important;height:auto!important;max-height:none!important;flex:0 1 auto;overflow:visible!important;padding:10px 12px 12px!important;gap:8px!important;border-radius:22px!important;background:radial-gradient(120% 80% at 50% 0,rgba(30,64,175,.16),transparent 68%),#101522!important}
     .conversation-progress{font-size:11px;font-weight:900;letter-spacing:.1em;text-align:center;color:var(--scene-accent);min-height:16px}
     .conversation-scene{display:grid;grid-template-columns:minmax(108px,35%) minmax(0,1fr);gap:10px;align-items:stretch;min-height:164px}
     .conversation-cast{position:relative;display:flex;align-items:flex-end;justify-content:center;min-height:164px;border-radius:20px;overflow:hidden;background:radial-gradient(95% 75% at 50% 28%,color-mix(in srgb,var(--scene-accent) 26%,transparent),transparent 68%),rgba(255,255,255,.035);box-shadow:inset 0 0 0 1px rgba(255,255,255,.07)}
