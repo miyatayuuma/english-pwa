@@ -180,6 +180,11 @@ def classify_clause(head: Any, sentence: Any) -> dict[str, Any]:
     if lemma in LINKING_LEMMAS and predicatives and not direct_objects and not indirect_objects:
         return analysis_record("SVC", "high", "linking_verb_predicative_complement", head, sentence)
 
+    # Known predicative PP idiom. Check before generic clausal complements because
+    # a following result clause ("so ... that ...") must not turn the main clause into SVO.
+    if lemma == "be" and is_beside_oneself(preps):
+        return analysis_record("SVC", "high", "predicative_idiom_beside_oneself", head, sentence)
+
     # be going to + lexical predicate is a future periphrasis; classify from the
     # lexical xcomp rather than treating 'going' as a low-confidence control verb.
     if lemma == "go" and head.tag_ == "VBG" and xcomps and any(
@@ -215,9 +220,6 @@ def classify_clause(head: Any, sentence: Any) -> dict[str, Any]:
         if lemma in INFINITIVE_OBJECT_LEMMAS:
             return analysis_record("SVO", "medium", "infinitival_object_candidate", head, sentence)
         return analysis_record(None, "low", "unresolved_xcomp_valency", head, sentence)
-
-    if lemma == "be" and is_beside_oneself(preps):
-        return analysis_record("SVC", "high", "predicative_idiom_beside_oneself", head, sentence)
 
     if lemma == "be" and (preps or advmods):
         return analysis_record("SVC", "medium", "be_with_prepositional_or_adverbial_complement", head, sentence)
