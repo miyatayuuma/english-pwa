@@ -1,6 +1,8 @@
 # Tagging migration roadmap
 
-The target model is seven independent learning axes: speaker, situation/topic, grammar, construction, five sentence patterns, conversation function, and vocabulary/expression. Mentioned characters are stored separately from speakers so character presence never implies who is speaking.
+The internal model keeps seven independent learning axes: speaker, situation/topic, grammar, construction, five sentence patterns, conversation function, and vocabulary/expression. Mentioned characters are stored separately from speakers so character presence never implies who is speaking.
+
+The learner-facing model is intentionally smaller: **characters** and **English skills**. Situation/topic and conversation-function metadata remain available to casting, recommendations, sequencing, and QA, but are not separate browse surfaces.
 
 ## P0 — Freeze semantics and schema
 
@@ -82,25 +84,30 @@ Exit criteria: pattern tags are accurate enough to browse and to support future 
 
 ## P5 — Runtime/UI migration
 
-Goal: expose the new data only after it is trustworthy.
+Goal: expose the trustworthy v3 data with low cognitive load rather than mirroring every internal taxonomy axis in the UI.
 
-- Change character browsing from legacy `character_tags` to `speaker_tags`.
-- Add grammar hierarchy and a separate construction browser.
-- Add a five-pattern browser.
-- Show speaker artwork as a subtle card background; show two speakers for dialogue.
-- Keep mentioned characters out of the speaker filter.
-- Retire legacy `character_tags` once no runtime path depends on it.
+- Character browsing uses `speaker_tags` only. Legacy `character_tags` never determines the learner-facing character deck.
+- Characters act as episodic/theme anchors. Their compact theme labels are derived from hidden `situation_tags` rather than exposing a separate situation browser.
+- The learner-facing **English skills** surface combines grammar, construction, and five-sentence-pattern training in one browser, grouped as 文法 / 構文 / 5文型.
+- `situation_tags` and `function_tags` remain internal metadata for casting, recommendation, sequencing, and QA; they are not top-level learner controls.
+- Study-card memory cues show the assigned speaker artwork only; mentioned characters and raw situation labels are not shown as speaker cues.
+- Dialogue examples may show two assigned speakers.
+- Old tag-browser tab/selection state is removed during migration so retired UI choices cannot reappear.
+- Retire legacy `character_tags` from persisted item data only after tagging/report tooling no longer needs the compatibility field.
 
-Exit criteria: the app UI uses only v3 semantics.
+Status: learner-facing browse/runtime migration implemented on the P5 branch. Remaining work is live UI verification and post-migration cleanup/QA before declaring the phase complete.
+
+Exit criteria: the app presents only characters and English skills as taxonomy choices, while internal axes remain available for recommendation and QA without increasing learner-facing complexity.
 
 ## P6 — Coverage and learning-quality QA
 
 Goal: tune the taxonomy after real use.
 
 - Inspect counts per parent/child tag and per character.
+- Measure actual character × situation distributions and character-to-character overlap before deciding whether any of the 20 cast members should be merged.
 - Review tags with very few examples and examples with excessive tagging.
 - Check that multi-tag examples are genuinely representative.
-- Verify speaker-background readability and memory-cue value.
+- Verify speaker artwork readability and memory-cue value.
 - Adjust parent categories or casting distribution based on usage rather than padding tags artificially.
 
-Exit criteria: tag collections are large enough to be useful, small tags remain meaningful, and no taxonomy axis is overloaded with a different concept.
+Exit criteria: character decks are distinct enough to work as memory anchors, skill collections are useful, and hidden metadata improves recommendations without becoming additional UI burden.
