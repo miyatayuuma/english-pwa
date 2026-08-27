@@ -8,29 +8,40 @@ const items=JSON.parse(await readFile(new URL('../data/items.json',import.meta.u
 const characterData=JSON.parse(await readFile(new URL('../data/characters.json',import.meta.url),'utf8'));
 const characters=characterData.characters||[];
 
-test('production tag catalog exposes every tag family',()=>{
+test('production browse catalog exposes only curated speakers and English skills',()=>{
   assert.equal(items.length,560);
   const catalog=buildTagCatalog(items,characters,{},Date.now());
+  assert.deepEqual(Object.keys(catalog).sort(),['character','skill']);
   assert.equal(catalog.character.length,characters.length);
-  assert.ok(catalog.situation.length>=10);
-  assert.ok(catalog.grammar.length>=10);
-  assert.ok(catalog.function.length>=5);
-  for(const type of ['character','situation','grammar','function']){
-    assert.ok(catalog[type].every(entry=>entry.id&&entry.label&&entry.total>0));
+  assert.ok(catalog.skill.some(entry=>entry.group==='sentence_pattern'));
+  assert.ok(catalog.skill.some(entry=>entry.group==='grammar'));
+  assert.ok(catalog.skill.some(entry=>entry.group==='construction'));
+  assert.ok(catalog.character.every(entry=>entry.id&&entry.label&&entry.total>0));
+  assert.ok(catalog.skill.every(entry=>entry.id&&entry.label&&entry.total>0));
+});
+
+test('runtime character catalog is driven by speaker tags, not legacy character context',()=>{
+  const catalog=buildTagCatalog(items,characters,{},Date.now());
+  for(const entry of catalog.character){
+    const expected=items.filter(item=>(item.speaker_tags||[]).some(tag=>tag.id===entry.id)).length;
+    assert.equal(entry.total,expected,`${entry.id}: speaker count mismatch`);
   }
 });
 
-test('structured tags have matching namespaced flat search tags',()=>{
+test('structured runtime tags have matching namespaced flat tags',()=>{
   for(const item of items){
     const flat=new Set(String(item.tags||'').split(',').map(x=>x.trim()).filter(Boolean));
-    for(const tag of item.character_tags||[]){
-      assert.ok(flat.has(makeSearchToken('character',tag.id)),`${item.id}: missing character:${tag.id}`);
+    for(const tag of item.speaker_tags||[]){
+      assert.ok(flat.has(makeSearchToken('speaker',tag.id)),`${item.id}: missing speaker:${tag.id}`);
     }
     for(const id of item.situation_tags||[]){
       assert.ok(flat.has(makeSearchToken('situation',id)),`${item.id}: missing situation:${id}`);
     }
     for(const id of item.grammar_tags||[]){
       assert.ok(flat.has(makeSearchToken('grammar',id)),`${item.id}: missing grammar:${id}`);
+    }
+    for(const id of item.construction_tags||[]){
+      assert.ok(flat.has(makeSearchToken('construction',id)),`${item.id}: missing construction:${id}`);
     }
     for(const id of item.function_tags||[]){
       assert.ok(flat.has(makeSearchToken('function',id)),`${item.id}: missing function:${id}`);
