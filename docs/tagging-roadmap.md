@@ -76,6 +76,8 @@ Goal: add structural sentence-pattern retrieval without pretending every example
 - Mark ambiguous cases for manual review rather than forcing a label.
 - Validate detector quality on a representative sample before full propagation.
 
+Status: data-layer implementation complete. High-confidence parser results and reviewed overrides are propagated to `items.json`; uncertain or fragmentary cases remain unassigned and auditable in the review dataset. The normal enrichment pipeline reapplies the accepted P4 analysis so later v3 regeneration does not erase it.
+
 Exit criteria: pattern tags are accurate enough to browse and to support future structural hints.
 
 ## P5 — Runtime/UI migration
