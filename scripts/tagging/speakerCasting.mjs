@@ -69,7 +69,7 @@ function contextualOverrideLocks(itemId,roles,castingData,profileById){
 }
 
 function explicitMentionIds(item){
-  return new Set((item?.character_tags||[]).filter(entry=>entry?.certainty==='explicit').map(entry=>entry.id).filter(Boolean));
+  return new Set((item?.mentioned_character_tags||[]).map(entry=>entry?.id).filter(Boolean));
 }
 
 function numeric(value,fallback){
