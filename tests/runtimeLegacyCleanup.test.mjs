@@ -53,3 +53,18 @@ test('compose autoplay never force-enables the audio control',async()=>{
   const practice=await text('scripts/app/sentencePracticeUx.js');
   assert.doesNotMatch(practice,/button\.disabled\s*=\s*false/);
 });
+
+test('boot and focused starts cannot revive a saved legacy section',async()=>{
+  const [main,sessionShell,version]=await Promise.all([
+    text('scripts/app/main.js'),
+    text('scripts/app/sessionShell.js'),
+    text('scripts/version.js'),
+  ]);
+  assert.match(main,/await rebuildAndRender\(true,\{autoStart:false\}\)/);
+  assert.match(main,/consumeFocusedSessionPending\(globalThis\)/);
+  assert.match(sessionShell,/markFocusedSessionPending\(globalThis\)/);
+  assert.doesNotMatch(sessionShell,/button\.click\(\)/);
+  for(const key of ['secSel','itemSearchV1','orderSel','levelFilterV1']){
+    assert.match(version,new RegExp(`removeItem\\('${key}'\\)`));
+  }
+});

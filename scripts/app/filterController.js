@@ -15,6 +15,16 @@ export function toggleLevelSelection(currentLevels, level, allLevels){
   return nextLevels;
 }
 
+export async function rebuildAfterFilterChange({
+  finalizeActiveSession,
+  rebuildAndRender,
+}={}){
+  try{
+    await finalizeActiveSession?.({reason:'filter-change'});
+  }catch(_){}
+  return rebuildAndRender?.(true,{autoStart:false});
+}
+
 export function createFilterController({
   el,
   levelChoices,
@@ -38,6 +48,11 @@ export function createFilterController({
     finalizeActiveSession,
     updateSectionOptions,
   }=deps;
+
+  const applyFilterChange=()=>rebuildAfterFilterChange({
+    finalizeActiveSession,
+    rebuildAndRender,
+  });
 
 
   function updateLevelFilterButtons(){
@@ -78,7 +93,7 @@ export function createFilterController({
         const nextLevels=toggleLevelSelection(getLevelFilterSet(), level, levelChoices);
         setLevelFilterSet(nextLevels);
         updateLevelFilterButtons();
-        rebuildAndRender(true);
+        applyFilterChange().catch(()=>{});
       });
       btnWrap.appendChild(btn);
     }
@@ -91,7 +106,7 @@ export function createFilterController({
       if(el?.secSel && el.secSel.value!==value) el.secSel.value=value;
       if(el?.studySecSel && el.studySecSel.value!==value) el.studySecSel.value=value;
       saveSectionSelection(SECTION_SELECTION, value);
-      rebuildAndRender(true);
+      applyFilterChange().catch(()=>{});
     };
     if(el?.secSel){
       el.secSel.onchange=()=>{ handleSectionChange(el.secSel.value); };
@@ -104,7 +119,7 @@ export function createFilterController({
       el.orderSel.value=['asc','rnd','srs'].includes(ordSaved) ? ordSaved : 'asc';
       el.orderSel.onchange=()=>{
         saveOrderSelection(ORDER_SELECTION, el.orderSel.value);
-        rebuildAndRender(true);
+        applyFilterChange().catch(()=>{});
       };
     }
     if(el?.search){
@@ -114,7 +129,6 @@ export function createFilterController({
       }
       let lastAppliedSearch=currentSearchQuery();
       let searchTimer=null;
-      const resetSessionForSearch=()=>finalizeActiveSession();
       const applySearchChange=(fromChange=false)=>{
         if(searchTimer){
           clearTimeout(searchTimer);
@@ -130,10 +144,7 @@ export function createFilterController({
         }
         lastAppliedSearch=trimmed;
         updateHeaderStats();
-        const resetPromise=resetSessionForSearch();
-        Promise.resolve(resetPromise)
-          .catch(()=>{})
-          .finally(()=>{ rebuildAndRender(true,{autoStart:false}); });
+        applyFilterChange().catch(()=>{});
       };
       const scheduleSearchChange=()=>{
         if(searchTimer){

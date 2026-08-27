@@ -1,6 +1,22 @@
 import { matchesTag } from './tagLearningCore.js';
 
 const HOUR_MS=60*60*1000;
+const FOCUSED_SESSION_PENDING_KEY='__ENGLISH_PWA_FOCUSED_SESSION_PENDING__';
+
+export const FOCUSED_SESSION_PREPARE_EVENT='english-pwa:prepare-focused-session';
+
+export function markFocusedSessionPending(host=globalThis){
+  if(!host) return false;
+  host[FOCUSED_SESSION_PENDING_KEY]=true;
+  return true;
+}
+
+export function consumeFocusedSessionPending(host=globalThis){
+  if(!host?.[FOCUSED_SESSION_PENDING_KEY]) return false;
+  try{ delete host[FOCUSED_SESSION_PENDING_KEY]; }
+  catch(_){ host[FOCUSED_SESSION_PENDING_KEY]=false; }
+  return true;
+}
 
 export function levelOf(levelState,itemId){
   const info=levelState?.[itemId];
