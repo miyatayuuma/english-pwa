@@ -1,14 +1,18 @@
-const APP_VERSION = 'v5.28';
+const APP_VERSION = 'v5.29';
 
 if (typeof globalThis !== 'undefined') {
   globalThis.APP_VERSION = APP_VERSION;
 }
 
 // appConfigV3.studyMode is the only sentence-game source of truth now.
-// Remove the old duplicate preference once so stale installations cannot
-// reintroduce split mode state after the legacy runtime was retired.
+// Remove stale one-time preferences and legacy tag-browser state so old
+// installations cannot revive retired UI choices after the P5 migration.
 if (typeof localStorage !== 'undefined') {
-  try { localStorage.removeItem('preferredSentenceMethodV1'); } catch (_) {}
+  try {
+    localStorage.removeItem('preferredSentenceMethodV1');
+    localStorage.removeItem('tagBrowserTabV1');
+    localStorage.removeItem('tagBrowserSelectionV1');
+  } catch (_) {}
 }
 
 if (typeof document !== 'undefined') {
@@ -16,7 +20,7 @@ if (typeof document !== 'undefined') {
     console.warn('Session shell failed to load', error);
   });
   import('./app/tagBrowser.js').catch((error) => {
-    console.warn('Tag browser failed to load', error);
+    console.warn('Character/skill browser failed to load', error);
   });
   import('./app/vocabularyMode.js').catch((error) => {
     console.warn('Vocabulary learning surface failed to load', error);
