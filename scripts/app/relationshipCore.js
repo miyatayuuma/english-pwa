@@ -10,6 +10,14 @@ export const RELATIONSHIP_RANKS=Object.freeze([
   Object.freeze({id:'best_friend',label:'親友',order:4}),
 ]);
 
+export const RELATIONSHIP_INTIMACY_CAPS=Object.freeze({
+  acquaintance:24,
+  familiar:49,
+  friend:69,
+  close_friend:89,
+  best_friend:100,
+});
+
 export const RELATIONSHIP_MILESTONES=Object.freeze([
   Object.freeze({id:'friends_5',kind:'friend',count:5,label:'5人と友達'}),
   Object.freeze({id:'friends_10',kind:'friend',count:10,label:'10人と友達'}),
@@ -108,7 +116,9 @@ export function buildCharacterRelationship(items,character,levelState={},now=Dat
   }
   const total=matched.length;
   const rank=rankForCounts(total,started,mastered);
-  const intimacy=total?Math.round(intimacySum/total*100):0;
+  const rawIntimacy=total?Math.round(intimacySum/total*100):0;
+  const intimacyCap=RELATIONSHIP_INTIMACY_CAPS[rank.id]??100;
+  const intimacy=Math.min(rawIntimacy,intimacyCap);
   const next=nextTargetForCounts(total,started,mastered,stable,rank);
   const maxFriendshipPoints=total*4;
   return {
@@ -122,6 +132,8 @@ export function buildCharacterRelationship(items,character,levelState={},now=Dat
     maxFriendshipPoints,
     rank,
     next,
+    rawIntimacy,
+    intimacyCap,
     intimacy,
     intimacyStatus:intimacyStatus(intimacy,due),
     overdueRatio:due?overdueRatioSum/due:0,
