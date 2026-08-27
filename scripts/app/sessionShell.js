@@ -48,6 +48,16 @@ function iconPath(profile){
   return name?`./${encodeURIComponent(name)}.png`:'';
 }
 
+export function orderedSpeakerIds(item){
+  return [...new Set((Array.isArray(item?.speaker_tags)?item.speaker_tags:[]).map(tag=>String(tag?.id||'')).filter(Boolean))];
+}
+
+export function conversationProgressFor(itemId,planItems=[]){
+  const items=Array.isArray(planItems)?planItems:[];
+  const index=items.findIndex(item=>String(item?.id)===String(itemId));
+  return {current:index>=0?index+1:Math.min(1,items.length),total:items.length};
+}
+
 export function isMainRuntimeReady(windowObj=globalThis.window,documentObj=globalThis.document){
   return !!(
     Array.isArray(windowObj?.ALL_ITEMS)
@@ -87,6 +97,21 @@ function injectStyles(){
     #chips,.study-stage-access,#studyView .kpi>div:nth-child(2),#footerInfoBtn,#footerMessage{display:none!important}
     .memory-cue{min-height:30px;display:flex;align-items:center;gap:6px;margin:0 0 7px;opacity:.82}
     .memory-cue:empty{display:none}.memory-cue__person{width:29px;height:29px;border-radius:9px;object-fit:cover;background:rgba(148,163,184,.12)}
+    body.focus-study-view main{padding:5px 8px 7px}.focus-study-view #studyView{gap:0}.focus-study-view .study-stage-access,.focus-study-view .friendship-session,.focus-study-view .memory-cue{display:none!important}
+    .conversation-card{--scene-accent:#7dd3fc;padding:10px 12px 12px!important;gap:8px!important;border-radius:22px!important;background:radial-gradient(120% 80% at 50% 0,rgba(30,64,175,.16),transparent 68%),#101522!important}
+    .conversation-progress{font-size:11px;font-weight:900;letter-spacing:.1em;text-align:center;color:var(--scene-accent);min-height:16px}
+    .conversation-scene{display:grid;grid-template-columns:minmax(108px,35%) minmax(0,1fr);gap:10px;align-items:stretch;min-height:164px}
+    .conversation-cast{position:relative;display:flex;align-items:flex-end;justify-content:center;min-height:164px;border-radius:20px;overflow:hidden;background:radial-gradient(95% 75% at 50% 28%,color-mix(in srgb,var(--scene-accent) 26%,transparent),transparent 68%),rgba(255,255,255,.035);box-shadow:inset 0 0 0 1px rgba(255,255,255,.07)}
+    .conversation-cast__person{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center}.conversation-cast__person img{width:100%;height:100%;object-fit:cover;object-position:center 28%}.conversation-cast__order{position:absolute;left:7px;top:7px;display:grid;place-items:center;width:22px;height:22px;border-radius:999px;background:rgba(8,15,28,.78);border:1px solid color-mix(in srgb,var(--scene-accent) 38%,transparent);font-size:10px;font-weight:900;color:var(--scene-accent)}
+    .conversation-cast--pair .conversation-cast__person{width:74%;inset:10px auto 0}.conversation-cast--pair .conversation-cast__person:first-child{left:-4px;z-index:2}.conversation-cast--pair .conversation-cast__person:nth-child(2){right:-4px;z-index:1;filter:saturate(.82) brightness(.82)}.conversation-cast--pair .conversation-cast__person:nth-child(2) .conversation-cast__order{left:auto;right:7px}
+    .conversation-cast__fallback{font-size:46px;opacity:.68;align-self:center}.conversation-bubble{position:relative;display:flex;flex-direction:column;justify-content:center;min-width:0;padding:14px 13px;border:1px solid rgba(255,255,255,.13);border-radius:20px;background:rgba(8,15,28,.58);box-shadow:0 13px 30px rgba(0,0,0,.18)}.conversation-bubble::before{content:"";position:absolute;left:-8px;top:42%;width:14px;height:14px;border-left:1px solid rgba(255,255,255,.13);border-bottom:1px solid rgba(255,255,255,.13);background:#0d1524;transform:rotate(45deg)}
+    .conversation-speakers{font-size:9px;font-weight:900;letter-spacing:.08em;color:var(--scene-accent);margin-bottom:7px}.conversation-prompt{font-size:15px;font-weight:750;line-height:1.55;word-break:normal}.conversation-intent{font-size:9px;opacity:.5;margin-top:8px}.conversation-feedback{min-height:17px;font-size:11px;font-weight:850;text-align:center;color:var(--scene-accent)}
+    .conversation-relationship{display:grid;gap:4px;margin-top:9px}.conversation-relationship[hidden]{display:none}.conversation-relationship__label{font-size:9px;font-weight:850;color:var(--scene-accent)}.conversation-relationship__track{height:4px;border-radius:999px;overflow:hidden;background:rgba(255,255,255,.1)}.conversation-relationship__fill{height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--scene-accent),#86efac)}
+    .conversation-card #enText{margin:0;padding:8px 10px!important;border:1px solid rgba(255,255,255,.08);border-radius:14px;background:rgba(255,255,255,.025);font-size:17px;line-height:1.5;min-height:42px}.conversation-card #enText::before{display:none}.conversation-card #enText.concealed{min-height:42px!important;font-size:11px!important;line-height:1.4!important;padding:9px!important}.conversation-card #jaText{display:none!important}.conversation-card #transcript{min-height:20px;text-align:center;font-size:12px}
+    .conversation-card .audio-ctrls{display:grid;grid-template-columns:1fr 76px 1fr;gap:12px;align-items:center;margin:0}.conversation-card #btnPlay{order:1;justify-self:end;width:54px;height:54px;font-size:18px}.conversation-card #btnMic{order:2;width:76px;height:76px;border:2px solid color-mix(in srgb,var(--scene-accent) 54%,transparent);background:color-mix(in srgb,var(--scene-accent) 15%,#101522);box-shadow:0 10px 28px color-mix(in srgb,var(--scene-accent) 16%,transparent)}.conversation-card .conversation-hint{order:3;justify-self:start;width:54px;height:54px;border:1px solid rgba(255,255,255,.12);border-radius:999px;background:#162032;color:inherit;font:inherit;font-size:18px;cursor:pointer}.conversation-control-label{display:block;font-size:8px;font-weight:900;line-height:1;margin-top:2px;opacity:.7}
+    .conversation-details{border:0;text-align:center}.conversation-details summary{display:inline-flex;align-items:center;min-height:26px;padding:3px 9px;border-radius:999px;color:var(--muted);font-size:9px;cursor:pointer;list-style:none}.conversation-details summary::-webkit-details-marker{display:none}.conversation-details__body{display:grid;gap:8px;margin-top:7px;padding:9px;border-radius:12px;background:rgba(255,255,255,.035)}.conversation-details .kpi{justify-content:center}.conversation-details .speed-ctrl{justify-self:center}
+    .conversation-card[data-conversation-outcome="success"] .conversation-scene{filter:drop-shadow(0 0 14px color-mix(in srgb,var(--scene-accent) 25%,transparent))}.conversation-card[data-conversation-outcome="success"] .conversation-cast::after{content:"✨";position:absolute;right:8px;top:7px;font-size:20px;filter:drop-shadow(0 0 8px var(--scene-accent))}.conversation-card[data-conversation-outcome="success"] .conversation-feedback{color:#86efac}.conversation-card[data-conversation-outcome="retry"] .conversation-feedback{color:#fde68a}
+    @media(prefers-reduced-motion:reduce){.conversation-card[data-conversation-outcome] .conversation-scene{filter:none!important}}
     .review-complete h2{font-size:28px;margin-bottom:8px}#reviewActionFocusReview{display:none!important}
     .review-complete-actions{display:grid!important;grid-template-columns:1fr auto;gap:9px;align-items:center}#reviewActionContinue{min-height:50px}
     #reviewActionFinish{background:transparent!important;border-color:transparent!important;opacity:.7;padding-inline:12px}
@@ -112,7 +137,7 @@ function injectStyles(){
     .play-options__choices{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.play-options__choices--mode{grid-template-columns:repeat(2,minmax(0,1fr))}.play-options__choice{min-height:43px;border:1px solid rgba(148,163,184,.14);border-radius:12px;background:rgba(148,163,184,.04);color:inherit;font:inherit;font-size:12px;font-weight:700;cursor:pointer}.play-options__choice.is-active{border-color:rgba(129,140,248,.65);background:rgba(99,102,241,.18);color:#e0e7ff}
     .play-options__manual{display:grid;gap:8px}.play-options__manual-list{display:grid;gap:5px;max-height:270px;overflow:auto;padding-right:2px}.play-options__manual-row{display:grid;grid-template-columns:auto minmax(0,1fr);gap:9px;align-items:start;padding:9px;border:1px solid rgba(148,163,184,.11);border-radius:11px;background:rgba(148,163,184,.025);font-size:11px}.play-options__manual-row input{margin-top:3px}.play-options__manual-en{display:block;font-weight:750;line-height:1.35}.play-options__manual-ja{display:block;opacity:.58;line-height:1.35;margin-top:3px}.play-options__manual-note{font-size:10px;opacity:.52}
     .play-options__footer{position:sticky;bottom:0;margin-top:auto;padding:12px 16px calc(12px + env(safe-area-inset-bottom));border-top:1px solid rgba(148,163,184,.12);background:rgba(16,21,34,.97);backdrop-filter:blur(12px)}.play-options__summary{font-size:12px;font-weight:800;line-height:1.45}.play-options__count{font-size:10px;opacity:.6;margin-top:3px}.play-options__causes{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}.play-options__cause{border:1px solid rgba(248,113,113,.28);border-radius:999px;background:rgba(248,113,113,.08);color:#fecaca;padding:6px 9px;font:inherit;font-size:10px;cursor:pointer}.play-options__start{width:100%;min-height:52px;border:0;border-radius:15px;background:#6366f1;color:#fff;font:inherit;font-size:16px;font-weight:900;margin-top:10px;cursor:pointer}.play-options__start:disabled{opacity:.38;cursor:not-allowed}
-    @media(max-width:390px){.home-cta-wrap.focus-home{margin-top:7vh}.focus-sheet__body{padding-inline:12px}}
+    @media(max-width:390px){.home-cta-wrap.focus-home{margin-top:7vh}.focus-sheet__body{padding-inline:12px}.conversation-card{padding-inline:9px!important}.conversation-scene{grid-template-columns:104px minmax(0,1fr);min-height:150px;gap:8px}.conversation-cast{min-height:150px}.conversation-bubble{padding:11px 10px}.conversation-prompt{font-size:14px}.conversation-card .audio-ctrls{grid-template-columns:1fr 68px 1fr}.conversation-card #btnMic{width:68px;height:68px}.conversation-card #btnPlay,.conversation-card .conversation-hint{width:50px;height:50px}}
   `;
   document.head.appendChild(style);
 }
@@ -503,10 +528,131 @@ function renderMemoryCue(item){
   }
 }
 
+const CONVERSATION_ACCENTS=['#7dd3fc','#c4b5fd','#f9a8d4','#86efac','#fcd34d'];
+
+function conversationAccent(characterId=''){
+  const index=[...String(characterId)].reduce((sum,char)=>sum+char.codePointAt(0),0)%CONVERSATION_ACCENTS.length;
+  return CONVERSATION_ACCENTS[index];
+}
+
+function ensureConversationScene(){
+  const card=document.getElementById('card');
+  const en=document.getElementById('enText');
+  if(!card||!en) return null;
+  card.classList.add('conversation-card');
+
+  let progress=document.getElementById('conversationProgress');
+  let scene=document.getElementById('conversationScene');
+  if(!progress){
+    progress=document.createElement('div');progress.id='conversationProgress';progress.className='conversation-progress';progress.setAttribute('aria-live','polite');
+    card.insertBefore(progress,en);
+  }
+  if(!scene){
+    scene=document.createElement('section');scene.id='conversationScene';scene.className='conversation-scene';scene.setAttribute('aria-label','会話シーン');
+    const cast=document.createElement('div');cast.id='conversationCast';cast.className='conversation-cast';cast.setAttribute('aria-hidden','true');
+    const bubble=document.createElement('div');bubble.className='conversation-bubble';
+    const speakers=document.createElement('div');speakers.id='conversationSpeakers';speakers.className='conversation-speakers';
+    const prompt=document.createElement('div');prompt.id='conversationPrompt';prompt.className='conversation-prompt';
+    const intent=document.createElement('div');intent.className='conversation-intent';intent.textContent='日本語を英語で返してみよう';
+    const relationship=document.createElement('div');relationship.id='conversationRelationship';relationship.className='conversation-relationship';relationship.hidden=true;
+    const relationshipLabel=document.createElement('div');relationshipLabel.id='conversationRelationshipLabel';relationshipLabel.className='conversation-relationship__label';
+    const relationshipTrack=document.createElement('div');relationshipTrack.className='conversation-relationship__track';relationshipTrack.setAttribute('role','progressbar');relationshipTrack.setAttribute('aria-label','親密度');relationshipTrack.setAttribute('aria-valuemin','0');relationshipTrack.setAttribute('aria-valuemax','100');
+    const relationshipFill=document.createElement('div');relationshipFill.id='conversationRelationshipFill';relationshipFill.className='conversation-relationship__fill';
+    relationshipTrack.appendChild(relationshipFill);relationship.append(relationshipLabel,relationshipTrack);bubble.append(speakers,prompt,intent,relationship);scene.append(cast,bubble);
+    card.insertBefore(scene,en);
+  }
+
+  let feedback=document.getElementById('conversationFeedback');
+  const transcript=document.getElementById('transcript');
+  if(!feedback){
+    feedback=document.createElement('div');feedback.id='conversationFeedback';feedback.className='conversation-feedback';feedback.setAttribute('aria-live','polite');
+    transcript?.parentNode?.insertBefore(feedback,transcript.nextSibling);
+  }
+
+  const controls=card.querySelector('.audio-ctrls');
+  let details=document.getElementById('conversationDetails');
+  if(!details&&controls){
+    details=document.createElement('details');details.id='conversationDetails';details.className='conversation-details';
+    const summary=document.createElement('summary');summary.textContent='記録・速度';
+    const body=document.createElement('div');body.className='conversation-details__body';
+    const kpi=card.querySelector('.kpi');const speed=document.getElementById('speedCtrl');
+    if(kpi) body.appendChild(kpi);if(speed) body.appendChild(speed);
+    details.append(summary,body);card.insertBefore(details,controls);
+  }
+  if(controls){
+    const play=document.getElementById('btnPlay');const mic=document.getElementById('btnMic');
+    if(play&&!play.querySelector('.conversation-control-label')){const label=document.createElement('span');label.className='conversation-control-label';label.textContent='聞く';play.appendChild(label);}
+    if(mic&&!mic.querySelector('.conversation-control-label')){const label=document.createElement('span');label.className='conversation-control-label';label.textContent='話す';mic.appendChild(label);}
+    let hint=document.getElementById('conversationHintBtn');
+    if(!hint){
+      hint=document.createElement('button');hint.id='conversationHintBtn';hint.className='conversation-hint';hint.type='button';hint.setAttribute('aria-label','次のヒントを表示');hint.innerHTML='<span aria-hidden="true">💡</span><span class="conversation-control-label">ヒント</span>';
+      hint.addEventListener('click',()=>document.dispatchEvent(new CustomEvent('english-pwa:request-hint')));controls.appendChild(hint);
+    }
+  }
+  return {card,progress,scene};
+}
+
+function renderConversationRelationship(item,{visible=false}={}){
+  const relationship=document.getElementById('conversationRelationship');
+  const label=document.getElementById('conversationRelationshipLabel');
+  const fill=document.getElementById('conversationRelationshipFill');
+  if(!relationship||!label||!fill) return;
+  const speakerId=orderedSpeakerIds(item)[0];
+  const game=globalThis.__RELATIONSHIP_GAME_STATE__?.();
+  const rel=game?.relationships?.find(entry=>String(entry?.id)===speakerId);
+  if(!visible||!rel){relationship.hidden=true;return;}
+  const intimacy=Math.max(0,Math.min(100,Number(rel.intimacy)||0));
+  label.textContent=`${rel.name||state.characters.get(speakerId)?.name||'相手'}との親密度 ${Math.round(intimacy)}`;
+  fill.style.width=`${intimacy}%`;fill.parentElement?.setAttribute('aria-valuenow',String(Math.round(intimacy)));relationship.hidden=false;
+}
+
+function renderConversationScene(item){
+  const surface=ensureConversationScene();
+  if(!surface) return;
+  const planItems=state.sessionPlan?.items?.length?state.sessionPlan.items:(item?[item]:[]);
+  const progress=conversationProgressFor(item?.id,planItems);
+  surface.progress.textContent=`会話 ${progress.current}/${Math.max(1,progress.total)}`;
+  const speakerIds=orderedSpeakerIds(item).slice(0,2);
+  surface.card.style.setProperty('--scene-accent',conversationAccent(speakerIds[0]));
+  const cast=document.getElementById('conversationCast');
+  const speakers=document.getElementById('conversationSpeakers');
+  const prompt=document.getElementById('conversationPrompt');
+  cast?.replaceChildren();cast?.classList.toggle('conversation-cast--pair',speakerIds.length>1);
+  const names=[];
+  for(const [index,id] of speakerIds.entries()){
+    const profile=state.characters.get(id);if(!profile) continue;
+    names.push(profile.name||profile.name_ja||id);
+    const person=document.createElement('div');person.className='conversation-cast__person';
+    const image=document.createElement('img');image.src=iconPath(profile);image.alt='';
+    const order=document.createElement('span');order.className='conversation-cast__order';order.textContent=String(index+1);
+    person.append(image,order);cast?.appendChild(person);
+  }
+  if(cast&&!cast.children.length){const fallback=document.createElement('span');fallback.className='conversation-cast__fallback';fallback.textContent='💬';cast.appendChild(fallback);}
+  if(speakers) speakers.textContent=names.length?names.join(' → '):'会話';
+  if(prompt) prompt.textContent=String(item?.ja||'英語で話してみよう');
+  delete surface.card.dataset.conversationOutcome;
+  const feedback=document.getElementById('conversationFeedback');if(feedback) feedback.textContent='';
+  renderConversationRelationship(item,{visible:false});
+}
+
+function updateConversationOutcome(){
+  const card=document.getElementById('card');const match=document.getElementById('valMatch');const feedback=document.getElementById('conversationFeedback');
+  if(!card||!match||!feedback) return;
+  const item=state.items.find(entry=>String(entry?.id)===state.currentItemId)||null;
+  if(match.classList.contains('match-good')){
+    card.dataset.conversationOutcome='success';feedback.textContent='通じた！';renderConversationRelationship(item,{visible:true});return;
+  }
+  if(match.classList.contains('match-mid')||match.classList.contains('match-bad')){
+    card.dataset.conversationOutcome='retry';feedback.textContent='もう一度話してみる';renderConversationRelationship(item,{visible:false});return;
+  }
+  delete card.dataset.conversationOutcome;feedback.textContent='';renderConversationRelationship(item,{visible:false});
+}
+
 function onNewItem(itemId){
   if(!itemId||itemId===state.currentItemId) return;
   state.currentItemId=itemId;
-  renderMemoryCue(state.items.find(item=>String(item?.id)===itemId)||null);
+  const item=state.items.find(entry=>String(entry?.id)===itemId)||null;
+  renderMemoryCue(item);renderConversationScene(item);
 }
 
 function bindObservers(){
@@ -515,6 +661,9 @@ function bindObservers(){
     new MutationObserver(()=>onNewItem(String(en.dataset.itemId||'')))
       .observe(en,{attributes:true,attributeFilter:['data-item-id']});
   }
+  const match=document.getElementById('valMatch');
+  if(match) new MutationObserver(updateConversationOutcome).observe(match,{attributes:true,attributeFilter:['class'],childList:true,characterData:true,subtree:true});
+  document.addEventListener('english-pwa:relationship-updated',updateConversationOutcome);
   const views=['homeView','studyView','reviewCompleteView'].map(id=>document.getElementById(id)).filter(Boolean);
   const viewObserver=new MutationObserver(setBodyViewClass);
   views.forEach(view=>viewObserver.observe(view,{attributes:true,attributeFilter:['hidden']}));
@@ -535,6 +684,7 @@ async function init(){
   bindStartInterceptors();
   bindObservers();
   ensureMemoryCue();
+  ensureConversationScene();
   refreshHomeMeta();
   injectStyles();
   globalThis.__OPEN_SESSION_OPTIONS__=openSessionOptions;
