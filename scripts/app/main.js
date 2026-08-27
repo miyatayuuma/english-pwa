@@ -1431,9 +1431,15 @@ function createAppRuntime(){
     const failures=Math.max(0, Number(sessionMetrics?.failures)||0);
     const failRate=attempts>0 ? failures/attempts : 0;
     const nextGoal=Math.max(1, Math.min(3, cardsDone>0 ? 1 : 2));
+    const conversationIds=[...speechSessionStats.submissions.keys()];
+    const conversationCount=conversationIds.length||cardsDone;
+    const retryConversationCount=conversationIds.filter(id=>(speechSessionStats.submissions.get(id)||0)>1||(speechSessionStats.correct.get(id)||0)===0).length;
     return {
       reason,
       cardsDone,
+      conversationCount,
+      retryConversationCount,
+      attempts,
       newIntroduced:Math.max(0, Number(sessionMetrics?.newIntroduced)||0),
       highestStreak:Math.max(0, Number(sessionMetrics?.highestStreak)||0),
       failRate:Math.round(failRate*1000)/1000,
@@ -1459,6 +1465,7 @@ function createAppRuntime(){
     if(el.reviewCompleteMessage){
       el.reviewCompleteMessage.textContent=`${summary.message}（失敗率${failRateLabel} / 新規${Math.max(0, Number(summary.newIntroduced)||0)}件）`;
     }
+    document.dispatchEvent(new CustomEvent('english-pwa:session-result',{detail:{...summary}}));
     setViewState(VIEW_REVIEW_COMPLETE);
   }
 
