@@ -25,10 +25,15 @@ test('home lobby keeps the three primary game actions above advanced options',as
   assert.match(source,/@media\(max-width:430px\)/);
 });
 
-test('character-only roster starts from a face card and hides training tabs',async()=>{
+test('character selection uses the same two-stage profile flow in both entrances',async()=>{
   const source=await readFile(new URL('../scripts/app/tagBrowser.js',import.meta.url),'utf8');
-  assert.match(source,/state\.characterOnly&&entry\.type==='character'/);
   assert.match(source,/if\(!state\.characterOnly\)/);
   assert.match(source,/会いどき/);
+  assert.match(source,/の詳細を見る/);
+  assert.match(source,/← 一覧に戻る/);
+  assert.match(source,/人物紹介/);
+  assert.match(source,/性格・会話テーマ/);
+  assert.match(source,/次の関係目標/);
+  assert.doesNotMatch(source,/state\.characterOnly&&entry\.type==='character'\)\{startScopedStudy/);
   assert.doesNotMatch(source,/stats\.textContent=`担当/);
 });
