@@ -2,7 +2,9 @@ import {
   buildAutomaticSession,
   buildLegacyQueueItems,
   consumeRequestedTagScope,
+  FOCUSED_SESSION_PREPARE_EVENT,
   levelOf,
+  markFocusedSessionPending,
 } from './adaptiveLearning.js';
 
 const LEVEL_KEY='itemLevelV1';
@@ -254,12 +256,6 @@ function openExploreDialog(){
   if(!dialog.open) dialog.showModal();
 }
 
-function ensureAllLevelsActive(){
-  document.querySelectorAll('#levelFilter button[data-level]').forEach(button=>{
-    if(button.getAttribute('aria-pressed')!=='true') button.click();
-  });
-}
-
 function restoreAllItems(){
   if(state.originalAllItems){
     window.ALL_ITEMS=state.originalAllItems;
@@ -275,7 +271,10 @@ function restoreAllItemsSoon(){
 
 function setLegacyPlan(plan){
   if(!plan?.items?.length) return false;
-  ensureAllLevelsActive();
+  // Reset the legacy runtime synchronously without clicking its filter UI.
+  // Filter clicks rebuild the old queue and can schedule the saved section
+  // (commonly Section23) before this focused plan reaches the start handler.
+  document.dispatchEvent(new CustomEvent(FOCUSED_SESSION_PREPARE_EVENT));
   const sec=document.getElementById('secSel');if(sec) sec.value='';
   const studySec=document.getElementById('studySecSel');if(studySec) studySec.value='';
   const search=document.getElementById('rangeSearch');if(search) search.value='';
@@ -286,6 +285,10 @@ function setLegacyPlan(plan){
   state.originalAllItems=window.ALL_ITEMS;
   window.ALL_ITEMS=buildLegacyQueueItems(plan.items);
   state.sessionPlan=plan;
+  // The legacy CTA reuses its existing QUEUE when it is non-empty. Tell its
+  // bubble-phase handler that window.ALL_ITEMS has just been replaced and a
+  // rebuild is mandatory before starting.
+  markFocusedSessionPending(globalThis);
   return true;
 }
 

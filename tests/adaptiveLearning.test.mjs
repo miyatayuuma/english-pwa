@@ -3,8 +3,10 @@ import assert from 'node:assert/strict';
 
 import {
   buildAutomaticSession,
+  consumeFocusedSessionPending,
   desiredSessionSize,
   filterByScope,
+  markFocusedSessionPending,
 } from '../scripts/app/adaptiveLearning.js';
 
 function item(id,extra={}){
@@ -67,4 +69,12 @@ test('interleaving avoids repeating the same speaker when alternatives exist',()
   const levels=Object.fromEntries(items.map(x=>[x.id,{last:2}]));
   const plan=buildAutomaticSession(items,levels,{now,size:6});
   assert.notDeepEqual(plan.items.slice(0,3).map(x=>x.id),['A','B','C']);
+});
+
+test('focused session rebuild request is consumed exactly once',()=>{
+  const host={};
+  assert.equal(consumeFocusedSessionPending(host),false);
+  assert.equal(markFocusedSessionPending(host),true);
+  assert.equal(consumeFocusedSessionPending(host),true);
+  assert.equal(consumeFocusedSessionPending(host),false);
 });

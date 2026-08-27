@@ -50,6 +50,10 @@ import { createViewStateController, VIEW_HOME, VIEW_STUDYING, VIEW_REVIEW_COMPLE
 import { createGoalController, normalizeGoalValue } from './goalController.js';
 import { createFilterController } from './filterController.js';
 import { createSwUpdatePrompt } from './swUpdatePrompt.js';
+import {
+  consumeFocusedSessionPending,
+  FOCUSED_SESSION_PREPARE_EVENT,
+} from './adaptiveLearning.js';
 import '../version.js';
 
 const APP_VERSION = globalThis.APP_VERSION;
@@ -214,6 +218,18 @@ function createAppRuntime(){
   });
   const initSectionPicker=(...args)=>filterController.initSectionPicker(...args);
   const updateLevelFilterButtons=(...args)=>filterController.updateLevelFilterButtons(...args);
+  function resetLegacyFiltersForFocusedSession(){
+    setLevelFilterSet(new Set(LEVEL_CHOICES));
+    updateLevelFilterButtons();
+    if(el.secSel) el.secSel.value='';
+    if(el.studySecSel) el.studySecSel.value='';
+    if(el.search) el.search.value='';
+    if(el.orderSel) el.orderSel.value='asc';
+    saveString(SECTION_SELECTION,'');
+    saveString(SEARCH,'');
+    saveString(ORDER_SELECTION,'asc');
+  }
+  document.addEventListener(FOCUSED_SESSION_PREPARE_EVENT,resetLegacyFiltersForFocusedSession);
   el.cfgPlaybackMode=qsa('input[name="cfgPlaybackMode"]');
   el.cfgStudyMode=qsa('input[name="cfgStudyMode"]');
   const versionTargets=qsa('[data-app-version]');
@@ -3063,6 +3079,13 @@ function createAppRuntime(){
   function handleQuickStart(){
     if(sessionStarting) return;
     const allowAuto=isAutoPlayAllowed();
+    if(consumeFocusedSessionPending(globalThis)){
+      rebuildAndRender(true,{autoStart:true,autoPlay:allowAuto}).catch(()=>{
+        clearRecoverySessionTarget();
+        toast('学習範囲を開始できませんでした');
+      });
+      return;
+    }
     const shouldRecovery=!sessionActive && getConsecutiveNoStudyDays()>=2;
     if(shouldRecovery){
       activateRecoverySessionTarget();
@@ -3749,7 +3772,9 @@ function createAppRuntime(){
       initSectionPicker();
       initOnboardingFlow();
       refreshDirStatus();
-      await rebuildAndRender(true);
+      // Opening the app must stay on Home. A saved legacy section must never
+      // start itself before the focused character/training shell is ready.
+      await rebuildAndRender(true,{autoStart:false});
       maybeShowFooterInfoIntroToast();
       maybeShowGoalOverview();
       syncProgressAndStatus().catch(()=>{});

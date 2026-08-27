@@ -1,4 +1,4 @@
-const APP_VERSION = 'v5.32';
+const APP_VERSION = 'v5.33';
 
 if (typeof globalThis !== 'undefined') {
   globalThis.APP_VERSION = APP_VERSION;
@@ -12,6 +12,12 @@ if (typeof localStorage !== 'undefined') {
     localStorage.removeItem('preferredSentenceMethodV1');
     localStorage.removeItem('tagBrowserTabV1');
     localStorage.removeItem('tagBrowserSelectionV1');
+    // Range choices now belong to one explicit "探す" action. They must not
+    // survive a reload and silently drive the next automatic/character start.
+    localStorage.removeItem('secSel');
+    localStorage.removeItem('itemSearchV1');
+    localStorage.removeItem('orderSel');
+    localStorage.removeItem('levelFilterV1');
   } catch (_) {}
 }
 
