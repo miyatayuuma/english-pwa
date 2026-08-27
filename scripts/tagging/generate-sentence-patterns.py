@@ -32,6 +32,7 @@ FINITE_TAGS = {"VBD", "VBP", "VBZ", "MD"}
 DIRECT_OBJECT_DEPS = {"dobj", "obj"}
 INDIRECT_OBJECT_DEPS = {"iobj", "dative"}
 PREDICATIVE_DEPS = {"attr", "acomp", "oprd"}
+SUBJECT_DEPS = {"nsubj", "nsubjpass", "csubj", "csubjpass"}
 LINKING_LEMMAS = {
     "be", "become", "seem", "remain", "appear", "feel", "look", "sound",
     "smell", "taste", "grow", "turn", "get", "stay", "prove",
@@ -110,12 +111,26 @@ def analysis_record(pattern: str | None, confidence: str, reason: str, head: Any
     }
 
 
-def is_nonfinite_object_complement(token: Any) -> bool:
-    if token.dep_ not in {"ccomp", "xcomp"}:
+def is_small_clause_complement(token: Any) -> bool:
+    """Detect parser-style O+C small clauses such as make [him happy]."""
+    if token.dep_ not in {"ccomp", "xcomp"} or token.pos_ not in {"ADJ", "NOUN", "PROPN"}:
         return False
-    if token.pos_ in {"ADJ", "NOUN", "PROPN"}:
-        return not any(child.dep_ in {"nsubj", "nsubjpass", "csubj", "csubjpass"} for child in token.children)
-    return False
+    subjects = child_list(token, SUBJECT_DEPS)
+    if not subjects:
+        return False
+    # A finite copula/auxiliary would indicate a full clause (e.g. think he is honest),
+    # not the surface O+C relation used by the traditional fifth pattern.
+    return not any(
+        child.dep_ in {"cop", "aux", "auxpass"}
+        and (child.tag_ in FINITE_TAGS or "Fin" in child.morph.get("VerbForm"))
+        for child in token.children
+    )
+
+
+def is_bare_object_complement(token: Any) -> bool:
+    if token.dep_ not in {"ccomp", "xcomp"} or token.pos_ not in {"ADJ", "NOUN", "PROPN"}:
+        return False
+    return not child_list(token, SUBJECT_DEPS)
 
 
 def classify_clause(head: Any, sentence: Any) -> dict[str, Any]:
@@ -124,7 +139,10 @@ def classify_clause(head: Any, sentence: Any) -> dict[str, Any]:
     predicatives = child_list(head, PREDICATIVE_DEPS)
     xcomps = child_list(head, {"xcomp"})
     ccomps = child_list(head, {"ccomp"})
-    object_complements = predicatives + [child for child in (*xcomps, *ccomps) if is_nonfinite_object_complement(child)]
+    complement_clauses = [*xcomps, *ccomps]
+    small_clauses = [child for child in complement_clauses if is_small_clause_complement(child)]
+    bare_object_complements = [child for child in complement_clauses if is_bare_object_complement(child)]
+    object_complements = predicatives + bare_object_complements
     copulas = child_list(head, {"cop"})
     preps = child_list(head, {"prep"})
     advmods = child_list(head, {"advmod"})
@@ -139,6 +157,11 @@ def classify_clause(head: Any, sentence: Any) -> dict[str, Any]:
 
     if direct_objects and indirect_objects:
         return analysis_record("SVOO", "high", "direct_and_indirect_objects", head, sentence)
+
+    # spaCy can analyse the O+C pair as an adjective/noun ccomp whose own subject
+    # is the surface object: make [him happy], consider [him a fool].
+    if small_clauses:
+        return analysis_record("SVOC", "high", "small_clause_object_complement", head, sentence)
 
     object_like = direct_objects or indirect_objects
     if object_like and object_complements:
