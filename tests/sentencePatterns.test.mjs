@@ -3,14 +3,14 @@ import test from 'node:test';
 import { applySentencePatternAnalysis, sentencePatternReportPatch, validateSentencePatternAnalysis } from '../scripts/tagging/sentencePatternApplication.mjs';
 
 const items=[
-  {id:'A',sentence_patterns:{main:null,clauses:[]}},
-  {id:'B',sentence_patterns:{main:null,clauses:[]}},
+  {id:'A',en:'A sentence.',sentence_patterns:{main:null,clauses:[]}},
+  {id:'B',en:'B sentence.',sentence_patterns:{main:null,clauses:[]}},
 ];
 const analysis={
-  summary:{review_item_count:1,gold:{accuracy:0.9}},
+  summary:{item_count:2,main_accepted:1,review_item_count:1,gold:{accuracy:0.9}},
   entries:[
-    {id:'A',main:{pattern:'SVO',accepted:true},clauses:[{pattern:'SVC',accepted:true},{pattern:'SVC',accepted:true}]},
-    {id:'B',main:{pattern:'SVOC',accepted:false},clauses:[{pattern:'SV',accepted:true}]},
+    {id:'A',en:'A sentence.',main:{pattern:'SVO',accepted:true},clauses:[{pattern:'SVC',accepted:true},{pattern:'SVC',accepted:true}],review_required:false},
+    {id:'B',en:'B sentence.',main:{pattern:'SVOC',accepted:false},clauses:[{pattern:'SV',accepted:true}],review_required:true},
   ],
 };
 
@@ -35,8 +35,23 @@ test('reports coverage without forcing unresolved main patterns',()=>{
 
 test('rejects incomplete or invalid analysis payloads',()=>{
   assert.ok(validateSentencePatternAnalysis(items,{entries:[]}).length>0);
-  assert.ok(validateSentencePatternAnalysis(items,{entries:[
-    {id:'A',main:{pattern:'BAD',accepted:true},clauses:[]},
-    {id:'B',main:{pattern:'SV',accepted:true},clauses:[]},
-  ]}).length>0);
+  assert.ok(validateSentencePatternAnalysis(items,{
+    summary:{item_count:2,main_accepted:2,review_item_count:0},
+    entries:[
+      {id:'A',en:'A sentence.',main:{pattern:'BAD',accepted:true},clauses:[],review_required:false},
+      {id:'B',en:'B sentence.',main:{pattern:'SV',accepted:true},clauses:[],review_required:false},
+    ],
+  }).length>0);
+});
+
+test('rejects analysis generated from different English text',()=>{
+  const stale=structuredClone(analysis);
+  stale.entries[0].en='Changed sentence.';
+  assert.ok(validateSentencePatternAnalysis(items,stale).some(error=>error==='analysis text mismatch A'));
+});
+
+test('rejects internally inconsistent analysis summaries',()=>{
+  const stale=structuredClone(analysis);
+  stale.summary.main_accepted=2;
+  assert.ok(validateSentencePatternAnalysis(items,stale).some(error=>error==='analysis summary main coverage mismatch'));
 });
