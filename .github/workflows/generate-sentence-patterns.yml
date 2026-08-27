@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
+      - main
       - p4-five-sentence-patterns
     paths:
       - 'scripts/tagging/generate-sentence-patterns.py'
@@ -26,11 +27,8 @@ jobs:
           python-version: '3.12'
       - name: Install dependency parser
         run: |
-          python -m pip install 'spacy>=3.8,<3.9'
+          python -m pip install 'spacy==3.8.16'
           python -m spacy download en_core_web_sm
-      - name: Inspect parser contract
-        run: |
-          python -c "import spacy; nlp=spacy.load('en_core_web_sm'); samples=['They made him happy.','He leaned against the pillar and gazed at the Statue of Liberty.','Bob was so beside himself that he could scarcely tell fact from fiction.','His new novel, which combines prose with his gift for poetry, is going to be published.']; [print(text, [(t.text,t.pos_,t.tag_,t.dep_,t.head.text,str(t.morph)) for t in nlp(text)]) for text in samples]"
       - name: Generate auditable sentence-pattern analysis
         run: python scripts/tagging/generate-sentence-patterns.py
       - uses: actions/setup-node@v4
@@ -48,7 +46,7 @@ jobs:
           const report=JSON.parse(fs.readFileSync('data/tagging-report.json','utf8'));
           if(items.length!==560||analysis.entries.length!==560) throw new Error('P4 item coverage');
           if(analysis.summary.main_accepted<350) throw new Error(`main coverage too low: ${analysis.summary.main_accepted}`);
-          if(analysis.summary.gold.total<8||analysis.summary.gold.accuracy<0.8) throw new Error(`gold accuracy too low: ${analysis.summary.gold.accuracy}`);
+          if(analysis.summary.gold.total<8||analysis.summary.gold.accuracy<0.9) throw new Error(`gold accuracy too low: ${analysis.summary.gold.accuracy}`);
           if(report.sentence_pattern_main_tagged_items!==analysis.summary.main_accepted) throw new Error('report/main mismatch');
           if(review.summary.review_item_count!==analysis.summary.review_item_count) throw new Error('review summary mismatch');
           const allowed=new Set(['SV','SVC','SVO','SVOO','SVOC']);
