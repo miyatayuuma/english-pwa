@@ -4,7 +4,6 @@ import {
   consumeRequestedTagScope,
   levelOf,
 } from './adaptiveLearning.js';
-import { labelForTag } from './tagLearningCore.js';
 
 const LEVEL_KEY='itemLevelV1';
 const ALL_LEVELS=[0,1,2,3,4,5];
@@ -26,27 +25,25 @@ function sleep(ms){ return new Promise(resolve=>setTimeout(resolve,ms)); }
 function loadJsonStorage(key,fallback){
   try{
     const raw=localStorage.getItem(key);
-    return raw ? (JSON.parse(raw) ?? fallback) : fallback;
+    return raw?(JSON.parse(raw)??fallback):fallback;
   }catch(_){ return fallback; }
 }
 function loadLevelState(){ return loadJsonStorage(LEVEL_KEY,{}); }
 function iconPath(profile){
   const name=String(profile?.name||'').trim();
-  return name ? `./${encodeURIComponent(name)}.png` : '';
+  return name?`./${encodeURIComponent(name)}.png`:'';
 }
 
 export function isMainRuntimeReady(windowObj=globalThis.window,documentObj=globalThis.document){
   return !!(
     Array.isArray(windowObj?.ALL_ITEMS)
-    && windowObj.ALL_ITEMS.length
-    && documentObj?.getElementById?.('startStudyCta')
+    &&windowObj.ALL_ITEMS.length
+    &&documentObj?.getElementById?.('startStudyCta')
   );
 }
 
 async function waitForMainReady(){
-  while(!isMainRuntimeReady()){
-    await sleep(80);
-  }
+  while(!isMainRuntimeReady()) await sleep(80);
   return true;
 }
 
@@ -76,7 +73,6 @@ function injectStyles(){
     #chips,.study-stage-access,#studyView .kpi>div:nth-child(2),#footerInfoBtn,#footerMessage{display:none!important}
     .memory-cue{min-height:30px;display:flex;align-items:center;gap:6px;margin:0 0 7px;opacity:.82}
     .memory-cue:empty{display:none}.memory-cue__person{width:29px;height:29px;border-radius:9px;object-fit:cover;background:rgba(148,163,184,.12)}
-    .memory-cue__scene{font-size:10px;opacity:.6;margin-left:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px}
     .review-complete h2{font-size:28px;margin-bottom:8px}#reviewActionFocusReview{display:none!important}
     .review-complete-actions{display:grid!important;grid-template-columns:1fr auto;gap:9px;align-items:center}#reviewActionContinue{min-height:50px}
     #reviewActionFinish{background:transparent!important;border-color:transparent!important;opacity:.7;padding-inline:12px}
@@ -127,9 +123,9 @@ function setBodyViewClass(){
 function simplifyReview(){
   const view=document.getElementById('reviewCompleteView');
   if(!view) return;
-  const title=view.querySelector('h2'); if(title) title.textContent='完了';
-  const cont=document.getElementById('reviewActionContinue'); if(cont) cont.textContent='続ける';
-  const finish=document.getElementById('reviewActionFinish'); if(finish) finish.textContent='終了';
+  const title=view.querySelector('h2');if(title) title.textContent='完了';
+  const cont=document.getElementById('reviewActionContinue');if(cont) cont.textContent='続ける';
+  const finish=document.getElementById('reviewActionFinish');if(finish) finish.textContent='終了';
 }
 
 function setupCompactHome(){
@@ -223,10 +219,10 @@ function createExploreDialog(){
   if(body.dataset.ready==='true') return dialog;
   body.dataset.ready='true';
   const status=document.createElement('div');
-  status.id='exploreStatus'; status.className='explore-status';
+  status.id='exploreStatus';status.className='explore-status';
   for(const [key,label] of [['all','すべて'],['fresh','未プレイ'],['learning','進行中'],['stable','クリア']]){
     const button=document.createElement('button');
-    button.type='button'; button.dataset.status=key; button.textContent=label;
+    button.type='button';button.dataset.status=key;button.textContent=label;
     button.addEventListener('click',()=>{state.exploreStatus=key;renderExploreStatus();updateExploreCount();});
     status.appendChild(button);
   }
@@ -235,20 +231,20 @@ function createExploreDialog(){
   if(range) body.appendChild(range);
   document.getElementById('levelFilter')?.closest('.range-item')?.classList.add('explore-hidden');
   document.getElementById('orderSel')?.closest('.range-item')?.classList.add('explore-hidden');
-  const actions=document.createElement('div'); actions.className='explore-actions';
-  const tags=document.createElement('button'); tags.type='button'; tags.className='explore-tag-link'; tags.textContent='テーマ';
-  tags.addEventListener('click',()=>{dialog.close();globalThis.__OPEN_ENGLISH_TAG_BROWSER__?.();});
-  const start=document.createElement('button'); start.type='button'; start.className='explore-start'; start.textContent='この範囲で遊ぶ';
+  const actions=document.createElement('div');actions.className='explore-actions';
+  const tags=document.createElement('button');tags.type='button';tags.className='explore-tag-link';tags.textContent='キャラ・スキル';
+  tags.addEventListener('click',()=>{dialog.close();globalThis.__OPEN_ENGLISH_LEARNING_BROWSER__?.();});
+  const start=document.createElement('button');start.type='button';start.className='explore-start';start.textContent='この範囲で遊ぶ';
   start.addEventListener('click',()=>{
     state.manualPool=buildExplorePool();
     dialog.close();
     setTimeout(()=>document.getElementById('startStudyCta')?.click(),0);
   });
-  actions.append(tags,start); body.appendChild(actions);
-  const count=document.createElement('div'); count.id='exploreCount'; count.className='explore-count'; body.appendChild(count);
+  actions.append(tags,start);body.appendChild(actions);
+  const count=document.createElement('div');count.id='exploreCount';count.className='explore-count';body.appendChild(count);
   document.getElementById('rangeSearch')?.addEventListener('input',updateExploreCount);
   document.getElementById('secSel')?.addEventListener('change',updateExploreCount);
-  renderExploreStatus(); updateExploreCount();
+  renderExploreStatus();updateExploreCount();
   return dialog;
 }
 
@@ -280,10 +276,10 @@ function restoreAllItemsSoon(){
 function setLegacyPlan(plan){
   if(!plan?.items?.length) return false;
   ensureAllLevelsActive();
-  const sec=document.getElementById('secSel'); if(sec) sec.value='';
-  const studySec=document.getElementById('studySecSel'); if(studySec) studySec.value='';
-  const search=document.getElementById('rangeSearch'); if(search) search.value='';
-  const order=document.getElementById('orderSel'); if(order) order.value='asc';
+  const sec=document.getElementById('secSel');if(sec) sec.value='';
+  const studySec=document.getElementById('studySecSel');if(studySec) studySec.value='';
+  const search=document.getElementById('rangeSearch');if(search) search.value='';
+  const order=document.getElementById('orderSel');if(order) order.value='asc';
   const slider=document.getElementById('sessionGoalSlider');
   if(slider){slider.value=String(plan.size);slider.dispatchEvent(new Event('input',{bubbles:true}));}
   restoreAllItems();
@@ -311,7 +307,7 @@ function ensureMemoryCue(){
   if(cue) return cue;
   const en=document.getElementById('enText');
   if(!en) return null;
-  cue=document.createElement('div'); cue.id='tagMemoryCue'; cue.className='memory-cue';
+  cue=document.createElement('div');cue.id='tagMemoryCue';cue.className='memory-cue';
   en.parentNode?.insertBefore(cue,en);
   return cue;
 }
@@ -321,16 +317,11 @@ function renderMemoryCue(item){
   if(!cue) return;
   cue.replaceChildren();
   if(!item) return;
-  const chars=(Array.isArray(item.character_tags)?item.character_tags:[])
-    .filter(tag=>tag?.id&&tag.certainty!=='inferred_medium').slice(0,2);
-  for(const tag of chars){
+  const speakers=(Array.isArray(item.speaker_tags)?item.speaker_tags:[]).filter(tag=>tag?.id).slice(0,2);
+  for(const tag of speakers){
     const profile=state.characters.get(tag.id);
     if(!profile) continue;
-    const img=document.createElement('img'); img.className='memory-cue__person'; img.alt=''; img.src=iconPath(profile); cue.appendChild(img);
-  }
-  const scene=(Array.isArray(item.situation_tags)?item.situation_tags:[]).find(id=>id&&id!=='general');
-  if(scene){
-    const span=document.createElement('span'); span.className='memory-cue__scene'; span.textContent=labelForTag('situation',scene); cue.appendChild(span);
+    const img=document.createElement('img');img.className='memory-cue__person';img.alt='';img.src=iconPath(profile);cue.appendChild(img);
   }
 }
 
