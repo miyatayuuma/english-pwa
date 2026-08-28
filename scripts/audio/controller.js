@@ -35,9 +35,24 @@ export function createAudioController({
   let playbackRate = clampSpeed(loadSpeed() ?? 1);
   let speechPlaying = false;
   let audioLockState=AUDIO_LOCK_STATES.UNLOCKED;
+  let activeUserPlaybackAuthorized=false;
 
   function isAudioOutputLocked(){
     return audioLockState!==AUDIO_LOCK_STATES.UNLOCKED;
+  }
+
+  function isPlaybackTransitionLocked(){
+    return audioLockState===AUDIO_LOCK_STATES.PENDING||audioLockState===AUDIO_LOCK_STATES.RELEASE;
+  }
+
+  function authorizeUserPlayback(){
+    if(audioLockState===AUDIO_LOCK_STATES.ACTIVE) activeUserPlaybackAuthorized=true;
+    return !isPlaybackTransitionLocked();
+  }
+
+  function isPlaybackAllowed(){
+    return audioLockState===AUDIO_LOCK_STATES.UNLOCKED
+      ||(audioLockState===AUDIO_LOCK_STATES.ACTIVE&&activeUserPlaybackAuthorized);
   }
 
   function stopAllTones(){
@@ -105,7 +120,7 @@ export function createAudioController({
     if (!playButton) return;
     const hasSrc = !!(audio && audio.dataset && audio.dataset.srcKey);
     const canSpeak = !!(typeof getCanSpeak === 'function' && getCanSpeak());
-    const locked=isAudioOutputLocked();
+    const locked=isPlaybackTransitionLocked();
     playButton.disabled = locked || !(hasSrc || canSpeak);
     playButton.classList?.toggle?.('audio-locked',locked);
     if(locked) playButton.setAttribute?.('aria-disabled','true');
@@ -126,14 +141,16 @@ export function createAudioController({
   }
 
   function setSpeechPlayingState(playing) {
-    speechPlaying = !isAudioOutputLocked() && !!playing;
+    speechPlaying = isPlaybackAllowed() && !!playing;
+    if(!playing&&audioLockState===AUDIO_LOCK_STATES.ACTIVE) activeUserPlaybackAuthorized=false;
     updatePlayVisualState();
   }
 
   function setAudioLockState(nextState=AUDIO_LOCK_STATES.UNLOCKED){
     const valid=Object.values(AUDIO_LOCK_STATES).includes(nextState)?nextState:AUDIO_LOCK_STATES.UNLOCKED;
     audioLockState=valid;
-    if(isAudioOutputLocked()){
+    activeUserPlaybackAuthorized=false;
+    if(isPlaybackTransitionLocked()){
       try{ audio?.pause?.(); }catch(_){}
       stopAllTones();
       speechPlaying=false;
@@ -145,19 +162,23 @@ export function createAudioController({
 
   if (audio?.addEventListener) {
     audio.addEventListener('play', () => {
-      if(isAudioOutputLocked()){
+      if(!isPlaybackAllowed()){
         try{ audio.pause?.(); }catch(_){}
       }
       updatePlayVisualState();
     });
     audio.addEventListener('playing', () => {
-      if(isAudioOutputLocked()){
+      if(!isPlaybackAllowed()){
         try{ audio.pause?.(); }catch(_){}
       }
       updatePlayVisualState();
     });
-    audio.addEventListener('pause', updatePlayVisualState);
+    audio.addEventListener('pause', () => {
+      if(audioLockState===AUDIO_LOCK_STATES.ACTIVE) activeUserPlaybackAuthorized=false;
+      updatePlayVisualState();
+    });
     audio.addEventListener('ended', () => {
+      if(audioLockState===AUDIO_LOCK_STATES.ACTIVE) activeUserPlaybackAuthorized=false;
       updatePlayVisualState();
     });
     audio.addEventListener('emptied', () => {
@@ -377,6 +398,8 @@ export function createAudioController({
     setAudioLockState,
     getAudioLockState:()=>audioLockState,
     isAudioOutputLocked,
+    isPlaybackTransitionLocked,
+    authorizeUserPlayback,
     isTonePlaying:()=>activeTones.size>0,
     stopAllTones,
   };

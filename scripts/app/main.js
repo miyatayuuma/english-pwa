@@ -1315,7 +1315,8 @@ function createAppRuntime(){
     setSpeechPlayingState,
     setAudioLockState,
     getAudioLockState,
-    isAudioOutputLocked,
+    isPlaybackTransitionLocked,
+    authorizeUserPlayback,
     isTonePlaying,
     stopAllTones,
   } = audioController;
@@ -1589,7 +1590,7 @@ function createAppRuntime(){
   function updatePlayButtonAvailability(){
     baseUpdatePlayButtonAvailability();
     if(!el.play) return;
-    if(isAudioOutputLocked()){
+    if(isPlaybackTransitionLocked()){
       el.play.disabled=true;
       el.play.setAttribute('aria-disabled','true');
       return;
@@ -2830,7 +2831,8 @@ function createAppRuntime(){
   // Render & navigation
   function stopAudio(){ try{audio.pause();}catch(_){ } audio.currentTime=0; speechController.cancelSpeech(); }
   async function tryPlayAudio({userInitiated=false, resetPosition=false}={}){
-    if(isAudioOutputLocked()) return false;
+    if(isPlaybackTransitionLocked()) return false;
+    if(getAudioLockState()===AUDIO_LOCK_STATES.ACTIVE&&!userInitiated) return false;
     const hasSrc=!!(audio?.dataset?.srcKey);
     const item=currentItem;
     const playbackMode=getPlaybackMode();
@@ -2847,7 +2849,7 @@ function createAppRuntime(){
         }
         return false;
       }
-      const speechOk=await speechController.speakCurrentCard({ preferredVoiceId: CFG.speechVoice });
+      const speechOk=await speechController.speakCurrentCard({ preferredVoiceId: CFG.speechVoice, beforeSpeak:userInitiated?authorizeUserPlayback:null });
       if(speechOk){
         if(userInitiated){
           autoPlayUnlocked=true;
@@ -2881,6 +2883,7 @@ function createAppRuntime(){
     if(resetPosition){
       try{ audio.currentTime=0; }catch(_){ }
     }
+    if(userInitiated&&!authorizeUserPlayback()) return false;
     speechController.cancelSpeech();
     try{
       const playPromise=audio.play();
@@ -3489,7 +3492,7 @@ function createAppRuntime(){
   el.card.addEventListener('touchcancel',(ev)=>{ handleTouchFinish(ev,true); },{passive:true});
   el.en.addEventListener('click', async ()=>{ if(!sessionActive){ await startSession(false); } });
   el.play.addEventListener('click', async ()=>{
-    if(isAudioOutputLocked()) return;
+    if(isPlaybackTransitionLocked()) return;
     if(sessionStarting) return;
     if(!sessionActive){ await startSession(false); }
     if(sessionStarting) return;
@@ -3506,7 +3509,7 @@ function createAppRuntime(){
       return;
     }
     if(!hasSrc && !canSpeak){ toast('音声が見つかりません'); return; }
-    const shouldReset = hasSrc ? (audio.ended || audio.currentTime<=0.05) : false;
+    const shouldReset = hasSrc ? (getAudioLockState()===AUDIO_LOCK_STATES.ACTIVE || audio.ended || audio.currentTime<=0.05) : false;
     await tryPlayAudio({userInitiated:true, resetPosition:shouldReset});
   });
 
@@ -3539,7 +3542,7 @@ function createAppRuntime(){
         beginMicReleaseSettle();
         updatePlayButtonAvailability();
       },
-      onStart: ()=>{ setAudioLockState(AUDIO_LOCK_STATES.ACTIVE);setMicState(true);updatePlayButtonAvailability(); },
+      onStart: ()=>{ setAudioLockState(AUDIO_LOCK_STATES.ACTIVE);setMicState(true);setFooterMessages('録音中です。','「聞く」で先頭から再生し、音声を追いかけて話してください。');updatePlayButtonAvailability(); },
       onStop: ()=>{ setMicState(false);beginMicReleaseSettle(); },
       onAutoStop: (result)=>{ stopRec(result).catch(()=>{}); },
       setMicState,
@@ -3626,7 +3629,7 @@ function createAppRuntime(){
     const requestedItemId=QUEUE[idx]?.id;
     setAudioLockState(AUDIO_LOCK_STATES.PENDING);
     resetPlaybackSessionForMic();
-    setFooterMessages('音声を停止して録音を準備しています。','録音中は音声を再生できません。');
+    setFooterMessages('音声を停止して録音を準備しています。','録音開始後、「聞く」で先頭から再生できます。');
     await waitForAppAudioStop();
     if(requestToken!==micRequestToken||!sessionActive||QUEUE[idx]?.id!==requestedItemId){beginMicReleaseSettle();return;}
     pendingMicStartTimer=setTimeout(()=>beginRecognition(requestToken,requestedItemId),MIC_AUDIO_SETTLE_MS);
