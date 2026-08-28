@@ -273,6 +273,11 @@
         <div id="attemptInfo" class="attempt-info"></div>
       </div>
 
+      <div id="micStatus" class="mic-status" data-state="off" role="status" aria-live="polite" aria-atomic="true">
+        <span class="mic-status__dot" aria-hidden="true"></span>
+        <span data-mic-status-label>マイクOFF</span>
+      </div>
+
       <div class="audio-ctrls">
         <button id="btnPlay" class="btn" type="button" aria-label="音声を再生/一時停止"><span class="playIcon">▶️</span></button>
         <button id="btnMic" class="btn" type="button" aria-label="マイク開始/停止"><span class="micIcon">🎤</span></button>
@@ -390,6 +395,13 @@
             <option value="strong">強め</option>
           </select>
         </label>
+        <label>発話判定の効果音
+          <select id="cfgResultSound">
+            <option value="standard">標準</option>
+            <option value="subtle">控えめ</option>
+            <option value="off">なし</option>
+          </select>
+        </label>
       </div>
       <div class="cfg-divider" role="presentation"></div>
       <div class="cfg-section">
@@ -412,6 +424,6 @@
 </div>
 
 <script type="module" src="scripts/app/main.js"></script>
-<script type="module" src="scripts/app/swBootstrap.js?v=5.49"></script>
+<script type="module" src="scripts/app/swBootstrap.js?v=5.50"></script>
 </body>
 </html>

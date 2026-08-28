@@ -64,52 +64,68 @@ export function createAudioController({
     activeTones.clear();
   }
 
-  function playTone(type) {
+  function prepareToneOutput(){
+    try{
+      if(typeof window==='undefined') return false;
+      const AC=window.AudioContext||window.webkitAudioContext;
+      if(!AC) return false;
+      if(!toneCtx) toneCtx=new AC();
+      if(toneCtx.state==='suspended') toneCtx.resume().catch(()=>{});
+      return true;
+    }catch(_){return false;}
+  }
+
+  function playTone(type,{intensity='standard'}={}) {
     if(isAudioOutputLocked()) return false;
     try {
       if (typeof window === 'undefined') return false;
-      const AC = window.AudioContext || window.webkitAudioContext;
-      if (!AC) return false;
-      if (!toneCtx) {
-        toneCtx = new AC();
-      }
-      if (toneCtx.state === 'suspended') {
-        toneCtx.resume().catch(() => {});
-      }
-      const osc = toneCtx.createOscillator();
-      const gain = toneCtx.createGain();
+      if(!prepareToneOutput()) return false;
       const now = toneCtx.currentTime;
-      let freq = 440;
-      let duration = 0.2;
-      let peak = 0.15;
+      let notes=[{freq:440,offset:0,duration:0.16,peak:0.12}];
       if (type === 'success') {
-        freq = 880;
-        duration = 0.25;
-        peak = 0.2;
+        notes=[
+          {freq:659.25,offset:0,duration:0.11,peak:0.16},
+          {freq:880,offset:0.1,duration:0.14,peak:0.18},
+        ];
+      } else if (type === 'perfect') {
+        notes=[
+          {freq:659.25,offset:0,duration:0.1,peak:0.15},
+          {freq:880,offset:0.09,duration:0.11,peak:0.17},
+          {freq:1046.5,offset:0.19,duration:0.16,peak:0.19},
+        ];
       } else if (type === 'fail') {
-        freq = 300;
-        duration = 0.3;
-        peak = 0.18;
+        notes=[{freq:293.66,offset:0,duration:0.14,peak:0.1}];
+      } else if (type === 'complete') {
+        notes=[
+          {freq:523.25,offset:0,duration:0.1,peak:0.13},
+          {freq:659.25,offset:0.09,duration:0.1,peak:0.14},
+          {freq:783.99,offset:0.18,duration:0.18,peak:0.16},
+        ];
       } else if (type === 'start') {
-        freq = 523.25;
-        duration = 0.12;
-        peak = 0.12;
+        notes=[{freq:523.25,offset:0,duration:0.12,peak:0.12}];
       }
-      osc.frequency.setValueAtTime(freq, now);
-      gain.gain.setValueAtTime(0, now);
-      gain.gain.linearRampToValueAtTime(peak, now + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
-      osc.connect(gain);
-      gain.connect(toneCtx.destination);
-      const entry={osc,gain};
-      activeTones.add(entry);
-      osc.onended=()=>{
-        activeTones.delete(entry);
-        try{osc.disconnect();}catch(_){}
-        try{gain.disconnect();}catch(_){}
-      };
-      osc.start(now);
-      osc.stop(now + duration + 0.05);
+      const intensityScale=intensity==='subtle'?0.48:1;
+      for(const note of notes){
+        const osc=toneCtx.createOscillator();
+        const gain=toneCtx.createGain();
+        const starts=now+note.offset;
+        const ends=starts+note.duration;
+        osc.frequency.setValueAtTime(note.freq,starts);
+        gain.gain.setValueAtTime(0,starts);
+        gain.gain.linearRampToValueAtTime(note.peak*intensityScale,starts+0.015);
+        gain.gain.exponentialRampToValueAtTime(0.0001,ends);
+        osc.connect(gain);
+        gain.connect(toneCtx.destination);
+        const entry={osc,gain};
+        activeTones.add(entry);
+        osc.onended=()=>{
+          activeTones.delete(entry);
+          try{osc.disconnect();}catch(_){}
+          try{gain.disconnect();}catch(_){}
+        };
+        osc.start(starts);
+        osc.stop(ends+0.03);
+      }
       return true;
     } catch (_) {
       return false;
@@ -385,6 +401,7 @@ export function createAudioController({
 
   return {
     playTone,
+    prepareToneOutput,
     updatePlayButtonAvailability,
     updatePlayVisualState,
     setSpeechPlayingState,
