@@ -1,7 +1,7 @@
 export const BROWSE_TYPES=Object.freeze(['character','skill']);
 
 export const BROWSE_TYPE_META=Object.freeze({
-  character:{label:'キャラ'},
+  character:{label:'連絡先'},
   skill:{label:'英語スキル'},
 });
 

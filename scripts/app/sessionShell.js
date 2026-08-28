@@ -434,7 +434,7 @@ function createExploreDialog(){
   document.getElementById('levelFilter')?.closest('.range-item')?.classList.add('explore-hidden');
   document.getElementById('orderSel')?.closest('.range-item')?.classList.add('explore-hidden');
   const actions=document.createElement('div');actions.className='explore-actions';
-  const tags=document.createElement('button');tags.type='button';tags.className='explore-tag-link';tags.textContent='キャラ・スキル';
+  const tags=document.createElement('button');tags.type='button';tags.className='explore-tag-link';tags.textContent='連絡先・トレーニング';
   tags.addEventListener('click',()=>{dialog.close();globalThis.__OPEN_ENGLISH_LEARNING_BROWSER__?.();});
   const start=document.createElement('button');start.type='button';start.className='explore-start';start.textContent='この範囲で遊ぶ';
   start.addEventListener('click',()=>{

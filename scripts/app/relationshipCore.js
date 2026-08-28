@@ -10,6 +10,18 @@ export const RELATIONSHIP_RANKS=Object.freeze([
   Object.freeze({id:'best_friend',label:'親友',order:4}),
 ]);
 
+export const RELATIONSHIP_RANK_COLORS=Object.freeze({
+  acquaintance:'#cbd5e1',
+  familiar:'#7dd3fc',
+  friend:'#86efac',
+  close_friend:'#c4b5fd',
+  best_friend:'#fcd34d',
+});
+
+export function relationshipRankColor(rankId){
+  return RELATIONSHIP_RANK_COLORS[rankId]||RELATIONSHIP_RANK_COLORS.acquaintance;
+}
+
 export const RELATIONSHIP_INTIMACY_CAPS=Object.freeze({
   acquaintance:24,
   familiar:49,
