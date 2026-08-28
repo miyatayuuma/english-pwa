@@ -323,7 +323,6 @@ export function createRecognitionController(options = {}) {
     onUnsupported = () => {},
     onError = () => {},
     setMicState = () => {},
-    playTone = () => {},
   } = options;
 
   let recognition = null;
@@ -409,7 +408,6 @@ export function createRecognitionController(options = {}) {
       if (!active || finalized) return;
       setMicState?.(true);
       onStart?.();
-      playTone?.('start');
     };
 
     recognition.onresult = (event) => {
@@ -444,7 +442,6 @@ export function createRecognitionController(options = {}) {
 
     recognition.onerror = (ev) => {
       console.warn('recognition error', ev);
-      playTone?.('fail');
       setMicState?.(false);
       active = false;
       finalized = true;

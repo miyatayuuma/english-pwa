@@ -33,7 +33,7 @@ import {
   recordSessionClosureSummary,
   getLatestSessionClosureSummaryBefore
 } from '../state/studyLog.js';
-import { createAudioController } from '../audio/controller.js';
+import { AUDIO_LOCK_STATES, createAudioController } from '../audio/controller.js';
 import {
   createRecognitionController,
   calcMatchScore,
@@ -41,6 +41,7 @@ import {
   isRecognitionSupported
 } from '../speech/recognition.js';
 import { createSpeechSynthesisController } from '../speech/synthesis.js';
+import { clearPostResultReveal, isPostResultReveal, revealCanonicalPostResult } from './postResultFeedback.js';
 import { createOverlayController } from './overlay.js';
 import { createCardTransitionQueue } from './cardTransitions.js';
 import { createComposeGuide } from './composeGuide.js';
@@ -261,6 +262,7 @@ function createAppRuntime(){
   let currentShouldUseSpeech=false;
   let lastProgressNote='';
   let autoAdvanceTimer=0;
+  let autoAdvanceGeneration=0;
 
   function setLastProgressNote(note, goal){
     lastProgressNote = typeof note==='string' ? note.trim() : '';
@@ -1255,7 +1257,6 @@ function createAppRuntime(){
           speechController.setSpeechRate(rate);
         }
       },
-      isRecognitionActive: ()=>recognitionController ? recognitionController.isActive() : false,
     });
     const speech=createSpeechSynthesisController({
       setSpeechPlayingState: controller.setSpeechPlayingState,
@@ -1311,9 +1312,12 @@ function createAppRuntime(){
     setAudioSource,
     clearAudioSource,
     primeAudio,
-    resetResumeAfterMicStart,
-    clearResumeTimer,
     setSpeechPlayingState,
+    setAudioLockState,
+    getAudioLockState,
+    isAudioOutputLocked,
+    isTonePlaying,
+    stopAllTones,
   } = audioController;
   const overlayController = createOverlayController({ overlayElement: el.overlay });
   const acquireOverlay = (tag='load') => overlayController.acquire(tag);
@@ -1585,6 +1589,11 @@ function createAppRuntime(){
   function updatePlayButtonAvailability(){
     baseUpdatePlayButtonAvailability();
     if(!el.play) return;
+    if(isAudioOutputLocked()){
+      el.play.disabled=true;
+      el.play.setAttribute('aria-disabled','true');
+      return;
+    }
     const locked=!isAudioHintUnlocked();
     if(locked){
       el.play.disabled=true;
@@ -1614,6 +1623,7 @@ function createAppRuntime(){
   }
 
   function setHintStage(stage,{reset=false}={}){
+    if(isPostResultReveal(el.en,currentItem?.id)) return false;
     const maxStage=Math.max(BASE_HINT_STAGE, getMaxHintStage());
     const next=Math.max(BASE_HINT_STAGE, Math.min(maxStage, Number.isFinite(stage)?Math.floor(stage):BASE_HINT_STAGE));
     const prev=hintStage;
@@ -1646,6 +1656,24 @@ function createAppRuntime(){
     el.ja.style.display = showJapanese ? 'block' : 'none';
     updatePlayButtonAvailability();
     return prev!==next;
+  }
+
+  function resetPostResultFeedback(){
+    clearPostResultReveal(el.en);
+  }
+
+  function showPostResultFeedback(item,matchInfo){
+    if(!item?.id||!item?.en) return;
+    const source=String(matchInfo?.source||'').trim();
+    const highlighted=revealCanonicalPostResult(el.en,item,{
+      rehighlight:(canonical)=>source&&recognitionController
+        ? recognitionController.matchAndHighlight(canonical,source)
+        : null,
+    });
+    if(highlighted){
+      lastMatchEval=Object.assign({},highlighted,{source});
+      updateMatch(calcMatchScore(highlighted.refCount,highlighted.recall,highlighted.precision));
+    }
   }
 
   function advanceHintStage(){
@@ -2589,6 +2617,8 @@ function createAppRuntime(){
       return false;
     }
     stopAudio();
+    resetPostResultFeedback();
+    cancelPendingMicStart();
     if(recognitionController && recognitionController.isActive()){
       try{ await stopRec(); }
       catch(_){ }
@@ -2798,8 +2828,9 @@ function createAppRuntime(){
   async function resolveAudioUrl(name){ if(!name) return ''; if(audioUrlCache.has(name)) return audioUrlCache.get(name); let url=await resolveFromDir(name); if(!url) url=await resolveFromOPFS(name); const base=(CFG.audioBase||'').trim().replace(/\/$/,''); if(!url && base){ const candidate= base + '/' + encodeURI(name); if(await canFetchAudioFromBase(candidate, base)){ url=candidate; } } audioUrlCache.set(name,url||''); return url||''; }
 
   // Render & navigation
-  function stopAudio(){ resetResumeAfterMicStart(); try{audio.pause();}catch(_){ } audio.currentTime=0; speechController.cancelSpeech(); }
+  function stopAudio(){ try{audio.pause();}catch(_){ } audio.currentTime=0; speechController.cancelSpeech(); }
   async function tryPlayAudio({userInitiated=false, resetPosition=false}={}){
+    if(isAudioOutputLocked()) return false;
     const hasSrc=!!(audio?.dataset?.srcKey);
     const item=currentItem;
     const playbackMode=getPlaybackMode();
@@ -2878,6 +2909,8 @@ function createAppRuntime(){
   function toggleJA(){ advanceHintStage(); }
 
   function showIdleCard(){
+    resetPostResultFeedback();
+    cancelPendingMicStart();
     clearLastProgressNote();
     finalizeSessionMetrics('idle');
     sessionActive=false;
@@ -2933,6 +2966,7 @@ function createAppRuntime(){
   }
 
   async function render(i, autoPlay=false){
+    resetPostResultFeedback();
     clearLastProgressNote();
     let releaseResolve=null;
     let releasePrepare=null;
@@ -3153,6 +3187,7 @@ function createAppRuntime(){
   }
 
   function cancelAutoAdvance(){
+    autoAdvanceGeneration+=1;
     if(autoAdvanceTimer){
       clearTimeout(autoAdvanceTimer);
       autoAdvanceTimer=0;
@@ -3163,9 +3198,12 @@ function createAppRuntime(){
     cancelAutoAdvance();
     if(!sessionActive) return;
     const allowAuto=isAutoPlayAllowed();
+    const generation=autoAdvanceGeneration;
+    const scheduledIndex=idx;
+    const scheduledItemId=QUEUE[idx]?.id;
     autoAdvanceTimer=setTimeout(()=>{
       autoAdvanceTimer=0;
-      if(!sessionActive) return;
+      if(!sessionActive||generation!==autoAdvanceGeneration||idx!==scheduledIndex||QUEUE[idx]?.id!==scheduledItemId) return;
       nextCard(false, allowAuto);
     }, delayMs);
   }
@@ -3451,6 +3489,7 @@ function createAppRuntime(){
   el.card.addEventListener('touchcancel',(ev)=>{ handleTouchFinish(ev,true); },{passive:true});
   el.en.addEventListener('click', async ()=>{ if(!sessionActive){ await startSession(false); } });
   el.play.addEventListener('click', async ()=>{
+    if(isAudioOutputLocked()) return;
     if(sessionStarting) return;
     if(!sessionActive){ await startSession(false); }
     if(sessionStarting) return;
@@ -3459,12 +3498,10 @@ function createAppRuntime(){
     const canSpeak=speechController ? speechController.canSpeakCurrentCard() : false;
     const audioPlaying=hasSrc && !audio.paused && !audio.ended;
     if(audioPlaying){
-      resetResumeAfterMicStart();
       audio.pause();
       return;
     }
     if(speechController && speechController.isSpeaking()){
-      resetResumeAfterMicStart();
       speechController.cancelSpeech();
       return;
     }
@@ -3499,32 +3536,93 @@ function createAppRuntime(){
       onError: (e)=>{
         toast('ASRエラー: '+(e && e.error || ''));
         el.mic.disabled=false;
+        beginMicReleaseSettle();
         updatePlayButtonAvailability();
       },
-      onStart: ()=>{ setMicState(true);updatePlayButtonAvailability(); },
-      onStop: ()=>{ setMicState(false);updatePlayButtonAvailability(); },
+      onStart: ()=>{ setAudioLockState(AUDIO_LOCK_STATES.ACTIVE);setMicState(true);updatePlayButtonAvailability(); },
+      onStop: ()=>{ setMicState(false);beginMicReleaseSettle(); },
       onAutoStop: (result)=>{ stopRec(result).catch(()=>{}); },
       setMicState,
-      playTone,
     });
   }
 
   recognitionController=initializeRecognitionController();
 
   const MIC_AUDIO_SETTLE_MS=350;
+  const MIC_RELEASE_SETTLE_MS=400;
+  const MIC_STOP_CONFIRM_TIMEOUT_MS=700;
   let pendingMicStartTimer=null;
+  let micReleaseTimer=null;
+  let micRequestToken=0;
 
-  function beginRecognition(){
-    pendingMicStartTimer=null;if(!sessionActive||!recognitionController||recognitionController.isActive()) return;lastMatchEval=null;if(el.play) el.play.disabled=true;const result=recognitionController.start();if(result&&!result.ok){updatePlayButtonAvailability();if(result.reason==='unsupported') el.mic.disabled=false;}
+  function clearMicReleaseTimer(){
+    if(micReleaseTimer){clearTimeout(micReleaseTimer);micReleaseTimer=null;}
   }
 
-  function startRec(){
+  function cancelPendingMicStart(){
+    micRequestToken+=1;
+    if(pendingMicStartTimer){clearTimeout(pendingMicStartTimer);pendingMicStartTimer=null;}
+    if(getAudioLockState()===AUDIO_LOCK_STATES.PENDING) beginMicReleaseSettle();
+  }
+
+  function beginMicReleaseSettle(){
+    clearMicReleaseTimer();
+    setAudioLockState(AUDIO_LOCK_STATES.RELEASE);
+    updatePlayButtonAvailability();
+    micReleaseTimer=setTimeout(()=>{
+      micReleaseTimer=null;
+      if(recognitionController?.isActive?.()||getAudioLockState()===AUDIO_LOCK_STATES.PENDING) return;
+      setAudioLockState(AUDIO_LOCK_STATES.UNLOCKED);
+      updatePlayButtonAvailability();
+    },MIC_RELEASE_SETTLE_MS);
+  }
+
+  function stopAppAudioOutput(){
+    try{audio?.pause?.();}catch(_){}
+    speechController?.cancelSpeech?.();
+    stopAllTones();
+  }
+
+  async function waitForAppAudioStop(timeoutMs=MIC_STOP_CONFIRM_TIMEOUT_MS){
+    const started=Date.now();
+    while(Date.now()-started<timeoutMs){
+      const audioStopped=!audio||audio.paused||audio.ended;
+      const speechStopped=!speechController?.isSpeaking?.();
+      const tonesStopped=!isTonePlaying();
+      if(audioStopped&&speechStopped&&tonesStopped) return true;
+      stopAppAudioOutput();
+      await new Promise(resolve=>setTimeout(resolve,25));
+    }
+    return (!audio||audio.paused||audio.ended)&&!speechController?.isSpeaking?.()&&!isTonePlaying();
+  }
+
+  function beginRecognition(requestToken,requestedItemId){
+    pendingMicStartTimer=null;
+    if(requestToken!==micRequestToken||!sessionActive||QUEUE[idx]?.id!==requestedItemId||!recognitionController||recognitionController.isActive()){
+      beginMicReleaseSettle();
+      return;
+    }
+    lastMatchEval=null;
+    const result=recognitionController.start();
+    if(result&&!result.ok){
+      if(result.reason==='unsupported') el.mic.disabled=false;
+      beginMicReleaseSettle();
+    }
+  }
+
+  async function startRec(){
     if(el.mic.disabled) return;
     if(!recognitionController) return;
-    if(recognitionController.isActive()||pendingMicStartTimer) return;
-    const audioPlaying=!!(audio&&!audio.paused&&!audio.ended);const speechPlaying=!!speechController?.isSpeaking?.();
-    if(audioPlaying||speechPlaying){resetResumeAfterMicStart();if(el.play) el.play.disabled=true;try{audio?.pause?.();}catch(_){}if(speechPlaying) speechController.cancelSpeech();setFooterMessages('再生を停止してから録音を開始します。','録音開始後に「聞く」を押すと音声を再生できます。');const requestedItemId=QUEUE[idx]?.id;pendingMicStartTimer=setTimeout(()=>{if(!sessionActive||QUEUE[idx]?.id!==requestedItemId){pendingMicStartTimer=null;updatePlayButtonAvailability();return;}beginRecognition();},MIC_AUDIO_SETTLE_MS);return;}
-    beginRecognition();
+    if(recognitionController.isActive()||pendingMicStartTimer||getAudioLockState()===AUDIO_LOCK_STATES.PENDING) return;
+    clearMicReleaseTimer();
+    const requestToken=++micRequestToken;
+    const requestedItemId=QUEUE[idx]?.id;
+    setAudioLockState(AUDIO_LOCK_STATES.PENDING);
+    stopAppAudioOutput();
+    setFooterMessages('音声を停止して録音を準備しています。','録音中は音声を再生できません。');
+    await waitForAppAudioStop();
+    if(requestToken!==micRequestToken||!sessionActive||QUEUE[idx]?.id!==requestedItemId){beginMicReleaseSettle();return;}
+    pendingMicStartTimer=setTimeout(()=>beginRecognition(requestToken,requestedItemId),MIC_AUDIO_SETTLE_MS);
   }
 
   async function stopRec(result){
@@ -3684,6 +3782,8 @@ function createAppRuntime(){
       lastErrorType='';
       sameErrorStreak=0;
       setFooterMessages('', '');
+      el.mic.disabled=true;
+      showPostResultFeedback(it,matchInfo);
       playTone('success');
       if(levelCandidate>=4 && evaluation?.noHintSuccess){
         const baseToast = evaluation?.perfectNoHint ? 'ノーヒントで満点クリア！' : '素晴らしい！ノーヒント合格';
@@ -3691,7 +3791,7 @@ function createAppRuntime(){
       }else{
         toast('合格です！着実にスピーキング力が伸びています。', 1600);
       }
-      scheduleAutoAdvance(900);
+      scheduleAutoAdvance(1600);
       recordStudyProgress({
         pass:true,
         newLevel5:gainedLevel5,

@@ -2,6 +2,13 @@ const DEFAULT_MIN_SPEED = 0.5;
 const DEFAULT_MAX_SPEED = 1.5;
 const PREFETCH_LIMIT = 6;
 
+export const AUDIO_LOCK_STATES=Object.freeze({
+  UNLOCKED:'unlocked',
+  PENDING:'pending',
+  ACTIVE:'active',
+  RELEASE:'release',
+});
+
 function clampSpeed(value, min = DEFAULT_MIN_SPEED, max = DEFAULT_MAX_SPEED) {
   const num = typeof value === 'number' ? value : parseFloat(value);
   if (!Number.isFinite(num)) return 1;
@@ -19,22 +26,35 @@ export function createAudioController({
   saveSpeed = () => {},
   getCanSpeak = () => false,
   onPlaybackRateChange = () => {},
-  isRecognitionActive = () => false,
 } = {}) {
   const audio = audioElement;
   const PREFETCH_POOL = new Map();
 
   let toneCtx = null;
+  const activeTones=new Set();
   let playbackRate = clampSpeed(loadSpeed() ?? 1);
   let speechPlaying = false;
-  let resumeAfterMicStart = false;
-  let resumeAfterMicTimer = null;
+  let audioLockState=AUDIO_LOCK_STATES.UNLOCKED;
+
+  function isAudioOutputLocked(){
+    return audioLockState!==AUDIO_LOCK_STATES.UNLOCKED;
+  }
+
+  function stopAllTones(){
+    for(const entry of activeTones){
+      try{entry.osc.stop(toneCtx?.currentTime||0);}catch(_){}
+      try{entry.osc.disconnect();}catch(_){}
+      try{entry.gain.disconnect();}catch(_){}
+    }
+    activeTones.clear();
+  }
 
   function playTone(type) {
+    if(isAudioOutputLocked()) return false;
     try {
-      if (typeof window === 'undefined') return;
+      if (typeof window === 'undefined') return false;
       const AC = window.AudioContext || window.webkitAudioContext;
-      if (!AC) return;
+      if (!AC) return false;
       if (!toneCtx) {
         toneCtx = new AC();
       }
@@ -66,10 +86,18 @@ export function createAudioController({
       gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
       osc.connect(gain);
       gain.connect(toneCtx.destination);
+      const entry={osc,gain};
+      activeTones.add(entry);
+      osc.onended=()=>{
+        activeTones.delete(entry);
+        try{osc.disconnect();}catch(_){}
+        try{gain.disconnect();}catch(_){}
+      };
       osc.start(now);
       osc.stop(now + duration + 0.05);
+      return true;
     } catch (_) {
-      // ignore
+      return false;
     }
   }
 
@@ -77,7 +105,11 @@ export function createAudioController({
     if (!playButton) return;
     const hasSrc = !!(audio && audio.dataset && audio.dataset.srcKey);
     const canSpeak = !!(typeof getCanSpeak === 'function' && getCanSpeak());
-    playButton.disabled = !(hasSrc || canSpeak);
+    const locked=isAudioOutputLocked();
+    playButton.disabled = locked || !(hasSrc || canSpeak);
+    playButton.classList?.toggle?.('audio-locked',locked);
+    if(locked) playButton.setAttribute?.('aria-disabled','true');
+    else playButton.removeAttribute?.('aria-disabled');
   }
 
   function updatePlayVisualState() {
@@ -94,73 +126,41 @@ export function createAudioController({
   }
 
   function setSpeechPlayingState(playing) {
-    speechPlaying = !!playing;
+    speechPlaying = !isAudioOutputLocked() && !!playing;
     updatePlayVisualState();
   }
 
-  function clearResumeTimer() {
-    if (resumeAfterMicTimer) {
-      clearTimeout(resumeAfterMicTimer);
-      resumeAfterMicTimer = null;
+  function setAudioLockState(nextState=AUDIO_LOCK_STATES.UNLOCKED){
+    const valid=Object.values(AUDIO_LOCK_STATES).includes(nextState)?nextState:AUDIO_LOCK_STATES.UNLOCKED;
+    audioLockState=valid;
+    if(isAudioOutputLocked()){
+      try{ audio?.pause?.(); }catch(_){}
+      stopAllTones();
+      speechPlaying=false;
     }
-  }
-
-  function setResumeAfterMicStart(value) {
-    resumeAfterMicStart = !!value;
-    if (!resumeAfterMicStart) {
-      clearResumeTimer();
-    }
-  }
-
-  function resetResumeAfterMicStart() {
-    resumeAfterMicStart = false;
-    clearResumeTimer();
-  }
-
-  function handlePause() {
+    updatePlayButtonAvailability();
     updatePlayVisualState();
-    if (!resumeAfterMicStart || !isRecognitionActive()) {
-      return;
-    }
-    if (audio?.ended) {
-      resetResumeAfterMicStart();
-      return;
-    }
-    clearResumeTimer();
-    resumeAfterMicTimer = setTimeout(() => {
-      resumeAfterMicTimer = null;
-      if (!resumeAfterMicStart || !isRecognitionActive() || audio?.ended) {
-        resumeAfterMicStart = false;
-        return;
-      }
-      try {
-        audio?.play?.().catch((err) => {
-          console.warn('resume after mic start failed', err);
-          resumeAfterMicStart = false;
-        });
-      } catch (err) {
-        console.warn('resume after mic start failed', err);
-        resumeAfterMicStart = false;
-      }
-    }, 150);
+    return audioLockState;
   }
 
   if (audio?.addEventListener) {
     audio.addEventListener('play', () => {
-      resetResumeAfterMicStart();
+      if(isAudioOutputLocked()){
+        try{ audio.pause?.(); }catch(_){}
+      }
       updatePlayVisualState();
     });
     audio.addEventListener('playing', () => {
-      resetResumeAfterMicStart();
+      if(isAudioOutputLocked()){
+        try{ audio.pause?.(); }catch(_){}
+      }
       updatePlayVisualState();
     });
-    audio.addEventListener('pause', handlePause);
+    audio.addEventListener('pause', updatePlayVisualState);
     audio.addEventListener('ended', () => {
-      resetResumeAfterMicStart();
       updatePlayVisualState();
     });
     audio.addEventListener('emptied', () => {
-      resetResumeAfterMicStart();
       updatePlayButtonAvailability();
       updatePlayVisualState();
     });
@@ -248,7 +248,6 @@ export function createAudioController({
 
   function clearAudioSource() {
     if (!audio) return;
-    resetResumeAfterMicStart();
     if (audio.dataset) {
       delete audio.dataset.srcKey;
     }
@@ -375,8 +374,10 @@ export function createAudioController({
     getPlaybackRate: () => playbackRate,
     applyPlaybackRate,
     stepPlaybackRate,
-    setResumeAfterMicStart,
-    resetResumeAfterMicStart,
-    clearResumeTimer,
+    setAudioLockState,
+    getAudioLockState:()=>audioLockState,
+    isAudioOutputLocked,
+    isTonePlaying:()=>activeTones.size>0,
+    stopAllTones,
   };
 }
