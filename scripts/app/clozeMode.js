@@ -7,6 +7,7 @@ import {
   READ_HINT_STAGE_FULL,
 } from './hintProgressionCore.js';
 import { spanify } from '../utils/text.js';
+import { isPostResultReveal, revealCanonicalPostResult } from './postResultFeedback.js';
 
 const state={
   items:new Map(),
@@ -185,6 +186,21 @@ function syncPresentation(){
   const item=state.items.get(itemId);
   if(!item?.en) return;
 
+  if(isPostResultReveal(en,itemId)){
+    state.rendering=true;
+    try{
+      clearCloze(en);
+      en.classList.remove('concealed');
+      const shown=String(en.textContent||'').replace(/\s+/g,' ').trim();
+      const canonical=String(item.en).replace(/\s+/g,' ').trim();
+      if(shown!==canonical) revealCanonicalPostResult(en,item);
+      en.dataset.readHintStage=String(READ_HINT_STAGE_FULL);
+    }finally{
+      state.rendering=false;
+    }
+    return;
+  }
+
   const stage=inferReadHintStage({
     concealed:en.classList.contains('concealed'),
     japaneseVisible:isJapaneseVisible(ja),
@@ -225,7 +241,7 @@ async function init(){
   // observed childList while rewriting innerHTML itself, which could cause
   // repeated redraws during a downward hint swipe.
   const enObserver=new MutationObserver(scheduleSync);
-  enObserver.observe(en,{attributes:true,attributeFilter:['data-item-id','class']});
+  enObserver.observe(en,{attributes:true,attributeFilter:['data-item-id','data-post-result-reveal','class']});
   if(ja){
     const jaObserver=new MutationObserver(scheduleSync);
     jaObserver.observe(ja,{attributes:true,attributeFilter:['style','hidden']});

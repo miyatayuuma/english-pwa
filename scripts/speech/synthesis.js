@@ -116,7 +116,7 @@ export function createSpeechSynthesisController(options = {}) {
     return !!text;
   }
 
-  function speakCurrentCard({ preferredVoiceId = '' } = {}) {
+  function speakCurrentCard({ preferredVoiceId = '', beforeSpeak = null } = {}) {
     if (!canSpeakCurrentCard()) return Promise.resolve(false);
     cancelSpeech();
     const item = getCurrentItem?.();
@@ -173,6 +173,7 @@ export function createSpeechSynthesisController(options = {}) {
         finish(false);
       };
       try {
+        if(typeof beforeSpeak==='function'&&beforeSpeak()===false){finish(false);return;}
         window.speechSynthesis.speak(utter);
         if (typeof window.speechSynthesis.resume === 'function') {
           try {
