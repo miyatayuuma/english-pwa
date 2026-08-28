@@ -14,6 +14,10 @@ export function calcMatchScore(refCount, recall, precision) {
   return (2 * recall * precision) / (recall + precision);
 }
 
+export function hasRecognizedSpeech(transcript) {
+  return toks(String(transcript || '')).length > 0;
+}
+
 function cloneCountMap(map) {
   const out = new Map();
   if (!map) return out;
@@ -320,13 +324,6 @@ export function createRecognitionController(options = {}) {
     onError = () => {},
     setMicState = () => {},
     playTone = () => {},
-    setResumeAfterMicStart = () => {},
-    clearResumeTimer = () => {},
-    resetResumeAfterMicStart = () => {},
-    shouldResumeAudio = () => false,
-    pauseAudioBeforeMicStart = () => {},
-    resumeAudio = () => {},
-    micAudioResumeDelayMs = 180,
   } = options;
 
   let recognition = null;
@@ -334,15 +331,6 @@ export function createRecognitionController(options = {}) {
   let finalized = false;
   let stableText = '';
   let lastMatch = null;
-  let micAudioResumeTimer = null;
-
-  function clearMicAudioResumeTimer() {
-    if (micAudioResumeTimer) {
-      clearTimeout(micAudioResumeTimer);
-      micAudioResumeTimer = null;
-    }
-  }
-
   function clearHighlight() {
     clearHighlightInternal(enElement, getComposeNodes);
   }
@@ -372,14 +360,12 @@ export function createRecognitionController(options = {}) {
     }
     active = false;
     finalized = true;
-    clearMicAudioResumeTimer();
-    resetResumeAfterMicStart?.();
     setMicState?.(false);
     onStop?.();
     const transcript = (stableText || '').trim();
     const refText = getReferenceText?.() ?? '';
     let matchInfo = null;
-    if (refText || transcript) {
+    if (hasRecognizedSpeech(transcript)) {
       matchInfo = matchAndHighlight(refText, transcript);
       lastMatch = Object.assign({}, matchInfo, {
         source: transcript,
@@ -406,18 +392,6 @@ export function createRecognitionController(options = {}) {
     if (active) {
       return { ok: false, reason: 'active' };
     }
-    onStart?.();
-    const shouldResume = !!shouldResumeAudio?.();
-    setResumeAfterMicStart?.(shouldResume);
-    clearResumeTimer?.();
-    clearMicAudioResumeTimer();
-    if (shouldResume) {
-      try {
-        pauseAudioBeforeMicStart?.();
-      } catch (_) {
-        // ignore playback pause failures
-      }
-    }
     recognition = new SR();
     recognition.lang = 'en-US';
     recognition.continuous = true;
@@ -428,23 +402,14 @@ export function createRecognitionController(options = {}) {
     lastMatch = null;
     active = true;
     finalized = false;
-    setMicState?.(true);
-    playTone?.('start');
     onTranscriptReset?.();
     clearHighlight();
 
     recognition.onstart = () => {
-      if (!shouldResume || !active || finalized) return;
-      const delay = Math.max(0, Number(micAudioResumeDelayMs) || 0);
-      micAudioResumeTimer = setTimeout(() => {
-        micAudioResumeTimer = null;
-        if (!active || finalized) return;
-        try {
-          resumeAudio?.();
-        } catch (_) {
-          // ignore resume failures
-        }
-      }, delay);
+      if (!active || finalized) return;
+      setMicState?.(true);
+      onStart?.();
+      playTone?.('start');
     };
 
     recognition.onresult = (event) => {
@@ -481,9 +446,6 @@ export function createRecognitionController(options = {}) {
       console.warn('recognition error', ev);
       playTone?.('fail');
       setMicState?.(false);
-      clearMicAudioResumeTimer();
-      resetResumeAfterMicStart?.();
-      clearResumeTimer?.();
       active = false;
       finalized = true;
       recognition = null;
@@ -500,8 +462,6 @@ export function createRecognitionController(options = {}) {
     try {
       recognition.start();
     } catch (_) {
-      clearMicAudioResumeTimer();
-      resetResumeAfterMicStart?.();
       active = false;
       finalized = true;
       recognition = null;

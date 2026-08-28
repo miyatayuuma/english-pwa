@@ -37,6 +37,7 @@ import { createAudioController } from '../audio/controller.js';
 import {
   createRecognitionController,
   calcMatchScore,
+  hasRecognizedSpeech,
   isRecognitionSupported
 } from '../speech/recognition.js';
 import { createSpeechSynthesisController } from '../speech/synthesis.js';
@@ -1310,7 +1311,6 @@ function createAppRuntime(){
     setAudioSource,
     clearAudioSource,
     primeAudio,
-    setResumeAfterMicStart,
     resetResumeAfterMicStart,
     clearResumeTimer,
     setSpeechPlayingState,
@@ -3499,32 +3499,32 @@ function createAppRuntime(){
       onError: (e)=>{
         toast('ASRエラー: '+(e && e.error || ''));
         el.mic.disabled=false;
+        updatePlayButtonAvailability();
       },
-      onStart: ()=>{ setMicState(true); },
-      onStop: ()=>{ setMicState(false); },
+      onStart: ()=>{ setMicState(true);updatePlayButtonAvailability(); },
+      onStop: ()=>{ setMicState(false);updatePlayButtonAvailability(); },
       onAutoStop: (result)=>{ stopRec(result).catch(()=>{}); },
       setMicState,
       playTone,
-      setResumeAfterMicStart,
-      clearResumeTimer,
-      resetResumeAfterMicStart,
-      shouldResumeAudio: ()=> audio && !audio.paused && !audio.ended,
-      pauseAudioBeforeMicStart: ()=>{ try{audio?.pause?.();}catch(_){} },
-      resumeAudio: ()=>{ if(audio?.src){ audio.play().catch(()=>{}); } },
     });
   }
 
   recognitionController=initializeRecognitionController();
 
+  const MIC_AUDIO_SETTLE_MS=350;
+  let pendingMicStartTimer=null;
+
+  function beginRecognition(){
+    pendingMicStartTimer=null;if(!sessionActive||!recognitionController||recognitionController.isActive()) return;lastMatchEval=null;if(el.play) el.play.disabled=true;const result=recognitionController.start();if(result&&!result.ok){updatePlayButtonAvailability();if(result.reason==='unsupported') el.mic.disabled=false;}
+  }
+
   function startRec(){
     if(el.mic.disabled) return;
     if(!recognitionController) return;
-    if(recognitionController.isActive()) return;
-    lastMatchEval=null;
-    const result=recognitionController.start();
-    if(result && result.reason==='unsupported'){
-      el.mic.disabled=false;
-    }
+    if(recognitionController.isActive()||pendingMicStartTimer) return;
+    const audioPlaying=!!(audio&&!audio.paused&&!audio.ended);const speechPlaying=!!speechController?.isSpeaking?.();
+    if(audioPlaying||speechPlaying){resetResumeAfterMicStart();if(el.play) el.play.disabled=true;try{audio?.pause?.();}catch(_){}if(speechPlaying) speechController.cancelSpeech();setFooterMessages('再生を停止してから録音を開始します。','録音開始後に「聞く」を押すと音声を再生できます。');const requestedItemId=QUEUE[idx]?.id;pendingMicStartTimer=setTimeout(()=>{if(!sessionActive||QUEUE[idx]?.id!==requestedItemId){pendingMicStartTimer=null;updatePlayButtonAvailability();return;}beginRecognition();},MIC_AUDIO_SETTLE_MS);return;}
+    beginRecognition();
   }
 
   async function stopRec(result){
@@ -3537,6 +3537,9 @@ function createAppRuntime(){
       return;
     }
     const hyp = (outcome.transcript || '').trim();
+    if(!hasRecognizedSpeech(hyp)){
+      lastMatchEval=null;updateMatch(null);resetTranscript();setFooterMessages('発話が検出されませんでした。もう一度話してください。','');el.mic.disabled=false;updatePlayButtonAvailability();return;
+    }
     const refItem = QUEUE[idx];
     const refText = refItem ? refItem.en : el.en.textContent;
     const studyMode = getStudyMode();
