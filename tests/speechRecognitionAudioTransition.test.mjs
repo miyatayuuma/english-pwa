@@ -64,8 +64,10 @@ test('app uses stop confirm settle record release flow without automatic resume'
   const {readFile}=await import('node:fs/promises');
   const source=await readFile(new URL('../scripts/app/main.js',import.meta.url),'utf8');
   assert.match(source,/MIC_AUDIO_SETTLE_MS=350/);
-  assert.match(source,/MIC_RELEASE_SETTLE_MS=400/);
+  assert.match(source,/MIC_RELEASE_SETTLE_MS=800/);
   assert.match(source,/await waitForAppAudioStop\(\)/);
+  assert.match(source,/function resetPlaybackSessionForMic\(\)[\s\S]*audio\.currentTime=0;[\s\S]*audio\.load\?\.\(\)/);
+  assert.match(source,/setAudioLockState\(AUDIO_LOCK_STATES\.PENDING\);\s*resetPlaybackSessionForMic\(\)/);
   assert.match(source,/setAudioLockState\(AUDIO_LOCK_STATES\.PENDING\)/);
   assert.match(source,/setAudioLockState\(AUDIO_LOCK_STATES\.ACTIVE\)/);
   assert.match(source,/setAudioLockState\(AUDIO_LOCK_STATES\.RELEASE\)/);

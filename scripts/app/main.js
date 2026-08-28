@@ -3549,7 +3549,7 @@ function createAppRuntime(){
   recognitionController=initializeRecognitionController();
 
   const MIC_AUDIO_SETTLE_MS=350;
-  const MIC_RELEASE_SETTLE_MS=400;
+  const MIC_RELEASE_SETTLE_MS=800;
   const MIC_STOP_CONFIRM_TIMEOUT_MS=700;
   let pendingMicStartTimer=null;
   let micReleaseTimer=null;
@@ -3581,6 +3581,13 @@ function createAppRuntime(){
     try{audio?.pause?.();}catch(_){}
     speechController?.cancelSpeech?.();
     stopAllTones();
+  }
+
+  function resetPlaybackSessionForMic(){
+    stopAppAudioOutput();
+    if(!audio) return;
+    try{audio.currentTime=0;}catch(_){}
+    try{audio.load?.();}catch(_){}
   }
 
   async function waitForAppAudioStop(timeoutMs=MIC_STOP_CONFIRM_TIMEOUT_MS){
@@ -3618,7 +3625,7 @@ function createAppRuntime(){
     const requestToken=++micRequestToken;
     const requestedItemId=QUEUE[idx]?.id;
     setAudioLockState(AUDIO_LOCK_STATES.PENDING);
-    stopAppAudioOutput();
+    resetPlaybackSessionForMic();
     setFooterMessages('音声を停止して録音を準備しています。','録音中は音声を再生できません。');
     await waitForAppAudioStop();
     if(requestToken!==micRequestToken||!sessionActive||QUEUE[idx]?.id!==requestedItemId){beginMicReleaseSettle();return;}
