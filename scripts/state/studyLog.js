@@ -212,6 +212,24 @@ function recordStudyProgress({
   if (pass || newLevel5 || noHint || perfect) scheduleNotificationCheckSoon();
 }
 
+function recordShadowingExposure({cards=1,durationMs=0}={}) {
+  const safeCards=Math.max(0,Math.round(Number(cards)||0));
+  const safeDuration=Math.max(0,Math.round(Number(durationMs)||0));
+  if(!safeCards&&!safeDuration) return;
+  const key=localDateKey();
+  const entry=STUDY_LOG[key]||{
+    passes:0,level5:0,level5_count:0,no_hint:0,streak:0,modes:{}
+  };
+  const practice=entry.shadowing&&typeof entry.shadowing==='object'?entry.shadowing:{};
+  entry.shadowing={
+    cards:(Number(practice.cards)||0)+safeCards,
+    duration_ms:(Number(practice.duration_ms)||0)+safeDuration,
+  };
+  STUDY_LOG[key]=entry;
+  STUDY_LOG=pruneStudyLog(STUDY_LOG);
+  saveStudyLog(STUDY_LOG);
+}
+
 function getDailyStats(key) {
   const target = key || localDateKey();
   const entry = STUDY_LOG[target];
@@ -235,6 +253,10 @@ function getDailyStats(key) {
     no_hint: entry?.no_hint || 0,
     streak: entry?.streak || 0,
     modes: modeStats,
+    shadowing:{
+      cards:Number(entry?.shadowing?.cards)||0,
+      duration_ms:Number(entry?.shadowing?.duration_ms)||0,
+    },
     sessionClosure: entry?.session_closure || null
   };
 }
@@ -932,6 +954,7 @@ export {
   saveStudyLog,
   pruneStudyLog,
   recordStudyProgress,
+  recordShadowingExposure,
   recordSessionClosureSummary,
   getDailyStats,
   getLatestSessionClosureSummaryBefore,

@@ -262,6 +262,15 @@
     #btnMic.recording{background:var(--accent);border-color:#7de4ff;box-shadow:0 0 0 0 rgba(98,213,255,.55);animation:micPulse 1.4s ease-in-out infinite}
     #btnMic:disabled{opacity:.35;cursor:not-allowed;animation:none;box-shadow:none}
     #btnMic .micIcon{font-size:28px}
+    .mic-status{display:flex;align-items:center;justify-content:center;gap:7px;width:max-content;max-width:100%;margin:2px auto 0;padding:5px 10px;border:1px solid rgba(148,163,184,.2);border-radius:999px;background:rgba(148,163,184,.08);color:#cbd5e1;font-size:11px;font-weight:850;letter-spacing:.02em}
+    .mic-status__dot{width:8px;height:8px;border-radius:999px;background:#64748b;box-shadow:0 0 0 3px rgba(100,116,139,.13)}
+    .mic-status[data-state="pending"],.mic-status[data-state="release"]{color:#fde68a;border-color:rgba(251,191,36,.3);background:rgba(245,158,11,.1)}
+    .mic-status[data-state="pending"] .mic-status__dot,.mic-status[data-state="release"] .mic-status__dot{background:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.16)}
+    .mic-status[data-state="active"]{color:#fecaca;border-color:rgba(248,113,113,.4);background:rgba(239,68,68,.13)}
+    .mic-status[data-state="active"] .mic-status__dot{background:#ef4444;box-shadow:0 0 0 4px rgba(239,68,68,.16);animation:micStatusPulse 1.25s ease-in-out infinite}
+    .mic-status[data-state="error"]{color:#fecaca;border-color:rgba(248,113,113,.4)}
+    @keyframes micStatusPulse{50%{box-shadow:0 0 0 7px rgba(239,68,68,.04)}}
+    @media (prefers-reduced-motion:reduce){.mic-status[data-state="active"] .mic-status__dot{animation:none}}
     .speed-ctrl{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:rgba(17,23,38,.65);border:1px solid rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px rgba(0,0,0,.35)}
     .speed-toggle{display:none;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.14);background:#131b2d;color:var(--txt);border-radius:999px;padding:4px 10px;font-size:13px;line-height:1.2;cursor:pointer}
     .speed-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:2px}

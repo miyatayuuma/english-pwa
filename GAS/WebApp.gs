@@ -5,6 +5,7 @@ const SHEETS = {
   attempts: 'attempts',
   speech:   'speech_metrics',
   sessions: 'sessions',
+  shadowing:'shadowing_practice',
   items:    'items',
   srs:      'srs_state',
   config:   'config',
@@ -65,6 +66,7 @@ const ENTRY_HANDLERS = Object.freeze({
   attempt: appendAttempt_,
   speech:  appendSpeech_,
   session: appendSession_,
+  shadowing:appendShadowing_,
   srs:     upsertSrsState_,
 });
 const SUPPORTED_ENTRY_TYPES = Object.freeze(Object.keys(ENTRY_HANDLERS));
@@ -187,6 +189,18 @@ function appendSession_(s, uid) {
     new Date().toISOString()
   ];
   sh.appendRow(row);
+}
+
+function appendShadowing_(s, uid) {
+  const sh = ensureSheet(SHEETS.shadowing,
+    ['ts','id','duration_ms','mode','client_uid']);
+  sh.appendRow([
+    s?.ts || new Date().toISOString(),
+    s?.id || '',
+    (s?.duration_ms ?? ''),
+    s?.mode || 'continuous_shadowing',
+    s?.client_uid || uid || ''
+  ]);
 }
 
 function upsertSrsState_(state, uid) {

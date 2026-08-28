@@ -42,7 +42,7 @@ test('card change clears post-result reveal state',()=>{
   assert.equal(isPostResultReveal(en,'E1'),false);
 });
 
-test('cloze sync prioritizes post-result reveal and pass uses guarded 1.6 second advance',async()=>{
+test('cloze sync prioritizes post-result reveal and pass uses guarded answer-check advance',async()=>{
   const [cloze,main]=await Promise.all([
     readFile(new URL('../scripts/app/clozeMode.js',import.meta.url),'utf8'),
     readFile(new URL('../scripts/app/main.js',import.meta.url),'utf8'),
@@ -56,7 +56,7 @@ test('cloze sync prioritizes post-result reveal and pass uses guarded 1.6 second
   const failBranch=main.indexOf('}else{',revealCall);
   assert.ok(silentGuard>=0&&silentGuard<passBranch&&passBranch<revealCall&&revealCall<failBranch);
   assert.equal(main.match(/showPostResultFeedback\(it,matchInfo\)/g)?.length,1);
-  assert.match(main,/scheduleAutoAdvance\(1600\)/);
+  assert.match(main,/scheduleAutoAdvance\(1900\)/);
   assert.match(main,/generation!==autoAdvanceGeneration\|\|idx!==scheduledIndex/);
   assert.match(main,/function setHintStage[\s\S]*if\(isPostResultReveal\(el\.en,currentItem\?\.id\)\) return false/);
 });

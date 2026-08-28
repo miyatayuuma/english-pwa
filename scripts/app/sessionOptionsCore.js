@@ -1,4 +1,10 @@
 import { buildAutomaticSession, filterByScope } from './adaptiveLearning.js';
+import {
+  TRAINING_MODES,
+  filterShadowingEligibleItems,
+  isContinuousShadowingMode,
+  normalizeTrainingMode,
+} from './continuousShadowing.js';
 
 export const SESSION_COUNT_CHOICES=Object.freeze(['auto','5','8','12','custom']);
 export const SESSION_SELECTION_MODES=Object.freeze(['auto','review','new','manual']);
@@ -11,6 +17,7 @@ export function createDefaultSessionOptions(characterId=''){
     count:'auto',
     customCount:7,
     mode:'auto',
+    trainingMode:TRAINING_MODES.STANDARD,
     manualItemIds:[],
   };
 }
@@ -32,6 +39,7 @@ export function normalizeSessionOptions(value={}){
     count,
     customCount:clampCount(value?.customCount),
     mode,
+    trainingMode:normalizeTrainingMode(value?.trainingMode),
     manualItemIds:[...new Set((Array.isArray(value?.manualItemIds)?value.manualItemIds:[]).map(String).filter(Boolean))],
   };
 }
@@ -51,19 +59,27 @@ export function requestedCountForSessionOptions(value={}){
   return options.count==='custom'?options.customCount:Number(options.count);
 }
 
-export function eligibleItemsForSessionOptions(items,value={}){
-  return filterByScope(items,scopeForSessionOptions(value));
+export function eligibleItemsForSessionOptions(items,value={},levelState={}){
+  const options=normalizeSessionOptions(value);
+  const scoped=filterByScope(items,scopeForSessionOptions(options));
+  return isContinuousShadowingMode(options.trainingMode)
+    ?filterShadowingEligibleItems(scoped,levelState)
+    :scoped;
 }
 
-export function diagnoseEmptySessionOptions(items,value={}){
+export function diagnoseEmptySessionOptions(items,value={},levelState={}){
   const options=normalizeSessionOptions(value);
-  if(eligibleItemsForSessionOptions(items,options).length) return [];
+  if(eligibleItemsForSessionOptions(items,options,levelState).length) return [];
+  if(isContinuousShadowingMode(options.trainingMode)
+    &&eligibleItemsForSessionOptions(items,{...options,trainingMode:TRAINING_MODES.STANDARD},levelState).length){
+    return [{key:'trainingMode',label:'連続シャドウイング',available:0,value:TRAINING_MODES.STANDARD}];
+  }
   const labels={characterId:'相手',skillId:'特訓テーマ',section:'チャプター'};
   const entries=Object.keys(labels)
     .filter(key=>options[key])
     .map(key=>{
       const relaxed={...options,[key]:''};
-      return {key,label:labels[key],available:eligibleItemsForSessionOptions(items,relaxed).length};
+      return {key,label:labels[key],available:eligibleItemsForSessionOptions(items,relaxed,levelState).length};
     });
   const resolving=entries.filter(entry=>entry.available>0);
   return resolving.length?resolving:entries;
@@ -74,8 +90,8 @@ export function resetSessionOptions(value={}){
   return createDefaultSessionOptions(options.characterId);
 }
 
-function buildManualPlan(items,options){
-  const eligible=eligibleItemsForSessionOptions(items,options);
+function buildManualPlan(items,options,levelState){
+  const eligible=eligibleItemsForSessionOptions(items,options,levelState);
   const eligibleById=new Map(eligible.map(item=>[String(item?.id),item]));
   const requested=options.manualItemIds.map(id=>eligibleById.get(id)).filter(Boolean);
   const limit=requestedCountForSessionOptions(options);
@@ -97,12 +113,20 @@ function buildManualPlan(items,options){
 
 export function buildSessionPlanFromOptions(items,levelState={},value={},runtimeOptions={}){
   const options=normalizeSessionOptions(value);
-  if(options.mode==='manual') return buildManualPlan(items,options);
+  if(options.mode==='manual') return {...buildManualPlan(items,options,levelState),trainingMode:options.trainingMode};
   const size=requestedCountForSessionOptions(options);
-  return buildAutomaticSession(items,levelState,{
+  const eligible=eligibleItemsForSessionOptions(items,options,levelState);
+  const shadowing=isContinuousShadowingMode(options.trainingMode);
+  const recentIds=new Set(Array.from(runtimeOptions.recentItemIds||[],String));
+  const candidates=shadowing&&recentIds.size
+    ?eligible.slice().sort((a,b)=>Number(recentIds.has(String(a?.id)))-Number(recentIds.has(String(b?.id))))
+    :eligible;
+  const plan=buildAutomaticSession(candidates,levelState,{
     ...runtimeOptions,
-    scope:scopeForSessionOptions(options),
+    scope:null,
+    ...(shadowing?{recentItemIds:[]}:{}),
     mode:options.mode,
     ...(size?{size}:{}),
   });
+  return {...plan,scope:scopeForSessionOptions(options),trainingMode:options.trainingMode};
 }

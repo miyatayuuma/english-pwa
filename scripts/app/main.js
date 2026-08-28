@@ -31,7 +31,8 @@ import {
   getConsecutiveNoStudyDays,
   computeWeeklyHighlights,
   recordSessionClosureSummary,
-  getLatestSessionClosureSummaryBefore
+  getLatestSessionClosureSummaryBefore,
+  recordShadowingExposure,
 } from '../state/studyLog.js';
 import { AUDIO_LOCK_STATES, createAudioController } from '../audio/controller.js';
 import {
@@ -42,6 +43,14 @@ import {
 } from '../speech/recognition.js';
 import { createSpeechSynthesisController } from '../speech/synthesis.js';
 import { clearPostResultReveal, isPostResultReveal, revealCanonicalPostResult } from './postResultFeedback.js';
+import {
+  TRAINING_MODES,
+  buildShadowingExposure,
+  isContinuousShadowingMode,
+  normalizeTrainingMode,
+} from './continuousShadowing.js';
+import { MIC_UI_STATES, applyMicStatus } from './micStatus.js';
+import { createResultFeedbackQueue, normalizeResultSoundMode } from './resultFeedbackSound.js';
 import { createOverlayController } from './overlay.js';
 import { createCardTransitionQueue } from './cardTransitions.js';
 import { createComposeGuide } from './composeGuide.js';
@@ -162,7 +171,7 @@ function createAppRuntime(){
 
 
   // ===== Elements =====
-  const el={ app:qs('#app'), homeView:qs('#homeView'), studyView:qs('#studyView'), reviewCompleteView:qs('#reviewCompleteView'), startStudyCta:qs('#startStudyCta'), reviewCompleteMessage:qs('#reviewCompleteMessage'), reviewActionContinue:qs('#reviewActionContinue'), reviewActionFocusReview:qs('#reviewActionFocusReview'), reviewActionFinish:qs('#reviewActionFinish'), headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerMessage'), nextAction:qs('#nextActionMessage'), footerInfoContainer:qs('#footerInfo'), footerInfoBtn:qs('#footerInfoBtn'), footerInfoDialog:qs('#footerInfoDialog'), footerInfoDialogBody:qs('#footerInfoDialogBody'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), play:qs('#btnPlay'), mic:qs('#btnMic'), card:qs('#card'), secSel:qs('#secSel'), studySecSel:qs('#studySecSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), composeGuide:qs('#composeGuide'), composeTokens:qs('#composeTokens'), composeNote:qs('#composeNote'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSpeechVoice:qs('#cfgSpeechVoice'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speedCtrl:qs('#speedCtrl'), speedToggle:qs('#speedToggle'), speedCtrlBody:qs('#speedCtrlBody'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus'), notifTimeList:qs('#notifTimeList'), notifTimeAdd:qs('#notifTimeAdd'), notifTriggerDailyZero:qs('#notifTriggerDailyZero'), notifTriggerDailyCompare:qs('#notifTriggerDailyCompare'), notifTriggerWeekly:qs('#notifTriggerWeekly'), notifTriggerRestartTone:qs('#notifTriggerRestartTone'), milestoneIntensity:qs('#cfgMilestoneIntensity'), notifHelp:qs('#notifHelp'), dailyGoalCard:qs('#dailyGoalCard'), dailyGoalBody:qs('#dailyGoalBody'), dailyGoalToggle:qs('#dailyGoalToggle'), dailyGoalToggleState:qs('#dailyGoalToggleState'), dailyGoalRing:qs('#dailyGoalRing'), dailyGoalPercent:qs('#dailyGoalPercent'), dailyGoalTag:qs('#dailyGoalTag'), dailyGoalDone:qs('#dailyGoalDone'), dailyGoalTarget:qs('#dailyGoalTarget'), dailyGoalHint:qs('#dailyGoalHint'), sessionGoalCard:qs('#sessionGoalCard'), sessionGoalBody:qs('#sessionGoalBody'), sessionGoalToggle:qs('#sessionGoalToggle'), sessionGoalRing:qs('#sessionGoalRing'), sessionGoalPercent:qs('#sessionGoalPercent'), sessionGoalTag:qs('#sessionGoalTag'), sessionGoalDone:qs('#sessionGoalDone'), sessionGoalTarget:qs('#sessionGoalTarget'), sessionGoalSlider:qs('#sessionGoalSlider'), sessionGoalBarFill:qs('#sessionGoalBarFill'), dailyOverviewCard:qs('#dailyOverviewCard'), dailyOverviewBody:qs('#dailyOverviewBody'), dailyOverviewToggle:qs('#dailyOverviewToggle'), dailyOverviewToggleState:qs('#dailyOverviewToggleState'), dailyOverviewDiff:qs('#dailyOverviewDiff'), dailyOverviewTrendStatus:qs('#dailyOverviewTrendStatus'), dailyOverviewNote:qs('#dailyOverviewNote'), overviewHighlights:qs('#dailyOverviewHighlights'), overviewTodayFill:qs('#overviewTodayFill'), overviewYesterdayFill:qs('#overviewYesterdayFill'), overviewTodayValue:qs('#overviewTodayValue'), overviewYesterdayValue:qs('#overviewYesterdayValue'), overviewPromotionStatus:qs('#overviewPromotionStatus'), overviewTaskBalance:qs('#overviewTaskBalance'), overviewMilestones:qs('#overviewMilestones'), overviewQuickStart:qs('#overviewQuickStart'), onboardingCard:qs('#onboardingCard'), onboardingStepLabel:qs('#onboardingStepLabel'), onboardingLevel:qs('#onboardingLevel'), onboardingPurpose:qs('#onboardingPurpose'), onboardingMinutes:qs('#onboardingMinutes'), onboardingBack:qs('#onboardingBack'), onboardingNext:qs('#onboardingNext'), personalPlanSummary:qs('#personalPlanSummary'), personalPlanBody:qs('#personalPlanBody'), personalPlanToggle:qs('#personalPlanToggle') };
+  const el={ app:qs('#app'), homeView:qs('#homeView'), studyView:qs('#studyView'), reviewCompleteView:qs('#reviewCompleteView'), startStudyCta:qs('#startStudyCta'), reviewCompleteMessage:qs('#reviewCompleteMessage'), reviewActionContinue:qs('#reviewActionContinue'), reviewActionFocusReview:qs('#reviewActionFocusReview'), reviewActionFinish:qs('#reviewActionFinish'), headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerMessage'), nextAction:qs('#nextActionMessage'), footerInfoContainer:qs('#footerInfo'), footerInfoBtn:qs('#footerInfoBtn'), footerInfoDialog:qs('#footerInfoDialog'), footerInfoDialogBody:qs('#footerInfoDialogBody'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), play:qs('#btnPlay'), mic:qs('#btnMic'), micStatus:qs('#micStatus'), card:qs('#card'), secSel:qs('#secSel'), studySecSel:qs('#studySecSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), composeGuide:qs('#composeGuide'), composeTokens:qs('#composeTokens'), composeNote:qs('#composeNote'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSpeechVoice:qs('#cfgSpeechVoice'), cfgResultSound:qs('#cfgResultSound'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speedCtrl:qs('#speedCtrl'), speedToggle:qs('#speedToggle'), speedCtrlBody:qs('#speedCtrlBody'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus'), notifTimeList:qs('#notifTimeList'), notifTimeAdd:qs('#notifTimeAdd'), notifTriggerDailyZero:qs('#notifTriggerDailyZero'), notifTriggerDailyCompare:qs('#notifTriggerDailyCompare'), notifTriggerWeekly:qs('#notifTriggerWeekly'), notifTriggerRestartTone:qs('#notifTriggerRestartTone'), milestoneIntensity:qs('#cfgMilestoneIntensity'), notifHelp:qs('#notifHelp'), dailyGoalCard:qs('#dailyGoalCard'), dailyGoalBody:qs('#dailyGoalBody'), dailyGoalToggle:qs('#dailyGoalToggle'), dailyGoalToggleState:qs('#dailyGoalToggleState'), dailyGoalRing:qs('#dailyGoalRing'), dailyGoalPercent:qs('#dailyGoalPercent'), dailyGoalTag:qs('#dailyGoalTag'), dailyGoalDone:qs('#dailyGoalDone'), dailyGoalTarget:qs('#dailyGoalTarget'), dailyGoalHint:qs('#dailyGoalHint'), sessionGoalCard:qs('#sessionGoalCard'), sessionGoalBody:qs('#sessionGoalBody'), sessionGoalToggle:qs('#sessionGoalToggle'), sessionGoalRing:qs('#sessionGoalRing'), sessionGoalPercent:qs('#sessionGoalPercent'), sessionGoalTag:qs('#sessionGoalTag'), sessionGoalDone:qs('#sessionGoalDone'), sessionGoalTarget:qs('#sessionGoalTarget'), sessionGoalSlider:qs('#sessionGoalSlider'), sessionGoalBarFill:qs('#sessionGoalBarFill'), dailyOverviewCard:qs('#dailyOverviewCard'), dailyOverviewBody:qs('#dailyOverviewBody'), dailyOverviewToggle:qs('#dailyOverviewToggle'), dailyOverviewToggleState:qs('#dailyOverviewToggleState'), dailyOverviewDiff:qs('#dailyOverviewDiff'), dailyOverviewTrendStatus:qs('#dailyOverviewTrendStatus'), dailyOverviewNote:qs('#dailyOverviewNote'), overviewHighlights:qs('#dailyOverviewHighlights'), overviewTodayFill:qs('#overviewTodayFill'), overviewYesterdayFill:qs('#overviewYesterdayFill'), overviewTodayValue:qs('#overviewTodayValue'), overviewYesterdayValue:qs('#overviewYesterdayValue'), overviewPromotionStatus:qs('#overviewPromotionStatus'), overviewTaskBalance:qs('#overviewTaskBalance'), overviewMilestones:qs('#overviewMilestones'), overviewQuickStart:qs('#overviewQuickStart'), onboardingCard:qs('#onboardingCard'), onboardingStepLabel:qs('#onboardingStepLabel'), onboardingLevel:qs('#onboardingLevel'), onboardingPurpose:qs('#onboardingPurpose'), onboardingMinutes:qs('#onboardingMinutes'), onboardingBack:qs('#onboardingBack'), onboardingNext:qs('#onboardingNext'), personalPlanSummary:qs('#personalPlanSummary'), personalPlanBody:qs('#personalPlanBody'), personalPlanToggle:qs('#personalPlanToggle') };
   const viewStateController=createViewStateController({ el });
   const applyViewState=(...args)=>viewStateController.applyViewState(...args);
   const getCurrentViewState=(...args)=>viewStateController.getCurrentViewState(...args);
@@ -1307,19 +1316,42 @@ function createAppRuntime(){
 
   const {
     playTone,
+    prepareToneOutput,
     updatePlayButtonAvailability: baseUpdatePlayButtonAvailability,
     updatePlayVisualState,
     setAudioSource,
     clearAudioSource,
     primeAudio,
     setSpeechPlayingState,
-    setAudioLockState,
+    setAudioLockState: baseSetAudioLockState,
     getAudioLockState,
     isPlaybackTransitionLocked,
     authorizeUserPlayback,
     isTonePlaying,
     stopAllTones,
   } = audioController;
+  let micUiState=MIC_UI_STATES.OFF;
+  function setMicUiState(state){
+    micUiState=applyMicStatus({statusElement:el.micStatus,micButton:el.mic,state});
+    return micUiState;
+  }
+  function micUiStateForAudioLock(state){
+    if(state===AUDIO_LOCK_STATES.PENDING) return MIC_UI_STATES.PENDING;
+    if(state===AUDIO_LOCK_STATES.ACTIVE) return MIC_UI_STATES.ACTIVE;
+    if(state===AUDIO_LOCK_STATES.RELEASE) return MIC_UI_STATES.RELEASE;
+    return MIC_UI_STATES.OFF;
+  }
+  function setAudioLockState(state){
+    const applied=baseSetAudioLockState(state);
+    setMicUiState(micUiStateForAudioLock(applied));
+    return applied;
+  }
+  const resultFeedbackQueue=createResultFeedbackQueue({
+    getMode:()=>CFG.resultSound,
+    isUnlocked:()=>getAudioLockState()===AUDIO_LOCK_STATES.UNLOCKED,
+    playTone,
+    vibrate:(duration)=>navigator.vibrate?.(duration),
+  });
   const overlayController = createOverlayController({ overlayElement: el.overlay });
   const acquireOverlay = (tag='load') => overlayController.acquire(tag);
   const { queueTransition: queueCardTransition } = createCardTransitionQueue({
@@ -1327,6 +1359,11 @@ function createAppRuntime(){
   });
   let sessionActive=false;
   let sessionStarting=false;
+  let activeTrainingMode=TRAINING_MODES.STANDARD;
+  let shadowCycleToken=0;
+  let shadowCycleState=null;
+  let shadowingPaused=false;
+  const shadowingSessionMetrics={cards:0,durationMs:0};
   let remoteStatus=null;
   let QUEUE=[];
   let idx=-1;
@@ -1342,6 +1379,14 @@ function createAppRuntime(){
   let speechSessionStats=createEmptySpeechSessionStats();
   let autoPlayUnlocked=false;
   let lastEmptySearchToast='';
+
+  function isShadowingSession(){ return isContinuousShadowingMode(activeTrainingMode); }
+  function consumePendingTrainingMode(){
+    if(!Object.prototype.hasOwnProperty.call(globalThis,'__ENGLISH_PWA_PENDING_TRAINING_MODE__')) return activeTrainingMode;
+    activeTrainingMode=normalizeTrainingMode(globalThis.__ENGLISH_PWA_PENDING_TRAINING_MODE__);
+    try{delete globalThis.__ENGLISH_PWA_PENDING_TRAINING_MODE__;}catch(_){globalThis.__ENGLISH_PWA_PENDING_TRAINING_MODE__=TRAINING_MODES.STANDARD;}
+    return activeTrainingMode;
+  }
 
   function updateHeaderStats(){
     if(el.headerSection){
@@ -1439,8 +1484,10 @@ function createAppRuntime(){
     const conversationIds=[...speechSessionStats.submissions.keys()];
     const conversationCount=conversationIds.length||cardsDone;
     const retryConversationCount=conversationIds.filter(id=>(speechSessionStats.submissions.get(id)||0)>1||(speechSessionStats.correct.get(id)||0)===0).length;
+    const shadowing=isShadowingSession();
     return {
       reason,
+      trainingMode:shadowing?TRAINING_MODES.CONTINUOUS_SHADOWING:TRAINING_MODES.STANDARD,
       cardsDone,
       conversationCount,
       retryConversationCount,
@@ -1449,7 +1496,9 @@ function createAppRuntime(){
       highestStreak:Math.max(0, Number(sessionMetrics?.highestStreak)||0),
       failRate:Math.round(failRate*1000)/1000,
       nextDayMinimumGoal:nextGoal,
-      message:`今日の達成: ${cardsDone}件 / 最高連続${Math.max(0, Number(sessionMetrics?.highestStreak)||0)}件。明日は最小${nextGoal}件だけでOK。`
+      message:shadowing
+        ?`連続シャドウイング: ${cardsDone}文 / ${Math.max(1,Math.round(shadowingSessionMetrics.durationMs/60000))}分。`
+        :`今日の達成: ${cardsDone}件 / 最高連続${Math.max(0, Number(sessionMetrics?.highestStreak)||0)}件。明日は最小${nextGoal}件だけでOK。`
     };
   }
 
@@ -1460,7 +1509,9 @@ function createAppRuntime(){
     const toastMessage=`🎉 ${summary.message}`;
     toast(toastMessage, 3600);
     if(el.dailyOverviewNote){
-      el.dailyOverviewNote.textContent=`${summary.message}（失敗率${failRateLabel}）`;
+      el.dailyOverviewNote.textContent=summary.trainingMode===TRAINING_MODES.CONTINUOUS_SHADOWING
+        ?summary.message
+        :`${summary.message}（失敗率${failRateLabel}）`;
     }
   }
 
@@ -1468,8 +1519,11 @@ function createAppRuntime(){
     if(!summary) return;
     const failRateLabel=`${Math.round(Math.max(0, Number(summary.failRate)||0)*100)}%`;
     if(el.reviewCompleteMessage){
-      el.reviewCompleteMessage.textContent=`${summary.message}（失敗率${failRateLabel} / 新規${Math.max(0, Number(summary.newIntroduced)||0)}件）`;
+      el.reviewCompleteMessage.textContent=summary.trainingMode===TRAINING_MODES.CONTINUOUS_SHADOWING
+        ?summary.message
+        :`${summary.message}（失敗率${failRateLabel} / 新規${Math.max(0, Number(summary.newIntroduced)||0)}件）`;
     }
+    if(el.reviewCompleteView) el.reviewCompleteView.dataset.trainingMode=summary.trainingMode||TRAINING_MODES.STANDARD;
     document.dispatchEvent(new CustomEvent('english-pwa:session-result',{detail:{...summary}}));
     setViewState(VIEW_REVIEW_COMPLETE);
   }
@@ -1590,6 +1644,11 @@ function createAppRuntime(){
   function updatePlayButtonAvailability(){
     baseUpdatePlayButtonAvailability();
     if(!el.play) return;
+    if(isShadowingSession()&&getAudioLockState()!==AUDIO_LOCK_STATES.UNLOCKED){
+      el.play.disabled=true;
+      el.play.setAttribute('aria-disabled','true');
+      return;
+    }
     if(isPlaybackTransitionLocked()){
       el.play.disabled=true;
       el.play.setAttribute('aria-disabled','true');
@@ -1795,7 +1854,8 @@ function createAppRuntime(){
   }
 
   function setMicState(on){
-    el.mic.classList.toggle('recording', !!on);
+    if(on){setMicUiState(MIC_UI_STATES.ACTIVE);return;}
+    setMicUiState(micUiStateForAudioLock(getAudioLockState()));
   }
 
   // ===== Config =====
@@ -1813,7 +1873,7 @@ function createAppRuntime(){
   function saveCfg(o){
     saveJson(CONFIG, o||{});
   }
-  let CFG=Object.assign({ apiUrl:'', apiKey:'', audioBase:'', speechVoice:'', playbackMode:'audio', studyMode:STUDY_MODE_READ, milestoneIntensity:'normal' }, loadCfg());
+  let CFG=Object.assign({ apiUrl:'', apiKey:'', audioBase:'', speechVoice:'', playbackMode:'audio', studyMode:STUDY_MODE_READ, milestoneIntensity:'normal', resultSound:'standard' }, loadCfg());
   if(typeof CFG.speechVoice!=='string'){ CFG.speechVoice=''; }
   const legacyFallback=CFG && typeof CFG.speechFallback!=='undefined' ? !!CFG.speechFallback : false;
   if(CFG && typeof CFG.playbackMode!=='string'){ CFG.playbackMode=''; }
@@ -1826,6 +1886,7 @@ function createAppRuntime(){
     CFG.studyMode = normalizedStudy===STUDY_MODE_COMPOSE ? STUDY_MODE_COMPOSE : STUDY_MODE_READ;
   }
   CFG.milestoneIntensity=getMilestoneIntensity();
+  CFG.resultSound=normalizeResultSoundMode(CFG.resultSound);
   setMilestoneEffectIntensity(CFG.milestoneIntensity);
 
   function getPlaybackMode(){
@@ -2274,6 +2335,7 @@ function createAppRuntime(){
       if(el.milestoneIntensity){
         el.milestoneIntensity.value=getMilestoneIntensity();
       }
+      if(el.cfgResultSound){ el.cfgResultSound.value=normalizeResultSoundMode(CFG.resultSound); }
       notifSettings=getNotificationSettings();
       renderNotificationTimes(notifSettings.reminderTimes);
       applyNotificationToggles(notifSettings);
@@ -2359,6 +2421,7 @@ function createAppRuntime(){
         const value=(el.milestoneIntensity.value||'normal').toLowerCase();
         CFG.milestoneIntensity = (value==='subtle' || value==='strong') ? value : 'normal';
       }
+      if(el.cfgResultSound){ CFG.resultSound=normalizeResultSoundMode(el.cfgResultSound.value); }
       setMilestoneEffectIntensity(getMilestoneIntensity());
       const { settings: nextNotifSettings, validation: notifValidation } = readNotificationSettingsFromForm();
       if(notifValidation.hasErrors){
@@ -2619,12 +2682,18 @@ function createAppRuntime(){
     }
     stopAudio();
     resetPostResultFeedback();
+    resultFeedbackQueue.clear();
+    cancelShadowingCycle({stopOutput:true});
     cancelPendingMicStart();
     if(recognitionController && recognitionController.isActive()){
-      try{ await stopRec(); }
+      try{
+        if(isShadowingSession()) recognitionController.stop();
+        else await stopRec();
+      }
       catch(_){ }
     }
     setMicState(false);
+    if(isShadowingSession()) sessionMetrics.cardsDone=Math.max(sessionMetrics.cardsDone,shadowingSessionMetrics.cards);
     finalizeSessionMetrics(reason);
     sessionActive=false;
     sessionStarting=false;
@@ -2633,6 +2702,11 @@ function createAppRuntime(){
       presentReviewCompleteView(latestSessionClosureSummary);
     }else{
       setViewState(VIEW_HOME);
+    }
+    if(reason==='completed'&&isShadowingSession()&&normalizeResultSoundMode(CFG.resultSound)!=='off'){
+      setTimeout(()=>{
+        if(getAudioLockState()===AUDIO_LOCK_STATES.UNLOCKED) playTone('complete',{intensity:normalizeResultSoundMode(CFG.resultSound)});
+      },MIC_RELEASE_SETTLE_MS+100);
     }
     if(flushLogs){
       try{ await flushPendingLogs(); }
@@ -2830,9 +2904,10 @@ function createAppRuntime(){
 
   // Render & navigation
   function stopAudio(){ try{audio.pause();}catch(_){ } audio.currentTime=0; speechController.cancelSpeech(); }
-  async function tryPlayAudio({userInitiated=false, resetPosition=false}={}){
+  async function tryPlayAudio({userInitiated=false, resetPosition=false,shadowingPlayback=false}={}){
     if(isPlaybackTransitionLocked()) return false;
-    if(getAudioLockState()===AUDIO_LOCK_STATES.ACTIVE&&!userInitiated) return false;
+    if(getAudioLockState()===AUDIO_LOCK_STATES.ACTIVE&&!userInitiated&&!shadowingPlayback) return false;
+    if(shadowingPlayback&&!authorizeUserPlayback()) return false;
     const hasSrc=!!(audio?.dataset?.srcKey);
     const item=currentItem;
     const playbackMode=getPlaybackMode();
@@ -2849,7 +2924,7 @@ function createAppRuntime(){
         }
         return false;
       }
-      const speechOk=await speechController.speakCurrentCard({ preferredVoiceId: CFG.speechVoice, beforeSpeak:userInitiated?authorizeUserPlayback:null });
+      const speechOk=await speechController.speakCurrentCard({ preferredVoiceId: CFG.speechVoice, beforeSpeak:(userInitiated||shadowingPlayback)?authorizeUserPlayback:null });
       if(speechOk){
         if(userInitiated){
           autoPlayUnlocked=true;
@@ -2913,6 +2988,9 @@ function createAppRuntime(){
 
   function showIdleCard(){
     resetPostResultFeedback();
+    resultFeedbackQueue.clear();
+    cancelShadowingCycle({stopOutput:true});
+    shadowingPaused=false;
     cancelPendingMicStart();
     clearLastProgressNote();
     finalizeSessionMetrics('idle');
@@ -2970,12 +3048,17 @@ function createAppRuntime(){
 
   async function render(i, autoPlay=false){
     resetPostResultFeedback();
+    resultFeedbackQueue.clear();
     clearLastProgressNote();
     let releaseResolve=null;
     let releasePrepare=null;
     try{
       stopAudio();
       currentShouldUseSpeech=false;
+      if(isShadowingSession()){
+        cancelShadowingCycle({stopOutput:true});
+        if(recognitionController?.isActive?.()) recognitionController.stop();
+      }
       updatePlayButtonAvailability();
       const it=QUEUE[i];
       if(!it){
@@ -2996,6 +3079,11 @@ function createAppRuntime(){
       const levelInfo=getLevelInfo(it.id);
       refreshLevelDisplay(levelInfo);
       setHintStage(BASE_HINT_STAGE,{reset:true});
+      if(isShadowingSession()){
+        el.en.classList.remove('concealed');
+        el.en.innerHTML=currentEnHtml;
+        el.ja.style.display='none';
+      }
       const allowAudio=shouldUseAudioForItem(it);
       let url='';
       if(allowAudio){
@@ -3048,7 +3136,13 @@ function createAppRuntime(){
       el.mic.disabled=false;
       if(shouldUseAudioForItem(QUEUE[i+1])){ primeAudio(QUEUE[i+1], undefined, {shouldUseAudioForItem, resolveAudioUrl}); }
       if(shouldUseAudioForItem(QUEUE[i-1])){ primeAudio(QUEUE[i-1], undefined, {shouldUseAudioForItem, resolveAudioUrl}); }
-      if(autoPlay && isAutoPlayAllowed() && (url||currentShouldUseSpeech)){
+      if(isShadowingSession()){
+        shadowingPaused=false;
+        setFooterMessages('連続シャドウイング','マイクを準備しています。');
+        setTimeout(()=>{
+          if(sessionActive&&isShadowingSession()&&idx===i&&!recognitionController?.isActive?.()) startRec();
+        },0);
+      }else if(autoPlay && isAutoPlayAllowed() && (url||currentShouldUseSpeech)){
         try{
           await tryPlayAudio({userInitiated:false, resetPosition:true});
         }catch(err){
@@ -3124,6 +3218,8 @@ function createAppRuntime(){
 
   function handleQuickStart(){
     if(sessionStarting) return;
+    prepareToneOutput();
+    consumePendingTrainingMode();
     const allowAuto=isAutoPlayAllowed();
     if(consumeFocusedSessionPending(globalThis)){
       rebuildAndRender(true,{autoStart:true,autoPlay:allowAuto}).catch(()=>{
@@ -3221,6 +3317,9 @@ function createAppRuntime(){
       }
       await ensureDir();
       sessionActive=true;
+      shadowingPaused=false;
+      shadowingSessionMetrics.cards=0;
+      shadowingSessionMetrics.durationMs=0;
       setViewState(VIEW_STUDYING);
       sessionStart=now();
       beginSessionMetrics();
@@ -3526,11 +3625,12 @@ function createAppRuntime(){
         const refItem=QUEUE[idx];
         return refItem ? refItem.en : el.en.textContent;
       },
+      shouldEvaluate:()=>!isShadowingSession(),
       onTranscriptReset: resetTranscript,
-      onTranscriptInterim: showTranscriptInterim,
-      onTranscriptFinal: (text)=>{ showTranscriptFinal(text); },
+      onTranscriptInterim: (text)=>{ if(!isShadowingSession()) showTranscriptInterim(text); },
+      onTranscriptFinal: (text)=>{ if(!isShadowingSession()) showTranscriptFinal(text); },
       onMatchEvaluated: (info)=>{
-        if(!info) return;
+        if(!info||isShadowingSession()) return;
         lastMatchEval=Object.assign({}, info);
         const score=calcMatchScore(info.refCount, info.recall, info.precision);
         updateMatch(score);
@@ -3539,12 +3639,28 @@ function createAppRuntime(){
       onError: (e)=>{
         toast('ASRエラー: '+(e && e.error || ''));
         el.mic.disabled=false;
+        if(isShadowingSession()){
+          cancelShadowingCycle({stopOutput:true});
+          shadowingPaused=true;
+          setMicUiState(MIC_UI_STATES.ERROR);
+        }
         beginMicReleaseSettle();
         updatePlayButtonAvailability();
       },
-      onStart: ()=>{ setAudioLockState(AUDIO_LOCK_STATES.ACTIVE);setMicState(true);setFooterMessages('録音中です。','「聞く」で先頭から再生し、音声を追いかけて話してください。');updatePlayButtonAvailability(); },
+      onStart: ()=>{
+        setAudioLockState(AUDIO_LOCK_STATES.ACTIVE);setMicState(true);updatePlayButtonAvailability();
+        if(isShadowingSession()){
+          setFooterMessages('録音中・連続シャドウイング','流れる音声を追いかけて発話してください。');
+          runShadowingCycle().catch(()=>pauseShadowingAfterError('音声を開始できませんでした。マイクを押して再試行してください。'));
+        }else{
+          setFooterMessages('録音中です。','「聞く」で先頭から再生し、音声を追いかけて話してください。');
+        }
+      },
       onStop: ()=>{ setMicState(false);beginMicReleaseSettle(); },
-      onAutoStop: (result)=>{ stopRec(result).catch(()=>{}); },
+      onAutoStop: (result)=>{
+        if(isShadowingSession()) handleShadowingAutoStop(result);
+        else stopRec(result).catch(()=>{});
+      },
       setMicState,
     });
   }
@@ -3554,9 +3670,94 @@ function createAppRuntime(){
   const MIC_AUDIO_SETTLE_MS=350;
   const MIC_RELEASE_SETTLE_MS=800;
   const MIC_STOP_CONFIRM_TIMEOUT_MS=700;
+  const SHADOWING_TAIL_MS=700;
+  const SHADOWING_PLAYBACK_TIMEOUT_MS=45000;
   let pendingMicStartTimer=null;
   let micReleaseTimer=null;
   let micRequestToken=0;
+
+  function cancelShadowingCycle({stopOutput=false}={}){
+    shadowCycleToken+=1;
+    shadowCycleState=null;
+    if(stopOutput) stopAppAudioOutput();
+  }
+
+  function pauseShadowingAfterError(message){
+    cancelShadowingCycle({stopOutput:true});
+    shadowingPaused=true;
+    if(recognitionController?.isActive?.()) recognitionController.stop();
+    setFooterMessages(message||'連続シャドウイングを一時停止しました。','マイクを押すと現在の文から再開します。');
+    el.mic.disabled=false;
+  }
+
+  async function waitForShadowingPlaybackEnd(token){
+    const started=now();
+    while(token===shadowCycleToken&&sessionActive&&isShadowingSession()){
+      const audioPlaying=!!(audio?.dataset?.srcKey&&!audio.paused&&!audio.ended);
+      const speechPlaying=!!speechController?.isSpeaking?.();
+      if(!audioPlaying&&!speechPlaying) return true;
+      if(now()-started>=SHADOWING_PLAYBACK_TIMEOUT_MS) return false;
+      await new Promise(resolve=>setTimeout(resolve,40));
+    }
+    return false;
+  }
+
+  async function runShadowingCycle(){
+    if(!sessionActive||!isShadowingSession()||shadowingPaused||!recognitionController?.isActive?.()) return false;
+    const item=QUEUE[idx];
+    if(!item) return false;
+    const token=++shadowCycleToken;
+    shadowCycleState={token,itemId:String(item.id||''),startedAt:0,index:idx};
+    shadowCycleState.startedAt=now();
+    const played=await tryPlayAudio({resetPosition:true,shadowingPlayback:true});
+    if(token!==shadowCycleToken) return false;
+    if(!played){
+      pauseShadowingAfterError('この文の音声を再生できないため一時停止しました。');
+      return false;
+    }
+    const ended=await waitForShadowingPlaybackEnd(token);
+    if(!ended||token!==shadowCycleToken||!recognitionController?.isActive?.()) return false;
+    await new Promise(resolve=>setTimeout(resolve,SHADOWING_TAIL_MS));
+    if(token!==shadowCycleToken||!sessionActive||idx!==shadowCycleState?.index||!recognitionController?.isActive?.()) return false;
+    finishShadowingCycle(token);
+    return true;
+  }
+
+  function finishShadowingCycle(token){
+    const cycle=shadowCycleState;
+    if(!cycle||cycle.token!==token||token!==shadowCycleToken) return false;
+    const exposure=buildShadowingExposure({itemId:cycle.itemId,startedAt:cycle.startedAt,finishedAt:now()});
+    shadowCycleState=null;
+    const transitionToken=++shadowCycleToken;
+    if(recognitionController?.isActive?.()) recognitionController.stop();
+    if(exposure.completed){
+      recordShadowingExposure({cards:1,durationMs:exposure.durationMs});
+      sendLog('shadowing',{
+        ts:new Date().toISOString(),
+        id:exposure.itemId,
+        duration_ms:exposure.durationMs,
+        mode:TRAINING_MODES.CONTINUOUS_SHADOWING,
+      });
+      shadowingSessionMetrics.cards+=1;
+      shadowingSessionMetrics.durationMs+=exposure.durationMs;
+      try{navigator.vibrate?.(8);}catch(_){ }
+    }
+    const scheduledIndex=idx;
+    const scheduledId=QUEUE[idx]?.id;
+    setFooterMessages('シャドウイング完了','次の文を準備しています。');
+    setTimeout(()=>{
+      if(transitionToken!==shadowCycleToken||!sessionActive||shadowingPaused||idx!==scheduledIndex||QUEUE[idx]?.id!==scheduledId) return;
+      nextCard(false,false).catch(()=>pauseShadowingAfterError('次の文を開始できませんでした。'));
+    },MIC_RELEASE_SETTLE_MS+80);
+    return true;
+  }
+
+  function handleShadowingAutoStop(){
+    cancelShadowingCycle({stopOutput:true});
+    shadowingPaused=true;
+    setFooterMessages('マイクが停止したため一時停止しました。','マイクを押すと現在の文から再開します。');
+    el.mic.disabled=false;
+  }
 
   function clearMicReleaseTimer(){
     if(micReleaseTimer){clearTimeout(micReleaseTimer);micReleaseTimer=null;}
@@ -3577,6 +3778,7 @@ function createAppRuntime(){
       if(recognitionController?.isActive?.()||getAudioLockState()===AUDIO_LOCK_STATES.PENDING) return;
       setAudioLockState(AUDIO_LOCK_STATES.UNLOCKED);
       updatePlayButtonAvailability();
+      if(!isShadowingSession()) resultFeedbackQueue.flush({itemId:QUEUE[idx]?.id});
     },MIC_RELEASE_SETTLE_MS);
   }
 
@@ -3625,6 +3827,7 @@ function createAppRuntime(){
     if(!recognitionController) return;
     if(recognitionController.isActive()||pendingMicStartTimer||getAudioLockState()===AUDIO_LOCK_STATES.PENDING) return;
     clearMicReleaseTimer();
+    resultFeedbackQueue.clear();
     const requestToken=++micRequestToken;
     const requestedItemId=QUEUE[idx]?.id;
     setAudioLockState(AUDIO_LOCK_STATES.PENDING);
@@ -3794,14 +3997,14 @@ function createAppRuntime(){
       setFooterMessages('', '');
       el.mic.disabled=true;
       showPostResultFeedback(it,matchInfo);
-      playTone('success');
+      resultFeedbackQueue.enqueue('success',{itemId:it.id,perfect:!!evaluation?.perfectNoHint});
       if(levelCandidate>=4 && evaluation?.noHintSuccess){
         const baseToast = evaluation?.perfectNoHint ? 'ノーヒントで満点クリア！' : '素晴らしい！ノーヒント合格';
         toast(baseToast, 2000);
       }else{
         toast('合格です！着実にスピーキング力が伸びています。', 1600);
       }
-      scheduleAutoAdvance(1600);
+      scheduleAutoAdvance(1900);
       recordStudyProgress({
         pass:true,
         newLevel5:gainedLevel5,
@@ -3827,12 +4030,12 @@ function createAppRuntime(){
           setFooterMessages(`つまずきに合わせてヒントを最適化しました（${sameErrorStreak}回）`, errorAnalysis.actionMessage, {actionPriority:true});
         }
       }
-      playTone('fail');
+      resultFeedbackQueue.enqueue('fail',{itemId:it.id});
       if(failCount>=FAIL_LIMIT){
         setFooterMessages(`3回チャレンジしたため、${levelLabel}で次の学習へ進みます`, errorAnalysis.actionMessage, {actionPriority:true});
         toast('次の問題へ進んでリズムよく学習を続けましょう。', 1600);
         el.mic.disabled=true;
-        scheduleAutoAdvance(900);
+        scheduleAutoAdvance(1300);
       }else if(!(el.footer && el.footer.textContent)){
         setFooterMessages(`一致率${pct}%：${levelLabel}${bestLabel} 定着のため再チャレンジ (${failCount}/${FAIL_LIMIT})`, errorAnalysis.actionMessage, {actionPriority:true});
         toast('もう一度チャレンジして、正確さを高めましょう。', 1600);
@@ -3877,7 +4080,24 @@ function createAppRuntime(){
   }
 
   el.mic.onclick=()=>{
+    prepareToneOutput();
     const active=recognitionController && recognitionController.isActive();
+    if(isShadowingSession()){
+      if(active){
+        cancelShadowingCycle({stopOutput:true});
+        shadowingPaused=true;
+        recognitionController.stop();
+        setFooterMessages('連続シャドウイングを一時停止しました。','マイクを押すと現在の文から再開します。');
+      }else if(getAudioLockState()===AUDIO_LOCK_STATES.PENDING){
+        cancelPendingMicStart();
+        shadowingPaused=true;
+        setFooterMessages('連続シャドウイングを一時停止しました。','マイクを押すと現在の文から再開します。');
+      }else{
+        shadowingPaused=false;
+        startRec();
+      }
+      return;
+    }
     if(!active){ startRec(); }
     else{ stopRec(); }
   };

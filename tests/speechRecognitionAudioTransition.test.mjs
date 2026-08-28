@@ -68,6 +68,39 @@ test('audio transition lock blocks pending and release but enables active shadow
   assert.equal(playButton.disabled,false);
 });
 
+test('continuous shadowing capture never evaluates or returns a score',async()=>{
+  let recognition=null;
+  let evaluated=0;
+  let finalText='';
+  class FakeSpeechRecognition{
+    constructor(){recognition=this;}
+    start(){}
+    stop(){}
+  }
+  const previousWindow=globalThis.window;
+  globalThis.window={SpeechRecognition:FakeSpeechRecognition};
+  try{
+    const {createRecognitionController}=await import(`../scripts/speech/recognition.js?shadow-capture=${Date.now()}`);
+    const controller=createRecognitionController({
+      getReferenceText:()=>'Canonical source audio',
+      shouldEvaluate:()=>false,
+      onTranscriptFinal:text=>{finalText=text;},
+      onMatchEvaluated:()=>{evaluated+=1;},
+    });
+    controller.start();
+    recognition.onstart();
+    const result=Object.assign([{transcript:'canonical source audio'}],{isFinal:true});
+    recognition.onresult({resultIndex:0,results:[result]});
+    const outcome=controller.stop();
+    assert.equal(finalText,'canonical source audio');
+    assert.equal(evaluated,0);
+    assert.equal(outcome.matchInfo,null);
+  }finally{
+    if(previousWindow===undefined) delete globalThis.window;
+    else globalThis.window=previousWindow;
+  }
+});
+
 test('app uses stop confirm settle then manual from-start shadowing without automatic resume',async()=>{
   const {readFile}=await import('node:fs/promises');
   const source=await readFile(new URL('../scripts/app/main.js',import.meta.url),'utf8');

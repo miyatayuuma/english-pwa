@@ -313,6 +313,7 @@ export function createRecognitionController(options = {}) {
     enElement,
     getComposeNodes = () => [],
     getReferenceText = () => '',
+    shouldEvaluate = () => true,
     onTranscriptReset = () => {},
     onTranscriptInterim = () => {},
     onTranscriptFinal = () => {},
@@ -364,7 +365,7 @@ export function createRecognitionController(options = {}) {
     const transcript = (stableText || '').trim();
     const refText = getReferenceText?.() ?? '';
     let matchInfo = null;
-    if (hasRecognizedSpeech(transcript)) {
+    if (hasRecognizedSpeech(transcript) && shouldEvaluate?.()!==false) {
       matchInfo = matchAndHighlight(refText, transcript);
       lastMatch = Object.assign({}, matchInfo, {
         source: transcript,
@@ -418,6 +419,10 @@ export function createRecognitionController(options = {}) {
         if (res.isFinal) {
           stableText = appendStableFinal(stableText, transcriptPiece);
           const trimmedStable = stableText.trim();
+          if(shouldEvaluate?.()===false){
+            onTranscriptFinal?.(trimmedStable,null);
+            continue;
+          }
           const refTextCurrent = getReferenceText?.() ?? '';
           const match = matchAndHighlight(refTextCurrent, trimmedStable);
           const normalized =

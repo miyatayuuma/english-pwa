@@ -16,6 +16,7 @@ import {
   requestedCountForSessionOptions,
   resetSessionOptions,
 } from './sessionOptionsCore.js';
+import { TRAINING_MODES, isContinuousShadowingMode } from './continuousShadowing.js';
 
 const LEVEL_KEY='itemLevelV1';
 const RECENT_SESSION_KEY='recentSentenceSessionIdsV1';
@@ -143,7 +144,7 @@ function injectStyles(){
     #playOptionsDialog .focus-sheet__body{flex:1;padding:0;display:flex;flex-direction:column;min-height:0;overflow:hidden}
     .play-options{display:flex;flex:1;flex-direction:column;min-width:0;min-height:0;margin:0}.play-options__fields{display:grid;flex:1;min-height:0;gap:14px;padding:14px 16px;overflow:auto;overscroll-behavior:contain}
     .play-options__field{display:grid;gap:7px}.play-options__label{font-size:12px;font-weight:850;letter-spacing:.02em}.play-options__select,.play-options__custom,.play-options__search{width:100%;min-height:48px;border:1px solid rgba(148,163,184,.17);border-radius:13px;background:rgba(148,163,184,.055);color:inherit;padding:10px 12px;font:inherit}
-    .play-options__choices{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.play-options__choices--mode{grid-template-columns:repeat(2,minmax(0,1fr))}.play-options__choice{min-height:43px;border:1px solid rgba(148,163,184,.14);border-radius:12px;background:rgba(148,163,184,.04);color:inherit;font:inherit;font-size:12px;font-weight:700;cursor:pointer}.play-options__choice.is-active{border-color:rgba(129,140,248,.65);background:rgba(99,102,241,.18);color:#e0e7ff}
+    .play-options__choices{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.play-options__choices--mode,.play-options__choices--training{grid-template-columns:repeat(2,minmax(0,1fr))}.play-options__choice{min-height:43px;border:1px solid rgba(148,163,184,.14);border-radius:12px;background:rgba(148,163,184,.04);color:inherit;font:inherit;font-size:12px;font-weight:700;cursor:pointer}.play-options__choice.is-active{border-color:rgba(129,140,248,.65);background:rgba(99,102,241,.18);color:#e0e7ff}.play-options__training-note{font-size:10px;line-height:1.5;opacity:.62;margin:7px 2px 0}
     .play-options__manual{display:grid;gap:8px}.play-options__manual-list{display:grid;gap:5px;max-height:270px;overflow:auto;padding-right:2px}.play-options__manual-row{display:grid;grid-template-columns:auto minmax(0,1fr);gap:9px;align-items:start;padding:9px;border:1px solid rgba(148,163,184,.11);border-radius:11px;background:rgba(148,163,184,.025);font-size:11px}.play-options__manual-row input{margin-top:3px}.play-options__manual-en{display:block;font-weight:750;line-height:1.35}.play-options__manual-ja{display:block;opacity:.58;line-height:1.35;margin-top:3px}.play-options__manual-note{font-size:10px;opacity:.52}
     .play-options__footer{display:block;flex:0 0 auto;margin:0;padding:12px 16px calc(12px + env(safe-area-inset-bottom));border-top:1px solid rgba(148,163,184,.12);background:rgba(16,21,34,.97);backdrop-filter:blur(12px)}.play-options__summary{font-size:12px;font-weight:800;line-height:1.45}.play-options__count{font-size:10px;opacity:.6;margin-top:3px}.play-options__causes{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}.play-options__cause{border:1px solid rgba(248,113,113,.28);border-radius:999px;background:rgba(248,113,113,.08);color:#fecaca;padding:6px 9px;font:inherit;font-size:10px;cursor:pointer}.play-options__start{display:block;width:100%;min-height:52px;border:0;border-radius:15px;background:#6366f1;color:#fff;font:inherit;font-size:16px;font-weight:900;margin-top:10px;cursor:pointer}.play-options__start:disabled{opacity:.38;cursor:not-allowed}
     @media(max-width:390px){.home-cta-wrap.focus-home{margin-top:7vh}.focus-sheet__body{padding-inline:12px}.conversation-card{padding-inline:9px!important}.conversation-scene{grid-template-columns:104px minmax(0,1fr);min-height:150px;gap:8px}.conversation-cast{min-height:150px}.conversation-bubble{padding:11px 10px}.conversation-prompt{font-size:14px}.conversation-card .audio-ctrls{grid-template-columns:1fr 68px 1fr}.conversation-card #btnMic{width:68px;height:68px}.conversation-card #btnPlay,.conversation-card .conversation-hint{width:50px;height:50px}}
@@ -183,8 +184,9 @@ function setBodyViewClass(){
 function simplifyReview(){
   const view=document.getElementById('reviewCompleteView');
   if(!view) return;
-  const title=view.querySelector('h2');if(title) title.textContent='今日の交流結果';
-  const cont=document.getElementById('reviewActionContinue');if(cont) cont.textContent='もう少し話す';
+  const shadowing=view.dataset.trainingMode===TRAINING_MODES.CONTINUOUS_SHADOWING;
+  const title=view.querySelector('h2');if(title) title.textContent=shadowing?'シャドウイング結果':'今日の交流結果';
+  const cont=document.getElementById('reviewActionContinue');if(cont) cont.textContent=shadowing?'通常会話へ':'もう少し話す';
   const finish=document.getElementById('reviewActionFinish');if(finish) finish.textContent='今日はここまで';
 }
 
@@ -307,18 +309,21 @@ function renderManualChoices(dialog,eligible){
 function updateOptionsSheet(dialog,{renderManual=true}={}){
   state.optionsDraft=normalizeSessionOptions(state.optionsDraft);
   const options=state.optionsDraft;
+  const levelState=loadLevelState();
   const character=dialog.querySelector('#playOptionsCharacter');if(character) character.value=options.characterId;
   const skill=dialog.querySelector('#playOptionsSkill');if(skill) skill.value=options.skillId;
   const section=dialog.querySelector('#playOptionsSection');if(section) section.value=options.section;
   dialog.querySelectorAll('[data-session-count]').forEach(button=>button.classList.toggle('is-active',button.dataset.sessionCount===options.count));
   dialog.querySelectorAll('[data-session-mode]').forEach(button=>button.classList.toggle('is-active',button.dataset.sessionMode===options.mode));
+  dialog.querySelectorAll('[data-training-mode]').forEach(button=>button.classList.toggle('is-active',button.dataset.trainingMode===options.trainingMode));
   const custom=dialog.querySelector('#playOptionsCustomCount');custom.hidden=options.count!=='custom';custom.value=String(options.customCount);
   const manual=dialog.querySelector('#playOptionsManual');manual.hidden=options.mode!=='manual';
-  const eligible=eligibleItemsForSessionOptions(state.items,options);
+  const eligible=eligibleItemsForSessionOptions(state.items,options,levelState);
   if(renderManual&&options.mode==='manual') renderManualChoices(dialog,eligible);
   const {characters,skills}=optionsLabelMaps();
   const labels=[characters.get(options.characterId)||'誰でも',skills.get(options.skillId)||'テーマおまかせ',options.section?options.section.replace(/^Section/i,'Chapter '):'チャプターおまかせ'];
-  const summary=dialog.querySelector('#playOptionsSummary');summary.textContent=`${labels.join(' × ')}：対象 ${eligible.length}文`;
+  const trainingLabel=isContinuousShadowingMode(options.trainingMode)?'連続シャドウイング':'通常会話';
+  const summary=dialog.querySelector('#playOptionsSummary');summary.textContent=`${labels.join(' × ')} · ${trainingLabel}：対象 ${eligible.length}文`;
   const count=requestedCountForSessionOptions(options);
   const selectedManual=options.manualItemIds.filter(id=>eligible.some(item=>String(item.id)===id)).length;
   dialog.querySelector('#playOptionsCount').textContent=options.mode==='manual'
@@ -326,14 +331,16 @@ function updateOptionsSheet(dialog,{renderManual=true}={}){
     :(count?`今回は ${count}会話`:'会話数は自動で6〜8');
   const causes=dialog.querySelector('#playOptionsCauses');causes.replaceChildren();
   if(!eligible.length){
-    for(const cause of diagnoseEmptySessionOptions(state.items,options)){
+    for(const cause of diagnoseEmptySessionOptions(state.items,options,levelState)){
       const button=document.createElement('button');button.type='button';button.className='play-options__cause';button.textContent=`${cause.label}を解除（${cause.available}文）`;
-      button.addEventListener('click',()=>{state.optionsDraft={...state.optionsDraft,[cause.key]:''};updateOptionsSheet(dialog);});causes.appendChild(button);
+      button.addEventListener('click',()=>{state.optionsDraft={...state.optionsDraft,[cause.key]:cause.value??''};updateOptionsSheet(dialog);});causes.appendChild(button);
     }
   }
   const start=dialog.querySelector('#playOptionsStart');
   start.disabled=!eligible.length||(options.mode==='manual'&&selectedManual===0);
-  start.textContent=options.mode==='manual'?`${selectedManual}文で始める`:(count?`${count}会話を始める`:'おまかせで始める');
+  start.textContent=isContinuousShadowingMode(options.trainingMode)
+    ?(count?`${count}文を連続練習`:'連続シャドウイングを始める')
+    :(options.mode==='manual'?`${selectedManual}文で始める`:(count?`${count}会話を始める`:'おまかせで始める'));
 }
 
 function createOptionsDialog(){
@@ -352,6 +359,9 @@ function createOptionsDialog(){
       <div class="play-options__field"><span class="play-options__label">選び方</span><div class="play-options__choices play-options__choices--mode">
         <button class="play-options__choice" type="button" data-session-mode="auto">おまかせ</button><button class="play-options__choice" type="button" data-session-mode="review">復習優先</button><button class="play-options__choice" type="button" data-session-mode="new">新規多め</button><button class="play-options__choice" type="button" data-session-mode="manual">例文指定</button>
       </div></div>
+      <div class="play-options__field"><span class="play-options__label">トレーニング</span><div class="play-options__choices play-options__choices--training">
+        <button class="play-options__choice" type="button" data-training-mode="${TRAINING_MODES.STANDARD}">通常会話</button><button class="play-options__choice" type="button" data-training-mode="${TRAINING_MODES.CONTINUOUS_SHADOWING}">連続シャドウイング</button>
+      </div><p class="play-options__training-note">連続シャドウイングは一致率70%以上で合格済みの文だけを使う復習モードです。評価・親密度・実績・SRSは更新しません。</p></div>
       <div class="play-options__manual" id="playOptionsManual" hidden><input class="play-options__search" type="search" placeholder="英文・和訳を検索" aria-label="指定する例文を検索"><div class="play-options__manual-note"></div><div class="play-options__manual-list"></div></div>
     </div>
     <footer class="play-options__footer"><div class="play-options__summary" id="playOptionsSummary"></div><div class="play-options__count" id="playOptionsCount"></div><div class="play-options__causes" id="playOptionsCauses"></div><button class="play-options__start" id="playOptionsStart" type="submit"></button></footer>
@@ -361,12 +371,13 @@ function createOptionsDialog(){
   body.querySelector('#playOptionsSection').addEventListener('change',event=>{state.optionsDraft={...state.optionsDraft,section:event.target.value};updateOptionsSheet(dialog);});
   body.querySelectorAll('[data-session-count]').forEach(button=>button.addEventListener('click',()=>{state.optionsDraft={...state.optionsDraft,count:button.dataset.sessionCount};updateOptionsSheet(dialog);}));
   body.querySelectorAll('[data-session-mode]').forEach(button=>button.addEventListener('click',()=>{state.optionsDraft={...state.optionsDraft,mode:button.dataset.sessionMode};updateOptionsSheet(dialog);}));
+  body.querySelectorAll('[data-training-mode]').forEach(button=>button.addEventListener('click',()=>{state.optionsDraft={...state.optionsDraft,trainingMode:button.dataset.trainingMode};updateOptionsSheet(dialog);}));
   body.querySelector('#playOptionsCustomCount').addEventListener('input',event=>{state.optionsDraft={...state.optionsDraft,customCount:event.target.value};updateOptionsSheet(dialog,{renderManual:false});});
-  body.querySelector('.play-options__search').addEventListener('input',()=>renderManualChoices(dialog,eligibleItemsForSessionOptions(state.items,state.optionsDraft)));
+  body.querySelector('.play-options__search').addEventListener('input',()=>renderManualChoices(dialog,eligibleItemsForSessionOptions(state.items,state.optionsDraft,loadLevelState())));
   body.querySelector('#playOptionsForm').addEventListener('submit',event=>{
     event.preventDefault();
     const options=normalizeSessionOptions(state.optionsDraft);
-    if(!eligibleItemsForSessionOptions(state.items,options).length) return;
+    if(!eligibleItemsForSessionOptions(state.items,options,loadLevelState()).length) return;
     state.pendingOptions=options;
     state.optionsDraft=resetSessionOptions(options);
     dialog.close();
@@ -485,6 +496,7 @@ function setLegacyPlan(plan){
   state.originalAllItems=window.ALL_ITEMS;
   window.ALL_ITEMS=buildLegacyQueueItems(plan.items);
   state.sessionPlan=plan;
+  globalThis.__ENGLISH_PWA_PENDING_TRAINING_MODE__=plan.trainingMode||TRAINING_MODES.STANDARD;
   rememberSessionItems(plan.items);
   // The legacy CTA reuses its existing QUEUE when it is non-empty. Tell its
   // bubble-phase handler that window.ALL_ITEMS has just been replaced and a
@@ -592,6 +604,7 @@ function ensureConversationScene(){
     details.append(summary,body);card.insertBefore(details,controls);
   }
   if(controls){
+    const micStatus=document.getElementById('micStatus');if(micStatus) card.insertBefore(micStatus,controls);
     const play=document.getElementById('btnPlay');const mic=document.getElementById('btnMic');
     if(play&&!play.querySelector('.conversation-control-label')){const label=document.createElement('span');label.className='conversation-control-label';label.textContent='聞く';play.appendChild(label);}
     if(mic&&!mic.querySelector('.conversation-control-label')){const label=document.createElement('span');label.className='conversation-control-label';label.textContent='話す';mic.appendChild(label);}
