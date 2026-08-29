@@ -269,6 +269,7 @@ function createAppRuntime(){
   let speechController=null;
   let lastMatchEval=null;
   let currentShouldUseSpeech=false;
+  let characterVoiceData=null;
   let lastProgressNote='';
   let autoAdvanceTimer=0;
   let autoAdvanceGeneration=0;
@@ -1271,6 +1272,9 @@ function createAppRuntime(){
       setSpeechPlayingState: controller.setSpeechPlayingState,
       getCurrentItem: ()=>currentItem,
       isSpeechDesired: ()=>currentShouldUseSpeech,
+      getActiveCharacterId: ()=>globalThis.__ENGLISH_PWA_ACTIVE_CHARACTER_ID__||'',
+      canStartSpeech: ()=>controller.getAudioLockState()===AUDIO_LOCK_STATES.UNLOCKED
+        && !recognitionController?.isActive?.(),
     });
     speech.setSpeechRate(controller.getPlaybackRate());
     return { controller, speech };
@@ -1343,6 +1347,9 @@ function createAppRuntime(){
   }
   function setAudioLockState(state){
     const applied=baseSetAudioLockState(state);
+    if(applied!==AUDIO_LOCK_STATES.UNLOCKED){
+      speechController?.cancelSpeech?.();
+    }
     setMicUiState(micUiStateForAudioLock(applied));
     return applied;
   }
@@ -1644,6 +1651,11 @@ function createAppRuntime(){
   function updatePlayButtonAvailability(){
     baseUpdatePlayButtonAvailability();
     if(!el.play) return;
+    if(currentShouldUseSpeech&&getAudioLockState()!==AUDIO_LOCK_STATES.UNLOCKED){
+      el.play.disabled=true;
+      el.play.setAttribute('aria-disabled','true');
+      return;
+    }
     if(isShadowingSession()&&getAudioLockState()!==AUDIO_LOCK_STATES.UNLOCKED){
       el.play.disabled=true;
       el.play.setAttribute('aria-disabled','true');
@@ -2570,6 +2582,7 @@ function createAppRuntime(){
 
   // Data
   const DATA_URL='./data/items.json';
+  const CHARACTER_DATA_URL='./data/characters.json';
   const ITEM_CACHE_NAME='items-v1';
   const ITEMS_BY_SECTION=new Map();
   let itemsLoadPromise=null;
@@ -2668,6 +2681,15 @@ function createAppRuntime(){
   }
   async function ensureDataLoaded(){
     await ensureItemsLoaded();
+    if(!characterVoiceData){
+      try{
+        characterVoiceData=await fetchJson(CHARACTER_DATA_URL);
+        speechController?.setCharacterVoiceData?.(characterVoiceData);
+      }catch(_){
+        characterVoiceData={characters:[]};
+        speechController?.setCharacterVoiceData?.(characterVoiceData);
+      }
+    }
     if(!SRS_MAP.size){
       try{ const arr=await fetchJson('./data/srs.json'); const m=new Map(); for(const x of arr) m.set(x.id,x); SRS_MAP=m; }
       catch(_){ SRS_MAP=new Map(); }
@@ -2916,6 +2938,7 @@ function createAppRuntime(){
     const speechAllowed=speechDesired && (playbackMode==='speech' || speechForced);
     const audioAllowed=shouldUseAudioForItem(item);
     if(speechAllowed){
+      if(getAudioLockState()!==AUDIO_LOCK_STATES.UNLOCKED) return false;
       const controllerCanSpeak = speechController ? speechController.canSpeakCurrentCard() : false;
       if(!controllerCanSpeak){
         if(userInitiated){
@@ -2924,7 +2947,7 @@ function createAppRuntime(){
         }
         return false;
       }
-      const speechOk=await speechController.speakCurrentCard({ preferredVoiceId: CFG.speechVoice, beforeSpeak:(userInitiated||shadowingPlayback)?authorizeUserPlayback:null });
+      const speechOk=await speechController.speakCurrentCard({ preferredVoiceId: CFG.speechVoice });
       if(speechOk){
         if(userInitiated){
           autoPlayUnlocked=true;

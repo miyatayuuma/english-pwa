@@ -1,3 +1,10 @@
+import {
+  createCharacterVoiceRegistry,
+  normalizeCharacterVoiceProfile,
+  pickVoiceForCharacter,
+  resolveCharacterVoiceProfile,
+} from './voiceProfiles.js';
+
 function speechSynthesisSupported() {
   if (typeof window === 'undefined') return false;
   if (typeof window.speechSynthesis === 'undefined') return false;
@@ -48,11 +55,17 @@ export function createSpeechSynthesisController(options = {}) {
     setSpeechPlayingState = () => {},
     getCurrentItem = () => null,
     isSpeechDesired = () => false,
+    getActiveCharacterId = () => '',
+    canStartSpeech = () => true,
   } = options;
 
   let speechRate = 1;
+  let characterVoiceRegistry = new Map();
   let currentSpeechUtterance = null;
   let currentSpeechResolver = null;
+  let currentVoiceProfile = null;
+  let pendingSpeechTimer = null;
+  let speechGeneration = 0;
   let speechPlaying = false;
 
   function supported() {
@@ -62,33 +75,48 @@ export function createSpeechSynthesisController(options = {}) {
   function setSpeechRate(rate) {
     const value = Number.isFinite(rate) ? rate : 1;
     speechRate = value;
-    if (currentSpeechUtterance) {
+    if (currentSpeechUtterance && currentVoiceProfile) {
       try {
-        currentSpeechUtterance.rate = value;
+        currentSpeechUtterance.rate = normalizeCharacterVoiceProfile(currentVoiceProfile, {
+          characterId: currentVoiceProfile.characterId,
+          userPlaybackRate: value,
+        }).effectiveRate;
       } catch (_) {
         // ignore
       }
     }
   }
 
-  function getConfiguredSpeechVoice(preferredVoiceId = '') {
+  function setCharacterVoiceData(characterData) {
+    characterVoiceRegistry = createCharacterVoiceRegistry(characterData);
+    return characterVoiceRegistry.size;
+  }
+
+  function getConfiguredSpeechVoice(preferredVoiceId = '', profile = null) {
     if (!supported()) return null;
     try {
       const voices = window.speechSynthesis.getVoices ? window.speechSynthesis.getVoices() : [];
-      if (preferredVoiceId) {
-        for (let i = 0; i < voices.length; i++) {
-          if (getVoiceId(voices[i], i) === preferredVoiceId) {
-            return voices[i];
-          }
-        }
-      }
-      return pickPreferredVoice(voices);
+      return pickVoiceForCharacter({
+        voices,
+        userVoiceId: preferredVoiceId,
+        profile: profile || normalizeCharacterVoiceProfile(),
+        getVoiceId,
+        pickAutomaticVoice: pickPreferredVoice,
+      });
     } catch (_) {
       return null;
     }
   }
 
+  function clearPendingSpeechTimer() {
+    if (!pendingSpeechTimer) return;
+    clearTimeout(pendingSpeechTimer);
+    pendingSpeechTimer = null;
+  }
+
   function cancelSpeech() {
+    speechGeneration += 1;
+    clearPendingSpeechTimer();
     if (supported()) {
       try {
         window.speechSynthesis.cancel();
@@ -105,6 +133,7 @@ export function createSpeechSynthesisController(options = {}) {
       setSpeechPlayingState(false);
     }
     currentSpeechUtterance = null;
+    currentVoiceProfile = null;
   }
 
   function canSpeakCurrentCard() {
@@ -118,23 +147,35 @@ export function createSpeechSynthesisController(options = {}) {
 
   function speakCurrentCard({ preferredVoiceId = '', beforeSpeak = null } = {}) {
     if (!canSpeakCurrentCard()) return Promise.resolve(false);
+    if (!canStartSpeech?.()) return Promise.resolve(false);
     cancelSpeech();
     const item = getCurrentItem?.();
     const text = String(item?.en || '').replace(/\s+/g, ' ').trim();
     if (!text) return Promise.resolve(false);
+    const profile = resolveCharacterVoiceProfile({
+      item,
+      registry: characterVoiceRegistry,
+      activeCharacterId: getActiveCharacterId?.(),
+      userPlaybackRate: speechRate,
+    });
     const Utterance = window.SpeechSynthesisUtterance || window.webkitSpeechSynthesisUtterance;
     return new Promise((resolve) => {
       let settled = false;
       const utter = new Utterance(text);
       try {
-        utter.rate = speechRate;
+        utter.rate = profile.effectiveRate;
+        utter.pitch = profile.pitch;
+        utter.volume = profile.volume;
       } catch (_) {
         // ignore
       }
       currentSpeechUtterance = utter;
+      currentVoiceProfile = profile;
+      const generation = ++speechGeneration;
       const finish = (success) => {
         if (settled) return;
         settled = true;
+        clearPendingSpeechTimer();
         if (currentSpeechResolver === finish) {
           currentSpeechResolver = null;
         }
@@ -145,10 +186,13 @@ export function createSpeechSynthesisController(options = {}) {
           speechPlaying = false;
           setSpeechPlayingState(false);
         }
+        if (currentVoiceProfile === profile) {
+          currentVoiceProfile = null;
+        }
         resolve(success);
       };
       currentSpeechResolver = finish;
-      const voice = getConfiguredSpeechVoice(preferredVoiceId);
+      const voice = getConfiguredSpeechVoice(preferredVoiceId, profile);
       if (voice) {
         utter.voice = voice;
         try {
@@ -164,27 +208,60 @@ export function createSpeechSynthesisController(options = {}) {
         }
       }
       utter.onstart = () => {
+        if (settled || generation !== speechGeneration || currentSpeechUtterance !== utter) return;
+        if (!canStartSpeech?.()) {
+          cancelSpeech();
+          return;
+        }
         speechPlaying = true;
         setSpeechPlayingState(true);
       };
-      utter.onend = () => finish(true);
+      utter.onend = () => {
+        if (settled || generation !== speechGeneration || currentSpeechUtterance !== utter) return;
+        if (speechPlaying) {
+          speechPlaying = false;
+          setSpeechPlayingState(false);
+        }
+        if (profile.postDelayMs > 0) {
+          pendingSpeechTimer = setTimeout(() => {
+            pendingSpeechTimer = null;
+            finish(generation === speechGeneration);
+          }, profile.postDelayMs);
+        } else {
+          finish(true);
+        }
+      };
       utter.onerror = (ev) => {
+        if (settled || generation !== speechGeneration || currentSpeechUtterance !== utter) return;
         console.warn('speech error', ev);
         finish(false);
       };
-      try {
-        if(typeof beforeSpeak==='function'&&beforeSpeak()===false){finish(false);return;}
-        window.speechSynthesis.speak(utter);
-        if (typeof window.speechSynthesis.resume === 'function') {
-          try {
-            window.speechSynthesis.resume();
-          } catch (_) {
-            // ignore
-          }
+      const startSpeech = () => {
+        pendingSpeechTimer = null;
+        if (generation !== speechGeneration || !canSpeakCurrentCard() || !canStartSpeech?.()) {
+          finish(false);
+          return;
         }
-      } catch (err) {
-        console.warn('speech speak failed', err);
-        finish(false);
+        try {
+          if(typeof beforeSpeak==='function'&&beforeSpeak()===false){finish(false);return;}
+          if (!canStartSpeech?.()) { finish(false); return; }
+          window.speechSynthesis.speak(utter);
+          if (typeof window.speechSynthesis.resume === 'function') {
+            try {
+              window.speechSynthesis.resume();
+            } catch (_) {
+              // ignore
+            }
+          }
+        } catch (err) {
+          console.warn('speech speak failed', err);
+          finish(false);
+        }
+      };
+      if (profile.preDelayMs > 0) {
+        pendingSpeechTimer = setTimeout(startSpeech, profile.preDelayMs);
+      } else {
+        startSpeech();
       }
     });
   }
@@ -248,7 +325,7 @@ export function createSpeechSynthesisController(options = {}) {
   }
 
   function isSpeaking() {
-    return speechPlaying;
+    return !!currentSpeechResolver;
   }
 
   return {
@@ -257,9 +334,11 @@ export function createSpeechSynthesisController(options = {}) {
     speakCurrentCard,
     cancelSpeech,
     setSpeechRate,
+    setCharacterVoiceData,
     populateVoiceOptions,
     attachVoicesChangedListener,
     getConfiguredSpeechVoice,
+    getCurrentVoiceProfile: () => currentVoiceProfile,
     isSpeaking,
   };
 }
