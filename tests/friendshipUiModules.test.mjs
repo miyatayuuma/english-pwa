@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises';
 
 import { characterTheme, lobbyConversationCopy } from '../scripts/app/relationshipMode.js';
 import { relationshipRankColor } from '../scripts/app/relationshipCore.js';
+import { resolveBrowseType } from '../scripts/app/tagBrowser.js';
 
 test('friendship UI modules load without a browser runtime',async()=>{
   await import('../scripts/app/relationshipMode.js');
@@ -24,6 +25,13 @@ test('relationship rank colors are stable across characters',()=>{
   assert.equal(relationshipRankColor('close_friend'),'#c4b5fd');
   assert.equal(relationshipRankColor('best_friend'),'#fcd34d');
   assert.equal(relationshipRankColor('unknown'),relationshipRankColor('acquaintance'));
+});
+
+test('explicit browser entry wins over the saved tab',()=>{
+  assert.equal(resolveBrowseType('character','skill'),'character');
+  assert.equal(resolveBrowseType('skill','character'),'skill');
+  assert.equal(resolveBrowseType(undefined,'skill'),'skill');
+  assert.equal(resolveBrowseType(undefined,null),'character');
 });
 
 test('home lobby keeps the three primary game actions above advanced options',async()=>{
@@ -51,8 +59,16 @@ test('character selection uses the same two-stage profile flow in both entrances
   assert.match(source,/合格済み/);
   assert.match(source,/一致率70%以上で1文クリア/);
   assert.match(source,/人物紹介/);
-  assert.match(source,/性格・会話テーマ/);
+  assert.match(source,/profile\?\.intro_ja/);
+  assert.doesNotMatch(source,/性格・会話テーマ/);
+  assert.doesNotMatch(source,/profile\?\.traits/);
   assert.match(source,/次の関係目標/);
   assert.doesNotMatch(source,/state\.characterOnly&&entry\.type==='character'\)\{startScopedStudy/);
   assert.doesNotMatch(source,/stats\.textContent=`担当/);
+});
+
+test('every character has a game-facing introduction',async()=>{
+  const data=JSON.parse(await readFile(new URL('../data/characters.json',import.meta.url),'utf8'));
+  assert.ok(data.characters.length>0);
+  assert.ok(data.characters.every(character=>typeof character.intro_ja==='string'&&character.intro_ja.trim().length>=20));
 });

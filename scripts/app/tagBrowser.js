@@ -13,6 +13,12 @@ const LEGACY_KEYS=['tagBrowserTabV1','tagBrowserSelectionV1'];
 
 const state={items:[],characters:[],catalog:null,activeType:'character',selected:null,query:'',loaded:false,loading:null,characterOnly:false,characterDetailId:'',characterListScrollTop:0};
 
+export function resolveBrowseType(requestedType,savedType){
+  if(BROWSE_TYPES.includes(requestedType)) return requestedType;
+  if(BROWSE_TYPES.includes(savedType)) return savedType;
+  return 'character';
+}
+
 function loadJsonStorage(key,fallback){
   try{const raw=localStorage.getItem(key);return raw?(JSON.parse(raw)??fallback):fallback;}catch(_){return fallback;}
 }
@@ -28,7 +34,6 @@ async function ensureData(){
     const [itemsRaw,charactersRaw]=await Promise.all([loadJson('./data/items.json'),loadJson('./data/characters.json')]);
     state.items=Array.isArray(itemsRaw)?itemsRaw:(Array.isArray(itemsRaw?.items)?itemsRaw.items:[]);
     state.characters=Array.isArray(charactersRaw)?charactersRaw:(Array.isArray(charactersRaw?.characters)?charactersRaw.characters:[]);
-    const savedTab=localStorage.getItem(TAB_KEY);if(BROWSE_TYPES.includes(savedTab)) state.activeType=savedTab;
     const selected=loadJsonStorage(SELECTED_KEY,null);if(BROWSE_TYPES.includes(selected?.type)&&selected?.id) state.selected=selected;
     cleanLegacyBrowserState();state.loaded=true;
   })().finally(()=>{state.loading=null;});
@@ -118,9 +123,7 @@ function characterDetailFor(entry,entries=[]){
 
   const stats=document.createElement('div');stats.className='tag-browser__stats-grid';for(const [value,label] of [[entry.started||0,'合格済み'],[entry.mastered||0,'習得'],[entry.total||0,'会話'],[entry.due||0,'復習待ち']]){const cell=document.createElement('div');cell.className='tag-browser__stat';const b=document.createElement('b');b.textContent=String(value);const span=document.createElement('span');span.textContent=label;cell.append(b,span);stats.appendChild(cell);}box.appendChild(stats);
 
-  const profile=document.createElement('section');profile.className='tag-browser__detail-section';const profileLabel=document.createElement('div');profileLabel.className='tag-browser__detail-label';profileLabel.textContent='人物紹介';const lead=document.createElement('div');lead.className='tag-browser__detail-lead';lead.textContent=entry.profile?.archetype_ja||'';const summary=document.createElement('p');summary.className='tag-browser__summary';summary.textContent=entry.profile?.summary_ja||'';profile.append(profileLabel,lead,summary);box.appendChild(profile);
-
-  const traits=(entry.profile?.traits||[]).map(trait=>trait?.label_ja).filter(Boolean).slice(0,4);const themes=(entry.themes||[]).map(theme=>theme.label).filter(Boolean);if(traits.length||themes.length){const features=document.createElement('section');features.className='tag-browser__detail-section';const label=document.createElement('div');label.className='tag-browser__detail-label';label.textContent='性格・会話テーマ';const chips=document.createElement('div');chips.className='tag-browser__chips';for(const text of [...traits,...themes]){const chip=document.createElement('span');chip.className='tag-browser__chip';chip.textContent=text;chips.appendChild(chip);}features.append(label,chips);box.appendChild(features);}
+  const profile=document.createElement('section');profile.className='tag-browser__detail-section';const profileLabel=document.createElement('div');profileLabel.className='tag-browser__detail-label';profileLabel.textContent='人物紹介';const summary=document.createElement('p');summary.className='tag-browser__summary';summary.textContent=entry.profile?.intro_ja||'';profile.append(profileLabel,summary);box.appendChild(profile);
 
   const goal=document.createElement('section');goal.className='tag-browser__detail-section';const goalLabel=document.createElement('div');goalLabel.className='tag-browser__detail-label';goalLabel.textContent='次の関係目標';const goalText=document.createElement('div');goalText.className='tag-browser__detail-lead';goalText.textContent=entry.rank?.id==='best_friend'?(entry.next?.remaining?`完全定着まであと${entry.next.remaining}文`:'完全定着'):`${entry.next?.label||'次の関係'}まであと${Math.max(0,Number(entry.next?.remaining)||0)}文`;const goalRule=document.createElement('p');goalRule.className='tag-browser__summary';goalRule.textContent=entry.rank?.order<2?'一致率70%以上で1文クリア':entry.rank?.id==='best_friend'?'完全定着はノーヒント100%相当を重ねて進行':'習得はノーヒント90%以上を重ねて進行';goal.append(goalLabel,goalText,goalRule);box.appendChild(goal);
 
@@ -162,8 +165,8 @@ function renderShell(){
 }
 
 async function openBrowser(type){
-  state.characterOnly=type==='character';state.characterDetailId='';state.selected=null;if(BROWSE_TYPES.includes(type)) state.activeType=type;injectStyles();const dialog=ensureDialog();if(!dialog.open) dialog.showModal();const body=dialog.querySelector('.tag-browser__body');if(!state.loaded) body.innerHTML='<div class="tag-browser__loading">読み込んでいます…</div>';
-  try{await ensureData();refreshCatalog();renderShell();}catch(error){console.warn('Character/training browser failed to load',error);body.innerHTML='<div class="tag-browser__error">読み込めませんでした。閉じてもう一度お試しください。</div>';}
+  const requestedType=BROWSE_TYPES.includes(type)?type:undefined;state.characterOnly=requestedType==='character';state.characterDetailId='';state.selected=null;injectStyles();const dialog=ensureDialog();if(!dialog.open) dialog.showModal();const body=dialog.querySelector('.tag-browser__body');if(!state.loaded) body.innerHTML='<div class="tag-browser__loading">読み込んでいます…</div>';
+  try{await ensureData();state.activeType=resolveBrowseType(requestedType,localStorage.getItem(TAB_KEY));refreshCatalog();renderShell();}catch(error){console.warn('Character/training browser failed to load',error);body.innerHTML='<div class="tag-browser__error">読み込めませんでした。閉じてもう一度お試しください。</div>';}
 }
 function isBrowserEntry(target){
   if(!(target instanceof Element)) return false;if(target.closest('[data-course="tag"]')) return true;if(target.closest('.explore-tag-link')) return true;const button=target.closest('#focusHomeNav button');return !!button&&['連絡先・トレーニング','連絡先','キャラ・スキル','キャラを選ぶ','相手を選ぶ','トレーニング'].includes(button.textContent?.trim());

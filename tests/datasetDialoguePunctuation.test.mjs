@@ -27,3 +27,15 @@ test('Japanese direct-speech brackets are balanced across the dataset', () => {
   });
   assert.deepEqual(broken.map((item) => item.id), []);
 });
+
+test('English examples do not begin with an accidental lowercase letter', () => {
+  const broken = items.filter((item) => /^[\s"'“‘(\[]*[a-z]/.test(String(item.en || '')));
+  assert.deepEqual(broken.map((item) => item.id), []);
+});
+
+test('known lowercase sentence-boundary repair remains intact', () => {
+  assert.equal(
+    byId.get('E0190')?.en,
+    'Dave is fat and clumsy. When he leaped over the shallow stream, he stumbled and twisted his ankle.'
+  );
+});

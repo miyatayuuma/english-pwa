@@ -15,7 +15,24 @@ const state={
   ready:false,
   rendering:false,
   scheduled:false,
+  encounter:null,
+  recentTargets:new Map(),
 };
+
+export function encounterFor(current,itemId,variantKey=`${Date.now()}:${Math.random()}`){
+  if(current?.itemId===itemId) return current;
+  return {itemId,variantKey,card:null};
+}
+
+function beginEncounter(itemId){
+  state.encounter=encounterFor(state.encounter,itemId);
+}
+
+function rememberTargets(itemId,targets){
+  const previous=state.recentTargets.get(itemId)||[];
+  const next=[...new Set([...(targets||[]).map(target=>String(target.entry_id)),...previous])].filter(id=>id!=='fallback').slice(0,2);
+  state.recentTargets.set(itemId,next);
+}
 
 function currentStudyMode(){
   try{
@@ -156,7 +173,17 @@ function renderCloze(en,item,itemId){
     && en.classList.contains('cloze-active')
     && !!en.querySelector('.cloze-mask');
   if(alreadyRendered) return;
-  const card=buildClozeCard(item,state.vocabByExample.get(itemId)||[],{count:targetCount});
+  beginEncounter(itemId);
+  if(!state.encounter.card){
+    state.encounter.card=buildClozeCard(item,state.vocabByExample.get(itemId)||[],{
+      count:targetCount,
+      level,
+      variantKey:state.encounter.variantKey,
+      recentTargetIds:state.recentTargets.get(itemId)||[],
+    });
+    rememberTargets(itemId,state.encounter.card.targets);
+  }
+  const card=state.encounter.card;
   en.innerHTML=spanify(item.en);
   applyMasks(en,card.targets||[]);
   en.classList.add('cloze-active');
@@ -185,6 +212,7 @@ function syncPresentation(){
   const itemId=String(en.dataset.itemId||'');
   const item=state.items.get(itemId);
   if(!item?.en) return;
+  beginEncounter(itemId);
 
   if(isPostResultReveal(en,itemId)){
     state.rendering=true;

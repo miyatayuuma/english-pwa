@@ -97,6 +97,19 @@ function candidateScore(entry,span){
   return score;
 }
 
+function candidateTier(entry){
+  const meaning=String(entry?.meaning_confidence||'');
+  if(entry?.match_confidence==='high'&&['aligned_high','aligned_medium'].includes(meaning)) return 0;
+  if(entry?.match_confidence==='high'||meaning.startsWith('aligned_')||meaning.startsWith('wiktionary_')) return 1;
+  return 2;
+}
+
+function stableHash(value){
+  let hash=2166136261;
+  for(const char of String(value??'')){hash^=char.codePointAt(0);hash=Math.imul(hash,16777619);}
+  return hash>>>0;
+}
+
 function overlaps(a,b){ return a.tokenStart<=b.tokenEnd&&b.tokenStart<=a.tokenEnd; }
 
 export function desiredClozeCount(sentence,{max=3}={}){
@@ -119,8 +132,14 @@ function fallbackTarget(tokens,sentence){
     .filter(token=>token.norm.length>=3&&!FALLBACK_STOPWORDS.has(token.norm))
     .filter(token=>!(token.index>0&&/^[A-Z]/.test(token.surface)))
     .sort((a,b)=>{
-      const len=b.norm.length-a.norm.length;
-      if(len) return len;
+      const contentScore=token=>{
+        let score=Math.min(token.norm.length,10);
+        if(/(?:tion|ment|ness|ity|ous|ive|ize|ise|ful|less|able|ibly|edly|ing|ed|ly)$/.test(token.norm)) score+=4;
+        if(token.index===0) score-=1;
+        return score;
+      };
+      const quality=contentScore(b)-contentScore(a);
+      if(quality) return quality;
       const aCenter=Math.abs(a.index-(tokens.length-1)/2);
       const bCenter=Math.abs(b.index-(tokens.length-1)/2);
       return aCenter-bCenter;
@@ -147,7 +166,11 @@ export function selectClozeTargets(item,vocabularyEntries,options={}){
   const itemId=String(item?.id||'');
   if(!sentence||!itemId) return [];
   const tokens=sentenceTokens(sentence);
-  const targetCount=Math.max(1,Number(options.count)||desiredClozeCount(sentence,options));
+  if(tokens.length<3) return [];
+  const impliedLevel=Number(options.count)>=3?3:(Number(options.count)===2?2:0);
+  const level=Math.max(0,Math.min(5,Number.isFinite(Number(options.level))?Number(options.level):impliedLevel));
+  const levelCap=adaptiveClozeCount(sentence,level);
+  const targetCount=Math.max(1,Math.min(levelCap,Number(options.count)||levelCap));
   const candidates=[];
   for(const entry of Array.isArray(vocabularyEntries)?vocabularyEntries:[]){
     if(!belongsToItem(entry,itemId)) continue;
@@ -164,13 +187,39 @@ export function selectClozeTargets(item,vocabularyEntries,options={}){
       ...span,
       surface:sentence.slice(span.start,span.end),
       score:candidateScore(entry,span),
+      tier:candidateTier(entry),
+      fallback:false,
     });
   }
-  candidates.sort((a,b)=>b.score-a.score || (b.tokenEnd-b.tokenStart)-(a.tokenEnd-a.tokenStart) || a.start-b.start);
+  const recent=new Set(Array.from(options.recentTargetIds||[],String));
+  const variant=stableHash(`${itemId}:${options.variantKey??options.seed??0}`);
+  candidates.sort((a,b)=>a.tier-b.tier || Number(recent.has(a.entry_id))-Number(recent.has(b.entry_id)) || b.score-a.score || a.start-b.start);
+  for(let start=0;start<candidates.length;){
+    let end=start+1;
+    while(end<candidates.length&&candidates[end].tier===candidates[start].tier&&recent.has(candidates[end].entry_id)===recent.has(candidates[start].entry_id)) end+=1;
+    const group=candidates.slice(start,end);
+    if(group.length>1){
+      const offset=variant%group.length;
+      candidates.splice(start,group.length,...group.slice(offset),...group.slice(0,offset));
+    }
+    start=end;
+  }
+  const softRatio=level<=1?.22:(level===2?.28:.34);
+  const normalHardBudget=Math.max(1,Math.min(Math.floor(tokens.length*.4),tokens.length-2));
+  const softBudget=Math.max(1,Math.min(normalHardBudget,Math.floor(tokens.length*softRatio)));
   const selected=[];
+  let hiddenWords=0;
   for(const candidate of candidates){
     if(selected.some(target=>overlaps(target,candidate))) continue;
+    const width=candidate.tokenEnd-candidate.tokenStart+1;
+    const projected=hiddenWords+width;
+    const phraseException=selected.length===0&&candidate.kind==='phrase'&&candidate.tier===0&&width<=4&&tokens.length>=8&&projected/tokens.length<=.45;
+    if(projected>softBudget&&!phraseException) continue;
+    if(!phraseException&&projected>normalHardBudget) continue;
+    candidate.phraseException=phraseException&&projected>softBudget;
     selected.push(candidate);
+    hiddenWords=projected;
+    if(candidate.phraseException) break;
     if(selected.length>=targetCount) break;
   }
   if(!selected.length){
