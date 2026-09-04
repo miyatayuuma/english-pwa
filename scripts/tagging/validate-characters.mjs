@@ -16,6 +16,7 @@ const validTier = new Set(['main', 'supporting', 'cameo']);
 
 for (const character of data.characters) {
   if (!character.id || !character.name || !character.name_ja) throw new Error(`Missing identity fields: ${JSON.stringify(character)}`);
+  if (typeof character.intro_ja !== 'string' || !character.intro_ja.trim()) throw new Error(`Missing intro_ja for ${character.id}`);
   if (characterIds.has(character.id)) throw new Error(`Duplicate character id: ${character.id}`);
   characterIds.add(character.id);
   if (!validTier.has(character.tier)) throw new Error(`Invalid tier for ${character.id}: ${character.tier}`);
