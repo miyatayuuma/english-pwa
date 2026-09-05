@@ -1,4 +1,4 @@
-import { createSwUpdatePrompt } from './swUpdatePrompt.js?v=5.52';
+import { createSwUpdatePrompt } from './swUpdatePrompt.js?v=5.53';
 
 // This entry point is loaded with a versioned URL from index.html so an older
 // cache-first worker cannot prevent the app from checking for its replacement.
