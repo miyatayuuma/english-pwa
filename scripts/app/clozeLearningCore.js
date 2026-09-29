@@ -62,7 +62,7 @@ export function adaptiveClozeCount(sentence,level=0){
   return maxForSentence;
 }
 
-function fallbackTarget(tokens,sentence){
+function fallbackTarget(tokens,sentence,reason='no-vocabulary-candidate'){
   const candidates=tokens
     .filter(token=>token.norm.length>=3&&!FALLBACK_STOPWORDS.has(token.norm))
     .filter(token=>!(token.index>0&&/^[A-Z]/.test(token.surface)))
@@ -93,6 +93,7 @@ function fallbackTarget(tokens,sentence){
     surface:sentence.slice(token.start,token.end),
     score:1,
     fallback:true,
+    fallbackReason:reason,
   };
 }
 
@@ -158,9 +159,16 @@ export function selectClozeTargets(item,vocabularyEntries,options={}){
     if(candidate.phraseException) break;
     if(selected.length>=targetCount) break;
   }
-  if(!selected.length&&!candidates.length){
-    const fallback=fallbackTarget(tokens,sentence);
-    if(fallback) selected.push(fallback);
+  if(!selected.length){
+    const fallback=fallbackTarget(tokens,sentence,candidates.length?'budget-rejection':'no-vocabulary-candidate');
+    const width=fallback?fallback.tokenEnd-fallback.tokenStart+1:0;
+    const valid=fallback
+      &&fallback.tokenStart>=0
+      &&fallback.tokenEnd<tokens.length
+      &&width>0
+      &&tokens.length-width>=2
+      &&width<=normalHardBudget;
+    if(valid) selected.push(fallback);
   }
   return selected.sort((a,b)=>a.start-b.start);
 }

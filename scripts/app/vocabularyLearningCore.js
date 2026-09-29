@@ -187,21 +187,63 @@ export function buildVocabularySession(entries,levelState={},options={}){
   };
 }
 
-function normalizeAnswer(text){
-  return String(text||'')
+export function normalizeVocabularyAnswer(text){
+  return String(text??'')
     .normalize('NFKC')
-    .replace(/[’‘]/g,"'")
-    .replace(/[“”]/g,'"')
-    .replace(/\s+([,.;:!?])/g,'$1')
+    .toLocaleLowerCase('en-US')
+    .replace(/[’‘‛ʼ＇]/g,"'")
+    .replace(/[‐‑‒–—―−﹘﹣－]/g,'-')
+    .replace(/'/g,'')
+    .replace(/\s*-\s*/g,'-')
+    .replace(/\p{P}/gu, character=>character==='-'?'-':' ')
     .replace(/\s+/g,' ')
     .trim();
 }
 
-export function answerVariants(entry){
+function occurrenceSourceSurface(activeOccurrence){
+  const source=activeOccurrence?.item?.en;
+  const occurrence=activeOccurrence?.occurrence||activeOccurrence;
+  const start=Number(occurrence?.start),end=Number(occurrence?.end);
+  if(typeof source!=='string'||!Number.isInteger(start)||!Number.isInteger(end)||start<0||end<=start||end>source.length) return '';
+  return source.slice(start,end);
+}
+
+export function answerVariants(entry,activeOccurrence=null){
   const canonical=String(entry?.canonical||'').trim();
   if(!canonical) return [];
-  return [...new Set([canonical,...(Array.isArray(entry?.answers)?entry.answers:[])]
-    .map(normalizeAnswer).filter(Boolean))];
+  return [...new Set([canonical,...(Array.isArray(entry?.answers)?entry.answers:[]),occurrenceSourceSurface(activeOccurrence)]
+    .map(value=>String(value||'').trim()).filter(Boolean))];
+}
+
+export function classifyVocabularyAnswer({entry,activeOccurrence=null,transcript=''}={}){
+  const normalized=normalizeVocabularyAnswer(transcript);
+  if(!normalized||!entry) return {type:'miss',matchedText:'',matchedAuthority:null};
+  const targetVariants=[
+    {text:String(entry.canonical||''),authority:'canonical'},
+    ...(Array.isArray(entry.answers)?entry.answers.map(text=>({text:String(text||''),authority:'answer'})):[]),
+    {text:occurrenceSourceSurface(activeOccurrence),authority:'source'},
+  ];
+  for(const variant of targetVariants){
+    if(variant.text&&normalizeVocabularyAnswer(variant.text)===normalized){
+      return {type:'target',matchedText:variant.text,matchedAuthority:variant.authority};
+    }
+  }
+  for(const text of Array.isArray(entry.paraphrases)?entry.paraphrases:[]){
+    if(String(text||'')&&normalizeVocabularyAnswer(text)===normalized){
+      return {type:'paraphrase',matchedText:String(text),matchedAuthority:'paraphrase'};
+    }
+  }
+  return {type:'miss',matchedText:'',matchedAuthority:null};
+}
+
+export function shouldUpdateVocabularyLevel(answerType){
+  return answerType==='target'||answerType==='miss';
+}
+
+export function applyVocabularyAnswerSrs(answerType,updateTargetLevel){
+  if(!shouldUpdateVocabularyLevel(answerType)) return {updated:false,value:undefined};
+  const rate=answerType==='target'?1:0;
+  return {updated:true,rate,value:typeof updateTargetLevel==='function'?updateTargetLevel(rate):undefined};
 }
 
 export function displayAnswer(entry){

@@ -1,8 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { buildClozeCard, adaptiveClozeCount } from '../app/clozeLearningCore.js';
-import { resolveOccurrenceSpeaker } from '../app/vocabularyLearningCore.js';
+import { buildClozeCard, adaptiveClozeCount, sentenceTokens } from '../app/clozeLearningCore.js';
+import { normalizeVocabularyAnswer, resolveOccurrenceSpeaker } from '../app/vocabularyLearningCore.js';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const read=name=>JSON.parse(fs.readFileSync(path.join(root,'data',name),'utf8'));
@@ -10,12 +10,141 @@ const KIND=new Set(['word','expression','construction']);
 const SUBTYPE=new Set(['phrasal_verb','idiom','collocation','fixed_expression','discourse_expression']);
 const ID=/^vocab:\d{5}$/;
 const MIGRATION_SLOTS=new Set(['someone','somebody','something','somewhere','someplace','one','ones']);
-const ENTRY_FIELDS=new Set(['id','kind','subtype','canonical','sense_key','pos','meaning_ja','answers','occurrences']);
+const ENTRY_FIELDS=new Set(['id','kind','subtype','canonical','sense_key','pos','meaning_ja','answers','paraphrases','occurrences']);
 const OCCURRENCE_FIELDS=new Set(['item_id','start','end','contextual_meaning_ja']);
 
 function isNaturalAnswer(value){
   const text=String(value||'').trim();
-  return !!text&&!/[~～]|(?<![A-Za-z])[AB](?![A-Za-z])|\(\d+\)|\.{2,}/.test(text);
+  return !!text&&!/[~～]|(?<![A-Za-z])[AB](?![A-Za-z])|[A-Za-z]\s*\/\s*[A-Za-z]|\(\d+\)|^\s*\d+[.)]|\.{2,}/.test(text);
+}
+
+function validateParaphraseAudit(audit,entries,errors){
+  if(!audit) return;
+  const entryById=new Map(entries.map(entry=>[String(entry?.id||''),entry]));
+  const reviewed=Array.isArray(audit.reviewed_entries)?audit.reviewed_entries:[];
+  const reviewedIds=reviewed.map(value=>String(value?.entry_id||''));
+  const kindCounts=Object.fromEntries(['word','expression','construction'].map(kind=>[kind,entries.filter(entry=>entry?.kind===kind).length]));
+  if(audit.schema_version!==1) errors.push('paraphrase audit: schema_version must equal 1');
+  if(!/^[0-9a-f]{40}$/.test(String(audit.baseline_main||''))) errors.push('paraphrase audit: baseline_main must be a full commit SHA');
+  if(audit.review_scope?.entry_count!==entries.length||JSON.stringify(audit.review_scope?.kind_counts)!==JSON.stringify(kindCounts)) errors.push('paraphrase audit: review scope does not match current entries');
+  if(reviewed.length!==entries.length||new Set(reviewedIds).size!==reviewedIds.length||entries.some(entry=>!reviewedIds.includes(String(entry.id)))) errors.push('paraphrase audit: every current vocabulary entry must be reviewed exactly once');
+  for(const item of reviewed){
+    const entry=entryById.get(String(item?.entry_id||''));
+    if(!entry) continue;
+    const expected=Array.isArray(entry.paraphrases)&&entry.paraphrases.length?'curated':'reviewed_no_major_paraphrase';
+    if(item.decision!==expected) errors.push(`paraphrase audit: ${entry.id} review decision does not match curated data`);
+  }
+  const curated=Array.isArray(audit.curated_paraphrases)?audit.curated_paraphrases:[];
+  const curatedById=new Map();
+  for(const item of curated){
+    const id=String(item?.entry_id||'');
+    if(curatedById.has(id)) errors.push(`paraphrase audit: duplicate curated entry ${id}`);
+    curatedById.set(id,item?.paraphrases);
+  }
+  for(const entry of entries){
+    const values=Array.isArray(entry?.paraphrases)?entry.paraphrases:[];
+    const reviewedValues=curatedById.get(String(entry.id));
+    if(values.length){
+      if(!Array.isArray(reviewedValues)||JSON.stringify(reviewedValues)!==JSON.stringify(values)) errors.push(`paraphrase audit: curated values differ for ${entry.id}`);
+    }else if(curatedById.has(String(entry.id))) errors.push(`paraphrase audit: empty curated entry ${entry.id}`);
+  }
+  if(curatedById.size!==entries.filter(entry=>Array.isArray(entry?.paraphrases)&&entry.paraphrases.length).length) errors.push('paraphrase audit: curated entry list has unknown or missing entries');
+
+  const answerReview=audit.answers_review||{};
+  const sourceEntries=Array.isArray(answerReview.source_entries)?answerReview.source_entries:[];
+  const sourceIds=sourceEntries.map(value=>String(value?.entry_id||''));
+  const reclassified=new Map((Array.isArray(answerReview.reclassified)?answerReview.reclassified:[]).map(value=>[String(value?.entry_id||'')+'\u0000'+String(value?.answer||''),value]));
+  if(answerReview.entries_reviewed!==sourceEntries.length||new Set(sourceIds).size!==sourceIds.length) errors.push('answers audit: every source entry must be accounted for once');
+  const expectedAnswerSourceIds=new Set(entries.filter(entry=>Array.isArray(entry.answers)&&entry.answers.length).map(entry=>String(entry.id)));
+  for(const row of sourceEntries){
+    const id=String(row?.entry_id||''),entry=entryById.get(id);
+    if(!entry){errors.push(`answers audit: unknown source entry ${id}`);continue;}
+    if(!Array.isArray(row.original_answers)||!row.original_answers.length) errors.push(`answers audit: ${id} must preserve the original variants`);
+    if(entry.answers?.length) expectedAnswerSourceIds.add(id);
+    for(const answer of Array.isArray(row.original_answers)?row.original_answers:[]){
+      const key=id+'\u0000'+String(answer);
+      const moved=reclassified.get(key);
+      const target=moved?entry.paraphrases:entry.answers;
+      if(!Array.isArray(target)||!target.some(value=>normalizeVocabularyAnswer(value)===normalizeVocabularyAnswer(answer))) errors.push(`answers audit: ${id} lost original variant ${answer}`);
+      if(moved&&moved.to!=='paraphrases') errors.push(`answers audit: ${id} reclassification target must be paraphrases`);
+    }
+    for(const answer of Array.isArray(entry.answers)?entry.answers:[]){
+      if(!row.original_answers?.some(value=>normalizeVocabularyAnswer(value)===normalizeVocabularyAnswer(answer))) errors.push(`answers audit: current variant ${id}/${answer} is absent from the review snapshot`);
+    }
+  }
+  if(sourceEntries.length!==7||answerReview.entries_reviewed!==7) errors.push('answers audit: expected the seven original answer-bearing entries to be reviewed');
+  for(const [key,moved] of reclassified){
+    const [id,answer]=key.split('\u0000');
+    const entry=entryById.get(id);
+    if(!entry||!entry.paraphrases?.some(value=>normalizeVocabularyAnswer(value)===normalizeVocabularyAnswer(answer))) errors.push(`answers audit: invalid reclassification ${id}/${answer}`);
+    expectedAnswerSourceIds.add(id);
+  }
+  if(expectedAnswerSourceIds.size!==sourceIds.length||sourceIds.some(id=>!expectedAnswerSourceIds.has(id))) errors.push('answers audit: source entry inventory differs from the complete original answer set');
+  const representatives=Array.isArray(audit.representative_accepted)?audit.representative_accepted:[];
+  for(const example of representatives){
+    const entry=entryById.get(String(example?.entry_id||''));
+    if(!entry?.paraphrases?.includes(example?.paraphrase)||!String(example?.reason||'').trim()) errors.push(`paraphrase audit: invalid accepted example ${example?.entry_id||'<missing>'}`);
+    const counterpart=entryById.get(String(example?.counterpart_entry_id||''));
+    if(example?.counterpart_entry_id&&!counterpart) errors.push(`paraphrase audit: unknown counterpart ${example.counterpart_entry_id}`);
+    if(counterpart&&!counterpart.paraphrases?.some(value=>normalizeVocabularyAnswer(value)===normalizeVocabularyAnswer(entry?.canonical))) errors.push(`paraphrase audit: directional counterpart was not separately curated for ${entry?.id||'<missing>'}`);
+  }
+  for(const example of Array.isArray(audit.representative_rejected)?audit.representative_rejected:[]){
+    if(!String(example?.left||'').trim()||!String(example?.right||'').trim()||!String(example?.reason||'').trim()) errors.push('paraphrase audit: rejected examples need candidates and a reason');
+  }
+}
+
+function auditClozeDataset(entries,items){
+  const entriesByItem=new Map();
+  for(const entry of entries) for(const occurrence of entry.occurrences||[]){
+    const itemId=String(occurrence?.item_id||'');
+    if(!entriesByItem.has(itemId)) entriesByItem.set(itemId,[]);
+    entriesByItem.get(itemId).push(entry);
+  }
+  const levels=[0,2,5],variants=[0,1,2,3,4,5];
+  const zeroTargetItems=Object.fromEntries(levels.map(level=>[`level_${level}`,0]));
+  const fallback={no_vocabulary:{cards:0,items:new Set()},budget_rejection:{cards:0,items:new Set()}};
+  const errors=[];
+  let cardsAudited=0,zeroTargetCards=0;
+  for(const item of items){
+    const text=String(item?.en||''),tokens=sentenceTokens(text),candidates=entriesByItem.get(String(item?.id||''))||[];
+    for(const level of levels){
+      let itemZero=false;
+      for(const variantKey of variants){
+        const options={level,count:adaptiveClozeCount(text,level),variantKey};
+        const card=buildClozeCard(item,candidates,options);
+        const repeated=buildClozeCard(item,candidates,options);
+        const signature=value=>JSON.stringify(value.targets.map(target=>[target.entry_id,target.start,target.end,target.fallback,target.fallbackReason]));
+        cardsAudited+=1;
+        if(signature(card)!==signature(repeated)) errors.push(`${item?.id}: nondeterministic cloze variant ${level}/${variantKey}`);
+        if(card.targets.length<1){zeroTargetCards+=1;itemZero=true;continue;}
+        if(card.targets.length>adaptiveClozeCount(text,level)) errors.push(`${item?.id}: cloze group cap exceeded at ${level}/${variantKey}`);
+        if(card.segments.map(segment=>segment.text).join('')!==text) errors.push(`${item?.id}: cloze reconstruction failed at ${level}/${variantKey}`);
+        let hidden=0;
+        for(let index=0;index<card.targets.length;index+=1){
+          const target=card.targets[index],width=target.tokenEnd-target.tokenStart+1;
+          if(!Number.isInteger(target.tokenStart)||!Number.isInteger(target.tokenEnd)||target.tokenStart<0||target.tokenEnd>=tokens.length||target.tokenStart>target.tokenEnd) errors.push(`${item?.id}: invalid cloze token range at ${level}/${variantKey}`);
+          if(index&&card.targets[index-1].tokenEnd>=target.tokenStart) errors.push(`${item?.id}: overlapping cloze targets at ${level}/${variantKey}`);
+          if(target.start<0||target.end<=target.start||target.end>text.length||text.slice(target.start,target.end)!==target.surface) errors.push(`${item?.id}: invalid cloze character span at ${level}/${variantKey}`);
+          hidden+=width;
+          if(target.fallback){
+            const reason=target.fallbackReason==='budget-rejection'?'budget_rejection':'no_vocabulary';
+            fallback[reason].cards+=1;
+            fallback[reason].items.add(String(item.id));
+          }
+        }
+        if(tokens.length-hidden<2) errors.push(`${item?.id}: fewer than two visible tokens at ${level}/${variantKey}`);
+        const ratio=tokens.length?hidden/tokens.length:1;
+        const hardLimit=card.targets.some(target=>target.phraseException)?.45:.4;
+        if(ratio>hardLimit+Number.EPSILON) errors.push(`${item?.id}: hidden ratio exceeded at ${level}/${variantKey}`);
+      }
+      if(itemZero) zeroTargetItems[`level_${level}`]+=1;
+    }
+  }
+  const fallbackSummary={
+    no_vocabulary:{cards:fallback.no_vocabulary.cards,items:fallback.no_vocabulary.items.size},
+    budget_rejection:{cards:fallback.budget_rejection.cards,items:fallback.budget_rejection.items.size},
+  };
+  return {errors,report:{items:items.length,levels,variants_per_level:variants.length,cards_audited:cardsAudited,zero_target_cards:zeroTargetCards,zero_target_items:zeroTargetItems,fallback_due_no_vocabulary:fallbackSummary.no_vocabulary,fallback_due_budget_rejection:fallbackSummary.budget_rejection,deterministic_variants:true}};
 }
 
 function lexicalWords(value,{legacy=false}={}){
@@ -90,7 +219,7 @@ function validateWordExpansionAudit(audit,entries,items,errors){
   }
 }
 
-export function validateVocabularyV3(db,items,characters,migration,v2,wordAudit=null){
+export function validateVocabularyV3(db,items,characters,migration,v2,wordAudit=null,paraphraseAudit=null){
   const errors=[];
   const entries=Array.isArray(db?.entries)?db.entries:[];
   const byItem=new Map((Array.isArray(items)?items:[]).map(item=>[String(item?.id||''),item]));
@@ -112,11 +241,20 @@ export function validateVocabularyV3(db,items,characters,migration,v2,wordAudit=
     if(!String(entry?.meaning_ja||'').trim()) errors.push(`${id}: empty representative Japanese meaning`);
     if(/(?:^|[、,])\s*[^、,]+(?:[、,]\s*[^、,]+){2,}\s*$/.test(String(entry?.meaning_ja||''))) errors.push(`${id}: list-like unrelated dictionary senses`);
     if(!Array.isArray(entry?.occurrences)||!entry.occurrences.length) errors.push(`${id}: needs at least one occurrence`);
+    if(entry?.answers!=null&&!Array.isArray(entry.answers)) errors.push(`${id}: answers must be an array`);
     const answers=Array.isArray(entry?.answers)?entry.answers:[];
-    for(const answer of answers){if(!isNaturalAnswer(answer)) errors.push(`${id}: invalid answer variant`);}
-    const uniqueAnswers=new Set(answers.map(answer=>String(answer).normalize('NFKC').toLocaleLowerCase('en-US')));
+    for(const answer of answers){if(!isNaturalAnswer(answer)||!normalizeVocabularyAnswer(answer)) errors.push(`${id}: invalid answer variant`);}
+    const canonicalNormalized=normalizeVocabularyAnswer(entry?.canonical);
+    const uniqueAnswers=new Set(answers.map(normalizeVocabularyAnswer));
     if(uniqueAnswers.size!==answers.length) errors.push(`${id}: duplicate answer variant`);
-    if(answers.some(answer=>String(answer).normalize('NFKC').toLocaleLowerCase('en-US')===String(entry?.canonical||'').normalize('NFKC').toLocaleLowerCase('en-US'))) errors.push(`${id}: answers must not repeat the canonical form`);
+    if(answers.some(answer=>normalizeVocabularyAnswer(answer)===canonicalNormalized)) errors.push(`${id}: answers must not repeat the canonical form`);
+    if(entry?.paraphrases!=null&&!Array.isArray(entry.paraphrases)) errors.push(`${id}: paraphrases must be an array`);
+    const paraphrases=Array.isArray(entry?.paraphrases)?entry.paraphrases:[];
+    for(const paraphrase of paraphrases){if(!isNaturalAnswer(paraphrase)||!normalizeVocabularyAnswer(paraphrase)) errors.push(`${id}: invalid paraphrase notation`);}
+    const uniqueParaphrases=new Set(paraphrases.map(normalizeVocabularyAnswer));
+    if(uniqueParaphrases.size!==paraphrases.length) errors.push(`${id}: duplicate paraphrase`);
+    const targetForms=new Set([canonicalNormalized,...answers.map(normalizeVocabularyAnswer)]);
+    if(paraphrases.some(value=>targetForms.has(normalizeVocabularyAnswer(value)))) errors.push(`${id}: paraphrases must not duplicate canonical or answers`);
     for(const occurrence of Array.isArray(entry?.occurrences)?entry.occurrences:[]){
       for(const field of Object.keys(occurrence||{})) if(!OCCURRENCE_FIELDS.has(field)) errors.push(`${id}: unapproved occurrence field ${field}`);
       const itemId=String(occurrence?.item_id||'');
@@ -139,6 +277,9 @@ export function validateVocabularyV3(db,items,characters,migration,v2,wordAudit=
   if(db?.schema_version!==3) errors.push('schema_version must equal 3');
 
   validateWordExpansionAudit(wordAudit,entries,items,errors);
+  validateParaphraseAudit(paraphraseAudit,entries,errors);
+  const clozeAudit=items.length===560?auditClozeDataset(entries,items):null;
+  if(clozeAudit) errors.push(...clozeAudit.errors);
 
   const oldIds=new Set(),newIds=new Set();
   const oldById=new Map((Array.isArray(v2?.entries)?v2.entries:[]).map(entry=>[String(entry.id),entry]));
@@ -157,10 +298,10 @@ export function validateVocabularyV3(db,items,characters,migration,v2,wordAudit=
     if(mapping?.pos_compatible_confirmed!==true) errors.push(`migration: POS compatibility not explicitly reviewed ${oldId} -> ${newId}`);
   }
 
-  return {errors,report:buildVocabularyV3Report(db,items,characters,migration,v2,wordAudit)};
+  return {errors,report:buildVocabularyV3Report(db,items,characters,migration,v2,wordAudit,paraphraseAudit,clozeAudit?.report||null)};
 }
 
-export function buildVocabularyV3Report(db,items,characters,migration,v2,wordAudit=null){
+export function buildVocabularyV3Report(db,items,characters,migration,v2,wordAudit=null,paraphraseAudit=null,clozeAudit=null){
   const entries=Array.isArray(db?.entries)?db.entries:[];
   const itemList=Array.isArray(items)?items:[];
   const sourceIds=new Set(entries.flatMap(entry=>(entry.occurrences||[]).map(occurrence=>String(occurrence.item_id))));
@@ -222,6 +363,14 @@ export function buildVocabularyV3Report(db,items,characters,migration,v2,wordAud
       selected_curated_targets:selectedTargets,
       fallback_targets:fallbackTargets,
     },
+    ...(clozeAudit||itemList.length===560?{cloze_generation_audit:clozeAudit||auditClozeDataset(entries,itemList).report}:{}),
+    answer_authority:{
+      entries_with_answers:entries.filter(entry=>Array.isArray(entry.answers)&&entry.answers.length).length,
+      source_realizations_audited:occurrenceList.length,
+      entries_with_paraphrases:entries.filter(entry=>Array.isArray(entry.paraphrases)&&entry.paraphrases.length).length,
+      total_paraphrases:entries.reduce((count,entry)=>count+(Array.isArray(entry.paraphrases)?entry.paraphrases.length:0),0),
+      paraphrase_entries_reviewed:Array.isArray(paraphraseAudit?.reviewed_entries)?paraphraseAudit.reviewed_entries.length:0,
+    },
     ...(wordAudit?{word_expansion_audit:{
       baseline_main:wordAudit.baseline_main,
       source_items_reviewed:wordAudit.source_items_reviewed,
@@ -247,7 +396,8 @@ function main(){
   const characters=read('characters.json').characters||[];
   const migration=read('vocabulary-v2-v3-migration.json'),v2=read('vocabulary-v2.json');
   const wordAudit=read('vocabulary-v3-word-audit.json');
-  const {errors,report}=validateVocabularyV3(db,items,characters,migration,v2,wordAudit);
+  const paraphraseAudit=read('vocabulary-v3-paraphrase-audit.json');
+  const {errors,report}=validateVocabularyV3(db,items,characters,migration,v2,wordAudit,paraphraseAudit);
   if(errors.length){console.error(errors.join('\n'));process.exitCode=1;return;}
   const reportPath=path.join(root,'data/vocabulary-v3-report.json');
   if(process.argv.includes('--check-report')){

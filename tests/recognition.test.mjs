@@ -1,7 +1,14 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { createRecognitionController } from '../scripts/speech/recognition.js';
+import { appendRawTranscriptFinal, createRecognitionController } from '../scripts/speech/recognition.js';
+
+test('Vocabulary raw transcript stitching preserves words, contractions, numbers, and compound punctuation',()=>{
+  assert.equal(appendRawTranscriptFinal('','I’m ready to pay two dollars.'),'I’m ready to pay two dollars.');
+  assert.equal(appendRawTranscriptFinal('well-known','story begins'),'well-known story begins');
+  assert.equal(appendRawTranscriptFinal('turn the faucet','the faucet off now'),'turn the faucet off now');
+  assert.equal(appendRawTranscriptFinal('despite','despise'),'despite despise');
+});
 
 test('matchAndHighlight treats split and fused compound words as equivalent', () => {
   const controller = createRecognitionController();
