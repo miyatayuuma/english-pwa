@@ -70,8 +70,17 @@ async function newPage(source,{reducedMotion='reduce'}={}){
   const page=await context.newPage();
   await page.route('**/*.m4a',route=>route.fulfill({status:200,body:'mock-audio'}));
   await page.goto(`${baseUrl}/index.html`);
-  await page.waitForSelector('#openVocabularyMode',{timeout:12000});
-  await page.locator('#openVocabularyMode').click();
+  const openedMode=await page.evaluate(()=>new Promise(resolve=>{
+    const started=performance.now();
+    const tryOpen=()=>{
+      const button=document.getElementById('openVocabularyMode');
+      if(button?.isConnected){button.click();resolve(true);return;}
+      if(performance.now()-started>12000){resolve(false);return;}
+      requestAnimationFrame(tryOpen);
+    };
+    tryOpen();
+  }));
+  assert.equal(openedMode,true,'Vocabulary lobby button should open the mode');
   await page.locator('.vocab-start:not([disabled])').click();
   await page.waitForSelector('.vocab-mic');
   return {context,page,entry};
