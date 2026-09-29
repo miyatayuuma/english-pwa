@@ -276,7 +276,7 @@ browserTest('production render keeps canonical English out of DOM and accessible
     assert.equal(pending.micDisabled, true);
     respondWithMetadata(heldMetadataResponse, validMetadata);
     await waitForReorder(page);
-    assert.match(await page.locator('#enText').innerText(), /並べ替え/);
+    assert.match(await page.locator('#enText').innerText(), /文の語順を組み立ててください/);
     assert.equal(await page.locator('#composeTokens .compose-token').count(), 2);
     assert.equal(await page.locator('#btnMic').isDisabled(), true);
     assert.equal((await page.locator('#enText').innerText()).includes(item.en), false);
@@ -298,7 +298,7 @@ browserTest('production render safely restores English and enables speech after 
     assert.equal(await page.locator('#composeGuide').evaluate((node) => node.classList.contains('show')), false);
     assert.equal(await page.locator('#btnMic').isDisabled(), false);
     assert.match(await page.locator('#footerMessage').innerText(), /並べ替えを安全に停止しました/);
-    assert.match(await page.locator('#nextActionMessage').innerText(), /全文を表示して発話/);
+    assert.match(await page.locator('#nextActionMessage').innerText(), /語順データを確認できない/);
     await page.locator('#btnMic').click();
     await page.waitForFunction(() => window.__testSpeech?.latest);
   } finally {
