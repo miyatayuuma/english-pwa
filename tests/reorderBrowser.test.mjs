@@ -112,13 +112,12 @@ async function tapCanonical(page, count, sentenceIndex = 0) {
 async function pageState(page) {
   return page.evaluate(() => ({
     controller: window.getReorderState(),
-    snapshot: window.getReorderSnapshot(),
     note: document.querySelector('#composeNote')?.textContent,
     feedback: document.querySelector('#composeFeedback')?.textContent,
     context: document.querySelector('#composeContext')?.textContent,
     controls: document.querySelector('#composeControls')?.innerHTML,
-    bank: [...document.querySelectorAll('[data-zone="bank"] .compose-token')].map((node) => [node.dataset.tileId, node.textContent]),
-    answer: [...document.querySelectorAll('[data-zone="answer"] .compose-token')].map((node) => [node.dataset.tileId, node.textContent]),
+    bank: [...document.querySelectorAll('[data-zone="bank"].compose-token')].map((node) => [node.dataset.tileId, node.textContent]),
+    answer: [...document.querySelectorAll('[data-zone="answer"].compose-token')].map((node) => [node.dataset.tileId, node.textContent]),
   }));
 }
 
@@ -236,17 +235,17 @@ browserTest('fixed context and two independent sentence puzzles progress in sour
   const fixture = buildItem({ id: 'MULTI', itemText: 'Hi. Birds sing. We like books.', sentences });
   await boot(page, fixture, 0);
   assert.match(await page.locator('#composeContext').innerText(), /固定文脈: Hi\./);
-  assert.equal(await page.locator('[data-zone="bank"] .compose-token').count(), 0);
+  assert.equal(await page.locator('[data-zone="bank"].compose-token').count(), 0);
   await page.locator('[data-action="advance"]').click();
   await page.waitForFunction(() => document.querySelector('#composeNote').textContent.includes('Sentence 2/3'), null, { timeout: 1500 }).catch(async (error) => {
     throw new Error(`${error.message}; after fixed-context advance: ${JSON.stringify(await pageState(page))}`);
   });
-  assert.equal(await page.locator('[data-zone="bank"] .compose-token').count(), 2, JSON.stringify(await pageState(page)));
+  assert.equal(await page.locator('[data-zone="bank"].compose-token').count(), 2, JSON.stringify(await pageState(page)));
   assert.match(await page.locator('#composeContext').innerText(), /固定文脈: Hi\./);
   await tapCanonical(page, 2, 1);
   await page.locator('[data-action="advance"]').click();
   await page.waitForFunction(() => document.querySelector('#composeNote').textContent.includes('Sentence 3/3'));
-  assert.equal(await page.locator('[data-zone="bank"] .compose-token').count(), 3);
+  assert.equal(await page.locator('[data-zone="bank"].compose-token').count(), 3);
   await tapCanonical(page, 3);
   await page.locator('[data-action="advance"]').click();
   await page.waitForFunction(() => document.querySelector('#completion').textContent === 'speech handoff');
@@ -264,15 +263,15 @@ browserTest('wrong answers retain their tiles, offer a scaffold on try two, and 
   };
   await wrong();
   assert.match(await page.locator('#composeFeedback').innerText(), /語順が違います/);
-  assert.equal(await page.locator('[data-zone="answer"] .compose-token').count(), 3, JSON.stringify(await pageState(page)));
+  assert.equal(await page.locator('[data-zone="answer"].compose-token').count(), 3, JSON.stringify(await pageState(page)));
   await page.locator('[data-action="reset"]').click();
   await wrong();
   assert.match(await page.locator('#composeFeedback').innerText(), /文の骨格/);
   await page.locator('[data-action="reset"]').click();
   await wrong();
   assert.match(await page.locator('#composeFeedback').innerText(), /正しい語順を表示/);
-  assert.equal(await page.locator('[data-zone="answer"] .compose-token').count(), 3);
-  assert.equal(await page.locator('[data-zone="bank"] .compose-token').count(), 0);
+  assert.equal(await page.locator('[data-zone="answer"].compose-token').count(), 3);
+  assert.equal(await page.locator('[data-zone="bank"].compose-token').count(), 0);
   assert.equal(await page.locator('#mic').isDisabled(), true);
   await closePage({ context });
 });
@@ -288,27 +287,27 @@ browserTest('Undo, Reset, keyboard movement, and duplicate visual buttons are op
   assert.equal(await page.locator('#composeFeedback').getAttribute('aria-live'), 'polite');
   await tapTile(page, 's0-t0');
   await page.locator('[data-zone="answer"][data-tile-id="s0-t0"]').click();
-  assert.equal(await page.locator('[data-zone="answer"] .compose-token').count(), 0);
-  assert.equal(await page.locator('[data-zone="bank"] .compose-token').count(), 3, JSON.stringify(await pageState(page)));
+  assert.equal(await page.locator('[data-zone="answer"].compose-token').count(), 0);
+  assert.equal(await page.locator('[data-zone="bank"].compose-token').count(), 3, JSON.stringify(await pageState(page)));
   await tapTile(page, 's0-t0');
   await page.locator('[data-action="undo"]').click();
-  assert.equal(await page.locator('[data-zone="answer"] .compose-token').count(), 0);
+  assert.equal(await page.locator('[data-zone="answer"].compose-token').count(), 0);
   await tapTile(page, 's0-t0');
   await tapTile(page, 's0-t1');
   await page.locator('[data-action="reset"]').click();
-  assert.equal(await page.locator('[data-zone="answer"] .compose-token').count(), 0);
+  assert.equal(await page.locator('[data-zone="answer"].compose-token').count(), 0);
   const tile = page.locator('[data-zone="bank"][data-tile-id="s0-t0"]');
   await tile.focus();
   await page.keyboard.press('Enter');
   await tapTile(page, 's0-t1');
-  assert.equal(await page.locator('[data-zone="answer"] .compose-token').count(), 2);
+  assert.equal(await page.locator('[data-zone="answer"].compose-token').count(), 2);
   await page.locator('[data-zone="answer"] [data-tile-id="s0-t0"]').focus();
   await page.keyboard.press('ArrowRight');
-  assert.deepEqual(await page.locator('[data-zone="answer"] .compose-token').evaluateAll((nodes) => nodes.map((node) => node.dataset.tileId)), ['s0-t1', 's0-t0']);
+  assert.deepEqual(await page.locator('[data-zone="answer"].compose-token').evaluateAll((nodes) => nodes.map((node) => node.dataset.tileId)), ['s0-t1', 's0-t0']);
   assert.match(await page.locator('#composeFeedback').innerText(), /解答内の語順を移動しました/);
   await page.locator('[data-zone="bank"][data-tile-id="s0-t2"]').focus();
   await page.keyboard.press('Space');
-  assert.equal(await page.locator('[data-zone="answer"] .compose-token').count(), 3);
+  assert.equal(await page.locator('[data-zone="answer"].compose-token').count(), 3);
   assert.match(await page.locator('#composeFeedback').innerText(), /語順が違います/);
   await closePage({ context });
 });
@@ -335,7 +334,7 @@ browserTest('pointer drag moves a tile between zones and between answer position
   await page.mouse.down();
   await page.mouse.move(to.x + to.width - 2, to.y + to.height / 2, { steps: 5 });
   await page.mouse.up();
-  assert.deepEqual(await page.locator('[data-zone="answer"] .compose-token').evaluateAll((nodes) => nodes.map((node) => node.dataset.tileId)), ['s0-t2', 's0-t1', 's0-t0'], JSON.stringify(await pageState(page)));
+  assert.deepEqual(await page.locator('[data-zone="answer"].compose-token').evaluateAll((nodes) => nodes.map((node) => node.dataset.tileId)), ['s0-t2', 's0-t1', 's0-t0'], JSON.stringify(await pageState(page)));
   await closePage({ context });
 });
 

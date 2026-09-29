@@ -55,7 +55,6 @@
     });
     window.bootReorder = async (item, bestLevel = 0) => controller.setup(item, bestLevel);
     window.getReorderState = () => ({ active: controller.isActive(), complete: controller.isComplete(), reason: controller.getDisabledReason() });
-    window.getReorderSnapshot = () => controller.getStateSnapshot();
     const sampleId = new URL(location.href).searchParams.get('live');
     if (sampleId) {
       Promise.all([fetch('/data/items.json').then((response) => response.json()), fetch('/data/reorder-v1.json').then((response) => response.json())])
