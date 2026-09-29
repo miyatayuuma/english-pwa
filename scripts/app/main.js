@@ -1632,6 +1632,8 @@ function createAppRuntime(){
   let maxHintStageUsed=BASE_HINT_STAGE;
   let currentEnHtml='';
   let currentReorderSetupReason='';
+  let reorderSetupPending=false;
+  let reorderSetupGeneration=0;
   let currentItem=null;
   let lastErrorType='';
   let sameErrorStreak=0;
@@ -1724,7 +1726,17 @@ function createAppRuntime(){
     el.en.setAttribute('aria-label','並べ替えチャレンジ。語句を並べ終えると英文が表示されます。');
   }
 
+  function showCanonicalEnglishAfterReorderSetup(item,reorderState){
+    if(isReorderSetupRequested(item)&&!reorderState?.active&&reorderState?.reason){
+      recordHintStageUsed(COMPOSE_HINT_STAGE_EN);
+    }
+    el.en.classList.remove('concealed');
+    el.en.removeAttribute('aria-label');
+    el.en.innerHTML=currentEnHtml;
+  }
+
   function setHintStage(stage,{reset=false}={}){
+    if(reorderSetupPending&&!reset) return false;
     if(isPostResultReveal(el.en,currentItem?.id)) return false;
     const maxStage=Math.max(BASE_HINT_STAGE, getMaxHintStage());
     const next=Math.max(BASE_HINT_STAGE, Math.min(maxStage, Number.isFinite(stage)?Math.floor(stage):BASE_HINT_STAGE));
@@ -1779,7 +1791,7 @@ function createAppRuntime(){
   }
 
   function advanceHintStage(){
-    if(!sessionActive) return;
+    if(!sessionActive||reorderSetupPending) return;
     const maxStage=Math.max(BASE_HINT_STAGE, getMaxHintStage());
     const nextStage=hintStage>=maxStage ? BASE_HINT_STAGE : hintStage+1;
     const changed=setHintStage(nextStage);
@@ -1952,6 +1964,10 @@ function createAppRuntime(){
   function requestedPracticeTaskType(item){
     if(getStudyMode()!==STUDY_MODE_COMPOSE) return TASK_TYPE_READ;
     return item?.taskType===TASK_TYPE_GENERATE?TASK_TYPE_GENERATE:TASK_TYPE_COMPOSE;
+  }
+  function isReorderSetupRequested(item){
+    const type=requestedPracticeTaskType(item);
+    return type===TASK_TYPE_COMPOSE||type===TASK_TYPE_GENERATE;
   }
   function isProductionTask(item=currentItem){
     const type=requestedPracticeTaskType(item);
@@ -2542,18 +2558,29 @@ function createAppRuntime(){
             el.en.setAttribute('aria-label','並べ替えチャレンジ。語句を並べ終えると英文が表示されます。');
           }
           setupComposeGuide(currentItem).then((reorderState)=>{
+            currentReorderSetupReason=String(reorderState?.reason||'');
             if(reorderState?.active){
+              el.en.classList.remove('concealed');
               el.en.textContent='文の語順を組み立ててください';
               el.en.setAttribute('aria-label','並べ替えチャレンジ。語句を並べ終えると英文が表示されます。');
               el.mic.disabled=true;
             }else{
-              el.en.classList.remove('concealed');
-              el.en.removeAttribute('aria-label');
-              el.en.innerHTML=currentEnHtml;
+              showCanonicalEnglishAfterReorderSetup(currentItem,reorderState);
               el.mic.disabled=false;
             }
             if(reorderState?.reason) setFooterMessages('並べ替えを安全に停止しました',reorderState.reason);
-          }).catch((error)=>console.warn('Reordering mode update failed',error));
+          }).catch((error)=>{
+            console.warn('Reordering mode update failed',error);
+            resetComposeGuide();
+            const fallback={
+              active:false,
+              reason:'語順データを確認できないため、並べ替えを停止しました。全文を表示して発話します。',
+            };
+            currentReorderSetupReason=fallback.reason;
+            showCanonicalEnglishAfterReorderSetup(currentItem,fallback);
+            el.mic.disabled=false;
+            setFooterMessages('並べ替えを安全に停止しました',fallback.reason);
+          });
           if(recognitionController && lastMatchEval && lastMatchEval.source){
             const rerun=recognitionController.matchAndHighlight(currentItem.en, lastMatchEval.source);
             lastMatchEval=Object.assign({}, rerun);
@@ -2822,12 +2849,20 @@ function createAppRuntime(){
     return copy;
   }
   function resetComposeGuide(){
+    reorderSetupGeneration+=1;
+    reorderSetupPending=false;
     composeGuide.reset();
   }
   async function setupComposeGuide(item){
     const info=getLevelInfo(item?.id);
     const requestedType=requestedPracticeTaskType(item);
-    return composeGuide.setup(item?{...item,taskType:requestedType}:item, info?.best ?? info?.last ?? 0);
+    const generation=++reorderSetupGeneration;
+    reorderSetupPending=requestedType===TASK_TYPE_COMPOSE||requestedType===TASK_TYPE_GENERATE;
+    try{
+      return await composeGuide.setup(item?{...item,taskType:requestedType}:item, info?.best ?? info?.last ?? 0);
+    }finally{
+      if(generation===reorderSetupGeneration) reorderSetupPending=false;
+    }
   }
   function buildQueue(){
     const sec=el.secSel.value;
@@ -3105,7 +3140,7 @@ function createAppRuntime(){
       currentReorderSetupReason='';
       el.en.dataset.itemId = it.id || '';
       const requestedTaskType=requestedPracticeTaskType(it);
-      const concealEnglishUntilReorderSetup=requestedTaskType==='compose'||requestedTaskType==='generate';
+      const concealEnglishUntilReorderSetup=isReorderSetupRequested(it);
       if(concealEnglishUntilReorderSetup){
         el.en.classList.add('concealed');
         el.en.textContent='並べ替えを準備しています…';
@@ -3129,18 +3164,15 @@ function createAppRuntime(){
         };
       }
       currentReorderSetupReason=String(reorderState?.reason||'');
+      const deferCanonicalFallback=concealEnglishUntilReorderSetup&&!!reorderState?.reason;
       if(reorderState?.active){
         if(isShadowingSession()){
-          el.en.classList.remove('concealed');
-          el.en.removeAttribute('aria-label');
-          el.en.innerHTML=currentEnHtml;
+          showCanonicalEnglishAfterReorderSetup(it,reorderState);
         }else{
           showReorderPrompt();
         }
-      }else{
-        el.en.classList.remove('concealed');
-        el.en.removeAttribute('aria-label');
-        el.en.innerHTML=currentEnHtml;
+      }else if(!deferCanonicalFallback){
+        showCanonicalEnglishAfterReorderSetup(it,reorderState);
       }
       if(reorderState?.reason){
         setFooterMessages('並べ替えを安全に停止しました',reorderState.reason);
@@ -3154,13 +3186,10 @@ function createAppRuntime(){
       if(composeGuide.isAwaitingReorder()&&!isShadowingSession()){
         showReorderPrompt();
       }else if(reorderState?.reason){
-        el.en.classList.remove('concealed');
-        el.en.removeAttribute('aria-label');
-        el.en.innerHTML=currentEnHtml;
+        showCanonicalEnglishAfterReorderSetup(it,reorderState);
       }
       if(isShadowingSession()){
-        el.en.classList.remove('concealed');
-        el.en.innerHTML=currentEnHtml;
+        showCanonicalEnglishAfterReorderSetup(it,reorderState);
         el.ja.style.display='none';
       }
       const allowAudio=shouldUseAudioForItem(it);
