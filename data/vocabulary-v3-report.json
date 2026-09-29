@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "vocabulary_schema_version": 3,
-  "total_entries": 733,
+  "total_entries": 1072,
   "kind_counts": {
-    "word": 42,
+    "word": 381,
     "expression": 654,
     "construction": 37
   },
@@ -14,19 +14,139 @@
     "fixed_expression": 281,
     "discourse_expression": 35
   },
-  "source_item_coverage": 433,
-  "zero_vocabulary_item_count": 127,
-  "occurrence_count": 733,
-  "entries_with_multiple_occurrences": 0,
-  "multi_sense_canonical_count": 0,
-  "source_speaker_resolvable_occurrences": 733,
+  "source_item_coverage": 493,
+  "zero_vocabulary_item_count": 67,
+  "occurrence_count": 1075,
+  "entries_with_multiple_occurrences": 3,
+  "multi_sense_canonical_count": 5,
+  "source_speaker_resolvable_occurrences": 1075,
   "source_speaker_ambiguous_occurrences": 0,
   "migration_mapped_entries": 4,
   "migration_reset_entries": 1833,
   "cloze_candidate_coverage": {
-    "items_with_curated_candidates": 433,
-    "items_with_selected_curated_targets": 331,
-    "selected_curated_targets": 358,
-    "fallback_targets": 127
+    "items_with_curated_candidates": 493,
+    "items_with_selected_curated_targets": 439,
+    "selected_curated_targets": 572,
+    "fallback_targets": 67
+  },
+  "word_expansion_audit": {
+    "baseline_main": "c9731e943a104622fb682c476aeeb6d891544561",
+    "source_items_reviewed": 560,
+    "word_entries_before": 42,
+    "word_entries_after": 381,
+    "word_entries_added": 339,
+    "source_items_with_word_entries": 261,
+    "source_items_newly_covered_by_words": 222,
+    "source_items_with_added_word_entries": 231,
+    "multi_occurrence_word_entries": 3,
+    "multi_sense_word_canonical_count": 5,
+    "existing_word_span_correction_count": 21,
+    "existing_word_span_correction_examples": [
+      {
+        "canonical": "barely",
+        "item_id": "E0173",
+        "from_surface": "barely visible",
+        "to_surface": "barely"
+      },
+      {
+        "canonical": "envy",
+        "item_id": "E0177",
+        "from_surface": "envy her",
+        "to_surface": "envy"
+      },
+      {
+        "canonical": "comprehend",
+        "item_id": "E0499",
+        "from_surface": "hardly comprehend",
+        "to_surface": "comprehend"
+      }
+    ],
+    "retained_examples": [
+      {
+        "canonical": "awkward",
+        "sense_key": "socially_uncomfortable",
+        "item_id": "E0521",
+        "surface": "awkward"
+      }
+    ],
+    "accepted_examples": [
+      {
+        "canonical": "breakthrough",
+        "sense_key": "important_advance_or_discovery",
+        "item_id": "E0052",
+        "surface": "breakthroughs"
+      },
+      {
+        "canonical": "benefit",
+        "sense_key": "good_effect_or_advantage",
+        "item_id": "E0052",
+        "surface": "benefits"
+      },
+      {
+        "canonical": "humanity",
+        "sense_key": "human_race",
+        "item_id": "E0052",
+        "surface": "humanity"
+      },
+      {
+        "canonical": "defeat",
+        "sense_key": "win_against_in_a_contest",
+        "item_id": "E0087",
+        "surface": "defeat"
+      },
+      {
+        "canonical": "opponent",
+        "sense_key": "person_you_compete_against",
+        "item_id": "E0087",
+        "surface": "opponent"
+      },
+      {
+        "canonical": "skepticism",
+        "sense_key": "attitude_of_doubt",
+        "item_id": "E0404",
+        "surface": "skepticism"
+      },
+      {
+        "canonical": "drag",
+        "sense_key": "pull_with_force",
+        "item_id": "E0521",
+        "surface": "dragged"
+      },
+      {
+        "canonical": "pause",
+        "sense_key": "brief_stop",
+        "item_id": "E0521",
+        "surface": "pause"
+      },
+      {
+        "canonical": "upstairs",
+        "sense_key": "to_or_on_an_upper_floor",
+        "item_id": "E0521",
+        "surface": "upstairs"
+      },
+      {
+        "canonical": "nevertheless",
+        "sense_key": "despite_what_was_just_said",
+        "item_id": "E0404",
+        "surface": "Nevertheless"
+      }
+    ],
+    "rejected_examples": [
+      {
+        "surface": "good",
+        "item_id": "E0065",
+        "reason": "Common elementary adjective in this source sense; individual productive card adds little for this learner."
+      },
+      {
+        "surface": "people",
+        "item_id": "E0024",
+        "reason": "High-frequency basic noun; excluded by the no-basic-word-flooding criterion."
+      },
+      {
+        "surface": "up",
+        "item_id": "E0020",
+        "reason": "Particle in the selected phrasal verb “take up”; this token has no separate lexical sense here."
+      }
+    ]
   }
 }
