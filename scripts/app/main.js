@@ -57,7 +57,7 @@ import { createCardTransitionQueue } from './cardTransitions.js';
 import { createReorderGuide } from './reorderGuide.js';
 import { createLogManager } from './logManager.js';
 import { qs, qsa } from './dom.js';
-import { createLevelStateManager, LEVEL_CHOICES } from './levelState.js';
+import { createLevelStateManager, LEVEL_CHOICES, retainHighestHintStageUsed } from './levelState.js';
 import { createViewStateController, VIEW_HOME, VIEW_STUDYING, VIEW_REVIEW_COMPLETE } from './viewState.js';
 import { createGoalController, normalizeGoalValue } from './goalController.js';
 import { createFilterController } from './filterController.js';
@@ -262,7 +262,8 @@ function createAppRuntime(){
     composeFeedbackEl: el.composeFeedback,
     composeControlsEl: el.composeControls,
     composeNoteEl: el.composeNote,
-    onComplete: () => {
+    onComplete: ({ assisted = false } = {}) => {
+      if (assisted) recordHintStageUsed(COMPOSE_HINT_STAGE_EN);
       if (currentItem && el.en) {
         el.en.classList.remove('concealed');
         el.en.removeAttribute('aria-label');
@@ -1630,9 +1631,20 @@ function createAppRuntime(){
   let hintStage=BASE_HINT_STAGE;
   let maxHintStageUsed=BASE_HINT_STAGE;
   let currentEnHtml='';
+  let currentReorderSetupReason='';
   let currentItem=null;
   let lastErrorType='';
   let sameErrorStreak=0;
+
+  function recordHintStageUsed(stage){
+    maxHintStageUsed=retainHighestHintStageUsed(maxHintStageUsed,stage);
+  }
+
+  function restoreReorderSetupNotice(){
+    if(currentReorderSetupReason){
+      setFooterMessages('並べ替えを安全に停止しました',currentReorderSetupReason);
+    }
+  }
 
   function getMaxHintStage(){
     return isProductionTask() ? COMPOSE_HINT_STAGE_EN : BASE_HINT_STAGE+2;
@@ -1706,6 +1718,12 @@ function createAppRuntime(){
     return '<span class="hint-placeholder">ヒントを押すか、下にスワイプして英文を表示（次は和訳）</span>';
   }
 
+  function showReorderPrompt(){
+    el.en.classList.remove('concealed');
+    el.en.textContent='文の語順を組み立ててください';
+    el.en.setAttribute('aria-label','並べ替えチャレンジ。語句を並べ終えると英文が表示されます。');
+  }
+
   function setHintStage(stage,{reset=false}={}){
     if(isPostResultReveal(el.en,currentItem?.id)) return false;
     const maxStage=Math.max(BASE_HINT_STAGE, getMaxHintStage());
@@ -1713,7 +1731,7 @@ function createAppRuntime(){
     const prev=hintStage;
     hintStage=next;
     if(reset){ maxHintStageUsed=next; }
-    else if(next>maxHintStageUsed){ maxHintStageUsed=next; }
+    else recordHintStageUsed(next);
     const compose=isProductionTask();
     const showEnglish=next>=getEnglishRevealStage();
     const showJapanese=next>=getJapaneseHintStage();
@@ -1931,8 +1949,12 @@ function createAppRuntime(){
   function isComposeMode(){
     return getStudyMode()===STUDY_MODE_COMPOSE;
   }
+  function requestedPracticeTaskType(item){
+    if(getStudyMode()!==STUDY_MODE_COMPOSE) return TASK_TYPE_READ;
+    return item?.taskType===TASK_TYPE_GENERATE?TASK_TYPE_GENERATE:TASK_TYPE_COMPOSE;
+  }
   function isProductionTask(item=currentItem){
-    const type=getCurrentTaskType(item);
+    const type=requestedPracticeTaskType(item);
     return type===TASK_TYPE_COMPOSE || type===TASK_TYPE_GENERATE;
   }
   function isAutoPlayAllowed(){
@@ -2804,9 +2826,7 @@ function createAppRuntime(){
   }
   async function setupComposeGuide(item){
     const info=getLevelInfo(item?.id);
-    const requestedType=getStudyMode()===STUDY_MODE_COMPOSE
-      ? (item?.taskType==='generate'?'generate':'compose')
-      : 'read';
+    const requestedType=requestedPracticeTaskType(item);
     return composeGuide.setup(item?{...item,taskType:requestedType}:item, info?.best ?? info?.last ?? 0);
   }
   function buildQueue(){
@@ -3032,6 +3052,7 @@ function createAppRuntime(){
     resetComposeGuide();
     currentItem=null;
     currentEnHtml='';
+    currentReorderSetupReason='';
     hintStage=BASE_HINT_STAGE;
     maxHintStageUsed=BASE_HINT_STAGE;
     refreshLevelDisplay(null);
@@ -3081,17 +3102,45 @@ function createAppRuntime(){
       }
       currentItem=it;
       currentEnHtml=spanify(it.en);
-      el.en.classList.remove('concealed');
+      currentReorderSetupReason='';
       el.en.dataset.itemId = it.id || '';
-      el.en.innerHTML=currentEnHtml;
+      const requestedTaskType=requestedPracticeTaskType(it);
+      const concealEnglishUntilReorderSetup=requestedTaskType==='compose'||requestedTaskType==='generate';
+      if(concealEnglishUntilReorderSetup){
+        el.en.classList.add('concealed');
+        el.en.textContent='並べ替えを準備しています…';
+        el.en.setAttribute('aria-label','並べ替えを準備しています');
+      }else{
+        el.en.classList.remove('concealed');
+        el.en.removeAttribute('aria-label');
+        el.en.innerHTML=currentEnHtml;
+      }
       if(recognitionController){ recognitionController.clearHighlight(); }
       el.mic.disabled=true;
-      const reorderState=await setupComposeGuide(it);
+      let reorderState;
+      try{
+        reorderState=await setupComposeGuide(it);
+      }catch(error){
+        console.warn('Reordering safely disabled',error);
+        resetComposeGuide();
+        reorderState={
+          active:false,
+          reason:'語順データを確認できないため、並べ替えを停止しました。全文を表示して発話します。',
+        };
+      }
+      currentReorderSetupReason=String(reorderState?.reason||'');
       if(reorderState?.active){
-        el.en.textContent='文の語順を組み立ててください';
-        el.en.setAttribute('aria-label','並べ替えチャレンジ。語句を並べ終えると英文が表示されます。');
+        if(isShadowingSession()){
+          el.en.classList.remove('concealed');
+          el.en.removeAttribute('aria-label');
+          el.en.innerHTML=currentEnHtml;
+        }else{
+          showReorderPrompt();
+        }
       }else{
+        el.en.classList.remove('concealed');
         el.en.removeAttribute('aria-label');
+        el.en.innerHTML=currentEnHtml;
       }
       if(reorderState?.reason){
         setFooterMessages('並べ替えを安全に停止しました',reorderState.reason);
@@ -3102,6 +3151,13 @@ function createAppRuntime(){
       const levelInfo=getLevelInfo(it.id);
       refreshLevelDisplay(levelInfo);
       setHintStage(BASE_HINT_STAGE,{reset:true});
+      if(composeGuide.isAwaitingReorder()&&!isShadowingSession()){
+        showReorderPrompt();
+      }else if(reorderState?.reason){
+        el.en.classList.remove('concealed');
+        el.en.removeAttribute('aria-label');
+        el.en.innerHTML=currentEnHtml;
+      }
       if(isShadowingSession()){
         el.en.classList.remove('concealed');
         el.en.innerHTML=currentEnHtml;
@@ -3210,9 +3266,10 @@ function createAppRuntime(){
       return;
     }
     idx=Math.max(0, Math.min(idx, QUEUE.length-1));
-    render(idx,false);
+    await render(idx,false);
     el.pbar.value=idx;
     setFooterMessages(`#${idx+1}/${QUEUE.length}`, '');
+    restoreReorderSetupNotice();
     updateHeaderStats();
   }
 
@@ -3288,6 +3345,7 @@ function createAppRuntime(){
       await render(idx, allowAutoPlay);
       el.pbar.value=idx;
       setFooterMessages(`#${idx+1}/${QUEUE.length}`, '');
+      restoreReorderSetupNotice();
       updateHeaderStats();
     };
     return queueCardTransition('next', task, {animate:!first});
@@ -3304,6 +3362,7 @@ function createAppRuntime(){
       await render(idx, allowAutoPlay);
       el.pbar.value=idx;
       setFooterMessages(`#${idx+1}/${QUEUE.length}`, '');
+      restoreReorderSetupNotice();
       updateHeaderStats();
     };
     return queueCardTransition('prev', task, {animate});
