@@ -188,6 +188,7 @@ browserTest('390×844 supports three, seven, and nine tile sentence units withou
     const widths = await page.evaluate(() => ({
       viewport: innerWidth,
       document: document.documentElement.scrollWidth,
+      main: (() => { const node = document.querySelector('main'); const rect = node.getBoundingClientRect(); const style = getComputedStyle(node); return { left: rect.left, right: rect.right, width: rect.width, cssWidth: style.width, boxSizing: style.boxSizing, padding: style.padding }; })(),
       overflow: [...document.querySelectorAll('body *')]
         .map((node) => ({ tag: node.tagName, id: node.id, className: typeof node.className === 'string' ? node.className : '', right: Math.round(node.getBoundingClientRect().right) }))
         .filter((node) => node.right > innerWidth)
@@ -213,7 +214,7 @@ browserTest('tap-only completion, canonical feedback, and speech handoff work en
   const fixture = basicFixture(3);
   await boot(page, fixture);
   assert.equal(await page.locator('#mic').isDisabled(), true);
-  await tapCanonical(page, 3, 2);
+  await tapCanonical(page, 3);
   await page.waitForSelector('[data-action="advance"]');
   assert.match(await page.locator('#composeFeedback').innerText(), /正解です/);
   assert.match(await page.locator('#composeContext').innerText(), /英文:/);
@@ -246,7 +247,7 @@ browserTest('fixed context and two independent sentence puzzles progress in sour
   await page.locator('[data-action="advance"]').click();
   await page.waitForFunction(() => document.querySelector('#composeNote').textContent.includes('Sentence 3/3'));
   assert.equal(await page.locator('[data-zone="bank"].compose-token').count(), 3);
-  await tapCanonical(page, 3);
+  await tapCanonical(page, 3, 2);
   await page.locator('[data-action="advance"]').click();
   await page.waitForFunction(() => document.querySelector('#completion').textContent === 'speech handoff');
   assert.equal(await page.locator('#composeContext').innerText(), '全文: Hi. Birds sing. We like books.');
