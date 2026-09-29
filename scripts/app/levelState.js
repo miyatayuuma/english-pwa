@@ -16,6 +16,12 @@ const DEFAULT_REVIEW_STATE = Object.freeze({
   intervalMs: 0,
 });
 
+export function retainHighestHintStageUsed(currentStage, requestedStage) {
+  const current = Number.isFinite(currentStage) ? Math.max(0, Math.floor(currentStage)) : 0;
+  const requested = Number.isFinite(requestedStage) ? Math.max(0, Math.floor(requestedStage)) : 0;
+  return Math.max(current, requested);
+}
+
 const { LEVEL_STATE, LEVEL_FILTER } = STORAGE_KEYS;
 
 function loadLevelStateFromStorage() {

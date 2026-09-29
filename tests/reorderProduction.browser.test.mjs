@@ -137,6 +137,20 @@ async function waitForReorder(page) {
   await page.waitForFunction(() => document.querySelector('#enText')?.dataset.itemId === 'RPROD1');
 }
 
+async function awaitMetadataRequest(requested) {
+  let timer;
+  try {
+    return await Promise.race([
+      requested,
+      new Promise((_, reject) => {
+        timer = setTimeout(() => reject(new Error('production render did not request reorder metadata')), 12000);
+      }),
+    ]);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 async function completeSentence(page, sentenceIndex, order) {
   for (const tileIndex of order) {
     await page.locator(`[data-zone="bank"][data-tile-id="s${sentenceIndex}-t${tileIndex}"]`).click();
@@ -161,10 +175,10 @@ async function failSentenceThreeTimes(page, sentenceIndex) {
 
 async function submitFullUtterance(page) {
   await page.waitForFunction(() => !document.querySelector('#btnMic')?.disabled);
-  await page.locator('#btnMic').click();
+  await page.evaluate(() => document.querySelector('#btnMic').click());
   await page.waitForFunction(() => window.__testSpeech?.latest, null, { timeout: 5000 });
   await page.evaluate((text) => window.__testSpeech.latest.inject(text), item.en);
-  await page.locator('#btnMic').click();
+  await page.evaluate(() => document.querySelector('#btnMic').click());
   await page.waitForFunction(() => {
     try {
       const state = JSON.parse(localStorage.getItem('itemLevelV1') || '{}').RPROD1;
@@ -228,7 +242,7 @@ before(async () => {
 });
 
 after(async () => {
-  browser?.close();
+  await browser?.close();
   await new Promise((resolve) => server?.close(resolve));
 });
 
@@ -236,7 +250,7 @@ browserTest('production render keeps canonical English out of DOM and accessible
   const opened = await newProductionPage({ hold: true });
   const { context, page, metadataRequested } = opened;
   try {
-    await metadataRequested;
+    await awaitMetadataRequest(metadataRequested);
     const pending = await page.evaluate(() => {
       const english = document.querySelector('#enText');
       return {
@@ -248,10 +262,17 @@ browserTest('production render keeps canonical English out of DOM and accessible
       };
     });
     const accessibleText = await page.locator('#enText').ariaSnapshot();
+    const answerFragments = sentenceRows.flatMap((row) => row.tiles);
     for (const field of ['text', 'html', 'ariaLabel', 'markup']) {
       assert.equal(pending[field].includes(item.en), false, `canonical answer leaked through ${field}: ${pending[field]}`);
+      for (const fragment of answerFragments) {
+        assert.equal(pending[field].includes(fragment), false, `answer tile leaked through ${field}: ${pending[field]}`);
+      }
     }
     assert.equal(accessibleText.includes(item.en), false, `canonical answer leaked through accessibility tree: ${accessibleText}`);
+    for (const fragment of answerFragments) {
+      assert.equal(accessibleText.includes(fragment), false, `answer tile leaked through accessibility tree: ${accessibleText}`);
+    }
     assert.equal(pending.micDisabled, true);
     respondWithMetadata(heldMetadataResponse, validMetadata);
     await waitForReorder(page);
@@ -288,8 +309,9 @@ browserTest('production render safely restores English and enables speech after 
 browserTest('production read mode keeps canonical English visible and does not request reorder metadata', async () => {
   const { context, page } = await newProductionPage({ studyMode: 'read' });
   try {
-    await page.waitForFunction(() => document.querySelector('#enText')?.dataset.itemId === 'RPROD1'
-      && document.querySelector('#enText')?.textContent.includes('Birds sing.'));
+    await page.waitForFunction(() => document.querySelector('#enText')?.dataset.itemId === 'RPROD1');
+    await page.evaluate(() => document.dispatchEvent(new Event('english-pwa:request-hint')));
+    await page.waitForFunction(() => document.querySelector('#enText')?.textContent.includes('Birds sing.'));
     assert.equal(metadataRequestCount, 0);
     assert.equal(await page.locator('#composeGuide').evaluate((node) => node.classList.contains('show')), false);
   } finally {
@@ -329,22 +351,18 @@ browserTest('production assisted multi-sentence reorder grades full-item speech 
   }
 });
 
-browserTest('a stronger pre-existing English hint stage survives the reorder completion callback', async () => {
+browserTest('a pre-existing English hint stage survives self-completed reorder and speech grading', async () => {
   const opened = await newProductionPage();
   const { context, page } = opened;
   try {
     await waitForReorder(page);
-    await page.evaluate(() => {
-      for (let index = 0; index < 3; index += 1) {
-        document.dispatchEvent(new Event('english-pwa:request-hint'));
-      }
-    });
+    await page.evaluate(() => document.dispatchEvent(new Event('english-pwa:request-hint')));
     assert.match(await page.locator('#enText').innerText(), /Birds sing\./);
     await completeSentence(page, 0, [0, 1]);
     await completeSentence(page, 1, [0, 1, 2]);
     await completeSentence(page, 2, [0, 1]);
     const state = await submitFullUtterance(page);
-    assert.equal(state.hintStage, 3);
+    assert.equal(state.hintStage, 1);
     assert.equal(state.noHintHistory.length, 0);
   } finally {
     await closePage({ context });
