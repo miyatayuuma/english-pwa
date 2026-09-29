@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <base href="/">
+  <title>Reordering browser harness</title>
+  <link rel="stylesheet" href="/styles/screens.css">
+  <style>
+    :root { color-scheme: dark; --txt: #f7faff; --muted: #b7c4d8; }
+    body { box-sizing: border-box; width: 100vw; margin: 0; padding: 12px; font: 16px/1.45 system-ui, sans-serif; }
+    main { box-sizing: border-box; display: block; padding: 0; width: 100%; max-width: 390px; margin: 0 auto; }
+    #composeGuide { display: flex; width: 100%; max-width: 100%; }
+    #composeGuide[aria-hidden="true"] { display: none; }
+    #speechStage { display: block; margin-top: 16px; }
+  </style>
+</head>
+<body>
+  <main>
+    <section id="composeGuide" class="compose-guide" aria-hidden="true">
+      <h4>並べ替えチャレンジ</h4>
+      <p id="composeNote">sentence reorder</p>
+      <div id="composeContext" class="compose-context" aria-live="polite"></div>
+      <div class="compose-zone">
+        <p class="compose-zone__label">語句バンク</p>
+        <div id="composeTokens" class="compose-token-list" role="list" aria-label="まだ置いていない語句" data-drop-zone="bank"></div>
+      </div>
+      <div class="compose-zone">
+        <p class="compose-zone__label">解答の語順</p>
+        <div id="composeAnswer" class="compose-answer-list" role="list" aria-label="解答の語順。矢印キーで並べ替え" data-drop-zone="answer"></div>
+      </div>
+      <div id="composeControls" class="compose-controls"></div>
+      <div id="composeFeedback" class="compose-feedback" role="status" aria-live="polite" aria-atomic="true"></div>
+    </section>
+    <section id="speechStage">
+      <button id="mic" type="button" disabled>発話</button>
+      <p id="completion" aria-live="polite"></p>
+    </section>
+  </main>
+  <script type="module">
+    import { createReorderGuide } from '/scripts/app/reorderGuide.js';
+    const controller = createReorderGuide({
+      composeGuideEl: document.querySelector('#composeGuide'),
+      composeTokensEl: document.querySelector('#composeTokens'),
+      composeAnswerEl: document.querySelector('#composeAnswer'),
+      composeContextEl: document.querySelector('#composeContext'),
+      composeFeedbackEl: document.querySelector('#composeFeedback'),
+      composeControlsEl: document.querySelector('#composeControls'),
+      composeNoteEl: document.querySelector('#composeNote'),
+      onStageChange: ({ active }) => { document.querySelector('#mic').disabled = active; },
+      onComplete: ({ assisted }) => {
+        document.querySelector('#mic').disabled = false;
+        document.querySelector('#completion').textContent = assisted ? 'assisted handoff' : 'speech handoff';
+      },
+    });
+    window.bootReorder = async (item, bestLevel = 0) => controller.setup(item, bestLevel);
+    window.getReorderState = () => ({ active: controller.isActive(), complete: controller.isComplete(), reason: controller.getDisabledReason() });
+    const sampleId = new URL(location.href).searchParams.get('live');
+    if (sampleId) {
+      Promise.all([fetch('/data/items.json').then((response) => response.json()), fetch('/data/reorder-v1.json').then((response) => response.json())])
+        .then(([items, metadata]) => {
+          const item = items.find((entry) => String(entry.id) === sampleId);
+          if (!item) throw new Error(`missing sample item ${sampleId}`);
+          item.taskType = 'compose';
+          return controller.setup(item, 1);
+        })
+        .catch((error) => { document.querySelector('#completion').textContent = String(error); });
+    }
+  </script>
+</body>
+</html>

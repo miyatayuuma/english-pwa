@@ -13,6 +13,8 @@ on:
       - 'scripts/vocabulary/validate-vocabulary-v3.mjs'
       - 'scripts/app/clozeLearningCore.js'
       - 'tests/**'
+      - 'package.json'
+      - 'package-lock.json'
       - '.github/workflows/validate-vocabulary-v3.yml'
   pull_request:
     paths:
@@ -25,6 +27,8 @@ on:
       - 'scripts/vocabulary/validate-vocabulary-v3.mjs'
       - 'scripts/app/clozeLearningCore.js'
       - 'tests/**'
+      - 'package.json'
+      - 'package-lock.json'
       - '.github/workflows/validate-vocabulary-v3.yml'
 
 permissions:
@@ -38,6 +42,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Install test dependencies
+        run: npm ci
       - name: Validate committed curated data and audit report
         run: node scripts/vocabulary/validate-vocabulary-v3.mjs --check-report
       - name: Run application tests

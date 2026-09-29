@@ -215,14 +215,28 @@
     .attempt-info{font-size:12px;color:var(--muted);transition:color .3s ease}
     .attempt-info.alert{color:var(--bad)}
 
-    .compose-guide{margin-top:6px;padding:12px;border-radius:12px;border:1px dashed rgba(98,213,255,.28);background:rgba(16,24,40,.6);display:none;flex-direction:column;gap:8px}
+    .compose-guide{box-sizing:border-box;min-width:0;max-width:100%;margin-top:6px;padding:12px;border-radius:12px;border:1px dashed rgba(98,213,255,.28);background:rgba(16,24,40,.6);display:none;flex-direction:column;gap:9px;overflow:hidden}
     .compose-guide.show{display:flex}
     .compose-guide h4{margin:0;font-size:13px;color:var(--muted);letter-spacing:.04em;font-weight:600}
-    .compose-guide p{margin:0;font-size:12px;color:var(--muted);line-height:1.5}
-    .compose-token-list{display:flex;flex-wrap:wrap;gap:8px}
-    .compose-token{padding:6px 12px;border-radius:10px;border:1px solid rgba(98,213,255,.26);background:rgba(98,213,255,.08);color:var(--txt);font-size:14px;letter-spacing:.01em;cursor:default;transition:background .18s ease,border-color .18s ease,box-shadow .18s ease}
-    .compose-token.hit{background:rgba(70,211,127,.18);border-color:rgba(70,211,127,.55);box-shadow:0 0 0 1px rgba(70,211,127,.25)}
-    .compose-token.miss{background:rgba(255,107,107,.12);border-color:rgba(255,107,107,.45)}
+    .compose-guide p{margin:0;font-size:12px;color:var(--muted);line-height:1.5;overflow-wrap:anywhere}
+    .compose-zone{display:grid;gap:5px;min-width:0}
+    .compose-zone__label{font-size:11px!important;font-weight:700;letter-spacing:.03em;color:var(--muted)}
+    .compose-context{display:grid;gap:5px;min-width:0}
+    .compose-context-line{padding:5px 8px;border-inline-start:2px solid rgba(98,213,255,.4);background:rgba(98,213,255,.035)}
+    .compose-token-list,.compose-answer-list{box-sizing:border-box;display:flex;flex-wrap:wrap;align-items:center;gap:7px;min-width:0;max-width:100%;min-height:44px;padding:7px;border-radius:10px;border:1px solid rgba(148,163,184,.17);background:rgba(0,0,0,.13);overflow-wrap:anywhere}
+    .compose-answer-list{border-style:dashed;background:rgba(98,213,255,.035)}
+    .compose-token{box-sizing:border-box;max-width:100%;min-height:40px;padding:7px 10px;border-radius:10px;border:1px solid rgba(98,213,255,.32);background:rgba(98,213,255,.1);color:var(--txt);font:inherit;font-size:14px;line-height:1.3;letter-spacing:.01em;text-align:left;white-space:normal;overflow-wrap:anywhere;cursor:grab;touch-action:none;transition:background .18s ease,border-color .18s ease,box-shadow .18s ease,transform .18s ease}
+    .compose-token:hover,.compose-token:focus-visible{background:rgba(98,213,255,.18);border-color:rgba(98,213,255,.62);outline:2px solid rgba(98,213,255,.55);outline-offset:1px}
+    .compose-token:active{cursor:grabbing}
+    .compose-token.is-dragging{opacity:.56;transform:scale(.97)}
+    .compose-controls{display:flex;flex-wrap:wrap;gap:8px;min-width:0}
+    .compose-control{min-height:42px;padding:8px 12px;border-radius:10px;border:1px solid rgba(148,163,184,.25);background:rgba(148,163,184,.08);color:var(--txt);font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+    .compose-control:disabled{opacity:.45;cursor:not-allowed}
+    .compose-control--primary{border-color:rgba(98,213,255,.52);background:rgba(98,213,255,.16)}
+    .compose-feedback{min-height:1.5em;color:var(--muted);font-size:12px;line-height:1.5;overflow-wrap:anywhere}
+    .compose-feedback__canonical,.compose-feedback__structure{color:var(--txt)!important}
+    .compose-guide.is-speech-ready .compose-token-list,.compose-guide.is-speech-ready .compose-answer-list{display:none}
+    @media(max-width:420px){.compose-guide{padding:10px}.compose-token-list,.compose-answer-list{gap:6px;padding:6px}.compose-token{font-size:13px;padding:7px 8px}}
 
     footer{border-top:1px solid var(--bd);padding:8px 12px;display:flex;gap:10px;align-items:center;background:var(--panel);padding-bottom:calc(8px + env(safe-area-inset-bottom,0px))}
     .footer-info{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"message button" "next button";column-gap:6px;row-gap:2px;align-items:center;min-width:0;flex:1}

@@ -28,6 +28,8 @@ test('the worker installs vocabulary v3 and one-time progress migration assets',
   assert.doesNotMatch(worker,/vocabulary-v2\.json/);
   for(const asset of [
     './scripts/app/vocabularyMigration.js',
+    './scripts/app/reorderGuide.js',
+    './scripts/reorder/reorderCore.js',
     './scripts/audio/resolver.js',
     './scripts/tagging/quotedTurns.js',
   ]) assert.ok(worker.includes(asset),`${asset} is precached`);
