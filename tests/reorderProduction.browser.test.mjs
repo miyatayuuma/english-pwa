@@ -356,13 +356,17 @@ browserTest('a pre-existing English hint stage survives self-completed reorder a
   const { context, page } = opened;
   try {
     await waitForReorder(page);
-    await page.evaluate(() => document.dispatchEvent(new Event('english-pwa:request-hint')));
+    await page.evaluate(() => {
+      for (let index = 0; index < 3; index += 1) {
+        document.dispatchEvent(new Event('english-pwa:request-hint'));
+      }
+    });
     assert.match(await page.locator('#enText').innerText(), /Birds sing\./);
     await completeSentence(page, 0, [0, 1]);
     await completeSentence(page, 1, [0, 1, 2]);
     await completeSentence(page, 2, [0, 1]);
     const state = await submitFullUtterance(page);
-    assert.equal(state.hintStage, 1);
+    assert.equal(state.hintStage, 3);
     assert.equal(state.noHintHistory.length, 0);
   } finally {
     await closePage({ context });
