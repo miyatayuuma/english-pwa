@@ -1,0 +1,1825 @@
+{
+  "schemaVersion": 1,
+  "grammarFixtures": [
+    {
+      "id": "g01-sv",
+      "category": "SV",
+      "text": "Birds sing.",
+      "assert": {
+        "pattern": "SV"
+      }
+    },
+    {
+      "id": "g02-svc",
+      "category": "SVC",
+      "text": "Mia is calm.",
+      "assert": {
+        "pattern": "SVC"
+      }
+    },
+    {
+      "id": "g03-svo",
+      "category": "SVO",
+      "text": "They admire music.",
+      "assert": {
+        "pattern": "SVO"
+      }
+    },
+    {
+      "id": "g04-svoo",
+      "category": "SVOO",
+      "text": "He sent me a note.",
+      "assert": {
+        "pattern": "SVOO"
+      }
+    },
+    {
+      "id": "g05-svoc",
+      "category": "SVOC",
+      "text": "They appointed him treasurer.",
+      "assert": {
+        "pattern": "SVOC"
+      }
+    },
+    {
+      "id": "g06-negative-contraction",
+      "category": "negative",
+      "text": "I don't agree.",
+      "assert": {
+        "protected": [
+          "don't"
+        ],
+        "hasNegation": true
+      }
+    },
+    {
+      "id": "g07-negative-uncontracted",
+      "category": "negative",
+      "text": "She did not answer.",
+      "assert": {
+        "hasNegation": true,
+        "precisionHasSeparateNot": true
+      }
+    },
+    {
+      "id": "g08-question",
+      "category": "question",
+      "text": "Are you ready?",
+      "assert": {
+        "question": true,
+        "inversion": true
+      }
+    },
+    {
+      "id": "g09-wh-question",
+      "category": "wh-question",
+      "text": "Where did she go?",
+      "assert": {
+        "question": true,
+        "inversion": true
+      }
+    },
+    {
+      "id": "g10-perfect",
+      "category": "perfect",
+      "text": "He has finished.",
+      "assert": {
+        "relations": [
+          "aux"
+        ]
+      }
+    },
+    {
+      "id": "g11-progressive",
+      "category": "progressive",
+      "text": "She is cooking.",
+      "assert": {
+        "relations": [
+          "aux"
+        ]
+      }
+    },
+    {
+      "id": "g12-modal",
+      "category": "modal",
+      "text": "They might leave.",
+      "assert": {
+        "relations": [
+          "aux"
+        ]
+      }
+    },
+    {
+      "id": "g13-passive",
+      "category": "passive",
+      "text": "The door was opened.",
+      "assert": {
+        "relations": [
+          "aux:pass"
+        ]
+      }
+    },
+    {
+      "id": "g14-subordinate",
+      "category": "subordinate clause",
+      "text": "I stayed because it rained.",
+      "assert": {
+        "clauseRelations": [
+          "advcl"
+        ]
+      }
+    },
+    {
+      "id": "g15-conditional",
+      "category": "conditional",
+      "text": "If it rains, we will stay home.",
+      "assert": {
+        "clauseRelations": [
+          "advcl"
+        ]
+      }
+    },
+    {
+      "id": "g16-relative",
+      "category": "relative clause",
+      "text": "The book that I bought is new.",
+      "assert": {
+        "clauseRelations": [
+          "relcl"
+        ]
+      }
+    },
+    {
+      "id": "g17-infinitive",
+      "category": "infinitive",
+      "text": "They want to leave.",
+      "assert": {
+        "clauseRelations": [
+          "xcomp"
+        ],
+        "notProtected": [
+          "want to"
+        ]
+      }
+    },
+    {
+      "id": "g18-gerund",
+      "category": "gerund",
+      "text": "Swimming keeps me calm.",
+      "assert": {
+        "relations": [
+          "nsubj"
+        ]
+      }
+    },
+    {
+      "id": "g19-phrasal-inseparable",
+      "category": "inseparable phrasal verb",
+      "text": "She looks after her sister.",
+      "assert": {
+        "protected": [
+          "looks after her sister"
+        ]
+      }
+    },
+    {
+      "id": "g20-phrasal-separable",
+      "category": "separable phrasal verb",
+      "text": "She picked the book up.",
+      "assert": {
+        "relations": [
+          "prt"
+        ],
+        "precisionSplit": [
+          "picked",
+          "up"
+        ]
+      }
+    },
+    {
+      "id": "g21-pp",
+      "category": "PP",
+      "text": "The keys are in the box.",
+      "assert": {
+        "noBarePreposition": true
+      }
+    },
+    {
+      "id": "g22-coordination",
+      "category": "coordination",
+      "text": "Anna and Bo smiled.",
+      "assert": {
+        "relations": [
+          "conj",
+          "cc"
+        ]
+      }
+    },
+    {
+      "id": "g23-correlative-not-only",
+      "category": "correlative",
+      "text": "Not only did he run, but he also jumped.",
+      "assert": {
+        "correlative": [
+          [
+            "not only",
+            "but also"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "g24-correlative-no-sooner",
+      "category": "correlative",
+      "text": "No sooner had we arrived than it began to rain.",
+      "assert": {
+        "correlative": [
+          [
+            "no sooner",
+            "than"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "g25-negative-inversion",
+      "category": "inversion",
+      "text": "Never have I seen snow.",
+      "assert": {
+        "inversion": true
+      }
+    },
+    {
+      "id": "g26-multi-sentence",
+      "category": "multi-sentence item",
+      "text": "The bell rang. We left.",
+      "assert": {
+        "sentenceCount": 2
+      }
+    },
+    {
+      "id": "g27-dialogue",
+      "category": "dialogue",
+      "text": "\"Hello!\" \"How are you?\"",
+      "assert": {
+        "sentenceCount": 2,
+        "quoteBalanced": true
+      }
+    },
+    {
+      "id": "g28-quotation",
+      "category": "quotation",
+      "text": "She said, \"Go now.\"",
+      "assert": {
+        "quoteBalanced": true
+      }
+    },
+    {
+      "id": "g29-duplicate-tile-text",
+      "category": "duplicate tile text",
+      "text": "I need one ticket and one ticket",
+      "assert": {
+        "duplicateTileText": true,
+        "uniqueTileIds": true
+      }
+    },
+    {
+      "id": "g30-ambiguous-alternative",
+      "category": "ambiguous alternate order",
+      "text": "I can meet you on Friday.",
+      "assert": {
+        "playable": true,
+        "acceptedOrderFixture": true
+      }
+    },
+    {
+      "id": "g31-perfect-progressive",
+      "category": "perfect progressive",
+      "text": "They might have been working.",
+      "assert": {
+        "relations": [
+          "aux"
+        ]
+      }
+    },
+    {
+      "id": "g32-multi-clause-quote",
+      "category": "multi-sentence dialogue",
+      "text": "\"I am ready.\" \"Let's go!\"",
+      "assert": {
+        "sentenceCount": 2,
+        "quoteBalanced": true
+      }
+    },
+    {
+      "id": "g33-passive-agent",
+      "category": "passive PP",
+      "text": "The portrait was painted by Maya.",
+      "assert": {
+        "noBarePreposition": true,
+        "relations": [
+          "agent"
+        ]
+      }
+    },
+    {
+      "id": "g34-embedded-infinitive",
+      "category": "infinitive clause",
+      "text": "The plan is to leave early.",
+      "assert": {
+        "clauseRelations": [
+          "xcomp"
+        ]
+      }
+    },
+    {
+      "id": "g35-coordinated-objects",
+      "category": "coordination",
+      "text": "We bought apples and pears.",
+      "assert": {
+        "relations": [
+          "conj",
+          "cc"
+        ]
+      }
+    },
+    {
+      "id": "g36-separable-particle",
+      "category": "separable particle",
+      "text": "He turned the radio down.",
+      "assert": {
+        "relations": [
+          "prt"
+        ],
+        "precisionSplit": [
+          "turned",
+          "down"
+        ]
+      }
+    },
+    {
+      "id": "g37-fixed-mwe",
+      "category": "fixed MWE and PP",
+      "text": "In spite of the rain, we left.",
+      "assert": {
+        "protected": [
+          "in spite of the rain"
+        ],
+        "tileContains": [
+          "In spite of the rain"
+        ]
+      }
+    },
+    {
+      "id": "g38-exclamation-context",
+      "category": "fixed context",
+      "text": "Welcome!",
+      "assert": {
+        "fixedContext": true
+      }
+    },
+    {
+      "id": "g39-curly-contraction",
+      "category": "curly apostrophe contraction",
+      "text": "I’m sure.",
+      "assert": {
+        "protected": [
+          "I’m"
+        ]
+      }
+    }
+  ],
+  "corpusAudit": [
+    {
+      "itemId": "E0078",
+      "sentenceIndex": 0,
+      "strata": [
+        "SV"
+      ],
+      "text": "\"Do you agree or disagree with him?\"",
+      "tier": "foundation",
+      "tileTexts": [
+        "\"Do you agree",
+        "or disagree with him?\""
+      ],
+      "tileRoles": [
+        "predicate",
+        "coordination"
+      ],
+      "fivePattern": "SV",
+      "isQuestion": false,
+      "hasInversion": true,
+      "clauseRelations": [],
+      "constructionKinds": [],
+      "protectedTexts": []
+    },
+    {
+      "itemId": "E0228",
+      "sentenceIndex": 0,
+      "strata": [
+        "SV"
+      ],
+      "text": "The astronauts were greeted with spontaneous applause.",
+      "tier": "foundation",
+      "tileTexts": [
+        "The astronauts",
+        "were greeted",
+        "with spontaneous applause."
+      ],
+      "tileRoles": [
+        "subject",
+        "predicate",
+        "pp"
+      ],
+      "fivePattern": "SV",
+      "isQuestion": false,
+      "hasInversion": false,
+      "clauseRelations": [],
+      "constructionKinds": [],
+      "protectedTexts": []
+    },
+    {
+      "itemId": "E0366",
+      "sentenceIndex": 0,
+      "strata": [
+        "SV"
+      ],
+      "text": "\"How's it going, Bob?\"",
+      "tier": "foundation",
+      "tileTexts": [
+        "\"How's",
+        "it going,",
+        "Bob?\""
+      ],
+      "tileRoles": [
+        "phrase",
+        "predicate",
+        "adjunct"
+      ],
+      "fivePattern": "SV",
+      "isQuestion": false,
+      "hasInversion": true,
+      "clauseRelations": [],
+      "constructionKinds": [
+        "contraction"
+      ],
+      "protectedTexts": [
+        "How's"
+      ]
+    },
+    {
+      "itemId": "E0516",
+      "sentenceIndex": 1,
+      "strata": [
+        "SV"
+      ],
+      "text": "\"I will.",
+      "tier": "foundation",
+      "tileTexts": [
+        "\"I",
+        "will."
+      ],
+      "tileRoles": [
+        "subject",
+        "predicate"
+      ],
+      "fivePattern": "SV",
+      "isQuestion": false,
+      "hasInversion": false,
+      "clauseRelations": [],
+      "constructionKinds": [],
+      "protectedTexts": []
+    },
+    {
+      "itemId": "E0062",
+      "sentenceIndex": 1,
+      "strata": [
+        "SVC"
+      ],
+      "text": "\"Hey, it's a genuine antique.\"",
+      "tier": "foundation",
+      "tileTexts": [
+        "\"Hey,",
+        "it's",
+        "a genuine antique.\""
+      ],
+      "tileRoles": [
+        "phrase",
+        "phrase",
+        "predicate"
+      ],
+      "fivePattern": "SVC",
+      "isQuestion": false,
+      "hasInversion": false,
+      "clauseRelations": [],
+      "constructionKinds": [
+        "contraction"
+      ],
+      "protectedTexts": [
+        "it's"
+      ]
+    },
+    {
+      "itemId": "E0182",
+      "sentenceIndex": 0,
+      "strata": [
+        "SVC"
+      ],
+      "text": "People should be judged not so much by how they look as by who they are.",
+      "tier": "foundation",
+      "tileTexts": [
+        "People",
+        "should be judged",
+        "not so much by how they look as by who they are."
+      ],
+      "tileRoles": [
+        "subject",
+        "predicate",
+        "complement"
+      ],
+      "fivePattern": "SVC",
+      "isQuestion": false,
+      "hasInversion": false,
+      "clauseRelations": [],
+      "constructionKinds": [],
+      "protectedTexts": []
+    },
+    {
+      "itemId": "E0315",
+      "sentenceIndex": 1,
+      "strata": [
+        "SVC"
+      ],
+      "text": "\"You look pale!\"",
+      "tier": "foundation",
+      "tileTexts": [
+        "\"You",
+        "look",
+        "pale!\""
+      ],
+      "tileRoles": [
+        "subject",
+        "predicate",
+        "complement"
+      ],
+      "fivePattern": "SVC",
+      "isQuestion": false,
+      "hasInversion": false,
+      "clauseRelations": [],
+      "constructionKinds": [],
+      "protectedTexts": []
+    },
+    {
+      "itemId": "E0507",
+      "sentenceIndex": 0,
+      "strata": [
+        "SVC"
+      ],
+      "text": "He is not good at making friends and always keeps to himself.",
+      "tier": "foundation",
+      "tileTexts": [
+        "He",
+        "is not good",
+        "at making friends",
+        "and always keeps to himself."
+      ],
+      "tileRoles": [
+        "subject",
+        "predicate",
+        "pp",
+        "coordination"
+      ],
+      "fivePattern": "SVC",
+      "isQuestion": false,
+      "hasInversion": false,
+      "clauseRelations": [],
+      "constructionKinds": [],
+      "protectedTexts": []
+    },
+    {
+      "itemId": "E0082",
+      "sentenceIndex": 1,
+      "strata": [
+        "SVO"
+      ],
+      "text": "\"You flatter me!\"",
+      "tier": "foundation",
+      "tileTexts": [
+        "\"You",
+        "flatter",
+        "me!\""
+      ],
+      "tileRoles": [
+        "subject",
+        "predicate",
+        "object"
+      ],
+      "fivePattern": "SVO",
+      "isQuestion": false,
+      "hasInversion": false,
+      "clauseRelations": [],
+      "constructionKinds": [],
+      "protectedTexts": []
+    },
+    {
+      "itemId": "E0207",
+      "sentenceIndex": 0,
+      "strata": [
+        "SVO"
+      ],
+      "text": "\"You betrayed me!\"",
+      "tier": "foundation",
+      "tileTexts": [
+        "\"You",
+        "betrayed",
+        "me!\""
+      ],
+      "tileRoles": [
+        "subject",
+        "predicate",
+        "object"
+      ],
+      "fivePattern": "SVO",
+      "isQuestion": false,
+      "hasInversion": false,
+      "clauseRelations": [],
+      "constructionKinds": [],
+      "protectedTexts": []
+    },
+    {
+      "itemId": "E0308",
+      "sentenceIndex": 1,
+      "strata": [
+        "SVO"
+      ],
+      "text": "We'd better make a reservation beforehand.",
+      "tier": "foundation",
+      "tileTexts": [
+        "We'd",
+        "better make",
+        "a reservation",
+        "beforehand."
+      ],
+      "tileRoles": [
+        "phrase",
+        "predicate",
+        "object",
+        "adjunct"
+      ],
+      "fivePattern": "SVO",
+      "isQuestion": false,
+      "hasInversion": false,
+      "clauseRelations": [],
+      "constructionKinds": [
+        "contraction"
+      ],
+      "protectedTexts": [
+        "We'd"
+      ]
+    },
+    {
+      "itemId": "E0465",
+      "sentenceIndex": 0,
+      "strata": [
+        "SVO"
+      ],
+      "text": "The day before yesterday he witnessed a weird incident in the wilderness.",
+      "tier": "foundation",
+      "tileTexts": [
+        "The day before yesterday",
+        "he",
+        "witnessed",
+        "a weird incident in the wilderness."
+      ],
+      "tileRoles": [
+        "adjunct",
+        "subject",
+        "predicate",
+        "object"
+      ],
+      "fivePattern": "SVO",
+      "isQuestion": false,
+      "hasInversion": false,
+      "clauseRelations": [],
+      "constructionKinds": [],
+      "protectedTexts": []
+    },
+    {
+      "itemId": "E0222",
+      "sentenceIndex": 1,
+      "strata": [
+        "SVOO"
+      ],
+      "text": "Can you give me a hand?\"",
+      "tier": "foundation",
+      "tileTexts": [
+        "Can you give",
+        "me",
+        "a hand?\""
+      ],
+      "tileRoles": [
+        "predicate",
+        "indirect_object",
+        "object"
+      ],
+      "fivePattern": "SVOO",
+      "isQuestion": false,
+      "hasInversion": true,
+      "clauseRelations": [],
+      "constructionKinds": [],
+      "protectedTexts": []
+    },
+    {
+      "itemId": "E0355",
+      "sentenceIndex": 0,
+      "strata": [
+        "SVOO"
+      ],
+      "text": "\"You owe me $200 altogether, Bob.",
+      "tier": "foundation",
+      "tileTexts": [
+        "\"You",
+        "owe",
+        "me",
+        "$200 altogether,",
+        "Bob."
+      ],
+      "tileRoles": [
+        "subject",
+        "predicate",
+        "indirect_object",
+        "object",
+        "adjunct"
+      ],
+      "fivePattern": "SVOO",
+      "isQuestion": false,
+      "hasInversion": false,
+      "clauseRelations": [],
+      "constructionKinds": [],
+      "protectedTexts": []
+    },
+    {
+      "itemId": "E0560",
+      "sentenceIndex": 3,
+      "strata": [
+        "SVOO"
+      ],
+      "text": "I'll buy you dinner.\"",
+      "tier": "foundation",
+      "tileTexts": [
+        "I'll",
+        "buy",
+        "you",
+        "dinner.\""
+      ],
+      "tileRoles": [
+        "phrase",
+        "predicate",
+        "indirect_object",
+        "object"
+      ],
+      "fivePattern": "SVOO",
+      "isQuestion": false,
+      "hasInversion": false,
+      "clauseRelations": [],
+      "constructionKinds": [
+        "contraction"
+      ],
+      "protectedTexts": [
+        "I'll"
+      ]
+    },
+    {
+      "itemId": "E0117",
+      "sentenceIndex": 0,
+      "strata": [
+        "question"
+      ],
+      "text": "\"Can you keep an eye on my kids for a while?",
+      "tier": "foundation",
+      "tileTexts": [
+        "\"Can you keep",
+        "an eye",
+        "on my kids",
+        "for a while?"
+      ],
+      "tileRoles": [
+        "predicate",
+        "object",
+        "pp",
+        "pp"
+      ],
+      "fivePattern": null,
+      "isQuestion": true,
+      "hasInversion": true,
+      "clauseRelations": [],
+      "constructionKinds": [],
+      "protectedTexts": []
+    },
+    {
+      "itemId": "E0311",
+      "sentenceIndex": 0,
+      "strata": [
+        "question"
+      ],
+      "text": "\"What's going on down there?",
+      "tier": "foundation",
+      "tileTexts": [
+        "\"What's",
+        "going on",
+        "down there?"
+      ],
+      "tileRoles": [
+        "phrase",
+        "predicate",
+        "adjunct"
+      ],
+      "fivePattern": "SV",
+      "isQuestion": true,
+      "hasInversion": false,
+      "clauseRelations": [],
+      "constructionKinds": [
+        "contraction",
+        "separable-phrasal-verb"
+      ],
+      "protectedTexts": [
+        "What's"
+      ]
+    },
+    {
+      "itemId": "E0518",
+      "sentenceIndex": 0,
+      "strata": [
+        "question"
+      ],
+      "text": "Can you spare a minute?",
+      "tier": "foundation",
+      "tileTexts": [
+        "Can you spare",
+        "a minute?"
+      ],
+      "tileRoles": [
+        "predicate",
+        "adjunct"
+      ],
+      "fivePattern": null,
+      "isQuestion": true,
+      "hasInversion": true,
+      "clauseRelations": [],
+      "constructionKinds": [],
+      "protectedTexts": []
+    },
+    {
+      "itemId": "E0064",
+      "sentenceIndex": 0,
+      "strata": [
+        "inversion"
+      ],
+      "text": "\"How much is this rug?\"",
+      "tier": "foundation",
+      "tileTexts": [
+        "\"How much is",
+        "this rug?\""
+      ],
+      "tileRoles": [
+        "predicate",
+        "subject"
+      ],
+      "fivePattern": null,
+      "isQuestion": false,
+      "hasInversion": true,
+      "clauseRelations": [],
+      "constructionKinds": [],
+      "protectedTexts": []
+    },
+    {
+      "itemId": "E0201",
+      "sentenceIndex": 0,
+      "strata": [
+        "inversion"
+      ],
+      "text": "\"Do you mind if I stop by your house?\"",
+      "tier": "foundation",
+      "tileTexts": [
+        "\"Do you mind",
+        "if I stop by your house?\""
+      ],
+      "tileRoles": [
+        "predicate",
+        "clause"
+      ],
+      "fivePattern": null,
+      "isQuestion": false,
+      "hasInversion": true,
+      "clauseRelations": [
+        "ccomp"
+      ],
+      "constructionKinds": [],
+      "protectedTexts": []
+    },
+    {
+      "itemId": "E0529",
+      "sentenceIndex": 0,
+      "strata": [
+        "inversion"
+      ],
+      "text": "\"Lisa, are you getting along with Nick?\"",
+      "tier": "foundation",
+      "tileTexts": [
+        "\"Lisa,",
+        "are you",
+        "getting along with Nick?\""
+      ],
+      "tileRoles": [
+        "adjunct",
+        "predicate",
+        "phrase"
+      ],
+      "fivePattern": "SV",
+      "isQuestion": false,
+      "hasInversion": true,
+      "clauseRelations": [],
+      "constructionKinds": [
+        "inseparable-phrasal-verb",
+        "separable-phrasal-verb"
+      ],
+      "protectedTexts": [
+        "getting along with Nick"
+      ]
+    },
+    {
+      "itemId": "E0069",
+      "sentenceIndex": 0,
+      "strata": [
+        "clause:advcl"
+      ],
+      "text": "While I was hanging out at the mall, I ran into Ken.",
+      "tier": "foundation",
+      "tileTexts": [
+        "While I was hanging out at the mall,",
+        "I",
+        "ran into Ken."
+      ],
+      "tileRoles": [
+        "clause",
+        "subject",
+        "phrase"
+      ],
+      "fivePattern": null,
+      "isQuestion": false,
+      "hasInversion": false,
+      "clauseRelations": [
+        "advcl"
+      ],
+      "constructionKinds": [
+        "inseparable-phrasal-verb",
+        "separable-phrasal-verb"
+      ],
+      "protectedTexts": [
+        "ran into Ken"
+      ]
+    },
+    {
+      "itemId": "E0195",
+      "sentenceIndex": 0,
+      "strata": [
+        "clause:advcl"
+      ],
+      "text": "Since Bob is lazy at heart, he frequently neglects his duties.",
+      "tier": "foundation",
+      "tileTexts": [
+        "Since Bob is lazy at heart,",
+        "he",
+        "frequently",
+        "neglects",
+        "his duties."
+      ],
+      "tileRoles": [
+        "clause",
+        "subject",
+        "adjunct",
+        "predicate",
+        "object"
+      ],
+      "fivePattern": null,
+      "isQuestion": false,
+      "hasInversion": false,
+      "clauseRelations": [
+        "advcl"
+      ],
+      "constructionKinds": [],
+      "protectedTexts": []
+    },
+    {
+      "itemId": "E0377",
+      "sentenceIndex": 1,
+      "strata": [
+        "clause:advcl"
+      ],
+      "text": "I've made up my mind to quit!",
+      "tier": "foundation",
+      "tileTexts": [
+        "I",
+        "'ve made up",
+        "my mind",
+        "to quit!"
+      ],
+      "tileRoles": [
+        "subject",
+        "predicate",
+        "object",
+        "clause"
+      ],
+      "fivePattern": null,
+      "isQuestion": false,
+      "hasInversion": false,
+      "clauseRelations": [
+        "advcl"
+      ],
+      "constructionKinds": [
+        "separable-phrasal-verb"
+      ],
+      "protectedTexts": []
+    },
+    {
+      "itemId": "E0511",
+      "sentenceIndex": 0,
+      "strata": [
+        "clause:advcl"
+      ],
+      "text": "To tell the truth, I don't like classical music.",
+      "tier": "foundation",
+      "tileTexts": [
+        "To tell the truth,",
+        "I",
+        "don't",
+        "like",
+        "classical music."
+      ],
+      "tileRoles": [
+        "clause",
+        "subject",
+        "phrase",
+        "predicate",
+        "object"
+      ],
+      "fivePattern": null,
+      "isQuestion": false,
+      "hasInversion": false,
+      "clauseRelations": [
+        "advcl"
+      ],
+      "constructionKinds": [
+        "contraction"
+      ],
+      "protectedTexts": [
+        "don't"
+      ]
+    },
+    {
+      "itemId": "E0098",
+      "sentenceIndex": 0,
+      "strata": [
+        "clause:xcomp"
+      ],
+      "text": "On behalf of all the staff, I'd like to express our sympathy for the victims.",
+      "tier": "foundation",
+      "tileTexts": [
+        "On behalf of all the staff,",
+        "I'd",
+        "like",
+        "to express our sympathy for the victims."
+      ],
+      "tileRoles": [
+        "phrase",
+        "phrase",
+        "predicate",
+        "clause"
+      ],
+      "fivePattern": null,
+      "isQuestion": false,
+      "hasInversion": false,
+      "clauseRelations": [
+        "xcomp"
+      ],
+      "constructionKinds": [
+        "contraction",
+        "fixed-mwe"
+      ],
+      "protectedTexts": [
+        "On behalf of all the staff",
+        "I'd"
+      ]
+    },
+    {
+      "itemId": "E0286",
+      "sentenceIndex": 0,
+      "strata": [
+        "clause:xcomp"
+      ],
+      "text": "He pretends to be enthusiastic when his boss is around.",
+      "tier": "foundation",
+      "tileTexts": [
+        "He",
+        "pretends",
+        "to be enthusiastic when his boss is around."
+      ],
+      "tileRoles": [
+        "subject",
+        "predicate",
+        "clause"
+      ],
+      "fivePattern": null,
+      "isQuestion": false,
+      "hasInversion": false,
+      "clauseRelations": [
+        "advcl",
+        "xcomp"
+      ],
+      "constructionKinds": [],
+      "protectedTexts": []
+    },
+    {
+      "itemId": "E0421",
+      "sentenceIndex": 0,
+      "strata": [
+        "clause:xcomp"
+      ],
+      "text": "Troops were swiftly called in to put down the riot.",
+      "tier": "foundation",
+      "tileTexts": [
+        "Troops",
+        "were swiftly called in",
+        "to put down the riot."
+      ],
+      "tileRoles": [
+        "subject",
+        "predicate",
+        "clause"
+      ],
+      "fivePattern": null,
+      "isQuestion": false,
+      "hasInversion": false,
+      "clauseRelations": [
+        "xcomp"
+      ],
+      "constructionKinds": [
+        "separable-phrasal-verb"
+      ],
+      "protectedTexts": []
+    },
+    {
+      "itemId": "E0076",
+      "sentenceIndex": 1,
+      "strata": [
+        "clause:ccomp"
+      ],
+      "text": "Let's take a vote.\"",
+      "tier": "foundation",
+      "tileTexts": [
+        "Let's",
+        "take a vote.\""
+      ],
+      "tileRoles": [
+        "phrase",
+        "clause"
+      ],
+      "fivePattern": null,
+      "isQuestion": false,
+      "hasInversion": false,
+      "clauseRelations": [
+        "ccomp"
+      ],
+      "constructionKinds": [
+        "contraction"
+      ],
+      "protectedTexts": [
+        "Let's"
+      ]
+    },
+    {
+      "itemId": "E0218",
+      "sentenceIndex": 1,
+      "strata": [
+        "clause:ccomp"
+      ],
+      "text": "\"I think we're lost.",
+      "tier": "foundation",
+      "tileTexts": [
+        "\"I",
+        "think",
+        "we're lost."
+      ],
+      "tileRoles": [
+        "subject",
+        "predicate",
+        "clause"
+      ],
+      "fivePattern": null,
+      "isQuestion": false,
+      "hasInversion": false,
+      "clauseRelations": [
+        "ccomp"
+      ],
+      "constructionKinds": [],
+      "protectedTexts": []
+    },
+    {
+      "itemId": "E0470",
+      "sentenceIndex": 0,
+      "strata": [
+        "clause:ccomp"
+      ],
+      "text": "At present, it's still uncertain whether it was done deliberately or by accident.",
+      "tier": "foundation",
+      "tileTexts": [
+        "At present,",
+        "it's",
+        "still uncertain whether it was done deliberately or by accident."
+      ],
+      "tileRoles": [
+        "pp",
+        "phrase",
+        "predicate"
+      ],
+      "fivePattern": null,
+      "isQuestion": false,
+      "hasInversion": false,
+      "clauseRelations": [
+        "ccomp"
+      ],
+      "constructionKinds": [
+        "contraction"
+      ],
+      "protectedTexts": [
+        "it's"
+      ]
+    },
+    {
+      "itemId": "E0075",
+      "sentenceIndex": 0,
+      "strata": [
+        "clause:relcl"
+      ],
+      "text": "Now that I've found that there's no one to turn to, I'll have to stand on my own two feet.",
+      "tier": "foundation",
+      "tileTexts": [
+        "Now that I've found that there's no one to turn to,",
+        "I'll have to stand on my own two feet."
+      ],
+      "tileRoles": [
+        "clause",
+        "clause"
+      ],
+      "fivePattern": null,
+      "isQuestion": false,
+      "hasInversion": false,
+      "clauseRelations": [
+        "ccomp",
+        "relcl",
+        "xcomp"
+      ],
+      "constructionKinds": [
+        "contraction"
+      ],
+      "protectedTexts": [
+        "there's",
+        "I'll"
+      ]
+    },
+    {
+      "itemId": "E0412",
+      "sentenceIndex": 0,
+      "strata": [
+        "clause:relcl"
+      ],
+      "text": "I'm still haunted by a vivid nightmare I had last night.",
+      "tier": "foundation",
+      "tileTexts": [
+        "I'm",
+        "still haunted",
+        "by a vivid nightmare I had last night."
+      ],
+      "tileRoles": [
+        "phrase",
+        "predicate",
+        "pp"
+      ],
+      "fivePattern": null,
+      "isQuestion": false,
+      "hasInversion": false,
+      "clauseRelations": [
+        "relcl"
+      ],
+      "constructionKinds": [
+        "contraction"
+      ],
+      "protectedTexts": [
+        "I'm"
+      ]
+    },
+    {
+      "itemId": "E0345",
+      "sentenceIndex": 0,
+      "strata": [
+        "clause:acl"
+      ],
+      "text": "You should make the most of this rare opportunity to demonstrate your talent.",
+      "tier": "foundation",
+      "tileTexts": [
+        "You",
+        "should make",
+        "the most of this rare opportunity to demonstrate your talent."
+      ],
+      "tileRoles": [
+        "subject",
+        "predicate",
+        "object"
+      ],
+      "fivePattern": null,
+      "isQuestion": false,
+      "hasInversion": false,
+      "clauseRelations": [
+        "acl"
+      ],
+      "constructionKinds": [],
+      "protectedTexts": []
+    },
+    {
+      "itemId": "E0072",
+      "sentenceIndex": 0,
+      "strata": [
+        "construction:contraction"
+      ],
+      "text": "\"That's odd!",
+      "tier": "foundation",
+      "tileTexts": [
+        "\"That's",
+        "odd!"
+      ],
+      "tileRoles": [
+        "phrase",
+        "pp"
+      ],
+      "fivePattern": null,
+      "isQuestion": false,
+      "hasInversion": false,
+      "clauseRelations": [],
+      "constructionKinds": [
+        "contraction"
+      ],
+      "protectedTexts": [
+        "That's"
+      ]
+    },
+    {
+      "itemId": "E0206",
+      "sentenceIndex": 1,
+      "strata": [
+        "construction:contraction"
+      ],
+      "text": "Don't get so emotional, Lisa.",
+      "tier": "foundation",
+      "tileTexts": [
+        "Don't",
+        "get",
+        "so emotional,",
+        "Lisa."
+      ],
+      "tileRoles": [
+        "phrase",
+        "predicate",
+        "complement",
+        "adjunct"
+      ],
+      "fivePattern": null,
+      "isQuestion": false,
+      "hasInversion": false,
+      "clauseRelations": [],
+      "constructionKinds": [
+        "contraction"
+      ],
+      "protectedTexts": [
+        "Don't"
+      ]
+    },
+    {
+      "itemId": "E0342",
+      "sentenceIndex": 1,
+      "strata": [
+        "construction:contraction"
+      ],
+      "text": "I'll stand by you.",
+      "tier": "foundation",
+      "tileTexts": [
+        "I'll",
+        "stand by you."
+      ],
+      "tileRoles": [
+        "phrase",
+        "phrase"
+      ],
+      "fivePattern": "SV",
+      "isQuestion": false,
+      "hasInversion": false,
+      "clauseRelations": [],
+      "constructionKinds": [
+        "contraction",
+        "inseparable-phrasal-verb"
+      ],
+      "protectedTexts": [
+        "I'll",
+        "stand by you"
+      ]
+    },
+    {
+      "itemId": "E0535",
+      "sentenceIndex": 0,
+      "strata": [
+        "construction:contraction"
+      ],
+      "text": "\"No wonder she didn't show up to see him off.\"",
+      "tier": "foundation",
+      "tileTexts": [
+        "\"No wonder she",
+        "didn't",
+        "show up to see him off.\""
+      ],
+      "tileRoles": [
+        "phrase",
+        "phrase",
+        "phrase"
+      ],
+      "fivePattern": null,
+      "isQuestion": false,
+      "hasInversion": false,
+      "clauseRelations": [
+        "advcl",
+        "relcl"
+      ],
+      "constructionKinds": [
+        "contraction",
+        "separable-phrasal-verb"
+      ],
+      "protectedTexts": [
+        "didn't"
+      ]
+    },
+    {
+      "itemId": "E0094",
+      "sentenceIndex": 0,
+      "strata": [
+        "construction:separable-phrasal-verb"
+      ],
+      "text": "The plane blew up and plunged into the ocean, killing all the people on board.",
+      "tier": "foundation",
+      "tileTexts": [
+        "The plane",
+        "blew up",
+        "and plunged into the ocean, killing",
+        "all the people on board."
+      ],
+      "tileRoles": [
+        "subject",
+        "predicate",
+        "coordination",
+        "coordination"
+      ],
+      "fivePattern": null,
+      "isQuestion": false,
+      "hasInversion": false,
+      "clauseRelations": [
+        "advcl"
+      ],
+      "constructionKinds": [
+        "separable-phrasal-verb"
+      ],
+      "protectedTexts": []
+    },
+    {
+      "itemId": "E0282",
+      "sentenceIndex": 0,
+      "strata": [
+        "construction:separable-phrasal-verb"
+      ],
+      "text": "Apparently, Nick wasn't willing to take on the task because it would just add to his burdens.",
+      "tier": "foundation",
+      "tileTexts": [
+        "Apparently,",
+        "Nick",
+        "wasn't",
+        "willing to take on the task",
+        "because it would just add to his burdens."
+      ],
+      "tileRoles": [
+        "adjunct",
+        "subject",
+        "phrase",
+        "predicate",
+        "clause"
+      ],
+      "fivePattern": null,
+      "isQuestion": false,
+      "hasInversion": false,
+      "clauseRelations": [
+        "advcl",
+        "xcomp"
+      ],
+      "constructionKinds": [
+        "contraction",
+        "separable-phrasal-verb"
+      ],
+      "protectedTexts": [
+        "wasn't"
+      ]
+    },
+    {
+      "itemId": "E0442",
+      "sentenceIndex": 0,
+      "strata": [
+        "construction:separable-phrasal-verb"
+      ],
+      "text": "The specialist predicts international tension will build up.",
+      "tier": "foundation",
+      "tileTexts": [
+        "The specialist",
+        "predicts",
+        "international tension will build up."
+      ],
+      "tileRoles": [
+        "subject",
+        "predicate",
+        "clause"
+      ],
+      "fivePattern": null,
+      "isQuestion": false,
+      "hasInversion": false,
+      "clauseRelations": [
+        "ccomp"
+      ],
+      "constructionKinds": [
+        "separable-phrasal-verb"
+      ],
+      "protectedTexts": []
+    },
+    {
+      "itemId": "E0112",
+      "sentenceIndex": 0,
+      "strata": [
+        "construction:inseparable-phrasal-verb"
+      ],
+      "text": "No sooner had I sat back and relaxed than my wife asked me to do the chores.",
+      "tier": "foundation",
+      "tileTexts": [
+        "No sooner",
+        "had I",
+        "sat back",
+        "and relaxed",
+        "than my wife asked me to do the chores."
+      ],
+      "tileRoles": [
+        "adjunct",
+        "predicate",
+        "phrase",
+        "coordination",
+        "clause"
+      ],
+      "fivePattern": null,
+      "isQuestion": false,
+      "hasInversion": true,
+      "clauseRelations": [
+        "advcl",
+        "xcomp"
+      ],
+      "constructionKinds": [
+        "correlative",
+        "inseparable-phrasal-verb"
+      ],
+      "protectedTexts": [
+        "sat back"
+      ]
+    },
+    {
+      "itemId": "E0517",
+      "sentenceIndex": 0,
+      "strata": [
+        "construction:inseparable-phrasal-verb"
+      ],
+      "text": "I'm looking forward to hearing from you.",
+      "tier": "foundation",
+      "tileTexts": [
+        "I'm",
+        "looking forward to",
+        "hearing from you."
+      ],
+      "tileRoles": [
+        "phrase",
+        "phrase",
+        "pp"
+      ],
+      "fivePattern": "SV",
+      "isQuestion": false,
+      "hasInversion": false,
+      "clauseRelations": [],
+      "constructionKinds": [
+        "contraction",
+        "inseparable-phrasal-verb"
+      ],
+      "protectedTexts": [
+        "I'm",
+        "looking forward to"
+      ]
+    },
+    {
+      "itemId": "E0152",
+      "sentenceIndex": 0,
+      "strata": [
+        "construction:fixed-mwe"
+      ],
+      "text": "In spite of our compliments, he frowned and turned away.",
+      "tier": "foundation",
+      "tileTexts": [
+        "In spite of our compliments,",
+        "he",
+        "frowned",
+        "and turned away."
+      ],
+      "tileRoles": [
+        "phrase",
+        "subject",
+        "predicate",
+        "coordination"
+      ],
+      "fivePattern": "SV",
+      "isQuestion": false,
+      "hasInversion": false,
+      "clauseRelations": [],
+      "constructionKinds": [
+        "fixed-mwe"
+      ],
+      "protectedTexts": [
+        "In spite of our compliments"
+      ]
+    },
+    {
+      "itemId": "E0500",
+      "sentenceIndex": 0,
+      "strata": [
+        "construction:fixed-mwe"
+      ],
+      "text": "Bob felt embarrassed when he was teased in front of some girls.",
+      "tier": "foundation",
+      "tileTexts": [
+        "Bob",
+        "felt",
+        "embarrassed",
+        "when he was teased",
+        "in front of some girls."
+      ],
+      "tileRoles": [
+        "subject",
+        "predicate",
+        "complement",
+        "clause",
+        "phrase"
+      ],
+      "fivePattern": null,
+      "isQuestion": false,
+      "hasInversion": false,
+      "clauseRelations": [
+        "advcl"
+      ],
+      "constructionKinds": [
+        "fixed-mwe"
+      ],
+      "protectedTexts": [
+        "in front of some girls"
+      ]
+    },
+    {
+      "itemId": "E0241",
+      "sentenceIndex": 0,
+      "strata": [
+        "construction:correlative"
+      ],
+      "text": "The ecologist has warned us time and again that petroleum is not only a blessing but also a curse.",
+      "tier": "foundation",
+      "tileTexts": [
+        "The ecologist has warned us time and again",
+        "that petroleum is not only a blessing but also a curse."
+      ],
+      "tileRoles": [
+        "clause",
+        "clause"
+      ],
+      "fivePattern": null,
+      "isQuestion": false,
+      "hasInversion": false,
+      "clauseRelations": [
+        "ccomp"
+      ],
+      "constructionKinds": [
+        "correlative",
+        "fixed-mwe"
+      ],
+      "protectedTexts": [
+        "time and again"
+      ]
+    },
+    {
+      "itemId": "E0093",
+      "sentenceIndex": 0,
+      "strata": [
+        "corpus-spread"
+      ],
+      "text": "Our flight to Vienna was delayed on account of a minor accident.",
+      "tier": "foundation",
+      "tileTexts": [
+        "Our flight to Vienna",
+        "was delayed",
+        "on account of a minor accident."
+      ],
+      "tileRoles": [
+        "subject",
+        "predicate",
+        "pp"
+      ],
+      "fivePattern": "SV",
+      "isQuestion": false,
+      "hasInversion": false,
+      "clauseRelations": [],
+      "constructionKinds": [],
+      "protectedTexts": []
+    },
+    {
+      "itemId": "E0422",
+      "sentenceIndex": 0,
+      "strata": [
+        "corpus-spread"
+      ],
+      "text": "We should appeal to reason instead of resorting to violence.",
+      "tier": "foundation",
+      "tileTexts": [
+        "We",
+        "should appeal",
+        "to reason",
+        "instead of",
+        "resorting to violence."
+      ],
+      "tileRoles": [
+        "subject",
+        "predicate",
+        "pp",
+        "phrase",
+        "pp"
+      ],
+      "fivePattern": "SV",
+      "isQuestion": false,
+      "hasInversion": false,
+      "clauseRelations": [],
+      "constructionKinds": [
+        "fixed-mwe"
+      ],
+      "protectedTexts": [
+        "instead of"
+      ]
+    },
+    {
+      "itemId": "E0276",
+      "sentenceIndex": 0,
+      "strata": [
+        "corpus-spread"
+      ],
+      "text": "In those days, the gigantic corporation had a virtual monopoly over internal commerce.",
+      "tier": "foundation",
+      "tileTexts": [
+        "In those days,",
+        "the gigantic corporation",
+        "had",
+        "a virtual monopoly over internal commerce."
+      ],
+      "tileRoles": [
+        "pp",
+        "subject",
+        "predicate",
+        "object"
+      ],
+      "fivePattern": "SVO",
+      "isQuestion": false,
+      "hasInversion": false,
+      "clauseRelations": [],
+      "constructionKinds": [],
+      "protectedTexts": []
+    },
+    {
+      "itemId": "E0009",
+      "sentenceIndex": 1,
+      "strata": [
+        "fixed-context"
+      ],
+      "text": "\"Stand back!",
+      "fixedContext": true,
+      "fixedContextReason": "single-constituent-fragment"
+    }
+  ]
+}

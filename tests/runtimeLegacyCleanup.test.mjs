@@ -28,10 +28,24 @@ test('duplicate sentence mode preference is retired',async()=>{
   const runtimeFiles=await Promise.all([
     text('scripts/app/learningMenu.js'),
     text('scripts/app/sentencePracticeUx.js'),
-    text('scripts/app/composeDefaults.js'),
+    text('scripts/app/reorderGuide.js'),
     text('scripts/app/clozeMode.js'),
   ]);
   runtimeFiles.forEach(source=>assert.doesNotMatch(source,/preferredSentenceMethodV1/));
+});
+
+test('reordering has one runtime controller and removes the old word-count modules',async()=>{
+  const [version,worker,main]=await Promise.all([
+    text('scripts/version.js'),text('sw.js'),text('scripts/app/main.js'),
+  ]);
+  for(const source of [version,worker,main]){
+    assert.doesNotMatch(source,/composeDefaults\.js|composeGuide\.js/);
+  }
+  assert.doesNotMatch(main,/chunks_json|generate_word_bank|\.chunks\b/);
+  for(const path of ['scripts/app/composeGuide.js','scripts/app/composeDefaults.js']){
+    await assert.rejects(access(new URL(path,root)));
+  }
+  assert.match(main,/createReorderGuide/);
 });
 
 test('automatic hint escalation APIs cannot return through adaptive runtime',async()=>{

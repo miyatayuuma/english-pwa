@@ -54,7 +54,7 @@ import { MIC_UI_STATES, applyMicStatus } from './micStatus.js';
 import { createResultFeedbackQueue, normalizeResultSoundMode } from './resultFeedbackSound.js';
 import { createOverlayController } from './overlay.js';
 import { createCardTransitionQueue } from './cardTransitions.js';
-import { createComposeGuide } from './composeGuide.js';
+import { createReorderGuide } from './reorderGuide.js';
 import { createLogManager } from './logManager.js';
 import { qs, qsa } from './dom.js';
 import { createLevelStateManager, LEVEL_CHOICES } from './levelState.js';
@@ -172,7 +172,7 @@ function createAppRuntime(){
 
 
   // ===== Elements =====
-  const el={ app:qs('#app'), homeView:qs('#homeView'), studyView:qs('#studyView'), reviewCompleteView:qs('#reviewCompleteView'), startStudyCta:qs('#startStudyCta'), reviewCompleteMessage:qs('#reviewCompleteMessage'), reviewActionContinue:qs('#reviewActionContinue'), reviewActionFocusReview:qs('#reviewActionFocusReview'), reviewActionFinish:qs('#reviewActionFinish'), headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerMessage'), nextAction:qs('#nextActionMessage'), footerInfoContainer:qs('#footerInfo'), footerInfoBtn:qs('#footerInfoBtn'), footerInfoDialog:qs('#footerInfoDialog'), footerInfoDialogBody:qs('#footerInfoDialogBody'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), play:qs('#btnPlay'), mic:qs('#btnMic'), micStatus:qs('#micStatus'), card:qs('#card'), secSel:qs('#secSel'), studySecSel:qs('#studySecSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), composeGuide:qs('#composeGuide'), composeTokens:qs('#composeTokens'), composeNote:qs('#composeNote'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSpeechVoice:qs('#cfgSpeechVoice'), cfgResultSound:qs('#cfgResultSound'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speedCtrl:qs('#speedCtrl'), speedToggle:qs('#speedToggle'), speedCtrlBody:qs('#speedCtrlBody'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus'), notifTimeList:qs('#notifTimeList'), notifTimeAdd:qs('#notifTimeAdd'), notifTriggerDailyZero:qs('#notifTriggerDailyZero'), notifTriggerDailyCompare:qs('#notifTriggerDailyCompare'), notifTriggerWeekly:qs('#notifTriggerWeekly'), notifTriggerRestartTone:qs('#notifTriggerRestartTone'), milestoneIntensity:qs('#cfgMilestoneIntensity'), notifHelp:qs('#notifHelp'), dailyGoalCard:qs('#dailyGoalCard'), dailyGoalBody:qs('#dailyGoalBody'), dailyGoalToggle:qs('#dailyGoalToggle'), dailyGoalToggleState:qs('#dailyGoalToggleState'), dailyGoalRing:qs('#dailyGoalRing'), dailyGoalPercent:qs('#dailyGoalPercent'), dailyGoalTag:qs('#dailyGoalTag'), dailyGoalDone:qs('#dailyGoalDone'), dailyGoalTarget:qs('#dailyGoalTarget'), dailyGoalHint:qs('#dailyGoalHint'), sessionGoalCard:qs('#sessionGoalCard'), sessionGoalBody:qs('#sessionGoalBody'), sessionGoalToggle:qs('#sessionGoalToggle'), sessionGoalRing:qs('#sessionGoalRing'), sessionGoalPercent:qs('#sessionGoalPercent'), sessionGoalTag:qs('#sessionGoalTag'), sessionGoalDone:qs('#sessionGoalDone'), sessionGoalTarget:qs('#sessionGoalTarget'), sessionGoalSlider:qs('#sessionGoalSlider'), sessionGoalBarFill:qs('#sessionGoalBarFill'), dailyOverviewCard:qs('#dailyOverviewCard'), dailyOverviewBody:qs('#dailyOverviewBody'), dailyOverviewToggle:qs('#dailyOverviewToggle'), dailyOverviewToggleState:qs('#dailyOverviewToggleState'), dailyOverviewDiff:qs('#dailyOverviewDiff'), dailyOverviewTrendStatus:qs('#dailyOverviewTrendStatus'), dailyOverviewNote:qs('#dailyOverviewNote'), overviewHighlights:qs('#dailyOverviewHighlights'), overviewTodayFill:qs('#overviewTodayFill'), overviewYesterdayFill:qs('#overviewYesterdayFill'), overviewTodayValue:qs('#overviewTodayValue'), overviewYesterdayValue:qs('#overviewYesterdayValue'), overviewPromotionStatus:qs('#overviewPromotionStatus'), overviewTaskBalance:qs('#overviewTaskBalance'), overviewMilestones:qs('#overviewMilestones'), overviewQuickStart:qs('#overviewQuickStart'), onboardingCard:qs('#onboardingCard'), onboardingStepLabel:qs('#onboardingStepLabel'), onboardingLevel:qs('#onboardingLevel'), onboardingPurpose:qs('#onboardingPurpose'), onboardingMinutes:qs('#onboardingMinutes'), onboardingBack:qs('#onboardingBack'), onboardingNext:qs('#onboardingNext'), personalPlanSummary:qs('#personalPlanSummary'), personalPlanBody:qs('#personalPlanBody'), personalPlanToggle:qs('#personalPlanToggle') };
+  const el={ app:qs('#app'), homeView:qs('#homeView'), studyView:qs('#studyView'), reviewCompleteView:qs('#reviewCompleteView'), startStudyCta:qs('#startStudyCta'), reviewCompleteMessage:qs('#reviewCompleteMessage'), reviewActionContinue:qs('#reviewActionContinue'), reviewActionFocusReview:qs('#reviewActionFocusReview'), reviewActionFinish:qs('#reviewActionFinish'), headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerMessage'), nextAction:qs('#nextActionMessage'), footerInfoContainer:qs('#footerInfo'), footerInfoBtn:qs('#footerInfoBtn'), footerInfoDialog:qs('#footerInfoDialog'), footerInfoDialogBody:qs('#footerInfoDialogBody'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), play:qs('#btnPlay'), mic:qs('#btnMic'), micStatus:qs('#micStatus'), card:qs('#card'), secSel:qs('#secSel'), studySecSel:qs('#studySecSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), composeGuide:qs('#composeGuide'), composeTokens:qs('#composeTokens'), composeAnswer:qs('#composeAnswer'), composeContext:qs('#composeContext'), composeFeedback:qs('#composeFeedback'), composeControls:qs('#composeControls'), composeNote:qs('#composeNote'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSpeechVoice:qs('#cfgSpeechVoice'), cfgResultSound:qs('#cfgResultSound'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speedCtrl:qs('#speedCtrl'), speedToggle:qs('#speedToggle'), speedCtrlBody:qs('#speedCtrlBody'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus'), notifTimeList:qs('#notifTimeList'), notifTimeAdd:qs('#notifTimeAdd'), notifTriggerDailyZero:qs('#notifTriggerDailyZero'), notifTriggerDailyCompare:qs('#notifTriggerDailyCompare'), notifTriggerWeekly:qs('#notifTriggerWeekly'), notifTriggerRestartTone:qs('#notifTriggerRestartTone'), milestoneIntensity:qs('#cfgMilestoneIntensity'), notifHelp:qs('#notifHelp'), dailyGoalCard:qs('#dailyGoalCard'), dailyGoalBody:qs('#dailyGoalBody'), dailyGoalToggle:qs('#dailyGoalToggle'), dailyGoalToggleState:qs('#dailyGoalToggleState'), dailyGoalRing:qs('#dailyGoalRing'), dailyGoalPercent:qs('#dailyGoalPercent'), dailyGoalTag:qs('#dailyGoalTag'), dailyGoalDone:qs('#dailyGoalDone'), dailyGoalTarget:qs('#dailyGoalTarget'), dailyGoalHint:qs('#dailyGoalHint'), sessionGoalCard:qs('#sessionGoalCard'), sessionGoalBody:qs('#sessionGoalBody'), sessionGoalToggle:qs('#sessionGoalToggle'), sessionGoalRing:qs('#sessionGoalRing'), sessionGoalPercent:qs('#sessionGoalPercent'), sessionGoalTag:qs('#sessionGoalTag'), sessionGoalDone:qs('#sessionGoalDone'), sessionGoalTarget:qs('#sessionGoalTarget'), sessionGoalSlider:qs('#sessionGoalSlider'), sessionGoalBarFill:qs('#sessionGoalBarFill'), dailyOverviewCard:qs('#dailyOverviewCard'), dailyOverviewBody:qs('#dailyOverviewBody'), dailyOverviewToggle:qs('#dailyOverviewToggle'), dailyOverviewToggleState:qs('#dailyOverviewToggleState'), dailyOverviewDiff:qs('#dailyOverviewDiff'), dailyOverviewTrendStatus:qs('#dailyOverviewTrendStatus'), dailyOverviewNote:qs('#dailyOverviewNote'), overviewHighlights:qs('#dailyOverviewHighlights'), overviewTodayFill:qs('#overviewTodayFill'), overviewYesterdayFill:qs('#overviewYesterdayFill'), overviewTodayValue:qs('#overviewTodayValue'), overviewYesterdayValue:qs('#overviewYesterdayValue'), overviewPromotionStatus:qs('#overviewPromotionStatus'), overviewTaskBalance:qs('#overviewTaskBalance'), overviewMilestones:qs('#overviewMilestones'), overviewQuickStart:qs('#overviewQuickStart'), onboardingCard:qs('#onboardingCard'), onboardingStepLabel:qs('#onboardingStepLabel'), onboardingLevel:qs('#onboardingLevel'), onboardingPurpose:qs('#onboardingPurpose'), onboardingMinutes:qs('#onboardingMinutes'), onboardingBack:qs('#onboardingBack'), onboardingNext:qs('#onboardingNext'), personalPlanSummary:qs('#personalPlanSummary'), personalPlanBody:qs('#personalPlanBody'), personalPlanToggle:qs('#personalPlanToggle') };
   const viewStateController=createViewStateController({ el });
   const applyViewState=(...args)=>viewStateController.applyViewState(...args);
   const getCurrentViewState=(...args)=>viewStateController.getCurrentViewState(...args);
@@ -253,16 +253,27 @@ function createAppRuntime(){
       }
     });
   }
-  const composeNoteDefault = el.composeNote ? el.composeNote.textContent : '';
   const audio=qs('#player');
-  const composeGuide = createComposeGuide({
+  const composeGuide = createReorderGuide({
     composeGuideEl: el.composeGuide,
     composeTokensEl: el.composeTokens,
+    composeAnswerEl: el.composeAnswer,
+    composeContextEl: el.composeContext,
+    composeFeedbackEl: el.composeFeedback,
+    composeControlsEl: el.composeControls,
     composeNoteEl: el.composeNote,
-    defaultNote: composeNoteDefault,
-    getTaskType: () => getCurrentTaskType(),
-    toks,
-    shuffledCopy
+    onComplete: () => {
+      if (currentItem && el.en) {
+        el.en.classList.remove('concealed');
+        el.en.removeAttribute('aria-label');
+        el.en.innerHTML=currentEnHtml;
+      }
+      if (sessionActive) {
+        el.mic.disabled=false;
+        updatePlayButtonAvailability();
+        setFooterMessages('並べ替え完了','続けて英文全体を発話してください。');
+      }
+    }
   });
   initAppVersion();
   const itemLabelCache=new Map();
@@ -2503,7 +2514,24 @@ function createAppRuntime(){
         }
         if(prevStudyMode!==newStudyMode){
           if(recognitionController){ recognitionController.clearHighlight(); }
-          setupComposeGuide(currentItem);
+          if(newStudyMode===STUDY_MODE_COMPOSE){
+            el.mic.disabled=true;
+            el.en.textContent='文の語順を組み立ててください';
+            el.en.setAttribute('aria-label','並べ替えチャレンジ。語句を並べ終えると英文が表示されます。');
+          }
+          setupComposeGuide(currentItem).then((reorderState)=>{
+            if(reorderState?.active){
+              el.en.textContent='文の語順を組み立ててください';
+              el.en.setAttribute('aria-label','並べ替えチャレンジ。語句を並べ終えると英文が表示されます。');
+              el.mic.disabled=true;
+            }else{
+              el.en.classList.remove('concealed');
+              el.en.removeAttribute('aria-label');
+              el.en.innerHTML=currentEnHtml;
+              el.mic.disabled=false;
+            }
+            if(reorderState?.reason) setFooterMessages('並べ替えを安全に停止しました',reorderState.reason);
+          }).catch((error)=>console.warn('Reordering mode update failed',error));
           if(recognitionController && lastMatchEval && lastMatchEval.source){
             const rerun=recognitionController.matchAndHighlight(currentItem.en, lastMatchEval.source);
             lastMatchEval=Object.assign({}, rerun);
@@ -2774,8 +2802,12 @@ function createAppRuntime(){
   function resetComposeGuide(){
     composeGuide.reset();
   }
-  function setupComposeGuide(item){
-    composeGuide.setup(item);
+  async function setupComposeGuide(item){
+    const info=getLevelInfo(item?.id);
+    const requestedType=getStudyMode()===STUDY_MODE_COMPOSE
+      ? (item?.taskType==='generate'?'generate':'compose')
+      : 'read';
+    return composeGuide.setup(item?{...item,taskType:requestedType}:item, info?.best ?? info?.last ?? 0);
   }
   function buildQueue(){
     const sec=el.secSel.value;
@@ -2854,13 +2886,11 @@ function createAppRuntime(){
         en:it.en,
         ja:it.ja,
         tags:it.tags||'',
-        chunks_json:it.chunks||'[]',
         audio_fn:it.audio_fn||'',
         forceSpeech,
         paraphrases:Array.isArray(it.paraphrases)?it.paraphrases.filter(Boolean):[],
         prompt_ja:typeof it.prompt_ja==='string'?it.prompt_ja:'',
-        focus_grammar:typeof it.focus_grammar==='string'?it.focus_grammar:'',
-        generate_word_bank:!!it.generate_word_bank
+        focus_grammar:typeof it.focus_grammar==='string'?it.focus_grammar:''
       };
       if(isComposeMode()){
         const types=normalizeTaskTypes(it.task_types);
@@ -3055,7 +3085,17 @@ function createAppRuntime(){
       el.en.dataset.itemId = it.id || '';
       el.en.innerHTML=currentEnHtml;
       if(recognitionController){ recognitionController.clearHighlight(); }
-      setupComposeGuide(it);
+      el.mic.disabled=true;
+      const reorderState=await setupComposeGuide(it);
+      if(reorderState?.active){
+        el.en.textContent='文の語順を組み立ててください';
+        el.en.setAttribute('aria-label','並べ替えチャレンジ。語句を並べ終えると英文が表示されます。');
+      }else{
+        el.en.removeAttribute('aria-label');
+      }
+      if(reorderState?.reason){
+        setFooterMessages('並べ替えを安全に停止しました',reorderState.reason);
+      }
       el.ja.textContent=it.ja;
       el.chips.innerHTML='';
       (it.tags||'').split(',').filter(Boolean).forEach(t=>{ const s=document.createElement('span'); s.className='chip'; s.textContent=t.trim(); el.chips.appendChild(s); });
@@ -3116,7 +3156,8 @@ function createAppRuntime(){
       setFooterMessages('', '');
       updateAttemptInfo();
       setMicState(false);
-      el.mic.disabled=false;
+      el.mic.disabled=composeGuide.isAwaitingReorder();
+      if(reorderState?.reason) setFooterMessages('並べ替えを安全に停止しました',reorderState.reason);
       if(shouldUseAudioForItem(QUEUE[i+1])){ primeAudio(QUEUE[i+1], undefined, {shouldUseAudioForItem, resolveAudioUrl}); }
       if(shouldUseAudioForItem(QUEUE[i-1])){ primeAudio(QUEUE[i-1], undefined, {shouldUseAudioForItem, resolveAudioUrl}); }
       if(isShadowingSession()){
@@ -3806,6 +3847,10 @@ function createAppRuntime(){
   }
 
   async function startRec(){
+    if(composeGuide.isAwaitingReorder()){
+      setFooterMessages('先に文の語順を完成してください。','');
+      return;
+    }
     if(el.mic.disabled) return;
     if(!recognitionController) return;
     if(recognitionController.isActive()||pendingMicStartTimer||getAudioLockState()===AUDIO_LOCK_STATES.PENDING) return;

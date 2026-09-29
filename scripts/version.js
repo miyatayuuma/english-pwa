@@ -58,9 +58,6 @@ if (typeof document !== 'undefined') {
   import('./app/sentencePracticeUx.js').catch((error) => {
     console.warn('Sentence practice UX failed to load', error);
   });
-  import('./app/composeDefaults.js').catch((error) => {
-    console.warn('Compose defaults failed to load', error);
-  });
   import('./app/clozeMode.js').catch((error) => {
     console.warn('Progressive hint surface failed to load', error);
   });
