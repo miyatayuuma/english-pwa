@@ -31,6 +31,8 @@ test('all cloze variants satisfy reconstruction, overlap, range, and load limits
   let multiCandidateItems=0;
   let variationItems=0;
   const groupDistribution={0:0,1:0,2:0,3:0};
+  const zeroTargetsByLevel={0:0,2:0,5:0};
+  const fallbackReasonCards={no_vocabulary:0,budget_rejection:0};
 
   for(const item of items){
     const vocabulary=byExample.get(item.id)||[];
@@ -39,6 +41,8 @@ test('all cloze variants satisfy reconstruction, overlap, range, and load limits
     for(const level of levels){
       for(const variantKey of variants){
         const card=buildClozeCard(item,vocabulary,{level,count:adaptiveClozeCount(item.en,level),variantKey});
+        if(!card.targets.length) zeroTargetsByLevel[level]+=1;
+        assert.ok(card.targets.length>=1,`${item.id}: zero targets at level ${level}, variant ${variantKey}`);
         assert.equal(card.segments.map(segment=>segment.text).join(''),item.en,`${item.id}: reconstruction`);
         const tokens=sentenceTokens(item.en);
         let hidden=0;
@@ -48,6 +52,7 @@ test('all cloze variants satisfy reconstruction, overlap, range, and load limits
           if(index>0) assert.ok(card.targets[index-1].tokenEnd<target.tokenStart,`${item.id}: overlap`);
           hidden+=target.tokenEnd-target.tokenStart+1;
           if(!target.fallback) itemTargetIds.add(target.entry_id);
+          if(target.fallback) fallbackReasonCards[target.fallbackReason==='budget-rejection'?'budget_rejection':'no_vocabulary']+=1;
         }
         assert.ok(card.targets.length<=adaptiveClozeCount(item.en,level),`${item.id}: group cap`);
         const ratio=tokens.length?hidden/tokens.length:0;
@@ -77,4 +82,6 @@ test('all cloze variants satisfy reconstruction, overlap, range, and load limits
   };
   console.log(`Cloze dataset audit: ${JSON.stringify(summary)}`);
   assert.equal(items.length,560);
+  assert.deepEqual(zeroTargetsByLevel,{0:0,2:0,5:0});
+  assert.ok(fallbackReasonCards.budget_rejection>0,'budget-rejected candidates use a valid fallback');
 });

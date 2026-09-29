@@ -52,6 +52,18 @@ test('source sentence and speaker data cannot be duplicated into vocabulary entr
   assert.ok(result.errors.some(error=>error.includes('unapproved occurrence field speaker_id')));
 });
 
+test('paraphrases are a separate literal array and cannot duplicate the target authority',()=>{
+  const withParaphrase={...entry,paraphrases:['run into someone']};
+  assert.deepEqual(validate({schema_version:3,entries:[withParaphrase]}).errors,[]);
+  const notArray={...entry,id:'vocab:00002',paraphrases:'run into someone'};
+  const duplicate={...entry,id:'vocab:00003',paraphrases:['TAKE, UP!']};
+  const malformed={...entry,id:'vocab:00004',paraphrases:['A / B']};
+  const result=validate({schema_version:3,entries:[notArray,duplicate,malformed]});
+  assert.ok(result.errors.some(error=>error.includes('paraphrases must be an array')));
+  assert.ok(result.errors.some(error=>error.includes('paraphrases must not duplicate canonical or answers')));
+  assert.ok(result.errors.some(error=>error.includes('invalid paraphrase notation')));
+});
+
 test('migration requires a matching lexical expression, source sentence, sense, and POS review',()=>{
   const map={schema_version:1,mappings:[{
     v2_id:'duo:1:4',v3_id:entry.id,item_id:'E1',same_sense_confirmed:true,

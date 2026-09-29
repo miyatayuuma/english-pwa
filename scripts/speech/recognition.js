@@ -43,6 +43,33 @@ function getComposeNodes(getComposeNodesFn) {
   return Array.isArray(nodes) ? nodes : [];
 }
 
+export function appendRawTranscriptFinal(stable,fragment){
+  const left=String(stable??'').trimEnd();
+  const right=String(fragment??'').trim();
+  if(!left) return right;
+  if(!right) return left;
+  const lowerLeft=left.toLocaleLowerCase('en-US');
+  const lowerRight=right.toLocaleLowerCase('en-US');
+  if(lowerRight===lowerLeft||lowerRight.startsWith(`${lowerLeft} `)) return right;
+  if(lowerLeft.startsWith(`${lowerRight} `)) return left;
+  const leftWords=left.split(/\s+/);
+  const rightWords=right.split(/\s+/);
+  const comparable=word=>String(word||'').normalize('NFKC').toLocaleLowerCase('en-US').replace(/^[\p{P}]+|[\p{P}]+$/gu,'');
+  let overlap=0;
+  const max=Math.min(leftWords.length,rightWords.length);
+  for(let count=max;count>0;count-=1){
+    let same=true;
+    for(let index=0;index<count;index+=1){
+      const a=comparable(leftWords[leftWords.length-count+index]);
+      const b=comparable(rightWords[index]);
+      if(a!==b){same=false;break;}
+    }
+    if(same){overlap=count;break;}
+  }
+  const remaining=rightWords.slice(overlap).join(' ');
+  return remaining?`${left} ${remaining}`:left;
+}
+
 function clearHighlightInternal(enElement, getComposeNodesFn) {
   const spans = getTokenSpans(enElement);
   for (const sp of spans) {
@@ -314,6 +341,7 @@ export function createRecognitionController(options = {}) {
     getComposeNodes = () => [],
     getReferenceText = () => '',
     shouldEvaluate = () => true,
+    preserveRawTranscript = false,
     onTranscriptReset = () => {},
     onTranscriptInterim = () => {},
     onTranscriptFinal = () => {},
@@ -417,7 +445,9 @@ export function createRecognitionController(options = {}) {
         const res = event.results[i];
         const transcriptPiece = res[0]?.transcript || '';
         if (res.isFinal) {
-          stableText = appendStableFinal(stableText, transcriptPiece);
+          stableText = preserveRawTranscript
+            ?appendRawTranscriptFinal(stableText,transcriptPiece)
+            :appendStableFinal(stableText, transcriptPiece);
           const trimmedStable = stableText.trim();
           if(shouldEvaluate?.()===false){
             onTranscriptFinal?.(trimmedStable,null);

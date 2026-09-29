@@ -1,9 +1,10 @@
 import { createLevelStateManager } from './levelState.js';
-import { createRecognitionController, calcMatchScore, isRecognitionSupported } from '../speech/recognition.js';
+import { createRecognitionController, isRecognitionSupported } from '../speech/recognition.js';
 import { createSpeechSynthesisController } from '../speech/synthesis.js';
 import {
-  answerVariants,
   buildVocabularySession,
+  applyVocabularyAnswerSrs,
+  classifyVocabularyAnswer,
   displayAnswer,
   displayMeaning,
   eligibleVocabularyEntries,
@@ -23,10 +24,9 @@ const state={
   position:0,
   initialCount:0,
   completed:0,
-  correct:0,
+  outcomes:new Map(),
   retried:new Set(),
   current:null,
-  variants:[],
   hintUsed:false,
   processing:false,
   timer:0,
@@ -104,9 +104,9 @@ function injectStyles(){
     .vocab-meaning{max-width:520px;font-size:clamp(24px,6.8vw,37px);font-weight:850;line-height:1.38;letter-spacing:.005em;line-break:strict;overflow-wrap:break-word}.vocab-meaning.is-long{font-size:clamp(21px,5.8vw,31px);line-height:1.45}.vocab-meaning.is-xlong{font-size:clamp(18px,5vw,27px);line-height:1.5}
     .vocab-prompt{margin-top:11px;font-size:11px;opacity:.42}.vocab-answer-wrap{display:flex;min-height:50px;margin-top:16px;flex-direction:column;align-items:center;justify-content:center;gap:7px;max-width:100%}.vocab-answer{max-width:520px;font-size:clamp(22px,5.8vw,32px);font-weight:850;line-height:1.35;color:#a5b4fc;word-break:normal;overflow-wrap:break-word;hyphens:auto}.vocab-answer.is-long{font-size:clamp(19px,5vw,27px)}.vocab-answer.is-xlong{font-size:clamp(17px,4.5vw,23px);line-height:1.42}.vocab-answer[hidden]{display:block!important;visibility:hidden}.vocab-audio{min-height:44px;border:1px solid rgba(165,180,252,.22);background:rgba(99,102,241,.08);color:#c7d2fe;border-radius:999px;padding:6px 11px;font:inherit;font-size:10px;font-weight:750;cursor:pointer}.vocab-audio[hidden]{display:none!important}
     .vocab-transcript{min-height:19px;margin-top:7px;font-size:11px;line-height:1.4;opacity:.5;max-width:500px;word-break:normal;overflow-wrap:break-word}
-    .vocab-feedback{flex:0 0 auto;min-height:22px;text-align:center;font-size:12px;font-weight:750}.vocab-feedback.is-ok{color:#86efac}.vocab-feedback.is-miss{color:#fca5a5}
+    .vocab-feedback{flex:0 0 auto;min-height:22px;text-align:center;font-size:12px;font-weight:750}.vocab-feedback.is-ok{color:#86efac}.vocab-feedback.is-paraphrase{color:#99f6e4}.vocab-feedback.is-miss{color:#fca5a5}.vocab-answer-detail,.vocab-paraphrases{margin:7px auto;text-align:center;font-size:12px;line-height:1.7;overflow-wrap:anywhere}.vocab-answer-detail{color:#99f6e4}.vocab-answer-detail strong{color:#e2e8f0}.vocab-paraphrases{opacity:.68}.vocab-paraphrases>span:first-child{font-size:10px;opacity:.8}
     .vocab-controls{display:flex;flex:0 0 auto;flex-direction:column;align-items:stretch;gap:7px;margin-top:6px}.vocab-mic{width:78px;height:78px;align-self:center;border:0;border-radius:50%;background:#6366f1;color:#fff;font:inherit;font-size:14px;font-weight:850;cursor:pointer;box-shadow:0 12px 28px rgba(99,102,241,.28);transition:transform .12s ease,box-shadow .12s ease}.vocab-mic.is-listening{transform:scale(1.05);box-shadow:0 0 0 8px rgba(99,102,241,.14),0 12px 28px rgba(99,102,241,.28)}
-    .vocab-reveal{min-height:44px;align-self:center;border:0;background:transparent;color:inherit;font:inherit;font-size:11px;opacity:.56;padding:7px 12px;cursor:pointer}.vocab-manual{display:grid;grid-template-columns:1fr 1fr;gap:8px}.vocab-manual button{min-height:48px;border-radius:13px;font:inherit;font-size:12px;font-weight:800;cursor:pointer}.vocab-manual button:disabled{opacity:.45;cursor:default}.vocab-manual__miss{border:1px solid rgba(148,163,184,.18);background:rgba(148,163,184,.06);color:inherit}.vocab-manual__ok{border:0;background:#6366f1;color:#fff}
+    .vocab-reveal{min-height:44px;align-self:center;border:0;background:transparent;color:inherit;font:inherit;font-size:11px;opacity:.56;padding:7px 12px;cursor:pointer}.vocab-manual-hint{margin:0;text-align:center;font-size:10px;line-height:1.5;opacity:.58}.vocab-manual{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.vocab-manual button{min-width:0;min-height:48px;padding:5px;border-radius:13px;font:inherit;font-size:12px;font-weight:800;line-height:1.35;cursor:pointer}.vocab-manual button:disabled{opacity:.45;cursor:default}.vocab-manual__miss{border:1px solid rgba(148,163,184,.18);background:rgba(148,163,184,.06);color:inherit}.vocab-manual__paraphrase{border:1px solid rgba(45,212,191,.32);background:rgba(45,212,191,.09);color:#99f6e4}.vocab-manual__ok{border:0;background:#6366f1;color:#fff}
     .vocab-done{display:flex;flex:1;min-height:0;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:11px}.vocab-done h2{font-size:29px;margin:0}.vocab-done p{margin:0;opacity:.62}.vocab-done small{opacity:.48}.vocab-done button{min-width:210px;min-height:50px;border:0;border-radius:14px;background:#6366f1;color:white;font:inherit;font-weight:850;cursor:pointer;margin-top:7px}.vocab-done .vocab-reveal{min-width:44px;min-height:44px;background:transparent;color:inherit;margin-top:0}
     .vocab-speaker{display:inline-flex;align-items:center;gap:6px;min-height:32px;color:inherit;font-size:12px;font-weight:750;opacity:.84}.vocab-speaker img{width:32px;height:32px;flex:0 0 32px;border-radius:50%;object-fit:cover;background:rgba(148,163,184,.12)}.vocab-meta .vocab-speaker{min-height:32px;padding:0;border:0;background:transparent;font-size:12px;opacity:.9}.vocab-speaker-turns{display:grid;gap:6px;margin-top:10px}.vocab-speaker-turn{display:flex;align-items:center;gap:8px;padding:7px;border:1px solid rgba(148,163,184,.11);border-radius:11px;text-align:left}.vocab-context-state{gap:8px}.vocab-context-scroll{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:8px 2px 4px}.vocab-context-top{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px;margin:2px 0 8px}.vocab-answer{max-width:100%;font-size:clamp(22px,5.8vw,32px);font-weight:850;line-height:1.35;color:#a5b4fc;overflow-wrap:anywhere}.vocab-source-line{margin:14px auto 8px;max-width:560px;font-size:clamp(16px,4.1vw,21px);line-height:1.65;text-align:center;overflow-wrap:anywhere}.vocab-target{color:#fff;background:rgba(99,102,241,.3);border-bottom:2px solid #a5b4fc;border-radius:3px;padding:0 2px}.vocab-contextual-meaning{margin:5px auto 12px;text-align:center;font-size:clamp(14px,3.8vw,17px);line-height:1.65;overflow-wrap:anywhere}.vocab-contextual-meaning span{display:block;font-size:10px;opacity:.55}.vocab-context-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}.vocab-expand-context{min-height:44px;padding:8px 14px;border:1px solid rgba(148,163,184,.16);border-radius:12px;background:rgba(148,163,184,.05);color:inherit;font:inherit;font-size:12px;cursor:pointer}.vocab-context-full{margin-top:12px;padding:11px 10px;border:1px solid rgba(148,163,184,.12);border-radius:13px;background:rgba(148,163,184,.035)}.vocab-context-full[hidden]{display:none}.vocab-context-full .vocab-source-line{margin:0 auto 9px;font-size:15px}.vocab-source-ja{margin:10px 0 2px;font-size:13px;line-height:1.6;opacity:.78;text-align:center;overflow-wrap:anywhere}.vocab-source-audio-status{min-height:17px;font-size:10px;text-align:center;opacity:.64}.vocab-next{width:100%;min-height:52px;border:0;border-radius:14px;background:#6366f1;color:#fff;font:inherit;font-size:15px;font-weight:850;cursor:pointer}.vocab-controls{padding-bottom:env(safe-area-inset-bottom)}.vocab-controls button,.vocab-context-actions button{touch-action:manipulation}.vocab-transcript:empty{display:none}.vocab-answer[hidden]{display:none!important}
     @media(max-width:390px){.vocab-body{padding:12px}.vocab-shell{border-radius:18px}.vocab-card{padding-inline:3px}.vocab-meta{margin-bottom:10px}.vocab-meaning{font-size:26px}.vocab-meaning.is-long{font-size:22px}.vocab-meaning.is-xlong{font-size:19px}.vocab-mic{width:72px;height:72px}}
@@ -243,7 +243,7 @@ function startSession(){
   state.position=0;
   state.initialCount=plan.size;
   state.completed=0;
-  state.correct=0;
+  state.outcomes=new Map();
   state.retried=new Set();
   showNextCard();
 }
@@ -263,10 +263,11 @@ function scheduleTranscriptGrade(text){
 }
 
 function setupRecognition(){
-  const answerEl=state.screen.querySelector('.vocab-answer');
   state.recognition=createRecognitionController({
-    enElement:answerEl,
-    getReferenceText:()=>state.variants[0]||'',
+    // Vocabulary grading needs unrewritten ASR text: the shared feedback
+    // matcher and default token stitcher both canonicalize recognized words.
+    shouldEvaluate:()=>false,
+    preserveRawTranscript:true,
     onTranscriptReset:()=>{state.pendingTranscript='';clearGradeTimer();setTranscript('');},
     onTranscriptInterim:text=>setTranscript(text),
     onTranscriptFinal:text=>{
@@ -323,19 +324,12 @@ function startListening(){
   if(!result?.ok) setListening(false);
 }
 
-function bestMatchFor(text){
-  let best=null;
-  for(const variant of state.variants){
-    const match=state.recognition.matchAndHighlight(variant,text);
-    const score=calcMatchScore(match.refCount,match.recall,match.precision);
-    if(!best||score>best.score) best={variant,match,score};
-  }
-  return best||{variant:displayAnswer(state.current),match:null,score:0};
-}
-
-function updateVocabularyLevel(rate,hintUsed){
-  const evaluation=levels.evaluateLevel(rate,hintUsed?1:0);
-  return levels.updateLevelInfo(state.current.id,evaluation);
+function updateVocabularyLevel(answerType,hintUsed){
+  const application=applyVocabularyAnswerSrs(answerType,rate=>{
+    const evaluation=levels.evaluateLevel(rate,hintUsed?1:0);
+    return levels.updateLevelInfo(state.current.id,evaluation);
+  });
+  return application.value??null;
 }
 
 function densityClass(base,text,{long=24,xlong=42}={}){
@@ -485,6 +479,16 @@ function renderAnswerContext({result=null,allowGrade=false}={}){
   const {item,occurrence}=active;
   const speaker=active.sourceSpeaker?.profile||null;
   const answer=canonicalAnswer();
+  const resultType=result?.type||null;
+  const feedbackText=resultType==='target'?'正解':resultType==='paraphrase'?'意味はOK':resultType==='miss'?'あとでもう一度':'';
+  const feedbackClass=resultType==='target'?'is-ok':resultType==='paraphrase'?'is-paraphrase':resultType==='miss'?'is-miss':'';
+  const resultDetails=resultType==='paraphrase'
+    ?`<div class="vocab-answer-detail" lang="ja">このカードの表現：<strong lang="en">${escapeHtml(answer)}</strong><br>別の言い方：<strong lang="en">${escapeHtml(result.matchedText||'')}</strong></div>`
+    :'';
+  const paraphraseList=Array.isArray(state.current?.paraphrases)?state.current.paraphrases:[];
+  const paraphraseMarkup=paraphraseList.length
+    ?`<div class="vocab-paraphrases"><span>別の言い方：</span>${paraphraseList.map(value=>`<span lang="en">${escapeHtml(value)}</span>`).join('、 ')}</div>`
+    :'';
   state.screen.innerHTML=`
     <section class="vocab-study vocab-context-state">
       <div class="vocab-context-scroll" aria-live="polite" aria-atomic="false">
@@ -498,7 +502,8 @@ function renderAnswerContext({result=null,allowGrade=false}={}){
         </div>
         <div class="vocab-source-audio-status" aria-live="polite"></div>
         <div class="vocab-context-full" hidden></div>
-        <div class="vocab-feedback ${result==null?'':result?'is-ok':'is-miss'}" aria-live="polite">${result==null?'':result?'正解':'あとでもう一度'}</div>
+        ${resultDetails}${paraphraseMarkup}
+        <div class="vocab-feedback ${feedbackClass}" role="status" aria-live="polite" aria-atomic="true">${feedbackText}</div>
       </div>
       <div class="vocab-controls"></div>
     </section>`;
@@ -508,9 +513,10 @@ function renderAnswerContext({result=null,allowGrade=false}={}){
   state.screen.querySelector('.vocab-expand-context')?.addEventListener('click',revealFullContext);
   const controls=state.screen.querySelector('.vocab-controls');
   if(allowGrade){
-    controls.innerHTML=`<div class="vocab-manual"><button type="button" class="vocab-manual__miss" data-grade="miss">思い出せなかった</button><button type="button" class="vocab-manual__ok" data-grade="ok">言えていた</button></div>`;
-    controls.querySelector('[data-grade="miss"]').addEventListener('click',()=>manualGrade(false));
-    controls.querySelector('[data-grade="ok"]').addEventListener('click',()=>manualGrade(true));
+    controls.innerHTML=`<p class="vocab-manual-hint">「言えていた」は、このカードの表現そのものを言えた場合に選びます。</p><div class="vocab-manual"><button type="button" class="vocab-manual__miss" data-grade="miss">思い出せなかった</button><button type="button" class="vocab-manual__paraphrase" data-grade="paraphrase">別の言い方は出た</button><button type="button" class="vocab-manual__ok" data-grade="target">言えていた</button></div>`;
+    controls.querySelector('[data-grade="miss"]').addEventListener('click',()=>manualGrade('miss'));
+    controls.querySelector('[data-grade="paraphrase"]').addEventListener('click',()=>manualGrade('paraphrase'));
+    controls.querySelector('[data-grade="target"]').addEventListener('click',()=>manualGrade('target'));
     controls.querySelector('[data-grade="miss"]').focus({preventScroll:true});
   }else{
     controls.appendChild(nextButton());
@@ -524,18 +530,17 @@ function gradeTranscript(text){
   state.processing=true;
   clearGradeTimer();
   state.pendingTranscript='';
-  const best=bestMatchFor(text);
+  const result=classifyVocabularyAnswer({entry:state.current,activeOccurrence:activeSource(),transcript:text});
   if(state.recognition?.isActive()) state.recognition.stop();
   setListening(false);
-  updateVocabularyLevel(best.score,state.hintUsed);
-  const pass=best.score>=0.7;
-  if(pass) state.correct+=1;
-  else if(!state.retried.has(state.current.id)){
+  updateVocabularyLevel(result.type,state.hintUsed);
+  state.outcomes.set(state.current.id,result.type);
+  if(result.type==='miss'&&!state.retried.has(state.current.id)){
     state.retried.add(state.current.id);
     state.queue.push(state.current);
   }
   state.completed+=1;
-  renderAnswerContext({result:pass});
+  renderAnswerContext({result});
 }
 
 function revealAnswer(){
@@ -547,19 +552,32 @@ function revealAnswer(){
   speakAnswer();
 }
 
-function manualGrade(ok){
+function manualGrade(answerType){
   if(state.processing||!state.current) return;
   state.processing=true;
   state.screen?.querySelectorAll('.vocab-manual button').forEach(button=>{button.disabled=true;});
-  updateVocabularyLevel(ok?0.95:0,true);
-  if(ok) state.correct+=1;
-  else if(!state.retried.has(state.current.id)){
+  updateVocabularyLevel(answerType,true);
+  state.outcomes.set(state.current.id,answerType);
+  if(answerType==='miss'&&!state.retried.has(state.current.id)){
     state.retried.add(state.current.id);
     state.queue.push(state.current);
   }
   state.completed+=1;
   const feedback=state.screen.querySelector('.vocab-feedback');
-  if(feedback){feedback.className=`vocab-feedback ${ok?'is-ok':'is-miss'}`;feedback.textContent=ok?'記録しました':'あとでもう一度';}
+  const feedbackByType={target:['is-ok','ターゲット正解として記録'],paraphrase:['is-paraphrase','意味はOK。ターゲットの習得記録は変わりません'],miss:['is-miss','あとでもう一度']};
+  const [className,label]=feedbackByType[answerType]||feedbackByType.miss;
+  if(feedback){feedback.className=`vocab-feedback ${className}`;feedback.textContent=label;}
+  if(answerType==='paraphrase'&&!state.screen.querySelector('.vocab-answer-detail')){
+    const detail=document.createElement('div');
+    detail.className='vocab-answer-detail';
+    detail.lang='ja';
+    detail.appendChild(document.createTextNode('このカードの表現：'));
+    const target=document.createElement('strong');
+    target.lang='en';
+    target.textContent=canonicalAnswer();
+    detail.appendChild(target);
+    state.screen.querySelector('.vocab-paraphrases,.vocab-feedback')?.before(detail);
+  }
   const controls=state.screen.querySelector('.vocab-controls');
   controls?.replaceChildren(nextButton());
   controls?.querySelector('.vocab-next')?.focus({preventScroll:true});
@@ -574,7 +592,6 @@ function showNextCard(){
   state.sourceAudio?.pause?.();state.sourceAudio=null;state.sourceAudioUrl='';
   if(state.position>=state.queue.length){ renderDone(); return; }
   state.current=state.queue[state.position];
-  state.variants=answerVariants(state.current);
   state.hintUsed=false;
   state.processing=false;
   const meaning=displayMeaning(state.current);
@@ -609,7 +626,11 @@ function renderDone(){
   state.sourceAudio?.pause?.();state.sourceAudio=null;state.sourceAudioUrl='';
   const initial=Math.max(0,state.initialCount);
   const retryCount=state.retried.size;
-  state.screen.innerHTML=`<section class="vocab-done"><h2>完了</h2><p>正解 ${state.correct}/${initial}</p>${retryCount?`<small>再確認 ${retryCount}枚</small>`:''}<button type="button">もう1セット</button><button type="button" class="vocab-reveal" data-back>戻る</button></section>`;
+  const outcomes=[...state.outcomes.values()];
+  const targetCount=outcomes.filter(type=>type==='target').length;
+  const paraphraseCount=outcomes.filter(type=>type==='paraphrase').length;
+  const missCount=outcomes.filter(type=>type==='miss').length;
+  state.screen.innerHTML=`<section class="vocab-done"><h2>完了</h2><p>ターゲット正解 ${targetCount}　別表現 ${paraphraseCount}　要復習 ${missCount}</p><small>対象 ${initial}枚</small>${retryCount?`<small>再確認 ${retryCount}枚</small>`:''}<button type="button">もう1セット</button><button type="button" class="vocab-reveal" data-back>戻る</button></section>`;
   state.screen.querySelector('.vocab-done>button:not([data-back])')?.addEventListener('click',renderLobby);
   state.screen.querySelector('[data-back]')?.addEventListener('click',renderLobby);
 }

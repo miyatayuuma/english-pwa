@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { adaptiveClozeCount, buildClozeCard, desiredClozeCount, selectClozeTargets } from '../scripts/app/clozeLearningCore.js';
+import { adaptiveClozeCount, buildClozeCard, desiredClozeCount, selectClozeTargets, sentenceTokens } from '../scripts/app/clozeLearningCore.js';
 import { encounterFor } from '../scripts/app/clozeMode.js';
 
 const e2={id:'E0002',en:'Take it easy. I can assure you that everything will turn out fine.',ja:'気楽にいけよ。大丈夫、すべてうまくいくさ。'};
@@ -99,13 +99,16 @@ test('normal and phrase-exception hidden-word ratios stay within their limits',(
   assert.ok(ratio<=(targets.some(target=>target.phraseException)?.45:.4));
 });
 
-test('fallback is used only when an item has no curated v3 candidates',()=>{
+test('fallback supplies a valid target when candidates are absent or rejected by the cloze budget',()=>{
   const item={id:'X',en:'The committee rejected the proposal immediately.',ja:''};
   const fallback=selectClozeTargets(item,[]);
-  assert.equal(fallback.length,1);assert.equal(fallback[0].fallback,true);
+  assert.equal(fallback.length,1);assert.equal(fallback[0].fallback,true);assert.equal(fallback[0].fallbackReason,'no-vocabulary-candidate');
   const surface='The committee rejected the proposal immediately',start=item.en.indexOf(surface);
   const tooLong={id:'too-long',kind:'expression',canonical:'reject the whole proposal immediately',occurrences:[{item_id:'X',start,end:start+surface.length,contextual_meaning_ja:'却下した'}]};
-  assert.deepEqual(selectClozeTargets(item,[tooLong]),[]);
+  const budgetFallback=selectClozeTargets(item,[tooLong]);
+  assert.equal(budgetFallback.length,1);assert.equal(budgetFallback[0].fallback,true);assert.equal(budgetFallback[0].fallbackReason,'budget-rejection');
+  assert.ok(budgetFallback[0].tokenStart>=0&&budgetFallback[0].tokenEnd<sentenceTokens(item.en).length);
+  assert.ok(sentenceTokens(item.en).length-(budgetFallback[0].tokenEnd-budgetFallback[0].tokenStart+1)>=2);
 });
 
 test('reconstruction, range, no-overlap, group caps, and token load hold for representative v3 targets',()=>{
