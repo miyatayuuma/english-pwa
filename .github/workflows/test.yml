@@ -4,11 +4,19 @@ on:
   push:
     paths:
       - 'scripts/**'
+      - 'data/vocabulary-v3.json'
+      - 'data/vocabulary-v2-v3-migration.json'
+      - 'data/items.json'
+      - 'data/characters.json'
       - 'tests/**'
       - '.github/workflows/test.yml'
   pull_request:
     paths:
       - 'scripts/**'
+      - 'data/vocabulary-v3.json'
+      - 'data/vocabulary-v2-v3-migration.json'
+      - 'data/items.json'
+      - 'data/characters.json'
       - 'tests/**'
 
 permissions:

@@ -35,6 +35,7 @@ import {
   recordShadowingExposure,
 } from '../state/studyLog.js';
 import { AUDIO_LOCK_STATES, createAudioController } from '../audio/controller.js';
+import { configureSharedAudioResolver, createAudioUrlResolver } from '../audio/resolver.js';
 import {
   createRecognitionController,
   calcMatchScore,
@@ -2462,8 +2463,7 @@ function createAppRuntime(){
         });
       }
       if(CFG.audioBase!==prevAudioBase){
-        audioUrlCache.clear();
-        audioBaseProbeCache.clear();
+        audioUrlResolver.clear();
       }
       saveCfg(CFG);
       if((nextApiUrl && nextApiUrl!==prevApiUrl) || (!nextApiUrl && prevApiUrl)){
@@ -2874,55 +2874,15 @@ function createAppRuntime(){
   }
 
   // Audio resolve: DIR (folder) -> OPFS -> base URL
-  const audioUrlCache=new Map();
-  const audioBaseProbeCache=new Map();
-  const audioBaseAvailabilityCache=new Map();
-  const audioBaseProbeInFlight=new Map();
-  async function canFetchAudioFromBase(url, baseKey=''){
-    if(!url) return false;
-    if(baseKey && audioBaseAvailabilityCache.has(baseKey) && !audioBaseAvailabilityCache.get(baseKey)){
-      return false;
-    }
-    if(baseKey && !audioBaseAvailabilityCache.has(baseKey) && audioBaseProbeInFlight.has(baseKey)){
-      const baseReady=await audioBaseProbeInFlight.get(baseKey);
-      if(!baseReady) return false;
-    }
-    if(audioBaseProbeCache.has(url)) return audioBaseProbeCache.get(url);
-    const probePromise=(async()=>{
-      let ok=false;
-      try{
-        const res=await fetch(url,{method:'HEAD'});
-        ok=!!(res&&res.ok);
-        if(baseKey && res && !res.ok && res.status===404){
-          audioBaseAvailabilityCache.set(baseKey,false);
-        }
-      }catch(_){
-        ok=false;
-        if(baseKey){
-          audioBaseAvailabilityCache.set(baseKey,false);
-        }
-      }
-      audioBaseProbeCache.set(url,ok);
-      if(baseKey && ok){
-        audioBaseAvailabilityCache.set(baseKey,true);
-      }
-      return ok;
-    })();
-    if(baseKey && !audioBaseAvailabilityCache.has(baseKey)){
-      audioBaseProbeInFlight.set(baseKey,probePromise);
-    }
-    const ok=await probePromise;
-    if(baseKey){
-      const inflight=audioBaseProbeInFlight.get(baseKey);
-      if(inflight===probePromise){
-        audioBaseProbeInFlight.delete(baseKey);
-      }
-    }
-    return ok;
-  }
   async function resolveFromDir(name){ try{ const d=await ensureDir(); if(!d||!name) return ''; const fh=await d.getFileHandle(name).catch(()=>null); if(!fh) return ''; const f=await fh.getFile(); return URL.createObjectURL(f); }catch(_){ return ''; } }
   async function resolveFromOPFS(name){ if(!name) return ''; try{ if(!(navigator.storage&&navigator.storage.getDirectory)) return ''; const root=await navigator.storage.getDirectory(); const fh=await root.getFileHandle(name).catch(()=>null); if(!fh) return ''; const file=await fh.getFile(); return URL.createObjectURL(file); }catch(_){ return ''; } }
-  async function resolveAudioUrl(name){ if(!name) return ''; if(audioUrlCache.has(name)) return audioUrlCache.get(name); let url=await resolveFromDir(name); if(!url) url=await resolveFromOPFS(name); const base=(CFG.audioBase||'').trim().replace(/\/$/,''); if(!url && base){ const candidate= base + '/' + encodeURI(name); if(await canFetchAudioFromBase(candidate, base)){ url=candidate; } } audioUrlCache.set(name,url||''); return url||''; }
+  const audioUrlResolver=createAudioUrlResolver({
+    resolveFromDirectory:resolveFromDir,
+    resolveFromOPFS,
+    getBaseUrl:()=>CFG.audioBase,
+  });
+  const resolveAudioUrl=audioUrlResolver.resolveAudioUrl;
+  configureSharedAudioResolver(audioUrlResolver);
 
   // Render & navigation
   function stopAudio(){ try{audio.pause();}catch(_){ } audio.currentTime=0; speechController.cancelSpeech(); }
@@ -3111,7 +3071,7 @@ function createAppRuntime(){
       let url='';
       if(allowAudio){
         const hasDirAudio=!!DIR;
-        const needsResolveLoader = !!(hasDirAudio && it.audio_fn && !audioUrlCache.has(it.audio_fn));
+        const needsResolveLoader = !!(hasDirAudio && it.audio_fn && !audioUrlResolver.hasCached(it.audio_fn));
         releaseResolve = needsResolveLoader ? acquireOverlay('audio-resolve') : null;
         try{
           url=await resolveAudioUrl(it.audio_fn);

@@ -18,90 +18,25 @@ export function sentenceTokens(sentence){
   return out;
 }
 
-function simpleStem(token){
-  const t=tokenNorm(token);
-  if(t.length<=3) return t;
-  if(/ies$/.test(t)&&t.length>4) return `${t.slice(0,-3)}y`;
-  if(/ied$/.test(t)&&t.length>4) return `${t.slice(0,-3)}y`;
-  if(/ing$/.test(t)&&t.length>5) return t.slice(0,-3).replace(/(.)\1$/,'$1');
-  if(/ed$/.test(t)&&t.length>4) return t.slice(0,-2).replace(/(.)\1$/,'$1');
-  if(/es$/.test(t)&&t.length>4) return t.slice(0,-2);
-  if(/s$/.test(t)&&t.length>3) return t.slice(0,-1);
-  return t;
-}
-
-function tokenMatches(a,b){
-  const aa=tokenNorm(a),bb=tokenNorm(b);
-  return aa===bb || simpleStem(aa)===simpleStem(bb);
-}
-
-function rawHeadwordTokens(headword){
-  return norm(headword)
-    .replace(/[\[\](),.;:!?]/g,' ')
-    .replace(/[~～…]/g,' ')
-    .replace(/one['’]?s/gi,' ')
-    .split(/\s+/)
-    .map(tokenNorm)
-    .filter(Boolean)
-    .filter(token=>!PLACEHOLDERS.has(token));
-}
-
-function anchorsFor(entry){
-  const raw=rawHeadwordTokens(entry?.headword||'');
-  if(entry?.kind==='word') return raw.slice(0,1);
-  const meaningful=raw.filter(token=>!FUNCTION_WORDS.has(token));
-  if(meaningful.length>=2) return meaningful;
-  if(meaningful.length===1){
-    const index=raw.indexOf(meaningful[0]);
-    const neighbor=raw[index+1]||raw[index-1];
-    return neighbor?[meaningful[0],neighbor]:meaningful;
+function exactOccurrenceSpans(entry,itemId,sentence,tokens){
+  const occurrences=Array.isArray(entry?.occurrences)?entry.occurrences:[];
+  const spans=[];
+  for(const occurrence of occurrences.filter(value=>String(value?.item_id||'')===itemId)){
+    const start=Number(occurrence.start),end=Number(occurrence.end);
+    if(!Number.isFinite(start)||!Number.isFinite(end)||start<0||end<=start||end>sentence.length) continue;
+    if(!/[A-Za-z]/.test(sentence.slice(start,end))) continue;
+    const covered=[];
+    for(const token of tokens){if(token.end>start&&token.start<end) covered.push(token);}
+    if(!covered.length||covered[0].start!==start||covered.at(-1).end!==end) continue;
+    spans.push({start,end,tokenStart:covered[0].index,tokenEnd:covered.at(-1).index,occurrence});
   }
-  return raw.slice(0,3);
-}
-
-function findOrderedSpan(tokens,anchors,{maxGap=4}={}){
-  if(!tokens.length||!anchors.length) return null;
-  let best=null;
-  for(let start=0;start<tokens.length;start+=1){
-    if(!tokenMatches(tokens[start].norm,anchors[0])) continue;
-    let pos=start;
-    let ok=true;
-    for(let ai=1;ai<anchors.length;ai+=1){
-      let found=-1;
-      for(let i=pos+1;i<Math.min(tokens.length,pos+maxGap+2);i+=1){
-        if(tokenMatches(tokens[i].norm,anchors[ai])){ found=i; break; }
-      }
-      if(found<0){ok=false;break;}
-      pos=found;
-    }
-    if(!ok) continue;
-    const candidate={tokenStart:start,tokenEnd:pos,start:tokens[start].start,end:tokens[pos].end};
-    const width=pos-start+1;
-    if(!best||width<(best.tokenEnd-best.tokenStart+1)) best=candidate;
-  }
-  return best;
-}
-
-function belongsToItem(entry,itemId){
-  return Array.isArray(entry?.example_ids)&&entry.example_ids.includes(itemId);
+  return spans;
 }
 
 function candidateScore(entry,span){
   const width=span.tokenEnd-span.tokenStart+1;
-  let score=entry?.kind==='phrase'?100:55;
-  score+=Math.min(30,width*7);
-  if(entry?.meaning_confidence==='aligned_high') score+=12;
-  else if(entry?.meaning_confidence==='aligned_medium') score+=7;
-  if(entry?.match_confidence==='high') score+=8;
-  if(entry?.kind==='word'&&FUNCTION_WORDS.has(tokenNorm(entry?.headword))) score-=80;
-  return score;
-}
-
-function candidateTier(entry){
-  const meaning=String(entry?.meaning_confidence||'');
-  if(entry?.match_confidence==='high'&&['aligned_high','aligned_medium'].includes(meaning)) return 0;
-  if(entry?.match_confidence==='high'||meaning.startsWith('aligned_')||meaning.startsWith('wiktionary_')) return 1;
-  return 2;
+  const expression=entry?.kind==='expression'||entry?.kind==='construction';
+  return (expression?100:55)+Math.min(30,width*7);
 }
 
 function stableHash(value){
@@ -149,7 +84,7 @@ function fallbackTarget(tokens,sentence){
   return {
     entry_id:'fallback',
     kind:'word',
-    headword:token.surface,
+    canonical:token.surface,
     meaning_ja:'',
     tokenStart:token.index,
     tokenEnd:token.index,
@@ -173,23 +108,23 @@ export function selectClozeTargets(item,vocabularyEntries,options={}){
   const targetCount=Math.max(1,Math.min(levelCap,Number(options.count)||levelCap));
   const candidates=[];
   for(const entry of Array.isArray(vocabularyEntries)?vocabularyEntries:[]){
-    if(!belongsToItem(entry,itemId)) continue;
-    const anchors=anchorsFor(entry);
-    const span=findOrderedSpan(tokens,anchors,{maxGap:entry?.kind==='phrase'?4:1});
-    if(!span) continue;
-    const width=span.tokenEnd-span.tokenStart+1;
-    if(width>Math.max(5,Math.ceil(tokens.length*.45))) continue;
-    candidates.push({
-      entry_id:entry.id,
-      kind:entry.kind||'word',
-      headword:String(entry.headword||''),
-      meaning_ja:String(entry.meaning_ja||''),
-      ...span,
-      surface:sentence.slice(span.start,span.end),
-      score:candidateScore(entry,span),
-      tier:candidateTier(entry),
-      fallback:false,
-    });
+    for(const span of exactOccurrenceSpans(entry,itemId,sentence,tokens)){
+      const width=span.tokenEnd-span.tokenStart+1;
+      candidates.push({
+        entry_id:entry.id,
+        kind:entry.kind||'word',
+        canonical:String(entry.canonical||''),
+        meaning_ja:String(entry.meaning_ja||''),
+        start:span.start,
+        end:span.end,
+        tokenStart:span.tokenStart,
+        tokenEnd:span.tokenEnd,
+        surface:sentence.slice(span.start,span.end),
+        score:candidateScore(entry,span),
+        tier:0,
+        fallback:false,
+      });
+    }
   }
   const recent=new Set(Array.from(options.recentTargetIds||[],String));
   const variant=stableHash(`${itemId}:${options.variantKey??options.seed??0}`);
@@ -212,8 +147,9 @@ export function selectClozeTargets(item,vocabularyEntries,options={}){
   for(const candidate of candidates){
     if(selected.some(target=>overlaps(target,candidate))) continue;
     const width=candidate.tokenEnd-candidate.tokenStart+1;
+    if(width>Math.max(5,Math.ceil(tokens.length*.45))) continue;
     const projected=hiddenWords+width;
-    const phraseException=selected.length===0&&candidate.kind==='phrase'&&candidate.tier===0&&width<=4&&tokens.length>=8&&projected/tokens.length<=.45;
+    const phraseException=selected.length===0&&(candidate.kind==='expression'||candidate.kind==='construction')&&width<=4&&tokens.length>=8&&projected/tokens.length<=.45;
     if(projected>softBudget&&!phraseException) continue;
     if(!phraseException&&projected>normalHardBudget) continue;
     candidate.phraseException=phraseException&&projected>softBudget;
@@ -222,7 +158,7 @@ export function selectClozeTargets(item,vocabularyEntries,options={}){
     if(candidate.phraseException) break;
     if(selected.length>=targetCount) break;
   }
-  if(!selected.length){
+  if(!selected.length&&!candidates.length){
     const fallback=fallbackTarget(tokens,sentence);
     if(fallback) selected.push(fallback);
   }
