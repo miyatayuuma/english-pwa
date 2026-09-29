@@ -464,6 +464,21 @@ export function createReorderGuide({
     isActive: () => active,
     isComplete: () => complete,
     getDisabledReason: () => disabledReason,
+    getStateSnapshot: () => ({
+      active,
+      complete,
+      puzzleIndex,
+      row: currentRow() ? {
+        sentence: currentRow().sentence?.text ?? '',
+        fixedContext: !!currentRow().fixedContext,
+        initialBank: currentRow().initialState?.bank?.slice() ?? [],
+      } : null,
+      puzzleState: puzzleState ? {
+        bank: puzzleState.bank.slice(),
+        answer: puzzleState.answer.slice(),
+        status: puzzleState.status,
+      } : null,
+    }),
     isAwaitingReorder: () => active,
     getNodes: () => [],
     setDefaultNote: (value) => { noteDefault = String(value ?? ''); },

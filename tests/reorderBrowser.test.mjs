@@ -112,6 +112,7 @@ async function tapCanonical(page, count, sentenceIndex = 0) {
 async function pageState(page) {
   return page.evaluate(() => ({
     controller: window.getReorderState(),
+    snapshot: window.getReorderSnapshot(),
     note: document.querySelector('#composeNote')?.textContent,
     feedback: document.querySelector('#composeFeedback')?.textContent,
     context: document.querySelector('#composeContext')?.textContent,
@@ -185,7 +186,15 @@ browserTest('390×844 supports three, seven, and nine tile sentence units withou
     await boot(page, fixture, count === 3 ? 1 : count === 7 ? 3 : 5);
     await page.waitForSelector('.compose-token');
     assert.equal(await page.locator('.compose-token').count(), count);
-    const widths = await page.evaluate(() => ({ viewport: innerWidth, document: document.documentElement.scrollWidth }));
+    const widths = await page.evaluate(() => ({
+      viewport: innerWidth,
+      document: document.documentElement.scrollWidth,
+      overflow: [...document.querySelectorAll('body *')]
+        .map((node) => ({ tag: node.tagName, id: node.id, className: typeof node.className === 'string' ? node.className : '', right: Math.round(node.getBoundingClientRect().right) }))
+        .filter((node) => node.right > innerWidth)
+        .sort((a, b) => b.right - a.right)
+        .slice(0, 10),
+    }));
     assert.ok(widths.document <= widths.viewport, `horizontal overflow at ${count} tiles: ${JSON.stringify(widths)}`);
     if (count === 9) {
       await page.setViewportSize({ width: 320, height: 640 });

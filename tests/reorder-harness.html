@@ -10,7 +10,7 @@
     :root { color-scheme: dark; --txt: #f7faff; --muted: #b7c4d8; }
     body { margin: 0; padding: 12px; font: 16px/1.45 system-ui, sans-serif; }
     main { width: min(390px, calc(100vw - 24px)); margin: 0 auto; }
-    #composeGuide { display: flex; max-width: 390px; }
+    #composeGuide { display: flex; width: 100%; max-width: 100%; }
     #composeGuide[aria-hidden="true"] { display: none; }
     #speechStage { display: block; margin-top: 16px; }
   </style>
@@ -55,6 +55,7 @@
     });
     window.bootReorder = async (item, bestLevel = 0) => controller.setup(item, bestLevel);
     window.getReorderState = () => ({ active: controller.isActive(), complete: controller.isComplete(), reason: controller.getDisabledReason() });
+    window.getReorderSnapshot = () => controller.getStateSnapshot();
     const sampleId = new URL(location.href).searchParams.get('live');
     if (sampleId) {
       Promise.all([fetch('/data/items.json').then((response) => response.json()), fetch('/data/reorder-v1.json').then((response) => response.json())])
