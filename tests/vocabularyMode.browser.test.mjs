@@ -126,6 +126,7 @@ browserTest('390×844 expression card preserves active source, strict paraphrase
     assert.equal(await page.locator('.vocab-meta').innerText().then(text=>text.includes('表現')),true);
     assert.equal(await page.locator('.vocab-mic').getAttribute('aria-label'),'英語で答える');
     assert.equal(await page.evaluate(()=>document.activeElement?.classList.contains('vocab-mic')),true);
+    assert.equal(await page.evaluate(()=>getComputedStyle(document.querySelector('.vocab-mic')).transitionDuration),'0s');
     assert.ok(await page.locator('.vocab-speaker').count());
     assert.equal(await page.locator('.vocab-paraphrases').count(),0,'paraphrases stay hidden before response');
     const width=await page.evaluate(()=>({viewport:innerWidth,document:document.documentElement.scrollWidth}));
@@ -148,7 +149,6 @@ browserTest('390×844 expression card preserves active source, strict paraphrase
     await sourceAudio.waitFor({state:'visible'});
     await sourceAudio.click();
     await page.waitForFunction(()=>window.__mockSpeech.audioPlayed.length>0);
-    assert.equal(await page.evaluate(()=>getComputedStyle(document.querySelector('.vocab-mic')).transitionDuration),'0s');
     await page.locator('.vocab-next').click();
     assert.match(await page.locator('.vocab-done').innerText(),/ターゲット正解 1　別表現 0　要復習 0/);
 
@@ -198,7 +198,11 @@ browserTest('word and construction source realizations grade as TARGET; manual r
         assert.ok(occurrence);
         await inject(page,text);
         await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='正解');
-        assert.equal(await page.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id].last,entry.id),5);
+        const state=await page.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id],entry.id);
+        assert.equal(state.lastMatch,1,'strict TARGET classification must pass perfect lexical credit');
+        assert.equal(state.level5Count,1,'TARGET must update mastery counters');
+        assert.equal(state.noHintHistory.length,1,'TARGET must update no-hint history');
+        assert.ok(state.review.nextDueAt>0,'TARGET must update the review schedule');
       }
       await page.locator('.vocab-next').click();
       assert.match(await page.locator('.vocab-done').innerText(),/ターゲット正解 1/);
