@@ -5,12 +5,13 @@ import fs from 'node:fs';
 import { adaptiveClozeCount, buildClozeCard, sentenceTokens } from '../scripts/app/clozeLearningCore.js';
 
 const itemsRaw=JSON.parse(fs.readFileSync(new URL('../data/items.json',import.meta.url),'utf8'));
-const vocabRaw=JSON.parse(fs.readFileSync(new URL('../data/vocabulary-v2.json',import.meta.url),'utf8'));
+const vocabRaw=JSON.parse(fs.readFileSync(new URL('../data/vocabulary-v3.json',import.meta.url),'utf8'));
 const items=Array.isArray(itemsRaw)?itemsRaw:itemsRaw.items;
 const entries=Array.isArray(vocabRaw)?vocabRaw:vocabRaw.entries;
 const byExample=new Map();
 for(const entry of entries){
-  for(const itemId of entry.example_ids||[]){
+  for(const occurrence of entry.occurrences||[]){
+    const itemId=occurrence.item_id;
     if(!byExample.has(itemId)) byExample.set(itemId,[]);
     byExample.get(itemId).push(entry);
   }

@@ -1,4 +1,5 @@
 import { voiceRolesFromCode } from './audioVoiceTaxonomy.mjs';
+import { extractQuotedTurns } from './quotedTurns.js';
 
 function stableJitter(itemId,characterId){
   const text=`${itemId}:${characterId}`;
@@ -24,12 +25,7 @@ export function buildCharacterNameMap(characterData){
 }
 
 export function quotedTurns(text){
-  const source=String(text||'');
-  const turns=[];
-  const regex=/"([^"]+)"/g;
-  let match;
-  while((match=regex.exec(source))) turns.push(match[1].trim());
-  return turns;
+  return extractQuotedTurns(text).map(turn=>turn.text);
 }
 
 function directAddresseeLocks(item,roles,nameMap,profileById){

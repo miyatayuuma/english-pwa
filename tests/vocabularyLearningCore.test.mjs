@@ -5,112 +5,101 @@ import {
   buildVocabularySession,
   displayAnswer,
   displayMeaning,
+  eligibleVocabularyEntries,
+  joinVocabularyData,
   readyVocabularyEntries,
   vocabularyStats,
 } from '../scripts/app/vocabularyLearningCore.js';
 
-test('ready vocabulary keeps only cards with a meaning and reliable example match',()=>{
-  const db={entries:[
-    {id:'a',headword:'respect',meaning_ja:'尊重する',match_confidence:'high'},
-    {id:'b',headword:'missing',meaning_ja:null,match_confidence:'high'},
-    {id:'c',headword:'uncertain',meaning_ja:'不確か',match_confidence:'low'},
-  ]};
-  assert.deepEqual(readyVocabularyEntries(db).map(x=>x.id),['a']);
+const item=(id,en)=>({id,en,ja:`${id}訳`,unit:'Section1',audio_fn:`${id}.m4a`,speaker_tags:[{id:'alice'}]});
+const occurrence=(item_id,start,end,contextual_meaning_ja='自然な訳')=>({item_id,start,end,contextual_meaning_ja});
+const word={id:'vocab:00001',kind:'word',canonical:'respect',sense_key:'treat_as_valuable',pos:'verb',meaning_ja:'尊重する',occurrences:[occurrence('E1',0,7)]};
+const expression={id:'vocab:00002',kind:'expression',subtype:'phrasal_verb',canonical:'take up',sense_key:'occupy_space',pos:'verb',meaning_ja:'場所を占める',occurrences:[occurrence('E1',8,15)]};
+const construction={id:'vocab:00003',kind:'construction',canonical:'make someone do something',sense_key:'causative_make',pos:'verb',meaning_ja:'人に〜させる',occurrences:[occurrence('E1',16,21)]};
+
+test('v3 ready entries require a supported kind, canonical sense, meaning, and occurrence',()=>{
+  const db={entries:[word,expression,construction,{id:'bad',headword:'legacy',meaning_ja:'古い形式'}]};
+  assert.deepEqual(readyVocabularyEntries(db).map(entry=>entry.id),[word.id,expression.id,construction.id]);
 });
 
-test('session prioritizes due cards, then unseen cards, without early-reviewing studied cards',()=>{
+test('new vocabulary stays locked until a source item has recorded progress',()=>{
+  const items=[item('E1','respect'),item('E2','take up')];
+  const joined=joinVocabularyData({entries:[{...word,occurrences:[occurrence('E1',0,7),occurrence('E2',0,7)]}]},items,[{id:'alice',name:'Alice'}]);
+  assert.equal(eligibleVocabularyEntries(joined,{}).length,0);
+  assert.equal(eligibleVocabularyEntries(joined,{E1:{updatedAt:100}}).length,1);
+  assert.equal(eligibleVocabularyEntries(joined,{E2:{last:1}}).length,1);
+  assert.equal(eligibleVocabularyEntries(joined,{E2:{best:1}}).length,1);
+});
+
+test('most recently studied occurrence becomes the context, with dataset order breaking ties',()=>{
+  const items=[item('E1','respect'),item('E2','respect'),item('E3','respect')];
+  const joined=joinVocabularyData({entries:[{...word,occurrences:[occurrence('E1',0,7),occurrence('E2',0,7),occurrence('E3',0,7)]}]},items,[{id:'alice',name:'Alice'}]);
+  const eligible=eligibleVocabularyEntries(joined,{
+    E1:{updatedAt:500},E2:{updatedAt:900},E3:{updatedAt:900},
+  });
+  assert.equal(eligible[0].activeOccurrence.item.id,'E2');
+});
+
+test('a safely migrated vocabulary card may use its first occurrence when sentence history is absent',()=>{
+  const joined=joinVocabularyData({entries:[{...word,occurrences:[occurrence('E1',0,7),occurrence('E2',0,7)]}]},[item('E1','respect'),item('E2','respect')],[{id:'alice',name:'Alice'}]);
+  const eligible=eligibleVocabularyEntries(joined,{[word.id]:{last:2,_vocabularyV3LegacySourceFallback:true}});
+  assert.equal(eligible[0].activeOccurrence.item.id,'E1');
+});
+
+test('vocabulary session preserves due priority, fresh cap, and kind filters',()=>{
   const now=1_800_000_000_000;
-  const entries=[
-    {id:'due',kind:'word'},
-    {id:'fresh',kind:'phrase'},
-    {id:'early',kind:'word'},
-  ];
+  const entries=[{...word},{...expression},{...construction}];
   const levels={
-    due:{last:2,updatedAt:now-1000,review:{nextDueAt:now-100}},
-    early:{last:2,updatedAt:now-1000,review:{nextDueAt:now+86_400_000}},
+    [word.id]:{last:2,updatedAt:now-100,review:{nextDueAt:now-1}},
+    [expression.id]:{last:2,updatedAt:now-100,review:{nextDueAt:now+100_000}},
   };
   const plan=buildVocabularySession(entries,levels,{now,size:2});
-  assert.equal(plan.entries[0].id,'due');
-  assert.equal(plan.entries[1].id,'fresh');
-  assert.equal(plan.early,0);
+  assert.equal(plan.entries[0].id,word.id);
+  assert.equal(plan.entries[1].id,construction.id);
+  assert.deepEqual(buildVocabularySession(entries,{}, {kind:'word',size:12,now}).entries.map(x=>x.id),[word.id]);
+  assert.deepEqual(new Set(buildVocabularySession(entries,{}, {kind:'expression',size:12,now}).entries.map(x=>x.id)),new Set([expression.id,construction.id]));
 });
 
-test('a new-only vocabulary session stays small enough for acquisition',()=>{
-  const entries=Array.from({length:20},(_,i)=>({id:`n${i}`,kind:'word'}));
-  const plan=buildVocabularySession(entries,{}, {size:12,now:1_800_000_000_000});
-  assert.equal(plan.size,8);
-  assert.equal(plan.fresh,8);
-});
-
-test('kind filter builds a word-only or phrase-only queue',()=>{
-  const entries=[{id:'w',kind:'word'},{id:'p',kind:'phrase'}];
-  const plan=buildVocabularySession(entries,{}, {kind:'phrase',size:12,now:1_800_000_000_000});
-  assert.deepEqual(plan.entries.map(x=>x.id),['p']);
-});
-
-test('consecutive vocabulary sessions rotate non-due cards but keep due reviews',()=>{
+test('fresh cap and recent-session rotation apply only to eligible entries',()=>{
   const now=1_800_000_000_000;
-  const entries=Array.from({length:20},(_,i)=>({id:`v${i}`,kind:'word'}));
+  const entries=Array.from({length:20},(_,i)=>({...word,id:`vocab:${String(i+1).padStart(5,'0')}`}));
   const first=buildVocabularySession(entries,{}, {size:6,newCap:6,now,rotationSeed:1});
-  const second=buildVocabularySession(entries,{}, {
-    size:6,newCap:6,now,rotationSeed:2,recentItemIds:first.entries.map(entry=>entry.id),
-  });
-  assert.equal(second.entries.filter(entry=>first.entries.some(previous=>previous.id===entry.id)).length,0);
+  const second=buildVocabularySession(entries,{}, {size:6,newCap:6,now,rotationSeed:2,recentItemIds:first.entries.map(x=>x.id)});
+  assert.equal(first.size,6);
+  assert.equal(second.entries.filter(x=>first.entries.some(y=>y.id===x.id)).length,0);
   assert.equal(second.recentExcluded,first.size);
-
-  const dueId=first.entries[0].id;
-  const levels={[dueId]:{last:2,updatedAt:now-1000,review:{nextDueAt:now-1}}};
-  const withDue=buildVocabularySession(entries,levels,{size:6,newCap:6,now,recentItemIds:first.entries.map(entry=>entry.id)});
-  assert.equal(withDue.entries[0].id,dueId);
-
-  const small=entries.slice(0,3);
-  const smallPlan=buildVocabularySession(small,{}, {
-    size:3,newCap:3,now,recentItemIds:small.map(entry=>entry.id),
-  });
-  assert.equal(smallPlan.size,3);
+  assert.equal(buildVocabularySession(entries,{}, {size:12,now}).fresh,8);
 });
 
-test('answer variants turn dictionary notation into speakable alternatives',()=>{
-  const variants=answerVariants({headword:"shake one's head"});
-  assert.ok(variants.includes('shake my head'));
-  assert.ok(variants.includes('shake your head'));
-  assert.equal(displayAnswer({headword:'geographic(al)'}),'geographic');
-  assert.ok(answerVariants({headword:'geographic(al)'}).includes('geographical'));
-  assert.ok(answerVariants({headword:'shrink-shrank-shrunk'}).includes('shrink'));
+test('only curated canonical and explicit answer variants are accepted',()=>{
+  const entry={canonical:'take up',answers:['take something up','take up']};
+  assert.deepEqual(answerVariants(entry),['take up','take something up']);
+  assert.equal(displayAnswer({canonical:'make someone do something'}),'make someone do something');
+  assert.deepEqual(answerVariants({headword:'take up ~ / A'}),[]);
 });
 
-test('bracket alternatives replace the preceding choice instead of concatenating labels',()=>{
-  assert.ok(answerVariants({headword:"on the[one's] way"}).includes("on one's way"));
-  assert.ok(answerVariants({headword:"break one's promise[word]"}).includes("break one's word"));
-  assert.ok(answerVariants({headword:'get [be] lost'}).includes('be lost'));
-  assert.ok(!answerVariants({headword:"on the[one's] way"}).some(x=>x.includes("theone's")));
+test('Japanese representative meaning normalization preserves its selected sense',()=>{
+  assert.equal(displayMeaning({meaning_ja:'  場所を占める ​ 、 ときには時間も取る  '}),'場所を占める、ときには時間も取る');
 });
 
-test('inflection chains display one clean base form while true compounds stay intact',()=>{
-  assert.equal(displayAnswer({headword:'shrink-shrank-shrunk'}),'shrink');
-  assert.deepEqual(answerVariants({headword:'lay-laid-laid'}),['lay','laid']);
-  assert.equal(displayAnswer({headword:'mother-in-law'}),'mother-in-law');
-});
-
-test('Japanese meaning labels remove invisible and accidental spacing without rewriting meaning',()=>{
-  assert.equal(displayMeaning({meaning_ja:'  ～を尊重する \u200b 、 大切にする  '}),'～を尊重する、大切にする');
-});
-
-test('vocabulary stats distinguish due, new, learning, and stable cards',()=>{
+test('lobby statistics describe only the supplied eligible pool',()=>{
   const now=1_800_000_000_000;
-  const entries=[
-    {id:'d',kind:'word'},{id:'n',kind:'word'},{id:'l',kind:'phrase'},{id:'s',kind:'phrase'}
-  ];
   const levels={
-    d:{last:2,updatedAt:now-100,review:{nextDueAt:now-1}},
-    l:{last:2,updatedAt:now-100,review:{nextDueAt:now+1000}},
-    s:{last:4,updatedAt:now-100,review:{nextDueAt:now+1000}},
+    [word.id]:{last:2,updatedAt:now-100,review:{nextDueAt:now-1}},
+    [expression.id]:{last:4,updatedAt:now-100,review:{nextDueAt:now+1000}},
   };
-  const stats=vocabularyStats(entries,levels,now);
-  assert.equal(stats.due,1);
-  assert.equal(stats.fresh,1);
-  assert.equal(stats.learning,2);
-  assert.equal(stats.stable,1);
-  assert.equal(stats.words,2);
-  assert.equal(stats.phrases,2);
+  const stats=vocabularyStats([word,expression],levels,now);
+  assert.deepEqual({total:stats.total,due:stats.due,fresh:stats.fresh,stable:stats.stable,words:stats.words,expressions:stats.expressions},{total:2,due:1,fresh:0,stable:1,words:1,expressions:1});
+});
+
+test('runtime joins source fields and speaker metadata instead of duplicating them in v3 entries',()=>{
+  const source=item('E1','respect');
+  const joined=joinVocabularyData({entries:[word]},[source],[{id:'alice',name:'Alice'}])[0];
+  assert.equal(joined.activeOccurrence,undefined);
+  const eligible=eligibleVocabularyEntries([joined],{E1:{updatedAt:1}})[0];
+  assert.equal(eligible.activeOccurrence.item.ja,'E1訳');
+  assert.equal(eligible.activeOccurrence.item.audio_fn,'E1.m4a');
+  assert.equal(eligible.activeOccurrence.sourceSpeaker.profile.name,'Alice');
+  assert.equal(Object.hasOwn(word,'en'),false);
+  assert.equal(Object.hasOwn(word.occurrences[0],'speaker_id'),false);
 });

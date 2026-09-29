@@ -6,12 +6,18 @@ import {
   buildVocabularySession,
   displayAnswer,
   displayMeaning,
+  eligibleVocabularyEntries,
+  joinVocabularyData,
   readyVocabularyEntries,
   vocabularyStats,
 } from './vocabularyLearningCore.js';
+import { migrateVocabularyProgress } from './vocabularyMigration.js';
+import { extractQuotedTurns, quotedTurnContainingSpan } from '../tagging/quotedTurns.js';
+import { resolveSharedAudioUrl } from '../audio/resolver.js';
 
 const state={
   entries:[],
+  characters:[],
   kind:'all',
   queue:[],
   position:0,
@@ -31,7 +37,8 @@ const state={
   screen:null,
   speechText:'',
   speechPromise:null,
-  advanceToken:0,
+  sourceAudioUrl:'',
+  sourceAudio:null,
 };
 const RECENT_VOCAB_KEY='recentVocabularySessionIdsV1';
 const VOCAB_ROTATION_KEY='vocabularyRotationSeedV1';
@@ -83,35 +90,49 @@ function injectStyles(){
     .vocab-dialog::backdrop{background:rgba(3,6,16,.82);backdrop-filter:blur(6px)}
     .vocab-shell{display:flex;flex-direction:column;height:min(720px,calc(100dvh - 10px));min-height:0;overflow:hidden;border:1px solid rgba(148,163,184,.16);border-radius:22px;background:#101522;box-shadow:0 24px 70px rgba(0,0,0,.5)}
     .vocab-head{display:flex;flex:0 0 auto;align-items:center;justify-content:space-between;gap:10px;padding:13px 15px;border-bottom:1px solid rgba(148,163,184,.1)}
-    .vocab-head strong{font-size:17px}.vocab-close{width:38px;height:38px;border:0;border-radius:12px;background:rgba(148,163,184,.09);color:inherit;font:inherit;font-size:20px;cursor:pointer}
+    .vocab-head strong{font-size:17px}.vocab-close{width:44px;height:44px;min-width:44px;min-height:44px;border:0;border-radius:12px;background:rgba(148,163,184,.09);color:inherit;font:inherit;font-size:20px;cursor:pointer}
     .vocab-body{display:flex;flex:1;min-height:0;flex-direction:column;padding:15px;overflow:hidden}
     .vocab-lobby{display:flex;flex:1;min-height:0;flex-direction:column;justify-content:center;gap:16px;max-width:460px;width:100%;margin:auto;overflow:auto;padding:4px 1px}
     .vocab-lead{text-align:center}.vocab-lead h2{font-size:25px;margin:0 0 7px}.vocab-lead p{margin:0;opacity:.6;font-size:12px;line-height:1.55}
     .vocab-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.vocab-stat{min-width:0;padding:11px 6px;border:1px solid rgba(148,163,184,.12);border-radius:13px;text-align:center;background:rgba(148,163,184,.045)}.vocab-stat b{display:block;font-size:19px}.vocab-stat span{display:block;margin-top:1px;font-size:10px;opacity:.54;white-space:nowrap}
-    .vocab-kind{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;padding:4px;border-radius:13px;background:rgba(148,163,184,.07)}.vocab-kind button{min-width:0;border:0;background:transparent;color:inherit;border-radius:9px;padding:10px 4px;font:inherit;font-size:12px;cursor:pointer;opacity:.58;white-space:nowrap}.vocab-kind button.is-active{background:rgba(99,102,241,.22);opacity:1;font-weight:800}
+    .vocab-kind{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;padding:4px;border-radius:13px;background:rgba(148,163,184,.07)}.vocab-kind button{min-width:0;min-height:44px;border:0;background:transparent;color:inherit;border-radius:9px;padding:10px 4px;font:inherit;font-size:12px;cursor:pointer;opacity:.58;white-space:nowrap}.vocab-kind button.is-active{background:rgba(99,102,241,.22);opacity:1;font-weight:800}
     .vocab-start{min-height:54px;border:0;border-radius:15px;background:#6366f1;color:#fff;font:inherit;font-weight:850;font-size:16px;cursor:pointer;box-shadow:0 10px 24px rgba(99,102,241,.22)}.vocab-start:disabled{opacity:.45;cursor:default;box-shadow:none}
     .vocab-note{text-align:center;font-size:10px;line-height:1.45;opacity:.44}
     .vocab-study{display:flex;flex:1;min-height:0;flex-direction:column;overflow:hidden}.vocab-progress{display:flex;flex:0 0 auto;align-items:center;gap:9px;font-size:10px;opacity:.56;white-space:nowrap}.vocab-progress__bar{height:4px;flex:1;min-width:30px;border-radius:99px;background:rgba(148,163,184,.12);overflow:hidden}.vocab-progress__bar i{display:block;height:100%;background:currentColor;transition:width .2s ease}
     .vocab-card{display:flex;flex:1;min-height:0;overflow:auto;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:18px 8px 10px;scrollbar-width:thin}
     .vocab-meta{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px;margin-bottom:13px}.vocab-meta span{display:inline-flex;align-items:center;min-height:22px;padding:3px 8px;border:1px solid rgba(148,163,184,.12);border-radius:999px;background:rgba(148,163,184,.045);font-size:9px;letter-spacing:.025em;opacity:.56;white-space:nowrap}
     .vocab-meaning{max-width:520px;font-size:clamp(24px,6.8vw,37px);font-weight:850;line-height:1.38;letter-spacing:.005em;line-break:strict;overflow-wrap:break-word}.vocab-meaning.is-long{font-size:clamp(21px,5.8vw,31px);line-height:1.45}.vocab-meaning.is-xlong{font-size:clamp(18px,5vw,27px);line-height:1.5}
-    .vocab-prompt{margin-top:11px;font-size:11px;opacity:.42}.vocab-answer-wrap{display:flex;min-height:50px;margin-top:16px;flex-direction:column;align-items:center;justify-content:center;gap:7px;max-width:100%}.vocab-answer{max-width:520px;font-size:clamp(22px,5.8vw,32px);font-weight:850;line-height:1.35;color:#a5b4fc;word-break:normal;overflow-wrap:break-word;hyphens:auto}.vocab-answer.is-long{font-size:clamp(19px,5vw,27px)}.vocab-answer.is-xlong{font-size:clamp(17px,4.5vw,23px);line-height:1.42}.vocab-answer[hidden]{display:block!important;visibility:hidden}.vocab-audio{border:1px solid rgba(165,180,252,.22);background:rgba(99,102,241,.08);color:#c7d2fe;border-radius:999px;padding:6px 11px;font:inherit;font-size:10px;font-weight:750;cursor:pointer}.vocab-audio[hidden]{display:none!important}
+    .vocab-prompt{margin-top:11px;font-size:11px;opacity:.42}.vocab-answer-wrap{display:flex;min-height:50px;margin-top:16px;flex-direction:column;align-items:center;justify-content:center;gap:7px;max-width:100%}.vocab-answer{max-width:520px;font-size:clamp(22px,5.8vw,32px);font-weight:850;line-height:1.35;color:#a5b4fc;word-break:normal;overflow-wrap:break-word;hyphens:auto}.vocab-answer.is-long{font-size:clamp(19px,5vw,27px)}.vocab-answer.is-xlong{font-size:clamp(17px,4.5vw,23px);line-height:1.42}.vocab-answer[hidden]{display:block!important;visibility:hidden}.vocab-audio{min-height:44px;border:1px solid rgba(165,180,252,.22);background:rgba(99,102,241,.08);color:#c7d2fe;border-radius:999px;padding:6px 11px;font:inherit;font-size:10px;font-weight:750;cursor:pointer}.vocab-audio[hidden]{display:none!important}
     .vocab-transcript{min-height:19px;margin-top:7px;font-size:11px;line-height:1.4;opacity:.5;max-width:500px;word-break:normal;overflow-wrap:break-word}
     .vocab-feedback{flex:0 0 auto;min-height:22px;text-align:center;font-size:12px;font-weight:750}.vocab-feedback.is-ok{color:#86efac}.vocab-feedback.is-miss{color:#fca5a5}
     .vocab-controls{display:flex;flex:0 0 auto;flex-direction:column;align-items:stretch;gap:7px;margin-top:6px}.vocab-mic{width:78px;height:78px;align-self:center;border:0;border-radius:50%;background:#6366f1;color:#fff;font:inherit;font-size:14px;font-weight:850;cursor:pointer;box-shadow:0 12px 28px rgba(99,102,241,.28);transition:transform .12s ease,box-shadow .12s ease}.vocab-mic.is-listening{transform:scale(1.05);box-shadow:0 0 0 8px rgba(99,102,241,.14),0 12px 28px rgba(99,102,241,.28)}
-    .vocab-reveal{align-self:center;border:0;background:transparent;color:inherit;font:inherit;font-size:11px;opacity:.56;padding:7px 12px;cursor:pointer}.vocab-manual{display:grid;grid-template-columns:1fr 1fr;gap:8px}.vocab-manual button{min-height:48px;border-radius:13px;font:inherit;font-size:12px;font-weight:800;cursor:pointer}.vocab-manual button:disabled{opacity:.45;cursor:default}.vocab-manual__miss{border:1px solid rgba(148,163,184,.18);background:rgba(148,163,184,.06);color:inherit}.vocab-manual__ok{border:0;background:#6366f1;color:#fff}
-    .vocab-done{display:flex;flex:1;min-height:0;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:11px}.vocab-done h2{font-size:29px;margin:0}.vocab-done p{margin:0;opacity:.62}.vocab-done small{opacity:.48}.vocab-done button{min-width:210px;min-height:50px;border:0;border-radius:14px;background:#6366f1;color:white;font:inherit;font-weight:850;cursor:pointer;margin-top:7px}.vocab-done .vocab-reveal{min-width:0;min-height:0;background:transparent;color:inherit;margin-top:0}
+    .vocab-reveal{min-height:44px;align-self:center;border:0;background:transparent;color:inherit;font:inherit;font-size:11px;opacity:.56;padding:7px 12px;cursor:pointer}.vocab-manual{display:grid;grid-template-columns:1fr 1fr;gap:8px}.vocab-manual button{min-height:48px;border-radius:13px;font:inherit;font-size:12px;font-weight:800;cursor:pointer}.vocab-manual button:disabled{opacity:.45;cursor:default}.vocab-manual__miss{border:1px solid rgba(148,163,184,.18);background:rgba(148,163,184,.06);color:inherit}.vocab-manual__ok{border:0;background:#6366f1;color:#fff}
+    .vocab-done{display:flex;flex:1;min-height:0;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:11px}.vocab-done h2{font-size:29px;margin:0}.vocab-done p{margin:0;opacity:.62}.vocab-done small{opacity:.48}.vocab-done button{min-width:210px;min-height:50px;border:0;border-radius:14px;background:#6366f1;color:white;font:inherit;font-weight:850;cursor:pointer;margin-top:7px}.vocab-done .vocab-reveal{min-width:44px;min-height:44px;background:transparent;color:inherit;margin-top:0}
+    .vocab-speaker{display:inline-flex;align-items:center;gap:6px;min-height:32px;color:inherit;font-size:12px;font-weight:750;opacity:.84}.vocab-speaker img{width:32px;height:32px;flex:0 0 32px;border-radius:50%;object-fit:cover;background:rgba(148,163,184,.12)}.vocab-meta .vocab-speaker{min-height:32px;padding:0;border:0;background:transparent;font-size:12px;opacity:.9}.vocab-speaker-turns{display:grid;gap:6px;margin-top:10px}.vocab-speaker-turn{display:flex;align-items:center;gap:8px;padding:7px;border:1px solid rgba(148,163,184,.11);border-radius:11px;text-align:left}.vocab-context-state{gap:8px}.vocab-context-scroll{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:8px 2px 4px}.vocab-context-top{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px;margin:2px 0 8px}.vocab-answer{max-width:100%;font-size:clamp(22px,5.8vw,32px);font-weight:850;line-height:1.35;color:#a5b4fc;overflow-wrap:anywhere}.vocab-source-line{margin:14px auto 8px;max-width:560px;font-size:clamp(16px,4.1vw,21px);line-height:1.65;text-align:center;overflow-wrap:anywhere}.vocab-target{color:#fff;background:rgba(99,102,241,.3);border-bottom:2px solid #a5b4fc;border-radius:3px;padding:0 2px}.vocab-contextual-meaning{margin:5px auto 12px;text-align:center;font-size:clamp(14px,3.8vw,17px);line-height:1.65;overflow-wrap:anywhere}.vocab-contextual-meaning span{display:block;font-size:10px;opacity:.55}.vocab-context-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}.vocab-expand-context{min-height:44px;padding:8px 14px;border:1px solid rgba(148,163,184,.16);border-radius:12px;background:rgba(148,163,184,.05);color:inherit;font:inherit;font-size:12px;cursor:pointer}.vocab-context-full{margin-top:12px;padding:11px 10px;border:1px solid rgba(148,163,184,.12);border-radius:13px;background:rgba(148,163,184,.035)}.vocab-context-full[hidden]{display:none}.vocab-context-full .vocab-source-line{margin:0 auto 9px;font-size:15px}.vocab-source-ja{margin:10px 0 2px;font-size:13px;line-height:1.6;opacity:.78;text-align:center;overflow-wrap:anywhere}.vocab-source-audio-status{min-height:17px;font-size:10px;text-align:center;opacity:.64}.vocab-next{width:100%;min-height:52px;border:0;border-radius:14px;background:#6366f1;color:#fff;font:inherit;font-size:15px;font-weight:850;cursor:pointer}.vocab-controls{padding-bottom:env(safe-area-inset-bottom)}.vocab-controls button,.vocab-context-actions button{touch-action:manipulation}.vocab-transcript:empty{display:none}.vocab-answer[hidden]{display:none!important}
     @media(max-width:390px){.vocab-body{padding:12px}.vocab-shell{border-radius:18px}.vocab-card{padding-inline:3px}.vocab-meta{margin-bottom:10px}.vocab-meaning{font-size:26px}.vocab-meaning.is-long{font-size:22px}.vocab-meaning.is-xlong{font-size:19px}.vocab-mic{width:72px;height:72px}}
     @media(max-height:650px){.vocab-head{padding-block:9px}.vocab-body{padding-block:10px}.vocab-card{padding-block:10px 5px}.vocab-meta{margin-bottom:8px}.vocab-meaning{font-size:clamp(22px,6vw,31px)}.vocab-prompt{margin-top:7px}.vocab-answer-wrap{margin-top:10px}.vocab-mic{width:66px;height:66px}.vocab-controls{gap:4px;margin-top:3px}}
+    @media(prefers-reduced-motion:reduce){.vocab-progress__bar i,.vocab-mic{transition:none!important}}
   `;
   document.head.appendChild(style);
 }
 
 async function loadVocabulary(){
   try{
-    const res=await fetch('./data/vocabulary-v2.json',{cache:'no-cache'});
-    if(!res.ok) return [];
-    return readyVocabularyEntries(await res.json());
+    const load=async path=>{
+      const res=await fetch(path,{cache:'no-cache'});
+      if(!res.ok) throw new Error(`${path}: ${res.status}`);
+      return res.json();
+    };
+    const [vocabulary,items,characters,migration]=await Promise.all([
+      load('./data/vocabulary-v3.json'),
+      load('./data/items.json'),
+      load('./data/characters.json'),
+      load('./data/vocabulary-v2-v3-migration.json'),
+    ]);
+    migrateVocabularyProgress({migration});
+    levels.refreshLevelState();
+    state.characters=Array.isArray(characters)?characters:(Array.isArray(characters?.characters)?characters.characters:[]);
+    return readyVocabularyEntries(joinVocabularyData(vocabulary,items,state.characters));
   }catch(error){
     console.warn('Vocabulary database failed to load',error);
     return [];
@@ -123,7 +144,8 @@ function makeDialog(){
   const dialog=document.createElement('dialog');
   dialog.id='vocabularyModeDialog';
   dialog.className='vocab-dialog';
-  dialog.innerHTML=`<section class="vocab-shell"><header class="vocab-head"><strong>単語・熟語</strong><button type="button" class="vocab-close" aria-label="閉じる">×</button></header><div class="vocab-body" id="vocabModeScreen"></div></section>`;
+  dialog.setAttribute('aria-labelledby','vocabModeTitle');
+  dialog.innerHTML=`<section class="vocab-shell"><header class="vocab-head"><strong id="vocabModeTitle">単語・表現</strong><button type="button" class="vocab-close" aria-label="閉じる">×</button></header><div class="vocab-body" id="vocabModeScreen"></div></section>`;
   document.body.appendChild(dialog);
   state.dialog=dialog;
   state.screen=dialog.querySelector('#vocabModeScreen');
@@ -139,7 +161,6 @@ function clearGradeTimer(){
 }
 
 function cancelPronunciation(){
-  state.advanceToken+=1;
   state.speechText='';
   state.speechPromise=null;
   speech.cancelSpeech();
@@ -159,11 +180,9 @@ function closeDialog(){
   state.processing=false;
   state.queue=[];
   state.current=null;
+  state.sourceAudio?.pause?.();
+  state.sourceAudio=null;
   if(state.dialog?.open) state.dialog.close();
-}
-
-function kindEntries(){
-  return state.kind==='all'?state.entries:state.entries.filter(x=>x.kind===state.kind);
 }
 
 function renderLobby(){
@@ -171,25 +190,27 @@ function renderLobby(){
   cancelPronunciation();
   state.processing=false;
   levels.refreshLevelState();
-  const entries=kindEntries();
   const levelState=JSON.parse(localStorage.getItem('itemLevelV1')||'{}');
+  const eligible=eligibleVocabularyEntries(state.entries,levelState);
+  const entries=state.kind==='all'?eligible:eligible.filter(x=>state.kind==='word'
+    ?x.kind==='word':x.kind==='expression'||x.kind==='construction');
   const stats=vocabularyStats(entries,levelState);
   const plan=buildVocabularySession(entries,levelState,{size:12,kind:'all'});
   state.screen.innerHTML=`
     <section class="vocab-lobby">
-      <div class="vocab-lead"><h2>日本語 → 英語</h2><p>意味を見て、英語を声に出して答えます。復習を優先し、新しい語は少量ずつ追加します。</p></div>
+      <div class="vocab-lead"><h2>日本語 → 英語</h2><p>会話で出会った単語・表現を思い出します。意味を見て、英語を声に出して答えます。</p></div>
       <div class="vocab-stats">
         <div class="vocab-stat"><b>${stats.due}</b><span>復習</span></div>
         <div class="vocab-stat"><b>${stats.fresh}</b><span>未学習</span></div>
         <div class="vocab-stat"><b>${stats.total}</b><span>対象</span></div>
       </div>
-      <div class="vocab-kind" role="tablist" aria-label="カード種別">
-        <button type="button" data-kind="all" class="${state.kind==='all'?'is-active':''}">すべて</button>
-        <button type="button" data-kind="word" class="${state.kind==='word'?'is-active':''}">単語</button>
-        <button type="button" data-kind="phrase" class="${state.kind==='phrase'?'is-active':''}">熟語</button>
+      <div class="vocab-kind" role="group" aria-label="カード種別">
+        <button type="button" data-kind="all" aria-pressed="${state.kind==='all'}" class="${state.kind==='all'?'is-active':''}">すべて</button>
+        <button type="button" data-kind="word" aria-pressed="${state.kind==='word'}" class="${state.kind==='word'?'is-active':''}">単語</button>
+        <button type="button" data-kind="expression" aria-pressed="${state.kind==='expression'}" class="${state.kind==='expression'?'is-active':''}">表現</button>
       </div>
       <button type="button" class="vocab-start" ${plan.size?'':'disabled'}>${plan.size?`${plan.size}枚で始める`:'対象カードなし'}</button>
-      <div class="vocab-note">答えを見たカードだけ自己判定になります。</div>
+      <div class="vocab-note">${stats.total?'答えを見たカードは、自分の感覚で判定できます。':'会話学習を進めると、出会った単語・表現がここに追加されます。'}</div>
     </section>`;
   state.screen.querySelectorAll('[data-kind]').forEach(button=>button.addEventListener('click',()=>{
     state.kind=button.dataset.kind||'all';
@@ -210,7 +231,8 @@ function startSession(){
   stopListening();
   cancelPronunciation();
   const levelState=JSON.parse(localStorage.getItem('itemLevelV1')||'{}');
-  const plan=buildVocabularySession(state.entries,levelState,{
+  const eligible=eligibleVocabularyEntries(state.entries,levelState);
+  const plan=buildVocabularySession(eligible,levelState,{
     size:12,
     kind:state.kind,
     recentItemIds:loadRecentVocabularyIds(),
@@ -231,7 +253,7 @@ function scheduleTranscriptGrade(text){
   state.pendingTranscript=String(text||'').trim();
   if(!state.pendingTranscript) return;
   clearGradeTimer();
-  const delay=state.current.kind==='phrase'?720:320;
+  const delay=state.current.kind==='word'?320:720;
   state.gradeTimer=setTimeout(()=>{
     state.gradeTimer=0;
     const pending=state.pendingTranscript;
@@ -360,31 +382,141 @@ function speakAnswer(text=canonicalAnswer()){
 }
 
 function bindPronunciationButton(){
-  const button=state.screen?.querySelector('.vocab-audio');
+  const button=state.screen?.querySelector('.vocab-expression-audio');
   if(!button||button.dataset.boundPronunciation==='true') return;
   button.dataset.boundPronunciation='true';
-  button.addEventListener('click',()=>{
-    clearTimeout(state.timer);
-    state.timer=0;
-    const delay=state.processing?280:null;
-    speakAnswer();
-    if(delay!==null) scheduleAdvanceAfterSpeech(delay);
+  button.addEventListener('click',()=>speakAnswer());
+}
+
+function activeSource(){
+  const active=state.current?.activeOccurrence;
+  return active?.item&&active?.occurrence?active:null;
+}
+
+function speakerProfile(item,turnIndex=null){
+  const tags=Array.isArray(item?.speaker_tags)?item.speaker_tags:[];
+  let id='';
+  if(tags.length===1) id=String(tags[0]?.id||'');
+  else if(tags.length===2&&Number.isInteger(turnIndex)&&turnIndex>=0) id=String(tags[turnIndex%2]?.id||'');
+  return state.characters.find(profile=>String(profile?.id)===id)||null;
+}
+
+function speakerCue(profile){
+  if(!profile?.name) return '';
+  return `<span class="vocab-speaker"><img src="./${encodeURIComponent(profile.name)}.png" alt=""><span lang="ja">${escapeHtml(profile.name)}</span></span>`;
+}
+
+function bindSpeakerImageFallback(root=state.screen){
+  root?.querySelectorAll('.vocab-speaker img').forEach(image=>image.addEventListener('error',()=>{image.hidden=true;}));
+}
+
+function sourceSegment(item,occurrence,{full=false}={}){
+  const source=String(item?.en||'');
+  const start=Number(occurrence?.start),end=Number(occurrence?.end);
+  const turn=full?null:quotedTurnContainingSpan(source,start,end);
+  const segmentStart=turn?.contentStart??0;
+  const segmentEnd=turn?.contentEnd??source.length;
+  const safeStart=Math.max(segmentStart,Math.min(segmentEnd,start));
+  const safeEnd=Math.max(safeStart,Math.min(segmentEnd,end));
+  return `${escapeHtml(source.slice(segmentStart,safeStart))}<mark class="vocab-target">${escapeHtml(source.slice(safeStart,safeEnd))}</mark>${escapeHtml(source.slice(safeEnd,segmentEnd))}`;
+}
+
+function fullSpeakerContext(item){
+  const turns=extractQuotedTurns(item?.en||'');
+  if(turns.length){
+    return `<div class="vocab-speaker-turns">${turns.map(turn=>{
+      const profile=speakerProfile(item,turn.index);
+      return `<div class="vocab-speaker-turn">${speakerCue(profile)}<span lang="en">“${escapeHtml(turn.text)}”</span></div>`;
+    }).join('')}</div>`;
+  }
+  return speakerCue(speakerProfile(item));
+}
+
+function bindSourceAudio(){
+  const button=state.screen?.querySelector('.vocab-source-audio');
+  const active=activeSource();
+  const item=active?.item;
+  if(!button||!item?.audio_fn) return;
+  const expected=state.current;
+  resolveSharedAudioUrl(item.audio_fn).then(url=>{
+    if(!url||state.current!==expected||!state.screen?.contains(button)) return;
+    state.sourceAudioUrl=url;
+    button.hidden=false;
+  }).catch(()=>{});
+  button.addEventListener('click',async()=>{
+    if(!state.sourceAudioUrl) return;
+    state.sourceAudio?.pause?.();
+    const audio=new Audio(state.sourceAudioUrl);
+    state.sourceAudio=audio;
+    try{await audio.play();}catch(_){
+      const status=state.screen?.querySelector('.vocab-source-audio-status');
+      if(status) status.textContent='この例文音声を再生できませんでした。';
+    }
   });
 }
 
-function scheduleAdvanceAfterSpeech(delay){
-  const card=state.current;
-  const position=state.position;
-  const token=++state.advanceToken;
-  const pending=state.speechPromise||Promise.resolve(false);
-  Promise.resolve(pending).finally(()=>{
-    if(token!==state.advanceToken||state.current!==card||state.position!==position||!state.processing) return;
-    state.timer=setTimeout(()=>{
-      if(token!==state.advanceToken||state.current!==card||state.position!==position) return;
-      state.position+=1;
-      showNextCard();
-    },Math.max(0,Number(delay)||0));
-  });
+function revealFullContext(){
+  const active=activeSource();
+  const item=active?.item;
+  if(!item) return;
+  const host=state.screen?.querySelector('.vocab-context-full');
+  const button=state.screen?.querySelector('.vocab-expand-context');
+  if(!host||!button) return;
+  if(button.dataset.expanded==='true'){
+    host.hidden=true;button.dataset.expanded='false';button.textContent='前後を見る';button.setAttribute('aria-expanded','false');return;
+  }
+  host.innerHTML=`<p class="vocab-source-line" lang="en" dir="ltr">${sourceSegment(item,active.occurrence,{full:true})}</p>${fullSpeakerContext(item)}<p class="vocab-source-ja" lang="ja">${escapeHtml(item.ja||'')}</p>`;
+  host.hidden=false;button.dataset.expanded='true';button.textContent='前後を閉じる';button.setAttribute('aria-expanded','true');
+  bindSpeakerImageFallback(host);
+}
+
+function nextButton(){
+  const button=document.createElement('button');
+  button.type='button';button.className='vocab-next';button.textContent='次へ';
+  button.addEventListener('click',()=>{state.position+=1;showNextCard();});
+  return button;
+}
+
+function renderAnswerContext({result=null,allowGrade=false}={}){
+  stopListening();
+  state.sourceAudio?.pause?.();state.sourceAudio=null;state.sourceAudioUrl='';
+  const active=activeSource();
+  if(!active) return;
+  const {item,occurrence}=active;
+  const speaker=active.sourceSpeaker?.profile||null;
+  const answer=canonicalAnswer();
+  state.screen.innerHTML=`
+    <section class="vocab-study vocab-context-state">
+      <div class="vocab-context-scroll" aria-live="polite" aria-atomic="false">
+        <div class="vocab-context-top"><div class="vocab-answer" lang="en" dir="ltr" tabindex="-1">${escapeHtml(answer)}</div>${speakerCue(speaker)}</div>
+        <button type="button" class="vocab-audio vocab-expression-audio" aria-label="英語の表現を再生" ${speech.supported()?'':'hidden'}>表現を聞く</button>
+        <p class="vocab-source-line" lang="en" dir="ltr">${sourceSegment(item,occurrence)}</p>
+        <p class="vocab-contextual-meaning" lang="ja"><span>この文では：</span>${escapeHtml(occurrence.contextual_meaning_ja)}</p>
+        <div class="vocab-context-actions">
+          <button type="button" class="vocab-audio vocab-source-audio" aria-label="例文の音声を再生" hidden>例文音声</button>
+          <button type="button" class="vocab-expand-context" aria-expanded="false">前後を見る</button>
+        </div>
+        <div class="vocab-source-audio-status" aria-live="polite"></div>
+        <div class="vocab-context-full" hidden></div>
+        <div class="vocab-feedback ${result==null?'':result?'is-ok':'is-miss'}" aria-live="polite">${result==null?'':result?'正解':'あとでもう一度'}</div>
+      </div>
+      <div class="vocab-controls"></div>
+    </section>`;
+  bindSpeakerImageFallback();
+  bindPronunciationButton();
+  bindSourceAudio();
+  state.screen.querySelector('.vocab-expand-context')?.addEventListener('click',revealFullContext);
+  const controls=state.screen.querySelector('.vocab-controls');
+  if(allowGrade){
+    controls.innerHTML=`<div class="vocab-manual"><button type="button" class="vocab-manual__miss" data-grade="miss">思い出せなかった</button><button type="button" class="vocab-manual__ok" data-grade="ok">言えていた</button></div>`;
+    controls.querySelector('[data-grade="miss"]').addEventListener('click',()=>manualGrade(false));
+    controls.querySelector('[data-grade="ok"]').addEventListener('click',()=>manualGrade(true));
+    controls.querySelector('[data-grade="miss"]').focus({preventScroll:true});
+  }else{
+    controls.appendChild(nextButton());
+    controls.querySelector('.vocab-next').focus({preventScroll:true});
+  }
+  if(result!==null) speakAnswer(answer);
 }
 
 function gradeTranscript(text){
@@ -395,31 +527,15 @@ function gradeTranscript(text){
   const best=bestMatchFor(text);
   if(state.recognition?.isActive()) state.recognition.stop();
   setListening(false);
-  setTranscript(text);
   updateVocabularyLevel(best.score,state.hintUsed);
   const pass=best.score>=0.7;
-  revealFeedback(pass,best.score);
-}
-
-function revealFeedback(pass,_score){
-  const answer=canonicalAnswer();
-  setAnswerVisible(answer);
-  const controls=state.screen.querySelector('.vocab-controls');
-  if(controls) controls.replaceChildren();
-  const feedback=state.screen.querySelector('.vocab-feedback');
-  if(feedback){
-    feedback.className=`vocab-feedback ${pass?'is-ok':'is-miss'}`;
-    feedback.textContent=pass?'正解':'あとでもう一度';
-  }
   if(pass) state.correct+=1;
   else if(!state.retried.has(state.current.id)){
     state.retried.add(state.current.id);
     state.queue.push(state.current);
   }
   state.completed+=1;
-  bindPronunciationButton();
-  speakAnswer(answer);
-  scheduleAdvanceAfterSpeech(pass?280:520);
+  renderAnswerContext({result:pass});
 }
 
 function revealAnswer(){
@@ -427,28 +543,14 @@ function revealAnswer(){
   state.hintUsed=true;
   stopListening();
   setListening(false);
-  const answer=canonicalAnswer();
-  setAnswerVisible(answer);
-  const prompt=state.screen.querySelector('.vocab-prompt');
-  if(prompt) prompt.textContent='聞いて確認してから自己判定';
-  const controls=state.screen.querySelector('.vocab-controls');
-  if(controls){
-    controls.innerHTML=`<div class="vocab-manual"><button type="button" class="vocab-manual__miss" data-grade="miss">思い出せなかった</button><button type="button" class="vocab-manual__ok" data-grade="ok">言えていた</button></div>`;
-    controls.querySelector('[data-grade="miss"]').addEventListener('click',()=>manualGrade(false));
-    controls.querySelector('[data-grade="ok"]').addEventListener('click',()=>manualGrade(true));
-  }
-  bindPronunciationButton();
-  speakAnswer(answer);
-}
-
-function disableManualControls(){
-  state.screen?.querySelectorAll('.vocab-manual button').forEach(button=>{button.disabled=true;});
+  renderAnswerContext({allowGrade:true});
+  speakAnswer();
 }
 
 function manualGrade(ok){
   if(state.processing||!state.current) return;
   state.processing=true;
-  disableManualControls();
+  state.screen?.querySelectorAll('.vocab-manual button').forEach(button=>{button.disabled=true;});
   updateVocabularyLevel(ok?0.95:0,true);
   if(ok) state.correct+=1;
   else if(!state.retried.has(state.current.id)){
@@ -458,7 +560,9 @@ function manualGrade(ok){
   state.completed+=1;
   const feedback=state.screen.querySelector('.vocab-feedback');
   if(feedback){feedback.className=`vocab-feedback ${ok?'is-ok':'is-miss'}`;feedback.textContent=ok?'記録しました':'あとでもう一度';}
-  scheduleAdvanceAfterSpeech(ok?220:420);
+  const controls=state.screen.querySelector('.vocab-controls');
+  controls?.replaceChildren(nextButton());
+  controls?.querySelector('.vocab-next')?.focus({preventScroll:true});
 }
 
 function showNextCard(){
@@ -467,39 +571,33 @@ function showNextCard(){
   cancelPronunciation();
   state.timer=0;
   state.pendingTranscript='';
+  state.sourceAudio?.pause?.();state.sourceAudio=null;state.sourceAudioUrl='';
   if(state.position>=state.queue.length){ renderDone(); return; }
   state.current=state.queue[state.position];
   state.variants=answerVariants(state.current);
   state.hintUsed=false;
   state.processing=false;
-  const initial=Math.max(1,state.initialCount||state.queue.length);
-  const isRetry=state.position>=initial;
-  const progress=Math.min(100,Math.round((Math.min(state.position,initial)/initial)*100));
   const meaning=displayMeaning(state.current);
-  const kindLabel=state.current.kind==='phrase'?'熟語':'単語';
-  const sec=sectionLabel(state.current);
+  const kindLabel=state.current.kind==='word'?'単語':'表現';
+  const speaker=state.current.activeOccurrence?.sourceSpeaker?.profile||null;
   state.screen.innerHTML=`
     <section class="vocab-study">
-      <div class="vocab-progress"><span>${isRetry?'再確認':`${state.position+1}/${initial}`}</span><div class="vocab-progress__bar"><i style="width:${progress}%"></i></div><span>正解 ${state.correct}</span></div>
       <div class="vocab-card">
-        <div class="vocab-meta"><span>${kindLabel}</span>${sec?`<span>${sec}</span>`:''}</div>
+        <div class="vocab-meta">${speakerCue(speaker)}<span>${kindLabel}</span></div>
         <div class="${densityClass('vocab-meaning',meaning,{long:20,xlong:34})}" lang="ja">${escapeHtml(meaning)}</div>
         <div class="vocab-prompt">英語で答える</div>
-        <div class="vocab-answer-wrap">
-          <div class="vocab-answer" lang="en" dir="ltr" hidden></div>
-          <button type="button" class="vocab-audio" hidden>発音</button>
-        </div>
         <div class="vocab-transcript" lang="en" dir="ltr" aria-live="polite"></div>
       </div>
-      <div class="vocab-feedback" aria-live="polite"></div>
       <div class="vocab-controls">
-        <button type="button" class="vocab-mic" aria-label="音声認識を開始">話す</button>
+        <button type="button" class="vocab-mic" aria-label="英語で答える">話す</button>
         <button type="button" class="vocab-reveal">答えを見る</button>
       </div>
     </section>`;
+  bindSpeakerImageFallback();
   setupRecognition();
   state.screen.querySelector('.vocab-mic')?.addEventListener('click',startListening);
   state.screen.querySelector('.vocab-reveal')?.addEventListener('click',revealAnswer);
+  state.screen.querySelector('.vocab-mic')?.focus({preventScroll:true});
   if(isRecognitionSupported()) state.timer=setTimeout(startListening,550);
 }
 
@@ -508,6 +606,7 @@ function renderDone(){
   cancelPronunciation();
   state.current=null;
   state.processing=false;
+  state.sourceAudio?.pause?.();state.sourceAudio=null;state.sourceAudioUrl='';
   const initial=Math.max(0,state.initialCount);
   const retryCount=state.retried.size;
   state.screen.innerHTML=`<section class="vocab-done"><h2>完了</h2><p>正解 ${state.correct}/${initial}</p>${retryCount?`<small>再確認 ${retryCount}枚</small>`:''}<button type="button">もう1セット</button><button type="button" class="vocab-reveal" data-back>戻る</button></section>`;
@@ -536,7 +635,7 @@ async function init(){
   const button=document.createElement('button');
   button.type='button';
   button.id='openVocabularyMode';
-  button.textContent='単語・熟語';
+  button.textContent='単語・表現';
   button.addEventListener('click',openVocabularyMode);
   nav.appendChild(button);
   makeDialog();

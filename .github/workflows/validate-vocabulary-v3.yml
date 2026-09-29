@@ -1,0 +1,44 @@
+name: Validate curated vocabulary v3
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'data/items.json'
+      - 'data/characters.json'
+      - 'data/vocabulary-v3.json'
+      - 'data/vocabulary-v3-report.json'
+      - 'data/vocabulary-v2-v3-migration.json'
+      - 'scripts/app/vocabulary*.js'
+      - 'scripts/vocabulary/validate-vocabulary-v3.mjs'
+      - 'scripts/app/clozeLearningCore.js'
+      - 'tests/**'
+      - '.github/workflows/validate-vocabulary-v3.yml'
+  pull_request:
+    paths:
+      - 'data/items.json'
+      - 'data/characters.json'
+      - 'data/vocabulary-v3.json'
+      - 'data/vocabulary-v3-report.json'
+      - 'data/vocabulary-v2-v3-migration.json'
+      - 'scripts/app/vocabulary*.js'
+      - 'scripts/vocabulary/validate-vocabulary-v3.mjs'
+      - 'scripts/app/clozeLearningCore.js'
+      - 'tests/**'
+      - '.github/workflows/validate-vocabulary-v3.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate committed curated data and audit report
+        run: node scripts/vocabulary/validate-vocabulary-v3.mjs --check-report
+      - name: Run application tests
+        run: node --experimental-default-type=module --test tests/*.test.mjs

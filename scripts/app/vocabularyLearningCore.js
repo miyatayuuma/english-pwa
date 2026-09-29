@@ -1,16 +1,90 @@
+import { quotedTurnContainingSpan } from '../tagging/quotedTurns.js';
+
 const DAY_MS=24*60*60*1000;
+export const VOCABULARY_MIGRATION_FALLBACK='_vocabularyV3LegacySourceFallback';
 
 export function vocabStateId(entry){
   return String(entry?.id||'').trim();
 }
 
+function characterList(value){
+  return Array.isArray(value)?value:(Array.isArray(value?.characters)?value.characters:[]);
+}
+
+function itemList(value){
+  return Array.isArray(value)?value:(Array.isArray(value?.items)?value.items:[]);
+}
+
+export function resolveOccurrenceSpeaker(item,occurrence,characters=[]){
+  const tags=Array.isArray(item?.speaker_tags)?item.speaker_tags:[];
+  const profiles=new Map(characterList(characters).filter(x=>x?.id).map(x=>[String(x.id),x]));
+  if(tags.length===1){
+    const id=String(tags[0]?.id||'');
+    return id&&profiles.has(id)?{profile:profiles.get(id),turn:null,turnIndex:null}:null;
+  }
+  if(tags.length!==2) return null;
+  const occurrenceStart=Number(occurrence?.start),occurrenceEnd=Number(occurrence?.end);
+  const turn=quotedTurnContainingSpan(item?.en,occurrenceStart,occurrenceEnd);
+  if(!turn) return null;
+  const roleIndex=turn.index%2;
+  const id=String(tags[roleIndex]?.id||'');
+  if(!id||!profiles.has(id)) return null;
+  return {profile:profiles.get(id),turn,turnIndex:turn.index};
+}
+
+export function joinVocabularyData(db,items,characters=[]){
+  const entries=Array.isArray(db)?db:(Array.isArray(db?.entries)?db.entries:[]);
+  const byId=new Map(itemList(items).filter(item=>item?.id).map(item=>[String(item.id),item]));
+  const profiles=characterList(characters);
+  return entries.map(entry=>({
+    ...entry,
+    sourceOccurrences:(Array.isArray(entry?.occurrences)?entry.occurrences:[]).map(occurrence=>{
+      const item=byId.get(String(occurrence?.item_id||''));
+      return item?{
+        occurrence,
+        item,
+        sourceSpeaker:resolveOccurrenceSpeaker(item,occurrence,profiles),
+      }:null;
+    }).filter(Boolean),
+  }));
+}
+
 export function readyVocabularyEntries(db){
   const entries=Array.isArray(db)?db:(Array.isArray(db?.entries)?db.entries:[]);
-  return entries.filter(entry=>{
-    const headword=String(entry?.headword||'').trim();
-    const meaning=String(entry?.meaning_ja||'').trim();
-    return !!headword && !!meaning && entry?.match_confidence!=='low';
-  });
+  return entries.filter(entry=>[
+    'word','expression','construction',
+  ].includes(entry?.kind)
+    &&String(entry?.canonical||'').trim()
+    &&String(entry?.sense_key||'').trim()
+    &&String(entry?.meaning_ja||'').trim()
+    &&Array.isArray(entry?.occurrences)
+    &&entry.occurrences.length>0);
+}
+
+export function occurrenceIsEncountered(levelState,occurrence){
+  const id=String(occurrence?.item_id||'');
+  const info=id&&levelState?.[id]&&typeof levelState[id]==='object'?levelState[id]:{};
+  return Number(info.updatedAt)>0||Number(info.last)>0||Number(info.best)>0;
+}
+
+export function eligibleVocabularyEntries(entries,levelState={}){
+  const eligible=[];
+  for(const entry of Array.isArray(entries)?entries:[]){
+    const occurrences=Array.isArray(entry.sourceOccurrences)
+      ?entry.sourceOccurrences
+      :entry.occurrences.map(occurrence=>({occurrence,item:null,sourceSpeaker:null}));
+    const encountered=occurrences.map((source,index)=>({
+      source,index,
+      info:levelState?.[String(source?.occurrence?.item_id||'')]||{},
+    })).filter(({source})=>source?.item&&occurrenceIsEncountered(levelState,source.occurrence));
+    encountered.sort((a,b)=>Number(b.info?.updatedAt||0)-Number(a.info?.updatedAt||0)||a.index-b.index);
+    let selected=encountered[0]?.source||null;
+    const state=levelState?.[vocabStateId(entry)];
+    if(!selected&&state?.[VOCABULARY_MIGRATION_FALLBACK]) selected=occurrences[0]||null;
+    if(!selected) continue;
+    eligible.push({...entry,activeOccurrence:selected});
+  }
+  return eligible;
 }
 
 export function vocabularyLevelInfo(levelState,entry){
@@ -21,12 +95,14 @@ export function vocabularyLevelInfo(levelState,entry){
   const level=Number.isFinite(last)?last:(Number.isFinite(best)?best:0);
   const dueAt=Number(info?.review?.nextDueAt ?? info?.nextDueAt ?? 0);
   const updatedAt=Number(info?.updatedAt||0);
+  const hasProgress=updatedAt>0||last>0||best>0;
   return {
     id,
     info,
     level:Math.max(0,Math.min(5,Number.isFinite(level)?level:0)),
     dueAt:Number.isFinite(dueAt)&&dueAt>0?dueAt:0,
     updatedAt:Number.isFinite(updatedAt)&&updatedAt>0?updatedAt:0,
+    hasProgress,
   };
 }
 
@@ -36,7 +112,7 @@ export function vocabularyStats(entries,levelState={},now=Date.now()){
   for(const entry of safe){
     const meta=vocabularyLevelInfo(levelState,entry);
     if(meta.dueAt>0&&meta.dueAt<=now) due+=1;
-    if(!meta.updatedAt&&!meta.dueAt) fresh+=1;
+    if(!meta.hasProgress&&!meta.dueAt) fresh+=1;
     else if(meta.level>=4) stable+=1;
     else learning+=1;
   }
@@ -44,7 +120,7 @@ export function vocabularyStats(entries,levelState={},now=Date.now()){
     total:safe.length,
     due,fresh,learning,stable,
     words:safe.filter(x=>x?.kind==='word').length,
-    phrases:safe.filter(x=>x?.kind==='phrase').length,
+    expressions:safe.filter(x=>x?.kind==='expression'||x?.kind==='construction').length,
   };
 }
 
@@ -58,7 +134,7 @@ function stableHash(text){
 function candidate(entry,levelState,now,index,rotationSeed=0){
   const meta=vocabularyLevelInfo(levelState,entry);
   const due=meta.dueAt>0&&meta.dueAt<=now;
-  const fresh=!meta.updatedAt&&!meta.dueAt;
+  const fresh=!meta.hasProgress&&!meta.dueAt;
   const overdueDays=due?Math.min(90,Math.max(0,(now-meta.dueAt)/DAY_MS)):0;
   let bucket='early';
   let score=500;
@@ -72,35 +148,29 @@ function candidate(entry,levelState,now,index,rotationSeed=0){
 
 export function buildVocabularySession(entries,levelState={},options={}){
   const now=Number(options.now)||Date.now();
-  const kind=options.kind==='word'||options.kind==='phrase'?options.kind:'all';
+  const kind=['word','expression'].includes(options.kind)?options.kind:'all';
   const requested=Math.max(1,Math.min(30,Math.round(Number(options.size)||12)));
   const newCapRaw=Number(options.newCap);
   const newCap=Number.isFinite(newCapRaw)
     ? Math.max(0,Math.min(requested,Math.round(newCapRaw)))
     : Math.min(8,requested);
-  const source=(Array.isArray(entries)?entries:[]).filter(entry=>kind==='all'||entry?.kind===kind);
+  const source=(Array.isArray(entries)?entries:[]).filter(entry=>kind==='all'
+    ||(kind==='word'?entry?.kind==='word':entry?.kind==='expression'||entry?.kind==='construction'));
   const rotationSeed=Math.max(0,Math.round(Number(options.rotationSeed)||0));
   const recentIds=new Set(Array.from(options.recentItemIds||[],String));
   const allMetas=source.map((entry,index)=>candidate(entry,levelState,now,index,rotationSeed));
-  // Due cards remain eligible because spaced review is more important than
-  // variety. Other cards from the immediately preceding set move to the back,
-  // while remaining available when a filtered pool is very small.
   for(const meta of allMetas){
     if(!meta.due&&recentIds.has(String(meta.entry?.id))) meta.score-=20000;
   }
-  const metas=allMetas;
   const recentDeferred=allMetas.filter(meta=>!meta.due&&recentIds.has(String(meta.entry?.id))).length;
-  const due=metas.filter(x=>x.bucket==='due').sort((a,b)=>b.score-a.score);
-  const fresh=metas.filter(x=>x.bucket==='fresh').sort((a,b)=>b.score-a.score);
-  const early=metas.filter(x=>x.bucket==='learning').sort((a,b)=>b.score-a.score);
-  const stable=metas.filter(x=>x.bucket==='stable').sort((a,b)=>b.score-a.score);
+  const due=allMetas.filter(x=>x.bucket==='due').sort((a,b)=>b.score-a.score);
+  const fresh=allMetas.filter(x=>x.bucket==='fresh').sort((a,b)=>b.score-a.score);
+  const early=allMetas.filter(x=>x.bucket==='learning').sort((a,b)=>b.score-a.score);
+  const stable=allMetas.filter(x=>x.bucket==='stable').sort((a,b)=>b.score-a.score);
   const selected=[];
   const pushFrom=(list,limit=Infinity)=>{
     let used=0;
-    while(selected.length<requested&&list.length&&used<limit){
-      selected.push(list.shift());
-      used+=1;
-    }
+    while(selected.length<requested&&list.length&&used<limit){selected.push(list.shift());used+=1;}
     return used;
   };
   pushFrom(due);
@@ -113,10 +183,7 @@ export function buildVocabularySession(entries,levelState={},options={}){
     due:selected.filter(x=>x.bucket==='due').length,
     fresh:freshUsed,
     early:selected.filter(x=>x.bucket==='learning'||x.bucket==='stable').length,
-    kind,
-    newCap,
-    rotationSeed,
-    recentExcluded:recentDeferred,
+    kind,newCap,rotationSeed,recentExcluded:recentDeferred,
   };
 }
 
@@ -125,93 +192,20 @@ function normalizeAnswer(text){
     .normalize('NFKC')
     .replace(/[’‘]/g,"'")
     .replace(/[“”]/g,'"')
-    .replace(/[～~…]+/g,' ')
-    .replace(/\b([ABCSVXYZ])\b/g,' ')
-    .replace(/["“”]/g,'')
     .replace(/\s+([,.;:!?])/g,'$1')
     .replace(/\s+/g,' ')
     .trim();
 }
 
-function expandInlineSuffix(text){
-  const m=String(text).match(/^(.*?)([A-Za-z]+)\(([A-Za-z]+)\)(.*)$/);
-  if(!m) return [text];
-  const [,before,base,suffix,after]=m;
-  return [`${before}${base}${after}`,`${before}${base}${suffix}${after}`];
-}
-
-function expandOptional(text,open='(',close=')'){
-  const s=String(text);
-  const start=s.indexOf(open);
-  const end=start>=0?s.indexOf(close,start+1):-1;
-  if(start<0||end<0) return [s];
-  const before=s.slice(0,start),inside=s.slice(start+1,end),after=s.slice(end+1);
-  return [`${before}${after}`,`${before}${inside}${after}`];
-}
-
-function expandBracketChoice(text){
-  const s=String(text);
-  const start=s.indexOf('['),end=start>=0?s.indexOf(']',start+1):-1;
-  if(start<0||end<0) return [s];
-  const before=s.slice(0,start);
-  const inside=s.slice(start+1,end).trim();
-  const after=s.slice(end+1);
-  const withoutChoice=`${before}${after}`;
-  const prior=before.match(/^(.*?)([A-Za-z][A-Za-z'’.-]*)\s*$/);
-  if(prior&&/^[A-Za-z][A-Za-z'’.-]*$/.test(inside)){
-    return [withoutChoice,`${prior[1]}${inside}${after}`];
-  }
-  return [withoutChoice,`${before}${inside}${after}`];
-}
-
-function pronounVariants(text){
-  const s=String(text);
-  if(!/one['’]?s|oneself/i.test(s)) return [s];
-  const possessives=["one's",'my','your','his','her','their'];
-  const reflexives=['oneself','myself','yourself','himself','herself','themselves'];
-  const out=[];
-  for(let i=0;i<Math.max(possessives.length,reflexives.length);i+=1){
-    out.push(s
-      .replace(/one['’]?s/gi,possessives[i%possessives.length])
-      .replace(/oneself/gi,reflexives[i%reflexives.length]));
-  }
-  return out;
-}
-
-function inflectionChainParts(raw){
-  const parts=String(raw||'').split('-');
-  if(parts.length!==3||!parts.every(part=>/^[A-Za-z]+$/.test(part))) return null;
-  const connector=new Set(['a','an','and','as','at','by','for','from','in','of','on','or','the','to','up','with']);
-  if(parts.some(part=>connector.has(part.toLowerCase()))) return null;
-  return parts;
-}
-
 export function answerVariants(entry){
-  const raw=String(entry?.headword||'').trim();
-  if(!raw) return [];
-  const inflections=inflectionChainParts(raw);
-  const pieces=inflections||raw.split(/\s*\/\s*/).filter(Boolean);
-  const seeds=pieces.length>1?pieces:[raw];
-  const variants=[];
-  for(const seed of seeds){
-    let expanded=expandInlineSuffix(seed);
-    expanded=expanded.flatMap(x=>expandBracketChoice(x));
-    expanded=expanded.flatMap(x=>expandOptional(x));
-    expanded=expanded.flatMap(x=>pronounVariants(x));
-    for(const value of expanded){
-      const normalized=normalizeAnswer(value)
-        .replace(/\b(?:etc)\.?$/i,'')
-        .replace(/\s+/g,' ')
-        .trim();
-      if(normalized) variants.push(normalized);
-    }
-  }
-  return [...new Set(variants)].slice(0,18);
+  const canonical=String(entry?.canonical||'').trim();
+  if(!canonical) return [];
+  return [...new Set([canonical,...(Array.isArray(entry?.answers)?entry.answers:[])]
+    .map(normalizeAnswer).filter(Boolean))];
 }
 
 export function displayAnswer(entry){
-  const variants=answerVariants(entry);
-  return variants[0]||String(entry?.headword||'').trim();
+  return String(entry?.canonical||'').trim();
 }
 
 export function displayMeaning(entry){

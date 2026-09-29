@@ -95,7 +95,8 @@ function indexVocabulary(db){
   const entries=Array.isArray(db)?db:(Array.isArray(db?.entries)?db.entries:[]);
   const map=new Map();
   for(const entry of entries){
-    for(const id of Array.isArray(entry?.example_ids)?entry.example_ids:[]){
+    for(const occurrence of Array.isArray(entry?.occurrences)?entry.occurrences:[]){
+      const id=String(occurrence?.item_id||'');
       if(!id) continue;
       if(!map.has(id)) map.set(id,[]);
       map.get(id).push(entry);
@@ -107,7 +108,7 @@ function indexVocabulary(db){
 async function loadData(){
   const [itemsRaw,vocabRaw]=await Promise.all([
     loadJson('./data/items.json'),
-    loadJson('./data/vocabulary-v2.json'),
+    loadJson('./data/vocabulary-v3.json'),
   ]);
   const items=Array.isArray(itemsRaw)?itemsRaw:(Array.isArray(itemsRaw?.items)?itemsRaw.items:[]);
   state.items=new Map(items.filter(item=>item?.id).map(item=>[String(item.id),item]));

@@ -1,6 +1,6 @@
-// sw.js: cache name follows the app version. v5.53
+// sw.js: cache name follows the app version. v5.54
 // Version the import itself so the browser cannot reuse an older worker import.
-importScripts('./scripts/version.js?v=5.53');
+importScripts('./scripts/version.js?v=5.54');
 const CACHE = self.APP_VERSION;
 
 self.addEventListener('install', e => {
@@ -15,15 +15,16 @@ self.addEventListener('install', e => {
     './styles/components.css',
     './data/items.json',
     './data/characters.json',
-    './data/vocabulary-v2.json',
+    './data/vocabulary-v3.json',
+    './data/vocabulary-v2-v3-migration.json',
     './icons/icon-192.png',
     './icons/icon-512.png',
     './icons/maskable-192.png',
     './icons/maskable-512.png',
     './scripts/version.js',
     './scripts/app/main.js',
-    './scripts/app/swBootstrap.js?v=5.53',
-    './scripts/app/swUpdatePrompt.js?v=5.53',
+    './scripts/app/swBootstrap.js?v=5.54',
+    './scripts/app/swUpdatePrompt.js?v=5.54',
     './scripts/app/dom.js',
     './scripts/app/levelState.js',
     './scripts/app/overlay.js',
@@ -39,6 +40,7 @@ self.addEventListener('install', e => {
     './scripts/app/relationshipMode.js',
     './scripts/app/tagBrowser.js',
     './scripts/app/vocabularyLearningCore.js',
+    './scripts/app/vocabularyMigration.js',
     './scripts/app/vocabularyMode.js',
     './scripts/app/vocabularyFeedbackUx.js',
     './scripts/app/learningMenu.js',
@@ -53,6 +55,8 @@ self.addEventListener('install', e => {
     './scripts/app/cardGestureGuard.js',
     './scripts/app/visualCleanup.js',
     './scripts/audio/controller.js',
+    './scripts/audio/resolver.js',
+    './scripts/tagging/quotedTurns.js',
     './scripts/speech/recognition.js',
     './scripts/speech/synthesis.js',
     './scripts/speech/voiceProfiles.js',
