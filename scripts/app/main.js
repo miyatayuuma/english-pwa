@@ -1727,7 +1727,7 @@ function createAppRuntime(){
   }
 
   function showCanonicalEnglishAfterReorderSetup(item,reorderState){
-    if(isReorderSetupRequested(item)&&reorderState?.reason){
+    if(isReorderSetupRequested(item)&&!reorderState?.active&&reorderState?.reason){
       recordHintStageUsed(COMPOSE_HINT_STAGE_EN);
     }
     el.en.classList.remove('concealed');
