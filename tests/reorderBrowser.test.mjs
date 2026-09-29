@@ -219,6 +219,7 @@ browserTest('fixed context and two independent sentence puzzles progress in sour
   await page.locator('[data-action="advance"]').click();
   await page.waitForSelector('[data-zone="bank"] .compose-token');
   assert.equal(await page.locator('[data-zone="bank"] .compose-token').count(), 2);
+  assert.match(await page.locator('#composeContext').innerText(), /固定文脈: Hi\./);
   await tapCanonical(page, 2);
   await page.locator('[data-action="advance"]').click();
   await page.waitForFunction(() => document.querySelector('#composeNote').textContent.includes('Sentence 3/3'));

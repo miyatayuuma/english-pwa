@@ -79,6 +79,7 @@ export function createReorderGuide({
   let suppressClickId = '';
   let sentenceIsAssisted = false;
   let fullUtteranceText = '';
+  let fixedContextLines = [];
   let noteDefault = composeNoteEl?.textContent ?? '';
 
   const currentRow = () => puzzleRows[puzzleIndex] ?? null;
@@ -94,6 +95,7 @@ export function createReorderGuide({
     puzzleState = null;
     history = [];
     initialBank = [];
+    fixedContextLines = [];
     pointer = null;
     suppressClickId = '';
     fullUtteranceText = '';
@@ -284,7 +286,7 @@ export function createReorderGuide({
         .filter((entry) => !entry.fixedContext)
         .map((entry) => `完了: ${readableSentence(entry.sentence)}`);
       composeContextEl.replaceChildren();
-      for (const text of [...fixed, ...previous]) {
+      for (const text of [...fixedContextLines, ...previous]) {
         const line = document.createElement('p');
         line.className = 'compose-context-line';
         line.textContent = text;
@@ -433,6 +435,9 @@ export function createReorderGuide({
       }
       // Keep context-only fragments in source order inside the sentence stage.
       puzzleRows = staged;
+      fixedContextLines = staged
+        .filter((entry) => entry.fixedContext)
+        .map((entry) => `固定文脈: ${readableSentence(entry.sentence)}`);
       fullUtteranceText = String(item.en ?? '');
       if (composeGuideEl) {
         composeGuideEl.classList.add('show');
