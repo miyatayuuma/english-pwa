@@ -252,6 +252,7 @@ browserTest('production render keeps canonical English out of DOM and accessible
   try {
     await awaitMetadataRequest(metadataRequested);
     const answerFragments = sentenceRows.flatMap((row) => row.tiles);
+    const pendingSnapshots = [];
     for (let hintAttempt = 0; hintAttempt < 4; hintAttempt += 1) {
       await page.evaluate(() => document.dispatchEvent(new Event('english-pwa:request-hint')));
       const pending = await page.evaluate(() => {
@@ -270,6 +271,9 @@ browserTest('production render keeps canonical English out of DOM and accessible
         };
       });
       const accessibleText = await page.locator('#enText').ariaSnapshot();
+      pendingSnapshots.push({ pending, accessibleText });
+    }
+    for (const { pending, accessibleText } of pendingSnapshots) {
       for (const field of ['text', 'html', 'ariaLabel', 'markup']) {
         assert.equal(pending[field].includes(item.en), false, `canonical answer leaked through ${field}: ${pending[field]}`);
         for (const fragment of answerFragments) {
