@@ -15,7 +15,8 @@ let metadataPromise = null;
 
 async function loadReorderMetadata() {
   if (!metadataPromise) {
-    metadataPromise = fetch('./data/reorder-v1.json', { cache: 'no-cache' }).then(async (response) => {
+    const metadataUrl = new URL('../../data/reorder-v1.json', import.meta.url);
+    metadataPromise = fetch(metadataUrl, { cache: 'no-cache' }).then(async (response) => {
       if (!response.ok) throw new Error(`reorder metadata unavailable (${response.status})`);
       const data = await response.json();
       if (data?.schemaVersion !== REORDER_SCHEMA_VERSION || !Array.isArray(data?.items)) {

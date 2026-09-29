@@ -78,7 +78,27 @@ async function newPage(viewport = { width: 390, height: 844 }) {
 
 async function boot(page, fixture, level = 0) {
   currentMetadata = { schemaVersion: 1, items: [fixture.metadataItem] };
-  return page.evaluate(({ item, level }) => window.bootReorder(item, level), { item: fixture.item, level });
+  const consoleMessages = [];
+  page.on('console', (message) => consoleMessages.push(`${message.type()}: ${message.text()}`));
+  const result = await page.evaluate(({ item, level }) => window.bootReorder(item, level), { item: fixture.item, level });
+  if (!result.active) {
+    const diagnostics = await page.evaluate(async () => {
+      const urls = [
+        new URL('./data/reorder-v1.json', document.baseURI),
+        new URL('../../data/reorder-v1.json', new URL('/scripts/app/reorderGuide.js', location.href)),
+      ];
+      return Promise.all(urls.map(async (url) => {
+        try {
+          const response = await fetch(url);
+          return { url: url.href, status: response.status, schemaVersion: (await response.json()).schemaVersion };
+        } catch (error) {
+          return { url: url.href, error: String(error) };
+        }
+      }));
+    });
+    throw new Error(`Reorder setup disabled: ${result.reason}; diagnostics=${JSON.stringify(diagnostics)}; console=${consoleMessages.join(' | ')}`);
+  }
+  return result;
 }
 
 async function tapTile(page, id) {
