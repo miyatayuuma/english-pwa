@@ -9,7 +9,7 @@
   <style>
     :root { color-scheme: dark; --txt: #f7faff; --muted: #b7c4d8; }
     body { margin: 0; padding: 12px; font: 16px/1.45 system-ui, sans-serif; }
-    main { width: min(390px, calc(100vw - 24px)); margin: 0 auto; }
+    main { box-sizing: border-box; display: block; padding: 0; width: min(390px, calc(100vw - 24px)); margin: 0 auto; }
     #composeGuide { display: flex; width: 100%; max-width: 100%; }
     #composeGuide[aria-hidden="true"] { display: none; }
     #speechStage { display: block; margin-top: 16px; }

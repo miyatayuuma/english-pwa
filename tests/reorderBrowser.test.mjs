@@ -213,7 +213,7 @@ browserTest('tap-only completion, canonical feedback, and speech handoff work en
   const fixture = basicFixture(3);
   await boot(page, fixture);
   assert.equal(await page.locator('#mic').isDisabled(), true);
-  await tapCanonical(page, 3);
+  await tapCanonical(page, 3, 2);
   await page.waitForSelector('[data-action="advance"]');
   assert.match(await page.locator('#composeFeedback').innerText(), /正解です/);
   assert.match(await page.locator('#composeContext').innerText(), /英文:/);
@@ -301,7 +301,7 @@ browserTest('Undo, Reset, keyboard movement, and duplicate visual buttons are op
   await page.keyboard.press('Enter');
   await tapTile(page, 's0-t1');
   assert.equal(await page.locator('[data-zone="answer"].compose-token').count(), 2);
-  await page.locator('[data-zone="answer"] [data-tile-id="s0-t0"]').focus();
+  await page.locator('[data-zone="answer"][data-tile-id="s0-t0"]').focus();
   await page.keyboard.press('ArrowRight');
   assert.deepEqual(await page.locator('[data-zone="answer"].compose-token').evaluateAll((nodes) => nodes.map((node) => node.dataset.tileId)), ['s0-t1', 's0-t0']);
   assert.match(await page.locator('#composeFeedback').innerText(), /解答内の語順を移動しました/);
