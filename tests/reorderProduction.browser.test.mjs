@@ -251,35 +251,54 @@ browserTest('production render keeps canonical English out of DOM and accessible
   const { context, page, metadataRequested } = opened;
   try {
     await awaitMetadataRequest(metadataRequested);
-    const pending = await page.evaluate(() => {
-      const english = document.querySelector('#enText');
-      return {
-        text: english.textContent,
-        html: english.innerHTML,
-        ariaLabel: english.getAttribute('aria-label') || '',
-        markup: english.outerHTML,
-        micDisabled: document.querySelector('#btnMic').disabled,
-      };
-    });
-    const accessibleText = await page.locator('#enText').ariaSnapshot();
     const answerFragments = sentenceRows.flatMap((row) => row.tiles);
-    for (const field of ['text', 'html', 'ariaLabel', 'markup']) {
-      assert.equal(pending[field].includes(item.en), false, `canonical answer leaked through ${field}: ${pending[field]}`);
-      for (const fragment of answerFragments) {
-        assert.equal(pending[field].includes(fragment), false, `answer tile leaked through ${field}: ${pending[field]}`);
+    for (let hintAttempt = 0; hintAttempt < 4; hintAttempt += 1) {
+      await page.evaluate(() => document.dispatchEvent(new Event('english-pwa:request-hint')));
+      const pending = await page.evaluate(() => {
+        const english = document.querySelector('#enText');
+        const japanese = document.querySelector('#jaText');
+        const card = document.querySelector('#card');
+        return {
+          text: english.textContent,
+          html: english.innerHTML,
+          ariaLabel: english.getAttribute('aria-label') || '',
+          markup: english.outerHTML,
+          micDisabled: document.querySelector('#btnMic').disabled,
+          japaneseVisible: japanese.style.display !== 'none',
+          hintActive: card.classList.contains('card-hint-active'),
+          audioHint: card.classList.contains('card-hint-audio'),
+        };
+      });
+      const accessibleText = await page.locator('#enText').ariaSnapshot();
+      for (const field of ['text', 'html', 'ariaLabel', 'markup']) {
+        assert.equal(pending[field].includes(item.en), false, `canonical answer leaked through ${field}: ${pending[field]}`);
+        for (const fragment of answerFragments) {
+          assert.equal(pending[field].includes(fragment), false, `answer tile leaked through ${field}: ${pending[field]}`);
+        }
       }
+      assert.equal(accessibleText.includes(item.en), false, `canonical answer leaked through accessibility tree: ${accessibleText}`);
+      for (const fragment of answerFragments) {
+        assert.equal(accessibleText.includes(fragment), false, `answer tile leaked through accessibility tree: ${accessibleText}`);
+      }
+      assert.equal(pending.text, '並べ替えを準備しています…', 'pending hint input must be ignored without advancing hint state');
+      assert.equal(pending.japaneseVisible, false, 'Japanese hint must remain hidden during setup');
+      assert.equal(pending.hintActive, false, 'hint state must remain at base during setup');
+      assert.equal(pending.audioHint, false, 'audio hint state must remain locked during setup');
+      assert.equal(pending.micDisabled, true);
     }
-    assert.equal(accessibleText.includes(item.en), false, `canonical answer leaked through accessibility tree: ${accessibleText}`);
-    for (const fragment of answerFragments) {
-      assert.equal(accessibleText.includes(fragment), false, `answer tile leaked through accessibility tree: ${accessibleText}`);
-    }
-    assert.equal(pending.micDisabled, true);
     respondWithMetadata(heldMetadataResponse, validMetadata);
     await waitForReorder(page);
     assert.match(await page.locator('#enText').innerText(), /文の語順を組み立ててください/);
     assert.equal(await page.locator('#composeTokens .compose-token').count(), 2);
     assert.equal(await page.locator('#btnMic').isDisabled(), true);
     assert.equal((await page.locator('#enText').innerText()).includes(item.en), false);
+    await completeSentence(page, 0, [0, 1]);
+    await completeSentence(page, 1, [0, 1, 2]);
+    await completeSentence(page, 2, [0, 1]);
+    const state = await submitFullUtterance(page);
+    assert.equal(state.hintStage, 0, 'ignored pending hints cannot make self-completion assisted');
+    assert.equal(state.noHintHistory.length, 1, 'self-completion remains eligible for no-hint success');
+    assert.equal(state.level5Count, 1, 'self-completion keeps perfect-no-hint credit');
   } finally {
     if (heldMetadataResponse && !heldMetadataResponse.writableEnded) respondWithMetadata(heldMetadataResponse, validMetadata);
     await closePage({ context });
@@ -299,8 +318,12 @@ browserTest('production render safely restores English and enables speech after 
     assert.equal(await page.locator('#btnMic').isDisabled(), false);
     assert.match(await page.locator('#footerMessage').innerText(), /並べ替えを安全に停止しました/);
     assert.match(await page.locator('#nextActionMessage').innerText(), /語順データを確認できない/);
-    await page.locator('#btnMic').click();
-    await page.waitForFunction(() => window.__testSpeech?.latest);
+    const state = await submitFullUtterance(page);
+    assert.equal(state.hintStage, 3, 'safe-disable English reveal is recorded before speech grading');
+    assert.equal(state.last, 3, '100% fallback speech uses candidate 3 under current policy');
+    assert.equal(state.best, 3);
+    assert.equal(state.noHintHistory.length, 0, 'safe-disable fallback cannot enter no-hint history');
+    assert.equal(state.level5Count, 0, 'safe-disable fallback cannot receive perfect-no-hint credit');
   } finally {
     await closePage({ context });
   }
@@ -314,6 +337,11 @@ browserTest('production read mode keeps canonical English visible and does not r
     await page.waitForFunction(() => document.querySelector('#enText')?.textContent.includes('Birds sing.'));
     assert.equal(metadataRequestCount, 0);
     assert.equal(await page.locator('#composeGuide').evaluate((node) => node.classList.contains('show')), false);
+    const state = await submitFullUtterance(page);
+    assert.equal(state.hintStage, 1, 'read mode keeps its ordinary manual English hint stage');
+    assert.equal(state.last, 3, 'read mode uses the ordinary hinted candidate');
+    assert.equal(state.noHintHistory.length, 0);
+    assert.equal(state.level5Count, 0);
   } finally {
     await closePage({ context });
   }
