@@ -20,11 +20,11 @@ const sources=[
 const fixtureFor=source=>vocabulary.entries.find(entry=>entry.kind===source.kind&&entry.canonical===source.canonical&&entry.occurrences.some(occurrence=>occurrence.item_id===source.itemId));
 const sourceSurface=(entry,itemId)=>{const occurrence=entry.occurrences.find(value=>String(value.item_id)===String(itemId));const item=itemById.get(String(itemId));return occurrence&&item?item.en.slice(occurrence.start,occurrence.end):''};
 
-async function newPage(source,{reducedMotion='reduce'}={}){
+async function newPage(source,{reducedMotion='reduce',entryState:entryStateOverride=null}={}){
   const context=await browser.newContext({viewport:{width:390,height:844},serviceWorkers:'block',reducedMotion});
   const entry=JSON.parse(JSON.stringify(fixtureFor(source)));
   assert.ok(entry,`fixture ${source.kind}/${source.canonical} exists`);
-  const entryState={last:0,best:0,noHintHistory:[],noHintStreak:0,level5Count:0,review:{nextDueAt:0,intervalMs:0},stability:0,difficulty:0};
+  const entryState=entryStateOverride||{last:0,best:0,noHintHistory:[],noHintStreak:0,level5Count:0,review:{nextDueAt:0,intervalMs:0},stability:0,difficulty:0};
   await context.addInitScript(({entry,source,entryState})=>{
     const initial={
       [source.itemId]:{last:2,best:2,updatedAt:1700000000000},
@@ -152,29 +152,41 @@ browserTest('390×844 expression card preserves active source, strict paraphrase
     await page.locator('.vocab-next').click();
     assert.match(await page.locator('.vocab-done').innerText(),/ターゲット正解 1　別表現 0　要復習 0/);
 
-    await page.locator('.vocab-done>button:not([data-back])').click();
-    await page.locator('.vocab-start').click();
-    const afterTarget=await page.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id],entry.id);
+  }finally{await closePage(opened);}
+});
+
+const lv5State=()=>({last:5,best:5,noHintHistory:[1700000000000,1700100000000,1700200000000],noHintStreak:3,level5Count:8,review:{nextDueAt:1,intervalMs:86400000},stability:8.4,difficulty:2.2});
+
+browserTest('automatic PARAPHRASE shows target details and leaves Lv5 SRS state untouched',async()=>{
+  const opened=await newPage(sources[0],{entryState:lv5State()});
+  const {page,entry}=opened;
+  try{
+    const before=await page.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id],entry.id);
     await inject(page,'run into someone');
     await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='意味はOK');
     assert.match(await page.locator('.vocab-answer-detail').innerText(),/このカードの表現：.*come across someone/s);
-    assert.deepEqual(await page.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id],entry.id),afterTarget,'automatic paraphrase must not mutate Lv5 target state');
+    assert.deepEqual(await page.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id],entry.id),before,'automatic paraphrase must not mutate Lv5 target state');
     await page.locator('.vocab-next').click();
     assert.match(await page.locator('.vocab-done').innerText(),/ターゲット正解 0　別表現 1　要復習 0/);
+  }finally{await closePage(opened);}
+});
 
-    await page.locator('.vocab-done>button:not([data-back])').click();
-    await page.locator('.vocab-start').click();
+browserTest('manual PARAPHRASE leaves Lv5 SRS state untouched and does not retry',async()=>{
+  const opened=await newPage(sources[0],{entryState:lv5State()});
+  const {page,entry}=opened;
+  try{
     await page.locator('.vocab-reveal').click();
     assert.equal(await page.locator('.vocab-manual button').count(),3);
     assert.match(await page.locator('.vocab-manual-hint').innerText(),/このカードの表現そのもの/);
     assert.equal(await page.evaluate(()=>document.activeElement?.dataset.grade),'miss');
-    const beforeManualPara=await page.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id],entry.id);
+    const before=await page.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id],entry.id);
     await page.locator('[data-grade="paraphrase"]').click();
     assert.match(await page.locator('.vocab-feedback').innerText(),/ターゲットの習得記録は変わりません/);
     assert.match(await page.locator('.vocab-answer-detail').innerText(),/このカードの表現：come across someone/);
-    assert.deepEqual(await page.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id],entry.id),beforeManualPara,'manual paraphrase must not mutate target state');
+    assert.deepEqual(await page.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id],entry.id),before,'manual paraphrase must not mutate Lv5 target state');
     await page.locator('.vocab-next').click();
     assert.match(await page.locator('.vocab-done').innerText(),/ターゲット正解 0　別表現 1　要復習 0/);
+    assert.doesNotMatch(await page.locator('.vocab-done').innerText(),/再確認/);
   }finally{await closePage(opened);}
 });
 
