@@ -1,6 +1,6 @@
-// sw.js: cache name follows the app version. v5.54
+// sw.js: cache name follows the app version. v5.55
 // Version the import itself so the browser cannot reuse an older worker import.
-importScripts('./scripts/version.js?v=5.54');
+importScripts('./scripts/version.js?v=5.55');
 const CACHE = self.APP_VERSION;
 
 self.addEventListener('install', e => {
@@ -17,20 +17,21 @@ self.addEventListener('install', e => {
     './data/characters.json',
     './data/vocabulary-v3.json',
     './data/vocabulary-v2-v3-migration.json',
+    './data/reorder-v1.json',
     './icons/icon-192.png',
     './icons/icon-512.png',
     './icons/maskable-192.png',
     './icons/maskable-512.png',
     './scripts/version.js',
     './scripts/app/main.js',
-    './scripts/app/swBootstrap.js?v=5.54',
-    './scripts/app/swUpdatePrompt.js?v=5.54',
+    './scripts/app/swBootstrap.js?v=5.55',
+    './scripts/app/swUpdatePrompt.js?v=5.55',
     './scripts/app/dom.js',
     './scripts/app/levelState.js',
     './scripts/app/overlay.js',
     './scripts/app/cardTransitions.js',
-    './scripts/app/composeGuide.js',
-    './scripts/app/composeDefaults.js',
+    './scripts/app/reorderGuide.js',
+    './scripts/reorder/reorderCore.js',
     './scripts/app/logManager.js',
     './scripts/app/tagLearningCore.js',
     './scripts/app/relationshipCore.js',
@@ -98,6 +99,27 @@ self.addEventListener('fetch', e => {
   const isCharacterImageRequest = url.pathname.endsWith('.png') && !isIconRequest;
   const isScriptRequest = url.pathname.includes('/scripts/') && url.pathname.endsWith('.js');
   const isStyleRequest = e.request.destination === 'style' || url.pathname.endsWith('.css');
+  const isReorderMetadataRequest = url.pathname.endsWith('/data/reorder-v1.json');
+
+  if (isReorderMetadataRequest) {
+    e.respondWith(caches.open(CACHE).then(async cache => {
+      const cached = await cache.match(e.request, { ignoreSearch: true })
+        || await cache.match(new URL('./data/reorder-v1.json', self.registration.scope).href);
+      const refresh = fetch(new Request(e.request, { cache: 'reload' }))
+        .then(response => {
+          if (response.ok) cache.put(e.request, response.clone());
+          return response;
+        })
+        .catch(() => null);
+      if (cached) {
+        e.waitUntil(refresh);
+        return cached;
+      }
+      const response = await refresh;
+      return response || Response.error();
+    }));
+    return;
+  }
 
   if (isStyleRequest) {
     e.respondWith(caches.open(CACHE).then(async cache => {

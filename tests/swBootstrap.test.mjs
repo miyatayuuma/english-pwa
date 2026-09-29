@@ -7,27 +7,29 @@ const bootstrap=fs.readFileSync(new URL('../scripts/app/swBootstrap.js',import.m
 const worker=fs.readFileSync(new URL('../sw.js',import.meta.url),'utf8');
 
 test('a versioned bootstrap escapes stale cache-first workers and registers updates',()=>{
-  assert.match(index,/swBootstrap\.js\?v=5\.54/);
-  assert.match(bootstrap,/swUpdatePrompt\.js\?v=5\.54/);
+  assert.match(index,/swBootstrap\.js\?v=5\.55/);
+  assert.match(bootstrap,/swUpdatePrompt\.js\?v=5\.55/);
   assert.match(bootstrap,/createSwUpdatePrompt\(\)/);
   assert.match(bootstrap,/registerServiceWorker\(\)/);
 });
 
 test('the current worker precaches its update bootstrap',()=>{
-  assert.match(worker,/version\.js\?v=5\.54/);
-  assert.match(worker,/swBootstrap\.js\?v=5\.54/);
-  assert.match(worker,/swUpdatePrompt\.js\?v=5\.54/);
+  assert.match(worker,/version\.js\?v=5\.55/);
+  assert.match(worker,/swBootstrap\.js\?v=5\.55/);
+  assert.match(worker,/swUpdatePrompt\.js\?v=5\.55/);
   assert.match(worker,/new Request\(asset,\{cache:'reload'\}\)/);
 });
 
 test('the worker installs vocabulary v3 and one-time progress migration assets',()=>{
   const version=fs.readFileSync(new URL('../scripts/version.js',import.meta.url),'utf8');
-  assert.match(version,/APP_VERSION\s*=\s*'v5\.54'/);
+  assert.match(version,/APP_VERSION\s*=\s*'v5\.55'/);
   assert.match(worker,/\.\/data\/vocabulary-v3\.json/);
   assert.match(worker,/\.\/data\/vocabulary-v2-v3-migration\.json/);
   assert.doesNotMatch(worker,/vocabulary-v2\.json/);
   for(const asset of [
     './scripts/app/vocabularyMigration.js',
+    './scripts/app/reorderGuide.js',
+    './scripts/reorder/reorderCore.js',
     './scripts/audio/resolver.js',
     './scripts/tagging/quotedTurns.js',
   ]) assert.ok(worker.includes(asset),`${asset} is precached`);

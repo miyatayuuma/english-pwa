@@ -44,7 +44,6 @@ function injectStyles(){
     .learning-choice__footer{display:grid;gap:8px;padding-top:11px;border-top:1px solid rgba(148,163,184,.1)}
     .learning-choice__summary{text-align:center;font-size:12px;line-height:1.5;font-weight:750;color:#c7d2fe;min-height:18px}
     .learning-choice__start{width:100%;min-height:52px;border:0;border-radius:14px;background:#6366f1;color:#fff;font:inherit;font-size:15px;font-weight:850;cursor:pointer;box-shadow:0 10px 24px rgba(99,102,241,.2)}
-    #composeGuide>h4,#composeNote{display:none!important}
     @media(max-width:430px){.learning-home-return span{display:none}.learning-home-return{padding-inline:10px}.learning-choice__grid{grid-template-columns:1fr}.learning-choice__button{min-height:60px}.learning-choice__title-row{align-items:flex-end}.learning-choice__current{font-size:9px}}
   `;
   document.head.appendChild(style);
