@@ -32,7 +32,65 @@ function migrationExpressionMatches(old,next){
   return previous.length>0&&previous.join(' ')===current.join(' ');
 }
 
-export function validateVocabularyV3(db,items,characters,migration,v2){
+function validateWordExpansionAudit(audit,entries,items,errors){
+  if(!audit) return;
+  const itemIds=(Array.isArray(items)?items:[]).map(item=>String(item?.id||''));
+  const itemById=new Map((Array.isArray(items)?items:[]).map(item=>[String(item?.id||''),item]));
+  const entryById=new Map(entries.map(entry=>[String(entry?.id||''),entry]));
+  const wordEntries=entries.filter(entry=>entry?.kind==='word');
+  const reviewed=Array.isArray(audit.reviewed_source_item_ids)?audit.reviewed_source_item_ids.map(String):[];
+  const baseline=Array.isArray(audit.baseline_word_source_item_ids)?audit.baseline_word_source_item_ids.map(String):[];
+  const added=Array.isArray(audit.added_word_entry_ids)?audit.added_word_entry_ids.map(String):[];
+  if(audit.schema_version!==1) errors.push('word audit: schema_version must equal 1');
+  if(!/^([0-9a-f]{40})$/.test(String(audit.baseline_main||''))) errors.push('word audit: baseline_main must be a full commit SHA');
+  if(audit.source_items_reviewed!==itemIds.length||reviewed.length!==itemIds.length||new Set(reviewed).size!==reviewed.length||itemIds.some(id=>!reviewed.includes(id))) errors.push('word audit: reviewed source item IDs must match the complete current source dataset');
+  if(new Set(baseline).size!==baseline.length||baseline.some(id=>!itemById.has(id))) errors.push('word audit: baseline word source item IDs must be unique known items');
+  if(audit.word_entries_before!==42) errors.push('word audit: baseline word_entries_before must be 42');
+  if(audit.word_entries_added!==added.length||new Set(added).size!==added.length) errors.push('word audit: added word IDs must be unique and match word_entries_added');
+  for(const id of added) if(entryById.get(id)?.kind!=='word') errors.push(`word audit: added ID ${id} must resolve to a word entry`);
+  const addedIds=new Set(added);
+  for(const id of entryById.keys()) if(addedIds.has(id)&&entryById.get(id)?.kind!=='word') errors.push(`word audit: ${id} is not a word entry`);
+  for(const example of Array.isArray(audit.accepted_examples)?audit.accepted_examples:[]){
+    const entry=entryById.get(String(example?.entry_id||''));
+    const item=itemById.get(String(example?.item_id||''));
+    const occurrence=entry?.occurrences?.find(value=>String(value.item_id)===String(example?.item_id));
+    const actual=occurrence&&item?item.en.slice(occurrence.start,occurrence.end):'';
+    if(!entry||entry.kind!=='word'||entry.canonical!==example.canonical||entry.sense_key!==example.sense_key||!addedIds.has(entry.id)) errors.push(`word audit: invalid accepted example entry ${example?.entry_id||'<missing>'}`);
+    if(!occurrence||actual!==example.surface||occurrence.contextual_meaning_ja!==example.contextual_meaning_ja||entry?.meaning_ja!==example.meaning_ja) errors.push(`word audit: accepted example source/meaning mismatch for ${example?.canonical||'<missing>'}`);
+  }
+  for(const example of Array.isArray(audit.retained_examples)?audit.retained_examples:[]){
+    const entry=entryById.get(String(example?.entry_id||''));
+    const item=itemById.get(String(example?.item_id||''));
+    const occurrence=entry?.occurrences?.find(value=>String(value.item_id)===String(example?.item_id));
+    const actual=occurrence&&item?item.en.slice(occurrence.start,occurrence.end):'';
+    if(!entry||entry.kind!=='word'||addedIds.has(entry.id)||entry.canonical!==example.canonical||entry.sense_key!==example.sense_key) errors.push(`word audit: invalid retained example entry ${example?.entry_id||'<missing>'}`);
+    if(!occurrence||actual!==example.surface||occurrence.contextual_meaning_ja!==example.contextual_meaning_ja||entry?.meaning_ja!==example.meaning_ja) errors.push(`word audit: retained example source/meaning mismatch for ${example?.canonical||'<missing>'}`);
+  }
+  for(const correction of Array.isArray(audit.existing_word_span_corrections)?audit.existing_word_span_corrections:[]){
+    const entry=entryById.get(String(correction?.entry_id||''));
+    const item=itemById.get(String(correction?.item_id||''));
+    const occurrence=entry?.occurrences?.find(value=>String(value.item_id)===String(correction?.item_id));
+    const actual=occurrence&&item?item.en.slice(occurrence.start,occurrence.end):'';
+    if(!entry||entry.kind!=='word'||addedIds.has(entry.id)||entry.canonical!==correction.canonical||!occurrence||actual!==correction.to_surface||correction.from_surface===correction.to_surface) errors.push(`word audit: existing word span correction is inconsistent for ${correction?.entry_id||'<missing>'}`);
+  }
+  for(const example of Array.isArray(audit.rejected_examples)?audit.rejected_examples:[]){
+    const item=itemById.get(String(example?.item_id||''));
+    if(!item||!String(example?.surface||'').trim()||!String(example?.reason||'').trim()||!item.en.includes(example.surface)) errors.push(`word audit: invalid rejected example ${example?.surface||'<missing>'}`);
+    if(wordEntries.some(entry=>String(entry.canonical||'').toLocaleLowerCase('en-US')===String(example?.surface||'').toLocaleLowerCase('en-US'))) errors.push(`word audit: rejected basic/expression token ${example?.surface||'<missing>'} was also selected as a word`);
+  }
+  for(const example of Array.isArray(audit.same_sense_multi_occurrence_examples)?audit.same_sense_multi_occurrence_examples:[]){
+    const entry=wordEntries.find(value=>value.canonical===example.canonical&&value.sense_key===example.sense_key);
+    const actualIds=(entry?.occurrences||[]).map(value=>String(value.item_id));
+    if(!entry||!example.item_ids?.every(id=>actualIds.includes(String(id)))||actualIds.length!==new Set(actualIds).size) errors.push(`word audit: same-sense occurrences are not consolidated for ${example?.canonical||'<missing>'}`);
+  }
+  for(const example of Array.isArray(audit.same_canonical_different_sense_examples)?audit.same_canonical_different_sense_examples:[]){
+    const senses=wordEntries.filter(value=>value.canonical===example.canonical).map(value=>value.sense_key);
+    const ids=wordEntries.filter(value=>value.canonical===example.canonical).flatMap(value=>(value.occurrences||[]).map(occurrence=>String(occurrence.item_id)));
+    if(!example.sense_keys?.every(key=>senses.includes(key))||new Set(senses).size<senses.length||!example.item_ids?.every(id=>ids.includes(String(id)))) errors.push(`word audit: distinct senses are not represented separately for ${example?.canonical||'<missing>'}`);
+  }
+}
+
+export function validateVocabularyV3(db,items,characters,migration,v2,wordAudit=null){
   const errors=[];
   const entries=Array.isArray(db?.entries)?db.entries:[];
   const byItem=new Map((Array.isArray(items)?items:[]).map(item=>[String(item?.id||''),item]));
@@ -69,6 +127,7 @@ export function validateVocabularyV3(db,items,characters,migration,v2){
       const surface=item.en.slice(start,end);
       if(!/[A-Za-z]/.test(surface)) errors.push(`${id}/${itemId}: span has no alphabetic target`);
       if(!/^[A-Za-z]/.test(surface)||!/[A-Za-z]$/.test(surface)) errors.push(`${id}/${itemId}: span must start and end on a word boundary`);
+      if(entry?.kind==='word'&&/\s/.test(surface)) errors.push(`${id}/${itemId}: word span must contain one lexical token`);
       if(!String(occurrence?.contextual_meaning_ja||'').trim()) errors.push(`${id}/${itemId}: empty contextual meaning`);
       const key=`${itemId}:${start}:${end}`;
       if(occurrences.has(key)) errors.push(`${id}/${itemId}: duplicate occurrence span`);occurrences.add(key);
@@ -78,6 +137,8 @@ export function validateVocabularyV3(db,items,characters,migration,v2){
     }
   }
   if(db?.schema_version!==3) errors.push('schema_version must equal 3');
+
+  validateWordExpansionAudit(wordAudit,entries,items,errors);
 
   const oldIds=new Set(),newIds=new Set();
   const oldById=new Map((Array.isArray(v2?.entries)?v2.entries:[]).map(entry=>[String(entry.id),entry]));
@@ -96,10 +157,10 @@ export function validateVocabularyV3(db,items,characters,migration,v2){
     if(mapping?.pos_compatible_confirmed!==true) errors.push(`migration: POS compatibility not explicitly reviewed ${oldId} -> ${newId}`);
   }
 
-  return {errors,report:buildVocabularyV3Report(db,items,characters,migration,v2)};
+  return {errors,report:buildVocabularyV3Report(db,items,characters,migration,v2,wordAudit)};
 }
 
-export function buildVocabularyV3Report(db,items,characters,migration,v2){
+export function buildVocabularyV3Report(db,items,characters,migration,v2,wordAudit=null){
   const entries=Array.isArray(db?.entries)?db.entries:[];
   const itemList=Array.isArray(items)?items:[];
   const sourceIds=new Set(entries.flatMap(entry=>(entry.occurrences||[]).map(occurrence=>String(occurrence.item_id))));
@@ -134,6 +195,12 @@ export function buildVocabularyV3Report(db,items,characters,migration,v2){
   }
   const readyV2=Number(v2?.stats?.ready_for_cards)||0;
   const migrationCount=Array.isArray(migration?.mappings)?migration.mappings.length:0;
+  const wordEntries=entries.filter(entry=>entry.kind==='word');
+  const wordSourceIds=new Set(wordEntries.flatMap(entry=>(entry.occurrences||[]).map(occurrence=>String(occurrence.item_id))));
+  const baselineWordSourceIds=new Set((wordAudit?.baseline_word_source_item_ids||[]).map(String));
+  const wordCanonicals=new Map();
+  for(const entry of wordEntries) wordCanonicals.set(entry.canonical,(wordCanonicals.get(entry.canonical)||0)+1);
+  const addedSourceIds=new Set(wordEntries.filter(entry=>(wordAudit?.added_word_entry_ids||[]).includes(entry.id)).flatMap(entry=>(entry.occurrences||[]).map(occurrence=>String(occurrence.item_id))));
   return {
     schema_version:1,
     vocabulary_schema_version:db?.schema_version||null,
@@ -155,6 +222,23 @@ export function buildVocabularyV3Report(db,items,characters,migration,v2){
       selected_curated_targets:selectedTargets,
       fallback_targets:fallbackTargets,
     },
+    ...(wordAudit?{word_expansion_audit:{
+      baseline_main:wordAudit.baseline_main,
+      source_items_reviewed:wordAudit.source_items_reviewed,
+      word_entries_before:wordAudit.word_entries_before,
+      word_entries_after:wordEntries.length,
+      word_entries_added:(wordAudit.added_word_entry_ids||[]).length,
+      source_items_with_word_entries:wordSourceIds.size,
+      source_items_newly_covered_by_words:[...wordSourceIds].filter(id=>!baselineWordSourceIds.has(id)).length,
+      source_items_with_added_word_entries:addedSourceIds.size,
+      multi_occurrence_word_entries:wordEntries.filter(entry=>(entry.occurrences||[]).length>1).length,
+      multi_sense_word_canonical_count:[...wordCanonicals.values()].filter(count=>count>1).length,
+      existing_word_span_correction_count:(wordAudit.existing_word_span_corrections||[]).length,
+      existing_word_span_correction_examples:(wordAudit.existing_word_span_corrections||[]).slice(0,3).map(({canonical,item_id,from_surface,to_surface})=>({canonical,item_id,from_surface,to_surface})),
+      retained_examples:(wordAudit.retained_examples||[]).map(({canonical,sense_key,item_id,surface})=>({canonical,sense_key,item_id,surface})),
+      accepted_examples:(wordAudit.accepted_examples||[]).map(({canonical,sense_key,item_id,surface})=>({canonical,sense_key,item_id,surface})),
+      rejected_examples:(wordAudit.rejected_examples||[]).map(({surface,item_id,reason})=>({surface,item_id,reason})),
+    }}:{})
   };
 }
 
@@ -162,7 +246,8 @@ function main(){
   const db=read('vocabulary-v3.json'),items=read('items.json');
   const characters=read('characters.json').characters||[];
   const migration=read('vocabulary-v2-v3-migration.json'),v2=read('vocabulary-v2.json');
-  const {errors,report}=validateVocabularyV3(db,items,characters,migration,v2);
+  const wordAudit=read('vocabulary-v3-word-audit.json');
+  const {errors,report}=validateVocabularyV3(db,items,characters,migration,v2,wordAudit);
   if(errors.length){console.error(errors.join('\n'));process.exitCode=1;return;}
   const reportPath=path.join(root,'data/vocabulary-v3-report.json');
   if(process.argv.includes('--check-report')){
