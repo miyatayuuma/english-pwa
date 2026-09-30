@@ -25,6 +25,92 @@ def fail(errors: list[str], fixture_id: str, message: str) -> None:
     errors.append(f"{fixture_id}: {message}")
 
 
+
+def dependency_span(tokens: list[dict], head_index: int) -> tuple[int, int]:
+    selected = {head_index}
+    changed = True
+    while changed:
+        changed = False
+        for token in tokens:
+            if token["i"] not in selected and token.get("head") in selected:
+                selected.add(token["i"])
+                changed = True
+    return min(selected), max(selected) + 1
+
+
+def validate_chunk_quality_gold(fixture_id: str, record: dict, specification: dict) -> list[str]:
+    errors: list[str] = []
+    tokens = record["tokens"]
+    text_at = lambda value: next((token["i"] for token in tokens if token["text"].lower() == value.lower()), None)
+    for tier in specification.get("tiers", []):
+        variant = record.get("variants", {}).get(tier)
+        if not variant:
+            fail(errors, fixture_id, f"chunk-quality tier missing: {tier}")
+            continue
+        tiles = variant["tiles"]
+        def tile_at(index: int | None):
+            return next((tile for tile in tiles if index is not None and tile["tokenStart"] <= index < tile["tokenEnd"]), None)
+        owner_token = text_at(specification.get("ownerToken", "")) if specification.get("ownerToken") else None
+        owner = tile_at(owner_token)
+        expected_owner = specification.get("ownerKind")
+        if expected_owner and owner and expected_owner not in {owner.get("ownerKind"), owner.get("ownerParentKind")}:
+            fail(errors, fixture_id, f"{tier} owner for {specification.get('ownerToken')} is {owner.get('ownerKind')}/{owner.get('ownerParentKind')}, expected {expected_owner}")
+        if expected_owner and owner is None:
+            fail(errors, fixture_id, f"{tier} owner token missing: {specification.get('ownerToken')}")
+
+        marker_text = specification.get("clauseMarker") or specification.get("nestedMarker")
+        marker = text_at(marker_text) if marker_text else None
+        span_head = owner_token
+        relative_head = text_at(specification.get("relativeHeadToken", "")) if specification.get("relativeHeadToken") else None
+        if relative_head is not None and specification.get("relativeOwnerKind"):
+            rel_tile = tile_at(relative_head)
+            expected = specification["relativeOwnerKind"]
+            if rel_tile is None or expected not in {rel_tile.get("ownerKind"), rel_tile.get("ownerParentKind")}:
+                fail(errors, fixture_id, f"{tier} relative clause owner is absent or incorrect")
+        if marker is not None:
+            head = owner_token if owner_token is not None else span_head
+        elif relative_head is not None:
+            head = relative_head
+        else:
+            head = owner_token
+        if head is not None:
+            span_start, span_end = dependency_span(tokens, head)
+            if marker is not None:
+                span_start = min(span_start, marker)
+            intersects = [tile for tile in tiles if tile["tokenStart"] < span_end and tile["tokenEnd"] > span_start]
+            minimum = specification.get("minimumClauseTiles", specification.get("minimumRelativeTiles"))
+            if minimum and len(intersects) < minimum:
+                fail(errors, fixture_id, f"{tier} nested clause has {len(intersects)} tile(s); expected at least {minimum}")
+            if marker is not None and any(tile.get("ownerKind") == "pp"
+                                          and tile["tokenStart"] <= span_start and tile["tokenEnd"] >= span_end
+                                          for tile in tiles):
+                fail(errors, fixture_id, f"{tier} clause marker is inside a PP-owned whole clause")
+        pp_word = specification.get("internalPpToken") or specification.get("ppToken")
+        if pp_word:
+            pp_tile = tile_at(text_at(pp_word))
+            if pp_tile is None or pp_tile.get("ownerKind") != "pp":
+                fail(errors, fixture_id, f"{tier} internal PP token {pp_word!r} has no PP owner")
+        coordination_words = specification.get("coordinationWords", [])
+        if coordination_words:
+            coordinate_tiles = [tile_at(text_at(word)) for word in coordination_words]
+            minimum = specification.get("minimumCoordinationTiles", 2)
+            if any(tile is None for tile in coordinate_tiles) or len({tile["id"] for tile in coordinate_tiles if tile}) < minimum:
+                fail(errors, fixture_id, f"{tier} non-verbal coordination remains atomic: {coordination_words}")
+            expected = specification.get("coordinationOwnerKind")
+            if expected and any(tile is None or tile.get("ownerKind") != expected for tile in coordinate_tiles):
+                fail(errors, fixture_id, f"{tier} non-verbal coordination owner is incorrect: {coordination_words}")
+
+    protected_exact = specification.get("protectedExact")
+    if protected_exact:
+        protected_texts = [span["text"].lower() for span in record.get("protectedConstructions", []) if span.get("hard")]
+        if protected_exact.lower() not in protected_texts:
+            fail(errors, fixture_id, f"expected hard-protected core {protected_exact!r}; got {protected_texts!r}")
+    not_protected = specification.get("notProtected")
+    if not_protected and any(not_protected.lower() in span["text"].lower()
+                             for span in record.get("protectedConstructions", []) if span.get("hard")):
+        fail(errors, fixture_id, f"relative clause overreach remains in protected spans: {not_protected!r}")
+    return errors
+
 def validate_grammar_fixtures(nlp, fixtures: list[dict]) -> list[str]:
     errors: list[str] = []
     if len(fixtures) < 30:
@@ -82,6 +168,8 @@ def validate_grammar_fixtures(nlp, fixtures: list[dict]) -> list[str]:
             if assertions.get("hasNegation") and not any(generator.dep(token) == "neg" or token.lower_ in {"not", "never", "n't"} for token in tokens):
                 fail(errors, fixture_id, "negation not represented")
             variants = record["variants"]
+            if assertions.get("chunkQuality"):
+                errors.extend(validate_chunk_quality_gold(fixture_id, record, assertions["chunkQuality"]))
             if assertions.get("playable") and not variants:
                 fail(errors, fixture_id, "expected a playable tier")
             if assertions.get("fixedContext") and not record["fixedContext"]:
