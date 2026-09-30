@@ -126,6 +126,7 @@ async function injectInterim(page,text){
   await page.evaluate(value=>window.__mockSpeech.latest.emitInterim(value),text);
 }
 async function recognitionError(page,error='network'){
+  await page.waitForFunction(()=>window.__mockSpeech?.latest);
   await page.evaluate(value=>window.__mockSpeech.latest.injectError(value),error);
 }
 function browserTest(name,run){
@@ -220,7 +221,12 @@ browserTest('answer reveal immediately records MISS and never asks for manual gr
     assert.equal(await page.locator('.vocab-next').count(),1);
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);
     const before=await page.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id],entry.id);
-    assert.equal(before.last,0);
+    assert.equal(before.lastMatch,0);
+    assert.ok(before.last<5,'answer reveal records a MISS against the previous Lv5 state');
+    await page.locator('.vocab-next').click();
+    await page.locator('.vocab-reveal').click();
+    await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='あとでもう一度');
+    assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),2,'the delayed retry presentation records its own MISS once');
     await page.locator('.vocab-next').click();
     assert.match(await page.locator('.vocab-done').innerText(),/ターゲット正解 0　別表現 0　要復習 1/);
     assert.match(await page.locator('.vocab-done').innerText(),/再確認 1枚/);
@@ -252,8 +258,10 @@ browserTest('word reveal is MISS while construction source realization remains a
         assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);
         assert.equal(await page.locator('.vocab-heard .vocab-heard__text').innerText(),text);
       }
-      await page.locator('.vocab-next').click();
-      assert.match(await page.locator('.vocab-done').innerText(),/ターゲット正解 1/);
+      if(source===sources[2]){
+        await page.locator('.vocab-next').click();
+        assert.match(await page.locator('.vocab-done').innerText(),/ターゲット正解 1/);
+      }
     }finally{await closePage(opened);}
   }
 });
@@ -377,6 +385,10 @@ browserTest('second NEAR after one immediate retry finalizes MISS instead of sho
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);
     assert.equal(await page.locator('.vocab-answer').count(),1);
     await page.locator('.vocab-next').click();
+    await page.locator('.vocab-reveal').click();
+    await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='あとでもう一度');
+    assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),2,'the queued presentation records its own final MISS once');
+    await page.locator('.vocab-next').click();
     assert.match(await page.locator('.vocab-done').innerText(),/要復習 1/);
     assert.match(await page.locator('.vocab-done').innerText(),/再確認 1枚/);
   }finally{await closePage(opened);}
@@ -394,6 +406,10 @@ browserTest('NEAR→CLEAR MISS finalizes once and enqueues only the delayed retr
     assert.equal(await page.locator('.vocab-heard .vocab-heard__text').innerText(),'banana');
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);
     assert.equal(await page.locator('.vocab-answer').count(),1);
+    await page.locator('.vocab-next').click();
+    await page.locator('.vocab-reveal').click();
+    await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='あとでもう一度');
+    assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),2,'the queued presentation records its own final MISS once');
     await page.locator('.vocab-next').click();
     assert.match(await page.locator('.vocab-done').innerText(),/要復習 1/);
     assert.match(await page.locator('.vocab-done').innerText(),/再確認 1枚/);
