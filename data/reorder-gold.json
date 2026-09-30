@@ -277,7 +277,7 @@
     {
       "id": "g29-duplicate-tile-text",
       "category": "duplicate tile text",
-      "text": "I need one ticket and one ticket",
+      "text": "I didn't realize I was taking up so much space.",
       "assert": {
         "duplicateTileText": true,
         "uniqueTileIds": true
@@ -387,6 +387,172 @@
           "I’m"
         ]
       }
+    },
+    {
+      "id": "g40-chunk-quality-e0110",
+      "category": "coordinated clause recursive split and local PP owner",
+      "text": "I could have laid out all that money on a new PC, but on second thought I decided to put some aside for a rainy day.",
+      "assert": {
+        "playable": true,
+        "chunkQuality": {
+          "tiers": [
+            "standard",
+            "precision"
+          ],
+          "clauseMarker": "but",
+          "ownerToken": "decided",
+          "ownerKind": "coordinated-clause",
+          "minimumClauseTiles": 2,
+          "internalPpToken": "rainy"
+        }
+      }
+    },
+    {
+      "id": "g41-chunk-quality-e0050",
+      "category": "adverbial clause recursive split",
+      "text": "My grandma strained her back when she bent down to hug my son.",
+      "assert": {
+        "playable": true,
+        "chunkQuality": {
+          "tiers": [
+            "standard",
+            "precision"
+          ],
+          "clauseMarker": "when",
+          "ownerToken": "bent",
+          "ownerKind": "subordinate-clause",
+          "minimumClauseTiles": 2
+        }
+      }
+    },
+    {
+      "id": "g42-chunk-quality-e0462",
+      "category": "coordinated clause and local PP owners",
+      "text": "The man pleaded for mercy, but he was sentenced to twenty years in prison for his crime.",
+      "assert": {
+        "playable": true,
+        "chunkQuality": {
+          "tiers": [
+            "standard",
+            "precision"
+          ],
+          "clauseMarker": "but",
+          "ownerToken": "sentenced",
+          "ownerKind": "coordinated-clause",
+          "minimumClauseTiles": 2,
+          "internalPpToken": "crime"
+        }
+      }
+    },
+    {
+      "id": "g43-chunk-quality-e0018",
+      "category": "PP with nested relative clause",
+      "text": "This article contains tips for those who are eager to increase their vocabulary.",
+      "assert": {
+        "playable": true,
+        "chunkQuality": {
+          "tiers": [
+            "standard",
+            "precision"
+          ],
+          "ppToken": "for",
+          "relativeHeadToken": "are",
+          "relativeOwnerKind": "relative-clause",
+          "minimumRelativeTiles": 2
+        }
+      }
+    },
+    {
+      "id": "g44-chunk-quality-e0033",
+      "category": "protected nominal core excludes relative clause",
+      "text": "In many business districts, there are a lot of vacant lots which have been for sale for years.",
+      "assert": {
+        "playable": true,
+        "chunkQuality": {
+          "tiers": [
+            "standard",
+            "precision"
+          ],
+          "protectedExact": "a lot of vacant lots",
+          "notProtected": "which have been",
+          "relativeHeadToken": "been",
+          "relativeOwnerKind": "relative-clause",
+          "minimumRelativeTiles": 2
+        }
+      }
+    },
+    {
+      "id": "g45-chunk-quality-e0141",
+      "category": "embedded clause precision decomposition",
+      "text": "There's little prospect that the two countries will make significant progress in disarmament.",
+      "assert": {
+        "playable": true,
+        "chunkQuality": {
+          "tiers": [
+            "precision"
+          ],
+          "clauseMarker": "that",
+          "ownerToken": "make",
+          "ownerKind": "subordinate-clause",
+          "minimumClauseTiles": 2
+        }
+      }
+    },
+    {
+      "id": "g46-chunk-quality-e0161",
+      "category": "infinitive and subordinate clause Standard decomposition",
+      "text": "\"Nick, I want you to look this over before I turn it in.\"",
+      "assert": {
+        "playable": true,
+        "chunkQuality": {
+          "tiers": [
+            "standard"
+          ],
+          "ownerToken": "look",
+          "ownerKind": "subordinate-clause",
+          "nestedMarker": "before",
+          "minimumClauseTiles": 2
+        }
+      }
+    },
+    {
+      "id": "g47-chunk-quality-e0164-pcomp-in-pp",
+      "category": "complement clause recursively decomposed inside PP",
+      "text": "You ought to think over whether the premise is valid or not.",
+      "assert": {
+        "playable": true,
+        "chunkQuality": {
+          "tiers": [
+            "standard",
+            "precision"
+          ],
+          "clauseMarker": "whether",
+          "ownerToken": "is",
+          "ownerKind": "subordinate-clause",
+          "minimumClauseTiles": 2,
+          "ppToken": "over"
+        }
+      }
+    },
+    {
+      "id": "g48-chunk-quality-e0241-nominal-coordination",
+      "category": "correlative nominal coordination",
+      "text": "The ecologist has warned us time and again that petroleum is not only a blessing but also a curse.",
+      "assert": {
+        "playable": true,
+        "chunkQuality": {
+          "tiers": [
+            "standard",
+            "precision"
+          ],
+          "coordinationWords": [
+            "blessing",
+            "curse"
+          ],
+          "minimumCoordinationTiles": 2,
+          "coordinationOwnerKind": "coordination"
+        }
+      }
     }
   ],
   "corpusAudit": [
@@ -399,12 +565,16 @@
       "text": "\"Do you agree or disagree with him?\"",
       "tier": "foundation",
       "tileTexts": [
-        "\"Do you agree",
+        "\"Do",
+        "you",
+        "agree",
         "or disagree with him?\""
       ],
       "tileRoles": [
         "predicate",
-        "coordination"
+        "subject",
+        "predicate",
+        "clause"
       ],
       "fivePattern": "SV",
       "isQuestion": false,
@@ -448,11 +618,13 @@
       "tier": "foundation",
       "tileTexts": [
         "\"How's",
-        "it going,",
+        "it",
+        "going,",
         "Bob?\""
       ],
       "tileRoles": [
         "phrase",
+        "subject",
         "predicate",
         "adjunct"
       ],
@@ -481,7 +653,7 @@
       ],
       "tileRoles": [
         "subject",
-        "predicate"
+        "clause"
       ],
       "fivePattern": "SV",
       "isQuestion": false,
@@ -506,7 +678,7 @@
       "tileRoles": [
         "phrase",
         "phrase",
-        "predicate"
+        "complement"
       ],
       "fivePattern": "SVC",
       "isQuestion": false,
@@ -559,7 +731,7 @@
       ],
       "tileRoles": [
         "subject",
-        "predicate",
+        "clause",
         "complement"
       ],
       "fivePattern": "SVC",
@@ -579,15 +751,17 @@
       "tier": "foundation",
       "tileTexts": [
         "He",
-        "is not good",
+        "is not",
+        "good",
         "at making friends",
         "and always keeps to himself."
       ],
       "tileRoles": [
         "subject",
         "predicate",
+        "complement",
         "pp",
-        "coordination"
+        "clause"
       ],
       "fivePattern": "SVC",
       "isQuestion": false,
@@ -611,7 +785,7 @@
       ],
       "tileRoles": [
         "subject",
-        "predicate",
+        "clause",
         "object"
       ],
       "fivePattern": "SVO",
@@ -636,7 +810,7 @@
       ],
       "tileRoles": [
         "subject",
-        "predicate",
+        "clause",
         "object"
       ],
       "fivePattern": "SVO",
@@ -656,12 +830,14 @@
       "tier": "foundation",
       "tileTexts": [
         "We'd",
-        "better make",
+        "better",
+        "make",
         "a reservation",
         "beforehand."
       ],
       "tileRoles": [
         "phrase",
+        "adjunct",
         "predicate",
         "object",
         "adjunct"
@@ -694,7 +870,7 @@
       "tileRoles": [
         "adjunct",
         "subject",
-        "predicate",
+        "clause",
         "object"
       ],
       "fivePattern": "SVO",
@@ -713,11 +889,15 @@
       "text": "Can you give me a hand?\"",
       "tier": "foundation",
       "tileTexts": [
-        "Can you give",
+        "Can",
+        "you",
+        "give",
         "me",
         "a hand?\""
       ],
       "tileRoles": [
+        "predicate",
+        "subject",
         "predicate",
         "indirect_object",
         "object"
@@ -746,7 +926,7 @@
       ],
       "tileRoles": [
         "subject",
-        "predicate",
+        "clause",
         "indirect_object",
         "object",
         "adjunct"
@@ -798,12 +978,14 @@
       "text": "\"Can you keep an eye on my kids for a while?",
       "tier": "foundation",
       "tileTexts": [
-        "\"Can you keep",
+        "\"Can you",
+        "keep",
         "an eye",
         "on my kids",
         "for a while?"
       ],
       "tileRoles": [
+        "phrase",
         "predicate",
         "object",
         "pp",
@@ -855,10 +1037,14 @@
       "text": "Can you spare a minute?",
       "tier": "foundation",
       "tileTexts": [
-        "Can you spare",
+        "Can",
+        "you",
+        "spare",
         "a minute?"
       ],
       "tileRoles": [
+        "predicate",
+        "subject",
         "predicate",
         "adjunct"
       ],
@@ -878,11 +1064,13 @@
       "text": "\"How much is this rug?\"",
       "tier": "foundation",
       "tileTexts": [
-        "\"How much is",
+        "\"How much",
+        "is",
         "this rug?\""
       ],
       "tileRoles": [
-        "predicate",
+        "complement",
+        "clause",
         "subject"
       ],
       "fivePattern": null,
@@ -901,10 +1089,14 @@
       "text": "\"Do you mind if I stop by your house?\"",
       "tier": "foundation",
       "tileTexts": [
-        "\"Do you mind",
+        "\"Do",
+        "you",
+        "mind",
         "if I stop by your house?\""
       ],
       "tileRoles": [
+        "predicate",
+        "subject",
         "predicate",
         "clause"
       ],
@@ -927,12 +1119,14 @@
       "tier": "foundation",
       "tileTexts": [
         "\"Lisa,",
-        "are you",
+        "are",
+        "you",
         "getting along with Nick?\""
       ],
       "tileRoles": [
         "adjunct",
         "predicate",
+        "subject",
         "phrase"
       ],
       "fivePattern": "SV",
@@ -998,7 +1192,7 @@
         "clause",
         "subject",
         "adjunct",
-        "predicate",
+        "clause",
         "object"
       ],
       "fivePattern": null,
@@ -1126,7 +1320,7 @@
       ],
       "tileRoles": [
         "subject",
-        "predicate",
+        "clause",
         "clause"
       ],
       "fivePattern": null,
@@ -1149,11 +1343,15 @@
       "tier": "foundation",
       "tileTexts": [
         "Troops",
-        "were swiftly called in",
+        "were",
+        "swiftly",
+        "called in",
         "to put down the riot."
       ],
       "tileRoles": [
         "subject",
+        "predicate",
+        "adjunct",
         "predicate",
         "clause"
       ],
@@ -1212,7 +1410,7 @@
       ],
       "tileRoles": [
         "subject",
-        "predicate",
+        "clause",
         "clause"
       ],
       "fivePattern": null,
@@ -1235,12 +1433,16 @@
       "tileTexts": [
         "At present,",
         "it's",
-        "still uncertain whether it was done deliberately or by accident."
+        "still",
+        "uncertain",
+        "whether it was done deliberately or by accident."
       ],
       "tileRoles": [
         "pp",
         "phrase",
-        "predicate"
+        "adjunct",
+        "complement",
+        "clause"
       ],
       "fivePattern": null,
       "isQuestion": false,
@@ -1297,11 +1499,13 @@
       "tier": "foundation",
       "tileTexts": [
         "I'm",
-        "still haunted",
+        "still",
+        "haunted",
         "by a vivid nightmare I had last night."
       ],
       "tileRoles": [
         "phrase",
+        "adjunct",
         "predicate",
         "pp"
       ],
@@ -1441,14 +1645,18 @@
       "text": "\"No wonder she didn't show up to see him off.\"",
       "tier": "foundation",
       "tileTexts": [
-        "\"No wonder she",
+        "\"No",
+        "wonder",
+        "she",
         "didn't",
         "show up to see him off.\""
       ],
       "tileRoles": [
         "phrase",
+        "clause",
+        "clause",
         "phrase",
-        "phrase"
+        "clause"
       ],
       "fivePattern": null,
       "isQuestion": false,
@@ -1476,14 +1684,12 @@
       "tileTexts": [
         "The plane",
         "blew up",
-        "and plunged into the ocean, killing",
-        "all the people on board."
+        "and plunged into the ocean, killing all the people on board."
       ],
       "tileRoles": [
         "subject",
         "predicate",
-        "coordination",
-        "coordination"
+        "clause"
       ],
       "fivePattern": null,
       "isQuestion": false,
@@ -1515,7 +1721,7 @@
         "adjunct",
         "subject",
         "phrase",
-        "predicate",
+        "complement",
         "clause"
       ],
       "fivePattern": null,
@@ -1548,7 +1754,7 @@
       ],
       "tileRoles": [
         "subject",
-        "predicate",
+        "clause",
         "clause"
       ],
       "fivePattern": null,
@@ -1571,16 +1777,16 @@
       "text": "No sooner had I sat back and relaxed than my wife asked me to do the chores.",
       "tier": "foundation",
       "tileTexts": [
-        "No sooner",
-        "had I",
-        "sat back",
-        "and relaxed",
+        "No sooner had",
+        "I sat back",
+        "and",
+        "relaxed",
         "than my wife asked me to do the chores."
       ],
       "tileRoles": [
-        "adjunct",
-        "predicate",
         "phrase",
+        "phrase",
+        "clause",
         "coordination",
         "clause"
       ],
@@ -1647,8 +1853,8 @@
       "tileRoles": [
         "phrase",
         "subject",
-        "predicate",
-        "coordination"
+        "clause",
+        "clause"
       ],
       "fivePattern": "SV",
       "isQuestion": false,
@@ -1678,7 +1884,7 @@
       ],
       "tileRoles": [
         "subject",
-        "predicate",
+        "clause",
         "complement",
         "clause",
         "phrase"
@@ -1801,7 +2007,7 @@
       "tileRoles": [
         "pp",
         "subject",
-        "predicate",
+        "clause",
         "object"
       ],
       "fivePattern": "SVO",
