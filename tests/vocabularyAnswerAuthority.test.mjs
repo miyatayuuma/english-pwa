@@ -5,11 +5,13 @@ import {
   applyVocabularyAnswerSrs,
   answerVariants,
   classifyVocabularyAnswer,
+  isVocabularyNearMiss,
   normalizeVocabularyAnswer,
 } from '../scripts/app/vocabularyLearningCore.js';
 
 const data=JSON.parse(fs.readFileSync(new URL('../data/vocabulary-v3.json',import.meta.url),'utf8'));
 const items=JSON.parse(fs.readFileSync(new URL('../data/items.json',import.meta.url),'utf8'));
+const vocabularyModeSource=fs.readFileSync(new URL('../scripts/app/vocabularyMode.js',import.meta.url),'utf8');
 const itemById=new Map(items.map(item=>[String(item.id),item]));
 const entry=(canonical)=>data.entries.find(value=>value.canonical===canonical);
 const source=(entry,itemId)=>{
@@ -65,6 +67,47 @@ test('curated paraphrases are recognized distinctly and strict fuzzy collisions 
   assert.equal(classify('despite','despise').type,'miss');
   assert.equal(classify('accurate','awkward').type,'miss');
   assert.equal(classify('take up','take it up').type,'miss');
+});
+
+test('near-miss diagnostics allow one multiword token edit or adjacent transposition only',()=>{
+  const cases=[
+    [{canonical:'in spite of',answers:[],paraphrases:[]},'in spite',true],
+    [{canonical:'turn it off',answers:[],paraphrases:[]},'turn off it',true],
+    [{canonical:'take up',answers:[],paraphrases:[]},'took up',true],
+    [{canonical:'come across',answers:[],paraphrases:[]},'come across to',true],
+    [{canonical:'come across someone',answers:[],paraphrases:['run into someone']},'run into',true],
+    [{canonical:'come across someone',answers:[],paraphrases:[]},'I completely forgot the expression',false],
+  ];
+  for(const [value,transcript,expected] of cases){
+    assert.equal(isVocabularyNearMiss({entry:value,transcript}),expected,`${value.canonical} / ${transcript}`);
+  }
+});
+
+test('single-word near-miss diagnostics include spelling, phonetic, and common word-form proximity',()=>{
+  for(const [canonical,transcript] of [['despite','despise'],['accurate','accuracy'],['faint','fainted']]){
+    assert.equal(isVocabularyNearMiss({entry:{canonical,answers:[],paraphrases:[]},transcript}),true,`${canonical} / ${transcript}`);
+  }
+  assert.equal(isVocabularyNearMiss({entry:{canonical:'accurate',answers:[],paraphrases:[]},transcript:'banana'}),false);
+});
+
+test('near-miss never changes strict TARGET/PARAPHRASE/MISS classification or active-source authority',()=>{
+  const despite=entry('despite');
+  const strict=classifyVocabularyAnswer({entry:despite,transcript:'despise'});
+  assert.equal(strict.type,'miss');
+  assert.equal(isVocabularyNearMiss({entry:despite,transcript:'despise'}),true);
+  const came=entry('come across someone');
+  const active=source(came,'E0524');
+  const exactSource=classifyVocabularyAnswer({entry:came,activeOccurrence:active,transcript:'came across Nick'});
+  assert.equal(exactSource.type,'target');
+  assert.equal(exactSource.matchedAuthority,'source');
+  assert.equal(exactSource.type==='miss'&&isVocabularyNearMiss({entry:came,activeOccurrence:active,transcript:'came across Nick'}),false);
+});
+
+test('Vocabulary production UI contains no manual-grade controls or self-assessment copy',()=>{
+  assert.doesNotMatch(vocabularyModeSource,/manualGrade|allowGrade|vocab-manual|data-grade/);
+  assert.doesNotMatch(vocabularyModeSource,/思い出せなかった|別の言い方は出た|言えていた/);
+  assert.doesNotMatch(vocabularyModeSource,/答えを見て自己判定/);
+  assert.match(vocabularyModeSource,/答えを見ると要復習として記録されます/);
 });
 
 test('same normalized text resolves to TARGET before PARAPHRASE',()=>{

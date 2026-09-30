@@ -70,6 +70,10 @@ export function appendRawTranscriptFinal(stable,fragment){
   return remaining?`${left} ${remaining}`:left;
 }
 
+export function composeRawTranscriptPreview(stable,interim){
+  return appendRawTranscriptFinal(stable,interim);
+}
+
 function clearHighlightInternal(enElement, getComposeNodesFn) {
   const spans = getTokenSpans(enElement);
   for (const sp of spans) {
@@ -345,6 +349,7 @@ export function createRecognitionController(options = {}) {
     onTranscriptReset = () => {},
     onTranscriptInterim = () => {},
     onTranscriptFinal = () => {},
+    onTranscriptPreview = () => {},
     onMatchEvaluated = () => {},
     onStart = () => {},
     onStop = () => {},
@@ -358,6 +363,10 @@ export function createRecognitionController(options = {}) {
   let active = false;
   let finalized = false;
   let stableText = '';
+  let rawStableText = '';
+  let interimFragments = [];
+  let latestPreview = '';
+  let stopRequested = false;
   let lastMatch = null;
   function clearHighlight() {
     clearHighlightInternal(enElement, getComposeNodes);
@@ -384,7 +393,7 @@ export function createRecognitionController(options = {}) {
 
   function finalize({ triggeredByOnEnd = false } = {}) {
     if (!active && !triggeredByOnEnd) {
-      return { ok: false, reason: 'inactive', transcript: stableText.trim(), matchInfo: lastMatch };
+      return { ok: false, reason: 'inactive', transcript: stableText.trim(), previewTranscript:latestPreview, matchInfo: lastMatch };
     }
     active = false;
     finalized = true;
@@ -404,7 +413,7 @@ export function createRecognitionController(options = {}) {
       lastMatch = null;
     }
     recognition = null;
-    return { ok: true, transcript, matchInfo: lastMatch };
+    return { ok: true, transcript, previewTranscript:latestPreview, matchInfo: lastMatch };
   }
 
   function handleAutoStop() {
@@ -420,31 +429,48 @@ export function createRecognitionController(options = {}) {
     if (active) {
       return { ok: false, reason: 'active' };
     }
-    recognition = new SR();
-    recognition.lang = 'en-US';
-    recognition.continuous = true;
-    recognition.interimResults = true;
-    recognition.maxAlternatives = 1;
+    let currentRecognition;
+    try{
+      currentRecognition=new SR();
+    }catch(error){
+      setMicState?.(false);
+      onError?.({error:'start-failed',cause:error});
+      return {ok:false,reason:'start-failed'};
+    }
+    recognition=currentRecognition;
+    currentRecognition.lang = 'en-US';
+    currentRecognition.continuous = true;
+    currentRecognition.interimResults = true;
+    currentRecognition.maxAlternatives = 1;
 
     stableText = '';
+    rawStableText = '';
+    interimFragments = [];
+    latestPreview = '';
     lastMatch = null;
     active = true;
     finalized = false;
+    stopRequested = false;
     onTranscriptReset?.();
     clearHighlight();
 
-    recognition.onstart = () => {
-      if (!active || finalized) return;
+    currentRecognition.onstart = () => {
+      if (recognition!==currentRecognition || !active || finalized) return;
       setMicState?.(true);
       onStart?.();
     };
 
-    recognition.onresult = (event) => {
+    currentRecognition.onresult = (event) => {
+      if (recognition!==currentRecognition || !active || finalized) return;
       let interim = '';
-      for (let i = event.resultIndex; i < event.results.length; i++) {
+      const firstChanged=Number.isInteger(event.resultIndex)?event.resultIndex:0;
+      interimFragments.length=Math.min(interimFragments.length,event.results.length);
+      for (let i = firstChanged; i < event.results.length; i++) {
         const res = event.results[i];
         const transcriptPiece = res[0]?.transcript || '';
         if (res.isFinal) {
+          rawStableText=appendRawTranscriptFinal(rawStableText,transcriptPiece);
+          interimFragments[i]='';
           stableText = preserveRawTranscript
             ?appendRawTranscriptFinal(stableText,transcriptPiece)
             :appendStableFinal(stableText, transcriptPiece);
@@ -468,14 +494,19 @@ export function createRecognitionController(options = {}) {
           onMatchEvaluated?.(enriched);
         } else {
           interim = transcriptPiece;
+          interimFragments[i]=transcriptPiece;
         }
       }
+      const interimText=interimFragments.filter(Boolean).join(' ');
+      latestPreview=composeRawTranscriptPreview(rawStableText,interimText);
       if (interim) {
         onTranscriptInterim?.(interim);
       }
+      onTranscriptPreview?.(latestPreview);
     };
 
-    recognition.onerror = (ev) => {
+    currentRecognition.onerror = (ev) => {
+      if (recognition!==currentRecognition || stopRequested || finalized) return;
       console.warn('recognition error', ev);
       setMicState?.(false);
       active = false;
@@ -484,20 +515,21 @@ export function createRecognitionController(options = {}) {
       onError?.(ev);
     };
 
-    recognition.onend = () => {
-      if (finalized) {
+    currentRecognition.onend = () => {
+      if (recognition!==currentRecognition || finalized || stopRequested) {
         return;
       }
       handleAutoStop();
     };
 
     try {
-      recognition.start();
-    } catch (_) {
+      currentRecognition.start();
+    } catch (error) {
       active = false;
       finalized = true;
       recognition = null;
       setMicState?.(false);
+      onError?.({error:'start-failed',cause:error});
       return { ok: false, reason: 'start-failed' };
     }
 
@@ -506,10 +538,12 @@ export function createRecognitionController(options = {}) {
 
   function stop() {
     if (!active) {
-      return { ok: false, reason: 'inactive', transcript: stableText.trim(), matchInfo: lastMatch };
+      return { ok: false, reason: 'inactive', transcript: stableText.trim(), previewTranscript:latestPreview, matchInfo: lastMatch };
     }
+    stopRequested=true;
+    const currentRecognition=recognition;
     try {
-      recognition?.stop?.();
+      currentRecognition?.stop?.();
     } catch (_) {
       // ignore stop failures
     }
@@ -524,6 +558,10 @@ export function createRecognitionController(options = {}) {
     return (stableText || '').trim();
   }
 
+  function getPreviewTranscript(){
+    return latestPreview;
+  }
+
   function getLastMatch() {
     return lastMatch ? Object.assign({}, lastMatch) : null;
   }
@@ -535,6 +573,7 @@ export function createRecognitionController(options = {}) {
     clearHighlight,
     matchAndHighlight,
     getStableTranscript,
+    getPreviewTranscript,
     getLastMatch,
   };
 }
