@@ -304,7 +304,7 @@ function showRecognitionFailure(){
     const feedback=state.screen?.querySelector('.vocab-feedback');
     if(feedback) feedback.textContent=result.message;
     clearGradeTimer();setListening(false);
-    if(result.complete){state.processing=true;scheduleVocabularyAdvance();}
+    if(result.complete) completeCorrectionPractice();
     else showRecognitionStatus('マイクを押してもう一度話してください。');
     return;
   }
@@ -542,6 +542,21 @@ function nextButton(){
   return button;
 }
 
+function completeCorrectionPractice(){
+  state.correction=false;
+  state.processing=true;
+  clearGradeTimer();
+  setListening(false);
+  const prompt=state.screen?.querySelector('.vocab-prompt');
+  if(prompt) prompt.textContent='修正練習完了';
+  const controls=state.screen?.querySelector('.vocab-controls');
+  if(controls){
+    controls.replaceChildren(nextButton());
+    controls.querySelector('.vocab-next')?.focus({preventScroll:true});
+  }
+  scheduleVocabularyAdvance();
+}
+
 function heardTranscriptMarkup(text){
   const raw=String(text??'');
   if(!raw.trim()) return '';
@@ -620,11 +635,11 @@ function gradeTranscript(text){
   if(state.recognition?.isActive()) state.recognition.stop();
   setListening(false);
   if(state.correction){
-    state.processing=false;
     const feedback=state.screen.querySelector('.vocab-feedback');
     const progress=recordCorrectionAttempt(state.correctionProgress,{success:result.type==='target'});
     if(feedback){feedback.className=result.type==='target'?'vocab-feedback is-ok':'vocab-feedback';feedback.textContent=progress.message;}
-    if(progress.complete){state.processing=true;scheduleVocabularyAdvance();}
+    if(progress.complete) completeCorrectionPractice();
+    else state.processing=false;
     return;
   }
   if(result.type==='miss'){renderTranscriptReview();return;}
