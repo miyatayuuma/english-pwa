@@ -46,7 +46,7 @@ async function newPage(source,{reducedMotion='reduce',entryState:entryStateOverr
       }
       return nativeFetch(input,init);
     };
-    window.__mockSpeech={latest:null,spoken:[],audioPlayed:[],startCount:0,srsWrites:0};
+    window.__mockSpeech={latest:null,spoken:[],audioPlayed:[],latestAudio:null,startCount:0,srsWrites:0};
     const storageSetItem=Storage.prototype.setItem;
     Storage.prototype.setItem=function(key,value){
       if(key==='itemLevelV1') window.__mockSpeech.srsWrites+=1;
@@ -90,7 +90,7 @@ async function newPage(source,{reducedMotion='reduce',entryState:entryStateOverr
       addEventListener:()=>{},
     },configurable:true});
     window.Audio=class MockAudio{
-      constructor(url){this.url=String(url);}
+      constructor(url){this.url=String(url);window.__mockSpeech.latestAudio=this;}
       play(){window.__mockSpeech.audioPlayed.push(this.url);return Promise.resolve();}
       pause(){}
     };
@@ -499,6 +499,46 @@ browserTest('answer correction rejects paraphrase, handles technical error, requ
     assert.deepEqual(await page.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id],entry.id),miss);
     await page.waitForSelector('.vocab-meaning');
     assert.equal(await page.locator('.vocab-answer').count(),0,'successful correction advances to delayed retrieval');
+  }finally{await closePage(opened);}
+});
+
+browserTest('correction completion re-arms automatic advance after source audio playback ends',async()=>{
+  const opened=await newPage(sources[0],{entryState:lv5State()});const {page}=opened;
+  try{
+    await page.locator('.vocab-reveal').click();
+    await page.waitForSelector('.vocab-answer');
+    await page.locator('.vocab-source-audio').waitFor({state:'visible'});
+    await page.locator('.vocab-mic').click();
+    await page.waitForFunction(()=>window.__mockSpeech.startCount>0);
+    await inject(page,'come across someone');
+    await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='修正練習完了');
+    assert.equal(await page.locator('.vocab-next').count(),1,'correction completion exposes an escape path');
+    await page.locator('.vocab-source-audio').click();
+    await page.waitForFunction(()=>window.__mockSpeech.audioPlayed.length>0);
+    await page.waitForTimeout(2100);
+    assert.equal(await page.locator('.vocab-answer').count(),1,'source audio holds auto-advance while playing');
+    await page.evaluate(()=>window.__mockSpeech.latestAudio?.onended?.());
+    await page.waitForSelector('.vocab-meaning');
+    assert.equal(await page.locator('.vocab-answer').count(),0,'audio end re-arms automatic advance');
+  }finally{await closePage(opened);}
+});
+
+browserTest('correction completion keeps manual Next available during source audio playback',async()=>{
+  const opened=await newPage(sources[0],{entryState:lv5State()});const {page}=opened;
+  try{
+    await page.locator('.vocab-reveal').click();
+    await page.waitForSelector('.vocab-answer');
+    await page.locator('.vocab-source-audio').waitFor({state:'visible'});
+    await page.locator('.vocab-mic').click();
+    await page.waitForFunction(()=>window.__mockSpeech.startCount>0);
+    await inject(page,'come across someone');
+    await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='修正練習完了');
+    await page.locator('.vocab-source-audio').click();
+    await page.waitForFunction(()=>window.__mockSpeech.audioPlayed.length>0);
+    assert.equal(await page.locator('.vocab-next').count(),1);
+    await page.locator('.vocab-next').click();
+    await page.waitForSelector('.vocab-meaning');
+    assert.equal(await page.locator('.vocab-answer').count(),0,'manual Next escapes even before audio ended');
   }finally{await closePage(opened);}
 });
 
