@@ -14,6 +14,10 @@ Vocabulary full utterances use 8.0, target chunks 7.0 and overlaps 6.0. Correcti
 
 Vocabulary, Cloze and correction request five native alternatives; other sentence attempts request one. Browser support may still return only one. Contextual capability fallback is independent of alternative support and retains the PR #242 session disable/one pre-transcript retry. Cloze alternatives are captured but deliberately do not alter full-sentence grading in this first stage. Correction counters, SRS/history exact-once, audio/mic settling and stale-event isolation are retained.
 
+## Android compatibility — checked 2026-10-01
+
+The current [MDN browser-compatibility data](https://github.com/mdn/browser-compat-data/blob/main/api/SpeechRecognition.json) reports `phrases` as available from Chrome desktop 142 but `chrome_android.version_added: false`. `maxAlternatives` is supported via the Chrome Android mirror. This is compatibility documentation, not a live probe of the user's exact browser. Strong boost values must not be presented as active Android bias without capability/assignment evidence; improvement there may depend on native candidates and filler/restart rescue alone. The task's backend-selection constraint remains unchanged.
+
 ## Android real-device gate — NOT RUN
 
 The implementation environment has no connected Android device or live user microphone. Its local browser cannot launch because native socket creation is denied; local browser skips are not counted as passes. Chromium UI/application verification is performed by GitHub Application CI. Mock recognition establishes data flow and grading policy, not recognition quality or human intelligibility.

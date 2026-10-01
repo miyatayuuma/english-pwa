@@ -317,7 +317,7 @@ function showRecognitionFailure(){
 
 function setupRecognition(){
   state.recognition=createRecognitionController({
-    // Bias only strict TARGET variants; grade the unmodified primary transcript.
+    // Bias strict TARGET utterances; native evidence never rewrites raw primary text.
     biasCapability:state.biasCapability,
     getRecognitionBiasContext:()=>buildRecognitionBiasContext({mode:'vocabulary',vocabularyEntry:state.current,activeOccurrence:activeSource(),correction:state.correction}),
     shouldEvaluate:()=>false,
