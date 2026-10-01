@@ -1,3 +1,4 @@
+import { setActiveClozeRecognitionContext, clearActiveClozeRecognitionContext } from './clozeRecognitionContext.js';
 import { adaptiveClozeCount, buildClozeCard } from './clozeLearningCore.js';
 import {
   inferReadHintStage,
@@ -117,8 +118,15 @@ async function loadData(){
 }
 
 function clearCloze(en){
+  clearActiveClozeRecognitionContext();
   if(!en) return false;
   let changed=false;
+  for(const span of en.querySelectorAll('.cloze-mask')){
+    span.removeAttribute('aria-hidden');
+    span.classList.remove('cloze-mask','cloze-start','cloze-end');
+    delete span.dataset.clozeGroup;
+    changed=true;
+  }
   if(en.classList.contains('cloze-active')){
     en.classList.remove('cloze-active');
     changed=true;
@@ -142,6 +150,7 @@ function applyMasks(en,targets){
       const span=wordSpans[i];
       if(!span) continue;
       span.classList.add('cloze-mask');
+      span.setAttribute('aria-hidden','true');
       span.dataset.clozeGroup=String(groupIndex);
       if(i===start) span.classList.add('cloze-start');
       if(i===end) span.classList.add('cloze-end');
@@ -173,7 +182,10 @@ function renderCloze(en,item,itemId){
     && Number(en.dataset.clozeCount)===targetCount
     && en.classList.contains('cloze-active')
     && !!en.querySelector('.cloze-mask');
-  if(alreadyRendered) return;
+  if(alreadyRendered){
+    if(state.encounter?.itemId===itemId&&state.encounter.card) setActiveClozeRecognitionContext({itemId,sentence:item.en,targets:state.encounter.card.targets});
+    return;
+  }
   beginEncounter(itemId);
   if(!state.encounter.card){
     state.encounter.card=buildClozeCard(item,state.vocabByExample.get(itemId)||[],{
@@ -185,6 +197,7 @@ function renderCloze(en,item,itemId){
     rememberTargets(itemId,state.encounter.card.targets);
   }
   const card=state.encounter.card;
+  setActiveClozeRecognitionContext({itemId,sentence:item.en,targets:card.targets});
   en.innerHTML=spanify(item.en);
   applyMasks(en,card.targets||[]);
   en.classList.add('cloze-active');
@@ -203,7 +216,7 @@ function syncPresentation(){
   const en=document.getElementById('enText');
   const ja=document.getElementById('jaText');
   const study=document.getElementById('studyView');
-  if(!en||!study||study.hidden) return;
+  if(!en||!study||study.hidden){clearActiveClozeRecognitionContext();return;}
   if(currentStudyMode()!=='read'){
     clearCloze(en);
     delete en.dataset.readHintStage;
@@ -212,7 +225,8 @@ function syncPresentation(){
 
   const itemId=String(en.dataset.itemId||'');
   const item=state.items.get(itemId);
-  if(!item?.en) return;
+  if(!item?.en){clearActiveClozeRecognitionContext();return;}
+  if(state.encounter?.itemId!==itemId) clearActiveClozeRecognitionContext();
   beginEncounter(itemId);
 
   if(isPostResultReveal(en,itemId)){

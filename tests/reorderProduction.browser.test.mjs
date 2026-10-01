@@ -93,7 +93,7 @@ function respondWithMetadata(response, payload = metadata) {
   response.end(JSON.stringify(payload));
 }
 
-async function newProductionPage({ studyMode = 'compose', hold = false, metadataPayload = validMetadata } = {}) {
+async function newProductionPage({ studyMode = 'compose', hold = false, metadataPayload = validMetadata, sourceItem=item, vocabulary=[], level=0 } = {}) {
   metadata = metadataPayload;
   holdMetadata = hold;
   heldMetadataResponse = null;
@@ -104,14 +104,16 @@ async function newProductionPage({ studyMode = 'compose', hold = false, metadata
     reducedMotion:'reduce',
     serviceWorkers: 'block',
   });
-  await context.addInitScript(({ studyMode }) => {
+  await context.addInitScript(({ studyMode, level, itemId }) => {
+    localStorage.setItem('itemLevelV1',JSON.stringify({[itemId]:{last:level,best:level}}));
     localStorage.setItem('appConfigV3', JSON.stringify({ playbackMode: 'speech', studyMode }));
     window.__testSpeech = { latest: null, starts:0, srsWrites:0, spoken:[] };
     const storageSet=Storage.prototype.setItem;
     Storage.prototype.setItem=function(key,value){if(key==='itemLevelV1') window.__testSpeech.srsWrites++;return storageSet.call(this,key,value);};
+    window.SpeechRecognitionPhrase=class {constructor(phrase,boost){this.phrase=phrase;this.boost=boost;}};
     class MockRecognition {
-      constructor() { window.__testSpeech.latest = this; }
-      start() { window.__testSpeech.starts=(window.__testSpeech.starts||0)+1;this.onstart?.(); }
+      constructor() { window.__testSpeech.latest = this;this.phrases=[]; }
+      start() { this.phrasesAtStart=this.phrases.map(p=>({text:p.phrase,boost:p.boost}));window.__testSpeech.starts=(window.__testSpeech.starts||0)+1;this.onstart?.(); }
       stop() {}
       inject(text) {
         const result = Object.assign((Array.isArray(text)?text:[text]).map(transcript=>({transcript:String(transcript),confidence:0})), { isFinal: true });
@@ -125,8 +127,10 @@ async function newProductionPage({ studyMode = 'compose', hold = false, metadata
       value: { getVoices: () => [{name:'English',lang:'en-US',voiceURI:'english'}], speak: utterance => {window.__testSpeech.spoken.push(utterance.text);utterance.onstart?.();utterance.onend?.();}, cancel: () => {}, addEventListener: () => {} },
       configurable: true,
     });
-  }, { studyMode });
+  }, { studyMode, level, itemId:sourceItem.id });
   const page = await context.newPage();
+  await page.route('**/data/items.json',route=>route.fulfill({contentType:'application/json',body:JSON.stringify([sourceItem])}));
+  await page.route('**/data/vocabulary-v3.json',route=>route.fulfill({contentType:'application/json',body:JSON.stringify({entries:vocabulary})}));
   await page.goto(`${baseUrl}/index.html`);
   await page.waitForFunction(() => window.ALL_ITEMS?.length === 1
     && document.querySelector('#sessionShellStyles')
@@ -417,13 +421,14 @@ async function speechAttempt(page,words){
   {const box=await page.locator('#btnMic').boundingBox();await page.mouse.click(box.x+box.width/2,box.y+box.height/2);}
 }
 
-browserTest('390×844 normal read N-best uses best score/highlight while retaining primary transcript',async()=>{
+browserTest('390×844 normal read baseline uses primary score/highlight without whole-sentence bias',async()=>{
   const {context,page}=await newProductionPage({studyMode:'read'});
   try{
     await page.waitForFunction(()=>document.querySelector('#enText')?.dataset.itemId==='RPROD1');
-    await speechAttempt(page,['banana',item.en]);
+    await speechAttempt(page,item.en);
     await page.waitForFunction(()=>JSON.parse(localStorage.getItem('itemLevelV1')||'{}').RPROD1?.lastMatch===1);
-    assert.equal(await page.locator('#transcript').innerText(),'banana');
+    assert.equal(await page.locator('#transcript').innerText(),item.en);
+    assert.deepEqual(await page.evaluate(()=>window.__testSpeech.latest.phrasesAtStart),[]);
     assert.equal(await page.locator('#enText .tok.miss').count(),0);
     assert.ok(await page.locator('#enText .tok.hit').count()>0);
     assert.equal(await page.evaluate(()=>window.__testSpeech.srsWrites),1);
@@ -447,10 +452,76 @@ browserTest('normal read FAIL correction is practice-only through repeated failu
       assert.deepEqual(await page.evaluate(()=>JSON.parse(localStorage.getItem('itemLevelV1')).RPROD1),initial);
       assert.equal(await page.evaluate(()=>window.__testSpeech.srsWrites),1);
     }
-    await speechAttempt(page,['banana',item.en]);
+    await speechAttempt(page,item.en);
     await page.waitForFunction(()=>document.querySelector('#footer')?.textContent.includes('修正練習完了')||document.body.textContent.includes('修正練習完了'));
     assert.deepEqual(await page.evaluate(()=>JSON.parse(localStorage.getItem('itemLevelV1')).RPROD1),initial);
     assert.equal(await page.evaluate(()=>window.__testSpeech.srsWrites),1);
     await page.waitForFunction(()=>document.querySelector('#startStudyCta')&&!document.querySelector('#startStudyCta').hidden);
+  }finally{await context.close();}
+});
+
+for(const count of [1,3]) browserTest(`390×844 read Cloze ${count} targets injects internal target/local context, preserves concealment and full-sentence grading`,async()=>{
+  const sentence=count===1?'He refused to yield to any threats from them.':'Today I came across him near the old bridge when I was looking for the station and decided to yield to his request before continuing my long journey home again.';
+  const surfaces=count===1?['yield to']:['came across','looking for','yield to'];
+  const sourceItem={...item,en:sentence};
+  const vocabulary=surfaces.map((surface,index)=>({id:`target${index}`,kind:'expression',canonical:surface,meaning_ja:'意味',answers:[],occurrences:[{item_id:item.id,start:sentence.indexOf(surface),end:sentence.indexOf(surface)+surface.length,contextual_meaning_ja:'意味'}]}));
+  const {context,page}=await newProductionPage({studyMode:'read',sourceItem,vocabulary,level:count===1?0:5});
+  try{
+    await page.waitForFunction(()=>document.querySelector('#enText')?.dataset.itemId==='RPROD1');
+    await page.evaluate(()=>document.dispatchEvent(new Event('english-pwa:request-hint')));
+    await page.waitForSelector('#enText.cloze-active .cloze-mask');
+    const registry=await page.evaluate(async()=> (await import('./scripts/app/clozeRecognitionContext.js')).getActiveClozeRecognitionContext('RPROD1'));
+    assert.equal(registry.targets.length,count);
+    for(const stage of ['2','0']){
+      await page.evaluate(()=>document.dispatchEvent(new Event('english-pwa:request-hint')));
+      await page.waitForFunction(stage=>document.querySelector('#enText')?.dataset.readHintStage===stage,stage);
+      assert.equal(await page.evaluate(async()=> (await import('./scripts/app/clozeRecognitionContext.js')).getActiveClozeRecognitionContext()),null);
+    }
+    await page.evaluate(()=>document.dispatchEvent(new Event('english-pwa:request-hint')));
+    await page.waitForSelector('#enText.cloze-active .cloze-mask');
+    assert.deepEqual(await page.evaluate(async()=> (await import('./scripts/app/clozeRecognitionContext.js')).getActiveClozeRecognitionContext('RPROD1')),registry);
+    const visible=await page.locator('#enText').evaluate(en=>{const copy=en.cloneNode(true);copy.querySelectorAll('.cloze-mask').forEach(node=>node.remove());return copy.textContent;});
+    assert.ok((await page.locator('#enText .cloze-mask').evaluateAll(nodes=>nodes.every(node=>getComputedStyle(node).color==='rgba(0, 0, 0, 0)'&&node.getAttribute('aria-hidden')==='true'))));
+    const accessible=await page.locator('#enText').ariaSnapshot();
+    for(const target of registry.targets){
+      assert.ok(!visible.includes(target.surface),'masked targets are absent from visible text');
+      assert.ok(!accessible.includes(target.surface),'masked targets are absent from accessible text');
+      assert.equal(await page.locator(`#enText [aria-label*="${target.surface}"],#enText [title*="${target.surface}"]`).count(),0);
+      const leaked=await page.locator('#enText').evaluate((en,surface)=>[en,...en.querySelectorAll('*')].some(node=>[...node.attributes].some(attr=>attr.name.startsWith('data-')&&attr.name!=='data-w'&&attr.value.includes(surface))),target.surface);
+      assert.equal(leaked,false,'no new target data attribute');
+    }
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+    await speechAttempt(page,registry.targets[0].surface);
+    const phrases=await page.evaluate(()=>window.__testSpeech.latest.phrasesAtStart);
+    assert.ok(phrases.length<=6);
+    for(const target of registry.targets) assert.ok(phrases.some(p=>p.text===target.surface&&p.boost===4.5));
+    assert.equal(phrases.filter(p=>p.boost===3).length,count);
+    assert.ok(!phrases.some(p=>p.text===sentence));
+    await page.waitForFunction(()=>JSON.parse(localStorage.getItem('itemLevelV1')).RPROD1.lastMatch<0.7);
+    assert.equal(await page.locator('#enText').innerText(),sentence,'grading still covers the full sentence');
+    assert.equal(await page.evaluate(async()=> (await import('./scripts/app/clozeRecognitionContext.js')).getActiveClozeRecognitionContext()),null,'canonical reveal clears hidden context');
+    await speechAttempt(page,sentence);
+    assert.deepEqual(await page.evaluate(()=>window.__testSpeech.latest.phrasesAtStart),[{text:sentence,boost:5}]);
+    assert.equal(await page.evaluate(()=>window.__testSpeech.srsWrites),1);
+  }finally{await context.close();}
+});
+
+for(const technical of [false,true]) browserTest(`normal correction ${technical?'technical':'lexical'} ×3 closes without multiplying penalties`,async()=>{
+  const {context,page}=await newProductionPage({studyMode:'read'});
+  try{
+    await page.waitForFunction(()=>document.querySelector('#enText')?.dataset.itemId==='RPROD1');
+    await speechAttempt(page,'banana');await page.waitForFunction(()=>window.__testSpeech.spoken.length>0);
+    for(let index=0;index<3;index++){
+      if(technical){
+        const starts=await page.evaluate(()=>window.__testSpeech.starts);
+        await page.waitForFunction(()=>!document.querySelector('#btnMic').disabled);
+        const box=await page.locator('#btnMic').boundingBox();await page.mouse.click(box.x+box.width/2,box.y+box.height/2);
+        await page.waitForFunction(count=>window.__testSpeech.starts>count,starts);
+        await page.evaluate(()=>{const r=window.__testSpeech.latest;r.onerror?.({error:'network'});r.onend?.();});
+      }else await speechAttempt(page,'banana');
+      assert.equal(await page.evaluate(()=>window.__testSpeech.srsWrites),1);
+    }
+    await page.waitForFunction(()=>document.querySelector('#startStudyCta')&&!document.querySelector('#startStudyCta').hidden);
+    assert.equal(await page.evaluate(()=>window.__testSpeech.srsWrites),1);
   }finally{await context.close();}
 });

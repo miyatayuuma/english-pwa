@@ -1,10 +1,12 @@
+import { buildRecognitionBiasContext } from '../speech/contextualBias.js';
+import { createCorrectionProgress, recordCorrectionAttempt } from '../speech/correctionProgress.js';
 import { createLevelStateManager } from './levelState.js';
 import { createRecognitionController, isRecognitionSupported } from '../speech/recognition.js';
 import { createSpeechSynthesisController } from '../speech/synthesis.js';
 import {
   buildVocabularySession,
   applyVocabularyAnswerSrs,
-  classifyVocabularyHypotheses,
+  classifyVocabularyAnswer,
   displayAnswer,
   displayMeaning,
   eligibleVocabularyEntries,
@@ -34,6 +36,8 @@ const state={
   liveTranscript:'',
   lastAttemptTranscript:'',
   correction:false,
+  correctionProgress:createCorrectionProgress(),
+  biasCapability:{unavailable:false},
   audioGeneration:0,
   micGeneration:0,
   audioReleaseAt:0,
@@ -254,6 +258,7 @@ function startSession(){
   state.completed=0;
   state.outcomes=new Map();
   state.retried=new Set();
+  state.biasCapability={unavailable:false};
   state.liveTranscript='';
   state.lastAttemptTranscript='';
   state.correction=false;
@@ -273,7 +278,7 @@ function scheduleTranscriptGrade(text){
   state.liveTranscript=String(text??'');
   setTranscript(state.liveTranscript);
   clearGradeTimer();
-  if(!state.liveTranscript.trim()&&!state.recognition?.getTranscriptHypotheses?.().length) return;
+  if(!state.liveTranscript.trim()) return;
   const delay=state.current.kind==='word'?650:1200;
   state.gradeTimer=setTimeout(()=>{
     state.gradeTimer=0;
@@ -288,6 +293,15 @@ function showRecognitionStatus(message){
 }
 
 function showRecognitionFailure(){
+  if(state.correction&&!state.processing){
+    const result=recordCorrectionAttempt(state.correctionProgress,{technical:true});
+    const feedback=state.screen?.querySelector('.vocab-feedback');
+    if(feedback) feedback.textContent=result.message;
+    clearGradeTimer();setListening(false);
+    if(result.complete){state.processing=true;scheduleVocabularyAdvance();}
+    else showRecognitionStatus('マイクを押してもう一度話してください。');
+    return;
+  }
   clearGradeTimer();
   setListening(false);
   const feedback=state.screen?.querySelector('.vocab-feedback');
@@ -297,7 +311,9 @@ function showRecognitionFailure(){
 
 function setupRecognition(){
   state.recognition=createRecognitionController({
-    // Grade raw N-best candidates with the Vocabulary strict classifier.
+    // Bias only strict TARGET variants; grade the unmodified primary transcript.
+    biasCapability:state.biasCapability,
+    getRecognitionBiasContext:()=>buildRecognitionBiasContext({mode:'vocabulary',vocabularyEntry:state.current,activeOccurrence:activeSource(),correction:state.correction}),
     shouldEvaluate:()=>false,
     onTranscriptReset:()=>{clearGradeTimer();state.liveTranscript='';state.lastAttemptTranscript='';setTranscript('');},
     onTranscriptPreview:text=>{
@@ -308,7 +324,7 @@ function setupRecognition(){
       if(state.processing||!state.current) return;
       clearGradeTimer();
       const text=latestNonEmptyTranscript(result?.previewTranscript,state.liveTranscript,result?.transcript);
-      if(text||result?.hypotheses?.length){state.liveTranscript=text;setTranscript(text);gradeTranscript(text);}
+      if(text){state.liveTranscript=text;setTranscript(text);gradeTranscript(text);}
       else showRecognitionFailure();
     },
     onUnsupported:()=>{
@@ -341,7 +357,7 @@ async function startListening(){
     const result=state.recognition.stop();
     clearGradeTimer();
     const text=latestNonEmptyTranscript(result?.previewTranscript,state.liveTranscript,result?.transcript);
-    if((text||result?.hypotheses?.length)&&!state.processing) gradeTranscript(text);
+    if(text&&!state.processing) gradeTranscript(text);
     else if(!state.processing) showRecognitionFailure();
     return;
   }
@@ -587,23 +603,21 @@ function renderAnswerContext({result=null,heardTranscript=state.lastAttemptTrans
 function gradeTranscript(text){
   if(state.processing||!state.current) return;
   const transcript=String(text??'');
-  if(!transcript.trim()&&!state.recognition?.getTranscriptHypotheses?.().length) return;
+  if(!transcript.trim()) return;
   state.processing=true;
   clearGradeTimer();
   state.liveTranscript=transcript;
   state.lastAttemptTranscript=transcript;
   setTranscript(transcript);
-  const result=classifyVocabularyHypotheses({entry:state.current,activeOccurrence:activeSource(),transcript,hypotheses:state.recognition?.getTranscriptHypotheses?.()||[],correction:state.correction});
+  const result=classifyVocabularyAnswer({entry:state.current,activeOccurrence:activeSource(),transcript});
   if(state.recognition?.isActive()) state.recognition.stop();
   setListening(false);
   if(state.correction){
     state.processing=false;
     const feedback=state.screen.querySelector('.vocab-feedback');
-    if(result.type==='target'){
-      state.processing=true;
-      if(feedback){feedback.className='vocab-feedback is-ok';feedback.textContent='修正練習完了';}
-      scheduleVocabularyAdvance();
-    }else if(feedback) feedback.textContent='表示された表現をもう一度話してください。';
+    const progress=recordCorrectionAttempt(state.correctionProgress,{success:result.type==='target'});
+    if(feedback){feedback.className=result.type==='target'?'vocab-feedback is-ok':'vocab-feedback';feedback.textContent=progress.message;}
+    if(progress.complete){state.processing=true;scheduleVocabularyAdvance();}
     return;
   }
   if(result.type==='miss'){renderTranscriptReview();return;}
@@ -637,6 +651,7 @@ function finalizeVocabularyAnswer(result){
   if(!state.current) return;
   state.processing=true;
   state.correction=result.type==='miss';
+  state.correctionProgress=createCorrectionProgress();
   updateVocabularyLevel(result.type,state.hintUsed);
   state.outcomes.set(state.current.id,result.type);
   if(result.type==='miss'&&!state.retried.has(state.current.id)){

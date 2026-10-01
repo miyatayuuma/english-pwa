@@ -236,17 +236,6 @@ export function classifyVocabularyAnswer({entry,activeOccurrence=null,transcript
   return {type:'miss',matchedText:'',matchedAuthority:null};
 }
 
-export function classifyVocabularyHypotheses({entry,activeOccurrence=null,hypotheses=[],transcript='',correction=false}={}){
-  const candidates=hypotheses.length?hypotheses:[{transcript}];
-  let selected={type:'miss',matchedText:'',matchedAuthority:null,selectedHypothesisIndex:0,selectedTranscript:transcript};
-  for(const [index,candidate] of candidates.entries()){
-    const result=classifyVocabularyAnswer({entry,activeOccurrence,transcript:candidate.transcript});
-    if(result.type==='target') return {...result,selectedHypothesisIndex:index,selectedTranscript:candidate.transcript};
-    if(!correction&&result.type==='paraphrase'&&selected.type==='miss') selected={...result,selectedHypothesisIndex:index,selectedTranscript:candidate.transcript};
-  }
-  return selected;
-}
-
 export function shouldUpdateVocabularyLevel(answerType){
   return answerType==='target'||answerType==='miss';
 }

@@ -1,3 +1,6 @@
+import { buildRecognitionBiasContext } from '../speech/contextualBias.js';
+import { createCorrectionProgress, recordCorrectionAttempt } from '../speech/correctionProgress.js';
+import { getActiveClozeRecognitionContext, clearActiveClozeRecognitionContext } from './clozeRecognitionContext.js';
 import {
   STORAGE_KEYS,
   loadJson,
@@ -39,7 +42,6 @@ import { configureSharedAudioResolver, createAudioUrlResolver } from '../audio/r
 import {
   createRecognitionController,
   calcMatchScore,
-  selectBestSpeechHypothesis,
   hasRecognizedSpeech,
   isRecognitionSupported
 } from '../speech/recognition.js';
@@ -280,6 +282,8 @@ function createAppRuntime(){
   initAppVersion();
   const itemLabelCache=new Map();
   let correctiveItemId=null;
+  let correctionProgress=createCorrectionProgress();
+  let correctionFinished=false;
   let recognitionController=null;
   let speechController=null;
   let lastMatchEval=null;
@@ -1767,6 +1771,7 @@ function createAppRuntime(){
       el.en.innerHTML=compose ? composeHintPlaceholder(next) : defaultHintPlaceholder();
       if(recognitionController){ recognitionController.clearHighlight(); }
     }
+    clearActiveClozeRecognitionContext();
     el.ja.style.display = showJapanese ? 'block' : 'none';
     updatePlayButtonAvailability();
     return prev!==next;
@@ -1777,6 +1782,7 @@ function createAppRuntime(){
   }
 
   function showPostResultFeedback(item,matchInfo){
+    clearActiveClozeRecognitionContext();
     if(!item?.id||!item?.en) return;
     const source=String(matchInfo?.source||'').trim();
     const highlighted=revealCanonicalPostResult(el.en,item,{
@@ -2792,6 +2798,7 @@ function createAppRuntime(){
     if(isShadowingSession()) sessionMetrics.cardsDone=Math.max(sessionMetrics.cardsDone,shadowingSessionMetrics.cards);
     finalizeSessionMetrics(reason);
     sessionActive=false;
+    clearActiveClozeRecognitionContext();
     sessionStarting=false;
     clearRecoverySessionTarget();
     if(reason==='completed' && latestSessionClosureSummary){
@@ -3060,6 +3067,7 @@ function createAppRuntime(){
     clearLastProgressNote();
     finalizeSessionMetrics('idle');
     sessionActive=false;
+    clearActiveClozeRecognitionContext();
     sessionStarting=false;
     setViewState(VIEW_HOME);
     cancelAutoAdvance();
@@ -3113,6 +3121,9 @@ function createAppRuntime(){
 
   async function render(i, autoPlay=false){
     correctiveItemId=null;
+    correctionFinished=false;
+    correctionProgress=createCorrectionProgress();
+    clearActiveClozeRecognitionContext();
     resetPostResultFeedback();
     resultFeedbackQueue.clear();
     clearLastProgressNote();
@@ -3439,6 +3450,7 @@ function createAppRuntime(){
       }catch(err){
         finalizeSessionMetrics('start-error');
         sessionActive=false;
+        clearActiveClozeRecognitionContext();
         setViewState(VIEW_HOME);
         throw err;
       }
@@ -3741,7 +3753,7 @@ function createAppRuntime(){
         return refItem ? refItem.en : el.en.textContent;
       },
       shouldEvaluate:()=>!isShadowingSession(),
-      selectHypothesis:selectBestSpeechHypothesis,
+      getRecognitionBiasContext:()=>buildRecognitionBiasContext({mode:isShadowingSession()?'shadowing':getStudyMode(),referenceText:QUEUE[idx]?.en,clozeContext:getActiveClozeRecognitionContext(QUEUE[idx]?.id),correction:correctiveItemId===QUEUE[idx]?.id}),
       onTranscriptPreview:text=>{if(!isShadowingSession()) showTranscriptFinal(text);},
       onTranscriptReset: resetTranscript,
       onTranscriptInterim: (text)=>{ if(!isShadowingSession()) showTranscriptInterim(text); },
@@ -3755,7 +3767,8 @@ function createAppRuntime(){
       onUnsupported: ()=>toast('この端末では音声認識が使えません'),
       onError: (e)=>{
         toast('ASRエラー: '+(e && e.error || ''));
-        el.mic.disabled=false;
+        if(correctiveItemId===QUEUE[idx]?.id) handleCorrectionAttempt({technical:true});
+        el.mic.disabled=correctionFinished;
         if(isShadowingSession()){
           cancelShadowingCycle({stopOutput:true});
           shadowingPaused=true;
@@ -3959,6 +3972,20 @@ function createAppRuntime(){
     pendingMicStartTimer=setTimeout(()=>beginRecognition(requestToken,requestedItemId),MIC_AUDIO_SETTLE_MS);
   }
 
+  function handleCorrectionAttempt(attempt){
+    if(!sessionActive||correctionFinished||correctiveItemId!==QUEUE[idx]?.id) return;
+    const result=recordCorrectionAttempt(correctionProgress,attempt);
+    el.mic.disabled=result.complete;
+    setFooterMessages(result.message,result.complete?'':'「聞く」で正解音声を確認できます。');
+    if(result.complete){
+      correctionFinished=true;
+      clearActiveClozeRecognitionContext();
+      if(attempt.success) resultFeedbackQueue.enqueue('success',{itemId:QUEUE[idx].id});
+      scheduleAutoAdvance(1900);
+    }
+    updateAttemptInfo();updatePlayButtonAvailability();
+  }
+
   async function stopRec(result){
     if(!recognitionController) return;
     const outcome = result && result.ok ? result : recognitionController.stop();
@@ -3969,7 +3996,8 @@ function createAppRuntime(){
       return;
     }
     const hyp = (outcome.transcript || '').trim();
-    if(!hasRecognizedSpeech(hyp)&&!(outcome.hypotheses||[]).some(value=>hasRecognizedSpeech(value.transcript))){
+    if(!hasRecognizedSpeech(hyp)){
+      if(correctiveItemId===it.id){handleCorrectionAttempt({technical:true});return;}
       lastMatchEval=null;updateMatch(null);resetTranscript();setFooterMessages('発話が検出されませんでした。もう一度話してください。','');el.mic.disabled=false;updatePlayButtonAvailability();return;
     }
     const refItem = QUEUE[idx];
@@ -3990,18 +4018,7 @@ function createAppRuntime(){
     updateMatch(matchRate);
     if(correctiveItemId===it.id){
       // Practice after the recorded failure never mutates SRS/history/metrics.
-      if(evaluateLevel(matchRate,maxHintStageUsed)?.pass){
-        correctiveItemId=null;
-        el.mic.disabled=true;
-        setFooterMessages('修正練習完了','');
-        resultFeedbackQueue.enqueue('success',{itemId:it.id});
-        scheduleAutoAdvance(1900);
-      }else{
-        el.mic.disabled=false;
-        setFooterMessages('表示された英文をもう一度話してください。','「聞く」で正解音声を確認できます。');
-      }
-      updateAttemptInfo();
-      updatePlayButtonAvailability();
+      handleCorrectionAttempt({success:!!evaluateLevel(matchRate,maxHintStageUsed)?.pass});
       return;
     }
     const prevInfoSnapshot = getLevelInfo(it.id);
@@ -4165,6 +4182,8 @@ function createAppRuntime(){
       resultFeedbackQueue.enqueue('fail',{itemId:it.id});
       cancelAutoAdvance();
       correctiveItemId=it.id;
+      correctionProgress=createCorrectionProgress();
+      correctionFinished=false;
       showPostResultFeedback(it,matchInfo);
       el.mic.disabled=true;
       setFooterMessages('正解音声を聞いて、表示された英文を話してください。','「聞く」で正解音声を確認できます。');
@@ -4175,7 +4194,7 @@ function createAppRuntime(){
         try{
           if(!recognitionController.isActive()&&getAudioLockState()===AUDIO_LOCK_STATES.UNLOCKED) await tryPlayAudio({userInitiated:false,resetPosition:true});
         }finally{
-          if(sessionActive&&correctiveItemId===correctionId&&QUEUE[idx]?.id===correctionId){el.mic.disabled=false;updatePlayButtonAvailability();}
+          if(sessionActive&&correctiveItemId===correctionId&&QUEUE[idx]?.id===correctionId&&!correctionFinished){el.mic.disabled=false;updatePlayButtonAvailability();}
         }
       },MIC_RELEASE_SETTLE_MS+80);
     }

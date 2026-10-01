@@ -1,3 +1,4 @@
+import { applyRecognitionBias } from './contextualBias.js';
 import { approxTokensMatch, toks, mergeCompoundWords } from '../utils/text.js';
 
 const SR = typeof window !== 'undefined'
@@ -74,54 +75,6 @@ export function composeRawTranscriptPreview(stable,interim){
   return appendRawTranscriptFinal(stable,interim);
 }
 
-export const ASR_MAX_ALTERNATIVES = 5;
-export const ASR_INTERNAL_BEAM_WIDTH = 25;
-
-const hypothesisKey = text => String(text).normalize('NFKC').toLocaleLowerCase('en-US').replace(/\s+/g,' ').trim();
-
-export function extractRecognitionAlternatives(result) {
-  const alternatives=[];
-  const seen=new Set();
-  for(let rank=0;rank<Math.min(result?.length||0,ASR_MAX_ALTERNATIVES);rank+=1){
-    const value=result[rank];
-    const transcript=String(value?.transcript??'');
-    const key=hypothesisKey(transcript);
-    if(!key||seen.has(key)) continue;
-    seen.add(key);
-    alternatives.push({transcript,asrRank:rank,confidence:Number.isFinite(value?.confidence)?value.confidence:null});
-  }
-  return alternatives;
-}
-
-export function buildRecognitionHypotheses(results,{beamWidth=ASR_INTERNAL_BEAM_WIDTH}={}) {
-  let beam=[{transcript:'',segmentRanks:[],rankCost:0,confidence:null}];
-  for(const result of Array.from(results||[])){
-    const alternatives=Array.isArray(result)&&result[0]?.asrRank!==undefined?result:extractRecognitionAlternatives(result);
-    if(!alternatives.length) continue;
-    const next=[];
-    for(const path of beam) for(const candidate of alternatives){
-      next.push({transcript:appendRawTranscriptFinal(path.transcript,candidate.transcript),
-        segmentRanks:[...path.segmentRanks,candidate.asrRank],rankCost:path.rankCost+candidate.asrRank,
-        confidence:candidate.confidence===null?path.confidence:path.confidence===null?candidate.confidence:Math.min(path.confidence,candidate.confidence)});
-    }
-    next.sort((a,b)=>a.rankCost-b.rankCost||(b.confidence??-1)-(a.confidence??-1));
-    const seen=new Set();
-    beam=next.filter(path=>{const key=hypothesisKey(path.transcript);if(seen.has(key)) return false;seen.add(key);return true;}).slice(0,Math.max(ASR_INTERNAL_BEAM_WIDTH,beamWidth));
-  }
-  return beam.filter(path=>path.transcript.trim());
-}
-
-export function selectBestSpeechHypothesis(refText,hypotheses) {
-  let selected=null;
-  const tokenMatchCache=new Map();
-  for(const [index,hypothesis] of hypotheses.entries()){
-    const matchInfo=matchTranscript(refText,hypothesis.transcript,{tokenMatchCache});
-    const score=calcMatchScore(matchInfo.refCount,matchInfo.recall,matchInfo.precision);
-    if(!selected||score>selected.score) selected={matchInfo,score,selectedHypothesisIndex:index,selectedTranscript:hypothesis.transcript};
-  }
-  return selected;
-}
-
 function clearHighlightInternal(enElement, getComposeNodesFn) {
   const spans = getTokenSpans(enElement);
   for (const sp of spans) {
@@ -139,7 +92,7 @@ function clearHighlightInternal(enElement, getComposeNodesFn) {
 }
 
 export function matchTranscript(refText, hypText,{tokenMatchCache=new Map()}={}) {
-  // Cache the existing pure token comparison across alignment windows/candidates.
+  // Cache the existing pure token comparison across alignment windows.
   const tokensMatch=(left,right)=>{
     if(left===right) return true;
     const key=`${left}\0${right}`;
@@ -407,8 +360,8 @@ export function createRecognitionController(options = {}) {
     onTranscriptInterim = () => {},
     onTranscriptFinal = () => {},
     onTranscriptPreview = () => {},
-    onTranscriptAlternatives = () => {},
-    selectHypothesis = (refText,hypotheses) => ({matchInfo:matchTranscript(refText,hypotheses[0]?.transcript||''),selectedTranscript:hypotheses[0]?.transcript||'',selectedHypothesisIndex:0}),
+    getRecognitionBiasContext = () => null,
+    biasCapability = {unavailable:false},
     onMatchEvaluated = () => {},
     onStart = () => {},
     onStop = () => {},
@@ -426,13 +379,10 @@ export function createRecognitionController(options = {}) {
   let stopRequested = false;
   let lastMatch = null;
   let segments=[];
-  let latestHypotheses=[];
-  function getTranscriptHypotheses(){return latestHypotheses.map(value=>({...value,segmentRanks:[...value.segmentRanks]}));}
-  function evaluateHypotheses(refText){
-    const selected=selectHypothesis(refText,getTranscriptHypotheses());
-    if(!selected?.matchInfo) return null;
-    applyMatchHighlight(selected.matchInfo,enElement,getComposeNodes);
-    return {...selected.matchInfo,primaryTranscript:latestPreview,selectedTranscript:selected.selectedTranscript,selectedHypothesisIndex:selected.selectedHypothesisIndex,rescuedByAlternative:!!latestHypotheses[selected.selectedHypothesisIndex]?.segmentRanks.some(rank=>rank>0)};
+  function evaluateTranscript(refText){
+    const match=matchTranscript(refText,latestPreview);
+    applyMatchHighlight(match,enElement,getComposeNodes);
+    return match;
   }
   function clearHighlight() {
     clearHighlightInternal(enElement, getComposeNodes);
@@ -461,7 +411,7 @@ export function createRecognitionController(options = {}) {
 
   function finalize({ triggeredByOnEnd = false } = {}) {
     if (!active && !triggeredByOnEnd) {
-      return { ok: false, reason: 'inactive', transcript: stableText.trim(), previewTranscript:latestPreview, hypotheses:getTranscriptHypotheses(), matchInfo: lastMatch };
+      return { ok: false, reason: 'inactive', transcript: stableText.trim(), previewTranscript:latestPreview, matchInfo: lastMatch };
     }
     active = false;
     finalized = true;
@@ -470,15 +420,15 @@ export function createRecognitionController(options = {}) {
     const transcript = (latestPreview || stableText || '').trim();
     const refText = getReferenceText?.() ?? '';
     let matchInfo = null;
-    if (latestHypotheses.some(value=>hasRecognizedSpeech(value.transcript)) && shouldEvaluate?.()!==false) {
-      matchInfo = evaluateHypotheses(refText);
+    if (hasRecognizedSpeech(transcript) && shouldEvaluate?.()!==false) {
+      matchInfo = evaluateTranscript(refText);
       lastMatch = matchInfo;
     } else {
       clearHighlight();
       lastMatch = null;
     }
     recognition = null;
-    return { ok: true, transcript, previewTranscript:latestPreview, hypotheses:getTranscriptHypotheses(), matchInfo: lastMatch };
+    return { ok: true, transcript, previewTranscript:latestPreview, matchInfo: lastMatch };
   }
 
   function handleAutoStop() {
@@ -486,7 +436,7 @@ export function createRecognitionController(options = {}) {
     onAutoStop?.(result);
   }
 
-  function start() {
+  function start({fallbackAttempt=false}={}) {
     if (!SR) {
       onUnsupported?.();
       return { ok: false, reason: 'unsupported' };
@@ -506,11 +456,11 @@ export function createRecognitionController(options = {}) {
     currentRecognition.lang = 'en-US';
     currentRecognition.continuous = true;
     currentRecognition.interimResults = true;
-    currentRecognition.maxAlternatives = ASR_MAX_ALTERNATIVES;
+    currentRecognition.maxAlternatives = 1;
+    const biased=!biasCapability.unavailable&&applyRecognitionBias(currentRecognition,getRecognitionBiasContext?.());
 
     stableText = '';
     segments=[];
-    latestHypotheses=[];
     latestPreview = '';
     lastMatch = null;
     active = true;
@@ -532,33 +482,33 @@ export function createRecognitionController(options = {}) {
       segments.length=event.results.length;
       for(let i=firstChanged;i<event.results.length;i+=1){
         const result=event.results[i];
-        segments[i]={primaryTranscript:String(result[0]?.transcript??''),alternatives:extractRecognitionAlternatives(result),isFinal:!!result.isFinal};
+        segments[i]={primaryTranscript:String(result[0]?.transcript??''),isFinal:!!result.isFinal};
       }
       const present=segments.filter(Boolean);
-      latestHypotheses=buildRecognitionHypotheses(present.map(segment=>segment.alternatives));
       latestPreview=present.reduce((text,segment)=>appendRawTranscriptFinal(text,segment.primaryTranscript),'');
       stableText=present.filter(segment=>segment.isFinal).reduce((text,segment)=>appendRawTranscriptFinal(text,segment.primaryTranscript),'');
       const changedFinal=Array.from(event.results).slice(firstChanged).some(result=>result.isFinal);
       if(changedFinal){
-        lastMatch=latestHypotheses.length&&shouldEvaluate?.()!==false?evaluateHypotheses(getReferenceText?.()??''):null;
+        lastMatch=hasRecognizedSpeech(latestPreview)&&shouldEvaluate?.()!==false?evaluateTranscript(getReferenceText?.()??''):null;
         onTranscriptFinal?.(stableText,lastMatch);
         if(lastMatch) onMatchEvaluated?.(lastMatch);
       }
       const interim=present.filter(segment=>!segment.isFinal).map(segment=>segment.primaryTranscript).join(' ');
       if(interim) onTranscriptInterim?.(interim);
-      onTranscriptAlternatives?.({primaryTranscript:latestPreview,hypotheses:getTranscriptHypotheses()});
       onTranscriptPreview?.(latestPreview);
 
     };
 
-    currentRecognition.onerror = (ev) => {
-      if (recognition!==currentRecognition || stopRequested || finalized) return;
-      console.warn('recognition error', ev);
-      setMicState?.(false);
-      active = false;
-      finalized = true;
-      recognition = null;
-      onError?.(ev);
+    currentRecognition.onerror = (event) => {
+      if(recognition!==currentRecognition||!active||finalized) return;
+      const canFallback=event.error==='phrases-not-supported'&&biased&&!fallbackAttempt&&!latestPreview.trim();
+      if(event.error==='phrases-not-supported') biasCapability.unavailable=true;
+      active=false;finalized=true;recognition=null;
+      try { currentRecognition.abort?.(); } catch (_) {}
+      setMicState?.(false);onStop?.();
+      if(canFallback) { start({fallbackAttempt:true}); return; }
+      // Errors never finalize a learning result, including errors after a partial result.
+      onError?.(event);
     };
 
     currentRecognition.onend = () => {
@@ -584,7 +534,7 @@ export function createRecognitionController(options = {}) {
 
   function stop() {
     if (!active) {
-      return { ok: false, reason: 'inactive', transcript: stableText.trim(), previewTranscript:latestPreview, hypotheses:getTranscriptHypotheses(), matchInfo: lastMatch };
+      return { ok: false, reason: 'inactive', transcript: stableText.trim(), previewTranscript:latestPreview, matchInfo: lastMatch };
     }
     stopRequested=true;
     const currentRecognition=recognition;
@@ -621,6 +571,5 @@ export function createRecognitionController(options = {}) {
     getStableTranscript,
     getPreviewTranscript,
     getLastMatch,
-    getTranscriptHypotheses,
   };
 }
