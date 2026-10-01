@@ -5,29 +5,37 @@ import {setActiveClozeRecognitionContext,getActiveClozeRecognitionContext,clearA
 import {createCorrectionProgress,recordCorrectionAttempt} from '../scripts/speech/correctionProgress.js';
 
 const vocab=(entry,options={})=>buildRecognitionBiasContext({mode:'vocabulary',vocabularyEntry:entry,...options}).phrases;
-test('Vocabulary word/expression/source TARGET variants are biased, paraphrases are excluded, duplicates/invalids bounded',()=>{
-  assert.deepEqual(vocab({canonical:'despite'}),[{text:'despite',boost:4,authority:'vocabulary-target'}]);
-  const entry={canonical:'yield to',answers:[' YIELD   TO ','yielded to',null,''],paraphrases:['give in to']};
+test('Vocabulary accepted whole utterances get strongest bias and overlapping phrase context, paraphrases excluded',()=>{
+  assert.deepEqual(vocab({canonical:'despite'}),[{text:'despite',boost:8,authority:'expected-utterance'}]);
+  const entry={canonical:'yield to something',answers:[' YIELD   TO   SOMETHING ',null,''],paraphrases:['give in to something']};
+  const plan=vocab(entry);
+  assert.deepEqual(plan.map(p=>[p.text,p.boost]),[['yield to something',8],['yield to',7],['to something',6]]);
+  assert.ok(vocab(entry,{correction:true}).filter(p=>p.authority!=='expected-utterance').every(p=>p.boost===7.5));
   const activeOccurrence={item:{en:'He yielded to them.'},occurrence:{start:3,end:13}};
-  assert.deepEqual(vocab(entry,{activeOccurrence}).map(p=>p.text),['yield to','yielded to']);
-  assert.ok(vocab(entry,{correction:true}).every(p=>p.boost===5));
+  assert.ok(vocab({canonical:'yield to',answers:['yielded to']},{activeOccurrence}).some(p=>p.text==='yielded to'&&p.boost===8));
   assert.equal(vocab({canonical:'word',answers:Array.from({length:50},(_,i)=>`word ${i}`)}).length,RECOGNITION_PHRASE_LIMIT);
 });
-test('Cloze uses target and two-token local window, never a whole sentence boost',()=>{
-  const sentence='He refused to yield to any threats from them.';
-  const phrases=buildRecognitionBiasContext({mode:'read',clozeContext:{sentence,targets:[{surface:'yield to',tokenStart:3,tokenEnd:4}]}}).phrases;
-  assert.deepEqual(phrases,[{text:'yield to',boost:4.5,authority:'cloze-target'},{text:'refused to yield to any threats',boost:3,authority:'cloze-local'}]);
-  assert.ok(!phrases.some(p=>p.text===sentence));
+test('Cloze biases target-bearing, overlapping and surrounding chunks, never an extreme whole-sentence phrase',()=>{
+  const sentence='Bob was so beside himself that he could scarcely tell fact from fiction.';
+  const phrases=buildRecognitionBiasContext({mode:'read',clozeContext:{sentence,targets:[{surface:'scarcely',tokenStart:8,tokenEnd:8}]}}).phrases;
+  assert.ok(phrases.some(p=>p.text.includes('scarcely')&&p.boost===7));
+  assert.ok(phrases.some(p=>p.authority==='overlap-chunk'&&p.text.includes('scarcely')&&p.boost===6));
+  assert.ok(phrases.some(p=>p.text==='Bob was so beside himself'&&p.boost===5));
+  assert.ok(!phrases.some(p=>p.text===sentence||p.boost>7));
 });
-test('30-token three-target Cloze is bounded at six phrases and separate windows',()=>{
+test('30-token three-target Cloze covers the sentence in bounded natural chunks; ordinary modes stay un-biased',()=>{
   const sentence='Today I came across him near the old bridge when I was looking for the station and decided to yield to his request before continuing my long journey home again';
-  const targets=[{surface:'came across',tokenStart:2,tokenEnd:3},{surface:'looking for',tokenStart:13,tokenEnd:14},{surface:'yield to',tokenStart:20,tokenEnd:21}];
+  const targets=[{surface:'came across',tokenStart:2,tokenEnd:3},{surface:'looking for',tokenStart:12,tokenEnd:13},{surface:'yield to',tokenStart:19,tokenEnd:20}];
   const phrases=buildRecognitionBiasContext({mode:'read',clozeContext:{sentence,targets}}).phrases;
-  assert.equal(phrases.length,6);assert.equal(phrases.filter(p=>p.authority==='cloze-target').length,3);
-  assert.ok(phrases.every(p=>p.text.split(' ').length<=6));
+  assert.ok(phrases.length<=RECOGNITION_PHRASE_LIMIT);
+  for(const target of targets) assert.ok(phrases.some(p=>p.text.includes(target.surface)&&p.boost===7));
+  assert.ok(phrases.some(p=>p.text.includes('journey home again')),'surrounding sentence context is retained');
+  assert.ok(new Set(phrases.map(p=>p.text.split(' ').length)).size>1,'chunks are not one fixed word window');
   for(const mode of ['compose','reorder','hidden','shadowing']) assert.deepEqual(buildRecognitionBiasContext({mode,referenceText:sentence,clozeContext:{sentence,targets}}).phrases,[]);
   assert.deepEqual(buildRecognitionBiasContext({mode:'read',referenceText:sentence}).phrases,[]);
-  assert.deepEqual(buildRecognitionBiasContext({mode:'read',referenceText:sentence,correction:true}).phrases,[{text:sentence,boost:5,authority:'correction-target'}]);
+  const correction=buildRecognitionBiasContext({mode:'read',referenceText:sentence,correction:true});
+  assert.equal(correction.phrases[0].text,sentence);assert.equal(correction.phrases[0].boost,8);
+  assert.ok(correction.phrases.some(p=>p.boost===7.5));
 });
 test('Cloze registry copies data, restricts item identity, clears without DOM storage',()=>{
   const input={itemId:'a',sentence:'hidden answer',targets:[{surface:'answer',tokenStart:1,tokenEnd:1}]};

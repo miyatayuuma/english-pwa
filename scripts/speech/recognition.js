@@ -1,4 +1,4 @@
-import { applyRecognitionBias } from './contextualBias.js';
+import { applyRecognitionBias, LEARNING_MAX_ALTERNATIVES } from './contextualBias.js';
 import { approxTokensMatch, toks, mergeCompoundWords } from '../utils/text.js';
 
 const SR = typeof window !== 'undefined'
@@ -361,6 +361,7 @@ export function createRecognitionController(options = {}) {
     onTranscriptFinal = () => {},
     onTranscriptPreview = () => {},
     getRecognitionBiasContext = () => null,
+    onRecognitionConfigured = () => {},
     biasCapability = {unavailable:false},
     onMatchEvaluated = () => {},
     onStart = () => {},
@@ -379,6 +380,9 @@ export function createRecognitionController(options = {}) {
   let stopRequested = false;
   let lastMatch = null;
   let segments=[];
+  function getNativeRecognitionSegments(){
+    return segments.filter(Boolean).map(segment=>({...segment,alternatives:segment.alternatives.map(candidate=>({...candidate}))}));
+  }
   function evaluateTranscript(refText){
     const match=matchTranscript(refText,latestPreview);
     applyMatchHighlight(match,enElement,getComposeNodes);
@@ -411,7 +415,7 @@ export function createRecognitionController(options = {}) {
 
   function finalize({ triggeredByOnEnd = false } = {}) {
     if (!active && !triggeredByOnEnd) {
-      return { ok: false, reason: 'inactive', transcript: stableText.trim(), previewTranscript:latestPreview, matchInfo: lastMatch };
+      return { ok: false, reason: 'inactive', transcript: stableText.trim(), previewTranscript:latestPreview, nativeSegments:getNativeRecognitionSegments(), matchInfo: lastMatch };
     }
     active = false;
     finalized = true;
@@ -428,7 +432,7 @@ export function createRecognitionController(options = {}) {
       lastMatch = null;
     }
     recognition = null;
-    return { ok: true, transcript, previewTranscript:latestPreview, matchInfo: lastMatch };
+    return { ok: true, transcript, previewTranscript:latestPreview, nativeSegments:getNativeRecognitionSegments(), matchInfo: lastMatch };
   }
 
   function handleAutoStop() {
@@ -456,8 +460,10 @@ export function createRecognitionController(options = {}) {
     currentRecognition.lang = 'en-US';
     currentRecognition.continuous = true;
     currentRecognition.interimResults = true;
-    currentRecognition.maxAlternatives = 1;
-    const biased=!biasCapability.unavailable&&applyRecognitionBias(currentRecognition,getRecognitionBiasContext?.());
+    const context=getRecognitionBiasContext?.();
+    currentRecognition.maxAlternatives=context?.maxAlternatives===LEARNING_MAX_ALTERNATIVES?LEARNING_MAX_ALTERNATIVES:1;
+    const biased=!biasCapability.unavailable&&applyRecognitionBias(currentRecognition,context);
+    onRecognitionConfigured?.({maxAlternatives:currentRecognition.maxAlternatives,biasApplied:!!biased,biasDisabled:biasCapability.unavailable});
 
     stableText = '';
     segments=[];
@@ -482,7 +488,15 @@ export function createRecognitionController(options = {}) {
       segments.length=event.results.length;
       for(let i=firstChanged;i<event.results.length;i+=1){
         const result=event.results[i];
-        segments[i]={primaryTranscript:String(result[0]?.transcript??''),isFinal:!!result.isFinal};
+        const alternatives=[];
+        const seen=new Set();
+        for(let rank=0;rank<Math.min(result.length,currentRecognition.maxAlternatives);rank++){
+          const value=result[rank],transcript=String(value?.transcript??'');
+          const key=transcript.normalize('NFKC').toLocaleLowerCase('en-US').replace(/\s+/g,' ').trim();
+          if(!key||seen.has(key)) continue;
+          seen.add(key);alternatives.push({transcript,asrRank:rank,confidence:Number.isFinite(value?.confidence)?value.confidence:null});
+        }
+        segments[i]={segmentIndex:i,primaryTranscript:String(result[0]?.transcript??''),alternatives,isFinal:!!result.isFinal};
       }
       const present=segments.filter(Boolean);
       latestPreview=present.reduce((text,segment)=>appendRawTranscriptFinal(text,segment.primaryTranscript),'');
@@ -501,7 +515,7 @@ export function createRecognitionController(options = {}) {
 
     currentRecognition.onerror = (event) => {
       if(recognition!==currentRecognition||!active||finalized) return;
-      const canFallback=event.error==='phrases-not-supported'&&biased&&!fallbackAttempt&&!latestPreview.trim();
+      const canFallback=event.error==='phrases-not-supported'&&biased&&!fallbackAttempt&&!segments.some(segment=>segment?.alternatives.some(candidate=>candidate.transcript.trim()));
       if(event.error==='phrases-not-supported') biasCapability.unavailable=true;
       active=false;finalized=true;recognition=null;
       try { currentRecognition.abort?.(); } catch (_) {}
@@ -534,7 +548,7 @@ export function createRecognitionController(options = {}) {
 
   function stop() {
     if (!active) {
-      return { ok: false, reason: 'inactive', transcript: stableText.trim(), previewTranscript:latestPreview, matchInfo: lastMatch };
+      return { ok: false, reason: 'inactive', transcript: stableText.trim(), previewTranscript:latestPreview, nativeSegments:getNativeRecognitionSegments(), matchInfo: lastMatch };
     }
     stopRequested=true;
     const currentRecognition=recognition;
@@ -570,6 +584,7 @@ export function createRecognitionController(options = {}) {
     matchAndHighlight,
     getStableTranscript,
     getPreviewTranscript,
+    getNativeRecognitionSegments,
     getLastMatch,
   };
 }
