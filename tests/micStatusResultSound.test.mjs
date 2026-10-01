@@ -61,5 +61,6 @@ test('app flushes result audio only after release settle and does not score sile
   assert.match(main,/resultFeedbackQueue\.enqueue\('fail'/);
   assert.doesNotMatch(main,/playTone\('success'\)/);
   assert.doesNotMatch(main,/playTone\('fail'\)/);
-  assert.ok(main.indexOf('if(!hasRecognizedSpeech(hyp))')<main.indexOf("resultFeedbackQueue.enqueue('success'"));
+  const stopRec=main.slice(main.indexOf('  async function stopRec(result)'));
+  assert.ok(stopRec.indexOf('if(!hasRecognizedSpeech(hyp))')<stopRec.indexOf("resultFeedbackQueue.enqueue('success'"));
 });
