@@ -89,10 +89,11 @@ test('continuous shadowing capture never evaluates or returns a score',async()=>
     });
     controller.start();
     recognition.onstart();
-    const result=Object.assign([{transcript:'canonical source audio'}],{isFinal:true});
+    const result=Object.assign([{transcript:'wrong primary'}, {transcript:'canonical source audio'}],{isFinal:true});
     recognition.onresult({resultIndex:0,results:[result]});
     const outcome=controller.stop();
-    assert.equal(finalText,'canonical source audio');
+    assert.equal(finalText,'wrong primary');
+    assert.equal(outcome.hypotheses.length,2);
     assert.equal(evaluated,0);
     assert.equal(outcome.matchInfo,null);
   }finally{
@@ -117,7 +118,7 @@ test('app uses stop confirm settle then manual from-start shadowing without auto
   assert.match(source,/getAudioLockState\(\)===AUDIO_LOCK_STATES\.ACTIVE&&!userInitiated/);
   assert.match(source,/if\(userInitiated&&!authorizeUserPlayback\(\)\) return false/);
   assert.match(source,/getAudioLockState\(\)===AUDIO_LOCK_STATES\.ACTIVE \|\| audio\.ended/);
-  assert.match(source,/if\(!hasRecognizedSpeech\(hyp\)\)/);
+  assert.match(source,/if\(!hasRecognizedSpeech\(hyp\)/);
   assert.doesNotMatch(source,/録音開始後に「聞く」/);
   assert.doesNotMatch(source,/resumeAfterMic/);
 });

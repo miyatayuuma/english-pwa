@@ -4,8 +4,7 @@ import { createSpeechSynthesisController } from '../speech/synthesis.js';
 import {
   buildVocabularySession,
   applyVocabularyAnswerSrs,
-  classifyVocabularyAnswer,
-  isVocabularyNearMiss,
+  classifyVocabularyHypotheses,
   displayAnswer,
   displayMeaning,
   eligibleVocabularyEntries,
@@ -34,7 +33,10 @@ const state={
   gradeTimer:0,
   liveTranscript:'',
   lastAttemptTranscript:'',
-  nearMissRetryUsed:false,
+  correction:false,
+  audioGeneration:0,
+  micGeneration:0,
+  audioReleaseAt:0,
   recognition:null,
   dialog:null,
   screen:null,
@@ -109,11 +111,11 @@ function injectStyles(){
     .vocab-transcript{min-height:19px;width:100%;max-width:500px;margin-top:7px;font-size:12px;line-height:1.5;opacity:.72;white-space:normal;word-break:normal;overflow-wrap:anywhere}
     .vocab-heard{display:grid;gap:3px;width:min(100%,520px);margin:8px auto;text-align:center;line-height:1.45;overflow-wrap:anywhere}.vocab-heard__label{font-size:10px;opacity:.64}.vocab-heard__text{font-size:12px;opacity:.78;white-space:normal;word-break:normal;overflow-wrap:anywhere}
     .vocab-feedback{flex:0 0 auto;min-height:22px;text-align:center;font-size:12px;font-weight:750}.vocab-feedback.is-ok{color:#86efac}.vocab-feedback.is-paraphrase{color:#99f6e4}.vocab-feedback.is-miss{color:#fca5a5}.vocab-answer-detail,.vocab-paraphrases{margin:7px auto;text-align:center;font-size:12px;line-height:1.7;overflow-wrap:anywhere}.vocab-answer-detail{color:#99f6e4}.vocab-answer-detail strong{color:#e2e8f0}.vocab-paraphrases{opacity:.68}.vocab-paraphrases>span:first-child{font-size:10px;opacity:.8}
-    .vocab-controls{display:flex;flex:0 0 auto;flex-direction:column;align-items:stretch;gap:7px;margin-top:6px}.vocab-mic{width:78px;height:78px;align-self:center;border:0;border-radius:50%;background:#6366f1;color:#fff;font:inherit;font-size:14px;font-weight:850;cursor:pointer;box-shadow:0 12px 28px rgba(99,102,241,.28);transition:transform .12s ease,box-shadow .12s ease}.vocab-mic.is-listening{transform:scale(1.05);box-shadow:0 0 0 8px rgba(99,102,241,.14),0 12px 28px rgba(99,102,241,.28)}
+    .vocab-controls{display:flex;flex:0 0 auto;flex-direction:column;align-items:stretch;gap:7px;margin-top:6px}.vocab-mic{min-width:78px;width:auto;max-width:100%;padding-inline:12px;height:78px;align-self:center;border:0;border-radius:50%;background:#6366f1;color:#fff;font:inherit;font-size:14px;font-weight:850;cursor:pointer;box-shadow:0 12px 28px rgba(99,102,241,.28);transition:transform .12s ease,box-shadow .12s ease}.vocab-mic.is-listening{transform:scale(1.05);box-shadow:0 0 0 8px rgba(99,102,241,.14),0 12px 28px rgba(99,102,241,.28)}
     .vocab-reveal{min-height:44px;align-self:center;border:0;background:transparent;color:inherit;font:inherit;font-size:11px;opacity:.56;padding:7px 12px;cursor:pointer}
     .vocab-done{display:flex;flex:1;min-height:0;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:11px}.vocab-done h2{font-size:29px;margin:0}.vocab-done p{margin:0;opacity:.62}.vocab-done small{opacity:.48}.vocab-done button{min-width:210px;min-height:50px;border:0;border-radius:14px;background:#6366f1;color:white;font:inherit;font-weight:850;cursor:pointer;margin-top:7px}.vocab-done .vocab-reveal{min-width:44px;min-height:44px;background:transparent;color:inherit;margin-top:0}
     .vocab-speaker{display:inline-flex;align-items:center;gap:6px;min-height:32px;color:inherit;font-size:12px;font-weight:750;opacity:.84}.vocab-speaker img{width:32px;height:32px;flex:0 0 32px;border-radius:50%;object-fit:cover;background:rgba(148,163,184,.12)}.vocab-meta .vocab-speaker{min-height:32px;padding:0;border:0;background:transparent;font-size:12px;opacity:.9}.vocab-speaker-turns{display:grid;gap:6px;margin-top:10px}.vocab-speaker-turn{display:flex;align-items:center;gap:8px;padding:7px;border:1px solid rgba(148,163,184,.11);border-radius:11px;text-align:left}.vocab-context-state{gap:8px}.vocab-context-scroll{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:8px 2px 4px}.vocab-context-top{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px;margin:2px 0 8px}.vocab-answer{max-width:100%;font-size:clamp(22px,5.8vw,32px);font-weight:850;line-height:1.35;color:#a5b4fc;overflow-wrap:anywhere}.vocab-source-line{margin:14px auto 8px;max-width:560px;font-size:clamp(16px,4.1vw,21px);line-height:1.65;text-align:center;overflow-wrap:anywhere}.vocab-target{color:#fff;background:rgba(99,102,241,.3);border-bottom:2px solid #a5b4fc;border-radius:3px;padding:0 2px}.vocab-contextual-meaning{margin:5px auto 12px;text-align:center;font-size:clamp(14px,3.8vw,17px);line-height:1.65;overflow-wrap:anywhere}.vocab-contextual-meaning span{display:block;font-size:10px;opacity:.55}.vocab-context-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}.vocab-expand-context{min-height:44px;padding:8px 14px;border:1px solid rgba(148,163,184,.16);border-radius:12px;background:rgba(148,163,184,.05);color:inherit;font:inherit;font-size:12px;cursor:pointer}.vocab-context-full{margin-top:12px;padding:11px 10px;border:1px solid rgba(148,163,184,.12);border-radius:13px;background:rgba(148,163,184,.035)}.vocab-context-full[hidden]{display:none}.vocab-context-full .vocab-source-line{margin:0 auto 9px;font-size:15px}.vocab-source-ja{margin:10px 0 2px;font-size:13px;line-height:1.6;opacity:.78;text-align:center;overflow-wrap:anywhere}.vocab-source-audio-status{min-height:17px;font-size:10px;text-align:center;opacity:.64}.vocab-next{width:100%;min-height:52px;border:0;border-radius:14px;background:#6366f1;color:#fff;font:inherit;font-size:15px;font-weight:850;cursor:pointer}.vocab-controls{padding-bottom:env(safe-area-inset-bottom)}.vocab-controls button,.vocab-context-actions button{touch-action:manipulation}.vocab-transcript:empty{display:none}.vocab-answer[hidden]{display:none!important}
-    @media(max-width:390px){.vocab-body{padding:12px}.vocab-shell{border-radius:18px}.vocab-card{padding-inline:3px}.vocab-meta{margin-bottom:10px}.vocab-meaning{font-size:26px}.vocab-meaning.is-long{font-size:22px}.vocab-meaning.is-xlong{font-size:19px}.vocab-mic{width:72px;height:72px}}
+    @media(max-width:390px){.vocab-body{padding:12px}.vocab-shell{border-radius:18px}.vocab-card{padding-inline:3px}.vocab-meta{margin-bottom:10px}.vocab-meaning{font-size:26px}.vocab-meaning.is-long{font-size:22px}.vocab-meaning.is-xlong{font-size:19px}.vocab-mic{min-width:72px;width:auto;max-width:100%;height:72px;padding-inline:12px}}
     @media(max-height:650px){.vocab-head{padding-block:9px}.vocab-body{padding-block:10px}.vocab-card{padding-block:10px 5px}.vocab-meta{margin-bottom:8px}.vocab-meaning{font-size:clamp(22px,6vw,31px)}.vocab-prompt{margin-top:7px}.vocab-answer-wrap{margin-top:10px}.vocab-mic{width:66px;height:66px}.vocab-controls{gap:4px;margin-top:3px}}
     @media(prefers-reduced-motion:reduce){.vocab-progress__bar i,.vocab-mic{transition:none!important}}
   `;
@@ -165,12 +167,14 @@ function clearGradeTimer(){
 }
 
 function cancelPronunciation(){
+  state.audioGeneration+=1;
   state.speechText='';
   state.speechPromise=null;
   speech.cancelSpeech();
 }
 
 function stopListening(){
+  state.micGeneration+=1;
   clearTimeout(state.timer);
   state.timer=0;
   clearGradeTimer();
@@ -252,7 +256,7 @@ function startSession(){
   state.retried=new Set();
   state.liveTranscript='';
   state.lastAttemptTranscript='';
-  state.nearMissRetryUsed=false;
+  state.correction=false;
   showNextCard();
 }
 
@@ -269,12 +273,12 @@ function scheduleTranscriptGrade(text){
   state.liveTranscript=String(text??'');
   setTranscript(state.liveTranscript);
   clearGradeTimer();
-  if(!state.liveTranscript.trim()) return;
+  if(!state.liveTranscript.trim()&&!state.recognition?.getTranscriptHypotheses?.().length) return;
   const delay=state.current.kind==='word'?650:1200;
   state.gradeTimer=setTimeout(()=>{
     state.gradeTimer=0;
     const latest=latestNonEmptyTranscript(state.liveTranscript,state.recognition?.getPreviewTranscript?.());
-    if(latest&&!state.processing&&state.current) gradeTranscript(latest);
+    if(!state.processing&&state.current) gradeTranscript(latest);
   },delay);
 }
 
@@ -293,10 +297,8 @@ function showRecognitionFailure(){
 
 function setupRecognition(){
   state.recognition=createRecognitionController({
-    // Vocabulary grading needs unrewritten ASR text: the shared feedback
-    // matcher and default token stitcher both canonicalize recognized words.
+    // Grade raw N-best candidates with the Vocabulary strict classifier.
     shouldEvaluate:()=>false,
-    preserveRawTranscript:true,
     onTranscriptReset:()=>{clearGradeTimer();state.liveTranscript='';state.lastAttemptTranscript='';setTranscript('');},
     onTranscriptPreview:text=>{
       if(state.processing||!state.current) return;
@@ -306,7 +308,7 @@ function setupRecognition(){
       if(state.processing||!state.current) return;
       clearGradeTimer();
       const text=latestNonEmptyTranscript(result?.previewTranscript,state.liveTranscript,result?.transcript);
-      if(text){state.liveTranscript=text;setTranscript(text);gradeTranscript(text);}
+      if(text||result?.hypotheses?.length){state.liveTranscript=text;setTranscript(text);gradeTranscript(text);}
       else showRecognitionFailure();
     },
     onUnsupported:()=>{
@@ -331,21 +333,30 @@ function setTranscript(text){
   if(el) el.textContent=String(text||'');
 }
 
-function startListening(){
-  if(!state.current||state.processing||state.hintUsed||!state.recognition) return;
+async function startListening(){
+  if(!state.current||state.processing||!state.recognition) return;
   clearTimeout(state.timer);
   state.timer=0;
   if(state.recognition.isActive()){
     const result=state.recognition.stop();
     clearGradeTimer();
     const text=latestNonEmptyTranscript(result?.previewTranscript,state.liveTranscript,result?.transcript);
-    if(text&&!state.processing) gradeTranscript(text);
+    if((text||result?.hypotheses?.length)&&!state.processing) gradeTranscript(text);
     else if(!state.processing) showRecognitionFailure();
     return;
   }
+  const token=++state.micGeneration;
+  const current=state.current;
+  const pendingAudio=state.speechPromise;
+  if(pendingAudio) await pendingAudio;
+  if(state.sourceAudio){state.sourceAudio.pause?.();state.audioReleaseAt=Date.now()+800;}
+  if(speech.isSpeaking?.()) return;
+  const delay=Math.max(350,state.audioReleaseAt-Date.now());
+  await new Promise(resolve=>setTimeout(resolve,delay));
+  if(token!==state.micGeneration||current!==state.current||state.processing) return;
   const feedback=state.screen?.querySelector('.vocab-feedback');
-  if(feedback&&!state.nearMissRetryUsed){feedback.className='vocab-feedback';feedback.textContent='';}
-  showRecognitionStatus(state.nearMissRetryUsed?'もう一度、英語で答える':'英語で答える');
+  if(feedback){feedback.className='vocab-feedback';feedback.textContent='';}
+  showRecognitionStatus(state.correction?'表示された表現を話してください':'英語で答える');
   const result=state.recognition.start();
   if(!result?.ok) setListening(false);
 }
@@ -390,12 +401,20 @@ function speakAnswer(text=canonicalAnswer()){
     state.speechPromise=Promise.resolve(false);
     return state.speechPromise;
   }
+  stopListening();
+  const generation=++state.audioGeneration;
+  const current=state.current,position=state.position;
+  state.sourceAudio?.pause?.();
   state.speechText=value;
   let tracked;
   tracked=Promise.resolve(speech.speakCurrentCard())
     .catch(()=>false)
     .finally(()=>{
       if(state.speechPromise===tracked) state.speechPromise=null;
+      if(generation===state.audioGeneration){
+        state.audioReleaseAt=Date.now()+800;
+        if(state.current===current&&state.position===position&&state.processing&&!state.correction) scheduleVocabularyAdvance();
+      }
     });
   state.speechPromise=tracked;
   return tracked;
@@ -465,9 +484,13 @@ function bindSourceAudio(){
   }).catch(()=>{});
   button.addEventListener('click',async()=>{
     if(!state.sourceAudioUrl) return;
+    stopListening();
+    cancelPronunciation();
     state.sourceAudio?.pause?.();
+    state.audioReleaseAt=Date.now()+800;
     const audio=new Audio(state.sourceAudioUrl);
     state.sourceAudio=audio;
+    audio.onended=()=>{if(state.current===expected&&state.sourceAudio===audio&&state.processing&&!state.correction) scheduleVocabularyAdvance();};
     try{await audio.play();}catch(_){
       const status=state.screen?.querySelector('.vocab-source-audio-status');
       if(status) status.textContent='この例文音声を再生できませんでした。';
@@ -523,7 +546,7 @@ function renderAnswerContext({result=null,heardTranscript=state.lastAttemptTrans
     :'';
   state.screen.innerHTML=`
     <section class="vocab-study vocab-context-state">
-      <div class="vocab-context-scroll" aria-live="polite" aria-atomic="false">
+      <div class="vocab-context-scroll">
         ${heardTranscriptMarkup(heardTranscript)}
         <div class="vocab-context-top"><div class="vocab-answer" lang="en" dir="ltr" tabindex="-1">${escapeHtml(answer)}</div>${speakerCue(speaker)}</div>
         <button type="button" class="vocab-audio vocab-expression-audio" aria-label="英語の表現を再生" ${speech.supported()?'':'hidden'}>表現を聞く</button>
@@ -536,6 +559,7 @@ function renderAnswerContext({result=null,heardTranscript=state.lastAttemptTrans
         <div class="vocab-source-audio-status" aria-live="polite"></div>
         <div class="vocab-context-full" hidden></div>
         ${resultDetails}${paraphraseMarkup}
+        ${state.correction?'<div class="vocab-prompt" role="status">正解音声を聞いて、表示された表現を話してください</div><div class="vocab-transcript" lang="en" aria-label="修正練習の聞き取り" aria-live="off"></div>':''}
         <div class="vocab-feedback ${feedbackClass}" role="status" aria-live="polite" aria-atomic="true">${feedbackText}</div>
       </div>
       <div class="vocab-controls"></div>
@@ -545,68 +569,74 @@ function renderAnswerContext({result=null,heardTranscript=state.lastAttemptTrans
   bindSourceAudio();
   state.screen.querySelector('.vocab-expand-context')?.addEventListener('click',revealFullContext);
   const controls=state.screen.querySelector('.vocab-controls');
-  controls.appendChild(nextButton());
-  controls.querySelector('.vocab-next').focus({preventScroll:true});
+  if(state.correction){
+    controls.innerHTML='<button type="button" class="vocab-mic" aria-label="表示された表現を話す">話す</button>';
+    controls.querySelector('.vocab-mic').addEventListener('click',startListening);
+    const audioButton=state.screen.querySelector('.vocab-expression-audio');
+    (audioButton&&!audioButton.hidden?audioButton:controls.querySelector('.vocab-mic'))?.focus({preventScroll:true});
+    state.processing=false;
+    setupRecognition();
+  }else{
+    controls.appendChild(nextButton());
+    controls.querySelector('.vocab-next').focus({preventScroll:true});
+  }
   if(result!==null) speakAnswer(answer);
+  if(!state.correction) scheduleVocabularyAdvance();
 }
 
 function gradeTranscript(text){
   if(state.processing||!state.current) return;
   const transcript=String(text??'');
-  if(!transcript.trim()) return;
+  if(!transcript.trim()&&!state.recognition?.getTranscriptHypotheses?.().length) return;
   state.processing=true;
   clearGradeTimer();
   state.liveTranscript=transcript;
   state.lastAttemptTranscript=transcript;
   setTranscript(transcript);
-  const result=classifyVocabularyAnswer({entry:state.current,activeOccurrence:activeSource(),transcript});
+  const result=classifyVocabularyHypotheses({entry:state.current,activeOccurrence:activeSource(),transcript,hypotheses:state.recognition?.getTranscriptHypotheses?.()||[],correction:state.correction});
   if(state.recognition?.isActive()) state.recognition.stop();
   setListening(false);
-  if(result.type==='miss'&&!state.nearMissRetryUsed&&isVocabularyNearMiss({entry:state.current,activeOccurrence:activeSource(),transcript})){
-    state.nearMissRetryUsed=true;
-    renderNearMissRetry();
+  if(state.correction){
+    state.processing=false;
+    const feedback=state.screen.querySelector('.vocab-feedback');
+    if(result.type==='target'){
+      state.processing=true;
+      if(feedback){feedback.className='vocab-feedback is-ok';feedback.textContent='修正練習完了';}
+      scheduleVocabularyAdvance();
+    }else if(feedback) feedback.textContent='表示された表現をもう一度話してください。';
     return;
   }
+  if(result.type==='miss'){renderTranscriptReview();return;}
   finalizeVocabularyAnswer(result);
 }
 
-function renderNearMissRetry(){
-  stopListening();
-  setListening(false);
-  const card=state.screen?.querySelector('.vocab-card');
-  const live=state.screen?.querySelector('.vocab-transcript');
-  const feedback=state.screen?.querySelector('.vocab-feedback');
-  if(card&&live){
-    const heard=document.createElement('div');
-    heard.className='vocab-heard vocab-near-heard';
-    const label=document.createElement('span');
-    label.className='vocab-heard__label';
-    label.textContent='聞き取り';
-    const transcript=document.createElement('span');
-    transcript.className='vocab-heard__text';
-    transcript.lang='en';
-    transcript.dir='ltr';
-    transcript.textContent=state.lastAttemptTranscript;
-    transcript.setAttribute('aria-labelledby','vocabNearHeardLabel');
-    label.id='vocabNearHeardLabel';
-    heard.append(label,transcript);
-    live.before(heard);
-    state.liveTranscript='';
-    setTranscript('');
-  }
-  if(feedback){feedback.className='vocab-feedback';feedback.textContent='惜しい。もう一度。';}
-  showRecognitionStatus('もう一度、英語で答える');
-  state.processing=false;
+function scheduleVocabularyAdvance(){
   clearTimeout(state.timer);
+  const current=state.current,position=state.position;
   state.timer=setTimeout(()=>{
     state.timer=0;
-    if(state.current&&!state.processing) startListening();
-  },300);
+    if(state.current!==current||state.position!==position||!state.processing) return;
+    state.position+=1;showNextCard();
+  },1900);
+}
+
+function renderTranscriptReview(){
+  stopListening();
+  state.screen.querySelector('.vocab-heard')?.remove();
+  const live=state.screen.querySelector('.vocab-transcript');
+  live?.insertAdjacentHTML('beforebegin',heardTranscriptMarkup(state.lastAttemptTranscript));
+  setTranscript('');
+  const feedback=state.screen.querySelector('.vocab-feedback');
+  if(feedback) feedback.textContent='聞き取りを確認して、もう一度話してください。';
+  const mic=state.screen.querySelector('.vocab-mic');
+  if(mic){mic.textContent='もう一度話す';mic.setAttribute('aria-label','もう一度話す');mic.focus({preventScroll:true});}
+  state.processing=false;
 }
 
 function finalizeVocabularyAnswer(result){
   if(!state.current) return;
   state.processing=true;
+  state.correction=result.type==='miss';
   updateVocabularyLevel(result.type,state.hintUsed);
   state.outcomes.set(state.current.id,result.type);
   if(result.type==='miss'&&!state.retried.has(state.current.id)){
@@ -618,7 +648,7 @@ function finalizeVocabularyAnswer(result){
 }
 
 function revealAnswer(){
-  if(state.processing||!state.current) return;
+  if(state.processing||!state.current||state.correction) return;
   state.processing=true;
   state.hintUsed=true;
   const transcript=latestNonEmptyTranscript(
@@ -641,7 +671,7 @@ function showNextCard(){
   state.timer=0;
   state.liveTranscript='';
   state.lastAttemptTranscript='';
-  state.nearMissRetryUsed=false;
+  state.correction=false;
   state.sourceAudio?.pause?.();state.sourceAudio=null;state.sourceAudioUrl='';
   if(state.position>=state.queue.length){ renderDone(); return; }
   state.current=state.queue[state.position];

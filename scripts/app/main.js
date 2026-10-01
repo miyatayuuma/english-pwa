@@ -39,6 +39,7 @@ import { configureSharedAudioResolver, createAudioUrlResolver } from '../audio/r
 import {
   createRecognitionController,
   calcMatchScore,
+  selectBestSpeechHypothesis,
   hasRecognizedSpeech,
   isRecognitionSupported
 } from '../speech/recognition.js';
@@ -278,6 +279,7 @@ function createAppRuntime(){
   });
   initAppVersion();
   const itemLabelCache=new Map();
+  let correctiveItemId=null;
   let recognitionController=null;
   let speechController=null;
   let lastMatchEval=null;
@@ -1625,8 +1627,6 @@ function createAppRuntime(){
     updateHeaderStats();
   }
 
-  const FAIL_LIMIT=3;
-  let failCount=0;
 
   let hintStage=BASE_HINT_STAGE;
   let maxHintStageUsed=BASE_HINT_STAGE;
@@ -1900,11 +1900,8 @@ function createAppRuntime(){
   }
 
   function updateAttemptInfo(){
-    if(failCount<=0){ el.attempt.textContent=''; el.attempt.classList.remove('alert'); return; }
-    const remain=Math.max(0, FAIL_LIMIT-failCount);
-    el.attempt.textContent = remain>0 ? `リトライ残り ${remain}回` : '規定回数に達しました';
-    if(remain<=1){ el.attempt.classList.add('alert'); }
-    else{ el.attempt.classList.remove('alert'); }
+    el.attempt.textContent=correctiveItemId?'修正練習中':'';
+    el.attempt.classList.remove('alert');
   }
 
   function setMicState(on){
@@ -3093,7 +3090,6 @@ function createAppRuntime(){
     refreshLevelDisplay(null);
     cardStart = now();
     sessionStart = 0;
-    failCount = 0;
     lastErrorType='';
     sameErrorStreak=0;
     setFooterMessages('', '');
@@ -3116,6 +3112,7 @@ function createAppRuntime(){
   }
 
   async function render(i, autoPlay=false){
+    correctiveItemId=null;
     resetPostResultFeedback();
     resultFeedbackQueue.clear();
     clearLastProgressNote();
@@ -3235,7 +3232,6 @@ function createAppRuntime(){
       resetResult();
       resetTranscript();
       lastMatchEval=null;
-      failCount=0;
       lastErrorType='';
       sameErrorStreak=0;
       setFooterMessages('', '');
@@ -3708,6 +3704,13 @@ function createAppRuntime(){
     if(!sessionActive){ await startSession(false); }
     if(sessionStarting) return;
     if(!sessionActive){ return; }
+    if(correctiveItemId===QUEUE[idx]?.id){
+      const expected=correctiveItemId;
+      cancelPendingMicStart();
+      if(recognitionController?.isActive?.()) recognitionController.stop();
+      if(getAudioLockState()===AUDIO_LOCK_STATES.RELEASE) await new Promise(resolve=>setTimeout(resolve,MIC_RELEASE_SETTLE_MS+30));
+      if(!sessionActive||QUEUE[idx]?.id!==expected) return;
+    }
     const hasSrc=!!audio.dataset.srcKey;
     const canSpeak=speechController ? speechController.canSpeakCurrentCard() : false;
     const audioPlaying=hasSrc && !audio.paused && !audio.ended;
@@ -3738,6 +3741,8 @@ function createAppRuntime(){
         return refItem ? refItem.en : el.en.textContent;
       },
       shouldEvaluate:()=>!isShadowingSession(),
+      selectHypothesis:selectBestSpeechHypothesis,
+      onTranscriptPreview:text=>{if(!isShadowingSession()) showTranscriptFinal(text);},
       onTranscriptReset: resetTranscript,
       onTranscriptInterim: (text)=>{ if(!isShadowingSession()) showTranscriptInterim(text); },
       onTranscriptFinal: (text)=>{ if(!isShadowingSession()) showTranscriptFinal(text); },
@@ -3964,14 +3969,14 @@ function createAppRuntime(){
       return;
     }
     const hyp = (outcome.transcript || '').trim();
-    if(!hasRecognizedSpeech(hyp)){
+    if(!hasRecognizedSpeech(hyp)&&!(outcome.hypotheses||[]).some(value=>hasRecognizedSpeech(value.transcript))){
       lastMatchEval=null;updateMatch(null);resetTranscript();setFooterMessages('発話が検出されませんでした。もう一度話してください。','');el.mic.disabled=false;updatePlayButtonAvailability();return;
     }
     const refItem = QUEUE[idx];
     const refText = refItem ? refItem.en : el.en.textContent;
     const studyMode = getStudyMode();
     let matchInfo = outcome.matchInfo;
-    if(!matchInfo || matchInfo.source !== hyp){
+    if(!matchInfo){
       matchInfo = recognitionController.matchAndHighlight(refText, hyp);
     }
     if(!matchInfo){
@@ -3983,6 +3988,22 @@ function createAppRuntime(){
     const { recall, precision, matched, missing, refCount, hypTokens, transcript } = matchInfo;
     const matchRate = calcMatchScore(refCount, recall, precision);
     updateMatch(matchRate);
+    if(correctiveItemId===it.id){
+      // Practice after the recorded failure never mutates SRS/history/metrics.
+      if(evaluateLevel(matchRate,maxHintStageUsed)?.pass){
+        correctiveItemId=null;
+        el.mic.disabled=true;
+        setFooterMessages('修正練習完了','');
+        resultFeedbackQueue.enqueue('success',{itemId:it.id});
+        scheduleAutoAdvance(1900);
+      }else{
+        el.mic.disabled=false;
+        setFooterMessages('表示された英文をもう一度話してください。','「聞く」で正解音声を確認できます。');
+      }
+      updateAttemptInfo();
+      updatePlayButtonAvailability();
+      return;
+    }
     const prevInfoSnapshot = getLevelInfo(it.id);
     const hadPriorProgress = Number(prevInfoSnapshot?.best)>0 || Number(prevInfoSnapshot?.last)>0;
     let prevBest = Number(prevInfoSnapshot?.best||0);
@@ -4030,9 +4051,6 @@ function createAppRuntime(){
       });
     }
 
-    const pct=Math.max(0, Math.round((matchRate||0)*100));
-    const levelLabel = `Lv${resolvedLastLevel}`;
-    const bestLabel = levelInfoBest>resolvedLastLevel ? ` (最高${levelInfoBest})` : '';
 
     const errorAnalysis=classifySpeechErrors(matchInfo, refText);
     const primaryErrorType=errorAnalysis.primaryType;
@@ -4107,7 +4125,6 @@ function createAppRuntime(){
       }
       maybeNotifyFatigue();
       incrementGoalProgressForPass();
-      failCount=0;
       lastErrorType='';
       sameErrorStreak=0;
       setFooterMessages('', '');
@@ -4134,7 +4151,6 @@ function createAppRuntime(){
       if(sessionMetrics && sessionMetrics.startMs){
         sessionMetrics.currentStreak=0;
       }
-      failCount++;
       sameErrorStreak = primaryErrorType && primaryErrorType!=='none' && primaryErrorType===lastErrorType ? sameErrorStreak+1 : 1;
       lastErrorType = primaryErrorType;
       setFooterMessages('', errorAnalysis.actionMessage);
@@ -4147,17 +4163,21 @@ function createAppRuntime(){
         }
       }
       resultFeedbackQueue.enqueue('fail',{itemId:it.id});
-      if(failCount>=FAIL_LIMIT){
-        setFooterMessages(`3回チャレンジしたため、${levelLabel}で次の学習へ進みます`, errorAnalysis.actionMessage, {actionPriority:true});
-        toast('次の問題へ進んでリズムよく学習を続けましょう。', 1600);
-        el.mic.disabled=true;
-        scheduleAutoAdvance(1300);
-      }else if(!(el.footer && el.footer.textContent)){
-        setFooterMessages(`一致率${pct}%：${levelLabel}${bestLabel} 定着のため再チャレンジ (${failCount}/${FAIL_LIMIT})`, errorAnalysis.actionMessage, {actionPriority:true});
-        toast('もう一度チャレンジして、正確さを高めましょう。', 1600);
-      }else{
-        toast('もう一度チャレンジして、正確さを高めましょう。', 1600);
-      }
+      cancelAutoAdvance();
+      correctiveItemId=it.id;
+      showPostResultFeedback(it,matchInfo);
+      el.mic.disabled=true;
+      setFooterMessages('正解音声を聞いて、表示された英文を話してください。','「聞く」で正解音声を確認できます。');
+      // Existing source/TTS playback and mic lock remain the audio authority.
+      const correctionId=it.id;
+      setTimeout(async()=>{
+        if(!sessionActive||correctiveItemId!==correctionId||QUEUE[idx]?.id!==correctionId) return;
+        try{
+          if(!recognitionController.isActive()&&getAudioLockState()===AUDIO_LOCK_STATES.UNLOCKED) await tryPlayAudio({userInitiated:false,resetPosition:true});
+        }finally{
+          if(sessionActive&&correctiveItemId===correctionId&&QUEUE[idx]?.id===correctionId){el.mic.disabled=false;updatePlayButtonAvailability();}
+        }
+      },MIC_RELEASE_SETTLE_MS+80);
     }
     updateAttemptInfo();
 
@@ -4189,7 +4209,6 @@ function createAppRuntime(){
       native_sr_submissions: numericOrEmpty(nativeSpeechStats?.submissions),
       native_sr_successes: numericOrEmpty(nativeSpeechStats?.correct)
     };
-    if(!pass && failCount<FAIL_LIMIT){ el.mic.disabled=false; }
     sendLog('srs', srsPayload);
     sendLog('attempt', attemptPayload);
     sendLog('speech', payload);

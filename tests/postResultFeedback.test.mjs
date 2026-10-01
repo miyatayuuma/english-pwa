@@ -50,12 +50,12 @@ test('cloze sync prioritizes post-result reveal and pass uses guarded answer-che
   assert.ok(cloze.indexOf('if(isPostResultReveal(en,itemId))')<cloze.indexOf('const stage=inferReadHintStage'));
   assert.match(cloze,/data-post-result-reveal/);
   assert.match(main,/showPostResultFeedback\(it,matchInfo\)/);
-  const silentGuard=main.indexOf('if(!hasRecognizedSpeech(hyp))');
+  const silentGuard=main.indexOf('if(!hasRecognizedSpeech(hyp)');
   const passBranch=main.indexOf('if(pass){',silentGuard);
   const revealCall=main.indexOf('showPostResultFeedback(it,matchInfo)',passBranch);
   const failBranch=main.indexOf('}else{',revealCall);
   assert.ok(silentGuard>=0&&silentGuard<passBranch&&passBranch<revealCall&&revealCall<failBranch);
-  assert.equal(main.match(/showPostResultFeedback\(it,matchInfo\)/g)?.length,1);
+  assert.equal(main.match(/showPostResultFeedback\(it,matchInfo\)/g)?.length,2,'initial PASS and FAIL both reveal canonical feedback');
   assert.match(main,/scheduleAutoAdvance\(1900\)/);
   assert.match(main,/generation!==autoAdvanceGeneration\|\|idx!==scheduledIndex/);
   assert.match(main,/function setHintStage[\s\S]*if\(isPostResultReveal\(el\.en,currentItem\?\.id\)\) return false/);
