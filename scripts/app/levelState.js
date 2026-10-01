@@ -1,3 +1,4 @@
+import { evaluateReorder } from './reorderGrading.js';
 import { STORAGE_KEYS, loadJson, saveJson } from '../storage/local.js';
 
 const LEVEL_CHOICES = [0, 1, 2, 3, 4, 5];
@@ -392,6 +393,25 @@ export function createLevelStateManager({ baseHintStage, getFirstHintStage, getE
     };
   }
 
+  function updateReorderLevelInfo(id, result, { now = Date.now() } = {}) {
+    const evaluation = evaluateReorder(result.grade);
+    const info = levelStateMap[id] || { best: 0, last: 0 };
+    // Successful word-order evidence cannot invalidate established Lv5 mastery.
+    const finalLevel = evaluation.pass && Number(info.last) === 5 ? 5 : evaluation.candidate;
+    info.last = finalLevel;
+    info.best = Math.max(Number(info.best) || 0, finalLevel);
+    const review = computeReviewState(info.review, evaluation, now);
+    Object.assign(info, { review, ...review, updatedAt: now,
+      lastReorder: { grade: result.grade, candidate: evaluation.candidate,
+        sentences: result.sentences.map(row => ({ ...row })), at: now } });
+    // Do not write noHintHistory, noHintStreak, lastNoHintAt or level5Count.
+    // Those remain exclusively ordinary speech/Cloze promotion evidence.
+    levelStateMap[id] = info;
+    saveLevelStateToStorage(levelStateMap);
+    return { info, candidate: evaluation.candidate, finalLevel, best: info.best,
+      evaluation, promotionBlocked: null, nextTarget: null };
+  }
+
   function lastRecordedLevel(id) {
     const info = getLevelInfo(id);
     if (!info) return 0;
@@ -411,6 +431,7 @@ export function createLevelStateManager({ baseHintStage, getFirstHintStage, getE
     evaluateLevel,
     getLevelInfo,
     updateLevelInfo,
+    updateReorderLevelInfo,
     buildNoHintProgressNote,
     getActiveLevelArray,
     getLevelFilterSet,

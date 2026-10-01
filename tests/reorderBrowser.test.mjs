@@ -107,6 +107,7 @@ async function tapTile(page, id) {
 
 async function tapCanonical(page, count, sentenceIndex = 0) {
   for (let index = 0; index < count; index += 1) await tapTile(page, `s${sentenceIndex}-t${index}`);
+  await page.locator('[data-action="check"]').click();
 }
 
 async function pageState(page) {
@@ -204,29 +205,29 @@ browserTest('390×844 supports three, seven, and nine tile sentence units withou
     await tapCanonical(page, count);
     await page.waitForSelector('[data-action="advance"]');
     await page.locator('[data-action="advance"]').click();
-    await page.waitForFunction(() => document.querySelector('#completion').textContent === 'speech handoff');
+    await page.waitForFunction(() => document.querySelector('#completion').textContent === 'FIRST_TRY');
     await closePage({ context });
   }
 });
 
-browserTest('tap-only completion, canonical feedback, and speech handoff work end-to-end', async () => {
+browserTest('tap-only completion, canonical feedback, and dedicated completion work end-to-end', async () => {
   const { context, page } = await newPage();
   const fixture = basicFixture(3);
   await boot(page, fixture);
   assert.equal(await page.locator('#mic').isDisabled(), true);
   await tapCanonical(page, 3);
   await page.waitForSelector('[data-action="advance"]');
-  assert.match(await page.locator('#composeFeedback').innerText(), /正解です/);
+  assert.match(await page.locator('#composeFeedback').innerText(), /正解/);
   assert.match(await page.locator('#composeContext').innerText(), /英文:/);
-  assert.match(await page.locator('#composeContext').innerText(), /まとまり:/);
+  assert.doesNotMatch(await page.locator('#composeContext').innerText(), /まとまり:/);
   await page.locator('[data-action="advance"]').click();
-  await page.waitForFunction(() => document.querySelector('#completion').textContent === 'speech handoff');
-  assert.equal(await page.locator('#mic').isDisabled(), false);
+  await page.waitForFunction(() => document.querySelector('#completion').textContent === 'FIRST_TRY');
+  assert.equal(await page.locator('#mic').isDisabled(), true);
   assert.match(await page.locator('#composeContext').innerText(), new RegExp(fixture.item.en.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   await closePage({ context });
 });
 
-browserTest('fixed context and two independent sentence puzzles progress in source order before full-item speech', async () => {
+browserTest('fixed context and two independent sentence puzzles progress in source order before full-item completion', async () => {
   const { context, page } = await newPage();
   const sentences = [
     { text: 'Hi.', fixedContext: true },
@@ -238,36 +239,35 @@ browserTest('fixed context and two independent sentence puzzles progress in sour
   assert.match(await page.locator('#composeContext').innerText(), /固定文脈: Hi\./);
   assert.equal(await page.locator('[data-zone="bank"].compose-token').count(), 0);
   await page.locator('[data-action="advance"]').click();
-  await page.waitForFunction(() => document.querySelector('#composeNote').textContent.includes('Sentence 2/3'), null, { timeout: 1500 }).catch(async (error) => {
-    throw new Error(`${error.message}; after fixed-context advance: ${JSON.stringify(await pageState(page))}`);
-  });
+  await page.waitForSelector('[data-tile-id="s1-t0"]');
   assert.equal(await page.locator('[data-zone="bank"].compose-token').count(), 2, JSON.stringify(await pageState(page)));
   assert.match(await page.locator('#composeContext').innerText(), /固定文脈: Hi\./);
   await tapCanonical(page, 2, 1);
   await page.locator('[data-action="advance"]').click();
-  await page.waitForFunction(() => document.querySelector('#composeNote').textContent.includes('Sentence 3/3'));
+  await page.waitForSelector('[data-tile-id="s2-t0"]');
   assert.equal(await page.locator('[data-zone="bank"].compose-token').count(), 3);
   await tapCanonical(page, 3, 2);
   await page.locator('[data-action="advance"]').click();
-  await page.waitForFunction(() => document.querySelector('#completion').textContent === 'speech handoff');
-  assert.equal(await page.locator('#composeContext').innerText(), '全文: Hi. Birds sing. We like books.');
+  await page.waitForFunction(() => document.querySelector('#completion').textContent === 'FIRST_TRY');
+  assert.equal(await page.locator('#composeContext').innerText(), 'Hi. Birds sing. We like books.');
   await closePage({ context });
 });
 
-browserTest('wrong answers retain their tiles, offer a scaffold on try two, and reveal on try three', async () => {
+browserTest('wrong answers retain their tiles, offer another attempt on try two, and reveal on try three', async () => {
   const { context, page } = await newPage();
   await boot(page, basicFixture(3));
   const wrong = async () => {
     await tapTile(page, 's0-t2');
     await tapTile(page, 's0-t0');
     await tapTile(page, 's0-t1');
+    await page.locator('[data-action="check"]').click();
   };
   await wrong();
-  assert.match(await page.locator('#composeFeedback').innerText(), /語順が違います/);
+  assert.match(await page.locator('#composeFeedback').innerText(), /もう一度/);
   assert.equal(await page.locator('[data-zone="answer"].compose-token').count(), 3, JSON.stringify(await pageState(page)));
   await page.locator('[data-action="reset"]').click();
   await wrong();
-  assert.match(await page.locator('#composeFeedback').innerText(), /文の骨格/);
+  assert.match(await page.locator('#composeFeedback').innerText(), /もう一度/);
   await page.locator('[data-action="reset"]').click();
   await wrong();
   assert.match(await page.locator('#composeFeedback').innerText(), /正しい語順を表示/);
@@ -305,11 +305,12 @@ browserTest('Undo, Reset, keyboard movement, and duplicate visual buttons are op
   await page.locator('[data-zone="answer"][data-tile-id="s0-t0"]').focus();
   await page.keyboard.press('ArrowRight');
   assert.deepEqual(await page.locator('[data-zone="answer"].compose-token').evaluateAll((nodes) => nodes.map((node) => node.dataset.tileId)), ['s0-t1', 's0-t0']);
-  assert.match(await page.locator('#composeFeedback').innerText(), /解答内の語順を移動しました/);
+  assert.equal(await page.locator('#composeFeedback').innerText(), '');
   await page.locator('[data-zone="bank"][data-tile-id="s0-t2"]').focus();
   await page.keyboard.press('Space');
   assert.equal(await page.locator('[data-zone="answer"].compose-token').count(), 3);
-  assert.match(await page.locator('#composeFeedback').innerText(), /語順が違います/);
+  await page.locator('[data-action="check"]').click();
+  assert.match(await page.locator('#composeFeedback').innerText(), /もう一度/);
   await closePage({ context });
 });
 
@@ -354,7 +355,7 @@ browserTest('schema or source-hash mismatch disables reordering without a word-c
   await next.page.evaluate(({ item }) => window.bootReorder(item), { item: fixture.item });
   state = await next.page.evaluate(() => window.getReorderState());
   assert.equal(state.active, false);
-  assert.match(state.reason, /全文を表示/);
+  assert.match(state.reason, /スキップ/);
   await closePage(next);
 });
 

@@ -430,3 +430,27 @@
 .signup-footer{display:flex;gap:14px;justify-content:center;margin-top:16px}
 .signup-footer a{font-size:12px;color:var(--muted);text-decoration:none}
 .signup-footer a:hover,.signup-footer a:focus-visible{color:var(--txt);text-decoration:underline}
+
+/* Dedicated word-order workspace; ordinary speech/Cloze layout is unchanged. */
+#card.reorder-mode #enText,#card.reorder-mode #jaText,
+#card.reorder-mode #transcript,#card.reorder-mode .kpi,
+#card.reorder-mode #micStatus,#card.reorder-mode #btnMic,
+#card.reorder-mode .conversation-hint,#card.reorder-mode .conversation-details,
+#card.reorder-mode .conversation-intent,#card.reorder-mode .conversation-relationship,
+#card.reorder-mode .conversation-feedback,#card.reorder-mode .conversation-progress,
+#card.reorder-mode #composeNote,#card.reorder-mode .compose-guide h4,
+#card.reorder-mode .compose-zone__label{display:none!important}
+#card.reorder-mode .conversation-scene{grid-template-columns:64px minmax(0,1fr);min-height:74px;gap:8px}
+#card.reorder-mode .conversation-cast{min-height:74px;border-radius:12px}
+#card.reorder-mode .conversation-bubble{padding:9px 10px;border-radius:12px}
+#card.reorder-mode .conversation-prompt{font-size:14px}
+#card.reorder-mode .compose-guide{margin:0;padding:0;border:0;background:none;overflow:visible;gap:8px}
+#card.reorder-mode .compose-context:empty,#card.reorder-mode .compose-feedback:empty{display:none}
+#card.reorder-mode .compose-context{max-height:100px;overflow:auto}
+#card.reorder-mode .compose-token-list,#card.reorder-mode .compose-answer-list{align-content:flex-start;align-items:flex-start;max-height:31dvh;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+#card.reorder-mode .compose-answer-list{min-height:180px}
+#card.reorder-mode .compose-token{touch-action:pan-y}
+#card.reorder-mode .audio-ctrls{display:none!important}
+#card.reorder-mode.reorder-complete .audio-ctrls{display:flex!important;justify-content:center}
+#card.reorder-mode.reorder-complete .compose-zone{display:none}
+#card.reorder-mode.reorder-complete .compose-context{max-height:none;overflow:visible}

@@ -22,8 +22,8 @@ const sentenceRows = [
   { text: 'They run.', tiles: ['They', 'run.'] },
 ];
 
-function buildMetadata(sourceItem = item) {
-  const sentences = sentenceRows.map((row, sentenceIndex) => {
+function buildMetadata(sourceItem = item, rows = sentenceRows) {
+  const sentences = rows.map((row, sentenceIndex) => {
     let charOffset = sourceItem.en.indexOf(row.text);
     const tiles = row.tiles.map((text, tileIndex) => {
       const charStart = charOffset;
@@ -93,7 +93,7 @@ function respondWithMetadata(response, payload = metadata) {
   response.end(JSON.stringify(payload));
 }
 
-async function newProductionPage({ studyMode = 'compose', hold = false, metadataPayload = validMetadata, sourceItem=item, vocabulary=[], level=0 } = {}) {
+async function newProductionPage({ studyMode = 'compose', hold = false, metadataPayload = validMetadata, sourceItem=item, vocabulary=[], level=0, playbackMode='speech' } = {}) {
   metadata = metadataPayload;
   holdMetadata = hold;
   heldMetadataResponse = null;
@@ -104,9 +104,9 @@ async function newProductionPage({ studyMode = 'compose', hold = false, metadata
     reducedMotion:'reduce',
     serviceWorkers: 'block',
   });
-  await context.addInitScript(({ studyMode, level, itemId }) => {
+  await context.addInitScript(({ studyMode, level, itemId, playbackMode, audioBase }) => {
     localStorage.setItem('itemLevelV1',JSON.stringify({[itemId]:{last:level,best:level}}));
-    localStorage.setItem('appConfigV3', JSON.stringify({ playbackMode: 'speech', studyMode }));
+    localStorage.setItem('appConfigV3', JSON.stringify({ playbackMode, studyMode, audioBase }));
     window.__testSpeech = { latest: null, starts:0, srsWrites:0, spoken:[] };
     const storageSet=Storage.prototype.setItem;
     Storage.prototype.setItem=function(key,value){if(key==='itemLevelV1') window.__testSpeech.srsWrites++;return storageSet.call(this,key,value);};
@@ -127,10 +127,19 @@ async function newProductionPage({ studyMode = 'compose', hold = false, metadata
       value: { getVoices: () => [{name:'English',lang:'en-US',voiceURI:'english'}], speak: utterance => {window.__testSpeech.spoken.push(utterance.text);utterance.onstart?.();utterance.onend?.();}, cancel: () => {}, addEventListener: () => {} },
       configurable: true,
     });
-  }, { studyMode, level, itemId:sourceItem.id });
+  }, { studyMode, level, itemId:sourceItem.id, playbackMode, audioBase:`${baseUrl}/audio` });
   const page = await context.newPage();
   await page.route('**/data/items.json',route=>route.fulfill({contentType:'application/json',body:JSON.stringify([sourceItem])}));
   await page.route('**/data/vocabulary-v3.json',route=>route.fulfill({contentType:'application/json',body:JSON.stringify({entries:vocabulary})}));
+  if (playbackMode === 'audio') {
+    const rate=8000, samples=rate*4;
+    const wav=Buffer.alloc(44+samples*2);
+    wav.write('RIFF',0);wav.writeUInt32LE(36+samples*2,4);wav.write('WAVEfmt ',8);
+    wav.writeUInt32LE(16,16);wav.writeUInt16LE(1,20);wav.writeUInt16LE(1,22);
+    wav.writeUInt32LE(rate,24);wav.writeUInt32LE(rate*2,28);wav.writeUInt16LE(2,32);wav.writeUInt16LE(16,34);
+    wav.write('data',36);wav.writeUInt32LE(samples*2,40);
+    await page.route('**/audio/fixture.wav', route=>route.fulfill({contentType:'audio/wav',body:wav}));
+  }
   await page.goto(`${baseUrl}/index.html`);
   await page.waitForFunction(() => window.ALL_ITEMS?.length === 1
     && document.querySelector('#sessionShellStyles')
@@ -162,6 +171,7 @@ async function completeSentence(page, sentenceIndex, order) {
   for (const tileIndex of order) {
     await page.locator(`[data-zone="bank"][data-tile-id="s${sentenceIndex}-t${tileIndex}"]`).click();
   }
+  await page.locator('#composeControls [data-action="check"]').click();
   await page.waitForSelector('#composeControls [data-action="advance"]');
   await page.locator('#composeControls [data-action="advance"]').click();
 }
@@ -173,6 +183,7 @@ async function failSentenceThreeTimes(page, sentenceIndex) {
     for (const tileIndex of wrongOrder) {
       await page.locator(`[data-zone="bank"][data-tile-id="s${sentenceIndex}-t${tileIndex}"]`).click();
     }
+    await page.locator('#composeControls [data-action="check"]').click();
     if (attempt < 3) await page.locator('#composeControls [data-action="reset"]').click();
   }
   await page.waitForSelector('#composeControls [data-action="advance"]');
@@ -299,45 +310,38 @@ browserTest('production render keeps canonical English out of DOM and accessible
     }
     respondWithMetadata(heldMetadataResponse, validMetadata);
     await waitForReorder(page);
-    assert.match(await page.locator('#enText').innerText(), /文の語順を組み立ててください/);
+    assert.equal(await page.locator('#enText').isVisible(),false);
     assert.equal(await page.locator('#composeTokens .compose-token').count(), 2);
     assert.equal(await page.locator('#btnMic').isDisabled(), true);
     assert.equal((await page.locator('#enText').innerText()).includes(item.en), false);
     await completeSentence(page, 0, [0, 1]);
     await completeSentence(page, 1, [0, 1, 2]);
     await completeSentence(page, 2, [0, 1]);
-    const state = await submitFullUtterance(page);
-    assert.equal(state.hintStage, 0, 'ignored pending hints cannot make self-completion assisted');
-    assert.equal(state.noHintHistory.length, 1, 'self-completion remains eligible for no-hint success');
-    assert.equal(state.level5Count, 1, 'self-completion keeps perfect-no-hint credit');
+    const state = await reorderState(page);
+    assert.equal(state.lastReorder.grade,'FIRST_TRY');
+    assert.equal(state.lastReorder.candidate,4);
+    assert.equal(state.level5Count || 0,0);
+    assert.equal((state.noHintHistory || []).length,0);
+    assert.equal(await page.evaluate(()=>window.__testSpeech.starts),0);
+
   } finally {
     if (heldMetadataResponse && !heldMetadataResponse.writableEnded) respondWithMetadata(heldMetadataResponse, validMetadata);
     await closePage({ context });
   }
 });
 
-browserTest('production render safely restores English and enables speech after a stale metadata source hash', async () => {
-  const staleMetadata = {
-    ...validMetadata,
-    items: [{ ...validMetadata.items[0], sourceHash: 'stale-source-hash' }],
-  };
-  const { context, page } = await newProductionPage({ metadataPayload: staleMetadata });
+browserTest('stale metadata safely disables Reordering with skip, no speech fallback or SRS write', async () => {
+  const staleMetadata = {...validMetadata, items:[{...validMetadata.items[0],sourceHash:'stale'}]};
+  const {context,page}=await newProductionPage({metadataPayload:staleMetadata});
   try {
-    await page.waitForFunction(() => document.querySelector('#enText')?.dataset.itemId === 'RPROD1'
-      && document.querySelector('#enText')?.textContent.includes('Birds sing.'));
-    assert.equal(await page.locator('#composeGuide').evaluate((node) => node.classList.contains('show')), false);
-    assert.equal(await page.locator('#btnMic').isDisabled(), false);
-    assert.match(await page.locator('#footerMessage').innerText(), /並べ替えを安全に停止しました/);
-    assert.match(await page.locator('#nextActionMessage').innerText(), /語順データを確認できない/);
-    const state = await submitFullUtterance(page);
-    assert.equal(state.hintStage, 3, 'safe-disable English reveal is recorded before speech grading');
-    assert.equal(state.last, 3, '100% fallback speech uses candidate 3 under current policy');
-    assert.equal(state.best, 3);
-    assert.equal(state.noHintHistory.length, 0, 'safe-disable fallback cannot enter no-hint history');
-    assert.equal(state.level5Count, 0, 'safe-disable fallback cannot receive perfect-no-hint credit');
-  } finally {
-    await closePage({ context });
-  }
+    await page.waitForSelector('#composeControls button');
+    assert.equal(await page.locator('#btnMic').isVisible(),false);
+    assert.equal(await page.evaluate(()=>window.__testSpeech.starts),0);
+    assert.equal(await page.evaluate(()=>window.__testSpeech.srsWrites),0);
+    assert.equal((await page.locator('#card').textContent()).includes(item.en),false);
+    await page.locator('#composeControls button').click();
+    await page.waitForFunction(()=>!document.querySelector('#startStudyCta').hidden);
+  } finally { await context.close(); }
 });
 
 browserTest('production read mode keeps canonical English visible and does not request reorder metadata', async () => {
@@ -358,58 +362,53 @@ browserTest('production read mode keeps canonical English visible and does not r
   }
 });
 
-browserTest('production assisted multi-sentence reorder grades full-item speech as assisted, while self-completed reorder stays unassisted', async () => {
-  const opened = await newProductionPage();
-  const { context, page } = opened;
+async function reorderState(page) {
+  await page.waitForFunction(()=>JSON.parse(localStorage.getItem('itemLevelV1')||'{}').RPROD1?.lastReorder);
+  return page.evaluate(()=>JSON.parse(localStorage.getItem('itemLevelV1')).RPROD1);
+}
+
+for (const wrong of [0,1,2,3]) for(const level of [0,5]) browserTest(`390×844 Reordering ${wrong} wrong submissions, existing Lv${level}, speech isolated`, async () => {
+  const {context,page}=await newProductionPage({level});
   try {
     await waitForReorder(page);
-    await completeSentence(page, 0, [0, 1]);
-    await failSentenceThreeTimes(page, 1);
-    await completeSentence(page, 2, [0, 1]);
-    const assisted = await submitFullUtterance(page);
-    assert.equal(assisted.hintStage, 3, 'English answer reveal must be recorded before speech grading');
-    assert.equal(assisted.noHintHistory.length, 0, 'assisted speech cannot enter no-hint history');
-    assert.equal(assisted.level5Count, 0, 'assisted 100% speech cannot count as perfect-no-hint');
-    assert.equal(assisted.lastMatch, 1);
-  } finally {
-    await closePage({ context });
-  }
-
-  const selfCompleted = await newProductionPage();
-  try {
-    await waitForReorder(selfCompleted.page);
-    await completeSentence(selfCompleted.page, 0, [0, 1]);
-    await completeSentence(selfCompleted.page, 1, [0, 1, 2]);
-    await completeSentence(selfCompleted.page, 2, [0, 1]);
-    const unassisted = await submitFullUtterance(selfCompleted.page);
-    assert.equal(unassisted.hintStage, 0, 'self-correct reorder cannot raise hint stage');
-    assert.equal(unassisted.noHintHistory.length, 1, 'pure self-completion remains eligible for no-hint success');
-    assert.equal(unassisted.level5Count, 1, 'pure self-completion keeps perfect-no-hint credit');
-  } finally {
-    await closePage(selfCompleted);
-  }
-});
-
-browserTest('a pre-existing English hint stage survives self-completed reorder and speech grading', async () => {
-  const opened = await newProductionPage();
-  const { context, page } = opened;
-  try {
-    await waitForReorder(page);
-    await page.evaluate(() => {
-      for (let index = 0; index < 3; index += 1) {
-        document.dispatchEvent(new Event('english-pwa:request-hint'));
+    for(let i=0;i<4;i++) await page.evaluate(()=>document.dispatchEvent(new Event('english-pwa:request-hint')));
+    assert.equal((await page.locator('#enText').textContent()).includes(item.en),false);
+    for(const selector of ['#btnMic','#transcript','#micStatus','#conversationHintBtn','.conversation-details'])
+      assert.equal(await page.locator(selector).isVisible(),false,selector);
+    const workspace=await page.locator('#composeAnswer').boundingBox();
+    assert.ok(workspace.height>=180);
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+    await completeSentence(page,0,[0,1]);
+    if(wrong===3) await failSentenceThreeTimes(page,1);
+    else {
+      for(let i=0;i<wrong;i++) {
+        for(const tile of [2,1,0]) await page.locator(`[data-zone="bank"][data-tile-id="s1-t${tile}"]`).click();
+        await page.locator('[data-action="check"]').click();
+        assert.equal(await page.locator('#composeFeedback').innerText(),'もう一度');
+        assert.equal((await page.locator('#composeContext').textContent()).includes('We like books.'),false);
+        await page.locator('[data-action="reset"]').click();
       }
-    });
-    assert.match(await page.locator('#enText').innerText(), /Birds sing\./);
-    await completeSentence(page, 0, [0, 1]);
-    await completeSentence(page, 1, [0, 1, 2]);
-    await completeSentence(page, 2, [0, 1]);
-    const state = await submitFullUtterance(page);
-    assert.equal(state.hintStage, 3);
-    assert.equal(state.noHintHistory.length, 0);
-  } finally {
-    await closePage({ context });
-  }
+      await completeSentence(page,1,[0,1,2]);
+    }
+    await completeSentence(page,2,[0,1]);
+    const state=await reorderState(page);
+    const grade=wrong===3?'FAILED':wrong?'RETRY_PASS':'FIRST_TRY';
+    const candidate=wrong===3?1:wrong?3:4;
+    assert.equal(state.lastReorder.grade,grade);assert.equal(state.lastReorder.candidate,candidate);
+    assert.equal(state.last,level===5&&wrong<3?5:candidate);
+    assert.equal(state.best,level===5?5:candidate);
+    assert.equal(state.level5Count||0,0);assert.equal((state.noHintHistory||[]).length,0);
+    assert.equal(await page.evaluate(()=>window.__testSpeech.srsWrites),1);
+    assert.equal(await page.evaluate(()=>window.__testSpeech.starts),0);
+    assert.equal(await page.locator('#btnPlay').isVisible(),true);
+    await page.locator('#btnPlay').click();
+    await page.waitForFunction(()=>window.__testSpeech.spoken.length>0);
+    assert.deepEqual(await page.evaluate(()=>window.__testSpeech.spoken),[item.en]);
+    assert.equal(await page.evaluate(()=>window.__testSpeech.starts),0);
+    await page.locator('[data-action="next"]').click();
+    await page.waitForFunction(()=>!document.querySelector('#startStudyCta').hidden);
+    assert.equal(await page.evaluate(()=>window.__testSpeech.srsWrites),1);
+  } finally { await context.close(); }
 });
 
 async function speechAttempt(page,words){
@@ -528,4 +527,40 @@ for(const technical of [false,true]) browserTest(`normal correction ${technical?
     await page.waitForFunction(()=>document.querySelector('#startStudyCta')&&!document.querySelector('#startStudyCta').hidden);
     assert.equal(await page.evaluate(()=>window.__testSpeech.srsWrites),1);
   }finally{await context.close();}
+});
+
+browserTest('390×844 long compound workspace scrolls; native full-item audio never starts ASR and next works during playback', async () => {
+  const tiles=Array.from({length:24},(_,i)=>`a substantial phrase number ${i}`);
+  tiles[23]+='.';
+  const text=tiles.join(' ');
+  const sourceItem={...item,en:text,ja:'長い複合文の文脈',audio_fn:'fixture.wav'};
+  const metadataPayload=buildMetadata(sourceItem,[{text,tiles}]);
+  const {context,page}=await newProductionPage({sourceItem,metadataPayload,playbackMode:'audio',level:5});
+  try {
+    await waitForReorder(page);
+    assert.equal(await page.locator('#btnPlay').isVisible(),false);
+    assert.equal(await page.locator('#jaText').isVisible(),false,'context appears once in scene');
+    for(let i=0;i<24;i++) await page.locator(`[data-zone="bank"][data-tile-id="s0-t${i}"]`).click();
+    const size=await page.locator('#composeAnswer').evaluate(node=>({height:node.clientHeight,content:node.scrollHeight}));
+    assert.ok(size.height>=180);assert.ok(size.content>size.height,'long answer scrolls in workspace');
+    await page.locator('#composeAnswer').evaluate(node=>node.scrollTop=node.scrollHeight);
+    assert.ok(await page.locator('#composeAnswer').evaluate(node=>node.scrollTop>0));
+    await page.locator('[data-zone="answer"][data-tile-id="s0-t23"]').click();
+    assert.equal(await page.locator('[data-zone="bank"]').count(),1);
+    await page.locator('[data-zone="bank"]').click();
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+    await page.screenshot({path:'/tmp/reorder-layout.png',fullPage:true});
+    await page.locator('[data-action="check"]').click();
+    await page.locator('[data-action="advance"]').click();
+    const state=await reorderState(page);
+    assert.equal(state.lastReorder.grade,'FIRST_TRY');
+    await page.locator('#btnPlay').click();
+    await page.waitForFunction(()=>!document.querySelector('#player').paused);
+    assert.equal(await page.evaluate(()=>window.__testSpeech.starts),0);
+    assert.deepEqual(await page.evaluate(()=>window.__testSpeech.spoken),[],'source audio needs no synthesis');
+    await page.locator('[data-action="next"]').click();
+    await page.waitForFunction(()=>!document.querySelector('#startStudyCta').hidden);
+    assert.equal(await page.evaluate(()=>document.querySelector('#player').paused),true);
+    assert.equal(await page.evaluate(()=>window.__testSpeech.starts),0);
+  }finally {await context.close();}
 });
