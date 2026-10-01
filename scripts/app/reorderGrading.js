@@ -13,3 +13,17 @@ export function evaluateReorder(grade) {
     stage: 0, pass: grade !== 'FAILED', noHintSuccess: false, perfectNoHint: false,
     usedEnglishHint: false, revealedEnglishHint: grade === 'FAILED' };
 }
+
+// GAS upserts replace the complete SRS row, so carry ordinary evidence through
+// unchanged rather than omitting its columns from this independent result.
+export function createReorderSrsPayload(id, update) {
+  const info = update.info;
+  const iso = value => Number(value) > 0 ? new Date(Number(value)).toISOString() : '';
+  return { id, ts: new Date().toISOString(), mode: 'compose',
+    level_candidate: update.candidate, level_final: update.finalLevel,
+    level_last: info.last, level_best: info.best, reorder_grade: update.evaluation.grade,
+    hint_stage: info.hintStage ?? 0, last_match: info.lastMatch ?? '',
+    no_hint_streak: info.noHintStreak ?? 0, no_hint_history: [...(info.noHintHistory || [])],
+    last_no_hint_at: iso(info.lastNoHintAt), level5_count: info.level5Count ?? 0,
+    level_updated_at: iso(info.updatedAt), promotion_blocked: null, next_target: null };
+}

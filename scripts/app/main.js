@@ -58,6 +58,7 @@ import { createResultFeedbackQueue, normalizeResultSoundMode } from './resultFee
 import { createOverlayController } from './overlay.js';
 import { createCardTransitionQueue } from './cardTransitions.js';
 import { createReorderGuide } from './reorderGuide.js';
+import { createReorderSrsPayload } from './reorderGrading.js';
 import { createLogManager } from './logManager.js';
 import { qs, qsa } from './dom.js';
 import { createLevelStateManager, LEVEL_CHOICES, retainHighestHintStageUsed } from './levelState.js';
@@ -285,9 +286,7 @@ function createAppRuntime(){
       if (pass) incrementGoalProgressForPass();
       recordStudyProgress({ pass, newLevel5: false, noHint: false, perfect: false, mode: getStudyMode() });
       resultFeedbackQueue.enqueue(pass ? 'success' : 'fail', { itemId: currentItem.id });
-      sendLog('srs', { id: currentItem.id, ts: new Date().toISOString(),
-        mode: 'compose', level_candidate: update.candidate, level_final: update.finalLevel,
-        level_last: update.info.last, level_best: update.info.best, reorder_grade: result.grade });
+      sendLog('srs', createReorderSrsPayload(currentItem.id, update));
       sendLog('attempt', { id: currentItem.id, ts: new Date().toISOString(),
         mode: 'compose', result: pass ? 'pass' : 'fail', reorder_grade: result.grade,
         reorder_sentences: result.sentences });
