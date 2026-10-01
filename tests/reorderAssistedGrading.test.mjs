@@ -1,59 +1,46 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
-import { createLevelStateManager, retainHighestHintStageUsed } from '../scripts/app/levelState.js';
+import { createLevelStateManager } from '../scripts/app/levelState.js';
+import { evaluateReorder, reduceReorderResult } from '../scripts/app/reorderGrading.js';
 
-const root = new URL('../', import.meta.url);
-const read = (path) => readFile(new URL(path, root), 'utf8');
-
-const levels = createLevelStateManager({
-  baseHintStage: 0,
-  getFirstHintStage: () => 1,
-  getEnglishRevealStage: () => 3,
+const first = { completed: true, wrongAttempts: 0, revealed: false };
+const retry = { completed: true, wrongAttempts: 1, revealed: false };
+const failed = { completed: true, wrongAttempts: 3, revealed: true };
+for (const [rows, grade, candidate] of [
+  [[first, first], 'FIRST_TRY', 4], [[first, retry], 'RETRY_PASS', 3],
+  [[{...retry, wrongAttempts:2}], 'RETRY_PASS', 3], [[first,failed,first], 'FAILED', 1],
+]) test(`${grade}: deterministic worst sentence authority`, () => {
+  assert.equal(reduceReorderResult(rows).grade, grade);
+  assert.equal(evaluateReorder(grade).candidate, candidate);
+  assert.equal(evaluateReorder(grade).perfectNoHint, false);
 });
-
-test('a canonical reorder reveal grades 100% speech as assisted under the current level policy', () => {
-  assert.deepEqual(levels.evaluateLevel(1, 3), {
-    candidate: 3,
-    rate: 1,
-    stage: 3,
-    noHintSuccess: false,
-    perfectNoHint: false,
-    usedEnglishHint: true,
-    revealedEnglishHint: true,
-    pass: true,
-  });
+test('incomplete and unknown results cannot be graded', () => {
+  assert.throws(()=>reduceReorderResult([]));
+  assert.throws(()=>reduceReorderResult([{...first, completed:false}]));
+  assert.throws(()=>evaluateReorder('unknown'));
 });
-
-test('a self-completed reorder leaves the base stage eligible for perfect no-hint grading', () => {
-  assert.deepEqual(levels.evaluateLevel(1, 0), {
-    candidate: 5,
-    rate: 1,
-    stage: 0,
-    noHintSuccess: true,
-    perfectNoHint: true,
-    usedEnglishHint: false,
-    revealedEnglishHint: false,
-    pass: true,
-  });
+test('repeated FIRST_TRY creates Lv4, without any ordinary Lv5 promotion evidence', () => {
+  const manager = createLevelStateManager({baseHintStage:0,getFirstHintStage:()=>1,getEnglishRevealStage:()=>3});
+  const result=reduceReorderResult([first]);
+  for (let i=0;i<5;i++) {
+    const update=manager.updateReorderLevelInfo('reorder',result,{now:1000+i*86400000});
+    assert.equal(update.candidate,4); assert.equal(update.finalLevel,4);
+    assert.equal(update.info.level5Count,undefined);
+    assert.equal(update.info.noHintHistory,undefined);
+  }
 });
-
-test('assisted completion raises the recorded stage without lowering prior hint history', () => {
-  assert.equal(retainHighestHintStageUsed(0, 3), 3);
-  assert.equal(retainHighestHintStageUsed(1, 3), 3);
-  assert.equal(retainHighestHintStageUsed(3, 3), 3);
-  assert.equal(retainHighestHintStageUsed(4, 3), 4);
-});
-
-test('the main completion callback records an assisted stage before showing English or enabling the microphone', async () => {
-  const main = await read('scripts/app/main.js');
-  const callback = main.match(/onComplete:\s*\(\{ assisted = false \} = \{\}\) => \{([\s\S]*?)\n    \}/)?.[1];
-  assert.ok(callback, 'reorder completion must consume its assisted payload');
-  assert.match(callback, /if\s*\(assisted\)\s*recordHintStageUsed\(COMPOSE_HINT_STAGE_EN\);/);
-  assert.match(main, /function recordHintStageUsed\(stage\)\s*\{\s*maxHintStageUsed=retainHighestHintStageUsed\(maxHintStageUsed,stage\);/);
-  const recorded = callback.indexOf('recordHintStageUsed(COMPOSE_HINT_STAGE_EN)');
-  const english = callback.indexOf('el.en.innerHTML=currentEnHtml');
-  const microphone = callback.indexOf('el.mic.disabled=false');
-  assert.ok(recorded >= 0 && english > recorded && microphone > english,
-    'the assisted grade must be recorded before English reveal and mic enable');
+test('existing Lv5 and speech history survive both success grades; failure downgrades last only', () => {
+  const manager=createLevelStateManager({baseHintStage:0,getFirstHintStage:()=>1,getEnglishRevealStage:()=>3});
+  manager.updateLevelInfo('mastered',{candidate:5, rate:1, stage:0, pass:true, noHintSuccess:true, perfectNoHint:true},{now:1000});
+  const info=manager.getLevelInfo('mastered');
+  info.last=5; info.best=5;
+  const history=[...info.noHintHistory]; const count=info.level5Count;
+  for(const rows of [[first],[retry]]) {
+    const updated=manager.updateReorderLevelInfo('mastered',reduceReorderResult(rows));
+    assert.equal(updated.finalLevel,5); assert.equal(updated.best,5);
+    assert.deepEqual(updated.info.noHintHistory,history); assert.equal(updated.info.level5Count,count);
+  }
+  const update=manager.updateReorderLevelInfo('mastered',reduceReorderResult([failed]));
+  assert.equal(update.finalLevel,1); assert.equal(update.best,5);
+  assert.deepEqual(update.info.noHintHistory,history); assert.equal(update.info.level5Count,count);
 });

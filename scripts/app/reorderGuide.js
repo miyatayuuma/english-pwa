@@ -10,6 +10,7 @@ import {
   restorePuzzle,
   selectReorderVariant,
 } from '../reorder/reorderCore.js';
+import { reduceReorderResult } from './reorderGrading.js';
 
 let metadataPromise = null;
 
@@ -66,6 +67,7 @@ export function createReorderGuide({
   composeNoteEl,
   onComplete = () => {},
   onStageChange = () => {},
+  onNext = () => {},
 } = {}) {
   let active = false;
   let complete = false;
@@ -107,7 +109,7 @@ export function createReorderGuide({
     if (composeFeedbackEl) composeFeedbackEl.textContent = '';
     if (composeControlsEl) composeControlsEl.replaceChildren();
     if (composeGuideEl) {
-      composeGuideEl.classList.remove('show', 'is-speech-ready');
+      composeGuideEl.classList.remove('show', 'is-complete');
       composeGuideEl.setAttribute('aria-hidden', 'true');
       delete composeGuideEl.dataset.tier;
     }
@@ -120,6 +122,7 @@ export function createReorderGuide({
     composeControlsEl.replaceChildren(
       button('戻す', 'compose-control', 'undo'),
       button('最初から', 'compose-control', 'reset'),
+      button('判定', 'compose-control compose-control--primary', 'check'),
     );
   };
 
@@ -153,10 +156,7 @@ export function createReorderGuide({
     const preview = document.createElement('p');
     preview.className = 'compose-feedback__canonical';
     preview.textContent = `英文: ${readableSentence(row.sentence)}`;
-    const structure = document.createElement('p');
-    structure.className = 'compose-feedback__structure';
-    structure.textContent = `まとまり: ${row.variant.tiles.map((tile) => `${tile.label}「${tile.text}」`).join(' / ')}`;
-    composeContextEl.replaceChildren(preview, structure);
+    composeContextEl.replaceChildren(preview);
   };
 
   const render = ({ focusId = '', announcement = '' } = {}) => {
@@ -167,6 +167,8 @@ export function createReorderGuide({
     composeAnswerEl.replaceChildren(...puzzleState.answer.map((tileId) => tileButton(tileId, 'answer')).filter(Boolean));
     composeTokensEl.setAttribute('aria-label', 'まだ置いていない語句');
     composeAnswerEl.setAttribute('aria-label', '解答の語順。矢印キーで並べ替え');
+    const check = composeControlsEl?.querySelector('[data-action="check"]');
+    if (check) check.disabled = !answerIsComplete(puzzleState) || puzzleState.status !== 'playing';
     const undo = composeControlsEl?.querySelector('[data-action="undo"]');
     const reset = composeControlsEl?.querySelector('[data-action="reset"]');
     if (undo) undo.disabled = history.length === 0 || ['complete', 'assisted', 'revealed'].includes(puzzleState.status);
@@ -190,20 +192,21 @@ export function createReorderGuide({
     if (puzzleIndex >= puzzleRows.length) {
       complete = true;
       active = false;
-      composeGuideEl?.classList.add('is-speech-ready');
+      composeGuideEl?.classList.add('is-complete');
+      const result = reduceReorderResult(puzzleRows.filter((entry) => !entry.fixedContext).map((entry) => entry.result));
       if (composeTokensEl) composeTokensEl.replaceChildren();
       if (composeAnswerEl) composeAnswerEl.replaceChildren();
-      if (composeControlsEl) composeControlsEl.replaceChildren();
+      if (composeControlsEl) composeControlsEl.replaceChildren(button('次へ', 'compose-control compose-control--primary', 'next'));
       if (composeContextEl) {
         const whole = document.createElement('p');
         whole.className = 'compose-feedback__canonical';
-        whole.textContent = `全文: ${fullUtteranceText}`;
+        whole.textContent = fullUtteranceText;
         composeContextEl.replaceChildren(whole);
       }
-      note('並べ替え完了。全文を発話してください。');
-      feedback(sentenceIsAssisted ? '正解を確認しました。続けて全文を発話してください。' : '全ての文を正しい語順に並べました。全文を発話してください。');
+      note('');
+      feedback({FIRST_TRY:'一発正解', RETRY_PASS:'自力で正解', FAILED:'正解を確認しました'}[result.grade]);
       onStageChange({ active: false, complete: true, disabledReason: '' });
-      onComplete({ assisted: puzzleRows.some((entry) => entry.assisted) });
+      onComplete(result);
       return;
     }
     sentenceIsAssisted = false;
@@ -215,12 +218,13 @@ export function createReorderGuide({
     puzzleState = markSentenceComplete(puzzleState);
     const row = currentRow();
     row.assisted = false;
+    row.result = { wrongAttempts: puzzleState.attempts, revealed: false, completed: true };
     renderSyntax(row);
     if (composeControlsEl) {
-      composeControlsEl.replaceChildren(button(puzzleIndex + 1 < puzzleRows.length ? '次の文へ' : '全文発話へ', 'compose-control compose-control--primary', 'advance'));
+      composeControlsEl.replaceChildren(button(puzzleIndex + 1 < puzzleRows.length ? '次の文へ' : '完了', 'compose-control compose-control--primary', 'advance'));
     }
-    feedback('正解です。語句のまとまりと構文を確認してください。');
-    note(`Sentence ${puzzleIndex + 1}/${puzzleRows.length} · ${row.variant.tier}`);
+    feedback('正解');
+    note('');
   };
 
   const revealAssistedAnswer = () => {
@@ -228,6 +232,7 @@ export function createReorderGuide({
     if (!row || !puzzleState) return;
     sentenceIsAssisted = true;
     row.assisted = true;
+    row.result = { wrongAttempts: puzzleState.attempts, revealed: true, completed: true };
     puzzleState = {
       ...puzzleState,
       bank: [],
@@ -237,14 +242,14 @@ export function createReorderGuide({
     renderSyntax(row);
     render();
     if (composeControlsEl) {
-      composeControlsEl.replaceChildren(button(puzzleIndex + 1 < puzzleRows.length ? '次の文へ' : '全文発話へ', 'compose-control compose-control--primary', 'advance'));
+      composeControlsEl.replaceChildren(button(puzzleIndex + 1 < puzzleRows.length ? '次の文へ' : '完了', 'compose-control compose-control--primary', 'advance'));
     }
     feedback('3回目の誤答のため、正しい語順を表示しました。');
-    note(`Sentence ${puzzleIndex + 1}/${puzzleRows.length} · 答えを確認`);
+    note('');
   };
 
   const checkAnswer = () => {
-    if (!answerIsComplete(puzzleState)) return;
+    if (puzzleState?.status !== 'playing' || !answerIsComplete(puzzleState)) return;
     if (answerIsCorrect(puzzleState)) {
       finishCorrectly();
       return;
@@ -254,9 +259,7 @@ export function createReorderGuide({
       revealAssistedAnswer();
       return;
     }
-    render({ announcement: puzzleState.attempts === 1
-      ? '語順が違います。配置を変えてもう一度試してください。'
-      : `もう一度。文の骨格は ${currentRow().variant.clauseScaffold.join(' / ')} です。` });
+    render({ announcement: 'もう一度' });
   };
 
   const beginPuzzle = () => {
@@ -295,8 +298,8 @@ export function createReorderGuide({
     }
     if (composeGuideEl) composeGuideEl.dataset.tier = row.variant.tier;
     if (composeControlsEl) createControls();
-    note(`Sentence ${puzzleIndex + 1}/${puzzleRows.length} · ${row.variant.tier} · tap to build the sentence`);
-    feedback('語句をタップして解答欄に移してください。解答欄の語句は矢印キーまたはドラッグで並べ替えられます。');
+    note('');
+    feedback('');
     render();
   };
 
@@ -304,8 +307,9 @@ export function createReorderGuide({
     if (!puzzleState || puzzleState.status !== 'playing') return;
     snapshot();
     puzzleState = moveTile(puzzleState, tileId, zone, index);
-    render({ focusId: tileId, announcement: zone === 'answer' ? '語句を解答に移しました。' : '語句をバンクに戻しました。' });
-    checkAnswer();
+    feedback('');
+    render({ focusId: tileId });
+
   };
 
   const restore = () => {
@@ -317,6 +321,8 @@ export function createReorderGuide({
 
   const handleClick = (event) => {
     const action = event.target.closest('[data-action]')?.dataset.action;
+    if (action === 'next') { onNext(); return; }
+    if (action === 'check') { checkAnswer(); return; }
     if (action === 'advance') { advanceSentence(); return; }
     if (action === 'undo') {
       if (!history.length || !puzzleState || puzzleState.status !== 'playing') return;
@@ -347,8 +353,9 @@ export function createReorderGuide({
     event.preventDefault();
     snapshot();
     puzzleState = reorderAnswerTile(puzzleState, tile.dataset.tileId, delta);
-    render({ focusId: tile.dataset.tileId, announcement: '解答内の語順を移動しました。' });
-    checkAnswer();
+    feedback('');
+    render({ focusId: tile.dataset.tileId });
+
   };
 
   const handlePointerDown = (event) => {
@@ -413,7 +420,7 @@ export function createReorderGuide({
       const actualHash = await sourceHash(item.en);
       if (!metadata || !actualHash || metadata.sourceHash !== actualHash) throw new Error('source metadata mismatch');
       if (metadata.status === 'excluded' || metadata.sentences.some((sentence) => sentence.excludedReason)) {
-        disabledReason = 'この文は安全な語句分割を作れないため、全文を表示して発話します。';
+        disabledReason = 'この文は安全な語句分割を作れないため、この項目をスキップしてください。';
         return { active: false, reason: disabledReason };
       }
       const staged = [];
@@ -430,7 +437,7 @@ export function createReorderGuide({
       }
       const puzzleEntries = staged.filter((entry) => !entry.fixedContext);
       if (!puzzleEntries.length) {
-        disabledReason = 'この項目には並べ替え可能な文がないため、通常の発話練習に進みます。';
+        disabledReason = 'この項目には並べ替え可能な文がないため、この項目をスキップしてください。';
         return { active: false, reason: disabledReason };
       }
       // Keep context-only fragments in source order inside the sentence stage.
@@ -452,7 +459,7 @@ export function createReorderGuide({
       beginPuzzle();
       return { active: true, reason: '' };
     } catch (error) {
-      disabledReason = '語順データを確認できないため、並べ替えを停止しました。全文を表示して発話します。';
+      disabledReason = '語順データを確認できないため、並べ替えを停止しました。この項目をスキップしてください。';
       console.warn('Reordering safely disabled', error);
       return { active: false, reason: disabledReason };
     }

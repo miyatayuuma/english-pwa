@@ -22,7 +22,7 @@ function injectStyles(){
   const style=document.createElement('style');
   style.id='sentencePracticeUxStyles';
   style.textContent=`
-    body.sentence-compose-mode #studyView:not([hidden]) #jaText{
+    body.sentence-compose-mode #studyView:not([hidden]) #card:not(.reorder-mode) #jaText{
       display:block!important;
       visibility:visible!important;
     }

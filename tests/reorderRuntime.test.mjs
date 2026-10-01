@@ -18,16 +18,13 @@ test('the full item remains the ASR reference, and ASR cannot decide tile order'
   assert.match(main, /calcMatchScore\(info\.refCount, info\.recall, info\.precision\)/);
 });
 
-test('speech capture stays locked until every sortable sentence and fixed context stage finishes', async () => {
-  const [main, reorderGuide] = await Promise.all([
-    read('scripts/app/main.js'),
-    read('scripts/app/reorderGuide.js'),
-  ]);
-  assert.match(main, /if\(composeGuide\.isAwaitingReorder\(\)\)\{\s*setFooterMessages\('先に文の語順を完成してください。'/);
-  assert.match(reorderGuide, /puzzleIndex >= puzzleRows\.length/);
-  assert.match(reorderGuide, /fullUtteranceText/);
-  assert.match(reorderGuide, /onComplete\(\{ assisted: puzzleRows\.some\(\(entry\) => entry\.assisted\) \}\)/);
-  assert.match(main, /el\.en\.innerHTML=currentEnHtml/);
+test('Reordering guards speech and uses dedicated completion', async () => {
+  const [main, guide] = await Promise.all([read('scripts/app/main.js'), read('scripts/app/reorderGuide.js')]);
+  assert.match(main, /async function startRec\(\)\{\s*if\(isComposeMode\(\)\) return;/);
+  assert.match(main, /async function stopRec\(result\)\{\s*if\(isComposeMode\(\)\) return;/);
+  assert.match(main, /updateReorderLevelInfo\(currentItem.id, result\)/);
+  assert.match(guide, /onComplete\(result\)/);
+  assert.doesNotMatch(guide, /全文を発話|全文発話へ|clauseScaffold/);
 });
 
 test('runtime no longer reads legacy item.chunks or emits word-count chunking', async () => {

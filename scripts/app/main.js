@@ -265,19 +265,34 @@ function createAppRuntime(){
     composeFeedbackEl: el.composeFeedback,
     composeControlsEl: el.composeControls,
     composeNoteEl: el.composeNote,
-    onComplete: ({ assisted = false } = {}) => {
-      if (assisted) recordHintStageUsed(COMPOSE_HINT_STAGE_EN);
-      if (currentItem && el.en) {
-        el.en.classList.remove('concealed');
-        el.en.removeAttribute('aria-label');
-        el.en.innerHTML=currentEnHtml;
+    onComplete: (result) => {
+      if (!sessionActive || !currentItem || !isComposeMode()) return;
+      const update = levelStateManager.updateReorderLevelInfo(currentItem.id, result);
+      const pass = update.evaluation.pass;
+      refreshLevelDisplay(update.info);
+      updateHeaderStats();
+      el.card.classList.add('reorder-complete');
+      el.mic.disabled = true;
+      updatePlayButtonAvailability();
+      setFooterMessages('', '');
+      if (sessionMetrics && sessionMetrics.startMs) {
+        sessionMetrics.attempts += 1;
+        sessionMetrics.cardsDone += 1;
+        if (!pass) sessionMetrics.failures += 1;
+        sessionMetrics.currentStreak = pass ? sessionMetrics.currentStreak + 1 : 0;
+        sessionMetrics.highestStreak = Math.max(sessionMetrics.highestStreak, sessionMetrics.currentStreak);
       }
-      if (sessionActive) {
-        el.mic.disabled=false;
-        updatePlayButtonAvailability();
-        setFooterMessages('並べ替え完了','続けて英文全体を発話してください。');
-      }
-    }
+      if (pass) incrementGoalProgressForPass();
+      recordStudyProgress({ pass, newLevel5: false, noHint: false, perfect: false, mode: getStudyMode() });
+      resultFeedbackQueue.enqueue(pass ? 'success' : 'fail', { itemId: currentItem.id });
+      sendLog('srs', { id: currentItem.id, ts: new Date().toISOString(),
+        mode: 'compose', level_candidate: update.candidate, level_final: update.finalLevel,
+        level_last: update.info.last, level_best: update.info.best, reorder_grade: result.grade });
+      sendLog('attempt', { id: currentItem.id, ts: new Date().toISOString(),
+        mode: 'compose', result: pass ? 'pass' : 'fail', reorder_grade: result.grade,
+        reorder_sentences: result.sentences });
+    },
+    onNext: () => nextCard(false, false),
   });
   initAppVersion();
   const itemLabelCache=new Map();
@@ -1696,7 +1711,7 @@ function createAppRuntime(){
       el.play.setAttribute('aria-disabled','true');
       return;
     }
-    const locked=!isAudioHintUnlocked();
+    const locked=isComposeMode() ? !composeGuide.isComplete() : !isAudioHintUnlocked();
     if(locked){
       el.play.disabled=true;
       el.play.classList.add('hint-locked');
@@ -1731,8 +1746,17 @@ function createAppRuntime(){
   }
 
   function showCanonicalEnglishAfterReorderSetup(item,reorderState){
-    if(isReorderSetupRequested(item)&&!reorderState?.active&&reorderState?.reason){
-      recordHintStageUsed(COMPOSE_HINT_STAGE_EN);
+    if(isReorderSetupRequested(item) && reorderState?.reason){
+      el.en.textContent='並べ替えを停止しました';
+      el.mic.disabled=true;
+      el.composeGuide.classList.add('show');
+      el.composeGuide.setAttribute('aria-hidden','false');
+      el.composeFeedback.textContent=reorderState.reason;
+      const skip=document.createElement('button');
+      skip.type='button'; skip.className='compose-control compose-control--primary';
+      skip.textContent='次へ'; skip.addEventListener('click',()=>nextCard(false,false));
+      el.composeControls.replaceChildren(skip);
+      return;
     }
     el.en.classList.remove('concealed');
     el.en.removeAttribute('aria-label');
@@ -1740,7 +1764,7 @@ function createAppRuntime(){
   }
 
   function setHintStage(stage,{reset=false}={}){
-    if(reorderSetupPending&&!reset) return false;
+    if((reorderSetupPending||isComposeMode())&&!reset) return false;
     if(isPostResultReveal(el.en,currentItem?.id)) return false;
     const maxStage=Math.max(BASE_HINT_STAGE, getMaxHintStage());
     const next=Math.max(BASE_HINT_STAGE, Math.min(maxStage, Number.isFinite(stage)?Math.floor(stage):BASE_HINT_STAGE));
@@ -1797,7 +1821,7 @@ function createAppRuntime(){
   }
 
   function advanceHintStage(){
-    if(!sessionActive||reorderSetupPending) return;
+    if(!sessionActive||reorderSetupPending||isComposeMode()) return;
     const maxStage=Math.max(BASE_HINT_STAGE, getMaxHintStage());
     const nextStage=hintStage>=maxStage ? BASE_HINT_STAGE : hintStage+1;
     const changed=setHintStage(nextStage);
@@ -2569,7 +2593,7 @@ function createAppRuntime(){
               el.mic.disabled=true;
             }else{
               showCanonicalEnglishAfterReorderSetup(currentItem,reorderState);
-              el.mic.disabled=false;
+              el.mic.disabled=isComposeMode();
             }
             if(reorderState?.reason) setFooterMessages('並べ替えを安全に停止しました',reorderState.reason);
           }).catch((error)=>{
@@ -2577,11 +2601,11 @@ function createAppRuntime(){
             resetComposeGuide();
             const fallback={
               active:false,
-              reason:'語順データを確認できないため、並べ替えを停止しました。全文を表示して発話します。',
+              reason:'語順データを確認できないため、並べ替えを停止しました。この項目をスキップしてください。',
             };
             currentReorderSetupReason=fallback.reason;
             showCanonicalEnglishAfterReorderSetup(currentItem,fallback);
-            el.mic.disabled=false;
+            el.mic.disabled=isComposeMode();
             setFooterMessages('並べ替えを安全に停止しました',fallback.reason);
           });
           if(recognitionController && lastMatchEval && lastMatchEval.source){
@@ -2856,10 +2880,13 @@ function createAppRuntime(){
     reorderSetupGeneration+=1;
     reorderSetupPending=false;
     composeGuide.reset();
+    el.card.classList.remove('reorder-complete');
   }
   async function setupComposeGuide(item){
     const info=getLevelInfo(item?.id);
     const requestedType=requestedPracticeTaskType(item);
+    el.card.classList.toggle('reorder-mode', isComposeMode());
+    el.card.classList.remove('reorder-complete');
     const generation=++reorderSetupGeneration;
     reorderSetupPending=requestedType===TASK_TYPE_COMPOSE||requestedType===TASK_TYPE_GENERATE;
     try{
@@ -2976,6 +3003,7 @@ function createAppRuntime(){
   // Render & navigation
   function stopAudio(){ try{audio.pause();}catch(_){ } audio.currentTime=0; speechController.cancelSpeech(); }
   async function tryPlayAudio({userInitiated=false, resetPosition=false,shadowingPlayback=false}={}){
+    if(isComposeMode()&&!composeGuide.isComplete()) return false;
     if(isPlaybackTransitionLocked()) return false;
     if(getAudioLockState()===AUDIO_LOCK_STATES.ACTIVE&&!userInitiated&&!shadowingPlayback) return false;
     if(shadowingPlayback&&!authorizeUserPlayback()) return false;
@@ -3168,7 +3196,7 @@ function createAppRuntime(){
         resetComposeGuide();
         reorderState={
           active:false,
-          reason:'語順データを確認できないため、並べ替えを停止しました。全文を表示して発話します。',
+          reason:'語順データを確認できないため、並べ替えを停止しました。この項目をスキップしてください。',
         };
       }
       currentReorderSetupReason=String(reorderState?.reason||'');
@@ -3248,7 +3276,7 @@ function createAppRuntime(){
       setFooterMessages('', '');
       updateAttemptInfo();
       setMicState(false);
-      el.mic.disabled=composeGuide.isAwaitingReorder();
+      el.mic.disabled=isComposeMode();
       if(reorderState?.reason) setFooterMessages('並べ替えを安全に停止しました',reorderState.reason);
       if(shouldUseAudioForItem(QUEUE[i+1])){ primeAudio(QUEUE[i+1], undefined, {shouldUseAudioForItem, resolveAudioUrl}); }
       if(shouldUseAudioForItem(QUEUE[i-1])){ primeAudio(QUEUE[i-1], undefined, {shouldUseAudioForItem, resolveAudioUrl}); }
@@ -3569,6 +3597,7 @@ function createAppRuntime(){
   }
   function isSwipeExcludedTarget(target){
     if(!target) return false;
+    if(target.closest?.('#composeGuide')) return true;
     let element=target;
     if(element.nodeType!==1){
       element=element.parentElement || null;
@@ -3940,6 +3969,7 @@ function createAppRuntime(){
 
   function beginRecognition(requestToken,requestedItemId){
     pendingMicStartTimer=null;
+    if(isComposeMode()) { beginMicReleaseSettle(); return; }
     if(requestToken!==micRequestToken||!sessionActive||QUEUE[idx]?.id!==requestedItemId||!recognitionController||recognitionController.isActive()){
       beginMicReleaseSettle();
       return;
@@ -3953,6 +3983,7 @@ function createAppRuntime(){
   }
 
   async function startRec(){
+    if(isComposeMode()) return;
     if(composeGuide.isAwaitingReorder()){
       setFooterMessages('先に文の語順を完成してください。','');
       return;
@@ -3987,6 +4018,7 @@ function createAppRuntime(){
   }
 
   async function stopRec(result){
+    if(isComposeMode()) return;
     if(!recognitionController) return;
     const outcome = result && result.ok ? result : recognitionController.stop();
     if(!outcome || !outcome.ok) return;
