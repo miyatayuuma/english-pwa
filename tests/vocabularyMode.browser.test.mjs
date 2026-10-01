@@ -593,7 +593,7 @@ for(const technical of [false,true]) browserTest(`Vocabulary correction ${techni
       if(technical) await recognitionError(page,attempt===1?'no-speech':'network');
       else {await inject(page,'banana');await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent.length>0);}
       assert.equal(await page.locator('.vocab-answer').count(),1);
-      assert.equal(await page.locator('.vocab-next').count(),0);
+      assert.equal(await page.locator('.vocab-next').count(),attempt===2?1:0);
       assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);
     }
     await page.waitForSelector('.vocab-meaning');
