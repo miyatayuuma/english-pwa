@@ -58,3 +58,20 @@ test('PR240 raw final overlap, interim replacement/resultIndex, manual/auto stop
   assert.equal(auto.transcript,"I'm ready. to pay two dollars.");assert.equal(controller.isActive(),false);
   assert.deepEqual(previews.slice(0,3),['Turn the faucet off','Turn the faucet off now','Turn the faucet off now']);
 }));
+
+test('learning context requests native five without confidence filtering, copies interims and clears stale evidence',()=>fixture(async({createRecognitionController},instances)=>{
+  let auto;
+  const controller=createRecognitionController({getRecognitionBiasContext:()=>({maxAlternatives:5,phrases:[{text:'yield to something',boost:8}]}),shouldEvaluate:()=>false,onAutoStop:r=>auto=r});
+  controller.start();const native=instances[0];assert.equal(native.maxAlternatives,5);
+  native.inject([result(['YouTube','yield to'],true),result(['anything','something'],false)]);
+  let evidence=controller.getNativeRecognitionSegments();assert.equal(evidence.length,2);assert.equal(evidence[1].isFinal,false);
+  assert.deepEqual(evidence[0].alternatives.map(c=>c.asrRank),[0,1]);
+  evidence[0].alternatives[1].transcript='mutated';evidence.length=0;
+  assert.equal(controller.getNativeRecognitionSegments()[0].alternatives[1].transcript,'yield to');
+  native.inject([result(['YouTube','yield to'],true),result(['something'],false)],1);
+  assert.equal(controller.getPreviewTranscript(),'YouTube something');
+  assert.equal(controller.getNativeRecognitionSegments()[1].alternatives.length,1,'actual one candidate is normal');
+  native.onend?.();assert.equal(auto.transcript,'YouTube something');assert.equal(auto.nativeSegments.length,2);assert.equal(auto.matchInfo,null);
+  controller.start();native.inject([result(['stale','yield to something'])]);native.onend?.();
+  assert.deepEqual(controller.getNativeRecognitionSegments(),[]);controller.stop();
+}));
