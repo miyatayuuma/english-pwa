@@ -101,17 +101,20 @@ async function newProductionPage({ studyMode = 'compose', hold = false, metadata
   const metadataRequested = hold ? waitForMetadataRequest() : null;
   const context = await browser.newContext({
     viewport: { width: 390, height: 844 },
+    reducedMotion:'reduce',
     serviceWorkers: 'block',
   });
   await context.addInitScript(({ studyMode }) => {
     localStorage.setItem('appConfigV3', JSON.stringify({ playbackMode: 'speech', studyMode }));
-    window.__testSpeech = { latest: null };
+    window.__testSpeech = { latest: null, starts:0, srsWrites:0, spoken:[] };
+    const storageSet=Storage.prototype.setItem;
+    Storage.prototype.setItem=function(key,value){if(key==='itemLevelV1') window.__testSpeech.srsWrites++;return storageSet.call(this,key,value);};
     class MockRecognition {
       constructor() { window.__testSpeech.latest = this; }
-      start() { this.onstart?.(); }
+      start() { window.__testSpeech.starts=(window.__testSpeech.starts||0)+1;this.onstart?.(); }
       stop() {}
       inject(text) {
-        const result = Object.assign([{ transcript: String(text), confidence: 1 }], { isFinal: true });
+        const result = Object.assign((Array.isArray(text)?text:[text]).map(transcript=>({transcript:String(transcript),confidence:0})), { isFinal: true });
         this.onresult?.({ resultIndex: 0, results: [result] });
       }
     }
@@ -119,7 +122,7 @@ async function newProductionPage({ studyMode = 'compose', hold = false, metadata
     class MockUtterance { constructor(text) { this.text = text; } }
     Object.defineProperty(window, 'SpeechSynthesisUtterance', { value: MockUtterance, configurable: true });
     Object.defineProperty(window, 'speechSynthesis', {
-      value: { getVoices: () => [], speak: () => {}, cancel: () => {}, addEventListener: () => {} },
+      value: { getVoices: () => [{name:'English',lang:'en-US',voiceURI:'english'}], speak: utterance => {window.__testSpeech.spoken.push(utterance.text);utterance.onstart?.();utterance.onend?.();}, cancel: () => {}, addEventListener: () => {} },
       configurable: true,
     });
   }, { studyMode });
@@ -403,4 +406,51 @@ browserTest('a pre-existing English hint stage survives self-completed reorder a
   } finally {
     await closePage({ context });
   }
+});
+
+async function speechAttempt(page,words){
+  const starts=await page.evaluate(()=>window.__testSpeech.starts||0);
+  await page.waitForFunction(()=>!document.querySelector('#btnMic').disabled);
+  {const box=await page.locator('#btnMic').boundingBox();await page.mouse.click(box.x+box.width/2,box.y+box.height/2);}
+  await page.waitForFunction(count=>(window.__testSpeech.starts||0)>count,starts);
+  await page.evaluate(words=>window.__testSpeech.latest.inject(words),words);
+  {const box=await page.locator('#btnMic').boundingBox();await page.mouse.click(box.x+box.width/2,box.y+box.height/2);}
+}
+
+browserTest('390×844 normal read N-best uses best score/highlight while retaining primary transcript',async()=>{
+  const {context,page}=await newProductionPage({studyMode:'read'});
+  try{
+    await page.waitForFunction(()=>document.querySelector('#enText')?.dataset.itemId==='RPROD1');
+    await speechAttempt(page,['banana',item.en]);
+    await page.waitForFunction(()=>JSON.parse(localStorage.getItem('itemLevelV1')||'{}').RPROD1?.lastMatch===1);
+    assert.equal(await page.locator('#transcript').innerText(),'banana');
+    assert.equal(await page.locator('#enText .tok.miss').count(),0);
+    assert.ok(await page.locator('#enText .tok.hit').count()>0);
+    assert.equal(await page.evaluate(()=>window.__testSpeech.srsWrites),1);
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+  }finally{await context.close();}
+});
+
+browserTest('normal read FAIL correction is practice-only through repeated failure and automatic successful advance',async()=>{
+  const {context,page}=await newProductionPage({studyMode:'read'});
+  try{
+    await page.waitForFunction(()=>document.querySelector('#enText')?.dataset.itemId==='RPROD1');
+    await speechAttempt(page,['banana','unrelated']);
+    await page.waitForFunction(()=>JSON.parse(localStorage.getItem('itemLevelV1')||'{}').RPROD1?.lastMatch===0);
+    const initial=await page.evaluate(()=>JSON.parse(localStorage.getItem('itemLevelV1')).RPROD1);
+    assert.equal(await page.evaluate(()=>window.__testSpeech.srsWrites),1);
+    assert.equal(await page.locator('#enText').innerText(),item.en);
+    assert.equal(await page.locator('#attemptInfo').textContent(),'修正練習中');
+    await page.waitForFunction(()=>window.__testSpeech.spoken.length>0);
+    for(let attempt=0;attempt<2;attempt++){
+      await speechAttempt(page,'banana');
+      assert.deepEqual(await page.evaluate(()=>JSON.parse(localStorage.getItem('itemLevelV1')).RPROD1),initial);
+      assert.equal(await page.evaluate(()=>window.__testSpeech.srsWrites),1);
+    }
+    await speechAttempt(page,['banana',item.en]);
+    await page.waitForFunction(()=>document.querySelector('#footer')?.textContent.includes('修正練習完了')||document.body.textContent.includes('修正練習完了'));
+    assert.deepEqual(await page.evaluate(()=>JSON.parse(localStorage.getItem('itemLevelV1')).RPROD1),initial);
+    assert.equal(await page.evaluate(()=>window.__testSpeech.srsWrites),1);
+    await page.waitForFunction(()=>document.querySelector('#startStudyCta')&&!document.querySelector('#startStudyCta').hidden);
+  }finally{await context.close();}
 });

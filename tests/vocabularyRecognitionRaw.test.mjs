@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 
 class MockRecognition{
   static instance=null;
-  constructor(){MockRecognition.instance=this;}
+  constructor(){MockRecognition.instance=this;this.results=[];}
   start(){this.onstart?.();}
   stop(){this.onend?.();}
   resultEvent(pieces,resultIndex=0){
@@ -12,7 +12,8 @@ class MockRecognition{
   }
   emit(transcript){
     const result=Object.assign([{transcript}],{isFinal:true});
-    this.onresult?.({resultIndex:0,results:[result]});
+    const index=this.results.length;this.results.push(result);
+    this.onresult?.({resultIndex:index,results:this.results});
   }
 }
 globalThis.window={SpeechRecognition:MockRecognition};

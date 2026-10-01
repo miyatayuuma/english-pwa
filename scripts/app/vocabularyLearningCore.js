@@ -1,5 +1,4 @@
 import { quotedTurnContainingSpan } from '../tagging/quotedTurns.js';
-import { approxTokensMatch } from '../utils/text.js';
 
 const DAY_MS=24*60*60*1000;
 export const VOCABULARY_MIGRATION_FALLBACK='_vocabularyV3LegacySourceFallback';
@@ -237,68 +236,15 @@ export function classifyVocabularyAnswer({entry,activeOccurrence=null,transcript
   return {type:'miss',matchedText:'',matchedAuthority:null};
 }
 
-function tokenDistanceAtMostOne(left,right){
-  const a=Array.isArray(left)?left:[];
-  const b=Array.isArray(right)?right:[];
-  if(Math.abs(a.length-b.length)>1) return false;
-  const rows=Array.from({length:a.length+1},(_,i)=>Array.from({length:b.length+1},(_,j)=>i===0?j:j===0?i:0));
-  for(let i=1;i<=a.length;i+=1){
-    for(let j=1;j<=b.length;j+=1){
-      const substitution=rows[i-1][j-1]+(a[i-1]===b[j-1]?0:1);
-      rows[i][j]=Math.min(rows[i-1][j]+1,rows[i][j-1]+1,substitution);
-      if(i>1&&j>1&&a[i-1]===b[j-2]&&a[i-2]===b[j-1]){
-        rows[i][j]=Math.min(rows[i][j],rows[i-2][j-2]+1);
-      }
-    }
+export function classifyVocabularyHypotheses({entry,activeOccurrence=null,hypotheses=[],transcript='',correction=false}={}){
+  const candidates=hypotheses.length?hypotheses:[{transcript}];
+  let selected={type:'miss',matchedText:'',matchedAuthority:null,selectedHypothesisIndex:0,selectedTranscript:transcript};
+  for(const [index,candidate] of candidates.entries()){
+    const result=classifyVocabularyAnswer({entry,activeOccurrence,transcript:candidate.transcript});
+    if(result.type==='target') return {...result,selectedHypothesisIndex:index,selectedTranscript:candidate.transcript};
+    if(!correction&&result.type==='paraphrase'&&selected.type==='miss') selected={...result,selectedHypothesisIndex:index,selectedTranscript:candidate.transcript};
   }
-  return rows[a.length][b.length]<=1;
-}
-
-function singleWordForms(word){
-  const forms=new Set([word]);
-  const add=(value)=>{if(value.length>=3) forms.add(value);};
-  if(word.endsWith('acy')) add(`${word.slice(0,-3)}ate`);
-  if(word.endsWith('ate')) add(`${word.slice(0,-3)}acy`);
-  if(word.endsWith('ies')) add(`${word.slice(0,-3)}y`);
-  if(word.endsWith('ied')) add(`${word.slice(0,-3)}y`);
-  for(const suffix of ['ed','ing','es','s','er','est','ly']){
-    if(word.endsWith(suffix)&&word.length-suffix.length>=3){
-      const stem=word.slice(0,-suffix.length);
-      add(stem);
-      if(suffix==='ed'&&stem.endsWith('i')) add(`${stem.slice(0,-1)}y`);
-      if(suffix==='ing'&&stem.endsWith('e')) add(stem.slice(0,-1));
-    }
-  }
-  return forms;
-}
-
-function singleWordNear(left,right){
-  if(approxTokensMatch(left,right)) return true;
-  const leftForms=singleWordForms(left),rightForms=singleWordForms(right);
-  for(const form of leftForms){if(rightForms.has(form)) return true;}
-  return false;
-}
-
-export function isVocabularyNearMiss({entry,activeOccurrence=null,transcript=''}={}){
-  if(!entry) return false;
-  const candidates=[
-    String(entry.canonical||''),
-    ...(Array.isArray(entry.answers)?entry.answers:[]),
-    occurrenceSourceSurface(activeOccurrence),
-    ...(Array.isArray(entry.paraphrases)?entry.paraphrases:[]),
-  ];
-  const spoken=normalizeVocabularyAnswer(transcript).split(' ').filter(Boolean);
-  if(!spoken.length) return false;
-  for(const candidate of candidates){
-    const tokens=normalizeVocabularyAnswer(candidate).split(' ').filter(Boolean);
-    if(!tokens.length) continue;
-    if(tokens.length===1&&spoken.length===1){
-      if(singleWordNear(tokens[0],spoken[0])) return true;
-    }else if(tokenDistanceAtMostOne(tokens,spoken)){
-      return true;
-    }
-  }
-  return false;
+  return selected;
 }
 
 export function shouldUpdateVocabularyLevel(answerType){
