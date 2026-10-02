@@ -65,6 +65,14 @@ test('known wrong-sense regressions stay pinned to their source expressions and 
     ['mortality','death_or_death_rate','E0326','mortality',/死亡/,/死亡率だけ/],
     ['infection','state_or_process_of_being_infected','E0327','infection',/感染/,/感染症だけ/],
     ['discipline','system_of_rules_and_control','E0336','discipline',/規律/,/訓練/],
+    ['abuse','misuse_something','E0144','abused',/乱用/,/虐待/],
+    ['obscure','unclear_or_difficult_to_understand','E0158','obscure',/曖昧|不明瞭/,/無名/],
+    ['thesis','academic_paper_or_dissertation','E0158','thesis',/論文/,/仮説/],
+    ['propose','ask_someone_to_marry','E0178','proposed',/結婚|プロポーズ/,/提案/],
+    ['neglect','fail_to_do_or_give_proper_attention','E0195','neglects',/怠る|放置/,/世話だけ/],
+    ['endangered','in_danger_of_harm_or_destruction','E0229','endangered',/危機/,/絶滅だけ/],
+    ['preserve','protect_or_keep_existing','E0229','preserving',/保護|保存/,/放棄/],
+    ['emission','release_of_gases_or_pollutants','E0237','emissions',/排出/,/吸収/],
   ];
   for(const [canonical,sense,itemId,expectedSurface,meaning,forbidden] of fixtures){
     const value=entry(canonical,sense);
@@ -109,6 +117,8 @@ test('contextual glosses do not absorb surrounding negation or neighboring modif
     ['burden','heavy_responsibility','負担',/重荷/],
     ['recession','period_of_economic_decline','景気後退',/set in/],
     ['accommodate','provide_space_for','泊める',/400|宿泊客/],
+    ['risk','possibility_of_harm_or_danger','危険',/さらされ|冒す/],
+    ['favor','act_of_help','親切',/頼み/],
   ];
   for(const [canonical,sense,expected,forbidden] of fixtures){
     const value=entry(canonical,sense);
@@ -124,4 +134,22 @@ test('reality glosses remain lexical across ordinary and fixed-expression occurr
   const value=entry('reality','actual_conditions_or_facts');
   assert.ok(value);
   assert.deepEqual(value.occurrences.map(row=>row.contextual_meaning_ja),['現実','現実']);
+});
+
+
+test('major word paraphrases remain source-substitutable',()=>{
+  const fixtures=[
+    ['discourage','reduce_someone_s_confidence_or_willingness','deter'],
+    ['significant','important_or_large','substantial'],
+    ['alter','change','change'],
+    ['obscure','unclear_or_difficult_to_understand','unclear'],
+    ['precise','exact_and_accurate','exact'],
+    ['conceal','hide','hide'],
+    ['preserve','protect_or_keep_existing','protect'],
+  ];
+  for(const [canonical,sense,paraphrase] of fixtures){
+    const value=entry(canonical,sense);
+    assert.ok(value,`${canonical}/${sense} is present`);
+    assert.deepEqual(value.paraphrases,[paraphrase]);
+  }
 });
