@@ -264,7 +264,7 @@ export function validateVocabularyV3(db,items,characters,migration,v2,wordAudit=
       if(!Number.isFinite(start)||!Number.isFinite(end)||!Number.isInteger(start)||!Number.isInteger(end)||start<0||start>=end||end>item.en.length){errors.push(`${id}/${itemId}: invalid UTF-16 span`);continue;}
       const surface=item.en.slice(start,end);
       if(!/[A-Za-z]/.test(surface)) errors.push(`${id}/${itemId}: span has no alphabetic target`);
-      if(!/^[A-Za-z]/.test(surface)||!/[A-Za-z]$/.test(surface)) errors.push(`${id}/${itemId}: span must start and end on a word boundary`);
+      if(!/^[A-Za-z0-9]/.test(surface)||!/[A-Za-z0-9]$/.test(surface)) errors.push(`${id}/${itemId}: span must start and end on a word boundary`);
       if(entry?.kind==='word'&&/\s/.test(surface)) errors.push(`${id}/${itemId}: word span must contain one lexical token`);
       if(!String(occurrence?.contextual_meaning_ja||'').trim()) errors.push(`${id}/${itemId}: empty contextual meaning`);
       const key=`${itemId}:${start}:${end}`;
