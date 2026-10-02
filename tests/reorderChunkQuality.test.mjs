@@ -250,22 +250,23 @@ test('E0241 exposes both members of a correlative nominal coordination', () => {
   assert.equal(chunkAt(value, curse)?.ownerKind, 'coordination');
 });
 
-test('predicate operators are not exploded into standalone function-word chunks', () => {
-  const forbidden = new Set(['the', 'a', 'an', 'to', 'had', 'has', 'have', 'not', 'because', 'but']);
+test('syntactic function words are never standalone chunks', () => {
+  const functionPos = new Set(['DET', 'ADP', 'AUX', 'CCONJ', 'SCONJ', 'PART']);
+  const functionDeps = new Set(['cc', 'mark', 'det', 'case', 'aux', 'aux:pass', 'auxpass', 'neg']);
   const offenders = [];
   for (const item of metadata.items) {
     for (const value of item.sentences) {
       for (const chunk of value.chunks ?? []) {
         const lexical = value.tokens.slice(chunk.tokenStart, chunk.tokenEnd)
           .filter((token) => !token.isPunct && !['PUNCT', 'SYM'].includes(token.pos));
-        if (lexical.length === 1 && forbidden.has(String(lexical[0].text).toLowerCase())) {
-          offenders.push(`${item.itemId}/${value.sentenceIndex}: ${chunk.text}`);
+        if (lexical.length === 1 && (functionPos.has(lexical[0].pos) || functionDeps.has(lexical[0].dep))) {
+          offenders.push(`${item.itemId}/${value.sentenceIndex}: ${chunk.text} [${lexical[0].pos}/${lexical[0].dep}]`);
         }
       }
     }
   }
-  assert.ok(offenders.length <= 5, offenders.join('\n'));
-  assert.equal(offenders.length, report.chunkQuality.standaloneFunctionWordChunkCount);
+  assert.deepEqual(offenders, []);
+  assert.equal(report.chunkQuality.standaloneFunctionWordChunkCount, 0);
 });
 
 test('the independent serialized-metadata audit detects a role/owner mutation', () => {
