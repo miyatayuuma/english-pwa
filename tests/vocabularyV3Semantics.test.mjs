@@ -58,6 +58,10 @@ test('known wrong-sense regressions stay pinned to their source expressions and 
     ['worship','show_deep_religious_respect','E0486','worships',/崇拝/,/神だけ/],
     ['prevail','be_widespread_or_common','E0487','prevail',/広く|行われ/,/成功|勝利/],
     ['intimate','personal_or_private','E0497','intimate',/個人的|私的/,/親密/],
+    ['eloquent','fluent_and_persuasive_in_expression','E0350','eloquent',/雄弁|説得力/,/無口/],
+    ['devote','give_time_or_effort_to','E0384','devoted',/捧げる/,/専念する/],
+    ['tolerate','accept_or_endure_something_unpleasant','E0419','tolerate',/容認|耐える/,/拒絶/],
+    ['regime','government_or_ruling_system','E0429','regime',/政権|体制/,/民間企業/],
   ];
   for(const [canonical,sense,itemId,expectedSurface,meaning,forbidden] of fixtures){
     const value=entry(canonical,sense);
@@ -95,6 +99,10 @@ test('contextual glosses do not absorb surrounding negation or neighboring modif
     ['favor','support_or_approval','支持',/法案/],
     ['familiar','known_to_someone','なじみのある',/ない/],
     ['pause','brief_stop','間',/気まずい|沈黙/],
+    ['humble','lowly_or_modest_in_status_or_background','質素な',/家庭|出身/],
+    ['linger','remain_for_a_long_time','残り続ける',/疑い/],
+    ['suspect','believe_someone_may_be_guilty_or_involved','疑う',/賄賂|受け取/],
+    ['charge','responsibility_or_control','責任',/担当|立場/],
   ];
   for(const [canonical,sense,expected,forbidden] of fixtures){
     const value=entry(canonical,sense);
@@ -103,4 +111,11 @@ test('contextual glosses do not absorb surrounding negation or neighboring modif
     assert.equal(gloss,expected);
     assert.doesNotMatch(gloss,forbidden);
   }
+});
+
+
+test('reality glosses remain lexical across ordinary and fixed-expression occurrences',()=>{
+  const value=entry('reality','actual_conditions_or_facts');
+  assert.ok(value);
+  assert.deepEqual(value.occurrences.map(row=>row.contextual_meaning_ja),['現実','現実']);
 });
