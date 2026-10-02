@@ -57,6 +57,15 @@ test('known wrong-sense regressions stay pinned to their source expressions and 
     ['if ever','if_at_all','E0192','if ever',/あるとしても/,/頻繁/],
     ['think much of something','have_high_opinion','E0197','think much of them',/高く評価/,/低く評価/],
     ['give out','come_to_an_end_or_fail','E0199','gave out',/尽きる/,/配る/],
+    ['stop by','visit_briefly','E0201','stop by',/立ち寄/,/通り過ぎ/],
+    ['for good','permanently','E0205','for good',/永久/,/一時的/],
+    ['pay off','bring_a_good_result','E0210','pays off',/報われ/,/損/],
+    ['cheer up','become_more_cheerful','E0211','Cheer up',/元気/,/落ち込/],
+    ['be tied up','be_busy_unavailable','E0212','tied up',/手が離せない/,/暇/],
+    ['turn up','arrive_or_appear','E0213','turned up',/現れ/,/消え/],
+    ['run out of something','use_all_of_a_supply','E0214','ran out of gas',/切らす/,/補充/],
+    ['out of control','not_under_control','E0223','out of control',/制御/,/安定/],
+    ['run someone over','hit_with_vehicle','E0223','running over a pedestrian',/ひく/,/避け/],
   ];
   for(const [canonical,sense,itemId,expectedSurface,meaning,forbidden] of fixtures){
     const value=entry(canonical,sense);
