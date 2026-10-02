@@ -120,6 +120,33 @@ test('known wrong-sense regressions stay pinned to their source expressions and 
   }
 });
 
+test('audited batch 00501-00550 occurrences stay scoped to their exact lexical targets',()=>{
+  const fixtures=[
+    ['be concerned with something','deal_with_or_focus_on','E0394','concerned with exploiting us','私たちから搾取することに関心がある'],
+    ['pull strings','use_influence_secretly','E0397','pulling strings','裏で手を回している'],
+    ['in return','as_repayment_or_exchange','E0398','in return','見返りに'],
+    ['deny doing something','say_something_did_not_happen','E0399','denied leaking any confidential information','機密情報を漏らしたことを否定した'],
+    ["there's no other way out",'no_alternative_solution','E0411','there was no other way out','ほかに方法はなかった'],
+    ['when it comes to something','in_the_area_of','E0415','when it comes to finding fault with others','他人のあら探しをすることに関しては'],
+    ['all but','almost','E0417','all but','ほとんど'],
+    ['for the moment','for_now','E0423','for the moment','今のところ'],
+    ['hold out','resist_or_last','E0425','hold out','持ちこたえる'],
+    ['be reluctant to do something','not_want_to_do','E0428','reluctant to obey the commands','命令に従うことに気が進まない'],
+    ['rule something out','exclude_as_impossible','E0431','rule out the possibility','その可能性を排除する'],
+    ['break out','war_or_illness_begins','E0431','break out','勃発する'],
+    ['all week long','throughout_the_week','E0438','all week long','一週間ずっと'],
+    ['be capable of doing something','have_ability_to_do','E0438','capable of coping with it','それに対処できる'],
+    ['build up','increase_gradually','E0442','build up','高まる'],
+  ];
+  for(const [canonical,sense,itemId,expectedSurface,expectedContext] of fixtures){
+    const value=entry(canonical,sense);
+    assert.ok(value,`${canonical}/${sense} is present`);
+    assert.equal(value.occurrences[0].item_id,itemId);
+    assert.equal(surface(value),expectedSurface);
+    assert.equal(value.occurrences[0].contextual_meaning_ja,expectedContext);
+  }
+});
+
 test('retained lexical occurrences are represented once per sense with exact source offsets',()=>{
   const seen=new Set();
   for(const value of db.entries){
