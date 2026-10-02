@@ -66,6 +66,15 @@ test('known wrong-sense regressions stay pinned to their source expressions and 
     ['run out of something','use_all_of_a_supply','E0214','ran out of gas',/切らす/,/補充/],
     ['out of control','not_under_control','E0223','out of control',/制御/,/安定/],
     ['run someone over','hit_with_vehicle','E0223','running over a pedestrian',/ひく/,/避け/],
+    ['give way','collapse_or_fail_structurally','E0252','giving way',/崩れ/,/譲る/],
+    ['chances are','probably','E0255','chances are',/おそらく/,/確実/],
+    ['clear up','weather_becomes_clear','E0255','clear up',/晴れ/,/曇/],
+    ['stand for something','abbreviation_represents','E0258','stands for "artificial intelligence',/表す/,/反対/],
+    ['room for improvement','potential_to_improve','E0268','room for improvement',/改善の余地/,/完成/],
+    ['catch on','become_popular','E0270','catching on',/人気/,/廃れ/],
+    ['come into being','begin_to_exist','E0277','come into being',/誕生|生まれ/,/消滅/],
+    ['look up','improve_or_get_better','E0279','looking up',/上向|好転/,/悪化/],
+    ['take someone out','take_on_a_date','E0283','take her out',/デート/,/家に留め/],
   ];
   for(const [canonical,sense,itemId,expectedSurface,meaning,forbidden] of fixtures){
     const value=entry(canonical,sense);
