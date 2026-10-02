@@ -763,6 +763,60 @@ def assign_groups(sentence: Any, policy: str, protected: list[dict[str, Any]], q
             if groups[index] is None:
                 groups[index] = key
 
+    # Suppress standalone function-word groups before enforcing the tile cap.
+    # Attach coordinators/markers/determiners forward; attach auxiliaries,
+    # negation and infinitival markers to their syntactic head when possible.
+    # This changes only ownership of the function token, never lexical order.
+    function_pos = {"DET", "ADP", "AUX", "CCONJ", "SCONJ", "PART"}
+    function_deps = {"cc", "mark", "det", "case", "aux", "aux:pass", "auxpass", "neg"}
+    forward_deps = {"cc", "mark", "det", "case"}
+
+    def lexical_tokens_in(start: int, end: int) -> list[Any]:
+        return [sentence[index] for index in range(start, end) if lexical_token(sentence[index])]
+
+    changed = True
+    while changed:
+        changed = False
+        ranges = ranges_from_groups([str(value) for value in groups])
+        for range_index, (start, end, key) in enumerate(ranges):
+            lexical = lexical_tokens_in(start, end)
+            if len(lexical) != 1:
+                continue
+            token = lexical[0]
+            relation = dep(token)
+            if token.pos_ not in function_pos and relation not in function_deps:
+                continue
+
+            target_key: str | None = None
+            head_index = local(token.head)
+            if token.head != token and 0 <= head_index < len(groups):
+                head_key = groups[head_index]
+                if head_key != key and relation not in forward_deps:
+                    target_key = head_key
+
+            previous_key = ranges[range_index - 1][2] if range_index > 0 else None
+            next_key = ranges[range_index + 1][2] if range_index + 1 < len(ranges) else None
+            if target_key is None:
+                if relation in forward_deps or token.pos_ in {"DET", "CCONJ", "SCONJ"}:
+                    target_key = next_key or previous_key
+                elif relation in {"aux", "aux:pass", "auxpass", "neg"} or token.pos_ in {"AUX", "PART"}:
+                    target_key = next_key or previous_key
+                else:
+                    target_key = next_key or previous_key
+
+            if target_key is None or target_key == key:
+                continue
+            # A hard-protected core can absorb its own adjacent function marker,
+            # but never reassign tokens from inside one hard span to another owner.
+            if any(span.get("hard") and start < span["tokenEnd"] and end > span["tokenStart"]
+                   and not (span["tokenStart"] <= start and end <= span["tokenEnd"])
+                   for span in protected):
+                continue
+            for index in range(start, end):
+                groups[index] = target_key
+            changed = True
+            break
+
     # Tile-count bounds are met only by undoing low-priority structural splits.
     # The removed boundary is recorded as a composite child of the smallest
     # common dependency ancestor; words are never merged by lexical count.
@@ -1107,7 +1161,8 @@ def validate_generated_dataset(source_items: list[dict[str, Any]], metadata: dic
 
 
 def chunk_quality_metrics(metadata: dict[str, Any]) -> dict[str, Any]:
-    function_words = {"the", "a", "an", "to", "had", "has", "have", "do", "does", "did", "not", "because", "but", "and", "or"}
+    function_pos = {"DET", "ADP", "AUX", "CCONJ", "SCONJ", "PART"}
+    function_deps = {"cc", "mark", "det", "case", "aux", "aux:pass", "auxpass", "neg"}
     distribution = Counter({"1": 0, "2-3": 0, "4-5": 0, "6-8": 0, ">8": 0})
     long_chunks = 0
     misowned_roles = 0
@@ -1138,9 +1193,11 @@ def chunk_quality_metrics(metadata: dict[str, Any]) -> dict[str, Any]:
                            if not token.get("isPunct") and token.get("pos") not in {"PUNCT", "SYM"}]
                 if len(lexical) >= 8:
                     long_chunks += 1
-                if len(lexical) == 1 and lexical[0].get("text", "").lower() in function_words:
+                if len(lexical) == 1 and (lexical[0].get("pos") in function_pos
+                                           or lexical[0].get("dep") in function_deps):
                     standalone_function_words.append({"itemId": item["itemId"], "sentenceIndex": sentence["sentenceIndex"],
-                                                      "text": chunk.get("text"), "token": lexical[0].get("text")})
+                                                      "text": chunk.get("text"), "token": lexical[0].get("text"),
+                                                      "pos": lexical[0].get("pos"), "dep": lexical[0].get("dep")})
                 kind, relation, head = chunk.get("ownerKind"), chunk.get("ownerRelation"), chunk.get("ownerHead")
                 if not isinstance(kind, str) or not kind or not isinstance(relation, str) or not relation \
                         or not isinstance(head, int) or not 0 <= head < len(tokens):
