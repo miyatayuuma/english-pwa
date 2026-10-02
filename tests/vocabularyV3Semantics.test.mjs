@@ -51,6 +51,7 @@ test('retained lexical occurrences are represented once per sense with exact sou
   }
 });
 
-test('malformed E0483 wording does not create a guessed cost expression',()=>{
-  assert.equal(db.entries.some(value=>value.occurrences.some(occurrence=>occurrence.item_id==='E0483')),false);
+test('E0483 source keeps the repaired cost wording',()=>{
+  const item=items.find(value=>value.id==='E0483');
+  assert.equal(item?.en,'The millionaire insisted on acquiring the masterpiece no matter how much it cost.');
 });
