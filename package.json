@@ -4,7 +4,10 @@
   "type": "module",
   "scripts": {
     "test": "node --test tests/*.test.mjs",
-    "test:reorder-browser": "node --test tests/reorderBrowser.test.mjs"
+    "test:reorder-browser": "node --test tests/reorderBrowser.test.mjs",
+    "vocab:check-derived": "node scripts/vocabulary/validate-vocabulary-v3.mjs --check-report",
+    "vocab:validate": "node scripts/vocabulary/validate-vocabulary-v3.mjs --check-report && node scripts/vocabulary/validate-source-sentence-integrity.mjs",
+    "vocab:sync-derived": "node scripts/vocabulary/validate-vocabulary-v3.mjs"
   },
   "devDependencies": {
     "playwright": "1.62.1"
