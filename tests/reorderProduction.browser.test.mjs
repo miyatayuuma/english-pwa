@@ -43,23 +43,18 @@ function buildMetadata(sourceItem = item, rows = sentenceRows) {
       };
     });
     const canonicalOrder = tiles.map((tile) => tile.id);
-    const variant = {
-      tier: 'foundation',
-      tiles,
-      canonicalOrder,
-      acceptedOrders: [canonicalOrder],
-      clauseScaffold: tiles.map(() => '語句'),
-      canonicalReconstruction: row.text,
-    };
     return {
       sentenceIndex,
       text: row.text,
       fixedContext: false,
-      variants: { foundation: variant },
+      chunks: tiles,
+      canonicalOrder,
+      acceptedOrders: [canonicalOrder],
+      canonicalReconstruction: row.text,
     };
   });
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     items: [{
       itemId: sourceItem.id,
       sourceHash: crypto.createHash('sha256').update(sourceItem.en, 'utf8').digest('hex'),
