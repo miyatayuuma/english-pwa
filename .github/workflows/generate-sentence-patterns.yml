@@ -6,6 +6,7 @@ on:
     branches:
       - main
       - p4-five-sentence-patterns
+      - fix/source-integrity-reorder-final-sync
     paths:
       - 'scripts/tagging/generate-sentence-patterns.py'
       - 'scripts/tagging/sentencePatternApplication.mjs'
@@ -36,6 +37,8 @@ jobs:
           node-version: '22'
       - name: Apply accepted patterns to items
         run: node scripts/tagging/apply-sentence-patterns.mjs
+      - name: Regenerate Reordering metadata after derived item sync
+        run: python scripts/reorder/generate-reorder-metadata.py
       - name: Validate P4 output
         run: |
           node - <<'NODE'
@@ -60,12 +63,12 @@ jobs:
           NODE
       - name: Commit generated P4 data
         run: |
-          if git diff --quiet -- data/sentence-pattern-analysis.json data/sentence-pattern-review.json data/items.json data/tagging-report.json; then
+          if git diff --quiet -- data/sentence-pattern-analysis.json data/sentence-pattern-review.json data/items.json data/tagging-report.json data/reorder-v1.json data/reorder-report.json; then
             echo 'No generated changes to commit.'
             exit 0
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add data/sentence-pattern-analysis.json data/sentence-pattern-review.json data/items.json data/tagging-report.json
+          git add data/sentence-pattern-analysis.json data/sentence-pattern-review.json data/items.json data/tagging-report.json data/reorder-v1.json data/reorder-report.json
           git commit -m 'data: generate five-sentence-pattern analysis'
           git push
