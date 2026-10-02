@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   generate:
-    if: ${{ !contains(github.event.head_commit.message, 'Generate shared reorder artifacts') }}
+    if: ${{ !contains(github.event.head_commit.message, '[generated-reorder]') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -35,5 +35,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/reorder-v1.json data/reorder-report.json
-          git commit -m "Generate shared reorder artifacts"
+          git commit -m "Generate shared reorder artifacts [generated-reorder]"
           git push origin HEAD:codex/shared-syntax-chunk-authority
