@@ -12,6 +12,7 @@ on:
       - 'data/vocabulary-v2-v3-migration.json'
       - 'scripts/app/vocabulary*.js'
       - 'scripts/vocabulary/validate-vocabulary-v3.mjs'
+      - 'scripts/vocabulary/validate-source-sentence-integrity.mjs'
       - 'scripts/app/clozeLearningCore.js'
       - 'tests/**'
       - 'package.json'
@@ -46,7 +47,9 @@ jobs:
           node-version: '22'
       - name: Install test dependencies
         run: npm ci
-      - name: Validate committed curated data and audit report
-        run: node scripts/vocabulary/validate-vocabulary-v3.mjs --check-report
+      - name: Check derived vocabulary artifacts
+        run: npm run vocab:check-derived
+      - name: Validate vocabulary and source sentence integrity
+        run: npm run vocab:validate
       - name: Run application tests
-        run: node --experimental-default-type=module --test tests/*.test.mjs
+        run: npm test

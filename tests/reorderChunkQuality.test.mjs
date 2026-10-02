@@ -14,6 +14,9 @@ const items = read('data/items.json');
 const sourceById = new Map(items.map((item) => [String(item.id), item]));
 const generatedById = new Map(metadata.items.map((item) => [String(item.itemId), item]));
 const clauseRelations = new Set(['advcl', 'acl', 'acl:relcl', 'relcl', 'ccomp', 'xcomp', 'csubj', 'csubjpass']);
+const sourceIntegrityRepairs = new Map([
+  ['E0483', 'The millionaire insisted on acquiring the masterpiece no matter how much it cost.'],
+]);
 
 function sentence(itemId, sentenceIndex = 0) {
   const value = generatedById.get(itemId)?.sentences?.[sentenceIndex];
@@ -65,10 +68,10 @@ test('the pre-change audit cohort is retained as a 67-sentence regression fixtur
   for (const entry of baseline.sentences) {
     const source = sourceById.get(entry.itemId)?.en;
     assert.ok(source, `missing source item ${entry.itemId}`);
-    assert.equal(generatedById.get(entry.itemId)?.sentences?.[entry.sentenceIndex]?.text, entry.text);
+    assert.equal(generatedById.get(entry.itemId)?.sentences?.[entry.sentenceIndex]?.text, sourceIntegrityRepairs.get(entry.itemId) ?? entry.text);
     assert.equal(entry.text, baseline.sentences.find((candidate) => candidate.itemId === entry.itemId
       && candidate.sentenceIndex === entry.sentenceIndex)?.text);
-    assert.ok(source.includes(entry.text), `baseline text is not in source ${entry.itemId}`);
+    assert.ok(source.includes(sourceIntegrityRepairs.get(entry.itemId) ?? entry.text), `baseline text is not in source ${entry.itemId}`);
     const archived = entry.baselineSentenceRecord;
     assert.equal(archived.text, entry.text);
     const projected = Object.fromEntries(Object.entries(archived.variants).map(([tier, variant]) => [tier,
