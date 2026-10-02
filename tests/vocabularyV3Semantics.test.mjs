@@ -62,6 +62,9 @@ test('known wrong-sense regressions stay pinned to their source expressions and 
     ['devote','give_time_or_effort_to','E0384','devoted',/捧げる/,/専念する/],
     ['tolerate','accept_or_endure_something_unpleasant','E0419','tolerate',/容認|耐える/,/拒絶/],
     ['regime','government_or_ruling_system','E0429','regime',/政権|体制/,/民間企業/],
+    ['mortality','death_or_death_rate','E0326','mortality',/死亡/,/死亡率だけ/],
+    ['infection','state_or_process_of_being_infected','E0327','infection',/感染/,/感染症だけ/],
+    ['discipline','system_of_rules_and_control','E0336','discipline',/規律/,/訓練/],
   ];
   for(const [canonical,sense,itemId,expectedSurface,meaning,forbidden] of fixtures){
     const value=entry(canonical,sense);
@@ -103,6 +106,9 @@ test('contextual glosses do not absorb surrounding negation or neighboring modif
     ['linger','remain_for_a_long_time','残り続ける',/疑い/],
     ['suspect','believe_someone_may_be_guilty_or_involved','疑う',/賄賂|受け取/],
     ['charge','responsibility_or_control','責任',/担当|立場/],
+    ['burden','heavy_responsibility','負担',/重荷/],
+    ['recession','period_of_economic_decline','景気後退',/set in/],
+    ['accommodate','provide_space_for','泊める',/400|宿泊客/],
   ];
   for(const [canonical,sense,expected,forbidden] of fixtures){
     const value=entry(canonical,sense);
