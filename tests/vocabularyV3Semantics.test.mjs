@@ -81,6 +81,9 @@ test('known wrong-sense regressions stay pinned to their source expressions and 
     ['despise','feel_contempt_for','E0375','despise',/軽蔑/,/ひどく嫌う/],
     ['gender','gender_category','E0004','gender',/性別|ジェンダー/,/国籍/],
     ['regardless','without_regard_to_circumstances','E0004','regardless',/関係なく/,/性別/],
+    ['it dawns on someone that something is true','come_to_realize','E0539','It dawned on me that I had been taken in by Jennifer',/気づく|分かってくる/,/徐々にだけ/],
+    ['put up with something','tolerate_something','E0545','put up with her arrogance',/我慢|耐える/,/人に我慢/],
+    ['all at once','suddenly','E0550','All at once',/突然/,/一度に/],
   ];
   for(const [canonical,sense,itemId,expectedSurface,meaning,forbidden] of fixtures){
     const value=entry(canonical,sense);
@@ -156,6 +159,13 @@ test('contextual glosses do not absorb surrounding negation or neighboring modif
     ['novel','long_work_of_fiction','長編小説',/新しい/],
     ['translate','express_in_another_language','翻訳する',/日本語/],
     ['familiar','knowledgeable_about_a_subject','詳しい',/文学/],
+    ['break up','end_a_romantic_relationship','別れる',/二人/],
+    ['on and off','intermittently','断続的に',/付き合|別れ|長い/],
+    ['be there for someone','support_someone','あなたを支える',/そばにいるだけ/],
+    ['feel down','feel_sad_or_low','落ち込んでいる',/たり/],
+    ['fade away','gradually_disappear','徐々に消えていく',/すぐ|ない/],
+    ['be at a loss for words','not_know_what_to_say','言葉を失う',/あきれて/],
+    ['not necessarily','not_always_or_inevitably','必ずしも〜とは限らない',/純粋/],
   ];
   for(const [canonical,sense,expected,forbidden] of fixtures){
     const value=entry(canonical,sense);
@@ -222,10 +232,62 @@ test('major word paraphrases remain source-substitutable',()=>{
     ['subtle','difficult_to_notice','faint'],
     ['scarcely','almost_not','hardly'],
     ['confuse','mistake_one_thing_for_another','mix up'],
+    ['break up','end_a_romantic_relationship','split up'],
+    ['all by oneself','completely_alone','alone'],
+    ['be crazy about someone','be_extremely_enthusiastic_about','be really into someone'],
+    ['take risks','do_things_that_may_be_dangerous','take chances'],
+    ['ask someone out','invite_on_a_date','ask someone on a date'],
+    ['on and off','intermittently','off and on'],
+    ['for ages','for_a_very_long_time','for a long time'],
+    ['it dawns on someone that something is true','come_to_realize','someone realizes that something is true'],
+    ['take someone in','deceive_someone','deceive someone'],
+    ['all along','the_entire_time','the whole time'],
+    ['be seeing someone','be_dating_someone','be dating someone'],
+    ['what\'s up','casual_greeting_or_question','what\'s new'],
+    ['not much','nothing_new_or_significant','nothing much'],
+    ['get married to someone','marry_someone','marry someone'],
+    ['feel down','feel_sad_or_low','feel low'],
+    ['be there for someone','support_someone','support someone'],
+    ['take something back','retract_a_statement','retract something'],
+    ['put up with something','tolerate_something','tolerate something'],
+    ['take advantage of someone','exploit_someone','exploit someone'],
+    ['take your time','do_not_hurry','don\'t rush'],
+    ['reflect on something','think_carefully_about','think carefully about something'],
+    ['get through something','successfully_endure','overcome something'],
+    ['on one\'s own','without_help_from_others','by oneself'],
+    ['interfere with something','disrupt_or_get_in_the_way','get in the way of something'],
+    ['all at once','suddenly','suddenly'],
+    ['burst into laughter','suddenly_start_laughing','burst out laughing'],
+    ['spoil something','ruin_a_mood_or_experience','ruin something'],
+    ['besides doing something','in_addition_to','in addition to doing something'],
+    ['feel for someone','sympathize_with_someone','sympathize with someone'],
+    ['fade away','gradually_disappear','fade'],
+    ['get over something','recover_from_difficulty_or_loss','recover from something'],
+    ['cherish memories of something','hold_memories_dear','treasure memories of something'],
+    ['be at a loss for words','not_know_what_to_say','be speechless'],
+    ['get engaged to someone','become_engaged_to_marry','become engaged to someone'],
+    ['take someone or something for example','offer_as_an_illustration','take someone or something as an example'],
   ];
   for(const [canonical,sense,paraphrase] of fixtures){
     const value=entry(canonical,sense);
     assert.ok(value,`${canonical}/${sense} is present`);
     assert.deepEqual(value.paraphrases,[paraphrase]);
+  }
+});
+
+
+test('audited expression spans exclude unrelated surrounding material',()=>{
+  const fixtures=[
+    ['break up','end_a_romantic_relationship','broke up'],
+    ['on and off','intermittently','on and off'],
+    ['be there for someone','support_someone','be there for you'],
+    ['feel for someone','sympathize_with_someone','feel for you'],
+    ['fade away','gradually_disappear','fade away'],
+    ['not necessarily','not_always_or_inevitably','not necessarily'],
+  ];
+  for(const [canonical,sense,expectedSurface] of fixtures){
+    const value=entry(canonical,sense);
+    assert.ok(value,`${canonical}/${sense} is present`);
+    assert.equal(surface(value),expectedSurface);
   }
 });
