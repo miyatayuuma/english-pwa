@@ -75,6 +75,9 @@ test('known wrong-sense regressions stay pinned to their source expressions and 
     ['emission','release_of_gases_or_pollutants','E0237','emissions',/排出/,/吸収/],
     ['genius','exceptional_ability','E0089','genius',/才能/,/天才$/],
     ['capacity','ability_to_do_something','E0090','capacity',/能力/,/容量/],
+    ['dismal','very_bad_or_gloomy','E0030','dismal',/悲惨|暗い/,/明るい/],
+    ['expose','subject_to_harmful_influence','E0038','exposed',/さらす/,/公開/],
+    ['epidemic','widespread_outbreak_of_disease','E0047','epidemic',/流行/,/慢性/],
   ];
   for(const [canonical,sense,itemId,expectedSurface,meaning,forbidden] of fixtures){
     const value=entry(canonical,sense);
@@ -125,6 +128,14 @@ test('contextual glosses do not absorb surrounding negation or neighboring modif
     ['delay','make_something_happen_later','遅れる',/遅らせる/],
     ['chore','routine_household_task','雑用',/家事/],
     ['shatter','break_into_many_pieces','粉々に割れる',/粉々にする/],
+    ['afford','have_enough_money_or_time_for','余裕がある',/購入/],
+    ['rate','proportion_or_frequency','率',/失業/],
+    ['rate','speed_or_degree_of_change','速度',/増加/],
+    ['vacant','not_occupied_or_in_use','空きの',/地/],
+    ['legal','connected_with_law','法的な',/措置/],
+    ['recommend','advise_that_something_is_good_or_suitable','勧める',/法的|措置/],
+    ['benefit','good_effect_or_advantage','恩恵',/人類|大きな|もたら/],
+    ['humanity','human_race','人類',/全体/],
   ];
   for(const [canonical,sense,expected,forbidden] of fixtures){
     const value=entry(canonical,sense);
@@ -159,6 +170,21 @@ test('major word paraphrases remain source-substitutable',()=>{
     ['defeat','win_against_in_a_contest','beat'],
     ['endeavor','serious_effort','effort'],
     ['exhausted','very_tired','worn out'],
+    ['eager','strongly_wanting','keen'],
+    ['purchase','buy','buy'],
+    ['anticipate','expect_in_advance','expect'],
+    ['competent','able_and_skilled','skilled'],
+    ['consequence','result_of_an_action','result'],
+    ['inevitable','impossible_to_avoid','unavoidable'],
+    ['alarming','causing_worry_or_alarm','worrying'],
+    ['decline','become_less','decrease'],
+    ['remote','far_away','distant'],
+    ['emphasize','give_special_importance_to','stress'],
+    ['cultivate','grow_crops','grow'],
+    ['intense','very_strong','strong'],
+    ['remedy','treatment_for_illness','treatment'],
+    ['humanity','human_race','humankind'],
+    ['technique','method_of_doing_something','method'],
   ];
   for(const [canonical,sense,paraphrase] of fixtures){
     const value=entry(canonical,sense);
