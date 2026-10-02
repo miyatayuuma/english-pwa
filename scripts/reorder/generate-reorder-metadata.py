@@ -26,13 +26,11 @@ ITEMS_PATH = ROOT / "data" / "items.json"
 OVERRIDES_PATH = ROOT / "data" / "reorder-overrides.json"
 OUTPUT_PATH = ROOT / "data" / "reorder-v1.json"
 REPORT_PATH = ROOT / "data" / "reorder-report.json"
-POLICY_VERSION = "reorder-policy-1.1.0"
-SCHEMA_VERSION = 1
-TIERS = {
-    "foundation": (2, 5),
-    "standard": (3, 7),
-    "precision": (4, 9),
-}
+POLICY_VERSION = "reorder-policy-2.0.0"
+SCHEMA_VERSION = 2
+SHARED_MIN_TILES = 2
+SHARED_MAX_TILES = 8
+LEGACY_TIER_ONLY_OVERRIDE_IDS = ["E0022", "E0050", "E0075", "E0241", "E0309", "E0369", "E0544"]
 
 SUBJECT_DEPS = {"nsubj", "csubj", "nsubjpass", "csubjpass"}
 OBJECT_DEPS = {"obj", "dobj"}
@@ -437,7 +435,7 @@ def owner_role_for_child(token: Any) -> tuple[str, str]:
     return _role_for_top(token)[1], "phrase"
 
 
-def assign_groups(sentence: Any, tier: str, protected: list[dict[str, Any]], quote_state: dict[str, bool] | None = None) -> tuple[list[str], list[dict[str, Any]]]:
+def assign_groups(sentence: Any, policy: str, protected: list[dict[str, Any]], quote_state: dict[str, bool] | None = None) -> tuple[list[str], list[dict[str, Any]]]:
     """Assign disjoint constituent owners while preserving clause-parent identity.
 
     Clause and PP owners receive unique IDs keyed by their dependency head. A
@@ -529,8 +527,7 @@ def assign_groups(sentence: Any, tier: str, protected: list[dict[str, Any]], quo
         visited_pps.add(head.i)
         key = add_owner("pp", head, "pp", dep(head), parent_kind, parent_head)
         mark_tokens(subtree_tokens(head), key)
-        if tier in {"standard", "precision"}:
-            assign_nested(head, "pp", head)
+        assign_nested(head, "pp", head)
 
     def assign_atomic_clause(head: Any, parent_kind: str | None = None,
                              parent_head: Any | None = None) -> str:
@@ -549,24 +546,20 @@ def assign_groups(sentence: Any, tier: str, protected: list[dict[str, Any]], quo
         clause_key = add_owner(kind, head, "clause", dep(head), parent_kind, parent_head)
         clause_keys[head.i] = clause_key
         mark_tokens(subtree_tokens(head), clause_key)
-        if tier == "foundation" and head != root:
-            return
-
         children = sorted((child for child in head.children if dep(child) != "punct"), key=lambda value: value.i)
         subjects = [child for child in children if dep(child) in SUBJECT_DEPS]
         markers = clause_markers(head)
         coordinator = coordinator_for(head)
 
-        # Standard keeps subordinate marker + first core constituent together.
-        # Precision exposes the marker/coordinator as its own owner.
+        # Clause markers stay with the first core constituent; they are not standalone tiles.
         subject_key: str | None = None
         if subjects:
             subject = subjects[0]
-            if markers and tier == "standard":
+            if markers:
                 subject_key = add_owner(kind, head, "subject", dep(head), parent_kind, parent_head, "-core")
                 mark_tokens(markers, subject_key)
                 mark_tokens(subtree_tokens(subject), subject_key)
-            elif kind == "coordinated-clause" and coordinator is not None and tier == "standard":
+            elif kind == "coordinated-clause" and coordinator is not None:
                 subject_key = add_owner(kind, head, "subject", dep(head), parent_kind, parent_head, "-core")
                 mark_tokens(subtree_tokens(subject), subject_key)
                 groups[local(coordinator)] = subject_key
@@ -575,12 +568,12 @@ def assign_groups(sentence: Any, tier: str, protected: list[dict[str, Any]], quo
                 mark_tokens(subtree_tokens(subject), subject_key)
             clause_subject_keys[head.i] = subject_key
 
-        # A short copular relative core ("who are eager") is one productive
-        # predicate unit at Standard; its infinitival complement is handled as
+        # A short copular relative core ("who are eager") remains one productive
+        # predicate unit; its infinitival complement is handled as
         # a nested clause below.
         copular_complements = [child for child in children if dep(child) in {"attr", "acomp", "oprd"}]
         relative_copular_core = (kind == "relative-clause" and head.pos_ == "AUX" and bool(subjects)
-                                 and bool(copular_complements) and tier == "standard")
+                                 and bool(copular_complements))
         if relative_copular_core:
             core = add_owner(kind, head, "clause", dep(head), parent_kind, parent_head, "-copular-core")
             mark_tokens(subtree_tokens(subjects[0]), core)
@@ -592,9 +585,7 @@ def assign_groups(sentence: Any, tier: str, protected: list[dict[str, Any]], quo
                 mark_tokens(subtree_tokens(child), core)
             clause_subject_keys[head.i] = core
 
-        # Predicate and operator owners are distinct nodes. Standard keeps the
-        # auxiliary sequence attached to the lexical predicate; Precision may
-        # expose each operator and separable particle.
+        # Auxiliaries, modals, negation and particles stay with the lexical predicate core.
         predicate = add_owner("predicate", head, "predicate", dep(head), kind, head)
         if not relative_copular_core:
             groups[local(head)] = predicate
@@ -603,24 +594,7 @@ def assign_groups(sentence: Any, tier: str, protected: list[dict[str, Any]], quo
             if relation in OPERATOR_DEPS or relation == "expl":
                 if relative_copular_core:
                     continue
-                if relation in {"compound:prt", "prt"} and tier == "precision":
-                    particle = add_owner("operator", child, "phrase", relation, kind, head, "-particle")
-                    mark_tokens(subtree_tokens(child), particle)
-                elif tier == "precision" and relation not in {"compound:prt", "prt"}:
-                    operator = add_owner("operator", child, "operator", relation, kind, head)
-                    mark_tokens(subtree_tokens(child), operator)
-                else:
-                    mark_tokens(subtree_tokens(child), predicate)
-
-        # Markers in Precision have explicit operator ownership. A coordinated
-        # clause marker keeps coordinated-clause ownership for auditability.
-        if tier == "precision":
-            for marker in markers:
-                marker_owner = add_owner("operator", marker, "conjunction", dep(marker), kind, head, "-marker")
-                groups[local(marker)] = marker_owner
-            if coordinator is not None:
-                coordinator_owner = add_owner("coordinated-clause", head, "conjunction", dep(head), parent_kind, parent_head, "-marker")
-                groups[local(coordinator)] = coordinator_owner
+                mark_tokens(subtree_tokens(child), predicate)
 
         for child in children:
             relation = dep(child)
@@ -635,17 +609,12 @@ def assign_groups(sentence: Any, tier: str, protected: list[dict[str, Any]], quo
                 following = next((candidate for candidate in head.children
                                   if candidate.i > child.i and dep(candidate) == "conj" and candidate.pos_ in {"VERB", "AUX"}), None)
                 if following is not None:
-                    if tier == "precision":
-                        key = add_owner("coordinated-clause", following, "conjunction", dep(following), kind, head, "-marker")
-                        groups[local(child)] = key
-                    else:
-                        groups[local(child)] = clause_subject_keys.get(following.i, clause_keys.get(following.i, clause_key))
+                    groups[local(child)] = clause_subject_keys.get(following.i, clause_keys.get(following.i, clause_key))
                 continue
             if is_clause(child):
                 nested_key = assign_atomic_clause(child, kind, head)
-                if tier in {"standard", "precision"}:
-                    visited_clauses.discard(child.i)
-                    assign_clause(child, kind, head)
+                visited_clauses.discard(child.i)
+                assign_clause(child, kind, head)
                 continue
             if is_pp(child):
                 assign_pp(child, kind, head)
@@ -660,50 +629,13 @@ def assign_groups(sentence: Any, tier: str, protected: list[dict[str, Any]], quo
         if relative_copular_core:
             for child in copular_complements:
                 assign_nested(child, kind, head)
-        if kind == "coordinated-clause" and coordinator is not None and tier == "standard" and not subjects:
+        if kind == "coordinated-clause" and coordinator is not None and not subjects:
             groups[local(coordinator)] = clause_key
 
-    def assign_foundation_root() -> None:
-        # Foundation exposes only the main clause's major constituents. A
-        # subordinate/coordinated clause, full PP, and protected expression
-        # remain atomic at this level.
-        main = add_owner("main-clause", root, "clause", dep(root))
-        mark_tokens(subtree_tokens(root), main)
-        for child in sorted((child for child in root.children if dep(child) != "punct"), key=lambda value: value.i):
-            relation = dep(child)
-            if relation in OPERATOR_DEPS or relation == "expl":
-                predicate = add_owner("predicate", root, "predicate", dep(root), suffix="-foundation")
-                groups[local(root)] = predicate
-                mark_tokens(subtree_tokens(child), predicate)
-                continue
-            if relation == "cc":
-                following = next((candidate for candidate in root.children
-                                  if candidate.i > child.i and dep(candidate) == "conj" and candidate.pos_ in {"VERB", "AUX"}), None)
-                if following is not None:
-                    key = add_owner("coordinated-clause", following, "clause", dep(following), "main-clause", root)
-                    groups[local(child)] = key
-                continue
-            if is_clause(child):
-                nested_key = assign_atomic_clause(child, "main-clause", root)
-                if dep(child) == "conj":
-                    coordinator = coordinator_for(child)
-                    if coordinator is not None:
-                        groups[local(coordinator)] = nested_key
-                continue
-            if is_pp(child):
-                assign_pp(child, "main-clause", root)
-                continue
-            role, child_kind = owner_role_for_child(child)
-            key = add_owner(child_kind, child, role, relation, "main-clause", root)
-            mark_tokens(subtree_tokens(child), key)
-
-    if tier == "foundation":
-        assign_foundation_root()
-    else:
-        assign_clause(root)
-        # Handle non-clausal parent tokens that can own postmodifying PPs or
-        # clauses (for example for + NP + relative clause).
-        assign_nested(root, "main-clause", root)
+    assign_clause(root)
+    # Handle non-clausal parent tokens that can own postmodifying PPs or
+    # clauses (for example for + NP + relative clause).
+    assign_nested(root, "main-clause", root)
 
     # Conjunction markers can be attached to a verbal conjunct whose head is a
     # sibling of the coordinator in spaCy's dependency tree.
@@ -711,13 +643,10 @@ def assign_groups(sentence: Any, tier: str, protected: list[dict[str, Any]], quo
         if dep(token) != "conj" or token.pos_ not in {"VERB", "AUX"}:
             continue
         coordinator = coordinator_for(token)
-        if coordinator is None or tier == "foundation":
+        if coordinator is None:
             continue
-        if tier == "standard" and token.i in clause_subject_keys:
+        if token.i in clause_subject_keys:
             groups[local(coordinator)] = clause_subject_keys[token.i]
-        elif tier == "precision" and groups[local(coordinator)] is None:
-            key = add_owner("coordinated-clause", token, "conjunction", dep(token), structural_owner_kind(token.head, sentence), token.head, "-marker")
-            groups[local(coordinator)] = key
 
     # Preserve non-verbal coordination boundaries inside complements and noun
     # phrases. The coordinator opens the later member; nested PPs, clauses,
@@ -866,13 +795,16 @@ def assign_groups(sentence: Any, tier: str, protected: list[dict[str, Any]], quo
             current = current.head
         return next((token for token in ancestors if token.i in right_ancestors), root)
 
-    maximum = TIERS[tier][1]
+    maximum = SHARED_MAX_TILES
     while len(ranges_from_groups([str(value) for value in groups])) > maximum:
         ranges = ranges_from_groups([str(value) for value in groups])
         candidates = []
         for boundary_index, (left, right) in enumerate(zip(ranges, ranges[1:])):
             left_role = roles.get(left[2], {})
             right_role = roles.get(right[2], {})
+            # Never collapse a coordinated independent-clause boundary just to hit the target.
+            if "coordinated-clause" in {left_role.get("ownerKind"), right_role.get("ownerKind")}:
+                continue
             score = max(merge_rank.get(left_role.get("ownerKind", "phrase"), 1),
                         merge_rank.get(right_role.get("ownerKind", "phrase"), 1))
             candidates.append((score, boundary_index, left_role, right_role))
@@ -907,7 +839,7 @@ def ranges_from_groups(groups: list[str]) -> list[tuple[int, int, str]]:
     return result
 
 
-def apply_manual_ranges(sentence: Any, specification: list[list[int]], tier: str) -> list[tuple[int, int, str]]:
+def apply_manual_ranges(sentence: Any, specification: list[list[int]]) -> list[tuple[int, int, str]]:
     cursor = 0
     ranges = []
     for index, pair in enumerate(specification):
@@ -915,28 +847,24 @@ def apply_manual_ranges(sentence: Any, specification: list[list[int]], tier: str
             raise ValueError(f"manual range must be [start,end): {pair!r}")
         start, end = pair
         if not isinstance(start, int) or not isinstance(end, int) or start != cursor or end <= start or end > len(sentence):
-            raise ValueError(f"manual {tier} ranges must partition sentence tokens in source order: {specification!r}")
-        ranges.append((start, end, f"manual-{tier}-{index}"))
+            raise ValueError(f"manual chunk ranges must partition sentence tokens in source order: {specification!r}")
+        ranges.append((start, end, f"manual-shared-{index}"))
         cursor = end
     if cursor != len(sentence):
-        raise ValueError(f"manual {tier} ranges do not cover every sentence token")
+        raise ValueError("manual chunk ranges do not cover every sentence token")
     return ranges
 
 
-def build_variant(sentence: Any, source: str, tier: str, groups: list[str], roles: list[dict[str, Any]],
-                  protected: list[dict[str, Any]], manual: dict[str, Any]) -> dict[str, Any] | None:
-    if tier in manual.get("manualVariants", {}):
-        ranges = apply_manual_ranges(sentence, manual["manualVariants"][tier], tier)
-    else:
-        ranges = ranges_from_groups(groups)
-    minimum, maximum = TIERS[tier]
-    if not minimum <= len(ranges) <= maximum:
+def build_partition(sentence: Any, source: str, groups: list[str], roles: list[dict[str, Any]],
+                    protected: list[dict[str, Any]], manual: dict[str, Any]) -> dict[str, Any] | None:
+    ranges = apply_manual_ranges(sentence, manual["manualChunks"]) if manual.get("manualChunks") else ranges_from_groups(groups)
+    if len(ranges) < SHARED_MIN_TILES:
         return None
     role_map = {role["id"]: role for role in roles}
-    manual_roles = manual.get("manualRoles", {}).get(tier, [])
-    tiles = []
-    for tile_index, (start, end, group_id) in enumerate(ranges):
-        contained = list(sentence)[start:end]
+    manual_roles = manual.get("manualRoles", [])
+    chunks = []
+    for chunk_index, (range_start, range_end, group_id) in enumerate(ranges):
+        contained = list(sentence)[range_start:range_end]
         lexical = [token for token in contained if lexical_token(token)]
         if not lexical:
             return None
@@ -945,17 +873,14 @@ def build_variant(sentence: Any, source: str, tier: str, groups: list[str], role
         if not value.strip():
             return None
         role = role_map.get(group_id, {"role": "phrase", "relation": "manual"})
-        if tile_index < len(manual_roles):
-            manual_role = manual_roles[tile_index]
+        if chunk_index < len(manual_roles):
+            manual_role = manual_roles[chunk_index]
             if isinstance(manual_role, str):
                 role = {**role, "role": manual_role, "relation": "manual-override"}
             elif isinstance(manual_role, dict) and manual_role.get("role"):
                 role = {**role, "role": str(manual_role["role"]),
                         "relation": str(manual_role.get("relation", "manual-override"))}
         if not role.get("ownerKind"):
-            # Manual tier ranges still receive dependency-derived diagnostic
-            # ownership. Prefer a syntactic head inside the range whose head
-            # lies outside it, then choose by role-compatible POS.
             contained_indices = {token.i for token in contained}
             roots = [token for token in contained if token.head.i not in contained_indices]
             role_name = role.get("role", "phrase")
@@ -975,10 +900,10 @@ def build_variant(sentence: Any, source: str, tier: str, groups: list[str], role
             role = {**role, "ownerKind": owner_kind, "ownerRelation": dep(head),
                     "ownerHead": head.i - sentence.start}
         label = role.get("role", "phrase")
-        tile_id = f"s{sentence.start_char}-t{tile_index}"
-        protections = [span["kind"] for span in protected if span["tokenStart"] >= start and span["tokenEnd"] <= end]
-        tile = {
-            "id": tile_id, "text": value, "tokenStart": start, "tokenEnd": end,
+        chunk_id = f"s{sentence.start_char}-c{chunk_index}"
+        protections = [span["kind"] for span in protected if span["tokenStart"] >= range_start and span["tokenEnd"] <= range_end]
+        chunk = {
+            "id": chunk_id, "text": value, "tokenStart": range_start, "tokenEnd": range_end,
             "charStart": char_start, "charEnd": char_end,
             "role": label, "label": ROLE_LABELS.get(label, ROLE_LABELS["phrase"]),
             "dependency": role.get("relation", "manual"),
@@ -987,42 +912,36 @@ def build_variant(sentence: Any, source: str, tier: str, groups: list[str], role
             "protectedConstructions": protections,
         }
         if role.get("ownerParentKind"):
-            tile["ownerParentKind"] = role["ownerParentKind"]
+            chunk["ownerParentKind"] = role["ownerParentKind"]
         if isinstance(role.get("ownerParentHead"), int):
-            tile["ownerParentHead"] = role["ownerParentHead"]
-        tiles.append(tile)
-    for index, tile in enumerate(tiles[:-1]):
-        tile["separatorAfter"] = source[tile["charEnd"]:tiles[index + 1]["charStart"]]
-    if tiles:
-        tiles[-1]["separatorAfter"] = source[tiles[-1]["charEnd"]:sentence.end_char]
-    canonical = "".join(tile["text"] + tile["separatorAfter"] for tile in tiles)
+            chunk["ownerParentHead"] = role["ownerParentHead"]
+        chunks.append(chunk)
+    for index, chunk in enumerate(chunks[:-1]):
+        chunk["separatorAfter"] = source[chunk["charEnd"]:chunks[index + 1]["charStart"]]
+    if chunks:
+        chunks[-1]["separatorAfter"] = source[chunks[-1]["charEnd"]:sentence.end_char]
+    canonical = "".join(chunk["text"] + chunk["separatorAfter"] for chunk in chunks)
     sentence_text = source[sentence.start_char:sentence.end_char]
     if canonical != sentence_text:
         return None
-    canonical_order = [tile["id"] for tile in tiles]
-    alt_orders = manual.get("acceptedOrders", {}).get(tier, [])
+    canonical_order = [chunk["id"] for chunk in chunks]
     accepted = [canonical_order]
-    for order in alt_orders:
+    for order in manual.get("acceptedOrders", []):
         if isinstance(order, list) and order not in accepted:
             accepted.append(order)
-    if any(len(order) != len(tiles) or set(order) != set(canonical_order) for order in accepted):
-        raise ValueError(f"invalid acceptedOrders in manual {tier} variant")
-    labels = [tile["label"] for tile in tiles]
+    if any(len(order) != len(chunks) or set(order) != set(canonical_order) for order in accepted):
+        raise ValueError("invalid acceptedOrders in manual shared partition")
     return {
-        "tier": tier,
-        "tiles": tiles,
+        "chunks": chunks,
         "canonicalOrder": canonical_order,
         "acceptedOrders": accepted,
-        "clauseScaffold": labels,
         "canonicalReconstruction": canonical,
     }
 
+
 def quote_state_before(source: str, char_index: int) -> dict[str, bool]:
     prefix = source[:char_index]
-    return {
-        "double": prefix.count('"') % 2 == 1,
-        "single": False,
-    }
+    return {"double": prefix.count('"') % 2 == 1, "single": False}
 
 
 def sentence_metadata(sentence: Any, source: str, item_override: dict[str, Any], sentence_index: int,
@@ -1040,35 +959,27 @@ def sentence_metadata(sentence: Any, source: str, item_override: dict[str, Any],
         if dep(token) not in {"prt", "compound:prt"}:
             continue
         construction_tags.append({
-            "kind": "separable-phrasal-verb",
-            "verbLemma": token.head.lemma_.lower(),
+            "kind": "separable-phrasal-verb", "verbLemma": token.head.lemma_.lower(),
             "particle": token.text,
             "tokenSpan": [min(token.i, token.head.i) - sentence.start, max(token.i, token.head.i) - sentence.start + 1],
-            "particleToken": token.i - sentence.start,
-            "maySeparate": True,
+            "particleToken": token.i - sentence.start, "maySeparate": True,
         })
     construction_tags += [{"kind": span["kind"], "text": span["text"],
                            "tokenSpan": [span["tokenStart"], span["tokenEnd"]], "hard": True}
                           for span in protected]
     entry: dict[str, Any] = {
-        "sentenceIndex": sentence_index,
-        "text": text,
-        "charStart": sentence.start_char,
-        "charEnd": sentence.end_char,
-        "tokenStart": sentence.start,
-        "tokenEnd": sentence.end,
-        "tokens": parsed,
-        "syntax": syntax,
-        "constructions": construction_tags,
+        "sentenceIndex": sentence_index, "text": text,
+        "charStart": sentence.start_char, "charEnd": sentence.end_char,
+        "tokenStart": sentence.start, "tokenEnd": sentence.end,
+        "tokens": parsed, "syntax": syntax, "constructions": construction_tags,
         "protectedConstructions": protected,
         "fixedContext": bool(override.get("fixedContext")),
         "fixedContextReason": str(override.get("fixedContextReason", "")) or None,
         "excludedReason": str(override.get("excludeReason", "")) or None,
-        "manualOverrideApplied": bool(override.get("manualVariants") or override.get("fixedContext")
-                                       or override.get("excludeReason") or override.get("protectedExpressions")
-                                       or override.get("acceptedOrders")),
-        "tierUnavailableReason": {},
-        "variants": {},
+        "manualOverrideApplied": bool(override.get("manualChunks") or override.get("fixedContext")
+                                      or override.get("excludeReason") or override.get("protectedExpressions")
+                                      or override.get("acceptedOrders")),
+        "chunks": [], "canonicalOrder": [], "acceptedOrders": [], "canonicalReconstruction": None,
     }
     if entry["fixedContext"] or entry["excludedReason"]:
         return entry
@@ -1077,27 +988,16 @@ def sentence_metadata(sentence: Any, source: str, item_override: dict[str, Any],
         entry["fixedContext"] = True
         entry["fixedContextReason"] = "one-word-fragment"
         return entry
-    for tier, (minimum, maximum) in TIERS.items():
-        groups, roles = assign_groups(sentence, tier, protected, quote_state)
-        variant = build_variant(sentence, source, tier, groups, roles, protected, override)
-        if variant is not None:
-            entry["variants"][tier] = variant
-        else:
-            ranges = apply_manual_ranges(sentence, override["manualVariants"][tier], tier) if tier in override.get("manualVariants", {}) else ranges_from_groups(groups)
-            if len(ranges) < minimum:
-                reason = f"only {len(ranges)} safe structural units; {minimum} required"
-            elif len(ranges) > maximum:
-                reason = f"{len(ranges)} structural units remain after lower-priority boundary reduction; maximum is {maximum}"
-            else:
-                reason = "variant failed exact source reconstruction or protected-span validation"
-            entry["tierUnavailableReason"][tier] = reason
-    if not entry["variants"]:
-        coarsest_groups, _ = assign_groups(sentence, "foundation", protected, quote_state)
-        if len(ranges_from_groups(coarsest_groups)) <= 1:
+    groups, roles = assign_groups(sentence, "shared", protected, quote_state)
+    partition = build_partition(sentence, source, groups, roles, protected, override)
+    if partition is None:
+        if len(ranges_from_groups(groups)) <= 1:
             entry["fixedContext"] = True
             entry["fixedContextReason"] = "single-constituent-fragment"
         else:
-            entry["excludedReason"] = "no-validated-constituent-variant"
+            entry["excludedReason"] = "no-validated-shared-partition"
+        return entry
+    entry.update(partition)
     return entry
 
 
@@ -1106,18 +1006,19 @@ def classify_item(sentences: list[dict[str, Any]]) -> tuple[str, str | None]:
         return "excluded", "sentence-segmentation-empty"
     if any(sentence.get("excludedReason") for sentence in sentences):
         return "excluded", "one-or-more-sentences-excluded"
-    if any(sentence.get("variants") for sentence in sentences):
+    if any(sentence.get("chunks") for sentence in sentences):
         return "playable", None
     return "fixed-context", "all-sentences-fixed-context"
 
 
 def validate_generated_dataset(source_items: list[dict[str, Any]], metadata: dict[str, Any]) -> list[str]:
-    """Gate the build before either generated artifact is written."""
     errors: list[str] = []
     sources = {str(item["id"]): item for item in source_items}
     generated = {str(item["itemId"]): item for item in metadata.get("items", [])}
     if len(source_items) != 560 or len(generated) != 560 or set(sources) != set(generated):
         errors.append("source/metadata item coverage must be exactly 560 unique IDs")
+    if metadata.get("schemaVersion") != SCHEMA_VERSION or metadata.get("partitionPolicy", {}).get("kind") != "shared":
+        errors.append("shared partition schema/policy mismatch")
     if metadata.get("source", {}).get("sha256") != sha256(json.dumps(source_items, ensure_ascii=False, separators=(",", ":"))):
         errors.append("metadata source hash does not match the current item corpus")
     for item_id, source_item in sources.items():
@@ -1134,250 +1035,136 @@ def validate_generated_dataset(source_items: list[dict[str, Any]], metadata: dic
         spans: list[tuple[int, int]] = []
         for sentence in sentences:
             context = f"{item_id}/s{sentence.get('sentenceIndex')}"
-            start, end = sentence.get("charStart"), sentence.get("charEnd")
-            if not isinstance(start, int) or not isinstance(end, int) or start < 0 or end <= start or end > len(source):
+            start_char, end_char = sentence.get("charStart"), sentence.get("charEnd")
+            if not isinstance(start_char, int) or not isinstance(end_char, int) or start_char < 0 or end_char <= start_char or end_char > len(source):
                 errors.append(f"{context}: invalid source character span")
                 continue
-            spans.append((start, end))
-            if sentence.get("text") != source[start:end]:
+            spans.append((start_char, end_char))
+            if sentence.get("text") != source[start_char:end_char]:
                 errors.append(f"{context}: sentence text does not match source span")
             tokens = sentence.get("tokens", [])
             if not tokens or any(token.get("i") != index for index, token in enumerate(tokens)):
                 errors.append(f"{context}: invalid token sequence")
             for token in tokens:
                 token_start, token_end = token.get("start"), token.get("end")
-                if not isinstance(token_start, int) or not isinstance(token_end, int) or token_start < start or token_end <= token_start or token_end > end or source[token_start:token_end] != token.get("text"):
+                if not isinstance(token_start, int) or not isinstance(token_end, int) or token_start < start_char or token_end <= token_start or token_end > end_char or source[token_start:token_end] != token.get("text"):
                     errors.append(f"{context}: token span does not match the source")
                     break
+            chunks = sentence.get("chunks", [])
             if sentence.get("fixedContext") or sentence.get("excludedReason"):
-                if sentence.get("variants"):
-                    errors.append(f"{context}: fixed/excluded sentence has sortable variants")
+                if chunks:
+                    errors.append(f"{context}: fixed/excluded sentence has sortable chunks")
                 continue
-            variants = sentence.get("variants", {})
-            if not variants:
-                errors.append(f"{context}: playable sentence has no validated tier")
-            for tier, variant in variants.items():
-                bounds = TIERS.get(tier)
-                tiles = variant.get("tiles", [])
-                if bounds is None or not bounds[0] <= len(tiles) <= bounds[1]:
-                    errors.append(f"{context}/{tier}: tile count out of range")
-                    continue
-                ids = [tile.get("id") for tile in tiles]
-                if len(ids) != len(set(ids)) or variant.get("canonicalOrder") != ids:
-                    errors.append(f"{context}/{tier}: invalid unique canonical tile IDs")
-                accepted = variant.get("acceptedOrders", [])
-                if variant.get("canonicalOrder") not in accepted or any(
-                    not isinstance(order, list) or len(order) != len(ids) or len(set(order)) != len(ids) or set(order) != set(ids)
-                    for order in accepted
-                ):
-                    errors.append(f"{context}/{tier}: invalid acceptedOrders")
-                cursor = 0
-                reconstruction = ""
-                for index, tile in enumerate(tiles):
-                    if tile.get("tokenStart") != cursor or not isinstance(tile.get("tokenEnd"), int) or tile["tokenEnd"] <= cursor:
-                        errors.append(f"{context}/{tier}: token loss, duplication, or overlap")
-                        break
-                    cursor = tile["tokenEnd"]
-                    if tile.get("charStart", -1) < start or tile.get("charEnd", 0) > end or tile.get("charEnd", 0) <= tile.get("charStart", -1):
-                        errors.append(f"{context}/{tier}: cross-sentence tile span")
-                        break
-                    if source[tile["charStart"]:tile["charEnd"]] != tile.get("text"):
-                        errors.append(f"{context}/{tier}: tile text/span mismatch")
-                    if all(token.get("isPunct") for token in tokens[tile["tokenStart"]:tile["tokenEnd"]]):
-                        errors.append(f"{context}/{tier}: punctuation-only tile")
-                    reconstruction += tile.get("text", "") + tile.get("separatorAfter", "")
-                if cursor != len(tokens):
-                    errors.append(f"{context}/{tier}: tile spans do not cover all sentence tokens")
-                if reconstruction != sentence["text"] or variant.get("canonicalReconstruction") != sentence["text"]:
-                    errors.append(f"{context}/{tier}: canonical reconstruction mismatch")
-                for protected in sentence.get("protectedConstructions", []):
-                    if protected.get("hard") and sum(tile.get("tokenStart", 0) <= protected["tokenStart"]
-                                                       and tile.get("tokenEnd", 0) >= protected["tokenEnd"]
-                                                       for tile in tiles) != 1:
-                        errors.append(f"{context}/{tier}: hard protected expression was split")
+            if len(chunks) < SHARED_MIN_TILES:
+                errors.append(f"{context}: playable sentence has fewer than two chunks")
+                continue
+            ids = [chunk.get("id") for chunk in chunks]
+            if len(ids) != len(set(ids)) or sentence.get("canonicalOrder") != ids:
+                errors.append(f"{context}: invalid unique canonical chunk IDs")
+            accepted = sentence.get("acceptedOrders", [])
+            if sentence.get("canonicalOrder") not in accepted or any(
+                not isinstance(order, list) or len(order) != len(ids) or len(set(order)) != len(ids) or set(order) != set(ids)
+                for order in accepted
+            ):
+                errors.append(f"{context}: invalid acceptedOrders")
+            cursor = 0
+            reconstruction = ""
+            for chunk in chunks:
+                if chunk.get("tokenStart") != cursor or not isinstance(chunk.get("tokenEnd"), int) or chunk["tokenEnd"] <= cursor:
+                    errors.append(f"{context}: token loss, duplication, or overlap")
+                    break
+                cursor = chunk["tokenEnd"]
+                if chunk.get("charStart", -1) < start_char or chunk.get("charEnd", 0) > end_char or chunk.get("charEnd", 0) <= chunk.get("charStart", -1):
+                    errors.append(f"{context}: cross-sentence chunk span")
+                    break
+                if source[chunk["charStart"]:chunk["charEnd"]] != chunk.get("text"):
+                    errors.append(f"{context}: chunk text/span mismatch")
+                if all(token.get("isPunct") for token in tokens[chunk["tokenStart"]:chunk["tokenEnd"]]):
+                    errors.append(f"{context}: punctuation-only chunk")
+                reconstruction += chunk.get("text", "") + chunk.get("separatorAfter", "")
+            if cursor != len(tokens):
+                errors.append(f"{context}: chunk spans do not cover all sentence tokens")
+            if reconstruction != sentence["text"] or sentence.get("canonicalReconstruction") != sentence["text"]:
+                errors.append(f"{context}: canonical reconstruction mismatch")
+            for protected_span in sentence.get("protectedConstructions", []):
+                if protected_span.get("hard") and sum(chunk.get("tokenStart", 0) <= protected_span["tokenStart"]
+                                                       and chunk.get("tokenEnd", 0) >= protected_span["tokenEnd"]
+                                                       for chunk in chunks) != 1:
+                    errors.append(f"{context}: hard protected expression was split")
         spans.sort()
         if any(spans[index][0] < spans[index - 1][1] for index in range(1, len(spans))):
             errors.append(f"{item_id}: sentence spans overlap")
         covered = bytearray(len(source))
-        for start, end in spans:
-            for index in range(start, end):
+        for start_char, end_char in spans:
+            for index in range(start_char, end_char):
                 covered[index] = 1
         if any(not char.isspace() and not covered[index] for index, char in enumerate(source)):
             errors.append(f"{item_id}: source text falls outside sentence boundaries")
-        for left, right, label in (("“", "”", "curly double"), ("‘", "’", "curly single"), ("«", "»", "guillemet")):
-            balance = 0
-            for index, char in enumerate(source):
-                if (label == "curly single" and char == right and index > 0 and index + 1 < len(source)
-                        and source[index - 1].isalnum() and source[index + 1].isalnum()):
-                    continue
-                if char == left:
-                    balance += 1
-                elif char == right:
-                    balance -= 1
-                if balance < 0:
-                    errors.append(f"{item_id}: misordered {label} quotation")
-                    break
-            if balance != 0:
-                errors.append(f"{item_id}: unmatched {label} quotation")
-        if source.count('"') % 2:
-            errors.append(f"{item_id}: unmatched ASCII double quotation")
         expected_status, expected_reason = classify_item(sentences)
         if item.get("status") != expected_status or item.get("classificationReason") != expected_reason:
             errors.append(f"{item_id}: unsafe item classification")
     return errors
 
 
-
 def chunk_quality_metrics(metadata: dict[str, Any]) -> dict[str, Any]:
-    """Audit generated chunk owners from serialized dependency/token spans.
-
-    This report pass reads only the output metadata. It does not call the
-    generator's grouping or decomposition helpers.
-    """
-    clause_relations = {"advcl", "acl", "acl:relcl", "relcl", "ccomp", "xcomp", "csubj", "csubjpass"}
-    subject_relations = SUBJECT_DEPS
-    object_relations = OBJECT_DEPS | INDIRECT_OBJECT_DEPS
-    structural_child_relations = clause_relations | subject_relations | object_relations | {"prep", "obl", "agent", "dative", "attr", "acomp", "oprd"}
-    long_counts = Counter({tier: 0 for tier in TIERS})
-    dominant_counts = Counter({tier: 0 for tier in TIERS})
-    decomposable_counts = Counter({tier: 0 for tier in TIERS})
-    unavailable_counts = Counter({tier: 0 for tier in TIERS})
-    unexplained_unavailable = 0
+    function_words = {"the", "a", "an", "to", "had", "has", "have", "do", "does", "did", "not", "because", "but", "and", "or"}
+    distribution = Counter({"1": 0, "2-3": 0, "4-5": 0, "6-8": 0, ">8": 0})
+    long_chunks = 0
     misowned_roles = 0
-    manual_coarse_only = 0
     protected_overreach = 0
-
-    def lexical_count(tokens: list[dict[str, Any]], start: int = 0, end: int | None = None) -> int:
-        end = len(tokens) if end is None else end
-        return sum(1 for token in tokens[start:end]
-                   if not token.get("isPunct") and token.get("pos") not in {"PUNCT", "SYM"})
-
-    def subtree_span(tokens: list[dict[str, Any]], head_index: int) -> tuple[int, int]:
-        selected = {head_index}
-        changed = True
-        while changed:
-            changed = False
-            for token in tokens:
-                if token["i"] not in selected and token.get("head") in selected:
-                    selected.add(token["i"])
-                    changed = True
-        return min(selected), max(selected) + 1
-
-    def protected_boundary(tokens: list[dict[str, Any]], sentence: dict[str, Any], boundary: int) -> bool:
-        return any(span.get("hard") and span.get("tokenStart", 0) < boundary < span.get("tokenEnd", 0)
-                   for span in sentence.get("protectedConstructions", []))
-
-    def legal_split_inside_tile(tokens: list[dict[str, Any]], sentence: dict[str, Any], tile: dict[str, Any], tier: str) -> bool:
-        start, end = tile["tokenStart"], tile["tokenEnd"]
-        if tile.get("ownerKind") == "structural-composite":
-            return False
-        for token in tokens[start:end]:
-            relation = token.get("dep", "")
-            clause_head = (relation in clause_relations
-                           or relation == "pcomp" and token.get("pos") in {"VERB", "AUX"}
-                           or relation == "conj" and token.get("pos") in {"VERB", "AUX"})
-            if not clause_head:
-                continue
-            child_start, child_end = subtree_span(tokens, token["i"])
-            for boundary in (child_start, child_end):
-                if start < boundary < end and not protected_boundary(tokens, sentence, boundary):
-                    left = lexical_count(tokens, start, boundary)
-                    right = lexical_count(tokens, boundary, end)
-                    if left and right:
-                        return True
-            if relation == "conj":
-                coordinator = next((candidate for candidate in tokens
-                                    if candidate.get("head") == token.get("head")
-                                    and candidate.get("dep") == "cc" and candidate["i"] < token["i"]), None)
-                boundary = coordinator["i"] if coordinator else token["i"]
-                if start < boundary < end and not protected_boundary(tokens, sentence, boundary):
-                    if lexical_count(tokens, start, boundary) and lexical_count(tokens, boundary, end):
-                        return True
-        for token in tokens[start:end]:
-            if token.get("dep") != "conj":
-                continue
-            coordinator = next((candidate for candidate in tokens
-                                if candidate.get("head") == token.get("head")
-                                and candidate.get("dep") == "cc" and candidate["i"] < token["i"]), None)
-            boundary = coordinator["i"] if coordinator else token["i"]
-            if start < boundary < end and not protected_boundary(tokens, sentence, boundary):
-                if lexical_count(tokens, start, boundary) and lexical_count(tokens, boundary, end):
-                    return True
-        # An atomic long clause owner with multiple direct core dependents has
-        # an exposed structural split, even when no child clause is nested.
-        owner_head = tile.get("ownerHead")
-        owner_kind = tile.get("ownerKind")
-        if isinstance(owner_head, int) and owner_kind in {"main-clause", "coordinated-clause", "subordinate-clause", "relative-clause"}:
-            structural_children = [token for token in tokens[start:end]
-                                   if token.get("head") == owner_head and token.get("dep") in structural_child_relations]
-            if len(structural_children) >= 2:
-                points = sorted(token["i"] for token in structural_children if start < token["i"] < end)
-                if any(not protected_boundary(tokens, sentence, point) for point in points):
-                    return True
-        return False
-
+    standalone_function_words: list[dict[str, Any]] = []
+    over_eight: list[dict[str, Any]] = []
+    max_chunk_count = 0
     for item in metadata.get("items", []):
         for sentence in item.get("sentences", []):
+            chunks = sentence.get("chunks", [])
+            if not chunks:
+                continue
+            count = len(chunks)
+            max_chunk_count = max(max_chunk_count, count)
+            bucket = "1" if count == 1 else "2-3" if count <= 3 else "4-5" if count <= 5 else "6-8" if count <= 8 else ">8"
+            distribution[bucket] += 1
+            if count > SHARED_MAX_TILES:
+                over_eight.append({"itemId": item["itemId"], "sentenceIndex": sentence["sentenceIndex"], "tileCount": count})
             tokens = sentence.get("tokens", [])
-            total_lexical = lexical_count(tokens)
-            variants = sentence.get("variants", {})
-            if not sentence.get("fixedContext") and not sentence.get("excludedReason"):
-                if sentence.get("manualOverrideApplied") and "foundation" in variants \
-                        and not any(tier in variants for tier in ("standard", "precision")):
-                    manual_coarse_only += 1
-                for tier in TIERS:
-                    if tier not in variants:
-                        unavailable_counts[tier] += 1
-                        reason = sentence.get("tierUnavailableReason", {}).get(tier)
-                        if not isinstance(reason, str) or not reason.strip():
-                            unexplained_unavailable += 1
             for protected in sentence.get("protectedConstructions", []):
                 if not protected.get("hard"):
                     continue
-                start, end = protected.get("tokenStart", 0), protected.get("tokenEnd", 0)
-                selected = set(range(max(0, start), min(len(tokens), end)))
-                if any(tokens[index].get("head") in selected
-                       and (tokens[index].get("dep") in clause_relations
-                            or tokens[index].get("dep") == "pcomp" and tokens[index].get("pos") in {"VERB", "AUX"}
-                            or tokens[index].get("dep") == "conj" and tokens[index].get("pos") in {"VERB", "AUX"})
-                       for index in selected):
+                selected = set(range(max(0, protected.get("tokenStart", 0)), min(len(tokens), protected.get("tokenEnd", 0))))
+                if any(tokens[index].get("head") in selected and tokens[index].get("dep") in CLAUSE_DEPS for index in selected):
                     protected_overreach += 1
-            for tier, variant in variants.items():
-                if tier not in TIERS:
-                    continue
-                for tile in variant.get("tiles", []):
-                    count = lexical_count(tokens, tile["tokenStart"], tile["tokenEnd"])
-                    if count >= 8:
-                        long_counts[tier] += 1
-                        if tier in {"standard", "precision"} and legal_split_inside_tile(tokens, sentence, tile, tier):
-                            decomposable_counts[tier] += 1
-                    if count >= 12 or count >= 8 and total_lexical and count / total_lexical >= 0.65:
-                        dominant_counts[tier] += 1
-                    kind = tile.get("ownerKind")
-                    relation = tile.get("ownerRelation")
-                    head = tile.get("ownerHead")
-                    if not isinstance(kind, str) or not kind or not isinstance(relation, str) or not relation \
-                            or not isinstance(head, int) or not 0 <= head < len(tokens):
-                        misowned_roles += 1
-                    elif tile.get("role") == "pp" and kind != "pp":
-                        misowned_roles += 1
-                    elif kind == "pp" and tile.get("role") != "pp":
-                        misowned_roles += 1
-                    elif kind == "pp" and relation.lower() not in {"prep", "obl", "agent", "dative"}:
-                        misowned_roles += 1
-                    elif kind != "protected-expression" and relation.lower() != str(tokens[head].get("dep", "")).lower():
-                        misowned_roles += 1
-
+            for chunk in chunks:
+                lexical = [token for token in tokens[chunk["tokenStart"]:chunk["tokenEnd"]]
+                           if not token.get("isPunct") and token.get("pos") not in {"PUNCT", "SYM"}]
+                if len(lexical) >= 8:
+                    long_chunks += 1
+                if len(lexical) == 1 and lexical[0].get("text", "").lower() in function_words:
+                    standalone_function_words.append({"itemId": item["itemId"], "sentenceIndex": sentence["sentenceIndex"],
+                                                      "text": chunk.get("text"), "token": lexical[0].get("text")})
+                kind, relation, head = chunk.get("ownerKind"), chunk.get("ownerRelation"), chunk.get("ownerHead")
+                if not isinstance(kind, str) or not kind or not isinstance(relation, str) or not relation \
+                        or not isinstance(head, int) or not 0 <= head < len(tokens):
+                    misowned_roles += 1
+                elif chunk.get("role") == "pp" and kind != "pp":
+                    misowned_roles += 1
+                elif kind == "pp" and chunk.get("role") != "pp":
+                    misowned_roles += 1
+                elif kind == "pp" and relation.lower() not in {"prep", "obl", "agent", "dative"}:
+                    misowned_roles += 1
+                elif kind != "protected-expression" and relation.lower() != str(tokens[head].get("dep", "")).lower():
+                    misowned_roles += 1
     return {
-        "longTileCountByTier": dict(long_counts),
-        "dominantTileCountByTier": dict(dominant_counts),
-        "decomposableLongTileCountByTier": dict(decomposable_counts),
+        "tileCountDistribution": dict(distribution),
+        "maxTileCount": max_chunk_count,
+        "overEightCount": len(over_eight),
+        "overEight": over_eight,
+        "longChunkCount": long_chunks,
+        "standaloneFunctionWordChunkCount": len(standalone_function_words),
+        "standaloneFunctionWordChunks": standalone_function_words[:50],
         "misownedRoleCount": misowned_roles,
-        "tierUnavailableCountByTier": dict(unavailable_counts),
-        "unexplainedTierUnavailableCount": unexplained_unavailable,
-        "manualCoarseOnlyCount": manual_coarse_only,
         "protectedOverreachCount": protected_overreach,
     }
+
 
 def main() -> None:
     if spacy.__version__ != "3.8.16":
@@ -1387,20 +1174,16 @@ def main() -> None:
     if model_version != "3.8.0":
         raise SystemExit(f"expected en_core_web_sm 3.8.0, found {model_version}")
     items = read_json(ITEMS_PATH, [])
-    overrides = read_json(OVERRIDES_PATH, {"schemaVersion": 1, "items": {}})
+    overrides = read_json(OVERRIDES_PATH, {"schemaVersion": 2, "items": {}})
     override_items = overrides.get("items", {})
+    if overrides.get("schemaVersion") != 2:
+        raise SystemExit("reorder override schemaVersion 2 required")
     if not isinstance(items, list) or len(items) != 560:
         raise SystemExit(f"expected 560 source items, found {len(items) if isinstance(items, list) else 'invalid'}")
     output_items = []
     reason_counts: Counter[str] = Counter()
-    tier_counts: Counter[str] = Counter()
-    sentence_count = 0
-    playable_sentences = 0
-    fixed_sentences = 0
-    excluded_sentences = 0
-    manual_variant_count = 0
-    protected_count = 0
-    review_required = 0
+    sentence_count = playable_sentences = fixed_sentences = excluded_sentences = 0
+    manual_override_count = protected_count = review_required = 0
     for item in items:
         item_id = str(item.get("id", ""))
         source = str(item.get("en", ""))
@@ -1415,14 +1198,13 @@ def main() -> None:
                                        quote_state_before(source, sentence.start_char))
                      for index, sentence in enumerate(parsed_sentences)]
         status, reason = classify_item(sentences)
-        output = {"itemId": item_id, "sourceHash": sha256(source), "status": status,
-                  "classificationReason": reason, "sentenceCount": len(sentences), "sentences": sentences}
-        output_items.append(output)
+        output_items.append({"itemId": item_id, "sourceHash": sha256(source), "status": status,
+                             "classificationReason": reason, "sentenceCount": len(sentences), "sentences": sentences})
         sentence_count += len(sentences)
         for sentence in sentences:
             protected_count += len(sentence["protectedConstructions"])
             if sentence.get("manualOverrideApplied"):
-                manual_variant_count += 1
+                manual_override_count += 1
             if sentence["fixedContext"]:
                 fixed_sentences += 1
             elif sentence["excludedReason"]:
@@ -1431,8 +1213,6 @@ def main() -> None:
                 reason_counts[sentence["excludedReason"]] += 1
             else:
                 playable_sentences += 1
-                for tier, variant in sentence["variants"].items():
-                    tier_counts[tier] += 1
         if reason:
             reason_counts[reason] += 1
     if len({item["itemId"] for item in output_items}) != 560:
@@ -1441,33 +1221,34 @@ def main() -> None:
         "schemaVersion": SCHEMA_VERSION,
         "source": {"path": "data/items.json", "itemCount": len(items),
                    "sha256": sha256(json.dumps(items, ensure_ascii=False, separators=(",", ":")))},
-        "parser": {"engine": "spaCy", "version": spacy.__version__,
-                   "model": "en_core_web_sm", "modelVersion": model_version,
-                   "policyVersion": POLICY_VERSION},
-        "tierRules": {tier: {"minTiles": bounds[0], "maxTiles": bounds[1]} for tier, bounds in TIERS.items()},
+        "parser": {"engine": "spaCy", "version": spacy.__version__, "model": "en_core_web_sm",
+                   "modelVersion": model_version, "policyVersion": POLICY_VERSION},
+        "partitionPolicy": {"kind": "shared", "minTiles": SHARED_MIN_TILES, "targetMaxTiles": SHARED_MAX_TILES,
+                            "levelInvariant": True, "asrReusable": True},
         "items": output_items,
     }
     report = {
-        "schemaVersion": SCHEMA_VERSION,
-        "parser": metadata["parser"],
-        "itemCount": len(output_items),
-        "itemClassification": dict(Counter(item["status"] for item in output_items)),
-        "sentenceCount": sentence_count,
-        "playableSentenceCount": playable_sentences,
-        "fixedContextSentenceCount": fixed_sentences,
-        "excludedSentenceCount": excluded_sentences,
-        "variantCountByTier": dict(tier_counts),
-        "reviewRequiredCount": review_required,
-        "excludedReasons": dict(reason_counts),
-        "manualOverrideCount": manual_variant_count,
-        "protectedConstructionCount": protected_count,
-        "crossSentenceViolationCount": 0,
+        "schemaVersion": SCHEMA_VERSION, "parser": metadata["parser"],
+        "partitionPolicy": metadata["partitionPolicy"],
+        "itemCount": len(output_items), "itemClassification": dict(Counter(item["status"] for item in output_items)),
+        "sentenceCount": sentence_count, "playableSentenceCount": playable_sentences,
+        "fixedContextSentenceCount": fixed_sentences, "excludedSentenceCount": excluded_sentences,
+        "sharedPartitionCount": playable_sentences, "reviewRequiredCount": review_required,
+        "excludedReasons": dict(reason_counts), "manualOverrideCount": manual_override_count,
+        "protectedConstructionCount": protected_count, "crossSentenceViolationCount": 0,
         "reconstructionViolationCount": 0,
+        "manualOverrideMigration": {
+            "removedLegacyTierOnlyItems": LEGACY_TIER_ONLY_OVERRIDE_IDS,
+            "remainingManualChunkOverrideCount": sum(1 for item in override_items.values()
+                for sentence in item.get("sentences", {}).values() if sentence.get("manualChunks")),
+        },
     }
     report["chunkQuality"] = chunk_quality_metrics(metadata)
     validation_errors = validate_generated_dataset(items, metadata)
     if validation_errors:
         raise SystemExit("generated reorder data failed corpus validation:\n" + "\n".join(validation_errors[:80]))
+    if report["chunkQuality"]["misownedRoleCount"] or report["chunkQuality"]["protectedOverreachCount"]:
+        raise SystemExit("shared chunk structural audit failed: " + json.dumps(report["chunkQuality"], ensure_ascii=False))
     write_json(OUTPUT_PATH, metadata)
     write_json(REPORT_PATH, report)
     print(json.dumps(report, ensure_ascii=False, indent=2))
