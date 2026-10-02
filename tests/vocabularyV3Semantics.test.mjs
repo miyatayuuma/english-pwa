@@ -48,6 +48,8 @@ test('known wrong-sense regressions stay pinned to their source expressions and 
     ['be particular about something','care_about_specific_choices','E0127','particular about it',/こだわる/,/無関心/],
     ['be jealous of something','feel_envy_toward','E0150','jealous of his wealth and status',/嫉妬/,/賞賛/],
     ['make sense','be_logical_or_understandable','E0158','make sense',/筋/,/意味不明/],
+    ['provoke','make_someone_angry_or_annoyed','E0544','provoked',/怒らせ|挑発/,/反応を引き起こす/],
+    ['interfere','disrupt_or_get_in_the_way','E0548','interfered',/邪魔|妨げ/,/干渉/],
   ];
   for(const [canonical,sense,itemId,expectedSurface,meaning,forbidden] of fixtures){
     const value=entry(canonical,sense);
