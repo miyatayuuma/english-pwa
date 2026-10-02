@@ -75,6 +75,19 @@ test('known wrong-sense regressions stay pinned to their source expressions and 
     ['come into being','begin_to_exist','E0277','come into being',/誕生|生まれ/,/消滅/],
     ['look up','improve_or_get_better','E0279','looking up',/上向|好転/,/悪化/],
     ['take someone out','take_on_a_date','E0283','take her out',/デート/,/家に留め/],
+    ['see to something','take_care_of_a_task','E0285','see to it',/処理|きちんと/,/放置/],
+    ['be around','be_nearby_or_present','E0286','is around',/そば|近く/,/不在/],
+    ['set in','unpleasant_condition_begins','E0288','set in',/始ま/,/終わ/],
+    ['lay someone off','dismiss_from_employment','E0288','were laid off',/解雇/,/雇用/],
+    ['be worried about something','feel_anxious_about','E0290','worried about something',/心配/,/安心/],
+    ['be concerned about something','feel_anxious_about','E0290','concerned about',/気に|心配/,/無関心/],
+    ['in vain','without_success','E0292','in vain',/無駄/,/成功/],
+    ['all you have to do is do something','only_required_action','E0295','All you have to do is fill in the blanks below',/だけ|さえ/,/禁止/],
+    ['get back to someone','contact_or_respond_later','E0309','get back to you',/返事/,/無視/],
+    ['have no idea','not_know_at_all','E0311','have no idea',/分から/,/知っている/],
+    ['hang around','stay_in_a_place_without_purpose','E0312','hanging around',/ぶらぶら/,/立ち去/],
+    ['sort of','somewhat_or_in_a_way','E0315','sort of',/何だか|多少/,/完全に/],
+    ['throw up','vomit','E0315','throwing up',/吐く/,/飲み込/],
   ];
   for(const [canonical,sense,itemId,expectedSurface,meaning,forbidden] of fixtures){
     const value=entry(canonical,sense);
