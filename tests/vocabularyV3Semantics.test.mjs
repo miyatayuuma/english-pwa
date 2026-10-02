@@ -50,6 +50,14 @@ test('known wrong-sense regressions stay pinned to their source expressions and 
     ['make sense','be_logical_or_understandable','E0158','make sense',/筋/,/意味不明/],
     ['provoke','make_someone_angry_or_annoyed','E0544','provoked',/怒らせ|挑発/,/反応を引き起こす/],
     ['interfere','disrupt_or_get_in_the_way','E0548','interfered',/邪魔|妨げ/,/干渉/],
+    ['perceive','notice_or_become_aware_of','E0463','perceived',/気づく|感じ取る/,/知覚する/],
+    ['critical','dangerously_serious','E0469','critical',/危機的|深刻/,/危篤/],
+    ['penetrate','go_into_or_through','E0469','penetrated',/入り込む|貫く/,/貫通する/],
+    ['cargo','goods_carried_by_transport','E0474','cargo',/貨物/,/旅客/],
+    ['inspire','give_someone_desire_or_idea_to_act','E0481','inspired',/刺激|奮い立たせ/,/命令/],
+    ['worship','show_deep_religious_respect','E0486','worships',/崇拝/,/神だけ/],
+    ['prevail','be_widespread_or_common','E0487','prevail',/広く|行われ/,/成功|勝利/],
+    ['intimate','personal_or_private','E0497','intimate',/個人的|私的/,/親密/],
   ];
   for(const [canonical,sense,itemId,expectedSurface,meaning,forbidden] of fixtures){
     const value=entry(canonical,sense);
@@ -79,4 +87,20 @@ test('retained lexical occurrences are represented once per sense with exact sou
 
 test('malformed E0483 wording does not create a guessed cost expression',()=>{
   assert.equal(db.entries.some(value=>value.occurrences.some(occurrence=>occurrence.item_id==='E0483')),false);
+});
+
+
+test('contextual glosses do not absorb surrounding negation or neighboring modifiers',()=>{
+  const fixtures=[
+    ['favor','support_or_approval','支持',/法案/],
+    ['familiar','known_to_someone','なじみのある',/ない/],
+    ['pause','brief_stop','間',/気まずい|沈黙/],
+  ];
+  for(const [canonical,sense,expected,forbidden] of fixtures){
+    const value=entry(canonical,sense);
+    assert.ok(value,`${canonical}/${sense} is present`);
+    const gloss=value.occurrences[0].contextual_meaning_ja;
+    assert.equal(gloss,expected);
+    assert.doesNotMatch(gloss,forbidden);
+  }
 });
