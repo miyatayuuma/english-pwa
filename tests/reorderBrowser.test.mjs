@@ -25,7 +25,10 @@ function buildItem({ id = 'T0001', sentences, itemText, sourceHashText = itemTex
       text: entry.text,
       fixedContext: true,
       fixedContextReason: entry.fixedContextReason ?? 'one-word-fragment',
-      variants: {},
+      chunks: [],
+      canonicalOrder: [],
+      acceptedOrders: [],
+      canonicalReconstruction: null,
     };
     const tiles = entry.tiles.map((text, tileIndex) => ({
       id: `s${sentenceIndex}-t${tileIndex}`,
@@ -40,19 +43,14 @@ function buildItem({ id = 'T0001', sentences, itemText, sourceHashText = itemTex
       separatorAfter: tileIndex + 1 < entry.tiles.length ? ' ' : '',
     }));
     const canonicalOrder = tiles.map((tile) => tile.id);
-    const variant = {
-      tier: entry.tier ?? 'foundation',
-      tiles,
-      canonicalOrder,
-      acceptedOrders: [canonicalOrder],
-      clauseScaffold: tiles.map(() => '語句'),
-      canonicalReconstruction: entry.text,
-    };
     return {
       sentenceIndex,
       text: entry.text,
       fixedContext: false,
-      variants: { [variant.tier]: variant },
+      chunks: tiles,
+      canonicalOrder,
+      acceptedOrders: [canonicalOrder],
+      canonicalReconstruction: entry.text,
     };
   });
   return {
@@ -77,7 +75,7 @@ async function newPage(viewport = { width: 390, height: 844 }) {
 }
 
 async function boot(page, fixture, level = 0) {
-  currentMetadata = { schemaVersion: 1, items: [fixture.metadataItem] };
+  currentMetadata = { schemaVersion: 2, items: [fixture.metadataItem] };
   const consoleMessages = [];
   page.on('console', (message) => consoleMessages.push(`${message.type()}: ${message.text()}`));
   const result = await page.evaluate(({ item, level }) => window.bootReorder(item, level), { item: fixture.item, level });
@@ -141,7 +139,7 @@ before(async () => {
     const url = new URL(request.url ?? '/', baseUrl ?? 'http://127.0.0.1');
     if (url.pathname === '/data/reorder-v1.json') {
       response.writeHead(200, { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' });
-      response.end(JSON.stringify(currentMetadata ?? { schemaVersion: 1, items: [] }));
+      response.end(JSON.stringify(currentMetadata ?? { schemaVersion: 2, items: [] }));
       return;
     }
     const relative = url.pathname === '/' ? 'index.html' : decodeURIComponent(url.pathname.slice(1));
@@ -343,7 +341,7 @@ browserTest('pointer drag moves a tile between zones and between answer position
 browserTest('schema or source-hash mismatch disables reordering without a word-count fallback', async () => {
   const { context, page } = await newPage();
   const fixture = basicFixture(3);
-  currentMetadata = { schemaVersion: 2, items: [fixture.metadataItem] };
+  currentMetadata = { schemaVersion: 1, items: [fixture.metadataItem] };
   await page.evaluate(({ item }) => window.bootReorder(item), { item: fixture.item });
   let state = await page.evaluate(() => window.getReorderState());
   assert.equal(state.active, false);
@@ -351,7 +349,7 @@ browserTest('schema or source-hash mismatch disables reordering without a word-c
   await closePage({ context });
 
   const next = await newPage();
-  currentMetadata = { schemaVersion: 1, items: [{ ...fixture.metadataItem, sourceHash: 'stale' }] };
+  currentMetadata = { schemaVersion: 2, items: [{ ...fixture.metadataItem, sourceHash: 'stale' }] };
   await next.page.evaluate(({ item }) => window.bootReorder(item), { item: fixture.item });
   state = await next.page.evaluate(() => window.getReorderState());
   assert.equal(state.active, false);
@@ -362,7 +360,7 @@ browserTest('schema or source-hash mismatch disables reordering without a word-c
 browserTest('the current PWA worker clears old caches and serves reorder metadata offline', async () => {
   const { context, page } = await newPage();
   const fixture = basicFixture(3);
-  currentMetadata = { schemaVersion: 1, items: [fixture.metadataItem] };
+  currentMetadata = { schemaVersion: 2, items: [fixture.metadataItem] };
   await page.evaluate(async () => {
     await caches.open('v5.54');
     await navigator.serviceWorker.register('/sw.js');
@@ -375,7 +373,7 @@ browserTest('the current PWA worker clears old caches and serves reorder metadat
     }
   });
   const online = await page.evaluate(async () => (await fetch('/data/reorder-v1.json')).json());
-  assert.equal(online.schemaVersion, 1);
+  assert.equal(online.schemaVersion, 2);
   assert.equal(await page.evaluate(() => caches.keys().then((keys) => keys.includes('v5.54'))), false);
   await context.setOffline(true);
   const offline = await page.evaluate(async () => (await fetch('/data/reorder-v1.json')).json());
