@@ -53,7 +53,7 @@ test('new word fixtures preserve source sense, part of speech, and exact inflect
     ['nevertheless','despite_what_was_just_said','adverb','E0404','Nevertheless',/それにもかかわらず/],
     ['linger','remain_for_a_long_time','verb','E0404','lingers',/残る/],
     ['shrink','become_smaller','verb','E0106','shrank',/縮む/],
-    ['alarming','causing_worry','adjective','E0032','alarming',/不安/],
+    ['alarming','causing_worry_or_alarm','adjective','E0032','alarming',/不安|憂慮/],
     ['exhausted','very_tired','adjective','E0123','exhausted',/疲れ切/],
     ['thriving','flourishing_or_successful','adjective','E0267','thriving',/盛ん/],
     ['familiar','knowledgeable_about_a_subject','adjective','E0015','familiar',/精通/],
