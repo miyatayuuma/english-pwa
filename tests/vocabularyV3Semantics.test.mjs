@@ -88,6 +88,16 @@ test('known wrong-sense regressions stay pinned to their source expressions and 
     ['hang around','stay_in_a_place_without_purpose','E0312','hanging around',/ぶらぶら/,/立ち去/],
     ['sort of','somewhat_or_in_a_way','E0315','sort of',/何だか|多少/,/完全に/],
     ['throw up','vomit','E0315','throwing up',/吐く/,/飲み込/],
+    ['refrain from something','avoid_or_abstain_from','E0321','refrain from alcohol',/控える/,/続ける/],
+    ['encourage someone to do something','give_someone_confidence_to_act','E0330','encouraged me to fulfill my ambitions',/励ます/,/妨げ/],
+    ['as of a date','starting_from_a_date','E0333','as of April 1, 2001',/日付|から/,/以前/],
+    ['be cut out for something','be_suited_to','E0336','cut out for the military',/向いて/,/不向き/],
+    ['make a living','earn_enough_to_live','E0337','make a living',/生計/,/浪費/],
+    ['toil away','work_hard_for_a_long_time','E0340','toil away',/働く/,/休む/],
+    ['give in','stop_resisting','E0341','gives in',/折れ/,/抵抗/],
+    ['make it','succeed_or_manage','E0346','make it',/うまく/,/失敗/],
+    ['from hand to mouth','with_only_enough_to_survive','E0353','from hand to mouth',/その日暮らし/,/裕福/],
+    ['by no means','definitely_not','E0354','by no means',/決して/,/確実に/],
   ];
   for(const [canonical,sense,itemId,expectedSurface,meaning,forbidden] of fixtures){
     const value=entry(canonical,sense);
