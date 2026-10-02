@@ -14,6 +14,7 @@ const items = read('data/items.json');
 const sourceById = new Map(items.map((item) => [String(item.id), item]));
 const generatedById = new Map(metadata.items.map((item) => [String(item.itemId), item]));
 const clauseRelations = new Set(['advcl', 'acl', 'acl:relcl', 'relcl', 'ccomp', 'xcomp', 'csubj', 'csubjpass']);
+const legacyOverrideItems = ['E0022', 'E0050', 'E0075', 'E0241', 'E0309', 'E0369', 'E0544'];
 
 function sentence(itemId, sentenceIndex = 0) {
   const value = generatedById.get(itemId)?.sentences?.[sentenceIndex];
@@ -21,8 +22,8 @@ function sentence(itemId, sentenceIndex = 0) {
   return value;
 }
 
-function tileAt(value, tier, tokenIndex) {
-  return value.variants?.[tier]?.tiles?.find((tile) => tile.tokenStart <= tokenIndex && tokenIndex < tile.tokenEnd);
+function chunkAt(value, tokenIndex) {
+  return value.chunks?.find((chunk) => chunk.tokenStart <= tokenIndex && tokenIndex < chunk.tokenEnd);
 }
 
 function dependencySpan(value, headIndex) {
@@ -40,22 +41,18 @@ function dependencySpan(value, headIndex) {
   return [Math.min(...selected), Math.max(...selected) + 1];
 }
 
-function tilesIntersecting(value, tier, [start, end]) {
-  return value.variants?.[tier]?.tiles?.filter((tile) => tile.tokenStart < end && tile.tokenEnd > start) ?? [];
+function chunksIntersecting(value, [start, end]) {
+  return value.chunks?.filter((chunk) => chunk.tokenStart < end && chunk.tokenEnd > start) ?? [];
 }
 
-function assertSplit(value, tier, span, minimumTiles = 2) {
-  const selected = tilesIntersecting(value, tier, span);
-  assert.ok(selected.length >= minimumTiles, `${tier} leaves a nested constituent in one tile: ${selected.map((tile) => tile.text).join(' / ')}`);
+function assertSplit(value, span, minimumChunks = 2) {
+  const selected = chunksIntersecting(value, span);
+  assert.ok(selected.length >= minimumChunks,
+    `shared partition leaves a nested constituent in one chunk: ${selected.map((chunk) => chunk.text).join(' / ')}`);
   return selected;
 }
 
-const chunkQualityCases = [
-  ['E0110', 0], ['E0050', 0], ['E0462', 0], ['E0018', 0],
-  ['E0033', 0], ['E0141', 0], ['E0161', 0],
-];
-
-test('the pre-change audit cohort is retained as a 67-sentence regression fixture', () => {
+test('the pre-change 67-sentence audit cohort remains archived as migration evidence', () => {
   assert.equal(baseline.baselineMainSha, 'b370462dc7a9a1c3d5193752dd2752b91d3a74f7');
   assert.equal(baseline.baselineMetadataSha256, '61c4bdbe8eca6a0211f579b78710c13269d5d0a50a64d4138b13faa7dd26e73a');
   assert.equal(baseline.priorAuditCounts.flaggedUniqueSentences, 67);
@@ -65,17 +62,52 @@ test('the pre-change audit cohort is retained as a 67-sentence regression fixtur
   for (const entry of baseline.sentences) {
     const source = sourceById.get(entry.itemId)?.en;
     assert.ok(source, `missing source item ${entry.itemId}`);
-    assert.equal(generatedById.get(entry.itemId)?.sentences?.[entry.sentenceIndex]?.text, entry.text);
-    assert.equal(entry.text, baseline.sentences.find((candidate) => candidate.itemId === entry.itemId
-      && candidate.sentenceIndex === entry.sentenceIndex)?.text);
+    assert.equal(sentence(entry.itemId, entry.sentenceIndex).text, entry.text);
     assert.ok(source.includes(entry.text), `baseline text is not in source ${entry.itemId}`);
-    const archived = entry.baselineSentenceRecord;
-    assert.equal(archived.text, entry.text);
-    const projected = Object.fromEntries(Object.entries(archived.variants).map(([tier, variant]) => [tier,
-      variant.tiles.map((tile) => ({ text: tile.text, tokenStart: tile.tokenStart, tokenEnd: tile.tokenEnd,
-        role: tile.role, dependency: tile.dependency }))]));
-    assert.deepEqual(entry.baselineVariants, projected, `incomplete archived variants for ${entry.itemId}/${entry.sentenceIndex}`);
+    assert.equal(entry.baselineSentenceRecord.text, entry.text);
   }
+});
+
+test('the shared partition removes tier authority everywhere', () => {
+  assert.equal(metadata.schemaVersion, 2);
+  assert.deepEqual(metadata.partitionPolicy, {
+    kind: 'shared',
+    minTiles: 2,
+    targetMaxTiles: 8,
+    levelInvariant: true,
+    asrReusable: true,
+  });
+  assert.equal(Object.hasOwn(metadata, 'tierRules'), false);
+  let playable = 0;
+  for (const item of metadata.items) {
+    for (const value of item.sentences) {
+      assert.equal(Object.hasOwn(value, 'variants'), false, `${item.itemId}/${value.sentenceIndex} retained variants`);
+      assert.equal(Object.hasOwn(value, 'tierUnavailableReason'), false,
+        `${item.itemId}/${value.sentenceIndex} retained tierUnavailableReason`);
+      if (value.fixedContext || value.excludedReason) {
+        assert.deepEqual(value.chunks, []);
+        continue;
+      }
+      playable += 1;
+      assert.ok(value.chunks.length >= 2, `${item.itemId}/${value.sentenceIndex} has no shared partition`);
+      assert.equal(value.canonicalOrder.length, value.chunks.length);
+      assert.equal(value.acceptedOrders.some((order) => JSON.stringify(order) === JSON.stringify(value.canonicalOrder)), true);
+      assert.equal(value.chunks.map((chunk) => chunk.text + chunk.separatorAfter).join(''), value.text);
+      assert.equal(value.canonicalReconstruction, value.text);
+    }
+  }
+  assert.equal(playable, report.playableSentenceCount);
+  assert.equal(playable, report.sharedPartitionCount);
+});
+
+test('legacy Foundation-only manual corrections are no longer production authorities', () => {
+  for (const itemId of legacyOverrideItems) {
+    const value = sentence(itemId);
+    assert.equal(value.manualOverrideApplied, false, `${itemId} still depends on a legacy tier override`);
+    assert.ok(value.chunks.length >= 2, `${itemId} did not regenerate a shared partition`);
+  }
+  assert.deepEqual(report.manualOverrideMigration.removedLegacyTierOnlyItems, legacyOverrideItems);
+  assert.equal(report.manualOverrideMigration.remainingManualChunkOverrideCount, 0);
 });
 
 test('the archived long-PP cohort no longer grants PP ownership over nested clauses', () => {
@@ -94,61 +126,31 @@ test('the archived long-PP cohort no longer grants PP ownership over nested clau
             || token.dep === 'conj' && ['VERB', 'AUX'].includes(token.pos));
         if (!hadNestedClause) continue;
         auditedNestedPpSpans += 1;
-        for (const tier of ['standard', 'precision']) {
-          if (!value.variants?.[tier]) {
-            assert.ok(typeof value.tierUnavailableReason?.[tier] === 'string'
-              && value.tierUnavailableReason[tier].trim().length > 0,
-            `${entry.itemId}/${entry.sentenceIndex} has an unexplained ${tier} gap`);
-            continue;
-          }
-          assert.ok(!value.variants[tier].tiles.some((tile) => tile.ownerKind === 'pp'
-            && tile.tokenStart <= oldTile.tokenStart && tile.tokenEnd >= oldTile.tokenEnd),
-          `${entry.itemId}/${entry.sentenceIndex}/${tier} kept a nested clause inside whole-span PP ownership`);
-        }
+        assert.ok(!value.chunks.some((chunk) => chunk.ownerKind === 'pp'
+          && chunk.tokenStart <= oldTile.tokenStart && chunk.tokenEnd >= oldTile.tokenEnd),
+        `${entry.itemId}/${entry.sentenceIndex} kept a nested clause inside whole-span PP ownership`);
       }
     }
   }
   assert.ok(auditedNestedPpSpans > 0, 'the retained audit cohort contains no nested long-PP spans');
 });
 
-test('each tile reports an immutable structural owner and source dependency head', () => {
+test('each shared chunk reports a structural owner and source dependency head', () => {
   for (const item of metadata.items) {
     for (const value of item.sentences) {
-      for (const [tier, variant] of Object.entries(value.variants ?? {})) {
-        for (const tile of variant.tiles) {
-          assert.ok(typeof tile.ownerKind === 'string' && tile.ownerKind.length > 0,
-            `${item.itemId}/${value.sentenceIndex}/${tier}/${tile.id}: missing ownerKind`);
-          assert.ok(typeof tile.ownerRelation === 'string' && tile.ownerRelation.length > 0,
-            `${item.itemId}/${value.sentenceIndex}/${tier}/${tile.id}: missing ownerRelation`);
-          assert.ok(Number.isInteger(tile.ownerHead) && tile.ownerHead >= 0 && tile.ownerHead < value.tokens.length,
-            `${item.itemId}/${value.sentenceIndex}/${tier}/${tile.id}: invalid ownerHead`);
-          if (tile.ownerKind === 'pp') {
-            assert.ok(['prep', 'obl', 'agent', 'dative'].includes(tile.ownerRelation.toLowerCase()),
-              `${item.itemId}/${value.sentenceIndex}/${tier}/${tile.id}: PP has non-PP dependency owner`);
-          }
+      for (const chunk of value.chunks ?? []) {
+        assert.ok(typeof chunk.ownerKind === 'string' && chunk.ownerKind.length > 0,
+          `${item.itemId}/${value.sentenceIndex}/${chunk.id}: missing ownerKind`);
+        assert.ok(typeof chunk.ownerRelation === 'string' && chunk.ownerRelation.length > 0,
+          `${item.itemId}/${value.sentenceIndex}/${chunk.id}: missing ownerRelation`);
+        assert.ok(Number.isInteger(chunk.ownerHead) && chunk.ownerHead >= 0 && chunk.ownerHead < value.tokens.length,
+          `${item.itemId}/${value.sentenceIndex}/${chunk.id}: invalid ownerHead`);
+        if (chunk.ownerKind === 'pp') {
+          assert.ok(['prep', 'obl', 'agent', 'dative'].includes(chunk.ownerRelation.toLowerCase()),
+            `${item.itemId}/${value.sentenceIndex}/${chunk.id}: PP has non-PP dependency owner`);
         }
       }
     }
-  }
-});
-
-test('upper-tier gaps always carry a reason, and the five coarse manual overrides regain both upper tiers', () => {
-  for (const item of metadata.items) {
-    for (const value of item.sentences) {
-      if (value.fixedContext || value.excludedReason) continue;
-      for (const tier of ['foundation', 'standard', 'precision']) {
-        if (!value.variants?.[tier]) {
-          assert.ok(typeof value.tierUnavailableReason?.[tier] === 'string'
-            && value.tierUnavailableReason[tier].trim().length > 0,
-          `${item.itemId}/${value.sentenceIndex}: unexplained ${tier} unavailability`);
-        }
-      }
-    }
-  }
-  for (const [itemId, sentenceIndex] of [['E0022', 0], ['E0075', 0], ['E0241', 0], ['E0309', 0], ['E0544', 0]]) {
-    const value = sentence(itemId, sentenceIndex);
-    assert.ok(value.variants.standard, `${itemId}/${sentenceIndex} has no Standard variant`);
-    assert.ok(value.variants.precision, `${itemId}/${sentenceIndex} has no Precision variant`);
   }
 });
 
@@ -157,33 +159,27 @@ test('E0110 coordinated clause and its PP keep separate structural ownership', (
   const head = value.tokens.find((token) => token.text.toLowerCase() === 'decided').i;
   const [start, end] = dependencySpan(value, head);
   const cc = value.tokens.find((token) => token.text.toLowerCase() === 'but').i;
-  const coordSpan = [cc, end];
-  for (const tier of ['standard', 'precision']) {
-    const clauseTiles = assertSplit(value, tier, coordSpan);
-    const predicateTile = tileAt(value, tier, head);
-    assert.ok(predicateTile?.ownerParentKind === 'coordinated-clause'
-      || predicateTile?.ownerKind === 'coordinated-clause');
-    const clauseCore = clauseTiles.find((tile) => tile.ownerKind === 'coordinated-clause'
-      || tile.ownerParentKind === 'coordinated-clause');
-    assert.ok(clauseCore, `${tier} has no coordinated-clause owner for its marker/core`);
-    assert.ok(!clauseTiles.some((tile) => tile.ownerKind === 'pp'
-      && tile.tokenStart <= cc && tile.tokenEnd >= end), `${tier} gave the whole coordinated clause to PP`);
-    assert.ok(clauseTiles.every((tile) => tile.tokenEnd - tile.tokenStart < end - start), `${tier} kept the coordinated clause atomic`);
-    const rainy = value.tokens.find((token) => token.text.toLowerCase() === 'rainy').i;
-    assert.equal(tileAt(value, tier, rainy)?.ownerKind, 'pp');
-  }
+  const clauseChunks = assertSplit(value, [cc, end]);
+  const predicateChunk = chunkAt(value, head);
+  assert.ok(predicateChunk?.ownerParentKind === 'coordinated-clause'
+    || predicateChunk?.ownerKind === 'coordinated-clause');
+  assert.ok(clauseChunks.some((chunk) => chunk.ownerKind === 'coordinated-clause'
+    || chunk.ownerParentKind === 'coordinated-clause'));
+  assert.ok(!clauseChunks.some((chunk) => chunk.ownerKind === 'pp'
+    && chunk.tokenStart <= cc && chunk.tokenEnd >= end));
+  assert.ok(clauseChunks.every((chunk) => chunk.tokenEnd - chunk.tokenStart < end - start));
+  const rainy = value.tokens.find((token) => token.text.toLowerCase() === 'rainy').i;
+  assert.equal(chunkAt(value, rainy)?.ownerKind, 'pp');
 });
 
 test('E0050 adverbial clause recursively decomposes without PP ownership', () => {
   const value = sentence('E0050');
   const head = value.tokens.find((token) => token.text.toLowerCase() === 'bent').i;
-  const [start, end] = dependencySpan(value, head);
+  const [, end] = dependencySpan(value, head);
   const when = value.tokens.find((token) => token.text.toLowerCase() === 'when').i;
-  const span = [when, end];
-  const standard = assertSplit(value, 'standard', span);
-  assert.equal(tileAt(value, 'standard', head)?.ownerParentKind, 'subordinate-clause');
-  assert.ok(!standard.some((tile) => tile.ownerKind === 'pp' && tile.tokenStart <= when && tile.tokenEnd >= end));
-  assertSplit(value, 'precision', span);
+  const chunks = assertSplit(value, [when, end]);
+  assert.equal(chunkAt(value, head)?.ownerParentKind, 'subordinate-clause');
+  assert.ok(!chunks.some((chunk) => chunk.ownerKind === 'pp' && chunk.tokenStart <= when && chunk.tokenEnd >= end));
 });
 
 test('E0462 coordinated clause stays a clause while internal PPs stay local', () => {
@@ -191,29 +187,21 @@ test('E0462 coordinated clause stays a clause while internal PPs stay local', ()
   const head = value.tokens.find((token) => token.text.toLowerCase() === 'sentenced').i;
   const [, end] = dependencySpan(value, head);
   const but = value.tokens.find((token) => token.text.toLowerCase() === 'but').i;
-  for (const tier of ['standard', 'precision']) {
-    const tiles = assertSplit(value, tier, [but, end]);
-    assert.equal(tileAt(value, tier, head)?.ownerParentKind, 'coordinated-clause');
-    assert.ok(!tiles.some((tile) => tile.ownerKind === 'pp' && tile.tokenStart <= but && tile.tokenEnd >= end));
-    const crime = value.tokens.find((token) => token.text.toLowerCase() === 'crime').i;
-    assert.equal(tileAt(value, tier, crime)?.ownerKind, 'pp');
-  }
+  const chunks = assertSplit(value, [but, end]);
+  assert.equal(chunkAt(value, head)?.ownerParentKind, 'coordinated-clause');
+  assert.ok(!chunks.some((chunk) => chunk.ownerKind === 'pp' && chunk.tokenStart <= but && chunk.tokenEnd >= end));
+  const crime = value.tokens.find((token) => token.text.toLowerCase() === 'crime').i;
+  assert.equal(chunkAt(value, crime)?.ownerKind, 'pp');
 });
 
-test('E0018 exposes the relative clause nested in a real PP above Foundation', () => {
+test('E0018 exposes the relative clause nested in a real PP', () => {
   const value = sentence('E0018');
   const relHead = value.tokens.find((token) => token.dep === 'relcl').i;
-  const relSpan = dependencySpan(value, relHead);
+  assertSplit(value, dependencySpan(value, relHead));
+  const relativeOwner = chunkAt(value, relHead);
+  assert.ok(relativeOwner?.ownerKind === 'relative-clause' || relativeOwner?.ownerParentKind === 'relative-clause');
   const forToken = value.tokens.find((token) => token.text.toLowerCase() === 'for').i;
-  const foundationPp = tileAt(value, 'foundation', forToken);
-  assert.ok(foundationPp.tokenStart <= forToken && foundationPp.tokenEnd >= relSpan[1],
-    'Foundation must keep the complete PP atomic inside its containing constituent');
-  for (const tier of ['standard', 'precision']) {
-    assertSplit(value, tier, relSpan);
-    const relativeOwner = tileAt(value, tier, relHead);
-    assert.ok(relativeOwner?.ownerKind === 'relative-clause' || relativeOwner?.ownerParentKind === 'relative-clause');
-    assert.equal(tileAt(value, tier, forToken)?.ownerKind, 'pp');
-  }
+  assert.equal(chunkAt(value, forToken)?.ownerKind, 'pp');
 });
 
 test('E0033 protects only the lexical quantity plus noun core, not the relative clause', () => {
@@ -222,31 +210,23 @@ test('E0033 protects only the lexical quantity plus noun core, not the relative 
   assert.ok(protectedText.some((text) => /^a lot of vacant lots$/.test(text)), protectedText.join(' | '));
   assert.ok(protectedText.every((text) => !text.includes('which have been')));
   const relHead = value.tokens.find((token) => token.dep === 'relcl').i;
-  const relSpan = dependencySpan(value, relHead);
-  for (const tier of ['standard', 'precision']) {
-    assertSplit(value, tier, relSpan);
-    assert.equal(tileAt(value, tier, relHead)?.ownerParentKind, 'relative-clause');
+  assertSplit(value, dependencySpan(value, relHead));
+  assert.equal(chunkAt(value, relHead)?.ownerParentKind, 'relative-clause');
+});
+
+test('long embedded and infinitival clauses remain recursively decomposed', () => {
+  for (const [itemId, headWord, markerWord] of [
+    ['E0141', 'make', 'that'],
+    ['E0161', 'look', null],
+  ]) {
+    const value = sentence(itemId);
+    const head = value.tokens.find((token) => token.text.toLowerCase() === headWord).i;
+    const [start, end] = dependencySpan(value, head);
+    const startAt = markerWord ? value.tokens.find((token) => token.text.toLowerCase() === markerWord).i : start;
+    const chunks = assertSplit(value, [startAt, end]);
+    assert.ok(chunks.every((chunk) => chunk.tokenEnd - chunk.tokenStart < end - start));
+    assert.equal(chunkAt(value, head)?.ownerParentKind, 'subordinate-clause');
   }
-});
-
-test('E0141 Precision recursively decomposes the long embedded clause', () => {
-  const value = sentence('E0141');
-  const head = value.tokens.find((token) => token.text.toLowerCase() === 'make').i;
-  const [start, end] = dependencySpan(value, head);
-  const that = value.tokens.find((token) => token.text.toLowerCase() === 'that').i;
-  const tiles = assertSplit(value, 'precision', [that, end]);
-  assert.ok(tiles.every((tile) => tile.tokenEnd - tile.tokenStart < end - start));
-  assert.equal(tileAt(value, 'precision', head)?.ownerParentKind, 'subordinate-clause');
-});
-
-test('E0161 Standard recursively decomposes the nested infinitival and before clauses', () => {
-  const value = sentence('E0161');
-  const look = value.tokens.find((token) => token.text.toLowerCase() === 'look').i;
-  const [, end] = dependencySpan(value, look);
-  const [start] = dependencySpan(value, look);
-  const tiles = assertSplit(value, 'standard', [start, end]);
-  assert.equal(tileAt(value, 'standard', look)?.ownerParentKind, 'subordinate-clause');
-  assert.ok(tiles.every((tile) => tile.tokenEnd - tile.tokenStart < end - start));
 });
 
 test('E0164 recursively exposes a complement clause nested inside a PP', () => {
@@ -254,43 +234,59 @@ test('E0164 recursively exposes a complement clause nested inside a PP', () => {
   const marker = value.tokens.find((token) => token.text.toLowerCase() === 'whether').i;
   const head = value.tokens.find((token) => token.text.toLowerCase() === 'is').i;
   const [, end] = dependencySpan(value, head);
-  for (const tier of ['standard', 'precision']) {
-    const nested = assertSplit(value, tier, [marker, end]);
-    assert.ok(nested.some((tile) => tile.ownerKind === 'subordinate-clause'
-      || tile.ownerParentKind === 'subordinate-clause'));
-    assert.equal(tileAt(value, tier, value.tokens.find((token) => token.text.toLowerCase() === 'over').i)?.ownerKind, 'pp');
-  }
+  const nested = assertSplit(value, [marker, end]);
+  assert.ok(nested.some((chunk) => chunk.ownerKind === 'subordinate-clause'
+    || chunk.ownerParentKind === 'subordinate-clause'));
+  assert.equal(chunkAt(value, value.tokens.find((token) => token.text.toLowerCase() === 'over').i)?.ownerKind, 'pp');
 });
 
 test('E0241 exposes both members of a correlative nominal coordination', () => {
   const value = sentence('E0241');
-  for (const tier of ['standard', 'precision']) {
-    const blessing = value.tokens.find((token) => token.text.toLowerCase() === 'blessing').i;
-    const curse = value.tokens.find((token) => token.text.toLowerCase() === 'curse').i;
-    assert.notEqual(tileAt(value, tier, blessing)?.id, tileAt(value, tier, curse)?.id,
-      `${tier} left the correlative coordination atomic`);
-    assert.equal(tileAt(value, tier, blessing)?.ownerKind, 'coordination');
-    assert.equal(tileAt(value, tier, curse)?.ownerKind, 'coordination');
+  const blessing = value.tokens.find((token) => token.text.toLowerCase() === 'blessing').i;
+  const curse = value.tokens.find((token) => token.text.toLowerCase() === 'curse').i;
+  assert.notEqual(chunkAt(value, blessing)?.id, chunkAt(value, curse)?.id,
+    'shared partition left the correlative coordination atomic');
+  assert.equal(chunkAt(value, blessing)?.ownerKind, 'coordination');
+  assert.equal(chunkAt(value, curse)?.ownerKind, 'coordination');
+});
+
+test('predicate operators are not exploded into standalone function-word chunks', () => {
+  const forbidden = new Set(['the', 'a', 'an', 'to', 'had', 'has', 'have', 'not', 'because', 'but']);
+  const offenders = [];
+  for (const item of metadata.items) {
+    for (const value of item.sentences) {
+      for (const chunk of value.chunks ?? []) {
+        const lexical = value.tokens.slice(chunk.tokenStart, chunk.tokenEnd)
+          .filter((token) => !token.isPunct && !['PUNCT', 'SYM'].includes(token.pos));
+        if (lexical.length === 1 && forbidden.has(String(lexical[0].text).toLowerCase())) {
+          offenders.push(`${item.itemId}/${value.sentenceIndex}: ${chunk.text}`);
+        }
+      }
+    }
   }
+  assert.ok(offenders.length <= 5, offenders.join('\n'));
+  assert.equal(offenders.length, report.chunkQuality.standaloneFunctionWordChunkCount);
 });
 
 test('the independent serialized-metadata audit detects a role/owner mutation', () => {
   const damaged = structuredClone(metadata);
-  const item = damaged.items.find((entry) => String(entry.itemId) === 'E0110');
-  const value = item.sentences[0];
-  const tile = tileAt(value, 'standard', value.tokens.find((token) => token.text.toLowerCase() === 'decided').i);
-  tile.role = 'pp';
+  const value = damaged.items.find((entry) => String(entry.itemId) === 'E0110').sentences[0];
+  chunkAt(value, value.tokens.find((token) => token.text.toLowerCase() === 'decided').i).role = 'pp';
   assert.ok(auditReorderChunkQuality(damaged).misownedRoleCount > 0);
 });
 
-test('chunk quality report closes structural ownership, decomposition, and protection audits', () => {
+test('chunk quality report closes ownership, decomposition, protection and tile-load audits', () => {
   const quality = report.chunkQuality;
   assert.ok(quality, 'missing chunkQuality audit report');
+  assert.deepEqual(quality, auditReorderChunkQuality(metadata));
   assert.equal(quality.misownedRoleCount, 0);
-  assert.equal(quality.decomposableLongTileCountByTier.standard, 0);
-  assert.equal(quality.decomposableLongTileCountByTier.precision, 0);
-  assert.equal(quality.unexplainedTierUnavailableCount, 0);
-  assert.equal(quality.manualCoarseOnlyCount, 0);
+  assert.equal(quality.decomposableLongChunkCount, 0);
   assert.equal(quality.protectedOverreachCount, 0);
-  assert.ok(quality.longTileCountByTier.foundation > 0, 'long Foundation tiles should remain allowed');
+  assert.equal(Object.values(quality.tileCountDistribution).reduce((sum, value) => sum + value, 0),
+    report.playableSentenceCount);
+  assert.equal(quality.tileCountDistribution['1'], 0);
+  for (const entry of quality.overEight) {
+    assert.ok(entry.tileCount > 8);
+    assert.equal(sentence(entry.itemId, entry.sentenceIndex).chunks.length, entry.tileCount);
+  }
 });
