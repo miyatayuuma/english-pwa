@@ -48,6 +48,15 @@ test('known wrong-sense regressions stay pinned to their source expressions and 
     ['be particular about something','care_about_specific_choices','E0127','particular about it',/こだわる/,/無関心/],
     ['be jealous of something','feel_envy_toward','E0150','jealous of his wealth and status',/嫉妬/,/賞賛/],
     ['make sense','be_logical_or_understandable','E0158','make sense',/筋/,/意味不明/],
+    ['go wrong','develop_a_problem','E0171','gone wrong',/うまくいか|おかしく/,/正しい/],
+    ['be composed of something','be_made_up_of','E0175','composed of hydrogen and oxygen',/構成/,/分解/],
+    ['show something off','display_proudly','E0177','show off her perfect figure',/見せびらか/,/隠す/],
+    ['keep something in mind','remember_or_consider','E0185','Keep in mind that youth is not eternal',/心に留め/,/忘れる/],
+    ['on earth','emphatic_why_or_how','E0186','on earth',/いったい/,/地球/],
+    ['be conscious of something','be_aware_of','E0188','conscious of annoying us',/意識/,/無自覚/],
+    ['if ever','if_at_all','E0192','if ever',/あるとしても/,/頻繁/],
+    ['think much of something','have_high_opinion','E0197','think much of them',/高く評価/,/低く評価/],
+    ['give out','come_to_an_end_or_fail','E0199','gave out',/尽きる/,/配る/],
   ];
   for(const [canonical,sense,itemId,expectedSurface,meaning,forbidden] of fixtures){
     const value=entry(canonical,sense);
