@@ -68,7 +68,7 @@ test('the pre-change audit cohort is retained as a 67-sentence regression fixtur
   for (const entry of baseline.sentences) {
     const source = sourceById.get(entry.itemId)?.en;
     assert.ok(source, `missing source item ${entry.itemId}`);
-    assert.equal(generatedById.get(entry.itemId)?.sentences?.[entry.sentenceIndex]?.text, entry.text);
+    assert.equal(generatedById.get(entry.itemId)?.sentences?.[entry.sentenceIndex]?.text, sourceIntegrityRepairs.get(entry.itemId) ?? entry.text);
     assert.equal(entry.text, baseline.sentences.find((candidate) => candidate.itemId === entry.itemId
       && candidate.sentenceIndex === entry.sentenceIndex)?.text);
     assert.ok(source.includes(sourceIntegrityRepairs.get(entry.itemId) ?? entry.text), `baseline text is not in source ${entry.itemId}`);
