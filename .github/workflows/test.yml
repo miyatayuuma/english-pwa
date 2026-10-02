@@ -47,7 +47,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: \${{ github.head_ref || github.ref_name }}
+          ref: fix/vocab-source-sentence-integrity
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -75,7 +75,7 @@ jobs:
             echo "Reorder artifacts already current."
           else
             git commit -m "Sync reorder metadata after source repairs"
-            git push origin HEAD:${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}
+            git push origin HEAD:fix/vocab-source-sentence-integrity
           fi
       - name: Validate the full corpus and gold fixtures
         run: |
