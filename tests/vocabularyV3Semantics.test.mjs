@@ -98,6 +98,17 @@ test('known wrong-sense regressions stay pinned to their source expressions and 
     ['make it','succeed_or_manage','E0346','make it',/うまく/,/失敗/],
     ['from hand to mouth','with_only_enough_to_survive','E0353','from hand to mouth',/その日暮らし/,/裕福/],
     ['by no means','definitely_not','E0354','by no means',/決して/,/確実に/],
+    ['be hard up','have_little_money','E0355','hard up',/金欠/,/裕福/],
+    ['work out','turn_out_well','E0362','work out',/うまく/,/失敗/],
+    ['make heads or tails of something','understand_something','E0367','make heads or tails of them',/理解/,/混乱/],
+    ['behind someone\'s back','without_someone_knowing','E0374','behind his back',/隠れて/,/面前/],
+    ['on the contrary','introduce_opposite_view','E0375','On the contrary',/それどころか/,/同意/],
+    ['make up one\'s mind','decide_firmly','E0377','made up my mind',/決心/,/迷/],
+    ['get by','manage_to_survive_or_continue','E0378','get by',/何とか/,/失敗/],
+    ['be sick of something','be_tired_of','E0382','sick of it',/うんざり/,/満足/],
+    ['in need','needing_help','E0385','in need',/困って/,/裕福/],
+    ['sell out','all_goods_are_sold','E0387','sold out',/売り切/,/在庫/],
+    ['be referred to as someone or something','be_called_by_a_name','E0388','referred to as a man of integrity',/呼ばれ/,/無名/],
   ];
   for(const [canonical,sense,itemId,expectedSurface,meaning,forbidden] of fixtures){
     const value=entry(canonical,sense);
