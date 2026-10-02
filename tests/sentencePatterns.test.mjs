@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { applySentencePatternAnalysis, sentencePatternReportPatch, validateSentencePatternAnalysis } from '../scripts/tagging/sentencePatternApplication.mjs';
@@ -54,4 +55,10 @@ test('rejects internally inconsistent analysis summaries',()=>{
   const stale=structuredClone(analysis);
   stale.summary.main_accepted=2;
   assert.ok(validateSentencePatternAnalysis(items,stale).some(error=>error==='analysis summary main coverage mismatch'));
+});
+
+test('committed sentence-pattern analysis matches the current source corpus',()=>{
+  const corpusItems=JSON.parse(fs.readFileSync(new URL('../data/items.json',import.meta.url),'utf8'));
+  const corpusAnalysis=JSON.parse(fs.readFileSync(new URL('../data/sentence-pattern-analysis.json',import.meta.url),'utf8'));
+  assert.deepEqual(validateSentencePatternAnalysis(corpusItems,corpusAnalysis),[]);
 });
