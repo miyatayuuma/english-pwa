@@ -8,7 +8,6 @@ import {
   recordWrongAttempt,
   markSentenceComplete,
   restorePuzzle,
-  selectReorderVariant,
 } from '../reorder/reorderCore.js';
 import { reduceReorderResult } from './reorderGrading.js';
 
@@ -111,7 +110,6 @@ export function createReorderGuide({
     if (composeGuideEl) {
       composeGuideEl.classList.remove('show', 'is-complete');
       composeGuideEl.setAttribute('aria-hidden', 'true');
-      delete composeGuideEl.dataset.tier;
     }
     note(noteDefault);
     onStageChange({ active: false, complete: false, disabledReason: '' });
@@ -132,7 +130,7 @@ export function createReorderGuide({
     if (history.length > 40) history.shift();
   };
 
-  const getTile = (tileId) => currentRow()?.variant.tiles.find((tile) => tile.id === tileId) ?? null;
+  const getTile = (tileId) => currentRow()?.sentence.chunks.find((chunk) => chunk.id === tileId) ?? null;
 
   const tileButton = (tileId, zone) => {
     const tile = getTile(tileId);
@@ -236,7 +234,7 @@ export function createReorderGuide({
     puzzleState = {
       ...puzzleState,
       bank: [],
-      answer: row.variant.canonicalOrder.slice(),
+      answer: row.sentence.canonicalOrder.slice(),
       status: 'revealed',
     };
     renderSyntax(row);
@@ -296,7 +294,6 @@ export function createReorderGuide({
         composeContextEl.appendChild(line);
       }
     }
-    if (composeGuideEl) composeGuideEl.dataset.tier = row.variant.tier;
     if (composeControlsEl) createControls();
     note('');
     feedback('');
@@ -408,7 +405,7 @@ export function createReorderGuide({
   globalThis.addEventListener?.('pointerup', handlePointerUp);
   globalThis.addEventListener?.('pointercancel', handlePointerUp);
 
-  async function setup(item, bestLevel = 0) {
+  async function setup(item) {
     clear();
     disabledReason = '';
     const taskType = String(item?.taskType ?? '').toLowerCase();
@@ -429,11 +426,10 @@ export function createReorderGuide({
           staged.push({ sentence, fixedContext: true });
           continue;
         }
-        const selected = selectReorderVariant(sentence, bestLevel);
-        if (!selected) throw new Error('no usable variant');
-        const state = createPuzzleState(selected.variant);
+        if (!Array.isArray(sentence.chunks) || sentence.chunks.length < 2) throw new Error('no usable shared partition');
+        const state = createPuzzleState(sentence);
         if (!state) throw new Error('no safe wrong initial order');
-        staged.push({ sentence, variant: selected.variant, tier: selected.tier, initialState: state });
+        staged.push({ sentence, initialState: state });
       }
       const puzzleEntries = staged.filter((entry) => !entry.fixedContext);
       if (!puzzleEntries.length) {
