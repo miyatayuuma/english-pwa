@@ -16,14 +16,17 @@ test('known wrong-sense regressions stay pinned to their source expressions and 
     ['make someone do something','causative_make','E0130','make her sign',/人に.*させる/,/成功/],
     ['be beside oneself','extremely_upset','E0010','beside himself',/取り乱/,/比較/],
     ['sound asleep','sleeping_deeply','E0523','sound asleep',/ぐっすり|熟睡/,/音/],
-    ['twist your ankle','sprain_an_ankle','E0190','twisted his ankle',/捻挫/,/ツイスト/],
+    ['twist your ankle','injure_ankle_by_twisting','E0190','twisted his ankle',/ひねる/,/捻挫|ツイスト/],
     ['assume that','take_as_true','E0227','assume that',/考える|仮定/,/自分のもの|奪い/],
     ['job interview','employment_interview','E0366','job interview',/就職面接/,/面会/],
     ['turn someone down','reject_a_person_or_offer','E0178','turned me down',/断る/,/弱める/],
     ['put your gloves on','put_on_gloves','E0189','put my gloves on',/手袋をはめる/,/飢え/],
     ['be starved','very_hungry','E0560','starved',/お腹.*ぺこぺこ/,/飢えさせる/],
     ['so childish that','so_adjective_that_result','E0371','so childish that',/子供っぽい/,/目的/],
-    ['come out','be_published','E0012','come out',/刊行|発売/,/結果が出る/],
+    ['come out','be_published','E0012','come out',/出る/,/結果が出る/],
+    ['take it easy','relax_or_not_worry','E0002','Take it easy',/気楽/,/世話/],
+    ['let go of something','stop_holding_or_clinging','E0003','Let go of your negative outlook on life',/手放す/,/許す/],
+    ['give off something','emit_smell_or_light','E0007','giving off a subtle scent of perfume',/発する/,/諦め/],
   ];
   for(const [canonical,sense,itemId,expectedSurface,meaning,forbidden] of fixtures){
     const value=entry(canonical,sense);
