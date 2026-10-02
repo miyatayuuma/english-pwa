@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "grammarFixtures": [
     {
       "id": "g01-sv",
@@ -57,8 +57,7 @@
       "category": "negative",
       "text": "She did not answer.",
       "assert": {
-        "hasNegation": true,
-        "precisionHasSeparateNot": true
+        "hasNegation": true
       }
     },
     {
@@ -189,10 +188,6 @@
       "assert": {
         "relations": [
           "prt"
-        ],
-        "precisionSplit": [
-          "picked",
-          "up"
         ]
       }
     },
@@ -350,10 +345,6 @@
       "assert": {
         "relations": [
           "prt"
-        ],
-        "precisionSplit": [
-          "turned",
-          "down"
         ]
       }
     },
@@ -395,10 +386,6 @@
       "assert": {
         "playable": true,
         "chunkQuality": {
-          "tiers": [
-            "standard",
-            "precision"
-          ],
           "clauseMarker": "but",
           "ownerToken": "decided",
           "ownerKind": "coordinated-clause",
@@ -414,10 +401,6 @@
       "assert": {
         "playable": true,
         "chunkQuality": {
-          "tiers": [
-            "standard",
-            "precision"
-          ],
           "clauseMarker": "when",
           "ownerToken": "bent",
           "ownerKind": "subordinate-clause",
@@ -432,10 +415,6 @@
       "assert": {
         "playable": true,
         "chunkQuality": {
-          "tiers": [
-            "standard",
-            "precision"
-          ],
           "clauseMarker": "but",
           "ownerToken": "sentenced",
           "ownerKind": "coordinated-clause",
@@ -451,10 +430,6 @@
       "assert": {
         "playable": true,
         "chunkQuality": {
-          "tiers": [
-            "standard",
-            "precision"
-          ],
           "ppToken": "for",
           "relativeHeadToken": "are",
           "relativeOwnerKind": "relative-clause",
@@ -469,10 +444,6 @@
       "assert": {
         "playable": true,
         "chunkQuality": {
-          "tiers": [
-            "standard",
-            "precision"
-          ],
           "protectedExact": "a lot of vacant lots",
           "notProtected": "which have been",
           "relativeHeadToken": "been",
@@ -488,9 +459,6 @@
       "assert": {
         "playable": true,
         "chunkQuality": {
-          "tiers": [
-            "precision"
-          ],
           "clauseMarker": "that",
           "ownerToken": "make",
           "ownerKind": "subordinate-clause",
@@ -505,9 +473,6 @@
       "assert": {
         "playable": true,
         "chunkQuality": {
-          "tiers": [
-            "standard"
-          ],
           "ownerToken": "look",
           "ownerKind": "subordinate-clause",
           "nestedMarker": "before",
@@ -522,10 +487,6 @@
       "assert": {
         "playable": true,
         "chunkQuality": {
-          "tiers": [
-            "standard",
-            "precision"
-          ],
           "clauseMarker": "whether",
           "ownerToken": "is",
           "ownerKind": "subordinate-clause",
@@ -541,10 +502,6 @@
       "assert": {
         "playable": true,
         "chunkQuality": {
-          "tiers": [
-            "standard",
-            "precision"
-          ],
           "coordinationWords": [
             "blessing",
             "curse"
@@ -563,25 +520,13 @@
         "SV"
       ],
       "text": "\"Do you agree or disagree with him?\"",
-      "tier": "foundation",
-      "tileTexts": [
-        "\"Do",
-        "you",
-        "agree",
-        "or disagree with him?\""
-      ],
-      "tileRoles": [
-        "predicate",
-        "subject",
-        "predicate",
-        "clause"
-      ],
       "fivePattern": "SV",
       "isQuestion": false,
       "hasInversion": true,
       "clauseRelations": [],
       "constructionKinds": [],
-      "protectedTexts": []
+      "protectedTexts": [],
+      "sharedPartition": true
     },
     {
       "itemId": "E0228",
@@ -590,23 +535,13 @@
         "SV"
       ],
       "text": "The astronauts were greeted with spontaneous applause.",
-      "tier": "foundation",
-      "tileTexts": [
-        "The astronauts",
-        "were greeted",
-        "with spontaneous applause."
-      ],
-      "tileRoles": [
-        "subject",
-        "predicate",
-        "pp"
-      ],
       "fivePattern": "SV",
       "isQuestion": false,
       "hasInversion": false,
       "clauseRelations": [],
       "constructionKinds": [],
-      "protectedTexts": []
+      "protectedTexts": [],
+      "sharedPartition": true
     },
     {
       "itemId": "E0366",
@@ -615,19 +550,6 @@
         "SV"
       ],
       "text": "\"How's it going, Bob?\"",
-      "tier": "foundation",
-      "tileTexts": [
-        "\"How's",
-        "it",
-        "going,",
-        "Bob?\""
-      ],
-      "tileRoles": [
-        "phrase",
-        "subject",
-        "predicate",
-        "adjunct"
-      ],
       "fivePattern": "SV",
       "isQuestion": false,
       "hasInversion": true,
@@ -637,7 +559,8 @@
       ],
       "protectedTexts": [
         "How's"
-      ]
+      ],
+      "sharedPartition": true
     },
     {
       "itemId": "E0516",
@@ -646,21 +569,13 @@
         "SV"
       ],
       "text": "\"I will.",
-      "tier": "foundation",
-      "tileTexts": [
-        "\"I",
-        "will."
-      ],
-      "tileRoles": [
-        "subject",
-        "clause"
-      ],
       "fivePattern": "SV",
       "isQuestion": false,
       "hasInversion": false,
       "clauseRelations": [],
       "constructionKinds": [],
-      "protectedTexts": []
+      "protectedTexts": [],
+      "sharedPartition": true
     },
     {
       "itemId": "E0062",
@@ -669,17 +584,6 @@
         "SVC"
       ],
       "text": "\"Hey, it's a genuine antique.\"",
-      "tier": "foundation",
-      "tileTexts": [
-        "\"Hey,",
-        "it's",
-        "a genuine antique.\""
-      ],
-      "tileRoles": [
-        "phrase",
-        "phrase",
-        "complement"
-      ],
       "fivePattern": "SVC",
       "isQuestion": false,
       "hasInversion": false,
@@ -689,7 +593,8 @@
       ],
       "protectedTexts": [
         "it's"
-      ]
+      ],
+      "sharedPartition": true
     },
     {
       "itemId": "E0182",
@@ -698,23 +603,13 @@
         "SVC"
       ],
       "text": "People should be judged not so much by how they look as by who they are.",
-      "tier": "foundation",
-      "tileTexts": [
-        "People",
-        "should be judged",
-        "not so much by how they look as by who they are."
-      ],
-      "tileRoles": [
-        "subject",
-        "predicate",
-        "complement"
-      ],
       "fivePattern": "SVC",
       "isQuestion": false,
       "hasInversion": false,
       "clauseRelations": [],
       "constructionKinds": [],
-      "protectedTexts": []
+      "protectedTexts": [],
+      "sharedPartition": true
     },
     {
       "itemId": "E0315",
@@ -723,23 +618,13 @@
         "SVC"
       ],
       "text": "\"You look pale!\"",
-      "tier": "foundation",
-      "tileTexts": [
-        "\"You",
-        "look",
-        "pale!\""
-      ],
-      "tileRoles": [
-        "subject",
-        "clause",
-        "complement"
-      ],
       "fivePattern": "SVC",
       "isQuestion": false,
       "hasInversion": false,
       "clauseRelations": [],
       "constructionKinds": [],
-      "protectedTexts": []
+      "protectedTexts": [],
+      "sharedPartition": true
     },
     {
       "itemId": "E0507",
@@ -748,27 +633,13 @@
         "SVC"
       ],
       "text": "He is not good at making friends and always keeps to himself.",
-      "tier": "foundation",
-      "tileTexts": [
-        "He",
-        "is not",
-        "good",
-        "at making friends",
-        "and always keeps to himself."
-      ],
-      "tileRoles": [
-        "subject",
-        "predicate",
-        "complement",
-        "pp",
-        "clause"
-      ],
       "fivePattern": "SVC",
       "isQuestion": false,
       "hasInversion": false,
       "clauseRelations": [],
       "constructionKinds": [],
-      "protectedTexts": []
+      "protectedTexts": [],
+      "sharedPartition": true
     },
     {
       "itemId": "E0082",
@@ -777,23 +648,13 @@
         "SVO"
       ],
       "text": "\"You flatter me!\"",
-      "tier": "foundation",
-      "tileTexts": [
-        "\"You",
-        "flatter",
-        "me!\""
-      ],
-      "tileRoles": [
-        "subject",
-        "clause",
-        "object"
-      ],
       "fivePattern": "SVO",
       "isQuestion": false,
       "hasInversion": false,
       "clauseRelations": [],
       "constructionKinds": [],
-      "protectedTexts": []
+      "protectedTexts": [],
+      "sharedPartition": true
     },
     {
       "itemId": "E0207",
@@ -802,23 +663,13 @@
         "SVO"
       ],
       "text": "\"You betrayed me!\"",
-      "tier": "foundation",
-      "tileTexts": [
-        "\"You",
-        "betrayed",
-        "me!\""
-      ],
-      "tileRoles": [
-        "subject",
-        "clause",
-        "object"
-      ],
       "fivePattern": "SVO",
       "isQuestion": false,
       "hasInversion": false,
       "clauseRelations": [],
       "constructionKinds": [],
-      "protectedTexts": []
+      "protectedTexts": [],
+      "sharedPartition": true
     },
     {
       "itemId": "E0308",
@@ -827,21 +678,6 @@
         "SVO"
       ],
       "text": "We'd better make a reservation beforehand.",
-      "tier": "foundation",
-      "tileTexts": [
-        "We'd",
-        "better",
-        "make",
-        "a reservation",
-        "beforehand."
-      ],
-      "tileRoles": [
-        "phrase",
-        "adjunct",
-        "predicate",
-        "object",
-        "adjunct"
-      ],
       "fivePattern": "SVO",
       "isQuestion": false,
       "hasInversion": false,
@@ -851,7 +687,8 @@
       ],
       "protectedTexts": [
         "We'd"
-      ]
+      ],
+      "sharedPartition": true
     },
     {
       "itemId": "E0465",
@@ -860,25 +697,13 @@
         "SVO"
       ],
       "text": "The day before yesterday he witnessed a weird incident in the wilderness.",
-      "tier": "foundation",
-      "tileTexts": [
-        "The day before yesterday",
-        "he",
-        "witnessed",
-        "a weird incident in the wilderness."
-      ],
-      "tileRoles": [
-        "adjunct",
-        "subject",
-        "clause",
-        "object"
-      ],
       "fivePattern": "SVO",
       "isQuestion": false,
       "hasInversion": false,
       "clauseRelations": [],
       "constructionKinds": [],
-      "protectedTexts": []
+      "protectedTexts": [],
+      "sharedPartition": true
     },
     {
       "itemId": "E0222",
@@ -887,27 +712,13 @@
         "SVOO"
       ],
       "text": "Can you give me a hand?\"",
-      "tier": "foundation",
-      "tileTexts": [
-        "Can",
-        "you",
-        "give",
-        "me",
-        "a hand?\""
-      ],
-      "tileRoles": [
-        "predicate",
-        "subject",
-        "predicate",
-        "indirect_object",
-        "object"
-      ],
       "fivePattern": "SVOO",
       "isQuestion": false,
       "hasInversion": true,
       "clauseRelations": [],
       "constructionKinds": [],
-      "protectedTexts": []
+      "protectedTexts": [],
+      "sharedPartition": true
     },
     {
       "itemId": "E0355",
@@ -916,27 +727,13 @@
         "SVOO"
       ],
       "text": "\"You owe me $200 altogether, Bob.",
-      "tier": "foundation",
-      "tileTexts": [
-        "\"You",
-        "owe",
-        "me",
-        "$200 altogether,",
-        "Bob."
-      ],
-      "tileRoles": [
-        "subject",
-        "clause",
-        "indirect_object",
-        "object",
-        "adjunct"
-      ],
       "fivePattern": "SVOO",
       "isQuestion": false,
       "hasInversion": false,
       "clauseRelations": [],
       "constructionKinds": [],
-      "protectedTexts": []
+      "protectedTexts": [],
+      "sharedPartition": true
     },
     {
       "itemId": "E0560",
@@ -945,19 +742,6 @@
         "SVOO"
       ],
       "text": "I'll buy you dinner.\"",
-      "tier": "foundation",
-      "tileTexts": [
-        "I'll",
-        "buy",
-        "you",
-        "dinner.\""
-      ],
-      "tileRoles": [
-        "phrase",
-        "predicate",
-        "indirect_object",
-        "object"
-      ],
       "fivePattern": "SVOO",
       "isQuestion": false,
       "hasInversion": false,
@@ -967,7 +751,8 @@
       ],
       "protectedTexts": [
         "I'll"
-      ]
+      ],
+      "sharedPartition": true
     },
     {
       "itemId": "E0117",
@@ -976,27 +761,13 @@
         "question"
       ],
       "text": "\"Can you keep an eye on my kids for a while?",
-      "tier": "foundation",
-      "tileTexts": [
-        "\"Can you",
-        "keep",
-        "an eye",
-        "on my kids",
-        "for a while?"
-      ],
-      "tileRoles": [
-        "phrase",
-        "predicate",
-        "object",
-        "pp",
-        "pp"
-      ],
       "fivePattern": null,
       "isQuestion": true,
       "hasInversion": true,
       "clauseRelations": [],
       "constructionKinds": [],
-      "protectedTexts": []
+      "protectedTexts": [],
+      "sharedPartition": true
     },
     {
       "itemId": "E0311",
@@ -1005,17 +776,6 @@
         "question"
       ],
       "text": "\"What's going on down there?",
-      "tier": "foundation",
-      "tileTexts": [
-        "\"What's",
-        "going on",
-        "down there?"
-      ],
-      "tileRoles": [
-        "phrase",
-        "predicate",
-        "adjunct"
-      ],
       "fivePattern": "SV",
       "isQuestion": true,
       "hasInversion": false,
@@ -1026,7 +786,8 @@
       ],
       "protectedTexts": [
         "What's"
-      ]
+      ],
+      "sharedPartition": true
     },
     {
       "itemId": "E0518",
@@ -1035,25 +796,13 @@
         "question"
       ],
       "text": "Can you spare a minute?",
-      "tier": "foundation",
-      "tileTexts": [
-        "Can",
-        "you",
-        "spare",
-        "a minute?"
-      ],
-      "tileRoles": [
-        "predicate",
-        "subject",
-        "predicate",
-        "adjunct"
-      ],
       "fivePattern": null,
       "isQuestion": true,
       "hasInversion": true,
       "clauseRelations": [],
       "constructionKinds": [],
-      "protectedTexts": []
+      "protectedTexts": [],
+      "sharedPartition": true
     },
     {
       "itemId": "E0064",
@@ -1062,23 +811,13 @@
         "inversion"
       ],
       "text": "\"How much is this rug?\"",
-      "tier": "foundation",
-      "tileTexts": [
-        "\"How much",
-        "is",
-        "this rug?\""
-      ],
-      "tileRoles": [
-        "complement",
-        "clause",
-        "subject"
-      ],
       "fivePattern": null,
       "isQuestion": false,
       "hasInversion": true,
       "clauseRelations": [],
       "constructionKinds": [],
-      "protectedTexts": []
+      "protectedTexts": [],
+      "sharedPartition": true
     },
     {
       "itemId": "E0201",
@@ -1087,19 +826,6 @@
         "inversion"
       ],
       "text": "\"Do you mind if I stop by your house?\"",
-      "tier": "foundation",
-      "tileTexts": [
-        "\"Do",
-        "you",
-        "mind",
-        "if I stop by your house?\""
-      ],
-      "tileRoles": [
-        "predicate",
-        "subject",
-        "predicate",
-        "clause"
-      ],
       "fivePattern": null,
       "isQuestion": false,
       "hasInversion": true,
@@ -1107,7 +833,8 @@
         "ccomp"
       ],
       "constructionKinds": [],
-      "protectedTexts": []
+      "protectedTexts": [],
+      "sharedPartition": true
     },
     {
       "itemId": "E0529",
@@ -1116,19 +843,6 @@
         "inversion"
       ],
       "text": "\"Lisa, are you getting along with Nick?\"",
-      "tier": "foundation",
-      "tileTexts": [
-        "\"Lisa,",
-        "are",
-        "you",
-        "getting along with Nick?\""
-      ],
-      "tileRoles": [
-        "adjunct",
-        "predicate",
-        "subject",
-        "phrase"
-      ],
       "fivePattern": "SV",
       "isQuestion": false,
       "hasInversion": true,
@@ -1139,7 +853,8 @@
       ],
       "protectedTexts": [
         "getting along with Nick"
-      ]
+      ],
+      "sharedPartition": true
     },
     {
       "itemId": "E0069",
@@ -1148,17 +863,6 @@
         "clause:advcl"
       ],
       "text": "While I was hanging out at the mall, I ran into Ken.",
-      "tier": "foundation",
-      "tileTexts": [
-        "While I was hanging out at the mall,",
-        "I",
-        "ran into Ken."
-      ],
-      "tileRoles": [
-        "clause",
-        "subject",
-        "phrase"
-      ],
       "fivePattern": null,
       "isQuestion": false,
       "hasInversion": false,
@@ -1171,7 +875,8 @@
       ],
       "protectedTexts": [
         "ran into Ken"
-      ]
+      ],
+      "sharedPartition": true
     },
     {
       "itemId": "E0195",
@@ -1180,21 +885,6 @@
         "clause:advcl"
       ],
       "text": "Since Bob is lazy at heart, he frequently neglects his duties.",
-      "tier": "foundation",
-      "tileTexts": [
-        "Since Bob is lazy at heart,",
-        "he",
-        "frequently",
-        "neglects",
-        "his duties."
-      ],
-      "tileRoles": [
-        "clause",
-        "subject",
-        "adjunct",
-        "clause",
-        "object"
-      ],
       "fivePattern": null,
       "isQuestion": false,
       "hasInversion": false,
@@ -1202,7 +892,8 @@
         "advcl"
       ],
       "constructionKinds": [],
-      "protectedTexts": []
+      "protectedTexts": [],
+      "sharedPartition": true
     },
     {
       "itemId": "E0377",
@@ -1211,19 +902,6 @@
         "clause:advcl"
       ],
       "text": "I've made up my mind to quit!",
-      "tier": "foundation",
-      "tileTexts": [
-        "I",
-        "'ve made up",
-        "my mind",
-        "to quit!"
-      ],
-      "tileRoles": [
-        "subject",
-        "predicate",
-        "object",
-        "clause"
-      ],
       "fivePattern": null,
       "isQuestion": false,
       "hasInversion": false,
@@ -1233,7 +911,8 @@
       "constructionKinds": [
         "separable-phrasal-verb"
       ],
-      "protectedTexts": []
+      "protectedTexts": [],
+      "sharedPartition": true
     },
     {
       "itemId": "E0511",
@@ -1242,21 +921,6 @@
         "clause:advcl"
       ],
       "text": "To tell the truth, I don't like classical music.",
-      "tier": "foundation",
-      "tileTexts": [
-        "To tell the truth,",
-        "I",
-        "don't",
-        "like",
-        "classical music."
-      ],
-      "tileRoles": [
-        "clause",
-        "subject",
-        "phrase",
-        "predicate",
-        "object"
-      ],
       "fivePattern": null,
       "isQuestion": false,
       "hasInversion": false,
@@ -1268,7 +932,8 @@
       ],
       "protectedTexts": [
         "don't"
-      ]
+      ],
+      "sharedPartition": true
     },
     {
       "itemId": "E0098",
@@ -1277,19 +942,6 @@
         "clause:xcomp"
       ],
       "text": "On behalf of all the staff, I'd like to express our sympathy for the victims.",
-      "tier": "foundation",
-      "tileTexts": [
-        "On behalf of all the staff,",
-        "I'd",
-        "like",
-        "to express our sympathy for the victims."
-      ],
-      "tileRoles": [
-        "phrase",
-        "phrase",
-        "predicate",
-        "clause"
-      ],
       "fivePattern": null,
       "isQuestion": false,
       "hasInversion": false,
@@ -1303,7 +955,8 @@
       "protectedTexts": [
         "On behalf of all the staff",
         "I'd"
-      ]
+      ],
+      "sharedPartition": true
     },
     {
       "itemId": "E0286",
@@ -1312,17 +965,6 @@
         "clause:xcomp"
       ],
       "text": "He pretends to be enthusiastic when his boss is around.",
-      "tier": "foundation",
-      "tileTexts": [
-        "He",
-        "pretends",
-        "to be enthusiastic when his boss is around."
-      ],
-      "tileRoles": [
-        "subject",
-        "clause",
-        "clause"
-      ],
       "fivePattern": null,
       "isQuestion": false,
       "hasInversion": false,
@@ -1331,7 +973,8 @@
         "xcomp"
       ],
       "constructionKinds": [],
-      "protectedTexts": []
+      "protectedTexts": [],
+      "sharedPartition": true
     },
     {
       "itemId": "E0421",
@@ -1340,21 +983,6 @@
         "clause:xcomp"
       ],
       "text": "Troops were swiftly called in to put down the riot.",
-      "tier": "foundation",
-      "tileTexts": [
-        "Troops",
-        "were",
-        "swiftly",
-        "called in",
-        "to put down the riot."
-      ],
-      "tileRoles": [
-        "subject",
-        "predicate",
-        "adjunct",
-        "predicate",
-        "clause"
-      ],
       "fivePattern": null,
       "isQuestion": false,
       "hasInversion": false,
@@ -1364,7 +992,8 @@
       "constructionKinds": [
         "separable-phrasal-verb"
       ],
-      "protectedTexts": []
+      "protectedTexts": [],
+      "sharedPartition": true
     },
     {
       "itemId": "E0076",
@@ -1373,15 +1002,6 @@
         "clause:ccomp"
       ],
       "text": "Let's take a vote.\"",
-      "tier": "foundation",
-      "tileTexts": [
-        "Let's",
-        "take a vote.\""
-      ],
-      "tileRoles": [
-        "phrase",
-        "clause"
-      ],
       "fivePattern": null,
       "isQuestion": false,
       "hasInversion": false,
@@ -1393,7 +1013,8 @@
       ],
       "protectedTexts": [
         "Let's"
-      ]
+      ],
+      "sharedPartition": true
     },
     {
       "itemId": "E0218",
@@ -1402,17 +1023,6 @@
         "clause:ccomp"
       ],
       "text": "\"I think we're lost.",
-      "tier": "foundation",
-      "tileTexts": [
-        "\"I",
-        "think",
-        "we're lost."
-      ],
-      "tileRoles": [
-        "subject",
-        "clause",
-        "clause"
-      ],
       "fivePattern": null,
       "isQuestion": false,
       "hasInversion": false,
@@ -1420,7 +1030,8 @@
         "ccomp"
       ],
       "constructionKinds": [],
-      "protectedTexts": []
+      "protectedTexts": [],
+      "sharedPartition": true
     },
     {
       "itemId": "E0470",
@@ -1429,21 +1040,6 @@
         "clause:ccomp"
       ],
       "text": "At present, it's still uncertain whether it was done deliberately or by accident.",
-      "tier": "foundation",
-      "tileTexts": [
-        "At present,",
-        "it's",
-        "still",
-        "uncertain",
-        "whether it was done deliberately or by accident."
-      ],
-      "tileRoles": [
-        "pp",
-        "phrase",
-        "adjunct",
-        "complement",
-        "clause"
-      ],
       "fivePattern": null,
       "isQuestion": false,
       "hasInversion": false,
@@ -1455,7 +1051,8 @@
       ],
       "protectedTexts": [
         "it's"
-      ]
+      ],
+      "sharedPartition": true
     },
     {
       "itemId": "E0075",
@@ -1464,15 +1061,6 @@
         "clause:relcl"
       ],
       "text": "Now that I've found that there's no one to turn to, I'll have to stand on my own two feet.",
-      "tier": "foundation",
-      "tileTexts": [
-        "Now that I've found that there's no one to turn to,",
-        "I'll have to stand on my own two feet."
-      ],
-      "tileRoles": [
-        "clause",
-        "clause"
-      ],
       "fivePattern": null,
       "isQuestion": false,
       "hasInversion": false,
@@ -1487,7 +1075,8 @@
       "protectedTexts": [
         "there's",
         "I'll"
-      ]
+      ],
+      "sharedPartition": true
     },
     {
       "itemId": "E0412",
@@ -1496,19 +1085,6 @@
         "clause:relcl"
       ],
       "text": "I'm still haunted by a vivid nightmare I had last night.",
-      "tier": "foundation",
-      "tileTexts": [
-        "I'm",
-        "still",
-        "haunted",
-        "by a vivid nightmare I had last night."
-      ],
-      "tileRoles": [
-        "phrase",
-        "adjunct",
-        "predicate",
-        "pp"
-      ],
       "fivePattern": null,
       "isQuestion": false,
       "hasInversion": false,
@@ -1520,7 +1096,8 @@
       ],
       "protectedTexts": [
         "I'm"
-      ]
+      ],
+      "sharedPartition": true
     },
     {
       "itemId": "E0345",
@@ -1529,17 +1106,6 @@
         "clause:acl"
       ],
       "text": "You should make the most of this rare opportunity to demonstrate your talent.",
-      "tier": "foundation",
-      "tileTexts": [
-        "You",
-        "should make",
-        "the most of this rare opportunity to demonstrate your talent."
-      ],
-      "tileRoles": [
-        "subject",
-        "predicate",
-        "object"
-      ],
       "fivePattern": null,
       "isQuestion": false,
       "hasInversion": false,
@@ -1547,7 +1113,8 @@
         "acl"
       ],
       "constructionKinds": [],
-      "protectedTexts": []
+      "protectedTexts": [],
+      "sharedPartition": true
     },
     {
       "itemId": "E0072",
@@ -1556,15 +1123,6 @@
         "construction:contraction"
       ],
       "text": "\"That's odd!",
-      "tier": "foundation",
-      "tileTexts": [
-        "\"That's",
-        "odd!"
-      ],
-      "tileRoles": [
-        "phrase",
-        "pp"
-      ],
       "fivePattern": null,
       "isQuestion": false,
       "hasInversion": false,
@@ -1574,7 +1132,8 @@
       ],
       "protectedTexts": [
         "That's"
-      ]
+      ],
+      "sharedPartition": true
     },
     {
       "itemId": "E0206",
@@ -1583,19 +1142,6 @@
         "construction:contraction"
       ],
       "text": "Don't get so emotional, Lisa.",
-      "tier": "foundation",
-      "tileTexts": [
-        "Don't",
-        "get",
-        "so emotional,",
-        "Lisa."
-      ],
-      "tileRoles": [
-        "phrase",
-        "predicate",
-        "complement",
-        "adjunct"
-      ],
       "fivePattern": null,
       "isQuestion": false,
       "hasInversion": false,
@@ -1605,7 +1151,8 @@
       ],
       "protectedTexts": [
         "Don't"
-      ]
+      ],
+      "sharedPartition": true
     },
     {
       "itemId": "E0342",
@@ -1614,15 +1161,6 @@
         "construction:contraction"
       ],
       "text": "I'll stand by you.",
-      "tier": "foundation",
-      "tileTexts": [
-        "I'll",
-        "stand by you."
-      ],
-      "tileRoles": [
-        "phrase",
-        "phrase"
-      ],
       "fivePattern": "SV",
       "isQuestion": false,
       "hasInversion": false,
@@ -1634,7 +1172,8 @@
       "protectedTexts": [
         "I'll",
         "stand by you"
-      ]
+      ],
+      "sharedPartition": true
     },
     {
       "itemId": "E0535",
@@ -1643,21 +1182,6 @@
         "construction:contraction"
       ],
       "text": "\"No wonder she didn't show up to see him off.\"",
-      "tier": "foundation",
-      "tileTexts": [
-        "\"No",
-        "wonder",
-        "she",
-        "didn't",
-        "show up to see him off.\""
-      ],
-      "tileRoles": [
-        "phrase",
-        "clause",
-        "clause",
-        "phrase",
-        "clause"
-      ],
       "fivePattern": null,
       "isQuestion": false,
       "hasInversion": false,
@@ -1671,7 +1195,8 @@
       ],
       "protectedTexts": [
         "didn't"
-      ]
+      ],
+      "sharedPartition": true
     },
     {
       "itemId": "E0094",
@@ -1680,17 +1205,6 @@
         "construction:separable-phrasal-verb"
       ],
       "text": "The plane blew up and plunged into the ocean, killing all the people on board.",
-      "tier": "foundation",
-      "tileTexts": [
-        "The plane",
-        "blew up",
-        "and plunged into the ocean, killing all the people on board."
-      ],
-      "tileRoles": [
-        "subject",
-        "predicate",
-        "clause"
-      ],
       "fivePattern": null,
       "isQuestion": false,
       "hasInversion": false,
@@ -1700,7 +1214,8 @@
       "constructionKinds": [
         "separable-phrasal-verb"
       ],
-      "protectedTexts": []
+      "protectedTexts": [],
+      "sharedPartition": true
     },
     {
       "itemId": "E0282",
@@ -1709,21 +1224,6 @@
         "construction:separable-phrasal-verb"
       ],
       "text": "Apparently, Nick wasn't willing to take on the task because it would just add to his burdens.",
-      "tier": "foundation",
-      "tileTexts": [
-        "Apparently,",
-        "Nick",
-        "wasn't",
-        "willing to take on the task",
-        "because it would just add to his burdens."
-      ],
-      "tileRoles": [
-        "adjunct",
-        "subject",
-        "phrase",
-        "complement",
-        "clause"
-      ],
       "fivePattern": null,
       "isQuestion": false,
       "hasInversion": false,
@@ -1737,7 +1237,8 @@
       ],
       "protectedTexts": [
         "wasn't"
-      ]
+      ],
+      "sharedPartition": true
     },
     {
       "itemId": "E0442",
@@ -1746,17 +1247,6 @@
         "construction:separable-phrasal-verb"
       ],
       "text": "The specialist predicts international tension will build up.",
-      "tier": "foundation",
-      "tileTexts": [
-        "The specialist",
-        "predicts",
-        "international tension will build up."
-      ],
-      "tileRoles": [
-        "subject",
-        "clause",
-        "clause"
-      ],
       "fivePattern": null,
       "isQuestion": false,
       "hasInversion": false,
@@ -1766,7 +1256,8 @@
       "constructionKinds": [
         "separable-phrasal-verb"
       ],
-      "protectedTexts": []
+      "protectedTexts": [],
+      "sharedPartition": true
     },
     {
       "itemId": "E0112",
@@ -1775,21 +1266,6 @@
         "construction:inseparable-phrasal-verb"
       ],
       "text": "No sooner had I sat back and relaxed than my wife asked me to do the chores.",
-      "tier": "foundation",
-      "tileTexts": [
-        "No sooner had",
-        "I sat back",
-        "and",
-        "relaxed",
-        "than my wife asked me to do the chores."
-      ],
-      "tileRoles": [
-        "phrase",
-        "phrase",
-        "clause",
-        "coordination",
-        "clause"
-      ],
       "fivePattern": null,
       "isQuestion": false,
       "hasInversion": true,
@@ -1803,7 +1279,8 @@
       ],
       "protectedTexts": [
         "sat back"
-      ]
+      ],
+      "sharedPartition": true
     },
     {
       "itemId": "E0517",
@@ -1812,17 +1289,6 @@
         "construction:inseparable-phrasal-verb"
       ],
       "text": "I'm looking forward to hearing from you.",
-      "tier": "foundation",
-      "tileTexts": [
-        "I'm",
-        "looking forward to",
-        "hearing from you."
-      ],
-      "tileRoles": [
-        "phrase",
-        "phrase",
-        "pp"
-      ],
       "fivePattern": "SV",
       "isQuestion": false,
       "hasInversion": false,
@@ -1834,7 +1300,8 @@
       "protectedTexts": [
         "I'm",
         "looking forward to"
-      ]
+      ],
+      "sharedPartition": true
     },
     {
       "itemId": "E0152",
@@ -1843,19 +1310,6 @@
         "construction:fixed-mwe"
       ],
       "text": "In spite of our compliments, he frowned and turned away.",
-      "tier": "foundation",
-      "tileTexts": [
-        "In spite of our compliments,",
-        "he",
-        "frowned",
-        "and turned away."
-      ],
-      "tileRoles": [
-        "phrase",
-        "subject",
-        "clause",
-        "clause"
-      ],
       "fivePattern": "SV",
       "isQuestion": false,
       "hasInversion": false,
@@ -1865,7 +1319,8 @@
       ],
       "protectedTexts": [
         "In spite of our compliments"
-      ]
+      ],
+      "sharedPartition": true
     },
     {
       "itemId": "E0500",
@@ -1874,21 +1329,6 @@
         "construction:fixed-mwe"
       ],
       "text": "Bob felt embarrassed when he was teased in front of some girls.",
-      "tier": "foundation",
-      "tileTexts": [
-        "Bob",
-        "felt",
-        "embarrassed",
-        "when he was teased",
-        "in front of some girls."
-      ],
-      "tileRoles": [
-        "subject",
-        "clause",
-        "complement",
-        "clause",
-        "phrase"
-      ],
       "fivePattern": null,
       "isQuestion": false,
       "hasInversion": false,
@@ -1900,7 +1340,8 @@
       ],
       "protectedTexts": [
         "in front of some girls"
-      ]
+      ],
+      "sharedPartition": true
     },
     {
       "itemId": "E0241",
@@ -1909,15 +1350,6 @@
         "construction:correlative"
       ],
       "text": "The ecologist has warned us time and again that petroleum is not only a blessing but also a curse.",
-      "tier": "foundation",
-      "tileTexts": [
-        "The ecologist has warned us time and again",
-        "that petroleum is not only a blessing but also a curse."
-      ],
-      "tileRoles": [
-        "clause",
-        "clause"
-      ],
       "fivePattern": null,
       "isQuestion": false,
       "hasInversion": false,
@@ -1930,7 +1362,8 @@
       ],
       "protectedTexts": [
         "time and again"
-      ]
+      ],
+      "sharedPartition": true
     },
     {
       "itemId": "E0093",
@@ -1939,23 +1372,13 @@
         "corpus-spread"
       ],
       "text": "Our flight to Vienna was delayed on account of a minor accident.",
-      "tier": "foundation",
-      "tileTexts": [
-        "Our flight to Vienna",
-        "was delayed",
-        "on account of a minor accident."
-      ],
-      "tileRoles": [
-        "subject",
-        "predicate",
-        "pp"
-      ],
       "fivePattern": "SV",
       "isQuestion": false,
       "hasInversion": false,
       "clauseRelations": [],
       "constructionKinds": [],
-      "protectedTexts": []
+      "protectedTexts": [],
+      "sharedPartition": true
     },
     {
       "itemId": "E0422",
@@ -1964,21 +1387,6 @@
         "corpus-spread"
       ],
       "text": "We should appeal to reason instead of resorting to violence.",
-      "tier": "foundation",
-      "tileTexts": [
-        "We",
-        "should appeal",
-        "to reason",
-        "instead of",
-        "resorting to violence."
-      ],
-      "tileRoles": [
-        "subject",
-        "predicate",
-        "pp",
-        "phrase",
-        "pp"
-      ],
       "fivePattern": "SV",
       "isQuestion": false,
       "hasInversion": false,
@@ -1988,7 +1396,8 @@
       ],
       "protectedTexts": [
         "instead of"
-      ]
+      ],
+      "sharedPartition": true
     },
     {
       "itemId": "E0276",
@@ -1997,25 +1406,13 @@
         "corpus-spread"
       ],
       "text": "In those days, the gigantic corporation had a virtual monopoly over internal commerce.",
-      "tier": "foundation",
-      "tileTexts": [
-        "In those days,",
-        "the gigantic corporation",
-        "had",
-        "a virtual monopoly over internal commerce."
-      ],
-      "tileRoles": [
-        "pp",
-        "subject",
-        "clause",
-        "object"
-      ],
       "fivePattern": "SVO",
       "isQuestion": false,
       "hasInversion": false,
       "clauseRelations": [],
       "constructionKinds": [],
-      "protectedTexts": []
+      "protectedTexts": [],
+      "sharedPartition": true
     },
     {
       "itemId": "E0009",
