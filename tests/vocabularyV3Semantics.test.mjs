@@ -10,7 +10,7 @@ function surface(value){const occurrence=value.occurrences[0],item=itemById.get(
 
 test('known wrong-sense regressions stay pinned to their source expressions and intended meanings',()=>{
   const fixtures=[
-    ['take up','occupy_space_or_time','E0020','taking up',/占める/,/再開する/],
+    ['take up','occupy_space_or_time','E0020','taking up',/取る/,/再開する/],
     ['turn something off','stop_a_device_or_flow','E0102','Turn the faucet off',/止める|切る/,/解雇する/],
     ['come across someone','meet_by_chance','E0524','came across Nick',/偶然|見かける/,/印象を与える/],
     ['make someone do something','causative_make','E0130','make her sign',/人に.*させる/,/成功/],
