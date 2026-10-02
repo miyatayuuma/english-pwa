@@ -73,6 +73,8 @@ test('known wrong-sense regressions stay pinned to their source expressions and 
     ['endangered','in_danger_of_harm_or_destruction','E0229','endangered',/危機/,/絶滅だけ/],
     ['preserve','protect_or_keep_existing','E0229','preserving',/保護|保存/,/放棄/],
     ['emission','release_of_gases_or_pollutants','E0237','emissions',/排出/,/吸収/],
+    ['genius','exceptional_ability','E0089','genius',/才能/,/天才$/],
+    ['capacity','ability_to_do_something','E0090','capacity',/能力/,/容量/],
   ];
   for(const [canonical,sense,itemId,expectedSurface,meaning,forbidden] of fixtures){
     const value=entry(canonical,sense);
@@ -119,6 +121,10 @@ test('contextual glosses do not absorb surrounding negation or neighboring modif
     ['accommodate','provide_space_for','泊める',/400|宿泊客/],
     ['risk','possibility_of_harm_or_danger','危険',/さらされ|冒す/],
     ['favor','act_of_help','親切',/頼み/],
+    ['charge','fee_for_a_service','料金',/追加/],
+    ['delay','make_something_happen_later','遅れる',/遅らせる/],
+    ['chore','routine_household_task','雑用',/家事/],
+    ['shatter','break_into_many_pieces','粉々に割れる',/粉々にする/],
   ];
   for(const [canonical,sense,expected,forbidden] of fixtures){
     const value=entry(canonical,sense);
@@ -146,6 +152,13 @@ test('major word paraphrases remain source-substitutable',()=>{
     ['precise','exact_and_accurate','exact'],
     ['conceal','hide','hide'],
     ['preserve','protect_or_keep_existing','protect'],
+    ['genuine','real_and_not_fake','authentic'],
+    ['frank','direct_and_honest','candid'],
+    ['eventually','in_the_end','ultimately'],
+    ['sensible','reasonable_and_practical','reasonable'],
+    ['defeat','win_against_in_a_contest','beat'],
+    ['endeavor','serious_effort','effort'],
+    ['exhausted','very_tired','worn out'],
   ];
   for(const [canonical,sense,paraphrase] of fixtures){
     const value=entry(canonical,sense);
