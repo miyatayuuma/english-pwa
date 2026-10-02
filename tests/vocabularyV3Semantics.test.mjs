@@ -27,6 +27,14 @@ test('known wrong-sense regressions stay pinned to their source expressions and 
     ['take it easy','relax_or_not_worry','E0002','Take it easy',/気楽/,/世話/],
     ['let go of something','stop_holding_or_clinging','E0003','Let go of your negative outlook on life',/手放す/,/許す/],
     ['give off something','emit_smell_or_light','E0007','giving off a subtle scent of perfume',/発する/,/諦め/],
+    ['keep track of something','monitor_or_record','E0026','keep track of them',/把握/,/見失/],
+    ['in all likelihood','very_probably','E0035','In all likelihood',/ほぼ間違いなく/,/可能性がない/],
+    ['have a habit of doing something','repeated_behavior','E0049','has a habit of biting his nails',/癖/,/一度だけ/],
+    ['bring about something','cause_to_happen','E0052','brought about great benefits',/引き起こす/,/防ぐ/],
+    ['be opposed to something','disagree_with_or_resist','E0057','opposed to so-called gene therapy',/反対/,/賛成/],
+    ['no way','strong_disbelief','E0062','No way',/まさか/,/同意/],
+    ['rob someone of something','deprive_by_stealing','E0071','was robbed of her purse',/奪う/,/与える/],
+    ['turn to someone','seek_help_or_support','E0075','turn to',/頼る/,/無視/],
   ];
   for(const [canonical,sense,itemId,expectedSurface,meaning,forbidden] of fixtures){
     const value=entry(canonical,sense);
