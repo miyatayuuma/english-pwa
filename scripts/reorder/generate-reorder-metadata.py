@@ -1241,6 +1241,7 @@ def main() -> None:
     reason_counts: Counter[str] = Counter()
     sentence_count = playable_sentences = fixed_sentences = excluded_sentences = 0
     manual_override_count = protected_count = review_required = 0
+    fixed_context_details: list[dict[str, Any]] = []
     for item in items:
         item_id = str(item.get("id", ""))
         source = str(item.get("en", ""))
@@ -1264,6 +1265,13 @@ def main() -> None:
                 manual_override_count += 1
             if sentence["fixedContext"]:
                 fixed_sentences += 1
+                fixed_context_details.append({
+                    "itemId": item_id,
+                    "sentenceIndex": sentence["sentenceIndex"],
+                    "text": sentence["text"],
+                    "reason": sentence.get("fixedContextReason"),
+                    "manual": bool(sentence.get("manualOverrideApplied")),
+                })
             elif sentence["excludedReason"]:
                 excluded_sentences += 1
                 review_required += 1
@@ -1289,7 +1297,8 @@ def main() -> None:
         "partitionPolicy": metadata["partitionPolicy"],
         "itemCount": len(output_items), "itemClassification": dict(Counter(item["status"] for item in output_items)),
         "sentenceCount": sentence_count, "playableSentenceCount": playable_sentences,
-        "fixedContextSentenceCount": fixed_sentences, "excludedSentenceCount": excluded_sentences,
+        "fixedContextSentenceCount": fixed_sentences, "fixedContextDetails": fixed_context_details,
+        "excludedSentenceCount": excluded_sentences,
         "sharedPartitionCount": playable_sentences, "reviewRequiredCount": review_required,
         "excludedReasons": dict(reason_counts), "manualOverrideCount": manual_override_count,
         "protectedConstructionCount": protected_count, "crossSentenceViolationCount": 0,
