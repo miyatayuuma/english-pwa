@@ -13,7 +13,8 @@ const OBJECT_RELATIONS = new Set(['obj', 'dobj', 'iobj', 'dative']);
 const STRUCTURAL_CHILD_RELATIONS = new Set([...CLAUSE_RELATIONS, ...SUBJECT_RELATIONS, ...OBJECT_RELATIONS,
   'prep', 'obl', 'agent', 'attr', 'acomp', 'oprd']);
 const PP_OWNER_RELATIONS = new Set(['prep', 'obl', 'agent', 'dative']);
-const FUNCTION_WORDS = new Set(['the', 'a', 'an', 'to', 'had', 'has', 'have', 'do', 'does', 'did', 'not', 'because', 'but', 'and', 'or']);
+const FUNCTION_POS = new Set(['DET', 'ADP', 'AUX', 'CCONJ', 'SCONJ', 'PART']);
+const FUNCTION_DEPS = new Set(['cc', 'mark', 'det', 'case', 'aux', 'aux:pass', 'auxpass', 'neg']);
 
 const hash = (value) => crypto.createHash('sha256').update(value, 'utf8').digest('hex');
 const fail = (errors, code, detail) => errors.push({ code, detail });
@@ -116,9 +117,9 @@ export function auditReorderChunkQuality(metadata) {
         }
         const lexical = tokens.slice(chunk.tokenStart, chunk.tokenEnd)
           .filter((token) => !token.isPunct && !['PUNCT', 'SYM'].includes(token.pos));
-        if (lexical.length === 1 && FUNCTION_WORDS.has(String(lexical[0].text).toLowerCase())) {
+        if (lexical.length === 1 && (FUNCTION_POS.has(lexical[0].pos) || FUNCTION_DEPS.has(lexical[0].dep))) {
           standaloneFunctionWordChunks.push({ itemId: item.itemId, sentenceIndex: sentence.sentenceIndex,
-            text: chunk.text, token: lexical[0].text });
+            text: chunk.text, token: lexical[0].text, pos: lexical[0].pos, dep: lexical[0].dep });
         }
         const ownerHead = chunk.ownerHead;
         const ownerValid = typeof chunk.ownerKind === 'string' && chunk.ownerKind.length > 0
@@ -307,7 +308,7 @@ export function validateReorderMetadata(items, metadata) {
   if (report.chunkQuality.misownedRoleCount !== 0) fail(errors, 'misowned-role', String(report.chunkQuality.misownedRoleCount));
   if (report.chunkQuality.decomposableLongChunkCount !== 0) fail(errors, 'decomposable-long-chunk', String(report.chunkQuality.decomposableLongChunkCount));
   if (report.chunkQuality.protectedOverreachCount !== 0) fail(errors, 'protected-overreach', String(report.chunkQuality.protectedOverreachCount));
-  if (report.chunkQuality.standaloneFunctionWordChunkCount > 5) fail(errors, 'function-word-singletons', String(report.chunkQuality.standaloneFunctionWordChunkCount));
+  if (report.chunkQuality.standaloneFunctionWordChunkCount !== 0) fail(errors, 'function-word-singletons', String(report.chunkQuality.standaloneFunctionWordChunkCount));
   report.failureCount = errors.length;
   return { ok: errors.length === 0, errors, report };
 }
