@@ -66,6 +66,15 @@ jobs:
         run: |
           python scripts/reorder/generate-reorder-metadata.py
           git diff --exit-code -- data/reorder-v1.json data/reorder-report.json
+      - name: Upload regenerated reorder artifacts for source-sync
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: regenerated-reorder-source-sync
+          path: |
+            data/reorder-v1.json
+            data/reorder-report.json
+          if-no-files-found: error
       - name: Validate the full corpus and gold fixtures
         run: |
           node scripts/reorder/validate-reorder-metadata.mjs
