@@ -35,6 +35,14 @@ test('known wrong-sense regressions stay pinned to their source expressions and 
     ['no way','strong_disbelief','E0062','No way',/まさか/,/同意/],
     ['rob someone of something','deprive_by_stealing','E0071','was robbed of her purse',/奪う/,/与える/],
     ['turn to someone','seek_help_or_support','E0075','turn to',/頼る/,/無視/],
+    ['make something out','understand_or_discern','E0080','make out what you were getting at',/理解|見分け/,/作り上げ/],
+    ['talk someone into doing something','persuade_someone_to_do','E0081','talked everyone into going along with my plan',/説得/,/反対/],
+    ['come up with something','think_of_an_idea','E0084','came up with an ingenious, sensible solution',/思いつく/,/捨てる/],
+    ['result in something','cause_a_result','E0088','resulted in complete failure',/結果/,/防ぐ/],
+    ['make up for something','compensate_for_a_lack','E0089','makes up for her lack of firsthand experience',/埋め合わせ|補/,/悪化/],
+    ['look into something','investigate','E0095','looking into the cause of the crash',/調べ/,/無視/],
+    ['be to blame for something','be_responsible_for_bad_result','E0099','is to blame for the disaster',/責任/,/無関係/],
+    ['no sooner did something happen than something else happened','immediate_sequence','E0112','No sooner had I sat back and relaxed than my wife asked me to do the chores',/すぐ|途端/,/同時でない/],
   ];
   for(const [canonical,sense,itemId,expectedSurface,meaning,forbidden] of fixtures){
     const value=entry(canonical,sense);
