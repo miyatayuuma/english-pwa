@@ -78,6 +78,9 @@ test('known wrong-sense regressions stay pinned to their source expressions and 
     ['dismal','very_bad_or_gloomy','E0030','dismal',/悲惨|暗い/,/明るい/],
     ['expose','subject_to_harmful_influence','E0038','exposed',/さらす/,/公開/],
     ['epidemic','widespread_outbreak_of_disease','E0047','epidemic',/流行/,/慢性/],
+    ['despise','feel_contempt_for','E0375','despise',/軽蔑/,/ひどく嫌う/],
+    ['gender','gender_category','E0004','gender',/性別|ジェンダー/,/国籍/],
+    ['regardless','without_regard_to_circumstances','E0004','regardless',/関係なく/,/性別/],
   ];
   for(const [canonical,sense,itemId,expectedSurface,meaning,forbidden] of fixtures){
     const value=entry(canonical,sense);
@@ -136,6 +139,23 @@ test('contextual glosses do not absorb surrounding negation or neighboring modif
     ['recommend','advise_that_something_is_good_or_suitable','勧める',/法的|措置/],
     ['benefit','good_effect_or_advantage','恩恵',/人類|大きな|もたら/],
     ['humanity','human_race','人類',/全体/],
+    ['absurd','ridiculous_or_unreasonable','ばかげた',/考え/],
+    ['pursue','work_toward_or_follow','追い求める',/理想/],
+    ['outcome','result_of_an_event_or_process','結果',/選挙/],
+    ['vague','unclear_or_indefinite','曖昧な',/噂/],
+    ['sufficient','enough_for_a_purpose','十分な',/証拠/],
+    ['relevant','closely_connected_to_topic','関連する',/書類/],
+    ['vivid','producing_a_clear_strong_image','生々しい',/悪夢/],
+    ['hesitate','pause_before_acting','ためらう',/侵害/],
+    ['sensitive','easily_affected_or_offended','敏感な',/批判/],
+    ['awkward','socially_uncomfortable','気まずい',/沈黙/],
+    ['ambiguous','open_to_more_than_one_interpretation','曖昧な',/返事/],
+    ['mature','behaving_like_an_adult','大人びた',/年の割/],
+    ['sophisticated','socially_polished_or_refined','洗練された',/人たち/],
+    ['cautious','careful_to_avoid_danger_or_risk','慎重な',/とても/],
+    ['novel','long_work_of_fiction','長編小説',/新しい/],
+    ['translate','express_in_another_language','翻訳する',/日本語/],
+    ['familiar','knowledgeable_about_a_subject','詳しい',/文学/],
   ];
   for(const [canonical,sense,expected,forbidden] of fixtures){
     const value=entry(canonical,sense);
@@ -185,6 +205,23 @@ test('major word paraphrases remain source-substitutable',()=>{
     ['remedy','treatment_for_illness','treatment'],
     ['humanity','human_race','humankind'],
     ['technique','method_of_doing_something','method'],
+    ['go easy on someone','be_gentle_or_lenient','be gentle with someone'],
+    ['go through a rough period','experience_difficult_time','go through a difficult time'],
+    ['do you have the time','ask_current_time','what time is it'],
+    ['irritated','annoyed_or_impatient','annoyed'],
+    ['despise','feel_contempt_for','look down on'],
+    ['absurd','ridiculous_or_unreasonable','ridiculous'],
+    ['pursue','work_toward_or_follow','seek'],
+    ['outcome','result_of_an_event_or_process','result'],
+    ['awkward','socially_uncomfortable','uncomfortable'],
+    ['sophisticated','socially_polished_or_refined','refined'],
+    ['cautious','careful_to_avoid_danger_or_risk','careful'],
+    ['grief','deep_sorrow','sorrow'],
+    ['maintain','keep_in_a_condition','keep'],
+    ['regardless','without_regard_to_circumstances','irrespective'],
+    ['subtle','difficult_to_notice','faint'],
+    ['scarcely','almost_not','hardly'],
+    ['confuse','mistake_one_thing_for_another','mix up'],
   ];
   for(const [canonical,sense,paraphrase] of fixtures){
     const value=entry(canonical,sense);
