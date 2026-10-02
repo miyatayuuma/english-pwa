@@ -147,6 +147,32 @@ test('audited batch 00501-00550 occurrences stay scoped to their exact lexical t
   }
 });
 
+test('audited batch 00551-00600 occurrences keep lexical scope and polarity local to the target',()=>{
+  const fixtures=[
+    ['at any moment','very_soon_or_without_warning','E0452','at any moment','今にも'],
+    ['meet someone halfway','compromise_with_someone','E0453','meet them halfway','相手側に歩み寄る'],
+    ['in sight','visible','E0466','in sight','視界に'],
+    ['take hold of something','grasp_or_seize','E0467','took hold of her arm','彼女の腕をつかんだ'],
+    ['in critical condition','critically_ill_or_injured','E0469','in critical condition','危篤状態で'],
+    ['catch fire','begin_to_burn','E0471','caught fire','火がついた'],
+    ['go off','bomb_explodes','E0473','went off','爆発した'],
+    ['upside down','with_top_and_bottom_reversed','E0479','upside down','上下逆さま'],
+    ['date back to a time','originate_at_a_past_time','E0480','dates back to the Meddle Ages','中世にまでさかのぼる'],
+    ['quite a few','a_surprisingly_large_number','E0492','Quite a few','かなり多くの'],
+    ['stand out','be_easily_noticed','E0494','stood out','目立った'],
+    ['be suitable for something','be_appropriate_for','E0496','suitable for the occasion','その場にふさわしい'],
+    ['comprehend','understand','E0499','comprehend','理解する'],
+    ['all the more','even_more_because_of_something','E0501','all the more','なおさら'],
+  ];
+  for(const [canonical,sense,itemId,expectedSurface,expectedContext] of fixtures){
+    const value=entry(canonical,sense);
+    assert.ok(value,`${canonical}/${sense} is present`);
+    assert.equal(value.occurrences[0].item_id,itemId);
+    assert.equal(surface(value),expectedSurface);
+    assert.equal(value.occurrences[0].contextual_meaning_ja,expectedContext);
+  }
+});
+
 test('retained lexical occurrences are represented once per sense with exact source offsets',()=>{
   const seen=new Set();
   for(const value of db.entries){
