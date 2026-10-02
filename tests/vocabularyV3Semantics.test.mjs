@@ -43,6 +43,10 @@ test('known wrong-sense regressions stay pinned to their source expressions and 
     ['look into something','investigate','E0095','looking into the cause of the crash',/調べ/,/無視/],
     ['be to blame for something','be_responsible_for_bad_result','E0099','is to blame for the disaster',/責任/,/無関係/],
     ['no sooner did something happen than something else happened','immediate_sequence','E0112','No sooner had I sat back and relaxed than my wife asked me to do the chores',/すぐ|途端/,/同時でない/],
+    ['as long as','condition_provided_that','E0127','as long as the rent is low',/でさえあれば/,/期間の長さ/],
+    ['be particular about something','care_about_specific_choices','E0127','particular about it',/こだわる/,/無関心/],
+    ['be jealous of something','feel_envy_toward','E0150','jealous of his wealth and status',/嫉妬/,/賞賛/],
+    ['make sense','be_logical_or_understandable','E0158','make sense',/筋/,/意味不明/],
   ];
   for(const [canonical,sense,itemId,expectedSurface,meaning,forbidden] of fixtures){
     const value=entry(canonical,sense);
