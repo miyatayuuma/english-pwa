@@ -14,7 +14,10 @@ const items = read('data/items.json');
 const sourceById = new Map(items.map((item) => [String(item.id), item]));
 const generatedById = new Map(metadata.items.map((item) => [String(item.itemId), item]));
 const clauseRelations = new Set(['advcl', 'acl', 'acl:relcl', 'relcl', 'ccomp', 'xcomp', 'csubj', 'csubjpass']);
-const legacyOverrideItems = ['E0022', 'E0050', 'E0075', 'E0241', 'E0309', 'E0369', 'E0544'];
+const legacyOverrideSentences = [
+  ['E0022', 0], ['E0050', 0], ['E0075', 0], ['E0241', 0],
+  ['E0309', 0], ['E0369', 1], ['E0544', 0],
+];
 
 function sentence(itemId, sentenceIndex = 0) {
   const value = generatedById.get(itemId)?.sentences?.[sentenceIndex];
@@ -101,12 +104,13 @@ test('the shared partition removes tier authority everywhere', () => {
 });
 
 test('legacy Foundation-only manual corrections are no longer production authorities', () => {
-  for (const itemId of legacyOverrideItems) {
-    const value = sentence(itemId);
-    assert.equal(value.manualOverrideApplied, false, `${itemId} still depends on a legacy tier override`);
-    assert.ok(value.chunks.length >= 2, `${itemId} did not regenerate a shared partition`);
+  for (const [itemId, sentenceIndex] of legacyOverrideSentences) {
+    const value = sentence(itemId, sentenceIndex);
+    assert.equal(value.manualOverrideApplied, false, `${itemId}/${sentenceIndex} still depends on a legacy tier override`);
+    assert.ok(value.chunks.length >= 2, `${itemId}/${sentenceIndex} did not regenerate a shared partition`);
   }
-  assert.deepEqual(report.manualOverrideMigration.removedLegacyTierOnlyItems, legacyOverrideItems);
+  assert.deepEqual(report.manualOverrideMigration.removedLegacyTierOnlyItems,
+    legacyOverrideSentences.map(([itemId]) => itemId));
   assert.equal(report.manualOverrideMigration.remainingManualChunkOverrideCount, 0);
 });
 
