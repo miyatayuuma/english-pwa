@@ -14,6 +14,7 @@ import androidx.test.uiautomator.Until;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.regex.Pattern;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -63,7 +64,7 @@ public class NativeShellGateTest {
             awaitTrue(scenario, "!!window.Capacitor?.Plugins?.NativeSpeech");
             assertEquals(PackageManager.PERMISSION_DENIED, InstrumentationRegistry.getInstrumentation().getTargetContext().checkSelfPermission(Manifest.permission.RECORD_AUDIO));
             eval(scenario, "window.__gatePermission=null; import('https://localhost/scripts/native/nativeSpeech.js').then(m=>m.getNativeSpeech()).then(p=>p.requestPermission()).then(x=>window.__gatePermission=x).catch(e=>window.__gatePermission={error:e.message}); true");
-            UiObject2 button = device.wait(Until.findObject(By.res("com.android.permissioncontroller", "permission_allow_foreground_only_button")), 15000);
+            UiObject2 button = device.wait(Until.findObject(By.res(Pattern.compile(".*:id/permission_allow_foreground_only_button"))), 15000);
             assertNotNull("Microphone system permission dialog missing: " + eval(scenario, "JSON.stringify(window.__gatePermission)"), button);
             button.click();
             awaitTrue(scenario, "window.__gatePermission?.granted === true");
