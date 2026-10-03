@@ -8,7 +8,7 @@ import {
   recordWrongAttempt,
   markSentenceComplete,
   restorePuzzle,
-  selectSharedPartition,
+  validateCanonicalVariant,
 } from '../reorder/reorderCore.js';
 import { reduceReorderResult } from './reorderGrading.js';
 
@@ -57,6 +57,28 @@ function readableSentence(sentence) {
   return (sentence?.sourceText ?? '').replace(/\s+/gu, ' ').trim();
 }
 
+function combineSentencePartitions(sentences) {
+  const partitions = [];
+  for (const sentence of sentences ?? []) {
+    const partition = sentence?.partition;
+    if (!validateCanonicalVariant(partition, sentence?.sourceText)) return null;
+    partitions.push(partition);
+  }
+  const chunks = partitions.flatMap((partition) => partition.chunks);
+  if (chunks.length < 2 || new Set(chunks.map((chunk) => chunk.id)).size !== chunks.length) return null;
+
+  let acceptedOrders = [[]];
+  for (const partition of partitions) {
+    acceptedOrders = acceptedOrders.flatMap((prefix) =>
+      partition.acceptedOrders.map((order) => [...prefix, ...order]));
+  }
+  return {
+    chunks,
+    canonicalOrder: partitions.flatMap((partition) => partition.canonicalOrder),
+    acceptedOrders,
+  };
+}
+
 export function createReorderGuide({
   composeGuideEl,
   composeTokensEl,
@@ -81,7 +103,6 @@ export function createReorderGuide({
   let suppressClickId = '';
   let sentenceIsAssisted = false;
   let fullUtteranceText = '';
-  let sourceRows = [];
   let noteDefault = composeNoteEl?.textContent ?? '';
 
   const currentRow = () => puzzleRows[puzzleIndex] ?? null;
@@ -97,7 +118,6 @@ export function createReorderGuide({
     puzzleState = null;
     history = [];
     initialBank = [];
-    sourceRows = [];
     pointer = null;
     suppressClickId = '';
     fullUtteranceText = '';
@@ -267,23 +287,7 @@ export function createReorderGuide({
     puzzleState = row.initialState;
     initialBank = puzzleState.bank.slice();
     history = [];
-    if (composeContextEl) {
-      const contextLines = sourceRows
-        .filter((entry) => entry.sentence.sentenceIndex < row.sentence.sentenceIndex)
-        .map((entry) => {
-          if (entry.fixedContext) return `固定文脈: ${readableSentence(entry.sentence)}`;
-          if (entry.result?.completed) return `完了: ${readableSentence(entry.sentence)}`;
-          return null;
-        })
-        .filter(Boolean);
-      composeContextEl.replaceChildren();
-      for (const text of contextLines) {
-        const line = document.createElement('p');
-        line.className = 'compose-context-line';
-        line.textContent = text;
-        composeContextEl.appendChild(line);
-      }
-    }
+    if (composeContextEl) composeContextEl.replaceChildren();
     if (composeControlsEl) createControls();
     note('');
     feedback('');
@@ -410,28 +414,19 @@ export function createReorderGuide({
         disabledReason = 'この文は安全な語句分割を作れないため、この項目をスキップしてください。';
         return { active: false, reason: disabledReason };
       }
-      const staged = [];
-      for (const sentence of metadata.sentences) {
-        if (sentence.fixedContext) {
-          staged.push({ sentence, fixedContext: true });
-          continue;
-        }
-        const selected = selectSharedPartition(sentence);
-        if (!selected) throw new Error('invalid shared partition');
-        const state = createPuzzleState(selected);
-        if (!state) throw new Error('no safe wrong initial order');
-        staged.push({ sentence, partition: selected, initialState: state });
-      }
-      const puzzleEntries = staged.filter((entry) => !entry.fixedContext);
-      if (!puzzleEntries.length) {
-        disabledReason = 'この項目には並べ替え可能な文がないため、この項目をスキップしてください。';
+      const combined = combineSentencePartitions(metadata.sentences);
+      if (!combined) {
+        disabledReason = 'この項目には並べ替え可能な語句がないため、この項目をスキップしてください。';
         return { active: false, reason: disabledReason };
       }
-      // Fixed-context fragments are context-only. They never become an empty
-      // puzzle turn and are revealed only after their source position is reached.
-      sourceRows = staged;
-      puzzleRows = puzzleEntries;
+      const state = createPuzzleState(combined);
+      if (!state) throw new Error('no safe wrong initial order');
       fullUtteranceText = String(item.en ?? '');
+      puzzleRows = [{
+        sentence: { sourceText: fullUtteranceText },
+        partition: combined,
+        initialState: state,
+      }];
       if (composeGuideEl) {
         composeGuideEl.classList.add('show');
         composeGuideEl.setAttribute('aria-hidden', 'false');
