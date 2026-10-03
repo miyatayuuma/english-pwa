@@ -8,7 +8,7 @@ import {
   recordWrongAttempt,
   markSentenceComplete,
   restorePuzzle,
-  selectReorderVariant,
+  selectSharedPartition,
 } from '../reorder/reorderCore.js';
 import { reduceReorderResult } from './reorderGrading.js';
 
@@ -54,7 +54,7 @@ function button(label, className, action) {
 }
 
 function readableSentence(sentence) {
-  return (sentence?.text ?? '').replace(/\s+/gu, ' ').trim();
+  return (sentence?.sourceText ?? '').replace(/\s+/gu, ' ').trim();
 }
 
 export function createReorderGuide({
@@ -111,7 +111,6 @@ export function createReorderGuide({
     if (composeGuideEl) {
       composeGuideEl.classList.remove('show', 'is-complete');
       composeGuideEl.setAttribute('aria-hidden', 'true');
-      delete composeGuideEl.dataset.tier;
     }
     note(noteDefault);
     onStageChange({ active: false, complete: false, disabledReason: '' });
@@ -132,7 +131,7 @@ export function createReorderGuide({
     if (history.length > 40) history.shift();
   };
 
-  const getTile = (tileId) => currentRow()?.variant.tiles.find((tile) => tile.id === tileId) ?? null;
+  const getTile = (tileId) => currentRow()?.partition.chunks.find((tile) => tile.id === tileId) ?? null;
 
   const tileButton = (tileId, zone) => {
     const tile = getTile(tileId);
@@ -142,11 +141,11 @@ export function createReorderGuide({
     node.className = 'compose-token';
     node.dataset.tileId = tile.id;
     node.dataset.zone = zone;
-    node.textContent = tile.text;
+    node.textContent = tile.learningText;
     node.setAttribute('aria-label', zone === 'bank'
-      ? `${tile.text}、未配置。EnterまたはSpaceで解答欄へ移動`
-      : `${tile.text}、解答。EnterまたはSpaceでバンクへ戻す。矢印キーで並べ替え`);
-    node.title = zone === 'answer' ? `${tile.text}。矢印キーで並べ替え` : `${tile.text}。EnterまたはSpaceで解答欄へ移動`;
+      ? `${tile.learningText}、未配置。EnterまたはSpaceで解答欄へ移動`
+      : `${tile.learningText}、解答。EnterまたはSpaceでバンクへ戻す。矢印キーで並べ替え`);
+    node.title = zone === 'answer' ? `${tile.learningText}。矢印キーで並べ替え` : `${tile.learningText}。EnterまたはSpaceで解答欄へ移動`;
     node.draggable = false;
     return node;
   };
@@ -236,7 +235,7 @@ export function createReorderGuide({
     puzzleState = {
       ...puzzleState,
       bank: [],
-      answer: row.variant.canonicalOrder.slice(),
+      answer: row.partition.canonicalOrder.slice(),
       status: 'revealed',
     };
     renderSyntax(row);
@@ -296,7 +295,6 @@ export function createReorderGuide({
         composeContextEl.appendChild(line);
       }
     }
-    if (composeGuideEl) composeGuideEl.dataset.tier = row.variant.tier;
     if (composeControlsEl) createControls();
     note('');
     feedback('');
@@ -408,7 +406,7 @@ export function createReorderGuide({
   globalThis.addEventListener?.('pointerup', handlePointerUp);
   globalThis.addEventListener?.('pointercancel', handlePointerUp);
 
-  async function setup(item, bestLevel = 0) {
+  async function setup(item) {
     clear();
     disabledReason = '';
     const taskType = String(item?.taskType ?? '').toLowerCase();
@@ -429,11 +427,11 @@ export function createReorderGuide({
           staged.push({ sentence, fixedContext: true });
           continue;
         }
-        const selected = selectReorderVariant(sentence, bestLevel);
-        if (!selected) throw new Error('no usable variant');
-        const state = createPuzzleState(selected.variant);
+        const selected = selectSharedPartition(sentence);
+        if (!selected) throw new Error('invalid shared partition');
+        const state = createPuzzleState(selected);
         if (!state) throw new Error('no safe wrong initial order');
-        staged.push({ sentence, variant: selected.variant, tier: selected.tier, initialState: state });
+        staged.push({ sentence, partition: selected, initialState: state });
       }
       const puzzleEntries = staged.filter((entry) => !entry.fixedContext);
       if (!puzzleEntries.length) {

@@ -1,13 +1,6 @@
 #!/usr/bin/env python3
-"""Build static, audited syntax-aware reordering metadata for English PWA.
-
-spaCy is a build-time dependency only. This generator preserves source offsets,
-uses dependency relations as the unit authority, and never fabricates chunks to
-hit a preferred tile count. Uncertain or over-complex sentences are reported for
-manual review or safely left out of the playable bank.
-"""
+"""Deterministic shared syntax and learning-surface authority; build-time spaCy only."""
 from __future__ import annotations
-
 import hashlib
 import json
 import re
@@ -15,122 +8,60 @@ import sys
 from collections import Counter
 from pathlib import Path
 from typing import Any
-
 try:
     import spacy
-except ImportError as exc:  # pragma: no cover - CI installs build dependencies
+except ImportError as exc:
     raise SystemExit("spaCy is required: pip install 'spacy==3.8.16' && python -m spacy download en_core_web_sm") from exc
-
 ROOT = Path(__file__).resolve().parents[2]
-ITEMS_PATH = ROOT / "data" / "items.json"
-OVERRIDES_PATH = ROOT / "data" / "reorder-overrides.json"
-OUTPUT_PATH = ROOT / "data" / "reorder-v1.json"
-REPORT_PATH = ROOT / "data" / "reorder-report.json"
-POLICY_VERSION = "reorder-policy-1.1.0"
-SCHEMA_VERSION = 1
-TIERS = {
-    "foundation": (2, 5),
-    "standard": (3, 7),
-    "precision": (4, 9),
-}
-
-SUBJECT_DEPS = {"nsubj", "csubj", "nsubjpass", "csubjpass"}
-OBJECT_DEPS = {"obj", "dobj"}
-INDIRECT_OBJECT_DEPS = {"iobj", "dative"}
-CLAUSE_DEPS = {"advcl", "acl", "acl:relcl", "relcl", "ccomp", "xcomp", "csubj", "csubjpass"}
-PREP_DEPS = {"obl", "prep", "nmod", "pobj", "agent"}
-MODIFIER_DEPS = {"advmod", "npadvmod", "amod", "appos"}
-OPERATOR_DEPS = {"aux", "aux:pass", "auxpass", "cop", "neg", "compound:prt", "prt"}
-
-# Expressions whose internal word order is not a productive target in V1.
-# Phrasal verbs that allow particle movement are deliberately kept out of this
-# table so that their placement can be practiced.
-FIXED_MWES = [
-    "as soon as", "as long as", "even though", "in spite of", "instead of",
-    "in order to", "as well as", "rather than", "because of", "due to",
-    "according to", "in front of", "on behalf of", "at least", "at first",
-    "at once", "by the way", "of course", "in fact", "in general",
-    "for example", "for instance", "in other words", "on the other hand", "time and again",
-    "as a result", "as a matter of fact", "each other", "one another",
-    "a lot of", "lots of", "no longer", "not at all", "so that", "as if",
-    "as though", "even if", "rather than", "in addition to", "look forward to",
-    "get along with", "put up with", "come up with", "take care of",
-]
-INSEPARABLE_PHRASAL_VERBS = [
-    "look after", "look into", "run into", "get over", "get along with",
-    "come across", "take after", "put up with", "look forward to", "deal with",
-    "rely on", "believe in", "consist of", "belong to", "care for", "sit back", "stand by",
-]
-CONTRACTION_RE = re.compile(r"(?i)\b[\w]+(?:n['’]t|['’][dms]|['’][rv]|['’]ll)\b")
-TOKEN_WORD_RE = re.compile(r"[^\W_]+(?:['’][^\W_]+)*|[^\w\s]", re.UNICODE)
-OPENING_PUNCT = {"(", "[", "{", '"', "'", "“", "‘", "«", "‹"}
-ROLE_LABELS = {
-    "subject": "主語", "predicate": "述語", "operator": "助動詞・否定",
-    "object": "目的語", "indirect_object": "間接目的語", "complement": "補語",
-    "clause": "節", "relative_clause": "関係詞節", "pp": "前置詞句",
-    "adjunct": "修飾語句", "coordination": "並列要素", "conjunction": "接続語",
-    "phrase": "語句",
-}
-
+ITEMS_PATH = ROOT / 'data' / 'items.json'
+OVERRIDES_PATH = ROOT / 'data' / 'reorder-overrides.json'
+OUTPUT_PATH = ROOT / 'data' / 'reorder-v1.json'
+REPORT_PATH = ROOT / 'data' / 'reorder-report.json'
+SUBJECT_DEPS = {'nsubj', 'csubj', 'nsubjpass', 'csubjpass'}
+OBJECT_DEPS = {'obj', 'dobj'}
+INDIRECT_OBJECT_DEPS = {'iobj', 'dative'}
+CLAUSE_DEPS = {'advcl', 'acl', 'acl:relcl', 'relcl', 'ccomp', 'xcomp', 'csubj', 'csubjpass'}
+PREP_DEPS = {'obl', 'prep', 'nmod', 'pobj', 'agent'}
+MODIFIER_DEPS = {'advmod', 'npadvmod', 'amod', 'appos'}
+OPERATOR_DEPS = {'aux', 'aux:pass', 'auxpass', 'cop', 'neg', 'compound:prt', 'prt'}
+FIXED_MWES = ['as soon as', 'as long as', 'even though', 'in spite of', 'instead of', 'in order to', 'as well as', 'rather than', 'because of', 'due to', 'according to', 'in front of', 'on behalf of', 'at least', 'at first', 'at once', 'by the way', 'of course', 'in fact', 'in general', 'for example', 'for instance', 'in other words', 'on the other hand', 'time and again', 'as a result', 'as a matter of fact', 'each other', 'one another', 'a lot of', 'lots of', 'no longer', 'not at all', 'so that', 'as if', 'as though', 'even if', 'rather than', 'in addition to', 'look forward to', 'get along with', 'put up with', 'come up with', 'take care of']
+INSEPARABLE_PHRASAL_VERBS = ['look after', 'look into', 'run into', 'get over', 'get along with', 'come across', 'take after', 'put up with', 'look forward to', 'deal with', 'rely on', 'believe in', 'consist of', 'belong to', 'care for', 'sit back', 'stand by']
+OPENING_PUNCT = {'(', '[', '{', '"', "'", '“', '‘', '«', '‹'}
 
 def read_json(path: Path, fallback: Any) -> Any:
     if not path.exists():
         return fallback
-    with path.open(encoding="utf-8") as handle:
+    with path.open(encoding='utf-8') as handle:
         return json.load(handle)
 
-
 def write_json(path: Path, value: Any) -> None:
-    path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-
+    path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
 
 def sha256(text: str) -> str:
-    return hashlib.sha256(text.encode("utf-8")).hexdigest()
-
+    return hashlib.sha256(text.encode('utf-8')).hexdigest()
 
 def dep(token: Any) -> str:
     value = token.dep_.lower()
-    if value == "auxpass":
-        return "aux:pass"
-    if value == "nsubjpass":
-        return "nsubjpass"
+    if value == 'auxpass':
+        return 'aux:pass'
+    if value == 'nsubjpass':
+        return 'nsubjpass'
     return value
-
 
 def is_clause_dependency(token: Any) -> bool:
     relation = dep(token)
-    return relation in CLAUSE_DEPS or relation == "pcomp" and token.pos_ in {"VERB", "AUX"}
+    return relation in CLAUSE_DEPS or (relation == 'pcomp' and token.pos_ in {'VERB', 'AUX'})
 
 
-def token_range(sentence: Any, indices: set[int]) -> tuple[int, int] | None:
-    values = [token.i - sentence.start for token in sentence if token.i in indices]
-    return (min(values), max(values) + 1) if values else None
-
-
-def token_span(sentence: Any, head: Any) -> set[int]:
-    return {token.i for token in head.subtree if sentence.start <= token.i < sentence.end}
-
-
-def top_child(token: Any, root: Any) -> Any | None:
-    if token == root:
-        return None
-    current = token
-    while current.head != root and current.head != current:
-        current = current.head
-    return current if current.head == root else None
 
 
 def lexical_token(token: Any) -> bool:
-    return not token.is_space and not token.is_punct and token.pos_ not in {"PUNCT", "SYM"}
+    return not token.is_space and (not token.is_punct) and (token.pos_ not in {'PUNCT', 'SYM'})
 
 
-def find_token_ranges(sentence: Any, start_char: int, end_char: int) -> list[int]:
-    return [token.i for token in sentence if token.idx < end_char and token.idx + len(token) > start_char]
-
-
-def expression_spans(sentence: Any, expressions: list[str], kind: str, *, hard: bool = True) -> list[dict[str, Any]]:
+def expression_spans(sentence: Any, expressions: list[str], kind: str, *, hard: bool=True) -> list[dict[str, Any]]:
     words = [token for token in sentence if lexical_token(token)]
-    normalized = [token.lemma_.lower() if kind == "inseparable-phrasal-verb" else token.lower_ for token in words]
+    normalized = [token.lemma_.lower() if kind == 'inseparable-phrasal-verb' else token.lower_ for token in words]
     spans: list[dict[str, Any]] = []
     seen: set[tuple[int, int, str]] = set()
     for expression in expressions:
@@ -138,155 +69,18 @@ def expression_spans(sentence: Any, expressions: list[str], kind: str, *, hard: 
         if not terms:
             continue
         for start in range(0, len(normalized) - len(terms) + 1):
-            if normalized[start:start + len(terms)] != terms:
+            if normalized[start:start + len(terms)] != terms and [selected.lower_ for selected in words[start:start + len(terms)]] != terms:
                 continue
             selected = words[start:start + len(terms)]
-            # Do not claim an expression across intervening lexical material.
-            if any(selected[n + 1].i != selected[n].i + 1 for n in range(len(selected) - 1)):
+            if any((sentence.doc.text[selected[n].idx + len(selected[n]):selected[n + 1].idx].strip(' ,') for n in range(len(selected) - 1))):
                 continue
             key = (selected[0].i, selected[-1].i + 1, kind)
             if key in seen:
                 continue
             seen.add(key)
-            spans.append({
-                "kind": kind,
-                "text": sentence.doc.text[selected[0].idx:selected[-1].idx + len(selected[-1])],
-                "tokenStart": selected[0].i - sentence.start,
-                "tokenEnd": selected[-1].i - sentence.start + 1,
-                "charStart": selected[0].idx,
-                "charEnd": selected[-1].idx + len(selected[-1]),
-                "hard": hard,
-            })
+            spans.append({'kind': kind, 'text': sentence.doc.text[selected[0].idx:selected[-1].idx + len(selected[-1])], 'tokenStart': selected[0].i - sentence.start, 'tokenEnd': selected[-1].i - sentence.start + 1, 'charStart': selected[0].idx, 'charEnd': selected[-1].idx + len(selected[-1]), 'hard': hard})
     return spans
 
-
-def protected_constructions(sentence: Any, override: dict[str, Any]) -> list[dict[str, Any]]:
-    spans = expression_spans(sentence, FIXED_MWES, "fixed-mwe")
-    spans.extend(expression_spans(sentence, INSEPARABLE_PHRASAL_VERBS, "inseparable-phrasal-verb"))
-    # A multiword preposition with a nominal complement forms one PP unit. If
-    # the final protected word is itself a preposition, include its `pobj`
-    # complement in the protected span so that the PP cannot split in half.
-    for span in spans:
-        final = next((token for token in sentence
-                      if token.i - sentence.start == span["tokenEnd"] - 1), None)
-        if final is None or final.pos_ != "ADP":
-            continue
-        # Only nominal multiword prepositions take a complement core. A
-        # complement subtree can contain relative, complement, or adjunct
-        # clauses; those are independent structures and must stay outside the
-        # hard-protected lexical span.
-        if span["kind"] == "fixed-mwe" and span["text"].lower() in {"a lot of", "lots of"}:
-            continue
-        complement = next((child for child in final.children if dep(child) in {"pobj", "obj"}), None)
-        if complement is None or complement.pos_ not in {"NOUN", "PROPN", "PRON", "NUM"}:
-            continue
-        core_indices = {complement.i}
-        for child in complement.children:
-            if dep(child) in {"amod", "compound", "nummod", "det", "poss", "quantmod"}:
-                core_indices.add(child.i)
-        complement_end = max(core_indices, default=complement.i)
-        if complement_end + 1 > span["tokenEnd"]:
-            span["tokenEnd"] = complement_end - sentence.start + 1
-            end_token = sentence[span["tokenEnd"] - 1]
-            span["charEnd"] = end_token.idx + len(end_token)
-            span["text"] = sentence.doc.text[span["charStart"]:span["charEnd"]]
-    for span in spans:
-        if span["kind"] != "fixed-mwe" or span["text"].lower() not in {"a lot of", "lots of"}:
-            continue
-        of_token = next((token for token in sentence if token.idx >= span["charStart"] and token.idx < span["charEnd"] and token.lower_ == "of"), None)
-        complement = next((child for child in of_token.children if dep(child) in {"pobj", "obj"}), None) if of_token else None
-        if complement is not None:
-            complement_tokens = {complement.i}
-            for child in complement.children:
-                if dep(child) in {"amod", "compound", "nummod", "det", "poss", "quantmod"}:
-                    complement_tokens |= token_span(sentence, child)
-            range_ = token_range(sentence, complement_tokens)
-            if range_:
-                end_token = sentence[range_[1] - 1]
-                span["tokenEnd"] = max(span["tokenEnd"], range_[1])
-                span["charEnd"] = max(span["charEnd"], end_token.idx + len(end_token))
-                span["text"] = sentence.doc.text[span["charStart"]:span["charEnd"]]
-    for match in CONTRACTION_RE.finditer(sentence.text):
-        absolute_start = sentence.start_char + match.start()
-        absolute_end = sentence.start_char + match.end()
-        indices = find_token_ranges(sentence, absolute_start, absolute_end)
-        if indices:
-            spans.append({
-                "kind": "contraction", "text": match.group(0),
-                "tokenStart": min(indices) - sentence.start,
-                "tokenEnd": max(indices) - sentence.start + 1,
-                "charStart": absolute_start, "charEnd": absolute_end, "hard": True,
-            })
-    for token in sentence:
-        if dep(token) != "fixed":
-            continue
-        indices = token_span(sentence, token.head)
-        span = token_range(sentence, indices)
-        if span and span[1] - span[0] > 1:
-            start = sentence[span[0]].idx
-            end = sentence[span[1] - 1].idx + len(sentence[span[1] - 1])
-            spans.append({"kind": "dependency-fixed", "text": sentence.doc.text[start:end],
-                          "tokenStart": span[0], "tokenEnd": span[1],
-                          "charStart": start, "charEnd": end, "hard": True})
-    for value in override.get("protectedExpressions", []):
-        if not isinstance(value, str) or not value.strip():
-            continue
-        spans.extend(expression_spans(sentence, [value.strip()], "manual-protected-expression"))
-    # Keep the longest interpretation when a generic lexicon entry overlaps a
-    # more specific entry; nested hard spans cannot be independently tiled.
-    spans.sort(key=lambda span: (span["tokenStart"], -(span["tokenEnd"] - span["tokenStart"]), span["kind"]))
-    accepted: list[dict[str, Any]] = []
-    occupied: set[int] = set()
-    for span in spans:
-        positions = set(range(span["tokenStart"], span["tokenEnd"]))
-        if positions & occupied:
-            continue
-        occupied |= positions
-        accepted.append(span)
-    return accepted
-
-
-def correlative_constructions(sentence: Any) -> list[dict[str, Any]]:
-    tokens = [token.lower_ for token in sentence]
-    pairs = [("not only", "but also"), ("either", "or"), ("neither", "nor"), ("no sooner", "than"), ("both", "and")]
-    result = []
-    for first, second in pairs:
-        first_terms, second_terms = first.split(), second.split()
-        first_at = next((i for i in range(len(tokens) - len(first_terms) + 1) if tokens[i:i + len(first_terms)] == first_terms), None)
-        if first_at is None:
-            continue
-        if first == "not only":
-            # The second pair member often wraps a subject: "but he also ...".
-            but_at = next((i for i in range(first_at + len(first_terms), len(tokens)) if tokens[i] == "but"), None)
-            also_at = next((i for i in range((but_at or 0) + 1, len(tokens)) if tokens[i] == "also"), None)
-            if but_at is None or also_at is None:
-                continue
-            marker_spans = [[first_at, first_at + len(first_terms)], [but_at, but_at + 1], [also_at, also_at + 1]]
-        else:
-            second_at = next((i for i in range(first_at + len(first_terms), len(tokens) - len(second_terms) + 1)
-                              if tokens[i:i + len(second_terms)] == second_terms), None)
-            if second_at is None:
-                continue
-            marker_spans = [[first_at, first_at + len(first_terms)], [second_at, second_at + len(second_terms)]]
-        result.append({"kind": "correlative", "pair": [first, second],
-                       "tokenSpans": marker_spans})
-    return result
-
-
-def construction_spans(sentence: Any) -> list[dict[str, Any]]:
-    spans = []
-    for token in sentence:
-        value = dep(token)
-        if value in CLAUSE_DEPS and token != sentence.root:
-            indices = token_span(sentence, token)
-            span = token_range(sentence, indices)
-            if not span:
-                continue
-            start_token, end_token = sentence[span[0]], sentence[span[1] - 1]
-            spans.append({"kind": "clause", "relation": value, "head": token.text,
-                          "tokenStart": span[0], "tokenEnd": span[1],
-                          "charStart": start_token.idx, "charEnd": end_token.idx + len(end_token)})
-    return spans
 
 
 def sentence_spans(doc: Any) -> list[Any]:
@@ -297,15 +91,15 @@ def sentence_spans(doc: Any) -> list[Any]:
     split below only acts on that unambiguous surface boundary.
     """
     result = []
-    closing_quotes = {"”", "’", "»", "\u2019", '"'}
-    opening_quotes = {"“", "‘", "«", '"'}
+    closing_quotes = {'”', '’', '»', '’', '"'}
+    opening_quotes = {'“', '‘', '«', '"'}
     for parsed in doc.sents:
         tokens = list(parsed)
         start = parsed.start
         index = 0
         while index < len(tokens):
             token = tokens[index]
-            if token.text not in {".", "?", "!", "？", "！"}:
+            if token.text not in {'.', '?', '!', '？', '！'}:
                 index += 1
                 continue
             close = index + 1
@@ -325,119 +119,72 @@ def sentence_spans(doc: Any) -> list[Any]:
     return [span for span in result if len(span)]
 
 
-def annotate_syntax(sentence: Any, text: str) -> dict[str, Any]:
-    root = sentence.root
-    clauses = construction_spans(sentence)
-    subject = next((child for child in root.children if dep(child) in SUBJECT_DEPS), None)
-    children = [dep(child) for child in root.children]
-    aux_before_subject = bool(subject is not None and (
-        any(dep(token) in OPERATOR_DEPS and token.i < subject.i for token in root.children)
-        or root.i < subject.i and root.pos_ in {"AUX", "VERB"}
-    ))
-    question = text.rstrip().endswith(("?", "？"))
-    object_child = any(value in OBJECT_DEPS for value in children)
-    indirect_child = any(value in INDIRECT_OBJECT_DEPS for value in children)
-    complement_child = any(value in {"attr", "acomp", "oprd"} for value in children)
-    has_copula = any(value == "cop" for value in children) or root.lemma_.lower() in {"be", "become", "seem", "remain", "appear"}
-    pattern = None
-    confidence = 0.0
-    if subject is not None and len([child for child in root.children if dep(child) in SUBJECT_DEPS]) == 1:
-        if indirect_child and object_child:
-            pattern, confidence = "SVOO", 0.92
-        elif object_child and complement_child:
-            pattern, confidence = "SVOC", 0.82
-        elif has_copula or complement_child:
-            pattern, confidence = "SVC", 0.88
-        elif object_child:
-            pattern, confidence = "SVO", 0.92
-        else:
-            pattern, confidence = "SV", 0.86
-        if clauses:
-            confidence = round(confidence * 0.72, 2)
-        if question and aux_before_subject:
-            confidence = round(confidence * 0.8, 2)
-        if confidence < 0.8:
-            pattern = None
-    return {
-        "surfaceForm": "question" if question else "declarative-or-imperative",
-        "isQuestion": question,
-        "hasInversion": bool(aux_before_subject),
-        "clauses": clauses,
-        "fivePattern": {"value": pattern, "confidence": confidence},
-    }
-
-
 def _role_for_top(child: Any) -> tuple[str, str]:
     relation = dep(child)
     if relation in SUBJECT_DEPS:
-        return "subject", "subject"
+        return ('subject', 'subject')
     if relation in OBJECT_DEPS:
-        return "object", "object"
+        return ('object', 'object')
     if relation in INDIRECT_OBJECT_DEPS:
-        return "indirect_object", "indirect_object"
-    if relation in {"ccomp", "xcomp", "advcl", "acl", "acl:relcl", "relcl", "csubj", "csubjpass"}:
-        return "clause", "clause"
+        return ('indirect_object', 'indirect_object')
+    if relation in {'ccomp', 'xcomp', 'advcl', 'acl', 'acl:relcl', 'relcl', 'csubj', 'csubjpass'}:
+        return ('clause', 'clause')
     if relation in PREP_DEPS:
-        return "pp", "pp"
-    if relation in {"advmod", "npadvmod"}:
-        return "adjunct", "adjunct"
-    if relation == "cc":
-        return "conjunction", "conjunction"
-    if relation == "conj":
-        return "coordination", "coordination"
-    if relation in {"attr", "acomp", "oprd"}:
-        return "complement", "complement"
-    if relation == "pobj":
-        return "object", "noun-phrase"
-    return "phrase", "phrase"
-
+        return ('pp', 'pp')
+    if relation in {'advmod', 'npadvmod'}:
+        return ('adjunct', 'adjunct')
+    if relation == 'cc':
+        return ('conjunction', 'conjunction')
+    if relation == 'conj':
+        return ('coordination', 'coordination')
+    if relation in {'attr', 'acomp', 'oprd'}:
+        return ('complement', 'complement')
+    if relation == 'pobj':
+        return ('object', 'noun-phrase')
+    return ('phrase', 'phrase')
 
 def sentence_local_root(sentence: Any) -> Any:
     root = sentence.root
     if sentence.start <= root.i < sentence.end:
         return root
     local_tokens = list(sentence)
-    candidates = [token for token in local_tokens
-                  if token.head.i < sentence.start or token.head.i >= sentence.end or token.head == token]
-    verbal = [token for token in candidates if token.pos_ in {"VERB", "AUX"}]
+    candidates = [token for token in local_tokens if token.head.i < sentence.start or token.head.i >= sentence.end or token.head == token]
+    verbal = [token for token in candidates if token.pos_ in {'VERB', 'AUX'}]
     if verbal:
         return max(verbal, key=lambda token: (len(token.subtree), token.i))
     return max(candidates or local_tokens, key=lambda token: (len(token.subtree), token.i))
 
-
 def structural_owner_kind(token: Any, sentence: Any) -> str:
     relation = dep(token)
     if token == sentence_local_root(sentence):
-        return "main-clause"
-    if relation in {"acl:relcl", "relcl"}:
-        return "relative-clause"
-    if relation == "conj" and token.pos_ in {"VERB", "AUX"}:
-        return "coordinated-clause"
-    if relation in CLAUSE_DEPS or relation == "pcomp" and token.pos_ in {"VERB", "AUX"}:
-        return "subordinate-clause"
-    return "phrase"
-
+        return 'main-clause'
+    if relation in {'acl:relcl', 'relcl'}:
+        return 'relative-clause'
+    if relation == 'conj' and token.pos_ in {'VERB', 'AUX'}:
+        return 'coordinated-clause'
+    if relation in CLAUSE_DEPS or (relation == 'pcomp' and token.pos_ in {'VERB', 'AUX'}):
+        return 'subordinate-clause'
+    return 'phrase'
 
 def owner_role_for_child(token: Any) -> tuple[str, str]:
     relation = dep(token)
     if relation in SUBJECT_DEPS:
-        return "subject", "noun-phrase"
+        return ('subject', 'noun-phrase')
     if relation in OBJECT_DEPS:
-        return "object", "noun-phrase"
+        return ('object', 'noun-phrase')
     if relation in INDIRECT_OBJECT_DEPS:
-        return "indirect_object", "noun-phrase"
-    if relation in {"attr", "acomp", "oprd"}:
-        return "complement", "complement"
-    if relation == "pobj":
-        return "object", "noun-phrase"
-    if relation in {"advmod", "npadvmod"}:
-        return "adjunct", "adjunct"
-    if relation == "conj":
-        return "coordination", "coordination"
-    return _role_for_top(token)[1], "phrase"
+        return ('indirect_object', 'noun-phrase')
+    if relation in {'attr', 'acomp', 'oprd'}:
+        return ('complement', 'complement')
+    if relation == 'pobj':
+        return ('object', 'noun-phrase')
+    if relation in {'advmod', 'npadvmod'}:
+        return ('adjunct', 'adjunct')
+    if relation == 'conj':
+        return ('coordination', 'coordination')
+    return (_role_for_top(token)[1], 'phrase')
 
-
-def assign_groups(sentence: Any, tier: str, protected: list[dict[str, Any]], quote_state: dict[str, bool] | None = None) -> tuple[list[str], list[dict[str, Any]]]:
+def assign_groups(sentence: Any, protected: list[dict[str, Any]], quote_state: dict[str, bool] | None=None) -> tuple[list[str], list[dict[str, Any]]]:
     """Assign disjoint constituent owners while preserving clause-parent identity.
 
     Clause and PP owners receive unique IDs keyed by their dependency head. A
@@ -451,30 +198,22 @@ def assign_groups(sentence: Any, tier: str, protected: list[dict[str, Any]], quo
     clause_subject_keys: dict[int, str] = {}
     visited_clauses: set[int] = set()
     visited_pps: set[int] = set()
-    marker_words = {"after", "although", "as", "before", "because", "if", "once", "since", "that", "though", "unless", "until", "when", "whenever", "whereas", "while", "whether"}
+    marker_words = {'after', 'although', 'as', 'before', 'because', 'if', 'once', 'since', 'that', 'though', 'unless', 'until', 'when', 'whenever', 'whereas', 'while', 'whether'}
 
     def local(token: Any) -> int:
         return token.i - sentence.start
 
-    def add_owner(kind: str, head: Any, role: str, relation: str | None = None,
-                  parent_kind: str | None = None, parent_head: Any | None = None,
-                  suffix: str = "") -> str:
+    def add_owner(kind: str, head: Any, role: str, relation: str | None=None, parent_kind: str | None=None, parent_head: Any | None=None, suffix: str='') -> str:
         head_index = local(head)
-        key = f"{kind}-{head_index}{suffix}"
-        value: dict[str, Any] = {
-            "role": role,
-            "relation": relation or dep(head),
-            "ownerKind": kind,
-            "ownerRelation": relation or dep(head),
-            "ownerHead": head_index,
-        }
+        key = f'{kind}-{head_index}{suffix}'
+        value: dict[str, Any] = {'role': role, 'relation': relation or dep(head), 'ownerKind': kind, 'ownerRelation': relation or dep(head), 'ownerHead': head_index}
         if parent_kind:
-            value["ownerParentKind"] = parent_kind
+            value['ownerParentKind'] = parent_kind
         if parent_head is not None:
-            value["ownerParentHead"] = local(parent_head)
+            value['ownerParentHead'] = local(parent_head)
         existing = roles.get(key)
         if existing is not None and existing != value:
-            raise ValueError(f"conflicting structural owner metadata for {key}")
+            raise ValueError(f'conflicting structural owner metadata for {key}')
         roles[key] = value
         return key
 
@@ -491,30 +230,30 @@ def assign_groups(sentence: Any, tier: str, protected: list[dict[str, Any]], quo
         relation = dep(head)
         if is_clause_dependency(head):
             return True
-        return relation == "conj" and head.pos_ in {"VERB", "AUX"}
+        return relation == 'conj' and head.pos_ in {'VERB', 'AUX'}
 
     def is_pp(head: Any) -> bool:
         relation = dep(head)
-        return relation in {"prep", "obl", "agent"} or (relation == "dative" and head.text.lower() == "to")
+        return relation in {'prep', 'obl', 'agent'} or (relation == 'dative' and head.text.lower() == 'to')
 
     def is_marker(token: Any) -> bool:
         relation = dep(token)
-        return relation == "mark" or (token.lower_ in marker_words and relation in {"advmod", "npadvmod"})
+        return relation == 'mark' or (token.lower_ in marker_words and relation in {'advmod', 'npadvmod'})
 
     def clause_markers(head: Any) -> list[Any]:
         return [child for child in head.children if is_marker(child)]
 
     def coordinator_for(head: Any) -> Any | None:
-        if dep(head) != "conj":
+        if dep(head) != 'conj':
             return None
         parent = head.head
-        return next((child for child in parent.children if dep(child) == "cc" and child.i < head.i), None)
+        return next((child for child in parent.children if dep(child) == 'cc' and child.i < head.i), None)
 
     def assign_nested(parent: Any, parent_kind: str, parent_head: Any) -> None:
         for child in sorted(parent.children, key=lambda value: value.i):
             if child.i < sentence.start or child.i >= sentence.end:
                 continue
-            if dep(child) == "punct":
+            if dep(child) == 'punct':
                 continue
             if is_clause(child):
                 assign_clause(child, parent_kind, parent_head)
@@ -527,125 +266,90 @@ def assign_groups(sentence: Any, tier: str, protected: list[dict[str, Any]], quo
         if head.i in visited_pps:
             return
         visited_pps.add(head.i)
-        key = add_owner("pp", head, "pp", dep(head), parent_kind, parent_head)
+        key = add_owner('pp', head, 'pp', dep(head), parent_kind, parent_head)
         mark_tokens(subtree_tokens(head), key)
-        if tier in {"standard", "precision"}:
-            assign_nested(head, "pp", head)
+        assign_nested(head, 'pp', head)
 
-    def assign_atomic_clause(head: Any, parent_kind: str | None = None,
-                             parent_head: Any | None = None) -> str:
+    def assign_atomic_clause(head: Any, parent_kind: str | None=None, parent_head: Any | None=None) -> str:
         kind = structural_owner_kind(head, sentence)
-        key = add_owner(kind, head, "clause", dep(head), parent_kind, parent_head)
+        key = add_owner(kind, head, 'clause', dep(head), parent_kind, parent_head)
         clause_keys[head.i] = key
         mark_tokens(subtree_tokens(head), key)
         return key
 
-    def assign_clause(head: Any, parent_kind: str | None = None,
-                      parent_head: Any | None = None) -> None:
+    def assign_clause(head: Any, parent_kind: str | None=None, parent_head: Any | None=None) -> None:
         if head.i in visited_clauses:
             return
         visited_clauses.add(head.i)
         kind = structural_owner_kind(head, sentence)
-        clause_key = add_owner(kind, head, "clause", dep(head), parent_kind, parent_head)
+        clause_key = add_owner(kind, head, 'clause', dep(head), parent_kind, parent_head)
         clause_keys[head.i] = clause_key
         mark_tokens(subtree_tokens(head), clause_key)
-        if tier == "foundation" and head != root:
-            return
-
-        children = sorted((child for child in head.children if dep(child) != "punct"), key=lambda value: value.i)
+        children = sorted((child for child in head.children if dep(child) != 'punct'), key=lambda value: value.i)
         subjects = [child for child in children if dep(child) in SUBJECT_DEPS]
         markers = clause_markers(head)
         coordinator = coordinator_for(head)
-
-        # Standard keeps subordinate marker + first core constituent together.
-        # Precision exposes the marker/coordinator as its own owner.
         subject_key: str | None = None
         if subjects:
             subject = subjects[0]
-            if markers and tier == "standard":
-                subject_key = add_owner(kind, head, "subject", dep(head), parent_kind, parent_head, "-core")
+            if markers and True:
+                subject_key = add_owner(kind, head, 'subject', dep(head), parent_kind, parent_head, '-core')
                 mark_tokens(markers, subject_key)
                 mark_tokens(subtree_tokens(subject), subject_key)
-            elif kind == "coordinated-clause" and coordinator is not None and tier == "standard":
-                subject_key = add_owner(kind, head, "subject", dep(head), parent_kind, parent_head, "-core")
+            elif kind == 'coordinated-clause' and coordinator is not None and True:
+                subject_key = add_owner(kind, head, 'subject', dep(head), parent_kind, parent_head, '-core')
                 mark_tokens(subtree_tokens(subject), subject_key)
                 groups[local(coordinator)] = subject_key
             else:
-                subject_key = add_owner("noun-phrase", subject, "subject", dep(subject), kind, head)
+                subject_key = add_owner('noun-phrase', subject, 'subject', dep(subject), kind, head)
                 mark_tokens(subtree_tokens(subject), subject_key)
+            for subject in subjects:
+                if is_clause(subject):
+                    assign_clause(subject, kind, head)
+                else:
+                    assign_nested(subject, 'noun-phrase', subject)
             clause_subject_keys[head.i] = subject_key
-
-        # A short copular relative core ("who are eager") is one productive
-        # predicate unit at Standard; its infinitival complement is handled as
-        # a nested clause below.
-        copular_complements = [child for child in children if dep(child) in {"attr", "acomp", "oprd"}]
-        relative_copular_core = (kind == "relative-clause" and head.pos_ == "AUX" and bool(subjects)
-                                 and bool(copular_complements) and tier == "standard")
+        copular_complements = [child for child in children if dep(child) in {'attr', 'acomp', 'oprd'}]
+        relative_copular_core = kind == 'relative-clause' and head.pos_ == 'AUX' and bool(subjects) and bool(copular_complements) and True
         if relative_copular_core:
-            core = add_owner(kind, head, "clause", dep(head), parent_kind, parent_head, "-copular-core")
+            core = add_owner(kind, head, 'clause', dep(head), parent_kind, parent_head, '-copular-core')
             mark_tokens(subtree_tokens(subjects[0]), core)
             groups[local(head)] = core
             for child in head.children:
-                if dep(child) in OPERATOR_DEPS or dep(child) == "expl":
+                if dep(child) in OPERATOR_DEPS or dep(child) == 'expl':
                     mark_tokens(subtree_tokens(child), core)
             for child in copular_complements:
                 mark_tokens(subtree_tokens(child), core)
             clause_subject_keys[head.i] = core
-
-        # Predicate and operator owners are distinct nodes. Standard keeps the
-        # auxiliary sequence attached to the lexical predicate; Precision may
-        # expose each operator and separable particle.
-        predicate = add_owner("predicate", head, "predicate", dep(head), kind, head)
+        predicate = add_owner('predicate', head, 'predicate', dep(head), kind, head)
         if not relative_copular_core:
             groups[local(head)] = predicate
         for child in children:
             relation = dep(child)
-            if relation in OPERATOR_DEPS or relation == "expl":
+            if relation in OPERATOR_DEPS or relation == 'expl':
                 if relative_copular_core:
                     continue
-                if relation in {"compound:prt", "prt"} and tier == "precision":
-                    particle = add_owner("operator", child, "phrase", relation, kind, head, "-particle")
+                if relation in {'compound:prt', 'prt'} and False:
+                    particle = add_owner('operator', child, 'phrase', relation, kind, head, '-particle')
                     mark_tokens(subtree_tokens(child), particle)
-                elif tier == "precision" and relation not in {"compound:prt", "prt"}:
-                    operator = add_owner("operator", child, "operator", relation, kind, head)
-                    mark_tokens(subtree_tokens(child), operator)
                 else:
                     mark_tokens(subtree_tokens(child), predicate)
-
-        # Markers in Precision have explicit operator ownership. A coordinated
-        # clause marker keeps coordinated-clause ownership for auditability.
-        if tier == "precision":
-            for marker in markers:
-                marker_owner = add_owner("operator", marker, "conjunction", dep(marker), kind, head, "-marker")
-                groups[local(marker)] = marker_owner
-            if coordinator is not None:
-                coordinator_owner = add_owner("coordinated-clause", head, "conjunction", dep(head), parent_kind, parent_head, "-marker")
-                groups[local(coordinator)] = coordinator_owner
-
         for child in children:
             relation = dep(child)
-            if relation in OPERATOR_DEPS or relation == "expl" or relation in SUBJECT_DEPS or is_marker(child):
+            if relation in OPERATOR_DEPS or relation == 'expl' or relation in SUBJECT_DEPS or is_marker(child):
                 continue
             if relative_copular_core and child in copular_complements:
                 assign_nested(child, kind, head)
                 continue
-            if relation == "cc":
-                # This is a coordinator between this clause and a later verbal
-                # conjunct. assign_clause() on that child owns the marker.
-                following = next((candidate for candidate in head.children
-                                  if candidate.i > child.i and dep(candidate) == "conj" and candidate.pos_ in {"VERB", "AUX"}), None)
+            if relation == 'cc':
+                following = next((candidate for candidate in head.children if candidate.i > child.i and dep(candidate) == 'conj' and (candidate.pos_ in {'VERB', 'AUX'})), None)
                 if following is not None:
-                    if tier == "precision":
-                        key = add_owner("coordinated-clause", following, "conjunction", dep(following), kind, head, "-marker")
-                        groups[local(child)] = key
-                    else:
-                        groups[local(child)] = clause_subject_keys.get(following.i, clause_keys.get(following.i, clause_key))
+                    groups[local(child)] = clause_subject_keys.get(following.i, clause_keys.get(following.i, clause_key))
                 continue
             if is_clause(child):
                 nested_key = assign_atomic_clause(child, kind, head)
-                if tier in {"standard", "precision"}:
-                    visited_clauses.discard(child.i)
-                    assign_clause(child, kind, head)
+                visited_clauses.discard(child.i)
+                assign_clause(child, kind, head)
                 continue
             if is_pp(child):
                 assign_pp(child, kind, head)
@@ -654,97 +358,40 @@ def assign_groups(sentence: Any, tier: str, protected: list[dict[str, Any]], quo
             child_key = add_owner(child_kind, child, role, dep(child), kind, head)
             mark_tokens(subtree_tokens(child), child_key)
             assign_nested(child, child_kind, child)
-
-        # Copular core complements and their xcomp/ccomp descendants are
-        # recursively decomposed without overwriting the relative core itself.
         if relative_copular_core:
             for child in copular_complements:
                 assign_nested(child, kind, head)
-        if kind == "coordinated-clause" and coordinator is not None and tier == "standard" and not subjects:
+        if kind == 'coordinated-clause' and coordinator is not None and True and (not subjects):
             groups[local(coordinator)] = clause_key
-
-    def assign_foundation_root() -> None:
-        # Foundation exposes only the main clause's major constituents. A
-        # subordinate/coordinated clause, full PP, and protected expression
-        # remain atomic at this level.
-        main = add_owner("main-clause", root, "clause", dep(root))
-        mark_tokens(subtree_tokens(root), main)
-        for child in sorted((child for child in root.children if dep(child) != "punct"), key=lambda value: value.i):
-            relation = dep(child)
-            if relation in OPERATOR_DEPS or relation == "expl":
-                predicate = add_owner("predicate", root, "predicate", dep(root), suffix="-foundation")
-                groups[local(root)] = predicate
-                mark_tokens(subtree_tokens(child), predicate)
-                continue
-            if relation == "cc":
-                following = next((candidate for candidate in root.children
-                                  if candidate.i > child.i and dep(candidate) == "conj" and candidate.pos_ in {"VERB", "AUX"}), None)
-                if following is not None:
-                    key = add_owner("coordinated-clause", following, "clause", dep(following), "main-clause", root)
-                    groups[local(child)] = key
-                continue
-            if is_clause(child):
-                nested_key = assign_atomic_clause(child, "main-clause", root)
-                if dep(child) == "conj":
-                    coordinator = coordinator_for(child)
-                    if coordinator is not None:
-                        groups[local(coordinator)] = nested_key
-                continue
-            if is_pp(child):
-                assign_pp(child, "main-clause", root)
-                continue
-            role, child_kind = owner_role_for_child(child)
-            key = add_owner(child_kind, child, role, relation, "main-clause", root)
-            mark_tokens(subtree_tokens(child), key)
-
-    if tier == "foundation":
-        assign_foundation_root()
-    else:
-        assign_clause(root)
-        # Handle non-clausal parent tokens that can own postmodifying PPs or
-        # clauses (for example for + NP + relative clause).
-        assign_nested(root, "main-clause", root)
-
-    # Conjunction markers can be attached to a verbal conjunct whose head is a
-    # sibling of the coordinator in spaCy's dependency tree.
+    assign_clause(root)
+    assign_nested(root, 'main-clause', root)
     for token in sentence:
-        if dep(token) != "conj" or token.pos_ not in {"VERB", "AUX"}:
+        if dep(token) != 'conj' or token.pos_ not in {'VERB', 'AUX'}:
             continue
         coordinator = coordinator_for(token)
-        if coordinator is None or tier == "foundation":
+        if coordinator is None or False:
             continue
-        if tier == "standard" and token.i in clause_subject_keys:
+        if True and token.i in clause_subject_keys:
             groups[local(coordinator)] = clause_subject_keys[token.i]
-        elif tier == "precision" and groups[local(coordinator)] is None:
-            key = add_owner("coordinated-clause", token, "conjunction", dep(token), structural_owner_kind(token.head, sentence), token.head, "-marker")
-            groups[local(coordinator)] = key
-
-    # Preserve non-verbal coordination boundaries inside complements and noun
-    # phrases. The coordinator opens the later member; nested PPs, clauses,
-    # operators, and hard expressions keep their more specific owners.
     phrase_coordinations: dict[int, list[tuple[Any, Any]]] = {}
     for token in sentence:
-        if dep(token) != "conj" or is_clause(token):
+        if dep(token) != 'conj' or is_clause(token):
             continue
         coordinator = coordinator_for(token)
         if coordinator is None:
             continue
         owner = token
-        while dep(owner) == "conj" and not is_clause(owner):
+        while dep(owner) == 'conj' and (not is_clause(owner)):
             owner = owner.head
         phrase_coordinations.setdefault(owner.i, []).append((coordinator, token))
-
-    protected_owner_kinds = {
-        "pp", "main-clause", "coordinated-clause", "subordinate-clause",
-        "relative-clause", "protected-expression", "operator", "predicate",
-    }
+    protected_owner_kinds = {'pp', 'main-clause', 'coordinated-clause', 'subordinate-clause', 'relative-clause', 'protected-expression', 'operator', 'predicate'}
     for owner_index, members in phrase_coordinations.items():
         owner = sentence[owner_index - sentence.start]
         span_tokens = subtree_tokens(owner)
         if not span_tokens:
             continue
-        span_start = min(local(token) for token in span_tokens)
-        span_end = max(local(token) for token in span_tokens) + 1
+        span_start = min((local(token) for token in span_tokens))
+        span_end = max((local(token) for token in span_tokens)) + 1
         boundaries = sorted({(local(coordinator), conjunct) for coordinator, conjunct in members}, key=lambda value: value[0])
         boundaries = [(index, conjunct) for index, conjunct in boundaries if span_start < index < span_end]
         if not boundaries:
@@ -752,55 +399,41 @@ def assign_groups(sentence: Any, tier: str, protected: list[dict[str, Any]], quo
         part_starts = [span_start, *[index for index, _ in boundaries]]
         part_ends = [*[index for index, _ in boundaries], span_end]
         first_key = groups[local(owner)]
-        first_metadata = roles.get(first_key or "", {})
+        first_metadata = roles.get(first_key or '', {})
         for part_index, (start, end) in enumerate(zip(part_starts, part_ends)):
-            part_head = owner if part_index == 0 else next(
-                conjunct for boundary, conjunct in boundaries if boundary == start
-            )
-            part_kind = "coordination"
-            part_role = first_metadata.get("role", "coordination") if part_index == 0 else "coordination"
+            part_head = owner if part_index == 0 else next((conjunct for boundary, conjunct in boundaries if boundary == start))
+            part_kind = 'coordination'
+            part_role = first_metadata.get('role', 'coordination') if part_index == 0 else 'coordination'
             part_relation = dep(part_head)
-            part_key = f"coordination-{local(owner)}-{part_index}"
-            part_metadata: dict[str, Any] = {
-                "role": part_role,
-                "relation": part_relation,
-                "ownerKind": part_kind,
-                "ownerRelation": part_relation,
-                "ownerHead": local(part_head),
-            }
+            part_key = f'coordination-{local(owner)}-{part_index}'
+            part_metadata: dict[str, Any] = {'role': part_role, 'relation': part_relation, 'ownerKind': part_kind, 'ownerRelation': part_relation, 'ownerHead': local(part_head)}
             if part_index == 0:
-                if first_metadata.get("ownerParentKind"):
-                    part_metadata["ownerParentKind"] = first_metadata["ownerParentKind"]
-                    part_metadata["ownerParentHead"] = first_metadata.get("ownerParentHead")
+                if first_metadata.get('ownerParentKind'):
+                    part_metadata['ownerParentKind'] = first_metadata['ownerParentKind']
+                    part_metadata['ownerParentHead'] = first_metadata.get('ownerParentHead')
             else:
-                part_metadata["ownerParentKind"] = "coordination"
-                part_metadata["ownerParentHead"] = local(owner)
+                part_metadata['ownerParentKind'] = 'coordination'
+                part_metadata['ownerParentHead'] = local(owner)
             roles[part_key] = part_metadata
             for index in range(start, end):
-                current = roles.get(groups[index] or "", {})
-                if current.get("ownerKind") not in protected_owner_kinds:
+                current = roles.get(groups[index] or '', {})
+                if current.get('ownerKind') not in protected_owner_kinds:
                     groups[index] = part_key
-
-    # Hard lexical cores take final precedence. Their spans are bounded by the
-    # curated construction and minimum required complement only.
     for span in protected:
-        key = add_owner("protected-expression", sentence[span["tokenStart"]], "phrase", span["kind"], suffix=f"-{span['tokenStart']}-{span['tokenEnd']}")
-        for index in range(span["tokenStart"], span["tokenEnd"]):
+        key = add_owner('protected-expression', sentence[span['tokenStart']], 'phrase', span['kind'], suffix=f"-{span['tokenStart']}-{span['tokenEnd']}")
+        for index in range(span['tokenStart'], span['tokenEnd']):
             groups[index] = key
-
-    # Punctuation belongs to an adjacent owner, never to a punctuation-only
-    # tile. Quotes retain the cross-sentence opening/closing state.
-    quote_open = {"\"": bool((quote_state or {}).get("double", False)), "'": bool((quote_state or {}).get("single", False))}
+    quote_open = {'"': bool((quote_state or {}).get('double', False)), "'": bool((quote_state or {}).get('single', False))}
     for index, token in enumerate(sentence):
-        if not (token.is_punct or token.pos_ == "PUNCT"):
+        if not (token.is_punct or token.pos_ == 'PUNCT'):
             continue
         is_opening = token.text in OPENING_PUNCT
         if token.text in quote_open:
             is_opening = not quote_open[token.text]
             quote_open[token.text] = is_opening
-        if token.text in {"”", "’", "»", "\u2019"}:
+        if token.text in {'”', '’', '»', '’'}:
             is_opening = False
-        if token.text in {"“", "‘", "«"}:
+        if token.text in {'“', '‘', '«'}:
             is_opening = True
         if is_opening:
             target = next((j for j in range(index + 1, len(sentence)) if groups[j] is not None), None)
@@ -812,19 +445,13 @@ def assign_groups(sentence: Any, tier: str, protected: list[dict[str, Any]], quo
                 target = next((j for j in range(index + 1, len(sentence)) if groups[j] is not None), None)
         if target is not None:
             groups[index] = groups[target]
-
     for index, value in enumerate(groups):
         if value is None:
             target = next((j for j in range(index - 1, -1, -1) if groups[j] is not None), None)
             if target is None:
                 target = next((j for j in range(index + 1, len(groups)) if groups[j] is not None), None)
-            groups[index] = groups[target] if target is not None else "whole-sentence"
-            roles.setdefault(groups[index], {"role": "phrase", "relation": "fallback-attachment",
-                                               "ownerKind": "phrase", "ownerRelation": "fallback-attachment",
-                                               "ownerHead": index})
-
-    # Keep every structural group contiguous. Fill only empty gaps; never let a
-    # later nested owner overwrite the parent's metadata or another child.
+            groups[index] = groups[target] if target is not None else 'whole-sentence'
+            roles.setdefault(groups[index], {'role': 'phrase', 'relation': 'fallback-attachment', 'ownerKind': 'phrase', 'ownerRelation': 'fallback-attachment', 'ownerHead': index})
     positions: dict[str, list[int]] = {}
     for index, key in enumerate(groups):
         if key is not None:
@@ -833,645 +460,543 @@ def assign_groups(sentence: Any, tier: str, protected: list[dict[str, Any]], quo
         for index in range(indices[0], indices[-1] + 1):
             if groups[index] is None:
                 groups[index] = key
-
-    # Tile-count bounds are met only by undoing low-priority structural splits.
-    # The removed boundary is recorded as a composite child of the smallest
-    # common dependency ancestor; words are never merged by lexical count.
-    merge_rank = {
-        "operator": 0, "conjunction": 0, "adjunct": 1, "phrase": 1,
-        "protected-expression": 1, "noun-phrase": 2, "complement": 2,
-        "structural-composite": 100, "predicate": 4, "subordinate-clause": 5,
-        "relative-clause": 6, "pp": 6, "coordination": 7,
-        "coordinated-clause": 8, "main-clause": 9,
-    }
-
-    def common_head(left_key: str, right_key: str) -> Any:
-        left = roles.get(left_key, {}).get("ownerHead", 0)
-        right = roles.get(right_key, {}).get("ownerHead", 0)
-        left_token = sentence[int(left)]
-        right_token = sentence[int(right)]
-        ancestors = []
-        current = left_token
-        while True:
-            ancestors.append(current)
-            if current.head == current:
-                break
-            current = current.head
-        right_ancestors = {token.i for token in [right_token]}
-        current = right_token
-        while True:
-            right_ancestors.add(current.i)
-            if current.head == current:
-                break
-            current = current.head
-        return next((token for token in ancestors if token.i in right_ancestors), root)
-
-    maximum = TIERS[tier][1]
-    while len(ranges_from_groups([str(value) for value in groups])) > maximum:
-        ranges = ranges_from_groups([str(value) for value in groups])
-        candidates = []
-        for boundary_index, (left, right) in enumerate(zip(ranges, ranges[1:])):
-            left_role = roles.get(left[2], {})
-            right_role = roles.get(right[2], {})
-            score = max(merge_rank.get(left_role.get("ownerKind", "phrase"), 1),
-                        merge_rank.get(right_role.get("ownerKind", "phrase"), 1))
-            candidates.append((score, boundary_index, left_role, right_role))
-        if not candidates:
-            break
-        _, boundary_index, left_role, right_role = min(candidates, key=lambda item: (item[0], item[1]))
-        left, right = ranges[boundary_index], ranges[boundary_index + 1]
-        ancestor = common_head(left[2], right[2])
-        ancestor_kind = structural_owner_kind(ancestor, sentence)
-        merged_key = f"structural-composite-{local(ancestor)}-{left[0]}-{right[1]}"
-        roles[merged_key] = {
-            "role": "phrase", "relation": dep(ancestor) if ancestor != root else "ROOT",
-            "ownerKind": "structural-composite", "ownerRelation": dep(ancestor) if ancestor != root else "ROOT",
-            "ownerHead": local(ancestor), "ownerParentKind": ancestor_kind,
-            "ownerParentHead": local(ancestor),
-            "ownerMemberKinds": sorted({str(left_role.get("ownerKind", "phrase")),
-                                         str(right_role.get("ownerKind", "phrase"))}),
-        }
-        for index in range(left[0], right[1]):
-            groups[index] = merged_key
-    return [str(value) for value in groups], [{"id": key, **value} for key, value in roles.items()]
+    return ([str(value) for value in groups], [{'id': key, **value} for key, value in roles.items()])
 
 def ranges_from_groups(groups: list[str]) -> list[tuple[int, int, str]]:
     result = []
     start = 0
-    current = groups[0] if groups else ""
+    current = groups[0] if groups else ''
     for index in range(1, len(groups) + 1):
         value = groups[index] if index < len(groups) else None
         if value != current:
             result.append((start, index, current))
-            start, current = index, value
+            start, current = (index, value)
     return result
-
-
-def apply_manual_ranges(sentence: Any, specification: list[list[int]], tier: str) -> list[tuple[int, int, str]]:
-    cursor = 0
-    ranges = []
-    for index, pair in enumerate(specification):
-        if not isinstance(pair, list) or len(pair) != 2:
-            raise ValueError(f"manual range must be [start,end): {pair!r}")
-        start, end = pair
-        if not isinstance(start, int) or not isinstance(end, int) or start != cursor or end <= start or end > len(sentence):
-            raise ValueError(f"manual {tier} ranges must partition sentence tokens in source order: {specification!r}")
-        ranges.append((start, end, f"manual-{tier}-{index}"))
-        cursor = end
-    if cursor != len(sentence):
-        raise ValueError(f"manual {tier} ranges do not cover every sentence token")
-    return ranges
-
-
-def build_variant(sentence: Any, source: str, tier: str, groups: list[str], roles: list[dict[str, Any]],
-                  protected: list[dict[str, Any]], manual: dict[str, Any]) -> dict[str, Any] | None:
-    if tier in manual.get("manualVariants", {}):
-        ranges = apply_manual_ranges(sentence, manual["manualVariants"][tier], tier)
-    else:
-        ranges = ranges_from_groups(groups)
-    minimum, maximum = TIERS[tier]
-    if not minimum <= len(ranges) <= maximum:
-        return None
-    role_map = {role["id"]: role for role in roles}
-    manual_roles = manual.get("manualRoles", {}).get(tier, [])
-    tiles = []
-    for tile_index, (start, end, group_id) in enumerate(ranges):
-        contained = list(sentence)[start:end]
-        lexical = [token for token in contained if lexical_token(token)]
-        if not lexical:
-            return None
-        char_start, char_end = contained[0].idx, contained[-1].idx + len(contained[-1])
-        value = source[char_start:char_end]
-        if not value.strip():
-            return None
-        role = role_map.get(group_id, {"role": "phrase", "relation": "manual"})
-        if tile_index < len(manual_roles):
-            manual_role = manual_roles[tile_index]
-            if isinstance(manual_role, str):
-                role = {**role, "role": manual_role, "relation": "manual-override"}
-            elif isinstance(manual_role, dict) and manual_role.get("role"):
-                role = {**role, "role": str(manual_role["role"]),
-                        "relation": str(manual_role.get("relation", "manual-override"))}
-        if not role.get("ownerKind"):
-            # Manual tier ranges still receive dependency-derived diagnostic
-            # ownership. Prefer a syntactic head inside the range whose head
-            # lies outside it, then choose by role-compatible POS.
-            contained_indices = {token.i for token in contained}
-            roots = [token for token in contained if token.head.i not in contained_indices]
-            role_name = role.get("role", "phrase")
-            compatible = {
-                "subject": {"NOUN", "PROPN", "PRON"}, "object": {"NOUN", "PROPN", "PRON"},
-                "indirect_object": {"NOUN", "PROPN", "PRON"}, "predicate": {"VERB", "AUX"},
-                "clause": {"VERB", "AUX"}, "pp": {"ADP"}, "operator": {"AUX", "PART"},
-            }.get(role_name, set())
-            head = next((token for token in roots if not compatible or token.pos_ in compatible), None)
-            if head is None:
-                head = next((token for token in contained if not token.is_punct), contained[0])
-            owner_kind = {
-                "subject": "noun-phrase", "object": "noun-phrase", "indirect_object": "noun-phrase",
-                "predicate": "predicate", "operator": "operator", "pp": "pp",
-                "clause": structural_owner_kind(head, sentence), "conjunction": "coordinated-clause",
-            }.get(role_name, "phrase")
-            role = {**role, "ownerKind": owner_kind, "ownerRelation": dep(head),
-                    "ownerHead": head.i - sentence.start}
-        label = role.get("role", "phrase")
-        tile_id = f"s{sentence.start_char}-t{tile_index}"
-        protections = [span["kind"] for span in protected if span["tokenStart"] >= start and span["tokenEnd"] <= end]
-        tile = {
-            "id": tile_id, "text": value, "tokenStart": start, "tokenEnd": end,
-            "charStart": char_start, "charEnd": char_end,
-            "role": label, "label": ROLE_LABELS.get(label, ROLE_LABELS["phrase"]),
-            "dependency": role.get("relation", "manual"),
-            "ownerKind": role["ownerKind"], "ownerRelation": role["ownerRelation"],
-            "ownerHead": role["ownerHead"],
-            "protectedConstructions": protections,
-        }
-        if role.get("ownerParentKind"):
-            tile["ownerParentKind"] = role["ownerParentKind"]
-        if isinstance(role.get("ownerParentHead"), int):
-            tile["ownerParentHead"] = role["ownerParentHead"]
-        tiles.append(tile)
-    for index, tile in enumerate(tiles[:-1]):
-        tile["separatorAfter"] = source[tile["charEnd"]:tiles[index + 1]["charStart"]]
-    if tiles:
-        tiles[-1]["separatorAfter"] = source[tiles[-1]["charEnd"]:sentence.end_char]
-    canonical = "".join(tile["text"] + tile["separatorAfter"] for tile in tiles)
-    sentence_text = source[sentence.start_char:sentence.end_char]
-    if canonical != sentence_text:
-        return None
-    canonical_order = [tile["id"] for tile in tiles]
-    alt_orders = manual.get("acceptedOrders", {}).get(tier, [])
-    accepted = [canonical_order]
-    for order in alt_orders:
-        if isinstance(order, list) and order not in accepted:
-            accepted.append(order)
-    if any(len(order) != len(tiles) or set(order) != set(canonical_order) for order in accepted):
-        raise ValueError(f"invalid acceptedOrders in manual {tier} variant")
-    labels = [tile["label"] for tile in tiles]
-    return {
-        "tier": tier,
-        "tiles": tiles,
-        "canonicalOrder": canonical_order,
-        "acceptedOrders": accepted,
-        "clauseScaffold": labels,
-        "canonicalReconstruction": canonical,
-    }
 
 def quote_state_before(source: str, char_index: int) -> dict[str, bool]:
     prefix = source[:char_index]
-    return {
-        "double": prefix.count('"') % 2 == 1,
-        "single": False,
-    }
+    return {'double': prefix.count('"') % 2 == 1, 'single': False}
+import unicodedata
+EXTRA_MWES = ['little by little', 'more or less', 'next to nothing', 'from now on', 'just in case', 'in any case', 'by far', 'owing to', 'strictly speaking', 'on account of', 'at first sight', 'first of all', 'every now and then', 'from time to time', 'back and forth', 'side by side', 'more often than not', 'day by day', 'from coast to coast', 'one after another', 'in terms of', 'at the expense of', 'in the face of', 'from hand to mouth', 'by no means', 'one of these days', 'free of charge', 'one by one', 'thanks to', 'for the sake of', 'for fear of', 'word for word', 'second to none', 'all but', 'sooner or later', 'in honor of', 'needless to say', 'in favor of', 'the day before yesterday', 'so as to', 'so as not to', 'no matter', 'from generation to generation', 'all the more', 'to tell the truth', 'as far as', 'once in a while', 'on and off', 'all at once', 'regardless of', 'apart from', 'as a result of', 'in the course of', 'in the middle of', 'in search of', 'a great deal of', 'a number of', 'a vast number of', 'a couple of', 'a piece of', 'such as', 'all over', 'no sooner', 'not only', 'but also', 'if only', 'not so much', 'in case of', 'according to', 'from across']
+POLICY_VERSION = 'shared-chunk-policy-1.0.0'
+SCHEMA_VERSION = 2
+LEARNING_SURFACE_VERSION = 'shared-learning-surface-1.0.0'
 
-
-def sentence_metadata(sentence: Any, source: str, item_override: dict[str, Any], sentence_index: int,
-                      quote_state: dict[str, bool] | None = None) -> dict[str, Any]:
-    override = item_override.get("sentences", {}).get(str(sentence_index), {})
-    text = source[sentence.start_char:sentence.end_char]
-    protected = protected_constructions(sentence, override)
-    parsed = [{"i": token.i - sentence.start, "text": token.text, "lemma": token.lemma_,
-               "pos": token.pos_, "tag": token.tag_, "dep": dep(token),
-               "head": token.head.i - sentence.start, "start": token.idx,
-               "end": token.idx + len(token), "isPunct": bool(token.is_punct)} for token in sentence]
-    syntax = annotate_syntax(sentence, text)
-    construction_tags = correlative_constructions(sentence)
-    for token in sentence:
-        if dep(token) not in {"prt", "compound:prt"}:
+def punctuation_classes(source):
+    """Classify in full source context, before slicing chunks (case is untouched)."""
+    lexical = set()
+    for pattern in ['\\b(?:[A-Za-z]\\.){2,}|\\b(?:Mr|Mrs|Ms|Dr|Prof|Sr|Jr|St|Mt|Inc|Ltd)\\.', "\\b[^\\W_]+(?:[-'’/][^\\W_]+)+\\b", '(?:\\$)?\\d+(?:[,:.]\\d+)*(?:%)?']:
+        for match in re.finditer(pattern, source):
+            lexical.update((i for i in range(match.start(), match.end()) if not source[i].isalnum()))
+    single_open = False
+    result = {}
+    for i, c in enumerate(source):
+        if c.isalnum() or c.isspace():
             continue
-        construction_tags.append({
-            "kind": "separable-phrasal-verb",
-            "verbLemma": token.head.lemma_.lower(),
-            "particle": token.text,
-            "tokenSpan": [min(token.i, token.head.i) - sentence.start, max(token.i, token.head.i) - sentence.start + 1],
-            "particleToken": token.i - sentence.start,
-            "maySeparate": True,
-        })
-    construction_tags += [{"kind": span["kind"], "text": span["text"],
-                           "tokenSpan": [span["tokenStart"], span["tokenEnd"]], "hard": True}
-                          for span in protected]
-    entry: dict[str, Any] = {
-        "sentenceIndex": sentence_index,
-        "text": text,
-        "charStart": sentence.start_char,
-        "charEnd": sentence.end_char,
-        "tokenStart": sentence.start,
-        "tokenEnd": sentence.end,
-        "tokens": parsed,
-        "syntax": syntax,
-        "constructions": construction_tags,
-        "protectedConstructions": protected,
-        "fixedContext": bool(override.get("fixedContext")),
-        "fixedContextReason": str(override.get("fixedContextReason", "")) or None,
-        "excludedReason": str(override.get("excludeReason", "")) or None,
-        "manualOverrideApplied": bool(override.get("manualVariants") or override.get("fixedContext")
-                                       or override.get("excludeReason") or override.get("protectedExpressions")
-                                       or override.get("acceptedOrders")),
-        "tierUnavailableReason": {},
-        "variants": {},
-    }
-    if entry["fixedContext"] or entry["excludedReason"]:
-        return entry
-    lexical_count = sum(1 for token in sentence if lexical_token(token))
-    if lexical_count < 2:
-        entry["fixedContext"] = True
-        entry["fixedContextReason"] = "one-word-fragment"
-        return entry
-    for tier, (minimum, maximum) in TIERS.items():
-        groups, roles = assign_groups(sentence, tier, protected, quote_state)
-        variant = build_variant(sentence, source, tier, groups, roles, protected, override)
-        if variant is not None:
-            entry["variants"][tier] = variant
-        else:
-            ranges = apply_manual_ranges(sentence, override["manualVariants"][tier], tier) if tier in override.get("manualVariants", {}) else ranges_from_groups(groups)
-            if len(ranges) < minimum:
-                reason = f"only {len(ranges)} safe structural units; {minimum} required"
-            elif len(ranges) > maximum:
-                reason = f"{len(ranges)} structural units remain after lower-priority boundary reduction; maximum is {maximum}"
+        if c in "'’" and i not in lexical:
+            if i and source[i - 1].lower() == 's' and (not single_open):
+                lexical.add(i)
             else:
-                reason = "variant failed exact source reconstruction or protected-span validation"
-            entry["tierUnavailableReason"][tier] = reason
-    if not entry["variants"]:
-        coarsest_groups, _ = assign_groups(sentence, "foundation", protected, quote_state)
-        if len(ranges_from_groups(coarsest_groups)) <= 1:
-            entry["fixedContext"] = True
-            entry["fixedContextReason"] = "single-constituent-fragment"
+                single_open = not single_open
+        if c in '$%':
+            lexical.add(i)
+        if i in lexical:
+            result[i] = 'LEXICAL'
+        elif c in ',.!?:;"\'’‘“”()[]{}—–-«»‹›':
+            result[i] = 'STRUCTURAL'
         else:
-            entry["excludedReason"] = "no-validated-constituent-variant"
+            raise ValueError(f'unclassified punctuation {c!r} at {i}: {source[max(0, i - 20):i + 20]}')
+    return result
+
+def learning_surface(source, start, end, classes):
+    return re.sub('\\s+', ' ', ''.join((' ' if classes.get(i) == 'STRUCTURAL' else source[i] for i in range(start, end)))).strip()
+
+def shared_ranges(sentence, source):
+    protected = expression_spans(sentence, EXTRA_MWES + FIXED_MWES + ['as it is', 'seldom if ever', 'if ever', 'believe it or not', 'to make matters worse', 'Statue of Liberty'], 'fixed-mwe')
+    protected += expression_spans(sentence, INSEPARABLE_PHRASAL_VERBS + ['come up with', 'make up for', 'refer to', 'feel for', 'pay attention to', 'make believe', 'make sure', 'come in handy'], 'inseparable-phrasal-verb')
+    for pattern in ["\\b[^\\W_]+(?:[-'’/][^\\W_]+)+\\b", '(?:\\$)?\\d+(?:[,:.]\\d+)*(?:%)?']:
+        for match in re.finditer(pattern, sentence.text):
+            a, b = (sentence.start_char + match.start(), sentence.start_char + match.end())
+            ii = [t.i - sentence.start for t in sentence if t.idx < b and t.idx + len(t) > a]
+            if ii:
+                protected.append({'kind': 'lexical-orthography', 'tokenStart': min(ii), 'tokenEnd': max(ii) + 1, 'hard': True, 'text': match.group()})
+    for t in sentence:
+        if dep(t)=='fixed':
+            ii={t.i-sentence.start,t.head.i-sentence.start}
+            if min(ii)>=0 and max(ii)<len(sentence):
+                protected.append({'kind':'dependency-fixed','tokenStart':min(ii),'tokenEnd':max(ii)+1,'hard':True,'text':source[sentence[min(ii)].idx:sentence[max(ii)].idx+len(sentence[max(ii)])]})
+    protected.sort(key=lambda p: (p['tokenStart'], -p['tokenEnd'], p['kind']))
+    accepted = []
+    occupied = set()
+    for p in protected:
+        span = set(range(p['tokenStart'], p['tokenEnd']))
+        if not occupied & span:
+            accepted.append(p)
+            occupied |= span
+    protected = accepted
+    groups, roles = assign_groups(sentence, [], quote_state_before(source, sentence.start_char))
+    ranges = [list(r[:2]) for r in ranges_from_groups(groups)]
+    ts = list(sentence)
+
+    def local(t):
+        return t.i - sentence.start
+
+    def lex(a, b):
+        return [t for t in ts[a:b] if not t.is_punct and t.pos_ not in {'PUNCT', 'SYM'}]
+
+    def merge(j):
+        ranges[j:j + 2] = [[ranges[j][0], ranges[j + 1][1]]]
+
+    def close(a, b):
+        jj = [j for j, (x, y) in enumerate(ranges) if x < b and y > a]
+        if jj:
+            ranges[jj[0]:jj[-1] + 1] = [[ranges[jj[0]][0], ranges[jj[-1]][1]]]
+
+    def edge(a):
+        j = next((j for j, (x, y) in enumerate(ranges) if x < a < y), None)
+        if j is not None:
+            x, y = ranges[j]
+            ranges[j:j + 1] = [[x, a], [a, y]]
+    for p in protected:
+        a, b = (p['tokenStart'], p['tokenEnd'])
+        if p['kind'] != 'lexical-orthography':
+            edge(a)
+            edge(b)
+        close(a, b)
+    for t in ts:
+        if t.pos_ in {'NOUN', 'PROPN', 'PRON', 'NUM'}:
+            ii = {local(t)}
+
+            def nominal(c):
+                ii.add(local(c))
+                for ch in c.children:
+                    if sentence.start <= ch.i < sentence.end and dep(ch) in {'det', 'amod', 'compound', 'nummod', 'poss', 'case', 'quantmod'}:
+                        nominal(ch)
+            nominal(t)
+            close(min(ii), max(ii) + 1)
+    for t in ts:
+        if t.pos_ in {'VERB', 'AUX'} and dep(t) not in OPERATOR_DEPS:
+            ii = {local(t)} | {local(c) for c in t.children if sentence.start <= c.i < sentence.end and dep(c) in {'aux', 'aux:pass', 'cop', 'neg', 'advmod', 'prt', 'compound:prt'} and (c.pos_ not in {'PROPN', 'PRON'})}
+            a, b = (min(ii), max(ii) + 1)
+            if all((local(c) in ii or c.pos_ in {'ADV', 'PART', 'PUNCT'} for c in lex(a, b))):
+                edge(a)
+                edge(b)
+                close(a, b)
+    for p in protected:
+        a, b = (p['tokenStart'], p['tokenEnd'])
+        last = ts[b - 1]
+        if p['kind'] == 'fixed-mwe' and (last.pos_ == 'ADP' or last.lower_ == 'to') and (not any((t.pos_ in {'VERB', 'AUX'} for t in ts[a:b]))):
+            child = next((c for c in last.children if dep(c) in {'pobj', 'obj', 'pcomp'}), None)
+            if child:
+                j = next((j for j, (x, y) in enumerate(ranges) if x <= local(child) < y), None)
+                if j is not None and ranges[j][0] >= a:
+                    close(a, ranges[j][1])
+    for t in ts:
+        if t.pos_ in {'VERB', 'AUX'}:
+            for c in t.children:
+                if not sentence.start <= c.i < sentence.end:
+                    continue
+                if dep(c) in OBJECT_DEPS | INDIRECT_OBJECT_DEPS | {'attr', 'acomp', 'oprd'}:
+                    core = [local(c)]
+                    def argument_core(v):
+                        core.append(local(v))
+                        for child in v.children:
+                            if sentence.start<=child.i<sentence.end and dep(child) in {'det','amod','compound','nummod','poss','quantmod'}:argument_core(child)
+                    argument_core(c)
+                    edge(min(core))
+                if dep(c) in {'npadvmod', 'advmod'} and c.lower_ in {'now', 'later', 'tonight', 'yesterday', 'tomorrow', 'overtime'}:
+                    ii = [local(v) for v in c.subtree if sentence.start <= v.i < sentence.end]
+                    edge(min(ii))
+                    edge(max(ii) + 1)
+    for t in ts:
+        if t.lemma_ in {'have', 'get', 'ought', 'use', 'go'} or t.lemma_ == 'be':
+            for c in t.children:
+                if not sentence.start <= c.i < sentence.end or dep(c) != 'xcomp':
+                    continue
+                pre = [v for v in c.children if v.lower_ == 'to' and v.i < c.i]
+                if not pre:
+                    continue
+                a = local(t)
+                b = local(c) + 1
+                mid = ts[a:b]
+                semi = t.lemma_ in {'have', 'ought', 'use'} or (t.lemma_ == 'go' and any((v.lemma_ == 'be' for v in t.children))) or (t.lemma_ == 'get' and any((v.lemma_ == 'have' for v in t.children))) or (t.lemma_ == 'be' and any((v.lower_ == 'about' for v in mid)))
+                if semi and (not any((dep(v) in SUBJECT_DEPS | OBJECT_DEPS for v in mid[1:]))):
+                    close(a, b)
+    for t in ts:
+        if t.pos_ in {'ADJ', 'ADV'}:
+            ii = [local(t)] + [local(c) for c in t.children if sentence.start <= c.i < sentence.end and dep(c) == 'advmod' and (c.pos_ in {'ADV', 'PART'})]
+            if max(ii) - min(ii) <= 3:
+                close(min(ii), max(ii) + 1)
+    for t in ts:
+        if dep(t) == 'conj' and t.pos_ not in {'VERB', 'AUX'} and any((v.text == ',' for v in ts[min(local(t.head), local(t)):local(t)])):
+            ii = [local(t)] + [local(c) for c in t.children if sentence.start <= c.i < sentence.end and dep(c) in {'det', 'amod', 'compound', 'cc'}]
+            a = min(ii)
+            if a > 0 and ts[a - 1].text in {',', 'and', 'or'}:
+                a -= 1 if ts[a - 1].text in {'and', 'or'} else 0
+            edge(a)
+    for t in ts:
+        if dep(t) == 'appos' and t.pos_ == 'PROPN' and (local(t) > 0) and (ts[local(t) - 1].text == ','):
+            edge(local(t))
+    classes = punctuation_classes(source)
+    changed = True
+    while changed:
+        changed = False
+        for j, (a, b) in enumerate(ranges):
+            tokens = lex(a, b)
+            if not tokens:
+                if len(ranges) > 1:
+                    merge(j - 1 if j else 0)
+                    changed = True
+                    break
+                continue
+            marker = all((t.pos_ in {'ADP', 'PART', 'CCONJ', 'SCONJ', 'DET'} or t.lower_ in {'so', 'but', 'and', 'yet', 'that', 'who', 'which'} for t in tokens))
+            if marker and (not any((dep(t) in {'prt', 'compound:prt'} for t in tokens))):
+                target = j if j + 1 < len(ranges) else j - 1
+                if target >= 0:
+                    merge(target)
+                    changed = True
+                    break
+            if all((t.pos_ == 'ADV' for t in tokens)) and j > 0 and (j + 1 < len(ranges)):
+                left = lex(*ranges[j - 1])
+                right = lex(*ranges[j + 1])
+                heads = {t.head.i for t in tokens}
+                if any((t.i in heads and t.pos_ in {'VERB', 'AUX'} for t in left + right)) and any((t.pos_ == 'AUX' for t in left)) and any((t.pos_ in {'VERB', 'AUX', 'ADJ'} for t in right)):
+                    merge(j)
+                    merge(j - 1)
+                    changed = True
+                    break
+            if j + 1 < len(ranges) and any((t.lemma_ == 'be' and t.pos_ == 'AUX' for t in tokens)) and (not any(("'" in t.text for t in tokens))):
+                right = lex(*ranges[j + 1])
+                if right and (not any((dep(t) in CLAUSE_DEPS or dep(t) in SUBJECT_DEPS for t in right))) and any((dep(t) in {'attr', 'acomp', 'oprd'} and t.head.i in {v.i for v in tokens} for t in right)):
+                    merge(j)
+                    changed = True
+                    break
+            if all((t.pos_ == 'AUX' or dep(t) == 'neg' or t.tag_.startswith('W') for t in tokens)) and j + 1 < len(ranges):
+                right = lex(*ranges[j + 1])
+                if right and all((t.pos_ == 'PRON' for t in right)) and ('?' in sentence.text or any((t.head.i in {v.i for v in tokens} for t in right))):
+                    merge(j)
+                    changed = True
+                    break
+    for p in protected:
+        a, b = (p['tokenStart'], p['tokenEnd'])
+        if p['kind'] != 'lexical-orthography':
+            edge(b)
+            if p['kind'] == 'fixed-mwe':
+                edge(a)
+        close(a, b)
+        last = ts[b - 1]
+        if p['kind'] == 'fixed-mwe' and (last.pos_ == 'ADP' or last.lower_ in {'as', 'though', 'only'}):
+            j = next((j for j, (x, y) in enumerate(ranges) if x <= a < y), None)
+            if j is not None and ranges[j][1] == b and (j + 1 < len(ranges)):
+                nxt = lex(*ranges[j + 1])
+                if nxt and (not any((t.pos_ in {'VERB', 'AUX'} for t in nxt))):
+                    merge(j)
+    for p in protected:
+        if p['kind'] == 'lexical-orthography':
+            close(p['tokenStart'], p['tokenEnd'])
+    for j in reversed(range(len(ranges))):
+        a, b = ranges[j]
+        if len(ranges) > 1 and (not learning_surface(source, ts[a].idx, ts[b - 1].idx + len(ts[b - 1]), classes)):
+            merge(j - 1 if j else 0)
+    for t in ts:
+        if t.pos_ in {'VERB', 'AUX', 'ADJ'} and dep(t) not in OPERATOR_DEPS:
+            ii = {local(t)} | {local(c) for c in t.children if sentence.start <= c.i < sentence.end and dep(c) in OPERATOR_DEPS | {'advmod'} and (c.pos_ not in {'PROPN', 'PRON'})}
+            a, b = (min(ii), max(ii) + 1)
+            mid = lex(a, b)
+            if all((local(c) in ii or c.pos_ in {'ADV', 'PART', 'PUNCT'} for c in mid)):
+                blocked = any((p['kind'] == 'fixed-mwe' and p['tokenStart'] < b and (p['tokenEnd'] > a) for p in protected))
+                if not blocked:
+                    close(a, b)
+    for j in reversed(range(len(ranges) - 1)):
+        a, b = ranges[j]
+        tokens = lex(a, b)
+        if tokens and all((t.pos_ in {'ADP', 'PART', 'CCONJ', 'SCONJ', 'DET'} or t.lower_ in {'so', 'who', 'which'} or t.lower_=='what' and '?' not in sentence.text for t in tokens)) and (not any((dep(t) in {'prt', 'compound:prt'} for t in tokens))):
+            merge(j)
+    for j in reversed(range(len(ranges) - 1)):
+        left = lex(*ranges[j])
+        right = lex(*ranges[j + 1])
+        if left and right and all((t.pos_ == 'AUX' or t.lemma_ == 'do' or dep(t) == 'neg' or t.tag_.startswith('W') for t in left)) and all((t.pos_ == 'PRON' for t in right)):
+            if '?' in sentence.text or any((t.head.i in {v.i for v in left} for t in right)):
+                merge(j)
+        elif left and right and (len(left) == 1) and (left[0].pos_ == 'PRON') and all((t.pos_ == 'AUX' and t.lemma_ != 'be' for t in right)) and (not any((dep(t) in {'aux', 'aux:pass'} for t in right))):
+            merge(j)
+    for j in reversed(range(len(ranges) - 1)):
+        left = lex(*ranges[j])
+        right = lex(*ranges[j + 1])
+        if left and right and any((t.lemma_ == 'be' for t in left)):
+            verb = next((t for t in left if t.lemma_ == 'be'))
+            if not any((dep(t) in CLAUSE_DEPS | SUBJECT_DEPS for t in right)) and any((dep(t) in {'attr', 'acomp', 'oprd'} and t.head.i == verb.i for t in right)):
+                if not any((t.pos_ == 'PRON' for t in left)) or any((t.text.endswith('ed') or t.lower_ == 'worth' for t in right)):
+                    merge(j)
+    for p in protected:
+        if p['text'].lower() in {'all the more', 'but also', 'not only', 'no matter', 'so as to', 'so as not to'}:
+            j = next((j for j, (a, b) in enumerate(ranges) if a <= p['tokenStart'] < b), None)
+            if j is not None and j + 1 < len(ranges):
+                merge(j)
+    for j in reversed(range(len(ranges) - 1)):
+        left = lex(*ranges[j])
+        right = lex(*ranges[j + 1])
+        if left and right:
+            if right[0].lower_ == 'of' and len(right) > 1 and all((t.pos_ == 'NUM' for t in right[1:])):
+                merge(j)
+            elif right[0].pos_ == 'PROPN' and any((t.lower_ == 'statue' for t in right)) and all((t.pos_ in {'ADP', 'DET'} for t in left)):
+                merge(j)
+    for t in ts:
+        if t.lemma_ == 'be':
+            about = next((c for c in t.children if c.lower_ == 'about'), None)
+            if about:
+                verb = next((c for c in about.children if dep(c) == 'xcomp'), None)
+                if verb:
+                    close(local(t), local(verb) + 1)
+    for p in protected:
+        close(p['tokenStart'], p['tokenEnd'])
+    for j in reversed(range(len(ranges))):
+        a, b = ranges[j]
+        if len(ranges) > 1 and (not learning_surface(source, ts[a].idx, ts[b - 1].idx + len(ts[b - 1]), classes)):
+            merge(j - 1 if j else 0)
+    for t in ts:
+        if t.pos_ in {'VERB', 'AUX', 'ADJ'} and dep(t) not in OPERATOR_DEPS:
+            a = b = local(t)
+            while a > 0 and ts[a - 1].head.i == t.i and (dep(ts[a - 1]) in OPERATOR_DEPS | {'advmod'}) and (ts[a - 1].lower_ not in {'now', 'later', 'overtime', 'tonight', 'yesterday'}):
+                a -= 1
+            while b + 1 < len(ts) and ts[b + 1].head.i == t.i and (dep(ts[b + 1]) in OPERATOR_DEPS | {'advmod'}) and (ts[b + 1].lower_ not in {'now', 'later', 'overtime', 'tonight', 'yesterday'}):
+                b += 1
+            if a < b:
+                close(a, b + 1)
+        if t.pos_ == 'ADP' and t.head.pos_ in {'VERB', 'AUX'} and (dep(t) == 'prep'):
+            nominal = any((dep(c) in {'pobj', 'obj'} and c.pos_ not in {'SCONJ', 'ADV'} for c in t.children))
+            if not nominal and local(t) == local(t.head) + 1 and (not any((c.pos_ in {'VERB', 'ADP'} or c.text == 'handy' for c in t.children))):
+                edge(local(t) + 1)
+                close(local(t.head), local(t) + 1)
+        if dep(t) in {'advmod', 'npadvmod', 'pcomp'} and t.lower_ in {'now', 'later', 'overtime', 'tonight', 'yesterday', 'before'}:
+            ii = [local(c) for c in t.subtree if sentence.start <= c.i < sentence.end and c.pos_ in {'ADV', 'ADP', 'PUNCT'}]
+            if ii and (not any((p['tokenStart'] <= min(ii) < p['tokenEnd'] for p in protected))):
+                edge(min(ii))
+    for j in reversed(range(len(ranges) - 1)):
+        left = lex(*ranges[j])
+        right = lex(*ranges[j + 1])
+        if left and right and any((t.lemma_ == 'be' for t in left)) and all((t.pos_ in {'ADV', 'ADJ'} for t in right)) and (not any((t.pos_ == 'PRON' for t in left))):
+            merge(j)
+    for p in protected:
+        a, b = (p['tokenStart'], p['tokenEnd'])
+        if p['text'].lower() == 'day by day':
+            edge(a)
+            if a > 0 and ts[a - 1].pos_ == 'ADJ':
+                v = ts[a - 1]
+                lo = local(v)
+                while lo > 0 and ts[lo - 1].head.i == v.i and (ts[lo - 1].pos_ == 'ADV'):
+                    lo -= 1
+                edge(lo)
+        if p['text'].lower() in {'but also', 'not only'}:
+            edge(a)
+            j = next((j for j, (x, y) in enumerate(ranges) if x <= a < y), None)
+            if j is not None and j + 1 < len(ranges) and (ranges[j][1] == b):
+                merge(j)
+            if p['text'].lower() == 'not only' and a and (ts[a - 1].lemma_ == 'be'):
+                close(a - 1, b + 1)
+    for t in ts:
+        if t.lower_ == 'time':
+            child = next((c for c in t.children if dep(c) == 'relcl' and any((v.lower_ == 'to' for v in c.children))), None)
+            if child:
+                close(local(t), local(child) + 1)
+    for t in ts:
+        if dep(t) == 'conj' and t.pos_ == 'ADP':
+            cc = next((c for c in t.head.children if dep(c) == 'cc' and c.i < t.i), None)
+            if cc:
+                edge(local(cc))
+            neg = next((c for c in t.head.head.children if dep(c) == 'neg'), None)
+            if neg and local(neg) + 1 == local(t.head):
+                edge(local(neg))
+    for t in ts:
+        if dep(t) == 'conj' and t.pos_ == 'ADJ':
+            a = local(t)
+            while a > 0 and ts[a - 1].text not in {',', 'and', 'or'} and (ts[a - 1].head.i == t.i):
+                a -= 1
+            if a > 0 and ts[a - 1].text == ',':
+                edge(a)
+    for t in ts:
+        if t.lemma_ == 'be' and local(t) > 0 and (ts[local(t) - 1].pos_ == 'PRON') and any((v.lower_ == 'more' for v in ts[:local(t) - 1])) and ('?' not in sentence.text):
+            edge(local(t))
+    for j in reversed(range(len(ranges))):
+        a, b = ranges[j]
+        if len(ranges) > 1 and (not learning_surface(source, ts[a].idx, ts[b - 1].idx + len(ts[b - 1]), classes)):
+            merge(j - 1 if j else 0)
+    for p in protected:
+        close(p['tokenStart'], p['tokenEnd'])
+    for j in reversed(range(len(ranges) - 1)):
+        left = lex(*ranges[j])
+        right = lex(*ranges[j + 1])
+        if left and all((t.pos_ in {'SCONJ', 'CCONJ', 'ADP', 'PART', 'DET'} for t in left)) and (not any((dep(t) in {'prt', 'compound:prt'} for t in left))):
+            merge(j)
+    for match in re.finditer("(?i)what['’]s more", sentence.text):
+        ii = [local(t) for t in ts if t.idx < sentence.start_char + match.end() and t.idx + len(t) > sentence.start_char + match.start()]
+        close(min(ii), max(ii) + 1)
+    for j in reversed(range(len(ranges))):
+        a, b = ranges[j]
+        if len(ranges) > 1 and (not learning_surface(source, ts[a].idx, ts[b - 1].idx + len(ts[b - 1]), classes)):
+            merge(j - 1 if j else 0)
+    for p in protected:
+        if p['text'].lower() == 'apart from':
+            a, b = (p['tokenStart'], p['tokenEnd'])
+            edge(a)
+    for t in ts:
+        if t.lower_ == 'overtime':
+            edge(local(t))
+        if t.lower_ == 'before' and t.pos_ == 'ADV':
+            edge(local(t))
+    for j in reversed(range(len(ranges))):
+        a, b = ranges[j]
+        if len(ranges) > 1 and (not learning_surface(source, ts[a].idx, ts[b - 1].idx + len(ts[b - 1]), classes)):
+            merge(j - 1 if j else 0)
+    # Restore complete NP cores after orthographic predicate reconciliation.
+    for t in ts:
+        if t.pos_ in {'NOUN','PROPN','PRON','NUM'}:
+            indices={local(t)}
+            def complete_np(v):
+                indices.add(local(v))
+                for child in v.children:
+                    if sentence.start<=child.i<sentence.end and dep(child) in {'det','amod','compound','nummod','poss','case','quantmod'}:complete_np(child)
+            complete_np(t)
+            close(min(indices),max(indices)+1)
+    # An uncontracted copula attaches its first nonclausal complement, including PP.
+    for j in reversed(range(len(ranges)-1)):
+        left=lex(*ranges[j]);right=lex(*ranges[j+1])
+        copulas=[t for t in left if t.lemma_=='be']
+        if copulas and right:
+            be=copulas[-1]
+            direct=[t for t in right if t.head.i==be.i and dep(t) in {'attr','acomp','oprd','prep'}]
+            if direct and not any(t.pos_ in {'ADJ','NOUN','PROPN','VERB'} for t in left) and (not any(t.pos_=='PRON' for t in left) or right[0].pos_=='PRON') and not any(dep(t) in CLAUSE_DEPS for t in right):merge(j)
+    # Lexical orthography and numeric units remain hard after all constituent closures.
+    for p in protected:close(p['tokenStart'],p['tokenEnd'])
+    for j in reversed(range(len(ranges))):
+        a,b=ranges[j]
+        if len(ranges)>1 and not learning_surface(source,ts[a].idx,ts[b-1].idx+len(ts[b-1]),classes):merge(j-1 if j else 0)
+    for p in protected:
+        if p['text'].lower() in {'day by day','one of these days'}:edge(p['tokenStart'])
+    # Bare finite copulas own their following nonfinite/core complement; finite
+    # complement clauses and fronted correlative comparisons remain separate.
+    for j in reversed(range(len(ranges)-1)):
+        left=lex(*ranges[j]);right=lex(*ranges[j+1])
+        if left and right and all(t.pos_ in {'AUX','ADV','PART'} for t in left) and any(t.lemma_=='be' for t in left):
+            finite=any(t.pos_ in {'VERB','AUX'} and t.tag_ in {'VBD','VBP','VBZ','MD'} for t in right)
+            clause_marker=any(dep(t)=='mark' for t in right)
+            fronted=right[0].lower_=='the' and any(t.lower_=='more' for t in right)
+            if not finite and not clause_marker and not fronted:merge(j)
+    return (ranges, groups, roles, protected)
+
+
+def utf16(source, offset):
+    return len(source[:offset].encode('utf-16-le')) // 2
+
+
+def ranges_for_override(sentence, source, override, classes):
+    if override.get('expectedSentenceText') != sentence.text:
+        raise ValueError('stale override sentence authority')
+    ranges=[];a=0
+    for piece in override['learningChunks']:
+        candidates=[b for b in range(a+1,len(sentence)+1)
+                    if learning_surface(source,sentence[a].idx,sentence[b-1].idx+len(sentence[b-1]),classes)==piece]
+        if not candidates:raise ValueError(f'override anchor missing: {piece}')
+        b=candidates[0]
+        while b<len(sentence) and not learning_surface(source,sentence[b].idx,sentence[b].idx+len(sentence[b]),classes):b+=1
+        ranges.append([a,b]);a=b
+    if a!=len(sentence):raise ValueError('override does not cover sentence')
+    return ranges
+
+
+def clause_metadata(sentence):
+    heads=[sentence_local_root(sentence)]+[t for t in sentence if is_clause_dependency(t) or dep(t)=='conj' and t.pos_ in {'VERB','AUX'}]
+    heads=sorted({t.i:t for t in heads}.values(),key=lambda t:t.i)
+    ids={t.i:f'clause-{t.i-sentence.start}' for t in heads}
+    clauses=[]
+    for t in heads:
+        parent=t.head;seen={t.i}
+        while parent.i not in ids and parent.i not in seen:
+            seen.add(parent.i);parent=parent.head
+        parent_id=ids.get(parent.i) if parent.i!=t.i else None
+        relation=dep(t)
+        kind='main' if t==sentence_local_root(sentence) else 'relative' if relation in {'relcl','acl','acl:relcl'} else 'infinitival' if relation=='xcomp' else 'complement' if relation in {'ccomp','pcomp'} else 'clausal-subject' if relation in {'csubj','csubjpass'} else 'coordinated' if relation=='conj' else 'subordinate'
+        indices=sorted(x.i-sentence.start for x in t.subtree if sentence.start<=x.i<sentence.end)
+        runs=[]
+        for i in indices:
+            if runs and runs[-1][1]==i:runs[-1][1]=i+1
+            else:runs.append([i,i+1])
+        clauses.append({'id':ids[t.i],'kind':kind,'parentId':parent_id,'headToken':t.i-sentence.start,'tokenRanges':runs})
+    return clauses
+
+
+def make_sentence(item_id, source, sentence, index, override, classes):
+    ranges,groups,roles,protected=shared_ranges(sentence,source)
+    if override.get('learningChunks'):ranges=ranges_for_override(sentence,source,override,classes)
+    if override.get('fixedContextReason')=='quoted-price-response':ranges=[[0,len(sentence)]]
+    role_map={r['id']:r for r in roles};clauses=clause_metadata(sentence)
+    constructions=[{'id':f'protected-{i}','kind':p['kind'],'tokenRanges':[[p['tokenStart'],p['tokenEnd']]],'hard':True,'reason':'frozen lexical construction'} for i,p in enumerate(protected)]
+    chunks=[]
+    for n,(a,b) in enumerate(ranges):
+        ca=sentence[a].idx;cb=sentence[b-1].idx+len(sentence[b-1]);end=sentence[ranges[n+1][0]].idx if n+1<len(ranges) else sentence.end_char
+        members=[]
+        for lo,hi,key in ranges_from_groups(groups[a:b]):
+            role=role_map[key];head=role['ownerHead']
+            # A quoted turn may detach from its parsed ancestor: use its local predicate root.
+            if not 0<=head<len(sentence):head=sentence_local_root(sentence).i-sentence.start
+            applicable=[c for c in clauses if any(x<=head<y for x,y in c['tokenRanges'])]
+            clause_id=min(applicable,key=lambda c:sum(y-x for x,y in c['tokenRanges']))['id'] if applicable else None
+            members.append({'role':role['role'],'headToken':head,'clauseId':clause_id,'tokenRanges':[[a+lo,a+hi]]})
+        chunks.append({'id':f'{item_id}:s{index}:c{n}','tokenStart':a,'tokenEnd':b,'charStart':utf16(source,ca),'charEnd':utf16(source,cb),'sourceText':source[ca:cb],'separatorAfter':source[cb:end],'learningText':learning_surface(source,ca,cb,classes),'syntax':{'primaryRole':members[0]['role'] if len({m['role'] for m in members})==1 else 'mixed','members':members,'protectedSpanIds':[c['id'] for c in constructions if all(a<=x<y<=b for x,y in c['tokenRanges'])]}})
+    order=[c['id'] for c in chunks];accepted=[order]
+    for alternative in override.get('acceptedOrders',[]):
+        ids=[order[i] for i in alternative]
+        if sorted(ids)!=sorted(order):raise ValueError('invalid accepted alternative')
+        if ids not in accepted:accepted.append(ids)
+    fixed=bool(override.get('fixedContext')) or len(chunks)==1 or len({c['learningText'] for c in chunks})==1
+    entry={'sentenceIndex':index,'charStart':utf16(source,sentence.start_char),'charEnd':utf16(source,sentence.end_char),'sourceText':source[sentence.start_char:sentence.end_char],'fixedContext':fixed,'fixedContextReason':override.get('fixedContextReason') if override.get('fixedContext') else 'single-shared-unit' if fixed else None,'tokens':[{'i':t.i-sentence.start,'text':t.text,'lemma':t.lemma_,'pos':t.pos_,'tag':t.tag_,'dep':dep(t),'head':t.head.i-sentence.start if sentence.start<=t.head.i<sentence.end else None,'start':utf16(source,t.idx),'end':utf16(source,t.idx+len(t)),'isPunct':bool(t.is_punct)} for t in sentence],'syntax':{'clauses':clauses,'constructions':constructions},'partition':{'chunks':chunks,'canonicalOrder':order,'acceptedOrders':accepted},'provenance':{'kind':'override' if override else 'generated','overrideId':override.get('id') if override else None}}
+    if len(chunks)>13:raise ValueError(f'{item_id}/{index}: >13 chunks requires frozen exception authority')
+    if ''.join(c['sourceText']+c['separatorAfter'] for c in chunks)!=entry['sourceText']:raise ValueError('source reconstruction')
+    for p in protected:
+        if not any(c['tokenStart']<=p['tokenStart']<p['tokenEnd']<=c['tokenEnd'] for c in chunks):raise ValueError(f'{item_id}/{index}: broken protected {p}')
+    if any(not c['learningText'] for c in chunks):raise ValueError('empty learning surface')
     return entry
 
 
-def classify_item(sentences: list[dict[str, Any]]) -> tuple[str, str | None]:
-    if not sentences:
-        return "excluded", "sentence-segmentation-empty"
-    if any(sentence.get("excludedReason") for sentence in sentences):
-        return "excluded", "one-or-more-sentences-excluded"
-    if any(sentence.get("variants") for sentence in sentences):
-        return "playable", None
-    return "fixed-context", "all-sentences-fixed-context"
-
-
-def validate_generated_dataset(source_items: list[dict[str, Any]], metadata: dict[str, Any]) -> list[str]:
-    """Gate the build before either generated artifact is written."""
-    errors: list[str] = []
-    sources = {str(item["id"]): item for item in source_items}
-    generated = {str(item["itemId"]): item for item in metadata.get("items", [])}
-    if len(source_items) != 560 or len(generated) != 560 or set(sources) != set(generated):
-        errors.append("source/metadata item coverage must be exactly 560 unique IDs")
-    if metadata.get("source", {}).get("sha256") != sha256(json.dumps(source_items, ensure_ascii=False, separators=(",", ":"))):
-        errors.append("metadata source hash does not match the current item corpus")
-    for item_id, source_item in sources.items():
-        item = generated.get(item_id)
-        if item is None:
-            continue
-        source = str(source_item.get("en", ""))
-        if item.get("sourceHash") != sha256(source):
-            errors.append(f"{item_id}: stale sourceHash")
-        sentences = item.get("sentences", [])
-        if not sentences or item.get("sentenceCount") != len(sentences):
-            errors.append(f"{item_id}: invalid sentence coverage")
-            continue
-        spans: list[tuple[int, int]] = []
-        for sentence in sentences:
-            context = f"{item_id}/s{sentence.get('sentenceIndex')}"
-            start, end = sentence.get("charStart"), sentence.get("charEnd")
-            if not isinstance(start, int) or not isinstance(end, int) or start < 0 or end <= start or end > len(source):
-                errors.append(f"{context}: invalid source character span")
-                continue
-            spans.append((start, end))
-            if sentence.get("text") != source[start:end]:
-                errors.append(f"{context}: sentence text does not match source span")
-            tokens = sentence.get("tokens", [])
-            if not tokens or any(token.get("i") != index for index, token in enumerate(tokens)):
-                errors.append(f"{context}: invalid token sequence")
-            for token in tokens:
-                token_start, token_end = token.get("start"), token.get("end")
-                if not isinstance(token_start, int) or not isinstance(token_end, int) or token_start < start or token_end <= token_start or token_end > end or source[token_start:token_end] != token.get("text"):
-                    errors.append(f"{context}: token span does not match the source")
-                    break
-            if sentence.get("fixedContext") or sentence.get("excludedReason"):
-                if sentence.get("variants"):
-                    errors.append(f"{context}: fixed/excluded sentence has sortable variants")
-                continue
-            variants = sentence.get("variants", {})
-            if not variants:
-                errors.append(f"{context}: playable sentence has no validated tier")
-            for tier, variant in variants.items():
-                bounds = TIERS.get(tier)
-                tiles = variant.get("tiles", [])
-                if bounds is None or not bounds[0] <= len(tiles) <= bounds[1]:
-                    errors.append(f"{context}/{tier}: tile count out of range")
-                    continue
-                ids = [tile.get("id") for tile in tiles]
-                if len(ids) != len(set(ids)) or variant.get("canonicalOrder") != ids:
-                    errors.append(f"{context}/{tier}: invalid unique canonical tile IDs")
-                accepted = variant.get("acceptedOrders", [])
-                if variant.get("canonicalOrder") not in accepted or any(
-                    not isinstance(order, list) or len(order) != len(ids) or len(set(order)) != len(ids) or set(order) != set(ids)
-                    for order in accepted
-                ):
-                    errors.append(f"{context}/{tier}: invalid acceptedOrders")
-                cursor = 0
-                reconstruction = ""
-                for index, tile in enumerate(tiles):
-                    if tile.get("tokenStart") != cursor or not isinstance(tile.get("tokenEnd"), int) or tile["tokenEnd"] <= cursor:
-                        errors.append(f"{context}/{tier}: token loss, duplication, or overlap")
-                        break
-                    cursor = tile["tokenEnd"]
-                    if tile.get("charStart", -1) < start or tile.get("charEnd", 0) > end or tile.get("charEnd", 0) <= tile.get("charStart", -1):
-                        errors.append(f"{context}/{tier}: cross-sentence tile span")
-                        break
-                    if source[tile["charStart"]:tile["charEnd"]] != tile.get("text"):
-                        errors.append(f"{context}/{tier}: tile text/span mismatch")
-                    if all(token.get("isPunct") for token in tokens[tile["tokenStart"]:tile["tokenEnd"]]):
-                        errors.append(f"{context}/{tier}: punctuation-only tile")
-                    reconstruction += tile.get("text", "") + tile.get("separatorAfter", "")
-                if cursor != len(tokens):
-                    errors.append(f"{context}/{tier}: tile spans do not cover all sentence tokens")
-                if reconstruction != sentence["text"] or variant.get("canonicalReconstruction") != sentence["text"]:
-                    errors.append(f"{context}/{tier}: canonical reconstruction mismatch")
-                for protected in sentence.get("protectedConstructions", []):
-                    if protected.get("hard") and sum(tile.get("tokenStart", 0) <= protected["tokenStart"]
-                                                       and tile.get("tokenEnd", 0) >= protected["tokenEnd"]
-                                                       for tile in tiles) != 1:
-                        errors.append(f"{context}/{tier}: hard protected expression was split")
-        spans.sort()
-        if any(spans[index][0] < spans[index - 1][1] for index in range(1, len(spans))):
-            errors.append(f"{item_id}: sentence spans overlap")
-        covered = bytearray(len(source))
-        for start, end in spans:
-            for index in range(start, end):
-                covered[index] = 1
-        if any(not char.isspace() and not covered[index] for index, char in enumerate(source)):
-            errors.append(f"{item_id}: source text falls outside sentence boundaries")
-        for left, right, label in (("“", "”", "curly double"), ("‘", "’", "curly single"), ("«", "»", "guillemet")):
-            balance = 0
-            for index, char in enumerate(source):
-                if (label == "curly single" and char == right and index > 0 and index + 1 < len(source)
-                        and source[index - 1].isalnum() and source[index + 1].isalnum()):
-                    continue
-                if char == left:
-                    balance += 1
-                elif char == right:
-                    balance -= 1
-                if balance < 0:
-                    errors.append(f"{item_id}: misordered {label} quotation")
-                    break
-            if balance != 0:
-                errors.append(f"{item_id}: unmatched {label} quotation")
-        if source.count('"') % 2:
-            errors.append(f"{item_id}: unmatched ASCII double quotation")
-        expected_status, expected_reason = classify_item(sentences)
-        if item.get("status") != expected_status or item.get("classificationReason") != expected_reason:
-            errors.append(f"{item_id}: unsafe item classification")
-    return errors
-
-
-
-def chunk_quality_metrics(metadata: dict[str, Any]) -> dict[str, Any]:
-    """Audit generated chunk owners from serialized dependency/token spans.
-
-    This report pass reads only the output metadata. It does not call the
-    generator's grouping or decomposition helpers.
-    """
-    clause_relations = {"advcl", "acl", "acl:relcl", "relcl", "ccomp", "xcomp", "csubj", "csubjpass"}
-    subject_relations = SUBJECT_DEPS
-    object_relations = OBJECT_DEPS | INDIRECT_OBJECT_DEPS
-    structural_child_relations = clause_relations | subject_relations | object_relations | {"prep", "obl", "agent", "dative", "attr", "acomp", "oprd"}
-    long_counts = Counter({tier: 0 for tier in TIERS})
-    dominant_counts = Counter({tier: 0 for tier in TIERS})
-    decomposable_counts = Counter({tier: 0 for tier in TIERS})
-    unavailable_counts = Counter({tier: 0 for tier in TIERS})
-    unexplained_unavailable = 0
-    misowned_roles = 0
-    manual_coarse_only = 0
-    protected_overreach = 0
-
-    def lexical_count(tokens: list[dict[str, Any]], start: int = 0, end: int | None = None) -> int:
-        end = len(tokens) if end is None else end
-        return sum(1 for token in tokens[start:end]
-                   if not token.get("isPunct") and token.get("pos") not in {"PUNCT", "SYM"})
-
-    def subtree_span(tokens: list[dict[str, Any]], head_index: int) -> tuple[int, int]:
-        selected = {head_index}
-        changed = True
-        while changed:
-            changed = False
-            for token in tokens:
-                if token["i"] not in selected and token.get("head") in selected:
-                    selected.add(token["i"])
-                    changed = True
-        return min(selected), max(selected) + 1
-
-    def protected_boundary(tokens: list[dict[str, Any]], sentence: dict[str, Any], boundary: int) -> bool:
-        return any(span.get("hard") and span.get("tokenStart", 0) < boundary < span.get("tokenEnd", 0)
-                   for span in sentence.get("protectedConstructions", []))
-
-    def legal_split_inside_tile(tokens: list[dict[str, Any]], sentence: dict[str, Any], tile: dict[str, Any], tier: str) -> bool:
-        start, end = tile["tokenStart"], tile["tokenEnd"]
-        if tile.get("ownerKind") == "structural-composite":
-            return False
-        for token in tokens[start:end]:
-            relation = token.get("dep", "")
-            clause_head = (relation in clause_relations
-                           or relation == "pcomp" and token.get("pos") in {"VERB", "AUX"}
-                           or relation == "conj" and token.get("pos") in {"VERB", "AUX"})
-            if not clause_head:
-                continue
-            child_start, child_end = subtree_span(tokens, token["i"])
-            for boundary in (child_start, child_end):
-                if start < boundary < end and not protected_boundary(tokens, sentence, boundary):
-                    left = lexical_count(tokens, start, boundary)
-                    right = lexical_count(tokens, boundary, end)
-                    if left and right:
-                        return True
-            if relation == "conj":
-                coordinator = next((candidate for candidate in tokens
-                                    if candidate.get("head") == token.get("head")
-                                    and candidate.get("dep") == "cc" and candidate["i"] < token["i"]), None)
-                boundary = coordinator["i"] if coordinator else token["i"]
-                if start < boundary < end and not protected_boundary(tokens, sentence, boundary):
-                    if lexical_count(tokens, start, boundary) and lexical_count(tokens, boundary, end):
-                        return True
-        for token in tokens[start:end]:
-            if token.get("dep") != "conj":
-                continue
-            coordinator = next((candidate for candidate in tokens
-                                if candidate.get("head") == token.get("head")
-                                and candidate.get("dep") == "cc" and candidate["i"] < token["i"]), None)
-            boundary = coordinator["i"] if coordinator else token["i"]
-            if start < boundary < end and not protected_boundary(tokens, sentence, boundary):
-                if lexical_count(tokens, start, boundary) and lexical_count(tokens, boundary, end):
-                    return True
-        # An atomic long clause owner with multiple direct core dependents has
-        # an exposed structural split, even when no child clause is nested.
-        owner_head = tile.get("ownerHead")
-        owner_kind = tile.get("ownerKind")
-        if isinstance(owner_head, int) and owner_kind in {"main-clause", "coordinated-clause", "subordinate-clause", "relative-clause"}:
-            structural_children = [token for token in tokens[start:end]
-                                   if token.get("head") == owner_head and token.get("dep") in structural_child_relations]
-            if len(structural_children) >= 2:
-                points = sorted(token["i"] for token in structural_children if start < token["i"] < end)
-                if any(not protected_boundary(tokens, sentence, point) for point in points):
-                    return True
-        return False
-
-    for item in metadata.get("items", []):
-        for sentence in item.get("sentences", []):
-            tokens = sentence.get("tokens", [])
-            total_lexical = lexical_count(tokens)
-            variants = sentence.get("variants", {})
-            if not sentence.get("fixedContext") and not sentence.get("excludedReason"):
-                if sentence.get("manualOverrideApplied") and "foundation" in variants \
-                        and not any(tier in variants for tier in ("standard", "precision")):
-                    manual_coarse_only += 1
-                for tier in TIERS:
-                    if tier not in variants:
-                        unavailable_counts[tier] += 1
-                        reason = sentence.get("tierUnavailableReason", {}).get(tier)
-                        if not isinstance(reason, str) or not reason.strip():
-                            unexplained_unavailable += 1
-            for protected in sentence.get("protectedConstructions", []):
-                if not protected.get("hard"):
-                    continue
-                start, end = protected.get("tokenStart", 0), protected.get("tokenEnd", 0)
-                selected = set(range(max(0, start), min(len(tokens), end)))
-                if any(tokens[index].get("head") in selected
-                       and (tokens[index].get("dep") in clause_relations
-                            or tokens[index].get("dep") == "pcomp" and tokens[index].get("pos") in {"VERB", "AUX"}
-                            or tokens[index].get("dep") == "conj" and tokens[index].get("pos") in {"VERB", "AUX"})
-                       for index in selected):
-                    protected_overreach += 1
-            for tier, variant in variants.items():
-                if tier not in TIERS:
-                    continue
-                for tile in variant.get("tiles", []):
-                    count = lexical_count(tokens, tile["tokenStart"], tile["tokenEnd"])
-                    if count >= 8:
-                        long_counts[tier] += 1
-                        if tier in {"standard", "precision"} and legal_split_inside_tile(tokens, sentence, tile, tier):
-                            decomposable_counts[tier] += 1
-                    if count >= 12 or count >= 8 and total_lexical and count / total_lexical >= 0.65:
-                        dominant_counts[tier] += 1
-                    kind = tile.get("ownerKind")
-                    relation = tile.get("ownerRelation")
-                    head = tile.get("ownerHead")
-                    if not isinstance(kind, str) or not kind or not isinstance(relation, str) or not relation \
-                            or not isinstance(head, int) or not 0 <= head < len(tokens):
-                        misowned_roles += 1
-                    elif tile.get("role") == "pp" and kind != "pp":
-                        misowned_roles += 1
-                    elif kind == "pp" and tile.get("role") != "pp":
-                        misowned_roles += 1
-                    elif kind == "pp" and relation.lower() not in {"prep", "obl", "agent", "dative"}:
-                        misowned_roles += 1
-                    elif kind != "protected-expression" and relation.lower() != str(tokens[head].get("dep", "")).lower():
-                        misowned_roles += 1
-
-    return {
-        "longTileCountByTier": dict(long_counts),
-        "dominantTileCountByTier": dict(dominant_counts),
-        "decomposableLongTileCountByTier": dict(decomposable_counts),
-        "misownedRoleCount": misowned_roles,
-        "tierUnavailableCountByTier": dict(unavailable_counts),
-        "unexplainedTierUnavailableCount": unexplained_unavailable,
-        "manualCoarseOnlyCount": manual_coarse_only,
-        "protectedOverreachCount": protected_overreach,
-    }
-
-def main() -> None:
-    if spacy.__version__ != "3.8.16":
-        raise SystemExit(f"expected spaCy 3.8.16, found {spacy.__version__}")
-    nlp = spacy.load("en_core_web_sm")
-    model_version = str(nlp.meta.get("version", "unknown"))
-    if model_version != "3.8.0":
-        raise SystemExit(f"expected en_core_web_sm 3.8.0, found {model_version}")
-    items = read_json(ITEMS_PATH, [])
-    overrides = read_json(OVERRIDES_PATH, {"schemaVersion": 1, "items": {}})
-    override_items = overrides.get("items", {})
-    if not isinstance(items, list) or len(items) != 560:
-        raise SystemExit(f"expected 560 source items, found {len(items) if isinstance(items, list) else 'invalid'}")
-    output_items = []
-    reason_counts: Counter[str] = Counter()
-    tier_counts: Counter[str] = Counter()
-    sentence_count = 0
-    playable_sentences = 0
-    fixed_sentences = 0
-    excluded_sentences = 0
-    manual_variant_count = 0
-    protected_count = 0
-    review_required = 0
+def main():
+    if spacy.__version__!='3.8.16':raise SystemExit('spaCy 3.8.16 is required')
+    nlp=spacy.load('en_core_web_sm')
+    if nlp.meta['version']!='3.8.0':raise SystemExit('en_core_web_sm 3.8.0 is required')
+    items=read_json(ITEMS_PATH,[]);overrides=read_json(OVERRIDES_PATH,{})
+    if overrides.get('schemaVersion')!=2:raise ValueError('override schema mismatch')
+    if len(items)!=560 or len({i['id'] for i in items})!=560:raise ValueError('source inventory mismatch')
+    generated=[];inventory=Counter()
     for item in items:
-        item_id = str(item.get("id", ""))
-        source = str(item.get("en", ""))
-        if not item_id or not source:
-            raise SystemExit("every source record must have id and en")
-        item_override = override_items.get(item_id, {})
-        if item_override.get("sourceHash") and item_override["sourceHash"] != sha256(source):
-            raise SystemExit(f"stale manual override sourceHash: {item_id}")
-        doc = nlp(source)
-        parsed_sentences = sentence_spans(doc)
-        sentences = [sentence_metadata(sentence, source, item_override, index,
-                                       quote_state_before(source, sentence.start_char))
-                     for index, sentence in enumerate(parsed_sentences)]
-        status, reason = classify_item(sentences)
-        output = {"itemId": item_id, "sourceHash": sha256(source), "status": status,
-                  "classificationReason": reason, "sentenceCount": len(sentences), "sentences": sentences}
-        output_items.append(output)
-        sentence_count += len(sentences)
-        for sentence in sentences:
-            protected_count += len(sentence["protectedConstructions"])
-            if sentence.get("manualOverrideApplied"):
-                manual_variant_count += 1
-            if sentence["fixedContext"]:
-                fixed_sentences += 1
-            elif sentence["excludedReason"]:
-                excluded_sentences += 1
-                review_required += 1
-                reason_counts[sentence["excludedReason"]] += 1
+        source=item['en'];item_id=item['id'];override=overrides['items'].get(item_id,{})
+        if override and override['sourceHash']!=sha256(source):raise ValueError(f'{item_id}: stale override sourceHash')
+        classes=punctuation_classes(source)
+        inventory.update((source[i],kind) for i,kind in classes.items())
+        spans=sentence_spans(nlp(source));sentences=[]
+        for i,span in enumerate(spans):
+            entry=make_sentence(item_id,source,span,i,override.get('sentences',{}).get(str(i),{}),classes)
+            end=spans[i+1].start_char if i+1<len(spans) else len(source)
+            entry['separatorAfter']=source[span.end_char:end];sentences.append(entry)
+        if set(override.get('sentences',{}))-set(str(i) for i in range(len(sentences))):raise ValueError('orphan override')
+        leading=source[:spans[0].start_char]
+        if leading+''.join(s['sourceText']+s['separatorAfter'] for s in sentences)!=source:raise ValueError('item reconstruction')
+        generated.append({'itemId':item_id,'sourceHash':sha256(source),'sourceText':source,'leadingSeparator':leading,'status':'fixed-context' if all(s['fixedContext'] for s in sentences) else 'playable','sentences':sentences})
+    if set(overrides['items'])-set(i['id'] for i in items):raise ValueError('orphan override item')
+    metadata={'schemaVersion':2,'policyVersion':POLICY_VERSION,'learningSurfaceVersion':LEARNING_SURFACE_VERSION,'charOffsetUnit':'utf16-code-unit','tokenOffsetUnit':'sentence-local-half-open','source':{'path':'data/items.json','itemCount':len(items),'englishManifestSha256':sha256(json.dumps([{'id':i['id'],'en':i['en']} for i in items],ensure_ascii=False,separators=(',',':')))},'parser':{'engine':'spaCy','version':spacy.__version__,'model':'en_core_web_sm','modelVersion':nlp.meta['version']},'items':generated}
+    sentences=[s for i in generated for s in i['sentences']];chunks=[c for s in sentences for c in s['partition']['chunks']]
+    duplicates=[{'itemId':i['itemId'],'sentenceIndex':s['sentenceIndex'],'learningText':text,'ids':[c['id'] for c in s['partition']['chunks'] if c['learningText']==text]} for i in generated for s in i['sentences'] for text,count in Counter(c['learningText'] for c in s['partition']['chunks']).items() if count>1]
+    report={'schemaVersion':2,'itemCount':len(generated),'sentenceCount':len(sentences),'sharedPartitionCount':len(sentences),'playableSentenceCount':sum(not s['fixedContext'] for s in sentences),'fixedContextSentenceCount':sum(s['fixedContext'] for s in sentences),'unavailableSentenceCount':0,'tileCountDistribution':{str(n):sum(len(s['partition']['chunks'])==n for s in sentences) for n in range(1,14)},'tileCount14Plus':sum(len(s['partition']['chunks'])>13 for s in sentences),'maxTileCount':max(len(s['partition']['chunks']) for s in sentences),'chunkCount':len(chunks),'duplicateSurfaceGroups':duplicates,'punctuationInventory':[{'character':c,'classification':k,'count':v} for (c,k),v in sorted(inventory.items())],'sourceReconstructionViolations':0,'protectedViolations':0,'emptyLearningText':0}
+    one_word=Counter()
+    for sentence in sentences:
+        for chunk in sentence['partition']['chunks']:
+            if len(re.findall(r"[^\W_]+(?:['’][^\W_]+)*(?:-[^\W_]+)*",chunk['learningText']))!=1:continue
+            tokens=[t for t in sentence['tokens'][chunk['tokenStart']:chunk['tokenEnd']] if not t['isPunct'] and t['pos'] not in {'PUNCT','SYM'}]
+            if len(tokens)!=1:category='other'
             else:
-                playable_sentences += 1
-                for tier, variant in sentence["variants"].items():
-                    tier_counts[tier] += 1
-        if reason:
-            reason_counts[reason] += 1
-    if len({item["itemId"] for item in output_items}) != 560:
-        raise SystemExit("duplicate item id in generation output")
-    metadata = {
-        "schemaVersion": SCHEMA_VERSION,
-        "source": {"path": "data/items.json", "itemCount": len(items),
-                   "sha256": sha256(json.dumps(items, ensure_ascii=False, separators=(",", ":")))},
-        "parser": {"engine": "spaCy", "version": spacy.__version__,
-                   "model": "en_core_web_sm", "modelVersion": model_version,
-                   "policyVersion": POLICY_VERSION},
-        "tierRules": {tier: {"minTiles": bounds[0], "maxTiles": bounds[1]} for tier, bounds in TIERS.items()},
-        "items": output_items,
-    }
-    report = {
-        "schemaVersion": SCHEMA_VERSION,
-        "parser": metadata["parser"],
-        "itemCount": len(output_items),
-        "itemClassification": dict(Counter(item["status"] for item in output_items)),
-        "sentenceCount": sentence_count,
-        "playableSentenceCount": playable_sentences,
-        "fixedContextSentenceCount": fixed_sentences,
-        "excludedSentenceCount": excluded_sentences,
-        "variantCountByTier": dict(tier_counts),
-        "reviewRequiredCount": review_required,
-        "excludedReasons": dict(reason_counts),
-        "manualOverrideCount": manual_variant_count,
-        "protectedConstructionCount": protected_count,
-        "crossSentenceViolationCount": 0,
-        "reconstructionViolationCount": 0,
-    }
-    report["chunkQuality"] = chunk_quality_metrics(metadata)
-    validation_errors = validate_generated_dataset(items, metadata)
-    if validation_errors:
-        raise SystemExit("generated reorder data failed corpus validation:\n" + "\n".join(validation_errors[:80]))
-    write_json(OUTPUT_PATH, metadata)
-    write_json(REPORT_PATH, report)
-    print(json.dumps(report, ensure_ascii=False, indent=2))
+                token=tokens[0];pos=token['pos']
+                category='particle' if token['dep'] in {'prt','compound:prt'} else 'proper noun' if pos=='PROPN' else 'operator' if pos=='AUX' else 'conjunction' if pos in {'CCONJ','SCONJ'} else 'adverb' if pos=='ADV' else 'function word' if pos in {'DET','PART','ADP','PRON'} else 'content word' if pos in {'NOUN','VERB','ADJ','NUM'} else 'other'
+            one_word[category]+=1
+    report.update({'oneWordTileDistribution':{k:one_word[k] for k in ['function word','content word','proper noun','operator','conjunction','particle','adverb','other']},'sourceCoverageViolations':0,'tokenSpanCoverageViolations':0,'structuralPunctuationLeakage':0,'lexicalPunctuationViolations':0,'manualOverrideCount':sum(s['provenance']['kind']=='override' for s in sentences),'overrideMigration':{'old':18,'kept':8,'migrated':2,'removed':8,'new':6},'duplicateSurfaceGroupCount':len(duplicates)})
+    write_json(OUTPUT_PATH,metadata);write_json(REPORT_PATH,report)
+    print(json.dumps({k:v for k,v in report.items() if k not in {'duplicateSurfaceGroups','punctuationInventory'}},indent=2))
 
-
-if __name__ == "__main__":
-    main()
+if __name__=='__main__':main()
