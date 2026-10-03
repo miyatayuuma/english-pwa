@@ -14,9 +14,9 @@ test('known wrong-sense regressions stay pinned to their source expressions and 
     ['turn something off','stop_a_device_or_flow','E0102','Turn the faucet off',/止める|切る/,/解雇する/],
     ['come across someone','meet_by_chance','E0524','came across Nick',/偶然|見かける/,/印象を与える/],
     ['make someone do something','causative_make','E0130','make her sign',/人に.*させる/,/成功/],
-    ['be beside oneself','extremely_upset','E0010','beside himself',/取り乱/,/比較/],
+    ["I'm beside myself",'extremely_upset','E0010','beside himself',/取り乱/,/比較/],
     ['sound asleep','sleeping_deeply','E0523','sound asleep',/ぐっすり|熟睡/,/音/],
-    ["twist one's ankle",'sprain_an_ankle','E0190','twisted his ankle',/捻挫/,/ツイスト/],
+    ['twist your ankle','sprain_an_ankle','E0190','twisted his ankle',/捻挫/,/ツイスト/],
     ['assume','take_as_true','E0227','assume',/考える|仮定/,/自分のもの|奪い/],
     ['job interview','employment_interview','E0366','job interview',/就職面接/,/面会/],
     ['turn someone down','reject_a_person_or_offer','E0178','turned me down',/断る/,/弱める/],
@@ -61,4 +61,10 @@ test('representative canonical answer surfaces are speakable and do not expose m
   assert.deepEqual(metaSlots,[]);
   const slashDelimited=db.entries.filter(value=>[value.canonical,...(Array.isArray(value.answers)?value.answers:[])].some(text=>String(text||'').includes('/'))).map(value=>`${value.id}: ${value.canonical}`);
   assert.deepEqual(slashDelimited,[]);
+});
+
+test('refined vocabulary surfaces exclude over-abstracted possessive, alternative, and incomplete construction targets',()=>{
+  assert.deepEqual(db.entries.filter(value=>/\\bone's\\b|\\boneself\\b/i.test(String(value.canonical||''))).map(value=>value.id),[]);
+  assert.deepEqual(db.entries.filter(value=>/\\bsomeone or something\\b|\\bsomething or someone\\b/i.test(String(value.canonical||''))).map(value=>value.id),[]);
+  assert.deepEqual(db.entries.filter(value=>value.kind==='construction'&&/\\b(?:that|if|before|to)\\s*$/i.test(String(value.canonical||''))).map(value=>value.id),[]);
 });

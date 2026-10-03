@@ -19,7 +19,7 @@ const sources=[
   {kind:'expression',canonical:'yield to something',itemId:'E0343'},
   {kind:'word',canonical:'scarcely',itemId:'E0010'},
   {kind:'word',canonical:'confuse',itemId:'E0016'},
-  {kind:'expression',canonical:"learn one's lesson",itemId:'E0187'},
+  {kind:'expression',canonical:'learn your lesson',itemId:'E0187'},
 ];
 const fixtureFor=source=>vocabulary.entries.find(entry=>entry.kind===source.kind&&entry.canonical===source.canonical&&entry.occurrences.some(occurrence=>occurrence.item_id===source.itemId));
 const sourceSurface=(entry,itemId)=>{const occurrence=entry.occurrences.find(value=>String(value.item_id)===String(itemId));const item=itemById.get(String(itemId));return occurrence&&item?item.en.slice(occurrence.start,occurrence.end):''};
@@ -424,7 +424,7 @@ browserTest('filler / restart accepted on primary and native correction keeps or
   }finally{await closePage(opened);}
   const second=await newPage(sources[7]);
   try{
-    const spoken="um learn learn one's lesson uh";
+    const spoken="um learn learn your lesson uh";
     await inject(second.page,spoken);await second.page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='正解');
     assert.equal(await second.page.locator('.vocab-heard__text').innerText(),spoken);
     assert.equal(await second.page.evaluate(()=>window.__mockSpeech.srsWrites),1);
