@@ -55,3 +55,11 @@ test('E0483 source keeps the repaired cost wording',()=>{
   const item=items.find(value=>value.id==='E0483');
   assert.equal(item?.en,'The millionaire insisted on acquiring the masterpiece no matter how much it cost.');
 });
+
+test('representative canonical answer surfaces exclude simple trailing meta slots and slash-delimited alternatives',()=>{
+  const simpleTrailingMeta=/^[^+]+\+\s*(?:(?:interrogative\s+)?clause(?:\s*\(past tense\))?|time)$/i;
+  const trailing=db.entries.filter(value=>simpleTrailingMeta.test(String(value.canonical||''))).map(value=>`${value.id}: ${value.canonical}`);
+  assert.deepEqual(trailing,[]);
+  const slashDelimited=db.entries.filter(value=>[value.canonical,...(Array.isArray(value.answers)?value.answers:[])].some(text=>String(text||'').includes('/'))).map(value=>`${value.id}: ${value.canonical}`);
+  assert.deepEqual(slashDelimited,[]);
+});
