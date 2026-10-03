@@ -36,7 +36,8 @@ public class NativeShellGateTest {
             if ("true".equals(eval(scenario, script))) return;
             Thread.sleep(100);
         }
-        fail("Gate condition not reached: " + script);
+        fail("Gate condition not reached: " + script + " diagnostics=" + eval(scenario,
+            "JSON.stringify({bridge:window.__gateBridge,permission:window.__gatePermission})"));
     }
 
     @Test
@@ -47,7 +48,7 @@ public class NativeShellGateTest {
             awaitTrue(scenario, "document.querySelector('#loadingOverlay')?.classList.contains('hidden') === true");
             eval(scenario, "window.__gateData=null; fetch('/data/items.json').then(r=>r.json()).then(x=>window.__gateData=x.length); true");
             awaitTrue(scenario, "window.__gateData === 560");
-            eval(scenario, "window.__gateBridge=null; import('/scripts/native/nativeSpeech.js').then(m=>m.getNativeSpeech()).then(p=>p.isAvailable()).then(x=>window.__gateBridge=x); true");
+            eval(scenario, "window.__gateBridge=null; import('/scripts/native/nativeSpeech.js').then(m=>m.getNativeSpeech()).then(p=>p.isAvailable()).then(x=>window.__gateBridge=x).catch(e=>window.__gateBridge={error:e.message}); true");
             awaitTrue(scenario, "typeof window.__gateBridge?.available === 'boolean' && window.__gateBridge.apiLevel >= 24");
             eval(scenario, "window.__gateSW=null; navigator.serviceWorker.getRegistrations().then(x=>window.__gateSW=x.length); true");
             awaitTrue(scenario, "window.__gateSW === 0");
@@ -61,9 +62,9 @@ public class NativeShellGateTest {
         try (ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class)) {
             awaitTrue(scenario, "!!window.Capacitor?.Plugins?.NativeSpeech");
             assertEquals(PackageManager.PERMISSION_DENIED, InstrumentationRegistry.getInstrumentation().getTargetContext().checkSelfPermission(Manifest.permission.RECORD_AUDIO));
-            eval(scenario, "window.__gatePermission=null; import('/scripts/native/nativeSpeech.js').then(m=>m.getNativeSpeech()).then(p=>p.requestPermission()).then(x=>window.__gatePermission=x); true");
+            eval(scenario, "window.__gatePermission=null; import('/scripts/native/nativeSpeech.js').then(m=>m.getNativeSpeech()).then(p=>p.requestPermission()).then(x=>window.__gatePermission=x).catch(e=>window.__gatePermission={error:e.message}); true");
             UiObject2 button = device.wait(Until.findObject(By.res("com.android.permissioncontroller", "permission_allow_foreground_only_button")), 15000);
-            assertNotNull("Microphone system permission dialog missing", button);
+            assertNotNull("Microphone system permission dialog missing: " + eval(scenario, "JSON.stringify(window.__gatePermission)"), button);
             button.click();
             awaitTrue(scenario, "window.__gatePermission?.granted === true");
             assertEquals(PackageManager.PERMISSION_GRANTED, InstrumentationRegistry.getInstrumentation().getTargetContext().checkSelfPermission(Manifest.permission.RECORD_AUDIO));

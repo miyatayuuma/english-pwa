@@ -61,9 +61,11 @@ jobs:
           target: google_apis
           arch: x86_64
           disable-animations: true
-          script: ./android/gradlew -p android connectedDebugAndroidTest --no-daemon
+          script: status=0; ./android/gradlew -p android connectedDebugAndroidTest --no-daemon || status=$?; adb logcat -d > android-gate-logcat.txt; exit "$status"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: android-gate-a-results
-          path: android/app/build/reports/androidTests/connected/
+          path: |
+            android/app/build/reports/androidTests/connected/
+            android-gate-logcat.txt
