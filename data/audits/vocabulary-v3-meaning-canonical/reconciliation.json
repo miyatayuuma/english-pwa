@@ -6743,7 +6743,7 @@
       "after": {
         "canonical": "be accused of doing something",
         "sense_key": "charged_with_action",
-        "meaning_ja": "somethingしたと非難される"
+        "meaning_ja": "somethingしたとして告発される"
       },
       "reason": "Learning-surface refinement: preserve the semantic sense while making the spoken TARGET minimal, natural, and fully recoverable from the Japanese prompt. Variable arguments use spoken someone/something placeholders mirrored literally in meaning_ja; arbitrary filler content is avoided.",
       "confidence": "high",
@@ -7042,7 +7042,7 @@
       "after": {
         "canonical": "give someone up",
         "sense_key": "stop_relationship_with_person",
-        "meaning_ja": "someoneとの関係を断つ"
+        "meaning_ja": "someoneを諦める"
       },
       "reason": "Learning-surface refinement: preserve the semantic sense while making the spoken TARGET minimal, natural, and fully recoverable from the Japanese prompt. Variable arguments use spoken someone/something placeholders mirrored literally in meaning_ja; arbitrary filler content is avoided.",
       "confidence": "high",
@@ -8791,6 +8791,63 @@
           "after": "someoneについて言えば"
         }
       ]
-    }
+    },
+    "batch_06": {
+      "status": "APPLIED",
+      "baseline_main": "fce346dda0c359c2aa55431c029aa46bf64b4db0",
+      "reviewed": 60,
+      "kept": 60,
+      "modified": 0,
+      "scope_note": "Indices 300-359 of learning_surface_refinement.changed_ids.",
+      "criteria": [
+        "Change only when the representative learning surface is materially improved.",
+        "Preserve natural spoken placeholders and the fixed sense boundary.",
+        "Avoid cosmetic rewrites that do not improve learning value."
+      ],
+      "applied": []
+    },
+    "batch_07": {
+      "status": "APPLIED",
+      "baseline_main": "fce346dda0c359c2aa55431c029aa46bf64b4db0",
+      "reviewed": 60,
+      "kept": 60,
+      "modified": 0,
+      "scope_note": "Indices 360-419 of learning_surface_refinement.changed_ids.",
+      "criteria": [
+        "Change only when the representative learning surface is materially improved.",
+        "Preserve natural spoken placeholders and the fixed sense boundary.",
+        "Avoid cosmetic rewrites that do not improve learning value."
+      ],
+      "applied": []
+    },
+    "batch_08": {
+      "status": "APPLIED",
+      "baseline_main": "fce346dda0c359c2aa55431c029aa46bf64b4db0",
+      "reviewed": 32,
+      "kept": 30,
+      "modified": 2,
+      "scope_note": "Indices 420-451 of learning_surface_refinement.changed_ids.",
+      "applied": [
+        {
+          "id": "vocab:02370",
+          "canonical": "be accused of doing something",
+          "before": "somethingしたと非難される",
+          "after": "somethingしたとして告発される"
+        },
+        {
+          "id": "vocab:02455",
+          "canonical": "give someone up",
+          "before": "someoneとの関係を断つ",
+          "after": "someoneを諦める"
+        }
+      ]
+    },
+    "status": "CLOSED",
+    "reviewed": 452,
+    "kept": 429,
+    "modified": 23,
+    "canonical_changes": 1,
+    "meaning_ja_refinements": 23,
+    "closure_note": "All 452 entries changed by learning_surface_refinement were human-reviewed for learning value, representative sense alignment, placeholder visibility, and spoken-target naturalness. No population, stable-ID, kind, source-occurrence, paraphrase-authority, or contextual-meaning changes were made in this human-review pass."
   }
 }

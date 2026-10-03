@@ -106,3 +106,5 @@ Full corpus independent source/token/span/structural/protected/learning/lexical/
 Implementation gates: source/coverage/protected/surface, fresh-parser human regression, determinism, and production browser tests PASS. Final-head CI and merge provenance are recorded in PR #253.
 
 Latest-main refresh: fce346d (PR #261). All parallel Vocabulary changes retained; English source unchanged. Full 560-item / 804-sentence regeneration and determinism/validation rerun before closure.
+
+Final parallel-main refresh: a33c350 (PR #262); English source remains unchanged. Prior refreshed-head application CI: 349 pass, 0 fail, 0 skip (job 111162579202). Final-head checks and merge provenance are in PR #253.

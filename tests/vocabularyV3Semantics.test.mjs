@@ -128,3 +128,10 @@ test('learning-surface human review batch 05 aligns Japanese prompts with the le
   assert.equal(byId.get('vocab:00618')?.meaning_ja,'somethingするのを楽しみにする');
   assert.equal(byId.get('vocab:00622')?.meaning_ja,'someoneについて言えば');
 });
+
+
+test('learning-surface final review keeps accusation and relationship senses precise',()=>{
+  const byId=new Map(db.entries.map(value=>[value.id,value]));
+  assert.equal(byId.get('vocab:02370')?.meaning_ja,'somethingしたとして告発される');
+  assert.equal(byId.get('vocab:02455')?.meaning_ja,'someoneを諦める');
+});
