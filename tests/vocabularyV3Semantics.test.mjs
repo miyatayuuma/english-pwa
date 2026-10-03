@@ -62,3 +62,9 @@ test('representative canonical answer surfaces are speakable and do not expose m
   const slashDelimited=db.entries.filter(value=>[value.canonical,...(Array.isArray(value.answers)?value.answers:[])].some(text=>String(text||'').includes('/'))).map(value=>`${value.id}: ${value.canonical}`);
   assert.deepEqual(slashDelimited,[]);
 });
+
+test('refined vocabulary surfaces exclude over-abstracted possessive, alternative, and incomplete construction targets',()=>{
+  assert.deepEqual(db.entries.filter(value=>/\\bone's\\b|\\boneself\\b/i.test(String(value.canonical||''))).map(value=>value.id),[]);
+  assert.deepEqual(db.entries.filter(value=>/\\bsomeone or something\\b|\\bsomething or someone\\b/i.test(String(value.canonical||''))).map(value=>value.id),[]);
+  assert.deepEqual(db.entries.filter(value=>value.kind==='construction'&&/\\b(?:that|if|before|to)\\s*$/i.test(String(value.canonical||''))).map(value=>value.id),[]);
+});
