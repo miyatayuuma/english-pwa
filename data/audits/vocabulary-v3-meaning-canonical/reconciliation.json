@@ -5,7 +5,7 @@
   "status": "CENTRALLY_RECONCILED",
   "policy": {
     "meaning": "代表辞書義。明示独立sense内に限定。sourceはカテゴリ/独立sense識別の証拠。",
-    "canonical": "base/dictionary form; own possessor=one's; person=someone; thing=something; action=do/doing something; canonical TARGET must be one speakable answer surface; non-spoken trailing meta slots such as + clause/+ time are excluded; embedded construction-slot notation remains a separate follow-up",
+    "canonical": "base/dictionary form for lexical items; canonical TARGET must be one speakable answer surface. Productive constructions may use a short representative concrete example when abstract slot notation would increase learning or speech cost. Non-spoken meta notation (+ clause, + noun, alternatives joined by slash) is not a canonical answer surface.",
     "capitalization": "nonproper lexical heads lowercase; English I/proper names preserved",
     "scope": "canonical/sense_key/meaning_ja only; pos/context/occurrences/answers/paraphrases unchanged"
   },
@@ -306,11 +306,11 @@
       "id": "vocab:00013",
       "decision": "MODIFY",
       "after": {
-        "canonical": "so + adjective or adverb + that + clause",
+        "canonical": "so tired that I fell asleep",
         "sense_key": "so_degree_that_result",
-        "meaning_ja": "あまりに〜なので…"
+        "meaning_ja": "疲れすぎて眠ってしまった"
       },
-      "reason": "代替品詞slotを or で明示し、発話候補のslash bundleと区別。程度結果構文は維持。",
+      "reason": "Concrete learning-surface normalization: replace abstract slot notation with a short, idiomatic, speakable example that preserves sense so_degree_that_result.",
       "confidence": "high",
       "cross_shard_note": "",
       "paraphrase_followup_required": true
@@ -332,11 +332,11 @@
       "id": "vocab:01816",
       "decision": "MODIFY",
       "after": {
-        "canonical": "nothing is more + adjective + than + noun or doing something",
+        "canonical": "nothing is more important than health",
         "sense_key": "negative_comparative_superlative",
-        "meaning_ja": "〜よりも…なものはない"
+        "meaning_ja": "健康ほど大切なものはない"
       },
-      "reason": "比較対象の名詞/動名詞slotを or で明示し、構文の意味を保持。",
+      "reason": "Concrete learning-surface normalization: replace abstract slot notation with a short, idiomatic, speakable example that preserves sense negative_comparative_superlative.",
       "confidence": "high",
       "cross_shard_note": "",
       "paraphrase_followup_required": true
@@ -345,11 +345,11 @@
       "id": "vocab:00637",
       "decision": "MODIFY",
       "after": {
-        "canonical": "be in a + adjective + mood",
+        "canonical": "be in a good mood",
         "sense_key": "mood_state",
-        "meaning_ja": "〜な気分である"
+        "meaning_ja": "機嫌がいい"
       },
-      "reason": "形容詞slotをellipsisから + adjective に統一。sourceの気分形容詞に固定しない。",
+      "reason": "Concrete learning-surface normalization: replace abstract slot notation with a short, idiomatic, speakable example that preserves sense mood_state.",
       "confidence": "high",
       "cross_shard_note": "mood形容詞slotをellipsisへ統一。construction workerの形容詞slot表記と中央で整合確認。",
       "paraphrase_followup_required": true
@@ -397,11 +397,11 @@
       "id": "vocab:02243",
       "decision": "MODIFY",
       "after": {
-        "canonical": "number + in + number",
+        "canonical": "three in five",
         "sense_key": "proportion_of_total",
-        "meaning_ja": "…人のうち〜人"
+        "meaning_ja": "5人中3人"
       },
-      "reason": "比率の説明文を日本語promptとして簡潔な数量patternへ。numeratorはfirst slot、denominatorはsecond slot。",
+      "reason": "Concrete learning-surface normalization: replace abstract slot notation with a short, idiomatic, speakable example that preserves sense proportion_of_total.",
       "confidence": "high",
       "cross_shard_note": "",
       "paraphrase_followup_required": true
@@ -730,6 +730,123 @@
       "confidence": "high",
       "cross_shard_note": null,
       "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00139",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "no sooner had I sat down than the phone rang",
+        "sense_key": "immediate_sequence",
+        "meaning_ja": "座るとすぐに電話が鳴った"
+      },
+      "reason": "Concrete learning-surface normalization: replace abstract slot notation with a short, idiomatic, speakable example that preserves sense immediate_sequence.",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00185",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "the more you practice, the better you get",
+        "sense_key": "correlated_increase",
+        "meaning_ja": "練習すればするほど上達する"
+      },
+      "reason": "Concrete learning-surface normalization: replace abstract slot notation with a short, idiomatic, speakable example that preserves sense correlated_increase.",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00538",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "all day long",
+        "sense_key": "throughout_a_time_period",
+        "meaning_ja": "一日中ずっと"
+      },
+      "reason": "Concrete learning-surface normalization: replace abstract slot notation with a short, idiomatic, speakable example that preserves sense throughout_a_time_period.",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01276",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "on safety grounds",
+        "sense_key": "on_specified_basis",
+        "meaning_ja": "安全上の理由で"
+      },
+      "reason": "Concrete learning-surface normalization: replace abstract slot notation with a short, idiomatic, speakable example that preserves sense on_specified_basis.",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01294",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "from an objective viewpoint",
+        "sense_key": "from_a_perspective",
+        "meaning_ja": "客観的な観点から"
+      },
+      "reason": "Concrete learning-surface normalization: replace abstract slot notation with a short, idiomatic, speakable example that preserves sense from_a_perspective.",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01377",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "something of a surprise",
+        "sense_key": "to_some_degree_a",
+        "meaning_ja": "ちょっとした驚き"
+      },
+      "reason": "Concrete learning-surface normalization: replace abstract slot notation with a short, idiomatic, speakable example that preserves sense to_some_degree_a.",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01815",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "with the door closed",
+        "sense_key": "accompanying_passive_state",
+        "meaning_ja": "ドアを閉めた状態で"
+      },
+      "reason": "Concrete learning-surface normalization: replace abstract slot notation with a short, idiomatic, speakable example that preserves sense accompanying_passive_state.",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01912",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "three times as large as mine",
+        "sense_key": "multiplicative_degree_comparison",
+        "meaning_ja": "私のものの3倍の大きさだ"
+      },
+      "reason": "Concrete learning-surface normalization: replace abstract slot notation with a short, idiomatic, speakable example that preserves sense multiplicative_degree_comparison.",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01937",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "find it hard to adjust",
+        "sense_key": "judge_action_to_have_quality",
+        "meaning_ja": "順応するのが難しいと感じる"
+      },
+      "reason": "Concrete learning-surface normalization: replace abstract slot notation with a short, idiomatic, speakable example that preserves sense judge_action_to_have_quality.",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
     }
   ],
   "followup_scope": "pos/source contextual corruption and canonical/paraphrase relationships are recorded; not repaired in this task.",
@@ -740,7 +857,7 @@
     "decision": "INTEGRATE"
   },
   "answer_surface_normalization": {
-    "status": "SIMPLE_PASS_APPLIED",
+    "status": "COMPLETED",
     "applied_count": 19,
     "slash_delimited_answer_targets_in_production": 0,
     "applied": [
@@ -859,73 +976,168 @@
         "to": "a quarter to"
       }
     ],
-    "residual_complex_slot_notation": [
+    "residual_complex_slot_notation": [],
+    "next_step": "Audit the remaining population for over-abstracted lexical/idiomatic canonicals even when they contain no explicit + slot notation.",
+    "simple_applied_count": 19,
+    "concretized_count": 13,
+    "total_normalized_count": 32,
+    "concretized": [
       {
         "id": "vocab:00013",
         "kind": "construction",
-        "canonical": "so + adjective or adverb + that + clause"
+        "from": {
+          "canonical": "so + adjective or adverb + that + clause",
+          "meaning_ja": "あまりに〜なので…"
+        },
+        "to": {
+          "canonical": "so tired that I fell asleep",
+          "meaning_ja": "疲れすぎて眠ってしまった"
+        }
       },
       {
         "id": "vocab:00139",
         "kind": "construction",
-        "canonical": "no sooner + inverted clause + than + clause"
+        "from": {
+          "canonical": "no sooner + inverted clause + than + clause",
+          "meaning_ja": "〜するとすぐに…"
+        },
+        "to": {
+          "canonical": "no sooner had I sat down than the phone rang",
+          "meaning_ja": "座るとすぐに電話が鳴った"
+        }
       },
       {
         "id": "vocab:00185",
         "kind": "construction",
-        "canonical": "the + comparative + clause, the + comparative + clause"
+        "from": {
+          "canonical": "the + comparative + clause, the + comparative + clause",
+          "meaning_ja": "〜すればするほど、ますます…"
+        },
+        "to": {
+          "canonical": "the more you practice, the better you get",
+          "meaning_ja": "練習すればするほど上達する"
+        }
       },
       {
         "id": "vocab:00538",
         "kind": "construction",
-        "canonical": "all + time period + long"
+        "from": {
+          "canonical": "all + time period + long",
+          "meaning_ja": "その期間ずっと"
+        },
+        "to": {
+          "canonical": "all day long",
+          "meaning_ja": "一日中ずっと"
+        }
       },
       {
         "id": "vocab:00637",
         "kind": "expression",
-        "canonical": "be in a + adjective + mood"
+        "from": {
+          "canonical": "be in a + adjective + mood",
+          "meaning_ja": "〜な気分である"
+        },
+        "to": {
+          "canonical": "be in a good mood",
+          "meaning_ja": "機嫌がいい"
+        }
       },
       {
         "id": "vocab:01276",
         "kind": "expression",
-        "canonical": "on + adjective + grounds"
+        "from": {
+          "canonical": "on + adjective + grounds",
+          "meaning_ja": "〜という理由で"
+        },
+        "to": {
+          "canonical": "on safety grounds",
+          "meaning_ja": "安全上の理由で"
+        }
       },
       {
         "id": "vocab:01294",
         "kind": "expression",
-        "canonical": "from a + adjective + viewpoint"
+        "from": {
+          "canonical": "from a + adjective + viewpoint",
+          "meaning_ja": "〜の観点から"
+        },
+        "to": {
+          "canonical": "from an objective viewpoint",
+          "meaning_ja": "客観的な観点から"
+        }
       },
       {
         "id": "vocab:01377",
         "kind": "construction",
-        "canonical": "something of a + noun"
+        "from": {
+          "canonical": "something of a + noun",
+          "meaning_ja": "ある程度の〜"
+        },
+        "to": {
+          "canonical": "something of a surprise",
+          "meaning_ja": "ちょっとした驚き"
+        }
       },
       {
         "id": "vocab:01815",
         "kind": "construction",
-        "canonical": "with + noun + past participle"
+        "from": {
+          "canonical": "with + noun + past participle",
+          "meaning_ja": "〜が…された状態で"
+        },
+        "to": {
+          "canonical": "with the door closed",
+          "meaning_ja": "ドアを閉めた状態で"
+        }
       },
       {
         "id": "vocab:01816",
         "kind": "construction",
-        "canonical": "nothing is more + adjective + than + noun or doing something"
+        "from": {
+          "canonical": "nothing is more + adjective + than + noun or doing something",
+          "meaning_ja": "〜よりも…なものはない"
+        },
+        "to": {
+          "canonical": "nothing is more important than health",
+          "meaning_ja": "健康ほど大切なものはない"
+        }
       },
       {
         "id": "vocab:01912",
         "kind": "construction",
-        "canonical": "number + times + comparative + than + something"
+        "from": {
+          "canonical": "number + times + comparative + than + something",
+          "meaning_ja": "〜の何倍も…"
+        },
+        "to": {
+          "canonical": "three times as large as mine",
+          "meaning_ja": "私のものの3倍の大きさだ"
+        }
       },
       {
         "id": "vocab:01937",
         "kind": "construction",
-        "canonical": "find it + adjective + to do something"
+        "from": {
+          "canonical": "find it + adjective + to do something",
+          "meaning_ja": "〜することを…だと感じる"
+        },
+        "to": {
+          "canonical": "find it hard to adjust",
+          "meaning_ja": "順応するのが難しいと感じる"
+        }
       },
       {
         "id": "vocab:02243",
         "kind": "construction",
-        "canonical": "number + in + number"
+        "from": {
+          "canonical": "number + in + number",
+          "meaning_ja": "…人のうち〜人"
+        },
+        "to": {
+          "canonical": "three in five",
+          "meaning_ja": "5人中3人"
+        }
       }
-    ],
-    "next_step": "Review residual embedded construction slots individually; do not mechanically strip them because the slots carry construction meaning."
+    ]
   }
 }
