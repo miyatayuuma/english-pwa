@@ -1,0 +1,573 @@
+{
+  "schema_version": 1,
+  "baseline_main": "85506d6ce258d2bd12f8ec80e937fbdd5e7a098d",
+  "baseline_blob": "ddc77e399048fc622605f4837f1487763e489624",
+  "status": "CENTRALLY_RECONCILED",
+  "policy": {
+    "meaning": "代表辞書義。明示独立sense内に限定。sourceはカテゴリ/独立sense識別の証拠。",
+    "canonical": "base/dictionary form; own possessor=one's; person=someone; thing=something; action=do/doing something; syntax slots=+ adjective/+ clause; alternatives=or; question punctuation retained",
+    "capitalization": "nonproper lexical heads lowercase; English I/proper names preserved",
+    "scope": "canonical/sense_key/meaning_ja only; pos/context/occurrences/answers/paraphrases unchanged"
+  },
+  "coverage": {
+    "reviewed": 2478,
+    "shards": 13,
+    "known_placeholders": 330,
+    "newly_materialized": 1408,
+    "existing_survivors": 1070
+  },
+  "secondary_review_dispositions": [
+    {
+      "id": "vocab:01618",
+      "decision": "ADOPT",
+      "reason": "humidは高湿度であり高温を含意しない。蒸し暑いでは湿度と温度が混ざる。"
+    },
+    {
+      "id": "vocab:01729",
+      "decision": "ADOPT",
+      "reason": "10代の若者では10〜12歳も含む。teenagerの定義は13〜19歳。"
+    },
+    {
+      "id": "vocab:00716",
+      "decision": "ADOPT",
+      "reason": "既存固定sense_keyは反対のことを述べる義。〜と矛盾するは事実や記述の不整合という別用法へ寄り、日本語と固定senseがずれる。"
+    },
+    {
+      "id": "vocab:01897",
+      "decision": "ADOPT",
+      "reason": "実演するは手順を実際に説明して見せる用法に限定される。demonstrate talent等もカバーする一般代表義は示す。Cambridge SHOW定義を確認。"
+    },
+    {
+      "id": "vocab:01347",
+      "decision": "RETAIN",
+      "reason": "入場authorityの明示sense境界を保持。"
+    },
+    {
+      "id": "vocab:01115",
+      "decision": "RETAIN",
+      "reason": "入場authorityの明示sense境界を保持。"
+    },
+    {
+      "id": "vocab:01225",
+      "decision": "RETAIN",
+      "reason": "入場authorityの明示sense境界を保持。"
+    },
+    {
+      "id": "vocab:01463",
+      "decision": "RETAIN",
+      "reason": "入場authorityの明示sense境界を保持。"
+    },
+    {
+      "id": "vocab:01470",
+      "decision": "ADOPT",
+      "reason": "新規単独nounで肩書きはsource sense。一般代表義優先なら題名。ただしAdmissionがRANK NAMEを明示固定した場合は現案を保持。"
+    },
+    {
+      "id": "vocab:01902",
+      "decision": "ADOPT",
+      "reason": "演技のみでは音楽の演奏を除く。current senseはentertaining an audienceなので同じsense内の代表promptに両主要形態を示す方が適切。二つの異なる辞書senseのbundleではない。"
+    },
+    {
+      "id": "vocab:02399",
+      "decision": "RETAIN",
+      "reason": "現案も一般的な辞書senseとして成立。必要以上の別sense移動を避ける。"
+    },
+    {
+      "id": "vocab:01343",
+      "decision": "RETAIN",
+      "reason": "入場authorityの明示sense境界を保持。"
+    },
+    {
+      "id": "vocab:01711",
+      "decision": "RETAIN",
+      "reason": "入場authorityの明示sense境界を保持。"
+    },
+    {
+      "id": "vocab:01892",
+      "decision": "RETAIN",
+      "reason": "現案も一般的な辞書senseとして成立。必要以上の別sense移動を避ける。"
+    },
+    {
+      "id": "vocab:02347",
+      "decision": "ADOPT",
+      "reason": "coupleの恋愛関係の2人の義は既婚に限定されない。夫婦よりカップルの方が過剰限定がない。2個/2人senseへ切り替えるかは固定conceptに従う。"
+    },
+    {
+      "id": "vocab:01453",
+      "decision": "ADOPT",
+      "reason": "組織だけではorganizationという別英単語も強く示す。固定biology senseを短い日本語headwordで明示する。"
+    }
+  ],
+  "same_lemma_review": [
+    {
+      "canonical": "come to",
+      "entries": [
+        {
+          "id": "vocab:00159",
+          "sense_key": "regain_consciousness",
+          "meaning_ja": "意識を取り戻す"
+        },
+        {
+          "id": "vocab:01373",
+          "sense_key": "amount_to",
+          "meaning_ja": "合計〜になる"
+        }
+      ],
+      "decision": "DISTINCT_SENSES_RETAINED",
+      "reason": "代表義とsense_keyが独立し、人口/境界変更不要。"
+    },
+    {
+      "canonical": "rate",
+      "entries": [
+        {
+          "id": "vocab:00758",
+          "sense_key": "proportion_or_frequency",
+          "meaning_ja": "率"
+        },
+        {
+          "id": "vocab:00771",
+          "sense_key": "speed_or_degree_of_change",
+          "meaning_ja": "変化の速度"
+        }
+      ],
+      "decision": "DISTINCT_SENSES_RETAINED",
+      "reason": "代表義とsense_keyが独立し、人口/境界変更不要。"
+    },
+    {
+      "canonical": "favor",
+      "entries": [
+        {
+          "id": "vocab:01002",
+          "sense_key": "support_or_approval",
+          "meaning_ja": "支持"
+        },
+        {
+          "id": "vocab:00889",
+          "sense_key": "act_of_help",
+          "meaning_ja": "親切な行為"
+        }
+      ],
+      "decision": "DISTINCT_SENSES_RETAINED",
+      "reason": "代表義とsense_keyが独立し、人口/境界変更不要。"
+    },
+    {
+      "canonical": "familiar",
+      "entries": [
+        {
+          "id": "vocab:00747",
+          "sense_key": "knowledgeable_about_a_subject",
+          "meaning_ja": "精通している"
+        },
+        {
+          "id": "vocab:01037",
+          "sense_key": "known_to_someone",
+          "meaning_ja": "なじみのある"
+        }
+      ],
+      "decision": "DISTINCT_SENSES_RETAINED",
+      "reason": "代表義とsense_keyが独立し、人口/境界変更不要。"
+    },
+    {
+      "canonical": "charge",
+      "entries": [
+        {
+          "id": "vocab:00978",
+          "sense_key": "responsibility_or_control",
+          "meaning_ja": "責任"
+        },
+        {
+          "id": "vocab:00809",
+          "sense_key": "fee_for_a_service",
+          "meaning_ja": "料金"
+        }
+      ],
+      "decision": "DISTINCT_SENSES_RETAINED",
+      "reason": "代表義とsense_keyが独立し、人口/境界変更不要。"
+    },
+    {
+      "canonical": "work",
+      "entries": [
+        {
+          "id": "vocab:01247",
+          "sense_key": "function_successfully",
+          "meaning_ja": "機能する"
+        },
+        {
+          "id": "vocab:01092",
+          "sense_key": "artistic_creation",
+          "meaning_ja": "作品"
+        }
+      ],
+      "decision": "DISTINCT_SENSES_RETAINED",
+      "reason": "代表義とsense_keyが独立し、人口/境界変更不要。"
+    },
+    {
+      "canonical": "suspect",
+      "entries": [
+        {
+          "id": "vocab:01006",
+          "sense_key": "person_believed_to_have_committed_a_crime",
+          "meaning_ja": "容疑者"
+        },
+        {
+          "id": "vocab:00977",
+          "sense_key": "believe_someone_may_be_guilty_or_involved",
+          "meaning_ja": "疑う"
+        }
+      ],
+      "decision": "DISTINCT_SENSES_RETAINED",
+      "reason": "代表義とsense_keyが独立し、人口/境界変更不要。"
+    },
+    {
+      "canonical": "run",
+      "entries": [
+        {
+          "id": "vocab:01140",
+          "sense_key": "manage_a_business",
+          "meaning_ja": "経営する"
+        },
+        {
+          "id": "vocab:01833",
+          "sense_key": "operate_a_transport_service",
+          "meaning_ja": "運行する"
+        }
+      ],
+      "decision": "DISTINCT_SENSES_RETAINED",
+      "reason": "代表義とsense_keyが独立し、人口/境界変更不要。"
+    }
+  ],
+  "overrides": [
+    {
+      "id": "vocab:01153",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "assure someone that + clause",
+        "sense_key": "reassure_person_that",
+        "meaning_ja": "人に〜だと請け合う"
+      },
+      "reason": "clause slotを他shardの構文表記と同じ + clause に統一。固定表現・補文構造は維持。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": true
+    },
+    {
+      "id": "vocab:01671",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "warn someone that + clause",
+        "sense_key": "warn_person_that",
+        "meaning_ja": "人に〜だと警告する"
+      },
+      "reason": "clause slotを他shardの構文表記と同じ + clause に統一。固定表現・補文構造は維持。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": true
+    },
+    {
+      "id": "vocab:02066",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "it is the case that + clause",
+        "sense_key": "assert_statement_is_true",
+        "meaning_ja": "〜というのは事実である"
+      },
+      "reason": "clause slotを他shardの構文表記と同じ + clause に統一。固定表現・補文構造は維持。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": true
+    },
+    {
+      "id": "vocab:01399",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "there is little prospect that + clause",
+        "sense_key": "unlikely_future_event",
+        "meaning_ja": "〜する見込みがほとんどない"
+      },
+      "reason": "clause slotを他shardの構文表記と同じ + clause に統一。固定表現・補文構造は維持。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": true
+    },
+    {
+      "id": "vocab:01498",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "I bet + clause",
+        "sense_key": "confident_prediction",
+        "meaning_ja": "きっと〜だと思う"
+      },
+      "reason": "補文slotを + clause に統一。Iは代名詞なので大文字を維持。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": true
+    },
+    {
+      "id": "vocab:00013",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "so + adjective or adverb + that + clause",
+        "sense_key": "so_degree_that_result",
+        "meaning_ja": "あまりに〜なので…"
+      },
+      "reason": "代替品詞slotを or で明示し、発話候補のslash bundleと区別。程度結果構文は維持。",
+      "confidence": "high",
+      "cross_shard_note": "",
+      "paraphrase_followup_required": true
+    },
+    {
+      "id": "vocab:00551",
+      "decision": "KEEP",
+      "after": {
+        "canonical": "what will become of someone or something",
+        "sense_key": "ask_about_future_state",
+        "meaning_ja": "〜はどうなるのか"
+      },
+      "reason": "人と物の代替slotを or で統一。future-state questionの境界を維持。",
+      "confidence": "high",
+      "cross_shard_note": "",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01816",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "nothing is more + adjective + than + noun or doing something",
+        "sense_key": "negative_comparative_superlative",
+        "meaning_ja": "〜よりも…なものはない"
+      },
+      "reason": "比較対象の名詞/動名詞slotを or で明示し、構文の意味を保持。",
+      "confidence": "high",
+      "cross_shard_note": "",
+      "paraphrase_followup_required": true
+    },
+    {
+      "id": "vocab:00637",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "be in a + adjective + mood",
+        "sense_key": "mood_state",
+        "meaning_ja": "〜な気分である"
+      },
+      "reason": "形容詞slotをellipsisから + adjective に統一。sourceの気分形容詞に固定しない。",
+      "confidence": "high",
+      "cross_shard_note": "mood形容詞slotをellipsisへ統一。construction workerの形容詞slot表記と中央で整合確認。",
+      "paraphrase_followup_required": true
+    },
+    {
+      "id": "vocab:01925",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "what do you do?",
+        "sense_key": "ask_occupation",
+        "meaning_ja": "お仕事は何ですか"
+      },
+      "reason": "辞書canonicalの非固有文頭を小文字へ統一。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": true
+    },
+    {
+      "id": "vocab:02449",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "how come?",
+        "sense_key": "ask_reason_informally",
+        "meaning_ja": "どうして"
+      },
+      "reason": "辞書canonicalの非固有文頭を小文字へ統一。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": true
+    },
+    {
+      "id": "vocab:02454",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "it's about time + clause (past tense)",
+        "sense_key": "overdue_action",
+        "meaning_ja": "もう〜すべき頃だ"
+      },
+      "reason": "about timeのoverdue senseは許可ではなく、既に行うべき時期に達したこと。",
+      "confidence": "high",
+      "cross_shard_note": "",
+      "paraphrase_followup_required": true
+    },
+    {
+      "id": "vocab:02243",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "number + in + number",
+        "sense_key": "proportion_of_total",
+        "meaning_ja": "…人のうち〜人"
+      },
+      "reason": "比率の説明文を日本語promptとして簡潔な数量patternへ。numeratorはfirst slot、denominatorはsecond slot。",
+      "confidence": "high",
+      "cross_shard_note": "",
+      "paraphrase_followup_required": true
+    },
+    {
+      "id": "vocab:01618",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "humid",
+        "sense_key": "having_high_air_moisture",
+        "meaning_ja": "湿気の多い"
+      },
+      "reason": "humidは高湿度であり高温を含意しない。蒸し暑いでは湿度と温度が混ざる。",
+      "confidence": "high",
+      "cross_shard_note": "pos が汎用 word のまま。canonical/senseの判断は上記で確定したが、posの具体化は本Taskの変更対象外。",
+      "paraphrase_followup_required": true
+    },
+    {
+      "id": "vocab:01729",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "teenager",
+        "sense_key": "person_aged_thirteen_to_nineteen",
+        "meaning_ja": "13〜19歳の若者"
+      },
+      "reason": "10代の若者では10〜12歳も含む。teenagerの定義は13〜19歳。",
+      "confidence": "high",
+      "cross_shard_note": "pos が汎用 word のまま。canonical/senseの判断は上記で確定したが、posの具体化は本Taskの変更対象外。",
+      "paraphrase_followup_required": true
+    },
+    {
+      "id": "vocab:00716",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "contradict",
+        "sense_key": "state_the_opposite_of",
+        "meaning_ja": "反論する"
+      },
+      "reason": "既存固定sense_keyは反対のことを述べる義。〜と矛盾するは事実や記述の不整合という別用法へ寄り、日本語と固定senseがずれる。",
+      "confidence": "high",
+      "cross_shard_note": "",
+      "paraphrase_followup_required": true
+    },
+    {
+      "id": "vocab:01897",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "demonstrate",
+        "sense_key": "show_or_make_clear",
+        "meaning_ja": "示す"
+      },
+      "reason": "実演するは手順を実際に説明して見せる用法に限定される。demonstrate talent等もカバーする一般代表義は示す。Cambridge SHOW定義を確認。",
+      "confidence": "high",
+      "cross_shard_note": "pos が汎用 word のまま。canonical/senseの判断は上記で確定したが、posの具体化は本Taskの変更対象外。",
+      "paraphrase_followup_required": true
+    },
+    {
+      "id": "vocab:01470",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "title",
+        "sense_key": "name_of_book_or_work",
+        "meaning_ja": "題名"
+      },
+      "reason": "新規単独nounで肩書きはsource sense。一般代表義優先なら題名。ただしAdmissionがRANK NAMEを明示固定した場合は現案を保持。",
+      "confidence": "high",
+      "cross_shard_note": "pos が汎用 word のまま。canonical/senseの判断は上記で確定したが、posの具体化は本Taskの変更対象外。",
+      "paraphrase_followup_required": true
+    },
+    {
+      "id": "vocab:01902",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "performance",
+        "sense_key": "act_of_entertaining_an_audience",
+        "meaning_ja": "演技・演奏"
+      },
+      "reason": "演技のみでは音楽の演奏を除く。current senseはentertaining an audienceなので同じsense内の代表promptに両主要形態を示す方が適切。二つの異なる辞書senseのbundleではない。",
+      "confidence": "high",
+      "cross_shard_note": "pos が汎用 word のまま。canonical/senseの判断は上記で確定したが、posの具体化は本Taskの変更対象外。",
+      "paraphrase_followup_required": true
+    },
+    {
+      "id": "vocab:02347",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "couple",
+        "sense_key": "two_people_in_relationship",
+        "meaning_ja": "カップル"
+      },
+      "reason": "coupleの恋愛関係の2人の義は既婚に限定されない。夫婦よりカップルの方が過剰限定がない。2個/2人senseへ切り替えるかは固定conceptに従う。",
+      "confidence": "high",
+      "cross_shard_note": "",
+      "paraphrase_followup_required": true
+    },
+    {
+      "id": "vocab:01453",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "tissue",
+        "sense_key": "biological_cell_material",
+        "meaning_ja": "生体組織"
+      },
+      "reason": "組織だけではorganizationという別英単語も強く示す。固定biology senseを短い日本語headwordで明示する。",
+      "confidence": "high",
+      "cross_shard_note": "",
+      "paraphrase_followup_required": true
+    },
+    {
+      "id": "vocab:01151",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "disgusting",
+        "sense_key": "causing_disgust",
+        "meaning_ja": "気持ち悪い"
+      },
+      "reason": "disgustingの一般的な形容詞promptを日常的な日本語へ簡潔化。",
+      "confidence": "high",
+      "cross_shard_note": "pos が汎用 word のまま。canonical/senseの判断は上記で確定したが、posの具体化は本Taskの変更対象外。",
+      "paraphrase_followup_required": true
+    },
+    {
+      "id": "vocab:01951",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "sum",
+        "sense_key": "total_amount",
+        "meaning_ja": "合計"
+      },
+      "reason": "generic noun sumの代表的な合計義を選択。金額限定にしない。",
+      "confidence": "high",
+      "cross_shard_note": "",
+      "paraphrase_followup_required": true
+    },
+    {
+      "id": "vocab:01606",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "curse",
+        "sense_key": "words_intended_to_bring_bad_luck",
+        "meaning_ja": "呪い"
+      },
+      "reason": "generic noun curseの一般的代表義を選択。source比喩の災いへ限定しない。",
+      "confidence": "high",
+      "cross_shard_note": "",
+      "paraphrase_followup_required": true
+    },
+    {
+      "id": "vocab:02097",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "pang",
+        "sense_key": "sudden_sharp_pain",
+        "meaning_ja": "鋭い痛み"
+      },
+      "reason": "pangは短く鋭い痛み。単なる激痛に限定せず心理的痛みも同sense内で許容。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": true
+    }
+  ],
+  "followup_scope": "pos/source contextual corruption and canonical/paraphrase relationships are recorded; not repaired in this task.",
+  "integration_gate": {
+    "latest_main": "85506d6ce258d2bd12f8ec80e937fbdd5e7a098d",
+    "baseline_compare": "IDENTICAL",
+    "semantic_conflicts": [],
+    "decision": "INTEGRATE"
+  }
+}

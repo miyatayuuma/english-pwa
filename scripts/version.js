@@ -1,4 +1,4 @@
-const APP_VERSION = 'v5.66';
+const APP_VERSION = 'v5.67';
 
 if (typeof globalThis !== 'undefined') {
   globalThis.APP_VERSION = APP_VERSION;
