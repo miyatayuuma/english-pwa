@@ -81,7 +81,7 @@ export function createReorderGuide({
   let suppressClickId = '';
   let sentenceIsAssisted = false;
   let fullUtteranceText = '';
-  let fixedContextLines = [];
+  let sourceRows = [];
   let noteDefault = composeNoteEl?.textContent ?? '';
 
   const currentRow = () => puzzleRows[puzzleIndex] ?? null;
@@ -97,7 +97,7 @@ export function createReorderGuide({
     puzzleState = null;
     history = [];
     initialBank = [];
-    fixedContextLines = [];
+    sourceRows = [];
     pointer = null;
     suppressClickId = '';
     fullUtteranceText = '';
@@ -264,31 +264,20 @@ export function createReorderGuide({
   const beginPuzzle = () => {
     const row = currentRow();
     if (!row) return;
-    if (row.fixedContext) {
-      puzzleState = null;
-      history = [];
-      if (composeContextEl) {
-        const context = document.createElement('p');
-        context.className = 'compose-context-line';
-        context.textContent = `固定文脈: ${readableSentence(row.sentence)}`;
-        composeContextEl.replaceChildren(context);
-      }
-      if (composeTokensEl) composeTokensEl.replaceChildren();
-      if (composeAnswerEl) composeAnswerEl.replaceChildren();
-      if (composeControlsEl) composeControlsEl.replaceChildren(button('次へ', 'compose-control compose-control--primary', 'advance'));
-      note(`Sentence ${puzzleIndex + 1}/${puzzleRows.length} · 固定文脈`);
-      feedback('この短い断片は並べ替えず、文脈として確認してください。');
-      return;
-    }
     puzzleState = row.initialState;
     initialBank = puzzleState.bank.slice();
     history = [];
     if (composeContextEl) {
-      const previous = puzzleRows.slice(0, puzzleIndex)
-        .filter((entry) => !entry.fixedContext)
-        .map((entry) => `完了: ${readableSentence(entry.sentence)}`);
+      const contextLines = sourceRows
+        .filter((entry) => entry.sentence.sentenceIndex < row.sentence.sentenceIndex)
+        .map((entry) => {
+          if (entry.fixedContext) return `固定文脈: ${readableSentence(entry.sentence)}`;
+          if (entry.result?.completed) return `完了: ${readableSentence(entry.sentence)}`;
+          return null;
+        })
+        .filter(Boolean);
       composeContextEl.replaceChildren();
-      for (const text of [...fixedContextLines, ...previous]) {
+      for (const text of contextLines) {
         const line = document.createElement('p');
         line.className = 'compose-context-line';
         line.textContent = text;
@@ -438,11 +427,10 @@ export function createReorderGuide({
         disabledReason = 'この項目には並べ替え可能な文がないため、この項目をスキップしてください。';
         return { active: false, reason: disabledReason };
       }
-      // Keep context-only fragments in source order inside the sentence stage.
-      puzzleRows = staged;
-      fixedContextLines = staged
-        .filter((entry) => entry.fixedContext)
-        .map((entry) => `固定文脈: ${readableSentence(entry.sentence)}`);
+      // Fixed-context fragments are context-only. They never become an empty
+      // puzzle turn and are revealed only after their source position is reached.
+      sourceRows = staged;
+      puzzleRows = puzzleEntries;
       fullUtteranceText = String(item.en ?? '');
       if (composeGuideEl) {
         composeGuideEl.classList.add('show');
