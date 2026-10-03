@@ -99,3 +99,9 @@ test('learning-surface human review batch 01 pins corrected reusable targets',()
   assert.equal(byId.get('vocab:00047')?.meaning_ja,'someoneにsomethingするよう懇願する');
   assert.equal(byId.get('vocab:00119')?.meaning_ja,'someoneがsomethingすると期待する');
 });
+
+test('learning-surface human review batch 02 keeps placeholder prompts natural and unambiguous',()=>{
+  const byId=new Map(db.entries.map(value=>[value.id,value]));
+  assert.equal(byId.get('vocab:00162')?.meaning_ja,'somethingはこの辺までにする');
+  assert.equal(byId.get('vocab:00244')?.meaning_ja,'someoneにsomethingがおかしいという考えがふと浮かぶ');
+});
