@@ -20,14 +20,8 @@ function sha256(text) {
 
 function buildItem({ id = 'T0001', sentences, itemText, sourceHashText = itemText } = {}) {
   const entries = sentences.map((entry, sentenceIndex) => {
-    if (entry.fixedContext) return {
-      sentenceIndex,
-      sourceText: entry.text,
-      fixedContext: true,
-      fixedContextReason: entry.fixedContextReason ?? 'one-word-fragment',
-      partition: {},
-    };
-    const tiles = entry.tiles.map((text, tileIndex) => ({
+    const sourceTiles = entry.tiles ?? [entry.text];
+    const tiles = sourceTiles.map((text, tileIndex) => ({
       id: `s${sentenceIndex}-t${tileIndex}`,
       sourceText: text,
       learningText: text.replace(/[.!?]/g, ''),
@@ -38,7 +32,7 @@ function buildItem({ id = 'T0001', sentences, itemText, sourceHashText = itemTex
       role: 'phrase',
       label: '語句',
       dependency: 'fixture',
-      separatorAfter: tileIndex + 1 < entry.tiles.length ? ' ' : '',
+      separatorAfter: tileIndex + 1 < sourceTiles.length ? ' ' : '',
     }));
     const canonicalOrder = tiles.map((tile) => tile.id);
     const variant = {
@@ -51,7 +45,8 @@ function buildItem({ id = 'T0001', sentences, itemText, sourceHashText = itemTex
     return {
       sentenceIndex,
       sourceText: entry.text,
-      fixedContext: false,
+      fixedContext: Boolean(entry.fixedContext),
+      fixedContextReason: entry.fixedContext ? entry.fixedContextReason ?? 'single-shared-unit' : null,
       partition: variant,
     };
   });
@@ -228,29 +223,54 @@ browserTest('tap-only completion, canonical feedback, and dedicated completion w
   await closePage({ context });
 });
 
-browserTest('fixed context and two independent sentence puzzles progress in source order before full-item completion', async () => {
+browserTest('multi-sentence items expose every shared chunk in one puzzle, including one-chunk turns', async () => {
   const { context, page } = await newPage();
   const sentences = [
     { text: 'Hi.', fixedContext: true },
     { text: 'Birds sing.', tiles: ['Birds', 'sing.'] },
+    { text: '$100 including tax.', fixedContext: true },
     { text: 'We like books.', tiles: ['We', 'like', 'books.'] },
   ];
-  const fixture = buildItem({ id: 'MULTI', itemText: 'Hi. Birds sing. We like books.', sentences });
+  const fixture = buildItem({ id: 'MULTI', itemText: 'Hi. Birds sing. $100 including tax. We like books.', sentences });
   await boot(page, fixture, 0);
-  assert.match(await page.locator('#composeContext').innerText(), /固定文脈: Hi\./);
-  assert.equal(await page.locator('[data-zone="bank"].compose-token').count(), 0);
-  await page.locator('[data-action="advance"]').click();
-  await page.waitForSelector('[data-tile-id="s1-t0"]');
-  assert.equal(await page.locator('[data-zone="bank"].compose-token').count(), 2, JSON.stringify(await pageState(page)));
-  assert.match(await page.locator('#composeContext').innerText(), /固定文脈: Hi\./);
-  await tapCanonical(page, 2, 1);
-  await page.locator('[data-action="advance"]').click();
-  await page.waitForSelector('[data-tile-id="s2-t0"]');
-  assert.equal(await page.locator('[data-zone="bank"].compose-token').count(), 3);
-  await tapCanonical(page, 3, 2);
+
+  assert.equal(await page.locator('[data-zone="bank"].compose-token').count(), 7, JSON.stringify(await pageState(page)));
+  for (const id of ['s0-t0', 's1-t0', 's1-t1', 's2-t0', 's3-t0', 's3-t1', 's3-t2']) {
+    assert.equal(await page.locator(`[data-zone="bank"][data-tile-id="${id}"]`).count(), 1, id);
+    await tapTile(page, id);
+  }
+  await page.locator('[data-action="check"]').click();
+  await page.waitForSelector('[data-action="advance"]');
+  assert.match(await page.locator('#composeContext').innerText(), /Hi\. Birds sing\. \$100 including tax\. We like books\./);
   await page.locator('[data-action="advance"]').click();
   await page.waitForFunction(() => document.querySelector('#completion').textContent === 'FIRST_TRY');
-  assert.equal(await page.locator('#composeContext').innerText(), 'Hi. Birds sing. We like books.');
+  await closePage({ context });
+});
+
+browserTest('production E0064 combines all three dialogue turns into one puzzle', async () => {
+  const sourceItems = JSON.parse(await fs.readFile(path.join(ROOT, 'data/items.json'), 'utf8'));
+  const authority = JSON.parse(await fs.readFile(path.join(ROOT, 'data/reorder-v1.json'), 'utf8'));
+  const record = authority.items.find((entry) => entry.itemId === 'E0064');
+  const item = { ...sourceItems.find((entry) => entry.id === 'E0064'), taskType: 'compose' };
+  assert.ok(record);
+  assert.ok(item);
+  assert.equal(record.sentences.length, 3);
+  assert.equal(record.sentences[1].fixedContext, true);
+  assert.deepEqual(record.sentences[1].partition.chunks.map((chunk) => chunk.learningText), ['$100 including tax']);
+
+  const { context, page } = await newPage();
+  await boot(page, { item, metadataItem: record }, 0);
+  const chunks = record.sentences.flatMap((sentence) => sentence.partition.chunks);
+  assert.equal(await page.locator('[data-zone="bank"].compose-token').count(), chunks.length);
+  for (const chunk of chunks) {
+    assert.equal(await page.locator(`[data-zone="bank"][data-tile-id="${chunk.id}"]`).innerText(), chunk.learningText);
+    await tapTile(page, chunk.id);
+  }
+  await page.locator('[data-action="check"]').click();
+  await page.waitForSelector('[data-action="advance"]');
+  assert.match(await page.locator('#composeContext').innerText(), /\$100 including tax/);
+  await page.locator('[data-action="advance"]').click();
+  await page.waitForFunction(() => document.querySelector('#completion').textContent === 'FIRST_TRY');
   await closePage({ context });
 });
 
@@ -419,18 +439,16 @@ browserTest('actual generated 13-tile corpus item renders and completes with the
   for (const level of [0,4]) {
     const {context,page}=await newPage();
     await boot(page,{item,metadataItem:record},level);
-    for (const row of record.sentences) {
-      if (row.fixedContext) { await page.locator('[data-action="advance"]').click();continue; }
-      await page.waitForSelector(`[data-zone="bank"][data-tile-id="${row.partition.chunks[0].id}"]`);
-      assert.equal(await page.locator('.compose-token').count(),row.partition.chunks.length);
-      for (const chunk of row.partition.chunks) {
-        assert.equal(await page.locator(`[data-tile-id="${chunk.id}"]`).innerText(),chunk.learningText);
-        await tapTile(page,chunk.id);
-      }
-      await page.locator('[data-action="check"]').click();
-      await page.waitForSelector('[data-action="advance"]');
-      await page.locator('[data-action="advance"]').click();
+    const chunks = record.sentences.flatMap((row) => row.partition.chunks);
+    await page.waitForSelector(`[data-zone="bank"][data-tile-id="${chunks[0].id}"]`);
+    assert.equal(await page.locator('.compose-token').count(), chunks.length);
+    for (const chunk of chunks) {
+      assert.equal(await page.locator(`[data-tile-id="${chunk.id}"]`).innerText(), chunk.learningText);
+      await tapTile(page, chunk.id);
     }
+    await page.locator('[data-action="check"]').click();
+    await page.waitForSelector('[data-action="advance"]');
+    await page.locator('[data-action="advance"]').click();
     await page.waitForFunction(()=>document.querySelector('#completion').textContent==='FIRST_TRY');
     await closePage({context});
   }
