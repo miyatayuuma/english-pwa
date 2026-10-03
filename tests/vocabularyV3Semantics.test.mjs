@@ -13,7 +13,7 @@ test('known wrong-sense regressions stay pinned to their source expressions and 
     ['take up','occupy_space_or_time','E0020','taking up',/占める/,/再開する/],
     ['turn something off','stop_a_device_or_flow','E0102','Turn the faucet off',/止める|切る/,/解雇する/],
     ['come across someone','meet_by_chance','E0524','came across Nick',/偶然|見かける/,/印象を与える/],
-    ['make someone do something','causative_make','E0130','make her sign',/人に.*させる/,/成功/],
+    ['make someone do something','causative_make','E0130','make her sign',/someoneにsomethingさせる/,/成功/],
     ["I'm beside myself",'extremely_upset','E0010','beside himself',/取り乱/,/比較/],
     ['sound asleep','sleeping_deeply','E0523','sound asleep',/ぐっすり|熟睡/,/音/],
     ['twist your ankle','sprain_an_ankle','E0190','twisted his ankle',/捻挫/,/ツイスト/],
@@ -67,4 +67,27 @@ test('refined vocabulary surfaces exclude over-abstracted possessive, alternativ
   assert.deepEqual(db.entries.filter(value=>/\\bone's\\b|\\boneself\\b/i.test(String(value.canonical||''))).map(value=>value.id),[]);
   assert.deepEqual(db.entries.filter(value=>/\\bsomeone or something\\b|\\bsomething or someone\\b/i.test(String(value.canonical||''))).map(value=>value.id),[]);
   assert.deepEqual(db.entries.filter(value=>value.kind==='construction'&&/\\b(?:that|if|before|to)\\s*$/i.test(String(value.canonical||''))).map(value=>value.id),[]);
+});
+
+
+test('spoken placeholder targets are mirrored literally in the Japanese prompt',()=>{
+  const lexicalSomething=new Set(['vocab:01377']);
+  for(const value of db.entries){
+    if(value.kind==='word'||lexicalSomething.has(value.id)) continue;
+    const canonical=String(value.canonical||'');
+    const prompt=String(value.meaning_ja||'');
+    if(/\\bsomeone\\b/i.test(canonical)) assert.match(prompt,/someone/i,\`${value.id} exposes someone in meaning_ja\`);
+    if(/\\bsomething\\b/i.test(canonical)) assert.match(prompt,/something/i,\`${value.id} exposes something in meaning_ja\`);
+    if(/\\bsomething else\\b/i.test(canonical)) assert.match(prompt,/something else/i,\`${value.id} exposes something else in meaning_ja\`);
+  }
+  const fixtures=[
+    ['vocab:00040','remind someone of something','someoneにsomethingを思い出させる'],
+    ['vocab:00503','associate something with something else','somethingをsomething elseと結び付ける'],
+    ['vocab:00323','keep up with something','somethingについていく'],
+  ];
+  for(const [id,canonical,meaning] of fixtures){
+    const value=db.entries.find(entry=>entry.id===id);
+    assert.equal(value?.canonical,canonical);
+    assert.equal(value?.meaning_ja,meaning);
+  }
 });
