@@ -4,7 +4,7 @@ import fs from 'node:fs/promises';
 import { execFileSync } from 'node:child_process';
 import { isNativePlatform, isNativeAndroid } from '../scripts/native/runtimePlatform.js';
 import { createSwUpdatePrompt } from '../scripts/app/swUpdatePrompt.js';
-import { getNativeSpeech } from '../scripts/native/nativeSpeech.js';
+import { getNativeSpeech, nativeSpeechFacade } from '../scripts/native/nativeSpeech.js';
 
 test('native routing follows the bridge, not Android user agent or standalone PWA', () => {
   const browser = { navigator: { userAgent: 'Android', standalone: true } };
@@ -46,13 +46,25 @@ test('both SW callers are protected by one native registration guard; Web still 
 test('Gate A bridge requires native Android and resolves the custom plugin', async () => {
   await assert.rejects(getNativeSpeech({}), /Capacitor Android/);
   let registered;
-  const expected = { isAvailable() {} };
+  const expected = { isAvailable: async () => ({ available: true }) };
   const scope = { Capacitor: {
     isNativePlatform: () => true, getPlatform: () => 'android',
     registerPlugin: name => { registered = name; return expected; },
   } };
-  assert.equal(await getNativeSpeech(scope), expected);
+  assert.deepEqual(await (await getNativeSpeech(scope)).isAvailable(), { available: true });
   assert.equal(registered, 'NativeSpeech');
+});
+
+test('async bridge acquisition cannot assimilate a Capacitor Proxy as a thenable', async () => {
+  let thenAccessed = false;
+  const proxy = new Proxy({}, { get: (_target, property) => {
+    if (property === 'then') thenAccessed = true;
+    return async () => ({ available: true });
+  } });
+  const facade = await Promise.resolve(nativeSpeechFacade(proxy));
+  assert.equal(thenAccessed, false);
+  assert.equal(facade.then, undefined);
+  assert.deepEqual(await facade.isAvailable(), { available: true });
 });
 
 test('staging is deterministic, loads real runtime data and excludes repository tooling', async () => {
