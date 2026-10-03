@@ -228,29 +228,32 @@ browserTest('tap-only completion, canonical feedback, and dedicated completion w
   await closePage({ context });
 });
 
-browserTest('fixed context and two independent sentence puzzles progress in source order before full-item completion', async () => {
+browserTest('fixed context is never an empty turn and only appears after its source position is reached', async () => {
   const { context, page } = await newPage();
   const sentences = [
     { text: 'Hi.', fixedContext: true },
     { text: 'Birds sing.', tiles: ['Birds', 'sing.'] },
+    { text: '$100 including tax.', fixedContext: true },
     { text: 'We like books.', tiles: ['We', 'like', 'books.'] },
   ];
-  const fixture = buildItem({ id: 'MULTI', itemText: 'Hi. Birds sing. We like books.', sentences });
+  const fixture = buildItem({ id: 'MULTI', itemText: 'Hi. Birds sing. $100 including tax. We like books.', sentences });
   await boot(page, fixture, 0);
-  assert.match(await page.locator('#composeContext').innerText(), /固定文脈: Hi\./);
-  assert.equal(await page.locator('[data-zone="bank"].compose-token').count(), 0);
-  await page.locator('[data-action="advance"]').click();
   await page.waitForSelector('[data-tile-id="s1-t0"]');
   assert.equal(await page.locator('[data-zone="bank"].compose-token').count(), 2, JSON.stringify(await pageState(page)));
   assert.match(await page.locator('#composeContext').innerText(), /固定文脈: Hi\./);
+  assert.doesNotMatch(await page.locator('#composeContext').innerText(), /\$100 including tax/);
+
   await tapCanonical(page, 2, 1);
   await page.locator('[data-action="advance"]').click();
-  await page.waitForSelector('[data-tile-id="s2-t0"]');
+  await page.waitForSelector('[data-tile-id="s3-t0"]');
   assert.equal(await page.locator('[data-zone="bank"].compose-token').count(), 3);
-  await tapCanonical(page, 3, 2);
+  assert.match(await page.locator('#composeContext').innerText(), /完了: Birds sing\./);
+  assert.match(await page.locator('#composeContext').innerText(), /固定文脈: \$100 including tax\./);
+
+  await tapCanonical(page, 3, 3);
   await page.locator('[data-action="advance"]').click();
   await page.waitForFunction(() => document.querySelector('#completion').textContent === 'FIRST_TRY');
-  assert.equal(await page.locator('#composeContext').innerText(), 'Hi. Birds sing. We like books.');
+  assert.equal(await page.locator('#composeContext').innerText(), 'Hi. Birds sing. $100 including tax. We like books.');
   await closePage({ context });
 });
 
@@ -420,7 +423,7 @@ browserTest('actual generated 13-tile corpus item renders and completes with the
     const {context,page}=await newPage();
     await boot(page,{item,metadataItem:record},level);
     for (const row of record.sentences) {
-      if (row.fixedContext) { await page.locator('[data-action="advance"]').click();continue; }
+      if (row.fixedContext) continue;
       await page.waitForSelector(`[data-zone="bank"][data-tile-id="${row.partition.chunks[0].id}"]`);
       assert.equal(await page.locator('.compose-token').count(),row.partition.chunks.length);
       for (const chunk of row.partition.chunks) {
