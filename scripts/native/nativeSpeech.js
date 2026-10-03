@@ -1,7 +1,6 @@
 import { isNativeAndroid } from './runtimePlatform.js';
 
-// This file is used only by the Gate A harness until launch, bridge and
-// microphone permission have been verified. Production speech stays Web.
+// Static-ESM bridge shared by production recognition and the debug harness.
 let pluginPromise;
 // Capacitor's Proxy synthesizes a method for any property, including `then`.
 // Returning that Proxy from an async function makes it a thenable and can hang

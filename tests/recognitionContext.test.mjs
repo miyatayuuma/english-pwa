@@ -16,30 +16,16 @@ async function fixture(run,{phrases=true,constructor=true}={}){
   try{const module=await import(`../scripts/speech/recognition.js?context-${Math.random()}`);await run(module,instances);}
   finally{globalThis.window=previousWindow;globalThis.SpeechRecognitionPhrase=previousPhrase;}
 }
-test('context injected before start, max1 and no cross-product/target rewriting',()=>fixture(async({createRecognitionController},instances)=>{
-  const controller=createRecognitionController({getRecognitionBiasContext:()=>({phrases:[{text:'yield to',boost:4}]}),getReferenceText:()=> 'yield to'});
-  controller.start();const native=instances[0];assert.deepEqual(native.atStart,['yield to']);assert.equal(native.maxAlternatives,1);assert.equal(native.processLocally,undefined);
+test('Web fallback ignores phrase bias, keeps raw primary and requests N-best',()=>fixture(async({createRecognitionController},instances)=>{
+  const controller=createRecognitionController({getRecognitionBiasContext:()=>({biasStrings:['yield to'],maxAlternatives:5}),getReferenceText:()=> 'yield to'});
+  controller.start();const native=instances[0];assert.deepEqual(native.atStart,[]);assert.equal(native.maxAlternatives,5);assert.equal(native.processLocally,undefined);
   native.inject([result(['you too','yield to'])]);
   assert.equal(controller.getPreviewTranscript(),'you too');assert.equal(controller.stop().transcript,'you too');
-  assert.equal(controller.getTranscriptHypotheses,undefined);
 }));
-for(const capabilities of [{phrases:false},{constructor:false}]) test(`unsupported contextual capability ${JSON.stringify(capabilities)} stays rank1`,()=>fixture(async({createRecognitionController},instances)=>{
-  const controller=createRecognitionController({getRecognitionBiasContext:()=>({phrases:[{text:'yield to',boost:4}]})});assert.equal(controller.start().ok,true);
-  instances[0].inject([result('you too')]);assert.equal(controller.stop().transcript,'you too');
-},capabilities));
-test('phrases-not-supported disables session bias and retries only once, errors never auto-grade',()=>fixture(async({createRecognitionController},instances)=>{
-  let errors=0,stops=0;const capability={unavailable:false};
-  const options={biasCapability:capability,getRecognitionBiasContext:()=>({phrases:[{text:'yield to',boost:4}]}),onError:()=>errors++,onAutoStop:()=>stops++};
-  const controller=createRecognitionController(options);controller.start();instances[0].error('phrases-not-supported');
-  assert.equal(instances.length,2);assert.deepEqual(instances[1].atStart,[]);assert.equal(errors,0);assert.equal(stops,0);
-  instances[1].error('phrases-not-supported');assert.equal(instances.length,2);assert.equal(errors,1);assert.equal(stops,0);
-  controller.start();assert.deepEqual(instances[2].atStart,[]);controller.stop();
-  const next=createRecognitionController(options);next.start();assert.deepEqual(instances[3].atStart,[]);next.stop();
-}));
-test('capability failure after transcript does not retry or grade a partial attempt',()=>fixture(async({createRecognitionController},instances)=>{
+test('Web error after partial never retries or grades a partial attempt',()=>fixture(async({createRecognitionController},instances)=>{
   let errors=0,autostops=0;
-  const controller=createRecognitionController({shouldEvaluate:()=>false,getRecognitionBiasContext:()=>({phrases:[{text:'yield to',boost:4}]}),onError:()=>errors++,onAutoStop:()=>autostops++});
-  controller.start();instances[0].inject([result('you',false)]);instances[0].error('phrases-not-supported');
+  const controller=createRecognitionController({shouldEvaluate:()=>false,onError:()=>errors++,onAutoStop:()=>autostops++});
+  controller.start();instances[0].inject([result('you',false)]);instances[0].error('network');
   assert.equal(instances.length,1);assert.equal(errors,1);assert.equal(autostops,0);assert.equal(controller.isActive(),false);
 }));
 test('PR240 raw final overlap, interim replacement/resultIndex, manual/auto stop and stale isolation',()=>fixture(async({createRecognitionController},instances)=>{
@@ -61,7 +47,7 @@ test('PR240 raw final overlap, interim replacement/resultIndex, manual/auto stop
 
 test('learning context requests native five without confidence filtering, copies interims and clears stale evidence',()=>fixture(async({createRecognitionController},instances)=>{
   let auto;
-  const controller=createRecognitionController({getRecognitionBiasContext:()=>({maxAlternatives:5,phrases:[{text:'yield to something',boost:8}]}),shouldEvaluate:()=>false,onAutoStop:r=>auto=r});
+  const controller=createRecognitionController({getRecognitionBiasContext:()=>({maxAlternatives:5,biasStrings:['yield to something']}),shouldEvaluate:()=>false,onAutoStop:r=>auto=r});
   controller.start();const native=instances[0];assert.equal(native.maxAlternatives,5);
   native.inject([result(['YouTube','yield to'],true),result(['anything','something'],false)]);
   let evidence=controller.getNativeRecognitionSegments();assert.equal(evidence.length,2);assert.equal(evidence[1].isFinal,false);

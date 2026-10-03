@@ -1,4 +1,4 @@
-# Android Native Speech — Gate A
+# Android Native Speech
 
 Start main: `2805f92faffe351df6e1a97771da0d9f1738f8b1` (PR #263 included).
 
@@ -50,8 +50,28 @@ uploads the debug APK, and uses an API 35 Google APIs emulator for UI/data/
 bridge/no-SW/system-permission instrumentation. Emulator recognition accuracy
 is not a substitute for real-device OFF/ON measurements.
 
-**Production speech routing, weighted Web bias removal, and legacy chunker
-removal must wait for Gate A PASS.** This is not a closed native migration.
+Gate A **PASS** on commit `97f32602a57ba63fc234a0e65bba9e6fc840a5be`: UI,
+560-item loading, bridge calls, native SW disabled, system permission dialog,
+debug/release builds and Android lint. Evidence: [Actions run 37118160209](https://github.com/miyatayuuma/english-pwa/actions/runs/37118160209).
+Production migration started only after that gate passed.
+
+## Production routing
+
+Android shell uses AndroidSpeechRecognizerBackend; browsers and installed PWAs
+keep Web Speech. Reordering/compose/generate have no speech context. One read-only
+shared metadata loader serves Reordering and speech. Stable itemId and optional
+sentenceIndex select partitions; item-wide sessions collect every sentence in
+source order, including fixed-context partitions. learningText goes unchanged
+to the recognizer, with exact dedupe only. Vocabulary uses answerVariants strict
+TARGET surfaces, excluding PARAPHRASE. No added whole sentence or overlap.
+
+The speech-only recognitionChunks.js and weighted Web phrase planner have been
+removed. Native results enter the existing primary/N-best schema with rank zero
+primary and optional confidence; grading, strict lower-ranked TARGET rescue and
+SRS authority are unchanged. Native partials only update the preview. Stop waits
+for final/error, cancel invalidates the current controller, and both native/JS
+reject stale sessions and double starts. Web fallback keeps its current capture
+and grading behavior. Candidate PWA version: v5.79 (main remains v5.78).
 
 ## Real-device cases after migration
 
@@ -71,7 +91,26 @@ source surface. For sentence speech use only the E0102 shared partition strings.
 On one device/provider record 10–20 trials per case per bias condition: rank-1
 strict TARGET, strict TARGET anywhere in five candidates, grading accepted,
 MISS, technical error. Alternate OFF/ON trial order to reduce learning/order bias.
-Record provider/device/API explicitly. No measurements exist yet.
+Record provider/device/API explicitly. No real-device measurements exist yet. The debug validation page offers the
+actual fixtures, OFF/ON selection, negative-control labels, intended utterance,
+ranked results, optional confidence and existing grading. Its summary counts
+rank-1 TARGET, N-best TARGET, accepted, MISS and technical error independently.
+OFF is gated by Capacitor.DEBUG; release uses authority. Use `adb logcat -s
+NativeSpeech Capacitor/Console` or inspect the debug WebView to retain the
+transient JSON rows. No audio is recorded or stored. Clear records when switching
+devices/providers. Confirm API >=33 and record the configured system provider
+from capability output; intent-extra support is not proof of provider behavior.
+
+| Case | OFF attempts / rank-1 / N-best | ON attempts / rank-1 / N-best | accepted |
+|---|---|---|---|
+| yield to something | unmeasured | unmeasured | unmeasured |
+| see to something | unmeasured | unmeasured | unmeasured |
+| be in | unmeasured | unmeasured | unmeasured |
+| yelled / E0102 | unmeasured | unmeasured | unmeasured |
+
+**Release/device closure pending:** 10–20 OFF/ON trials per case and all negative
+controls on one real device/provider. No recognition-quality percentage or
+false-positive conclusion can be claimed from emulator smoke tests.
 
 Negative controls: omitted words, omitted chunk, wrong content word, wrong tense,
 swapped chunks, interrupted utterance. Keep primary/N-best/grading results for

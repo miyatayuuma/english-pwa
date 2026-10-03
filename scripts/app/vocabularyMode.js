@@ -3,6 +3,8 @@ import { buildRecognitionBiasContext } from '../speech/contextualBias.js';
 import { createCorrectionProgress, recordCorrectionAttempt } from '../speech/correctionProgress.js';
 import { createLevelStateManager } from './levelState.js';
 import { createRecognitionController, isRecognitionSupported } from '../speech/recognition.js';
+import { nativeSpeechDiagnostic } from '../native/androidSpeechBackend.js';
+import { isNativeAndroid } from '../native/runtimePlatform.js';
 import { createSpeechSynthesisController } from '../speech/synthesis.js';
 import {
   buildVocabularySession,
@@ -38,7 +40,6 @@ const state={
   correction:false,
   lastRecognitionDecision:null,
   correctionProgress:createCorrectionProgress(),
-  biasCapability:{unavailable:false},
   audioGeneration:0,
   micGeneration:0,
   audioReleaseAt:0,
@@ -184,7 +185,7 @@ function stopListening(){
   clearTimeout(state.timer);
   state.timer=0;
   clearGradeTimer();
-  if(state.recognition?.isActive?.()) state.recognition.stop();
+  if(state.recognition?.isActive?.()) state.recognition.cancel();
 }
 
 function closeDialog(){
@@ -260,7 +261,6 @@ function startSession(){
   state.completed=0;
   state.outcomes=new Map();
   state.retried=new Set();
-  state.biasCapability={unavailable:false};
   state.liveTranscript='';
   state.lastAttemptTranscript='';
   state.lastRecognitionDecision=null;
@@ -285,6 +285,8 @@ function scheduleTranscriptGrade(text){
   state.liveTranscript=String(text??'');
   setTranscript(state.liveTranscript);
   clearGradeTimer();
+  // Native previews are display-only; wait for the terminal result/error.
+  if(isNativeAndroid()) return;
   if(!state.liveTranscript.trim()&&!hasNativeSpeech()) return;
   const delay=state.current.kind==='word'?650:1200;
   state.gradeTimer=setTimeout(()=>{
@@ -319,7 +321,6 @@ function showRecognitionFailure(){
 function setupRecognition(){
   state.recognition=createRecognitionController({
     // Bias strict TARGET utterances; native evidence never rewrites raw primary text.
-    biasCapability:state.biasCapability,
     getRecognitionBiasContext:()=>buildRecognitionBiasContext({mode:'vocabulary',vocabularyEntry:state.current,activeOccurrence:activeSource(),correction:state.correction}),
     shouldEvaluate:()=>false,
     onTranscriptReset:()=>{clearGradeTimer();state.liveTranscript='';state.lastAttemptTranscript='';setTranscript('');},
@@ -361,7 +362,10 @@ async function startListening(){
   clearTimeout(state.timer);
   state.timer=0;
   if(state.recognition.isActive()){
-    const result=state.recognition.stop();
+    const generation=state.micGeneration;
+    const current=state.current;
+    const result=await state.recognition.stop();
+    if(generation!==state.micGeneration||current!==state.current||!result?.ok) return;
     clearGradeTimer();
     const text=latestNonEmptyTranscript(result?.previewTranscript,state.liveTranscript,result?.transcript);
     if((text||hasNativeSpeech())&&!state.processing) gradeTranscript(text);
@@ -633,7 +637,8 @@ function gradeTranscript(text){
   setTranscript(transcript);
   const result=classifyVocabularySpeechAnswer({entry:state.current,activeOccurrence:activeSource(),transcript,nativeSegments:state.recognition?.getNativeRecognitionSegments?.()||[],correction:state.correction});
   state.lastRecognitionDecision=result;
-  if(state.recognition?.isActive()) state.recognition.stop();
+  nativeSpeechDiagnostic('grading',{mode:'vocabulary',entryId:state.current.id,decision:result});
+  if(state.recognition?.isActive()) state.recognition.cancel();
   setListening(false);
   if(state.correction){
     const feedback=state.screen.querySelector('.vocab-feedback');

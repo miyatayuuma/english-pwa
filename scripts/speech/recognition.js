@@ -1,9 +1,8 @@
-import { applyRecognitionBias, LEARNING_MAX_ALTERNATIVES } from './contextualBias.js';
+import { LEARNING_MAX_ALTERNATIVES } from './contextualBias.js';
+import { selectRecognitionBackend } from '../native/androidSpeechBackend.js';
 import { approxTokensMatch, toks, mergeCompoundWords } from '../utils/text.js';
 
-const SR = typeof window !== 'undefined'
-  ? (window.SpeechRecognition || window.webkitSpeechRecognition)
-  : null;
+const SR = selectRecognitionBackend();
 
 export function isRecognitionSupported() {
   return !!SR;
@@ -362,7 +361,7 @@ export function createRecognitionController(options = {}) {
     onTranscriptPreview = () => {},
     getRecognitionBiasContext = () => null,
     onRecognitionConfigured = () => {},
-    biasCapability = {unavailable:false},
+    recognitionBackend = SR,
     onMatchEvaluated = () => {},
     onStart = () => {},
     onStop = () => {},
@@ -380,6 +379,12 @@ export function createRecognitionController(options = {}) {
   let stopRequested = false;
   let lastMatch = null;
   let segments=[];
+  let pendingStop=null;
+  function settleStop(result){
+    const pending=pendingStop;
+    pendingStop=null;
+    pending?.resolve(result);
+  }
   function getNativeRecognitionSegments(){
     return segments.filter(Boolean).map(segment=>({...segment,alternatives:segment.alternatives.map(candidate=>({...candidate}))}));
   }
@@ -440,8 +445,9 @@ export function createRecognitionController(options = {}) {
     onAutoStop?.(result);
   }
 
-  function start({fallbackAttempt=false}={}) {
-    if (!SR) {
+  function start() {
+    const context=getRecognitionBiasContext?.();
+    if (!recognitionBackend || context?.speechDisabled) {
       onUnsupported?.();
       return { ok: false, reason: 'unsupported' };
     }
@@ -450,7 +456,7 @@ export function createRecognitionController(options = {}) {
     }
     let currentRecognition;
     try{
-      currentRecognition=new SR();
+      currentRecognition=new recognitionBackend();
     }catch(error){
       setMicState?.(false);
       onError?.({error:'start-failed',cause:error});
@@ -460,10 +466,10 @@ export function createRecognitionController(options = {}) {
     currentRecognition.lang = 'en-US';
     currentRecognition.continuous = true;
     currentRecognition.interimResults = true;
-    const context=getRecognitionBiasContext?.();
+    currentRecognition.context=context;
     currentRecognition.maxAlternatives=context?.maxAlternatives===LEARNING_MAX_ALTERNATIVES?LEARNING_MAX_ALTERNATIVES:1;
-    const biased=!biasCapability.unavailable&&applyRecognitionBias(currentRecognition,context);
-    onRecognitionConfigured?.({maxAlternatives:currentRecognition.maxAlternatives,biasApplied:!!biased,biasDisabled:biasCapability.unavailable});
+    if(currentRecognition.waitsForFinalResult) currentRecognition.maxAlternatives=LEARNING_MAX_ALTERNATIVES;
+    onRecognitionConfigured?.({maxAlternatives:currentRecognition.maxAlternatives,backend:currentRecognition.waitsForFinalResult?'android-native':'web'});
 
     stableText = '';
     segments=[];
@@ -515,18 +521,20 @@ export function createRecognitionController(options = {}) {
 
     currentRecognition.onerror = (event) => {
       if(recognition!==currentRecognition||!active||finalized) return;
-      const canFallback=event.error==='phrases-not-supported'&&biased&&!fallbackAttempt&&!segments.some(segment=>segment?.alternatives.some(candidate=>candidate.transcript.trim()));
-      if(event.error==='phrases-not-supported') biasCapability.unavailable=true;
       active=false;finalized=true;recognition=null;
       try { currentRecognition.abort?.(); } catch (_) {}
       setMicState?.(false);onStop?.();
-      if(canFallback) { start({fallbackAttempt:true}); return; }
+      settleStop({ok:false,reason:event.error||'recognition-error'});
       // Errors never finalize a learning result, including errors after a partial result.
       onError?.(event);
     };
 
     currentRecognition.onend = () => {
-      if (recognition!==currentRecognition || finalized || stopRequested) {
+      if (recognition!==currentRecognition || finalized) {
+        return;
+      }
+      if(stopRequested){
+        if(currentRecognition.waitsForFinalResult) settleStop(finalize({triggeredByOnEnd:true}));
         return;
       }
       handleAutoStop();
@@ -547,17 +555,37 @@ export function createRecognitionController(options = {}) {
   }
 
   function stop() {
+    if(pendingStop) return pendingStop.promise;
     if (!active) {
       return { ok: false, reason: 'inactive', transcript: stableText.trim(), previewTranscript:latestPreview, nativeSegments:getNativeRecognitionSegments(), matchInfo: lastMatch };
     }
     stopRequested=true;
     const currentRecognition=recognition;
+    if(currentRecognition?.waitsForFinalResult){
+      let resolve;
+      const promise=new Promise(done=>{resolve=done;});
+      pendingStop={promise,resolve};
+      try { currentRecognition.stop(); }
+      catch(error){
+        cancel();
+        onError?.({error:'stop-failed',cause:error});
+      }
+      return promise;
+    }
     try {
       currentRecognition?.stop?.();
     } catch (_) {
       // ignore stop failures
     }
     return finalize({ triggeredByOnEnd: false });
+  }
+
+  function cancel(){
+    const currentRecognition=recognition;
+    active=false;finalized=true;stopRequested=false;recognition=null;
+    settleStop({ok:false,reason:'cancelled'});
+    try { currentRecognition?.abort?.(); } catch (_) {}
+    setMicState?.(false);onStop?.();
   }
 
   function isActive() {
@@ -579,6 +607,7 @@ export function createRecognitionController(options = {}) {
   return {
     start,
     stop,
+    cancel,
     isActive,
     clearHighlight,
     matchAndHighlight,

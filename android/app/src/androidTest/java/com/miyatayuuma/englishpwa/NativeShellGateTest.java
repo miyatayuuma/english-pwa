@@ -57,6 +57,19 @@ public class NativeShellGateTest {
     }
 
     @Test
+    public void productionBackendStartsAndCancelsWithoutWebSpeech() throws Exception {
+        UiDevice device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+        device.executeShellCommand("pm grant com.miyatayuuma.englishpwa android.permission.RECORD_AUDIO");
+        try (ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class)) {
+            awaitTrue(scenario, "document.readyState === 'complete' && !!window.Capacitor");
+            eval(scenario, "window.__productionGate={}; Promise.all([import('https://localhost/scripts/native/androidSpeechBackend.js'),import('https://localhost/scripts/speech/contextualBias.js')]).then(async ([b,c])=>{ const driver=new b.AndroidSpeechRecognizerBackend(); window.__productionDriver=driver; driver.context=c.buildRecognitionBiasContext({mode:'read',itemId:'E0102'}); window.__productionGate.bias=await c.resolveNativeBiasStrings(driver.context); driver.onstart=()=>{window.__productionGate.started=true;driver.abort();}; driver.onerror=e=>window.__productionGate.error=e; driver.onend=()=>window.__productionGate.ended=true; window.__productionGate.route=b.selectRecognitionBackend()===b.AndroidSpeechRecognizerBackend; driver.start(); }).catch(e=>window.__productionGate.error=e.message); true");
+            awaitTrue(scenario, "window.__productionGate?.ended === true");
+            assertEquals("true", eval(scenario, "window.__productionGate.route === true && window.__productionGate.started === true && !window.__productionGate.error"));
+            assertEquals("true", eval(scenario, "Array.isArray(window.__productionGate.bias) && window.__productionGate.bias.length > 0 && window.__productionDriver.state === 'idle'"));
+        }
+    }
+
+    @Test
     public void permissionIsRequestedOnDemandAndGrantedThroughSystemDialog() throws Exception {
         UiDevice device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
         device.executeShellCommand("pm revoke com.miyatayuuma.englishpwa android.permission.RECORD_AUDIO");

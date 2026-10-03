@@ -1,4 +1,5 @@
 import { buildRecognitionBiasContext } from '../speech/contextualBias.js';
+import { nativeSpeechDiagnostic } from '../native/androidSpeechBackend.js';
 import { createCorrectionProgress, recordCorrectionAttempt } from '../speech/correctionProgress.js';
 import { getActiveClozeRecognitionContext, clearActiveClozeRecognitionContext } from './clozeRecognitionContext.js';
 import {
@@ -2812,7 +2813,7 @@ function createAppRuntime(){
     cancelPendingMicStart();
     if(recognitionController && recognitionController.isActive()){
       try{
-        if(isShadowingSession()) recognitionController.stop();
+        if(isShadowingSession()) recognitionController.cancel();
         else await stopRec();
       }
       catch(_){ }
@@ -3161,7 +3162,7 @@ function createAppRuntime(){
       currentShouldUseSpeech=false;
       if(isShadowingSession()){
         cancelShadowingCycle({stopOutput:true});
-        if(recognitionController?.isActive?.()) recognitionController.stop();
+        if(recognitionController?.isActive?.()) recognitionController.cancel();
       }
       updatePlayButtonAvailability();
       const it=QUEUE[i];
@@ -3747,7 +3748,7 @@ function createAppRuntime(){
     if(correctiveItemId===QUEUE[idx]?.id){
       const expected=correctiveItemId;
       cancelPendingMicStart();
-      if(recognitionController?.isActive?.()) recognitionController.stop();
+      if(recognitionController?.isActive?.()) recognitionController.cancel();
       if(getAudioLockState()===AUDIO_LOCK_STATES.RELEASE) await new Promise(resolve=>setTimeout(resolve,MIC_RELEASE_SETTLE_MS+30));
       if(!sessionActive||QUEUE[idx]?.id!==expected) return;
     }
@@ -3781,7 +3782,7 @@ function createAppRuntime(){
         return refItem ? refItem.en : el.en.textContent;
       },
       shouldEvaluate:()=>!isShadowingSession(),
-      getRecognitionBiasContext:()=>buildRecognitionBiasContext({mode:isShadowingSession()?'shadowing':getStudyMode(),referenceText:QUEUE[idx]?.en,clozeContext:getActiveClozeRecognitionContext(QUEUE[idx]?.id),correction:correctiveItemId===QUEUE[idx]?.id}),
+      getRecognitionBiasContext:()=>buildRecognitionBiasContext({mode:isShadowingSession()?'shadowing':getStudyMode(),itemId:QUEUE[idx]?.id,clozeContext:getActiveClozeRecognitionContext(QUEUE[idx]?.id)}),
       onTranscriptPreview:text=>{if(!isShadowingSession()) showTranscriptFinal(text);},
       onTranscriptReset: resetTranscript,
       onTranscriptInterim: (text)=>{ if(!isShadowingSession()) showTranscriptInterim(text); },
@@ -3843,7 +3844,7 @@ function createAppRuntime(){
   function pauseShadowingAfterError(message){
     cancelShadowingCycle({stopOutput:true});
     shadowingPaused=true;
-    if(recognitionController?.isActive?.()) recognitionController.stop();
+    if(recognitionController?.isActive?.()) recognitionController.cancel();
     setFooterMessages(message||'連続シャドウイングを一時停止しました。','マイクを押すと現在の文から再開します。');
     el.mic.disabled=false;
   }
@@ -3887,7 +3888,7 @@ function createAppRuntime(){
     const exposure=buildShadowingExposure({itemId:cycle.itemId,startedAt:cycle.startedAt,finishedAt:now()});
     shadowCycleState=null;
     const transitionToken=++shadowCycleToken;
-    if(recognitionController?.isActive?.()) recognitionController.stop();
+    if(recognitionController?.isActive?.()) recognitionController.cancel();
     if(exposure.completed){
       recordShadowingExposure({cards:1,durationMs:exposure.durationMs});
       sendLog('shadowing',{
@@ -4016,10 +4017,17 @@ function createAppRuntime(){
     updateAttemptInfo();updatePlayButtonAvailability();
   }
 
+  let stopRecPending=false;
   async function stopRec(result){
     if(isComposeMode()) return;
     if(!recognitionController) return;
-    const outcome = result && result.ok ? result : recognitionController.stop();
+    if(!result&&stopRecPending) return;
+    const requestedItemId=QUEUE[idx]?.id;
+    let outcome;
+    if(!result) stopRecPending=true;
+    try { outcome = result && result.ok ? result : await recognitionController.stop(); }
+    finally { if(!result) stopRecPending=false; }
+    if(requestedItemId!==QUEUE[idx]?.id) return;
     if(!outcome || !outcome.ok) return;
     const it = QUEUE[idx];
     if(!it){
@@ -4049,6 +4057,7 @@ function createAppRuntime(){
     updateMatch(matchRate);
     if(correctiveItemId===it.id){
       // Practice after the recorded failure never mutates SRS/history/metrics.
+      nativeSpeechDiagnostic('grading',{mode:'correction',itemId:it.id,matchRate,evaluation:evaluateLevel(matchRate,maxHintStageUsed)});
       handleCorrectionAttempt({success:!!evaluateLevel(matchRate,maxHintStageUsed)?.pass});
       return;
     }
@@ -4060,6 +4069,7 @@ function createAppRuntime(){
     }
     const stageUsed = maxHintStageUsed;
     const evaluation = evaluateLevel(matchRate, stageUsed);
+    nativeSpeechDiagnostic('grading',{mode:studyMode,itemId:it.id,matchRate,evaluation});
     const updateTs = Date.now();
     const levelUpdate = updateLevelInfo(it.id, evaluation, {now:updateTs});
     const levelInfo = levelUpdate?.info;
@@ -4271,7 +4281,7 @@ function createAppRuntime(){
       if(active){
         cancelShadowingCycle({stopOutput:true});
         shadowingPaused=true;
-        recognitionController.stop();
+        recognitionController.cancel();
         setFooterMessages('連続シャドウイングを一時停止しました。','マイクを押すと現在の文から再開します。');
       }else if(getAudioLockState()===AUDIO_LOCK_STATES.PENDING){
         cancelPendingMicStart();

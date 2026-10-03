@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.Settings;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
@@ -46,6 +47,7 @@ public class NativeSpeechPlugin extends Plugin {
             JSObject result = new JSObject();
             result.put("available", SpeechRecognizer.isRecognitionAvailable(getContext()));
             result.put("apiLevel", Build.VERSION.SDK_INT);
+            result.put("provider", Settings.Secure.getString(getContext().getContentResolver(), "voice_recognition_service"));
             // Intent support is a platform capability, not proof the provider
             // honors bias. OFF/ON device measurements remain necessary.
             result.put("biasSupported", Build.VERSION.SDK_INT >= 33);
@@ -192,7 +194,7 @@ public class NativeSpeechPlugin extends Plugin {
         emit(session, "end", new JSObject());
         session.finished = true;
         active = null;
-        session.recognizer.destroy();
+        destroy(session);
         debug("destroy " + session.id);
     }
 
@@ -203,8 +205,10 @@ public class NativeSpeechPlugin extends Plugin {
         active = null;
         try {
             session.recognizer.cancel();
+        } catch (RuntimeException error) {
+            debug("cancel failure " + error);
         } finally {
-            session.recognizer.destroy();
+            destroy(session);
         }
         JSObject payload = errorPayload(code, code);
         payload.put("sessionId", session.id);
@@ -215,6 +219,11 @@ public class NativeSpeechPlugin extends Plugin {
         end.put("type", "end");
         notifyListeners("recognition", end);
         debug("cancel/destroy " + session.id);
+    }
+
+    private void destroy(Session session) {
+        try { session.recognizer.destroy(); }
+        catch (RuntimeException error) { debug("destroy failure " + error); }
     }
 
     private JSObject results(Bundle bundle) {
