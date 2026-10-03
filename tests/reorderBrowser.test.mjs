@@ -247,6 +247,33 @@ browserTest('multi-sentence items expose every shared chunk in one puzzle, inclu
   await closePage({ context });
 });
 
+browserTest('production E0064 combines all three dialogue turns into one puzzle', async () => {
+  const sourceItems = JSON.parse(await fs.readFile(path.join(ROOT, 'data/items.json'), 'utf8'));
+  const authority = JSON.parse(await fs.readFile(path.join(ROOT, 'data/reorder-v1.json'), 'utf8'));
+  const record = authority.items.find((entry) => entry.itemId === 'E0064');
+  const item = { ...sourceItems.find((entry) => entry.id === 'E0064'), taskType: 'compose' };
+  assert.ok(record);
+  assert.ok(item);
+  assert.equal(record.sentences.length, 3);
+  assert.equal(record.sentences[1].fixedContext, true);
+  assert.deepEqual(record.sentences[1].partition.chunks.map((chunk) => chunk.learningText), ['$100 including tax']);
+
+  const { context, page } = await newPage();
+  await boot(page, { item, metadataItem: record }, 0);
+  const chunks = record.sentences.flatMap((sentence) => sentence.partition.chunks);
+  assert.equal(await page.locator('[data-zone="bank"].compose-token').count(), chunks.length);
+  for (const chunk of chunks) {
+    assert.equal(await page.locator(`[data-zone="bank"][data-tile-id="${chunk.id}"]`).innerText(), chunk.learningText);
+    await tapTile(page, chunk.id);
+  }
+  await page.locator('[data-action="check"]').click();
+  await page.waitForSelector('[data-action="advance"]');
+  assert.match(await page.locator('#composeContext').innerText(), /\$100 including tax/);
+  await page.locator('[data-action="advance"]').click();
+  await page.waitForFunction(() => document.querySelector('#completion').textContent === 'FIRST_TRY');
+  await closePage({ context });
+});
+
 browserTest('wrong answers retain their tiles, offer another attempt on try two, and reveal on try three', async () => {
   const { context, page } = await newPage();
   await boot(page, basicFixture(3));
