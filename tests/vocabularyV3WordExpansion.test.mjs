@@ -8,7 +8,7 @@ const items=load('../data/items.json');
 const db=load('../data/vocabulary-v3.json');
 const audit=load('../data/vocabulary-v3-word-audit.json');
 const itemById=new Map(items.map(item=>[item.id,item]));
-const wordEntries=db.entries.filter(entry=>entry.kind==='word');
+const wordEntries=db.entries.filter(entry=>entry.kind==='word'&&audit.cohort_word_entry_ids.includes(entry.id));
 const word=(canonical,senseKey)=>wordEntries.find(entry=>entry.canonical===canonical&&entry.sense_key===senseKey);
 function occurrence(value,itemId){
   const found=value?.occurrences.find(candidate=>candidate.item_id===itemId);

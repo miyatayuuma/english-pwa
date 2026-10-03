@@ -81,7 +81,7 @@ test('same normalized text resolves to TARGET before PARAPHRASE',()=>{
   assert.equal(classifyVocabularyAnswer({entry:value,transcript:'same'}).matchedAuthority,'paraphrase');
 });
 
-test('all 1,075 curated source occurrence surfaces classify as TARGET',()=>{
+test('all 2,481 curated source occurrence surfaces classify as TARGET',()=>{
   let audited=0;
   for(const value of data.entries){
     for(const occurrence of value.occurrences){
@@ -92,7 +92,7 @@ test('all 1,075 curated source occurrence surfaces classify as TARGET',()=>{
       audited+=1;
     }
   }
-  assert.equal(audited,1075);
+  assert.equal(audited,2481);
 });
 
 test('PARAPHRASE leaves fresh and Lv5 SRS state byte-for-byte unchanged',()=>{

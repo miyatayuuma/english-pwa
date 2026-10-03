@@ -95,7 +95,7 @@ export function validateSourceSentenceIntegrity(items,db){
         errors.push(`${entry.id}/${item.id}: empty occurrence span`);
         continue;
       }
-      if(!/[A-Za-z]/.test(surface)||!/^[A-Za-z]/.test(surface)||!/[A-Za-z]$/.test(surface)){
+      if(!/[A-Za-z]/.test(surface)||!/^[A-Za-z]/.test(surface)||!/[A-Za-z0-9][?]?$/.test(surface)){
         counters.broken_target_surface+=1;
         errors.push(`${entry.id}/${item.id}: broken occurrence target surface ${JSON.stringify(surface)}`);
       }
