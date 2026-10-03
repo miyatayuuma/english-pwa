@@ -33,6 +33,7 @@ const statusCounts={EXACT:0,NORMALIZED:0,GENERALIZED:0,LEGACY_EVIDENCE_RECOVERED
 const batchSummary={};
 
 for(const record of records){
+  if(typeof record?.concept!=='string'||!record.concept.trim()) errors.push('occurrence authority: missing concept');
   const key=`${record?.audit_batch}\u0000${record?.kind}\u0000${record?.concept}`;
   if(seen.has(key)) errors.push(`occurrence authority: duplicate record ${key}`);
   seen.add(key);
@@ -43,6 +44,15 @@ for(const record of records){
   else statusCounts[record.recovery_status]+=1;
   if(!record?.evidence||!String(record.evidence.method||'').trim()||!String(record.evidence.note||'').trim()) errors.push(`occurrence authority: missing evidence for ${record?.concept||'<missing>'}`);
 
+  if(record.recovery_status==='AMBIGUOUS'&&(!Array.isArray(record.closest_source_candidates)||record.closest_source_candidates.length<2||!String(record.why_invalid_or_ambiguous||'').trim())) errors.push(`occurrence authority: missing semantic ambiguity evidence for ${record.concept}`);
+  for(const candidate of record.closest_source_candidates||[]){
+    const item=byItem.get(candidate.item_id);
+    if(!item){errors.push(`occurrence authority: invalid candidate item for ${record.concept}`);continue;}
+    if(!Number.isInteger(candidate.start)||!Number.isInteger(candidate.end)||candidate.start<0||candidate.end<=candidate.start||candidate.end>item.en.length||item.en.slice(candidate.start,candidate.end)!==candidate.surface) errors.push(`occurrence authority: invalid candidate span for ${record.concept}/${candidate.item_id}`);
+    if(candidate.source_sentence!==item.en) errors.push(`occurrence authority: stale candidate sentence for ${record.concept}/${candidate.item_id}`);
+    if(record.recovery_status==='AMBIGUOUS'&&!String(candidate.sense||'').trim()) errors.push(`occurrence authority: missing candidate sense for ${record.concept}/${candidate.item_id}`);
+  }
+
   const batch=batchSummary[record.audit_batch]??={reviewed:0,EXACT:0,NORMALIZED:0,GENERALIZED:0,LEGACY_EVIDENCE_RECOVERED:0,NO_VALID_OCCURRENCE:0,AMBIGUOUS:0};
   batch.reviewed+=1;if(STATUS.has(record?.recovery_status))batch[record.recovery_status]+=1;batchSummary[record.audit_batch]=batch;
 
@@ -50,6 +60,7 @@ for(const record of records){
     const item=byItem.get(String(record.item_id||''));
     if(!item){errors.push(`occurrence authority: unknown item for ${record.concept}`);continue;}
     if(!Number.isInteger(record.start)||!Number.isInteger(record.end)||record.start<0||record.end<=record.start||record.end>item.en.length){errors.push(`occurrence authority: invalid span for ${record.concept}/${record.item_id}`);continue;}
+    if(/\b(?:the|a|an|my|your|his|her|their|our|its)$/i.test(record.surface||'')&&/\b(?:something|someone|A|B)\b/.test(record.concept)) errors.push(`occurrence authority: incomplete realized argument for ${record.concept}`);
     if(!String(record.surface||'').length) errors.push(`occurrence authority: empty surface for ${record.concept}`);
     if(item.en.slice(record.start,record.end)!==record.surface) errors.push(`occurrence authority: surface mismatch for ${record.concept}/${record.item_id}`);
     const range=RANGES[record.audit_batch],n=number(record.item_id);
@@ -68,6 +79,8 @@ if(JSON.stringify(authority?.batch_summary)!==JSON.stringify(batchSummary)) erro
 const exceptionKeys=new Set((authority?.exceptions||[]).map(record=>`${record.audit_batch}\u0000${record.kind}\u0000${record.concept}`));
 const unresolvedKeys=new Set(records.filter(record=>!RESOLVED.has(record.recovery_status)).map(record=>`${record.audit_batch}\u0000${record.kind}\u0000${record.concept}`));
 if(exceptionKeys.size!==unresolvedKeys.size||[...unresolvedKeys].some(key=>!exceptionKeys.has(key))) errors.push('occurrence authority: exception inventory does not match unresolved records');
+
+if(JSON.stringify(authority.exceptions)!==JSON.stringify(records.filter(record=>!RESOLVED.has(record.recovery_status)))) errors.push('occurrence authority: exception evidence differs from records');
 
 const critical=records.find(record=>record.concept==='find it + adjective + to do something');
 if(!critical||critical.item_id!=='E0509'||critical.recovery_status!=='GENERALIZED'||critical?.evidence?.batch_provenance_mismatch!==true) errors.push('occurrence authority: critical find-it construction recovery must remain fixed to E0509 with explicit batch provenance mismatch');

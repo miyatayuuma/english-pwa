@@ -698,8 +698,8 @@
       "audit_batch": 1,
       "recovery_status": "AMBIGUOUS",
       "evidence": {
-        "method": "current_source_multiple",
-        "note": "Multiple valid in-batch realizations remain and no preserved admission evidence identifies the original primary occurrence."
+        "method": "semantic_candidate_reconciliation",
+        "note": "Current-corpus candidates differ in lexical sense or part of speech. Final Admission fixes only the lemma/kind/batch, without a sense discriminator. Legacy dictionary headword links favor one candidate but do not establish the fixed Final ADD sense. Original audit source unconfirmed; historical uncertainty alone is not the blocker."
       },
       "search_performed": [
         "E0001–E0050",
@@ -711,16 +711,22 @@
         {
           "item_id": "E0018",
           "surface": "increase",
-          "source_sentence": "This article contains tips for those who are eager to increase their vocabulary."
+          "source_sentence": "This article contains tips for those who are eager to increase their vocabulary.",
+          "sense": "verb: make something greater (増やす)",
+          "start": 54,
+          "end": 62
         },
         {
           "item_id": "E0032",
           "surface": "increase",
-          "source_sentence": "Please take a look at this chart. It indicates that juvenile delinquency is on the increase at an alarming rate."
+          "source_sentence": "Please take a look at this chart. It indicates that juvenile delinquency is on the increase at an alarming rate.",
+          "sense": "noun: growth in amount (増加); on the increase",
+          "start": 83,
+          "end": 91
         }
       ],
-      "why_invalid_or_ambiguous": "The fixed admission concept is not source-specific enough to distinguish the listed current-source realizations, and the preserved authority artifact contains no item-level provenance.",
-      "recommended_next_action": "Exception Reconciliation: recover original audited source evidence or explicitly fix a primary occurrence. Do not choose by sentence order alone."
+      "why_invalid_or_ambiguous": "Competing senses: verb: make something greater (増やす) versus noun: growth in amount (増加); on the increase. Selecting one would assign an unspecified Final Admission sense; deterministic item ordering cannot resolve this semantic choice.",
+      "recommended_next_action": "Exception Reconciliation: explicitly confirm the intended lexical sense, then fix a current-corpus primary occurrence without claiming recovery of original audit provenance."
     },
     {
       "concept": "vocabulary",
@@ -1358,12 +1364,13 @@
       "audit_batch": 1,
       "item_id": "E0002",
       "start": 20,
-      "end": 46,
-      "surface": "assure you that everything",
+      "end": 65,
+      "surface": "assure you that everything will turn out fine",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Complete realized complement or argument retained after high-risk GENERALIZED review."
       }
     },
     {
@@ -1386,12 +1393,13 @@
       "audit_batch": 1,
       "item_id": "E0006",
       "start": 3,
-      "end": 21,
-      "surface": "leaned against the",
+      "end": 28,
+      "surface": "leaned against the pillar",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Full realized argument retained; previous automatic span stopped at a determiner."
       }
     },
     {
@@ -1400,12 +1408,13 @@
       "audit_batch": 1,
       "item_id": "E0006",
       "start": 33,
-      "end": 45,
-      "surface": "gazed at the",
+      "end": 63,
+      "surface": "gazed at the Statue of Liberty",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Full realized argument retained; previous automatic span stopped at a determiner."
       }
     },
     {
@@ -1470,12 +1479,13 @@
       "audit_batch": 1,
       "item_id": "E0013",
       "start": 11,
-      "end": 59,
-      "surface": "translated the fascinating fairy tale into plain",
+      "end": 68,
+      "surface": "translated the fascinating fairy tale into plain Japanese",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Complete realized complement or argument retained after high-risk GENERALIZED review."
       }
     },
     {
@@ -1503,7 +1513,8 @@
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Quoted lexical arguments checked against the current source; punctuation belongs to the surrounding quotation."
       }
     },
     {
@@ -1582,12 +1593,13 @@
       "audit_batch": 1,
       "item_id": "E0026",
       "start": 10,
-      "end": 24,
-      "surface": "cut down on my",
+      "end": 33,
+      "surface": "cut down on my expenses",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Full realized argument retained; previous automatic span stopped at a determiner."
       }
     },
     {
@@ -1834,12 +1846,13 @@
       "audit_batch": 1,
       "item_id": "E0045",
       "start": 39,
-      "end": 68,
-      "surface": "take legal action against the",
+      "end": 86,
+      "surface": "take legal action against the insurance company",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Full realized argument retained; previous automatic span stopped at a determiner."
       }
     },
     {
@@ -1848,12 +1861,13 @@
       "audit_batch": 1,
       "item_id": "E0046",
       "start": 5,
-      "end": 23,
-      "surface": "are entitled to be",
+      "end": 54,
+      "surface": "are entitled to be compensated for their injuries",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Complete realized complement or argument retained after high-risk GENERALIZED review."
       }
     },
     {
@@ -2030,8 +2044,8 @@
       "audit_batch": 2,
       "recovery_status": "AMBIGUOUS",
       "evidence": {
-        "method": "current_source_multiple",
-        "note": "Multiple valid in-batch realizations remain and no preserved admission evidence identifies the original primary occurrence."
+        "method": "semantic_candidate_reconciliation",
+        "note": "Current-corpus candidates differ in lexical sense or part of speech. Final Admission fixes only the lemma/kind/batch, without a sense discriminator. Legacy dictionary headword links favor one candidate but do not establish the fixed Final ADD sense. Original audit source unconfirmed; historical uncertainty alone is not the blocker."
       },
       "search_performed": [
         "E0051–E0100",
@@ -2043,16 +2057,22 @@
         {
           "item_id": "E0055",
           "surface": "theory",
-          "source_sentence": "The theory of evolution is beyond the reach of my imagination."
+          "source_sentence": "The theory of evolution is beyond the reach of my imagination.",
+          "sense": "count noun: scientific explanatory theory (学説)",
+          "start": 4,
+          "end": 10
         },
         {
           "item_id": "E0086",
           "surface": "theory",
-          "source_sentence": "Your idea sounds marvelous in theory, yet I don't think it will work in practice."
+          "source_sentence": "Your idea sounds marvelous in theory, yet I don't think it will work in practice.",
+          "sense": "abstract noun: theoretical reasoning contrasted with practice (理論上); in theory",
+          "start": 30,
+          "end": 36
         }
       ],
-      "why_invalid_or_ambiguous": "The fixed admission concept is not source-specific enough to distinguish the listed current-source realizations, and the preserved authority artifact contains no item-level provenance.",
-      "recommended_next_action": "Exception Reconciliation: recover original audited source evidence or explicitly fix a primary occurrence. Do not choose by sentence order alone."
+      "why_invalid_or_ambiguous": "Competing senses: count noun: scientific explanatory theory (学説) versus abstract noun: theoretical reasoning contrasted with practice (理論上); in theory. Selecting one would assign an unspecified Final Admission sense; deterministic item ordering cannot resolve this semantic choice.",
+      "recommended_next_action": "Exception Reconciliation: explicitly confirm the intended lexical sense, then fix a current-corpus primary occurrence without claiming recovery of original audit provenance."
     },
     {
       "concept": "biologist",
@@ -3278,12 +3298,13 @@
       "audit_batch": 2,
       "item_id": "E0077",
       "start": 58,
-      "end": 70,
-      "surface": "is yet to be",
+      "end": 100,
+      "surface": "is yet to be reached regarding this matter",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Complete realized complement or argument retained after high-risk GENERALIZED review."
       }
     },
     {
@@ -3334,12 +3355,13 @@
       "audit_batch": 2,
       "item_id": "E0083",
       "start": 29,
-      "end": 48,
-      "surface": "not on logic but on",
+      "end": 57,
+      "surface": "not on logic but on instinct",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Complete realized complement or argument retained after high-risk GENERALIZED review."
       }
     },
     {
@@ -3362,12 +3384,13 @@
       "audit_batch": 2,
       "item_id": "E0087",
       "start": 47,
-      "end": 61,
-      "surface": "failed to live",
+      "end": 84,
+      "surface": "failed to live up to our expectations",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Complete realized complement or argument retained after high-risk GENERALIZED review."
       }
     },
     {
@@ -3376,12 +3399,13 @@
       "audit_batch": 2,
       "item_id": "E0089",
       "start": 28,
-      "end": 45,
-      "surface": "lack of firsthand",
+      "end": 56,
+      "surface": "lack of firsthand experience",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Complete realized complement or argument retained after high-risk GENERALIZED review."
       }
     },
     {
@@ -3418,12 +3442,13 @@
       "audit_batch": 2,
       "item_id": "E0094",
       "start": 22,
-      "end": 38,
-      "surface": "plunged into the",
+      "end": 44,
+      "surface": "plunged into the ocean",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Full realized argument retained; previous automatic span stopped at a determiner."
       }
     },
     {
@@ -4482,12 +4507,13 @@
       "audit_batch": 3,
       "item_id": "E0105",
       "start": 8,
-      "end": 46,
-      "surface": "substitute some transparent glue for a",
+      "end": 64,
+      "surface": "substitute some transparent glue for a needle and thread",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Full realized argument retained; previous automatic span stopped at a determiner."
       }
     },
     {
@@ -4566,12 +4592,13 @@
       "audit_batch": 3,
       "item_id": "E0121",
       "start": 0,
-      "end": 18,
-      "surface": "I'm tired of doing",
+      "end": 59,
+      "surface": "I'm tired of doing the dishes, doing the laundry, and so on",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Complete realized complement or argument retained after high-risk GENERALIZED review."
       }
     },
     {
@@ -4762,12 +4789,13 @@
       "audit_batch": 3,
       "item_id": "E0138",
       "start": 26,
-      "end": 69,
-      "surface": "provide developing countries with financial",
+      "end": 73,
+      "surface": "provide developing countries with financial aid",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Complete realized complement or argument retained after high-risk GENERALIZED review."
       }
     },
     {
@@ -5196,8 +5224,8 @@
       "audit_batch": 4,
       "recovery_status": "AMBIGUOUS",
       "evidence": {
-        "method": "current_source_multiple",
-        "note": "Multiple valid in-batch realizations remain and no preserved admission evidence identifies the original primary occurrence."
+        "method": "semantic_candidate_reconciliation",
+        "note": "Current-corpus candidates differ in lexical sense or part of speech. Final Admission fixes only the lemma/kind/batch, without a sense discriminator. Legacy dictionary headword links favor one candidate but do not establish the fixed Final ADD sense. Original audit source unconfirmed; historical uncertainty alone is not the blocker."
       },
       "search_performed": [
         "E0151–E0200",
@@ -5209,16 +5237,22 @@
         {
           "item_id": "E0165",
           "surface": "terms",
-          "source_sentence": "Above all, scientific terms call for precise definitions."
+          "source_sentence": "Above all, scientific terms call for precise definitions.",
+          "sense": "count noun: technical word or expression (用語)",
+          "start": 22,
+          "end": 27
         },
         {
           "item_id": "E0200",
           "surface": "terms",
-          "source_sentence": "I must admit we quarrel every now and then, but generally we're on good terms with each other."
+          "source_sentence": "I must admit we quarrel every now and then, but generally we're on good terms with each other.",
+          "sense": "plural noun: relationship between people (間柄); on good terms",
+          "start": 72,
+          "end": 77
         }
       ],
-      "why_invalid_or_ambiguous": "The fixed admission concept is not source-specific enough to distinguish the listed current-source realizations, and the preserved authority artifact contains no item-level provenance.",
-      "recommended_next_action": "Exception Reconciliation: recover original audited source evidence or explicitly fix a primary occurrence. Do not choose by sentence order alone."
+      "why_invalid_or_ambiguous": "Competing senses: count noun: technical word or expression (用語) versus plural noun: relationship between people (間柄); on good terms. Selecting one would assign an unspecified Final Admission sense; deterministic item ordering cannot resolve this semantic choice.",
+      "recommended_next_action": "Exception Reconciliation: explicitly confirm the intended lexical sense, then fix a current-corpus primary occurrence without claiming recovery of original audit provenance."
     },
     {
       "concept": "definition",
@@ -6206,12 +6240,13 @@
       "audit_batch": 4,
       "item_id": "E0162",
       "start": 1,
-      "end": 10,
-      "surface": "What if I",
+      "end": 34,
+      "surface": "What if I don't meet the deadline",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Complete realized complement or argument retained after high-risk GENERALIZED review."
       }
     },
     {
@@ -6220,12 +6255,13 @@
       "audit_batch": 4,
       "item_id": "E0162",
       "start": 38,
-      "end": 49,
-      "surface": "I bet he'll",
+      "end": 64,
+      "surface": "I bet he'll get mad at you",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Complete realized complement or argument retained after high-risk GENERALIZED review."
       }
     },
     {
@@ -6290,12 +6326,13 @@
       "audit_batch": 4,
       "item_id": "E0167",
       "start": 25,
-      "end": 51,
-      "surface": "multiply the length by the",
+      "end": 70,
+      "surface": "multiply the length by the width by the depth",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Full realized argument retained; previous automatic span stopped at a determiner."
       }
     },
     {
@@ -6318,12 +6355,13 @@
       "audit_batch": 4,
       "item_id": "E0181",
       "start": 2,
-      "end": 22,
-      "surface": "introduced Bob to my",
+      "end": 28,
+      "surface": "introduced Bob to my folks",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Full realized argument retained; previous automatic span stopped at a determiner."
       }
     },
     {
@@ -6458,12 +6496,13 @@
       "audit_batch": 4,
       "item_id": "E0190",
       "start": 32,
-      "end": 47,
-      "surface": "leaped over the",
+      "end": 62,
+      "surface": "leaped over the shallow stream",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Full realized argument retained; previous automatic span stopped at a determiner."
       }
     },
     {
@@ -8082,12 +8121,13 @@
       "audit_batch": 5,
       "item_id": "E0201",
       "start": 1,
-      "end": 17,
-      "surface": "Do you mind if I",
+      "end": 36,
+      "surface": "Do you mind if I stop by your house",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Complete realized complement or argument retained after high-risk GENERALIZED review."
       }
     },
     {
@@ -8334,12 +8374,13 @@
       "audit_batch": 5,
       "item_id": "E0225",
       "start": 17,
-      "end": 34,
-      "surface": "preparing for the",
+      "end": 58,
+      "surface": "preparing for the voyage into outer space",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Full realized argument retained; previous automatic span stopped at a determiner."
       }
     },
     {
@@ -8418,12 +8459,13 @@
       "audit_batch": 5,
       "item_id": "E0231",
       "start": 12,
-      "end": 38,
-      "surface": "divides the globe into two",
+      "end": 50,
+      "surface": "divides the globe into two hemispheres",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Complete realized complement or argument retained after high-risk GENERALIZED review."
       }
     },
     {
@@ -8642,12 +8684,13 @@
       "audit_batch": 5,
       "item_id": "E0241",
       "start": 18,
-      "end": 57,
-      "surface": "warned us time and again that petroleum",
+      "end": 97,
+      "surface": "warned us time and again that petroleum is not only a blessing but also a curse",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Complete realized complement or argument retained after high-risk GENERALIZED review."
       }
     },
     {
@@ -8698,12 +8741,13 @@
       "audit_batch": 5,
       "item_id": "E0248",
       "start": 17,
-      "end": 47,
-      "surface": "connects the Atlantic with the",
+      "end": 55,
+      "surface": "connects the Atlantic with the Pacific",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Full realized argument retained; previous automatic span stopped at a determiner."
       }
     },
     {
@@ -9076,8 +9120,8 @@
       "audit_batch": 6,
       "recovery_status": "AMBIGUOUS",
       "evidence": {
-        "method": "current_source_multiple",
-        "note": "Multiple valid in-batch realizations remain and no preserved admission evidence identifies the original primary occurrence."
+        "method": "semantic_candidate_reconciliation",
+        "note": "Current-corpus candidates differ in lexical sense or part of speech. Final Admission fixes only the lemma/kind/batch, without a sense discriminator. Legacy dictionary headword links favor one candidate but do not establish the fixed Final ADD sense. Original audit source unconfirmed; historical uncertainty alone is not the blocker."
       },
       "search_performed": [
         "E0251–E0300",
@@ -9089,16 +9133,22 @@
         {
           "item_id": "E0263",
           "surface": "advances",
-          "source_sentence": "As technology rapidly advances, it's tough to keep pace with it."
+          "source_sentence": "As technology rapidly advances, it's tough to keep pace with it.",
+          "sense": "verb: progress or develop (進歩する)",
+          "start": 22,
+          "end": 30
         },
         {
           "item_id": "E0298",
           "surface": "advance",
-          "source_sentence": "\"Don't forget to confirm your reservation in advance.\" \"I won't.\""
+          "source_sentence": "\"Don't forget to confirm your reservation in advance.\" \"I won't.\"",
+          "sense": "noun in temporal expression: beforehand (事前に); in advance",
+          "start": 45,
+          "end": 52
         }
       ],
-      "why_invalid_or_ambiguous": "The fixed admission concept is not source-specific enough to distinguish the listed current-source realizations, and the preserved authority artifact contains no item-level provenance.",
-      "recommended_next_action": "Exception Reconciliation: recover original audited source evidence or explicitly fix a primary occurrence. Do not choose by sentence order alone."
+      "why_invalid_or_ambiguous": "Competing senses: verb: progress or develop (進歩する) versus noun in temporal expression: beforehand (事前に); in advance. Selecting one would assign an unspecified Final Admission sense; deterministic item ordering cannot resolve this semantic choice.",
+      "recommended_next_action": "Exception Reconciliation: explicitly confirm the intended lexical sense, then fix a current-corpus primary occurrence without claiming recovery of original audit provenance."
     },
     {
       "concept": "tough",
@@ -10464,12 +10514,13 @@
       "audit_batch": 6,
       "item_id": "E0268",
       "start": 69,
-      "end": 96,
-      "surface": "is superior to conventional",
+      "end": 106,
+      "surface": "is superior to conventional equipment",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Complete realized complement or argument retained after high-risk GENERALIZED review."
       }
     },
     {
@@ -10758,12 +10809,13 @@
       "audit_batch": 6,
       "item_id": "E0300",
       "start": 2,
-      "end": 28,
-      "surface": "attached my name tag to my",
+      "end": 36,
+      "surface": "attached my name tag to my baggage",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Full realized argument retained; previous automatic span stopped at a determiner."
       }
     },
     {
@@ -12089,12 +12141,13 @@
       "audit_batch": 7,
       "item_id": "E0317",
       "start": 1,
-      "end": 15,
-      "surface": "I'm afraid I'm",
+      "end": 42,
+      "surface": "I'm afraid I'm coming down with something",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Complete realized complement or argument retained after high-risk GENERALIZED review."
       }
     },
     {
@@ -12159,12 +12212,13 @@
       "audit_batch": 7,
       "item_id": "E0328",
       "start": 28,
-      "end": 43,
-      "surface": "resign from the",
+      "end": 51,
+      "surface": "resign from the Cabinet",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Full realized argument retained; previous automatic span stopped at a determiner."
       }
     },
     {
@@ -12243,12 +12297,13 @@
       "audit_batch": 7,
       "item_id": "E0334",
       "start": 29,
-      "end": 42,
-      "surface": "apply for the",
+      "end": 54,
+      "surface": "apply for the scholarship",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Full realized argument retained; previous automatic span stopped at a determiner."
       }
     },
     {
@@ -12271,12 +12326,13 @@
       "audit_batch": 7,
       "item_id": "E0335",
       "start": 14,
-      "end": 33,
-      "surface": "graduated from Keio",
+      "end": 44,
+      "surface": "graduated from Keio University",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Complete realized complement or argument retained after high-risk GENERALIZED review."
       }
     },
     {
@@ -12354,13 +12410,14 @@
       "kind": "expression",
       "audit_batch": 7,
       "item_id": "E0343",
-      "start": 25,
-      "end": 39,
-      "surface": "believe in and",
+      "start": 18,
+      "end": 35,
+      "surface": "what I believe in",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Free-relative realization: what supplies the preposed object of believe in; coordination and is excluded."
       }
     },
     {
@@ -13940,12 +13997,13 @@
       "audit_batch": 8,
       "item_id": "E0355",
       "start": 5,
-      "end": 11,
-      "surface": "owe me",
+      "end": 16,
+      "surface": "owe me $200",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Complete realized complement or argument retained after high-risk GENERALIZED review."
       }
     },
     {
@@ -14024,12 +14082,13 @@
       "audit_batch": 8,
       "item_id": "E0364",
       "start": 41,
-      "end": 59,
-      "surface": "participate in the",
+      "end": 68,
+      "surface": "participate in the workshop",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Full realized argument retained; previous automatic span stopped at a determiner."
       }
     },
     {
@@ -14052,12 +14111,13 @@
       "audit_batch": 8,
       "item_id": "E0367",
       "start": 3,
-      "end": 27,
-      "surface": "gave instructions to the",
+      "end": 36,
+      "surface": "gave instructions to the trainees",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Full realized argument retained; previous automatic span stopped at a determiner."
       }
     },
     {
@@ -14108,12 +14168,13 @@
       "audit_batch": 8,
       "item_id": "E0381",
       "start": 18,
-      "end": 53,
-      "surface": "think of loyalty to a company as an",
+      "end": 67,
+      "surface": "think of loyalty to a company as an absurd notion",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Full realized argument retained; previous automatic span stopped at a determiner."
       }
     },
     {
@@ -14164,12 +14225,13 @@
       "audit_batch": 8,
       "item_id": "E0389",
       "start": 14,
-      "end": 37,
-      "surface": "was disappointed by the",
+      "end": 61,
+      "surface": "was disappointed by the outcome of the election",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Full realized argument retained; previous automatic span stopped at a determiner."
       }
     },
     {
@@ -16110,12 +16172,13 @@
       "audit_batch": 9,
       "item_id": "E0402",
       "start": 31,
-      "end": 53,
-      "surface": "reconcile myself to my",
+      "end": 58,
+      "surface": "reconcile myself to my fate",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Full realized argument retained; previous automatic span stopped at a determiner."
       }
     },
     {
@@ -16208,12 +16271,13 @@
       "audit_batch": 9,
       "item_id": "E0406",
       "start": 11,
-      "end": 31,
-      "surface": "was in charge of the",
+      "end": 39,
+      "surface": "was in charge of the project",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Full realized argument retained; previous automatic span stopped at a determiner."
       }
     },
     {
@@ -16306,12 +16370,13 @@
       "audit_batch": 9,
       "item_id": "E0413",
       "start": 42,
-      "end": 58,
-      "surface": "intrude on one's",
+      "end": 66,
+      "surface": "intrude on one's privacy",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Complete realized complement or argument retained after high-risk GENERALIZED review."
       }
     },
     {
@@ -16446,12 +16511,13 @@
       "audit_batch": 9,
       "item_id": "E0423",
       "start": 2,
-      "end": 12,
-      "surface": "suggest we",
+      "end": 50,
+      "surface": "suggest we adopt flexible tactics for the moment",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Complete realized complement or argument retained after high-risk GENERALIZED review."
       }
     },
     {
@@ -16516,12 +16582,13 @@
       "audit_batch": 9,
       "item_id": "E0430",
       "start": 11,
-      "end": 38,
-      "surface": "condemned the invasion as a",
+      "end": 66,
+      "surface": "condemned the invasion as a violation of UN resolutions",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Full realized argument retained; previous automatic span stopped at a determiner."
       }
     },
     {
@@ -16558,12 +16625,13 @@
       "audit_batch": 9,
       "item_id": "E0436",
       "start": 21,
-      "end": 40,
-      "surface": "protested against a",
+      "end": 56,
+      "surface": "protested against a ban on abortion",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Full realized argument retained; previous automatic span stopped at a determiner."
       }
     },
     {
@@ -18406,12 +18474,13 @@
       "audit_batch": 10,
       "item_id": "E0455",
       "start": 39,
-      "end": 59,
-      "surface": "look for alternative",
+      "end": 78,
+      "surface": "look for alternative sources of revenue",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Complete realized complement or argument retained after high-risk GENERALIZED review."
       }
     },
     {
@@ -18546,12 +18615,13 @@
       "audit_batch": 10,
       "item_id": "E0478",
       "start": 24,
-      "end": 47,
-      "surface": "sowing the seeds of the",
+      "end": 67,
+      "surface": "sowing the seeds of the Italian Renaissance",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Full realized argument retained; previous automatic span stopped at a determiner."
       }
     },
     {
@@ -18602,12 +18672,13 @@
       "audit_batch": 10,
       "item_id": "E0488",
       "start": 51,
-      "end": 68,
-      "surface": "turned him into a",
+      "end": 72,
+      "surface": "turned him into a bug",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Full realized argument retained; previous automatic span stopped at a determiner."
       }
     },
     {
@@ -18616,12 +18687,13 @@
       "audit_batch": 10,
       "item_id": "E0489",
       "start": 56,
-      "end": 69,
-      "surface": "access to the",
+      "end": 76,
+      "surface": "access to the border",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Full realized argument retained; previous automatic span stopped at a determiner."
       }
     },
     {
@@ -18644,12 +18716,13 @@
       "audit_batch": 10,
       "item_id": "E0493",
       "start": 0,
-      "end": 34,
-      "surface": "It won't be long before everything",
+      "end": 43,
+      "surface": "It won't be long before everything is ready",
       "recovery_status": "GENERALIZED",
       "evidence": {
         "method": "current_source_pattern",
-        "note": "Unique structurally valid realization in the original audit batch."
+        "note": "Unique structurally valid realization in the original audit batch.",
+        "span_review": "Complete realized complement or argument retained after high-risk GENERALIZED review."
       }
     },
     {
@@ -20018,8 +20091,8 @@
       "audit_batch": 1,
       "recovery_status": "AMBIGUOUS",
       "evidence": {
-        "method": "current_source_multiple",
-        "note": "Multiple valid in-batch realizations remain and no preserved admission evidence identifies the original primary occurrence."
+        "method": "semantic_candidate_reconciliation",
+        "note": "Current-corpus candidates differ in lexical sense or part of speech. Final Admission fixes only the lemma/kind/batch, without a sense discriminator. Legacy dictionary headword links favor one candidate but do not establish the fixed Final ADD sense. Original audit source unconfirmed; historical uncertainty alone is not the blocker."
       },
       "search_performed": [
         "E0001–E0050",
@@ -20031,16 +20104,22 @@
         {
           "item_id": "E0018",
           "surface": "increase",
-          "source_sentence": "This article contains tips for those who are eager to increase their vocabulary."
+          "source_sentence": "This article contains tips for those who are eager to increase their vocabulary.",
+          "sense": "verb: make something greater (増やす)",
+          "start": 54,
+          "end": 62
         },
         {
           "item_id": "E0032",
           "surface": "increase",
-          "source_sentence": "Please take a look at this chart. It indicates that juvenile delinquency is on the increase at an alarming rate."
+          "source_sentence": "Please take a look at this chart. It indicates that juvenile delinquency is on the increase at an alarming rate.",
+          "sense": "noun: growth in amount (増加); on the increase",
+          "start": 83,
+          "end": 91
         }
       ],
-      "why_invalid_or_ambiguous": "The fixed admission concept is not source-specific enough to distinguish the listed current-source realizations, and the preserved authority artifact contains no item-level provenance.",
-      "recommended_next_action": "Exception Reconciliation: recover original audited source evidence or explicitly fix a primary occurrence. Do not choose by sentence order alone."
+      "why_invalid_or_ambiguous": "Competing senses: verb: make something greater (増やす) versus noun: growth in amount (増加); on the increase. Selecting one would assign an unspecified Final Admission sense; deterministic item ordering cannot resolve this semantic choice.",
+      "recommended_next_action": "Exception Reconciliation: explicitly confirm the intended lexical sense, then fix a current-corpus primary occurrence without claiming recovery of original audit provenance."
     },
     {
       "concept": "theory",
@@ -20048,8 +20127,8 @@
       "audit_batch": 2,
       "recovery_status": "AMBIGUOUS",
       "evidence": {
-        "method": "current_source_multiple",
-        "note": "Multiple valid in-batch realizations remain and no preserved admission evidence identifies the original primary occurrence."
+        "method": "semantic_candidate_reconciliation",
+        "note": "Current-corpus candidates differ in lexical sense or part of speech. Final Admission fixes only the lemma/kind/batch, without a sense discriminator. Legacy dictionary headword links favor one candidate but do not establish the fixed Final ADD sense. Original audit source unconfirmed; historical uncertainty alone is not the blocker."
       },
       "search_performed": [
         "E0051–E0100",
@@ -20061,16 +20140,22 @@
         {
           "item_id": "E0055",
           "surface": "theory",
-          "source_sentence": "The theory of evolution is beyond the reach of my imagination."
+          "source_sentence": "The theory of evolution is beyond the reach of my imagination.",
+          "sense": "count noun: scientific explanatory theory (学説)",
+          "start": 4,
+          "end": 10
         },
         {
           "item_id": "E0086",
           "surface": "theory",
-          "source_sentence": "Your idea sounds marvelous in theory, yet I don't think it will work in practice."
+          "source_sentence": "Your idea sounds marvelous in theory, yet I don't think it will work in practice.",
+          "sense": "abstract noun: theoretical reasoning contrasted with practice (理論上); in theory",
+          "start": 30,
+          "end": 36
         }
       ],
-      "why_invalid_or_ambiguous": "The fixed admission concept is not source-specific enough to distinguish the listed current-source realizations, and the preserved authority artifact contains no item-level provenance.",
-      "recommended_next_action": "Exception Reconciliation: recover original audited source evidence or explicitly fix a primary occurrence. Do not choose by sentence order alone."
+      "why_invalid_or_ambiguous": "Competing senses: count noun: scientific explanatory theory (学説) versus abstract noun: theoretical reasoning contrasted with practice (理論上); in theory. Selecting one would assign an unspecified Final Admission sense; deterministic item ordering cannot resolve this semantic choice.",
+      "recommended_next_action": "Exception Reconciliation: explicitly confirm the intended lexical sense, then fix a current-corpus primary occurrence without claiming recovery of original audit provenance."
     },
     {
       "concept": "term",
@@ -20078,8 +20163,8 @@
       "audit_batch": 4,
       "recovery_status": "AMBIGUOUS",
       "evidence": {
-        "method": "current_source_multiple",
-        "note": "Multiple valid in-batch realizations remain and no preserved admission evidence identifies the original primary occurrence."
+        "method": "semantic_candidate_reconciliation",
+        "note": "Current-corpus candidates differ in lexical sense or part of speech. Final Admission fixes only the lemma/kind/batch, without a sense discriminator. Legacy dictionary headword links favor one candidate but do not establish the fixed Final ADD sense. Original audit source unconfirmed; historical uncertainty alone is not the blocker."
       },
       "search_performed": [
         "E0151–E0200",
@@ -20091,16 +20176,22 @@
         {
           "item_id": "E0165",
           "surface": "terms",
-          "source_sentence": "Above all, scientific terms call for precise definitions."
+          "source_sentence": "Above all, scientific terms call for precise definitions.",
+          "sense": "count noun: technical word or expression (用語)",
+          "start": 22,
+          "end": 27
         },
         {
           "item_id": "E0200",
           "surface": "terms",
-          "source_sentence": "I must admit we quarrel every now and then, but generally we're on good terms with each other."
+          "source_sentence": "I must admit we quarrel every now and then, but generally we're on good terms with each other.",
+          "sense": "plural noun: relationship between people (間柄); on good terms",
+          "start": 72,
+          "end": 77
         }
       ],
-      "why_invalid_or_ambiguous": "The fixed admission concept is not source-specific enough to distinguish the listed current-source realizations, and the preserved authority artifact contains no item-level provenance.",
-      "recommended_next_action": "Exception Reconciliation: recover original audited source evidence or explicitly fix a primary occurrence. Do not choose by sentence order alone."
+      "why_invalid_or_ambiguous": "Competing senses: count noun: technical word or expression (用語) versus plural noun: relationship between people (間柄); on good terms. Selecting one would assign an unspecified Final Admission sense; deterministic item ordering cannot resolve this semantic choice.",
+      "recommended_next_action": "Exception Reconciliation: explicitly confirm the intended lexical sense, then fix a current-corpus primary occurrence without claiming recovery of original audit provenance."
     },
     {
       "concept": "advance",
@@ -20108,8 +20199,8 @@
       "audit_batch": 6,
       "recovery_status": "AMBIGUOUS",
       "evidence": {
-        "method": "current_source_multiple",
-        "note": "Multiple valid in-batch realizations remain and no preserved admission evidence identifies the original primary occurrence."
+        "method": "semantic_candidate_reconciliation",
+        "note": "Current-corpus candidates differ in lexical sense or part of speech. Final Admission fixes only the lemma/kind/batch, without a sense discriminator. Legacy dictionary headword links favor one candidate but do not establish the fixed Final ADD sense. Original audit source unconfirmed; historical uncertainty alone is not the blocker."
       },
       "search_performed": [
         "E0251–E0300",
@@ -20121,16 +20212,22 @@
         {
           "item_id": "E0263",
           "surface": "advances",
-          "source_sentence": "As technology rapidly advances, it's tough to keep pace with it."
+          "source_sentence": "As technology rapidly advances, it's tough to keep pace with it.",
+          "sense": "verb: progress or develop (進歩する)",
+          "start": 22,
+          "end": 30
         },
         {
           "item_id": "E0298",
           "surface": "advance",
-          "source_sentence": "\"Don't forget to confirm your reservation in advance.\" \"I won't.\""
+          "source_sentence": "\"Don't forget to confirm your reservation in advance.\" \"I won't.\"",
+          "sense": "noun in temporal expression: beforehand (事前に); in advance",
+          "start": 45,
+          "end": 52
         }
       ],
-      "why_invalid_or_ambiguous": "The fixed admission concept is not source-specific enough to distinguish the listed current-source realizations, and the preserved authority artifact contains no item-level provenance.",
-      "recommended_next_action": "Exception Reconciliation: recover original audited source evidence or explicitly fix a primary occurrence. Do not choose by sentence order alone."
+      "why_invalid_or_ambiguous": "Competing senses: verb: progress or develop (進歩する) versus noun in temporal expression: beforehand (事前に); in advance. Selecting one would assign an unspecified Final Admission sense; deterministic item ordering cannot resolve this semantic choice.",
+      "recommended_next_action": "Exception Reconciliation: explicitly confirm the intended lexical sense, then fix a current-corpus primary occurrence without claiming recovery of original audit provenance."
     }
   ],
   "status": "Recovery complete / Exception Reconciliation required"
