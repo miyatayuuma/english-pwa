@@ -22,7 +22,7 @@ test('known wrong-sense regressions stay pinned to their source expressions and 
     ['turn someone down','reject_a_person_or_offer','E0178','turned me down',/断る/,/弱める/],
     ['put something on','put_on_clothing','E0189','put my gloves on',/身につける/,/飢え/],
     ['be starved','very_hungry','E0560','starved',/お腹.*ぺこぺこ/,/飢えさせる/],
-    ['so + adjective or adverb + that + clause','so_degree_that_result','E0371','so childish that',/あまりに.*なので/,/目的|子供っぽい/],
+    ['so tired that I fell asleep','so_degree_that_result','E0371','so childish that',/疲れすぎて眠ってしまった/,/目的|子供っぽい/],
     ['come out','be_published','E0012','come out',/刊行|発売/,/結果が出る/],
   ];
   for(const [canonical,sense,itemId,expectedSurface,meaning,forbidden] of fixtures){
@@ -54,4 +54,11 @@ test('retained lexical occurrences are represented once per sense with exact sou
 test('E0483 source keeps the repaired cost wording',()=>{
   const item=items.find(value=>value.id==='E0483');
   assert.equal(item?.en,'The millionaire insisted on acquiring the masterpiece no matter how much it cost.');
+});
+
+test('representative canonical answer surfaces are speakable and do not expose meta-slot notation',()=>{
+  const metaSlots=db.entries.filter(value=>String(value.canonical||'').includes('+')).map(value=>`${value.id}: ${value.canonical}`);
+  assert.deepEqual(metaSlots,[]);
+  const slashDelimited=db.entries.filter(value=>[value.canonical,...(Array.isArray(value.answers)?value.answers:[])].some(text=>String(text||'').includes('/'))).map(value=>`${value.id}: ${value.canonical}`);
+  assert.deepEqual(slashDelimited,[]);
 });

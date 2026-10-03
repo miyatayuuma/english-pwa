@@ -1,4 +1,4 @@
-// sw.js: cache name follows the app version. v5.67
+// sw.js: cache name follows the app version. v5.68
 // Version the import itself so the browser cannot reuse an older worker import.
 importScripts('./scripts/version.js?v=5.66');
 const CACHE = self.APP_VERSION;
