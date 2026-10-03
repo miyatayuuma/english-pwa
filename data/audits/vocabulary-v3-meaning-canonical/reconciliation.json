@@ -2206,7 +2206,7 @@
       "after": {
         "canonical": "have something to do with something else",
         "sense_key": "be_related_to",
-        "meaning_ja": "somethingとsomething elseに関係がある"
+        "meaning_ja": "somethingはsomething elseと関係がある"
       },
       "reason": "Learning-surface refinement: preserve the semantic sense while making the spoken TARGET minimal, natural, and fully recoverable from the Japanese prompt. Variable arguments use spoken someone/something placeholders mirrored literally in meaning_ja; arbitrary filler content is avoided.",
       "confidence": "high",
@@ -2310,7 +2310,7 @@
       "after": {
         "canonical": "take someone out",
         "sense_key": "take_on_a_date",
-        "meaning_ja": "someoneをデートや外出に連れて行く"
+        "meaning_ja": "someoneをデートに連れて行く"
       },
       "reason": "Learning-surface refinement: preserve the semantic sense while making the spoken TARGET minimal, natural, and fully recoverable from the Japanese prompt. Variable arguments use spoken someone/something placeholders mirrored literally in meaning_ja; arbitrary filler content is avoided.",
       "confidence": "high",
@@ -2336,7 +2336,7 @@
       "after": {
         "canonical": "see to something",
         "sense_key": "take_care_of_a_task",
-        "meaning_ja": "somethingを手配する"
+        "meaning_ja": "somethingをきちんと処理する"
       },
       "reason": "Learning-surface refinement: preserve the semantic sense while making the spoken TARGET minimal, natural, and fully recoverable from the Japanese prompt. Variable arguments use spoken someone/something placeholders mirrored literally in meaning_ja; arbitrary filler content is avoided.",
       "confidence": "high",
@@ -2674,7 +2674,7 @@
       "after": {
         "canonical": "refrain from something",
         "sense_key": "deliberately_not_do",
-        "meaning_ja": "somethingするのを控える"
+        "meaning_ja": "somethingを控える"
       },
       "reason": "Learning-surface refinement: preserve the semantic sense while making the spoken TARGET minimal, natural, and fully recoverable from the Japanese prompt. Variable arguments use spoken someone/something placeholders mirrored literally in meaning_ja; arbitrary filler content is avoided.",
       "confidence": "high",
@@ -8693,6 +8693,46 @@
           "canonical": "it occurs to someone that something is wrong",
           "before": "someoneがsomethingがおかしいとふと思う",
           "after": "someoneにsomethingがおかしいという考えがふと浮かぶ"
+        }
+      ]
+    },
+    "batch_03": {
+      "status": "APPLIED",
+      "baseline_main": "e15c01062568b4f864eac2574f45c663a1db17c6",
+      "reviewed": 60,
+      "kept": 56,
+      "modified": 4,
+      "scope_note": "Indices 120-179 of learning_surface_refinement.changed_ids.",
+      "criteria": [
+        "Preserve the reusable English target unless its structure is actually deficient.",
+        "Keep every spoken someone/something placeholder literally visible in meaning_ja.",
+        "Prefer the representative sense_key over a source-specific or over-broad Japanese gloss.",
+        "Do not add arbitrary concrete filler content."
+      ],
+      "applied": [
+        {
+          "id": "vocab:00328",
+          "canonical": "have something to do with something else",
+          "before": "somethingとsomething elseに関係がある",
+          "after": "somethingはsomething elseと関係がある"
+        },
+        {
+          "id": "vocab:00349",
+          "canonical": "take someone out",
+          "before": "someoneをデートや外出に連れて行く",
+          "after": "someoneをデートに連れて行く"
+        },
+        {
+          "id": "vocab:00353",
+          "canonical": "see to something",
+          "before": "somethingを手配する",
+          "after": "somethingをきちんと処理する"
+        },
+        {
+          "id": "vocab:00402",
+          "canonical": "refrain from something",
+          "before": "somethingするのを控える",
+          "after": "somethingを控える"
         }
       ]
     }
