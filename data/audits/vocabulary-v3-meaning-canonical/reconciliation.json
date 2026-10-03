@@ -4260,7 +4260,7 @@
       "after": {
         "canonical": "look forward to doing something",
         "sense_key": "anticipate_with_pleasure",
-        "meaning_ja": "somethingを楽しみにする"
+        "meaning_ja": "somethingするのを楽しみにする"
       },
       "reason": "Learning-surface refinement: preserve the semantic sense while making the spoken TARGET minimal, natural, and fully recoverable from the Japanese prompt. Variable arguments use spoken someone/something placeholders mirrored literally in meaning_ja; arbitrary filler content is avoided.",
       "confidence": "high",
@@ -4299,7 +4299,7 @@
       "after": {
         "canonical": "as far as someone is concerned",
         "sense_key": "regarding_someone",
-        "meaning_ja": "someoneにとっては"
+        "meaning_ja": "someoneについて言えば"
       },
       "reason": "Learning-surface refinement: preserve the semantic sense while making the spoken TARGET minimal, natural, and fully recoverable from the Japanese prompt. Variable arguments use spoken someone/something placeholders mirrored literally in meaning_ja; arbitrary filler content is avoided.",
       "confidence": "high",
@@ -8761,6 +8761,34 @@
           "canonical": "be reluctant to do something",
           "before": "somethingするのを嫌がる",
           "after": "somethingするのに気が進まない"
+        }
+      ]
+    },
+    "batch_05": {
+      "status": "APPLIED",
+      "baseline_main": "42c082f0b4ee5b37de81dc091435f94f47fbada5",
+      "reviewed": 60,
+      "kept": 58,
+      "modified": 2,
+      "scope_note": "Indices 240-299 of learning_surface_refinement.changed_ids.",
+      "criteria": [
+        "Preserve the reusable canonical unless the English structure is deficient.",
+        "Keep Japanese argument structure aligned with the spoken target.",
+        "Prefer the fixed representative sense over source-specific readings.",
+        "Do not change population, occurrence authority, or paraphrase authority."
+      ],
+      "applied": [
+        {
+          "id": "vocab:00618",
+          "canonical": "look forward to doing something",
+          "before": "somethingを楽しみにする",
+          "after": "somethingするのを楽しみにする"
+        },
+        {
+          "id": "vocab:00622",
+          "canonical": "as far as someone is concerned",
+          "before": "someoneにとっては",
+          "after": "someoneについて言えば"
         }
       ]
     }
