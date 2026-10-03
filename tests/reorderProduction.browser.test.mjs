@@ -167,22 +167,26 @@ async function awaitMetadataRequest(requested) {
   }
 }
 
-async function completeSentence(page, sentenceIndex, order) {
-  for (const tileIndex of order) {
-    await page.locator(`[data-zone="bank"][data-tile-id="s${sentenceIndex}-t${tileIndex}"]`).click();
+const canonicalReorderIds = sentenceRows.flatMap((row, sentenceIndex) =>
+  row.tiles.map((_, tileIndex) => `s${sentenceIndex}-t${tileIndex}`));
+
+async function placeReorderIds(page, ids) {
+  for (const id of ids) {
+    await page.locator(`[data-zone="bank"][data-tile-id="${id}"]`).click();
   }
+}
+
+async function completeReorderItem(page) {
+  await placeReorderIds(page, canonicalReorderIds);
   await page.locator('#composeControls [data-action="check"]').click();
   await page.waitForSelector('#composeControls [data-action="advance"]');
   await page.locator('#composeControls [data-action="advance"]').click();
 }
 
-async function failSentenceThreeTimes(page, sentenceIndex) {
-  const tileCount = sentenceRows[sentenceIndex].tiles.length;
-  const wrongOrder = Array.from({ length: tileCount }, (_, index) => tileCount - index - 1);
+async function failReorderItemThreeTimes(page) {
+  const wrongOrder = canonicalReorderIds.slice().reverse();
   for (let attempt = 1; attempt <= 3; attempt += 1) {
-    for (const tileIndex of wrongOrder) {
-      await page.locator(`[data-zone="bank"][data-tile-id="s${sentenceIndex}-t${tileIndex}"]`).click();
-    }
+    await placeReorderIds(page, wrongOrder);
     await page.locator('#composeControls [data-action="check"]').click();
     if (attempt < 3) await page.locator('#composeControls [data-action="reset"]').click();
   }
@@ -311,12 +315,10 @@ browserTest('production render keeps canonical English out of DOM and accessible
     respondWithMetadata(heldMetadataResponse, validMetadata);
     await waitForReorder(page);
     assert.equal(await page.locator('#enText').isVisible(),false);
-    assert.equal(await page.locator('#composeTokens .compose-token').count(), 2);
+    assert.equal(await page.locator('#composeTokens .compose-token').count(), 7);
     assert.equal(await page.locator('#btnMic').isDisabled(), true);
     assert.equal((await page.locator('#enText').innerText()).includes(item.en), false);
-    await completeSentence(page, 0, [0, 1]);
-    await completeSentence(page, 1, [0, 1, 2]);
-    await completeSentence(page, 2, [0, 1]);
+    await completeReorderItem(page);
     const state = await reorderState(page);
     assert.equal(state.lastReorder.grade,'FIRST_TRY');
     assert.equal(state.lastReorder.candidate,4);
@@ -378,19 +380,18 @@ for (const wrong of [0,1,2,3]) for(const level of [0,5]) browserTest(`390×844 R
     const workspace=await page.locator('#composeAnswer').boundingBox();
     assert.ok(workspace.height>=180);
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
-    await completeSentence(page,0,[0,1]);
-    if(wrong===3) await failSentenceThreeTimes(page,1);
+    if(wrong===3) await failReorderItemThreeTimes(page);
     else {
+      const wrongOrder = canonicalReorderIds.slice().reverse();
       for(let i=0;i<wrong;i++) {
-        for(const tile of [2,1,0]) await page.locator(`[data-zone="bank"][data-tile-id="s1-t${tile}"]`).click();
+        await placeReorderIds(page, wrongOrder);
         await page.locator('[data-action="check"]').click();
         assert.equal(await page.locator('#composeFeedback').innerText(),'もう一度');
-        assert.equal((await page.locator('#composeContext').textContent()).includes('We like books.'),false);
+        assert.equal((await page.locator('#composeContext').textContent()).includes(item.en),false);
         await page.locator('[data-action="reset"]').click();
       }
-      await completeSentence(page,1,[0,1,2]);
+      await completeReorderItem(page);
     }
-    await completeSentence(page,2,[0,1]);
     const state=await reorderState(page);
     const grade=wrong===3?'FAILED':wrong?'RETRY_PASS':'FIRST_TRY';
     const candidate=wrong===3?1:wrong?3:4;
