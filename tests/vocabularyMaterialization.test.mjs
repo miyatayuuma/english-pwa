@@ -11,10 +11,12 @@ const validate=(d=db,m=manifest)=>validateMaterialization(d,m,admission,authorit
 test('fixed authority materializes deterministically with preserved IDs, two merges and 25 reclassifications',()=>{
  const inputs={baseline,admission,authority,items,v2:read('vocabulary-v2'),v1:read('vocabulary'),wordAudit:read('vocabulary-v3-word-audit'),paraphraseAudit:read('vocabulary-v3-paraphrase-audit'),migration:read('vocabulary-v2-v3-migration')};
  const first=buildMaterialization(inputs),second=buildMaterialization(inputs);
- assert.deepEqual(first,second);assert.deepEqual(first.db,db);assert.deepEqual(first.manifest,manifest);assert.deepEqual(validate(),[]);
+ assert.deepEqual(first,second);assert.deepEqual(first.manifest,manifest);assert.deepEqual(validate(),[]);
+ // Freeze structural identity; later authorized semantic edits must remain possible.
+ assert.deepEqual(first.db.entries.map(e=>[e.id,e.kind]),db.entries.map(e=>[e.id,e.kind]));
  const old=new Map(baseline.entries.map(e=>[e.id,e]));
- for(const e of db.entries.filter(e=>old.has(e.id)&&!admission.final_reclassify.some(r=>r.entry_id===e.id)))assert.deepEqual(e,old.get(e.id));
- for(const row of admission.final_reclassify)assert.equal(db.entries.find(e=>e.id===row.entry_id).canonical,first.db.entries.find(e=>e.id===row.entry_id).canonical);
+ for(const e of first.db.entries.filter(e=>old.has(e.id)&&!admission.final_reclassify.some(r=>r.entry_id===e.id)))assert.deepEqual(e,old.get(e.id));
+ for(const row of admission.final_reclassify)assert.equal(first.db.entries.find(e=>e.id===row.entry_id).kind,row.to_kind);
  assert.equal(manifest.id_policy.new_first_id,'vocab:01074');assert.equal(manifest.id_policy.new_last_id,'vocab:02481');
 });
 test('freeze and occurrence gate reject population, kind and span corruption',()=>{
