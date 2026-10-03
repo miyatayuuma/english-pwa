@@ -243,7 +243,7 @@
       "after": {
         "canonical": "turn something off",
         "sense_key": "stop_a_device_or_flow",
-        "meaning_ja": "somethingを止める"
+        "meaning_ja": "somethingを止める・切る"
       },
       "reason": "Learning-surface refinement: preserve the semantic sense while making the spoken TARGET minimal, natural, and fully recoverable from the Japanese prompt. Variable arguments use spoken someone/something placeholders mirrored literally in meaning_ja; arbitrary filler content is avoided.",
       "confidence": "high",
@@ -438,7 +438,7 @@
       "after": {
         "canonical": "be eager to do something",
         "sense_key": "keen_to_do",
-        "meaning_ja": "somethingしたいと強く思う"
+        "meaning_ja": "somethingすることを強く望む"
       },
       "reason": "Learning-surface refinement: preserve the semantic sense while making the spoken TARGET minimal, natural, and fully recoverable from the Japanese prompt. Variable arguments use spoken someone/something placeholders mirrored literally in meaning_ja; arbitrary filler content is avoided.",
       "confidence": "high",
@@ -451,7 +451,7 @@
       "after": {
         "canonical": "beg someone to do something",
         "sense_key": "plead_for_action",
-        "meaning_ja": "someoneにsomethingしてくれるよう懇願する"
+        "meaning_ja": "someoneにsomethingするよう懇願する"
       },
       "reason": "Learning-surface refinement: preserve the semantic sense while making the spoken TARGET minimal, natural, and fully recoverable from the Japanese prompt. Variable arguments use spoken someone/something placeholders mirrored literally in meaning_ja; arbitrary filler content is avoided.",
       "confidence": "high",
@@ -464,7 +464,7 @@
       "after": {
         "canonical": "keep track of something",
         "sense_key": "monitor_or_record",
-        "meaning_ja": "somethingを把握し続ける"
+        "meaning_ja": "somethingを継続的に把握する"
       },
       "reason": "Learning-surface refinement: preserve the semantic sense while making the spoken TARGET minimal, natural, and fully recoverable from the Japanese prompt. Variable arguments use spoken someone/something placeholders mirrored literally in meaning_ja; arbitrary filler content is avoided.",
       "confidence": "high",
@@ -542,7 +542,7 @@
       "after": {
         "canonical": "beyond the reach of something",
         "sense_key": "outside_ability_or_access",
-        "meaning_ja": "somethingの手が届かない"
+        "meaning_ja": "somethingの及ぶ範囲を超えている"
       },
       "reason": "Learning-surface refinement: preserve the semantic sense while making the spoken TARGET minimal, natural, and fully recoverable from the Japanese prompt. Variable arguments use spoken someone/something placeholders mirrored literally in meaning_ja; arbitrary filler content is avoided.",
       "confidence": "high",
@@ -646,7 +646,7 @@
       "after": {
         "canonical": "get out of something",
         "sense_key": "exit_a_vehicle_or_place",
-        "meaning_ja": "somethingから降りる"
+        "meaning_ja": "somethingから降りる・出る"
       },
       "reason": "Learning-surface refinement: preserve the semantic sense while making the spoken TARGET minimal, natural, and fully recoverable from the Japanese prompt. Variable arguments use spoken someone/something placeholders mirrored literally in meaning_ja; arbitrary filler content is avoided.",
       "confidence": "high",
@@ -789,7 +789,7 @@
       "after": {
         "canonical": "make something out",
         "sense_key": "discern_or_understand",
-        "meaning_ja": "somethingを見分ける・聞き取る"
+        "meaning_ja": "somethingを見分ける・理解する"
       },
       "reason": "Learning-surface refinement: preserve the semantic sense while making the spoken TARGET minimal, natural, and fully recoverable from the Japanese prompt. Variable arguments use spoken someone/something placeholders mirrored literally in meaning_ja; arbitrary filler content is avoided.",
       "confidence": "high",
@@ -802,7 +802,7 @@
       "after": {
         "canonical": "get at something",
         "sense_key": "mean_or_imply",
-        "meaning_ja": "somethingを言いたい"
+        "meaning_ja": "somethingを言おうとする"
       },
       "reason": "Learning-surface refinement: preserve the semantic sense while making the spoken TARGET minimal, natural, and fully recoverable from the Japanese prompt. Variable arguments use spoken someone/something placeholders mirrored literally in meaning_ja; arbitrary filler content is avoided.",
       "confidence": "high",
@@ -893,7 +893,7 @@
       "after": {
         "canonical": "expect someone to do something",
         "sense_key": "expect_action_from_someone",
-        "meaning_ja": "someoneがsomethingすると思う"
+        "meaning_ja": "someoneがsomethingすると期待する"
       },
       "reason": "Learning-surface refinement: preserve the semantic sense while making the spoken TARGET minimal, natural, and fully recoverable from the Japanese prompt. Variable arguments use spoken someone/something placeholders mirrored literally in meaning_ja; arbitrary filler content is avoided.",
       "confidence": "high",
@@ -958,7 +958,7 @@
       "after": {
         "canonical": "be to blame for something",
         "sense_key": "be_responsible_for_bad_result",
-        "meaning_ja": "somethingの責任がある"
+        "meaning_ja": "somethingについて責任がある"
       },
       "reason": "Learning-surface refinement: preserve the semantic sense while making the spoken TARGET minimal, natural, and fully recoverable from the Japanese prompt. Variable arguments use spoken someone/something placeholders mirrored literally in meaning_ja; arbitrary filler content is avoided.",
       "confidence": "high",
@@ -1099,9 +1099,9 @@
       "id": "vocab:00151",
       "decision": "MODIFY",
       "after": {
-        "canonical": "tell someone apart",
+        "canonical": "tell someone and someone else apart",
         "sense_key": "distinguish_people",
-        "meaning_ja": "someoneを見分ける"
+        "meaning_ja": "someoneとsomeone elseを見分ける"
       },
       "reason": "Learning-surface refinement: preserve the semantic sense while making the spoken TARGET minimal, natural, and fully recoverable from the Japanese prompt. Variable arguments use spoken someone/something placeholders mirrored literally in meaning_ja; arbitrary filler content is avoided.",
       "confidence": "high",
@@ -8535,5 +8535,143 @@
       "vocab:02452",
       "vocab:02455"
     ]
+  },
+  "learning_surface_human_review": {
+    "batch_01": {
+      "status": "APPLIED",
+      "baseline_main": "1f06a14f14a8a9d954cc53f4a225773b818ff666",
+      "reviewed": 60,
+      "kept": 49,
+      "modified": 11,
+      "criteria": [
+        "Natural Japanese prompt while preserving literal placeholder visibility required by the spoken target.",
+        "Representative meaning must match the sense_key rather than only the source occurrence.",
+        "Canonical must encode every semantic argument needed to learn the reusable pattern.",
+        "Do not add arbitrary concrete filler nouns."
+      ],
+      "applied": [
+        {
+          "id": "vocab:00002",
+          "before": {
+            "canonical": "turn something off",
+            "meaning_ja": "somethingを止める"
+          },
+          "after": {
+            "canonical": "turn something off",
+            "meaning_ja": "somethingを止める・切る"
+          }
+        },
+        {
+          "id": "vocab:00044",
+          "before": {
+            "canonical": "be eager to do something",
+            "meaning_ja": "somethingしたいと強く思う"
+          },
+          "after": {
+            "canonical": "be eager to do something",
+            "meaning_ja": "somethingすることを強く望む"
+          }
+        },
+        {
+          "id": "vocab:00047",
+          "before": {
+            "canonical": "beg someone to do something",
+            "meaning_ja": "someoneにsomethingしてくれるよう懇願する"
+          },
+          "after": {
+            "canonical": "beg someone to do something",
+            "meaning_ja": "someoneにsomethingするよう懇願する"
+          }
+        },
+        {
+          "id": "vocab:00053",
+          "before": {
+            "canonical": "keep track of something",
+            "meaning_ja": "somethingを把握し続ける"
+          },
+          "after": {
+            "canonical": "keep track of something",
+            "meaning_ja": "somethingを継続的に把握する"
+          }
+        },
+        {
+          "id": "vocab:00075",
+          "before": {
+            "canonical": "beyond the reach of something",
+            "meaning_ja": "somethingの手が届かない"
+          },
+          "after": {
+            "canonical": "beyond the reach of something",
+            "meaning_ja": "somethingの及ぶ範囲を超えている"
+          }
+        },
+        {
+          "id": "vocab:00088",
+          "before": {
+            "canonical": "get out of something",
+            "meaning_ja": "somethingから降りる"
+          },
+          "after": {
+            "canonical": "get out of something",
+            "meaning_ja": "somethingから降りる・出る"
+          }
+        },
+        {
+          "id": "vocab:00108",
+          "before": {
+            "canonical": "make something out",
+            "meaning_ja": "somethingを見分ける・聞き取る"
+          },
+          "after": {
+            "canonical": "make something out",
+            "meaning_ja": "somethingを見分ける・理解する"
+          }
+        },
+        {
+          "id": "vocab:00109",
+          "before": {
+            "canonical": "get at something",
+            "meaning_ja": "somethingを言いたい"
+          },
+          "after": {
+            "canonical": "get at something",
+            "meaning_ja": "somethingを言おうとする"
+          }
+        },
+        {
+          "id": "vocab:00119",
+          "before": {
+            "canonical": "expect someone to do something",
+            "meaning_ja": "someoneがsomethingすると思う"
+          },
+          "after": {
+            "canonical": "expect someone to do something",
+            "meaning_ja": "someoneがsomethingすると期待する"
+          }
+        },
+        {
+          "id": "vocab:00130",
+          "before": {
+            "canonical": "be to blame for something",
+            "meaning_ja": "somethingの責任がある"
+          },
+          "after": {
+            "canonical": "be to blame for something",
+            "meaning_ja": "somethingについて責任がある"
+          }
+        },
+        {
+          "id": "vocab:00151",
+          "before": {
+            "canonical": "tell someone apart",
+            "meaning_ja": "someoneを見分ける"
+          },
+          "after": {
+            "canonical": "tell someone and someone else apart",
+            "meaning_ja": "someoneとsomeone elseを見分ける"
+          }
+        }
+      ]
+    }
   }
 }
