@@ -13,16 +13,16 @@ test('known wrong-sense regressions stay pinned to their source expressions and 
     ['take up','occupy_space_or_time','E0020','taking up',/占める/,/再開する/],
     ['turn something off','stop_a_device_or_flow','E0102','Turn the faucet off',/止める|切る/,/解雇する/],
     ['come across someone','meet_by_chance','E0524','came across Nick',/偶然|見かける/,/印象を与える/],
-    ['make someone do something','causative_make','E0130','make her sign',/人に.*させる/,/成功/],
-    ['be beside oneself','extremely_upset','E0010','beside himself',/取り乱/,/比較/],
+    ['make someone do something','causative_make','E0130','make her sign',/someoneにsomethingさせる/,/成功/],
+    ["I'm beside myself",'extremely_upset','E0010','beside himself',/取り乱/,/比較/],
     ['sound asleep','sleeping_deeply','E0523','sound asleep',/ぐっすり|熟睡/,/音/],
-    ["twist one's ankle",'sprain_an_ankle','E0190','twisted his ankle',/捻挫/,/ツイスト/],
+    ['twist your ankle','sprain_an_ankle','E0190','twisted his ankle',/捻挫/,/ツイスト/],
     ['assume','take_as_true','E0227','assume',/考える|仮定/,/自分のもの|奪い/],
     ['job interview','employment_interview','E0366','job interview',/就職面接/,/面会/],
     ['turn someone down','reject_a_person_or_offer','E0178','turned me down',/断る/,/弱める/],
     ['put something on','put_on_clothing','E0189','put my gloves on',/身につける/,/飢え/],
     ['be starved','very_hungry','E0560','starved',/お腹.*ぺこぺこ/,/飢えさせる/],
-    ['so + adjective or adverb + that + clause','so_degree_that_result','E0371','so childish that',/あまりに.*なので/,/目的|子供っぽい/],
+    ['so tired that I fell asleep','so_degree_that_result','E0371','so childish that',/疲れすぎて眠ってしまった/,/目的|子供っぽい/],
     ['come out','be_published','E0012','come out',/刊行|発売/,/結果が出る/],
   ];
   for(const [canonical,sense,itemId,expectedSurface,meaning,forbidden] of fixtures){
@@ -54,4 +54,77 @@ test('retained lexical occurrences are represented once per sense with exact sou
 test('E0483 source keeps the repaired cost wording',()=>{
   const item=items.find(value=>value.id==='E0483');
   assert.equal(item?.en,'The millionaire insisted on acquiring the masterpiece no matter how much it cost.');
+});
+
+test('representative canonical answer surfaces are speakable and do not expose meta-slot notation',()=>{
+  const metaSlots=db.entries.filter(value=>String(value.canonical||'').includes('+')).map(value=>`${value.id}: ${value.canonical}`);
+  assert.deepEqual(metaSlots,[]);
+  const slashDelimited=db.entries.filter(value=>[value.canonical,...(Array.isArray(value.answers)?value.answers:[])].some(text=>String(text||'').includes('/'))).map(value=>`${value.id}: ${value.canonical}`);
+  assert.deepEqual(slashDelimited,[]);
+});
+
+test('refined vocabulary surfaces exclude over-abstracted possessive, alternative, and incomplete construction targets',()=>{
+  assert.deepEqual(db.entries.filter(value=>/\bone's\b|\boneself\b/i.test(String(value.canonical||''))).map(value=>value.id),[]);
+  assert.deepEqual(db.entries.filter(value=>/\bsomeone or something\b|\bsomething or someone\b/i.test(String(value.canonical||''))).map(value=>value.id),[]);
+  assert.deepEqual(db.entries.filter(value=>value.kind==='construction'&&/\b(?:that|if|before|to)\s*$/i.test(String(value.canonical||''))).map(value=>value.id),[]);
+});
+
+
+test('spoken placeholder targets are mirrored literally in the Japanese prompt',()=>{
+  const lexicalSomething=new Set(['vocab:01377']);
+  for(const value of db.entries){
+    if(value.kind==='word'||lexicalSomething.has(value.id)) continue;
+    const canonical=String(value.canonical||'');
+    const prompt=String(value.meaning_ja||'');
+    if(/\bsomeone\b/i.test(canonical)) assert.match(prompt,/someone/i,`${value.id} exposes someone in meaning_ja`);
+    if(/\bsomething\b/i.test(canonical)) assert.match(prompt,/something/i,`${value.id} exposes something in meaning_ja`);
+    if(/\bsomething else\b/i.test(canonical)) assert.match(prompt,/something else/i,`${value.id} exposes something else in meaning_ja`);
+  }
+  const fixtures=[
+    ['vocab:00040','remind someone of something','someoneにsomethingを思い出させる'],
+    ['vocab:00503','associate something with something else','somethingをsomething elseと結び付ける'],
+    ['vocab:00323','keep up with something','somethingについていく'],
+  ];
+  for(const [id,canonical,meaning] of fixtures){
+    const value=db.entries.find(entry=>entry.id===id);
+    assert.equal(value?.canonical,canonical);
+    assert.equal(value?.meaning_ja,meaning);
+  }
+});
+
+test('learning-surface human review batch 01 pins corrected reusable targets',()=>{
+  const byId=new Map(db.entries.map(value=>[value.id,value]));
+  assert.equal(byId.get('vocab:00151')?.canonical,'tell someone and someone else apart');
+  assert.equal(byId.get('vocab:00151')?.meaning_ja,'someoneとsomeone elseを見分ける');
+  assert.equal(byId.get('vocab:00047')?.meaning_ja,'someoneにsomethingするよう懇願する');
+  assert.equal(byId.get('vocab:00119')?.meaning_ja,'someoneがsomethingすると期待する');
+});
+
+test('learning-surface human review batch 02 keeps placeholder prompts natural and unambiguous',()=>{
+  const byId=new Map(db.entries.map(value=>[value.id,value]));
+  assert.equal(byId.get('vocab:00162')?.meaning_ja,'somethingはこの辺までにする');
+  assert.equal(byId.get('vocab:00244')?.meaning_ja,'someoneにsomethingがおかしいという考えがふと浮かぶ');
+});
+
+
+test('learning-surface human review batch 03 keeps prompts aligned with reusable expression senses',()=>{
+  const byId=new Map(db.entries.map(value=>[value.id,value]));
+  assert.equal(byId.get('vocab:00328')?.meaning_ja,'somethingはsomething elseと関係がある');
+  assert.equal(byId.get('vocab:00349')?.meaning_ja,'someoneをデートに連れて行く');
+  assert.equal(byId.get('vocab:00353')?.meaning_ja,'somethingをきちんと処理する');
+  assert.equal(byId.get('vocab:00402')?.meaning_ja,'somethingを控える');
+});
+
+
+test('learning-surface human review batch 04 removes source-specific emotional overstatement',()=>{
+  const byId=new Map(db.entries.map(value=>[value.id,value]));
+  assert.equal(byId.get('vocab:00474')?.meaning_ja,'somethingし続ける');
+  assert.equal(byId.get('vocab:00531')?.meaning_ja,'somethingするのに気が進まない');
+});
+
+
+test('learning-surface human review batch 05 aligns Japanese prompts with the learned structure and sense',()=>{
+  const byId=new Map(db.entries.map(value=>[value.id,value]));
+  assert.equal(byId.get('vocab:00618')?.meaning_ja,'somethingするのを楽しみにする');
+  assert.equal(byId.get('vocab:00622')?.meaning_ja,'someoneについて言えば');
 });

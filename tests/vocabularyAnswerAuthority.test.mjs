@@ -46,7 +46,7 @@ test('canonical, explicit answer, and active exact source realizations classify 
   assert.equal(classifyVocabularyAnswer({entry:construction,activeOccurrence:source(construction,'E0130'),transcript:'make her sign'}).type,'target');
   const faint=entry('faint');
   assert.equal(classifyVocabularyAnswer({entry:faint,activeOccurrence:source(faint,'E0125'),transcript:'fainted'}).type,'target');
-  assert.equal(classify('be beside oneself','be beside himself').type,'target');
+  assert.equal(classify("I'm beside myself",'be beside himself').type,'target');
 });
 
 test('active source realization is local to the selected occurrence and does not create a wildcard',()=>{

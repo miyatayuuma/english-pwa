@@ -1,7 +1,7 @@
 # Shared Chunk Authority materialization
 
 Start main: `85506d6ce258d2bd12f8ec80e937fbdd5e7a098d` (PR #251).
-Integrated main: `8624729b77330a03172e991100b91aa14d62e5c6` (parallel vocabulary semantic audit retained). English source did not change.
+Integrated main: `fce346d` (PR #261), following `8624729b77330a03172e991100b91aa14d62e5c6` (parallel vocabulary semantic audit retained). English source did not change.
 
 Production authority is `items.json → generate-reorder-metadata.py → sentence.partition.chunks`. Every sentence, including fixed context, has one partition. Reordering level does not select a partition. Android implementation is outside this change; its surface contract is exactly `sentence.partition.chunks.map(chunk => chunk.learningText)`.
 
@@ -104,3 +104,5 @@ A = general structural rule; B = reusable protected construction; C = determinis
 Full corpus independent source/token/span/structural/protected/learning/lexical/grading validation: PASS. Fresh-parser 126 + 79 replay: PASS. Consecutive generation byte stability: PASS. Local Node tests: 288 pass, zero failures; browser tests cannot launch in this managed execution environment and are explicitly not counted as passed. CI browser launch failures are fatal. Application CI job 111127248308 passed all 341 tests with zero skips, including actual production UI, duplicate-surface grading and the generated 13-tile item. The required-browser flag is scoped to the browser-installed application job; the vocabulary unit-only job remains independent. PR #253 records final-head reruns and release/merge status.
 
 Implementation gates: source/coverage/protected/surface, fresh-parser human regression, determinism, and production browser tests PASS. Final-head CI and merge provenance are recorded in PR #253.
+
+Latest-main refresh: fce346d (PR #261). All parallel Vocabulary changes retained; English source unchanged. Full 560-item / 804-sentence regeneration and determinism/validation rerun before closure.
