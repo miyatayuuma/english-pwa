@@ -95,6 +95,12 @@ public class NativeShellGateTest {
             assertEquals("true", eval(scenario, "Capacitor.DEBUG === true && document.querySelector('#condition').options.length === 2"));
             eval(scenario, "document.querySelector('#fixture').value='vocab:01306'; document.querySelector('#fixture').dispatchEvent(new Event('change')); true");
             assertEquals("true", eval(scenario, "document.querySelector('#expected').textContent.includes('yelled')"));
+            eval(scenario, "document.querySelector('#fixture').value='word:yield'; document.querySelector('#fixture').dispatchEvent(new Event('change')); true");
+            assertEquals("true", eval(scenario, "document.querySelector('#prompt').textContent === 'yield'"));
+            eval(scenario, "document.querySelector('#fixture').value='word:yell'; document.querySelector('#fixture').dispatchEvent(new Event('change')); true");
+            assertEquals("true", eval(scenario, "document.querySelector('#prompt').textContent === 'yell' && !!document.querySelector('#copy')"));
+            eval(scenario, "document.querySelector('#control').value='content word違い'; document.querySelector('#control').dispatchEvent(new Event('change')); true");
+            assertEquals("true", eval(scenario, "document.querySelector('#prompt').textContent === 'hello'"));
             eval(scenario, "document.querySelector('#fixture').value='E0102'; document.querySelector('#fixture').dispatchEvent(new Event('change')); true");
             assertEquals("true", eval(scenario, "document.querySelector('#expected').textContent.includes('Mom yelled in a rage.')"));
         }

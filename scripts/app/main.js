@@ -2230,7 +2230,7 @@ function createAppRuntime(){
   function idb(){ return new Promise((res,rej)=>{ const r=indexedDB.open(DB,1); r.onupgradeneeded=()=>{ r.result.createObjectStore(STORE); }; r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }); }
   async function saveDirHandle(h){ if(isNativeAndroid()) return; const db=await idb(); return new Promise((res,rej)=>{ const tx=db.transaction(STORE,'readwrite'); tx.objectStore(STORE).put(h,'audio'); tx.oncomplete=()=>res(); tx.onerror=()=>rej(tx.error); }); }
   async function loadDirHandle(){ if(isNativeAndroid()) return nativeDirectory('status'); const db=await idb(); return new Promise((res,rej)=>{ const tx=db.transaction(STORE,'readonly'); const rq=tx.objectStore(STORE).get('audio'); rq.onsuccess=()=>res(rq.result||null); rq.onerror=()=>rej(rq.error); }); }
-  async function clearDirHandle(){ if(isNativeAndroid()) { audioUrlResolver.clear(); return nativeDirectory('clear'); } const db=await idb(); return new Promise((res,rej)=>{ const tx=db.transaction(STORE,'readwrite'); tx.objectStore(STORE).delete('audio'); tx.oncomplete=()=>res(); tx.onerror=()=>rej(tx.error); }); }
+  async function clearDirHandle(){ if(isNativeAndroid()) return nativeDirectory('clear'); const db=await idb(); return new Promise((res,rej)=>{ const tx=db.transaction(STORE,'readwrite'); tx.objectStore(STORE).delete('audio'); tx.oncomplete=()=>res(); tx.onerror=()=>rej(tx.error); }); }
 
   let DIR=null; // FileSystemDirectoryHandle
   let dirNeedsGesture=false;
@@ -2650,6 +2650,7 @@ function createAppRuntime(){
   if(el.btnClearDir){
     el.btnClearDir.addEventListener('click', async()=>{
       await clearDirHandle();
+      audioUrlResolver.clear();
       DIR=null;
       dirNeedsGesture=false;
       dirPromptArmed=false;

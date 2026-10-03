@@ -28,6 +28,7 @@ self.addEventListener('install', e => {
     './scripts/app/swBootstrap.js?v=5.66',
     './scripts/app/swUpdatePrompt.js?v=5.66',
     './scripts/native/runtimePlatform.js',
+    './scripts/native/media.js',
     './scripts/reorder/sharedAuthority.js',
     './scripts/app/dom.js',
     './scripts/app/levelState.js',
