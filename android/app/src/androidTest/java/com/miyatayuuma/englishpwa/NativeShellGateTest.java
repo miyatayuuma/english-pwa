@@ -1,0 +1,72 @@
+package com.miyatayuuma.englishpwa;
+
+import static org.junit.Assert.*;
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.webkit.WebView;
+import androidx.test.core.app.ActivityScenario;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.uiautomator.By;
+import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.UiObject2;
+import androidx.test.uiautomator.Until;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+@RunWith(AndroidJUnit4.class)
+public class NativeShellGateTest {
+    private String eval(ActivityScenario<MainActivity> scenario, String script) throws Exception {
+        AtomicReference<String> value = new AtomicReference<>();
+        CountDownLatch latch = new CountDownLatch(1);
+        scenario.onActivity(activity -> activity.getBridge().getWebView().evaluateJavascript(script, result -> {
+            value.set(result);
+            latch.countDown();
+        }));
+        assertTrue("WebView evaluation timed out", latch.await(10, TimeUnit.SECONDS));
+        return value.get();
+    }
+
+    private void awaitTrue(ActivityScenario<MainActivity> scenario, String script) throws Exception {
+        long deadline = System.currentTimeMillis() + 60000;
+        while (System.currentTimeMillis() < deadline) {
+            if ("true".equals(eval(scenario, script))) return;
+            Thread.sleep(100);
+        }
+        fail("Gate condition not reached: " + script);
+    }
+
+    @Test
+    public void shellRendersDataLoadsBridgeCallsAndServiceWorkerStaysDisabled() throws Exception {
+        try (ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class)) {
+            awaitTrue(scenario, "!!document.querySelector('#app') && document.readyState === 'complete'");
+            assertEquals("\"android\"", eval(scenario, "Capacitor.getPlatform()"));
+            awaitTrue(scenario, "document.querySelector('#loadingOverlay')?.classList.contains('hidden') === true");
+            eval(scenario, "window.__gateData=null; fetch('/data/items.json').then(r=>r.json()).then(x=>window.__gateData=x.length); true");
+            awaitTrue(scenario, "window.__gateData === 560");
+            eval(scenario, "window.__gateBridge=null; import('/scripts/native/nativeSpeech.js').then(m=>m.getNativeSpeech()).then(p=>p.isAvailable()).then(x=>window.__gateBridge=x); true");
+            awaitTrue(scenario, "typeof window.__gateBridge?.available === 'boolean' && window.__gateBridge.apiLevel >= 24");
+            eval(scenario, "window.__gateSW=null; navigator.serviceWorker.getRegistrations().then(x=>window.__gateSW=x.length); true");
+            awaitTrue(scenario, "window.__gateSW === 0");
+        }
+    }
+
+    @Test
+    public void permissionIsRequestedOnDemandAndGrantedThroughSystemDialog() throws Exception {
+        UiDevice device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+        device.executeShellCommand("pm revoke com.miyatayuuma.englishpwa android.permission.RECORD_AUDIO");
+        try (ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class)) {
+            awaitTrue(scenario, "!!window.Capacitor?.Plugins?.NativeSpeech");
+            assertEquals(PackageManager.PERMISSION_DENIED, InstrumentationRegistry.getInstrumentation().getTargetContext().checkSelfPermission(Manifest.permission.RECORD_AUDIO));
+            eval(scenario, "window.__gatePermission=null; import('/scripts/native/nativeSpeech.js').then(m=>m.getNativeSpeech()).then(p=>p.requestPermission()).then(x=>window.__gatePermission=x); true");
+            UiObject2 button = device.wait(Until.findObject(By.res("com.android.permissioncontroller", "permission_allow_foreground_only_button")), 15000);
+            assertNotNull("Microphone system permission dialog missing", button);
+            button.click();
+            awaitTrue(scenario, "window.__gatePermission?.granted === true");
+            assertEquals(PackageManager.PERMISSION_GRANTED, InstrumentationRegistry.getInstrumentation().getTargetContext().checkSelfPermission(Manifest.permission.RECORD_AUDIO));
+        }
+    }
+}

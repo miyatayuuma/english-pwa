@@ -27,6 +27,7 @@ self.addEventListener('install', e => {
     './scripts/app/main.js',
     './scripts/app/swBootstrap.js?v=5.66',
     './scripts/app/swUpdatePrompt.js?v=5.66',
+    './scripts/native/runtimePlatform.js',
     './scripts/app/dom.js',
     './scripts/app/levelState.js',
     './scripts/app/overlay.js',

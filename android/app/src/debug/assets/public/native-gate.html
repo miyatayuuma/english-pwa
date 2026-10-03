@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ja">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NativeSpeech Gate A (debug only)</title>
+<h1>NativeSpeech Gate A</h1>
+<p>この画面はdebug APKにのみ含まれます。確認結果は画面内とconsoleのみで、音声は保存しません。</p>
+<a href="/index.html">既存UIへ戻る</a>
+<button id="capabilities">Bridge / capability</button>
+<button id="permission">マイク権限を要求</button>
+<input id="session" value="gate-a-1" aria-label="session ID">
+<textarea id="bias" aria-label="bias strings (one per line)"></textarea>
+<button id="start">Start</button><button id="stop">Stop</button><button id="cancel">Cancel</button>
+<pre id="output"></pre>
+<script type="module">
+import { getNativeSpeech } from '/scripts/native/nativeSpeech.js';
+const output = document.querySelector('#output');
+function log(value) {
+  const text = JSON.stringify(value, null, 2);
+  output.textContent += text + '\n';
+  console.info('Gate A', value);
+}
+try {
+  const plugin = await getNativeSpeech();
+  await plugin.addListener('recognition', log);
+  const execute = async (action) => {
+    try { log({ action, result: await plugin[action](action === 'start' ? {
+      sessionId: document.querySelector('#session').value,
+      biasStrings: document.querySelector('#bias').value.split('\n').filter(value => value.length > 0),
+    } : { sessionId: document.querySelector('#session').value }) }); }
+    catch (error) { log({ action, error: error.message, code: error.code }); }
+  };
+  document.querySelector('#capabilities').onclick = () => execute('isAvailable');
+  document.querySelector('#permission').onclick = () => execute('requestPermission');
+  for (const action of ['start', 'stop', 'cancel']) document.querySelector('#' + action).onclick = () => execute(action);
+  await execute('isAvailable');
+} catch (error) { log({ error: error.message }); }
+</script>
+</html>

@@ -1,3 +1,5 @@
+import { isNativePlatform } from '../native/runtimePlatform.js';
+
 export function createSwUpdatePrompt(){
   let hasPromptedReload=false;
   let swRegistration=null;
@@ -158,6 +160,7 @@ export function createSwUpdatePrompt(){
   };
 
   function registerServiceWorker({ toastFn=()=>{}, getCurrentViewState=()=> 'home' }={}){
+    if(isNativePlatform()) return;
     if(!('serviceWorker' in navigator)) return;
     promptDeps={
       toastFn,
