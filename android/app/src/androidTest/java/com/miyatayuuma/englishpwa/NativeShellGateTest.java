@@ -2,6 +2,7 @@ package com.miyatayuuma.englishpwa;
 
 import static org.junit.Assert.*;
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.webkit.WebView;
 import androidx.test.core.app.ActivityScenario;
@@ -16,9 +17,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 import org.junit.Test;
+import org.junit.FixMethodOrder;
+import org.junit.runners.MethodSorters;
 import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class NativeShellGateTest {
     private String eval(ActivityScenario<MainActivity> scenario, String script) throws Exception {
         AtomicReference<String> value = new AtomicReference<>();
@@ -42,7 +46,7 @@ public class NativeShellGateTest {
     }
 
     @Test
-    public void shellRendersDataLoadsBridgeCallsAndServiceWorkerStaysDisabled() throws Exception {
+    public void c_shellRendersDataLoadsBridgeCallsAndServiceWorkerStaysDisabled() throws Exception {
         try (ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class)) {
             awaitTrue(scenario, "!!document.querySelector('#app') && document.readyState === 'complete'");
             assertEquals("\"android\"", eval(scenario, "Capacitor.getPlatform()"));
@@ -57,7 +61,7 @@ public class NativeShellGateTest {
     }
 
     @Test
-    public void productionBackendStartsAndCancelsWithoutWebSpeech() throws Exception {
+    public void b_productionBackendStartsAndCancelsWithoutWebSpeech() throws Exception {
         UiDevice device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
         device.executeShellCommand("pm grant com.miyatayuuma.englishpwa android.permission.RECORD_AUDIO");
         try (ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class)) {
@@ -70,9 +74,25 @@ public class NativeShellGateTest {
     }
 
     @Test
-    public void permissionIsRequestedOnDemandAndGrantedThroughSystemDialog() throws Exception {
+    public void d_debugValidationUsesActualTargetAuthority() throws Exception {
+        Intent intent = new Intent(InstrumentationRegistry.getInstrumentation().getTargetContext(), MainActivity.class);
+        intent.putExtra("nativeSpeechGate", true);
+        try (ActivityScenario<MainActivity> scenario = ActivityScenario.launch(intent)) {
+            awaitTrue(scenario, "document.querySelector('#expected')?.textContent.includes('yield to something') === true");
+            assertEquals("true", eval(scenario, "document.querySelector('#expected').textContent.includes('yield to any threats')"));
+            assertEquals("true", eval(scenario, "Capacitor.DEBUG === true && document.querySelector('#condition').options.length === 2"));
+            eval(scenario, "document.querySelector('#fixture').value='vocab:01306'; document.querySelector('#fixture').dispatchEvent(new Event('change')); true");
+            assertEquals("true", eval(scenario, "document.querySelector('#expected').textContent.includes('yelled')"));
+            eval(scenario, "document.querySelector('#fixture').value='E0102'; document.querySelector('#fixture').dispatchEvent(new Event('change')); true");
+            assertEquals("true", eval(scenario, "document.querySelector('#expected').textContent.includes('Mom yelled in a rage.')"));
+        }
+    }
+
+    @Test
+    public void a_permissionIsRequestedOnDemandAndGrantedThroughSystemDialog() throws Exception {
         UiDevice device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
-        device.executeShellCommand("pm revoke com.miyatayuuma.englishpwa android.permission.RECORD_AUDIO");
+        // Fresh install starts denied. Revoking after a grant kills the target
+        // process, including instrumentation, so permission runs first.
         try (ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class)) {
             awaitTrue(scenario, "!!window.Capacitor?.Plugins?.NativeSpeech");
             assertEquals(PackageManager.PERMISSION_DENIED, InstrumentationRegistry.getInstrumentation().getTargetContext().checkSelfPermission(Manifest.permission.RECORD_AUDIO));
