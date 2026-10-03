@@ -511,6 +511,29 @@ def punctuation_classes(source):
 def learning_surface(source, start, end, classes):
     return re.sub('\\s+', ' ', ''.join((' ' if classes.get(i) == 'STRUCTURAL' else source[i] for i in range(start, end)))).strip()
 
+def dependency_fixed_spans(sentence, source):
+    """Protect a connected fixed core, never the surrounding head subtree."""
+    result=[];seen=set()
+    for token in sentence:
+        if dep(token)!='fixed':continue
+        head=token
+        while dep(head)=='fixed' and head.head!=head:head=head.head
+        if head.i in seen or not sentence.start<=head.i<sentence.end:continue
+        seen.add(head.i);indices=set()
+        def collect(current):
+            if not sentence.start<=current.i<sentence.end:return
+            indices.add(current.i-sentence.start)
+            for child in current.children:
+                if dep(child)=='fixed':collect(child)
+        collect(head)
+        start,end=min(indices),max(indices)+1
+        if any(i not in indices and not sentence[i].is_punct for i in range(start,end)):
+            raise ValueError('noncontiguous dependency-fixed core requires explicit reconciliation')
+        result.append({'kind':'dependency-fixed','tokenStart':start,'tokenEnd':end,'hard':True,
+                       'text':source[sentence[start].idx:sentence[end-1].idx+len(sentence[end-1])]})
+    return result
+
+
 def shared_ranges(sentence, source):
     protected = expression_spans(sentence, EXTRA_MWES + FIXED_MWES + ['as it is', 'seldom if ever', 'if ever', 'believe it or not', 'to make matters worse', 'Statue of Liberty'], 'fixed-mwe')
     protected += expression_spans(sentence, INSEPARABLE_PHRASAL_VERBS + ['come up with', 'make up for', 'refer to', 'feel for', 'pay attention to', 'make believe', 'make sure', 'come in handy'], 'inseparable-phrasal-verb')
@@ -520,11 +543,7 @@ def shared_ranges(sentence, source):
             ii = [t.i - sentence.start for t in sentence if t.idx < b and t.idx + len(t) > a]
             if ii:
                 protected.append({'kind': 'lexical-orthography', 'tokenStart': min(ii), 'tokenEnd': max(ii) + 1, 'hard': True, 'text': match.group()})
-    for t in sentence:
-        if dep(t)=='fixed':
-            ii={t.i-sentence.start,t.head.i-sentence.start}
-            if min(ii)>=0 and max(ii)<len(sentence):
-                protected.append({'kind':'dependency-fixed','tokenStart':min(ii),'tokenEnd':max(ii)+1,'hard':True,'text':source[sentence[min(ii)].idx:sentence[max(ii)].idx+len(sentence[max(ii)])]})
+    protected += dependency_fixed_spans(sentence, source)
     protected.sort(key=lambda p: (p['tokenStart'], -p['tokenEnd'], p['kind']))
     accepted = []
     occupied = set()

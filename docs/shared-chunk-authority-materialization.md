@@ -101,6 +101,6 @@ A = general structural rule; B = reusable protected construction; C = determinis
 
 ## Validation status
 
-Full corpus independent source/token/span/structural/protected/learning/lexical/grading validation: PASS. Fresh-parser 126 + 79 replay: PASS. Consecutive generation byte stability: PASS. Local Node tests: 288 pass, zero failures; browser tests cannot launch in this managed execution environment and are explicitly not counted as passed. CI browser launch failures are fatal. CI/production browser result and merge remain pending.
+Full corpus independent source/token/span/structural/protected/learning/lexical/grading validation: PASS. Fresh-parser 126 + 79 replay: PASS. Consecutive generation byte stability: PASS. Local Node tests: 288 pass, zero failures; browser tests cannot launch in this managed execution environment and are explicitly not counted as passed. CI browser launch failures are fatal. Application CI job 111127248308 passed all 341 tests with zero skips, including actual production UI, duplicate-surface grading and the generated 13-tile item. The required-browser flag is scoped to the browser-installed application job; the vocabulary unit-only job remains independent. PR #253 records final-head reruns and release/merge status.
 
-Shared Chunk Authority: **PENDING CI/browser gate**.
+Implementation gates: source/coverage/protected/surface, fresh-parser human regression, determinism, and production browser tests PASS. Final-head CI and merge provenance are recorded in PR #253.

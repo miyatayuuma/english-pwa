@@ -33,6 +33,11 @@ for source,expected in [('\"No,\" he said, \"I don\'t know.\"',"No he said I don
                         ("An 'instrument' is useful.","An instrument is useful")]:
     assert g.learning_surface(source,0,len(source),g.punctuation_classes(source))==expected,source
 assert g.utf16('A𝒜B',2)==3
+from spacy.tokens import Doc
+fixed_doc=Doc(nlp.vocab,words=['in','spite','of','delays'],spaces=[True,True,True,False],heads=[0,0,1,0],deps=['ROOT','fixed','fixed','pobj'])
+fixed=g.dependency_fixed_spans(fixed_doc[:],fixed_doc.text)
+assert len(fixed)==1 and fixed[0]['tokenStart']==0 and fixed[0]['tokenEnd']==3
+assert fixed[0]['text']=='in spite of'
 assert g.learning_surface('The NASA I',0,10,g.punctuation_classes('The NASA I'))=='The NASA I'
 try:g.punctuation_classes('unknown @ symbol')
 except ValueError:pass

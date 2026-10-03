@@ -51,4 +51,6 @@ test('structural punctuation is removed while internal marks and capitalization 
   assert.equal(expectedLearning(source,0,source.length), `No he said I don't know John's O'Brien well-known U.S. Ms. 22.68 1,000 5:00 $100 10% his/her`);
   assert.equal(expectedLearning("An 'instrument' is useful.",0,26),'An instrument is useful');
   assert.equal(expectedLearning("the hearts' wishes",0,18),"the hearts' wishes");
+  const unicode="𝒜 — α-β O’Brien";
+  assert.equal(expectedLearning(unicode,0,unicode.length),"𝒜 α-β O’Brien");
 });

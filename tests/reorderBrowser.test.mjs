@@ -165,7 +165,7 @@ before(async () => {
   try {
     browser = await chromium.launch({ headless: true });
   } catch (error) {
-    if (process.env.CI) throw error;
+    if (process.env.REORDER_REQUIRE_BROWSER) throw error;
     browserError = String(error?.message ?? error).split('\n')[0];
   }
 });
