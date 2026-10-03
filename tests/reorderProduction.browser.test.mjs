@@ -31,7 +31,8 @@ function buildMetadata(sourceItem = item, rows = sentenceRows) {
       charOffset = charEnd + (tileIndex + 1 < row.tiles.length ? 1 : 0);
       return {
         id: `s${sentenceIndex}-t${tileIndex}`,
-        text,
+        sourceText: text,
+      learningText: text.replace(/[.!?]/g, ''),
         tokenStart: tileIndex,
         tokenEnd: tileIndex + 1,
         charStart,
@@ -44,8 +45,7 @@ function buildMetadata(sourceItem = item, rows = sentenceRows) {
     });
     const canonicalOrder = tiles.map((tile) => tile.id);
     const variant = {
-      tier: 'foundation',
-      tiles,
+      chunks: tiles,
       canonicalOrder,
       acceptedOrders: [canonicalOrder],
       clauseScaffold: tiles.map(() => '語句'),
@@ -53,13 +53,13 @@ function buildMetadata(sourceItem = item, rows = sentenceRows) {
     };
     return {
       sentenceIndex,
-      text: row.text,
+      sourceText: row.text,
       fixedContext: false,
-      variants: { foundation: variant },
+      partition: variant,
     };
   });
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     items: [{
       itemId: sourceItem.id,
       sourceHash: crypto.createHash('sha256').update(sourceItem.en, 'utf8').digest('hex'),
@@ -256,7 +256,7 @@ before(async () => {
   await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
   baseUrl = `http://127.0.0.1:${server.address().port}`;
   try { browser = await chromium.launch({ headless: true }); }
-  catch (error) { browserError = String(error?.message ?? error).split('\n')[0]; }
+  catch (error) { if (process.env.REORDER_REQUIRE_BROWSER) throw error; browserError = String(error?.message ?? error).split('\n')[0]; }
 });
 
 after(async () => {

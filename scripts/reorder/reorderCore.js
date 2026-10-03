@@ -1,14 +1,13 @@
-export const REORDER_SCHEMA_VERSION = 1;
-export const REORDER_TIERS = Object.freeze(['foundation', 'standard', 'precision']);
+export const REORDER_SCHEMA_VERSION = 2;
 
 export function reconstructCanonical(variant) {
-  if (!Array.isArray(variant?.tiles)) return null;
-  return variant.tiles.map((tile) => `${tile.text}${tile.separatorAfter ?? ''}`).join('');
+  if (!Array.isArray(variant?.chunks)) return null;
+  return variant.chunks.map((tile) => `${tile.sourceText}${tile.separatorAfter ?? ''}`).join('');
 }
 
 export function validateCanonicalVariant(variant, sourceText) {
-  if (!Array.isArray(variant?.tiles) || variant.tiles.length < 2) return false;
-  const ids = variant.tiles.map((tile) => tile?.id);
+  if (!Array.isArray(variant?.chunks) || variant.chunks.length < 1) return false;
+  const ids = variant.chunks.map((tile) => tile?.id);
   if (ids.some((id) => typeof id !== 'string' || !id) || new Set(ids).size !== ids.length) return false;
   if (!Array.isArray(variant.canonicalOrder) || variant.canonicalOrder.length !== ids.length
     || variant.canonicalOrder.some((id, index) => id !== ids[index])) return false;
@@ -16,33 +15,29 @@ export function validateCanonicalVariant(variant, sourceText) {
     || variant.acceptedOrders.some((order) => !Array.isArray(order) || order.length !== ids.length
       || new Set(order).size !== ids.length || order.some((id) => !ids.includes(id)))) return false;
   let cursor = 0;
-  for (const tile of variant.tiles) {
+  for (const tile of variant.chunks) {
     if (!Number.isInteger(tile.tokenStart) || !Number.isInteger(tile.tokenEnd)
-      || tile.tokenStart !== cursor || tile.tokenEnd <= cursor || typeof tile.text !== 'string'
-      || typeof tile.separatorAfter !== 'string') return false;
+      || tile.tokenStart !== cursor || tile.tokenEnd <= cursor || typeof tile.sourceText !== 'string'
+      || typeof tile.separatorAfter !== 'string' || typeof tile.learningText !== 'string' || !tile.learningText.trim()) return false;
     cursor = tile.tokenEnd;
   }
-  return reconstructCanonical(variant) === sourceText && variant.canonicalReconstruction === sourceText;
+  return reconstructCanonical(variant) === sourceText;
 }
 
-export function targetTierForLevel(bestLevel) {
-  const level = Number(bestLevel);
-  if (!Number.isFinite(level) || level <= 2) return 'foundation';
-  return level <= 4 ? 'standard' : 'precision';
+export function selectSharedPartition(sentence) {
+  const partition = sentence?.partition;
+  return !sentence?.fixedContext && validateCanonicalVariant(partition, sentence?.sourceText)
+    && partition.chunks.length > 1 ? partition : null;
 }
 
-export function selectReorderVariant(sentence, bestLevel) {
-  const variants = sentence?.variants;
-  if (!variants || typeof variants !== 'object') return null;
-  const target = targetTierForLevel(bestLevel);
-  const targetIndex = REORDER_TIERS.indexOf(target);
-  const candidates = REORDER_TIERS
-    .map((tier, index) => ({ tier, index, variant: variants[tier] }))
-    .filter((entry) => entry.variant && Array.isArray(entry.variant.tiles) && entry.variant.tiles.length > 1)
-    .sort((a, b) => Math.abs(a.index - targetIndex) - Math.abs(b.index - targetIndex) || a.index - b.index);
-  if (!candidates.length) return null;
-  const selected = candidates[0];
-  return { ...selected, targetTier: target, usedFallback: selected.tier !== target };
+function surfaceKey(order, tileById) {
+  return JSON.stringify(order.map((id) => tileById ? tileById.get(id)?.learningText : id));
+}
+
+export function ordersEquivalent(candidate, accepted, tileById) {
+  if (!Array.isArray(candidate) || !Array.isArray(accepted) || candidate.length !== accepted.length
+    || new Set(candidate).size !== candidate.length || candidate.some((id) => !accepted.includes(id))) return false;
+  return surfaceKey(candidate, tileById) === surfaceKey(accepted, tileById);
 }
 
 function orderKey(order) {
@@ -58,41 +53,41 @@ function shuffled(values, random) {
   return result;
 }
 
-function isAccepted(order, acceptedSet) {
-  return acceptedSet.has(orderKey(order));
+function isAccepted(order, acceptedSet, tileById) {
+  return acceptedSet.has(surfaceKey(order, tileById));
 }
 
-export function createWrongShuffle(tileIds, acceptedOrders, { random = Math.random, maxAttempts = 64 } = {}) {
+export function createWrongShuffle(tileIds, acceptedOrders, { random = Math.random, maxAttempts = 64, tileById = null } = {}) {
   if (!Array.isArray(tileIds) || tileIds.length < 2) return null;
-  const accepted = new Set((Array.isArray(acceptedOrders) ? acceptedOrders : []).map(orderKey));
+  const accepted = new Set((Array.isArray(acceptedOrders) ? acceptedOrders : []).map((order) => surfaceKey(order, tileById)));
   for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
     const candidate = shuffled(tileIds, random);
-    if (!isAccepted(candidate, accepted)) return candidate;
+    if (!isAccepted(candidate, accepted, tileById)) return candidate;
   }
   // Deterministic fallbacks prevent the bank from occasionally starting in an
   // accepted order on tiny puzzles or under an unlucky random source.
   for (let shift = 1; shift < tileIds.length; shift += 1) {
     const candidate = tileIds.slice(shift).concat(tileIds.slice(0, shift));
-    if (!isAccepted(candidate, accepted)) return candidate;
+    if (!isAccepted(candidate, accepted, tileById)) return candidate;
   }
   const reversed = tileIds.slice().reverse();
-  if (!isAccepted(reversed, accepted)) return reversed;
+  if (!isAccepted(reversed, accepted, tileById)) return reversed;
   for (let left = 0; left < tileIds.length; left += 1) {
     for (let right = left + 1; right < tileIds.length; right += 1) {
       const candidate = tileIds.slice();
       [candidate[left], candidate[right]] = [candidate[right], candidate[left]];
-      if (!isAccepted(candidate, accepted)) return candidate;
+      if (!isAccepted(candidate, accepted, tileById)) return candidate;
     }
   }
   return null;
 }
 
 export function createPuzzleState(variant, options = {}) {
-  const tiles = Array.isArray(variant?.tiles) ? variant.tiles : [];
+  const tiles = Array.isArray(variant?.chunks) ? variant.chunks : [];
   const ids = tiles.map((tile) => tile?.id).filter((id) => typeof id === 'string' && id);
   if (ids.length !== tiles.length || ids.length < 2 || new Set(ids).size !== ids.length) return null;
   const acceptedOrders = Array.isArray(variant.acceptedOrders) ? variant.acceptedOrders : [];
-  const initialBank = createWrongShuffle(ids, acceptedOrders, options);
+  const initialBank = createWrongShuffle(ids, acceptedOrders, { ...options, tileById: new Map(tiles.map((tile) => [tile.id, tile])) });
   if (!initialBank) return null;
   return {
     tiles: tiles.slice(),
@@ -136,8 +131,7 @@ export function answerIsComplete(state) {
 
 export function answerIsCorrect(state) {
   if (!answerIsComplete(state)) return false;
-  const key = orderKey(state.answer);
-  return state.acceptedOrders.some((order) => orderKey(order) === key);
+  return state.acceptedOrders.some((order) => ordersEquivalent(state.answer, order, state.tileById));
 }
 
 export function recordWrongAttempt(state) {
@@ -157,6 +151,6 @@ export function restorePuzzle(state, bankOrder) {
     && new Set(bankOrder).size === state.tiles.length
     && bankOrder.every((id) => state.tileById.has(id))
     ? bankOrder.slice()
-    : createWrongShuffle(state.tiles.map((tile) => tile.id), state.acceptedOrders) ?? state.tiles.map((tile) => tile.id);
+    : createWrongShuffle(state.tiles.map((tile) => tile.id), state.acceptedOrders, { tileById: state.tileById }) ?? state.tiles.map((tile) => tile.id);
   return { ...state, bank: order, answer: [], status: 'playing' };
 }

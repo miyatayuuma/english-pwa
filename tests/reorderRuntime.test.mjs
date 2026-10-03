@@ -35,6 +35,6 @@ test('runtime no longer reads legacy item.chunks or emits word-count chunking', 
     read('sw.js'),
   ]);
   for (const source of [main, reorderGuide, version, worker]) {
-    assert.doesNotMatch(source, /\.chunks\b|chunks_json|wordsPerChunk|compactComposeChunks/);
+    assert.doesNotMatch(source, /item\.chunks\b|chunks_json|wordsPerChunk|compactComposeChunks/);
   }
 });

@@ -22,14 +22,15 @@ function buildItem({ id = 'T0001', sentences, itemText, sourceHashText = itemTex
   const entries = sentences.map((entry, sentenceIndex) => {
     if (entry.fixedContext) return {
       sentenceIndex,
-      text: entry.text,
+      sourceText: entry.text,
       fixedContext: true,
       fixedContextReason: entry.fixedContextReason ?? 'one-word-fragment',
-      variants: {},
+      partition: {},
     };
     const tiles = entry.tiles.map((text, tileIndex) => ({
       id: `s${sentenceIndex}-t${tileIndex}`,
-      text,
+      sourceText: text,
+      learningText: text.replace(/[.!?]/g, ''),
       tokenStart: tileIndex,
       tokenEnd: tileIndex + 1,
       charStart: tileIndex,
@@ -41,8 +42,7 @@ function buildItem({ id = 'T0001', sentences, itemText, sourceHashText = itemTex
     }));
     const canonicalOrder = tiles.map((tile) => tile.id);
     const variant = {
-      tier: entry.tier ?? 'foundation',
-      tiles,
+      chunks: tiles,
       canonicalOrder,
       acceptedOrders: [canonicalOrder],
       clauseScaffold: tiles.map(() => '語句'),
@@ -50,9 +50,9 @@ function buildItem({ id = 'T0001', sentences, itemText, sourceHashText = itemTex
     };
     return {
       sentenceIndex,
-      text: entry.text,
+      sourceText: entry.text,
       fixedContext: false,
-      variants: { [variant.tier]: variant },
+      partition: variant,
     };
   });
   return {
@@ -77,7 +77,7 @@ async function newPage(viewport = { width: 390, height: 844 }) {
 }
 
 async function boot(page, fixture, level = 0) {
-  currentMetadata = { schemaVersion: 1, items: [fixture.metadataItem] };
+  currentMetadata = { schemaVersion: 2, items: [fixture.metadataItem] };
   const consoleMessages = [];
   page.on('console', (message) => consoleMessages.push(`${message.type()}: ${message.text()}`));
   const result = await page.evaluate(({ item, level }) => window.bootReorder(item, level), { item: fixture.item, level });
@@ -141,7 +141,7 @@ before(async () => {
     const url = new URL(request.url ?? '/', baseUrl ?? 'http://127.0.0.1');
     if (url.pathname === '/data/reorder-v1.json') {
       response.writeHead(200, { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' });
-      response.end(JSON.stringify(currentMetadata ?? { schemaVersion: 1, items: [] }));
+      response.end(JSON.stringify(currentMetadata ?? { schemaVersion: 2, items: [] }));
       return;
     }
     const relative = url.pathname === '/' ? 'index.html' : decodeURIComponent(url.pathname.slice(1));
@@ -165,6 +165,7 @@ before(async () => {
   try {
     browser = await chromium.launch({ headless: true });
   } catch (error) {
+    if (process.env.REORDER_REQUIRE_BROWSER) throw error;
     browserError = String(error?.message ?? error).split('\n')[0];
   }
 });
@@ -174,8 +175,8 @@ after(async () => {
   await new Promise((resolve) => server?.close(resolve));
 });
 
-browserTest('390×844 supports three, seven, and nine tile sentence units without horizontal overflow', async () => {
-  for (const count of [3, 7, 9]) {
+browserTest('390×844 supports three, seven, nine, and thirteen tile sentence units without horizontal overflow', async () => {
+  for (const count of [3, 7, 9, 13]) {
     const { context, page } = await newPage();
     const phrases = Array.from({ length: count }, (_, index) => `phrase-${index + 1}`);
     phrases[0] = 'The exceptionally long noun phrase that must wrap inside the narrow mobile screen';
@@ -343,7 +344,7 @@ browserTest('pointer drag moves a tile between zones and between answer position
 browserTest('schema or source-hash mismatch disables reordering without a word-count fallback', async () => {
   const { context, page } = await newPage();
   const fixture = basicFixture(3);
-  currentMetadata = { schemaVersion: 2, items: [fixture.metadataItem] };
+  currentMetadata = { schemaVersion: 99, items: [fixture.metadataItem] };
   await page.evaluate(({ item }) => window.bootReorder(item), { item: fixture.item });
   let state = await page.evaluate(() => window.getReorderState());
   assert.equal(state.active, false);
@@ -351,7 +352,7 @@ browserTest('schema or source-hash mismatch disables reordering without a word-c
   await closePage({ context });
 
   const next = await newPage();
-  currentMetadata = { schemaVersion: 1, items: [{ ...fixture.metadataItem, sourceHash: 'stale' }] };
+  currentMetadata = { schemaVersion: 2, items: [{ ...fixture.metadataItem, sourceHash: 'stale' }] };
   await next.page.evaluate(({ item }) => window.bootReorder(item), { item: fixture.item });
   state = await next.page.evaluate(() => window.getReorderState());
   assert.equal(state.active, false);
@@ -362,7 +363,7 @@ browserTest('schema or source-hash mismatch disables reordering without a word-c
 browserTest('the current PWA worker clears old caches and serves reorder metadata offline', async () => {
   const { context, page } = await newPage();
   const fixture = basicFixture(3);
-  currentMetadata = { schemaVersion: 1, items: [fixture.metadataItem] };
+  currentMetadata = { schemaVersion: 2, items: [fixture.metadataItem] };
   await page.evaluate(async () => {
     await caches.open('v5.54');
     await navigator.serviceWorker.register('/sw.js');
@@ -375,7 +376,7 @@ browserTest('the current PWA worker clears old caches and serves reorder metadat
     }
   });
   const online = await page.evaluate(async () => (await fetch('/data/reorder-v1.json')).json());
-  assert.equal(online.schemaVersion, 1);
+  assert.equal(online.schemaVersion, 2);
   assert.equal(await page.evaluate(() => caches.keys().then((keys) => keys.includes('v5.54'))), false);
   await context.setOffline(true);
   const offline = await page.evaluate(async () => (await fetch('/data/reorder-v1.json')).json());
@@ -383,4 +384,54 @@ browserTest('the current PWA worker clears old caches and serves reorder metadat
   const cachedModule = await page.evaluate(async () => (await fetch('/scripts/app/reorderGuide.js')).text());
   assert.match(cachedModule, /createReorderGuide/);
   await closePage({ context });
+});
+
+browserTest('punctuation-free case-preserved duplicate tiles grade swapped IDs and reject distinct wrong order', async () => {
+  for (const retry of [false, true]) {
+    const { context, page } = await newPage();
+    const text='Yes? Other Yes!';
+    const fixture=buildItem({id:'DUPLICATE_SURFACE',itemText:text,sentences:[{text,tiles:['Yes?','Other','Yes!']}]});
+    await boot(page,fixture,4);
+    assert.equal(await page.locator('.compose-token').filter({hasText:/^Yes$/}).count(),2);
+    assert.equal(await page.locator('.compose-token').filter({hasText:/[?!]/}).count(),0);
+    if (retry) {
+      for (const id of ['s0-t0','s0-t2','s0-t1']) await tapTile(page,id);
+      await page.locator('[data-action="check"]').click();
+      assert.match(await page.locator('#composeFeedback').innerText(),/もう一度/);
+      await page.locator('[data-action="reset"]').click();
+    }
+    for (const id of ['s0-t2','s0-t1','s0-t0']) await tapTile(page,id);
+    await page.locator('[data-action="check"]').click();
+    await page.waitForSelector('[data-action="advance"]');
+    assert.match(await page.locator('#composeFeedback').innerText(),/正解/);
+    await page.locator('[data-action="advance"]').click();
+    await page.waitForFunction(()=>document.querySelector('#completion').textContent.length>0);
+    assert.equal(await page.locator('#completion').innerText(),retry?'RETRY_PASS':'FIRST_TRY');
+    await closePage({context});
+  }
+});
+
+browserTest('actual generated 13-tile corpus item renders and completes with the same partition at every playable level', async () => {
+  const sourceItems=JSON.parse(await fs.readFile(path.join(ROOT,'data/items.json'),'utf8'));
+  const authority=JSON.parse(await fs.readFile(path.join(ROOT,'data/reorder-v1.json'),'utf8'));
+  const record=authority.items.find(i=>i.sentences.some(s=>s.partition.chunks.length===13));
+  const item={...sourceItems.find(i=>i.id===record.itemId),taskType:'compose'};
+  for (const level of [0,4]) {
+    const {context,page}=await newPage();
+    await boot(page,{item,metadataItem:record},level);
+    for (const row of record.sentences) {
+      if (row.fixedContext) { await page.locator('[data-action="advance"]').click();continue; }
+      await page.waitForSelector(`[data-zone="bank"][data-tile-id="${row.partition.chunks[0].id}"]`);
+      assert.equal(await page.locator('.compose-token').count(),row.partition.chunks.length);
+      for (const chunk of row.partition.chunks) {
+        assert.equal(await page.locator(`[data-tile-id="${chunk.id}"]`).innerText(),chunk.learningText);
+        await tapTile(page,chunk.id);
+      }
+      await page.locator('[data-action="check"]').click();
+      await page.waitForSelector('[data-action="advance"]');
+      await page.locator('[data-action="advance"]').click();
+    }
+    await page.waitForFunction(()=>document.querySelector('#completion').textContent==='FIRST_TRY');
+    await closePage({context});
+  }
 });

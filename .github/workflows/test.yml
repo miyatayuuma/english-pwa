@@ -55,6 +55,8 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Run unit and pointer-browser tests
         run: node --experimental-default-type=module --test tests/*.test.mjs
+        env:
+          REORDER_REQUIRE_BROWSER: '1'
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
