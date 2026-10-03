@@ -3194,7 +3194,7 @@
       "after": {
         "canonical": "persist in doing something",
         "sense_key": "continue_despite_resistance",
-        "meaning_ja": "しつこくsomethingし続ける"
+        "meaning_ja": "somethingし続ける"
       },
       "reason": "Learning-surface refinement: preserve the semantic sense while making the spoken TARGET minimal, natural, and fully recoverable from the Japanese prompt. Variable arguments use spoken someone/something placeholders mirrored literally in meaning_ja; arbitrary filler content is avoided.",
       "confidence": "high",
@@ -3623,7 +3623,7 @@
       "after": {
         "canonical": "be reluctant to do something",
         "sense_key": "not_want_to_do",
-        "meaning_ja": "somethingするのを嫌がる"
+        "meaning_ja": "somethingするのに気が進まない"
       },
       "reason": "Learning-surface refinement: preserve the semantic sense while making the spoken TARGET minimal, natural, and fully recoverable from the Japanese prompt. Variable arguments use spoken someone/something placeholders mirrored literally in meaning_ja; arbitrary filler content is avoided.",
       "confidence": "high",
@@ -8733,6 +8733,34 @@
           "canonical": "refrain from something",
           "before": "somethingするのを控える",
           "after": "somethingを控える"
+        }
+      ]
+    },
+    "batch_04": {
+      "status": "APPLIED",
+      "baseline_main": "42c082f0b4ee5b37de81dc091435f94f47fbada5",
+      "reviewed": 60,
+      "kept": 58,
+      "modified": 2,
+      "scope_note": "Indices 180-239 of learning_surface_refinement.changed_ids.",
+      "criteria": [
+        "Keep the reusable canonical unless the English structure is actually deficient.",
+        "Prefer a neutral representative Japanese sense over source-specific emotional coloring.",
+        "Keep spoken placeholders explicit and aligned with meaning_ja.",
+        "Do not narrow or broaden the fixed sense_key."
+      ],
+      "applied": [
+        {
+          "id": "vocab:00474",
+          "canonical": "persist in doing something",
+          "before": "しつこくsomethingし続ける",
+          "after": "somethingし続ける"
+        },
+        {
+          "id": "vocab:00531",
+          "canonical": "be reluctant to do something",
+          "before": "somethingするのを嫌がる",
+          "after": "somethingするのに気が進まない"
         }
       ]
     }

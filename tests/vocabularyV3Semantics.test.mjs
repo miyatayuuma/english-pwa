@@ -114,3 +114,10 @@ test('learning-surface human review batch 03 keeps prompts aligned with reusable
   assert.equal(byId.get('vocab:00353')?.meaning_ja,'somethingをきちんと処理する');
   assert.equal(byId.get('vocab:00402')?.meaning_ja,'somethingを控える');
 });
+
+
+test('learning-surface human review batch 04 removes source-specific emotional overstatement',()=>{
+  const byId=new Map(db.entries.map(value=>[value.id,value]));
+  assert.equal(byId.get('vocab:00474')?.meaning_ja,'somethingし続ける');
+  assert.equal(byId.get('vocab:00531')?.meaning_ja,'somethingするのに気が進まない');
+});
