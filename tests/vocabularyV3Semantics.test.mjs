@@ -64,9 +64,9 @@ test('representative canonical answer surfaces are speakable and do not expose m
 });
 
 test('refined vocabulary surfaces exclude over-abstracted possessive, alternative, and incomplete construction targets',()=>{
-  assert.deepEqual(db.entries.filter(value=>/\\bone's\\b|\\boneself\\b/i.test(String(value.canonical||''))).map(value=>value.id),[]);
-  assert.deepEqual(db.entries.filter(value=>/\\bsomeone or something\\b|\\bsomething or someone\\b/i.test(String(value.canonical||''))).map(value=>value.id),[]);
-  assert.deepEqual(db.entries.filter(value=>value.kind==='construction'&&/\\b(?:that|if|before|to)\\s*$/i.test(String(value.canonical||''))).map(value=>value.id),[]);
+  assert.deepEqual(db.entries.filter(value=>/\bone's\b|\boneself\b/i.test(String(value.canonical||''))).map(value=>value.id),[]);
+  assert.deepEqual(db.entries.filter(value=>/\bsomeone or something\b|\bsomething or someone\b/i.test(String(value.canonical||''))).map(value=>value.id),[]);
+  assert.deepEqual(db.entries.filter(value=>value.kind==='construction'&&/\b(?:that|if|before|to)\s*$/i.test(String(value.canonical||''))).map(value=>value.id),[]);
 });
 
 
@@ -76,9 +76,9 @@ test('spoken placeholder targets are mirrored literally in the Japanese prompt',
     if(value.kind==='word'||lexicalSomething.has(value.id)) continue;
     const canonical=String(value.canonical||'');
     const prompt=String(value.meaning_ja||'');
-    if(/\\bsomeone\\b/i.test(canonical)) assert.match(prompt,/someone/i,\`${value.id} exposes someone in meaning_ja\`);
-    if(/\\bsomething\\b/i.test(canonical)) assert.match(prompt,/something/i,\`${value.id} exposes something in meaning_ja\`);
-    if(/\\bsomething else\\b/i.test(canonical)) assert.match(prompt,/something else/i,\`${value.id} exposes something else in meaning_ja\`);
+    if(/\bsomeone\b/i.test(canonical)) assert.match(prompt,/someone/i,`${value.id} exposes someone in meaning_ja`);
+    if(/\bsomething\b/i.test(canonical)) assert.match(prompt,/something/i,`${value.id} exposes something in meaning_ja`);
+    if(/\bsomething else\b/i.test(canonical)) assert.match(prompt,/something else/i,`${value.id} exposes something else in meaning_ja`);
   }
   const fixtures=[
     ['vocab:00040','remind someone of something','someoneにsomethingを思い出させる'],
