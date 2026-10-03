@@ -105,3 +105,12 @@ test('learning-surface human review batch 02 keeps placeholder prompts natural a
   assert.equal(byId.get('vocab:00162')?.meaning_ja,'somethingはこの辺までにする');
   assert.equal(byId.get('vocab:00244')?.meaning_ja,'someoneにsomethingがおかしいという考えがふと浮かぶ');
 });
+
+
+test('learning-surface human review batch 03 keeps prompts aligned with reusable expression senses',()=>{
+  const byId=new Map(db.entries.map(value=>[value.id,value]));
+  assert.equal(byId.get('vocab:00328')?.meaning_ja,'somethingはsomething elseと関係がある');
+  assert.equal(byId.get('vocab:00349')?.meaning_ja,'someoneをデートに連れて行く');
+  assert.equal(byId.get('vocab:00353')?.meaning_ja,'somethingをきちんと処理する');
+  assert.equal(byId.get('vocab:00402')?.meaning_ja,'somethingを控える');
+});
