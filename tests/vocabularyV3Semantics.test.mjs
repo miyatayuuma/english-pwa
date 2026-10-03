@@ -91,3 +91,11 @@ test('spoken placeholder targets are mirrored literally in the Japanese prompt',
     assert.equal(value?.meaning_ja,meaning);
   }
 });
+
+test('learning-surface human review batch 01 pins corrected reusable targets',()=>{
+  const byId=new Map(db.entries.map(value=>[value.id,value]));
+  assert.equal(byId.get('vocab:00151')?.canonical,'tell someone and someone else apart');
+  assert.equal(byId.get('vocab:00151')?.meaning_ja,'someoneとsomeone elseを見分ける');
+  assert.equal(byId.get('vocab:00047')?.meaning_ja,'someoneにsomethingするよう懇願する');
+  assert.equal(byId.get('vocab:00119')?.meaning_ja,'someoneがsomethingすると期待する');
+});
