@@ -59,7 +59,7 @@ public class NativeShellGateTest {
                 assertTrue(container.getPaddingTop()>=bars.top);
                 assertTrue(container.getPaddingBottom()>=bars.bottom);
             });
-            eval(scenario, "window.__media=null; import('/scripts/native/media.js').then(m=>m.getNativeMedia()).then(async p=>window.__media={status:await p.status(),voices:await p.voices()}); true");
+            eval(scenario, "window.__media=null; import('https://localhost/scripts/native/media.js').then(m=>m.getNativeMedia()).then(async p=>window.__media={status:await p.status(),voices:await p.voices()}); true");
             awaitTrue(scenario, "typeof window.__media?.status?.selected === 'boolean' && Array.isArray(window.__media?.voices?.voices)");
 
             awaitTrue(scenario, "document.querySelector('#loadingOverlay')?.classList.contains('hidden') === true");
