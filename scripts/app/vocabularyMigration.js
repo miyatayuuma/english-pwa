@@ -38,3 +38,23 @@ export function migrateVocabularyProgress({
   }catch(_){return {executed:false,mapped:0,skippedExisting};}
   return {executed:true,mapped,skippedExisting};
 }
+
+// Admission merges have an independent marker: existing v2 migrations must not
+// prevent these two later transfers. Preserve retired state and target priority.
+export const FINAL_ADMISSION_MIGRATION_MARKER='vocabularyFinalAdmissionMergesCompletedV1';
+export function migrateFinalAdmissionProgress({storage=globalThis.localStorage,migration,stateKey=LEVEL_STATE_KEY,markerKey=FINAL_ADMISSION_MIGRATION_MARKER}={}){
+ if(!storage)return {executed:false,mapped:0,skippedExisting:0};
+ try{
+  if(storage.getItem(markerKey)==='done')return {executed:false,mapped:0,skippedExisting:0};
+  const state=parseObject(storage.getItem(stateKey));let mapped=0,skippedExisting=0;
+  for(const row of migration?.final_admission_merges||[]){
+   if(!/^vocab:\d{5}$/.test(row.from_id)||!/^vocab:\d{5}$/.test(row.into_id)||row.from_id===row.into_id)continue;
+   if(Object.prototype.hasOwnProperty.call(state,row.into_id)){skippedExisting++;continue;}
+   const old=state[row.from_id];
+   if(!old||typeof old!=='object'||Array.isArray(old)||!hasProgress(old))continue;
+   state[row.into_id]={...old};mapped++;
+  }
+  if(mapped)storage.setItem(stateKey,JSON.stringify(state));
+  storage.setItem(markerKey,'done');return {executed:true,mapped,skippedExisting};
+ }catch(_){return {executed:false,mapped:0,skippedExisting:0};}
+}

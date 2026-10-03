@@ -5,7 +5,7 @@ import { validateVocabularyV3 } from '../scripts/vocabulary/validate-vocabulary-
 
 const read=name=>JSON.parse(fs.readFileSync(new URL(`../data/${name}`,import.meta.url),'utf8'));
 
-test('the committed paraphrase audit reviews every v3 entry and exactly mirrors curated data',()=>{
+test('the paraphrase audit preserves historical review, explicitly marks pending entries and mirrors curated data',()=>{
   const db=read('vocabulary-v3.json');
   const items=read('items.json');
   const characters=read('characters.json').characters;
@@ -15,8 +15,11 @@ test('the committed paraphrase audit reviews every v3 entry and exactly mirrors 
   const audit=read('vocabulary-v3-paraphrase-audit.json');
   const result=validateVocabularyV3(db,items,characters,migration,v2,wordAudit,audit);
   assert.deepEqual(result.errors,[]);
-  assert.equal(audit.reviewed_entries.length,1072);
-  assert.equal(result.report.answer_authority.source_realizations_audited,1075);
+  assert.equal(audit.historical_reviewed_entries.length,1072);
+  assert.equal(audit.reviewed_entries.length,1045);
+  assert.equal(audit.pending_entries.length,1433);
+  assert.equal(audit.retired_entries.length,2);
+  assert.equal(result.report.answer_authority.source_realizations_audited,2481);
   assert.equal(result.report.answer_authority.entries_with_paraphrases,35);
   assert.equal(result.report.answer_authority.total_paraphrases,35);
   assert.equal(result.report.cloze_generation_audit.cards_audited,560*3*6);

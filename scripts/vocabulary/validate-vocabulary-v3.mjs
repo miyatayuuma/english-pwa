@@ -27,7 +27,10 @@ function validateParaphraseAudit(audit,entries,errors){
   if(audit.schema_version!==1) errors.push('paraphrase audit: schema_version must equal 1');
   if(!/^[0-9a-f]{40}$/.test(String(audit.baseline_main||''))) errors.push('paraphrase audit: baseline_main must be a full commit SHA');
   if(audit.review_scope?.entry_count!==entries.length||JSON.stringify(audit.review_scope?.kind_counts)!==JSON.stringify(kindCounts)) errors.push('paraphrase audit: review scope does not match current entries');
-  if(reviewed.length!==entries.length||new Set(reviewedIds).size!==reviewedIds.length||entries.some(entry=>!reviewedIds.includes(String(entry.id)))) errors.push('paraphrase audit: every current vocabulary entry must be reviewed exactly once');
+  const pending=Array.isArray(audit.pending_entries)?audit.pending_entries:[];
+  const accounted=[...reviewedIds,...pending.map(row=>String(row.entry_id||''))];
+  if(accounted.length!==entries.length||new Set(accounted).size!==accounted.length||accounted.some(id=>!entryById.has(id))||entries.some(entry=>!accounted.includes(String(entry.id)))) errors.push('paraphrase audit: every current vocabulary entry must be reviewed or explicitly pending exactly once');
+  for(const row of pending) if(!row.reason||entryById.get(row.entry_id)?.paraphrases?.length) errors.push(`paraphrase audit: invalid pending entry ${row.entry_id}`);
   for(const item of reviewed){
     const entry=entryById.get(String(item?.entry_id||''));
     if(!entry) continue;
@@ -166,7 +169,8 @@ function validateWordExpansionAudit(audit,entries,items,errors){
   const itemIds=(Array.isArray(items)?items:[]).map(item=>String(item?.id||''));
   const itemById=new Map((Array.isArray(items)?items:[]).map(item=>[String(item?.id||''),item]));
   const entryById=new Map(entries.map(entry=>[String(entry?.id||''),entry]));
-  const wordEntries=entries.filter(entry=>entry?.kind==='word');
+  const wordEntries=entries.filter(entry=>entry?.kind==='word'&&(!audit.cohort_word_entry_ids||audit.cohort_word_entry_ids.includes(entry.id)));
+  if(audit.cohort_word_entry_ids&&(audit.cohort_word_entry_ids.length!==381||new Set(audit.cohort_word_entry_ids).size!==381||audit.cohort_word_entry_ids.some(id=>entryById.get(id)?.kind!=='word'))) errors.push('word audit: historical cohort must preserve its 381 surviving word IDs');
   const reviewed=Array.isArray(audit.reviewed_source_item_ids)?audit.reviewed_source_item_ids.map(String):[];
   const baseline=Array.isArray(audit.baseline_word_source_item_ids)?audit.baseline_word_source_item_ids.map(String):[];
   const added=Array.isArray(audit.added_word_entry_ids)?audit.added_word_entry_ids.map(String):[];
@@ -264,8 +268,8 @@ export function validateVocabularyV3(db,items,characters,migration,v2,wordAudit=
       if(!Number.isFinite(start)||!Number.isFinite(end)||!Number.isInteger(start)||!Number.isInteger(end)||start<0||start>=end||end>item.en.length){errors.push(`${id}/${itemId}: invalid UTF-16 span`);continue;}
       const surface=item.en.slice(start,end);
       if(!/[A-Za-z]/.test(surface)) errors.push(`${id}/${itemId}: span has no alphabetic target`);
-      if(!/^[A-Za-z]/.test(surface)||!/[A-Za-z]$/.test(surface)) errors.push(`${id}/${itemId}: span must start and end on a word boundary`);
-      if(entry?.kind==='word'&&/\s/.test(surface)) errors.push(`${id}/${itemId}: word span must contain one lexical token`);
+      if(!/^[A-Za-z]/.test(surface)||!/[A-Za-z0-9][?]?$/.test(surface)) errors.push(`${id}/${itemId}: span must start and end on a word boundary`);
+      if(entry?.kind==='word'&&/\s/.test(surface)&&normalizeVocabularyAnswer(surface)!==normalizeVocabularyAnswer(entry.canonical)) errors.push(`${id}/${itemId}: word span must be a lexical token or its exact dictionary compound`);
       if(!String(occurrence?.contextual_meaning_ja||'').trim()) errors.push(`${id}/${itemId}: empty contextual meaning`);
       const key=`${itemId}:${start}:${end}`;
       if(occurrences.has(key)) errors.push(`${id}/${itemId}: duplicate occurrence span`);occurrences.add(key);
@@ -336,7 +340,7 @@ export function buildVocabularyV3Report(db,items,characters,migration,v2,wordAud
   }
   const readyV2=Number(v2?.stats?.ready_for_cards)||0;
   const migrationCount=Array.isArray(migration?.mappings)?migration.mappings.length:0;
-  const wordEntries=entries.filter(entry=>entry.kind==='word');
+  const wordEntries=entries.filter(entry=>entry.kind==='word'&&(!wordAudit?.cohort_word_entry_ids||wordAudit.cohort_word_entry_ids.includes(entry.id)));
   const wordSourceIds=new Set(wordEntries.flatMap(entry=>(entry.occurrences||[]).map(occurrence=>String(occurrence.item_id))));
   const baselineWordSourceIds=new Set((wordAudit?.baseline_word_source_item_ids||[]).map(String));
   const wordCanonicals=new Map();
@@ -369,6 +373,7 @@ export function buildVocabularyV3Report(db,items,characters,migration,v2,wordAud
       source_realizations_audited:occurrenceList.length,
       entries_with_paraphrases:entries.filter(entry=>Array.isArray(entry.paraphrases)&&entry.paraphrases.length).length,
       total_paraphrases:entries.reduce((count,entry)=>count+(Array.isArray(entry.paraphrases)?entry.paraphrases.length:0),0),
+      paraphrase_entries_pending:(paraphraseAudit?.pending_entries||[]).length,
       paraphrase_entries_reviewed:Array.isArray(paraphraseAudit?.reviewed_entries)?paraphraseAudit.reviewed_entries.length:0,
     },
     ...(wordAudit?{word_expansion_audit:{

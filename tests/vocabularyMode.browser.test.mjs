@@ -24,13 +24,15 @@ const sources=[
 const fixtureFor=source=>vocabulary.entries.find(entry=>entry.kind===source.kind&&entry.canonical===source.canonical&&entry.occurrences.some(occurrence=>occurrence.item_id===source.itemId));
 const sourceSurface=(entry,itemId)=>{const occurrence=entry.occurrences.find(value=>String(value.item_id)===String(itemId));const item=itemById.get(String(itemId));return occurrence&&item?item.en.slice(occurrence.start,occurrence.end):''};
 
-async function newPage(source,{reducedMotion='reduce',entryState:entryStateOverride=null,speechSupported=true,startSession=true}={}){
+async function newPage(source,{reducedMotion='reduce',entryState:entryStateOverride=null,speechSupported=true,startSession=true,fullDataset=false}={}){
   const context=await browser.newContext({viewport:{width:390,height:844},serviceWorkers:'block',reducedMotion});
   const entry=JSON.parse(JSON.stringify(fixtureFor(source)));
   assert.ok(entry,`fixture ${source.kind}/${source.canonical} exists`);
   const entryState=entryStateOverride||{last:0,best:0,noHintHistory:[],noHintStreak:0,level5Count:0,review:{nextDueAt:0,intervalMs:0},stability:0,difficulty:0};
-  await context.addInitScript(({entry,source,entryState,speechSupported})=>{
+  await context.addInitScript(({entry,source,entryState,speechSupported,fullDataset,items})=>{
     const initial={
+      // Encountered sources unlock Vocabulary without completing the unrelated friendship milestone.
+      ...(fullDataset?Object.fromEntries(items.map(item=>[item.id,{last:1,best:1,updatedAt:1700000000000}])):{}),
       [source.itemId]:{last:2,best:2,updatedAt:1700000000000},
       [entry.id]:entryState,
     };
@@ -41,7 +43,7 @@ async function newPage(source,{reducedMotion='reduce',entryState:entryStateOverr
     window.fetch=(input,init)=>{
       const raw=typeof input==='string'?input:input?.url||String(input||'');
       const url=new URL(raw,location.href);
-      if(url.pathname.endsWith('/data/vocabulary-v3.json')){
+      if(!fullDataset&&url.pathname.endsWith('/data/vocabulary-v3.json')){
         return Promise.resolve(new Response(JSON.stringify({schema_version:3,entries:[window.__vocabularyFixture__]}),{status:200,headers:{'content-type':'application/json'}}));
       }
       return nativeFetch(input,init);
@@ -94,7 +96,7 @@ async function newPage(source,{reducedMotion='reduce',entryState:entryStateOverr
       play(){window.__mockSpeech.audioPlayed.push(this.url);return Promise.resolve();}
       pause(){}
     };
-  },{entry,source,entryState,speechSupported});
+  },{entry,source,entryState,speechSupported,fullDataset,items});
   const page=await context.newPage();
   await page.route('**/*.m4a',route=>route.fulfill({status:200,body:'mock-audio'}));
   await page.goto(`${baseUrl}/index.html`);
@@ -634,4 +636,20 @@ browserTest('two consecutive technical failures then corrective TARGET exits ear
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);
     await page.waitForSelector('.vocab-meaning');assert.equal(await page.locator('.vocab-answer').count(),0);
   }finally{await closePage(opened);}
+});
+
+
+browserTest('full 2478-entry production dataset starts Vocabulary and selects each existing UI filter',async()=>{
+ const active=await newPage(sources[0],{fullDataset:true,startSession:false});
+ try{
+  assert.equal(await active.page.evaluate(async()=>{const db=await (await fetch('data/vocabulary-v3.json')).json();return db.entries.length;}),2478);
+  for(const label of ['単語','表現','すべて']){
+   await active.page.locator('.vocab-kind button').filter({hasText:label}).click();
+   assert.equal(await active.page.locator('.vocab-start').isEnabled(),true);
+  }
+  await active.page.locator('.vocab-start').click();await active.page.waitForSelector('.vocab-mic');
+  assert.ok((await active.page.locator('.vocab-meta').innerText()).length);
+  await active.page.locator('.vocab-reveal').click();assert.ok((await active.page.locator('.vocab-answer').innerText()).length);
+  assert.ok((await active.page.locator('.vocab-target').innerText()).length);
+ }finally{await closePage(active);}
 });

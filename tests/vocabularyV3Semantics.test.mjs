@@ -17,12 +17,12 @@ test('known wrong-sense regressions stay pinned to their source expressions and 
     ['be beside oneself','extremely_upset','E0010','beside himself',/取り乱/,/比較/],
     ['sound asleep','sleeping_deeply','E0523','sound asleep',/ぐっすり|熟睡/,/音/],
     ['twist your ankle','sprain_an_ankle','E0190','twisted his ankle',/捻挫/,/ツイスト/],
-    ['assume that','take_as_true','E0227','assume that',/考える|仮定/,/自分のもの|奪い/],
+    ['assume','take_as_true','E0227','assume',/考える|仮定/,/自分のもの|奪い/],
     ['job interview','employment_interview','E0366','job interview',/就職面接/,/面会/],
     ['turn someone down','reject_a_person_or_offer','E0178','turned me down',/断る/,/弱める/],
-    ['put your gloves on','put_on_gloves','E0189','put my gloves on',/手袋をはめる/,/飢え/],
+    ['put something on','put_on_clothing','E0189','put my gloves on',/手袋をはめる/,/飢え/],
     ['be starved','very_hungry','E0560','starved',/お腹.*ぺこぺこ/,/飢えさせる/],
-    ['so childish that','so_adjective_that_result','E0371','so childish that',/子供っぽい/,/目的/],
+    ['so + adjective or adverb + that something','so_degree_that_result','E0371','so childish that',/子供っぽい/,/目的/],
     ['come out','be_published','E0012','come out',/刊行|発売/,/結果が出る/],
   ];
   for(const [canonical,sense,itemId,expectedSurface,meaning,forbidden] of fixtures){

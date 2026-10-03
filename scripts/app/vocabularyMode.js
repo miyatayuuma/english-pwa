@@ -14,7 +14,7 @@ import {
   readyVocabularyEntries,
   vocabularyStats,
 } from './vocabularyLearningCore.js';
-import { migrateVocabularyProgress } from './vocabularyMigration.js';
+import { migrateVocabularyProgress, migrateFinalAdmissionProgress } from './vocabularyMigration.js';
 import { extractQuotedTurns, quotedTurnContainingSpan } from '../tagging/quotedTurns.js';
 import { resolveSharedAudioUrl } from '../audio/resolver.js';
 
@@ -141,6 +141,7 @@ async function loadVocabulary(){
       load('./data/vocabulary-v2-v3-migration.json'),
     ]);
     migrateVocabularyProgress({migration});
+    migrateFinalAdmissionProgress({migration});
     levels.refreshLevelState();
     state.characters=Array.isArray(characters)?characters:(Array.isArray(characters?.characters)?characters.characters:[]);
     return readyVocabularyEntries(joinVocabularyData(vocabulary,items,state.characters));
