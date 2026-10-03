@@ -31,7 +31,8 @@ async function newPage(source,{reducedMotion='reduce',entryState:entryStateOverr
   const entryState=entryStateOverride||{last:0,best:0,noHintHistory:[],noHintStreak:0,level5Count:0,review:{nextDueAt:0,intervalMs:0},stability:0,difficulty:0};
   await context.addInitScript(({entry,source,entryState,speechSupported,fullDataset,items})=>{
     const initial={
-      ...(fullDataset?Object.fromEntries(items.map(item=>[item.id,{last:2,best:2,updatedAt:1700000000000}])):{}),
+      // Encountered sources unlock Vocabulary without completing the unrelated friendship milestone.
+      ...(fullDataset?Object.fromEntries(items.map(item=>[item.id,{last:1,best:1,updatedAt:1700000000000}])):{}),
       [source.itemId]:{last:2,best:2,updatedAt:1700000000000},
       [entry.id]:entryState,
     };
