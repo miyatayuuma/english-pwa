@@ -1140,7 +1140,7 @@
       "after": {
         "canonical": "so much for something",
         "sense_key": "end_or_dismiss_topic",
-        "meaning_ja": "somethingはこの辺にしておく"
+        "meaning_ja": "somethingはこの辺までにする"
       },
       "reason": "Learning-surface refinement: preserve the semantic sense while making the spoken TARGET minimal, natural, and fully recoverable from the Japanese prompt. Variable arguments use spoken someone/something placeholders mirrored literally in meaning_ja; arbitrary filler content is avoided.",
       "confidence": "high",
@@ -1673,7 +1673,7 @@
       "after": {
         "canonical": "it occurs to someone that something is wrong",
         "sense_key": "idea_comes_to_mind",
-        "meaning_ja": "someoneがsomethingがおかしいとふと思う"
+        "meaning_ja": "someoneにsomethingがおかしいという考えがふと浮かぶ"
       },
       "reason": "Learning-surface refinement: preserve the semantic sense while making the spoken TARGET minimal, natural, and fully recoverable from the Japanese prompt. Variable arguments use spoken someone/something placeholders mirrored literally in meaning_ja; arbitrary filler content is avoided.",
       "confidence": "high",
@@ -8540,8 +8540,8 @@
     "batch_01": {
       "status": "APPLIED",
       "baseline_main": "1f06a14f14a8a9d954cc53f4a225773b818ff666",
-      "reviewed": 60,
-      "kept": 49,
+      "reviewed": 61,
+      "kept": 50,
       "modified": 11,
       "criteria": [
         "Natural Japanese prompt while preserving literal placeholder visibility required by the spoken target.",
@@ -8670,6 +8670,29 @@
             "canonical": "tell someone and someone else apart",
             "meaning_ja": "someoneとsomeone elseを見分ける"
           }
+        }
+      ],
+      "boundary_note": "vocab:00151 (index 60) was pulled forward from batch 02 because its canonical had a structural defect; counts corrected post-merge."
+    },
+    "batch_02": {
+      "status": "APPLIED",
+      "baseline_main": "ac2316231423c3780a6b687b3b2c237fd87fdcc8",
+      "reviewed": 59,
+      "kept": 57,
+      "modified": 2,
+      "scope_note": "Indices 61-119 of learning_surface_refinement.changed_ids; index 60 was already reviewed and fixed in batch 01.",
+      "applied": [
+        {
+          "id": "vocab:00162",
+          "canonical": "so much for something",
+          "before": "somethingはこの辺にしておく",
+          "after": "somethingはこの辺までにする"
+        },
+        {
+          "id": "vocab:00244",
+          "canonical": "it occurs to someone that something is wrong",
+          "before": "someoneがsomethingがおかしいとふと思う",
+          "after": "someoneにsomethingがおかしいという考えがふと浮かぶ"
         }
       ]
     }
