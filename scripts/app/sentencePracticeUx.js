@@ -1,3 +1,5 @@
+import { isNativeAndroid } from '../native/runtimePlatform.js';
+import { nativeSynthesis, NativeUtterance } from '../native/media.js';
 const CONFIG_KEY='appConfigV3';
 
 const state={
@@ -74,7 +76,7 @@ function cancelTimers(){
 function mediaAlreadyPlaying(){
   const player=document.getElementById('player');
   if(player&&!player.paused&&!player.ended) return true;
-  try{ if(window.speechSynthesis?.speaking) return true; }catch(_){}
+  try{ if((isNativeAndroid()?nativeSynthesis():window.speechSynthesis)?.speaking) return true; }catch(_){}
   return false;
 }
 
@@ -83,18 +85,21 @@ function isUsEnglishVoice(voice){
 }
 
 function fallbackSpeak(text){
-  if(!text||typeof SpeechSynthesisUtterance==='undefined'||!window.speechSynthesis) return false;
+  if(!text) return false;
+  if(!isNativeAndroid()&&(typeof SpeechSynthesisUtterance==='undefined'||!window.speechSynthesis)) return false;
+  const synth=isNativeAndroid()?nativeSynthesis():window.speechSynthesis;
+  const Utterance=isNativeAndroid()?NativeUtterance:SpeechSynthesisUtterance;
   try{
-    window.speechSynthesis.cancel();
-    const utterance=new SpeechSynthesisUtterance(text);
+    synth.cancel();
+    const utterance=new Utterance(text);
     utterance.lang='en-US';
     const speed=Number(document.getElementById('speedSlider')?.value);
     utterance.rate=Number.isFinite(speed)?Math.max(.7,Math.min(1.25,speed)):.95;
-    const voices=window.speechSynthesis.getVoices?.()||[];
+    const voices=synth.getVoices?.()||[];
     utterance.voice=voices.find(isUsEnglishVoice)
       ||voices.find(voice=>/^en(?:-|_)/i.test(String(voice?.lang||'')))
       ||null;
-    window.speechSynthesis.speak(utterance);
+    synth.speak(utterance);
     return true;
   }catch(_){ return false; }
 }

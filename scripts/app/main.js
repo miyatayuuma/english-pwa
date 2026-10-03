@@ -1,4 +1,7 @@
+import { isNativeAndroid } from '../native/runtimePlatform.js';
+import { nativeDirectory } from '../native/media.js';
 import { buildRecognitionBiasContext } from '../speech/contextualBias.js';
+import { nativeSpeechDiagnostic } from '../native/androidSpeechBackend.js';
 import { createCorrectionProgress, recordCorrectionAttempt } from '../speech/correctionProgress.js';
 import { getActiveClozeRecognitionContext, clearActiveClozeRecognitionContext } from './clozeRecognitionContext.js';
 import {
@@ -2225,9 +2228,9 @@ function createAppRuntime(){
   // ===== IndexedDB for DirectoryHandle =====
   const DB='fs-handles', STORE='dir';
   function idb(){ return new Promise((res,rej)=>{ const r=indexedDB.open(DB,1); r.onupgradeneeded=()=>{ r.result.createObjectStore(STORE); }; r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }); }
-  async function saveDirHandle(h){ const db=await idb(); return new Promise((res,rej)=>{ const tx=db.transaction(STORE,'readwrite'); tx.objectStore(STORE).put(h,'audio'); tx.oncomplete=()=>res(); tx.onerror=()=>rej(tx.error); }); }
-  async function loadDirHandle(){ const db=await idb(); return new Promise((res,rej)=>{ const tx=db.transaction(STORE,'readonly'); const rq=tx.objectStore(STORE).get('audio'); rq.onsuccess=()=>res(rq.result||null); rq.onerror=()=>rej(rq.error); }); }
-  async function clearDirHandle(){ const db=await idb(); return new Promise((res,rej)=>{ const tx=db.transaction(STORE,'readwrite'); tx.objectStore(STORE).delete('audio'); tx.oncomplete=()=>res(); tx.onerror=()=>rej(tx.error); }); }
+  async function saveDirHandle(h){ if(isNativeAndroid()) return; const db=await idb(); return new Promise((res,rej)=>{ const tx=db.transaction(STORE,'readwrite'); tx.objectStore(STORE).put(h,'audio'); tx.oncomplete=()=>res(); tx.onerror=()=>rej(tx.error); }); }
+  async function loadDirHandle(){ if(isNativeAndroid()) return nativeDirectory('status'); const db=await idb(); return new Promise((res,rej)=>{ const tx=db.transaction(STORE,'readonly'); const rq=tx.objectStore(STORE).get('audio'); rq.onsuccess=()=>res(rq.result||null); rq.onerror=()=>rej(rq.error); }); }
+  async function clearDirHandle(){ if(isNativeAndroid()) return nativeDirectory('clear'); const db=await idb(); return new Promise((res,rej)=>{ const tx=db.transaction(STORE,'readwrite'); tx.objectStore(STORE).delete('audio'); tx.oncomplete=()=>res(); tx.onerror=()=>rej(tx.error); }); }
 
   let DIR=null; // FileSystemDirectoryHandle
   let dirNeedsGesture=false;
@@ -2628,9 +2631,10 @@ function createAppRuntime(){
   }
   if(el.btnPickDir){
     el.btnPickDir.addEventListener('click', async()=>{
-      if(!window.showDirectoryPicker){ toast('この端末はフォルダピッカー非対応'); return; }
+      if(!isNativeAndroid()&&!window.showDirectoryPicker){ toast('この端末はフォルダピッカー非対応'); return; }
       try{
-        const h=await showDirectoryPicker({mode:'read'});
+        const h=isNativeAndroid()?await nativeDirectory('pick'):await showDirectoryPicker({mode:'read'});
+        audioUrlResolver.clear();
         await saveDirHandle(h);
         DIR=h;
         dirNeedsGesture=false;
@@ -2646,6 +2650,7 @@ function createAppRuntime(){
   if(el.btnClearDir){
     el.btnClearDir.addEventListener('click', async()=>{
       await clearDirHandle();
+      audioUrlResolver.clear();
       DIR=null;
       dirNeedsGesture=false;
       dirPromptArmed=false;
@@ -2812,7 +2817,7 @@ function createAppRuntime(){
     cancelPendingMicStart();
     if(recognitionController && recognitionController.isActive()){
       try{
-        if(isShadowingSession()) recognitionController.stop();
+        if(isShadowingSession()) recognitionController.cancel();
         else await stopRec();
       }
       catch(_){ }
@@ -3161,7 +3166,7 @@ function createAppRuntime(){
       currentShouldUseSpeech=false;
       if(isShadowingSession()){
         cancelShadowingCycle({stopOutput:true});
-        if(recognitionController?.isActive?.()) recognitionController.stop();
+        if(recognitionController?.isActive?.()) recognitionController.cancel();
       }
       updatePlayButtonAvailability();
       const it=QUEUE[i];
@@ -3747,7 +3752,7 @@ function createAppRuntime(){
     if(correctiveItemId===QUEUE[idx]?.id){
       const expected=correctiveItemId;
       cancelPendingMicStart();
-      if(recognitionController?.isActive?.()) recognitionController.stop();
+      if(recognitionController?.isActive?.()) recognitionController.cancel();
       if(getAudioLockState()===AUDIO_LOCK_STATES.RELEASE) await new Promise(resolve=>setTimeout(resolve,MIC_RELEASE_SETTLE_MS+30));
       if(!sessionActive||QUEUE[idx]?.id!==expected) return;
     }
@@ -3781,7 +3786,7 @@ function createAppRuntime(){
         return refItem ? refItem.en : el.en.textContent;
       },
       shouldEvaluate:()=>!isShadowingSession(),
-      getRecognitionBiasContext:()=>buildRecognitionBiasContext({mode:isShadowingSession()?'shadowing':getStudyMode(),referenceText:QUEUE[idx]?.en,clozeContext:getActiveClozeRecognitionContext(QUEUE[idx]?.id),correction:correctiveItemId===QUEUE[idx]?.id}),
+      getRecognitionBiasContext:()=>buildRecognitionBiasContext({mode:isShadowingSession()?'shadowing':getStudyMode(),itemId:QUEUE[idx]?.id,clozeContext:getActiveClozeRecognitionContext(QUEUE[idx]?.id)}),
       onTranscriptPreview:text=>{if(!isShadowingSession()) showTranscriptFinal(text);},
       onTranscriptReset: resetTranscript,
       onTranscriptInterim: (text)=>{ if(!isShadowingSession()) showTranscriptInterim(text); },
@@ -3843,7 +3848,7 @@ function createAppRuntime(){
   function pauseShadowingAfterError(message){
     cancelShadowingCycle({stopOutput:true});
     shadowingPaused=true;
-    if(recognitionController?.isActive?.()) recognitionController.stop();
+    if(recognitionController?.isActive?.()) recognitionController.cancel();
     setFooterMessages(message||'連続シャドウイングを一時停止しました。','マイクを押すと現在の文から再開します。');
     el.mic.disabled=false;
   }
@@ -3887,7 +3892,7 @@ function createAppRuntime(){
     const exposure=buildShadowingExposure({itemId:cycle.itemId,startedAt:cycle.startedAt,finishedAt:now()});
     shadowCycleState=null;
     const transitionToken=++shadowCycleToken;
-    if(recognitionController?.isActive?.()) recognitionController.stop();
+    if(recognitionController?.isActive?.()) recognitionController.cancel();
     if(exposure.completed){
       recordShadowingExposure({cards:1,durationMs:exposure.durationMs});
       sendLog('shadowing',{
@@ -4016,10 +4021,17 @@ function createAppRuntime(){
     updateAttemptInfo();updatePlayButtonAvailability();
   }
 
+  let stopRecPending=false;
   async function stopRec(result){
     if(isComposeMode()) return;
     if(!recognitionController) return;
-    const outcome = result && result.ok ? result : recognitionController.stop();
+    if(!result&&stopRecPending) return;
+    const requestedItemId=QUEUE[idx]?.id;
+    let outcome;
+    if(!result) stopRecPending=true;
+    try { outcome = result && result.ok ? result : await recognitionController.stop(); }
+    finally { if(!result) stopRecPending=false; }
+    if(requestedItemId!==QUEUE[idx]?.id) return;
     if(!outcome || !outcome.ok) return;
     const it = QUEUE[idx];
     if(!it){
@@ -4049,6 +4061,7 @@ function createAppRuntime(){
     updateMatch(matchRate);
     if(correctiveItemId===it.id){
       // Practice after the recorded failure never mutates SRS/history/metrics.
+      nativeSpeechDiagnostic('grading',{mode:'correction',itemId:it.id,matchRate,evaluation:evaluateLevel(matchRate,maxHintStageUsed)});
       handleCorrectionAttempt({success:!!evaluateLevel(matchRate,maxHintStageUsed)?.pass});
       return;
     }
@@ -4060,6 +4073,7 @@ function createAppRuntime(){
     }
     const stageUsed = maxHintStageUsed;
     const evaluation = evaluateLevel(matchRate, stageUsed);
+    nativeSpeechDiagnostic('grading',{mode:studyMode,itemId:it.id,matchRate,evaluation});
     const updateTs = Date.now();
     const levelUpdate = updateLevelInfo(it.id, evaluation, {now:updateTs});
     const levelInfo = levelUpdate?.info;
@@ -4271,7 +4285,7 @@ function createAppRuntime(){
       if(active){
         cancelShadowingCycle({stopOutput:true});
         shadowingPaused=true;
-        recognitionController.stop();
+        recognitionController.cancel();
         setFooterMessages('連続シャドウイングを一時停止しました。','マイクを押すと現在の文から再開します。');
       }else if(getAudioLockState()===AUDIO_LOCK_STATES.PENDING){
         cancelPendingMicStart();
@@ -4355,3 +4369,11 @@ async function bootstrap() {
 bootstrap().catch((err) => {
   console.error('Bootstrap failed', err);
 });
+
+// The target page itself is a debug-only Android asset; never shown in release/PWA.
+if(isNativeAndroid() && globalThis.Capacitor?.DEBUG === true){
+  const button=document.createElement('button');
+  button.className='btn';button.id='nativeAsrTest';button.textContent='ASR実機テスト';
+  button.onclick=()=>{location.href='/native-gate.html';};
+  document.querySelector('#homeView .home-cta-wrap')?.append(button);
+}
