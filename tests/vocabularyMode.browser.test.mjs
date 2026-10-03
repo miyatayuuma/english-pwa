@@ -702,7 +702,7 @@ browserTest('Android Vocabulary preview never grades partials; manual stop waits
 browserTest('Android microphone denial is explicit in Vocabulary UI, creates no recognizer and writes no SRS',async()=>{
   const opened=await newPage(sources[4],{native:true,nativePermission:false});const {page}=opened;
   try{
-    try { await page.waitForFunction(()=>document.querySelector('.vocab-prompt')?.textContent.includes('権限が拒否されました'),null,{timeout:10000}); }
+    try { await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent.includes('権限が拒否されました'),null,{timeout:10000}); }
     catch(error){throw new Error(JSON.stringify(await page.evaluate(()=>({prompt:document.querySelector('.vocab-prompt')?.textContent,feedback:document.querySelector('.vocab-feedback')?.textContent,native:{starts:window.__mockNative.starts,permission:window.__mockNative.permission},body:document.body.innerText.slice(-1600)}))),{cause:error});}
     assert.equal(await page.evaluate(()=>window.__mockNative.starts),0);
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0);

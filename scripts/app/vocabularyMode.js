@@ -303,10 +303,11 @@ function showRecognitionStatus(message){
 
 function showRecognitionFailure(error){
   const retryMessage=error==='PERMISSION_DENIED'?'マイクの権限が拒否されました。端末の設定で許可して再試行してください。':error==='UNAVAILABLE'?'端末の音声認識サービスが利用できません。':'マイクを押してもう一度話してください。';
+  const explicitError=error==='PERMISSION_DENIED'||error==='UNAVAILABLE';
   if(state.correction&&!state.processing){
     const result=recordCorrectionAttempt(state.correctionProgress,{technical:true});
     const feedback=state.screen?.querySelector('.vocab-feedback');
-    if(feedback) feedback.textContent=result.message;
+    if(feedback) feedback.textContent=explicitError?`${result.message} ${retryMessage}`:result.message;
     clearGradeTimer();setListening(false);
     if(result.complete) completeCorrectionPractice();
     else showRecognitionStatus(retryMessage);
@@ -315,7 +316,7 @@ function showRecognitionFailure(error){
   clearGradeTimer();
   setListening(false);
   const feedback=state.screen?.querySelector('.vocab-feedback');
-  if(feedback){feedback.className='vocab-feedback';feedback.textContent='認識できませんでした。もう一度。';}
+  if(feedback){feedback.className='vocab-feedback';feedback.textContent=explicitError?retryMessage:'認識できませんでした。もう一度。';}
   showRecognitionStatus(retryMessage);
 }
 
