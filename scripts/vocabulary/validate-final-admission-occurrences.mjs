@@ -8,8 +8,8 @@ const read=name=>JSON.parse(fs.readFileSync(path.join(root,'data',name),'utf8'))
 const authority=read('vocabulary-v3-final-admission-occurrences.json');
 const items=read('items.json');
 const byItem=new Map(items.map(item=>[String(item.id),item]));
-const STATUS=new Set(['EXACT','NORMALIZED','GENERALIZED','LEGACY_EVIDENCE_RECOVERED','NO_VALID_OCCURRENCE','AMBIGUOUS']);
-const RESOLVED=new Set(['EXACT','NORMALIZED','GENERALIZED','LEGACY_EVIDENCE_RECOVERED']);
+const STATUS=new Set(['EXACT','NORMALIZED','GENERALIZED','LEGACY_EVIDENCE_RECOVERED','RECOVERED_VALID_OCCURRENCE','NO_VALID_OCCURRENCE','AMBIGUOUS']);
+const RESOLVED=new Set(['EXACT','NORMALIZED','GENERALIZED','LEGACY_EVIDENCE_RECOVERED','RECOVERED_VALID_OCCURRENCE']);
 const KIND=new Set(['word','expression','construction']);
 const EXPECTED_TOTAL=1408;
 const EXPECTED_KIND={word:1036,expression:351,construction:21};
@@ -29,7 +29,7 @@ if(inventorySha!==EXPECTED_INVENTORY_SHA) errors.push(`occurrence authority: rec
 
 const seen=new Set();
 const kindCounts={word:0,expression:0,construction:0};
-const statusCounts={EXACT:0,NORMALIZED:0,GENERALIZED:0,LEGACY_EVIDENCE_RECOVERED:0,NO_VALID_OCCURRENCE:0,AMBIGUOUS:0};
+const statusCounts={EXACT:0,NORMALIZED:0,GENERALIZED:0,LEGACY_EVIDENCE_RECOVERED:0,RECOVERED_VALID_OCCURRENCE:0,NO_VALID_OCCURRENCE:0,AMBIGUOUS:0};
 const batchSummary={};
 
 for(const record of records){
@@ -44,8 +44,16 @@ for(const record of records){
   else statusCounts[record.recovery_status]+=1;
   if(!record?.evidence||!String(record.evidence.method||'').trim()||!String(record.evidence.note||'').trim()) errors.push(`occurrence authority: missing evidence for ${record?.concept||'<missing>'}`);
 
+  if(record.recovery_status==='RECOVERED_VALID_OCCURRENCE'){
+    const sense=record.sense_interpretation;
+    if(!['noun','verb','adjective','adverb'].includes(sense?.pos)||!String(sense?.sense_key||'').trim()||!String(sense?.meaning_ja||'').trim()) errors.push(`occurrence authority: missing recovered sense authority for ${record.concept}`);
+    if(record.evidence?.method!=='admission_sense_reconciliation'||record.evidence?.original_audit_source_confirmed!==false||!String(record.evidence?.provenance||'').trim()||!record.evidence?.legacy_link||!record.evidence?.coverage_check) errors.push(`occurrence authority: missing sense reconciliation evidence for ${record.concept}`);
+    const chosen=(record.reconciliation_candidates||[]).filter(candidate=>candidate.decision==='chosen_primary');
+    if(chosen.length!==1||chosen[0].item_id!==record.item_id||chosen[0].start!==record.start||chosen[0].end!==record.end||chosen[0].surface!==record.surface) errors.push(`occurrence authority: primary sense candidate mismatch for ${record.concept}`);
+  }
+
   if(record.recovery_status==='AMBIGUOUS'&&(!Array.isArray(record.closest_source_candidates)||record.closest_source_candidates.length<2||!String(record.why_invalid_or_ambiguous||'').trim())) errors.push(`occurrence authority: missing semantic ambiguity evidence for ${record.concept}`);
-  for(const candidate of record.closest_source_candidates||[]){
+  for(const candidate of [...(record.closest_source_candidates||[]),...(record.reconciliation_candidates||[])]){
     const item=byItem.get(candidate.item_id);
     if(!item){errors.push(`occurrence authority: invalid candidate item for ${record.concept}`);continue;}
     if(!Number.isInteger(candidate.start)||!Number.isInteger(candidate.end)||candidate.start<0||candidate.end<=candidate.start||candidate.end>item.en.length||item.en.slice(candidate.start,candidate.end)!==candidate.surface) errors.push(`occurrence authority: invalid candidate span for ${record.concept}/${candidate.item_id}`);
@@ -53,7 +61,7 @@ for(const record of records){
     if(record.recovery_status==='AMBIGUOUS'&&!String(candidate.sense||'').trim()) errors.push(`occurrence authority: missing candidate sense for ${record.concept}/${candidate.item_id}`);
   }
 
-  const batch=batchSummary[record.audit_batch]??={reviewed:0,EXACT:0,NORMALIZED:0,GENERALIZED:0,LEGACY_EVIDENCE_RECOVERED:0,NO_VALID_OCCURRENCE:0,AMBIGUOUS:0};
+  const batch=batchSummary[record.audit_batch]??={reviewed:0,EXACT:0,NORMALIZED:0,GENERALIZED:0,LEGACY_EVIDENCE_RECOVERED:0,RECOVERED_VALID_OCCURRENCE:0,NO_VALID_OCCURRENCE:0,AMBIGUOUS:0};
   batch.reviewed+=1;if(STATUS.has(record?.recovery_status))batch[record.recovery_status]+=1;batchSummary[record.audit_batch]=batch;
 
   if(RESOLVED.has(record?.recovery_status)){

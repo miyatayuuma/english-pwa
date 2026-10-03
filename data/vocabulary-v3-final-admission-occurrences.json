@@ -103,11 +103,12 @@
       "NORMALIZED": 317,
       "GENERALIZED": 169,
       "LEGACY_EVIDENCE_RECOVERED": 1,
+      "RECOVERED_VALID_OCCURRENCE": 4,
       "NO_VALID_OCCURRENCE": 0,
-      "AMBIGUOUS": 4
+      "AMBIGUOUS": 0
     },
-    "resolved_total": 1404,
-    "unresolved_total": 4,
+    "resolved_total": 1408,
+    "unresolved_total": 0,
     "kind_counts": {
       "word": 1036,
       "expression": 351,
@@ -126,8 +127,9 @@
       "NORMALIZED": 24,
       "GENERALIZED": 21,
       "LEGACY_EVIDENCE_RECOVERED": 0,
+      "RECOVERED_VALID_OCCURRENCE": 1,
       "NO_VALID_OCCURRENCE": 0,
-      "AMBIGUOUS": 1
+      "AMBIGUOUS": 0
     },
     "2": {
       "reviewed": 111,
@@ -135,8 +137,9 @@
       "NORMALIZED": 18,
       "GENERALIZED": 16,
       "LEGACY_EVIDENCE_RECOVERED": 0,
+      "RECOVERED_VALID_OCCURRENCE": 1,
       "NO_VALID_OCCURRENCE": 0,
-      "AMBIGUOUS": 1
+      "AMBIGUOUS": 0
     },
     "3": {
       "reviewed": 103,
@@ -144,6 +147,7 @@
       "NORMALIZED": 31,
       "GENERALIZED": 11,
       "LEGACY_EVIDENCE_RECOVERED": 0,
+      "RECOVERED_VALID_OCCURRENCE": 0,
       "NO_VALID_OCCURRENCE": 0,
       "AMBIGUOUS": 0
     },
@@ -153,8 +157,9 @@
       "NORMALIZED": 22,
       "GENERALIZED": 15,
       "LEGACY_EVIDENCE_RECOVERED": 0,
+      "RECOVERED_VALID_OCCURRENCE": 1,
       "NO_VALID_OCCURRENCE": 0,
-      "AMBIGUOUS": 1
+      "AMBIGUOUS": 0
     },
     "5": {
       "reviewed": 156,
@@ -162,6 +167,7 @@
       "NORMALIZED": 39,
       "GENERALIZED": 13,
       "LEGACY_EVIDENCE_RECOVERED": 0,
+      "RECOVERED_VALID_OCCURRENCE": 0,
       "NO_VALID_OCCURRENCE": 0,
       "AMBIGUOUS": 0
     },
@@ -171,8 +177,9 @@
       "NORMALIZED": 31,
       "GENERALIZED": 12,
       "LEGACY_EVIDENCE_RECOVERED": 0,
+      "RECOVERED_VALID_OCCURRENCE": 1,
       "NO_VALID_OCCURRENCE": 0,
-      "AMBIGUOUS": 1
+      "AMBIGUOUS": 0
     },
     "7": {
       "reviewed": 115,
@@ -180,6 +187,7 @@
       "NORMALIZED": 21,
       "GENERALIZED": 15,
       "LEGACY_EVIDENCE_RECOVERED": 1,
+      "RECOVERED_VALID_OCCURRENCE": 0,
       "NO_VALID_OCCURRENCE": 0,
       "AMBIGUOUS": 0
     },
@@ -189,6 +197,7 @@
       "NORMALIZED": 33,
       "GENERALIZED": 15,
       "LEGACY_EVIDENCE_RECOVERED": 0,
+      "RECOVERED_VALID_OCCURRENCE": 0,
       "NO_VALID_OCCURRENCE": 0,
       "AMBIGUOUS": 0
     },
@@ -198,6 +207,7 @@
       "NORMALIZED": 40,
       "GENERALIZED": 20,
       "LEGACY_EVIDENCE_RECOVERED": 0,
+      "RECOVERED_VALID_OCCURRENCE": 0,
       "NO_VALID_OCCURRENCE": 0,
       "AMBIGUOUS": 0
     },
@@ -207,6 +217,7 @@
       "NORMALIZED": 36,
       "GENERALIZED": 16,
       "LEGACY_EVIDENCE_RECOVERED": 0,
+      "RECOVERED_VALID_OCCURRENCE": 0,
       "NO_VALID_OCCURRENCE": 0,
       "AMBIGUOUS": 0
     },
@@ -216,6 +227,7 @@
       "NORMALIZED": 18,
       "GENERALIZED": 12,
       "LEGACY_EVIDENCE_RECOVERED": 0,
+      "RECOVERED_VALID_OCCURRENCE": 0,
       "NO_VALID_OCCURRENCE": 0,
       "AMBIGUOUS": 0
     },
@@ -225,6 +237,7 @@
       "NORMALIZED": 4,
       "GENERALIZED": 3,
       "LEGACY_EVIDENCE_RECOVERED": 0,
+      "RECOVERED_VALID_OCCURRENCE": 0,
       "NO_VALID_OCCURRENCE": 0,
       "AMBIGUOUS": 0
     }
@@ -696,25 +709,73 @@
       "concept": "increase",
       "kind": "word",
       "audit_batch": 1,
-      "recovery_status": "AMBIGUOUS",
+      "recovery_status": "RECOVERED_VALID_OCCURRENCE",
       "evidence": {
-        "method": "semantic_candidate_reconciliation",
-        "note": "Current-corpus candidates differ in lexical sense or part of speech. Final Admission fixes only the lemma/kind/batch, without a sense discriminator. Legacy dictionary headword links favor one candidate but do not establish the fixed Final ADD sense. Original audit source unconfirmed; historical uncertainty alone is not the blocker."
+        "method": "admission_sense_reconciliation",
+        "note": "Fixed word admission, ordered neighboring admission concepts, explicit legacy sense/source linkage, current Japanese source, and complementary production coverage converge on this independent lexical sense. This fixes missing sense authority without changing concept/kind/batch or card population.",
+        "provenance": "current-corpus recovery; original audit source unconfirmed",
+        "original_audit_source_confirmed": false,
+        "original_audit_evidence": {
+          "searched": "Original Card Admission batch reports and preserved Final Admission JSON/Markdown. Retrieval only corroborated item-level ADD for increase/theory; no independently verifiable original sense explanation was recovered.",
+          "authority_path": "vocabulary-v3-final-admission-authority.json",
+          "authority_sha256": "f7235bffdd629fbde05c4eb1dcede67aa7296ebcff383c9d7439d087f3965d33",
+          "ordered_word_context": [
+            "article",
+            "contain",
+            "tip",
+            "increase",
+            "vocabulary"
+          ],
+          "interpretation": "Neighbor order matches the chosen source lexical teaching sequence; corroborative admission-intent evidence, not a historical source-ID claim."
+        },
+        "legacy_link": {
+          "path": "data/vocabulary-v2.json",
+          "entry_id": "duo:2:84",
+          "headword": "increase (~)",
+          "meaning_ja": "...を『増やす』",
+          "item_id": "E0018"
+        },
+        "source_learning_intent": {
+          "item_id": "E0018",
+          "source_japanese": "この記事には語彙を本気で増やしたいと思う人々に役立つ情報が含まれています。",
+          "interpretation": "The selected verb realizes the independent word sense 増やす・増加させる. The competing usage is already taught as a complete expression."
+        },
+        "coverage_check": {
+          "production_entries_checked": 1072,
+          "same_lemma_word_entries": 0,
+          "matching_final_add_records": 1,
+          "competing_sense_covered_by": {
+            "entry_id": "vocab:00061",
+            "canonical": "be on the increase",
+            "sense_key": "becoming_more_common",
+            "meaning_ja": "増加している",
+            "item_ids": [
+              "E0032"
+            ]
+          },
+          "note": "Synonyms or expressions with related meanings are distinct lexical concepts, not duplicate cards. No MERGE/DROP/RECLASSIFY is performed."
+        },
+        "representative_policy": "Retain the independent word sense directly realized by the chosen source; do not inherit the meaning of an already-covered multiword expression.",
+        "decision_confidence": "high; evidence convergence, not direct recovery of an original sense annotation"
       },
-      "search_performed": [
-        "E0001–E0050",
-        "E0001–E0560",
-        "data/vocabulary-v2.json",
-        "data/vocabulary.json"
-      ],
-      "closest_source_candidates": [
+      "item_id": "E0018",
+      "start": 54,
+      "end": 62,
+      "surface": "increase",
+      "sense_interpretation": {
+        "pos": "verb",
+        "sense_key": "make_greater_in_amount",
+        "meaning_ja": "増やす・増加させる"
+      },
+      "reconciliation_candidates": [
         {
           "item_id": "E0018",
           "surface": "increase",
           "source_sentence": "This article contains tips for those who are eager to increase their vocabulary.",
           "sense": "verb: make something greater (増やす)",
           "start": 54,
-          "end": 62
+          "end": 62,
+          "decision": "chosen_primary"
         },
         {
           "item_id": "E0032",
@@ -722,11 +783,10 @@
           "source_sentence": "Please take a look at this chart. It indicates that juvenile delinquency is on the increase at an alarming rate.",
           "sense": "noun: growth in amount (増加); on the increase",
           "start": 83,
-          "end": 91
+          "end": 91,
+          "decision": "other_sense_already_covered_by_expression"
         }
-      ],
-      "why_invalid_or_ambiguous": "Competing senses: verb: make something greater (増やす) versus noun: growth in amount (増加); on the increase. Selecting one would assign an unspecified Final Admission sense; deterministic item ordering cannot resolve this semantic choice.",
-      "recommended_next_action": "Exception Reconciliation: explicitly confirm the intended lexical sense, then fix a current-corpus primary occurrence without claiming recovery of original audit provenance."
+      ]
     },
     {
       "concept": "vocabulary",
@@ -2042,25 +2102,73 @@
       "concept": "theory",
       "kind": "word",
       "audit_batch": 2,
-      "recovery_status": "AMBIGUOUS",
+      "recovery_status": "RECOVERED_VALID_OCCURRENCE",
       "evidence": {
-        "method": "semantic_candidate_reconciliation",
-        "note": "Current-corpus candidates differ in lexical sense or part of speech. Final Admission fixes only the lemma/kind/batch, without a sense discriminator. Legacy dictionary headword links favor one candidate but do not establish the fixed Final ADD sense. Original audit source unconfirmed; historical uncertainty alone is not the blocker."
+        "method": "admission_sense_reconciliation",
+        "note": "Fixed word admission, ordered neighboring admission concepts, explicit legacy sense/source linkage, current Japanese source, and complementary production coverage converge on this independent lexical sense. This fixes missing sense authority without changing concept/kind/batch or card population.",
+        "provenance": "current-corpus recovery; original audit source unconfirmed",
+        "original_audit_source_confirmed": false,
+        "original_audit_evidence": {
+          "searched": "Original Card Admission batch reports and preserved Final Admission JSON/Markdown. Retrieval only corroborated item-level ADD for increase/theory; no independently verifiable original sense explanation was recovered.",
+          "authority_path": "vocabulary-v3-final-admission-authority.json",
+          "authority_sha256": "f7235bffdd629fbde05c4eb1dcede67aa7296ebcff383c9d7439d087f3965d33",
+          "ordered_word_context": [
+            "classify",
+            "mammal",
+            "theory",
+            "biologist",
+            "historic"
+          ],
+          "interpretation": "Neighbor order matches the chosen source lexical teaching sequence; corroborative admission-intent evidence, not a historical source-ID claim."
+        },
+        "legacy_link": {
+          "path": "data/vocabulary-v2.json",
+          "entry_id": "duo:5:257",
+          "headword": "theory",
+          "meaning_ja": "(学問的な)『理論』,学説",
+          "item_id": "E0055"
+        },
+        "source_learning_intent": {
+          "item_id": "E0055",
+          "source_japanese": "進化論は私の想像力の範囲を超えている。",
+          "interpretation": "The selected noun realizes the independent word sense 理論・学説. The competing usage is already taught as a complete expression."
+        },
+        "coverage_check": {
+          "production_entries_checked": 1072,
+          "same_lemma_word_entries": 0,
+          "matching_final_add_records": 1,
+          "competing_sense_covered_by": {
+            "entry_id": "vocab:00117",
+            "canonical": "in theory",
+            "sense_key": "according_to_theory",
+            "meaning_ja": "理論上は",
+            "item_ids": [
+              "E0086"
+            ]
+          },
+          "note": "Synonyms or expressions with related meanings are distinct lexical concepts, not duplicate cards. No MERGE/DROP/RECLASSIFY is performed."
+        },
+        "representative_policy": "Retain the independent word sense directly realized by the chosen source; do not inherit the meaning of an already-covered multiword expression.",
+        "decision_confidence": "high; evidence convergence, not direct recovery of an original sense annotation"
       },
-      "search_performed": [
-        "E0051–E0100",
-        "E0001–E0560",
-        "data/vocabulary-v2.json",
-        "data/vocabulary.json"
-      ],
-      "closest_source_candidates": [
+      "item_id": "E0055",
+      "start": 4,
+      "end": 10,
+      "surface": "theory",
+      "sense_interpretation": {
+        "pos": "noun",
+        "sense_key": "explanatory_system_of_ideas",
+        "meaning_ja": "理論・学説"
+      },
+      "reconciliation_candidates": [
         {
           "item_id": "E0055",
           "surface": "theory",
           "source_sentence": "The theory of evolution is beyond the reach of my imagination.",
           "sense": "count noun: scientific explanatory theory (学説)",
           "start": 4,
-          "end": 10
+          "end": 10,
+          "decision": "chosen_primary"
         },
         {
           "item_id": "E0086",
@@ -2068,11 +2176,10 @@
           "source_sentence": "Your idea sounds marvelous in theory, yet I don't think it will work in practice.",
           "sense": "abstract noun: theoretical reasoning contrasted with practice (理論上); in theory",
           "start": 30,
-          "end": 36
+          "end": 36,
+          "decision": "other_sense_already_covered_by_expression"
         }
-      ],
-      "why_invalid_or_ambiguous": "Competing senses: count noun: scientific explanatory theory (学説) versus abstract noun: theoretical reasoning contrasted with practice (理論上); in theory. Selecting one would assign an unspecified Final Admission sense; deterministic item ordering cannot resolve this semantic choice.",
-      "recommended_next_action": "Exception Reconciliation: explicitly confirm the intended lexical sense, then fix a current-corpus primary occurrence without claiming recovery of original audit provenance."
+      ]
     },
     {
       "concept": "biologist",
@@ -5222,25 +5329,73 @@
       "concept": "term",
       "kind": "word",
       "audit_batch": 4,
-      "recovery_status": "AMBIGUOUS",
+      "recovery_status": "RECOVERED_VALID_OCCURRENCE",
       "evidence": {
-        "method": "semantic_candidate_reconciliation",
-        "note": "Current-corpus candidates differ in lexical sense or part of speech. Final Admission fixes only the lemma/kind/batch, without a sense discriminator. Legacy dictionary headword links favor one candidate but do not establish the fixed Final ADD sense. Original audit source unconfirmed; historical uncertainty alone is not the blocker."
+        "method": "admission_sense_reconciliation",
+        "note": "Fixed word admission, ordered neighboring admission concepts, explicit legacy sense/source linkage, current Japanese source, and complementary production coverage converge on this independent lexical sense. This fixes missing sense authority without changing concept/kind/batch or card population.",
+        "provenance": "current-corpus recovery; original audit source unconfirmed",
+        "original_audit_source_confirmed": false,
+        "original_audit_evidence": {
+          "searched": "Original Card Admission batch reports and preserved Final Admission JSON/Markdown. Retrieval only corroborated item-level ADD for increase/theory; no independently verifiable original sense explanation was recovered.",
+          "authority_path": "vocabulary-v3-final-admission-authority.json",
+          "authority_sha256": "f7235bffdd629fbde05c4eb1dcede67aa7296ebcff383c9d7439d087f3965d33",
+          "ordered_word_context": [
+            "valid",
+            "scientific",
+            "term",
+            "definition",
+            "formula"
+          ],
+          "interpretation": "Neighbor order matches the chosen source lexical teaching sequence; corroborative admission-intent evidence, not a historical source-ID claim."
+        },
+        "legacy_link": {
+          "path": "data/vocabulary-v2.json",
+          "entry_id": "duo:14:720",
+          "headword": "term",
+          "meaning_ja": "『専門用語』,術語",
+          "item_id": "E0165"
+        },
+        "source_learning_intent": {
+          "item_id": "E0165",
+          "source_japanese": "とりわけ、科学用語には厳密な定義が要求される。",
+          "interpretation": "The selected noun realizes the independent word sense 用語. The competing usage is already taught as a complete expression."
+        },
+        "coverage_check": {
+          "production_entries_checked": 1072,
+          "same_lemma_word_entries": 0,
+          "matching_final_add_records": 1,
+          "competing_sense_covered_by": {
+            "entry_id": "vocab:00250",
+            "canonical": "be on good terms with someone",
+            "sense_key": "have_friendly_relationship",
+            "meaning_ja": "人と仲がよい",
+            "item_ids": [
+              "E0200"
+            ]
+          },
+          "note": "Synonyms or expressions with related meanings are distinct lexical concepts, not duplicate cards. No MERGE/DROP/RECLASSIFY is performed."
+        },
+        "representative_policy": "Retain the independent word sense directly realized by the chosen source; do not inherit the meaning of an already-covered multiword expression.",
+        "decision_confidence": "high; evidence convergence, not direct recovery of an original sense annotation"
       },
-      "search_performed": [
-        "E0151–E0200",
-        "E0001–E0560",
-        "data/vocabulary-v2.json",
-        "data/vocabulary.json"
-      ],
-      "closest_source_candidates": [
+      "item_id": "E0165",
+      "start": 22,
+      "end": 27,
+      "surface": "terms",
+      "sense_interpretation": {
+        "pos": "noun",
+        "sense_key": "word_or_expression_with_specific_meaning",
+        "meaning_ja": "用語"
+      },
+      "reconciliation_candidates": [
         {
           "item_id": "E0165",
           "surface": "terms",
           "source_sentence": "Above all, scientific terms call for precise definitions.",
           "sense": "count noun: technical word or expression (用語)",
           "start": 22,
-          "end": 27
+          "end": 27,
+          "decision": "chosen_primary"
         },
         {
           "item_id": "E0200",
@@ -5248,11 +5403,10 @@
           "source_sentence": "I must admit we quarrel every now and then, but generally we're on good terms with each other.",
           "sense": "plural noun: relationship between people (間柄); on good terms",
           "start": 72,
-          "end": 77
+          "end": 77,
+          "decision": "other_sense_already_covered_by_expression"
         }
-      ],
-      "why_invalid_or_ambiguous": "Competing senses: count noun: technical word or expression (用語) versus plural noun: relationship between people (間柄); on good terms. Selecting one would assign an unspecified Final Admission sense; deterministic item ordering cannot resolve this semantic choice.",
-      "recommended_next_action": "Exception Reconciliation: explicitly confirm the intended lexical sense, then fix a current-corpus primary occurrence without claiming recovery of original audit provenance."
+      ]
     },
     {
       "concept": "definition",
@@ -9118,25 +9272,73 @@
       "concept": "advance",
       "kind": "word",
       "audit_batch": 6,
-      "recovery_status": "AMBIGUOUS",
+      "recovery_status": "RECOVERED_VALID_OCCURRENCE",
       "evidence": {
-        "method": "semantic_candidate_reconciliation",
-        "note": "Current-corpus candidates differ in lexical sense or part of speech. Final Admission fixes only the lemma/kind/batch, without a sense discriminator. Legacy dictionary headword links favor one candidate but do not establish the fixed Final ADD sense. Original audit source unconfirmed; historical uncertainty alone is not the blocker."
+        "method": "admission_sense_reconciliation",
+        "note": "Fixed word admission, ordered neighboring admission concepts, explicit legacy sense/source linkage, current Japanese source, and complementary production coverage converge on this independent lexical sense. This fixes missing sense authority without changing concept/kind/batch or card population.",
+        "provenance": "current-corpus recovery; original audit source unconfirmed",
+        "original_audit_source_confirmed": false,
+        "original_audit_evidence": {
+          "searched": "Original Card Admission batch reports and preserved Final Admission JSON/Markdown. Retrieval only corroborated item-level ADD for increase/theory; no independently verifiable original sense explanation was recovered.",
+          "authority_path": "vocabulary-v3-final-admission-authority.json",
+          "authority_sha256": "f7235bffdd629fbde05c4eb1dcede67aa7296ebcff383c9d7439d087f3965d33",
+          "ordered_word_context": [
+            "technology",
+            "rapidly",
+            "advance",
+            "tough",
+            "interactive"
+          ],
+          "interpretation": "Neighbor order matches the chosen source lexical teaching sequence; corroborative admission-intent evidence, not a historical source-ID claim."
+        },
+        "legacy_link": {
+          "path": "data/vocabulary-v2.json",
+          "entry_id": "duo:22:1168",
+          "headword": "advance",
+          "meaning_ja": "進歩する,はかどる",
+          "item_id": "E0263"
+        },
+        "source_learning_intent": {
+          "item_id": "E0263",
+          "source_japanese": "技術は急速に進歩するので、遅れを取らずについていくのは大変だ。",
+          "interpretation": "The selected verb realizes the independent word sense 進歩する・発展する. The competing usage is already taught as a complete expression."
+        },
+        "coverage_check": {
+          "production_entries_checked": 1072,
+          "same_lemma_word_entries": 0,
+          "matching_final_add_records": 1,
+          "competing_sense_covered_by": {
+            "entry_id": "vocab:00375",
+            "canonical": "in advance",
+            "sense_key": "beforehand",
+            "meaning_ja": "事前に",
+            "item_ids": [
+              "E0298"
+            ]
+          },
+          "note": "Synonyms or expressions with related meanings are distinct lexical concepts, not duplicate cards. No MERGE/DROP/RECLASSIFY is performed."
+        },
+        "representative_policy": "Retain the independent word sense directly realized by the chosen source; do not inherit the meaning of an already-covered multiword expression.",
+        "decision_confidence": "high; evidence convergence, not direct recovery of an original sense annotation"
       },
-      "search_performed": [
-        "E0251–E0300",
-        "E0001–E0560",
-        "data/vocabulary-v2.json",
-        "data/vocabulary.json"
-      ],
-      "closest_source_candidates": [
+      "item_id": "E0263",
+      "start": 22,
+      "end": 30,
+      "surface": "advances",
+      "sense_interpretation": {
+        "pos": "verb",
+        "sense_key": "progress_or_develop",
+        "meaning_ja": "進歩する・発展する"
+      },
+      "reconciliation_candidates": [
         {
           "item_id": "E0263",
           "surface": "advances",
           "source_sentence": "As technology rapidly advances, it's tough to keep pace with it.",
           "sense": "verb: progress or develop (進歩する)",
           "start": 22,
-          "end": 30
+          "end": 30,
+          "decision": "chosen_primary"
         },
         {
           "item_id": "E0298",
@@ -9144,11 +9346,10 @@
           "source_sentence": "\"Don't forget to confirm your reservation in advance.\" \"I won't.\"",
           "sense": "noun in temporal expression: beforehand (事前に); in advance",
           "start": 45,
-          "end": 52
+          "end": 52,
+          "decision": "other_sense_already_covered_by_expression"
         }
-      ],
-      "why_invalid_or_ambiguous": "Competing senses: verb: progress or develop (進歩する) versus noun in temporal expression: beforehand (事前に); in advance. Selecting one would assign an unspecified Final Admission sense; deterministic item ordering cannot resolve this semantic choice.",
-      "recommended_next_action": "Exception Reconciliation: explicitly confirm the intended lexical sense, then fix a current-corpus primary occurrence without claiming recovery of original audit provenance."
+      ]
     },
     {
       "concept": "tough",
@@ -20084,151 +20285,6 @@
       }
     }
   ],
-  "exceptions": [
-    {
-      "concept": "increase",
-      "kind": "word",
-      "audit_batch": 1,
-      "recovery_status": "AMBIGUOUS",
-      "evidence": {
-        "method": "semantic_candidate_reconciliation",
-        "note": "Current-corpus candidates differ in lexical sense or part of speech. Final Admission fixes only the lemma/kind/batch, without a sense discriminator. Legacy dictionary headword links favor one candidate but do not establish the fixed Final ADD sense. Original audit source unconfirmed; historical uncertainty alone is not the blocker."
-      },
-      "search_performed": [
-        "E0001–E0050",
-        "E0001–E0560",
-        "data/vocabulary-v2.json",
-        "data/vocabulary.json"
-      ],
-      "closest_source_candidates": [
-        {
-          "item_id": "E0018",
-          "surface": "increase",
-          "source_sentence": "This article contains tips for those who are eager to increase their vocabulary.",
-          "sense": "verb: make something greater (増やす)",
-          "start": 54,
-          "end": 62
-        },
-        {
-          "item_id": "E0032",
-          "surface": "increase",
-          "source_sentence": "Please take a look at this chart. It indicates that juvenile delinquency is on the increase at an alarming rate.",
-          "sense": "noun: growth in amount (増加); on the increase",
-          "start": 83,
-          "end": 91
-        }
-      ],
-      "why_invalid_or_ambiguous": "Competing senses: verb: make something greater (増やす) versus noun: growth in amount (増加); on the increase. Selecting one would assign an unspecified Final Admission sense; deterministic item ordering cannot resolve this semantic choice.",
-      "recommended_next_action": "Exception Reconciliation: explicitly confirm the intended lexical sense, then fix a current-corpus primary occurrence without claiming recovery of original audit provenance."
-    },
-    {
-      "concept": "theory",
-      "kind": "word",
-      "audit_batch": 2,
-      "recovery_status": "AMBIGUOUS",
-      "evidence": {
-        "method": "semantic_candidate_reconciliation",
-        "note": "Current-corpus candidates differ in lexical sense or part of speech. Final Admission fixes only the lemma/kind/batch, without a sense discriminator. Legacy dictionary headword links favor one candidate but do not establish the fixed Final ADD sense. Original audit source unconfirmed; historical uncertainty alone is not the blocker."
-      },
-      "search_performed": [
-        "E0051–E0100",
-        "E0001–E0560",
-        "data/vocabulary-v2.json",
-        "data/vocabulary.json"
-      ],
-      "closest_source_candidates": [
-        {
-          "item_id": "E0055",
-          "surface": "theory",
-          "source_sentence": "The theory of evolution is beyond the reach of my imagination.",
-          "sense": "count noun: scientific explanatory theory (学説)",
-          "start": 4,
-          "end": 10
-        },
-        {
-          "item_id": "E0086",
-          "surface": "theory",
-          "source_sentence": "Your idea sounds marvelous in theory, yet I don't think it will work in practice.",
-          "sense": "abstract noun: theoretical reasoning contrasted with practice (理論上); in theory",
-          "start": 30,
-          "end": 36
-        }
-      ],
-      "why_invalid_or_ambiguous": "Competing senses: count noun: scientific explanatory theory (学説) versus abstract noun: theoretical reasoning contrasted with practice (理論上); in theory. Selecting one would assign an unspecified Final Admission sense; deterministic item ordering cannot resolve this semantic choice.",
-      "recommended_next_action": "Exception Reconciliation: explicitly confirm the intended lexical sense, then fix a current-corpus primary occurrence without claiming recovery of original audit provenance."
-    },
-    {
-      "concept": "term",
-      "kind": "word",
-      "audit_batch": 4,
-      "recovery_status": "AMBIGUOUS",
-      "evidence": {
-        "method": "semantic_candidate_reconciliation",
-        "note": "Current-corpus candidates differ in lexical sense or part of speech. Final Admission fixes only the lemma/kind/batch, without a sense discriminator. Legacy dictionary headword links favor one candidate but do not establish the fixed Final ADD sense. Original audit source unconfirmed; historical uncertainty alone is not the blocker."
-      },
-      "search_performed": [
-        "E0151–E0200",
-        "E0001–E0560",
-        "data/vocabulary-v2.json",
-        "data/vocabulary.json"
-      ],
-      "closest_source_candidates": [
-        {
-          "item_id": "E0165",
-          "surface": "terms",
-          "source_sentence": "Above all, scientific terms call for precise definitions.",
-          "sense": "count noun: technical word or expression (用語)",
-          "start": 22,
-          "end": 27
-        },
-        {
-          "item_id": "E0200",
-          "surface": "terms",
-          "source_sentence": "I must admit we quarrel every now and then, but generally we're on good terms with each other.",
-          "sense": "plural noun: relationship between people (間柄); on good terms",
-          "start": 72,
-          "end": 77
-        }
-      ],
-      "why_invalid_or_ambiguous": "Competing senses: count noun: technical word or expression (用語) versus plural noun: relationship between people (間柄); on good terms. Selecting one would assign an unspecified Final Admission sense; deterministic item ordering cannot resolve this semantic choice.",
-      "recommended_next_action": "Exception Reconciliation: explicitly confirm the intended lexical sense, then fix a current-corpus primary occurrence without claiming recovery of original audit provenance."
-    },
-    {
-      "concept": "advance",
-      "kind": "word",
-      "audit_batch": 6,
-      "recovery_status": "AMBIGUOUS",
-      "evidence": {
-        "method": "semantic_candidate_reconciliation",
-        "note": "Current-corpus candidates differ in lexical sense or part of speech. Final Admission fixes only the lemma/kind/batch, without a sense discriminator. Legacy dictionary headword links favor one candidate but do not establish the fixed Final ADD sense. Original audit source unconfirmed; historical uncertainty alone is not the blocker."
-      },
-      "search_performed": [
-        "E0251–E0300",
-        "E0001–E0560",
-        "data/vocabulary-v2.json",
-        "data/vocabulary.json"
-      ],
-      "closest_source_candidates": [
-        {
-          "item_id": "E0263",
-          "surface": "advances",
-          "source_sentence": "As technology rapidly advances, it's tough to keep pace with it.",
-          "sense": "verb: progress or develop (進歩する)",
-          "start": 22,
-          "end": 30
-        },
-        {
-          "item_id": "E0298",
-          "surface": "advance",
-          "source_sentence": "\"Don't forget to confirm your reservation in advance.\" \"I won't.\"",
-          "sense": "noun in temporal expression: beforehand (事前に); in advance",
-          "start": 45,
-          "end": 52
-        }
-      ],
-      "why_invalid_or_ambiguous": "Competing senses: verb: progress or develop (進歩する) versus noun in temporal expression: beforehand (事前に); in advance. Selecting one would assign an unspecified Final Admission sense; deterministic item ordering cannot resolve this semantic choice.",
-      "recommended_next_action": "Exception Reconciliation: explicitly confirm the intended lexical sense, then fix a current-corpus primary occurrence without claiming recovery of original audit provenance."
-    }
-  ],
-  "status": "Recovery complete / Exception Reconciliation required"
+  "exceptions": [],
+  "status": "Source Occurrence Authority fully resolved / Materialization gate OPEN"
 }
