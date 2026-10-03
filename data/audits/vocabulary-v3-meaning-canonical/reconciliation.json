@@ -5,7 +5,7 @@
   "status": "CENTRALLY_RECONCILED",
   "policy": {
     "meaning": "代表辞書義。明示独立sense内に限定。sourceはカテゴリ/独立sense識別の証拠。",
-    "canonical": "base/dictionary form; own possessor=one's; person=someone; thing=something; action=do/doing something; syntax slots=+ adjective/+ clause; alternatives=or; question punctuation retained",
+    "canonical": "base/dictionary form; own possessor=one's; person=someone; thing=something; action=do/doing something; canonical TARGET must be one speakable answer surface; non-spoken trailing meta slots such as + clause/+ time are excluded; embedded construction-slot notation remains a separate follow-up",
     "capitalization": "nonproper lexical heads lowercase; English I/proper names preserved",
     "scope": "canonical/sense_key/meaning_ja only; pos/context/occurrences/answers/paraphrases unchanged"
   },
@@ -241,11 +241,11 @@
       "id": "vocab:01153",
       "decision": "MODIFY",
       "after": {
-        "canonical": "assure someone that + clause",
+        "canonical": "assure someone that",
         "sense_key": "reassure_person_that",
         "meaning_ja": "人に〜だと請け合う"
       },
-      "reason": "clause slotを他shardの構文表記と同じ + clause に統一。固定表現・補文構造は維持。",
+      "reason": "Vocabulary answer-surface normalization: \"assure someone that + clause\" used a non-spoken trailing meta slot. Canonical target is normalized to the single speakable surface \"assure someone that\" without changing the fixed sense boundary.",
       "confidence": "high",
       "cross_shard_note": null,
       "paraphrase_followup_required": true
@@ -254,11 +254,11 @@
       "id": "vocab:01671",
       "decision": "MODIFY",
       "after": {
-        "canonical": "warn someone that + clause",
+        "canonical": "warn someone that",
         "sense_key": "warn_person_that",
         "meaning_ja": "人に〜だと警告する"
       },
-      "reason": "clause slotを他shardの構文表記と同じ + clause に統一。固定表現・補文構造は維持。",
+      "reason": "Vocabulary answer-surface normalization: \"warn someone that + clause\" used a non-spoken trailing meta slot. Canonical target is normalized to the single speakable surface \"warn someone that\" without changing the fixed sense boundary.",
       "confidence": "high",
       "cross_shard_note": null,
       "paraphrase_followup_required": true
@@ -267,11 +267,11 @@
       "id": "vocab:02066",
       "decision": "MODIFY",
       "after": {
-        "canonical": "it is the case that + clause",
+        "canonical": "it is the case that",
         "sense_key": "assert_statement_is_true",
         "meaning_ja": "〜というのは事実である"
       },
-      "reason": "clause slotを他shardの構文表記と同じ + clause に統一。固定表現・補文構造は維持。",
+      "reason": "Vocabulary answer-surface normalization: \"it is the case that + clause\" used a non-spoken trailing meta slot. Canonical target is normalized to the single speakable surface \"it is the case that\" without changing the fixed sense boundary.",
       "confidence": "high",
       "cross_shard_note": null,
       "paraphrase_followup_required": true
@@ -280,11 +280,11 @@
       "id": "vocab:01399",
       "decision": "MODIFY",
       "after": {
-        "canonical": "there is little prospect that + clause",
+        "canonical": "there is little prospect that",
         "sense_key": "unlikely_future_event",
         "meaning_ja": "〜する見込みがほとんどない"
       },
-      "reason": "clause slotを他shardの構文表記と同じ + clause に統一。固定表現・補文構造は維持。",
+      "reason": "Vocabulary answer-surface normalization: \"there is little prospect that + clause\" used a non-spoken trailing meta slot. Canonical target is normalized to the single speakable surface \"there is little prospect that\" without changing the fixed sense boundary.",
       "confidence": "high",
       "cross_shard_note": null,
       "paraphrase_followup_required": true
@@ -293,11 +293,11 @@
       "id": "vocab:01498",
       "decision": "MODIFY",
       "after": {
-        "canonical": "I bet + clause",
+        "canonical": "I bet",
         "sense_key": "confident_prediction",
         "meaning_ja": "きっと〜だと思う"
       },
-      "reason": "補文slotを + clause に統一。Iは代名詞なので大文字を維持。",
+      "reason": "Vocabulary answer-surface normalization: \"I bet + clause\" used a non-spoken trailing meta slot. Canonical target is normalized to the single speakable surface \"I bet\" without changing the fixed sense boundary.",
       "confidence": "high",
       "cross_shard_note": null,
       "paraphrase_followup_required": true
@@ -384,11 +384,11 @@
       "id": "vocab:02454",
       "decision": "MODIFY",
       "after": {
-        "canonical": "it's about time + clause (past tense)",
+        "canonical": "it's about time",
         "sense_key": "overdue_action",
         "meaning_ja": "もう〜すべき頃だ"
       },
-      "reason": "about timeのoverdue senseは許可ではなく、既に行うべき時期に達したこと。",
+      "reason": "Vocabulary answer-surface normalization: \"it's about time + clause (past tense)\" used a non-spoken trailing meta slot. Canonical target is normalized to the single speakable surface \"it's about time\" without changing the fixed sense boundary.",
       "confidence": "high",
       "cross_shard_note": "",
       "paraphrase_followup_required": true
@@ -561,6 +561,175 @@
       "confidence": "high",
       "cross_shard_note": null,
       "paraphrase_followup_required": true
+    },
+    {
+      "id": "vocab:00059",
+      "decision": "KEEP",
+      "after": {
+        "canonical": "it goes without saying that",
+        "sense_key": "obvious_that",
+        "meaning_ja": "〜は言うまでもない"
+      },
+      "reason": "Vocabulary answer-surface normalization: \"it goes without saying that + clause\" used a non-spoken trailing meta slot. Canonical target is normalized to the single speakable surface \"it goes without saying that\" without changing the fixed sense boundary.",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00160",
+      "decision": "KEEP",
+      "after": {
+        "canonical": "as long as",
+        "sense_key": "condition_provided_that",
+        "meaning_ja": "〜でありさえすれば"
+      },
+      "reason": "Vocabulary answer-surface normalization: \"as long as + clause\" used a non-spoken trailing meta slot. Canonical target is normalized to the single speakable surface \"as long as\" without changing the fixed sense boundary.",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00181",
+      "decision": "KEEP",
+      "after": {
+        "canonical": "as if",
+        "sense_key": "as_if_something_were_true",
+        "meaning_ja": "まるで〜であるかのように"
+      },
+      "reason": "Vocabulary answer-surface normalization: \"as if + clause\" used a non-spoken trailing meta slot. Canonical target is normalized to the single speakable surface \"as if\" without changing the fixed sense boundary.",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00237",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "convince someone that",
+        "sense_key": "persuade_of_a_claim",
+        "meaning_ja": "人に〜だと納得させる"
+      },
+      "reason": "Vocabulary answer-surface normalization: \"convince someone that + clause\" used a non-spoken trailing meta slot. Canonical target is normalized to the single speakable surface \"convince someone that\" without changing the fixed sense boundary.",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00244",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "it occurs to someone that",
+        "sense_key": "idea_comes_to_mind",
+        "meaning_ja": "人にふと〜と思い浮かぶ"
+      },
+      "reason": "Vocabulary answer-surface normalization: \"it occurs to someone that + clause\" used a non-spoken trailing meta slot. Canonical target is normalized to the single speakable surface \"it occurs to someone that\" without changing the fixed sense boundary.",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00380",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "how often",
+        "sense_key": "ask_frequency",
+        "meaning_ja": "どのくらいの頻度で〜しますか"
+      },
+      "reason": "Vocabulary answer-surface normalization: \"how often + interrogative clause\" used a non-spoken trailing meta slot. Canonical target is normalized to the single speakable surface \"how often\" without changing the fixed sense boundary.",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00438",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "if only",
+        "sense_key": "wish_or_regret",
+        "meaning_ja": "〜であればなあ"
+      },
+      "reason": "Vocabulary answer-surface normalization: \"if only + clause\" used a non-spoken trailing meta slot. Canonical target is normalized to the single speakable surface \"if only\" without changing the fixed sense boundary.",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00661",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "it dawns on someone that",
+        "sense_key": "gradually_realize",
+        "meaning_ja": "人が〜だと気づき始める"
+      },
+      "reason": "Vocabulary answer-surface normalization: \"it dawns on someone that + clause\" used a non-spoken trailing meta slot. Canonical target is normalized to the single speakable surface \"it dawns on someone that\" without changing the fixed sense boundary.",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01497",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "what if",
+        "sense_key": "ask_hypothetical_consequence",
+        "meaning_ja": "もし〜ならどうなるか"
+      },
+      "reason": "Vocabulary answer-surface normalization: \"what if + clause\" used a non-spoken trailing meta slot. Canonical target is normalized to the single speakable surface \"what if\" without changing the fixed sense boundary.",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01631",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "do you mind if",
+        "sense_key": "request_permission",
+        "meaning_ja": "〜してもよいですか"
+      },
+      "reason": "Vocabulary answer-surface normalization: \"do you mind if + clause\" used a non-spoken trailing meta slot. Canonical target is normalized to the single speakable surface \"do you mind if\" without changing the fixed sense boundary.",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01916",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "I'm afraid",
+        "sense_key": "polite_unwelcome_information",
+        "meaning_ja": "残念ながら〜だと思う"
+      },
+      "reason": "Vocabulary answer-surface normalization: \"I'm afraid + clause\" used a non-spoken trailing meta slot. Canonical target is normalized to the single speakable surface \"I'm afraid\" without changing the fixed sense boundary.",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02384",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "it won't be long before",
+        "sense_key": "soon_before_event",
+        "meaning_ja": "もうすぐ〜する"
+      },
+      "reason": "Vocabulary answer-surface normalization: \"it won't be long before + clause\" used a non-spoken trailing meta slot. Canonical target is normalized to the single speakable surface \"it won't be long before\" without changing the fixed sense boundary.",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02481",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "a quarter to",
+        "sense_key": "fifteen_minutes_before_hour",
+        "meaning_ja": "〜時の15分前"
+      },
+      "reason": "Vocabulary answer-surface normalization: \"a quarter to + time\" used a non-spoken trailing meta slot. Canonical target is normalized to the single speakable surface \"a quarter to\" without changing the fixed sense boundary.",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
     }
   ],
   "followup_scope": "pos/source contextual corruption and canonical/paraphrase relationships are recorded; not repaired in this task.",
@@ -569,5 +738,194 @@
     "baseline_compare": "IDENTICAL",
     "semantic_conflicts": [],
     "decision": "INTEGRATE"
+  },
+  "answer_surface_normalization": {
+    "status": "SIMPLE_PASS_APPLIED",
+    "applied_count": 19,
+    "slash_delimited_answer_targets_in_production": 0,
+    "applied": [
+      {
+        "id": "vocab:00059",
+        "kind": "construction",
+        "from": "it goes without saying that + clause",
+        "to": "it goes without saying that"
+      },
+      {
+        "id": "vocab:00160",
+        "kind": "construction",
+        "from": "as long as + clause",
+        "to": "as long as"
+      },
+      {
+        "id": "vocab:00181",
+        "kind": "construction",
+        "from": "as if + clause",
+        "to": "as if"
+      },
+      {
+        "id": "vocab:00237",
+        "kind": "expression",
+        "from": "convince someone that + clause",
+        "to": "convince someone that"
+      },
+      {
+        "id": "vocab:00244",
+        "kind": "expression",
+        "from": "it occurs to someone that + clause",
+        "to": "it occurs to someone that"
+      },
+      {
+        "id": "vocab:00380",
+        "kind": "construction",
+        "from": "how often + interrogative clause",
+        "to": "how often"
+      },
+      {
+        "id": "vocab:00438",
+        "kind": "construction",
+        "from": "if only + clause",
+        "to": "if only"
+      },
+      {
+        "id": "vocab:00661",
+        "kind": "construction",
+        "from": "it dawns on someone that + clause",
+        "to": "it dawns on someone that"
+      },
+      {
+        "id": "vocab:01153",
+        "kind": "expression",
+        "from": "assure someone that + clause",
+        "to": "assure someone that"
+      },
+      {
+        "id": "vocab:01399",
+        "kind": "expression",
+        "from": "there is little prospect that + clause",
+        "to": "there is little prospect that"
+      },
+      {
+        "id": "vocab:01497",
+        "kind": "construction",
+        "from": "what if + clause",
+        "to": "what if"
+      },
+      {
+        "id": "vocab:01498",
+        "kind": "expression",
+        "from": "I bet + clause",
+        "to": "I bet"
+      },
+      {
+        "id": "vocab:01631",
+        "kind": "construction",
+        "from": "do you mind if + clause",
+        "to": "do you mind if"
+      },
+      {
+        "id": "vocab:01671",
+        "kind": "expression",
+        "from": "warn someone that + clause",
+        "to": "warn someone that"
+      },
+      {
+        "id": "vocab:01916",
+        "kind": "expression",
+        "from": "I'm afraid + clause",
+        "to": "I'm afraid"
+      },
+      {
+        "id": "vocab:02066",
+        "kind": "expression",
+        "from": "it is the case that + clause",
+        "to": "it is the case that"
+      },
+      {
+        "id": "vocab:02384",
+        "kind": "construction",
+        "from": "it won't be long before + clause",
+        "to": "it won't be long before"
+      },
+      {
+        "id": "vocab:02454",
+        "kind": "construction",
+        "from": "it's about time + clause (past tense)",
+        "to": "it's about time"
+      },
+      {
+        "id": "vocab:02481",
+        "kind": "construction",
+        "from": "a quarter to + time",
+        "to": "a quarter to"
+      }
+    ],
+    "residual_complex_slot_notation": [
+      {
+        "id": "vocab:00013",
+        "kind": "construction",
+        "canonical": "so + adjective or adverb + that + clause"
+      },
+      {
+        "id": "vocab:00139",
+        "kind": "construction",
+        "canonical": "no sooner + inverted clause + than + clause"
+      },
+      {
+        "id": "vocab:00185",
+        "kind": "construction",
+        "canonical": "the + comparative + clause, the + comparative + clause"
+      },
+      {
+        "id": "vocab:00538",
+        "kind": "construction",
+        "canonical": "all + time period + long"
+      },
+      {
+        "id": "vocab:00637",
+        "kind": "expression",
+        "canonical": "be in a + adjective + mood"
+      },
+      {
+        "id": "vocab:01276",
+        "kind": "expression",
+        "canonical": "on + adjective + grounds"
+      },
+      {
+        "id": "vocab:01294",
+        "kind": "expression",
+        "canonical": "from a + adjective + viewpoint"
+      },
+      {
+        "id": "vocab:01377",
+        "kind": "construction",
+        "canonical": "something of a + noun"
+      },
+      {
+        "id": "vocab:01815",
+        "kind": "construction",
+        "canonical": "with + noun + past participle"
+      },
+      {
+        "id": "vocab:01816",
+        "kind": "construction",
+        "canonical": "nothing is more + adjective + than + noun or doing something"
+      },
+      {
+        "id": "vocab:01912",
+        "kind": "construction",
+        "canonical": "number + times + comparative + than + something"
+      },
+      {
+        "id": "vocab:01937",
+        "kind": "construction",
+        "canonical": "find it + adjective + to do something"
+      },
+      {
+        "id": "vocab:02243",
+        "kind": "construction",
+        "canonical": "number + in + number"
+      }
+    ],
+    "next_step": "Review residual embedded construction slots individually; do not mechanically strip them because the slots carry construction meaning."
   }
 }
