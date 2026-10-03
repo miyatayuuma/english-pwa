@@ -98,7 +98,7 @@ async function newPage(source,{reducedMotion='reduce',entryState:entryStateOverr
       state.emit=(type,transcripts=[])=>{for(const listener of state.listeners) listener({type,sessionId:state.session.sessionId,alternatives:transcripts.map((transcript,asrRank)=>({transcript,asrRank,confidence:null}))});};
       window.__nativePlugin={
         isAvailable:async()=>({available:true,apiLevel:35,biasSupported:true}),
-        requestPermission:async()=>({granted:nativePermission}),
+        requestPermission:async()=>{state.permission=nativePermission;return {granted:nativePermission};},
         addListener:async(_,listener)=>{state.listeners.add(listener);return {remove:async()=>state.listeners.delete(listener)};},
         start:async options=>{state.session=options;state.starts++;state.emit('started');},
         stop:async()=>{state.stops++;},
@@ -702,7 +702,8 @@ browserTest('Android Vocabulary preview never grades partials; manual stop waits
 browserTest('Android microphone denial is explicit in Vocabulary UI, creates no recognizer and writes no SRS',async()=>{
   const opened=await newPage(sources[4],{native:true,nativePermission:false});const {page}=opened;
   try{
-    await page.waitForFunction(()=>document.querySelector('.vocab-prompt')?.textContent.includes('権限が拒否されました'));
+    try { await page.waitForFunction(()=>document.querySelector('.vocab-prompt')?.textContent.includes('権限が拒否されました'),null,{timeout:10000}); }
+    catch(error){throw new Error(JSON.stringify(await page.evaluate(()=>({prompt:document.querySelector('.vocab-prompt')?.textContent,feedback:document.querySelector('.vocab-feedback')?.textContent,native:{starts:window.__mockNative.starts,permission:window.__mockNative.permission},body:document.body.innerText.slice(-1600)}))),{cause:error});}
     assert.equal(await page.evaluate(()=>window.__mockNative.starts),0);
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0);
     assert.equal(await page.locator('.vocab-answer').count(),0);
