@@ -24,12 +24,12 @@ const sources=[
 const fixtureFor=source=>vocabulary.entries.find(entry=>entry.kind===source.kind&&entry.canonical===source.canonical&&entry.occurrences.some(occurrence=>occurrence.item_id===source.itemId));
 const sourceSurface=(entry,itemId)=>{const occurrence=entry.occurrences.find(value=>String(value.item_id)===String(itemId));const item=itemById.get(String(itemId));return occurrence&&item?item.en.slice(occurrence.start,occurrence.end):''};
 
-async function newPage(source,{reducedMotion='reduce',entryState:entryStateOverride=null,speechSupported=true,startSession=true,fullDataset=false,native=false}={}){
+async function newPage(source,{reducedMotion='reduce',entryState:entryStateOverride=null,speechSupported=true,startSession=true,fullDataset=false,native=false,nativePermission=true}={}){
   const context=await browser.newContext({viewport:{width:390,height:844},serviceWorkers:'block',reducedMotion});
   const entry=JSON.parse(JSON.stringify(fixtureFor(source)));
   assert.ok(entry,`fixture ${source.kind}/${source.canonical} exists`);
   const entryState=entryStateOverride||{last:0,best:0,noHintHistory:[],noHintStreak:0,level5Count:0,review:{nextDueAt:0,intervalMs:0},stability:0,difficulty:0};
-  await context.addInitScript(({entry,source,entryState,speechSupported,fullDataset,items,native})=>{
+  await context.addInitScript(({entry,source,entryState,speechSupported,fullDataset,items,native,nativePermission})=>{
     const initial={
       // Encountered sources unlock Vocabulary without completing the unrelated friendship milestone.
       ...(fullDataset?Object.fromEntries(items.map(item=>[item.id,{last:1,best:1,updatedAt:1700000000000}])):{}),
@@ -98,7 +98,7 @@ async function newPage(source,{reducedMotion='reduce',entryState:entryStateOverr
       state.emit=(type,transcripts=[])=>{for(const listener of state.listeners) listener({type,sessionId:state.session.sessionId,alternatives:transcripts.map((transcript,asrRank)=>({transcript,asrRank,confidence:null}))});};
       window.__nativePlugin={
         isAvailable:async()=>({available:true,apiLevel:35,biasSupported:true}),
-        requestPermission:async()=>({granted:true}),
+        requestPermission:async()=>({granted:nativePermission}),
         addListener:async(_,listener)=>{state.listeners.add(listener);return {remove:async()=>state.listeners.delete(listener)};},
         start:async options=>{state.session=options;state.starts++;state.emit('started');},
         stop:async()=>{state.stops++;},
@@ -110,7 +110,7 @@ async function newPage(source,{reducedMotion='reduce',entryState:entryStateOverr
       play(){window.__mockSpeech.audioPlayed.push(this.url);return Promise.resolve();}
       pause(){}
     };
-  },{entry,source,entryState,speechSupported,fullDataset,items,native});
+  },{entry,source,entryState,speechSupported,fullDataset,items,native,nativePermission});
   const page=await context.newPage();
   if(native) await page.route('**/scripts/native/capacitor-core.js',route=>route.fulfill({contentType:'text/javascript',body:'export const registerPlugin=()=>window.__nativePlugin;'}));
   await page.route('**/*.m4a',route=>route.fulfill({status:200,body:'mock-audio'}));
@@ -695,5 +695,17 @@ browserTest('Android Vocabulary preview never grades partials; manual stop waits
     assert.equal(await page.locator('.vocab-heard__text').innerText(),'YouTube something');
     await page.evaluate(()=>window.__mockNative.emit('final',['yield to something']));
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);
+  }finally{await closePage(opened);}
+});
+
+
+browserTest('Android microphone denial is explicit in Vocabulary UI, creates no recognizer and writes no SRS',async()=>{
+  const opened=await newPage(sources[4],{native:true,nativePermission:false});const {page}=opened;
+  try{
+    await page.waitForFunction(()=>document.querySelector('.vocab-prompt')?.textContent.includes('権限が拒否されました'));
+    assert.equal(await page.evaluate(()=>window.__mockNative.starts),0);
+    assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0);
+    assert.equal(await page.locator('.vocab-answer').count(),0);
+    assert.equal(await page.locator('.vocab-mic').isEnabled(),true);
   }finally{await closePage(opened);}
 });
