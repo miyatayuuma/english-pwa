@@ -121,3 +121,10 @@ test('learning-surface human review batch 04 removes source-specific emotional o
   assert.equal(byId.get('vocab:00474')?.meaning_ja,'somethingし続ける');
   assert.equal(byId.get('vocab:00531')?.meaning_ja,'somethingするのに気が進まない');
 });
+
+
+test('learning-surface human review batch 05 aligns Japanese prompts with the learned structure and sense',()=>{
+  const byId=new Map(db.entries.map(value=>[value.id,value]));
+  assert.equal(byId.get('vocab:00618')?.meaning_ja,'somethingするのを楽しみにする');
+  assert.equal(byId.get('vocab:00622')?.meaning_ja,'someoneについて言えば');
+});
