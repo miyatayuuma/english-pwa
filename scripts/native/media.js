@@ -35,7 +35,7 @@ export function createNativeSynthesis(getPlugin=getNativeMedia){
   const initialized=getPlugin().then(async plugin=>{
     await plugin.addListener('voiceschanged',()=>refresh().catch(()=>{}));
     await plugin.addListener('tts',event=>{
-      if(active?.id!==event.id) return;
+      if(!active || !event.id || active.id!==event.id) return;
       const utter=active.utter;
       if(event.type!=='start') active=null;
       utter['on'+event.type]?.(event);

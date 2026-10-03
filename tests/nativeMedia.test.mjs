@@ -9,6 +9,7 @@ function fixture(){
 }
 test('native synthesis forwards voice/profile and completes only matching native utterance',async()=>{
  const {listeners,calls,synth}=fixture();await tick();
+ assert.doesNotThrow(()=>listeners.tts({type:'end'}));
  const utter=new NativeUtterance('yield');utter.voice={voiceURI:'us'};utter.rate=.8;let starts=0,ends=0;
  utter.onstart=()=>starts++;utter.onend=()=>ends++;
  synth.speak(utter);await tick();assert.equal(calls[0].text,'yield');assert.equal(calls[0].rate,.8);assert.equal(calls[0].voice,'us');
