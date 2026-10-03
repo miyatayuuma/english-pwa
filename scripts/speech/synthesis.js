@@ -1,3 +1,7 @@
+import { isNativeAndroid } from '../native/runtimePlatform.js';
+import { nativeSynthesis, NativeUtterance } from '../native/media.js';
+const synthBackend=()=>isNativeAndroid()?nativeSynthesis():window.speechSynthesis;
+const utteranceBackend=()=>isNativeAndroid()?NativeUtterance:(window.SpeechSynthesisUtterance || window.webkitSpeechSynthesisUtterance);
 import {
   createCharacterVoiceRegistry,
   normalizeCharacterVoiceProfile,
@@ -7,8 +11,9 @@ import {
 
 function speechSynthesisSupported() {
   if (typeof window === 'undefined') return false;
+  if (isNativeAndroid()) return true;
   if (typeof window.speechSynthesis === 'undefined') return false;
-  const Utterance = window.SpeechSynthesisUtterance || window.webkitSpeechSynthesisUtterance;
+  const Utterance = utteranceBackend();
   return typeof Utterance === 'function';
 }
 
@@ -95,7 +100,7 @@ export function createSpeechSynthesisController(options = {}) {
   function getConfiguredSpeechVoice(preferredVoiceId = '', profile = null) {
     if (!supported()) return null;
     try {
-      const voices = window.speechSynthesis.getVoices ? window.speechSynthesis.getVoices() : [];
+      const voices = synthBackend().getVoices ? synthBackend().getVoices() : [];
       return pickVoiceForCharacter({
         voices,
         userVoiceId: preferredVoiceId,
@@ -119,7 +124,7 @@ export function createSpeechSynthesisController(options = {}) {
     clearPendingSpeechTimer();
     if (supported()) {
       try {
-        window.speechSynthesis.cancel();
+        synthBackend().cancel();
       } catch (_) {
         // ignore
       }
@@ -158,7 +163,7 @@ export function createSpeechSynthesisController(options = {}) {
       activeCharacterId: getActiveCharacterId?.(),
       userPlaybackRate: speechRate,
     });
-    const Utterance = window.SpeechSynthesisUtterance || window.webkitSpeechSynthesisUtterance;
+    const Utterance = utteranceBackend();
     return new Promise((resolve) => {
       let settled = false;
       const utter = new Utterance(text);
@@ -245,10 +250,10 @@ export function createSpeechSynthesisController(options = {}) {
         try {
           if(typeof beforeSpeak==='function'&&beforeSpeak()===false){finish(false);return;}
           if (!canStartSpeech?.()) { finish(false); return; }
-          window.speechSynthesis.speak(utter);
-          if (typeof window.speechSynthesis.resume === 'function') {
+          synthBackend().speak(utter);
+          if (typeof synthBackend().resume === 'function') {
             try {
-              window.speechSynthesis.resume();
+              synthBackend().resume();
             } catch (_) {
               // ignore
             }
@@ -280,7 +285,7 @@ export function createSpeechSynthesisController(options = {}) {
     selectEl.disabled = false;
     let voices = [];
     try {
-      voices = window.speechSynthesis.getVoices ? window.speechSynthesis.getVoices() : [];
+      voices = synthBackend().getVoices ? synthBackend().getVoices() : [];
     } catch (_) {
       voices = [];
     }
@@ -316,7 +321,7 @@ export function createSpeechSynthesisController(options = {}) {
 
   function attachVoicesChangedListener(callback) {
     if (!supported() || typeof callback !== 'function') return;
-    const synth = window.speechSynthesis;
+    const synth = synthBackend();
     if (typeof synth.addEventListener === 'function') {
       synth.addEventListener('voiceschanged', callback);
     } else {

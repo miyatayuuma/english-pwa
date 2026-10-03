@@ -4,16 +4,17 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>NativeSpeech device validation (debug only)</title>
 <style>body{font:16px system-ui;margin:16px}label,button{display:inline-block;margin:8px}pre{white-space:pre-wrap;overflow-wrap:anywhere}td,th{border:1px solid #aaa;padding:4px}table{border-collapse:collapse}</style>
-<h1>NativeSpeech device validation</h1>
+<h1>ASR実機テスト</h1>
+<p>これを発音してください</p><p id="prompt" style="font-size:2rem;font-weight:bold"></p>
 <p>debug APKのみ。同一端末・system default recognizerでOFF/ONを比較します。音声は保存しません。記録はこの画面のメモリ内のみです。</p>
 <a href="/index.html">既存UIへ戻る</a>
 <button id="capabilities">Bridge / capability</button><button id="permission">マイク権限</button>
-<label>case <select id="fixture"><option value="vocab:00437">yield to something</option><option value="vocab:00353">see to something</option><option value="vocab:01282">be in</option><option value="vocab:01306">yelled (Vocabulary source)</option><option value="E0102">yelled (actual whole source)</option></select></label>
+<label>case <select id="fixture"><option value="word:yield">yield</option><option value="word:yell">yell</option><option value="vocab:00437" selected>yield to something</option><option value="vocab:00353">see to something</option><option value="vocab:01282">be in</option><option value="vocab:01306">yelled (Vocabulary source)</option><option value="E0102">yelled (actual whole source)</option></select></label>
 <label>bias <select id="condition"><option>ON</option><option>OFF</option></select></label>
 <label>control <select id="control"><option value="positive">正解発話</option><option>数語抜け</option><option>chunk丸ごと抜け</option><option>content word違い</option><option>時制違い</option><option>chunk順序入れ替え</option><option>言いかけ停止</option></select></label>
 <label>発話内容（negativeでは実際に言う内容を入力）<input id="intended"></label>
 <p>現在の正解 authority: <span id="expected"></span></p>
-<button id="start">Start</button><button id="stop" disabled>Stop</button><button id="cancel" disabled>Cancel</button><button id="clear">Clear records</button>
+<button id="start">Start</button><button id="stop" disabled>Stop</button><button id="cancel" disabled>Cancel</button><button id="clear">Clear records</button><button id="copy">結果をコピー</button><button id="export">結果を表示してコピー</button><textarea id="exportText" hidden rows="10" style="width:100%"></textarea>
 <p id="status"></p><pre id="preview"></pre><pre id="configuration"></pre>
 <table><thead><tr><th>case / bias / control</th><th>attempts</th><th>rank-1 exact TARGET</th><th>N-best TARGET</th><th>accepted</th><th>MISS</th><th>technical</th></tr></thead><tbody id="summary"></tbody></table>
 <pre id="output"></pre>
@@ -33,7 +34,7 @@ let controller,attempt,finished=true;
 function log(value){$('output').textContent=JSON.stringify(value,null,2);console.info('NativeSpeech validation',value);}
 function fixture(){
  const key=$('fixture').value;
- const entry=vocabulary.entries.find(entry=>entry.entry_id===key||entry.id===key);
+ const entry=vocabulary.entries.find(entry=>key.startsWith('word:')?entry.canonical===key.slice(5):entry.entry_id===key||entry.id===key);
  if(key==='E0102') return {key,item:itemById.get(key)};
  if(!entry) throw Error('Missing current TARGET entry '+key);
  const occurrence=entry.occurrences.find(o=>o.item_id===(key==='vocab:01306'?'E0102':entry.occurrences[0].item_id));
@@ -44,24 +45,27 @@ function selected(){
  const targets=f.entry?answerVariants(f.entry,f.activeOccurrence):[f.item.en];
  $('expected').textContent=targets.join(' / ');
  if($('control').value==='positive') $('intended').value=f.key==='vocab:01306'?'yelled':targets[0];
+ $('prompt').textContent=$('intended').value;
 }
 function locks(active){for(const id of ['fixture','condition','control','intended','start','clear']) $(id).disabled=active; $('stop').disabled=!active;$('cancel').disabled=!active;}
 function record(result){
  if(finished) return;finished=true;
  const primary=result?.previewTranscript||result?.transcript||'';
  const segments=result?.nativeSegments||[];
- const alternatives=segments.flatMap(segment=>segment.alternatives);
+ const alternatives=segments.flatMap(segment=>segment.alternatives).slice(0,5);
  const targets=attempt.targets;
  const exact=text=>targets.some(target=>normalizeVocabularyAnswer(text)===normalizeVocabularyAnswer(target));
+ const targetIndex=alternatives.findIndex(c=>exact(c.transcript));
  const grade=attempt.fixture.entry?classifyVocabularySpeechAnswer({entry:attempt.fixture.entry,activeOccurrence:attempt.fixture.activeOccurrence,transcript:primary,nativeSegments:segments}):(()=>{const m=matchTranscript(attempt.fixture.item.en,primary);return {type:calcMatchScore(m.refCount,m.recall,m.precision)>=0.7?'accepted':'miss'};})();
  const technical=result?.ok===false?result.reason||'technical':!primary.trim()?'no-speech':null;
- const row={timestamp:new Date().toISOString(),case:attempt.fixture.key,bias:attempt.condition,control:attempt.control,intended:attempt.intended,targets,biasStrings:attempt.biasStrings,backend:'Android SpeechRecognizer',capabilities,primary,alternatives,grade,rank1Target:exact(primary),nbestTarget:alternatives.some(c=>exact(c.transcript)),accepted:!technical&&grade.type!=='miss',technical};
+ const row={timestamp:new Date().toISOString(),case:attempt.fixture.key,bias:attempt.condition,control:attempt.control,intended:attempt.intended,targets,biasStrings:attempt.biasStrings,backend:'Android SpeechRecognizer',capabilities,primary,alternatives,targetRank:targetIndex<0?null:targetIndex+1,grade:technical?null:grade,rank1Target:exact(primary),nbestTarget:alternatives.some(c=>exact(c.transcript)),accepted:!technical&&grade.type!=='miss',technical};
  rows.push(row);locks(false);$('status').textContent=technical||grade.type;log(rows);
  $('summary').replaceChildren();
  const groups=new Map();for(const row of rows){const key=[row.case,row.bias,row.control].join(' / ');if(!groups.has(key)) groups.set(key,[]);groups.get(key).push(row);}
  for(const [key,group] of groups){const tr=document.createElement('tr');for(const value of [key,group.length,group.filter(r=>r.rank1Target).length,group.filter(r=>r.nbestTarget).length,group.filter(r=>r.accepted).length,group.filter(r=>!r.technical&&!r.accepted).length,group.filter(r=>r.technical).length]){const td=document.createElement('td');td.textContent=value;tr.append(td);} $('summary').append(tr);}
 }
 $('start').onclick=async()=>{
+ attempt=null;
  try{
   const f=fixture();const context=buildRecognitionBiasContext(f.entry?{mode:'vocabulary',vocabularyEntry:f.entry,activeOccurrence:f.activeOccurrence}:{mode:'read',itemId:f.key});
   const authority=await resolveNativeBiasStrings(context);const condition=$('condition').value;
@@ -71,14 +75,17 @@ $('start').onclick=async()=>{
   finished=false;locks(true);$('preview').textContent='';$('configuration').textContent=JSON.stringify({capabilities,biasStrings:attempt.biasStrings},null,2);
   controller=createRecognitionController({shouldEvaluate:()=>false,getRecognitionBiasContext:()=>context,onTranscriptPreview:text=>$('preview').textContent=text,onAutoStop:record,onError:event=>record({ok:false,reason:event.error}),onUnsupported:()=>record({ok:false,reason:'unsupported'})});
   const started=controller.start();if(!started.ok) record(started);else $('status').textContent='録音中';
- }catch(error){locks(false);$('status').textContent=error.message;}
+ }catch(error){if(attempt&&!finished) record({ok:false,reason:error.message});else {locks(false);$('status').textContent=error.message;}}
 };
 $('stop').onclick=async()=>record(await controller.stop());
 $('cancel').onclick=()=>{controller.cancel();record({ok:false,reason:'cancelled'});};
 $('clear').onclick=()=>{rows.length=0;$('summary').replaceChildren();$('output').textContent='';};
 $('capabilities').onclick=async()=>log(await plugin.isAvailable());
 $('permission').onclick=async()=>log(await plugin.requestPermission());
-for(const id of ['fixture','control']) $(id).onchange=selected;
+$('intended').oninput=()=>$('prompt').textContent=$('intended').value;
+$('copy').onclick=async()=>{try{await navigator.clipboard.writeText(JSON.stringify(rows,null,2));$('status').textContent='コピーしました';}catch(_){$('export').click();}};
+$('export').onclick=()=>{const box=$('exportText');box.hidden=false;box.value=JSON.stringify(rows,null,2);box.focus();box.select();};
+for(const id of ['fixture','control']) $(id).onchange=()=>{if($('control').value!=='positive') $('intended').value='hello';selected();};
 selected();log(capabilities);
 </script>
 </html>

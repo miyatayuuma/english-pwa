@@ -50,6 +50,18 @@ public class NativeShellGateTest {
         try (ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class)) {
             awaitTrue(scenario, "!!document.querySelector('#app') && document.readyState === 'complete'");
             assertEquals("\"android\"", eval(scenario, "Capacitor.getPlatform()"));
+            awaitTrue(scenario, "!!document.querySelector('#nativeAsrTest')");
+            scenario.onActivity(activity -> {
+                android.view.View container=(android.view.View)activity.getBridge().getWebView().getParent();
+                androidx.core.view.WindowInsetsCompat insets=androidx.core.view.ViewCompat.getRootWindowInsets(container);
+                assertNotNull(insets);
+                androidx.core.graphics.Insets bars=insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars());
+                assertTrue(container.getPaddingTop()>=bars.top);
+                assertTrue(container.getPaddingBottom()>=bars.bottom);
+            });
+            eval(scenario, "window.__media=null; import('/scripts/native/media.js').then(m=>m.getNativeMedia()).then(async p=>window.__media={status:await p.status(),voices:await p.voices()}); true");
+            awaitTrue(scenario, "typeof window.__media?.status?.selected === 'boolean' && Array.isArray(window.__media?.voices?.voices)");
+
             awaitTrue(scenario, "document.querySelector('#loadingOverlay')?.classList.contains('hidden') === true");
             eval(scenario, "window.__gateData=null; fetch('/data/items.json').then(r=>r.json()).then(x=>window.__gateData=x.length); true");
             awaitTrue(scenario, "window.__gateData === 560");

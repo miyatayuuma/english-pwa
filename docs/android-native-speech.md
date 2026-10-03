@@ -116,3 +116,15 @@ Negative controls: omitted words, omitted chunk, wrong content word, wrong tense
 swapped chunks, interrupted utterance. Keep primary/N-best/grading results for
 each. Systematic acceptance of clear wrong answers blocks release. Do not change
 grading or add fuzzy/phonetic rescue to hide recognition defects.
+
+## Pixel follow-up: shell compatibility and device harness
+
+SystemBars automatic CSS handling is disabled only in the Capacitor config. MainActivity applies systemBars/displayCutout/IME insets once to the WebView parent, so all pages and fixed overlays share a viewport inside system UI. This avoids WebView-version-dependent safe-area env handling and leaves browser CSS unchanged.
+
+Debug home has an ASR実機テスト button. The debug-only asset now includes isolated yield/yell, source yelled and the three short expressions, an explicit large spoken prompt, ON/OFF, negative controls, one-based exact TARGET rank, up to five provider alternatives with nullable confidence, unchanged final grading and technical errors. Copy exports JSON; selectable textarea is the clipboard fallback. No recording/audio is stored; rows live only while the page remains open. Technical outcomes have no grade. A negative control starts with hello and can be edited; its actual intended utterance must be entered before starting.
+
+Android NativeMedia owns ACTION_OPEN_DOCUMENT_TREE, read-only persistable grants and exact direct-child filename lookup. The existing folder setting selects/clears it; status restores after process restart. Reselect if a provider revokes access or moves/deletes files. Audio passes through bounded (32 MiB per file) base64 to Blob URLs, preserving the existing HTML audio controller and source fallback order. No broad storage permission is requested. Current filenames are direct children, as in the Web directory resolver.
+
+Native TextToSpeech is a private synthesis backend preserving the existing controller interface, rate/pitch/volume/voice selection and native completion/error/cancel lifecycle. Browser synthesis is unchanged. English voice data must be present in the Android TTS engine; unsupported/missing English data is an explicit playback failure. The sentence fallback also uses this backend. No ASR, shared partition, vocabulary answers or grading authority changes are included.
+
+Device protocol: install the new debug artifact, tap ASR実機テスト, speak each displayed yield / yield to something / yell / yelled / see to something / be in with ON and OFF (10–20 attempts per condition when assessing accuracy). Use negative control hello for each case/condition. Copy the final JSON. Separately verify settings/close controls, folder playback after app restart, and word-card TTS. Emulator checks validate shell/bridge/lifecycle, not real recognizer accuracy or external document providers.
