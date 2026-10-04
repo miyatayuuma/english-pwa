@@ -160,17 +160,6 @@
     .home-cta-wrap{position:sticky;top:0;z-index:3;padding:2px 0 6px;background:linear-gradient(180deg,var(--bg),rgba(11,14,26,.72) 70%,rgba(11,14,26,0))}
     .home-cta{width:100%;max-width:840px;margin:0 auto;display:block}
 
-    .onboarding-card,.personal-plan{max-width:840px;margin:0 auto;border:1px solid var(--bd);border-radius:16px;padding:14px;background:linear-gradient(180deg,rgba(17,23,38,.88),rgba(11,14,26,.94));box-shadow:0 14px 34px rgba(0,0,0,.28)}
-    .onboarding-card__header h2{margin:2px 0 0;font-size:18px}
-    .onboarding-card__eyebrow{margin:0;color:var(--accent);font-size:12px;letter-spacing:.05em}
-    .onboarding-card__note{margin:10px 0 12px;color:var(--muted);font-size:13px}
-    .onboarding-step{display:flex;flex-direction:column;gap:8px}
-    .onboarding-step label{font-size:13px;color:#d8deee}
-    .onboarding-step select{background:#111726;border:1px solid var(--bd);color:var(--txt);border-radius:12px;padding:10px}
-    .onboarding-card__actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}
-    .personal-plan__header{display:flex;align-items:center;justify-content:space-between;gap:12px}
-    .personal-plan__title{margin:0;font-size:14px;font-weight:700;color:#d8deee}
-    .personal-plan__body{margin-top:8px;color:var(--muted);font-size:13px;line-height:1.5}
     .study-stage-access{max-width:840px;margin:0 auto;width:100%;display:flex;justify-content:flex-end}
     .study-stage-access select{width:min(320px,100%);background:#111726;border:1px solid var(--bd);color:var(--txt);border-radius:12px;padding:8px}
     /* iPhone SE〜Pro Max (320-430px / portrait) の縦収まり確認ポイント: home・study・reviewComplete の主要CTAが初期表示で見えること */
@@ -325,35 +314,16 @@
     #cfgBox{width:min(560px,92%);background:#0f1422;border:1px solid var(--bd);border-radius:18px;box-shadow:0 24px 72px rgba(0,0,0,.45);display:flex;flex-direction:column;max-height:90vh;overflow:hidden}
     .cfg-header{padding:18px 18px 10px}
     .cfg-header h3{margin:0 0 6px 0}
-    #cfgBox label{display:block;margin:10px 0}
-    .cfg-fieldset{margin:12px 0;padding:10px 12px;border:1px solid var(--bd);border-radius:10px;background:#0c1221}
-    .cfg-fieldset legend{padding:0 6px;font-size:13px;color:var(--muted)}
-    .cfg-radio{display:flex;align-items:center;gap:8px;margin:6px 0;font-size:14px}
-    .cfg-radio input[type="radio"]{width:auto}
-    .cfg-note{margin:4px 0 0;font-size:12px;color:var(--muted);line-height:1.5}
-    #cfgBox input[type="text"], #cfgBox input[type="url"], #cfgBox input[type="time"], #cfgBox select{width:100%;padding:8px;border-radius:10px;border:1px solid var(--bd);background:#0c1221;color:var(--txt)}
     .cfg-scroll{padding:0 18px 18px;overflow-y:auto;max-height:calc(80vh - 150px);-webkit-overflow-scrolling:touch}
     #cfgBox .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
     #cfgBox .cfg-row{gap:12px;margin-top:8px}
     #cfgBox .cfg-row+.cfg-row{margin-top:6px}
     #cfgBox .cfg-section{padding:10px 0}
     #cfgBox .cfg-section-title{margin:0 0 8px;font-size:13px;color:var(--muted);letter-spacing:.03em;font-weight:600}
-    #cfgBox .cfg-divider{height:1px;margin:4px 0 12px;border:0;background:linear-gradient(90deg,rgba(255,255,255,.14),rgba(255,255,255,.04),rgba(255,255,255,.14));opacity:.7}
     #cfgBox .cfg-status{font-size:12px;color:var(--muted);flex:1 1 auto;min-height:1.2em}
     #cfgBox .cfg-actions-bar{position:sticky;bottom:0;padding:12px 16px;border-top:1px solid var(--bd);background:linear-gradient(180deg,rgba(17,23,38,.9),rgba(17,23,38,.94));backdrop-filter:blur(8px)}
     #cfgBox .cfg-actions{margin-top:0;justify-content:flex-end;gap:10px}
     #cfgBox .btn-ghost{background:transparent;border-color:rgba(255,255,255,.16);color:var(--txt);padding:8px 12px}
-    .cfg-subsection{margin:10px 0 4px}
-    .cfg-subtitle{margin:0 0 6px;font-size:13px;color:var(--muted);letter-spacing:.02em;font-weight:600}
-    .cfg-check{display:flex;align-items:center;gap:8px;margin:6px 0;font-size:14px}
-    .cfg-check input[type="checkbox"]{width:auto}
-    .cfg-fieldset-inline{display:flex;flex-direction:column;gap:4px}
-    .notif-time-list{display:flex;flex-direction:column;gap:6px}
-    .notif-time-row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-start}
-    .notif-time-row input[type="time"]{flex:1 1 auto;min-width:0}
-    .notif-time-row .btn-ghost{flex:0 0 auto}
-    .notif-time-row.has-error input[type="time"], #cfgBox input.input-error{border-color:var(--bad);box-shadow:0 0 0 1px rgba(255,107,107,.18)}
-    .notif-time-error{flex:1 1 100%;color:var(--bad);font-size:12px;margin:2px 0 0}
     #toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#0f1422;border:1px solid #24304a;color:#b7c0d6;border-radius:10px;padding:8px 12px;z-index:99999;display:none}
     .info-dialog{border:none;border-radius:18px;background:#111726;color:var(--txt);padding:0;max-width:min(360px,92vw);width:100%;box-shadow:0 24px 60px rgba(0,0,0,.55)}
     .info-dialog::backdrop{background:rgba(11,14,26,.68)}
@@ -380,13 +350,6 @@
     .milestone-effect.level4{background:linear-gradient(140deg,rgba(98,213,255,.35),rgba(70,211,127,.18));border-color:rgba(98,213,255,.6)}
     .milestone-effect.level5{background:linear-gradient(150deg,rgba(255,215,128,.4),rgba(255,255,255,.12));border-color:rgba(255,215,128,.7);color:#fff8e6}
     .milestone-effect.level5 .effect-title{text-shadow:0 0 18px rgba(255,215,128,.75)}
-    #dirPermOverlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(11,14,26,.88);z-index:100002}
-    #dirPermOverlay.show{display:flex}
-    #dirPermBox{max-width:420px;width:100%;background:#111726;border:1px solid var(--bd);border-radius:18px;padding:20px;box-shadow:0 24px 60px rgba(0,0,0,.5)}
-    #dirPermBox h2{margin:0 0 12px 0;font-size:20px}
-    #dirPermBox p{margin:0 0 12px 0;line-height:1.6;color:var(--muted)}
-    #dirPermStatus{min-height:1.2em;font-size:13px;color:var(--bad);margin-bottom:12px}
-    #dirPermBox .actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
 
 /* Signup form styles */
 .signup-body{background:#0b0e1a;color:var(--txt);min-height:100vh;font-family:'Inter','Noto Sans JP',system-ui,sans-serif;margin:0;display:flex;align-items:center;justify-content:center;padding:24px}

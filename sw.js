@@ -1,4 +1,4 @@
-// sw.js: cache name follows the app version. v5.79
+// sw.js: cache name follows the app version. v5.80
 // Version the import itself so the browser cannot reuse an older worker import.
 importScripts('./scripts/version.js?v=5.66');
 const CACHE = self.APP_VERSION;
@@ -37,7 +37,6 @@ self.addEventListener('install', e => {
     './scripts/app/reorderGuide.js',
     './scripts/app/reorderGrading.js',
     './scripts/reorder/reorderCore.js',
-    './scripts/app/logManager.js',
     './scripts/app/tagLearningCore.js',
     './scripts/app/relationshipCore.js',
     './scripts/app/adaptiveLearning.js',
@@ -75,6 +74,7 @@ self.addEventListener('install', e => {
     './scripts/speech/voiceProfiles.js',
     './scripts/state/studyLog.js',
     './scripts/storage/local.js',
+    './scripts/storage/zeroSetupMigration.js',
     './scripts/ui/milestones.js',
     './scripts/utils/text.js'
   ];

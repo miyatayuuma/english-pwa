@@ -126,7 +126,7 @@ export function buildSessionPlanFromOptions(items,levelState={},value={},runtime
     scope:null,
     ...(shadowing?{recentItemIds:[]}:{}),
     mode:options.mode,
-    ...(size?{size}:{}),
+    ...(size?{size,fillRequestedCount:true}:{}),
   });
   return {...plan,scope:scopeForSessionOptions(options),trainingMode:options.trainingMode};
 }

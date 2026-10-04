@@ -106,7 +106,8 @@ async function newProductionPage({ studyMode = 'compose', hold = false, metadata
   });
   await context.addInitScript(({ studyMode, level, itemId, playbackMode, audioBase }) => {
     localStorage.setItem('itemLevelV1',JSON.stringify({[itemId]:{last:level,best:level}}));
-    localStorage.setItem('appConfigV3', JSON.stringify({ playbackMode, studyMode, audioBase }));
+    localStorage.setItem('appConfigV3', JSON.stringify({ studyMode }));
+    if(playbackMode==='audio') navigator.storage.getDirectory=async()=>({getFileHandle:async()=>({getFile:async()=>new File([await (await fetch(audioBase+'/fixture.wav')).arrayBuffer()],'fixture.wav',{type:'audio/wav'})})});
     window.__testSpeech = { latest: null, starts:0, srsWrites:0, spoken:[] };
     const storageSet=Storage.prototype.setItem;
     Storage.prototype.setItem=function(key,value){if(key==='itemLevelV1') window.__testSpeech.srsWrites++;return storageSet.call(this,key,value);};

@@ -38,17 +38,7 @@
     <div class="loaderDots" aria-hidden="true"><span></span><span></span><span></span></div>
   </div>
 </div>
-<div id="dirPermOverlay" hidden aria-hidden="true">
-  <div id="dirPermBox" role="dialog" aria-modal="true" aria-labelledby="dirPermTitle">
-    <h2 id="dirPermTitle">音声フォルダへのアクセス許可が必要です</h2>
-    <p>保存済みの音声フォルダにアクセスするには、端末のダイアログで「許可する」を選んでください。アクセスを許可しない場合、音声が再生できないことがあります。</p>
-    <div id="dirPermStatus" aria-live="polite"></div>
-    <div class="actions">
-      <button id="dirPermLater" class="btn" hidden>許可せず続行</button>
-      <button id="dirPermAllow" class="btn btn--success">許可を開く</button>
-    </div>
-  </div>
-</div>
+
 <div id="app">
   <header>
     <div class="stat">
@@ -69,44 +59,6 @@
 
   <main>
     <section id="homeView">
-      <section class="onboarding-card" id="onboardingCard" aria-labelledby="onboardingTitle" hidden>
-        <div class="onboarding-card__header">
-          <p class="onboarding-card__eyebrow">初回セットアップ</p>
-          <h2 id="onboardingTitle">3ステップ診断で学習プランを作成</h2>
-        </div>
-        <p class="onboarding-card__note" id="onboardingStepLabel">ステップ1/3：現在の英語レベルを選んでください</p>
-        <div class="onboarding-step" data-step="1">
-          <label for="onboardingLevel">自己申告レベル</label>
-          <select id="onboardingLevel">
-            <option value="">選択してください</option>
-            <option value="beginner">これから始める</option>
-            <option value="intermediate">基礎はあるが会話が不安</option>
-            <option value="advanced">日常会話はできる</option>
-          </select>
-        </div>
-        <div class="onboarding-step" data-step="2" hidden>
-          <label for="onboardingPurpose">学習目的</label>
-          <select id="onboardingPurpose">
-            <option value="">選択してください</option>
-            <option value="travel">旅行・日常会話</option>
-            <option value="business">仕事・ミーティング</option>
-            <option value="exam">試験・資格対策</option>
-          </select>
-        </div>
-        <div class="onboarding-step" data-step="3" hidden>
-          <label for="onboardingMinutes">1日の学習可能時間</label>
-          <select id="onboardingMinutes">
-            <option value="">選択してください</option>
-            <option value="10">10分以内</option>
-            <option value="20">20分前後</option>
-            <option value="30">30分以上</option>
-          </select>
-        </div>
-        <div class="onboarding-card__actions">
-          <button class="btn" id="onboardingBack" type="button">戻る</button>
-          <button class="btn btn--primary" id="onboardingNext" type="button">次へ</button>
-        </div>
-      </section>
 
       <div class="home-cta-wrap">
         <button class="btn btn--primary home-cta" id="startStudyCta" type="button">いまの実力に合った学習を始める</button>
@@ -163,13 +115,6 @@
         </div>
       </div>
 
-      <section class="personal-plan" id="personalPlanSummary" hidden>
-        <div class="personal-plan__header">
-          <p class="personal-plan__title">あなた向けプラン</p>
-          <button id="personalPlanToggle" class="overview-toggle" type="button" aria-expanded="true" aria-controls="personalPlanBody" aria-label="あなた向けプランを折りたたむ">⌄</button>
-        </div>
-        <div class="personal-plan__body" id="personalPlanBody"></div>
-      </section>
 
       <section class="overview-card" id="dailyOverviewCard">
       <div class="overview-card__header">
@@ -239,7 +184,7 @@
             <div class="goal-card__meta goal-card__meta--session">
               <div class="goal-card__value"><span id="sessionGoalDone">0</span>/<span id="sessionGoalTarget">5</span>件</div>
               <div class="session-goal__controls">
-                <label class="sr-only" for="sessionGoalSlider">セッション目標の件数</label>
+                <label class="sr-only" for="sessionGoalSlider">今回の達成目標（出題数は開始メニューで指定）</label>
                 <input id="sessionGoalSlider" type="range" min="1" max="30" step="1" value="5">
                 <div class="session-goal__bar">
                   <div class="session-goal__bar-fill" id="sessionGoalBarFill"></div>
@@ -350,70 +295,8 @@
 <!-- 設定モーダル -->
 <div id="cfgModal">
   <div id="cfgBox">
-    <div class="cfg-header">
-      <h3>接続設定</h3>
-      <p class="muted version-tag" data-app-version aria-live="polite"></p>
-    </div>
+    <div class="cfg-header"><h3>音源</h3></div>
     <div class="cfg-scroll">
-      <label>GAS Web App URL（/exec）
-        <input id="cfgUrl" type="url" placeholder="https://script.google.com/macros/s/.../exec">
-      </label>
-      <label>API Key（未設定でも可）
-        <input id="cfgKey" type="text" placeholder="（空でも可）">
-      </label>
-      <label>音源ベースURL（例: https://example.com/audio または ./audio）
-        <input id="cfgAudioBase" type="text" placeholder="./audio">
-      </label>
-      <fieldset class="cfg-fieldset">
-        <legend>再生方法</legend>
-        <label class="cfg-radio"><input type="radio" name="cfgPlaybackMode" value="audio"> 音源のみ</label>
-        <label class="cfg-radio"><input type="radio" name="cfgPlaybackMode" value="speech"> 合成音声のみ</label>
-      </fieldset>
-      <fieldset class="cfg-fieldset">
-        <legend>学習モード</legend>
-        <label class="cfg-radio"><input type="radio" name="cfgStudyMode" value="read"> 通常モード（音読・リピーティング）</label>
-        <label class="cfg-radio"><input type="radio" name="cfgStudyMode" value="compose"> 整序英作文ガイド（語順ヒントを表示）</label>
-        <p class="cfg-note">整序英作文を有効化すると、英文ヒントの代わりにランダムな語句タグが表示されます。設定を保存すると次のカードから適用されます。</p>
-      </fieldset>
-      <label>音声合成の声
-        <select id="cfgSpeechVoice"></select>
-      </label>
-      <p class="cfg-note">自動選択では話者ごとの自然な声を使います。声を選ぶと全キャラクター共通で上書きします。再生速度はキャラクター固有速度と掛け合わせ、安全範囲内で適用されます。</p>
-      <div class="cfg-section">
-        <p class="cfg-section-title">通知・接続</p>
-        <div class="row cfg-row">
-          <button id="btnNotifPerm" class="btn">学習リマインド通知を有効化</button>
-          <span id="notifStatus" class="muted cfg-status"></span>
-        </div>
-        <p id="notifHelp" class="cfg-note"></p>
-        <div class="cfg-subsection">
-          <p class="cfg-subtitle">リマインダー時間</p>
-          <div id="notifTimeList" class="notif-time-list"></div>
-          <button id="notifTimeAdd" type="button" class="btn btn-ghost">時刻を追加</button>
-        </div>
-        <fieldset class="cfg-fieldset cfg-fieldset-inline">
-          <legend>通知トリガー</legend>
-          <label class="cfg-check"><input type="checkbox" id="notifTriggerDailyZero"> 未学習リマインド（合格0件をお知らせ）</label>
-          <label class="cfg-check"><input type="checkbox" id="notifTriggerDailyCompare"> 昨日との進捗比較</label>
-          <label class="cfg-check"><input type="checkbox" id="notifTriggerWeekly"> 週次振り返り</label>
-          <label class="cfg-check"><input type="checkbox" id="notifTriggerRestartTone"> 再開モード通知（やさしめ文面）</label>
-        </fieldset>
-        <label>達成演出の強さ
-          <select id="cfgMilestoneIntensity">
-            <option value="subtle">控えめ</option>
-            <option value="normal">標準</option>
-            <option value="strong">強め</option>
-          </select>
-        </label>
-        <label>発話判定の効果音
-          <select id="cfgResultSound">
-            <option value="standard">標準</option>
-            <option value="subtle">控えめ</option>
-            <option value="off">なし</option>
-          </select>
-        </label>
-      </div>
-      <div class="cfg-divider" role="presentation"></div>
       <div class="cfg-section">
         <p class="cfg-section-title">ファイル</p>
         <div class="row cfg-row">
@@ -428,7 +311,6 @@
     <div class="cfg-actions-bar row cfg-actions">
       <div class="grow"></div>
       <button id="cfgClose" class="btn">閉じる</button>
-      <button id="cfgSave" class="btn" style="background:#1a2134;border-color:#233252">保存</button>
     </div>
   </div>
 </div>

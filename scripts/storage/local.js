@@ -8,18 +8,13 @@ const STORAGE_KEYS = Object.freeze({
   SEARCH: 'itemSearchV1',
   SPEED: 'audioSpeedV1',
   CONFIG: 'appConfigV3',
-  NOTIF_SETTINGS: 'notifSettingsV1',
   DAILY_GOAL: 'dailyGoalV1',
   SESSION_GOAL: 'sessionGoalV1',
-  PENDING_LOGS: 'pendingLogsV1',
   SECTION_SELECTION: 'secSel',
   ORDER_SELECTION: 'orderSel',
   DAILY_OVERVIEW: 'dailyOverviewCollapsedV1',
   DAILY_GOAL_COLLAPSE: 'dailyGoalCollapsedV1',
   SESSION_GOAL_COLLAPSE: 'sessionGoalCollapsedV1',
-  ONBOARDING_COMPLETED: 'hasCompletedOnboardingV1',
-  ONBOARDING_PLAN: 'onboardingPlanV1',
-  ONBOARDING_PLAN_COLLAPSE_DATE: 'onboardingPlanCollapseDateV1'
 });
 
 const storage = (() => {

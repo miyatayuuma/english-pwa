@@ -37,7 +37,7 @@ async function newPage(source,{reducedMotion='reduce',entryState:entryStateOverr
       [entry.id]:entryState,
     };
     localStorage.setItem('itemLevelV1',JSON.stringify(initial));
-    localStorage.setItem('appConfigV3',JSON.stringify({audioBase:`${location.origin}/mock-audio`,playbackMode:'audio'}));
+    navigator.storage.getDirectory=async()=>({getFileHandle:async name=>({getFile:async()=>new File(['mock-audio'],name,{type:'audio/mp4'})})});
     window.__vocabularyFixture__=entry;
     const nativeFetch=window.fetch.bind(window);
     window.fetch=(input,init)=>{

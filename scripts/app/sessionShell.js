@@ -138,7 +138,7 @@ function injectStyles(){
     .explore-status button.is-active{border-color:rgba(129,140,248,.5);background:rgba(99,102,241,.13);font-weight:750}
     .explore-actions{display:grid;grid-template-columns:auto 1fr;gap:8px;margin-top:12px}.explore-actions button{min-height:48px;border-radius:13px;font:inherit;font-weight:750;cursor:pointer}
     .explore-tag-link{border:1px solid rgba(148,163,184,.15);background:rgba(148,163,184,.05);color:inherit;padding:0 14px}.explore-start{border:0;background:#6366f1;color:#fff}
-    .explore-count{text-align:center;font-size:11px;opacity:.55;margin-top:8px}.cfg-fieldset[data-focus-hidden=true]{display:none!important}
+    .explore-count{text-align:center;font-size:11px;opacity:.55;margin-top:8px}
     #playOptionsDialog{width:min(100%,720px);height:100dvh;max-height:100dvh;margin:0 auto}
     #playOptionsDialog .focus-sheet{height:100dvh;max-height:100dvh;border-radius:0}
     #playOptionsDialog .focus-sheet__body{flex:1;padding:0;display:flex;flex-direction:column;min-height:0;overflow:hidden}
@@ -224,12 +224,6 @@ function refreshHomeMeta(){
   host.textContent=`今日 ${today}文 · 次 ${plan.size}文`;
 }
 
-function hideInternalSettings(){
-  document.querySelectorAll('.cfg-fieldset').forEach(fieldset=>{
-    const legend=fieldset.querySelector('legend');
-    if(legend?.textContent?.includes('学習モード')) fieldset.dataset.focusHidden='true';
-  });
-}
 
 function makeDialog(id,title){
   let dialog=document.getElementById(id);
@@ -327,8 +321,8 @@ function updateOptionsSheet(dialog,{renderManual=true}={}){
   const count=requestedCountForSessionOptions(options);
   const selectedManual=options.manualItemIds.filter(id=>eligible.some(item=>String(item.id)===id)).length;
   dialog.querySelector('#playOptionsCount').textContent=options.mode==='manual'
-    ?`例文指定 ${selectedManual}文${count?` · 今回は最大${count}会話`:''}`
-    :(count?`今回は ${count}会話`:'会話数は自動で6〜8');
+    ?`例文指定 ${selectedManual}文${count?` · 今回は最大${count}問`:''}`
+    :(count?`今回は ${count}問`:'出題数は自動で6〜8');
   const causes=dialog.querySelector('#playOptionsCauses');causes.replaceChildren();
   if(!eligible.length){
     for(const cause of diagnoseEmptySessionOptions(state.items,options,levelState)){
@@ -340,7 +334,7 @@ function updateOptionsSheet(dialog,{renderManual=true}={}){
   start.disabled=!eligible.length||(options.mode==='manual'&&selectedManual===0);
   start.textContent=isContinuousShadowingMode(options.trainingMode)
     ?(count?`${count}文を連続練習`:'連続シャドウイングを始める')
-    :(options.mode==='manual'?`${selectedManual}文で始める`:(count?`${count}会話を始める`:'おまかせで始める'));
+    :(options.mode==='manual'?`${selectedManual}文で始める`:(count?`${count}問を始める`:'おまかせで始める'));
 }
 
 function createOptionsDialog(){
@@ -353,9 +347,9 @@ function createOptionsDialog(){
       <label class="play-options__field"><span class="play-options__label">相手</span><select class="play-options__select" id="playOptionsCharacter"></select></label>
       <label class="play-options__field"><span class="play-options__label">特訓テーマ</span><select class="play-options__select" id="playOptionsSkill"></select></label>
       <label class="play-options__field"><span class="play-options__label">チャプター</span><select class="play-options__select" id="playOptionsSection"></select></label>
-      <div class="play-options__field"><span class="play-options__label">今回の会話数</span><div class="play-options__choices">
+      <div class="play-options__field"><span class="play-options__label">今回の出題数</span><div class="play-options__choices">
         <button class="play-options__choice" type="button" data-session-count="auto">おまかせ</button><button class="play-options__choice" type="button" data-session-count="5">5</button><button class="play-options__choice" type="button" data-session-count="8">8</button><button class="play-options__choice" type="button" data-session-count="12">12</button>
-      </div><button class="play-options__choice" type="button" data-session-count="custom">任意</button><input class="play-options__custom" id="playOptionsCustomCount" type="number" inputmode="numeric" min="1" max="50" aria-label="任意の会話数"></div>
+      </div><button class="play-options__choice" type="button" data-session-count="custom">任意</button><input class="play-options__custom" id="playOptionsCustomCount" type="number" inputmode="numeric" min="1" max="50" aria-label="任意の出題数"></div>
       <div class="play-options__field"><span class="play-options__label">選び方</span><div class="play-options__choices play-options__choices--mode">
         <button class="play-options__choice" type="button" data-session-mode="auto">おまかせ</button><button class="play-options__choice" type="button" data-session-mode="review">復習優先</button><button class="play-options__choice" type="button" data-session-mode="new">新規多め</button><button class="play-options__choice" type="button" data-session-mode="manual">例文指定</button>
       </div></div>
@@ -705,7 +699,6 @@ async function init(){
   state.characters=new Map(characters.filter(profile=>profile?.id).map(profile=>[profile.id,profile]));
   state.optionsDraft=createDefaultSessionOptions(globalThis.__ENGLISH_PWA_ACTIVE_CHARACTER_ID__||'');
   setupCompactHome();
-  hideInternalSettings();
   bindStartInterceptors();
   bindObservers();
   ensureMemoryCue();
