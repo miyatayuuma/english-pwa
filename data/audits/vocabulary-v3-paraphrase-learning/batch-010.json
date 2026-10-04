@@ -1,0 +1,3060 @@
+{
+  "schema_version": 1,
+  "policy_version": "prompt-learning-value-v1",
+  "batch": 10,
+  "ordinal_start": 901,
+  "ordinal_end": 1000,
+  "claim_main": "4a096add99a3ebe1c90e904a8cc0713e34603394",
+  "reviewed_against_main": "39aa6590976317ad4cb82547a5ff394e128dd380",
+  "reviewed_count": 100,
+  "entry_ids": [
+    "vocab:00904",
+    "vocab:00905",
+    "vocab:00906",
+    "vocab:00907",
+    "vocab:00908",
+    "vocab:00909",
+    "vocab:00910",
+    "vocab:00911",
+    "vocab:00912",
+    "vocab:00913",
+    "vocab:00914",
+    "vocab:00915",
+    "vocab:00916",
+    "vocab:00917",
+    "vocab:00918",
+    "vocab:00919",
+    "vocab:00920",
+    "vocab:00921",
+    "vocab:00922",
+    "vocab:00923",
+    "vocab:00924",
+    "vocab:00925",
+    "vocab:00926",
+    "vocab:00927",
+    "vocab:00928",
+    "vocab:00929",
+    "vocab:00930",
+    "vocab:00931",
+    "vocab:00932",
+    "vocab:00933",
+    "vocab:00934",
+    "vocab:00935",
+    "vocab:00936",
+    "vocab:00937",
+    "vocab:00938",
+    "vocab:00939",
+    "vocab:00940",
+    "vocab:00941",
+    "vocab:00942",
+    "vocab:00943",
+    "vocab:00944",
+    "vocab:00945",
+    "vocab:00946",
+    "vocab:00947",
+    "vocab:00948",
+    "vocab:00949",
+    "vocab:00950",
+    "vocab:00951",
+    "vocab:00952",
+    "vocab:00953",
+    "vocab:00954",
+    "vocab:00955",
+    "vocab:00956",
+    "vocab:00957",
+    "vocab:00958",
+    "vocab:00959",
+    "vocab:00960",
+    "vocab:00961",
+    "vocab:00962",
+    "vocab:00963",
+    "vocab:00964",
+    "vocab:00965",
+    "vocab:00966",
+    "vocab:00967",
+    "vocab:00968",
+    "vocab:00969",
+    "vocab:00970",
+    "vocab:00971",
+    "vocab:00972",
+    "vocab:00973",
+    "vocab:00974",
+    "vocab:00975",
+    "vocab:00976",
+    "vocab:00977",
+    "vocab:00978",
+    "vocab:00979",
+    "vocab:00980",
+    "vocab:00981",
+    "vocab:00982",
+    "vocab:00983",
+    "vocab:00984",
+    "vocab:00985",
+    "vocab:00986",
+    "vocab:00987",
+    "vocab:00988",
+    "vocab:00989",
+    "vocab:00990",
+    "vocab:00991",
+    "vocab:00992",
+    "vocab:00993",
+    "vocab:00994",
+    "vocab:00995",
+    "vocab:00996",
+    "vocab:00997",
+    "vocab:00998",
+    "vocab:00999",
+    "vocab:01000",
+    "vocab:01001",
+    "vocab:01002",
+    "vocab:01003"
+  ],
+  "results": [
+    {
+      "entry_id": "vocab:00904",
+      "prompt_ja": "現象",
+      "canonical_snapshot": "phenomenon",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "occurrence"
+      ],
+      "candidate_review": [
+        {
+          "expression": "occurrence",
+          "decision": "REJECT",
+          "reason": "occurrence は「出来事・発生」まで含むため、「現象」の主要な別英答としては意味範囲が広すぎる。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「現象」について候補 occurrence を逆方向に検証したが、意味ずれ・文脈依存・低い増分価値のため登録しない。"
+    },
+    {
+      "entry_id": "vocab:00905",
+      "prompt_ja": "まねる",
+      "canonical_snapshot": "imitate",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "mimic",
+        "copy"
+      ],
+      "candidate_review": [
+        {
+          "expression": "mimic",
+          "decision": "ACCEPT",
+          "reason": "「まねる」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "copy",
+          "decision": "ACCEPT",
+          "reason": "「まねる」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "mimic",
+        "copy"
+      ],
+      "decision": "CHANGED",
+      "reason": "「まねる」への主要な別英答として mimic / copy を採用。 promptへの成立性と学習価値の両方を満たす表現に限定した。"
+    },
+    {
+      "entry_id": "vocab:00906",
+      "prompt_ja": "盛んな",
+      "canonical_snapshot": "thriving",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "flourishing",
+        "booming"
+      ],
+      "candidate_review": [
+        {
+          "expression": "flourishing",
+          "decision": "ACCEPT",
+          "reason": "「盛んな」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "booming",
+          "decision": "ACCEPT",
+          "reason": "「盛んな」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "flourishing",
+        "booming"
+      ],
+      "decision": "CHANGED",
+      "reason": "「盛んな」への主要な別英答として flourishing / booming を採用。 promptへの成立性と学習価値の両方を満たす表現に限定した。"
+    },
+    {
+      "entry_id": "vocab:00907",
+      "prompt_ja": "大きく変える",
+      "canonical_snapshot": "transform",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "revolutionize",
+        "reshape",
+        "overhaul"
+      ],
+      "candidate_review": [
+        {
+          "expression": "revolutionize",
+          "decision": "ACCEPT",
+          "reason": "「大きく変える」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "reshape",
+          "decision": "ACCEPT",
+          "reason": "「大きく変える」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "overhaul",
+          "decision": "REJECT",
+          "reason": "overhaul は制度・機械などを全面改修する文脈に偏り、一般的な「大きく変える」への汎用回答としては狭い。"
+        }
+      ],
+      "after_paraphrases": [
+        "revolutionize",
+        "reshape"
+      ],
+      "decision": "CHANGED",
+      "reason": "「大きく変える」への主要な別英答として revolutionize / reshape を採用。 overhaul は意味範囲・文脈依存・増分価値を再検討して除外した。"
+    },
+    {
+      "entry_id": "vocab:00908",
+      "prompt_ja": "従来の",
+      "canonical_snapshot": "conventional",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "traditional",
+        "existing"
+      ],
+      "candidate_review": [
+        {
+          "expression": "traditional",
+          "decision": "ACCEPT",
+          "reason": "「従来の」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "existing",
+          "decision": "REJECT",
+          "reason": "existing は「既存の」であり、時間的対比を含む「従来の」と常に対応するわけではない。"
+        }
+      ],
+      "after_paraphrases": [
+        "traditional"
+      ],
+      "decision": "CHANGED",
+      "reason": "「従来の」への主要な別英答として traditional を採用。 existing は意味範囲・文脈依存・増分価値を再検討して除外した。"
+    },
+    {
+      "entry_id": "vocab:00909",
+      "prompt_ja": "統合する",
+      "canonical_snapshot": "integrate",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "combine",
+        "merge",
+        "unify"
+      ],
+      "candidate_review": [
+        {
+          "expression": "combine",
+          "decision": "ACCEPT",
+          "reason": "「統合する」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "merge",
+          "decision": "ACCEPT",
+          "reason": "「統合する」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "unify",
+          "decision": "ACCEPT",
+          "reason": "「統合する」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "combine",
+        "merge",
+        "unify"
+      ],
+      "decision": "CHANGED",
+      "reason": "「統合する」への主要な別英答として combine / merge / unify を採用。 promptへの成立性と学習価値の両方を満たす表現に限定した。"
+    },
+    {
+      "entry_id": "vocab:00910",
+      "prompt_ja": "消費者",
+      "canonical_snapshot": "consumer",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "customer",
+        "end user"
+      ],
+      "candidate_review": [
+        {
+          "expression": "customer",
+          "decision": "REJECT",
+          "reason": "customer は購入者であり、実際の消費者 consumer と一致しない場合がある。"
+        },
+        {
+          "expression": "end user",
+          "decision": "REJECT",
+          "reason": "end user は最終利用者に限定され、一般的な「消費者」より狭い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「消費者」について候補 customer / end user を逆方向に検証したが、意味ずれ・文脈依存・低い増分価値のため登録しない。"
+    },
+    {
+      "entry_id": "vocab:00911",
+      "prompt_ja": "効率的な",
+      "canonical_snapshot": "efficient",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "effective",
+        "streamlined"
+      ],
+      "candidate_review": [
+        {
+          "expression": "effective",
+          "decision": "REJECT",
+          "reason": "effective は「効果的な」で、資源効率を表す efficient とは区別すべき。"
+        },
+        {
+          "expression": "streamlined",
+          "decision": "REJECT",
+          "reason": "streamlined は工程・組織などが無駄なく簡素化された場合に偏る。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「効率的な」について候補 effective / streamlined を逆方向に検証したが、意味ずれ・文脈依存・低い増分価値のため登録しない。"
+    },
+    {
+      "entry_id": "vocab:00912",
+      "prompt_ja": "企業",
+      "canonical_snapshot": "enterprise",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "company",
+        "business",
+        "corporation",
+        "firm"
+      ],
+      "candidate_review": [
+        {
+          "expression": "company",
+          "decision": "ACCEPT",
+          "reason": "「企業」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "business",
+          "decision": "ACCEPT",
+          "reason": "「企業」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "corporation",
+          "decision": "ACCEPT",
+          "reason": "「企業」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "firm",
+          "decision": "ACCEPT",
+          "reason": "「企業」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "company",
+        "business",
+        "corporation",
+        "firm"
+      ],
+      "decision": "CHANGED",
+      "reason": "「企業」への主要な別英答として company / business / corporation / firm を採用。 promptへの成立性と学習価値の両方を満たす表現に限定した。"
+    },
+    {
+      "entry_id": "vocab:00913",
+      "prompt_ja": "破産状態の",
+      "canonical_snapshot": "bankrupt",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "insolvent"
+      ],
+      "candidate_review": [
+        {
+          "expression": "insolvent",
+          "decision": "ACCEPT",
+          "reason": "「破産状態の」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "insolvent"
+      ],
+      "decision": "CHANGED",
+      "reason": "「破産状態の」への主要な別英答として insolvent を採用。 promptへの成立性と学習価値の両方を満たす表現に限定した。"
+    },
+    {
+      "entry_id": "vocab:00914",
+      "prompt_ja": "利益",
+      "canonical_snapshot": "profit",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "benefit",
+        "gain"
+      ],
+      "candidate_review": [
+        {
+          "expression": "benefit",
+          "decision": "ACCEPT",
+          "reason": "「利益」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "gain",
+          "decision": "ACCEPT",
+          "reason": "「利益」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "benefit",
+        "gain"
+      ],
+      "decision": "CHANGED",
+      "reason": "「利益」への主要な別英答として benefit / gain を採用。 promptへの成立性と学習価値の両方を満たす表現に限定した。"
+    },
+    {
+      "entry_id": "vocab:00915",
+      "prompt_ja": "重荷",
+      "canonical_snapshot": "burden",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "load",
+        "liability"
+      ],
+      "candidate_review": [
+        {
+          "expression": "load",
+          "decision": "ACCEPT",
+          "reason": "「重荷」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "liability",
+          "decision": "REJECT",
+          "reason": "liability は法的責任・負債・足手まとい等の限定的な意味が強く、一般的な「重荷」には広げない。"
+        }
+      ],
+      "after_paraphrases": [
+        "load"
+      ],
+      "decision": "CHANGED",
+      "reason": "「重荷」への主要な別英答として load を採用。 liability は意味範囲・文脈依存・増分価値を再検討して除外した。"
+    },
+    {
+      "entry_id": "vocab:00916",
+      "prompt_ja": "見積もる",
+      "canonical_snapshot": "estimate",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "assess",
+        "quote"
+      ],
+      "candidate_review": [
+        {
+          "expression": "assess",
+          "decision": "REJECT",
+          "reason": "assess は評価・査定全般で、数量や価格を「見積もる」より意味が広い。"
+        },
+        {
+          "expression": "quote",
+          "decision": "REJECT",
+          "reason": "quote は価格を提示する場合に限定され、一般的な「見積もる」には狭い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「見積もる」について候補 assess / quote を逆方向に検証したが、意味ずれ・文脈依存・低い増分価値のため登録しない。"
+    },
+    {
+      "entry_id": "vocab:00917",
+      "prompt_ja": "感謝する",
+      "canonical_snapshot": "appreciate",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "thank"
+      ],
+      "candidate_review": [
+        {
+          "expression": "thank",
+          "decision": "ACCEPT",
+          "reason": "「感謝する」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "thank"
+      ],
+      "decision": "CHANGED",
+      "reason": "「感謝する」への主要な別英答として thank を採用。 promptへの成立性と学習価値の両方を満たす表現に限定した。"
+    },
+    {
+      "entry_id": "vocab:00918",
+      "prompt_ja": "同僚",
+      "canonical_snapshot": "colleague",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "coworker",
+        "peer"
+      ],
+      "candidate_review": [
+        {
+          "expression": "coworker",
+          "decision": "ACCEPT",
+          "reason": "「同僚」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "peer",
+          "decision": "REJECT",
+          "reason": "peer は同等の立場・仲間で、同じ職場の「同僚」とは一致しない場合がある。"
+        }
+      ],
+      "after_paraphrases": [
+        "coworker"
+      ],
+      "decision": "CHANGED",
+      "reason": "「同僚」への主要な別英答として coworker を採用。 peer は意味範囲・文脈依存・増分価値を再検討して除外した。"
+    },
+    {
+      "entry_id": "vocab:00919",
+      "prompt_ja": "不況",
+      "canonical_snapshot": "recession",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "downturn",
+        "slump",
+        "depression"
+      ],
+      "candidate_review": [
+        {
+          "expression": "downturn",
+          "decision": "ACCEPT",
+          "reason": "「不況」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "slump",
+          "decision": "ACCEPT",
+          "reason": "「不況」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "depression",
+          "decision": "REJECT",
+          "reason": "depression は通常 recession より深刻で長期の経済不況を指し、単なる「不況」への汎用回答には強すぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "downturn",
+        "slump"
+      ],
+      "decision": "CHANGED",
+      "reason": "「不況」への主要な別英答として downturn / slump を採用。 depression は意味範囲・文脈依存・増分価値を再検討して除外した。"
+    },
+    {
+      "entry_id": "vocab:00920",
+      "prompt_ja": "通貨",
+      "canonical_snapshot": "currency",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "money"
+      ],
+      "candidate_review": [
+        {
+          "expression": "money",
+          "decision": "REJECT",
+          "reason": "money は金銭一般で、交換媒体の体系としての「通貨」より広い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「通貨」について候補 money を逆方向に検証したが、意味ずれ・文脈依存・低い増分価値のため登録しない。"
+    },
+    {
+      "entry_id": "vocab:00921",
+      "prompt_ja": "安定させる",
+      "canonical_snapshot": "stabilize",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "steady"
+      ],
+      "candidate_review": [
+        {
+          "expression": "steady",
+          "decision": "ACCEPT",
+          "reason": "「安定させる」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "steady"
+      ],
+      "decision": "CHANGED",
+      "reason": "「安定させる」への主要な別英答として steady を採用。 promptへの成立性と学習価値の両方を満たす表現に限定した。"
+    },
+    {
+      "entry_id": "vocab:00922",
+      "prompt_ja": "不足額",
+      "canonical_snapshot": "deficit",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "shortfall"
+      ],
+      "candidate_review": [
+        {
+          "expression": "shortfall",
+          "decision": "ACCEPT",
+          "reason": "「不足額」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "shortfall"
+      ],
+      "decision": "CHANGED",
+      "reason": "「不足額」への主要な別英答として shortfall を採用。 promptへの成立性と学習価値の両方を満たす表現に限定した。"
+    },
+    {
+      "entry_id": "vocab:00923",
+      "prompt_ja": "予約",
+      "canonical_snapshot": "reservation",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "booking",
+        "appointment"
+      ],
+      "candidate_review": [
+        {
+          "expression": "booking",
+          "decision": "ACCEPT",
+          "reason": "「予約」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "appointment",
+          "decision": "ACCEPT",
+          "reason": "「予約」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "booking",
+        "appointment"
+      ],
+      "decision": "CHANGED",
+      "reason": "「予約」への主要な別英答として booking / appointment を採用。 promptへの成立性と学習価値の両方を満たす表現に限定した。"
+    },
+    {
+      "entry_id": "vocab:00924",
+      "prompt_ja": "収容する",
+      "canonical_snapshot": "accommodate",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "house",
+        "hold",
+        "seat"
+      ],
+      "candidate_review": [
+        {
+          "expression": "house",
+          "decision": "ACCEPT",
+          "reason": "「収容する」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "hold",
+          "decision": "ACCEPT",
+          "reason": "「収容する」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "seat",
+          "decision": "REJECT",
+          "reason": "seat は座席に着かせる意味に限定され、「収容する」全般の回答には狭い。"
+        }
+      ],
+      "after_paraphrases": [
+        "house",
+        "hold"
+      ],
+      "decision": "CHANGED",
+      "reason": "「収容する」への主要な別英答として house / hold を採用。 seat は意味範囲・文脈依存・増分価値を再検討して除外した。"
+    },
+    {
+      "entry_id": "vocab:00925",
+      "prompt_ja": "食欲",
+      "canonical_snapshot": "appetite",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "hunger"
+      ],
+      "candidate_review": [
+        {
+          "expression": "hunger",
+          "decision": "REJECT",
+          "reason": "hunger は空腹・飢えであり、食べたい欲求としての appetite と同一ではない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「食欲」について候補 hunger を逆方向に検証したが、意味ずれ・文脈依存・低い増分価値のため登録しない。"
+    },
+    {
+      "entry_id": "vocab:00926",
+      "prompt_ja": "苦しむ",
+      "canonical_snapshot": "suffer",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "struggle",
+        "be in pain"
+      ],
+      "candidate_review": [
+        {
+          "expression": "struggle",
+          "decision": "REJECT",
+          "reason": "struggle は困難に対して努力・格闘する含意があり、単に「苦しむ」より意味を足す。"
+        },
+        {
+          "expression": "be in pain",
+          "decision": "REJECT",
+          "reason": "be in pain は身体的苦痛中心で、「苦しむ」の意味範囲を狭めすぎる。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「苦しむ」について候補 struggle / be in pain を逆方向に検証したが、意味ずれ・文脈依存・低い増分価値のため登録しない。"
+    },
+    {
+      "entry_id": "vocab:00927",
+      "prompt_ja": "栄養",
+      "canonical_snapshot": "nutrition",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "nourishment"
+      ],
+      "candidate_review": [
+        {
+          "expression": "nourishment",
+          "decision": "ACCEPT",
+          "reason": "「栄養」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "nourishment"
+      ],
+      "decision": "CHANGED",
+      "reason": "「栄養」への主要な別英答として nourishment を採用。 promptへの成立性と学習価値の両方を満たす表現に限定した。"
+    },
+    {
+      "entry_id": "vocab:00928",
+      "prompt_ja": "不可欠な",
+      "canonical_snapshot": "vital",
+      "answers_snapshot": [],
+      "existing_paraphrases": [
+        "essential"
+      ],
+      "blind_candidates": [
+        "essential",
+        "indispensable",
+        "crucial"
+      ],
+      "candidate_review": [
+        {
+          "expression": "essential",
+          "decision": "ACCEPT",
+          "reason": "「不可欠な」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "indispensable",
+          "decision": "ACCEPT",
+          "reason": "「不可欠な」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "crucial",
+          "decision": "REJECT",
+          "reason": "crucial は「極めて重要な」だが、必ずしも「不可欠な」まで意味しない。"
+        }
+      ],
+      "after_paraphrases": [
+        "essential",
+        "indispensable"
+      ],
+      "decision": "CHANGED",
+      "reason": "「不可欠な」への主要な別英答として essential / indispensable を採用。 crucial は意味範囲・文脈依存・増分価値を再検討して除外した。"
+    },
+    {
+      "entry_id": "vocab:00929",
+      "prompt_ja": "医師",
+      "canonical_snapshot": "physician",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "doctor"
+      ],
+      "candidate_review": [
+        {
+          "expression": "doctor",
+          "decision": "ACCEPT",
+          "reason": "「医師」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "doctor"
+      ],
+      "decision": "CHANGED",
+      "reason": "「医師」への主要な別英答として doctor を採用。 promptへの成立性と学習価値の両方を満たす表現に限定した。"
+    },
+    {
+      "entry_id": "vocab:00930",
+      "prompt_ja": "説得する",
+      "canonical_snapshot": "persuade",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "convince"
+      ],
+      "candidate_review": [
+        {
+          "expression": "convince",
+          "decision": "ACCEPT",
+          "reason": "「説得する」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "convince"
+      ],
+      "decision": "CHANGED",
+      "reason": "「説得する」への主要な別英答として convince を採用。 promptへの成立性と学習価値の両方を満たす表現に限定した。"
+    },
+    {
+      "entry_id": "vocab:00931",
+      "prompt_ja": "外科医",
+      "canonical_snapshot": "surgeon",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「外科医」に対してcanonical/target以外で独立して学ばせる価値の高い主要英答を見いだせず、paraphraseは追加しない。"
+    },
+    {
+      "entry_id": "vocab:00932",
+      "prompt_ja": "（治療・変化・試練などを）受ける・経験する",
+      "canonical_snapshot": "undergo",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "go through",
+        "experience"
+      ],
+      "candidate_review": [
+        {
+          "expression": "go through",
+          "decision": "ACCEPT",
+          "reason": "「（治療・変化・試練などを）受ける・経験する」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "experience",
+          "decision": "ACCEPT",
+          "reason": "「（治療・変化・試練などを）受ける・経験する」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "go through",
+        "experience"
+      ],
+      "decision": "CHANGED",
+      "reason": "「（治療・変化・試練などを）受ける・経験する」への主要な別英答として go through / experience を採用。 promptへの成立性と学習価値の両方を満たす表現に限定した。"
+    },
+    {
+      "entry_id": "vocab:00933",
+      "prompt_ja": "寄与する",
+      "canonical_snapshot": "contribute",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "help",
+        "play a part in something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "help",
+          "decision": "ACCEPT",
+          "reason": "「寄与する」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "play a part in something",
+          "decision": "ACCEPT",
+          "reason": "「寄与する」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "help",
+        "play a part in something"
+      ],
+      "decision": "CHANGED",
+      "reason": "「寄与する」への主要な別英答として help / play a part in something を採用。 promptへの成立性と学習価値の両方を満たす表現に限定した。"
+    },
+    {
+      "entry_id": "vocab:00934",
+      "prompt_ja": "過度の",
+      "canonical_snapshot": "excessive",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "undue",
+        "extreme"
+      ],
+      "candidate_review": [
+        {
+          "expression": "undue",
+          "decision": "ACCEPT",
+          "reason": "「過度の」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "extreme",
+          "decision": "REJECT",
+          "reason": "extreme は程度が極端であることを表し、「過度の」という許容限度超過とは一致しない場合がある。"
+        }
+      ],
+      "after_paraphrases": [
+        "undue"
+      ],
+      "decision": "CHANGED",
+      "reason": "「過度の」への主要な別英答として undue を採用。 extreme は意味範囲・文脈依存・増分価値を再検討して除外した。"
+    },
+    {
+      "entry_id": "vocab:00935",
+      "prompt_ja": "仮説",
+      "canonical_snapshot": "hypothesis",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "theory",
+        "assumption"
+      ],
+      "candidate_review": [
+        {
+          "expression": "theory",
+          "decision": "REJECT",
+          "reason": "theory は仮説より確立度や用法が広く、両者を無差別に対応づけない。"
+        },
+        {
+          "expression": "assumption",
+          "decision": "REJECT",
+          "reason": "assumption は検証対象の仮説ではなく前提・仮定を指すのが中心。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「仮説」について候補 theory / assumption を逆方向に検証したが、意味ずれ・文脈依存・低い増分価値のため登録しない。"
+    },
+    {
+      "entry_id": "vocab:00936",
+      "prompt_ja": "死亡率",
+      "canonical_snapshot": "mortality",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "mortality rate",
+        "death rate"
+      ],
+      "candidate_review": [
+        {
+          "expression": "mortality rate",
+          "decision": "REJECT",
+          "reason": "mortality というcanonical自体に rate の意味が含まれ、語を足しただけの表現は独立した学習価値が小さい。"
+        },
+        {
+          "expression": "death rate",
+          "decision": "ACCEPT",
+          "reason": "「死亡率」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "death rate"
+      ],
+      "decision": "CHANGED",
+      "reason": "「死亡率」への主要な別英答として death rate を採用。 mortality rate は意味範囲・文脈依存・増分価値を再検討して除外した。"
+    },
+    {
+      "entry_id": "vocab:00937",
+      "prompt_ja": "感染症",
+      "canonical_snapshot": "infection",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "infectious disease",
+        "communicable disease"
+      ],
+      "candidate_review": [
+        {
+          "expression": "infectious disease",
+          "decision": "ACCEPT",
+          "reason": "「感染症」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "communicable disease",
+          "decision": "REJECT",
+          "reason": "communicable disease は人から人などへ伝播可能な疾病を強く指し、infectious disease 全体とは範囲がずれる。"
+        }
+      ],
+      "after_paraphrases": [
+        "infectious disease"
+      ],
+      "decision": "CHANGED",
+      "reason": "「感染症」への主要な別英答として infectious disease を採用。 communicable disease は意味範囲・文脈依存・増分価値を再検討して除外した。"
+    },
+    {
+      "entry_id": "vocab:00938",
+      "prompt_ja": "辞職する",
+      "canonical_snapshot": "resign",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "step down",
+        "quit"
+      ],
+      "candidate_review": [
+        {
+          "expression": "step down",
+          "decision": "ACCEPT",
+          "reason": "「辞職する」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "quit",
+          "decision": "ACCEPT",
+          "reason": "「辞職する」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "step down",
+        "quit"
+      ],
+      "decision": "CHANGED",
+      "reason": "「辞職する」への主要な別英答として step down / quit を採用。 promptへの成立性と学習価値の両方を満たす表現に限定した。"
+    },
+    {
+      "entry_id": "vocab:00939",
+      "prompt_ja": "義務づけられた",
+      "canonical_snapshot": "compulsory",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "mandatory",
+        "required",
+        "obligatory"
+      ],
+      "candidate_review": [
+        {
+          "expression": "mandatory",
+          "decision": "ACCEPT",
+          "reason": "「義務づけられた」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "required",
+          "decision": "ACCEPT",
+          "reason": "「義務づけられた」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "obligatory",
+          "decision": "ACCEPT",
+          "reason": "「義務づけられた」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "mandatory",
+        "required",
+        "obligatory"
+      ],
+      "decision": "CHANGED",
+      "reason": "「義務づけられた」への主要な別英答として mandatory / required / obligatory を採用。 promptへの成立性と学習価値の両方を満たす表現に限定した。"
+    },
+    {
+      "entry_id": "vocab:00940",
+      "prompt_ja": "大志",
+      "canonical_snapshot": "ambition",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "aspiration"
+      ],
+      "candidate_review": [
+        {
+          "expression": "aspiration",
+          "decision": "ACCEPT",
+          "reason": "「大志」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "aspiration"
+      ],
+      "decision": "CHANGED",
+      "reason": "「大志」への主要な別英答として aspiration を採用。 promptへの成立性と学習価値の両方を満たす表現に限定した。"
+    },
+    {
+      "entry_id": "vocab:00941",
+      "prompt_ja": "奨学金",
+      "canonical_snapshot": "scholarship",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "grant",
+        "bursary"
+      ],
+      "candidate_review": [
+        {
+          "expression": "grant",
+          "decision": "REJECT",
+          "reason": "grant は研究費等も含む助成金全般で、学生向け「奨学金」より広い。"
+        },
+        {
+          "expression": "bursary",
+          "decision": "REJECT",
+          "reason": "bursary は主に英国系で用いる学生助成だが、一般学習で scholarship に追加する優先度は低い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「奨学金」について候補 grant / bursary を逆方向に検証したが、意味ずれ・文脈依存・低い増分価値のため登録しない。"
+    },
+    {
+      "entry_id": "vocab:00942",
+      "prompt_ja": "規律",
+      "canonical_snapshot": "discipline",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "order",
+        "self-discipline"
+      ],
+      "candidate_review": [
+        {
+          "expression": "order",
+          "decision": "REJECT",
+          "reason": "order は秩序であり、行動を統制する「規律」とは常に一致しない。"
+        },
+        {
+          "expression": "self-discipline",
+          "decision": "REJECT",
+          "reason": "self-discipline は自己規律に限定され、組織・制度上の規律を含むpromptより狭い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「規律」について候補 order / self-discipline を逆方向に検証したが、意味ずれ・文脈依存・低い増分価値のため登録しない。"
+    },
+    {
+      "entry_id": "vocab:00943",
+      "prompt_ja": "厳格な",
+      "canonical_snapshot": "rigid",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "strict",
+        "stringent",
+        "rigorous",
+        "stern"
+      ],
+      "candidate_review": [
+        {
+          "expression": "strict",
+          "decision": "ACCEPT",
+          "reason": "「厳格な」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "stringent",
+          "decision": "ACCEPT",
+          "reason": "「厳格な」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "rigorous",
+          "decision": "ACCEPT",
+          "reason": "「厳格な」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "stern",
+          "decision": "REJECT",
+          "reason": "stern は人の態度・表情などの厳しさに偏り、一般的な「厳格な」の形容詞回答としては狭い。"
+        }
+      ],
+      "after_paraphrases": [
+        "strict",
+        "stringent",
+        "rigorous"
+      ],
+      "decision": "CHANGED",
+      "reason": "「厳格な」への主要な別英答として strict / stringent / rigorous を採用。 stern は意味範囲・文脈依存・増分価値を再検討して除外した。"
+    },
+    {
+      "entry_id": "vocab:00944",
+      "prompt_ja": "視点",
+      "canonical_snapshot": "perspective",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "viewpoint",
+        "point of view"
+      ],
+      "candidate_review": [
+        {
+          "expression": "viewpoint",
+          "decision": "ACCEPT",
+          "reason": "「視点」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "point of view",
+          "decision": "ACCEPT",
+          "reason": "「視点」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "viewpoint",
+        "point of view"
+      ],
+      "decision": "CHANGED",
+      "reason": "「視点」への主要な別英答として viewpoint / point of view を採用。 promptへの成立性と学習価値の両方を満たす表現に限定した。"
+    },
+    {
+      "entry_id": "vocab:00945",
+      "prompt_ja": "同調",
+      "canonical_snapshot": "conformity",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "compliance",
+        "agreement"
+      ],
+      "candidate_review": [
+        {
+          "expression": "compliance",
+          "decision": "REJECT",
+          "reason": "compliance は規則・要求への従順に偏り、社会的な「同調」全般ではない。"
+        },
+        {
+          "expression": "agreement",
+          "decision": "REJECT",
+          "reason": "agreement は意見の一致であり、周囲に合わせる conformity の含意を持たない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「同調」について候補 compliance / agreement を逆方向に検証したが、意味ずれ・文脈依存・低い増分価値のため登録しない。"
+    },
+    {
+      "entry_id": "vocab:00946",
+      "prompt_ja": "不可欠な",
+      "canonical_snapshot": "essential",
+      "answers_snapshot": [],
+      "existing_paraphrases": [
+        "vital"
+      ],
+      "blind_candidates": [
+        "vital",
+        "indispensable",
+        "crucial"
+      ],
+      "candidate_review": [
+        {
+          "expression": "vital",
+          "decision": "ACCEPT",
+          "reason": "「不可欠な」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "indispensable",
+          "decision": "ACCEPT",
+          "reason": "「不可欠な」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "crucial",
+          "decision": "REJECT",
+          "reason": "crucial は「極めて重要な」だが、必ずしも「不可欠な」まで意味しない。"
+        }
+      ],
+      "after_paraphrases": [
+        "vital",
+        "indispensable"
+      ],
+      "decision": "CHANGED",
+      "reason": "「不可欠な」への主要な別英答として vital / indispensable を採用。 crucial は意味範囲・文脈依存・増分価値を再検討して除外した。"
+    },
+    {
+      "entry_id": "vocab:00947",
+      "prompt_ja": "苦労して働く",
+      "canonical_snapshot": "toil",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "work hard",
+        "labor"
+      ],
+      "candidate_review": [
+        {
+          "expression": "work hard",
+          "decision": "ACCEPT",
+          "reason": "「苦労して働く」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "labor",
+          "decision": "REJECT",
+          "reason": "labor は単に働く意味でも使え、「苦労して」という含意が安定しない。"
+        }
+      ],
+      "after_paraphrases": [
+        "work hard"
+      ],
+      "decision": "CHANGED",
+      "reason": "「苦労して働く」への主要な別英答として work hard を採用。 labor は意味範囲・文脈依存・増分価値を再検討して除外した。"
+    },
+    {
+      "entry_id": "vocab:00948",
+      "prompt_ja": "屈する",
+      "canonical_snapshot": "yield",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "give in",
+        "succumb",
+        "surrender"
+      ],
+      "candidate_review": [
+        {
+          "expression": "give in",
+          "decision": "ACCEPT",
+          "reason": "「屈する」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "succumb",
+          "decision": "ACCEPT",
+          "reason": "「屈する」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "surrender",
+          "decision": "REJECT",
+          "reason": "surrender は「降伏する」の軍事的・明示的な意味が強く、一般的な「屈する」には狭い。"
+        }
+      ],
+      "after_paraphrases": [
+        "give in",
+        "succumb"
+      ],
+      "decision": "CHANGED",
+      "reason": "「屈する」への主要な別英答として give in / succumb を採用。 surrender は意味範囲・文脈依存・増分価値を再検討して除外した。"
+    },
+    {
+      "entry_id": "vocab:00949",
+      "prompt_ja": "成し遂げる",
+      "canonical_snapshot": "accomplish",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "achieve",
+        "complete"
+      ],
+      "candidate_review": [
+        {
+          "expression": "achieve",
+          "decision": "ACCEPT",
+          "reason": "「成し遂げる」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "complete",
+          "decision": "REJECT",
+          "reason": "complete は「完了する」であり、成果を「成し遂げる」とは焦点が異なる。"
+        }
+      ],
+      "after_paraphrases": [
+        "achieve"
+      ],
+      "decision": "CHANGED",
+      "reason": "「成し遂げる」への主要な別英答として achieve を採用。 complete は意味範囲・文脈依存・増分価値を再検討して除外した。"
+    },
+    {
+      "entry_id": "vocab:00950",
+      "prompt_ja": "逆境",
+      "canonical_snapshot": "adversity",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "hardship"
+      ],
+      "candidate_review": [
+        {
+          "expression": "hardship",
+          "decision": "ACCEPT",
+          "reason": "「逆境」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "hardship"
+      ],
+      "decision": "CHANGED",
+      "reason": "「逆境」への主要な別英答として hardship を採用。 promptへの成立性と学習価値の両方を満たす表現に限定した。"
+    },
+    {
+      "entry_id": "vocab:00951",
+      "prompt_ja": "値する",
+      "canonical_snapshot": "deserve",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be worth something",
+        "be worthy of something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be worth something",
+          "decision": "ACCEPT",
+          "reason": "「値する」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "be worthy of something",
+          "decision": "ACCEPT",
+          "reason": "「値する」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "be worth something",
+        "be worthy of something"
+      ],
+      "decision": "CHANGED",
+      "reason": "「値する」への主要な別英答として be worth something / be worthy of something を採用。 promptへの成立性と学習価値の両方を満たす表現に限定した。"
+    },
+    {
+      "entry_id": "vocab:00952",
+      "prompt_ja": "偉業",
+      "canonical_snapshot": "feat",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "great achievement",
+        "achievement",
+        "accomplishment"
+      ],
+      "candidate_review": [
+        {
+          "expression": "great achievement",
+          "decision": "ACCEPT",
+          "reason": "「偉業」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "achievement",
+          "decision": "REJECT",
+          "reason": "achievement は成果一般で、「偉業」の大きさを表さない。"
+        },
+        {
+          "expression": "accomplishment",
+          "decision": "REJECT",
+          "reason": "accomplishment も達成・成果一般で、「偉業」の強さが不足する。"
+        }
+      ],
+      "after_paraphrases": [
+        "great achievement"
+      ],
+      "decision": "CHANGED",
+      "reason": "「偉業」への主要な別英答として great achievement を採用。 achievement / accomplishment は意味範囲・文脈依存・増分価値を再検討して除外した。"
+    },
+    {
+      "entry_id": "vocab:00953",
+      "prompt_ja": "雄弁な",
+      "canonical_snapshot": "eloquent",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "articulate",
+        "persuasive"
+      ],
+      "candidate_review": [
+        {
+          "expression": "articulate",
+          "decision": "ACCEPT",
+          "reason": "「雄弁な」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "persuasive",
+          "decision": "REJECT",
+          "reason": "persuasive は説得力を表し、表現力としての「雄弁な」とは別軸。"
+        }
+      ],
+      "after_paraphrases": [
+        "articulate"
+      ],
+      "decision": "CHANGED",
+      "reason": "「雄弁な」への主要な別英答として articulate を採用。 persuasive は意味範囲・文脈依存・増分価値を再検討して除外した。"
+    },
+    {
+      "entry_id": "vocab:00954",
+      "prompt_ja": "質素な",
+      "canonical_snapshot": "humble",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "modest",
+        "frugal",
+        "simple",
+        "plain"
+      ],
+      "candidate_review": [
+        {
+          "expression": "modest",
+          "decision": "ACCEPT",
+          "reason": "「質素な」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "frugal",
+          "decision": "ACCEPT",
+          "reason": "「質素な」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "simple",
+          "decision": "REJECT",
+          "reason": "simple は意味範囲が広すぎ、生活・服装等の「質素な」への安定した対応にならない。"
+        },
+        {
+          "expression": "plain",
+          "decision": "REJECT",
+          "reason": "plain は装飾のなさ等には合うが、「質素な」全般への主要回答としては文脈依存。"
+        }
+      ],
+      "after_paraphrases": [
+        "modest",
+        "frugal"
+      ],
+      "decision": "CHANGED",
+      "reason": "「質素な」への主要な別英答として modest / frugal を採用。 simple / plain は意味範囲・文脈依存・増分価値を再検討して除外した。"
+    },
+    {
+      "entry_id": "vocab:00955",
+      "prompt_ja": "財産",
+      "canonical_snapshot": "fortune",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "property",
+        "assets",
+        "wealth"
+      ],
+      "candidate_review": [
+        {
+          "expression": "property",
+          "decision": "ACCEPT",
+          "reason": "「財産」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "assets",
+          "decision": "ACCEPT",
+          "reason": "「財産」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "wealth",
+          "decision": "ACCEPT",
+          "reason": "「財産」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "property",
+        "assets",
+        "wealth"
+      ],
+      "decision": "CHANGED",
+      "reason": "「財産」への主要な別英答として property / assets / wealth を採用。 promptへの成立性と学習価値の両方を満たす表現に限定した。"
+    },
+    {
+      "entry_id": "vocab:00956",
+      "prompt_ja": "借金",
+      "canonical_snapshot": "debt",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "loan",
+        "liability"
+      ],
+      "candidate_review": [
+        {
+          "expression": "loan",
+          "decision": "REJECT",
+          "reason": "loan は個別の借入・貸付であり、返済義務全体としての「借金」と同一ではない。"
+        },
+        {
+          "expression": "liability",
+          "decision": "REJECT",
+          "reason": "liability は負債以外の法的義務も含み、「借金」より広い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「借金」について候補 loan / liability を逆方向に検証したが、意味ずれ・文脈依存・低い増分価値のため登録しない。"
+    },
+    {
+      "entry_id": "vocab:00957",
+      "prompt_ja": "適応する",
+      "canonical_snapshot": "adapt",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "adjust"
+      ],
+      "candidate_review": [
+        {
+          "expression": "adjust",
+          "decision": "ACCEPT",
+          "reason": "「適応する」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "adjust"
+      ],
+      "decision": "CHANGED",
+      "reason": "「適応する」への主要な別英答として adjust を採用。 promptへの成立性と学習価値の両方を満たす表現に限定した。"
+    },
+    {
+      "entry_id": "vocab:00958",
+      "prompt_ja": "現実",
+      "canonical_snapshot": "reality",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "actuality",
+        "real world"
+      ],
+      "candidate_review": [
+        {
+          "expression": "actuality",
+          "decision": "REJECT",
+          "reason": "actuality は現代英語での一般的な回答価値が低く、reality に追加して学ばせる優先度が低い。"
+        },
+        {
+          "expression": "real world",
+          "decision": "REJECT",
+          "reason": "real world は現実世界という限定された句で、抽象概念としての「現実」全般ではない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「現実」について候補 actuality / real world を逆方向に検証したが、意味ずれ・文脈依存・低い増分価値のため登録しない。"
+    },
+    {
+      "entry_id": "vocab:00959",
+      "prompt_ja": "忠誠",
+      "canonical_snapshot": "loyalty",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "allegiance",
+        "fidelity"
+      ],
+      "candidate_review": [
+        {
+          "expression": "allegiance",
+          "decision": "ACCEPT",
+          "reason": "「忠誠」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "fidelity",
+          "decision": "REJECT",
+          "reason": "fidelity は忠実さを表すが、配偶関係・再現忠実度等の用法も強く、一般的な「忠誠」への主要回答ではない。"
+        }
+      ],
+      "after_paraphrases": [
+        "allegiance"
+      ],
+      "decision": "CHANGED",
+      "reason": "「忠誠」への主要な別英答として allegiance を採用。 fidelity は意味範囲・文脈依存・増分価値を再検討して除外した。"
+    },
+    {
+      "entry_id": "vocab:00960",
+      "prompt_ja": "考え",
+      "canonical_snapshot": "notion",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "idea",
+        "thought",
+        "opinion",
+        "view"
+      ],
+      "candidate_review": [
+        {
+          "expression": "idea",
+          "decision": "ACCEPT",
+          "reason": "「考え」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "thought",
+          "decision": "ACCEPT",
+          "reason": "「考え」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "opinion",
+          "decision": "ACCEPT",
+          "reason": "「考え」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "view",
+          "decision": "REJECT",
+          "reason": "view は「見解」の意味にはなるが、既に idea/thought/opinion を登録すれば「考え」への追加学習価値が相対的に小さい。"
+        }
+      ],
+      "after_paraphrases": [
+        "idea",
+        "thought",
+        "opinion"
+      ],
+      "decision": "CHANGED",
+      "reason": "「考え」への主要な別英答として idea / thought / opinion を採用。 view は意味範囲・文脈依存・増分価値を再検討して除外した。"
+    },
+    {
+      "entry_id": "vocab:00961",
+      "prompt_ja": "捧げる",
+      "canonical_snapshot": "devote",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "dedicate",
+        "offer"
+      ],
+      "candidate_review": [
+        {
+          "expression": "dedicate",
+          "decision": "ACCEPT",
+          "reason": "「捧げる」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "offer",
+          "decision": "REJECT",
+          "reason": "offer は「差し出す・提供する」が中心で、献身的に「捧げる」となるのは特定文脈に限られる。"
+        }
+      ],
+      "after_paraphrases": [
+        "dedicate"
+      ],
+      "decision": "CHANGED",
+      "reason": "「捧げる」への主要な別英答として dedicate を採用。 offer は意味範囲・文脈依存・増分価値を再検討して除外した。"
+    },
+    {
+      "entry_id": "vocab:00962",
+      "prompt_ja": "協力する",
+      "canonical_snapshot": "cooperate",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "collaborate",
+        "work together"
+      ],
+      "candidate_review": [
+        {
+          "expression": "collaborate",
+          "decision": "ACCEPT",
+          "reason": "「協力する」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "work together",
+          "decision": "ACCEPT",
+          "reason": "「協力する」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "collaborate",
+        "work together"
+      ],
+      "decision": "CHANGED",
+      "reason": "「協力する」への主要な別英答として collaborate / work together を採用。 promptへの成立性と学習価値の両方を満たす表現に限定した。"
+    },
+    {
+      "entry_id": "vocab:00963",
+      "prompt_ja": "慈善団体",
+      "canonical_snapshot": "charity",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "charitable organization",
+        "nonprofit"
+      ],
+      "candidate_review": [
+        {
+          "expression": "charitable organization",
+          "decision": "REJECT",
+          "reason": "charitable organization は説明的な展開で、独立した別語彙としての増分学習価値が小さい。"
+        },
+        {
+          "expression": "nonprofit",
+          "decision": "REJECT",
+          "reason": "nonprofit は非営利団体全般で、慈善団体より広い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「慈善団体」について候補 charitable organization / nonprofit を逆方向に検証したが、意味ずれ・文脈依存・低い増分価値のため登録しない。"
+    },
+    {
+      "entry_id": "vocab:00964",
+      "prompt_ja": "誠実さ",
+      "canonical_snapshot": "integrity",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "honesty",
+        "sincerity"
+      ],
+      "candidate_review": [
+        {
+          "expression": "honesty",
+          "decision": "ACCEPT",
+          "reason": "「誠実さ」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "sincerity",
+          "decision": "ACCEPT",
+          "reason": "「誠実さ」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "honesty",
+        "sincerity"
+      ],
+      "decision": "CHANGED",
+      "reason": "「誠実さ」への主要な別英答として honesty / sincerity を採用。 promptへの成立性と学習価値の両方を満たす表現に限定した。"
+    },
+    {
+      "entry_id": "vocab:00965",
+      "prompt_ja": "偽善",
+      "canonical_snapshot": "hypocrisy",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "insincerity",
+        "deceit"
+      ],
+      "candidate_review": [
+        {
+          "expression": "insincerity",
+          "decision": "REJECT",
+          "reason": "insincerity は不誠実さで、信念と行動の矛盾を含む hypocrisy とは別。"
+        },
+        {
+          "expression": "deceit",
+          "decision": "REJECT",
+          "reason": "deceit は欺瞞・だますことが中心で、「偽善」とは一致しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「偽善」について候補 insincerity / deceit を逆方向に検証したが、意味ずれ・文脈依存・低い増分価値のため登録しない。"
+    },
+    {
+      "entry_id": "vocab:00966",
+      "prompt_ja": "高める",
+      "canonical_snapshot": "enhance",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "improve",
+        "boost",
+        "raise",
+        "increase"
+      ],
+      "candidate_review": [
+        {
+          "expression": "improve",
+          "decision": "ACCEPT",
+          "reason": "「高める」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "boost",
+          "decision": "ACCEPT",
+          "reason": "「高める」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "raise",
+          "decision": "ACCEPT",
+          "reason": "「高める」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "increase",
+          "decision": "REJECT",
+          "reason": "increase は数量増加の一般語で、improve/boost/raise を登録した後は「高める」への独立した増分価値が小さい。"
+        }
+      ],
+      "after_paraphrases": [
+        "improve",
+        "boost",
+        "raise"
+      ],
+      "decision": "CHANGED",
+      "reason": "「高める」への主要な別英答として improve / boost / raise を採用。 increase は意味範囲・文脈依存・増分価値を再検討して除外した。"
+    },
+    {
+      "entry_id": "vocab:00967",
+      "prompt_ja": "搾取する",
+      "canonical_snapshot": "exploit",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "take advantage of someone",
+        "use someone"
+      ],
+      "candidate_review": [
+        {
+          "expression": "take advantage of someone",
+          "decision": "ACCEPT",
+          "reason": "「搾取する」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "use someone",
+          "decision": "REJECT",
+          "reason": "use someone は利用する全般で、搾取性を必ずしも含まない。"
+        }
+      ],
+      "after_paraphrases": [
+        "take advantage of someone"
+      ],
+      "decision": "CHANGED",
+      "reason": "「搾取する」への主要な別英答として take advantage of someone を採用。 use someone は意味範囲・文脈依存・増分価値を再検討して除外した。"
+    },
+    {
+      "entry_id": "vocab:00968",
+      "prompt_ja": "秘密の",
+      "canonical_snapshot": "confidential",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "secret",
+        "classified",
+        "covert",
+        "private"
+      ],
+      "candidate_review": [
+        {
+          "expression": "secret",
+          "decision": "ACCEPT",
+          "reason": "「秘密の」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "classified",
+          "decision": "REJECT",
+          "reason": "classified は公的機密情報などに限定される。"
+        },
+        {
+          "expression": "covert",
+          "decision": "REJECT",
+          "reason": "covert は秘密裏の活動・作戦などに偏る。"
+        },
+        {
+          "expression": "private",
+          "decision": "REJECT",
+          "reason": "private は非公開・私的であることを表し、秘密であることを必ずしも意味しない。"
+        }
+      ],
+      "after_paraphrases": [
+        "secret"
+      ],
+      "decision": "CHANGED",
+      "reason": "「秘密の」への主要な別英答として secret を採用。 classified / covert / private は意味範囲・文脈依存・増分価値を再検討して除外した。"
+    },
+    {
+      "entry_id": "vocab:00969",
+      "prompt_ja": "尊厳・品位",
+      "canonical_snapshot": "dignity",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "self-respect",
+        "decency",
+        "grace"
+      ],
+      "candidate_review": [
+        {
+          "expression": "self-respect",
+          "decision": "REJECT",
+          "reason": "self-respect は自己尊重に限定され、他者が認める尊厳・品位まで含まない。"
+        },
+        {
+          "expression": "decency",
+          "decision": "REJECT",
+          "reason": "decency は礼儀・良識の含意が中心で dignity と一致しない。"
+        },
+        {
+          "expression": "grace",
+          "decision": "REJECT",
+          "reason": "grace は優雅さには対応するが、「尊厳・品位」全体への主要回答ではない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「尊厳・品位」について候補 self-respect / decency / grace を逆方向に検証したが、意味ずれ・文脈依存・低い増分価値のため登録しない。"
+    },
+    {
+      "entry_id": "vocab:00970",
+      "prompt_ja": "犠牲にする",
+      "canonical_snapshot": "sacrifice",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "give up something",
+        "forgo something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "give up something",
+          "decision": "REJECT",
+          "reason": "give up は単なる放棄でも使え、何かのために「犠牲にする」という関係を必ずしも表さない。"
+        },
+        {
+          "expression": "forgo something",
+          "decision": "REJECT",
+          "reason": "forgo は自発的に差し控える意味が中心で、犠牲にする対象を失わせる用法全般には対応しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「犠牲にする」について候補 give up something / forgo something を逆方向に検証したが、意味ずれ・文脈依存・低い増分価値のため登録しない。"
+    },
+    {
+      "entry_id": "vocab:00971",
+      "prompt_ja": "運命",
+      "canonical_snapshot": "fate",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "destiny"
+      ],
+      "candidate_review": [
+        {
+          "expression": "destiny",
+          "decision": "ACCEPT",
+          "reason": "「運命」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "destiny"
+      ],
+      "decision": "CHANGED",
+      "reason": "「運命」への主要な別英答として destiny を採用。 promptへの成立性と学習価値の両方を満たす表現に限定した。"
+    },
+    {
+      "entry_id": "vocab:00972",
+      "prompt_ja": "受け入れる",
+      "canonical_snapshot": "reconcile",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "accept",
+        "embrace",
+        "adopt",
+        "take in"
+      ],
+      "candidate_review": [
+        {
+          "expression": "accept",
+          "decision": "ACCEPT",
+          "reason": "「受け入れる」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "embrace",
+          "decision": "ACCEPT",
+          "reason": "「受け入れる」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "adopt",
+          "decision": "REJECT",
+          "reason": "adopt は方針・方法等を採用する限定的な「受け入れる」。"
+        },
+        {
+          "expression": "take in",
+          "decision": "REJECT",
+          "reason": "take in は収容・理解・だます等の多義性が強く、一般的な「受け入れる」の回答としては不安定。"
+        }
+      ],
+      "after_paraphrases": [
+        "accept",
+        "embrace"
+      ],
+      "decision": "CHANGED",
+      "reason": "「受け入れる」への主要な別英答として accept / embrace を採用。 adopt / take in は意味範囲・文脈依存・増分価値を再検討して除外した。"
+    },
+    {
+      "entry_id": "vocab:00973",
+      "prompt_ja": "長く残る",
+      "canonical_snapshot": "linger",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "last",
+        "persist",
+        "endure"
+      ],
+      "candidate_review": [
+        {
+          "expression": "last",
+          "decision": "ACCEPT",
+          "reason": "「長く残る」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "persist",
+          "decision": "ACCEPT",
+          "reason": "「長く残る」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "endure",
+          "decision": "ACCEPT",
+          "reason": "「長く残る」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "last",
+        "persist",
+        "endure"
+      ],
+      "decision": "CHANGED",
+      "reason": "「長く残る」への主要な別英答として last / persist / endure を採用。 promptへの成立性と学習価値の両方を満たす表現に限定した。"
+    },
+    {
+      "entry_id": "vocab:00974",
+      "prompt_ja": "それにもかかわらず",
+      "canonical_snapshot": "nevertheless",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "nonetheless",
+        "even so",
+        "still"
+      ],
+      "candidate_review": [
+        {
+          "expression": "nonetheless",
+          "decision": "ACCEPT",
+          "reason": "「それにもかかわらず」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "even so",
+          "decision": "ACCEPT",
+          "reason": "「それにもかかわらず」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "still",
+          "decision": "REJECT",
+          "reason": "still は「それでも」の用法は重要だが、多義性と語順依存が強く、このpromptへの独立回答としては誤判定を増やしやすい。"
+        }
+      ],
+      "after_paraphrases": [
+        "nonetheless",
+        "even so"
+      ],
+      "decision": "CHANGED",
+      "reason": "「それにもかかわらず」への主要な別英答として nonetheless / even so を採用。 still は意味範囲・文脈依存・増分価値を再検討して除外した。"
+    },
+    {
+      "entry_id": "vocab:00975",
+      "prompt_ja": "懐疑",
+      "canonical_snapshot": "skepticism",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "doubt"
+      ],
+      "candidate_review": [
+        {
+          "expression": "doubt",
+          "decision": "ACCEPT",
+          "reason": "「懐疑」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "doubt"
+      ],
+      "decision": "CHANGED",
+      "reason": "「懐疑」への主要な別英答として doubt を採用。 promptへの成立性と学習価値の両方を満たす表現に限定した。"
+    },
+    {
+      "entry_id": "vocab:00976",
+      "prompt_ja": "賄賂",
+      "canonical_snapshot": "bribe",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "bribery",
+        "payoff"
+      ],
+      "candidate_review": [
+        {
+          "expression": "bribery",
+          "decision": "REJECT",
+          "reason": "bribery は賄賂を贈る行為・制度で、個々の「賄賂」bribe とは名詞の指示対象が異なる。"
+        },
+        {
+          "expression": "payoff",
+          "decision": "REJECT",
+          "reason": "payoff は見返り・成果などの意味が強く、賄賂の意味は文脈依存。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「賄賂」について候補 bribery / payoff を逆方向に検証したが、意味ずれ・文脈依存・低い増分価値のため登録しない。"
+    },
+    {
+      "entry_id": "vocab:00977",
+      "prompt_ja": "疑う",
+      "canonical_snapshot": "suspect",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "doubt",
+        "question"
+      ],
+      "candidate_review": [
+        {
+          "expression": "doubt",
+          "decision": "ACCEPT",
+          "reason": "「疑う」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "question",
+          "decision": "ACCEPT",
+          "reason": "「疑う」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "doubt",
+        "question"
+      ],
+      "decision": "CHANGED",
+      "reason": "「疑う」への主要な別英答として doubt / question を採用。 promptへの成立性と学習価値の両方を満たす表現に限定した。"
+    },
+    {
+      "entry_id": "vocab:00978",
+      "prompt_ja": "責任",
+      "canonical_snapshot": "charge",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "responsibility",
+        "accountability",
+        "liability"
+      ],
+      "candidate_review": [
+        {
+          "expression": "responsibility",
+          "decision": "ACCEPT",
+          "reason": "「責任」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "accountability",
+          "decision": "ACCEPT",
+          "reason": "「責任」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "liability",
+          "decision": "REJECT",
+          "reason": "liability は法的責任・債務に偏り、一般的な「責任」より狭い。"
+        }
+      ],
+      "after_paraphrases": [
+        "responsibility",
+        "accountability"
+      ],
+      "decision": "CHANGED",
+      "reason": "「責任」への主要な別英答として responsibility / accountability を採用。 liability は意味範囲・文脈依存・増分価値を再検討して除外した。"
+    },
+    {
+      "entry_id": "vocab:00979",
+      "prompt_ja": "詐欺",
+      "canonical_snapshot": "fraud",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "scam",
+        "swindle"
+      ],
+      "candidate_review": [
+        {
+          "expression": "scam",
+          "decision": "ACCEPT",
+          "reason": "「詐欺」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "swindle",
+          "decision": "REJECT",
+          "reason": "swindle は詐欺行為・詐取の意味にはなるが、名詞「詐欺」の主要回答として scam より優先度が低い。"
+        }
+      ],
+      "after_paraphrases": [
+        "scam"
+      ],
+      "decision": "CHANGED",
+      "reason": "「詐欺」への主要な別英答として scam を採用。 swindle は意味範囲・文脈依存・増分価値を再検討して除外した。"
+    },
+    {
+      "entry_id": "vocab:00980",
+      "prompt_ja": "証言",
+      "canonical_snapshot": "testimony",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "statement",
+        "evidence"
+      ],
+      "candidate_review": [
+        {
+          "expression": "statement",
+          "decision": "REJECT",
+          "reason": "statement は陳述一般で、宣誓・証人による「証言」とは限らない。"
+        },
+        {
+          "expression": "evidence",
+          "decision": "REJECT",
+          "reason": "evidence は証拠全般で、「証言」はその一種にすぎない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「証言」について候補 statement / evidence を逆方向に検証したが、意味ずれ・文脈依存・低い増分価値のため登録しない。"
+    },
+    {
+      "entry_id": "vocab:00981",
+      "prompt_ja": "良心",
+      "canonical_snapshot": "conscience",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "moral sense"
+      ],
+      "candidate_review": [
+        {
+          "expression": "moral sense",
+          "decision": "REJECT",
+          "reason": "moral sense は説明的な近似であり、conscience に代わる独立した主要語彙ではない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「良心」について候補 moral sense を逆方向に検証したが、意味ずれ・文脈依存・低い増分価値のため登録しない。"
+    },
+    {
+      "entry_id": "vocab:00982",
+      "prompt_ja": "プライバシー",
+      "canonical_snapshot": "privacy",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "confidentiality",
+        "private life"
+      ],
+      "candidate_review": [
+        {
+          "expression": "confidentiality",
+          "decision": "REJECT",
+          "reason": "confidentiality は秘密保持・機密性で、個人領域としての privacy と別概念。"
+        },
+        {
+          "expression": "private life",
+          "decision": "REJECT",
+          "reason": "private life は私生活に限定され、privacy 全般より狭い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「プライバシー」について候補 confidentiality / private life を逆方向に検証したが、意味ずれ・文脈依存・低い増分価値のため登録しない。"
+    },
+    {
+      "entry_id": "vocab:00983",
+      "prompt_ja": "評判",
+      "canonical_snapshot": "reputation",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "standing",
+        "repute"
+      ],
+      "candidate_review": [
+        {
+          "expression": "standing",
+          "decision": "REJECT",
+          "reason": "standing は地位・評価の文脈に限定され、一般的な「評判」への回答としては不安定。"
+        },
+        {
+          "expression": "repute",
+          "decision": "REJECT",
+          "reason": "repute は現代英語で頻度が低く、reputation に追加する学習優先度が低い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「評判」について候補 standing / repute を逆方向に検証したが、意味ずれ・文脈依存・低い増分価値のため登録しない。"
+    },
+    {
+      "entry_id": "vocab:00984",
+      "prompt_ja": "欠点",
+      "canonical_snapshot": "flaw",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "weakness",
+        "drawback",
+        "defect",
+        "shortcoming"
+      ],
+      "candidate_review": [
+        {
+          "expression": "weakness",
+          "decision": "ACCEPT",
+          "reason": "「欠点」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "drawback",
+          "decision": "ACCEPT",
+          "reason": "「欠点」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "defect",
+          "decision": "ACCEPT",
+          "reason": "「欠点」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "shortcoming",
+          "decision": "ACCEPT",
+          "reason": "「欠点」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "weakness",
+        "drawback",
+        "defect",
+        "shortcoming"
+      ],
+      "decision": "CHANGED",
+      "reason": "「欠点」への主要な別英答として weakness / drawback / defect / shortcoming を採用。 promptへの成立性と学習価値の両方を満たす表現に限定した。"
+    },
+    {
+      "entry_id": "vocab:00985",
+      "prompt_ja": "我慢する",
+      "canonical_snapshot": "tolerate",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "put up with something",
+        "endure",
+        "bear",
+        "stand"
+      ],
+      "candidate_review": [
+        {
+          "expression": "put up with something",
+          "decision": "ACCEPT",
+          "reason": "「我慢する」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "endure",
+          "decision": "ACCEPT",
+          "reason": "「我慢する」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "bear",
+          "decision": "ACCEPT",
+          "reason": "「我慢する」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "stand",
+          "decision": "REJECT",
+          "reason": "stand は tolerate の意味では通常 can/can't 等の構文依存が強く、単独表現として登録するには不安定。"
+        }
+      ],
+      "after_paraphrases": [
+        "put up with something",
+        "endure",
+        "bear"
+      ],
+      "decision": "CHANGED",
+      "reason": "「我慢する」への主要な別英答として put up with something / endure / bear を採用。 stand は意味範囲・文脈依存・増分価値を再検討して除外した。"
+    },
+    {
+      "entry_id": "vocab:00986",
+      "prompt_ja": "悪名高い",
+      "canonical_snapshot": "notorious",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "infamous"
+      ],
+      "candidate_review": [
+        {
+          "expression": "infamous",
+          "decision": "ACCEPT",
+          "reason": "「悪名高い」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "infamous"
+      ],
+      "decision": "CHANGED",
+      "reason": "「悪名高い」への主要な別英答として infamous を採用。 promptへの成立性と学習価値の両方を満たす表現に限定した。"
+    },
+    {
+      "entry_id": "vocab:00987",
+      "prompt_ja": "降伏する",
+      "canonical_snapshot": "surrender",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "capitulate",
+        "give up",
+        "give in"
+      ],
+      "candidate_review": [
+        {
+          "expression": "capitulate",
+          "decision": "ACCEPT",
+          "reason": "「降伏する」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "give up",
+          "decision": "REJECT",
+          "reason": "give up は放棄全般で、降伏を必ずしも意味しない。"
+        },
+        {
+          "expression": "give in",
+          "decision": "REJECT",
+          "reason": "give in は圧力に屈する意味が中心で、明示的な「降伏する」より広い。"
+        }
+      ],
+      "after_paraphrases": [
+        "capitulate"
+      ],
+      "decision": "CHANGED",
+      "reason": "「降伏する」への主要な別英答として capitulate を採用。 give up / give in は意味範囲・文脈依存・増分価値を再検討して除外した。"
+    },
+    {
+      "entry_id": "vocab:00988",
+      "prompt_ja": "奪う",
+      "canonical_snapshot": "deprive",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "take something away",
+        "seize something",
+        "rob someone of something",
+        "steal something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "take something away",
+          "decision": "ACCEPT",
+          "reason": "「奪う」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "seize something",
+          "decision": "ACCEPT",
+          "reason": "「奪う」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "rob someone of something",
+          "decision": "ACCEPT",
+          "reason": "「奪う」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "steal something",
+          "decision": "REJECT",
+          "reason": "steal は盗むことに限定され、権利・自由などを「奪う」一般には狭い。"
+        }
+      ],
+      "after_paraphrases": [
+        "take something away",
+        "seize something",
+        "rob someone of something"
+      ],
+      "decision": "CHANGED",
+      "reason": "「奪う」への主要な別英答として take something away / seize something / rob someone of something を採用。 steal something は意味範囲・文脈依存・増分価値を再検討して除外した。"
+    },
+    {
+      "entry_id": "vocab:00989",
+      "prompt_ja": "圧政",
+      "canonical_snapshot": "tyranny",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "oppression",
+        "despotism"
+      ],
+      "candidate_review": [
+        {
+          "expression": "oppression",
+          "decision": "ACCEPT",
+          "reason": "「圧政」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "despotism",
+          "decision": "REJECT",
+          "reason": "despotism は意味上は近いが現代一般英語では優先度が低く、tyranny/oppression に追加する増分価値が小さい。"
+        }
+      ],
+      "after_paraphrases": [
+        "oppression"
+      ],
+      "decision": "CHANGED",
+      "reason": "「圧政」への主要な別英答として oppression を採用。 despotism は意味範囲・文脈依存・増分価値を再検討して除外した。"
+    },
+    {
+      "entry_id": "vocab:00990",
+      "prompt_ja": "気が進まない",
+      "canonical_snapshot": "reluctant",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "unwilling",
+        "hesitant"
+      ],
+      "candidate_review": [
+        {
+          "expression": "unwilling",
+          "decision": "ACCEPT",
+          "reason": "「気が進まない」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "hesitant",
+          "decision": "REJECT",
+          "reason": "hesitant はためらいを表すが、意思として「気が進まない」unwilling/reluctant とは一致しない場合がある。"
+        }
+      ],
+      "after_paraphrases": [
+        "unwilling"
+      ],
+      "decision": "CHANGED",
+      "reason": "「気が進まない」への主要な別英答として unwilling を採用。 hesitant は意味範囲・文脈依存・増分価値を再検討して除外した。"
+    },
+    {
+      "entry_id": "vocab:00991",
+      "prompt_ja": "崩壊する",
+      "canonical_snapshot": "collapse",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "fall apart",
+        "break down",
+        "crumble"
+      ],
+      "candidate_review": [
+        {
+          "expression": "fall apart",
+          "decision": "ACCEPT",
+          "reason": "「崩壊する」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "break down",
+          "decision": "ACCEPT",
+          "reason": "「崩壊する」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "crumble",
+          "decision": "ACCEPT",
+          "reason": "「崩壊する」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "fall apart",
+        "break down",
+        "crumble"
+      ],
+      "decision": "CHANGED",
+      "reason": "「崩壊する」への主要な別英答として fall apart / break down / crumble を採用。 promptへの成立性と学習価値の両方を満たす表現に限定した。"
+    },
+    {
+      "entry_id": "vocab:00992",
+      "prompt_ja": "政権",
+      "canonical_snapshot": "regime",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "government",
+        "administration"
+      ],
+      "candidate_review": [
+        {
+          "expression": "government",
+          "decision": "ACCEPT",
+          "reason": "「政権」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "administration",
+          "decision": "ACCEPT",
+          "reason": "「政権」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "government",
+        "administration"
+      ],
+      "decision": "CHANGED",
+      "reason": "「政権」への主要な別英答として government / administration を採用。 promptへの成立性と学習価値の両方を満たす表現に限定した。"
+    },
+    {
+      "entry_id": "vocab:00993",
+      "prompt_ja": "非難する",
+      "canonical_snapshot": "condemn",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "criticize",
+        "denounce",
+        "blame"
+      ],
+      "candidate_review": [
+        {
+          "expression": "criticize",
+          "decision": "ACCEPT",
+          "reason": "「非難する」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "denounce",
+          "decision": "ACCEPT",
+          "reason": "「非難する」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "blame",
+          "decision": "ACCEPT",
+          "reason": "「非難する」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "criticize",
+        "denounce",
+        "blame"
+      ],
+      "decision": "CHANGED",
+      "reason": "「非難する」への主要な別英答として criticize / denounce / blame を採用。 promptへの成立性と学習価値の両方を満たす表現に限定した。"
+    },
+    {
+      "entry_id": "vocab:00994",
+      "prompt_ja": "侵略",
+      "canonical_snapshot": "invasion",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "aggression",
+        "attack"
+      ],
+      "candidate_review": [
+        {
+          "expression": "aggression",
+          "decision": "ACCEPT",
+          "reason": "「侵略」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "attack",
+          "decision": "REJECT",
+          "reason": "attack は攻撃一般で、領域への侵入・侵略を含む invasion より広すぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "aggression"
+      ],
+      "decision": "CHANGED",
+      "reason": "「侵略」への主要な別英答として aggression を採用。 attack は意味範囲・文脈依存・増分価値を再検討して除外した。"
+    },
+    {
+      "entry_id": "vocab:00995",
+      "prompt_ja": "多様性",
+      "canonical_snapshot": "diversity",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "variety"
+      ],
+      "candidate_review": [
+        {
+          "expression": "variety",
+          "decision": "ACCEPT",
+          "reason": "「多様性」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "variety"
+      ],
+      "decision": "CHANGED",
+      "reason": "「多様性」への主要な別英答として variety を採用。 promptへの成立性と学習価値の両方を満たす表現に限定した。"
+    },
+    {
+      "entry_id": "vocab:00996",
+      "prompt_ja": "条約",
+      "canonical_snapshot": "treaty",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "pact",
+        "agreement",
+        "convention"
+      ],
+      "candidate_review": [
+        {
+          "expression": "pact",
+          "decision": "ACCEPT",
+          "reason": "「条約」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "agreement",
+          "decision": "REJECT",
+          "reason": "agreement は合意・協定全般で、国家間の正式な「条約」より広い。"
+        },
+        {
+          "expression": "convention",
+          "decision": "REJECT",
+          "reason": "convention は特定種の国際条約にはなるが用法が限定され、一般回答としての優先度は低い。"
+        }
+      ],
+      "after_paraphrases": [
+        "pact"
+      ],
+      "decision": "CHANGED",
+      "reason": "「条約」への主要な別英答として pact を採用。 agreement / convention は意味範囲・文脈依存・増分価値を再検討して除外した。"
+    },
+    {
+      "entry_id": "vocab:00997",
+      "prompt_ja": "制裁",
+      "canonical_snapshot": "sanction",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "penalty",
+        "punishment"
+      ],
+      "candidate_review": [
+        {
+          "expression": "penalty",
+          "decision": "ACCEPT",
+          "reason": "「制裁」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "punishment",
+          "decision": "REJECT",
+          "reason": "punishment は処罰一般で、規則違反等に課す「制裁」penalty より広い。"
+        }
+      ],
+      "after_paraphrases": [
+        "penalty"
+      ],
+      "decision": "CHANGED",
+      "reason": "「制裁」への主要な別英答として penalty を採用。 punishment は意味範囲・文脈依存・増分価値を再検討して除外した。"
+    },
+    {
+      "entry_id": "vocab:00998",
+      "prompt_ja": "関税",
+      "canonical_snapshot": "tariff",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "customs duty",
+        "duty"
+      ],
+      "candidate_review": [
+        {
+          "expression": "customs duty",
+          "decision": "ACCEPT",
+          "reason": "「関税」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "duty",
+          "decision": "REJECT",
+          "reason": "duty は税の意味を持つが義務の意味も強く、単独では「関税」への回答として曖昧すぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "customs duty"
+      ],
+      "decision": "CHANGED",
+      "reason": "「関税」への主要な別英答として customs duty を採用。 duty は意味範囲・文脈依存・増分価値を再検討して除外した。"
+    },
+    {
+      "entry_id": "vocab:00999",
+      "prompt_ja": "論争",
+      "canonical_snapshot": "dispute",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "controversy",
+        "debate",
+        "argument"
+      ],
+      "candidate_review": [
+        {
+          "expression": "controversy",
+          "decision": "ACCEPT",
+          "reason": "「論争」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "debate",
+          "decision": "ACCEPT",
+          "reason": "「論争」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "argument",
+          "decision": "REJECT",
+          "reason": "argument は口論・主張・論証まで広く、「論争」の主要回答としては意味範囲が広すぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "controversy",
+        "debate"
+      ],
+      "decision": "CHANGED",
+      "reason": "「論争」への主要な別英答として controversy / debate を採用。 argument は意味範囲・文脈依存・増分価値を再検討して除外した。"
+    },
+    {
+      "entry_id": "vocab:01000",
+      "prompt_ja": "代わりの",
+      "canonical_snapshot": "alternative",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "replacement",
+        "substitute",
+        "alternate"
+      ],
+      "candidate_review": [
+        {
+          "expression": "replacement",
+          "decision": "ACCEPT",
+          "reason": "「代わりの」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "substitute",
+          "decision": "ACCEPT",
+          "reason": "「代わりの」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "alternate",
+          "decision": "REJECT",
+          "reason": "alternate は米語で「代わりの」の意味もあるが、「交互の」の意味も強く、主要回答として追加する優先度が低い。"
+        }
+      ],
+      "after_paraphrases": [
+        "replacement",
+        "substitute"
+      ],
+      "decision": "CHANGED",
+      "reason": "「代わりの」への主要な別英答として replacement / substitute を採用。 alternate は意味範囲・文脈依存・増分価値を再検討して除外した。"
+    },
+    {
+      "entry_id": "vocab:01001",
+      "prompt_ja": "収入",
+      "canonical_snapshot": "revenue",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "income",
+        "earnings"
+      ],
+      "candidate_review": [
+        {
+          "expression": "income",
+          "decision": "ACCEPT",
+          "reason": "「収入」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "earnings",
+          "decision": "ACCEPT",
+          "reason": "「収入」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "income",
+        "earnings"
+      ],
+      "decision": "CHANGED",
+      "reason": "「収入」への主要な別英答として income / earnings を採用。 promptへの成立性と学習価値の両方を満たす表現に限定した。"
+    },
+    {
+      "entry_id": "vocab:01002",
+      "prompt_ja": "支持",
+      "canonical_snapshot": "favor",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "support",
+        "backing",
+        "endorsement"
+      ],
+      "candidate_review": [
+        {
+          "expression": "support",
+          "decision": "ACCEPT",
+          "reason": "「支持」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "backing",
+          "decision": "ACCEPT",
+          "reason": "「支持」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "endorsement",
+          "decision": "ACCEPT",
+          "reason": "「支持」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "support",
+        "backing",
+        "endorsement"
+      ],
+      "decision": "CHANGED",
+      "reason": "「支持」への主要な別英答として support / backing / endorsement を採用。 promptへの成立性と学習価値の両方を満たす表現に限定した。"
+    },
+    {
+      "entry_id": "vocab:01003",
+      "prompt_ja": "法律",
+      "canonical_snapshot": "legislation",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "law",
+        "statute"
+      ],
+      "candidate_review": [
+        {
+          "expression": "law",
+          "decision": "ACCEPT",
+          "reason": "「法律」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        },
+        {
+          "expression": "statute",
+          "decision": "ACCEPT",
+          "reason": "「法律」への自然な主要英答として成立し、canonicalとは別表現で、頻度・実用性または読解上の独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "law",
+        "statute"
+      ],
+      "decision": "CHANGED",
+      "reason": "「法律」への主要な別英答として law / statute を採用。 promptへの成立性と学習価値の両方を満たす表現に限定した。"
+    }
+  ],
+  "followups": [
+    {
+      "entry_id": "vocab:00972",
+      "type": "target_surface_review",
+      "issue": "meaning_ja「受け入れる」に対し canonical `reconcile` は通常 `reconcile oneself to something` / `be reconciled to something` のような構文で「受け入れる」を表す。bare TARGET surface としての自然さは answers/TARGET authority 側で別途確認が必要。今回scopeでは未変更。"
+    }
+  ]
+}
