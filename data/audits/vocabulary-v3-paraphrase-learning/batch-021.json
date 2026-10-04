@@ -1,0 +1,2567 @@
+{
+  "schema_version": 1,
+  "policy_version": "prompt-learning-value-v1",
+  "batch": 21,
+  "ordinal_start": 2001,
+  "ordinal_end": 2100,
+  "claim_main": "e3b494a3892a7f571f9ae0cccb1ee277c223f075",
+  "reviewed_against_main": "e3b494a3892a7f571f9ae0cccb1ee277c223f075",
+  "reviewed_count": 100,
+  "entry_ids": [
+    "vocab:02004",
+    "vocab:02005",
+    "vocab:02006",
+    "vocab:02007",
+    "vocab:02008",
+    "vocab:02009",
+    "vocab:02010",
+    "vocab:02011",
+    "vocab:02012",
+    "vocab:02013",
+    "vocab:02014",
+    "vocab:02015",
+    "vocab:02016",
+    "vocab:02017",
+    "vocab:02018",
+    "vocab:02019",
+    "vocab:02020",
+    "vocab:02021",
+    "vocab:02022",
+    "vocab:02023",
+    "vocab:02024",
+    "vocab:02025",
+    "vocab:02026",
+    "vocab:02027",
+    "vocab:02028",
+    "vocab:02029",
+    "vocab:02030",
+    "vocab:02031",
+    "vocab:02032",
+    "vocab:02033",
+    "vocab:02034",
+    "vocab:02035",
+    "vocab:02036",
+    "vocab:02037",
+    "vocab:02038",
+    "vocab:02039",
+    "vocab:02040",
+    "vocab:02041",
+    "vocab:02042",
+    "vocab:02043",
+    "vocab:02044",
+    "vocab:02045",
+    "vocab:02046",
+    "vocab:02047",
+    "vocab:02048",
+    "vocab:02049",
+    "vocab:02050",
+    "vocab:02051",
+    "vocab:02052",
+    "vocab:02053",
+    "vocab:02054",
+    "vocab:02055",
+    "vocab:02056",
+    "vocab:02057",
+    "vocab:02058",
+    "vocab:02059",
+    "vocab:02060",
+    "vocab:02061",
+    "vocab:02062",
+    "vocab:02063",
+    "vocab:02064",
+    "vocab:02065",
+    "vocab:02066",
+    "vocab:02067",
+    "vocab:02068",
+    "vocab:02069",
+    "vocab:02070",
+    "vocab:02071",
+    "vocab:02072",
+    "vocab:02073",
+    "vocab:02074",
+    "vocab:02075",
+    "vocab:02076",
+    "vocab:02077",
+    "vocab:02078",
+    "vocab:02079",
+    "vocab:02080",
+    "vocab:02081",
+    "vocab:02082",
+    "vocab:02083",
+    "vocab:02084",
+    "vocab:02085",
+    "vocab:02086",
+    "vocab:02087",
+    "vocab:02088",
+    "vocab:02089",
+    "vocab:02090",
+    "vocab:02091",
+    "vocab:02092",
+    "vocab:02093",
+    "vocab:02094",
+    "vocab:02095",
+    "vocab:02096",
+    "vocab:02097",
+    "vocab:02098",
+    "vocab:02099",
+    "vocab:02100",
+    "vocab:02101",
+    "vocab:02102",
+    "vocab:02103"
+  ],
+  "results": [
+    {
+      "entry_id": "vocab:02004",
+      "prompt_ja": "遠い",
+      "canonical_snapshot": "distant",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "far",
+        "distant",
+        "remote"
+      ],
+      "candidate_review": [
+        {
+          "expression": "far",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "remote",
+          "decision": "REJECT",
+          "reason": "遠さに加えて隔絶・アクセス困難の含意を持ちやすく、無標の「遠い」への追加回答としては狭い。"
+        }
+      ],
+      "after_paraphrases": [
+        "far"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 far を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02005",
+      "prompt_ja": "郊外",
+      "canonical_snapshot": "suburb",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "suburb",
+        "suburbs",
+        "outskirts"
+      ],
+      "candidate_review": [
+        {
+          "expression": "suburbs",
+          "decision": "REJECT",
+          "reason": "canonicalの単複差に近いsurface variantで、独立したparaphrase価値はない。"
+        },
+        {
+          "expression": "outskirts",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "outskirts"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 outskirts を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02006",
+      "prompt_ja": "理想",
+      "canonical_snapshot": "ideal",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "ideal"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02007",
+      "prompt_ja": "引退",
+      "canonical_snapshot": "retirement",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "retirement"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02008",
+      "prompt_ja": "孤児",
+      "canonical_snapshot": "orphan",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "orphan"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02009",
+      "prompt_ja": "集める",
+      "canonical_snapshot": "collect",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "collect",
+        "gather",
+        "assemble"
+      ],
+      "candidate_review": [
+        {
+          "expression": "gather",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "assemble",
+          "decision": "REJECT",
+          "reason": "人・部品などを一か所に集める用法へ偏り、一般の「集める」には条件が付く。"
+        }
+      ],
+      "after_paraphrases": [
+        "gather"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 gather を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02010",
+      "prompt_ja": "寄付",
+      "canonical_snapshot": "donation",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "donation",
+        "contribution"
+      ],
+      "candidate_review": [
+        {
+          "expression": "contribution",
+          "decision": "ACCEPT",
+          "reason": "金銭・物品などの「寄付」を表す主要語で、donationとは別の実用的語彙価値がある。"
+        }
+      ],
+      "after_paraphrases": [
+        "contribution"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 contribution を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02011",
+      "prompt_ja": "自伝",
+      "canonical_snapshot": "autobiography",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "autobiography"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02012",
+      "prompt_ja": "発売する",
+      "canonical_snapshot": "release",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "release",
+        "launch"
+      ],
+      "candidate_review": [
+        {
+          "expression": "launch",
+          "decision": "ACCEPT",
+          "reason": "商品・サービス等を「発売する」主要動詞として高頻度で、releaseとは独立した学習価値がある。"
+        }
+      ],
+      "after_paraphrases": [
+        "launch"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 launch を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02013",
+      "prompt_ja": "正午",
+      "canonical_snapshot": "noon",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "noon",
+        "midday"
+      ],
+      "candidate_review": [
+        {
+          "expression": "midday",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "midday"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 midday を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02014",
+      "prompt_ja": "市長",
+      "canonical_snapshot": "mayor",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "mayor"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02015",
+      "prompt_ja": "候補者",
+      "canonical_snapshot": "candidate",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "candidate",
+        "nominee"
+      ],
+      "candidate_review": [
+        {
+          "expression": "nominee",
+          "decision": "REJECT",
+          "reason": "正式に指名された候補者に限定され、一般の「候補者」より意味範囲が狭い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02016",
+      "prompt_ja": "選挙",
+      "canonical_snapshot": "election",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "election"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02017",
+      "prompt_ja": "市の",
+      "canonical_snapshot": "municipal",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "municipal",
+        "city"
+      ],
+      "candidate_review": [
+        {
+          "expression": "city",
+          "decision": "ACCEPT",
+          "reason": "city government / city council のように「市の」を表す主要な名詞修飾用法で実用性が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "city"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 city を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02018",
+      "prompt_ja": "議会",
+      "canonical_snapshot": "council",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "council",
+        "parliament",
+        "legislature"
+      ],
+      "candidate_review": [
+        {
+          "expression": "parliament",
+          "decision": "ACCEPT",
+          "reason": "国などの「議会」を指す主要語で、日本語promptが機関レベルを限定していないため正答として成立する。"
+        },
+        {
+          "expression": "legislature",
+          "decision": "ACCEPT",
+          "reason": "立法府としての「議会」を表す重要な読解語彙で、日本語promptへの対応が明確。"
+        }
+      ],
+      "after_paraphrases": [
+        "parliament",
+        "legislature"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 parliament / legislature を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02019",
+      "prompt_ja": "特定の",
+      "canonical_snapshot": "specific",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "specific",
+        "particular",
+        "certain"
+      ],
+      "candidate_review": [
+        {
+          "expression": "particular",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "certain",
+          "decision": "ACCEPT",
+          "reason": "a certain person のように「特定の」を表す主要用法があり、独立した高頻度語彙として価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "particular",
+        "certain"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 particular / certain を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02020",
+      "prompt_ja": "問題",
+      "canonical_snapshot": "issue",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "problem",
+        "issue",
+        "matter"
+      ],
+      "candidate_review": [
+        {
+          "expression": "problem",
+          "decision": "ACCEPT",
+          "reason": "「問題」への最も基本的な英答の一つで、これをMISSにする教育的不利益が大きい。"
+        },
+        {
+          "expression": "matter",
+          "decision": "REJECT",
+          "reason": "「事柄・案件」まで広く指し、無標の「問題」への対応としては意味範囲が広すぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "problem"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 problem を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02021",
+      "prompt_ja": "年金",
+      "canonical_snapshot": "pension",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "pension"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02022",
+      "prompt_ja": "政治家",
+      "canonical_snapshot": "politician",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "politician"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02023",
+      "prompt_ja": "主に",
+      "canonical_snapshot": "primarily",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "mainly",
+        "primarily",
+        "chiefly"
+      ],
+      "candidate_review": [
+        {
+          "expression": "mainly",
+          "decision": "ACCEPT",
+          "reason": "「主に」への高頻度で自然な主要英答であり、answer-valueが高い。"
+        },
+        {
+          "expression": "chiefly",
+          "decision": "REJECT",
+          "reason": "意味は成立するが現代一般英語ではmainly/primarilyより頻度と増分価値が低く、このカードでは過剰登録になる。"
+        }
+      ],
+      "after_paraphrases": [
+        "mainly"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 mainly を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02024",
+      "prompt_ja": "発揮する",
+      "canonical_snapshot": "exert",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "demonstrate",
+        "exercise",
+        "exert",
+        "display"
+      ],
+      "candidate_review": [
+        {
+          "expression": "demonstrate",
+          "decision": "REJECT",
+          "reason": "能力・性質など特定の目的語では成立するが、一般の「発揮する」への独立回答としては目的語依存が強い。"
+        },
+        {
+          "expression": "exercise",
+          "decision": "REJECT",
+          "reason": "権利・権限・影響力など特定の目的語に強く依存し、無標promptには狭い。"
+        },
+        {
+          "expression": "display",
+          "decision": "REJECT",
+          "reason": "能力・技能等では成立するが「示す」の意味が中心で、一般の「発揮する」との対応を固定すると誤学習余地がある。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02025",
+      "prompt_ja": "支配的な",
+      "canonical_snapshot": "dominant",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "dominant",
+        "predominant",
+        "prevailing"
+      ],
+      "candidate_review": [
+        {
+          "expression": "predominant",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "prevailing",
+          "decision": "REJECT",
+          "reason": "意見・状況・風など「広く行き渡る」対象に偏り、一般の「支配的な」より使用条件が狭い。"
+        }
+      ],
+      "after_paraphrases": [
+        "predominant"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 predominant を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02026",
+      "prompt_ja": "影響力",
+      "canonical_snapshot": "influence",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "influence",
+        "clout",
+        "sway"
+      ],
+      "candidate_review": [
+        {
+          "expression": "clout",
+          "decision": "ACCEPT",
+          "reason": "口語・報道で「影響力」を表す重要なregister alternativeで、独立した語彙価値が高い。"
+        },
+        {
+          "expression": "sway",
+          "decision": "REJECT",
+          "reason": "意味は成立するがhold sway等の定型環境に寄りやすく、cloutを加えた後の増分価値が低い。"
+        }
+      ],
+      "after_paraphrases": [
+        "clout"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 clout を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02027",
+      "prompt_ja": "保守的な",
+      "canonical_snapshot": "conservative",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "conservative"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02028",
+      "prompt_ja": "政党",
+      "canonical_snapshot": "party",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "party",
+        "political party"
+      ],
+      "candidate_review": [
+        {
+          "expression": "political party",
+          "decision": "REJECT",
+          "reason": "canonical partyを説明的に明示した合成表現で、別語彙としての増分学習価値が乏しい。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02029",
+      "prompt_ja": "減少する",
+      "canonical_snapshot": "diminish",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "decrease",
+        "decline",
+        "fall"
+      ],
+      "candidate_review": [
+        {
+          "expression": "decrease",
+          "decision": "ACCEPT",
+          "reason": "「減少する」への基本的で高頻度な英答で、diminishよりもanswer-valueが高い場面が多い。"
+        },
+        {
+          "expression": "decline",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "fall",
+          "decision": "ACCEPT",
+          "reason": "数量・率・水準が「減少する」を表す極めて一般的な自動詞で実用性が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "decrease",
+        "decline",
+        "fall"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 decrease / decline / fall を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02030",
+      "prompt_ja": "広報担当者",
+      "canonical_snapshot": "spokesperson",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "spokesperson",
+        "press officer"
+      ],
+      "candidate_review": [
+        {
+          "expression": "press officer",
+          "decision": "ACCEPT",
+          "reason": "報道対応を担う「広報担当者」の主要表現で、職務語彙として独立した学習価値がある。"
+        }
+      ],
+      "after_paraphrases": [
+        "press officer"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 press officer を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02031",
+      "prompt_ja": "断る",
+      "canonical_snapshot": "refuse",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "refuse",
+        "decline",
+        "turn down"
+      ],
+      "candidate_review": [
+        {
+          "expression": "decline",
+          "decision": "ACCEPT",
+          "reason": "依頼・招待などを丁寧に「断る」主要語でregister差も学習価値が高い。"
+        },
+        {
+          "expression": "turn down",
+          "decision": "ACCEPT",
+          "reason": "提案・依頼等を「断る」高頻度phrasal verbで、独立した実用価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "decline",
+        "turn down"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 decline / turn down を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02032",
+      "prompt_ja": "論評",
+      "canonical_snapshot": "comment",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "comment",
+        "commentary"
+      ],
+      "candidate_review": [
+        {
+          "expression": "commentary",
+          "decision": "ACCEPT",
+          "reason": "出来事・作品等についての「論評」を表す主要名詞で、commentとは別の重要語彙。"
+        }
+      ],
+      "after_paraphrases": [
+        "commentary"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 commentary を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02033",
+      "prompt_ja": "警察",
+      "canonical_snapshot": "police",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "police"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02034",
+      "prompt_ja": "幹部",
+      "canonical_snapshot": "executive",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "executive",
+        "senior official"
+      ],
+      "candidate_review": [
+        {
+          "expression": "senior official",
+          "decision": "ACCEPT",
+          "reason": "組織・官庁などの「幹部」を表す主要表現で、corporate executiveとは異なる場面を自然に覆う。"
+        }
+      ],
+      "after_paraphrases": [
+        "senior official"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 senior official を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02035",
+      "prompt_ja": "楽しませる",
+      "canonical_snapshot": "entertain",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "entertain",
+        "amuse"
+      ],
+      "candidate_review": [
+        {
+          "expression": "amuse",
+          "decision": "ACCEPT",
+          "reason": "人を「楽しませる」主要動詞で、特に面白がらせる意味を持つ有用な別語彙。"
+        }
+      ],
+      "after_paraphrases": [
+        "amuse"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 amuse を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02036",
+      "prompt_ja": "官僚",
+      "canonical_snapshot": "bureaucrat",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "bureaucrat"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02037",
+      "prompt_ja": "排他的な・独占的な／限定の",
+      "canonical_snapshot": "exclusive",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "exclusive"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02038",
+      "prompt_ja": "秘書",
+      "canonical_snapshot": "secretary",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "secretary",
+        "assistant"
+      ],
+      "candidate_review": [
+        {
+          "expression": "assistant",
+          "decision": "REJECT",
+          "reason": "補佐役一般を指し、secretaryより大幅に広いので「秘書」と固定対応させるのは不正確。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02039",
+      "prompt_ja": "きっぱりと",
+      "canonical_snapshot": "flatly",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "firmly",
+        "flatly",
+        "categorically",
+        "decisively"
+      ],
+      "candidate_review": [
+        {
+          "expression": "firmly",
+          "decision": "ACCEPT",
+          "reason": "態度・発言を「きっぱりと」行う高頻度副詞で自然な主要回答。"
+        },
+        {
+          "expression": "categorically",
+          "decision": "REJECT",
+          "reason": "全面否定・断言の文脈に強く偏り、一般の「きっぱりと」には狭い。"
+        },
+        {
+          "expression": "decisively",
+          "decision": "REJECT",
+          "reason": "「決然と・決定的に」が中心で、単なる明確な拒絶等を表す「きっぱりと」とはずれやすい。"
+        }
+      ],
+      "after_paraphrases": [
+        "firmly"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 firmly を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02040",
+      "prompt_ja": "漏らす",
+      "canonical_snapshot": "leak",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "leak",
+        "divulge"
+      ],
+      "candidate_review": [
+        {
+          "expression": "divulge",
+          "decision": "ACCEPT",
+          "reason": "秘密・情報を「漏らす」を表す標準的なformal verbで、register alternativeとして読解価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "divulge"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 divulge を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02041",
+      "prompt_ja": "情報",
+      "canonical_snapshot": "information",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "information",
+        "intelligence"
+      ],
+      "candidate_review": [
+        {
+          "expression": "intelligence",
+          "decision": "REJECT",
+          "reason": "機密・諜報など特定種の情報を指す用法が中心で、一般の「情報」には狭い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02042",
+      "prompt_ja": "あえて〜する",
+      "canonical_snapshot": "dare",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "dare",
+        "dare to do"
+      ],
+      "candidate_review": [
+        {
+          "expression": "dare to do",
+          "decision": "REJECT",
+          "reason": "canonical dareの補文展開で同一lexemeの構文variantに過ぎず、独立paraphraseではない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02043",
+      "prompt_ja": "雇用主",
+      "canonical_snapshot": "employer",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "employer"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02044",
+      "prompt_ja": "解雇する",
+      "canonical_snapshot": "fire",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "fire",
+        "dismiss",
+        "sack",
+        "lay off"
+      ],
+      "candidate_review": [
+        {
+          "expression": "dismiss",
+          "decision": "ACCEPT",
+          "reason": "雇用を「解雇する」標準的なformal verbで、fireとはregister差のある重要語彙。"
+        },
+        {
+          "expression": "sack",
+          "decision": "ACCEPT",
+          "reason": "主に英語圏の口語で「解雇する」を表す主要variantで、独立した実用価値がある。"
+        },
+        {
+          "expression": "lay off",
+          "decision": "REJECT",
+          "reason": "人員整理・仕事不足等による解雇の含意が強く、一般の「解雇する」より意味が狭い。"
+        }
+      ],
+      "after_paraphrases": [
+        "dismiss",
+        "sack"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 dismiss / sack を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02045",
+      "prompt_ja": "名声を得る",
+      "canonical_snapshot": "achieve fame",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "gain fame",
+        "become famous",
+        "make a name for oneself"
+      ],
+      "candidate_review": [
+        {
+          "expression": "gain fame",
+          "decision": "ACCEPT",
+          "reason": "「名声を得る」の直接的で自然な主要表現。"
+        },
+        {
+          "expression": "become famous",
+          "decision": "ACCEPT",
+          "reason": "結果状態として「名声を得る」に自然に対応する高頻度表現で、answer-valueが高い。"
+        },
+        {
+          "expression": "make a name for oneself",
+          "decision": "ACCEPT",
+          "reason": "「名を上げる／名声を得る」の重要idiomで、独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "gain fame",
+        "become famous",
+        "make a name for oneself"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 gain fame / become famous / make a name for oneself を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02046",
+      "prompt_ja": "以前はsomethingしていた",
+      "canonical_snapshot": "used to do something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "used to do something"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02047",
+      "prompt_ja": "裕福である",
+      "canonical_snapshot": "be well off",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be rich",
+        "be wealthy",
+        "be well-off"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be rich",
+          "decision": "ACCEPT",
+          "reason": "「裕福である」への最も基本的な主要英答で、MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "be wealthy",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "be well-off",
+          "decision": "REJECT",
+          "reason": "canonical be well offとの差はhyphen表記のみで、独立paraphraseではない。"
+        }
+      ],
+      "after_paraphrases": [
+        "be rich",
+        "be wealthy"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 be rich / be wealthy を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02048",
+      "prompt_ja": "someoneにsomethingの借りがある",
+      "canonical_snapshot": "owe someone something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "owe someone something",
+        "be indebted to someone for something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be indebted to someone for something",
+          "decision": "ACCEPT",
+          "reason": "金銭的・恩義上の「借りがある」を表すformalな主要構文で、独立した学習価値がある。"
+        }
+      ],
+      "after_paraphrases": [
+        "be indebted to someone for something"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 be indebted to someone for something を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02049",
+      "prompt_ja": "栄光の時代",
+      "canonical_snapshot": "glory days",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "glory days",
+        "heyday"
+      ],
+      "candidate_review": [
+        {
+          "expression": "heyday",
+          "decision": "ACCEPT",
+          "reason": "人・組織等の最も栄えた「栄光の時代」を表す重要語で、独立した読解価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "heyday"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 heyday を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02050",
+      "prompt_ja": "言い換えれば",
+      "canonical_snapshot": "in other words",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "in other words",
+        "to put it another way"
+      ],
+      "candidate_review": [
+        {
+          "expression": "to put it another way",
+          "decision": "ACCEPT",
+          "reason": "「言い換えれば」を表す自然な談話表現で、canonicalとは別constructionとして実用価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "to put it another way"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 to put it another way を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02051",
+      "prompt_ja": "コンピューターを使いこなす能力",
+      "canonical_snapshot": "computer literacy",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "computer skills",
+        "computer literacy"
+      ],
+      "candidate_review": [
+        {
+          "expression": "computer skills",
+          "decision": "ACCEPT",
+          "reason": "「コンピューターを使いこなす能力」を表す高頻度で実務的な表現。"
+        }
+      ],
+      "after_paraphrases": [
+        "computer skills"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 computer skills を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02052",
+      "prompt_ja": "人事部",
+      "canonical_snapshot": "personnel department",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "human resources",
+        "HR department",
+        "personnel department"
+      ],
+      "candidate_review": [
+        {
+          "expression": "human resources",
+          "decision": "ACCEPT",
+          "reason": "現代の組織で「人事部／人事機能」を指す最重要表現の一つ。"
+        },
+        {
+          "expression": "HR department",
+          "decision": "ACCEPT",
+          "reason": "部門を明示する高頻度実務表現で、personnel departmentとは別の現代的表現価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "human resources",
+        "HR department"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 human resources / HR department を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02053",
+      "prompt_ja": "五分五分の可能性",
+      "canonical_snapshot": "fifty-fifty chance",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "a fifty-fifty chance",
+        "an even chance"
+      ],
+      "candidate_review": [
+        {
+          "expression": "a fifty-fifty chance",
+          "decision": "REJECT",
+          "reason": "canonical fifty-fifty chanceへの冠詞追加だけで、独立したparaphraseではない。"
+        },
+        {
+          "expression": "an even chance",
+          "decision": "ACCEPT",
+          "reason": "「五分五分の可能性」を表す標準的な別idiomで、学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "an even chance"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 an even chance を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02054",
+      "prompt_ja": "somethingに参加する",
+      "canonical_snapshot": "participate in something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "participate in something",
+        "take part in something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "take part in something",
+          "decision": "ACCEPT",
+          "reason": "「somethingに参加する」を表す高頻度phrasal expressionで、独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "take part in something"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 take part in something を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02055",
+      "prompt_ja": "うまくやる",
+      "canonical_snapshot": "do well",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "do well",
+        "manage well"
+      ],
+      "candidate_review": [
+        {
+          "expression": "manage well",
+          "decision": "REJECT",
+          "reason": "「上手に管理する／うまく対処する」など目的語・状況依存が強く、無標の「うまくやる」への主要回答としては不安定。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02056",
+      "prompt_ja": "someoneに指示を与える",
+      "canonical_snapshot": "give instructions to someone",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "give someone instructions",
+        "instruct someone"
+      ],
+      "candidate_review": [
+        {
+          "expression": "give someone instructions",
+          "decision": "REJECT",
+          "reason": "canonical give instructions to someoneのdative alternationで、同一表現の構文variantに近い。"
+        },
+        {
+          "expression": "instruct someone",
+          "decision": "ACCEPT",
+          "reason": "「someoneに指示を与える」を一語で表す標準的なformal verbで独立語彙価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "instruct someone"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 instruct someone を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02057",
+      "prompt_ja": "someoneに口答えする",
+      "canonical_snapshot": "talk back to someone",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "talk back to someone",
+        "answer someone back"
+      ],
+      "candidate_review": [
+        {
+          "expression": "answer someone back",
+          "decision": "ACCEPT",
+          "reason": "主にBritish Englishで「口答えする」を表す標準的variantで、地域差として学習価値がある。"
+        }
+      ],
+      "after_paraphrases": [
+        "answer someone back"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 answer someone back を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02058",
+      "prompt_ja": "実際には",
+      "canonical_snapshot": "in reality",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "actually",
+        "in fact",
+        "in reality"
+      ],
+      "candidate_review": [
+        {
+          "expression": "actually",
+          "decision": "ACCEPT",
+          "reason": "「実際には」への極めて高頻度な主要英答。"
+        },
+        {
+          "expression": "in fact",
+          "decision": "ACCEPT",
+          "reason": "事実を補強・訂正する「実際には」を表す重要な談話表現。"
+        }
+      ],
+      "after_paraphrases": [
+        "actually",
+        "in fact"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 actually / in fact を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02059",
+      "prompt_ja": "somethingするのに苦労する",
+      "canonical_snapshot": "have difficulty doing something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "have difficulty doing something",
+        "struggle to do something",
+        "have trouble doing something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "struggle to do something",
+          "decision": "ACCEPT",
+          "reason": "「somethingするのに苦労する」を表す高頻度で自然な主要構文。"
+        },
+        {
+          "expression": "have trouble doing something",
+          "decision": "ACCEPT",
+          "reason": "同promptへの日常的で高頻度な別constructionで、answer-valueが高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "struggle to do something",
+        "have trouble doing something"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 struggle to do something / have trouble doing something を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02060",
+      "prompt_ja": "somethingをsomething elseと考える",
+      "canonical_snapshot": "think of something as something else",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "regard something as something else",
+        "think of something as something else",
+        "consider something to be something else"
+      ],
+      "candidate_review": [
+        {
+          "expression": "regard something as something else",
+          "decision": "ACCEPT",
+          "reason": "「somethingをsomething elseと考える」の標準的formal constructionで、独立した学習価値が高い。"
+        },
+        {
+          "expression": "consider something to be something else",
+          "decision": "ACCEPT",
+          "reason": "同じ判断・見なしを表す主要constructionで、自然な回答として高価値。"
+        }
+      ],
+      "after_paraphrases": [
+        "regard something as something else",
+        "consider something to be something else"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 regard something as something else / consider something to be something else を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02061",
+      "prompt_ja": "はるばる",
+      "canonical_snapshot": "all the way",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "all the way",
+        "from far away"
+      ],
+      "candidate_review": [
+        {
+          "expression": "from far away",
+          "decision": "REJECT",
+          "reason": "単に「遠くから」を表すだけで、移動・労力を含意し得る「はるばる」と常には対応しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02062",
+      "prompt_ja": "someoneの世話をする",
+      "canonical_snapshot": "care for someone",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "take care of someone",
+        "look after someone",
+        "care for someone"
+      ],
+      "candidate_review": [
+        {
+          "expression": "take care of someone",
+          "decision": "ACCEPT",
+          "reason": "「someoneの世話をする」への極めて一般的な主要表現。"
+        },
+        {
+          "expression": "look after someone",
+          "decision": "ACCEPT",
+          "reason": "特にBritish Englishを含む日常英語で高頻度の主要phrasal verb。"
+        }
+      ],
+      "after_paraphrases": [
+        "take care of someone",
+        "look after someone"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 take care of someone / look after someone を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02063",
+      "prompt_ja": "公職に立候補する",
+      "canonical_snapshot": "run for office",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "run for office",
+        "stand for office"
+      ],
+      "candidate_review": [
+        {
+          "expression": "stand for office",
+          "decision": "ACCEPT",
+          "reason": "British Englishで「公職に立候補する」を表す主要variantで、地域差として価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "stand for office"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 stand for office を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02064",
+      "prompt_ja": "somethingに失望する",
+      "canonical_snapshot": "be disappointed by something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be disappointed with something",
+        "be disappointed in something",
+        "be let down by something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be disappointed with something",
+          "decision": "REJECT",
+          "reason": "canonicalと同じdisappointedの前置詞選択差で、paraphraseよりTARGET/answer variant側に近い。"
+        },
+        {
+          "expression": "be disappointed in something",
+          "decision": "REJECT",
+          "reason": "canonicalと同じlexemeの補語variantで、独立した別表現としての増分価値が弱い。"
+        },
+        {
+          "expression": "be let down by something",
+          "decision": "ACCEPT",
+          "reason": "期待を裏切られて「失望する」を表す高頻度idiomatic expressionで、独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "be let down by something"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 be let down by something を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02065",
+      "prompt_ja": "somethingに集中する",
+      "canonical_snapshot": "concentrate on something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "focus on something",
+        "concentrate on something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "focus on something",
+          "decision": "ACCEPT",
+          "reason": "「somethingに集中する」への高頻度な主要phrasal constructionでanswer-valueが非常に高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "focus on something"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 focus on something を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02066",
+      "prompt_ja": "〜というのは事実である",
+      "canonical_snapshot": "it is the case that",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "it is true that",
+        "the fact is that"
+      ],
+      "candidate_review": [
+        {
+          "expression": "it is true that",
+          "decision": "ACCEPT",
+          "reason": "「〜というのは事実である」への直接的で自然な主要constructionで、canonicalより一般的。"
+        },
+        {
+          "expression": "the fact is that",
+          "decision": "REJECT",
+          "reason": "談話上「実は／事実は」と新情報を提示する機能が強く、命題の真偽を述べるpromptとは完全には一致しない。"
+        }
+      ],
+      "after_paraphrases": [
+        "it is true that"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 it is true that を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02067",
+      "prompt_ja": "年金で暮らす",
+      "canonical_snapshot": "live on a pension",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "live on a pension",
+        "live off a pension"
+      ],
+      "candidate_review": [
+        {
+          "expression": "live off a pension",
+          "decision": "REJECT",
+          "reason": "canonicalと同一lexemeの前置詞variantで、独立paraphraseとしての増分価値が小さい。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02068",
+      "prompt_ja": "苦しい生活を送る",
+      "canonical_snapshot": "lead a hard life",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "lead a hard life",
+        "live a hard life",
+        "struggle to make ends meet"
+      ],
+      "candidate_review": [
+        {
+          "expression": "live a hard life",
+          "decision": "ACCEPT",
+          "reason": "「苦しい生活を送る」への自然で基本的な別表現で、MISS扱いすべきでない。"
+        },
+        {
+          "expression": "struggle to make ends meet",
+          "decision": "REJECT",
+          "reason": "主に金銭的困窮に限定され、「苦しい生活」一般より意味が狭い。"
+        }
+      ],
+      "after_paraphrases": [
+        "live a hard life"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 live a hard life を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02069",
+      "prompt_ja": "生活水準",
+      "canonical_snapshot": "living standard",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "standard of living",
+        "living standard",
+        "living standards"
+      ],
+      "candidate_review": [
+        {
+          "expression": "standard of living",
+          "decision": "ACCEPT",
+          "reason": "「生活水準」を表す最も標準的な主要表現の一つで、独立constructionとして高価値。"
+        },
+        {
+          "expression": "living standards",
+          "decision": "REJECT",
+          "reason": "canonical living standardの単複差に過ぎず、paraphraseではない。"
+        }
+      ],
+      "after_paraphrases": [
+        "standard of living"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 standard of living を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02070",
+      "prompt_ja": "somethingに影響を及ぼす",
+      "canonical_snapshot": "exert influence on something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "affect something",
+        "have an effect on something",
+        "influence something",
+        "exert influence on something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "affect something",
+          "decision": "ACCEPT",
+          "reason": "「somethingに影響を及ぼす」への基本的かつ高頻度の一語動詞でanswer-valueが高い。"
+        },
+        {
+          "expression": "influence something",
+          "decision": "ACCEPT",
+          "reason": "同promptへの直接的な主要動詞で、canonicalの名詞構文とは別の実用価値がある。"
+        },
+        {
+          "expression": "have an effect on something",
+          "decision": "ACCEPT",
+          "reason": "「影響を及ぼす」を表す極めて一般的なconstructionで、独立して覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "affect something",
+        "influence something",
+        "have an effect on something"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 affect something / influence something / have an effect on something を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02071",
+      "prompt_ja": "somethingすることを拒む",
+      "canonical_snapshot": "refuse to do something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "refuse to do something",
+        "decline to do something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "decline to do something",
+          "decision": "ACCEPT",
+          "reason": "丁寧・formal registerで「somethingすることを拒む」を表す主要construction。"
+        }
+      ],
+      "after_paraphrases": [
+        "decline to do something"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 decline to do something を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02072",
+      "prompt_ja": "舞台裏で",
+      "canonical_snapshot": "behind the scenes",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "behind the scenes",
+        "backstage"
+      ],
+      "candidate_review": [
+        {
+          "expression": "backstage",
+          "decision": "ACCEPT",
+          "reason": "文字どおりの「舞台裏で」を表す高頻度語で、日本語promptが比喩義に限定していないため正答価値がある。"
+        }
+      ],
+      "after_paraphrases": [
+        "backstage"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 backstage を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02073",
+      "prompt_ja": "somethingをきっぱり否定する",
+      "canonical_snapshot": "flatly deny something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "flatly deny something",
+        "categorically deny something",
+        "deny something outright"
+      ],
+      "candidate_review": [
+        {
+          "expression": "categorically deny something",
+          "decision": "ACCEPT",
+          "reason": "「きっぱり否定する」を表す標準的なformal collocationで読解価値が高い。"
+        },
+        {
+          "expression": "deny something outright",
+          "decision": "ACCEPT",
+          "reason": "全面的・明確に否定する意味の自然な別constructionで、独立した実用価値がある。"
+        }
+      ],
+      "after_paraphrases": [
+        "categorically deny something",
+        "deny something outright"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 categorically deny something / deny something outright を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02074",
+      "prompt_ja": "あえてsomethingする",
+      "canonical_snapshot": "dare to do something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "dare to do something",
+        "venture to do something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "venture to do something",
+          "decision": "REJECT",
+          "reason": "意味は成立するが文語・慎重な試みの含意が強く、一般の「あえて〜する」への追加価値は低い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02075",
+      "prompt_ja": "有望な",
+      "canonical_snapshot": "promising",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "promising",
+        "hopeful"
+      ],
+      "candidate_review": [
+        {
+          "expression": "hopeful",
+          "decision": "REJECT",
+          "reason": "人の心理状態「希望を抱く」の意味も強く、「有望な」と一対一で教えると誤対応を生みやすい。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02076",
+      "prompt_ja": "職業上の経歴",
+      "canonical_snapshot": "career",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "career",
+        "professional background",
+        "career history"
+      ],
+      "candidate_review": [
+        {
+          "expression": "professional background",
+          "decision": "ACCEPT",
+          "reason": "「職業上の経歴」を表す実務・面接で高頻度の主要表現。"
+        },
+        {
+          "expression": "career history",
+          "decision": "REJECT",
+          "reason": "履歴書等では成立するが使用域が狭く、professional background採用後の増分価値が低い。"
+        }
+      ],
+      "after_paraphrases": [
+        "professional background"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 professional background を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02077",
+      "prompt_ja": "保持する",
+      "canonical_snapshot": "retain",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "retain",
+        "keep",
+        "hold"
+      ],
+      "candidate_review": [
+        {
+          "expression": "keep",
+          "decision": "ACCEPT",
+          "reason": "「保持する」への最も基本的で高頻度な英答の一つで、answer-valueが高い。"
+        },
+        {
+          "expression": "hold",
+          "decision": "REJECT",
+          "reason": "地位・記録・物など特定の目的語では成立するが、一般の「保持する」には目的語依存が強い。"
+        }
+      ],
+      "after_paraphrases": [
+        "keep"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 keep を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02078",
+      "prompt_ja": "飲み込む",
+      "canonical_snapshot": "swallow",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "swallow",
+        "gulp down"
+      ],
+      "candidate_review": [
+        {
+          "expression": "gulp down",
+          "decision": "REJECT",
+          "reason": "急いで／一気に飲み込むという様態を追加し、無標の「飲み込む」より狭い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02079",
+      "prompt_ja": "毒",
+      "canonical_snapshot": "poison",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "poison",
+        "toxin"
+      ],
+      "candidate_review": [
+        {
+          "expression": "toxin",
+          "decision": "REJECT",
+          "reason": "厳密には生物由来などの毒性物質を指す下位概念で、一般の「毒」と固定対応させると過度に狭い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02080",
+      "prompt_ja": "誤った",
+      "canonical_snapshot": "false",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "wrong",
+        "incorrect",
+        "mistaken",
+        "false"
+      ],
+      "candidate_review": [
+        {
+          "expression": "wrong",
+          "decision": "ACCEPT",
+          "reason": "「誤った」への最も一般的な主要英答でanswer-valueが高い。"
+        },
+        {
+          "expression": "incorrect",
+          "decision": "ACCEPT",
+          "reason": "事実・答え等が「誤った」を表す標準的なformal alternative。"
+        },
+        {
+          "expression": "mistaken",
+          "decision": "REJECT",
+          "reason": "人・信念・判断などとの結び付きが強く、無標の「誤った」への追加回答としては使用条件が狭い。"
+        }
+      ],
+      "after_paraphrases": [
+        "wrong",
+        "incorrect"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 wrong / incorrect を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02081",
+      "prompt_ja": "上級の",
+      "canonical_snapshot": "senior",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "advanced",
+        "senior",
+        "upper-level"
+      ],
+      "candidate_review": [
+        {
+          "expression": "advanced",
+          "decision": "ACCEPT",
+          "reason": "授業・技術・能力等の「上級の」への極めて主要な英答で、MISS扱いは不適切。"
+        },
+        {
+          "expression": "upper-level",
+          "decision": "REJECT",
+          "reason": "教育課程・組織階層など特定領域に偏り、advanced採用後の増分価値が低い。"
+        }
+      ],
+      "after_paraphrases": [
+        "advanced"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 advanced を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02082",
+      "prompt_ja": "役人",
+      "canonical_snapshot": "official",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "official",
+        "civil servant"
+      ],
+      "candidate_review": [
+        {
+          "expression": "civil servant",
+          "decision": "ACCEPT",
+          "reason": "政府・行政の「役人」を表す主要表現で、officialとは制度上の切り口が異なる重要語彙。"
+        }
+      ],
+      "after_paraphrases": [
+        "civil servant"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 civil servant を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02083",
+      "prompt_ja": "証拠",
+      "canonical_snapshot": "evidence",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "evidence",
+        "proof"
+      ],
+      "candidate_review": [
+        {
+          "expression": "proof",
+          "decision": "ACCEPT",
+          "reason": "「証拠」への主要英答で、evidenceより立証力が強い場合があるが日本語promptはその差を区別していない。"
+        }
+      ],
+      "after_paraphrases": [
+        "proof"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 proof を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02084",
+      "prompt_ja": "逮捕する",
+      "canonical_snapshot": "arrest",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "arrest",
+        "take into custody"
+      ],
+      "candidate_review": [
+        {
+          "expression": "take into custody",
+          "decision": "ACCEPT",
+          "reason": "法執行で「逮捕する／身柄を拘束する」を表す重要な別construction。"
+        }
+      ],
+      "after_paraphrases": [
+        "take into custody"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 take into custody を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02085",
+      "prompt_ja": "解雇する",
+      "canonical_snapshot": "dismiss",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "fire",
+        "dismiss",
+        "sack"
+      ],
+      "candidate_review": [
+        {
+          "expression": "fire",
+          "decision": "ACCEPT",
+          "reason": "「解雇する」への高頻度な日常英語でanswer-valueが非常に高い。"
+        },
+        {
+          "expression": "sack",
+          "decision": "ACCEPT",
+          "reason": "主にBritish Englishで「解雇する」を表す主要な口語variant。"
+        }
+      ],
+      "after_paraphrases": [
+        "fire",
+        "sack"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 fire / sack を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02086",
+      "prompt_ja": "腐敗",
+      "canonical_snapshot": "corruption",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "corruption",
+        "decay"
+      ],
+      "candidate_review": [
+        {
+          "expression": "decay",
+          "decision": "ACCEPT",
+          "reason": "日本語「腐敗」は制度・道徳上のcorruptionだけでなく物質の腐敗・朽ちも表し、decayはその主要英答として独立価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "decay"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 decay を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02087",
+      "prompt_ja": "計画",
+      "canonical_snapshot": "scheme",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "plan",
+        "scheme"
+      ],
+      "candidate_review": [
+        {
+          "expression": "plan",
+          "decision": "ACCEPT",
+          "reason": "「計画」への最も基本的かつ高頻度な英答で、canonicalより一般的なanswer-valueが高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "plan"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 plan を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02088",
+      "prompt_ja": "真実",
+      "canonical_snapshot": "truth",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "truth",
+        "fact"
+      ],
+      "candidate_review": [
+        {
+          "expression": "fact",
+          "decision": "REJECT",
+          "reason": "個別の「事実」を指す語で、抽象的な「真実」truthとは意味階層が異なる。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02089",
+      "prompt_ja": "調べる",
+      "canonical_snapshot": "examine",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "investigate",
+        "look into",
+        "examine",
+        "check"
+      ],
+      "candidate_review": [
+        {
+          "expression": "investigate",
+          "decision": "ACCEPT",
+          "reason": "原因・事件等を「調べる」主要動詞で、独立した高価値語彙。"
+        },
+        {
+          "expression": "look into",
+          "decision": "ACCEPT",
+          "reason": "問題・事情を「調べる」高頻度phrasal verbで実用性が高い。"
+        },
+        {
+          "expression": "check",
+          "decision": "ACCEPT",
+          "reason": "確認のために「調べる」を表す非常に高頻度な基本動詞でanswer-valueが高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "investigate",
+        "look into",
+        "check"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 investigate / look into / check を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02090",
+      "prompt_ja": "山積み",
+      "canonical_snapshot": "pile",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "pile",
+        "heap"
+      ],
+      "candidate_review": [
+        {
+          "expression": "heap",
+          "decision": "ACCEPT",
+          "reason": "物の「山積み／山」を表す主要名詞で、pileとは別の実用的語彙。"
+        }
+      ],
+      "after_paraphrases": [
+        "heap"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 heap を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02091",
+      "prompt_ja": "文書",
+      "canonical_snapshot": "document",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "document",
+        "paperwork"
+      ],
+      "candidate_review": [
+        {
+          "expression": "paperwork",
+          "decision": "REJECT",
+          "reason": "書類一式や事務作業を表すmass nounで、個々の「文書」一般とは意味範囲が異なる。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02092",
+      "prompt_ja": "裁判",
+      "canonical_snapshot": "trial",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "trial",
+        "court case"
+      ],
+      "candidate_review": [
+        {
+          "expression": "court case",
+          "decision": "ACCEPT",
+          "reason": "「裁判」を事件・訴訟単位で表す高頻度な一般表現で、trialとは別constructionとして有用。"
+        }
+      ],
+      "after_paraphrases": [
+        "court case"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 court case を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02093",
+      "prompt_ja": "違法な",
+      "canonical_snapshot": "illegal",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "illegal",
+        "unlawful"
+      ],
+      "candidate_review": [
+        {
+          "expression": "unlawful",
+          "decision": "ACCEPT",
+          "reason": "「違法な」を表す標準的なformal/legal alternativeで、読解上の独立価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "unlawful"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 unlawful を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02094",
+      "prompt_ja": "取引",
+      "canonical_snapshot": "transaction",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "deal",
+        "transaction",
+        "trade"
+      ],
+      "candidate_review": [
+        {
+          "expression": "deal",
+          "decision": "ACCEPT",
+          "reason": "商取引・合意としての「取引」を表す高頻度な基本語でanswer-valueが高い。"
+        },
+        {
+          "expression": "trade",
+          "decision": "ACCEPT",
+          "reason": "売買・交換としての「取引」を表す主要語で、transactionとは別の実用価値がある。"
+        }
+      ],
+      "after_paraphrases": [
+        "deal",
+        "trade"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 deal / trade を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02095",
+      "prompt_ja": "10年間",
+      "canonical_snapshot": "decade",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "for ten years",
+        "a decade",
+        "decade"
+      ],
+      "candidate_review": [
+        {
+          "expression": "for ten years",
+          "decision": "ACCEPT",
+          "reason": "期間を表す「10年間」への自然で最も直接的な英答の一つ。"
+        },
+        {
+          "expression": "a decade",
+          "decision": "REJECT",
+          "reason": "canonical decadeへの冠詞付加であり、別語彙・別constructionとしての増分価値がない。"
+        }
+      ],
+      "after_paraphrases": [
+        "for ten years"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 for ten years を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02096",
+      "prompt_ja": "刑事",
+      "canonical_snapshot": "detective",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "detective",
+        "investigator"
+      ],
+      "candidate_review": [
+        {
+          "expression": "investigator",
+          "decision": "REJECT",
+          "reason": "調査員一般を含む上位概念で、警察の「刑事」に固定すると範囲が広すぎる。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02097",
+      "prompt_ja": "鋭い痛み",
+      "canonical_snapshot": "pang",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "sharp pain",
+        "stabbing pain",
+        "pang"
+      ],
+      "candidate_review": [
+        {
+          "expression": "sharp pain",
+          "decision": "ACCEPT",
+          "reason": "「鋭い痛み」への直接的で高頻度な主要表現で、pangより基本的なanswer-valueが高い。"
+        },
+        {
+          "expression": "stabbing pain",
+          "decision": "REJECT",
+          "reason": "刺すような痛みに限定され、「鋭い痛み」一般より感覚が具体的で狭い。"
+        }
+      ],
+      "after_paraphrases": [
+        "sharp pain"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 sharp pain を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02098",
+      "prompt_ja": "付きまとう",
+      "canonical_snapshot": "haunt",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "haunt",
+        "stalk someone",
+        "follow someone around"
+      ],
+      "candidate_review": [
+        {
+          "expression": "stalk someone",
+          "decision": "REJECT",
+          "reason": "執拗な追跡・威嚇の含意が強く、一般の「付きまとう」への対応としては狭い。"
+        },
+        {
+          "expression": "follow someone around",
+          "decision": "ACCEPT",
+          "reason": "人に「付きまとう」を表す自然で高頻度な別constructionで、日本語promptが比喩義に限定されていないため有効。"
+        }
+      ],
+      "after_paraphrases": [
+        "follow someone around"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 follow someone around を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02099",
+      "prompt_ja": "悪夢",
+      "canonical_snapshot": "nightmare",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "nightmare"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02100",
+      "prompt_ja": "記者",
+      "canonical_snapshot": "reporter",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "reporter",
+        "journalist"
+      ],
+      "candidate_review": [
+        {
+          "expression": "journalist",
+          "decision": "ACCEPT",
+          "reason": "「記者」への主要かつ高頻度な英答で、reporterとは職域の切り口が異なる有用語彙。"
+        }
+      ],
+      "after_paraphrases": [
+        "journalist"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 journalist を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02101",
+      "prompt_ja": "立ち入る",
+      "canonical_snapshot": "intrude",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "intrude",
+        "enter",
+        "go into"
+      ],
+      "candidate_review": [
+        {
+          "expression": "enter",
+          "decision": "ACCEPT",
+          "reason": "場所に「立ち入る」を表す基本的で高頻度な主要動詞。"
+        },
+        {
+          "expression": "go into",
+          "decision": "REJECT",
+          "reason": "意味は成立するが極めて一般的・合成的で、enter採用後の独立学習価値が低い。"
+        }
+      ],
+      "after_paraphrases": [
+        "enter"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 enter を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02102",
+      "prompt_ja": "著者",
+      "canonical_snapshot": "author",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "author",
+        "writer"
+      ],
+      "candidate_review": [
+        {
+          "expression": "writer",
+          "decision": "ACCEPT",
+          "reason": "作品の「著者」を指す自然な主要語で、authorとは別の高頻度語彙として価値がある。"
+        }
+      ],
+      "after_paraphrases": [
+        "writer"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 writer を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02103",
+      "prompt_ja": "改訂する",
+      "canonical_snapshot": "revise",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "revise",
+        "amend",
+        "update"
+      ],
+      "candidate_review": [
+        {
+          "expression": "amend",
+          "decision": "REJECT",
+          "reason": "法律・規則・文面の修正に強く、一般の「改訂する」より使用領域が限定される。"
+        },
+        {
+          "expression": "update",
+          "decision": "REJECT",
+          "reason": "最新化・情報更新の意味が中心で、内容を見直して「改訂する」と常には一致しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    }
+  ],
+  "followups": []
+}
