@@ -73,7 +73,7 @@ import '../version.js';
 const APP_VERSION = globalThis.APP_VERSION;
 function createAppRuntime(){
   // ===== Utilities =====
-  const now=()=>Date.now(); const UA=(()=>navigator.userAgent||'')();
+  const now=()=>Date.now();
   const DAY_MS=86400000;
 
 
@@ -1211,7 +1211,6 @@ function createAppRuntime(){
   let QUEUE=[];
   let idx=-1;
   let sessionStart=0;
-  let cardStart=0;
   const FATIGUE_CONSECUTIVE_THRESHOLD=8;
   const FATIGUE_FAIL_RATE_THRESHOLD=0.45;
   const FATIGUE_MIN_ATTEMPTS=6;
@@ -1413,14 +1412,6 @@ function createAppRuntime(){
     };
   }
 
-  function getSpeechAttemptStats(itemId){
-    if(!itemId) return { submissions:0, correct:0 };
-    const key=String(itemId);
-    return {
-      submissions: speechSessionStats.submissions.get(key)||0,
-      correct: speechSessionStats.correct.get(key)||0
-    };
-  }
 
 
 
@@ -2357,7 +2348,6 @@ function createAppRuntime(){
     hintStage=BASE_HINT_STAGE;
     maxHintStageUsed=BASE_HINT_STAGE;
     refreshLevelDisplay(null);
-    cardStart = now();
     sessionStart = 0;
     lastErrorType='';
     sameErrorStreak=0;
@@ -2502,7 +2492,6 @@ function createAppRuntime(){
       }
       currentShouldUseSpeech=shouldUseSpeechForItem(it);
       updatePlayButtonAvailability();
-      cardStart=now();
       resetResult();
       resetTranscript();
       lastMatchEval=null;

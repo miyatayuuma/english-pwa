@@ -61,3 +61,11 @@ test('learning context requests native five without confidence filtering, copies
   controller.start();native.inject([result(['stale','yield to something'])]);native.onend?.();
   assert.deepEqual(controller.getNativeRecognitionSegments(),[]);controller.stop();
 }));
+
+test('Web dedupe preserves original provider rank and still caps at five',()=>fixture(async({createRecognitionController},instances)=>{
+  const controller=createRecognitionController({getRecognitionBiasContext:()=>({maxAlternatives:5}),shouldEvaluate:()=>false});
+  controller.start();instances[0].inject([result(['yeah','yeah','wrong','other','yell','yield'])]);
+  const alternatives=controller.getNativeRecognitionSegments()[0].alternatives;
+  assert.deepEqual(alternatives.map(c=>c.asrRank),[0,2,3,4]);
+  assert.equal(alternatives.at(-1).transcript,'yell');controller.cancel();
+}));
