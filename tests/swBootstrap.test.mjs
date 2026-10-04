@@ -22,7 +22,10 @@ test('the current worker precaches its update bootstrap',()=>{
 
 test('the worker installs vocabulary v3 and one-time progress migration assets',()=>{
   const version=fs.readFileSync(new URL('../scripts/version.js',import.meta.url),'utf8');
-  assert.match(version,/APP_VERSION\s*=\s*'v5\.82'/);
+  const appVersion=version.match(/APP_VERSION\s*=\s*'(v\d+\.\d+)'/)?.[1];
+  assert.ok(appVersion,'version.js declares one production version');
+  assert.match(worker,/const CACHE = self\.APP_VERSION/);
+  assert.ok(worker.includes(`cache name follows the app version. ${appVersion}`),'worker documentation matches APP_VERSION');
   assert.match(worker,/\.\/data\/vocabulary-v3\.json/);
   assert.match(worker,/\.\/data\/vocabulary-v3-paraphrase-audit\.json/);
   assert.match(worker,/\.\/data\/vocabulary-v2-v3-migration\.json/);

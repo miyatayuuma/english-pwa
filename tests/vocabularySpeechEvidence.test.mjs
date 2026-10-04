@@ -3,91 +3,51 @@ import assert from 'node:assert/strict';
 import {classifyVocabularySpeechAnswer,isTargetSpeechProduction} from '../scripts/speech/vocabularySpeechEvidence.js';
 import {classifyVocabularyAnswer} from '../scripts/app/vocabularyLearningCore.js';
 const segment=(values,index=0)=>({segmentIndex:index,primaryTranscript:values[0],isFinal:true,alternatives:values.map((transcript,asrRank)=>({transcript,asrRank,confidence:0}))});
-const entry=(canonical,extra={})=>({canonical,...extra});
-const grade=(canonical,transcript,options={})=>classifyVocabularySpeechAnswer({entry:entry(canonical),transcript,...options});
+const grade=(canonical,values,options={})=>classifyVocabularySpeechAnswer({entry:{canonical},transcript:values[0],recognitionSegments:[segment(values)],...options});
 
-test('strict TARGET token sequence anywhere in primary utterance is accepted and raw evidence is retained',()=>{
+for(const [target,native] of [
+  ['yield to something',['YouTube something','yield to something','able to something']],
+  ['scarcely',['scarcity','scarcely']],
+  ['confuse',['confused','confuse']],
+]) test(`observed PWA false-negative fixture ${target} is rescued by actual native TARGET`,()=>{
+  const result=grade(target,native);assert.equal(result.type,'target');assert.equal(result.targetRescued,true);
+  assert.equal(result.primaryTranscript,native[0]);assert.equal(result.asrRank,1);assert.equal(result.recognitionSegmentIndex,0);
+  assert.equal(classifyVocabularyAnswer({entry:{canonical:target},transcript:native[0]}).type,'miss');
+});
+test('meaningful wrong words and lower-rank paraphrases are not promoted, primary PARAPHRASE survives',()=>{
+  const entry={canonical:'yield to something',paraphrases:['give in to something']};
+  assert.equal(grade(entry.canonical,['able to do it','YouTube is something','want to do something']).type,'miss');
+  assert.equal(grade(entry.canonical,['YouTube something','give in to something'],{entry}).type,'miss');
+  assert.equal(grade(entry.canonical,['give in to something','yield to something'],{entry}).type,'paraphrase');
+  assert.equal(grade(entry.canonical,['give in to something'],{entry,correction:true}).type,'miss');
+  assert.equal(grade(entry.canonical,['give in to something','yield to something'],{entry,correction:true}).type,'target');
+  for(const value of ['not yield to something',"I won't yield to something",'I refuse to yield to something','want to something','able to something','yield something yield to something'])
+    assert.equal(grade(entry.canonical,[value]).type,'miss',value);
+});
+test('limited fillers and exact target-prefix restarts pass without changing raw input or semantic classifier',()=>{
   const target='yield to something';
-  const accepted=['yield to something','please yield to something','yield to something please','I mean yield to something please','something yield to something again','not yield to something','I refuse to yield to something','yield something yield to something'];
-  for(const spoken of accepted){
-    const result=grade(target,spoken);
-    assert.equal(result.type,'target',spoken);
-    assert.equal(result.targetRescued,false,spoken);
-    assert.equal(result.primaryTranscript,spoken,spoken);
-    assert.equal(result.matchedText,target,spoken);
-    assert.equal(result.recognitionAuthority,spoken===target?'primary':'contained-target',spoken);
+  for(const value of ['uh yield to something','um yield to something','er yield to something ah','yield... yield to something','yield yield to something','yield to something uh','yield to something um','yield to yield to something','yield um to something']){
+    const result=grade(target,[value]);assert.equal(result.type,'target',value);assert.equal(result.primaryTranscript,value);
+    assert.equal(result.targetRescued,false);assert.equal(result.recognitionAuthority,'filler-restart');
+    assert.equal(classifyVocabularyAnswer({entry:{canonical:target},transcript:value}).type,'miss','strict lexical authority is unchanged');
   }
-  for(const spoken of ['not yield to something',"I won't yield to something",'I refuse to yield to something']){
-    assert.equal(grade(target,spoken).type,'target','meaning and negation are deliberately not evaluated: '+spoken);
-  }
-  assert.equal(classifyVocabularyAnswer({entry:entry(target),transcript:'I mean yield to something please'}).type,'miss','strict lexical authority remains unchanged');
+  assert.equal(isTargetSpeechProduction('something yield to something',target),false);
 });
-
-test('TARGET sequence must be contiguous; words inside it cannot be skipped',()=>{
-  for(const spoken of ['yield um to something','yield please to something','yield to definitely something','years to something','yield something','yield to do something','yielded to something']){
-    assert.equal(grade('yield to something',spoken).type,'miss',spoken);
-    assert.equal(isTargetSpeechProduction(spoken,'yield to something'),false,spoken);
-  }
+test('native TARGET evidence cannot discard meaningful words in other segments or synthesize cross-result candidates',()=>{
+  const entry={canonical:'yield to something'};
+  const run=recognitionSegments=>classifyVocabularySpeechAnswer({entry,transcript:recognitionSegments.map(s=>s.primaryTranscript).join(' '),recognitionSegments});
+  assert.equal(run([segment(['YouTube','yield to'],0),segment(['anything','something'],1)]).type,'miss');
+  assert.equal(run([segment(['not'],0),segment(['YouTube something','yield to something'],1)]).type,'miss');
+  assert.equal(run([segment(['YouTube something','yield to something'],0),segment(['not'],1)]).type,'miss');
+  assert.equal(run([segment(['uh yield'],0),segment(['YouTube something','yield to something'],1),segment(['um'],2)]).type,'target');
+  assert.equal(run([segment(['yield to'],0),segment(['something'],1)]).type,'target','native primary accumulation remains allowed');
 });
-
-test('matching uses normalized word boundaries rather than string substrings',()=>{
-  for(const [target,spoken] of [['yield','yielded'],['yield','yields'],['yell','yelling'],['be in','being']]){
-    assert.equal(grade(target,spoken).type,'miss',spoken+' must not contain token sequence '+target);
-  }
-  assert.equal(grade('yield to something','well, yield to something, please').type,'target');
-  assert.equal(isTargetSpeechProduction('WELL, yield to something, please.','yield to something'),true);
-});
-
-test('canonical, answers, and active source surfaces are containment authorities; paraphrases are not',()=>{
-  const withAnswer=entry('yield to something',{answers:['yield to pressure'],paraphrases:['give in to pressure']});
-  assert.equal(classifyVocabularySpeechAnswer({entry:withAnswer,transcript:'please yield to pressure again'}).type,'target');
-  const source='He will yield to pressure soon.';
-  const start=source.indexOf('yield to pressure');
-  const activeOccurrence={item:{en:source},occurrence:{start,end:start+'yield to pressure'.length}};
-  assert.equal(classifyVocabularySpeechAnswer({entry:entry('yield to something'),activeOccurrence,transcript:'please yield to pressure again'}).type,'target');
-  assert.equal(classifyVocabularySpeechAnswer({entry:withAnswer,transcript:'I would give in to pressure'}).type,'miss');
-  assert.equal(classifyVocabularySpeechAnswer({entry:withAnswer,transcript:'I would give in to pressure',recognitionSegments:[segment(['wrong','please give in to pressure again'])]}).type,'miss');
-});
-
-test('lower N-best rank 20 rescues an independent contained TARGET candidate and preserves primary rank-one evidence',()=>{
-  const alternatives=Array.from({length:20},(_,i)=>i===0?'years to something':i===19?'please yield to something again':'unrelated speech');
-  const recognitionSegments=[segment(alternatives,0)];
-  const result=classifyVocabularySpeechAnswer({entry:entry('yield to something'),transcript:alternatives[0],recognitionSegments});
-  assert.equal(result.type,'target');
-  assert.equal(result.targetRescued,true);
-  assert.equal(result.recognitionAuthority,'nbest-target');
-  assert.equal(result.asrRank,19);
-  assert.equal(result.primaryTranscript,alternatives[0]);
-});
-
-test('lower N-best paraphrases, phonetic near-matches, and incomplete TARGET fragments are not rescued',()=>{
-  const e=entry('yield to something',{paraphrases:['give in to something']});
-  for(const lower of ['give in to something','years to something','yield to','something','yield something','yield to do something']){
-    const result=classifyVocabularySpeechAnswer({entry:e,transcript:'wrong',recognitionSegments:[segment(['wrong',lower])]});
-    assert.equal(result.type,'miss',lower);
-  }
-});
-
-test('lower candidates stay independent across segments; primary accumulation remains allowed',()=>{
-  const e=entry('yield to something');
-  const splitOnly=[segment(['wrong','yield to'],0),segment(['wrong','something'],1)];
-  assert.equal(classifyVocabularySpeechAnswer({entry:e,transcript:'wrong wrong',recognitionSegments:splitOnly}).type,'miss');
-  const oneCandidateAlongsideOtherWords=[segment(['not','years to something'],0),segment(['other','yield to something'],1)];
-  const rescued=classifyVocabularySpeechAnswer({entry:e,transcript:'not other',recognitionSegments:oneCandidateAlongsideOtherWords});
-  assert.equal(rescued.type,'target');
-  assert.equal(rescued.recognitionAuthority,'nbest-target');
-  assert.equal(rescued.asrRank,1);
-  assert.equal(rescued.recognitionSegmentIndex,1);
-  const primary=classifyVocabularySpeechAnswer({entry:e,transcript:'yield to something',recognitionSegments:[segment(['yield to'],0),segment(['something'],1)]});
-  assert.equal(primary.type,'target');
-  assert.equal(primary.recognitionAuthority,'primary');
-});
-
-test('correction accepts contained strict TARGET while preserving correction and paraphrase rules',()=>{
-  const e=entry('come across someone',{paraphrases:['run into someone']});
-  const target=classifyVocabularySpeechAnswer({entry:e,transcript:'okay come across someone again',correction:true});
-  assert.equal(target.type,'target');assert.equal(target.targetRescued,false);
-  assert.equal(target.recognitionAuthority,'contained-target');
-  assert.equal(classifyVocabularySpeechAnswer({entry:e,transcript:'run into someone',correction:true}).type,'miss');
-  assert.equal(classifyVocabularySpeechAnswer({entry:e,transcript:'run into someone'}).type,'paraphrase');
+test('active source / explicit answers remain TARGET, native filler rescue is TARGET-only',()=>{
+  const entry={canonical:'yield to something',answers:['yield to pressure'],paraphrases:['give in to pressure']};
+  const activeOccurrence={item:{en:'He yielded to pressure.'},occurrence:{start:3,end:22}};
+  assert.equal(grade(entry.canonical,['wrong','yielded to pressure'],{entry,activeOccurrence}).type,'target');
+  assert.equal(grade(entry.canonical,['wrong','um yield to pressure'],{entry}).type,'target');
+  assert.equal(grade(entry.canonical,['wrong','uh give in to pressure'],{entry}).type,'miss');
+  assert.equal(grade(entry.canonical,['wrong']).type,'miss');
+  assert.equal(grade(entry.canonical,['yield to something']).recognitionAuthority,'primary');
 });
