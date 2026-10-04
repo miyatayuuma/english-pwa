@@ -1,0 +1,3125 @@
+{
+  "schema_version": 1,
+  "policy_version": "prompt-learning-value-v1",
+  "batch": 22,
+  "ordinal_start": 2101,
+  "ordinal_end": 2200,
+  "claim_main": "e3b494a3892a7f571f9ae0cccb1ee277c223f075",
+  "reviewed_against_main": "e3b494a3892a7f571f9ae0cccb1ee277c223f075",
+  "reviewed_count": 100,
+  "entry_ids": [
+    "vocab:02104",
+    "vocab:02105",
+    "vocab:02106",
+    "vocab:02107",
+    "vocab:02108",
+    "vocab:02109",
+    "vocab:02110",
+    "vocab:02111",
+    "vocab:02112",
+    "vocab:02113",
+    "vocab:02114",
+    "vocab:02115",
+    "vocab:02116",
+    "vocab:02117",
+    "vocab:02118",
+    "vocab:02119",
+    "vocab:02120",
+    "vocab:02121",
+    "vocab:02122",
+    "vocab:02123",
+    "vocab:02124",
+    "vocab:02125",
+    "vocab:02126",
+    "vocab:02127",
+    "vocab:02128",
+    "vocab:02129",
+    "vocab:02130",
+    "vocab:02131",
+    "vocab:02132",
+    "vocab:02133",
+    "vocab:02134",
+    "vocab:02135",
+    "vocab:02136",
+    "vocab:02137",
+    "vocab:02138",
+    "vocab:02139",
+    "vocab:02140",
+    "vocab:02141",
+    "vocab:02142",
+    "vocab:02143",
+    "vocab:02144",
+    "vocab:02145",
+    "vocab:02146",
+    "vocab:02147",
+    "vocab:02148",
+    "vocab:02149",
+    "vocab:02150",
+    "vocab:02151",
+    "vocab:02152",
+    "vocab:02153",
+    "vocab:02154",
+    "vocab:02155",
+    "vocab:02156",
+    "vocab:02157",
+    "vocab:02158",
+    "vocab:02159",
+    "vocab:02160",
+    "vocab:02161",
+    "vocab:02162",
+    "vocab:02163",
+    "vocab:02164",
+    "vocab:02165",
+    "vocab:02166",
+    "vocab:02167",
+    "vocab:02168",
+    "vocab:02169",
+    "vocab:02170",
+    "vocab:02171",
+    "vocab:02172",
+    "vocab:02173",
+    "vocab:02174",
+    "vocab:02175",
+    "vocab:02176",
+    "vocab:02177",
+    "vocab:02178",
+    "vocab:02179",
+    "vocab:02180",
+    "vocab:02181",
+    "vocab:02182",
+    "vocab:02183",
+    "vocab:02184",
+    "vocab:02185",
+    "vocab:02186",
+    "vocab:02187",
+    "vocab:02188",
+    "vocab:02189",
+    "vocab:02190",
+    "vocab:02191",
+    "vocab:02192",
+    "vocab:02193",
+    "vocab:02194",
+    "vocab:02195",
+    "vocab:02196",
+    "vocab:02197",
+    "vocab:02198",
+    "vocab:02199",
+    "vocab:02200",
+    "vocab:02201",
+    "vocab:02202",
+    "vocab:02203"
+  ],
+  "results": [
+    {
+      "entry_id": "vocab:02104",
+      "prompt_ja": "原稿",
+      "canonical_snapshot": "manuscript",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "manuscript",
+        "draft",
+        "script"
+      ],
+      "candidate_review": [
+        {
+          "expression": "manuscript",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "draft",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「原稿」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "script",
+          "decision": "REJECT",
+          "reason": "「台本・脚本」に寄り、一般的な「原稿」への主要回答としては狭すぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "draft"
+      ],
+      "decision": "CHANGED",
+      "reason": "「draft」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02105",
+      "prompt_ja": "選ばれた人々",
+      "canonical_snapshot": "elite",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "the chosen",
+        "the elect",
+        "the chosen few"
+      ],
+      "candidate_review": [
+        {
+          "expression": "the chosen",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「選ばれた人々」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "the elect",
+          "decision": "REJECT",
+          "reason": "宗教的・文語的な用法が強く、一般promptへの登録価値は低い。"
+        },
+        {
+          "expression": "the chosen few",
+          "decision": "REJECT",
+          "reason": "「少数の」という意味を追加してしまいpromptより狭い。"
+        }
+      ],
+      "after_paraphrases": [
+        "the chosen"
+      ],
+      "decision": "CHANGED",
+      "reason": "「the chosen」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02106",
+      "prompt_ja": "批判",
+      "canonical_snapshot": "criticism",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "criticism",
+        "critique"
+      ],
+      "candidate_review": [
+        {
+          "expression": "criticism",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "critique",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「批判」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        }
+      ],
+      "after_paraphrases": [
+        "critique"
+      ],
+      "decision": "CHANGED",
+      "reason": "「critique」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02107",
+      "prompt_ja": "タブロイド紙",
+      "canonical_snapshot": "tabloid",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "tabloid",
+        "tabloid newspaper"
+      ],
+      "candidate_review": [
+        {
+          "expression": "tabloid",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "tabloid newspaper",
+          "decision": "REJECT",
+          "reason": "canonicalを説明的に展開しただけで、独立して学ばせる表現価値が乏しい。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "blind候補を個別検証したが、canonical以外は意味範囲・context依存・surface variant・増分価値のいずれかで登録基準を満たさない。"
+    },
+    {
+      "entry_id": "vocab:02108",
+      "prompt_ja": "明らかにする",
+      "canonical_snapshot": "reveal",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "reveal",
+        "disclose",
+        "uncover",
+        "make clear"
+      ],
+      "candidate_review": [
+        {
+          "expression": "reveal",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "disclose",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「明らかにする」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "uncover",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「明らかにする」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "make clear",
+          "decision": "REJECT",
+          "reason": "「明確にする・説明して分からせる」に寄ることがあり、promptの主要対応としては範囲がずれる。"
+        }
+      ],
+      "after_paraphrases": [
+        "disclose",
+        "uncover"
+      ],
+      "decision": "CHANGED",
+      "reason": "「disclose」、「uncover」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02109",
+      "prompt_ja": "台無しにする",
+      "canonical_snapshot": "ruin",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "ruin",
+        "spoil",
+        "mess up"
+      ],
+      "candidate_review": [
+        {
+          "expression": "ruin",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "spoil",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「台無しにする」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "mess up",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「台無しにする」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        }
+      ],
+      "after_paraphrases": [
+        "spoil",
+        "mess up"
+      ],
+      "decision": "CHANGED",
+      "reason": "「spoil」、「mess up」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02110",
+      "prompt_ja": "側面",
+      "canonical_snapshot": "aspect",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "aspect",
+        "side",
+        "facet"
+      ],
+      "candidate_review": [
+        {
+          "expression": "aspect",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "side",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「側面」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "facet",
+          "decision": "REJECT",
+          "reason": "成立はするが、canonicalとsideに比べ追加で覚えさせる実用上の増分が小さい。"
+        }
+      ],
+      "after_paraphrases": [
+        "side"
+      ],
+      "decision": "CHANGED",
+      "reason": "「side」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02111",
+      "prompt_ja": "防御",
+      "canonical_snapshot": "defense",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "defense",
+        "protection"
+      ],
+      "candidate_review": [
+        {
+          "expression": "defense",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "protection",
+          "decision": "REJECT",
+          "reason": "「保護・防護」寄りで、「防御」への主要な別回答としては意味範囲がずれる。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "blind候補を個別検証したが、canonical以外は意味範囲・context依存・surface variant・増分価値のいずれかで登録基準を満たさない。"
+    },
+    {
+      "entry_id": "vocab:02112",
+      "prompt_ja": "計画",
+      "canonical_snapshot": "program",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "plan",
+        "scheme"
+      ],
+      "candidate_review": [
+        {
+          "expression": "plan",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「計画」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "scheme",
+          "decision": "REJECT",
+          "reason": "「計略・制度案」など特有の含意があり、無標の「計画」への主要回答としては狭い。"
+        }
+      ],
+      "after_paraphrases": [
+        "plan"
+      ],
+      "decision": "CHANGED",
+      "reason": "「plan」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02113",
+      "prompt_ja": "数多くの",
+      "canonical_snapshot": "numerous",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "many",
+        "numerous",
+        "a large number of"
+      ],
+      "candidate_review": [
+        {
+          "expression": "many",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「数多くの」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "numerous",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "a large number of",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「数多くの」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        }
+      ],
+      "after_paraphrases": [
+        "many",
+        "a large number of"
+      ],
+      "decision": "CHANGED",
+      "reason": "「many」、「a large number of」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02114",
+      "prompt_ja": "テロ行為",
+      "canonical_snapshot": "terrorism",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "terrorism",
+        "terrorist act",
+        "act of terrorism"
+      ],
+      "candidate_review": [
+        {
+          "expression": "terrorism",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "terrorist act",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「テロ行為」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "act of terrorism",
+          "decision": "REJECT",
+          "reason": "意味は適合するが、terrorist actと同じ内容を説明的に言い換えた形で増分が小さい。"
+        }
+      ],
+      "after_paraphrases": [
+        "terrorist act"
+      ],
+      "decision": "CHANGED",
+      "reason": "「terrorist act」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02115",
+      "prompt_ja": "反逆者",
+      "canonical_snapshot": "rebel",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "rebel",
+        "traitor"
+      ],
+      "candidate_review": [
+        {
+          "expression": "rebel",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "traitor",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「反逆者」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        }
+      ],
+      "after_paraphrases": [
+        "traitor"
+      ],
+      "decision": "CHANGED",
+      "reason": "「traitor」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02116",
+      "prompt_ja": "最終的に",
+      "canonical_snapshot": "ultimately",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "eventually",
+        "ultimately",
+        "in the end",
+        "finally"
+      ],
+      "candidate_review": [
+        {
+          "expression": "eventually",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「最終的に」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "ultimately",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "in the end",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「最終的に」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "finally",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「最終的に」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        }
+      ],
+      "after_paraphrases": [
+        "eventually",
+        "in the end",
+        "finally"
+      ],
+      "decision": "CHANGED",
+      "reason": "「eventually」、「in the end」、「finally」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02117",
+      "prompt_ja": "捕らえる",
+      "canonical_snapshot": "capture",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "capture",
+        "catch",
+        "seize",
+        "apprehend"
+      ],
+      "candidate_review": [
+        {
+          "expression": "capture",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "catch",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「捕らえる」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "seize",
+          "decision": "REJECT",
+          "reason": "「つかむ・奪取する」の意味が中心で、一般的な「捕らえる」への主要回答としてはずれが大きい。"
+        },
+        {
+          "expression": "apprehend",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「捕らえる」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        }
+      ],
+      "after_paraphrases": [
+        "catch",
+        "apprehend"
+      ],
+      "decision": "CHANGED",
+      "reason": "「catch」、「apprehend」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02118",
+      "prompt_ja": "（範囲内に）制限する／閉じ込める",
+      "canonical_snapshot": "confine",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "confine",
+        "restrict",
+        "limit"
+      ],
+      "candidate_review": [
+        {
+          "expression": "confine",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "restrict",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「（範囲内に）制限する／閉じ込める」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "limit",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「（範囲内に）制限する／閉じ込める」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        }
+      ],
+      "after_paraphrases": [
+        "restrict",
+        "limit"
+      ],
+      "decision": "CHANGED",
+      "reason": "「restrict」、「limit」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02119",
+      "prompt_ja": "刑務所",
+      "canonical_snapshot": "jail",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "prison",
+        "jail"
+      ],
+      "candidate_review": [
+        {
+          "expression": "prison",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「刑務所」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "jail",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        }
+      ],
+      "after_paraphrases": [
+        "prison"
+      ],
+      "decision": "CHANGED",
+      "reason": "「prison」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02120",
+      "prompt_ja": "兵士たち",
+      "canonical_snapshot": "troops",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "soldiers",
+        "troops"
+      ],
+      "candidate_review": [
+        {
+          "expression": "soldiers",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「兵士たち」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "troops",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        }
+      ],
+      "after_paraphrases": [
+        "soldiers"
+      ],
+      "decision": "CHANGED",
+      "reason": "「soldiers」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02121",
+      "prompt_ja": "素早く",
+      "canonical_snapshot": "swiftly",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "quickly",
+        "rapidly",
+        "swiftly"
+      ],
+      "candidate_review": [
+        {
+          "expression": "quickly",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「素早く」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "rapidly",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「素早く」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "swiftly",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        }
+      ],
+      "after_paraphrases": [
+        "quickly",
+        "rapidly"
+      ],
+      "decision": "CHANGED",
+      "reason": "「quickly」、「rapidly」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02122",
+      "prompt_ja": "暴動",
+      "canonical_snapshot": "riot",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "riot"
+      ],
+      "candidate_review": [
+        {
+          "expression": "riot",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "blind-firstでcanonical以外の主要かつ高学習価値な回答が出ず、追加paraphraseは不要。"
+    },
+    {
+      "entry_id": "vocab:02123",
+      "prompt_ja": "暴力",
+      "canonical_snapshot": "violence",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "violence"
+      ],
+      "candidate_review": [
+        {
+          "expression": "violence",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "blind-firstでcanonical以外の主要かつ高学習価値な回答が出ず、追加paraphraseは不要。"
+    },
+    {
+      "entry_id": "vocab:02124",
+      "prompt_ja": "理性",
+      "canonical_snapshot": "reason",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "reason",
+        "rationality",
+        "sense"
+      ],
+      "candidate_review": [
+        {
+          "expression": "reason",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "rationality",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「理性」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "sense",
+          "decision": "REJECT",
+          "reason": "「分別・感覚」まで広く、単独では「理性」との対応が曖昧すぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "rationality"
+      ],
+      "decision": "CHANGED",
+      "reason": "「rationality」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02125",
+      "prompt_ja": "提案する",
+      "canonical_snapshot": "suggest",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "suggest",
+        "propose",
+        "recommend"
+      ],
+      "candidate_review": [
+        {
+          "expression": "suggest",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "propose",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「提案する」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "recommend",
+          "decision": "REJECT",
+          "reason": "通常は「勧める・推薦する」の意味が中心で、「提案する」より目的語構造と意味がずれる。"
+        }
+      ],
+      "after_paraphrases": [
+        "propose"
+      ],
+      "decision": "CHANGED",
+      "reason": "「propose」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02126",
+      "prompt_ja": "採用する",
+      "canonical_snapshot": "adopt",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "adopt",
+        "hire",
+        "employ"
+      ],
+      "candidate_review": [
+        {
+          "expression": "adopt",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "hire",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「採用する」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "employ",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「採用する」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        }
+      ],
+      "after_paraphrases": [
+        "hire",
+        "employ"
+      ],
+      "decision": "CHANGED",
+      "reason": "「hire」、「employ」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02127",
+      "prompt_ja": "柔軟な",
+      "canonical_snapshot": "flexible",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "flexible",
+        "adaptable"
+      ],
+      "candidate_review": [
+        {
+          "expression": "flexible",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "adaptable",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「柔軟な」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        }
+      ],
+      "after_paraphrases": [
+        "adaptable"
+      ],
+      "decision": "CHANGED",
+      "reason": "「adaptable」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02128",
+      "prompt_ja": "戦術",
+      "canonical_snapshot": "tactic",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "tactics",
+        "tactic"
+      ],
+      "candidate_review": [
+        {
+          "expression": "tactics",
+          "decision": "REJECT",
+          "reason": "canonicalの単複だけのsurface variantであり、paraphrase対象外。"
+        },
+        {
+          "expression": "tactic",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "blind候補を個別検証したが、canonical以外は意味範囲・context依存・surface variant・増分価値のいずれかで登録基準を満たさない。"
+    },
+    {
+      "entry_id": "vocab:02129",
+      "prompt_ja": "占領する",
+      "canonical_snapshot": "occupy",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "occupy",
+        "take over",
+        "seize"
+      ],
+      "candidate_review": [
+        {
+          "expression": "occupy",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "take over",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「占領する」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "seize",
+          "decision": "REJECT",
+          "reason": "「奪取する・押収する」が中心で、継続的な「占領」とは意味がずれる。"
+        }
+      ],
+      "after_paraphrases": [
+        "take over"
+      ],
+      "decision": "CHANGED",
+      "reason": "「take over」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02130",
+      "prompt_ja": "全体の",
+      "canonical_snapshot": "entire",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "entire",
+        "whole",
+        "overall"
+      ],
+      "candidate_review": [
+        {
+          "expression": "entire",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "whole",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「全体の」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "overall",
+          "decision": "REJECT",
+          "reason": "通常は「全体的な・総合的な」で、名詞を丸ごと指す「全体の」とは用法がずれる。"
+        }
+      ],
+      "after_paraphrases": [
+        "whole"
+      ],
+      "decision": "CHANGED",
+      "reason": "「whole」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02131",
+      "prompt_ja": "領土",
+      "canonical_snapshot": "territory",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "territory"
+      ],
+      "candidate_review": [
+        {
+          "expression": "territory",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "blind-firstでcanonical以外の主要かつ高学習価値な回答が出ず、追加paraphraseは不要。"
+    },
+    {
+      "entry_id": "vocab:02132",
+      "prompt_ja": "敵",
+      "canonical_snapshot": "enemy",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "enemy",
+        "foe",
+        "opponent"
+      ],
+      "candidate_review": [
+        {
+          "expression": "enemy",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "foe",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「敵」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "opponent",
+          "decision": "REJECT",
+          "reason": "「対戦相手・反対者」で、必ずしも「敵」ではない。"
+        }
+      ],
+      "after_paraphrases": [
+        "foe"
+      ],
+      "decision": "CHANGED",
+      "reason": "「foe」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02133",
+      "prompt_ja": "人質",
+      "canonical_snapshot": "hostage",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "hostage"
+      ],
+      "candidate_review": [
+        {
+          "expression": "hostage",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "blind-firstでcanonical以外の主要かつ高学習価値な回答が出ず、追加paraphraseは不要。"
+    },
+    {
+      "entry_id": "vocab:02134",
+      "prompt_ja": "（君主の）統治・治世／君臨する",
+      "canonical_snapshot": "reign",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "reign",
+        "rule"
+      ],
+      "candidate_review": [
+        {
+          "expression": "reign",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "rule",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「（君主の）統治・治世／君臨する」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        }
+      ],
+      "after_paraphrases": [
+        "rule"
+      ],
+      "decision": "CHANGED",
+      "reason": "「rule」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02135",
+      "prompt_ja": "罪のない",
+      "canonical_snapshot": "innocent",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "innocent",
+        "guiltless"
+      ],
+      "candidate_review": [
+        {
+          "expression": "innocent",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "guiltless",
+          "decision": "REJECT",
+          "reason": "意味は近いが使用頻度と独立した学習価値が低く、主要別回答として登録する必要性が弱い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "blind候補を個別検証したが、canonical以外は意味範囲・context依存・surface variant・増分価値のいずれかで登録基準を満たさない。"
+    },
+    {
+      "entry_id": "vocab:02136",
+      "prompt_ja": "市民権",
+      "canonical_snapshot": "citizenship",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "citizenship"
+      ],
+      "candidate_review": [
+        {
+          "expression": "citizenship",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "blind-firstでcanonical以外の主要かつ高学習価値な回答が出ず、追加paraphraseは不要。"
+    },
+    {
+      "entry_id": "vocab:02137",
+      "prompt_ja": "兵士",
+      "canonical_snapshot": "soldier",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "soldier",
+        "serviceman"
+      ],
+      "candidate_review": [
+        {
+          "expression": "soldier",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "serviceman",
+          "decision": "REJECT",
+          "reason": "性別を帯びる古めの語で、現代の一般的な「兵士」への主要別回答としては優先度が低い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "blind候補を個別検証したが、canonical以外は意味範囲・context依存・surface variant・増分価値のいずれかで登録基準を満たさない。"
+    },
+    {
+      "entry_id": "vocab:02138",
+      "prompt_ja": "従う",
+      "canonical_snapshot": "obey",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "obey",
+        "follow",
+        "comply with something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "obey",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "follow",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「従う」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "comply with something",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「従う」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        }
+      ],
+      "after_paraphrases": [
+        "follow",
+        "comply with something"
+      ],
+      "decision": "CHANGED",
+      "reason": "「follow」、「comply with something」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02139",
+      "prompt_ja": "命令",
+      "canonical_snapshot": "command",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "order",
+        "command",
+        "instruction"
+      ],
+      "candidate_review": [
+        {
+          "expression": "order",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「命令」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "command",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "instruction",
+          "decision": "REJECT",
+          "reason": "「指示・説明」の意味が広く、強制性を伴う「命令」とは一致しない場合が多い。"
+        }
+      ],
+      "after_paraphrases": [
+        "order"
+      ],
+      "decision": "CHANGED",
+      "reason": "「order」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02140",
+      "prompt_ja": "同盟国",
+      "canonical_snapshot": "ally",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "ally"
+      ],
+      "candidate_review": [
+        {
+          "expression": "ally",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "blind-firstでcanonical以外の主要かつ高学習価値な回答が出ず、追加paraphraseは不要。"
+    },
+    {
+      "entry_id": "vocab:02141",
+      "prompt_ja": "違反",
+      "canonical_snapshot": "violation",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "violation",
+        "breach",
+        "infringement"
+      ],
+      "candidate_review": [
+        {
+          "expression": "violation",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "breach",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「違反」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "infringement",
+          "decision": "REJECT",
+          "reason": "法・権利の侵害という限定されたregisterが強く、一般promptへの増分価値は低い。"
+        }
+      ],
+      "after_paraphrases": [
+        "breach"
+      ],
+      "decision": "CHANGED",
+      "reason": "「breach」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02142",
+      "prompt_ja": "決意・決議／解決",
+      "canonical_snapshot": "resolution",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "resolution",
+        "resolve",
+        "solution"
+      ],
+      "candidate_review": [
+        {
+          "expression": "resolution",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "resolve",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「決意・決議／解決」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "solution",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「決意・決議／解決」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        }
+      ],
+      "after_paraphrases": [
+        "resolve",
+        "solution"
+      ],
+      "decision": "CHANGED",
+      "reason": "「resolve」、「solution」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02143",
+      "prompt_ja": "可能性",
+      "canonical_snapshot": "possibility",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "possibility",
+        "chance",
+        "likelihood"
+      ],
+      "candidate_review": [
+        {
+          "expression": "possibility",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "chance",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「可能性」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "likelihood",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「可能性」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        }
+      ],
+      "after_paraphrases": [
+        "chance",
+        "likelihood"
+      ],
+      "decision": "CHANGED",
+      "reason": "「chance」、「likelihood」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02144",
+      "prompt_ja": "植民地",
+      "canonical_snapshot": "colony",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "colony"
+      ],
+      "candidate_review": [
+        {
+          "expression": "colony",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "blind-firstでcanonical以外の主要かつ高学習価値な回答が出ず、追加paraphraseは不要。"
+    },
+    {
+      "entry_id": "vocab:02145",
+      "prompt_ja": "独立",
+      "canonical_snapshot": "independence",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "independence",
+        "autonomy"
+      ],
+      "candidate_review": [
+        {
+          "expression": "independence",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "autonomy",
+          "decision": "REJECT",
+          "reason": "「自治・自律」であり、国家等の「独立」とは意味範囲が一致しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "blind候補を個別検証したが、canonical以外は意味範囲・context依存・surface variant・増分価値のいずれかで登録基準を満たさない。"
+    },
+    {
+      "entry_id": "vocab:02146",
+      "prompt_ja": "共和国",
+      "canonical_snapshot": "republic",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "republic"
+      ],
+      "candidate_review": [
+        {
+          "expression": "republic",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "blind-firstでcanonical以外の主要かつ高学習価値な回答が出ず、追加paraphraseは不要。"
+    },
+    {
+      "entry_id": "vocab:02147",
+      "prompt_ja": "巨大な",
+      "canonical_snapshot": "immense",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "huge",
+        "enormous",
+        "massive",
+        "gigantic"
+      ],
+      "candidate_review": [
+        {
+          "expression": "huge",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「巨大な」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "enormous",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「巨大な」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "massive",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「巨大な」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "gigantic",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「巨大な」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        }
+      ],
+      "after_paraphrases": [
+        "huge",
+        "enormous",
+        "massive",
+        "gigantic"
+      ],
+      "decision": "CHANGED",
+      "reason": "「huge」、「enormous」、「massive」、「gigantic」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02148",
+      "prompt_ja": "記念碑",
+      "canonical_snapshot": "monument",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "monument",
+        "memorial"
+      ],
+      "candidate_review": [
+        {
+          "expression": "monument",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "memorial",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「記念碑」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        }
+      ],
+      "after_paraphrases": [
+        "memorial"
+      ],
+      "decision": "CHANGED",
+      "reason": "「memorial」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02149",
+      "prompt_ja": "建てる",
+      "canonical_snapshot": "erect",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "build",
+        "construct",
+        "erect"
+      ],
+      "candidate_review": [
+        {
+          "expression": "build",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「建てる」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "construct",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「建てる」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "erect",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        }
+      ],
+      "after_paraphrases": [
+        "build",
+        "construct"
+      ],
+      "decision": "CHANGED",
+      "reason": "「build」、「construct」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02150",
+      "prompt_ja": "高潔な",
+      "canonical_snapshot": "noble",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "noble",
+        "virtuous",
+        "upright"
+      ],
+      "candidate_review": [
+        {
+          "expression": "noble",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "virtuous",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「高潔な」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "upright",
+          "decision": "REJECT",
+          "reason": "道徳的に正しい意味では成立するが、「高潔な」への主要回答としてはやや限定的で増分が小さい。"
+        }
+      ],
+      "after_paraphrases": [
+        "virtuous"
+      ],
+      "decision": "CHANGED",
+      "reason": "「virtuous」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02151",
+      "prompt_ja": "愛国者",
+      "canonical_snapshot": "patriot",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "patriot"
+      ],
+      "candidate_review": [
+        {
+          "expression": "patriot",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "blind-firstでcanonical以外の主要かつ高学習価値な回答が出ず、追加paraphraseは不要。"
+    },
+    {
+      "entry_id": "vocab:02152",
+      "prompt_ja": "祈る",
+      "canonical_snapshot": "pray",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "pray"
+      ],
+      "candidate_review": [
+        {
+          "expression": "pray",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "blind-firstでcanonical以外の主要かつ高学習価値な回答が出ず、追加paraphraseは不要。"
+    },
+    {
+      "entry_id": "vocab:02153",
+      "prompt_ja": "魂",
+      "canonical_snapshot": "soul",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "soul",
+        "spirit"
+      ],
+      "candidate_review": [
+        {
+          "expression": "soul",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "spirit",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「魂」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        }
+      ],
+      "after_paraphrases": [
+        "spirit"
+      ],
+      "decision": "CHANGED",
+      "reason": "「spirit」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02154",
+      "prompt_ja": "亡くなった",
+      "canonical_snapshot": "deceased",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "dead",
+        "deceased",
+        "late"
+      ],
+      "candidate_review": [
+        {
+          "expression": "dead",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「亡くなった」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "deceased",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "late",
+          "decision": "REJECT",
+          "reason": "故人を指す特定の名詞句環境でのみ自然で、単独回答としてはcontext依存が強い。"
+        }
+      ],
+      "after_paraphrases": [
+        "dead"
+      ],
+      "decision": "CHANGED",
+      "reason": "「dead」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02155",
+      "prompt_ja": "最高の",
+      "canonical_snapshot": "supreme",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "best",
+        "greatest",
+        "supreme"
+      ],
+      "candidate_review": [
+        {
+          "expression": "best",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「最高の」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "greatest",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「最高の」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "supreme",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        }
+      ],
+      "after_paraphrases": [
+        "best",
+        "greatest"
+      ],
+      "decision": "CHANGED",
+      "reason": "「best」、「greatest」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02156",
+      "prompt_ja": "裁判所",
+      "canonical_snapshot": "court",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "court"
+      ],
+      "candidate_review": [
+        {
+          "expression": "court",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "blind-firstでcanonical以外の主要かつ高学習価値な回答が出ず、追加paraphraseは不要。"
+    },
+    {
+      "entry_id": "vocab:02157",
+      "prompt_ja": "中絶の選択権を支持する",
+      "canonical_snapshot": "pro-choice",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "pro-choice",
+        "support abortion rights"
+      ],
+      "candidate_review": [
+        {
+          "expression": "pro-choice",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "support abortion rights",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「中絶の選択権を支持する」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        }
+      ],
+      "after_paraphrases": [
+        "support abortion rights"
+      ],
+      "decision": "CHANGED",
+      "reason": "「support abortion rights」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02158",
+      "prompt_ja": "抗議する",
+      "canonical_snapshot": "protest",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "protest",
+        "object to something",
+        "demonstrate against something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "protest",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "object to something",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「抗議する」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "demonstrate against something",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「抗議する」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        }
+      ],
+      "after_paraphrases": [
+        "object to something",
+        "demonstrate against something"
+      ],
+      "decision": "CHANGED",
+      "reason": "「object to something」、「demonstrate against something」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02159",
+      "prompt_ja": "禁止",
+      "canonical_snapshot": "ban",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "ban",
+        "prohibition"
+      ],
+      "candidate_review": [
+        {
+          "expression": "ban",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "prohibition",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「禁止」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        }
+      ],
+      "after_paraphrases": [
+        "prohibition"
+      ],
+      "decision": "CHANGED",
+      "reason": "「prohibition」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02160",
+      "prompt_ja": "妊娠中絶",
+      "canonical_snapshot": "abortion",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "abortion",
+        "termination of pregnancy"
+      ],
+      "candidate_review": [
+        {
+          "expression": "abortion",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "termination of pregnancy",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「妊娠中絶」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        }
+      ],
+      "after_paraphrases": [
+        "termination of pregnancy"
+      ],
+      "decision": "CHANGED",
+      "reason": "「termination of pregnancy」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02161",
+      "prompt_ja": "上院議員",
+      "canonical_snapshot": "senator",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "senator"
+      ],
+      "candidate_review": [
+        {
+          "expression": "senator",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "blind-firstでcanonical以外の主要かつ高学習価値な回答が出ず、追加paraphraseは不要。"
+    },
+    {
+      "entry_id": "vocab:02162",
+      "prompt_ja": "残る",
+      "canonical_snapshot": "remain",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "remain",
+        "stay",
+        "be left"
+      ],
+      "candidate_review": [
+        {
+          "expression": "remain",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "stay",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「残る」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "be left",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「残る」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        }
+      ],
+      "after_paraphrases": [
+        "stay",
+        "be left"
+      ],
+      "decision": "CHANGED",
+      "reason": "「stay」、「be left」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02163",
+      "prompt_ja": "中立の",
+      "canonical_snapshot": "neutral",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "neutral",
+        "impartial"
+      ],
+      "candidate_review": [
+        {
+          "expression": "neutral",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "impartial",
+          "decision": "REJECT",
+          "reason": "「公平な・偏りのない」であり、立場を取らない「中立の」とは必ずしも同じではない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "blind候補を個別検証したが、canonical以外は意味範囲・context依存・surface variant・増分価値のいずれかで登録基準を満たさない。"
+    },
+    {
+      "entry_id": "vocab:02164",
+      "prompt_ja": "激しい",
+      "canonical_snapshot": "bitter",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "intense",
+        "fierce",
+        "severe"
+      ],
+      "candidate_review": [
+        {
+          "expression": "intense",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「激しい」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "fierce",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「激しい」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "severe",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「激しい」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        }
+      ],
+      "after_paraphrases": [
+        "intense",
+        "fierce",
+        "severe"
+      ],
+      "decision": "CHANGED",
+      "reason": "「intense」、「fierce」、「severe」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02165",
+      "prompt_ja": "論争",
+      "canonical_snapshot": "controversy",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "controversy",
+        "dispute",
+        "debate"
+      ],
+      "candidate_review": [
+        {
+          "expression": "controversy",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "dispute",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「論争」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "debate",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「論争」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        }
+      ],
+      "after_paraphrases": [
+        "dispute",
+        "debate"
+      ],
+      "decision": "CHANGED",
+      "reason": "「dispute」、「debate」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02166",
+      "prompt_ja": "放送する",
+      "canonical_snapshot": "broadcast",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "broadcast",
+        "air"
+      ],
+      "candidate_review": [
+        {
+          "expression": "broadcast",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "air",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「放送する」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        }
+      ],
+      "after_paraphrases": [
+        "air"
+      ],
+      "decision": "CHANGED",
+      "reason": "「air」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02167",
+      "prompt_ja": "同時に",
+      "canonical_snapshot": "simultaneously",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "simultaneously",
+        "at the same time"
+      ],
+      "candidate_review": [
+        {
+          "expression": "simultaneously",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "at the same time",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「同時に」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        }
+      ],
+      "after_paraphrases": [
+        "at the same time"
+      ],
+      "decision": "CHANGED",
+      "reason": "「at the same time」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02168",
+      "prompt_ja": "〜の至る所で",
+      "canonical_snapshot": "throughout",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "throughout",
+        "all over",
+        "across"
+      ],
+      "candidate_review": [
+        {
+          "expression": "throughout",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "all over",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「〜の至る所で」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "across",
+          "decision": "REJECT",
+          "reason": "「〜全域にわたって」は成立するが、必ずしも「至る所で」を表さず分布の密度を含意しない。"
+        }
+      ],
+      "after_paraphrases": [
+        "all over"
+      ],
+      "decision": "CHANGED",
+      "reason": "「all over」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02169",
+      "prompt_ja": "外交の",
+      "canonical_snapshot": "diplomatic",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "diplomatic"
+      ],
+      "candidate_review": [
+        {
+          "expression": "diplomatic",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "blind-firstでcanonical以外の主要かつ高学習価値な回答が出ず、追加paraphraseは不要。"
+    },
+    {
+      "entry_id": "vocab:02170",
+      "prompt_ja": "対話",
+      "canonical_snapshot": "dialogue",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "dialogue",
+        "conversation",
+        "talks"
+      ],
+      "candidate_review": [
+        {
+          "expression": "dialogue",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "conversation",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「対話」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "talks",
+          "decision": "REJECT",
+          "reason": "複数形で「会談・協議」の意味が強く、一般的な「対話」よりcontext依存が強い。"
+        }
+      ],
+      "after_paraphrases": [
+        "conversation"
+      ],
+      "decision": "CHANGED",
+      "reason": "「conversation」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02171",
+      "prompt_ja": "争い",
+      "canonical_snapshot": "conflict",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "conflict",
+        "dispute",
+        "struggle",
+        "fight"
+      ],
+      "candidate_review": [
+        {
+          "expression": "conflict",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "dispute",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「争い」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "struggle",
+          "decision": "REJECT",
+          "reason": "「苦闘・努力」の意味にも広く、単独promptでは対応が曖昧。"
+        },
+        {
+          "expression": "fight",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「争い」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        }
+      ],
+      "after_paraphrases": [
+        "dispute",
+        "fight"
+      ],
+      "decision": "CHANGED",
+      "reason": "「dispute」、「fight」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02172",
+      "prompt_ja": "任命する",
+      "canonical_snapshot": "appoint",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "appoint",
+        "name",
+        "designate"
+      ],
+      "candidate_review": [
+        {
+          "expression": "appoint",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "name",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「任命する」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "designate",
+          "decision": "REJECT",
+          "reason": "「指定する・指名する」まで広く、正式な「任命」とは一致しない場合がある。"
+        }
+      ],
+      "after_paraphrases": [
+        "name"
+      ],
+      "decision": "CHANGED",
+      "reason": "「name」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02173",
+      "prompt_ja": "大使",
+      "canonical_snapshot": "ambassador",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "ambassador"
+      ],
+      "candidate_review": [
+        {
+          "expression": "ambassador",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "blind-firstでcanonical以外の主要かつ高学習価値な回答が出ず、追加paraphraseは不要。"
+    },
+    {
+      "entry_id": "vocab:02174",
+      "prompt_ja": "育む",
+      "canonical_snapshot": "foster",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "foster",
+        "nurture",
+        "cultivate"
+      ],
+      "candidate_review": [
+        {
+          "expression": "foster",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "nurture",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「育む」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "cultivate",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「育む」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        }
+      ],
+      "after_paraphrases": [
+        "nurture",
+        "cultivate"
+      ],
+      "decision": "CHANGED",
+      "reason": "「nurture」、「cultivate」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02175",
+      "prompt_ja": "相互の",
+      "canonical_snapshot": "mutual",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "mutual",
+        "reciprocal"
+      ],
+      "candidate_review": [
+        {
+          "expression": "mutual",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "reciprocal",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「相互の」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        }
+      ],
+      "after_paraphrases": [
+        "reciprocal"
+      ],
+      "decision": "CHANGED",
+      "reason": "「reciprocal」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02176",
+      "prompt_ja": "理解",
+      "canonical_snapshot": "understanding",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "understanding",
+        "comprehension"
+      ],
+      "candidate_review": [
+        {
+          "expression": "understanding",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "comprehension",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「理解」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        }
+      ],
+      "after_paraphrases": [
+        "comprehension"
+      ],
+      "decision": "CHANGED",
+      "reason": "「comprehension」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02177",
+      "prompt_ja": "専門家",
+      "canonical_snapshot": "specialist",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "expert",
+        "specialist",
+        "professional"
+      ],
+      "candidate_review": [
+        {
+          "expression": "expert",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「専門家」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "specialist",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "professional",
+          "decision": "REJECT",
+          "reason": "職業人を指し、必ずしも特定分野の「専門家」とは限らない。"
+        }
+      ],
+      "after_paraphrases": [
+        "expert"
+      ],
+      "decision": "CHANGED",
+      "reason": "「expert」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02178",
+      "prompt_ja": "予測する",
+      "canonical_snapshot": "predict",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "predict",
+        "forecast",
+        "anticipate"
+      ],
+      "candidate_review": [
+        {
+          "expression": "predict",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "forecast",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「予測する」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "anticipate",
+          "decision": "REJECT",
+          "reason": "「予期する・先回りして備える」まで含み、客観的な「予測する」とはずれる場合がある。"
+        }
+      ],
+      "after_paraphrases": [
+        "forecast"
+      ],
+      "decision": "CHANGED",
+      "reason": "「forecast」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02179",
+      "prompt_ja": "国際的な",
+      "canonical_snapshot": "international",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "international",
+        "global"
+      ],
+      "candidate_review": [
+        {
+          "expression": "international",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "global",
+          "decision": "REJECT",
+          "reason": "「世界的な・地球規模の」で、複数国家間という「国際的な」とは範囲が異なる。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "blind候補を個別検証したが、canonical以外は意味範囲・context依存・surface variant・増分価値のいずれかで登録基準を満たさない。"
+    },
+    {
+      "entry_id": "vocab:02180",
+      "prompt_ja": "緊張",
+      "canonical_snapshot": "tension",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "tension",
+        "strain"
+      ],
+      "candidate_review": [
+        {
+          "expression": "tension",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "strain",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「緊張」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        }
+      ],
+      "after_paraphrases": [
+        "strain"
+      ],
+      "decision": "CHANGED",
+      "reason": "「strain」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02181",
+      "prompt_ja": "永続的な",
+      "canonical_snapshot": "permanent",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "permanent",
+        "lasting",
+        "enduring"
+      ],
+      "candidate_review": [
+        {
+          "expression": "permanent",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "lasting",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「永続的な」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "enduring",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「永続的な」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        }
+      ],
+      "after_paraphrases": [
+        "lasting",
+        "enduring"
+      ],
+      "decision": "CHANGED",
+      "reason": "「lasting」、「enduring」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02182",
+      "prompt_ja": "平和",
+      "canonical_snapshot": "peace",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "peace"
+      ],
+      "candidate_review": [
+        {
+          "expression": "peace",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "blind-firstでcanonical以外の主要かつ高学習価値な回答が出ず、追加paraphraseは不要。"
+    },
+    {
+      "entry_id": "vocab:02183",
+      "prompt_ja": "偏見",
+      "canonical_snapshot": "prejudice",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "prejudice",
+        "bias"
+      ],
+      "candidate_review": [
+        {
+          "expression": "prejudice",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "bias",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「偏見」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        }
+      ],
+      "after_paraphrases": [
+        "bias"
+      ],
+      "decision": "CHANGED",
+      "reason": "「bias」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02184",
+      "prompt_ja": "貧困",
+      "canonical_snapshot": "poverty",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "poverty"
+      ],
+      "candidate_review": [
+        {
+          "expression": "poverty",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "blind-firstでcanonical以外の主要かつ高学習価値な回答が出ず、追加paraphraseは不要。"
+    },
+    {
+      "entry_id": "vocab:02185",
+      "prompt_ja": "抑圧",
+      "canonical_snapshot": "oppression",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "oppression",
+        "repression",
+        "suppression"
+      ],
+      "candidate_review": [
+        {
+          "expression": "oppression",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "repression",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「抑圧」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "suppression",
+          "decision": "REJECT",
+          "reason": "「抑制・鎮圧」まで広く、人や集団への「抑圧」を表す主要語としてはずれがある。"
+        }
+      ],
+      "after_paraphrases": [
+        "repression"
+      ],
+      "decision": "CHANGED",
+      "reason": "「repression」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02186",
+      "prompt_ja": "努力",
+      "canonical_snapshot": "effort",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "effort",
+        "endeavor",
+        "attempt"
+      ],
+      "candidate_review": [
+        {
+          "expression": "effort",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "endeavor",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「努力」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "attempt",
+          "decision": "REJECT",
+          "reason": "「試み」であり、成功のために力を注ぐ「努力」とは意味が一致しない場合がある。"
+        }
+      ],
+      "after_paraphrases": [
+        "endeavor"
+      ],
+      "decision": "CHANGED",
+      "reason": "「endeavor」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02187",
+      "prompt_ja": "差別",
+      "canonical_snapshot": "discrimination",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "discrimination"
+      ],
+      "candidate_review": [
+        {
+          "expression": "discrimination",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "blind-firstでcanonical以外の主要かつ高学習価値な回答が出ず、追加paraphraseは不要。"
+    },
+    {
+      "entry_id": "vocab:02188",
+      "prompt_ja": "移民",
+      "canonical_snapshot": "immigrant",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "immigrant",
+        "migrant"
+      ],
+      "candidate_review": [
+        {
+          "expression": "immigrant",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "migrant",
+          "decision": "REJECT",
+          "reason": "一時的・国内移動も含む広い語で、定住を前提としやすい「移民」と完全には対応しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "blind候補を個別検証したが、canonical以外は意味範囲・context依存・surface variant・増分価値のいずれかで登録基準を満たさない。"
+    },
+    {
+      "entry_id": "vocab:02189",
+      "prompt_ja": "耐える",
+      "canonical_snapshot": "endure",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "endure",
+        "bear",
+        "withstand",
+        "tolerate"
+      ],
+      "candidate_review": [
+        {
+          "expression": "endure",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "bear",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「耐える」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "withstand",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「耐える」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "tolerate",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「耐える」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        }
+      ],
+      "after_paraphrases": [
+        "bear",
+        "withstand",
+        "tolerate"
+      ],
+      "decision": "CHANGED",
+      "reason": "「bear」、「withstand」、「tolerate」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02190",
+      "prompt_ja": "身体の",
+      "canonical_snapshot": "physical",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "physical",
+        "bodily"
+      ],
+      "candidate_review": [
+        {
+          "expression": "physical",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "bodily",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「身体の」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        }
+      ],
+      "after_paraphrases": [
+        "bodily"
+      ],
+      "decision": "CHANGED",
+      "reason": "「bodily」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02191",
+      "prompt_ja": "精神の",
+      "canonical_snapshot": "mental",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "mental",
+        "psychological"
+      ],
+      "candidate_review": [
+        {
+          "expression": "mental",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "psychological",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「精神の」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        }
+      ],
+      "after_paraphrases": [
+        "psychological"
+      ],
+      "decision": "CHANGED",
+      "reason": "「psychological」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02192",
+      "prompt_ja": "苦痛",
+      "canonical_snapshot": "pain",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "pain",
+        "suffering",
+        "distress",
+        "agony"
+      ],
+      "candidate_review": [
+        {
+          "expression": "pain",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "suffering",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「苦痛」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "distress",
+          "decision": "REJECT",
+          "reason": "「苦悩・困窮」まで広く、一般的な「苦痛」の主要別回答としては意味が散る。"
+        },
+        {
+          "expression": "agony",
+          "decision": "REJECT",
+          "reason": "非常に強い苦痛に限定され、無標のpromptより強すぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "suffering"
+      ],
+      "decision": "CHANGED",
+      "reason": "「suffering」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02193",
+      "prompt_ja": "修正・改正（案）",
+      "canonical_snapshot": "amendment",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "amendment",
+        "revision",
+        "modification"
+      ],
+      "candidate_review": [
+        {
+          "expression": "amendment",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "revision",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「修正・改正（案）」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "modification",
+          "decision": "REJECT",
+          "reason": "「変更・改変」一般で、正式な「修正・改正（案）」との対応が弱い。"
+        }
+      ],
+      "after_paraphrases": [
+        "revision"
+      ],
+      "decision": "CHANGED",
+      "reason": "「revision」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02194",
+      "prompt_ja": "拒否する",
+      "canonical_snapshot": "reject",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "reject",
+        "refuse",
+        "decline"
+      ],
+      "candidate_review": [
+        {
+          "expression": "reject",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "refuse",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「拒否する」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "decline",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「拒否する」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        }
+      ],
+      "after_paraphrases": [
+        "refuse",
+        "decline"
+      ],
+      "decision": "CHANGED",
+      "reason": "「refuse」、「decline」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02195",
+      "prompt_ja": "人種の",
+      "canonical_snapshot": "racial",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "racial"
+      ],
+      "candidate_review": [
+        {
+          "expression": "racial",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "blind-firstでcanonical以外の主要かつ高学習価値な回答が出ず、追加paraphraseは不要。"
+    },
+    {
+      "entry_id": "vocab:02196",
+      "prompt_ja": "難民",
+      "canonical_snapshot": "refugee",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "refugee"
+      ],
+      "candidate_review": [
+        {
+          "expression": "refugee",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "blind-firstでcanonical以外の主要かつ高学習価値な回答が出ず、追加paraphraseは不要。"
+    },
+    {
+      "entry_id": "vocab:02197",
+      "prompt_ja": "自由",
+      "canonical_snapshot": "freedom",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "freedom",
+        "liberty"
+      ],
+      "candidate_review": [
+        {
+          "expression": "freedom",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "liberty",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「自由」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        }
+      ],
+      "after_paraphrases": [
+        "liberty"
+      ],
+      "decision": "CHANGED",
+      "reason": "「liberty」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02198",
+      "prompt_ja": "調査",
+      "canonical_snapshot": "survey",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "survey",
+        "investigation",
+        "inquiry",
+        "research"
+      ],
+      "candidate_review": [
+        {
+          "expression": "survey",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "investigation",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「調査」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "inquiry",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「調査」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "research",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「調査」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        }
+      ],
+      "after_paraphrases": [
+        "investigation",
+        "inquiry",
+        "research"
+      ],
+      "decision": "CHANGED",
+      "reason": "「investigation」、「inquiry」、「research」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02199",
+      "prompt_ja": "関係",
+      "canonical_snapshot": "relation",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "relation",
+        "relationship",
+        "connection",
+        "association"
+      ],
+      "candidate_review": [
+        {
+          "expression": "relation",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "relationship",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「関係」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "connection",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「関係」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "association",
+          "decision": "REJECT",
+          "reason": "「関連・連想・団体」まで広く、単独の「関係」への主要別回答としては曖昧。"
+        }
+      ],
+      "after_paraphrases": [
+        "relationship",
+        "connection"
+      ],
+      "decision": "CHANGED",
+      "reason": "「relationship」、「connection」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02200",
+      "prompt_ja": "安全",
+      "canonical_snapshot": "security",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "security",
+        "safety"
+      ],
+      "candidate_review": [
+        {
+          "expression": "security",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "safety",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「安全」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        }
+      ],
+      "after_paraphrases": [
+        "safety"
+      ],
+      "decision": "CHANGED",
+      "reason": "「safety」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02201",
+      "prompt_ja": "期限が切れる",
+      "canonical_snapshot": "expire",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "expire",
+        "run out",
+        "lapse"
+      ],
+      "candidate_review": [
+        {
+          "expression": "expire",
+          "decision": "REJECT",
+          "reason": "canonicalまたはTARGET answerそのものなので、別表現paraphraseには登録しない。"
+        },
+        {
+          "expression": "run out",
+          "decision": "REJECT",
+          "reason": "主に時間・在庫などが尽きる意味で、資格・契約等の「期限が切れる」とは構文上ずれる。"
+        },
+        {
+          "expression": "lapse",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「期限が切れる」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        }
+      ],
+      "after_paraphrases": [
+        "lapse"
+      ],
+      "decision": "CHANGED",
+      "reason": "「lapse」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02202",
+      "prompt_ja": "something elseするくらいなら、somethingする方がましだ",
+      "canonical_snapshot": "might as well do something as do something else",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "would rather do something than do something else",
+        "prefer doing something to doing something else"
+      ],
+      "candidate_review": [
+        {
+          "expression": "would rather do something than do something else",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「something elseするくらいなら、somethingする方がましだ」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "prefer doing something to doing something else",
+          "decision": "REJECT",
+          "reason": "単なる一般的な好みを表しやすく、「〜するくらいなら…する方がまし」という消極的比較の含意が弱い。"
+        }
+      ],
+      "after_paraphrases": [
+        "would rather do something than do something else"
+      ],
+      "decision": "CHANGED",
+      "reason": "「would rather do something than do something else」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02203",
+      "prompt_ja": "somethingを仕方ないと受け入れる",
+      "canonical_snapshot": "reconcile yourself to something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "resign yourself to something",
+        "accept something as inevitable",
+        "come to terms with something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "resign yourself to something",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「somethingを仕方ないと受け入れる」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "accept something as inevitable",
+          "decision": "REJECT",
+          "reason": "意味説明としては成立するが、固定した独立表現として学ばせる増分価値が低い。"
+        },
+        {
+          "expression": "come to terms with something",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「somethingを仕方ないと受け入れる」への自然で主要な英語回答として成立し、canonicalとは独立した実用的な表現。MISS扱いは教育的に不適切。"
+        }
+      ],
+      "after_paraphrases": [
+        "resign yourself to something",
+        "come to terms with something"
+      ],
+      "decision": "CHANGED",
+      "reason": "「resign yourself to something」、「come to terms with something」を主要な別回答として採用。promptへの対応が直接的で、独立した学習価値がある。"
+    }
+  ],
+  "followups": []
+}
