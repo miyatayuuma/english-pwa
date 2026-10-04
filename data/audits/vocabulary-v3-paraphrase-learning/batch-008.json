@@ -1,0 +1,3759 @@
+{
+  "schema_version": 1,
+  "policy_version": "prompt-learning-value-v1",
+  "batch": 8,
+  "ordinal_start": 701,
+  "ordinal_end": 800,
+  "claim_main": "4a096add99a3ebe1c90e904a8cc0713e34603394",
+  "reviewed_against_main": "0dee683ba6696852e7f63376972b187efee6a84d",
+  "reviewed_count": 100,
+  "entry_ids": [
+    "vocab:00704",
+    "vocab:00705",
+    "vocab:00706",
+    "vocab:00707",
+    "vocab:00708",
+    "vocab:00709",
+    "vocab:00710",
+    "vocab:00711",
+    "vocab:00712",
+    "vocab:00713",
+    "vocab:00714",
+    "vocab:00715",
+    "vocab:00716",
+    "vocab:00717",
+    "vocab:00718",
+    "vocab:00719",
+    "vocab:00720",
+    "vocab:00721",
+    "vocab:00722",
+    "vocab:00723",
+    "vocab:00724",
+    "vocab:00725",
+    "vocab:00726",
+    "vocab:00727",
+    "vocab:00728",
+    "vocab:00729",
+    "vocab:00730",
+    "vocab:00731",
+    "vocab:00732",
+    "vocab:00733",
+    "vocab:00734",
+    "vocab:00735",
+    "vocab:00736",
+    "vocab:00737",
+    "vocab:00738",
+    "vocab:00739",
+    "vocab:00740",
+    "vocab:00741",
+    "vocab:00742",
+    "vocab:00743",
+    "vocab:00744",
+    "vocab:00745",
+    "vocab:00746",
+    "vocab:00747",
+    "vocab:00748",
+    "vocab:00749",
+    "vocab:00750",
+    "vocab:00751",
+    "vocab:00752",
+    "vocab:00753",
+    "vocab:00754",
+    "vocab:00755",
+    "vocab:00756",
+    "vocab:00757",
+    "vocab:00758",
+    "vocab:00759",
+    "vocab:00760",
+    "vocab:00761",
+    "vocab:00762",
+    "vocab:00763",
+    "vocab:00764",
+    "vocab:00765",
+    "vocab:00766",
+    "vocab:00767",
+    "vocab:00768",
+    "vocab:00769",
+    "vocab:00770",
+    "vocab:00771",
+    "vocab:00772",
+    "vocab:00773",
+    "vocab:00774",
+    "vocab:00775",
+    "vocab:00776",
+    "vocab:00777",
+    "vocab:00778",
+    "vocab:00779",
+    "vocab:00780",
+    "vocab:00781",
+    "vocab:00782",
+    "vocab:00783",
+    "vocab:00784",
+    "vocab:00785",
+    "vocab:00786",
+    "vocab:00787",
+    "vocab:00788",
+    "vocab:00789",
+    "vocab:00790",
+    "vocab:00791",
+    "vocab:00792",
+    "vocab:00793",
+    "vocab:00794",
+    "vocab:00795",
+    "vocab:00796",
+    "vocab:00797",
+    "vocab:00798",
+    "vocab:00799",
+    "vocab:00800",
+    "vocab:00801",
+    "vocab:00802",
+    "vocab:00803"
+  ],
+  "results": [
+    {
+      "entry_id": "vocab:00704",
+      "prompt_ja": "今何時ですか",
+      "canonical_snapshot": "do you have the time?",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "what time is it?",
+        "do you have the time?"
+      ],
+      "candidate_review": [
+        {
+          "expression": "what time is it?",
+          "decision": "ACCEPT",
+          "reason": "「今何時ですか」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "do you have the time?",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        }
+      ],
+      "after_paraphrases": [
+        "what time is it?"
+      ],
+      "decision": "CHANGED",
+      "reason": "「今何時ですか」に対する主要な別英答として what time is it? を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00705",
+      "prompt_ja": "楽観的な",
+      "canonical_snapshot": "optimistic",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "optimistic",
+        "positive",
+        "hopeful"
+      ],
+      "candidate_review": [
+        {
+          "expression": "optimistic",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "positive",
+          "decision": "ACCEPT",
+          "reason": "「楽観的な」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "hopeful",
+          "decision": "ACCEPT",
+          "reason": "「楽観的な」への自然で高頻度な回答。optimistic/positiveとは別語彙で、将来への楽観を表す主要表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "positive",
+        "hopeful"
+      ],
+      "decision": "CHANGED",
+      "reason": "「楽観的な」に対する主要な別英答として positive / hopeful を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00706",
+      "prompt_ja": "いら立った",
+      "canonical_snapshot": "irritated",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "irritated",
+        "annoyed",
+        "frustrated",
+        "exasperated"
+      ],
+      "candidate_review": [
+        {
+          "expression": "irritated",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "annoyed",
+          "decision": "ACCEPT",
+          "reason": "「いら立った」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "frustrated",
+          "decision": "ACCEPT",
+          "reason": "「いら立った」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "exasperated",
+          "decision": "REJECT",
+          "reason": "「いら立った」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "annoyed",
+        "frustrated"
+      ],
+      "decision": "CHANGED",
+      "reason": "「いら立った」に対する主要な別英答として annoyed / frustrated を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00707",
+      "prompt_ja": "軽蔑する",
+      "canonical_snapshot": "despise",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "despise",
+        "look down on someone",
+        "scorn"
+      ],
+      "candidate_review": [
+        {
+          "expression": "despise",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "look down on someone",
+          "decision": "ACCEPT",
+          "reason": "「軽蔑する」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "scorn",
+          "decision": "ACCEPT",
+          "reason": "「軽蔑する」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "look down on someone",
+        "scorn"
+      ],
+      "decision": "CHANGED",
+      "reason": "「軽蔑する」に対する主要な別英答として look down on someone / scorn を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00708",
+      "prompt_ja": "侮辱",
+      "canonical_snapshot": "insult",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "insult",
+        "disrespect",
+        "offense"
+      ],
+      "candidate_review": [
+        {
+          "expression": "insult",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "disrespect",
+          "decision": "REJECT",
+          "reason": "`disrespect` は「無礼・軽視」を広く表し、行為として侮辱に当たる場合はあるが、日本語prompt「侮辱」への主要な名詞回答としては対応が広すぎるため登録しない。"
+        },
+        {
+          "expression": "offense",
+          "decision": "REJECT",
+          "reason": "「侮辱」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「侮辱」について候補を再検討したが、意味範囲・用法または学習価値の基準を満たすcanonical以外の主要表現は残らない。"
+    },
+    {
+      "entry_id": "vocab:00709",
+      "prompt_ja": "ばかげた",
+      "canonical_snapshot": "absurd",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "ridiculous",
+        "absurd",
+        "silly"
+      ],
+      "candidate_review": [
+        {
+          "expression": "ridiculous",
+          "decision": "ACCEPT",
+          "reason": "「ばかげた」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "absurd",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "silly",
+          "decision": "ACCEPT",
+          "reason": "「ばかげた」への非常に一般的な英答。口語で重要で、absurd / ridiculous とregister差もあり独立学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "ridiculous",
+        "silly"
+      ],
+      "decision": "CHANGED",
+      "reason": "「ばかげた」に対する主要な別英答として ridiculous / silly を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00710",
+      "prompt_ja": "通勤・通学する",
+      "canonical_snapshot": "commute",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "commute"
+      ],
+      "candidate_review": [
+        {
+          "expression": "commute",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「通勤・通学する」について主要候補を再検討したが、TARGET重複、surface variant、意味ずれ・文脈依存、または追加学習価値不足のため登録なし。"
+    },
+    {
+      "entry_id": "vocab:00711",
+      "prompt_ja": "追い求める",
+      "canonical_snapshot": "pursue",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "pursue",
+        "seek",
+        "chase after"
+      ],
+      "candidate_review": [
+        {
+          "expression": "pursue",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "seek",
+          "decision": "ACCEPT",
+          "reason": "「追い求める」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "chase after",
+          "decision": "ACCEPT",
+          "reason": "「追い求める」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "seek",
+        "chase after"
+      ],
+      "decision": "CHANGED",
+      "reason": "「追い求める」に対する主要な別英答として seek / chase after を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00712",
+      "prompt_ja": "気前のよい",
+      "canonical_snapshot": "generous",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "generous",
+        "giving",
+        "big-hearted"
+      ],
+      "candidate_review": [
+        {
+          "expression": "generous",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "giving",
+          "decision": "ACCEPT",
+          "reason": "人の性質として「気前のよい」を表す一般的な形容詞で、generousとは別語彙として会話上の学習価値がある。"
+        },
+        {
+          "expression": "big-hearted",
+          "decision": "REJECT",
+          "reason": "「気前のよい」に成立する場面はあるが、頻度・register・独立学習価値を踏まえると今回のcurated paraphraseに加える優先度は低い。"
+        }
+      ],
+      "after_paraphrases": [
+        "giving"
+      ],
+      "decision": "CHANGED",
+      "reason": "「気前のよい」に対する主要な別英答として giving を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00713",
+      "prompt_ja": "欲張りな",
+      "canonical_snapshot": "greedy",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "greedy",
+        "grasping",
+        "avaricious"
+      ],
+      "candidate_review": [
+        {
+          "expression": "greedy",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "grasping",
+          "decision": "REJECT",
+          "reason": "「欲張りな」に成立する場面はあるが、頻度・register・独立学習価値を踏まえると今回のcurated paraphraseに加える優先度は低い。"
+        },
+        {
+          "expression": "avaricious",
+          "decision": "REJECT",
+          "reason": "「欲張りな」に成立する場面はあるが、頻度・register・独立学習価値を踏まえると今回のcurated paraphraseに加える優先度は低い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「欲張りな」について主要候補を再検討したが、TARGET重複、surface variant、意味ずれ・文脈依存、または追加学習価値不足のため登録なし。"
+    },
+    {
+      "entry_id": "vocab:00714",
+      "prompt_ja": "結果",
+      "canonical_snapshot": "outcome",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "result",
+        "outcome",
+        "consequence"
+      ],
+      "candidate_review": [
+        {
+          "expression": "result",
+          "decision": "ACCEPT",
+          "reason": "「結果」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "outcome",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "consequence",
+          "decision": "ACCEPT",
+          "reason": "「結果」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "effect",
+          "decision": "ACCEPT",
+          "reason": "因果関係における「結果」の主要語。result/outcome/consequenceとは別のacademic基本語として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "result",
+        "consequence",
+        "effect"
+      ],
+      "decision": "CHANGED",
+      "reason": "「結果」に対する主要な別英答として result / consequence / effect を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00715",
+      "prompt_ja": "正確な",
+      "canonical_snapshot": "accurate",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "accurate",
+        "precise",
+        "exact",
+        "correct"
+      ],
+      "candidate_review": [
+        {
+          "expression": "accurate",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "precise",
+          "decision": "ACCEPT",
+          "reason": "「正確な」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "exact",
+          "decision": "ACCEPT",
+          "reason": "「正確な」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "correct",
+          "decision": "ACCEPT",
+          "reason": "情報・答えなどが「正確な」を表す基本語で、日本語promptへの自然な主要英答として成立する。"
+        }
+      ],
+      "after_paraphrases": [
+        "correct",
+        "precise",
+        "exact"
+      ],
+      "decision": "CHANGED",
+      "reason": "「正確な」に対する主要な別英答として correct / precise / exact を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00716",
+      "prompt_ja": "反論する",
+      "canonical_snapshot": "contradict",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "rebut",
+        "counter",
+        "refute",
+        "argue back"
+      ],
+      "candidate_review": [
+        {
+          "expression": "rebut",
+          "decision": "ACCEPT",
+          "reason": "「反論する」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "counter",
+          "decision": "ACCEPT",
+          "reason": "「反論する」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "refute",
+          "decision": "REJECT",
+          "reason": "「反論する」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        },
+        {
+          "expression": "argue back",
+          "decision": "REJECT",
+          "reason": "「反論する」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "rebut",
+        "counter"
+      ],
+      "decision": "CHANGED",
+      "reason": "「反論する」に対する主要な別英答として rebut / counter を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00717",
+      "prompt_ja": "曖昧な",
+      "canonical_snapshot": "vague",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "ambiguous",
+        "vague",
+        "unclear"
+      ],
+      "candidate_review": [
+        {
+          "expression": "ambiguous",
+          "decision": "ACCEPT",
+          "reason": "「曖昧な」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "vague",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "unclear",
+          "decision": "ACCEPT",
+          "reason": "「曖昧な」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "ambiguous",
+        "unclear"
+      ],
+      "decision": "CHANGED",
+      "reason": "「曖昧な」に対する主要な別英答として ambiguous / unclear を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00718",
+      "prompt_ja": "噂",
+      "canonical_snapshot": "rumor",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "rumor",
+        "gossip",
+        "hearsay"
+      ],
+      "candidate_review": [
+        {
+          "expression": "rumor",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "gossip",
+          "decision": "ACCEPT",
+          "reason": "人についての「噂・噂話」を表す高頻度語で、rumorとは異なる使用域も含め学習価値が高い。"
+        },
+        {
+          "expression": "hearsay",
+          "decision": "REJECT",
+          "reason": "「噂」に成立する場面はあるが、頻度・register・独立学習価値を踏まえると今回のcurated paraphraseに加える優先度は低い。"
+        }
+      ],
+      "after_paraphrases": [
+        "gossip"
+      ],
+      "decision": "CHANGED",
+      "reason": "「噂」に対する主要な別英答として gossip を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00719",
+      "prompt_ja": "十分な",
+      "canonical_snapshot": "sufficient",
+      "answers_snapshot": [],
+      "existing_paraphrases": [
+        "adequate"
+      ],
+      "blind_candidates": [
+        "sufficient",
+        "adequate",
+        "enough"
+      ],
+      "candidate_review": [
+        {
+          "expression": "sufficient",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "adequate",
+          "decision": "ACCEPT",
+          "reason": "「十分な」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "enough",
+          "decision": "ACCEPT",
+          "reason": "「十分な」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "enough",
+        "adequate"
+      ],
+      "decision": "CHANGED",
+      "reason": "「十分な」に対する主要な別英答として enough / adequate を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00720",
+      "prompt_ja": "関連する",
+      "canonical_snapshot": "relevant",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "relate to",
+        "be related to",
+        "be relevant to"
+      ],
+      "candidate_review": [
+        {
+          "expression": "relate to",
+          "decision": "ACCEPT",
+          "reason": "「関連する」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "be related to",
+          "decision": "ACCEPT",
+          "reason": "「関連する」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "be relevant to",
+          "decision": "REJECT",
+          "reason": "canonicalと同一語彙のsurface展開・形態差に近く、独立したparaphraseとして登録する価値はない。"
+        }
+      ],
+      "after_paraphrases": [
+        "relate to",
+        "be related to"
+      ],
+      "decision": "CHANGED",
+      "reason": "「関連する」に対する主要な別英答として relate to / be related to を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00721",
+      "prompt_ja": "鮮明な",
+      "canonical_snapshot": "vivid",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "vivid",
+        "clear",
+        "sharp",
+        "distinct"
+      ],
+      "candidate_review": [
+        {
+          "expression": "vivid",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "clear",
+          "decision": "ACCEPT",
+          "reason": "「鮮明な」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "sharp",
+          "decision": "ACCEPT",
+          "reason": "「鮮明な」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "distinct",
+          "decision": "REJECT",
+          "reason": "「鮮明な」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "clear",
+        "sharp"
+      ],
+      "decision": "CHANGED",
+      "reason": "「鮮明な」に対する主要な別英答として clear / sharp を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00722",
+      "prompt_ja": "ためらう",
+      "canonical_snapshot": "hesitate",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "hesitate",
+        "be reluctant to",
+        "waver"
+      ],
+      "candidate_review": [
+        {
+          "expression": "hesitate",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "be reluctant to",
+          "decision": "REJECT",
+          "reason": "「ためらう」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        },
+        {
+          "expression": "waver",
+          "decision": "REJECT",
+          "reason": "「ためらう」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「ためらう」について主要候補を再検討したが、TARGET重複、surface variant、意味ずれ・文脈依存、または追加学習価値不足のため登録なし。"
+    },
+    {
+      "entry_id": "vocab:00723",
+      "prompt_ja": "敏感な",
+      "canonical_snapshot": "sensitive",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "sensitive",
+        "susceptible",
+        "responsive"
+      ],
+      "candidate_review": [
+        {
+          "expression": "sensitive",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "susceptible",
+          "decision": "REJECT",
+          "reason": "「敏感な」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        },
+        {
+          "expression": "responsive",
+          "decision": "REJECT",
+          "reason": "「敏感な」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「敏感な」について主要候補を再検討したが、TARGET重複、surface variant、意味ずれ・文脈依存、または追加学習価値不足のため登録なし。"
+    },
+    {
+      "entry_id": "vocab:00724",
+      "prompt_ja": "幻想",
+      "canonical_snapshot": "illusion",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "illusion",
+        "fantasy",
+        "delusion"
+      ],
+      "candidate_review": [
+        {
+          "expression": "illusion",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "fantasy",
+          "decision": "ACCEPT",
+          "reason": "「幻想」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "delusion",
+          "decision": "REJECT",
+          "reason": "「幻想」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "fantasy"
+      ],
+      "decision": "CHANGED",
+      "reason": "「幻想」に対する主要な別英答として fantasy を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00725",
+      "prompt_ja": "頑固な",
+      "canonical_snapshot": "stubborn",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "stubborn",
+        "obstinate",
+        "headstrong"
+      ],
+      "candidate_review": [
+        {
+          "expression": "stubborn",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "obstinate",
+          "decision": "ACCEPT",
+          "reason": "「頑固な」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "headstrong",
+          "decision": "REJECT",
+          "reason": "「頑固な」に成立する場面はあるが、頻度・register・独立学習価値を踏まえると今回のcurated paraphraseに加える優先度は低い。"
+        }
+      ],
+      "after_paraphrases": [
+        "obstinate"
+      ],
+      "decision": "CHANGED",
+      "reason": "「頑固な」に対する主要な別英答として obstinate を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00726",
+      "prompt_ja": "気まずい",
+      "canonical_snapshot": "awkward",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "awkward",
+        "uncomfortable",
+        "embarrassing"
+      ],
+      "candidate_review": [
+        {
+          "expression": "awkward",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "uncomfortable",
+          "decision": "ACCEPT",
+          "reason": "「気まずい」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "embarrassing",
+          "decision": "ACCEPT",
+          "reason": "状況などが「気まずい」を表す主要な形容詞。awkward/uncomfortableとは別の有用な表現として成立する。"
+        }
+      ],
+      "after_paraphrases": [
+        "uncomfortable",
+        "embarrassing"
+      ],
+      "decision": "CHANGED",
+      "reason": "「気まずい」に対する主要な別英答として uncomfortable / embarrassing を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00727",
+      "prompt_ja": "きまりが悪い",
+      "canonical_snapshot": "embarrassed",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "embarrassed",
+        "self-conscious",
+        "awkward"
+      ],
+      "candidate_review": [
+        {
+          "expression": "embarrassed",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "self-conscious",
+          "decision": "ACCEPT",
+          "reason": "「きまりが悪い」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "awkward",
+          "decision": "REJECT",
+          "reason": "「きまりが悪い」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "self-conscious"
+      ],
+      "decision": "CHANGED",
+      "reason": "「きまりが悪い」に対する主要な別英答として self-conscious を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00728",
+      "prompt_ja": "曖昧な",
+      "canonical_snapshot": "ambiguous",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "ambiguous",
+        "vague",
+        "unclear"
+      ],
+      "candidate_review": [
+        {
+          "expression": "ambiguous",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "vague",
+          "decision": "ACCEPT",
+          "reason": "「曖昧な」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "unclear",
+          "decision": "ACCEPT",
+          "reason": "「曖昧な」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "vague",
+        "unclear"
+      ],
+      "decision": "CHANGED",
+      "reason": "「曖昧な」に対する主要な別英答として vague / unclear を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00729",
+      "prompt_ja": "臆病な・気の弱い",
+      "canonical_snapshot": "timid",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "timid",
+        "cowardly",
+        "shy"
+      ],
+      "candidate_review": [
+        {
+          "expression": "timid",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "cowardly",
+          "decision": "ACCEPT",
+          "reason": "「臆病な・気の弱い」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "shy",
+          "decision": "REJECT",
+          "reason": "「臆病な・気の弱い」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "cowardly"
+      ],
+      "decision": "CHANGED",
+      "reason": "「臆病な・気の弱い」に対する主要な別英答として cowardly を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00730",
+      "prompt_ja": "惨めな",
+      "canonical_snapshot": "miserable",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "miserable",
+        "wretched",
+        "pathetic"
+      ],
+      "candidate_review": [
+        {
+          "expression": "miserable",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "wretched",
+          "decision": "ACCEPT",
+          "reason": "「惨めな」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "pathetic",
+          "decision": "REJECT",
+          "reason": "「惨めな」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "wretched"
+      ],
+      "decision": "CHANGED",
+      "reason": "「惨めな」に対する主要な別英答として wretched を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00731",
+      "prompt_ja": "大人びた",
+      "canonical_snapshot": "mature",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "mature",
+        "grown-up",
+        "sophisticated"
+      ],
+      "candidate_review": [
+        {
+          "expression": "mature",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "grown-up",
+          "decision": "ACCEPT",
+          "reason": "「大人びた」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "sophisticated",
+          "decision": "REJECT",
+          "reason": "「大人びた」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "grown-up"
+      ],
+      "decision": "CHANGED",
+      "reason": "「大人びた」に対する主要な別英答として grown-up を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00732",
+      "prompt_ja": "洗練された",
+      "canonical_snapshot": "sophisticated",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "sophisticated",
+        "refined",
+        "polished"
+      ],
+      "candidate_review": [
+        {
+          "expression": "sophisticated",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "refined",
+          "decision": "ACCEPT",
+          "reason": "「洗練された」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "polished",
+          "decision": "ACCEPT",
+          "reason": "「洗練された」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "refined",
+        "polished"
+      ],
+      "decision": "CHANGED",
+      "reason": "「洗練された」に対する主要な別英答として refined / polished を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00733",
+      "prompt_ja": "慎重な",
+      "canonical_snapshot": "cautious",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "careful",
+        "cautious",
+        "prudent",
+        "wary"
+      ],
+      "candidate_review": [
+        {
+          "expression": "careful",
+          "decision": "ACCEPT",
+          "reason": "「慎重な」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "cautious",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "prudent",
+          "decision": "ACCEPT",
+          "reason": "「慎重な」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "wary",
+          "decision": "REJECT",
+          "reason": "「慎重な」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "careful",
+        "prudent"
+      ],
+      "decision": "CHANGED",
+      "reason": "「慎重な」に対する主要な別英答として careful / prudent を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00734",
+      "prompt_ja": "深い悲しみ",
+      "canonical_snapshot": "grief",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "grief",
+        "sorrow",
+        "heartbreak"
+      ],
+      "candidate_review": [
+        {
+          "expression": "grief",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "sorrow",
+          "decision": "ACCEPT",
+          "reason": "「深い悲しみ」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "heartbreak",
+          "decision": "ACCEPT",
+          "reason": "「深い悲しみ」を直接表す高頻度名詞で、grief/sorrowとは別の感情語として学習価値がある。"
+        }
+      ],
+      "after_paraphrases": [
+        "sorrow",
+        "heartbreak"
+      ],
+      "decision": "CHANGED",
+      "reason": "「深い悲しみ」に対する主要な別英答として sorrow / heartbreak を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00735",
+      "prompt_ja": "考え方",
+      "canonical_snapshot": "attitude",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "mindset",
+        "way of thinking",
+        "perspective",
+        "viewpoint"
+      ],
+      "candidate_review": [
+        {
+          "expression": "mindset",
+          "decision": "ACCEPT",
+          "reason": "「考え方」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "way of thinking",
+          "decision": "ACCEPT",
+          "reason": "「考え方」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "perspective",
+          "decision": "ACCEPT",
+          "reason": "「考え方・物の見方」を表す主要語で、mindset/way of thinkingとは別の読解・会話上の価値が高い。"
+        },
+        {
+          "expression": "viewpoint",
+          "decision": "REJECT",
+          "reason": "「考え方」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "way of thinking",
+        "mindset",
+        "perspective"
+      ],
+      "decision": "CHANGED",
+      "reason": "「考え方」に対する主要な別英答として way of thinking / mindset / perspective を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00736",
+      "prompt_ja": "保つ",
+      "canonical_snapshot": "maintain",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "keep",
+        "maintain",
+        "preserve",
+        "retain"
+      ],
+      "candidate_review": [
+        {
+          "expression": "keep",
+          "decision": "ACCEPT",
+          "reason": "「保つ」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "maintain",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "preserve",
+          "decision": "ACCEPT",
+          "reason": "「保つ」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "retain",
+          "decision": "ACCEPT",
+          "reason": "「保つ」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "keep",
+        "preserve",
+        "retain"
+      ],
+      "decision": "CHANGED",
+      "reason": "「保つ」に対する主要な別英答として keep / preserve / retain を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00737",
+      "prompt_ja": "人生観",
+      "canonical_snapshot": "outlook",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "outlook on life",
+        "view of life",
+        "philosophy of life",
+        "worldview"
+      ],
+      "candidate_review": [
+        {
+          "expression": "outlook on life",
+          "decision": "REJECT",
+          "reason": "canonicalと同一語彙のsurface展開・形態差に近く、独立したparaphraseとして登録する価値はない。"
+        },
+        {
+          "expression": "view of life",
+          "decision": "ACCEPT",
+          "reason": "「人生観」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "philosophy of life",
+          "decision": "ACCEPT",
+          "reason": "「人生観」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "worldview",
+          "decision": "REJECT",
+          "reason": "「人生観」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "view of life",
+        "philosophy of life"
+      ],
+      "decision": "CHANGED",
+      "reason": "「人生観」に対する主要な別英答として view of life / philosophy of life を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00738",
+      "prompt_ja": "性別",
+      "canonical_snapshot": "gender",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "gender",
+        "sex"
+      ],
+      "candidate_review": [
+        {
+          "expression": "gender",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "sex",
+          "decision": "ACCEPT",
+          "reason": "「性別」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "sex"
+      ],
+      "decision": "CHANGED",
+      "reason": "「性別」に対する主要な別英答として sex を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00739",
+      "prompt_ja": "それでも・かまわず",
+      "canonical_snapshot": "regardless",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "nevertheless",
+        "nonetheless",
+        "still",
+        "regardless",
+        "even so"
+      ],
+      "candidate_review": [
+        {
+          "expression": "nevertheless",
+          "decision": "ACCEPT",
+          "reason": "「それでも・かまわず」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "nonetheless",
+          "decision": "ACCEPT",
+          "reason": "「それでも・かまわず」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "still",
+          "decision": "ACCEPT",
+          "reason": "「それでも・かまわず」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "regardless",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "even so",
+          "decision": "ACCEPT",
+          "reason": "「それでも・かまわず」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "nevertheless",
+        "nonetheless",
+        "even so",
+        "still"
+      ],
+      "decision": "CHANGED",
+      "reason": "「それでも・かまわず」に対する主要な別英答として nevertheless / nonetheless / even so / still を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00740",
+      "prompt_ja": "平等",
+      "canonical_snapshot": "equality",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "equality",
+        "parity",
+        "equal treatment"
+      ],
+      "candidate_review": [
+        {
+          "expression": "equality",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "parity",
+          "decision": "REJECT",
+          "reason": "「平等」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        },
+        {
+          "expression": "equal treatment",
+          "decision": "REJECT",
+          "reason": "「平等」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「平等」について主要候補を再検討したが、TARGET重複、surface variant、意味ずれ・文脈依存、または追加学習価値不足のため登録なし。"
+    },
+    {
+      "entry_id": "vocab:00741",
+      "prompt_ja": "香り",
+      "canonical_snapshot": "scent",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "scent",
+        "fragrance",
+        "aroma",
+        "smell"
+      ],
+      "candidate_review": [
+        {
+          "expression": "scent",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "fragrance",
+          "decision": "ACCEPT",
+          "reason": "「香り」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "aroma",
+          "decision": "ACCEPT",
+          "reason": "「香り」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "smell",
+          "decision": "ACCEPT",
+          "reason": "「香り」を含む匂いを表す最も基本的な語。pleasant限定ではないがpromptへの回答として成立し、基本語としてMISSにする教育的不利益が大きい。"
+        }
+      ],
+      "after_paraphrases": [
+        "fragrance",
+        "aroma",
+        "smell"
+      ],
+      "decision": "CHANGED",
+      "reason": "「香り」に対する主要な別英答として fragrance / aroma / smell を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00742",
+      "prompt_ja": "かすかな",
+      "canonical_snapshot": "subtle",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "faint",
+        "slight",
+        "subtle",
+        "dim"
+      ],
+      "candidate_review": [
+        {
+          "expression": "faint",
+          "decision": "ACCEPT",
+          "reason": "「かすかな」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "slight",
+          "decision": "ACCEPT",
+          "reason": "「かすかな」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "subtle",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "dim",
+          "decision": "REJECT",
+          "reason": "「かすかな」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "faint",
+        "slight"
+      ],
+      "decision": "CHANGED",
+      "reason": "「かすかな」に対する主要な別英答として faint / slight を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00743",
+      "prompt_ja": "ほとんど〜ない",
+      "canonical_snapshot": "scarcely",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "hardly",
+        "scarcely",
+        "barely"
+      ],
+      "candidate_review": [
+        {
+          "expression": "hardly",
+          "decision": "ACCEPT",
+          "reason": "「ほとんど〜ない」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "scarcely",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "barely",
+          "decision": "ACCEPT",
+          "reason": "「ほとんど〜ない」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "hardly",
+        "barely"
+      ],
+      "decision": "CHANGED",
+      "reason": "「ほとんど〜ない」に対する主要な別英答として hardly / barely を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00744",
+      "prompt_ja": "長編小説",
+      "canonical_snapshot": "novel",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "novel",
+        "full-length novel"
+      ],
+      "candidate_review": [
+        {
+          "expression": "novel",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "full-length novel",
+          "decision": "REJECT",
+          "reason": "canonicalと同一語彙のsurface展開・形態差に近く、独立したparaphraseとして登録する価値はない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「長編小説」について主要候補を再検討したが、TARGET重複、surface variant、意味ずれ・文脈依存、または追加学習価値不足のため登録なし。"
+    },
+    {
+      "entry_id": "vocab:00745",
+      "prompt_ja": "翻訳する",
+      "canonical_snapshot": "translate",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "translate",
+        "render",
+        "interpret"
+      ],
+      "candidate_review": [
+        {
+          "expression": "translate",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "render",
+          "decision": "REJECT",
+          "reason": "「翻訳する」に成立する場面はあるが、頻度・register・独立学習価値を踏まえると今回のcurated paraphraseに加える優先度は低い。"
+        },
+        {
+          "expression": "interpret",
+          "decision": "REJECT",
+          "reason": "「翻訳する」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「翻訳する」について主要候補を再検討したが、TARGET重複、surface variant、意味ずれ・文脈依存、または追加学習価値不足のため登録なし。"
+    },
+    {
+      "entry_id": "vocab:00746",
+      "prompt_ja": "現代の",
+      "canonical_snapshot": "contemporary",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "modern",
+        "contemporary",
+        "present-day"
+      ],
+      "candidate_review": [
+        {
+          "expression": "modern",
+          "decision": "ACCEPT",
+          "reason": "「現代の」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "contemporary",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "present-day",
+          "decision": "ACCEPT",
+          "reason": "「現代の」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "modern",
+        "present-day"
+      ],
+      "decision": "CHANGED",
+      "reason": "「現代の」に対する主要な別英答として modern / present-day を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00747",
+      "prompt_ja": "精通している",
+      "canonical_snapshot": "familiar",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be familiar with",
+        "be knowledgeable about",
+        "be well versed in",
+        "know something well"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be familiar with",
+          "decision": "REJECT",
+          "reason": "canonicalと同一語彙のsurface展開・形態差に近く、独立したparaphraseとして登録する価値はない。"
+        },
+        {
+          "expression": "be knowledgeable about",
+          "decision": "ACCEPT",
+          "reason": "「精通している」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "be well versed in",
+          "decision": "ACCEPT",
+          "reason": "「精通している」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "know something well",
+          "decision": "ACCEPT",
+          "reason": "「somethingに精通している」を表す高頻度の基本構文で、別constructionとして実用価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "know something well",
+        "be well versed in",
+        "be knowledgeable about"
+      ],
+      "decision": "CHANGED",
+      "reason": "「精通している」に対する主要な別英答として know something well / be well versed in / be knowledgeable about を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00748",
+      "prompt_ja": "文学",
+      "canonical_snapshot": "literature",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "literature"
+      ],
+      "candidate_review": [
+        {
+          "expression": "literature",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「文学」について主要候補を再検討したが、TARGET重複、surface variant、意味ずれ・文脈依存、または追加学習価値不足のため登録なし。"
+    },
+    {
+      "entry_id": "vocab:00749",
+      "prompt_ja": "混同する",
+      "canonical_snapshot": "confuse",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "confuse",
+        "mix up",
+        "conflate"
+      ],
+      "candidate_review": [
+        {
+          "expression": "confuse",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "mix up",
+          "decision": "ACCEPT",
+          "reason": "「混同する」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "conflate",
+          "decision": "ACCEPT",
+          "reason": "「混同する」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "mix up",
+        "conflate"
+      ],
+      "decision": "CHANGED",
+      "reason": "「混同する」に対する主要な別英答として mix up / conflate を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00750",
+      "prompt_ja": "発音",
+      "canonical_snapshot": "pronunciation",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "pronunciation",
+        "enunciation"
+      ],
+      "candidate_review": [
+        {
+          "expression": "pronunciation",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "enunciation",
+          "decision": "REJECT",
+          "reason": "「発音」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「発音」について主要候補を再検討したが、TARGET重複、surface variant、意味ずれ・文脈依存、または追加学習価値不足のため登録なし。"
+    },
+    {
+      "entry_id": "vocab:00751",
+      "prompt_ja": "熱望している",
+      "canonical_snapshot": "eager",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be eager to",
+        "be keen to",
+        "long to",
+        "yearn to"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be eager to",
+          "decision": "REJECT",
+          "reason": "canonicalと同一語彙のsurface展開・形態差に近く、独立したparaphraseとして登録する価値はない。"
+        },
+        {
+          "expression": "be keen to",
+          "decision": "ACCEPT",
+          "reason": "「熱望している」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "long to",
+          "decision": "ACCEPT",
+          "reason": "「熱望している」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "yearn to",
+          "decision": "ACCEPT",
+          "reason": "「熱望している」を表す主要な動詞構文で、long toよりやや強いがpromptがその差を区別しておらず読解価値も高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "be keen to",
+        "long to",
+        "yearn to"
+      ],
+      "decision": "CHANGED",
+      "reason": "「熱望している」に対する主要な別英答として be keen to / long to / yearn to を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00752",
+      "prompt_ja": "抽象的な",
+      "canonical_snapshot": "abstract",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "abstract",
+        "conceptual",
+        "theoretical"
+      ],
+      "candidate_review": [
+        {
+          "expression": "abstract",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "conceptual",
+          "decision": "REJECT",
+          "reason": "「抽象的な」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        },
+        {
+          "expression": "theoretical",
+          "decision": "REJECT",
+          "reason": "「抽象的な」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「抽象的な」について主要候補を再検討したが、TARGET重複、surface variant、意味ずれ・文脈依存、または追加学習価値不足のため登録なし。"
+    },
+    {
+      "entry_id": "vocab:00753",
+      "prompt_ja": "衝動",
+      "canonical_snapshot": "impulse",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "impulse",
+        "urge",
+        "compulsion"
+      ],
+      "candidate_review": [
+        {
+          "expression": "impulse",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "urge",
+          "decision": "ACCEPT",
+          "reason": "「衝動」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "compulsion",
+          "decision": "REJECT",
+          "reason": "「衝動」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "urge"
+      ],
+      "decision": "CHANGED",
+      "reason": "「衝動」に対する主要な別英答として urge を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00754",
+      "prompt_ja": "余裕がある",
+      "canonical_snapshot": "afford",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "can afford",
+        "have some leeway",
+        "have room to spare",
+        "have time to spare"
+      ],
+      "candidate_review": [
+        {
+          "expression": "can afford",
+          "decision": "REJECT",
+          "reason": "canonicalと同一語彙のsurface展開・形態差に近く、独立したparaphraseとして登録する価値はない。"
+        },
+        {
+          "expression": "have some leeway",
+          "decision": "REJECT",
+          "reason": "「余裕がある」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        },
+        {
+          "expression": "have room to spare",
+          "decision": "REJECT",
+          "reason": "「余裕がある」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        },
+        {
+          "expression": "have time to spare",
+          "decision": "REJECT",
+          "reason": "「余裕がある」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「余裕がある」について主要候補を再検討したが、TARGET重複、surface variant、意味ずれ・文脈依存、または追加学習価値不足のため登録なし。"
+    },
+    {
+      "entry_id": "vocab:00755",
+      "prompt_ja": "贅沢品",
+      "canonical_snapshot": "luxury",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "luxury",
+        "luxury item",
+        "luxury goods"
+      ],
+      "candidate_review": [
+        {
+          "expression": "luxury",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "luxury item",
+          "decision": "REJECT",
+          "reason": "canonicalと同一語彙のsurface展開・形態差に近く、独立したparaphraseとして登録する価値はない。"
+        },
+        {
+          "expression": "luxury goods",
+          "decision": "REJECT",
+          "reason": "canonicalと同一語彙のsurface展開・形態差に近く、独立したparaphraseとして登録する価値はない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「贅沢品」について主要候補を再検討したが、TARGET重複、surface variant、意味ずれ・文脈依存、または追加学習価値不足のため登録なし。"
+    },
+    {
+      "entry_id": "vocab:00756",
+      "prompt_ja": "購入する",
+      "canonical_snapshot": "purchase",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "buy",
+        "purchase"
+      ],
+      "candidate_review": [
+        {
+          "expression": "buy",
+          "decision": "ACCEPT",
+          "reason": "「購入する」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "purchase",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        }
+      ],
+      "after_paraphrases": [
+        "buy"
+      ],
+      "decision": "CHANGED",
+      "reason": "「購入する」に対する主要な別英答として buy を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00757",
+      "prompt_ja": "予期する",
+      "canonical_snapshot": "anticipate",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "expect",
+        "anticipate",
+        "foresee"
+      ],
+      "candidate_review": [
+        {
+          "expression": "expect",
+          "decision": "ACCEPT",
+          "reason": "「予期する」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "anticipate",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "foresee",
+          "decision": "ACCEPT",
+          "reason": "「予期する」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "expect",
+        "foresee"
+      ],
+      "decision": "CHANGED",
+      "reason": "「予期する」に対する主要な別英答として expect / foresee を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00758",
+      "prompt_ja": "率",
+      "canonical_snapshot": "rate",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "rate",
+        "ratio",
+        "proportion",
+        "percentage"
+      ],
+      "candidate_review": [
+        {
+          "expression": "rate",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "ratio",
+          "decision": "ACCEPT",
+          "reason": "「率」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "proportion",
+          "decision": "ACCEPT",
+          "reason": "「率」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "percentage",
+          "decision": "ACCEPT",
+          "reason": "数値上の「率」を表す主要語で、日常・academic双方で重要な独立表現。"
+        }
+      ],
+      "after_paraphrases": [
+        "percentage",
+        "ratio",
+        "proportion"
+      ],
+      "decision": "CHANGED",
+      "reason": "「率」に対する主要な別英答として percentage / ratio / proportion を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00759",
+      "prompt_ja": "失業",
+      "canonical_snapshot": "unemployment",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "unemployment",
+        "joblessness"
+      ],
+      "candidate_review": [
+        {
+          "expression": "unemployment",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "joblessness",
+          "decision": "REJECT",
+          "reason": "「失業」に成立する場面はあるが、頻度・register・独立学習価値を踏まえると今回のcurated paraphraseに加える優先度は低い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「失業」について主要候補を再検討したが、TARGET重複、surface variant、意味ずれ・文脈依存、または追加学習価値不足のため登録なし。"
+    },
+    {
+      "entry_id": "vocab:00760",
+      "prompt_ja": "妥協する",
+      "canonical_snapshot": "compromise",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "compromise",
+        "make a compromise",
+        "meet someone halfway",
+        "give in"
+      ],
+      "candidate_review": [
+        {
+          "expression": "compromise",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "make a compromise",
+          "decision": "REJECT",
+          "reason": "canonicalと同一語彙のsurface展開・形態差に近く、独立したparaphraseとして登録する価値はない。"
+        },
+        {
+          "expression": "meet someone halfway",
+          "decision": "ACCEPT",
+          "reason": "「妥協する」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "give in",
+          "decision": "REJECT",
+          "reason": "「妥協する」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "meet someone halfway"
+      ],
+      "decision": "CHANGED",
+      "reason": "「妥協する」に対する主要な別英答として meet someone halfway を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00761",
+      "prompt_ja": "有能な",
+      "canonical_snapshot": "competent",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "competent",
+        "capable",
+        "able",
+        "skilled"
+      ],
+      "candidate_review": [
+        {
+          "expression": "competent",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "capable",
+          "decision": "ACCEPT",
+          "reason": "「有能な」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "able",
+          "decision": "ACCEPT",
+          "reason": "人物が「有能な」を表す用法（an able leader等）が確立した基本語で、capable/competentとは別の読解価値がある。"
+        },
+        {
+          "expression": "skilled",
+          "decision": "REJECT",
+          "reason": "「有能な」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "capable",
+        "able"
+      ],
+      "decision": "CHANGED",
+      "reason": "「有能な」に対する主要な別英答として capable / able を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00762",
+      "prompt_ja": "まともな",
+      "canonical_snapshot": "decent",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "decent",
+        "reasonable",
+        "respectable",
+        "proper"
+      ],
+      "candidate_review": [
+        {
+          "expression": "decent",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "reasonable",
+          "decision": "ACCEPT",
+          "reason": "判断・説明・水準などが「まともな」を表す高頻度語で、promptが文脈を限定していないため主要回答として成立する。"
+        },
+        {
+          "expression": "respectable",
+          "decision": "ACCEPT",
+          "reason": "人・仕事・水準などが「まともな／ちゃんとした」を表す主要語で、decentとは別の有用な語彙。"
+        },
+        {
+          "expression": "proper",
+          "decision": "REJECT",
+          "reason": "「まともな」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "reasonable",
+        "respectable"
+      ],
+      "decision": "CHANGED",
+      "reason": "「まともな」に対する主要な別英答として reasonable / respectable を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00763",
+      "prompt_ja": "需要",
+      "canonical_snapshot": "demand",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "demand",
+        "need"
+      ],
+      "candidate_review": [
+        {
+          "expression": "demand",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "need",
+          "decision": "REJECT",
+          "reason": "「需要」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「需要」について主要候補を再検討したが、TARGET重複、surface variant、意味ずれ・文脈依存、または追加学習価値不足のため登録なし。"
+    },
+    {
+      "entry_id": "vocab:00764",
+      "prompt_ja": "賃金",
+      "canonical_snapshot": "wage",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "wage",
+        "pay",
+        "earnings"
+      ],
+      "candidate_review": [
+        {
+          "expression": "wage",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "pay",
+          "decision": "ACCEPT",
+          "reason": "「賃金」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "earnings",
+          "decision": "REJECT",
+          "reason": "「賃金」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "pay"
+      ],
+      "decision": "CHANGED",
+      "reason": "「賃金」に対する主要な別英答として pay を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00765",
+      "prompt_ja": "改革",
+      "canonical_snapshot": "reform",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "reform",
+        "overhaul",
+        "restructuring"
+      ],
+      "candidate_review": [
+        {
+          "expression": "reform",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "overhaul",
+          "decision": "REJECT",
+          "reason": "「改革」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        },
+        {
+          "expression": "restructuring",
+          "decision": "REJECT",
+          "reason": "「改革」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「改革」について主要候補を再検討したが、TARGET重複、surface variant、意味ずれ・文脈依存、または追加学習価値不足のため登録なし。"
+    },
+    {
+      "entry_id": "vocab:00766",
+      "prompt_ja": "社会福祉",
+      "canonical_snapshot": "welfare",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "social welfare",
+        "welfare",
+        "social services"
+      ],
+      "candidate_review": [
+        {
+          "expression": "social welfare",
+          "decision": "REJECT",
+          "reason": "canonicalと同一語彙のsurface展開・形態差に近く、独立したparaphraseとして登録する価値はない。"
+        },
+        {
+          "expression": "welfare",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "social services",
+          "decision": "REJECT",
+          "reason": "「社会福祉」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「社会福祉」について主要候補を再検討したが、TARGET重複、surface variant、意味ずれ・文脈依存、または追加学習価値不足のため登録なし。"
+    },
+    {
+      "entry_id": "vocab:00767",
+      "prompt_ja": "結果",
+      "canonical_snapshot": "consequence",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "result",
+        "outcome",
+        "consequence"
+      ],
+      "candidate_review": [
+        {
+          "expression": "result",
+          "decision": "ACCEPT",
+          "reason": "「結果」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "outcome",
+          "decision": "ACCEPT",
+          "reason": "「結果」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "consequence",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        }
+      ],
+      "after_paraphrases": [
+        "result",
+        "outcome"
+      ],
+      "decision": "CHANGED",
+      "reason": "「結果」に対する主要な別英答として result / outcome を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00768",
+      "prompt_ja": "暗い",
+      "canonical_snapshot": "dismal",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "dark",
+        "gloomy",
+        "dim",
+        "bleak",
+        "dismal"
+      ],
+      "candidate_review": [
+        {
+          "expression": "dark",
+          "decision": "ACCEPT",
+          "reason": "「暗い」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "gloomy",
+          "decision": "ACCEPT",
+          "reason": "「暗い」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "dim",
+          "decision": "ACCEPT",
+          "reason": "光・視界などが「暗い」を表す主要語で、prompt-onlyでは自然な回答。dark/gloomy/bleakとは別の意味領域を学べる。"
+        },
+        {
+          "expression": "bleak",
+          "decision": "ACCEPT",
+          "reason": "「暗い」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "dismal",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        }
+      ],
+      "after_paraphrases": [
+        "dark",
+        "gloomy",
+        "bleak",
+        "dim"
+      ],
+      "decision": "CHANGED",
+      "reason": "「暗い」に対する主要な別英答として dark / gloomy / bleak / dim を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00769",
+      "prompt_ja": "避けられない",
+      "canonical_snapshot": "inevitable",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "inevitable",
+        "unavoidable",
+        "inescapable"
+      ],
+      "candidate_review": [
+        {
+          "expression": "inevitable",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "unavoidable",
+          "decision": "ACCEPT",
+          "reason": "「避けられない」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "inescapable",
+          "decision": "ACCEPT",
+          "reason": "「避けられない」を直接表す読解上重要な形容詞で、unavoidableとは別語彙として価値がある。"
+        }
+      ],
+      "after_paraphrases": [
+        "unavoidable",
+        "inescapable"
+      ],
+      "decision": "CHANGED",
+      "reason": "「避けられない」に対する主要な別英答として unavoidable / inescapable を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00770",
+      "prompt_ja": "人を不安にさせる",
+      "canonical_snapshot": "alarming",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "worry someone",
+        "alarm someone",
+        "make someone anxious",
+        "disturb someone",
+        "worrying"
+      ],
+      "candidate_review": [
+        {
+          "expression": "worry someone",
+          "decision": "ACCEPT",
+          "reason": "「人を不安にさせる」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "alarm someone",
+          "decision": "REJECT",
+          "reason": "canonicalと同一語彙のsurface展開・形態差に近く、独立したparaphraseとして登録する価値はない。"
+        },
+        {
+          "expression": "make someone anxious",
+          "decision": "ACCEPT",
+          "reason": "「人を不安にさせる」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "disturb someone",
+          "decision": "REJECT",
+          "reason": "「人を不安にさせる」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        },
+        {
+          "expression": "worrying",
+          "decision": "REJECT",
+          "reason": "「人を不安にさせる」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "worry someone",
+        "make someone anxious"
+      ],
+      "decision": "CHANGED",
+      "reason": "「人を不安にさせる」に対する主要な別英答として worry someone / make someone anxious を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00771",
+      "prompt_ja": "変化の速度",
+      "canonical_snapshot": "rate",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "rate of change",
+        "pace of change",
+        "speed of change"
+      ],
+      "candidate_review": [
+        {
+          "expression": "rate of change",
+          "decision": "REJECT",
+          "reason": "canonicalと同一語彙のsurface展開・形態差に近く、独立したparaphraseとして登録する価値はない。"
+        },
+        {
+          "expression": "pace of change",
+          "decision": "ACCEPT",
+          "reason": "「変化の速度」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "speed of change",
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「変化の速度」への直接的で自然な英答。pace of changeとは別の基本表現としてMISSにすべきでない。"
+        }
+      ],
+      "after_paraphrases": [
+        "pace of change",
+        "speed of change"
+      ],
+      "decision": "CHANGED",
+      "reason": "「変化の速度」に対する主要な別英答として pace of change / speed of change を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00772",
+      "prompt_ja": "空いている",
+      "canonical_snapshot": "vacant",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "vacant",
+        "available",
+        "empty",
+        "free"
+      ],
+      "candidate_review": [
+        {
+          "expression": "vacant",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "available",
+          "decision": "ACCEPT",
+          "reason": "「空いている」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "empty",
+          "decision": "ACCEPT",
+          "reason": "「空いている」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "free",
+          "decision": "ACCEPT",
+          "reason": "席・時間・人などが「空いている」を表す非常に高頻度な基本語で、available/vacantと並ぶ主要回答。"
+        }
+      ],
+      "after_paraphrases": [
+        "available",
+        "empty",
+        "free"
+      ],
+      "decision": "CHANGED",
+      "reason": "「空いている」に対する主要な別英答として available / empty / free を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00773",
+      "prompt_ja": "減少する",
+      "canonical_snapshot": "decline",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "decrease",
+        "decline",
+        "drop",
+        "fall",
+        "diminish"
+      ],
+      "candidate_review": [
+        {
+          "expression": "decrease",
+          "decision": "ACCEPT",
+          "reason": "「減少する」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "decline",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "drop",
+          "decision": "ACCEPT",
+          "reason": "「減少する」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "fall",
+          "decision": "ACCEPT",
+          "reason": "「減少する」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "diminish",
+          "decision": "ACCEPT",
+          "reason": "「減少する」を表す一般的な動詞で、特に書き言葉・academicで重要な独立語彙。"
+        }
+      ],
+      "after_paraphrases": [
+        "decrease",
+        "drop",
+        "fall",
+        "diminish"
+      ],
+      "decision": "CHANGED",
+      "reason": "「減少する」に対する主要な別英答として decrease / drop / fall / diminish を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00774",
+      "prompt_ja": "起こる可能性",
+      "canonical_snapshot": "likelihood",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "likelihood",
+        "probability",
+        "chance",
+        "possibility"
+      ],
+      "candidate_review": [
+        {
+          "expression": "likelihood",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "probability",
+          "decision": "ACCEPT",
+          "reason": "「起こる可能性」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "chance",
+          "decision": "ACCEPT",
+          "reason": "「起こる可能性」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "possibility",
+          "decision": "ACCEPT",
+          "reason": "「起こる可能性」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "possibility",
+        "chance",
+        "probability"
+      ],
+      "decision": "CHANGED",
+      "reason": "「起こる可能性」に対する主要な別英答として possibility / chance / probability を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00775",
+      "prompt_ja": "遠く離れた",
+      "canonical_snapshot": "remote",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "remote",
+        "distant",
+        "faraway",
+        "far-off"
+      ],
+      "candidate_review": [
+        {
+          "expression": "remote",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "distant",
+          "decision": "ACCEPT",
+          "reason": "「遠く離れた」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "faraway",
+          "decision": "ACCEPT",
+          "reason": "「遠く離れた」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "far-off",
+          "decision": "REJECT",
+          "reason": "「遠く離れた」に成立する場面はあるが、頻度・register・独立学習価値を踏まえると今回のcurated paraphraseに加える優先度は低い。"
+        }
+      ],
+      "after_paraphrases": [
+        "distant",
+        "faraway"
+      ],
+      "decision": "CHANGED",
+      "reason": "「遠く離れた」に対する主要な別英答として distant / faraway を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00776",
+      "prompt_ja": "操作する",
+      "canonical_snapshot": "operate",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "operate",
+        "manipulate",
+        "control",
+        "handle"
+      ],
+      "candidate_review": [
+        {
+          "expression": "operate",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "manipulate",
+          "decision": "ACCEPT",
+          "reason": "「操作する」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "control",
+          "decision": "ACCEPT",
+          "reason": "機械・装置等を「操作する」を表す基本動詞で、operate/manipulateとは別の高頻度表現。"
+        },
+        {
+          "expression": "handle",
+          "decision": "REJECT",
+          "reason": "「操作する」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "manipulate",
+        "control"
+      ],
+      "decision": "CHANGED",
+      "reason": "「操作する」に対する主要な別英答として manipulate / control を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00777",
+      "prompt_ja": "許可",
+      "canonical_snapshot": "permission",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "permission",
+        "authorization",
+        "approval",
+        "consent"
+      ],
+      "candidate_review": [
+        {
+          "expression": "permission",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "authorization",
+          "decision": "ACCEPT",
+          "reason": "「許可」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "approval",
+          "decision": "ACCEPT",
+          "reason": "「許可・承認」を表す高頻度名詞で、permission/authorizationとは別のbusiness・日常上の学習価値が高い。"
+        },
+        {
+          "expression": "consent",
+          "decision": "REJECT",
+          "reason": "「許可」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "authorization",
+        "approval"
+      ],
+      "decision": "CHANGED",
+      "reason": "「許可」に対する主要な別英答として authorization / approval を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00778",
+      "prompt_ja": "さらす",
+      "canonical_snapshot": "expose",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "expose",
+        "subject someone to something",
+        "lay bare"
+      ],
+      "candidate_review": [
+        {
+          "expression": "expose",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "subject someone to something",
+          "decision": "ACCEPT",
+          "reason": "「さらす」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "lay bare",
+          "decision": "REJECT",
+          "reason": "「さらす」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "subject someone to something"
+      ],
+      "decision": "CHANGED",
+      "reason": "「さらす」に対する主要な別英答として subject someone to something を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00779",
+      "prompt_ja": "放射線",
+      "canonical_snapshot": "radiation",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "radiation"
+      ],
+      "candidate_review": [
+        {
+          "expression": "radiation",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「放射線」について主要候補を再検討したが、TARGET重複、surface variant、意味ずれ・文脈依存、または追加学習価値不足のため登録なし。"
+    },
+    {
+      "entry_id": "vocab:00780",
+      "prompt_ja": "強調する",
+      "canonical_snapshot": "emphasize",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "emphasize",
+        "stress",
+        "highlight",
+        "underscore"
+      ],
+      "candidate_review": [
+        {
+          "expression": "emphasize",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "stress",
+          "decision": "ACCEPT",
+          "reason": "「強調する」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "highlight",
+          "decision": "ACCEPT",
+          "reason": "「強調する」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "underscore",
+          "decision": "ACCEPT",
+          "reason": "「強調する」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "stress",
+        "highlight",
+        "underscore"
+      ],
+      "decision": "CHANGED",
+      "reason": "「強調する」に対する主要な別英答として stress / highlight / underscore を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00781",
+      "prompt_ja": "潜在的な",
+      "canonical_snapshot": "potential",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "potential",
+        "latent",
+        "underlying"
+      ],
+      "candidate_review": [
+        {
+          "expression": "potential",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "latent",
+          "decision": "ACCEPT",
+          "reason": "「潜在的な」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "underlying",
+          "decision": "REJECT",
+          "reason": "「潜在的な」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "latent"
+      ],
+      "decision": "CHANGED",
+      "reason": "「潜在的な」に対する主要な別英答として latent を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00782",
+      "prompt_ja": "見落とす",
+      "canonical_snapshot": "overlook",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "overlook",
+        "miss",
+        "fail to notice",
+        "ignore"
+      ],
+      "candidate_review": [
+        {
+          "expression": "overlook",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "miss",
+          "decision": "ACCEPT",
+          "reason": "「見落とす」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "fail to notice",
+          "decision": "ACCEPT",
+          "reason": "「見落とす」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "ignore",
+          "decision": "REJECT",
+          "reason": "「見落とす」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "miss",
+        "fail to notice"
+      ],
+      "decision": "CHANGED",
+      "reason": "「見落とす」に対する主要な別英答として miss / fail to notice を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00783",
+      "prompt_ja": "栽培する",
+      "canonical_snapshot": "cultivate",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "cultivate",
+        "grow",
+        "raise"
+      ],
+      "candidate_review": [
+        {
+          "expression": "cultivate",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "grow",
+          "decision": "ACCEPT",
+          "reason": "「栽培する」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "raise",
+          "decision": "REJECT",
+          "reason": "「栽培する」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "grow"
+      ],
+      "decision": "CHANGED",
+      "reason": "「栽培する」に対する主要な別英答として grow を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00784",
+      "prompt_ja": "著名な",
+      "canonical_snapshot": "prominent",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "prominent",
+        "famous",
+        "renowned",
+        "notable",
+        "distinguished"
+      ],
+      "candidate_review": [
+        {
+          "expression": "prominent",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "famous",
+          "decision": "ACCEPT",
+          "reason": "「著名な」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "renowned",
+          "decision": "ACCEPT",
+          "reason": "「著名な」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "notable",
+          "decision": "ACCEPT",
+          "reason": "「著名な」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "distinguished",
+          "decision": "ACCEPT",
+          "reason": "人物などが「著名な／名高い」を表す主要なformal語で、academic読解上の価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "famous",
+        "renowned",
+        "notable",
+        "distinguished"
+      ],
+      "decision": "CHANGED",
+      "reason": "「著名な」に対する主要な別英答として famous / renowned / notable / distinguished を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00785",
+      "prompt_ja": "依頼人",
+      "canonical_snapshot": "client",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "client",
+        "customer",
+        "principal"
+      ],
+      "candidate_review": [
+        {
+          "expression": "client",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "customer",
+          "decision": "REJECT",
+          "reason": "「依頼人」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        },
+        {
+          "expression": "principal",
+          "decision": "REJECT",
+          "reason": "「依頼人」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「依頼人」について主要候補を再検討したが、TARGET重複、surface variant、意味ずれ・文脈依存、または追加学習価値不足のため登録なし。"
+    },
+    {
+      "entry_id": "vocab:00786",
+      "prompt_ja": "法律上の",
+      "canonical_snapshot": "legal",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "legal",
+        "lawful",
+        "statutory"
+      ],
+      "candidate_review": [
+        {
+          "expression": "legal",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "lawful",
+          "decision": "REJECT",
+          "reason": "「法律上の」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        },
+        {
+          "expression": "statutory",
+          "decision": "REJECT",
+          "reason": "「法律上の」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「法律上の」について主要候補を再検討したが、TARGET重複、surface variant、意味ずれ・文脈依存、または追加学習価値不足のため登録なし。"
+    },
+    {
+      "entry_id": "vocab:00787",
+      "prompt_ja": "勧める",
+      "canonical_snapshot": "recommend",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "recommend",
+        "advise",
+        "suggest",
+        "urge"
+      ],
+      "candidate_review": [
+        {
+          "expression": "recommend",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "advise",
+          "decision": "ACCEPT",
+          "reason": "「勧める」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "suggest",
+          "decision": "ACCEPT",
+          "reason": "「勧める」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "urge",
+          "decision": "ACCEPT",
+          "reason": "「強く勧める」を表す主要動詞。強さの差はあるがprompt「勧める」が区別しておらず、独立語彙として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "advise",
+        "suggest",
+        "urge"
+      ],
+      "decision": "CHANGED",
+      "reason": "「勧める」に対する主要な別英答として advise / suggest / urge を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00788",
+      "prompt_ja": "補償する",
+      "canonical_snapshot": "compensate",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "compensate",
+        "make up for",
+        "reimburse",
+        "indemnify"
+      ],
+      "candidate_review": [
+        {
+          "expression": "compensate",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "make up for",
+          "decision": "ACCEPT",
+          "reason": "「補償する」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "reimburse",
+          "decision": "ACCEPT",
+          "reason": "「補償する」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "indemnify",
+          "decision": "REJECT",
+          "reason": "「補償する」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "make up for",
+        "reimburse"
+      ],
+      "decision": "CHANGED",
+      "reason": "「補償する」に対する主要な別英答として make up for / reimburse を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00789",
+      "prompt_ja": "流行病",
+      "canonical_snapshot": "epidemic",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "epidemic",
+        "outbreak",
+        "plague"
+      ],
+      "candidate_review": [
+        {
+          "expression": "epidemic",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "outbreak",
+          "decision": "REJECT",
+          "reason": "「流行病」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        },
+        {
+          "expression": "plague",
+          "decision": "REJECT",
+          "reason": "「流行病」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「流行病」について主要候補を再検討したが、TARGET重複、surface variant、意味ずれ・文脈依存、または追加学習価値不足のため登録なし。"
+    },
+    {
+      "entry_id": "vocab:00790",
+      "prompt_ja": "強烈な",
+      "canonical_snapshot": "intense",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "intense",
+        "strong",
+        "powerful",
+        "fierce"
+      ],
+      "candidate_review": [
+        {
+          "expression": "intense",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "strong",
+          "decision": "ACCEPT",
+          "reason": "「強烈な」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "powerful",
+          "decision": "ACCEPT",
+          "reason": "「強烈な」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "fierce",
+          "decision": "REJECT",
+          "reason": "「強烈な」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "strong",
+        "powerful"
+      ],
+      "decision": "CHANGED",
+      "reason": "「強烈な」に対する主要な別英答として strong / powerful を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00791",
+      "prompt_ja": "痛める",
+      "canonical_snapshot": "strain",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "hurt",
+        "injure",
+        "strain",
+        "damage"
+      ],
+      "candidate_review": [
+        {
+          "expression": "hurt",
+          "decision": "ACCEPT",
+          "reason": "「痛める」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "injure",
+          "decision": "ACCEPT",
+          "reason": "「痛める」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "strain",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "damage",
+          "decision": "REJECT",
+          "reason": "「痛める」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "hurt",
+        "injure"
+      ],
+      "decision": "CHANGED",
+      "reason": "「痛める」に対する主要な別英答として hurt / injure を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00792",
+      "prompt_ja": "治療法",
+      "canonical_snapshot": "remedy",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "treatment",
+        "remedy",
+        "therapy",
+        "cure"
+      ],
+      "candidate_review": [
+        {
+          "expression": "treatment",
+          "decision": "ACCEPT",
+          "reason": "「治療法」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "remedy",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "therapy",
+          "decision": "ACCEPT",
+          "reason": "「治療法」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "cure",
+          "decision": "REJECT",
+          "reason": "「治療法」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "treatment",
+        "therapy"
+      ],
+      "decision": "CHANGED",
+      "reason": "「治療法」に対する主要な別英答として treatment / therapy を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00793",
+      "prompt_ja": "恩恵",
+      "canonical_snapshot": "benefit",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "benefit",
+        "blessing",
+        "boon",
+        "advantage"
+      ],
+      "candidate_review": [
+        {
+          "expression": "benefit",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "blessing",
+          "decision": "ACCEPT",
+          "reason": "「恩恵」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "boon",
+          "decision": "ACCEPT",
+          "reason": "「恩恵」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "advantage",
+          "decision": "REJECT",
+          "reason": "「恩恵」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "blessing",
+        "boon"
+      ],
+      "decision": "CHANGED",
+      "reason": "「恩恵」に対する主要な別英答として blessing / boon を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00794",
+      "prompt_ja": "飛躍的な進歩",
+      "canonical_snapshot": "breakthrough",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "breakthrough",
+        "major advance",
+        "leap forward",
+        "quantum leap"
+      ],
+      "candidate_review": [
+        {
+          "expression": "breakthrough",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "major advance",
+          "decision": "ACCEPT",
+          "reason": "「飛躍的な進歩」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "leap forward",
+          "decision": "ACCEPT",
+          "reason": "「飛躍的な進歩」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "quantum leap",
+          "decision": "ACCEPT",
+          "reason": "「飛躍的な進歩」を表す定着したidiomで、literalな物理用語とは別に実用・読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "major advance",
+        "leap forward",
+        "quantum leap"
+      ],
+      "decision": "CHANGED",
+      "reason": "「飛躍的な進歩」に対する主要な別英答として major advance / leap forward / quantum leap を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00795",
+      "prompt_ja": "人類",
+      "canonical_snapshot": "humanity",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "humanity",
+        "humankind",
+        "mankind",
+        "the human race"
+      ],
+      "candidate_review": [
+        {
+          "expression": "humanity",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "humankind",
+          "decision": "ACCEPT",
+          "reason": "「人類」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "mankind",
+          "decision": "REJECT",
+          "reason": "「人類」に成立する場面はあるが、頻度・register・独立学習価値を踏まえると今回のcurated paraphraseに加える優先度は低い。"
+        },
+        {
+          "expression": "the human race",
+          "decision": "ACCEPT",
+          "reason": "「人類」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "humankind",
+        "the human race"
+      ],
+      "decision": "CHANGED",
+      "reason": "「人類」に対する主要な別英答として humankind / the human race を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00796",
+      "prompt_ja": "禁じる",
+      "canonical_snapshot": "forbid",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "prohibit",
+        "forbid",
+        "ban",
+        "bar"
+      ],
+      "candidate_review": [
+        {
+          "expression": "prohibit",
+          "decision": "ACCEPT",
+          "reason": "「禁じる」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "forbid",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "ban",
+          "decision": "ACCEPT",
+          "reason": "「禁じる」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "bar",
+          "decision": "REJECT",
+          "reason": "「禁じる」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "prohibit",
+        "ban"
+      ],
+      "decision": "CHANGED",
+      "reason": "「禁じる」に対する主要な別英答として prohibit / ban を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00797",
+      "prompt_ja": "技法",
+      "canonical_snapshot": "technique",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "technique",
+        "method",
+        "procedure",
+        "skill"
+      ],
+      "candidate_review": [
+        {
+          "expression": "technique",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "method",
+          "decision": "ACCEPT",
+          "reason": "「技法」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "procedure",
+          "decision": "REJECT",
+          "reason": "「技法」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        },
+        {
+          "expression": "skill",
+          "decision": "REJECT",
+          "reason": "「技法」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "method"
+      ],
+      "decision": "CHANGED",
+      "reason": "「技法」に対する主要な別英答として method を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00798",
+      "prompt_ja": "進化",
+      "canonical_snapshot": "evolution",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "evolution",
+        "development",
+        "progression"
+      ],
+      "candidate_review": [
+        {
+          "expression": "evolution",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "development",
+          "decision": "REJECT",
+          "reason": "「進化」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        },
+        {
+          "expression": "progression",
+          "decision": "REJECT",
+          "reason": "「進化」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「進化」について主要候補を再検討したが、TARGET重複、surface variant、意味ずれ・文脈依存、または追加学習価値不足のため登録なし。"
+    },
+    {
+      "entry_id": "vocab:00799",
+      "prompt_ja": "想像力",
+      "canonical_snapshot": "imagination",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "imagination",
+        "creativity",
+        "inventiveness"
+      ],
+      "candidate_review": [
+        {
+          "expression": "imagination",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "creativity",
+          "decision": "REJECT",
+          "reason": "「想像力」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        },
+        {
+          "expression": "inventiveness",
+          "decision": "REJECT",
+          "reason": "「想像力」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「想像力」について主要候補を再検討したが、TARGET重複、surface variant、意味ずれ・文脈依存、または追加学習価値不足のため登録なし。"
+    },
+    {
+      "entry_id": "vocab:00800",
+      "prompt_ja": "自慢する",
+      "canonical_snapshot": "boast",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "boast",
+        "brag",
+        "show off"
+      ],
+      "candidate_review": [
+        {
+          "expression": "boast",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "brag",
+          "decision": "ACCEPT",
+          "reason": "「自慢する」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "show off",
+          "decision": "ACCEPT",
+          "reason": "「自慢する」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "brag",
+        "show off"
+      ],
+      "decision": "CHANGED",
+      "reason": "「自慢する」に対する主要な別英答として brag / show off を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00801",
+      "prompt_ja": "倫理的な",
+      "canonical_snapshot": "ethical",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "ethical",
+        "moral",
+        "principled"
+      ],
+      "candidate_review": [
+        {
+          "expression": "ethical",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "moral",
+          "decision": "ACCEPT",
+          "reason": "「倫理的な」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "principled",
+          "decision": "REJECT",
+          "reason": "「倫理的な」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "moral"
+      ],
+      "decision": "CHANGED",
+      "reason": "「倫理的な」に対する主要な別英答として moral を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00802",
+      "prompt_ja": "反対する",
+      "canonical_snapshot": "oppose",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "oppose",
+        "object to",
+        "be against",
+        "disagree with",
+        "resist"
+      ],
+      "candidate_review": [
+        {
+          "expression": "oppose",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "object to",
+          "decision": "ACCEPT",
+          "reason": "「反対する」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "be against",
+          "decision": "ACCEPT",
+          "reason": "「反対する」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "disagree with",
+          "decision": "ACCEPT",
+          "reason": "意見・提案などに「反対する」を表す非常に高頻度なconstructionで、oppose/object toとは別の実用価値が高い。"
+        },
+        {
+          "expression": "resist",
+          "decision": "REJECT",
+          "reason": "「反対する」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "object to",
+        "be against",
+        "disagree with"
+      ],
+      "decision": "CHANGED",
+      "reason": "「反対する」に対する主要な別英答として object to / be against / disagree with を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    },
+    {
+      "entry_id": "vocab:00803",
+      "prompt_ja": "最初の",
+      "canonical_snapshot": "initial",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "first",
+        "initial",
+        "original",
+        "earliest"
+      ],
+      "candidate_review": [
+        {
+          "expression": "first",
+          "decision": "ACCEPT",
+          "reason": "「最初の」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "initial",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGETと実質同一であり、paraphraseとして重複登録しない。"
+        },
+        {
+          "expression": "original",
+          "decision": "REJECT",
+          "reason": "「最初の」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        },
+        {
+          "expression": "earliest",
+          "decision": "REJECT",
+          "reason": "「最初の」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "first"
+      ],
+      "decision": "CHANGED",
+      "reason": "「最初の」に対する主要な別英答として first を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+    }
+  ],
+  "followups": []
+}
