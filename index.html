@@ -295,16 +295,22 @@
 <!-- 設定モーダル -->
 <div id="cfgModal">
   <div id="cfgBox">
-    <div class="cfg-header"><h3>音源</h3></div>
+    <div class="cfg-header"><h3>設定</h3></div>
     <div class="cfg-scroll">
       <div class="cfg-section">
-        <p class="cfg-section-title">ファイル</p>
+        <p class="cfg-section-title">音源</p>
         <div class="row cfg-row">
           <button id="btnPickDir" class="btn">音源フォルダを指定（フォルダピッカー）</button>
           <button id="btnClearDir" class="btn">フォルダ解除</button>
         </div>
         <div class="row cfg-row">
           <span id="dirStatus" class="muted cfg-status"></span>
+        </div>
+      </div>
+      <div class="cfg-section">
+        <p class="cfg-section-title">アプリ情報</p>
+        <div class="row cfg-row">
+          <span data-app-version aria-label="アプリのバージョン"></span>
         </div>
       </div>
     </div>
