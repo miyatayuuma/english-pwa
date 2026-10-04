@@ -1,0 +1,3339 @@
+{
+  "schema_version": 1,
+  "policy_version": "prompt-learning-value-v1",
+  "batch": 2,
+  "ordinal_start": 101,
+  "ordinal_end": 200,
+  "claim_main": "dbe0bd91b56e63a5367940f7e4bc7672d09fce43",
+  "reviewed_against_main": "dbe0bd91b56e63a5367940f7e4bc7672d09fce43",
+  "reviewed_count": 100,
+  "entry_ids": [
+    "vocab:00101",
+    "vocab:00102",
+    "vocab:00103",
+    "vocab:00104",
+    "vocab:00105",
+    "vocab:00106",
+    "vocab:00107",
+    "vocab:00108",
+    "vocab:00109",
+    "vocab:00110",
+    "vocab:00111",
+    "vocab:00112",
+    "vocab:00113",
+    "vocab:00114",
+    "vocab:00115",
+    "vocab:00116",
+    "vocab:00117",
+    "vocab:00118",
+    "vocab:00119",
+    "vocab:00120",
+    "vocab:00121",
+    "vocab:00122",
+    "vocab:00123",
+    "vocab:00124",
+    "vocab:00125",
+    "vocab:00126",
+    "vocab:00127",
+    "vocab:00128",
+    "vocab:00129",
+    "vocab:00130",
+    "vocab:00131",
+    "vocab:00132",
+    "vocab:00133",
+    "vocab:00134",
+    "vocab:00135",
+    "vocab:00136",
+    "vocab:00137",
+    "vocab:00138",
+    "vocab:00139",
+    "vocab:00140",
+    "vocab:00141",
+    "vocab:00142",
+    "vocab:00143",
+    "vocab:00144",
+    "vocab:00145",
+    "vocab:00146",
+    "vocab:00148",
+    "vocab:00149",
+    "vocab:00150",
+    "vocab:00151",
+    "vocab:00152",
+    "vocab:00153",
+    "vocab:00154",
+    "vocab:00155",
+    "vocab:00156",
+    "vocab:00157",
+    "vocab:00158",
+    "vocab:00159",
+    "vocab:00160",
+    "vocab:00161",
+    "vocab:00162",
+    "vocab:00163",
+    "vocab:00164",
+    "vocab:00165",
+    "vocab:00166",
+    "vocab:00167",
+    "vocab:00168",
+    "vocab:00169",
+    "vocab:00170",
+    "vocab:00171",
+    "vocab:00172",
+    "vocab:00173",
+    "vocab:00174",
+    "vocab:00175",
+    "vocab:00176",
+    "vocab:00177",
+    "vocab:00178",
+    "vocab:00179",
+    "vocab:00180",
+    "vocab:00181",
+    "vocab:00182",
+    "vocab:00183",
+    "vocab:00184",
+    "vocab:00185",
+    "vocab:00186",
+    "vocab:00187",
+    "vocab:00188",
+    "vocab:00189",
+    "vocab:00190",
+    "vocab:00191",
+    "vocab:00192",
+    "vocab:00193",
+    "vocab:00194",
+    "vocab:00195",
+    "vocab:00196",
+    "vocab:00197",
+    "vocab:00198",
+    "vocab:00199",
+    "vocab:00200",
+    "vocab:00201"
+  ],
+  "results": [
+    {
+      "entry_id": "vocab:00101",
+      "prompt_ja": "someoneの話をさえぎる",
+      "canonical_snapshot": "cut someone off",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "interrupt someone",
+        "cut someone off"
+      ],
+      "candidate_review": [
+        {
+          "expression": "interrupt someone",
+          "decision": "ACCEPT",
+          "reason": "「someoneの話をさえぎる」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "cut someone off",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        }
+      ],
+      "after_paraphrases": [
+        "interrupt someone"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「interrupt someone」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00102",
+      "prompt_ja": "somethingを締めくくる",
+      "canonical_snapshot": "wind something up",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "wrap up something",
+        "conclude something",
+        "bring something to a close"
+      ],
+      "candidate_review": [
+        {
+          "expression": "wrap up something",
+          "decision": "REJECT",
+          "reason": "意味は成立するが、generic objectを挟むsurfaceは「wrap something up」の方が自然なのでその形へ正規化する。"
+        },
+        {
+          "expression": "conclude something",
+          "decision": "ACCEPT",
+          "reason": "「somethingを締めくくる」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "bring something to a close",
+          "decision": "REJECT",
+          "reason": "成立するが、wrap up / concludeに比べて追加学習価値が小さく、類義表現の過剰収集になる。"
+        },
+        {
+          "expression": "wrap something up",
+          "decision": "ACCEPT",
+          "reason": "「somethingを締めくくる」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "wrap something up",
+        "conclude something"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「wrap something up」、「conclude something」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00103",
+      "prompt_ja": "採決する",
+      "canonical_snapshot": "take a vote",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "take a vote",
+        "hold a vote"
+      ],
+      "candidate_review": [
+        {
+          "expression": "take a vote",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "hold a vote",
+          "decision": "ACCEPT",
+          "reason": "「採決する」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "hold a vote"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「hold a vote」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00104",
+      "prompt_ja": "someoneの味方である",
+      "canonical_snapshot": "be on someone's side",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be on someone's side",
+        "side with someone"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be on someone's side",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "side with someone",
+          "decision": "ACCEPT",
+          "reason": "「someoneの味方である」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "side with someone"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「side with someone」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00105",
+      "prompt_ja": "厳密に言えば",
+      "canonical_snapshot": "strictly speaking",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "strictly speaking",
+        "technically speaking"
+      ],
+      "candidate_review": [
+        {
+          "expression": "strictly speaking",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "technically speaking",
+          "decision": "ACCEPT",
+          "reason": "「厳密に言えば」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "technically speaking"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「technically speaking」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00106",
+      "prompt_ja": "somethingと異なる",
+      "canonical_snapshot": "differ from something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "differ from something",
+        "be different from something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "differ from something",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "be different from something",
+          "decision": "ACCEPT",
+          "reason": "「somethingと異なる」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "be different from something"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「be different from something」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00107",
+      "prompt_ja": "somethingを見直す",
+      "canonical_snapshot": "go over something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "review something",
+        "reconsider something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "review something",
+          "decision": "ACCEPT",
+          "reason": "「somethingを見直す」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "reconsider something",
+          "decision": "ACCEPT",
+          "reason": "「somethingを見直す」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "review something",
+        "reconsider something"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「review something」、「reconsider something」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00108",
+      "prompt_ja": "somethingを見分ける・理解する",
+      "canonical_snapshot": "make something out",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "make something out",
+        "figure something out",
+        "discern something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "make something out",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "figure something out",
+          "decision": "ACCEPT",
+          "reason": "「somethingを見分ける・理解する」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "discern something",
+          "decision": "ACCEPT",
+          "reason": "「somethingを見分ける・理解する」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "figure something out",
+        "discern something"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「figure something out」、「discern something」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00109",
+      "prompt_ja": "somethingを言おうとする",
+      "canonical_snapshot": "get at something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "try to say something",
+        "be trying to say something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "try to say something",
+          "decision": "ACCEPT",
+          "reason": "「somethingを言おうとする」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "be trying to say something",
+          "decision": "REJECT",
+          "reason": "「try to say something」の進行形variantにすぎず、独立paraphraseとしての増分がない。"
+        }
+      ],
+      "after_paraphrases": [
+        "try to say something"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「try to say something」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00110",
+      "prompt_ja": "someoneを支持する",
+      "canonical_snapshot": "back someone up",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "support someone",
+        "back someone",
+        "stand behind someone"
+      ],
+      "candidate_review": [
+        {
+          "expression": "support someone",
+          "decision": "ACCEPT",
+          "reason": "「someoneを支持する」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "back someone",
+          "decision": "ACCEPT",
+          "reason": "「someoneを支持する」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "stand behind someone",
+          "decision": "ACCEPT",
+          "reason": "「someoneを支持する」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "support someone",
+        "back someone",
+        "stand behind someone"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「support someone」、「back someone」、「stand behind someone」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00111",
+      "prompt_ja": "someoneを説得してsomethingさせる",
+      "canonical_snapshot": "talk someone into doing something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "persuade someone to do something",
+        "convince someone to do something",
+        "talk someone into doing something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "persuade someone to do something",
+          "decision": "ACCEPT",
+          "reason": "「someoneを説得してsomethingさせる」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "convince someone to do something",
+          "decision": "ACCEPT",
+          "reason": "「someoneを説得してsomethingさせる」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "talk someone into doing something",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        }
+      ],
+      "after_paraphrases": [
+        "persuade someone to do something",
+        "convince someone to do something"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「persuade someone to do something」、「convince someone to do something」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00112",
+      "prompt_ja": "somethingに賛同する",
+      "canonical_snapshot": "go along with something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "agree with something",
+        "support something",
+        "be in favor of something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "agree with something",
+          "decision": "ACCEPT",
+          "reason": "「somethingに賛同する」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "support something",
+          "decision": "ACCEPT",
+          "reason": "「somethingに賛同する」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "be in favor of something",
+          "decision": "ACCEPT",
+          "reason": "「somethingに賛同する」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "agree with something",
+        "be in favor of something",
+        "support something"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「agree with something」、「be in favor of something」、「support something」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00113",
+      "prompt_ja": "お世辞を言ってくれるね",
+      "canonical_snapshot": "you flatter me",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "you flatter me",
+        "that's flattering",
+        "you're flattering me"
+      ],
+      "candidate_review": [
+        {
+          "expression": "you flatter me",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "that's flattering",
+          "decision": "REJECT",
+          "reason": "褒め言葉への反応としては自然だが、「あなたがお世辞を言っている」というpromptへの直接回答から少しずれる。"
+        },
+        {
+          "expression": "you're flattering me",
+          "decision": "ACCEPT",
+          "reason": "「お世辞を言ってくれるね」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "you're flattering me"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「you're flattering me」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00114",
+      "prompt_ja": "somethingを思いつく",
+      "canonical_snapshot": "come up with something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "come up with something",
+        "think of something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "come up with something",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "think of something",
+          "decision": "ACCEPT",
+          "reason": "「somethingを思いつく」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "think of something"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「think of something」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00115",
+      "prompt_ja": "somethingを実行に移す",
+      "canonical_snapshot": "put something into practice",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "put something into action",
+        "carry something out",
+        "implement something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "put something into action",
+          "decision": "ACCEPT",
+          "reason": "「somethingを実行に移す」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "carry something out",
+          "decision": "ACCEPT",
+          "reason": "「somethingを実行に移す」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "implement something",
+          "decision": "ACCEPT",
+          "reason": "「somethingを実行に移す」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "put something into action",
+        "carry something out",
+        "implement something"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「put something into action」、「carry something out」、「implement something」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00116",
+      "prompt_ja": "somethingより劣っている",
+      "canonical_snapshot": "be inferior to something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be inferior to something",
+        "be worse than something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be inferior to something",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "be worse than something",
+          "decision": "ACCEPT",
+          "reason": "「somethingより劣っている」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "be worse than something"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「be worse than something」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00117",
+      "prompt_ja": "理論上は",
+      "canonical_snapshot": "in theory",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "in theory",
+        "theoretically"
+      ],
+      "candidate_review": [
+        {
+          "expression": "in theory",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "theoretically",
+          "decision": "ACCEPT",
+          "reason": "「理論上は」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "theoretically"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「theoretically」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00118",
+      "prompt_ja": "実際には",
+      "canonical_snapshot": "in practice",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "in practice",
+        "in reality",
+        "actually"
+      ],
+      "candidate_review": [
+        {
+          "expression": "in practice",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "in reality",
+          "decision": "ACCEPT",
+          "reason": "「実際には」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "actually",
+          "decision": "ACCEPT",
+          "reason": "「実際には」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "in fact",
+          "decision": "ACCEPT",
+          "reason": "「実際には」に直接対応する高頻度discourse markerで、canonicalとは独立して覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "actually",
+        "in fact",
+        "in reality"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「actually」、「in fact」、「in reality」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00119",
+      "prompt_ja": "someoneがsomethingすると期待する",
+      "canonical_snapshot": "expect someone to do something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "expect someone to do something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "expect someone to do something",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "主要候補を個別に検討したが、canonical/TARGET重複、surface variant、意味範囲のずれ、または学習増分不足のためparaphraseは登録しない。"
+    },
+    {
+      "entry_id": "vocab:00120",
+      "prompt_ja": "期待に応える",
+      "canonical_snapshot": "live up to expectations",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "live up to expectations",
+        "meet expectations"
+      ],
+      "candidate_review": [
+        {
+          "expression": "live up to expectations",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "meet expectations",
+          "decision": "ACCEPT",
+          "reason": "「期待に応える」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "meet expectations"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「meet expectations」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00121",
+      "prompt_ja": "〜にもかかわらず",
+      "canonical_snapshot": "despite",
+      "answers_snapshot": [],
+      "existing_paraphrases": [
+        "in spite of something"
+      ],
+      "blind_candidates": [
+        "despite",
+        "in spite of",
+        "although",
+        "even though"
+      ],
+      "candidate_review": [
+        {
+          "expression": "despite",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "in spite of",
+          "decision": "REJECT",
+          "reason": "主要表現だが、このartifactではgeneric complementを含む既存の「in spite of something」を自然なsurfaceとして採用する。"
+        },
+        {
+          "expression": "although",
+          "decision": "ACCEPT",
+          "reason": "「〜にもかかわらず」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "even though",
+          "decision": "ACCEPT",
+          "reason": "「〜にもかかわらず」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "in spite of something",
+          "decision": "ACCEPT",
+          "reason": "「〜にもかかわらず」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "in spite of something",
+        "although",
+        "even though"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「in spite of something」、「although」、「even though」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00122",
+      "prompt_ja": "somethingという結果をもたらす",
+      "canonical_snapshot": "result in something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "result in something",
+        "lead to something",
+        "bring about something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "result in something",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "lead to something",
+          "decision": "ACCEPT",
+          "reason": "「somethingという結果をもたらす」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "bring about something",
+          "decision": "ACCEPT",
+          "reason": "「somethingという結果をもたらす」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "cause something",
+          "decision": "ACCEPT",
+          "reason": "「somethingという結果をもたらす」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "lead to something",
+        "cause something",
+        "bring about something"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「lead to something」、「cause something」、「bring about something」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00123",
+      "prompt_ja": "somethingを埋め合わせる",
+      "canonical_snapshot": "make up for something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "make up for something",
+        "compensate for something",
+        "offset something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "make up for something",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "compensate for something",
+          "decision": "ACCEPT",
+          "reason": "「somethingを埋め合わせる」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "offset something",
+          "decision": "ACCEPT",
+          "reason": "「somethingを埋め合わせる」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "compensate for something",
+        "offset something"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「compensate for something」、「offset something」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00124",
+      "prompt_ja": "計画・取引などが失敗に終わる",
+      "canonical_snapshot": "fall through",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "fall through",
+        "come to nothing"
+      ],
+      "candidate_review": [
+        {
+          "expression": "fall through",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "come to nothing",
+          "decision": "ACCEPT",
+          "reason": "「計画・取引などが失敗に終わる」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "come to nothing"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「come to nothing」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00125",
+      "prompt_ja": "someoneに感謝している",
+      "canonical_snapshot": "be grateful to someone",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be grateful to someone",
+        "be thankful to someone"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be grateful to someone",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "be thankful to someone",
+          "decision": "ACCEPT",
+          "reason": "「someoneに感謝している」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "be thankful to someone"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「be thankful to someone」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00126",
+      "prompt_ja": "〜が原因で",
+      "canonical_snapshot": "on account of",
+      "answers_snapshot": [],
+      "existing_paraphrases": [
+        "owing to"
+      ],
+      "blind_candidates": [
+        "because of",
+        "due to",
+        "owing to",
+        "as a result of"
+      ],
+      "candidate_review": [
+        {
+          "expression": "because of",
+          "decision": "ACCEPT",
+          "reason": "「〜が原因で」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "due to",
+          "decision": "ACCEPT",
+          "reason": "「〜が原因で」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "owing to",
+          "decision": "ACCEPT",
+          "reason": "「〜が原因で」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "as a result of",
+          "decision": "ACCEPT",
+          "reason": "「〜が原因で」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "because of",
+        "due to",
+        "owing to",
+        "as a result of"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「because of」、「due to」、「owing to」、「as a result of」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00127",
+      "prompt_ja": "昼夜を問わず",
+      "canonical_snapshot": "around the clock",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "day and night",
+        "around the clock"
+      ],
+      "candidate_review": [
+        {
+          "expression": "day and night",
+          "decision": "ACCEPT",
+          "reason": "「昼夜を問わず」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "around the clock",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        }
+      ],
+      "after_paraphrases": [
+        "day and night"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「day and night」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00128",
+      "prompt_ja": "somethingを調べる",
+      "canonical_snapshot": "look into something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "look into something",
+        "investigate something",
+        "examine something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "look into something",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "investigate something",
+          "decision": "ACCEPT",
+          "reason": "「somethingを調べる」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "examine something",
+          "decision": "ACCEPT",
+          "reason": "「somethingを調べる」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "investigate something",
+        "examine something"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「investigate something」、「examine something」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00129",
+      "prompt_ja": "〜を代表して",
+      "canonical_snapshot": "on behalf of",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "on behalf of",
+        "representing"
+      ],
+      "candidate_review": [
+        {
+          "expression": "on behalf of",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "representing",
+          "decision": "REJECT",
+          "reason": "文中では成立するが、単独の学習回答としては構文依存が強く、「on behalf of」に対する増分が小さい。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "主要候補を個別に検討したが、canonical/TARGET重複、surface variant、意味範囲のずれ、または学習増分不足のためparaphraseは登録しない。"
+    },
+    {
+      "entry_id": "vocab:00130",
+      "prompt_ja": "somethingについて責任がある",
+      "canonical_snapshot": "be to blame for something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be responsible for something",
+        "be accountable for something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be responsible for something",
+          "decision": "ACCEPT",
+          "reason": "「somethingについて責任がある」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "be accountable for something",
+          "decision": "ACCEPT",
+          "reason": "「somethingについて責任がある」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "be responsible for something",
+        "be accountable for something"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「be responsible for something」、「be accountable for something」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00131",
+      "prompt_ja": "（食べ物などが）傷む",
+      "canonical_snapshot": "go bad",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "go bad",
+        "spoil"
+      ],
+      "candidate_review": [
+        {
+          "expression": "go bad",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "spoil",
+          "decision": "ACCEPT",
+          "reason": "「（食べ物などが）傷む」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "go off",
+          "decision": "ACCEPT",
+          "reason": "食べ物・飲み物が傷む意味の主要UK用法で、地域variantとして学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "spoil",
+        "go off"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「spoil」、「go off」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00132",
+      "prompt_ja": "somethingを処分する",
+      "canonical_snapshot": "get rid of something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "dispose of something",
+        "get rid of something",
+        "throw something away"
+      ],
+      "candidate_review": [
+        {
+          "expression": "dispose of something",
+          "decision": "ACCEPT",
+          "reason": "「somethingを処分する」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "get rid of something",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "throw something away",
+          "decision": "ACCEPT",
+          "reason": "「somethingを処分する」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "discard something",
+          "decision": "ACCEPT",
+          "reason": "不要物を「処分する」の主要なtransitive verbで、formal/neutralな独立語彙として価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "dispose of something",
+        "discard something",
+        "throw something away"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「dispose of something」、「discard something」、「throw something away」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00133",
+      "prompt_ja": "使い古された",
+      "canonical_snapshot": "worn out",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "worn out",
+        "well-worn"
+      ],
+      "candidate_review": [
+        {
+          "expression": "worn out",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "well-worn",
+          "decision": "ACCEPT",
+          "reason": "「使い古された」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "well-worn"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「well-worn」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00134",
+      "prompt_ja": "とりあえず今は",
+      "canonical_snapshot": "for now",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "for now",
+        "for the time being"
+      ],
+      "candidate_review": [
+        {
+          "expression": "for now",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "for the time being",
+          "decision": "ACCEPT",
+          "reason": "「とりあえず今は」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "for the time being"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「for the time being」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00135",
+      "prompt_ja": "考え直してみると",
+      "canonical_snapshot": "on second thought",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "on second thought",
+        "come to think of it"
+      ],
+      "candidate_review": [
+        {
+          "expression": "on second thought",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "come to think of it",
+          "decision": "REJECT",
+          "reason": "「考えてみれば／そういえば」の想起に寄りやすく、決定・判断を考え直す「on second thought」とは軸が異なる。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "主要候補を個別に検討したが、canonical/TARGET重複、surface variant、意味範囲のずれ、または学習増分不足のためparaphraseは登録しない。"
+    },
+    {
+      "entry_id": "vocab:00136",
+      "prompt_ja": "somethingを取っておく",
+      "canonical_snapshot": "put something aside",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "save something",
+        "keep something",
+        "set something aside"
+      ],
+      "candidate_review": [
+        {
+          "expression": "save something",
+          "decision": "ACCEPT",
+          "reason": "「somethingを取っておく」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "keep something",
+          "decision": "ACCEPT",
+          "reason": "「somethingを取っておく」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "set something aside",
+          "decision": "ACCEPT",
+          "reason": "「somethingを取っておく」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "save something",
+        "keep something",
+        "set something aside"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「save something」、「keep something」、「set something aside」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00137",
+      "prompt_ja": "いざというときのために",
+      "canonical_snapshot": "for a rainy day",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "just in case",
+        "for a rainy day"
+      ],
+      "candidate_review": [
+        {
+          "expression": "just in case",
+          "decision": "ACCEPT",
+          "reason": "「いざというときのために」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "for a rainy day",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        }
+      ],
+      "after_paraphrases": [
+        "just in case"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「just in case」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00138",
+      "prompt_ja": "somethingなしではやっていけない",
+      "canonical_snapshot": "can't do without something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "can't do without something",
+        "can't live without something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "can't do without something",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "can't live without something",
+          "decision": "ACCEPT",
+          "reason": "「somethingなしではやっていけない」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "can't live without something"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「can't live without something」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00139",
+      "prompt_ja": "座るとすぐに電話が鳴った",
+      "canonical_snapshot": "no sooner had I sat down than the phone rang",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "the phone rang as soon as I sat down",
+        "no sooner had I sat down than the phone rang",
+        "hardly had I sat down when the phone rang"
+      ],
+      "candidate_review": [
+        {
+          "expression": "the phone rang as soon as I sat down",
+          "decision": "ACCEPT",
+          "reason": "「座るとすぐに電話が鳴った」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "no sooner had I sat down than the phone rang",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "hardly had I sat down when the phone rang",
+          "decision": "ACCEPT",
+          "reason": "「座るとすぐに電話が鳴った」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "the phone rang as soon as I sat down",
+        "hardly had I sat down when the phone rang"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「the phone rang as soon as I sat down」、「hardly had I sat down when the phone rang」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00140",
+      "prompt_ja": "ゆったり座る",
+      "canonical_snapshot": "sit back",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "sit back",
+        "sit comfortably",
+        "settle back"
+      ],
+      "candidate_review": [
+        {
+          "expression": "sit back",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "sit comfortably",
+          "decision": "REJECT",
+          "reason": "意味は成立するが、一般語の組合せで独立表現としての学習増分が小さい。"
+        },
+        {
+          "expression": "settle back",
+          "decision": "ACCEPT",
+          "reason": "「ゆったり座る」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "settle back"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「settle back」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00141",
+      "prompt_ja": "somethingを横たえる",
+      "canonical_snapshot": "lay something down",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "lay something down",
+        "lay something flat"
+      ],
+      "candidate_review": [
+        {
+          "expression": "lay something down",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "lay something flat",
+          "decision": "REJECT",
+          "reason": "「平らに置く」という追加条件を含み、「横たえる」一般より狭い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "主要候補を個別に検討したが、canonical/TARGET重複、surface variant、意味範囲のずれ、または学習増分不足のためparaphraseは登録しない。"
+    },
+    {
+      "entry_id": "vocab:00142",
+      "prompt_ja": "横になる",
+      "canonical_snapshot": "lie down",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "lie down",
+        "recline"
+      ],
+      "candidate_review": [
+        {
+          "expression": "lie down",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "recline",
+          "decision": "REJECT",
+          "reason": "上体を後ろへもたせる用法も広く、必ずしも「横になる」と一致しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "主要候補を個別に検討したが、canonical/TARGET重複、surface variant、意味範囲のずれ、または学習増分不足のためparaphraseは登録しない。"
+    },
+    {
+      "entry_id": "vocab:00143",
+      "prompt_ja": "somethingを片付ける",
+      "canonical_snapshot": "put something away",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "put something away",
+        "tidy something up",
+        "clear something away"
+      ],
+      "candidate_review": [
+        {
+          "expression": "put something away",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "tidy something up",
+          "decision": "ACCEPT",
+          "reason": "「somethingを片付ける」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "clear something away",
+          "decision": "ACCEPT",
+          "reason": "「somethingを片付ける」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "tidy something up",
+        "clear something away"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「tidy something up」、「clear something away」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00144",
+      "prompt_ja": "邪魔になって",
+      "canonical_snapshot": "in the way",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "in the way"
+      ],
+      "candidate_review": [
+        {
+          "expression": "in the way",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "主要候補を個別に検討したが、canonical/TARGET重複、surface variant、意味範囲のずれ、または学習増分不足のためparaphraseは登録しない。"
+    },
+    {
+      "entry_id": "vocab:00145",
+      "prompt_ja": "〜のふりをする",
+      "canonical_snapshot": "make believe",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "pretend to",
+        "act as if",
+        "make believe"
+      ],
+      "candidate_review": [
+        {
+          "expression": "pretend to",
+          "decision": "REJECT",
+          "reason": "to以下が必要な未完surfaceなので登録しない。主要語「pretend」を独立回答として採用する。"
+        },
+        {
+          "expression": "act as if",
+          "decision": "REJECT",
+          "reason": "as if以下が必要な未完surfaceで、promptへの単独回答として弱い。"
+        },
+        {
+          "expression": "make believe",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "pretend",
+          "decision": "ACCEPT",
+          "reason": "「〜のふりをする」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "pretend"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「pretend」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00146",
+      "prompt_ja": "somethingにぶつかる",
+      "canonical_snapshot": "bump into something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "bump into something",
+        "run into something",
+        "collide with something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "bump into something",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "run into something",
+          "decision": "ACCEPT",
+          "reason": "「somethingにぶつかる」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "collide with something",
+          "decision": "ACCEPT",
+          "reason": "「somethingにぶつかる」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "run into something",
+        "collide with something"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「run into something」、「collide with something」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00148",
+      "prompt_ja": "someoneを見守る",
+      "canonical_snapshot": "keep an eye on someone",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "watch over someone",
+        "keep an eye on someone"
+      ],
+      "candidate_review": [
+        {
+          "expression": "watch over someone",
+          "decision": "ACCEPT",
+          "reason": "「someoneを見守る」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "keep an eye on someone",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        }
+      ],
+      "after_paraphrases": [
+        "watch over someone"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「watch over someone」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00149",
+      "prompt_ja": "someoneを車などで迎えに行く",
+      "canonical_snapshot": "pick someone up",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "pick someone up",
+        "go pick someone up"
+      ],
+      "candidate_review": [
+        {
+          "expression": "pick someone up",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "go pick someone up",
+          "decision": "REJECT",
+          "reason": "canonicalの「pick someone up」にgoを足した構文variantで、独立した言い換え価値がない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "主要候補を個別に検討したが、canonical/TARGET重複、surface variant、意味範囲のずれ、または学習増分不足のためparaphraseは登録しない。"
+    },
+    {
+      "entry_id": "vocab:00150",
+      "prompt_ja": "someoneをきつく叱る",
+      "canonical_snapshot": "tell someone off",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "tell someone off",
+        "chew someone out"
+      ],
+      "candidate_review": [
+        {
+          "expression": "tell someone off",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "chew someone out",
+          "decision": "ACCEPT",
+          "reason": "「きつく叱る」に直接対応する主要なinformal US表現で、register差として学習価値がある。"
+        }
+      ],
+      "after_paraphrases": [
+        "chew someone out"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「chew someone out」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00151",
+      "prompt_ja": "someoneとsomeone elseを見分ける",
+      "canonical_snapshot": "tell someone and someone else apart",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "tell someone and someone else apart",
+        "distinguish someone from someone else"
+      ],
+      "candidate_review": [
+        {
+          "expression": "tell someone and someone else apart",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "distinguish someone from someone else",
+          "decision": "ACCEPT",
+          "reason": "「someoneとsomeone elseを見分ける」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "distinguish someone from someone else"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「distinguish someone from someone else」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00152",
+      "prompt_ja": "一般に",
+      "canonical_snapshot": "as a rule",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "in general",
+        "generally speaking",
+        "generally"
+      ],
+      "candidate_review": [
+        {
+          "expression": "in general",
+          "decision": "ACCEPT",
+          "reason": "「一般に」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "generally speaking",
+          "decision": "ACCEPT",
+          "reason": "「一般に」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "generally",
+          "decision": "ACCEPT",
+          "reason": "「一般に」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "in general",
+        "generally speaking",
+        "generally"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「in general」、「generally speaking」、「generally」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00153",
+      "prompt_ja": "共通点が多い",
+      "canonical_snapshot": "have a lot in common",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "have a lot in common",
+        "have much in common"
+      ],
+      "candidate_review": [
+        {
+          "expression": "have a lot in common",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "have much in common",
+          "decision": "ACCEPT",
+          "reason": "「共通点が多い」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "have much in common"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「have much in common」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00154",
+      "prompt_ja": "〜など",
+      "canonical_snapshot": "and so on",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "and so on",
+        "and so forth",
+        "etcetera"
+      ],
+      "candidate_review": [
+        {
+          "expression": "and so on",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "and so forth",
+          "decision": "ACCEPT",
+          "reason": "「〜など」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "etcetera",
+          "decision": "REJECT",
+          "reason": "「et cetera」と同一語の綴りvariantとして扱い、別paraphraseを重複登録しない。"
+        },
+        {
+          "expression": "et cetera",
+          "decision": "ACCEPT",
+          "reason": "「〜など」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "and so forth",
+        "et cetera"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「and so forth」、「et cetera」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00155",
+      "prompt_ja": "ひと休みする",
+      "canonical_snapshot": "take a break",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "take a break",
+        "have a break",
+        "take a rest"
+      ],
+      "candidate_review": [
+        {
+          "expression": "take a break",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "have a break",
+          "decision": "ACCEPT",
+          "reason": "「ひと休みする」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "take a rest",
+          "decision": "ACCEPT",
+          "reason": "「ひと休みする」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "have a break",
+        "take a rest"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「have a break」、「take a rest」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00156",
+      "prompt_ja": "故障している",
+      "canonical_snapshot": "out of order",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be broken",
+        "be out of order",
+        "not be working"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be broken",
+          "decision": "ACCEPT",
+          "reason": "「故障している」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "be out of order",
+          "decision": "REJECT",
+          "reason": "意味上は近接するが、このpromptへの直接性・一般性・独立した学習増分のいずれかが不足するため登録しない。"
+        },
+        {
+          "expression": "not be working",
+          "decision": "ACCEPT",
+          "reason": "「故障している」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "be broken",
+        "not be working"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「be broken」、「not be working」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00157",
+      "prompt_ja": "喉が渇いてたまらない",
+      "canonical_snapshot": "be dying of thirst",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be dying of thirst",
+        "be parched"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be dying of thirst",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "be parched",
+          "decision": "ACCEPT",
+          "reason": "「喉が渇いてたまらない」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "be parched"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「be parched」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00158",
+      "prompt_ja": "気を失う",
+      "canonical_snapshot": "faint",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "faint",
+        "pass out",
+        "lose consciousness"
+      ],
+      "candidate_review": [
+        {
+          "expression": "faint",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "pass out",
+          "decision": "ACCEPT",
+          "reason": "「気を失う」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "lose consciousness",
+          "decision": "ACCEPT",
+          "reason": "「気を失う」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "pass out",
+        "lose consciousness"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「pass out」、「lose consciousness」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00159",
+      "prompt_ja": "意識を取り戻す",
+      "canonical_snapshot": "come to",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "regain consciousness",
+        "come to",
+        "come around"
+      ],
+      "candidate_review": [
+        {
+          "expression": "regain consciousness",
+          "decision": "ACCEPT",
+          "reason": "「意識を取り戻す」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "come to",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "come around",
+          "decision": "ACCEPT",
+          "reason": "「意識を取り戻す」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "regain consciousness",
+        "come around"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「regain consciousness」、「come around」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00160",
+      "prompt_ja": "〜でありさえすれば",
+      "canonical_snapshot": "as long as",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "as long as",
+        "provided that",
+        "so long as"
+      ],
+      "candidate_review": [
+        {
+          "expression": "as long as",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "provided that",
+          "decision": "ACCEPT",
+          "reason": "「〜でありさえすれば」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "so long as",
+          "decision": "ACCEPT",
+          "reason": "「〜でありさえすれば」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "provided that",
+        "so long as"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「provided that」、「so long as」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00161",
+      "prompt_ja": "somethingにこだわる",
+      "canonical_snapshot": "be particular about something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "stick to something",
+        "insist on something",
+        "be particular about something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "stick to something",
+          "decision": "REJECT",
+          "reason": "「方針等を変えず守る・続ける」が中心で、「こだわる」全般への対応としては意味範囲がずれる。"
+        },
+        {
+          "expression": "insist on something",
+          "decision": "REJECT",
+          "reason": "「要求・主張して譲らない」が中心で、単なる「こだわる」より強く、promptとの対応を広げすぎる。"
+        },
+        {
+          "expression": "be particular about something",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "主要候補を個別に検討したが、canonical/TARGET重複、surface variant、意味範囲のずれ、または学習増分不足のためparaphraseは登録しない。"
+    },
+    {
+      "entry_id": "vocab:00162",
+      "prompt_ja": "somethingはこの辺までにする",
+      "canonical_snapshot": "so much for something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "leave it at that",
+        "that's enough about something",
+        "let's stop there"
+      ],
+      "candidate_review": [
+        {
+          "expression": "leave it at that",
+          "decision": "ACCEPT",
+          "reason": "「somethingはこの辺までにする」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "that's enough about something",
+          "decision": "REJECT",
+          "reason": "意味は通るが説明的で、独立して覚える価値は「leave it at that」より低い。"
+        },
+        {
+          "expression": "let's stop there",
+          "decision": "REJECT",
+          "reason": "会話を止める一般表現で、somethingについてここまでにするという対応が弱い。"
+        }
+      ],
+      "after_paraphrases": [
+        "leave it at that"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「leave it at that」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00163",
+      "prompt_ja": "本題に取りかかる",
+      "canonical_snapshot": "get down to business",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "get down to business",
+        "get to the main point"
+      ],
+      "candidate_review": [
+        {
+          "expression": "get down to business",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "get to the main point",
+          "decision": "REJECT",
+          "reason": "要点へ移る意味にはなるが、「本題の作業に取りかかる」まで含むとは限らず、canonicalより意味が狭い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "主要候補を個別に検討したが、canonical/TARGET重複、surface variant、意味範囲のずれ、または学習増分不足のためparaphraseは登録しない。"
+    },
+    {
+      "entry_id": "vocab:00164",
+      "prompt_ja": "somethingの過程で",
+      "canonical_snapshot": "in the course of something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "in the course of something",
+        "during something",
+        "in the process of something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "in the course of something",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "during something",
+          "decision": "REJECT",
+          "reason": "単なる時間的「〜の間」で、「〜の過程で」というprocess性を必ずしも表さない。"
+        },
+        {
+          "expression": "in the process of something",
+          "decision": "ACCEPT",
+          "reason": "「somethingの過程で」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "in the process of something"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「in the process of something」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00165",
+      "prompt_ja": "somethingに直面している",
+      "canonical_snapshot": "be faced with something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be faced with something",
+        "face something",
+        "be confronted with something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be faced with something",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "face something",
+          "decision": "ACCEPT",
+          "reason": "「somethingに直面している」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "be confronted with something",
+          "decision": "ACCEPT",
+          "reason": "「somethingに直面している」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "face something",
+        "be confronted with something"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「face something」、「be confronted with something」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00166",
+      "prompt_ja": "要するに",
+      "canonical_snapshot": "in short",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "in short",
+        "in a nutshell",
+        "basically"
+      ],
+      "candidate_review": [
+        {
+          "expression": "in short",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "in a nutshell",
+          "decision": "ACCEPT",
+          "reason": "「要するに」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "basically",
+          "decision": "ACCEPT",
+          "reason": "「要するに」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "in a nutshell",
+        "basically"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「in a nutshell」、「basically」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00167",
+      "prompt_ja": "someoneを見捨てる",
+      "canonical_snapshot": "turn your back on someone",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "abandon someone",
+        "desert someone",
+        "give up on someone"
+      ],
+      "candidate_review": [
+        {
+          "expression": "abandon someone",
+          "decision": "ACCEPT",
+          "reason": "「someoneを見捨てる」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "desert someone",
+          "decision": "ACCEPT",
+          "reason": "「someoneを見捨てる」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "give up on someone",
+          "decision": "ACCEPT",
+          "reason": "「someoneを見捨てる」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "abandon someone",
+        "desert someone",
+        "give up on someone"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「abandon someone」、「desert someone」、「give up on someone」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00168",
+      "prompt_ja": "危険にさらされて",
+      "canonical_snapshot": "at risk",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "at risk",
+        "in danger",
+        "be exposed to danger"
+      ],
+      "candidate_review": [
+        {
+          "expression": "at risk",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "in danger",
+          "decision": "ACCEPT",
+          "reason": "「危険にさらされて」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "be exposed to danger",
+          "decision": "REJECT",
+          "reason": "意味は直接的だが説明的で、主要表現「at risk / in danger」に対する独立学習価値が低い。"
+        }
+      ],
+      "after_paraphrases": [
+        "in danger"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「in danger」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00169",
+      "prompt_ja": "進歩する",
+      "canonical_snapshot": "make progress",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "make progress",
+        "advance",
+        "progress"
+      ],
+      "candidate_review": [
+        {
+          "expression": "make progress",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "advance",
+          "decision": "ACCEPT",
+          "reason": "「進歩する」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "progress",
+          "decision": "ACCEPT",
+          "reason": "「進歩する」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "advance",
+        "progress"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「advance」、「progress」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00170",
+      "prompt_ja": "進行中で",
+      "canonical_snapshot": "under way",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "in progress",
+        "underway"
+      ],
+      "candidate_review": [
+        {
+          "expression": "in progress",
+          "decision": "ACCEPT",
+          "reason": "「進行中で」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "underway",
+          "decision": "REJECT",
+          "reason": "canonical「under way」の綴り・表記variantに相当し、paraphraseへは登録しない。"
+        }
+      ],
+      "after_paraphrases": [
+        "in progress"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「in progress」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00171",
+      "prompt_ja": "まもなく",
+      "canonical_snapshot": "before long",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "soon",
+        "before long",
+        "shortly"
+      ],
+      "candidate_review": [
+        {
+          "expression": "soon",
+          "decision": "ACCEPT",
+          "reason": "「まもなく」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "before long",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "shortly",
+          "decision": "ACCEPT",
+          "reason": "「まもなく」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "soon",
+        "shortly"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「soon」、「shortly」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00172",
+      "prompt_ja": "思う存分",
+      "canonical_snapshot": "to your heart's content",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "to one's heart's content",
+        "as much as one likes"
+      ],
+      "candidate_review": [
+        {
+          "expression": "to one's heart's content",
+          "decision": "REJECT",
+          "reason": "canonical「to your heart's content」の代名詞置換variantであり、paraphrase対象外。"
+        },
+        {
+          "expression": "as much as one likes",
+          "decision": "ACCEPT",
+          "reason": "「思う存分」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "as much as one likes"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「as much as one likes」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00173",
+      "prompt_ja": "成果を生む",
+      "canonical_snapshot": "bear fruit",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "bear fruit",
+        "pay off",
+        "produce results"
+      ],
+      "candidate_review": [
+        {
+          "expression": "bear fruit",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "pay off",
+          "decision": "ACCEPT",
+          "reason": "「成果を生む」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "produce results",
+          "decision": "ACCEPT",
+          "reason": "「成果を生む」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "pay off",
+        "produce results"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「pay off」、「produce results」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00174",
+      "prompt_ja": "会話に割り込む",
+      "canonical_snapshot": "cut in",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "break into a conversation",
+        "butt in",
+        "cut in"
+      ],
+      "candidate_review": [
+        {
+          "expression": "break into a conversation",
+          "decision": "REJECT",
+          "reason": "会話へ入るだけの中立用法もあり、「割り込む」のinterruptive meaningを安定して表す「break in / butt in」より対応が弱い。"
+        },
+        {
+          "expression": "butt in",
+          "decision": "ACCEPT",
+          "reason": "「会話に割り込む」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "cut in",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "break in",
+          "decision": "ACCEPT",
+          "reason": "「会話に割り込む」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "butt in",
+        "break in"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「butt in」、「break in」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00175",
+      "prompt_ja": "someoneの順番を飛ばす",
+      "canonical_snapshot": "skip someone's turn",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "skip someone's turn"
+      ],
+      "candidate_review": [
+        {
+          "expression": "skip someone's turn",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "主要候補を個別に検討したが、canonical/TARGET重複、surface variant、意味範囲のずれ、または学習増分不足のためparaphraseは登録しない。"
+    },
+    {
+      "entry_id": "vocab:00176",
+      "prompt_ja": "見て見ぬふりをする",
+      "canonical_snapshot": "turn a blind eye",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "turn a blind eye",
+        "pretend not to see",
+        "look the other way"
+      ],
+      "candidate_review": [
+        {
+          "expression": "turn a blind eye",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "pretend not to see",
+          "decision": "ACCEPT",
+          "reason": "「見て見ぬふりをする」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "look the other way",
+          "decision": "ACCEPT",
+          "reason": "「見て見ぬふりをする」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "pretend not to see",
+        "look the other way"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「pretend not to see」、「look the other way」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00177",
+      "prompt_ja": "試験でカンニングする",
+      "canonical_snapshot": "cheat on an exam",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "cheat on a test",
+        "cheat in an exam"
+      ],
+      "candidate_review": [
+        {
+          "expression": "cheat on a test",
+          "decision": "REJECT",
+          "reason": "canonicalと同一のcheat constructionでobject語だけを置き換えたvariantで、別表現としての増分がない。"
+        },
+        {
+          "expression": "cheat in an exam",
+          "decision": "REJECT",
+          "reason": "主要な地域的collocationではあるが、語彙的にはcanonicalと同じcheat constructionで、paraphraseではなくTARGET variant側の性質が強い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "主要候補を個別に検討したが、canonical/TARGET重複、surface variant、意味範囲のずれ、または学習増分不足のためparaphraseは登録しない。"
+    },
+    {
+      "entry_id": "vocab:00178",
+      "prompt_ja": "somethingをして罰を免れる",
+      "canonical_snapshot": "get away with something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "get away with doing something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "get away with doing something",
+          "decision": "REJECT",
+          "reason": "canonical「get away with something」のargument形variantであり、同一句動詞の別表現ではない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "主要候補を個別に検討したが、canonical/TARGET重複、surface variant、意味範囲のずれ、または学習増分不足のためparaphraseは登録しない。"
+    },
+    {
+      "entry_id": "vocab:00179",
+      "prompt_ja": "someoneに敵意を抱いている",
+      "canonical_snapshot": "be hostile to someone",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be hostile to someone",
+        "bear ill will toward someone",
+        "have it in for someone"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be hostile to someone",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "bear ill will toward someone",
+          "decision": "ACCEPT",
+          "reason": "「someoneに敵意を抱いている」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "have it in for someone",
+          "decision": "REJECT",
+          "reason": "単なる敵意より「害そう・仕返ししようと狙う」という強い意図を含み、promptより狭く強い。"
+        }
+      ],
+      "after_paraphrases": [
+        "bear ill will toward someone"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「bear ill will toward someone」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00180",
+      "prompt_ja": "someoneに嫉妬している",
+      "canonical_snapshot": "be jealous of someone",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be jealous of someone",
+        "envy someone"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be jealous of someone",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "envy someone",
+          "decision": "ACCEPT",
+          "reason": "「someoneに嫉妬している」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "envy someone"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「envy someone」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00181",
+      "prompt_ja": "何事もなかったかのように",
+      "canonical_snapshot": "as if nothing had happened",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "as if nothing had happened",
+        "as though nothing had happened"
+      ],
+      "candidate_review": [
+        {
+          "expression": "as if nothing had happened",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "as though nothing had happened",
+          "decision": "ACCEPT",
+          "reason": "「何事もなかったかのように」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "as though nothing had happened"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「as though nothing had happened」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00182",
+      "prompt_ja": "somethingにもかかわらず",
+      "canonical_snapshot": "in spite of something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [
+        "despite"
+      ],
+      "blind_candidates": [
+        "despite something",
+        "in spite of something",
+        "notwithstanding something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "despite something",
+          "decision": "ACCEPT",
+          "reason": "「somethingにもかかわらず」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "in spite of something",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "notwithstanding something",
+          "decision": "ACCEPT",
+          "reason": "「〜にもかかわらず」を表すformalな主要prepositionで、academic/business読解上の独立価値がある。"
+        },
+        {
+          "expression": "despite",
+          "decision": "REJECT",
+          "reason": "意味語としては正しいが、promptがsomethingを明示するため、自然なgeneric surface「despite something」へ置換する。"
+        }
+      ],
+      "after_paraphrases": [
+        "despite something",
+        "notwithstanding something"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「despite something」、「notwithstanding something」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00183",
+      "prompt_ja": "背を向ける",
+      "canonical_snapshot": "turn away",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "turn one's back",
+        "turn away"
+      ],
+      "candidate_review": [
+        {
+          "expression": "turn one's back",
+          "decision": "REJECT",
+          "reason": "意味は成立するが、learner-facing surfaceはgeneric one'sより自然な「turn your back」に正規化する。"
+        },
+        {
+          "expression": "turn away",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "turn your back",
+          "decision": "ACCEPT",
+          "reason": "「背を向ける」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "turn your back"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「turn your back」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00184",
+      "prompt_ja": "someoneが自由に使える状態で",
+      "canonical_snapshot": "at someone's disposal",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "at someone's disposal",
+        "available to someone"
+      ],
+      "candidate_review": [
+        {
+          "expression": "at someone's disposal",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "available to someone",
+          "decision": "ACCEPT",
+          "reason": "「someoneが自由に使える状態で」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "available to someone"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「available to someone」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00185",
+      "prompt_ja": "練習すればするほど上達する",
+      "canonical_snapshot": "the more you practice, the better you get",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "the more you practice, the better you get",
+        "practice makes perfect"
+      ],
+      "candidate_review": [
+        {
+          "expression": "the more you practice, the better you get",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "practice makes perfect",
+          "decision": "ACCEPT",
+          "reason": "「練習すればするほど上達する」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "practice makes perfect"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「practice makes perfect」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00186",
+      "prompt_ja": "要点を避けて遠回しに言う",
+      "canonical_snapshot": "beat around the bush",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "beat around the bush",
+        "avoid the point",
+        "talk around the issue"
+      ],
+      "candidate_review": [
+        {
+          "expression": "beat around the bush",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "avoid the point",
+          "decision": "REJECT",
+          "reason": "説明的には成立するが、定着した別表現としての学習価値が「talk around the issue」より低い。"
+        },
+        {
+          "expression": "talk around the issue",
+          "decision": "ACCEPT",
+          "reason": "「要点を避けて遠回しに言う」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "talk around the issue"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「talk around the issue」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00187",
+      "prompt_ja": "成り行きを見守る",
+      "canonical_snapshot": "wait and see",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "wait and see",
+        "see how things go"
+      ],
+      "candidate_review": [
+        {
+          "expression": "wait and see",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "see how things go",
+          "decision": "ACCEPT",
+          "reason": "「成り行きを見守る」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "see how things go"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「see how things go」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00188",
+      "prompt_ja": "時がたてば分かる",
+      "canonical_snapshot": "time will tell",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "time will tell",
+        "we'll see in time"
+      ],
+      "candidate_review": [
+        {
+          "expression": "time will tell",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "we'll see in time",
+          "decision": "REJECT",
+          "reason": "意味は通るが、一般語の組合せで「time will tell」に対する独立した学習価値が小さい。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "主要候補を個別に検討したが、canonical/TARGET重複、surface variant、意味範囲のずれ、または学習増分不足のためparaphraseは登録しない。"
+    },
+    {
+      "entry_id": "vocab:00189",
+      "prompt_ja": "somethingを提出する",
+      "canonical_snapshot": "hand something in",
+      "answers_snapshot": [],
+      "existing_paraphrases": [
+        "turn something in"
+      ],
+      "blind_candidates": [
+        "submit something",
+        "hand something in",
+        "turn something in"
+      ],
+      "candidate_review": [
+        {
+          "expression": "submit something",
+          "decision": "ACCEPT",
+          "reason": "「somethingを提出する」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "hand something in",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "turn something in",
+          "decision": "ACCEPT",
+          "reason": "「somethingを提出する」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "submit something",
+        "turn something in"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「submit something」、「turn something in」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00190",
+      "prompt_ja": "遅くとも〜までに",
+      "canonical_snapshot": "no later than",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "by ... at the latest",
+        "no later than ..."
+      ],
+      "candidate_review": [
+        {
+          "expression": "by ... at the latest",
+          "decision": "REJECT",
+          "reason": "ellipsisを含むmetanotationで、発話可能なparaphrase surfaceではない。「at the latest」を採用する。"
+        },
+        {
+          "expression": "no later than ...",
+          "decision": "REJECT",
+          "reason": "canonical由来の表現にellipsisを足したsurfaceであり、paraphrase登録対象ではない。"
+        },
+        {
+          "expression": "at the latest",
+          "decision": "ACCEPT",
+          "reason": "「遅くとも〜までに」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "at the latest"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「at the latest」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00191",
+      "prompt_ja": "決して〜ではない",
+      "canonical_snapshot": "anything but",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "by no means",
+        "not at all",
+        "far from"
+      ],
+      "candidate_review": [
+        {
+          "expression": "by no means",
+          "decision": "ACCEPT",
+          "reason": "「決して〜ではない」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "not at all",
+          "decision": "ACCEPT",
+          "reason": "「決して〜ではない」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "far from",
+          "decision": "REJECT",
+          "reason": "物理距離の意味も強く、否定表現としては補語を必要とするため、このpromptへの単独対応が不安定。"
+        },
+        {
+          "expression": "in no way",
+          "decision": "ACCEPT",
+          "reason": "「決して〜ではない」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "by no means",
+        "not at all",
+        "in no way"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「by no means」、「not at all」、「in no way」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00192",
+      "prompt_ja": "筋が通る",
+      "canonical_snapshot": "make sense",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "make sense",
+        "add up",
+        "be logical"
+      ],
+      "candidate_review": [
+        {
+          "expression": "make sense",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "add up",
+          "decision": "ACCEPT",
+          "reason": "「筋が通る」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "be logical",
+          "decision": "REJECT",
+          "reason": "意味は成立するが説明的な一般語で、独立表現としての増分が「add up」より小さい。"
+        }
+      ],
+      "after_paraphrases": [
+        "add up"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「add up」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00193",
+      "prompt_ja": "まず第一に",
+      "canonical_snapshot": "to begin with",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "first of all",
+        "first and foremost",
+        "to begin with"
+      ],
+      "candidate_review": [
+        {
+          "expression": "first of all",
+          "decision": "ACCEPT",
+          "reason": "「まず第一に」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "first and foremost",
+          "decision": "ACCEPT",
+          "reason": "「まず第一に」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "to begin with",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        }
+      ],
+      "after_paraphrases": [
+        "first of all",
+        "first and foremost"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「first of all」、「first and foremost」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00194",
+      "prompt_ja": "要点を押さえた",
+      "canonical_snapshot": "to the point",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "to the point",
+        "on point",
+        "pertinent"
+      ],
+      "candidate_review": [
+        {
+          "expression": "to the point",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "on point",
+          "decision": "ACCEPT",
+          "reason": "主にUSで「議論の要点に合っている・的確な」を表し、「要点を押さえた」への有用なregister alternative。"
+        },
+        {
+          "expression": "pertinent",
+          "decision": "REJECT",
+          "reason": "主に「関連性がある・適切な」で、「要点を押さえた」の簡潔・核心性まで安定して表さない。"
+        }
+      ],
+      "after_paraphrases": [
+        "on point"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「on point」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00195",
+      "prompt_ja": "somethingに対処する",
+      "canonical_snapshot": "deal with something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "deal with something",
+        "handle something",
+        "tackle something",
+        "address something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "deal with something",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "handle something",
+          "decision": "ACCEPT",
+          "reason": "「somethingに対処する」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "tackle something",
+          "decision": "ACCEPT",
+          "reason": "「somethingに対処する」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "address something",
+          "decision": "ACCEPT",
+          "reason": "「somethingに対処する」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "handle something",
+        "address something",
+        "tackle something"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「handle something」、「address something」、「tackle something」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00196",
+      "prompt_ja": "とても簡単なこと",
+      "canonical_snapshot": "a piece of cake",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "a piece of cake",
+        "child's play",
+        "easy"
+      ],
+      "candidate_review": [
+        {
+          "expression": "a piece of cake",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        },
+        {
+          "expression": "child's play",
+          "decision": "ACCEPT",
+          "reason": "「とても簡単なこと」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "easy",
+          "decision": "REJECT",
+          "reason": "意味は近いが単なる形容詞で、名詞句「とても簡単なこと」への独立表現としては弱い。"
+        }
+      ],
+      "after_paraphrases": [
+        "child's play"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「child's play」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00197",
+      "prompt_ja": "somethingにざっと目を通す",
+      "canonical_snapshot": "look something over",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "glance over something",
+        "skim something",
+        "look something over quickly"
+      ],
+      "candidate_review": [
+        {
+          "expression": "glance over something",
+          "decision": "ACCEPT",
+          "reason": "「somethingにざっと目を通す」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "skim something",
+          "decision": "ACCEPT",
+          "reason": "「somethingにざっと目を通す」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "look something over quickly",
+          "decision": "REJECT",
+          "reason": "canonicalにquicklyを追加しただけの構文variantで、別表現ではない。"
+        }
+      ],
+      "after_paraphrases": [
+        "skim something",
+        "glance over something"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「skim something」、「glance over something」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00198",
+      "prompt_ja": "somethingを提出する",
+      "canonical_snapshot": "turn something in",
+      "answers_snapshot": [],
+      "existing_paraphrases": [
+        "hand something in"
+      ],
+      "blind_candidates": [
+        "submit something",
+        "hand something in",
+        "turn something in"
+      ],
+      "candidate_review": [
+        {
+          "expression": "submit something",
+          "decision": "ACCEPT",
+          "reason": "「somethingを提出する」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "hand something in",
+          "decision": "ACCEPT",
+          "reason": "「somethingを提出する」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "turn something in",
+          "decision": "REJECT",
+          "reason": "canonicalそのものでTARGET重複のためparaphrase登録対象外。"
+        }
+      ],
+      "after_paraphrases": [
+        "submit something",
+        "hand something in"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「submit something」、「hand something in」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00199",
+      "prompt_ja": "手が離せない",
+      "canonical_snapshot": "I have my hands full",
+      "answers_snapshot": [],
+      "existing_paraphrases": [
+        "be tied up"
+      ],
+      "blind_candidates": [
+        "be tied up",
+        "have one's hands full",
+        "be busy"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be tied up",
+          "decision": "ACCEPT",
+          "reason": "「手が離せない」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        },
+        {
+          "expression": "have one's hands full",
+          "decision": "REJECT",
+          "reason": "canonical「I have my hands full」の人称一般化variantであり、paraphrase対象外。"
+        },
+        {
+          "expression": "be busy",
+          "decision": "REJECT",
+          "reason": "広すぎる一般語で、「手が離せない」という切迫したoccupied stateを十分に特定しない。"
+        }
+      ],
+      "after_paraphrases": [
+        "be tied up"
+      ],
+      "decision": "UNCHANGED",
+      "reason": "最終採用は 「be tied up」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00200",
+      "prompt_ja": "締め切りに間に合わせる",
+      "canonical_snapshot": "meet a deadline",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "meet the deadline",
+        "make the deadline"
+      ],
+      "candidate_review": [
+        {
+          "expression": "meet the deadline",
+          "decision": "REJECT",
+          "reason": "canonical「meet a deadline」の冠詞・特定性variantで、独立paraphraseではない。"
+        },
+        {
+          "expression": "make the deadline",
+          "decision": "ACCEPT",
+          "reason": "「締め切りに間に合わせる」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "make the deadline"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「make the deadline」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    },
+    {
+      "entry_id": "vocab:00201",
+      "prompt_ja": "someoneに腹を立てる",
+      "canonical_snapshot": "get mad at someone",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be angry with someone",
+        "be mad at someone",
+        "be upset with someone"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be angry with someone",
+          "decision": "REJECT",
+          "reason": "状態「怒っている」に寄り、eventiveな「腹を立てる」には「get angry with someone」の方が直接的。"
+        },
+        {
+          "expression": "be mad at someone",
+          "decision": "REJECT",
+          "reason": "canonicalと同じmadを用いたbe/getのaspect variantで、独立した語彙価値が小さい。"
+        },
+        {
+          "expression": "be upset with someone",
+          "decision": "REJECT",
+          "reason": "怒り以外に失望・動揺も広く含み、「腹を立てる」への対応として弱い。"
+        },
+        {
+          "expression": "get angry with someone",
+          "decision": "ACCEPT",
+          "reason": "「someoneに腹を立てる」への自然な主要回答で、canonical/TARGETとは別の語彙・idiom・constructionとして覚える価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "get angry with someone"
+      ],
+      "decision": "CHANGED",
+      "reason": "最終採用は 「get angry with someone」。promptへの直接対応と独立した学習価値を満たす候補だけを残した。"
+    }
+  ],
+  "followups": []
+}
