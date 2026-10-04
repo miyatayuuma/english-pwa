@@ -1,0 +1,2698 @@
+{
+  "schema_version": 1,
+  "policy_version": "prompt-learning-value-v1",
+  "batch": 24,
+  "ordinal_start": 2301,
+  "ordinal_end": 2400,
+  "claim_main": "44f0b68ee2e24fb6a0dc89d5255037fd973dca5b",
+  "reviewed_against_main": "26113e1316165e549306b6202eb35afdc7088c02",
+  "reviewed_count": 100,
+  "entry_ids": [
+    "vocab:02304",
+    "vocab:02305",
+    "vocab:02306",
+    "vocab:02307",
+    "vocab:02308",
+    "vocab:02309",
+    "vocab:02310",
+    "vocab:02311",
+    "vocab:02312",
+    "vocab:02313",
+    "vocab:02314",
+    "vocab:02315",
+    "vocab:02316",
+    "vocab:02317",
+    "vocab:02318",
+    "vocab:02319",
+    "vocab:02320",
+    "vocab:02321",
+    "vocab:02322",
+    "vocab:02323",
+    "vocab:02324",
+    "vocab:02325",
+    "vocab:02326",
+    "vocab:02327",
+    "vocab:02328",
+    "vocab:02329",
+    "vocab:02330",
+    "vocab:02331",
+    "vocab:02332",
+    "vocab:02333",
+    "vocab:02334",
+    "vocab:02335",
+    "vocab:02336",
+    "vocab:02337",
+    "vocab:02338",
+    "vocab:02339",
+    "vocab:02340",
+    "vocab:02341",
+    "vocab:02342",
+    "vocab:02343",
+    "vocab:02344",
+    "vocab:02345",
+    "vocab:02346",
+    "vocab:02347",
+    "vocab:02348",
+    "vocab:02349",
+    "vocab:02350",
+    "vocab:02351",
+    "vocab:02352",
+    "vocab:02353",
+    "vocab:02354",
+    "vocab:02355",
+    "vocab:02356",
+    "vocab:02357",
+    "vocab:02358",
+    "vocab:02359",
+    "vocab:02360",
+    "vocab:02361",
+    "vocab:02362",
+    "vocab:02363",
+    "vocab:02364",
+    "vocab:02365",
+    "vocab:02366",
+    "vocab:02367",
+    "vocab:02368",
+    "vocab:02369",
+    "vocab:02370",
+    "vocab:02371",
+    "vocab:02372",
+    "vocab:02373",
+    "vocab:02374",
+    "vocab:02375",
+    "vocab:02376",
+    "vocab:02377",
+    "vocab:02378",
+    "vocab:02379",
+    "vocab:02380",
+    "vocab:02381",
+    "vocab:02382",
+    "vocab:02383",
+    "vocab:02384",
+    "vocab:02385",
+    "vocab:02386",
+    "vocab:02387",
+    "vocab:02388",
+    "vocab:02389",
+    "vocab:02390",
+    "vocab:02391",
+    "vocab:02392",
+    "vocab:02393",
+    "vocab:02394",
+    "vocab:02395",
+    "vocab:02396",
+    "vocab:02397",
+    "vocab:02398",
+    "vocab:02399",
+    "vocab:02400",
+    "vocab:02401",
+    "vocab:02402",
+    "vocab:02403"
+  ],
+  "results": [
+    {
+      "entry_id": "vocab:02304",
+      "prompt_ja": "遠征",
+      "canonical_snapshot": "expedition",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "expedition"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02305",
+      "prompt_ja": "展覧会",
+      "canonical_snapshot": "exhibition",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "exhibition",
+        "exhibit"
+      ],
+      "candidate_review": [
+        {
+          "expression": "exhibit",
+          "decision": "REJECT",
+          "reason": "展覧会そのものを指す用法はあるが、展示物・展示行為の意味も強く、無標の「展覧会」への追加回答としては曖昧さが大きい。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02306",
+      "prompt_ja": "申し出る・提供する",
+      "canonical_snapshot": "offer",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "offer",
+        "provide"
+      ],
+      "candidate_review": [
+        {
+          "expression": "provide",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "provide"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 provide を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02307",
+      "prompt_ja": "古代の",
+      "canonical_snapshot": "ancient",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "ancient"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02308",
+      "prompt_ja": "種をまく",
+      "canonical_snapshot": "sow",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "sow",
+        "plant"
+      ],
+      "candidate_review": [
+        {
+          "expression": "plant",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "plant"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 plant を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02309",
+      "prompt_ja": "種",
+      "canonical_snapshot": "seed",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "seed"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02310",
+      "prompt_ja": "登る・上がる／取り付ける",
+      "canonical_snapshot": "mount",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "climb",
+        "go up",
+        "mount",
+        "attach",
+        "install",
+        "ascend"
+      ],
+      "candidate_review": [
+        {
+          "expression": "climb",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "go up",
+          "decision": "REJECT",
+          "reason": "「上がる」には成立するが意味範囲が広すぎ、登る／取り付けるを束ねたこのpromptへの独立学習項目としては弱い。"
+        },
+        {
+          "expression": "attach",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "install",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "ascend",
+          "decision": "REJECT",
+          "reason": "「登る・上がる」には成立するが、climbを採用した上での増分実用価値が相対的に低いため追加しない。"
+        }
+      ],
+      "after_paraphrases": [
+        "climb",
+        "attach",
+        "install"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 climb, attach, install を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02311",
+      "prompt_ja": "肖像画",
+      "canonical_snapshot": "portrait",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "portrait"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02312",
+      "prompt_ja": "装飾的な",
+      "canonical_snapshot": "fancy",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "decorative",
+        "ornamental",
+        "fancy"
+      ],
+      "candidate_review": [
+        {
+          "expression": "decorative",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "ornamental",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "decorative",
+        "ornamental"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 decorative, ornamental を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02313",
+      "prompt_ja": "額縁",
+      "canonical_snapshot": "frame",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "frame",
+        "picture frame"
+      ],
+      "candidate_review": [
+        {
+          "expression": "picture frame",
+          "decision": "REJECT",
+          "reason": "canonical frame の説明的な名詞拡張で、独立したparaphraseとしての増分学習価値が小さい。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02314",
+      "prompt_ja": "大聖堂",
+      "canonical_snapshot": "cathedral",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "cathedral"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02315",
+      "prompt_ja": "宗教",
+      "canonical_snapshot": "religion",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "religion",
+        "faith"
+      ],
+      "candidate_review": [
+        {
+          "expression": "faith",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "faith"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 faith を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02316",
+      "prompt_ja": "創造する",
+      "canonical_snapshot": "create",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "create",
+        "make",
+        "produce"
+      ],
+      "candidate_review": [
+        {
+          "expression": "make",
+          "decision": "REJECT",
+          "reason": "「作る」寄りで意味範囲が広く、無標の「創造する」と対応づけると過剰一般化しやすい。"
+        },
+        {
+          "expression": "produce",
+          "decision": "REJECT",
+          "reason": "産出・生産などの文脈では成立するが、無標の「創造する」への主要別答としては文脈依存が強い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02317",
+      "prompt_ja": "探検する",
+      "canonical_snapshot": "explore",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "explore"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02318",
+      "prompt_ja": "砂漠",
+      "canonical_snapshot": "desert",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "desert"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02319",
+      "prompt_ja": "埋める・埋葬する",
+      "canonical_snapshot": "bury",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "bury"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02320",
+      "prompt_ja": "大金持ち",
+      "canonical_snapshot": "millionaire",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "millionaire",
+        "rich person",
+        "wealthy person"
+      ],
+      "candidate_review": [
+        {
+          "expression": "rich person",
+          "decision": "REJECT",
+          "reason": "意味説明としては成立するが、語彙項目としての独立した増分学習価値が低い。"
+        },
+        {
+          "expression": "wealthy person",
+          "decision": "REJECT",
+          "reason": "意味説明としては成立するが、語彙項目としての独立した増分学習価値が低い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02321",
+      "prompt_ja": "強く主張する・言い張る／強く要求する",
+      "canonical_snapshot": "insist",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "insist",
+        "demand",
+        "maintain"
+      ],
+      "candidate_review": [
+        {
+          "expression": "demand",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "maintain",
+          "decision": "REJECT",
+          "reason": "「主張し続ける」用法はあるが、要求の意味を持たず文脈依存も強いため追加しない。"
+        }
+      ],
+      "after_paraphrases": [
+        "demand"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 demand を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02322",
+      "prompt_ja": "手に入れる",
+      "canonical_snapshot": "acquire",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "get",
+        "obtain",
+        "acquire",
+        "gain"
+      ],
+      "candidate_review": [
+        {
+          "expression": "get",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "obtain",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "gain",
+          "decision": "REJECT",
+          "reason": "利益・優位・経験などを得る用法に寄り、一般的な「手に入れる」への回答としては範囲が狭い。"
+        }
+      ],
+      "after_paraphrases": [
+        "get",
+        "obtain"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 get, obtain を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02323",
+      "prompt_ja": "傑作",
+      "canonical_snapshot": "masterpiece",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "masterpiece"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02324",
+      "prompt_ja": "言語学者",
+      "canonical_snapshot": "linguist",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "linguist"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02325",
+      "prompt_ja": "部族",
+      "canonical_snapshot": "tribe",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "tribe"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02326",
+      "prompt_ja": "言語",
+      "canonical_snapshot": "language",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "language"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02327",
+      "prompt_ja": "人類学者",
+      "canonical_snapshot": "anthropologist",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "anthropologist"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02328",
+      "prompt_ja": "習慣",
+      "canonical_snapshot": "custom",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "habit",
+        "custom",
+        "practice"
+      ],
+      "candidate_review": [
+        {
+          "expression": "habit",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "practice",
+          "decision": "REJECT",
+          "reason": "社会的な慣行には成立するが、個人の習慣も含む無標の「習慣」への追加回答としては文脈依存が強い。"
+        }
+      ],
+      "after_paraphrases": [
+        "habit"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 habit を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02329",
+      "prompt_ja": "州",
+      "canonical_snapshot": "province",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "state",
+        "province"
+      ],
+      "candidate_review": [
+        {
+          "expression": "state",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "state"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 state を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02330",
+      "prompt_ja": "邪悪な（道徳的にひどく悪い）",
+      "canonical_snapshot": "wicked",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "evil",
+        "wicked"
+      ],
+      "candidate_review": [
+        {
+          "expression": "evil",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "evil"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 evil を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02331",
+      "prompt_ja": "魔女",
+      "canonical_snapshot": "witch",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "witch"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02332",
+      "prompt_ja": "邪悪な",
+      "canonical_snapshot": "evil",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "evil",
+        "wicked"
+      ],
+      "candidate_review": [
+        {
+          "expression": "wicked",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "wicked"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 wicked を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02333",
+      "prompt_ja": "呪文",
+      "canonical_snapshot": "spell",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "spell",
+        "magic spell"
+      ],
+      "candidate_review": [
+        {
+          "expression": "magic spell",
+          "decision": "REJECT",
+          "reason": "canonical spell の説明的拡張で、独立したparaphrase価値はない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02334",
+      "prompt_ja": "進む",
+      "canonical_snapshot": "proceed",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "proceed",
+        "advance",
+        "move forward",
+        "go on"
+      ],
+      "candidate_review": [
+        {
+          "expression": "advance",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "move forward",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "go on",
+          "decision": "REJECT",
+          "reason": "「続ける」の意味が中心で、単独の「進む」への対応は文脈依存が強い。"
+        }
+      ],
+      "after_paraphrases": [
+        "advance",
+        "move forward"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 advance, move forward を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02335",
+      "prompt_ja": "急勾配の",
+      "canonical_snapshot": "steep",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "steep"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02336",
+      "prompt_ja": "小道",
+      "canonical_snapshot": "path",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "path",
+        "trail",
+        "lane"
+      ],
+      "candidate_review": [
+        {
+          "expression": "trail",
+          "decision": "REJECT",
+          "reason": "自然環境の小道に寄るため、無標の「小道」への主要別答としては範囲が狭い。"
+        },
+        {
+          "expression": "lane",
+          "decision": "REJECT",
+          "reason": "道路・路地の小道に寄るため、無標の「小道」への主要別答としては範囲が狭い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02337",
+      "prompt_ja": "唯一の",
+      "canonical_snapshot": "sole",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "only",
+        "sole"
+      ],
+      "candidate_review": [
+        {
+          "expression": "only",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "only"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 only を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02338",
+      "prompt_ja": "接近する手段",
+      "canonical_snapshot": "access",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "access",
+        "means of access",
+        "way in"
+      ],
+      "candidate_review": [
+        {
+          "expression": "means of access",
+          "decision": "REJECT",
+          "reason": "promptの英語説明に近く、canonical access から独立して覚える表現としての増分価値が低い。"
+        },
+        {
+          "expression": "way in",
+          "decision": "REJECT",
+          "reason": "入口・侵入経路の文脈に寄り、「接近する手段」全般への対応としては狭い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02339",
+      "prompt_ja": "境界",
+      "canonical_snapshot": "border",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "boundary",
+        "border"
+      ],
+      "candidate_review": [
+        {
+          "expression": "boundary",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "boundary"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 boundary を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02340",
+      "prompt_ja": "現れる",
+      "canonical_snapshot": "emerge",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "appear",
+        "emerge",
+        "show up"
+      ],
+      "candidate_review": [
+        {
+          "expression": "appear",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "show up",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "appear",
+        "show up"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 appear, show up を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02341",
+      "prompt_ja": "洞窟",
+      "canonical_snapshot": "cave",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "cave",
+        "cavern"
+      ],
+      "candidate_review": [
+        {
+          "expression": "cavern",
+          "decision": "REJECT",
+          "reason": "通常は大きな洞窟を指すため、無標の「洞窟」への追加回答としては下位概念に寄りすぎる。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02342",
+      "prompt_ja": "おびえた",
+      "canonical_snapshot": "frightened",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "frightened",
+        "scared",
+        "terrified"
+      ],
+      "candidate_review": [
+        {
+          "expression": "scared",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "terrified",
+          "decision": "REJECT",
+          "reason": "frightened/scared より恐怖の程度が強く、無標の「おびえた」への追加回答としては過強。"
+        }
+      ],
+      "after_paraphrases": [
+        "scared"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 scared を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02343",
+      "prompt_ja": "宇宙人",
+      "canonical_snapshot": "alien",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "alien",
+        "extraterrestrial"
+      ],
+      "candidate_review": [
+        {
+          "expression": "extraterrestrial",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "extraterrestrial"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 extraterrestrial を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02344",
+      "prompt_ja": "姿を消す",
+      "canonical_snapshot": "vanish",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "disappear",
+        "vanish"
+      ],
+      "candidate_review": [
+        {
+          "expression": "disappear",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "disappear"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 disappear を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02345",
+      "prompt_ja": "招待する",
+      "canonical_snapshot": "invite",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "invite"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02346",
+      "prompt_ja": "祝う",
+      "canonical_snapshot": "celebrate",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "celebrate"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02347",
+      "prompt_ja": "カップル",
+      "canonical_snapshot": "couple",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "couple",
+        "pair"
+      ],
+      "candidate_review": [
+        {
+          "expression": "pair",
+          "decision": "REJECT",
+          "reason": "二つ一組を広く指し、人物の「カップル」に必要な関係性を表さない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02348",
+      "prompt_ja": "記念日",
+      "canonical_snapshot": "anniversary",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "anniversary"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02349",
+      "prompt_ja": "軽食",
+      "canonical_snapshot": "snack",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "snack",
+        "light meal",
+        "a bite to eat"
+      ],
+      "candidate_review": [
+        {
+          "expression": "light meal",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "a bite to eat",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "light meal",
+        "a bite to eat"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 light meal, a bite to eat を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02350",
+      "prompt_ja": "派手な",
+      "canonical_snapshot": "loud",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "flashy",
+        "showy",
+        "gaudy",
+        "loud"
+      ],
+      "candidate_review": [
+        {
+          "expression": "flashy",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "showy",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "gaudy",
+          "decision": "REJECT",
+          "reason": "不快なほどけばけばしいという否定評価が強く、無標の「派手な」への対応としては狭い。"
+        }
+      ],
+      "after_paraphrases": [
+        "flashy",
+        "showy"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 flashy, showy を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02351",
+      "prompt_ja": "奇妙な",
+      "canonical_snapshot": "peculiar",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "strange",
+        "odd",
+        "weird",
+        "peculiar"
+      ],
+      "candidate_review": [
+        {
+          "expression": "strange",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "odd",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "weird",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "strange",
+        "odd",
+        "weird"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 strange, odd, weird を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02352",
+      "prompt_ja": "服装一式",
+      "canonical_snapshot": "outfit",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "outfit",
+        "set of clothes",
+        "ensemble"
+      ],
+      "candidate_review": [
+        {
+          "expression": "set of clothes",
+          "decision": "REJECT",
+          "reason": "説明句としては成立するが、独立した語彙・表現として学ばせる増分価値が低い。"
+        },
+        {
+          "expression": "ensemble",
+          "decision": "REJECT",
+          "reason": "服装一式の用法はあるがファッション文脈寄りで、一般学習項目としての実用優先度が低い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02353",
+      "prompt_ja": "群衆",
+      "canonical_snapshot": "crowd",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "crowd"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02354",
+      "prompt_ja": "感動させる",
+      "canonical_snapshot": "touch",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "move",
+        "touch",
+        "impress"
+      ],
+      "candidate_review": [
+        {
+          "expression": "move",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "impress",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "move",
+        "impress"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 move, impress を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02355",
+      "prompt_ja": "古ぼけた",
+      "canonical_snapshot": "shabby",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "shabby",
+        "worn",
+        "worn-out",
+        "faded"
+      ],
+      "candidate_review": [
+        {
+          "expression": "worn",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "worn-out",
+          "decision": "REJECT",
+          "reason": "古さに加えて使い古され機能低下した含意が強く、無標の「古ぼけた」より過強。"
+        },
+        {
+          "expression": "faded",
+          "decision": "REJECT",
+          "reason": "色あせに意味が限定され、古ぼけた外観全般には対応しない。"
+        }
+      ],
+      "after_paraphrases": [
+        "worn"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 worn を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02356",
+      "prompt_ja": "機会・場合／特定の出来事",
+      "canonical_snapshot": "occasion",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "occasion",
+        "opportunity",
+        "case",
+        "event"
+      ],
+      "candidate_review": [
+        {
+          "expression": "opportunity",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "case",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "event",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "opportunity",
+        "case",
+        "event"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 opportunity, case, event を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02357",
+      "prompt_ja": "気軽な・形式ばらない／何気ない",
+      "canonical_snapshot": "casual",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "casual",
+        "informal",
+        "offhand",
+        "relaxed"
+      ],
+      "candidate_review": [
+        {
+          "expression": "informal",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "offhand",
+          "decision": "REJECT",
+          "reason": "準備なし・ぞんざいという含意が中心で、「気軽な・形式ばらない」全般への回答としては狭い。"
+        },
+        {
+          "expression": "relaxed",
+          "decision": "REJECT",
+          "reason": "雰囲気や状態の気楽さには対応するが、「何気ない」まで含むpromptへの主要別答としてはずれる。"
+        }
+      ],
+      "after_paraphrases": [
+        "informal"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 informal を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02358",
+      "prompt_ja": "粗野な",
+      "canonical_snapshot": "crude",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "crude",
+        "coarse",
+        "rude",
+        "rough"
+      ],
+      "candidate_review": [
+        {
+          "expression": "coarse",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "rude",
+          "decision": "REJECT",
+          "reason": "無礼さが中心で、粗野さ・洗練されていない性質そのものとは範囲がずれる。"
+        },
+        {
+          "expression": "rough",
+          "decision": "REJECT",
+          "reason": "物理的な粗さ等の意味が広く、人物・態度の「粗野な」への追加回答としては曖昧。"
+        }
+      ],
+      "after_paraphrases": [
+        "coarse"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 coarse を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02359",
+      "prompt_ja": "不快感を与える",
+      "canonical_snapshot": "offensive",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "offensive",
+        "offend",
+        "displease",
+        "upset"
+      ],
+      "candidate_review": [
+        {
+          "expression": "offend",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "displease",
+          "decision": "REJECT",
+          "reason": "意味は成立するが現代の一般用法での優先度が低く、offend採用後の増分学習価値が小さい。"
+        },
+        {
+          "expression": "upset",
+          "decision": "REJECT",
+          "reason": "感情を乱す意味が広く、「不快感を与える」への対応としては過広。"
+        }
+      ],
+      "after_paraphrases": [
+        "offend"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 offend を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02360",
+      "prompt_ja": "ほとんど〜ない",
+      "canonical_snapshot": "hardly",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "hardly",
+        "barely",
+        "scarcely"
+      ],
+      "candidate_review": [
+        {
+          "expression": "barely",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "scarcely",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "barely",
+        "scarcely"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 barely, scarcely を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02361",
+      "prompt_ja": "からかう",
+      "canonical_snapshot": "tease",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "tease",
+        "make fun of",
+        "mock"
+      ],
+      "candidate_review": [
+        {
+          "expression": "make fun of",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "mock",
+          "decision": "REJECT",
+          "reason": "嘲笑・侮蔑の強さが出やすく、軽い「からかう」まで含む無標promptには過強。"
+        }
+      ],
+      "after_paraphrases": [
+        "make fun of"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 make fun of を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02362",
+      "prompt_ja": "制裁を科す",
+      "canonical_snapshot": "impose sanctions",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "impose sanctions",
+        "impose sanctions on someone",
+        "sanction someone",
+        "penalize someone"
+      ],
+      "candidate_review": [
+        {
+          "expression": "impose sanctions on someone",
+          "decision": "REJECT",
+          "reason": "canonical impose sanctions に引数を足しただけのsurface variantで、独立paraphraseではない。"
+        },
+        {
+          "expression": "sanction someone",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "penalize someone",
+          "decision": "REJECT",
+          "reason": "一般的に罰する意味で、政治・経済的な「制裁を科す」に必要なsanctionの意味が弱い。"
+        }
+      ],
+      "after_paraphrases": [
+        "sanction someone"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 sanction someone を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02363",
+      "prompt_ja": "貿易摩擦",
+      "canonical_snapshot": "trade friction",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "trade friction",
+        "trade tensions",
+        "trade conflict"
+      ],
+      "candidate_review": [
+        {
+          "expression": "trade tensions",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "trade conflict",
+          "decision": "REJECT",
+          "reason": "摩擦・緊張より対立の強度が高く、無標の「貿易摩擦」への回答としては過強。"
+        }
+      ],
+      "after_paraphrases": [
+        "trade tensions"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 trade tensions を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02364",
+      "prompt_ja": "最優先事項",
+      "canonical_snapshot": "top priority",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "top priority",
+        "highest priority",
+        "number one priority"
+      ],
+      "candidate_review": [
+        {
+          "expression": "highest priority",
+          "decision": "REJECT",
+          "reason": "意味は成立するがcanonicalと同じpriorityを使う機械的な程度表現で、独立表現としての増分価値が小さい。"
+        },
+        {
+          "expression": "number one priority",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "number one priority"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 number one priority を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02365",
+      "prompt_ja": "争いを解決する",
+      "canonical_snapshot": "settle a dispute",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "settle a dispute",
+        "resolve a dispute",
+        "resolve a conflict"
+      ],
+      "candidate_review": [
+        {
+          "expression": "resolve a dispute",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "resolve a conflict",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "resolve a dispute",
+        "resolve a conflict"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 resolve a dispute, resolve a conflict を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02366",
+      "prompt_ja": "somethingする用意がある",
+      "canonical_snapshot": "be ready to do something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be ready to do something",
+        "be prepared to do something",
+        "be willing to do something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be prepared to do something",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "be willing to do something",
+          "decision": "REJECT",
+          "reason": "意欲・意思の有無を表し、準備ができているという「用意がある」とは意味軸がずれる。"
+        }
+      ],
+      "after_paraphrases": [
+        "be prepared to do something"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 be prepared to do something を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02367",
+      "prompt_ja": "somethingを探す",
+      "canonical_snapshot": "look for something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "look for something",
+        "search for something",
+        "seek something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "search for something",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "seek something",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "search for something",
+        "seek something"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 search for something, seek something を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02368",
+      "prompt_ja": "somethingを探す",
+      "canonical_snapshot": "search for something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "search for something",
+        "look for something",
+        "seek something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "look for something",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "seek something",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "look for something",
+        "seek something"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 look for something, seek something を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02369",
+      "prompt_ja": "somethingとsomething elseを区別する",
+      "canonical_snapshot": "distinguish something from something else",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "distinguish something from something else",
+        "tell something from something else",
+        "differentiate something from something else"
+      ],
+      "candidate_review": [
+        {
+          "expression": "tell something from something else",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "differentiate something from something else",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "tell something from something else",
+        "differentiate something from something else"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 tell something from something else, differentiate something from something else を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02370",
+      "prompt_ja": "somethingしたとして告発される",
+      "canonical_snapshot": "be accused of doing something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be accused of doing something",
+        "be charged with doing something",
+        "be alleged to have done something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be charged with doing something",
+          "decision": "REJECT",
+          "reason": "刑事・法的な正式起訴に寄るため、一般的な「告発される」への回答としては文脈限定が強い。"
+        },
+        {
+          "expression": "be alleged to have done something",
+          "decision": "REJECT",
+          "reason": "「〜したとされる」で告発主体や非難を必ずしも含まず、promptより意味がずれる。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02371",
+      "prompt_ja": "somethingしようと試みる",
+      "canonical_snapshot": "attempt to do something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "attempt to do something",
+        "try to do something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "try to do something",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "try to do something"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 try to do something を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02372",
+      "prompt_ja": "一昨日",
+      "canonical_snapshot": "the day before yesterday",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "the day before yesterday"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02373",
+      "prompt_ja": "somethingに気づく",
+      "canonical_snapshot": "become aware of something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "become aware of something",
+        "notice something",
+        "realize something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "notice something",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "realize something",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "notice something",
+        "realize something"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 notice something, realize something を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02374",
+      "prompt_ja": "somethingをじっと見る",
+      "canonical_snapshot": "stare at something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "stare at something",
+        "gaze at something",
+        "look closely at something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "gaze at something",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "look closely at something",
+          "decision": "REJECT",
+          "reason": "注意深く観察する意味で、視線を固定する「じっと見る」とは焦点が異なる。"
+        }
+      ],
+      "after_paraphrases": [
+        "gaze at something"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 gaze at something を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02375",
+      "prompt_ja": "振り向く",
+      "canonical_snapshot": "turn around",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "turn around",
+        "look back",
+        "turn one's head"
+      ],
+      "candidate_review": [
+        {
+          "expression": "look back",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "turn one's head",
+          "decision": "REJECT",
+          "reason": "動作の説明としては成立するが、固定表現としての独立学習価値が低い。"
+        }
+      ],
+      "after_paraphrases": [
+        "look back"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 look back を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02376",
+      "prompt_ja": "〜行きである・〜へ向かっている",
+      "canonical_snapshot": "be bound for",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be bound for",
+        "be headed for somewhere",
+        "be on one's way to somewhere"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be headed for somewhere",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "be on one's way to somewhere",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "be headed for somewhere",
+        "be on one's way to somewhere"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 be headed for somewhere, be on one's way to somewhere を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02377",
+      "prompt_ja": "somethingの種をまく",
+      "canonical_snapshot": "sow the seeds of something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "sow the seeds of something",
+        "plant the seeds of something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "plant the seeds of something",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "plant the seeds of something"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 plant the seeds of something を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02378",
+      "prompt_ja": "somethingすると言い張る",
+      "canonical_snapshot": "insist on doing something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "insist on doing something",
+        "claim to do something",
+        "demand to do something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "claim to do something",
+          "decision": "REJECT",
+          "reason": "行為をすると主張する意味で、行為をすることを強く求める insist on doing とは構文意味が異なる。"
+        },
+        {
+          "expression": "demand to do something",
+          "decision": "REJECT",
+          "reason": "強く要求する意味はあるが、「〜すると言い張る」全般への対応としては限定的。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02379",
+      "prompt_ja": "代々",
+      "canonical_snapshot": "from generation to generation",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "from generation to generation",
+        "for generations",
+        "generation after generation"
+      ],
+      "candidate_review": [
+        {
+          "expression": "for generations",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "generation after generation",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "for generations",
+        "generation after generation"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 for generations, generation after generation を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02380",
+      "prompt_ja": "someoneに魔法をかける",
+      "canonical_snapshot": "cast a spell on someone",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "cast a spell on someone",
+        "put a spell on someone",
+        "bewitch someone"
+      ],
+      "candidate_review": [
+        {
+          "expression": "put a spell on someone",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "bewitch someone",
+          "decision": "REJECT",
+          "reason": "意味は成立するが文学的・低頻度で、put a spell on someone採用後の増分実用価値が低い。"
+        }
+      ],
+      "after_paraphrases": [
+        "put a spell on someone"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 put a spell on someone を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02381",
+      "prompt_ja": "somethingをsomething elseに変える",
+      "canonical_snapshot": "turn something into something else",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "turn something into something else",
+        "change something into something else",
+        "transform something into something else"
+      ],
+      "candidate_review": [
+        {
+          "expression": "change something into something else",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "transform something into something else",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "change something into something else",
+        "transform something into something else"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 change something into something else, transform something into something else を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02382",
+      "prompt_ja": "somethingを利用できること",
+      "canonical_snapshot": "access to something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "access to something",
+        "availability of something",
+        "ability to use something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "availability of something",
+          "decision": "REJECT",
+          "reason": "対象が利用可能な状態を表すが、利用者側の「利用できること/access」とは焦点がずれる。"
+        },
+        {
+          "expression": "ability to use something",
+          "decision": "REJECT",
+          "reason": "説明句であり、独立して学ばせる語彙・定型表現としての増分価値が低い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02383",
+      "prompt_ja": "逃げ去る",
+      "canonical_snapshot": "run away",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "run away",
+        "flee",
+        "escape"
+      ],
+      "candidate_review": [
+        {
+          "expression": "flee",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "escape",
+          "decision": "REJECT",
+          "reason": "拘束・危険から逃れる結果に焦点があり、「逃げ去る」という移動そのものへの対応としてはずれる場合がある。"
+        }
+      ],
+      "after_paraphrases": [
+        "flee"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 flee を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02384",
+      "prompt_ja": "もうすぐ準備が整う",
+      "canonical_snapshot": "it won't be long before everything is ready",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "it won't be long before everything is ready",
+        "be almost ready",
+        "be nearly ready",
+        "everything will be ready soon"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be almost ready",
+          "decision": "REJECT",
+          "reason": "現在すでにほぼ準備済みという状態を表し、「もうすぐ準備が整う」という未来時点表現と完全には一致しない。"
+        },
+        {
+          "expression": "be nearly ready",
+          "decision": "REJECT",
+          "reason": "be almost ready と同様に現在状態寄りで、direct future paraphraseより優先して登録する価値は低い。"
+        },
+        {
+          "expression": "everything will be ready soon",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "everything will be ready soon"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 everything will be ready soon を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02385",
+      "prompt_ja": "返答",
+      "canonical_snapshot": "reply",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "reply",
+        "answer",
+        "response"
+      ],
+      "candidate_review": [
+        {
+          "expression": "answer",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "response",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "answer",
+        "response"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 answer, response を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02386",
+      "prompt_ja": "顔を赤らめる",
+      "canonical_snapshot": "blush",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "blush"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02387",
+      "prompt_ja": "談笑する",
+      "canonical_snapshot": "chat",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "chat",
+        "talk",
+        "have a chat",
+        "make small talk"
+      ],
+      "candidate_review": [
+        {
+          "expression": "talk",
+          "decision": "REJECT",
+          "reason": "会話一般で、楽しく雑談する「談笑する」に必要な軽さ・社交性を表さない。"
+        },
+        {
+          "expression": "have a chat",
+          "decision": "REJECT",
+          "reason": "canonical chat の句化に近く、独立したparaphraseとしての増分価値が小さい。"
+        },
+        {
+          "expression": "make small talk",
+          "decision": "REJECT",
+          "reason": "軽い社交会話には合うが、必ずしも楽しげに談笑することを意味せずpromptより狭い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02388",
+      "prompt_ja": "田舎の",
+      "canonical_snapshot": "rural",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "rural",
+        "country",
+        "countryside"
+      ],
+      "candidate_review": [
+        {
+          "expression": "country",
+          "decision": "REJECT",
+          "reason": "形容詞用法はあるが特定collocation依存が強く、単独回答では国の意味との曖昧さが大きい。"
+        },
+        {
+          "expression": "countryside",
+          "decision": "REJECT",
+          "reason": "名詞「田舎」であり、形容的な「田舎の」へのsurface answerとしては形が合わない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02389",
+      "prompt_ja": "変装",
+      "canonical_snapshot": "disguise",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "disguise"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02390",
+      "prompt_ja": "見分ける",
+      "canonical_snapshot": "recognize",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "recognize",
+        "tell apart",
+        "distinguish",
+        "identify"
+      ],
+      "candidate_review": [
+        {
+          "expression": "tell apart",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "distinguish",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "identify",
+          "decision": "REJECT",
+          "reason": "対象を特定する意味が中心で、二者を見分ける distinguish/tell apart とは焦点が異なる。"
+        }
+      ],
+      "after_paraphrases": [
+        "tell apart",
+        "distinguish"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 tell apart, distinguish を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02391",
+      "prompt_ja": "くすくす笑う",
+      "canonical_snapshot": "chuckle",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "chuckle",
+        "giggle",
+        "snicker"
+      ],
+      "candidate_review": [
+        {
+          "expression": "giggle",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "snicker",
+          "decision": "REJECT",
+          "reason": "嘲笑を含む押し殺した笑いに寄り、無標の「くすくす笑う」より意味が狭い。"
+        }
+      ],
+      "after_paraphrases": [
+        "giggle"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 giggle を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02392",
+      "prompt_ja": "後ろ向きに／逆方向に・逆に",
+      "canonical_snapshot": "backwards",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "backwards",
+        "backward",
+        "in reverse",
+        "the other way around"
+      ],
+      "candidate_review": [
+        {
+          "expression": "backward",
+          "decision": "REJECT",
+          "reason": "backwardsとの地域・形態variantに近く、今回のparaphrase対象外。"
+        },
+        {
+          "expression": "in reverse",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "the other way around",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "in reverse",
+        "the other way around"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 in reverse, the other way around を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02393",
+      "prompt_ja": "属する／（人など）のものである",
+      "canonical_snapshot": "belong",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "belong",
+        "belong to someone",
+        "be someone's"
+      ],
+      "candidate_review": [
+        {
+          "expression": "belong to someone",
+          "decision": "REJECT",
+          "reason": "canonical belong に必要引数を補ったsurface variantで、独立paraphraseではない。"
+        },
+        {
+          "expression": "be someone's",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "be someone's"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 be someone's を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02394",
+      "prompt_ja": "不安な",
+      "canonical_snapshot": "uneasy",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "uneasy",
+        "worried",
+        "anxious",
+        "nervous"
+      ],
+      "candidate_review": [
+        {
+          "expression": "worried",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "anxious",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "nervous",
+          "decision": "REJECT",
+          "reason": "特定状況で緊張している意味に寄り、一般的な「不安な」への追加回答としてはやや狭い。"
+        }
+      ],
+      "after_paraphrases": [
+        "worried",
+        "anxious"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 worried, anxious を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02395",
+      "prompt_ja": "寂しい",
+      "canonical_snapshot": "lonely",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "lonely",
+        "lonesome"
+      ],
+      "candidate_review": [
+        {
+          "expression": "lonesome",
+          "decision": "REJECT",
+          "reason": "意味は成立するが地域・文体差のある低優先度variantで、独立した学習価値が小さい。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02396",
+      "prompt_ja": "かなり",
+      "canonical_snapshot": "pretty",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "pretty",
+        "quite",
+        "rather",
+        "fairly"
+      ],
+      "candidate_review": [
+        {
+          "expression": "quite",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "rather",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "fairly",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "quite",
+        "rather",
+        "fairly"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 quite, rather, fairly を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02397",
+      "prompt_ja": "周囲の環境",
+      "canonical_snapshot": "surroundings",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "surroundings",
+        "environment",
+        "setting"
+      ],
+      "candidate_review": [
+        {
+          "expression": "environment",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "setting",
+          "decision": "REJECT",
+          "reason": "出来事・物語の背景環境に寄り、「周囲の環境」全般への回答としては文脈依存が強い。"
+        }
+      ],
+      "after_paraphrases": [
+        "environment"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 environment を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02398",
+      "prompt_ja": "まったく",
+      "canonical_snapshot": "utterly",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "utterly",
+        "completely",
+        "absolutely",
+        "entirely",
+        "at all"
+      ],
+      "candidate_review": [
+        {
+          "expression": "completely",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "absolutely",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "entirely",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "at all",
+          "decision": "REJECT",
+          "reason": "主に否定・疑問構文で機能するため、単独の「まったく」への回答としては構文依存が強い。"
+        }
+      ],
+      "after_paraphrases": [
+        "completely",
+        "absolutely",
+        "entirely"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 completely, absolutely, entirely を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02399",
+      "prompt_ja": "クラシック音楽の",
+      "canonical_snapshot": "classical",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "classical"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02400",
+      "prompt_ja": "引き出す",
+      "canonical_snapshot": "derive",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "derive",
+        "draw out",
+        "extract",
+        "bring out",
+        "elicit",
+        "pull out"
+      ],
+      "candidate_review": [
+        {
+          "expression": "draw out",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "extract",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "bring out",
+          "decision": "REJECT",
+          "reason": "性質・味・能力などを引き出す文脈に寄り、無標の「引き出す」への回答としては範囲が限定される。"
+        },
+        {
+          "expression": "elicit",
+          "decision": "REJECT",
+          "reason": "反応・情報を引き出す目的語に限定されやすく、一般promptへの回答としては文脈依存が強い。"
+        },
+        {
+          "expression": "pull out",
+          "decision": "REJECT",
+          "reason": "物理的に引き抜く意味に寄り、deriveが表す抽象的な取得も含むpromptへの主要別答としては狭い。"
+        }
+      ],
+      "after_paraphrases": [
+        "draw out",
+        "extract"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 draw out, extract を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02401",
+      "prompt_ja": "喜び",
+      "canonical_snapshot": "pleasure",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "pleasure",
+        "joy",
+        "delight"
+      ],
+      "candidate_review": [
+        {
+          "expression": "joy",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "delight",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "joy",
+        "delight"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 joy, delight を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02402",
+      "prompt_ja": "観察する",
+      "canonical_snapshot": "observe",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "observe",
+        "watch",
+        "monitor"
+      ],
+      "candidate_review": [
+        {
+          "expression": "watch",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの主要な別英答として自然に成立し、canonicalとは独立した頻度・実用性または読解上の学習価値が高い。"
+        },
+        {
+          "expression": "monitor",
+          "decision": "REJECT",
+          "reason": "継続的・体系的に監視する意味に寄り、一般的な「観察する」より範囲が狭い。"
+        }
+      ],
+      "after_paraphrases": [
+        "watch"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt-only監査で主要な別英答 watch を採用。second passで文脈依存・surface variant・低増分候補を除外した。"
+    },
+    {
+      "entry_id": "vocab:02403",
+      "prompt_ja": "昆虫",
+      "canonical_snapshot": "insect",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "insect",
+        "bug"
+      ],
+      "candidate_review": [
+        {
+          "expression": "bug",
+          "decision": "REJECT",
+          "reason": "日常語では昆虫以外の小型節足動物まで含み得るため、厳密な「昆虫」と一対一対応させると誤学習リスクがある。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要候補を生成・逆検証したが、canonical以外は意味範囲・独立性・増分学習価値のいずれかが不足するため登録しない。"
+    }
+  ],
+  "followups": []
+}
