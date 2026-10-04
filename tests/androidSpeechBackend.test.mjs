@@ -142,7 +142,7 @@ test('native error and cancellation settle pending manual stop without grading p
   }
 });
 
-test('native production controller retains twenty, dedupes without losing provider rank, and exports counts',async()=>{
+test('native production controller retains all twenty original provider candidates and exports counts',async()=>{
   const f=fixture();let driver;
   class Backend extends AndroidSpeechRecognizerBackend{constructor(){super({pluginProvider:async()=>f.plugin,biasProvider:async()=>[]});driver=this;drivers.push(this);}}
   const controller=createRecognitionController({recognitionBackend:Backend,shouldEvaluate:()=>false});
@@ -151,7 +151,7 @@ test('native production controller retains twenty, dedupes without losing provid
   const values=Array.from({length:20},(_,i)=>({transcript:i===19?'yell':i<2?'yeah':'wrong '+i,asrRank:i,confidence:0.05}));
   f.emit(driver,'final',values);
   const segment=controller.getNativeRecognitionSegments()[0];
-  assert.equal(segment.alternatives.length,19);
+  assert.equal(segment.alternatives.length,20);
   assert.equal(segment.alternatives.at(-1).asrRank,19);
   assert.equal(segment.alternatives.at(-1).transcript,'yell');
   assert.equal(segment.providerReturnedCount,20);

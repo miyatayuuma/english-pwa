@@ -500,7 +500,7 @@ export function createRecognitionController(options = {}) {
         for(let rank=0;rank<Math.min(result.length,currentRecognition.maxAlternatives);rank++){
           const value=result[rank],transcript=String(value?.transcript??'');
           const key=transcript.normalize('NFKC').toLocaleLowerCase('en-US').replace(/\s+/g,' ').trim();
-          if(!key||seen.has(key)) continue;
+          if(!key || (!currentRecognition.waitsForFinalResult && seen.has(key))) continue;
           seen.add(key);alternatives.push({transcript,asrRank:Number.isInteger(value?.asrRank)?value.asrRank:rank,confidence:Number.isFinite(value?.confidence)?value.confidence:null});
         }
         segments[i]={segmentIndex:i,primaryTranscript:String(result[0]?.transcript??''),alternatives,isFinal:!!result.isFinal,requestedMaxResults:result.requestedMaxResults,providerReturnedCount:result.providerReturnedCount,retainedCandidateCount:result.retainedCandidateCount};
