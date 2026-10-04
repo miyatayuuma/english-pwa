@@ -407,7 +407,7 @@ browserTest('native TARGET rescue preserves raw primary, answer authority and ex
   }
 });
 
-browserTest('wrong native candidates and meaningful other segments stay provisional; lower PARAPHRASE is not rescued',async()=>{
+browserTest('a lower contained TARGET is rescued despite extra words in another segment',async()=>{
   const opened=await newPage(sources[0]);const {page}=opened;
   try{
     await inject(page,['banana','run into someone']);
@@ -415,35 +415,43 @@ browserTest('wrong native candidates and meaningful other segments stay provisio
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0);
     await page.locator('.vocab-mic').click();await page.waitForFunction(()=>window.__mockSpeech.startCount===2);
     await injectFinal(page,'not');await injectInterim(page,['wrong','come across someone']);
-    await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent.includes('聞き取りを確認'));
+    await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='正解');
     assert.equal(await page.locator('.vocab-heard__text').innerText(),'not wrong');
-    assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0);
-    await page.locator('.vocab-mic').click();await page.waitForFunction(()=>window.__mockSpeech.startCount===3);
-    await inject(page,['run into someone','come across someone']);
-    await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='意味はOK');
+    assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);
+  }finally{await closePage(opened);}
+});
+
+browserTest('primary Vocabulary containment accepts extra words, preserves raw transcript, and writes SRS once',async()=>{
+  const opened=await newPage(sources[4]);const {page}=opened;
+  try{
+    const spoken='I mean yield to something please';
+    await inject(page,spoken);
+    await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='正解');
+    assert.equal(await page.locator('.vocab-heard__text').innerText(),spoken);
+    assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);
+  }finally{await closePage(opened);}
+});
+
+browserTest('TARGET-internal interruption remains a MISS under primary containment',async()=>{
+  const opened=await newPage(sources[4]);const {page}=opened;
+  try{
+    await inject(page,'yield um to something');
+    await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent.includes('聞き取りを確認'));
+    assert.equal(await page.locator('.vocab-heard__text').innerText(),'yield um to something');
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0);
   }finally{await closePage(opened);}
 });
 
-browserTest('filler / restart accepted on primary and native correction keeps original MISS and raw hearing',async()=>{
-  const opened=await newPage(sources[4]);const {page,entry}=opened;
+browserTest('correction completes on a contained strict TARGET without an extra SRS write',async()=>{
+  const opened=await newPage(sources[0],{entryState:lv5State()});const {page}=opened;
   try{
     await page.locator('.vocab-reveal').click();await page.waitForSelector('.vocab-answer');
-    const miss=await page.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id],entry.id);
-    await page.locator('.vocab-mic').click();await page.waitForFunction(()=>window.__mockSpeech.startCount>0);
-    await inject(page,['YouTube something','uh yield yield to something um']);
-    await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='修正練習完了');
-    assert.equal(await page.locator('.vocab-transcript').innerText(),'YouTube something');
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);
-    assert.deepEqual(await page.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id],entry.id),miss);
+    await page.locator('.vocab-mic').click();await page.waitForFunction(()=>window.__mockSpeech.startCount>0);
+    await inject(page,'okay come across someone again');
+    await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='修正練習完了');
+    assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);
   }finally{await closePage(opened);}
-  const second=await newPage(sources[7]);
-  try{
-    const spoken="um learn learn your lesson uh";
-    await inject(second.page,spoken);await second.page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='正解');
-    assert.equal(await second.page.locator('.vocab-heard__text').innerText(),spoken);
-    assert.equal(await second.page.evaluate(()=>window.__mockSpeech.srsWrites),1);
-  }finally{await closePage(second);}
 });
 
 browserTest('all-MISS review supports unlimited fresh retries, focus, stale-event isolation and TARGET without penalty',async()=>{
@@ -714,7 +722,7 @@ for(const rank of [1,6,12,20]) browserTest(`Web production Vocabulary strict TAR
   try{
     await page.waitForFunction(()=>window.__mockSpeech.startCount>0);
     assert.equal(await page.evaluate(()=>window.__mockSpeech.latest.maxAlternatives),20);
-    const alternatives=Array.from({length:20},(_,i)=>i===rank-1?'yield to something':'years to something');
+    const alternatives=Array.from({length:20},(_,i)=>i===rank-1?'please yield to something again':'years to something');
     await inject(page,alternatives);
     await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='正解');
     assert.equal(await page.locator('.vocab-heard__text').innerText(),alternatives[0]);

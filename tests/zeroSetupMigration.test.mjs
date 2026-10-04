@@ -31,7 +31,7 @@ test('actual plan counts use the existing authority with auto, explicit, custom 
   const auto=buildSessionPlanFromOptions(items,levels, {count:'auto'},{now:10000});assert.ok(auto.size>=6&&auto.size<=8);
   const short=buildSessionPlanFromOptions(items.slice(0,3),{}, {count:'12'},{now:10000});assert.equal(short.size,3);assert.equal(short.composition.shortfall,9);
 });
-test('runtime has folder-only settings and no retired bindings or remote logs; native bridges remain',async()=>{
+test('runtime has folder and app information settings with no retired bindings or remote logs; native bridges remain',async()=>{
   const read=path=>fs.readFile(new URL('../'+path,import.meta.url),'utf8');
   const [html,main,worker]=await Promise.all([read('index.html'),read('scripts/app/main.js'),read('sw.js')]);
   for(const control of ['cfgUrl','cfgKey','cfgAudioBase','cfgPlaybackMode','cfgStudyMode','cfgSpeechVoice','cfgMilestoneIntensity','cfgResultSound','notifTimeList','notifTriggerDailyZero','cfgSave','onboardingCard','personalPlanSummary']){
@@ -40,5 +40,10 @@ test('runtime has folder-only settings and no retired bindings or remote logs; n
   assert.doesNotMatch(main,/sendLog|flushPendingLogs|refreshRemoteStatus|CFG\.(apiUrl|apiKey|audioBase)|initOnboardingFlow/);
   assert.doesNotMatch(worker,/logManager/);
   for(const id of ['btnPickDir','btnClearDir','dirStatus']) assert.ok(html.includes(id));
+  assert.match(html,/<h3>設定<\/h3>/);
+  assert.match(html,/<p class="cfg-section-title">アプリ情報<\/p>/);
+  assert.match(html,/data-app-version/);
+  assert.match(main,/const appVersionText=\x60バージョン: \$\{APP_VERSION\}\x60/);
+  assert.match(main,/data-app-version/);
   assert.match(main,/nativeDirectory\('pick'\)/);assert.match(main,/prompt:false, forceCheck:true/);
 });
