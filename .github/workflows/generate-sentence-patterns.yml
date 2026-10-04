@@ -1,0 +1,71 @@
+name: Generate sentence patterns
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - p4-five-sentence-patterns
+    paths:
+      - 'scripts/tagging/generate-sentence-patterns.py'
+      - 'scripts/tagging/sentencePatternApplication.mjs'
+      - 'scripts/tagging/apply-sentence-patterns.mjs'
+      - 'data/sentence-pattern-overrides.json'
+      - 'data/sentence-pattern-gold.json'
+      - '.github/workflows/generate-sentence-patterns.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependency parser
+        run: |
+          python -m pip install 'spacy==3.8.16'
+          python -m spacy download en_core_web_sm
+      - name: Generate auditable sentence-pattern analysis
+        run: python scripts/tagging/generate-sentence-patterns.py
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Apply accepted patterns to items
+        run: node scripts/tagging/apply-sentence-patterns.mjs
+      - name: Validate P4 output
+        run: |
+          node - <<'NODE'
+          const fs=require('fs');
+          const items=JSON.parse(fs.readFileSync('data/items.json','utf8'));
+          const analysis=JSON.parse(fs.readFileSync('data/sentence-pattern-analysis.json','utf8'));
+          const review=JSON.parse(fs.readFileSync('data/sentence-pattern-review.json','utf8'));
+          const report=JSON.parse(fs.readFileSync('data/tagging-report.json','utf8'));
+          if(items.length!==560||analysis.entries.length!==560) throw new Error('P4 item coverage');
+          if(analysis.summary.main_accepted<350) throw new Error(`main coverage too low: ${analysis.summary.main_accepted}`);
+          if(analysis.summary.gold.total<8||analysis.summary.gold.accuracy<0.9) throw new Error(`gold accuracy too low: ${analysis.summary.gold.accuracy}`);
+          if(report.sentence_pattern_main_tagged_items!==analysis.summary.main_accepted) throw new Error('report/main mismatch');
+          if(review.summary.review_item_count!==analysis.summary.review_item_count) throw new Error('review summary mismatch');
+          const allowed=new Set(['SV','SVC','SVO','SVOO','SVOC']);
+          for(const item of items){
+            const p=item.sentence_patterns;
+            if(!p||!Array.isArray(p.clauses)) throw new Error(`missing pattern scaffold ${item.id}`);
+            if(p.main!==null&&!allowed.has(p.main)) throw new Error(`bad main pattern ${item.id}`);
+            if(p.clauses.some(x=>!allowed.has(x))) throw new Error(`bad clause pattern ${item.id}`);
+          }
+          console.log('P4 validated',analysis.summary);
+          NODE
+      - name: Commit generated P4 data
+        run: |
+          if git diff --quiet -- data/sentence-pattern-analysis.json data/sentence-pattern-review.json data/items.json data/tagging-report.json; then
+            echo 'No generated changes to commit.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/sentence-pattern-analysis.json data/sentence-pattern-review.json data/items.json data/tagging-report.json
+          git commit -m 'data: generate five-sentence-pattern analysis'
+          git push
