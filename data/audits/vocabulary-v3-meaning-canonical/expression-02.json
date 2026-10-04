@@ -1,0 +1,3808 @@
+{
+  "shard": "expression-02",
+  "baseline_main": "85506d6ce258d2bd12f8ec80e937fbdd5e7a098d",
+  "summary": {
+    "assigned": 199,
+    "reviewed": 199,
+    "KEEP": 117,
+    "MODIFY": 82,
+    "unresolved": 0
+  },
+  "entries": [
+    {
+      "id": "vocab:00011",
+      "kind": "expression",
+      "before": {
+        "canonical": "put something on",
+        "sense_key": "put_on_clothing",
+        "meaning_ja": "手袋をはめる"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "put something on",
+        "sense_key": "put_on_clothing",
+        "meaning_ja": "〜を身につける"
+      },
+      "reason": "手袋に限定された原文訳を衣類等を身につける一般義へ戻す。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": true
+    },
+    {
+      "id": "vocab:00012",
+      "kind": "expression",
+      "before": {
+        "canonical": "be starved",
+        "sense_key": "very_hungry",
+        "meaning_ja": "お腹がぺこぺこだ"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "be starved",
+        "sense_key": "very_hungry",
+        "meaning_ja": "お腹がぺこぺこだ"
+      },
+      "reason": "be starvedはvery_hungryの固定義に対応する辞書形・定型表現。『お腹がぺこぺこだ』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00020",
+      "kind": "expression",
+      "before": {
+        "canonical": "good for you",
+        "sense_key": "congratulate_someone",
+        "meaning_ja": "よかったね"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "good for you",
+        "sense_key": "congratulate_someone",
+        "meaning_ja": "よかったね"
+      },
+      "reason": "good for youはcongratulate_someoneの固定義に対応する辞書形・定型表現。『よかったね』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00025",
+      "kind": "expression",
+      "before": {
+        "canonical": "be short of something",
+        "sense_key": "insufficient_amount",
+        "meaning_ja": "現金が足りない"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "be short of something",
+        "sense_key": "insufficient_amount",
+        "meaning_ja": "〜が不足している"
+      },
+      "reason": "『〜が不足している』をbe short of somethingの代表義として確定する。原文の時制・特定対象を混入せず、insufficient_amountとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": true
+    },
+    {
+      "id": "vocab:00032",
+      "kind": "expression",
+      "before": {
+        "canonical": "make sure",
+        "sense_key": "check_that_something_is_true",
+        "meaning_ja": "確かめる"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "make sure",
+        "sense_key": "check_that_something_is_true",
+        "meaning_ja": "確かめる"
+      },
+      "reason": "make sureはcheck_that_something_is_trueの固定義に対応する辞書形・定型表現。『確かめる』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00039",
+      "kind": "expression",
+      "before": {
+        "canonical": "give off something",
+        "sense_key": "emit_smell_or_light",
+        "meaning_ja": "（におい・光などを）発する"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "give off something",
+        "sense_key": "emit_smell_or_light",
+        "meaning_ja": "（におい・光などを）発する"
+      },
+      "reason": "give off somethingはemit_smell_or_lightの固定義に対応する辞書形・定型表現。『（におい・光などを）発する』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00046",
+      "kind": "expression",
+      "before": {
+        "canonical": "beyond description",
+        "sense_key": "too_extraordinary_for_words",
+        "meaning_ja": "言葉で表せないほど"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "beyond description",
+        "sense_key": "too_extraordinary_for_words",
+        "meaning_ja": "言葉で表せないほど"
+      },
+      "reason": "beyond descriptionはtoo_extraordinary_for_wordsの固定義に対応する辞書形・定型表現。『言葉で表せないほど』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00052",
+      "kind": "expression",
+      "before": {
+        "canonical": "from now on",
+        "sense_key": "starting_now_and_continuing",
+        "meaning_ja": "これからは"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "from now on",
+        "sense_key": "starting_now_and_continuing",
+        "meaning_ja": "これからは"
+      },
+      "reason": "from now onはstarting_now_and_continuingの固定義に対応する辞書形・定型表現。『これからは』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00058",
+      "kind": "expression",
+      "before": {
+        "canonical": "lead to",
+        "sense_key": "cause_or_result_in",
+        "meaning_ja": "〜につながる"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "lead to",
+        "sense_key": "cause_or_result_in",
+        "meaning_ja": "〜につながる"
+      },
+      "reason": "lead toはcause_or_result_inの固定義に対応する辞書形・定型表現。『〜につながる』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00060",
+      "kind": "expression",
+      "before": {
+        "canonical": "take a look at something",
+        "sense_key": "look_at_briefly",
+        "meaning_ja": "〜をちょっと見る"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "take a look at something",
+        "sense_key": "look_at_briefly",
+        "meaning_ja": "〜をちょっと見る"
+      },
+      "reason": "take a look at somethingはlook_at_brieflyの固定義に対応する辞書形・定型表現。『〜をちょっと見る』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00061",
+      "kind": "expression",
+      "before": {
+        "canonical": "be on the increase",
+        "sense_key": "becoming_more_common",
+        "meaning_ja": "増加している"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "be on the increase",
+        "sense_key": "becoming_more_common",
+        "meaning_ja": "増加している"
+      },
+      "reason": "be on the increaseはbecoming_more_commonの固定義に対応する辞書形・定型表現。『増加している』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00066",
+      "kind": "expression",
+      "before": {
+        "canonical": "just in case",
+        "sense_key": "as_a_precaution",
+        "meaning_ja": "念のため"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "just in case",
+        "sense_key": "as_a_precaution",
+        "meaning_ja": "念のため"
+      },
+      "reason": "just in caseはas_a_precautionの固定義に対応する辞書形・定型表現。『念のため』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00074",
+      "kind": "expression",
+      "before": {
+        "canonical": "let alone",
+        "sense_key": "much_less",
+        "meaning_ja": "まして〜はなおさら"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "let alone",
+        "sense_key": "much_less",
+        "meaning_ja": "まして〜はなおさら"
+      },
+      "reason": "let aloneはmuch_lessの固定義に対応する辞書形・定型表現。『まして〜はなおさら』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00077",
+      "kind": "expression",
+      "before": {
+        "canonical": "boast about something",
+        "sense_key": "speak_proudly_of",
+        "meaning_ja": "〜を自慢する"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "boast about something",
+        "sense_key": "speak_proudly_of",
+        "meaning_ja": "〜を自慢する"
+      },
+      "reason": "boast about somethingはspeak_proudly_ofの固定義に対応する辞書形・定型表現。『〜を自慢する』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00088",
+      "kind": "expression",
+      "before": {
+        "canonical": "get out of something",
+        "sense_key": "exit_a_vehicle_or_place",
+        "meaning_ja": "（乗り物などから）降りる"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "get out of something",
+        "sense_key": "exit_a_vehicle_or_place",
+        "meaning_ja": "（乗り物などから）降りる"
+      },
+      "reason": "get out of somethingはexit_a_vehicle_or_placeの固定義に対応する辞書形・定型表現。『（乗り物などから）降りる』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00090",
+      "kind": "expression",
+      "before": {
+        "canonical": "keep the change",
+        "sense_key": "let_someone_keep_change",
+        "meaning_ja": "おつりは取っておいて"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "keep the change",
+        "sense_key": "let_someone_keep_change",
+        "meaning_ja": "おつりは取っておいて"
+      },
+      "reason": "keep the changeはlet_someone_keep_changeの固定義に対応する辞書形・定型表現。『おつりは取っておいて』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00092",
+      "kind": "expression",
+      "before": {
+        "canonical": "eat out",
+        "sense_key": "eat_at_restaurant",
+        "meaning_ja": "外食する"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "eat out",
+        "sense_key": "eat_at_restaurant",
+        "meaning_ja": "外食する"
+      },
+      "reason": "eat outはeat_at_restaurantの固定義に対応する辞書形・定型表現。『外食する』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00100",
+      "kind": "expression",
+      "before": {
+        "canonical": "stand on your own two feet",
+        "sense_key": "be_independent",
+        "meaning_ja": "自分の力でやっていく"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "stand on one's own two feet",
+        "sense_key": "be_independent",
+        "meaning_ja": "自分の力でやっていく"
+      },
+      "reason": "『自分の力でやっていく』をstand on one's own two feetの代表義として確定する。原文の時制・特定対象を混入せず、be_independentとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": true
+    },
+    {
+      "id": "vocab:00101",
+      "kind": "expression",
+      "before": {
+        "canonical": "cut someone off",
+        "sense_key": "interrupt_a_speaker",
+        "meaning_ja": "人の話をさえぎる"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "cut someone off",
+        "sense_key": "interrupt_a_speaker",
+        "meaning_ja": "人の話をさえぎる"
+      },
+      "reason": "cut someone offはinterrupt_a_speakerの固定義に対応する辞書形・定型表現。『人の話をさえぎる』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00108",
+      "kind": "expression",
+      "before": {
+        "canonical": "make something out",
+        "sense_key": "discern_or_understand",
+        "meaning_ja": "〜を聞き取る"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "make something out",
+        "sense_key": "discern_or_understand",
+        "meaning_ja": "〜を見分ける・聞き取る"
+      },
+      "reason": "discern authorityは視覚・聴覚の双方を含むため聞き取りだけに限定しない。",
+      "confidence": "high",
+      "cross_shard_note": "同一canonicalの他senseがある場合は中央でmeaning_ja重複とsense分離を確認。",
+      "paraphrase_followup_required": true
+    },
+    {
+      "id": "vocab:00115",
+      "kind": "expression",
+      "before": {
+        "canonical": "put something into practice",
+        "sense_key": "implement_an_idea",
+        "meaning_ja": "〜を実行に移す"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "put something into practice",
+        "sense_key": "implement_an_idea",
+        "meaning_ja": "〜を実行に移す"
+      },
+      "reason": "put something into practiceはimplement_an_ideaの固定義に対応する辞書形・定型表現。『〜を実行に移す』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00124",
+      "kind": "expression",
+      "before": {
+        "canonical": "fall through",
+        "sense_key": "fail_to_happen",
+        "meaning_ja": "計画・取引などが失敗に終わる"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "fall through",
+        "sense_key": "fail_to_happen",
+        "meaning_ja": "計画・取引などが失敗に終わる"
+      },
+      "reason": "fall throughはfail_to_happenの固定義に対応する辞書形・定型表現。『計画・取引などが失敗に終わる』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00126",
+      "kind": "expression",
+      "before": {
+        "canonical": "on account of",
+        "sense_key": "because_of",
+        "meaning_ja": "〜が原因で"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "on account of",
+        "sense_key": "because_of",
+        "meaning_ja": "〜が原因で"
+      },
+      "reason": "on account ofはbecause_ofの固定義に対応する辞書形・定型表現。『〜が原因で』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00132",
+      "kind": "expression",
+      "before": {
+        "canonical": "get rid of something",
+        "sense_key": "remove_or_dispose",
+        "meaning_ja": "〜を処分する"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "get rid of something",
+        "sense_key": "remove_or_dispose",
+        "meaning_ja": "〜を処分する"
+      },
+      "reason": "get rid of somethingはremove_or_disposeの固定義に対応する辞書形・定型表現。『〜を処分する』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00136",
+      "kind": "expression",
+      "before": {
+        "canonical": "put something aside",
+        "sense_key": "save_or_reserve",
+        "meaning_ja": "〜を取っておく"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "put something aside",
+        "sense_key": "save_or_reserve",
+        "meaning_ja": "〜を取っておく"
+      },
+      "reason": "put something asideはsave_or_reserveの固定義に対応する辞書形・定型表現。『〜を取っておく』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00142",
+      "kind": "expression",
+      "before": {
+        "canonical": "lie down",
+        "sense_key": "recline",
+        "meaning_ja": "横になる"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "lie down",
+        "sense_key": "recline",
+        "meaning_ja": "横になる"
+      },
+      "reason": "lie downはreclineの固定義に対応する辞書形・定型表現。『横になる』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00149",
+      "kind": "expression",
+      "before": {
+        "canonical": "pick someone up",
+        "sense_key": "collect_a_person",
+        "meaning_ja": "人を車などで迎えに行く"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "pick someone up",
+        "sense_key": "collect_a_person",
+        "meaning_ja": "人を車などで迎えに行く"
+      },
+      "reason": "pick someone upはcollect_a_personの固定義に対応する辞書形・定型表現。『人を車などで迎えに行く』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00155",
+      "kind": "expression",
+      "before": {
+        "canonical": "take a break",
+        "sense_key": "rest_briefly",
+        "meaning_ja": "ひと休みする"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "take a break",
+        "sense_key": "rest_briefly",
+        "meaning_ja": "ひと休みする"
+      },
+      "reason": "take a breakはrest_brieflyの固定義に対応する辞書形・定型表現。『ひと休みする』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00162",
+      "kind": "expression",
+      "before": {
+        "canonical": "so much for something",
+        "sense_key": "end_or_dismiss_topic",
+        "meaning_ja": "〜はこの辺にしておく"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "so much for something",
+        "sense_key": "end_or_dismiss_topic",
+        "meaning_ja": "〜はこの辺にしておく"
+      },
+      "reason": "so much for somethingはend_or_dismiss_topicの固定義に対応する辞書形・定型表現。『〜はこの辺にしておく』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00167",
+      "kind": "expression",
+      "before": {
+        "canonical": "turn one's back on someone",
+        "sense_key": "abandon_or_ignore",
+        "meaning_ja": "人を見捨てる"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "turn one's back on someone",
+        "sense_key": "abandon_or_ignore",
+        "meaning_ja": "人を見捨てる"
+      },
+      "reason": "turn one's back on someoneはabandon_or_ignoreの固定義に対応する辞書形・定型表現。『人を見捨てる』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00170",
+      "kind": "expression",
+      "before": {
+        "canonical": "under way",
+        "sense_key": "in_progress",
+        "meaning_ja": "進行中で"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "under way",
+        "sense_key": "in_progress",
+        "meaning_ja": "進行中で"
+      },
+      "reason": "under wayはin_progressの固定義に対応する辞書形・定型表現。『進行中で』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00177",
+      "kind": "expression",
+      "before": {
+        "canonical": "cheat on an exam",
+        "sense_key": "cheat_in_test",
+        "meaning_ja": "試験でカンニングする"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "cheat on an exam",
+        "sense_key": "cheat_in_test",
+        "meaning_ja": "試験でカンニングする"
+      },
+      "reason": "cheat on an examはcheat_in_testの固定義に対応する辞書形・定型表現。『試験でカンニングする』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00186",
+      "kind": "expression",
+      "before": {
+        "canonical": "beat around the bush",
+        "sense_key": "avoid_direct_speech",
+        "meaning_ja": "要点を避けて遠回しに言う"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "beat around the bush",
+        "sense_key": "avoid_direct_speech",
+        "meaning_ja": "要点を避けて遠回しに言う"
+      },
+      "reason": "beat around the bushはavoid_direct_speechの固定義に対応する辞書形・定型表現。『要点を避けて遠回しに言う』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00188",
+      "kind": "expression",
+      "before": {
+        "canonical": "time will tell",
+        "sense_key": "future_reveals_answer",
+        "meaning_ja": "時がたてば分かる"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "time will tell",
+        "sense_key": "future_reveals_answer",
+        "meaning_ja": "時がたてば分かる"
+      },
+      "reason": "time will tellはfuture_reveals_answerの固定義に対応する辞書形・定型表現。『時がたてば分かる』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00191",
+      "kind": "expression",
+      "before": {
+        "canonical": "anything but",
+        "sense_key": "far_from",
+        "meaning_ja": "決して〜ではない"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "anything but",
+        "sense_key": "far_from",
+        "meaning_ja": "決して〜ではない"
+      },
+      "reason": "anything butはfar_fromの固定義に対応する辞書形・定型表現。『決して〜ではない』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00195",
+      "kind": "expression",
+      "before": {
+        "canonical": "deal with something",
+        "sense_key": "handle_a_problem",
+        "meaning_ja": "問題などに対処する"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "deal with something",
+        "sense_key": "handle_a_problem",
+        "meaning_ja": "問題などに対処する"
+      },
+      "reason": "deal with somethingはhandle_a_problemの固定義に対応する辞書形・定型表現。『問題などに対処する』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00205",
+      "kind": "expression",
+      "before": {
+        "canonical": "call for something",
+        "sense_key": "require_or_demand",
+        "meaning_ja": "〜を必要とする"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "call for something",
+        "sense_key": "require_or_demand",
+        "meaning_ja": "〜を必要とする"
+      },
+      "reason": "call for somethingはrequire_or_demandの固定義に対応する辞書形・定型表現。『〜を必要とする』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00211",
+      "kind": "expression",
+      "before": {
+        "canonical": "for instance",
+        "sense_key": "give_an_example",
+        "meaning_ja": "例えば"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "for instance",
+        "sense_key": "give_an_example",
+        "meaning_ja": "例えば"
+      },
+      "reason": "for instanceはgive_an_exampleの固定義に対応する辞書形・定型表現。『例えば』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00214",
+      "kind": "expression",
+      "before": {
+        "canonical": "to the naked eye",
+        "sense_key": "visible_without_instrument",
+        "meaning_ja": "肉眼で"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "to the naked eye",
+        "sense_key": "visible_without_instrument",
+        "meaning_ja": "肉眼で"
+      },
+      "reason": "to the naked eyeはvisible_without_instrumentの固定義に対応する辞書形・定型表現。『肉眼で』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00228",
+      "kind": "expression",
+      "before": {
+        "canonical": "figure something out",
+        "sense_key": "understand_or_solve",
+        "meaning_ja": "〜を理解する"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "figure something out",
+        "sense_key": "understand_or_solve",
+        "meaning_ja": "〜を理解する"
+      },
+      "reason": "figure something outはunderstand_or_solveの固定義に対応する辞書形・定型表現。『〜を理解する』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00233",
+      "kind": "expression",
+      "before": {
+        "canonical": "to make matters worse",
+        "sense_key": "introduce_additional_problem",
+        "meaning_ja": "さらに悪いことに"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "to make matters worse",
+        "sense_key": "introduce_additional_problem",
+        "meaning_ja": "さらに悪いことに"
+      },
+      "reason": "to make matters worseはintroduce_additional_problemの固定義に対応する辞書形・定型表現。『さらに悪いことに』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00235",
+      "kind": "expression",
+      "before": {
+        "canonical": "if ever",
+        "sense_key": "almost_never",
+        "meaning_ja": "あるとしてもめったに〜ない"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "if ever",
+        "sense_key": "almost_never",
+        "meaning_ja": "あるとしてもめったに〜ない"
+      },
+      "reason": "if everはalmost_neverの固定義に対応する辞書形・定型表現。『あるとしてもめったに〜ない』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00252",
+      "kind": "expression",
+      "before": {
+        "canonical": "be my guest",
+        "sense_key": "permission_to_proceed",
+        "meaning_ja": "どうぞ"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "be my guest",
+        "sense_key": "permission_to_proceed",
+        "meaning_ja": "どうぞ"
+      },
+      "reason": "be my guestはpermission_to_proceedの固定義に対応する辞書形・定型表現。『どうぞ』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00255",
+      "kind": "expression",
+      "before": {
+        "canonical": "hang up",
+        "sense_key": "end_a_phone_call",
+        "meaning_ja": "電話を切る"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "hang up",
+        "sense_key": "end_a_phone_call",
+        "meaning_ja": "電話を切る"
+      },
+      "reason": "hang upはend_a_phone_callの固定義に対応する辞書形・定型表現。『電話を切る』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00258",
+      "kind": "expression",
+      "before": {
+        "canonical": "drop in on someone",
+        "sense_key": "visit_without_arranging",
+        "meaning_ja": "人のところにふらりと立ち寄る"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "drop in on someone",
+        "sense_key": "visit_without_arranging",
+        "meaning_ja": "人のところにふらりと立ち寄る"
+      },
+      "reason": "drop in on someoneはvisit_without_arrangingの固定義に対応する辞書形・定型表現。『人のところにふらりと立ち寄る』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00263",
+      "kind": "expression",
+      "before": {
+        "canonical": "talk something over",
+        "sense_key": "discuss_carefully",
+        "meaning_ja": "〜についてじっくり話し合う"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "talk something over",
+        "sense_key": "discuss_carefully",
+        "meaning_ja": "〜についてじっくり話し合う"
+      },
+      "reason": "talk something overはdiscuss_carefullyの固定義に対応する辞書形・定型表現。『〜についてじっくり話し合う』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00265",
+      "kind": "expression",
+      "before": {
+        "canonical": "make it up to someone",
+        "sense_key": "compensate_someone_for_harm",
+        "meaning_ja": "人に埋め合わせをする"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "make it up to someone",
+        "sense_key": "compensate_someone_for_harm",
+        "meaning_ja": "人に埋め合わせをする"
+      },
+      "reason": "make it up to someoneはcompensate_someone_for_harmの固定義に対応する辞書形・定型表現。『人に埋め合わせをする』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00270",
+      "kind": "expression",
+      "before": {
+        "canonical": "lose face",
+        "sense_key": "lose_respect_or_reputation",
+        "meaning_ja": "面目を失う"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "lose face",
+        "sense_key": "lose_respect_or_reputation",
+        "meaning_ja": "面目を失う"
+      },
+      "reason": "lose faceはlose_respect_or_reputationの固定義に対応する辞書形・定型表現。『面目を失う』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00278",
+      "kind": "expression",
+      "before": {
+        "canonical": "give someone a ride",
+        "sense_key": "take_someone_in_a_vehicle",
+        "meaning_ja": "人を車などに乗せて送る"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "give someone a ride",
+        "sense_key": "take_someone_in_a_vehicle",
+        "meaning_ja": "人を車などに乗せて送る"
+      },
+      "reason": "give someone a rideはtake_someone_in_a_vehicleの固定義に対応する辞書形・定型表現。『人を車などに乗せて送る』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00281",
+      "kind": "expression",
+      "before": {
+        "canonical": "on time",
+        "sense_key": "at_the_scheduled_time",
+        "meaning_ja": "時間どおりに"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "on time",
+        "sense_key": "at_the_scheduled_time",
+        "meaning_ja": "時間どおりに"
+      },
+      "reason": "on timeはat_the_scheduled_timeの固定義に対応する辞書形・定型表現。『時間どおりに』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00283",
+      "kind": "expression",
+      "before": {
+        "canonical": "by sheer luck",
+        "sense_key": "only_because_of_luck",
+        "meaning_ja": "まったくの幸運で"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "by sheer luck",
+        "sense_key": "only_because_of_luck",
+        "meaning_ja": "まったくの幸運で"
+      },
+      "reason": "by sheer luckはonly_because_of_luckの固定義に対応する辞書形・定型表現。『まったくの幸運で』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00292",
+      "kind": "expression",
+      "before": {
+        "canonical": "chill out",
+        "sense_key": "relax_or_calm_down",
+        "meaning_ja": "落ち着く"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "chill out",
+        "sense_key": "relax_or_calm_down",
+        "meaning_ja": "落ち着く"
+      },
+      "reason": "chill outはrelax_or_calm_downの固定義に対応する辞書形・定型表現。『落ち着く』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00301",
+      "kind": "expression",
+      "before": {
+        "canonical": "be abundant in something",
+        "sense_key": "have_a_lot_of",
+        "meaning_ja": "〜が豊富である"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "be abundant in something",
+        "sense_key": "have_a_lot_of",
+        "meaning_ja": "〜が豊富である"
+      },
+      "reason": "be abundant in somethingはhave_a_lot_ofの固定義に対応する辞書形・定型表現。『〜が豊富である』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00302",
+      "kind": "expression",
+      "before": {
+        "canonical": "account for something",
+        "sense_key": "make_up_a_share",
+        "meaning_ja": "〜を占める"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "account for something",
+        "sense_key": "make_up_a_share",
+        "meaning_ja": "〜を占める"
+      },
+      "reason": "account for somethingはmake_up_a_shareの固定義に対応する辞書形・定型表現。『〜を占める』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00312",
+      "kind": "expression",
+      "before": {
+        "canonical": "make no difference to someone",
+        "sense_key": "have_no_effect_or_importance",
+        "meaning_ja": "人にとってどうでもよい"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "make no difference to someone",
+        "sense_key": "have_no_effect_or_importance",
+        "meaning_ja": "人にとってどうでもよい"
+      },
+      "reason": "make no difference to someoneはhave_no_effect_or_importanceの固定義に対応する辞書形・定型表現。『人にとってどうでもよい』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00314",
+      "kind": "expression",
+      "before": {
+        "canonical": "clear up",
+        "sense_key": "weather_becomes_clear",
+        "meaning_ja": "（天気が）晴れる"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "clear up",
+        "sense_key": "weather_becomes_clear",
+        "meaning_ja": "（天気が）晴れる"
+      },
+      "reason": "clear upはweather_becomes_clearの固定義に対応する辞書形・定型表現。『（天気が）晴れる』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00316",
+      "kind": "expression",
+      "before": {
+        "canonical": "be identified with something",
+        "sense_key": "be_seen_as_same_or_equivalent",
+        "meaning_ja": "〜と同一視される"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "be identified with something",
+        "sense_key": "be_seen_as_same_or_equivalent",
+        "meaning_ja": "〜と同一視される"
+      },
+      "reason": "be identified with somethingはbe_seen_as_same_or_equivalentの固定義に対応する辞書形・定型表現。『〜と同一視される』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00320",
+      "kind": "expression",
+      "before": {
+        "canonical": "provide for someone",
+        "sense_key": "financial_support",
+        "meaning_ja": "家族を養う"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "provide for someone",
+        "sense_key": "financial_support",
+        "meaning_ja": "人を養う"
+      },
+      "reason": "『人を養う』をprovide for someoneの代表義として確定する。原文の時制・特定対象を混入せず、financial_supportとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": true
+    },
+    {
+      "id": "vocab:00323",
+      "kind": "expression",
+      "before": {
+        "canonical": "keep up with someone or something",
+        "sense_key": "stay_current_or_at_same_pace",
+        "meaning_ja": "〜に遅れずについていく"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "keep up with someone or something",
+        "sense_key": "stay_current_or_at_same_pace",
+        "meaning_ja": "〜に遅れずについていく"
+      },
+      "reason": "keep up with someone or somethingはstay_current_or_at_same_paceの固定義に対応する辞書形・定型表現。『〜に遅れずについていく』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00335",
+      "kind": "expression",
+      "before": {
+        "canonical": "close at hand",
+        "sense_key": "nearby_and_available",
+        "meaning_ja": "すぐ手の届くところに"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "close at hand",
+        "sense_key": "nearby_and_available",
+        "meaning_ja": "すぐ手の届くところに"
+      },
+      "reason": "close at handはnearby_and_availableの固定義に対応する辞書形・定型表現。『すぐ手の届くところに』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00338",
+      "kind": "expression",
+      "before": {
+        "canonical": "under construction",
+        "sense_key": "being_built",
+        "meaning_ja": "建設中で"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "under construction",
+        "sense_key": "being_built",
+        "meaning_ja": "建設中で"
+      },
+      "reason": "under constructionはbeing_builtの固定義に対応する辞書形・定型表現。『建設中で』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00343",
+      "kind": "expression",
+      "before": {
+        "canonical": "in terms of something",
+        "sense_key": "when_considering_a_measure",
+        "meaning_ja": "〜に関して"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "in terms of something",
+        "sense_key": "when_considering_a_measure",
+        "meaning_ja": "〜の観点から"
+      },
+      "reason": "『〜の観点から』をin terms of somethingの代表義として確定する。原文の時制・特定対象を混入せず、when_considering_a_measureとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": true
+    },
+    {
+      "id": "vocab:00349",
+      "kind": "expression",
+      "before": {
+        "canonical": "take someone out",
+        "sense_key": "take_on_a_date",
+        "meaning_ja": "人をデートや外出に連れて行く"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "take someone out",
+        "sense_key": "take_on_a_date",
+        "meaning_ja": "人をデートや外出に連れて行く"
+      },
+      "reason": "take someone outはtake_on_a_dateの固定義に対応する辞書形・定型表現。『人をデートや外出に連れて行く』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00359",
+      "kind": "expression",
+      "before": {
+        "canonical": "lay someone off",
+        "sense_key": "dismiss_from_employment",
+        "meaning_ja": "人を一時解雇する"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "lay someone off",
+        "sense_key": "dismiss_from_employment",
+        "meaning_ja": "人を一時解雇する"
+      },
+      "reason": "lay someone offはdismiss_from_employmentの固定義に対応する辞書形・定型表現。『人を一時解雇する』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00363",
+      "kind": "expression",
+      "before": {
+        "canonical": "be responsible for something",
+        "sense_key": "be_accountable_for",
+        "meaning_ja": "〜に責任がある"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "be responsible for something",
+        "sense_key": "be_accountable_for",
+        "meaning_ja": "〜に責任がある"
+      },
+      "reason": "be responsible for somethingはbe_accountable_forの固定義に対応する辞書形・定型表現。『〜に責任がある』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00367",
+      "kind": "expression",
+      "before": {
+        "canonical": "in vain",
+        "sense_key": "without_success",
+        "meaning_ja": "無駄に"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "in vain",
+        "sense_key": "without_success",
+        "meaning_ja": "無駄に"
+      },
+      "reason": "in vainはwithout_successの固定義に対応する辞書形・定型表現。『無駄に』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00372",
+      "kind": "expression",
+      "before": {
+        "canonical": "in addition to something",
+        "sense_key": "as_well_as",
+        "meaning_ja": "〜に加えて"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "in addition to something",
+        "sense_key": "as_well_as",
+        "meaning_ja": "〜に加えて"
+      },
+      "reason": "in addition to somethingはas_well_asの固定義に対応する辞書形・定型表現。『〜に加えて』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00376",
+      "kind": "expression",
+      "before": {
+        "canonical": "prior to something",
+        "sense_key": "before_a_time_or_event",
+        "meaning_ja": "〜より前に"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "prior to something",
+        "sense_key": "before_a_time_or_event",
+        "meaning_ja": "〜より前に"
+      },
+      "reason": "prior to somethingはbefore_a_time_or_eventの固定義に対応する辞書形・定型表現。『〜より前に』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00378",
+      "kind": "expression",
+      "before": {
+        "canonical": "on average",
+        "sense_key": "as_a_mean",
+        "meaning_ja": "平均すると"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "on average",
+        "sense_key": "as_a_mean",
+        "meaning_ja": "平均すると"
+      },
+      "reason": "on averageはas_a_meanの固定義に対応する辞書形・定型表現。『平均すると』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00391",
+      "kind": "expression",
+      "before": {
+        "canonical": "ask for something",
+        "sense_key": "request_something",
+        "meaning_ja": "〜を求める"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "ask for something",
+        "sense_key": "request_something",
+        "meaning_ja": "〜を求める"
+      },
+      "reason": "ask for somethingはrequest_somethingの固定義に対応する辞書形・定型表現。『〜を求める』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00397",
+      "kind": "expression",
+      "before": {
+        "canonical": "cure someone of something",
+        "sense_key": "make_someone_well",
+        "meaning_ja": "人の病気や症状を治す"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "cure someone of something",
+        "sense_key": "make_someone_well",
+        "meaning_ja": "人の病気や症状を治す"
+      },
+      "reason": "cure someone of somethingはmake_someone_wellの固定義に対応する辞書形・定型表現。『人の病気や症状を治す』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00404",
+      "kind": "expression",
+      "before": {
+        "canonical": "lose weight",
+        "sense_key": "become_lighter",
+        "meaning_ja": "体重を減らす"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "lose weight",
+        "sense_key": "become_lighter",
+        "meaning_ja": "体重を減らす"
+      },
+      "reason": "lose weightはbecome_lighterの固定義に対応する辞書形・定型表現。『体重を減らす』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00405",
+      "kind": "expression",
+      "before": {
+        "canonical": "catch a cold",
+        "sense_key": "become_ill_with_a_cold",
+        "meaning_ja": "風邪をひく"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "catch a cold",
+        "sense_key": "become_ill_with_a_cold",
+        "meaning_ja": "風邪をひく"
+      },
+      "reason": "catch a coldはbecome_ill_with_a_coldの固定義に対応する辞書形・定型表現。『風邪をひく』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00407",
+      "kind": "expression",
+      "before": {
+        "canonical": "take turns doing something",
+        "sense_key": "do_something_in_rotation",
+        "meaning_ja": "交代で〜する"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "take turns doing something",
+        "sense_key": "do_something_in_rotation",
+        "meaning_ja": "交代で〜する"
+      },
+      "reason": "take turns doing somethingはdo_something_in_rotationの固定義に対応する辞書形・定型表現。『交代で〜する』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00412",
+      "kind": "expression",
+      "before": {
+        "canonical": "be obliged to do something",
+        "sense_key": "be_forced_or_required",
+        "meaning_ja": "〜せざるを得ない"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "be obliged to do something",
+        "sense_key": "be_forced_or_required",
+        "meaning_ja": "〜せざるを得ない"
+      },
+      "reason": "be obliged to do somethingはbe_forced_or_requiredの固定義に対応する辞書形・定型表現。『〜せざるを得ない』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00424",
+      "kind": "expression",
+      "before": {
+        "canonical": "make a living",
+        "sense_key": "earn_enough_to_live",
+        "meaning_ja": "生計を立てる"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "make a living",
+        "sense_key": "earn_enough_to_live",
+        "meaning_ja": "生計を立てる"
+      },
+      "reason": "make a livingはearn_enough_to_liveの固定義に対応する辞書形・定型表現。『生計を立てる』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00426",
+      "kind": "expression",
+      "before": {
+        "canonical": "put something in perspective",
+        "sense_key": "see_in_proper_context",
+        "meaning_ja": "物事を大局的に見る"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "put something in perspective",
+        "sense_key": "see_in_proper_context",
+        "meaning_ja": "物事を大局的に見る"
+      },
+      "reason": "put something in perspectiveはsee_in_proper_contextの固定義に対応する辞書形・定型表現。『物事を大局的に見る』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00432",
+      "kind": "expression",
+      "before": {
+        "canonical": "give in",
+        "sense_key": "stop_resisting",
+        "meaning_ja": "折れる"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "give in",
+        "sense_key": "stop_resisting",
+        "meaning_ja": "屈する"
+      },
+      "reason": "『屈する』をgive inの代表義として確定する。原文の時制・特定対象を混入せず、stop_resistingとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": true
+    },
+    {
+      "id": "vocab:00437",
+      "kind": "expression",
+      "before": {
+        "canonical": "yield to something",
+        "sense_key": "give_way_to_pressure",
+        "meaning_ja": "〜に屈する"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "yield to something",
+        "sense_key": "give_way_to_pressure",
+        "meaning_ja": "〜に屈する"
+      },
+      "reason": "yield to somethingはgive_way_to_pressureの固定義に対応する辞書形・定型表現。『〜に屈する』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00440",
+      "kind": "expression",
+      "before": {
+        "canonical": "make the most of something",
+        "sense_key": "use_to_best_advantage",
+        "meaning_ja": "〜を最大限に活用する"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "make the most of something",
+        "sense_key": "use_to_best_advantage",
+        "meaning_ja": "〜を最大限に活用する"
+      },
+      "reason": "make the most of somethingはuse_to_best_advantageの固定義に対応する辞書形・定型表現。『〜を最大限に活用する』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00442",
+      "kind": "expression",
+      "before": {
+        "canonical": "have faith in someone",
+        "sense_key": "trust_someone",
+        "meaning_ja": "人を信頼する"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "have faith in someone",
+        "sense_key": "trust_someone",
+        "meaning_ja": "人を信頼する"
+      },
+      "reason": "have faith in someoneはtrust_someoneの固定義に対応する辞書形・定型表現。『人を信頼する』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00447",
+      "kind": "expression",
+      "before": {
+        "canonical": "be impressed by someone or something",
+        "sense_key": "feel_admiration",
+        "meaning_ja": "〜に感銘を受ける"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "be impressed by someone or something",
+        "sense_key": "feel_admiration",
+        "meaning_ja": "〜に感銘を受ける"
+      },
+      "reason": "be impressed by someone or somethingはfeel_admirationの固定義に対応する辞書形・定型表現。『〜に感銘を受ける』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00454",
+      "kind": "expression",
+      "before": {
+        "canonical": "to someone's surprise",
+        "sense_key": "unexpectedly_to_someone",
+        "meaning_ja": "人が驚いたことに"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "to someone's surprise",
+        "sense_key": "unexpectedly_to_someone",
+        "meaning_ja": "人が驚いたことに"
+      },
+      "reason": "to someone's surpriseはunexpectedly_to_someoneの固定義に対応する辞書形・定型表現。『人が驚いたことに』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00459",
+      "kind": "expression",
+      "before": {
+        "canonical": "adapt to something",
+        "sense_key": "adjust_to_new_conditions",
+        "meaning_ja": "〜に順応する"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "adapt to something",
+        "sense_key": "adjust_to_new_conditions",
+        "meaning_ja": "〜に順応する"
+      },
+      "reason": "adapt to somethingはadjust_to_new_conditionsの固定義に対応する辞書形・定型表現。『〜に順応する』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00460",
+      "kind": "expression",
+      "before": {
+        "canonical": "come to an end",
+        "sense_key": "finish_or_stop",
+        "meaning_ja": "終わりを迎える"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "come to an end",
+        "sense_key": "finish_or_stop",
+        "meaning_ja": "終わりを迎える"
+      },
+      "reason": "come to an endはfinish_or_stopの固定義に対応する辞書形・定型表現。『終わりを迎える』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00473",
+      "kind": "expression",
+      "before": {
+        "canonical": "mind your own business",
+        "sense_key": "do_not_interfere",
+        "meaning_ja": "余計な口出しをしないで"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "mind your own business",
+        "sense_key": "do_not_interfere",
+        "meaning_ja": "余計な口出しをしないで"
+      },
+      "reason": "mind your own businessはdo_not_interfereの固定義に対応する辞書形・定型表現。『余計な口出しをしないで』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00475",
+      "kind": "expression",
+      "before": {
+        "canonical": "lose one's temper",
+        "sense_key": "become_angry",
+        "meaning_ja": "腹を立てる"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "lose one's temper",
+        "sense_key": "become_angry",
+        "meaning_ja": "腹を立てる"
+      },
+      "reason": "lose one's temperはbecome_angryの固定義に対応する辞書形・定型表現。『腹を立てる』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00482",
+      "kind": "expression",
+      "before": {
+        "canonical": "on the contrary",
+        "sense_key": "introduce_opposite_view",
+        "meaning_ja": "いや、そんなことはない"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "on the contrary",
+        "sense_key": "introduce_opposite_view",
+        "meaning_ja": "それどころか逆に"
+      },
+      "reason": "『それどころか逆に』をon the contraryの代表義として確定する。原文の時制・特定対象を混入せず、introduce_opposite_viewとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": true
+    },
+    {
+      "id": "vocab:00487",
+      "kind": "expression",
+      "before": {
+        "canonical": "get by",
+        "sense_key": "manage_to_survive_or_continue",
+        "meaning_ja": "何とかやっていく"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "get by",
+        "sense_key": "manage_to_survive_or_continue",
+        "meaning_ja": "何とかやっていく"
+      },
+      "reason": "get byはmanage_to_survive_or_continueの固定義に対応する辞書形・定型表現。『何とかやっていく』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00488",
+      "kind": "expression",
+      "before": {
+        "canonical": "may well do something",
+        "sense_key": "have_good_reason_to",
+        "meaning_ja": "〜するのももっともだ"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "may well do something",
+        "sense_key": "have_good_reason_to",
+        "meaning_ja": "〜するのももっともだ"
+      },
+      "reason": "may well do somethingはhave_good_reason_toの固定義に対応する辞書形・定型表現。『〜するのももっともだ』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00502",
+      "kind": "expression",
+      "before": {
+        "canonical": "tend to do something",
+        "sense_key": "usually_or_often_do",
+        "meaning_ja": "〜する傾向がある"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "tend to do something",
+        "sense_key": "usually_or_often_do",
+        "meaning_ja": "〜する傾向がある"
+      },
+      "reason": "tend to do somethingはusually_or_often_doの固定義に対応する辞書形・定型表現。『〜する傾向がある』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00506",
+      "kind": "expression",
+      "before": {
+        "canonical": "pull the strings",
+        "sense_key": "secretly_control_events",
+        "meaning_ja": "陰で糸を引く"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "pull the strings",
+        "sense_key": "secretly_control_events",
+        "meaning_ja": "陰で糸を引く"
+      },
+      "reason": "pull the stringsはsecretly_control_eventsの固定義に対応する辞書形・定型表現。『陰で糸を引く』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00514",
+      "kind": "expression",
+      "before": {
+        "canonical": "on the spot",
+        "sense_key": "at_the_place_or_immediately",
+        "meaning_ja": "その場で"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "on the spot",
+        "sense_key": "at_the_place_or_immediately",
+        "meaning_ja": "その場で"
+      },
+      "reason": "on the spotはat_the_place_or_immediatelyの固定義に対応する辞書形・定型表現。『その場で』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00516",
+      "kind": "expression",
+      "before": {
+        "canonical": "way out",
+        "sense_key": "solution_or_escape",
+        "meaning_ja": "ほかに方法がない"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "way out",
+        "sense_key": "solution_or_escape",
+        "meaning_ja": "解決策"
+      },
+      "reason": "原文のno以降の否定をway out自体へ混入した誤訳を修正。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": true
+    },
+    {
+      "id": "vocab:00520",
+      "kind": "expression",
+      "before": {
+        "canonical": "when it comes to something",
+        "sense_key": "in_the_area_of",
+        "meaning_ja": "〜に関しては"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "when it comes to something",
+        "sense_key": "in_the_area_of",
+        "meaning_ja": "〜に関しては"
+      },
+      "reason": "when it comes to somethingはin_the_area_ofの固定義に対応する辞書形・定型表現。『〜に関しては』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00523",
+      "kind": "expression",
+      "before": {
+        "canonical": "point something out",
+        "sense_key": "draw_attention_to",
+        "meaning_ja": "〜を指摘する"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "point something out",
+        "sense_key": "draw_attention_to",
+        "meaning_ja": "〜を指摘する"
+      },
+      "reason": "point something outはdraw_attention_toの固定義に対応する辞書形・定型表現。『〜を指摘する』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00526",
+      "kind": "expression",
+      "before": {
+        "canonical": "succeed in doing something",
+        "sense_key": "manage_to_do",
+        "meaning_ja": "〜することに成功する"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "succeed in doing something",
+        "sense_key": "manage_to_do",
+        "meaning_ja": "〜することに成功する"
+      },
+      "reason": "succeed in doing somethingはmanage_to_doの固定義に対応する辞書形・定型表現。『〜することに成功する』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00533",
+      "kind": "expression",
+      "before": {
+        "canonical": "rule something out",
+        "sense_key": "exclude_as_impossible",
+        "meaning_ja": "〜を除外する"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "rule something out",
+        "sense_key": "exclude_as_impossible",
+        "meaning_ja": "〜を除外する"
+      },
+      "reason": "rule something outはexclude_as_impossibleの固定義に対応する辞書形・定型表現。『〜を除外する』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00539",
+      "kind": "expression",
+      "before": {
+        "canonical": "be capable of doing something",
+        "sense_key": "have_ability_to_do",
+        "meaning_ja": "〜する能力がある"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "be capable of doing something",
+        "sense_key": "have_ability_to_do",
+        "meaning_ja": "〜する能力がある"
+      },
+      "reason": "be capable of doing somethingはhave_ability_to_doの固定義に対応する辞書形・定型表現。『〜する能力がある』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00552",
+      "kind": "expression",
+      "before": {
+        "canonical": "at any moment",
+        "sense_key": "very_soon_or_without_warning",
+        "meaning_ja": "今にも"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "at any moment",
+        "sense_key": "very_soon_or_without_warning",
+        "meaning_ja": "今にも"
+      },
+      "reason": "at any momentはvery_soon_or_without_warningの固定義に対応する辞書形・定型表現。『今にも』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00553",
+      "kind": "expression",
+      "before": {
+        "canonical": "once and for all",
+        "sense_key": "finally_and_permanently",
+        "meaning_ja": "きっぱりと"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "once and for all",
+        "sense_key": "finally_and_permanently",
+        "meaning_ja": "きっぱりと"
+      },
+      "reason": "once and for allはfinally_and_permanentlyの固定義に対応する辞書形・定型表現。『きっぱりと』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00556",
+      "kind": "expression",
+      "before": {
+        "canonical": "on duty",
+        "sense_key": "working_or_responsible_now",
+        "meaning_ja": "勤務中で"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "on duty",
+        "sense_key": "working_or_responsible_now",
+        "meaning_ja": "勤務中で"
+      },
+      "reason": "on dutyはworking_or_responsible_nowの固定義に対応する辞書形・定型表現。『勤務中で』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00562",
+      "kind": "expression",
+      "before": {
+        "canonical": "come up behind someone",
+        "sense_key": "approach_from_behind",
+        "meaning_ja": "人の背後から近づく"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "come up behind someone",
+        "sense_key": "approach_from_behind",
+        "meaning_ja": "人の背後から近づく"
+      },
+      "reason": "come up behind someoneはapproach_from_behindの固定義に対応する辞書形・定型表現。『人の背後から近づく』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00568",
+      "kind": "expression",
+      "before": {
+        "canonical": "in critical condition",
+        "sense_key": "critically_ill_or_injured",
+        "meaning_ja": "危篤状態で"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "in critical condition",
+        "sense_key": "critically_ill_or_injured",
+        "meaning_ja": "危篤状態で"
+      },
+      "reason": "in critical conditionはcritically_ill_or_injuredの固定義に対応する辞書形・定型表現。『危篤状態で』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00572",
+      "kind": "expression",
+      "before": {
+        "canonical": "burn down",
+        "sense_key": "be_destroyed_by_fire",
+        "meaning_ja": "全焼する"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "burn down",
+        "sense_key": "be_destroyed_by_fire",
+        "meaning_ja": "全焼する"
+      },
+      "reason": "burn downはbe_destroyed_by_fireの固定義に対応する辞書形・定型表現。『全焼する』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00586",
+      "kind": "expression",
+      "before": {
+        "canonical": "believe it or not",
+        "sense_key": "introduce_surprising_claim",
+        "meaning_ja": "信じられないかもしれないけれど"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "believe it or not",
+        "sense_key": "introduce_surprising_claim",
+        "meaning_ja": "信じられないかもしれないけれど"
+      },
+      "reason": "believe it or notはintroduce_surprising_claimの固定義に対応する辞書形・定型表現。『信じられないかもしれないけれど』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00588",
+      "kind": "expression",
+      "before": {
+        "canonical": "quite a few",
+        "sense_key": "a_surprisingly_large_number",
+        "meaning_ja": "かなり多くの"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "quite a few",
+        "sense_key": "a_surprisingly_large_number",
+        "meaning_ja": "かなり多くの"
+      },
+      "reason": "quite a fewはa_surprisingly_large_numberの固定義に対応する辞書形・定型表現。『かなり多くの』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00594",
+      "kind": "expression",
+      "before": {
+        "canonical": "stay away from someone",
+        "sense_key": "keep_a_distance",
+        "meaning_ja": "人に近づかない"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "stay away from someone",
+        "sense_key": "keep_a_distance",
+        "meaning_ja": "人に近づかない"
+      },
+      "reason": "stay away from someoneはkeep_a_distanceの固定義に対応する辞書形・定型表現。『人に近づかない』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00603",
+      "kind": "expression",
+      "before": {
+        "canonical": "at a glance",
+        "sense_key": "with_one_quick_look",
+        "meaning_ja": "一目で"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "at a glance",
+        "sense_key": "with_one_quick_look",
+        "meaning_ja": "一目で"
+      },
+      "reason": "at a glanceはwith_one_quick_lookの固定義に対応する辞書形・定型表現。『一目で』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00608",
+      "kind": "expression",
+      "before": {
+        "canonical": "to tell the truth",
+        "sense_key": "introduce_honest_opinion",
+        "meaning_ja": "正直に言うと"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "to tell the truth",
+        "sense_key": "introduce_honest_opinion",
+        "meaning_ja": "正直に言うと"
+      },
+      "reason": "to tell the truthはintroduce_honest_opinionの固定義に対応する辞書形・定型表現。『正直に言うと』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00612",
+      "kind": "expression",
+      "before": {
+        "canonical": "for a change",
+        "sense_key": "as_a_different_experience",
+        "meaning_ja": "気分転換に"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "for a change",
+        "sense_key": "as_a_different_experience",
+        "meaning_ja": "気分転換に"
+      },
+      "reason": "for a changeはas_a_different_experienceの固定義に対応する辞書形・定型表現。『気分転換に』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00614",
+      "kind": "expression",
+      "before": {
+        "canonical": "after you",
+        "sense_key": "polite_invitation_to_go_first",
+        "meaning_ja": "お先にどうぞ"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "after you",
+        "sense_key": "polite_invitation_to_go_first",
+        "meaning_ja": "お先にどうぞ"
+      },
+      "reason": "after youはpolite_invitation_to_go_firstの固定義に対応する辞書形・定型表現。『お先にどうぞ』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00618",
+      "kind": "expression",
+      "before": {
+        "canonical": "look forward to doing something",
+        "sense_key": "anticipate_with_pleasure",
+        "meaning_ja": "〜を楽しみにする"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "look forward to doing something",
+        "sense_key": "anticipate_with_pleasure",
+        "meaning_ja": "〜を楽しみにする"
+      },
+      "reason": "look forward to doing somethingはanticipate_with_pleasureの固定義に対応する辞書形・定型表現。『〜を楽しみにする』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00621",
+      "kind": "expression",
+      "before": {
+        "canonical": "pay attention to something",
+        "sense_key": "notice_or_focus_on",
+        "meaning_ja": "〜に注意を払う"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "pay attention to something",
+        "sense_key": "notice_or_focus_on",
+        "meaning_ja": "〜に注意を払う"
+      },
+      "reason": "pay attention to somethingはnotice_or_focus_onの固定義に対応する辞書形・定型表現。『〜に注意を払う』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00622",
+      "kind": "expression",
+      "before": {
+        "canonical": "as far as someone is concerned",
+        "sense_key": "regarding_someone",
+        "meaning_ja": "〜について言えば"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "as far as someone is concerned",
+        "sense_key": "regarding_someone",
+        "meaning_ja": "人にとっては"
+      },
+      "reason": "『人にとっては』をas far as someone is concernedの代表義として確定する。原文の時制・特定対象を混入せず、regarding_someoneとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": true
+    },
+    {
+      "id": "vocab:00631",
+      "kind": "expression",
+      "before": {
+        "canonical": "come over",
+        "sense_key": "visit_someone",
+        "meaning_ja": "人のところに来る"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "come over",
+        "sense_key": "visit_someone",
+        "meaning_ja": "人のところに来る"
+      },
+      "reason": "come overはvisit_someoneの固定義に対応する辞書形・定型表現。『人のところに来る』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00636",
+      "kind": "expression",
+      "before": {
+        "canonical": "go too far",
+        "sense_key": "act_beyond_acceptable_limits",
+        "meaning_ja": "度を越す"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "go too far",
+        "sense_key": "act_beyond_acceptable_limits",
+        "meaning_ja": "度を越す"
+      },
+      "reason": "go too farはact_beyond_acceptable_limitsの固定義に対応する辞書形・定型表現。『度を越す』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00639",
+      "kind": "expression",
+      "before": {
+        "canonical": "get along with someone",
+        "sense_key": "have_a_good_relationship",
+        "meaning_ja": "人とうまくやっていく"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "get along with someone",
+        "sense_key": "have_a_good_relationship",
+        "meaning_ja": "人とうまくやっていく"
+      },
+      "reason": "get along with someoneはhave_a_good_relationshipの固定義に対応する辞書形・定型表現。『人とうまくやっていく』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00646",
+      "kind": "expression",
+      "before": {
+        "canonical": "a great deal of something",
+        "sense_key": "a_large_amount",
+        "meaning_ja": "かなり多くの〜"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "a great deal of something",
+        "sense_key": "a_large_amount",
+        "meaning_ja": "かなり多くの〜"
+      },
+      "reason": "a great deal of somethingはa_large_amountの固定義に対応する辞書形・定型表現。『かなり多くの〜』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00652",
+      "kind": "expression",
+      "before": {
+        "canonical": "break up",
+        "sense_key": "end_a_romantic_relationship",
+        "meaning_ja": "（恋人同士が）別れる"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "break up",
+        "sense_key": "end_a_romantic_relationship",
+        "meaning_ja": "（恋人同士が）別れる"
+      },
+      "reason": "break upはend_a_romantic_relationshipの固定義に対応する辞書形・定型表現。『（恋人同士が）別れる』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00654",
+      "kind": "expression",
+      "before": {
+        "canonical": "to be honest",
+        "sense_key": "introduce_honest_opinion",
+        "meaning_ja": "正直に言うと"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "to be honest",
+        "sense_key": "introduce_honest_opinion",
+        "meaning_ja": "正直に言うと"
+      },
+      "reason": "to be honestはintroduce_honest_opinionの固定義に対応する辞書形・定型表現。『正直に言うと』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00665",
+      "kind": "expression",
+      "before": {
+        "canonical": "be seeing someone",
+        "sense_key": "be_dating_someone",
+        "meaning_ja": "人と付き合っている"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "be seeing someone",
+        "sense_key": "be_dating_someone",
+        "meaning_ja": "人と付き合っている"
+      },
+      "reason": "be seeing someoneはbe_dating_someoneの固定義に対応する辞書形・定型表現。『人と付き合っている』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00666",
+      "kind": "expression",
+      "before": {
+        "canonical": "what's up",
+        "sense_key": "casual_greeting_or_question",
+        "meaning_ja": "最近どう？"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "what's up",
+        "sense_key": "casual_greeting_or_question",
+        "meaning_ja": "最近どう？"
+      },
+      "reason": "what's upはcasual_greeting_or_questionの固定義に対応する辞書形・定型表現。『最近どう？』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00672",
+      "kind": "expression",
+      "before": {
+        "canonical": "the opposite of something",
+        "sense_key": "direct_contrary",
+        "meaning_ja": "〜の反対"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "the opposite of something",
+        "sense_key": "direct_contrary",
+        "meaning_ja": "〜の反対"
+      },
+      "reason": "the opposite of somethingはdirect_contraryの固定義に対応する辞書形・定型表現。『〜の反対』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00680",
+      "kind": "expression",
+      "before": {
+        "canonical": "reflect on something",
+        "sense_key": "think_carefully_about",
+        "meaning_ja": "〜についてじっくり考える"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "reflect on something",
+        "sense_key": "think_carefully_about",
+        "meaning_ja": "〜についてじっくり考える"
+      },
+      "reason": "reflect on somethingはthink_carefully_aboutの固定義に対応する辞書形・定型表現。『〜についてじっくり考える』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00686",
+      "kind": "expression",
+      "before": {
+        "canonical": "burst into laughter",
+        "sense_key": "suddenly_start_laughing",
+        "meaning_ja": "急に笑い出す"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "burst into laughter",
+        "sense_key": "suddenly_start_laughing",
+        "meaning_ja": "急に笑い出す"
+      },
+      "reason": "burst into laughterはsuddenly_start_laughingの固定義に対応する辞書形・定型表現。『急に笑い出す』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00688",
+      "kind": "expression",
+      "before": {
+        "canonical": "pass away",
+        "sense_key": "die_polite_euphemism",
+        "meaning_ja": "亡くなる"
+      },
+      "decision": "KEEP",
+      "after": {
+        "canonical": "pass away",
+        "sense_key": "die_polite_euphemism",
+        "meaning_ja": "亡くなる"
+      },
+      "reason": "pass awayはdie_polite_euphemismの固定義に対応する辞書形・定型表現。『亡くなる』は同義内の簡潔な代表promptとして適合する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00703",
+      "kind": "expression",
+      "before": {
+        "canonical": "by the way",
+        "sense_key": "introduce_a_new_related_topic",
+        "meaning_ja": "ところで"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "by the way",
+        "sense_key": "introduce_additional_topic",
+        "meaning_ja": "ところで"
+      },
+      "reason": "by the wayは元の話題に関連しない話題へも転換できるため、relatedへの限定を除く。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": true
+    },
+    {
+      "id": "vocab:01155",
+      "kind": "expression",
+      "before": {
+        "canonical": "lean against something",
+        "sense_key": "pending_admission_0082",
+        "meaning_ja": "意味監査待ち（E0006の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "lean against something",
+        "sense_key": "rest_against_support",
+        "meaning_ja": "〜に寄りかかる"
+      },
+      "reason": "『〜に寄りかかる』をlean against somethingの代表義として確定する。原文の時制・特定対象を混入せず、rest_against_supportとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01162",
+      "kind": "expression",
+      "before": {
+        "canonical": "at times",
+        "sense_key": "pending_admission_0089",
+        "meaning_ja": "たまに"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "at times",
+        "sense_key": "occasionally",
+        "meaning_ja": "時々"
+      },
+      "reason": "『時々』をat timesの代表義として確定する。原文の時制・特定対象を混入せず、occasionallyとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01165",
+      "kind": "expression",
+      "before": {
+        "canonical": "shake one's head",
+        "sense_key": "pending_admission_0092",
+        "meaning_ja": "意味監査待ち（E0022の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "shake one's head",
+        "sense_key": "move_head_to_signal_no",
+        "meaning_ja": "首を横に振る"
+      },
+      "reason": "『首を横に振る』をshake one's headの代表義として確定する。原文の時制・特定対象を混入せず、move_head_to_signal_noとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01168",
+      "kind": "expression",
+      "before": {
+        "canonical": "afford to do something",
+        "sense_key": "pending_admission_0095",
+        "meaning_ja": "意味監査待ち（E0024の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "afford to do something",
+        "sense_key": "have_means_or_time_to_do",
+        "meaning_ja": "〜する余裕がある"
+      },
+      "reason": "『〜する余裕がある』をafford to do somethingの代表義として確定する。原文の時制・特定対象を混入せず、have_means_or_time_to_doとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01173",
+      "kind": "expression",
+      "before": {
+        "canonical": "population density",
+        "sense_key": "pending_admission_0100",
+        "meaning_ja": "意味監査待ち（E0034の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "population density",
+        "sense_key": "people_per_unit_area",
+        "meaning_ja": "人口密度"
+      },
+      "reason": "『人口密度』をpopulation densityの代表義として確定する。原文の時制・特定対象を混入せず、people_per_unit_areaとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01179",
+      "kind": "expression",
+      "before": {
+        "canonical": "be exposed to something",
+        "sense_key": "pending_admission_0106",
+        "meaning_ja": "意味監査待ち（E0038の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "be exposed to something",
+        "sense_key": "be_unprotected_from_exposure",
+        "meaning_ja": "〜にさらされる"
+      },
+      "reason": "『〜にさらされる』をbe exposed to somethingの代表義として確定する。原文の時制・特定対象を混入せず、be_unprotected_from_exposureとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01186",
+      "kind": "expression",
+      "before": {
+        "canonical": "write down",
+        "sense_key": "pending_admission_0113",
+        "meaning_ja": "意味監査待ち（E0044の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "write something down",
+        "sense_key": "record_in_writing",
+        "meaning_ja": "〜を書き留める"
+      },
+      "reason": "『〜を書き留める』をwrite something downの代表義として確定する。原文の時制・特定対象を混入せず、record_in_writingとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": true
+    },
+    {
+      "id": "vocab:01280",
+      "kind": "expression",
+      "before": {
+        "canonical": "for here or to go?",
+        "sense_key": "pending_admission_0207",
+        "meaning_ja": "意味監査待ち（E0063の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "for here or to go?",
+        "sense_key": "ask_eat_in_or_take_away",
+        "meaning_ja": "店内で召し上がりますか、持ち帰りますか"
+      },
+      "reason": "『店内で召し上がりますか、持ち帰りますか』をfor here or to go?の代表義として確定する。原文の時制・特定対象を混入せず、ask_eat_in_or_take_awayとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01281",
+      "kind": "expression",
+      "before": {
+        "canonical": "to go",
+        "sense_key": "pending_admission_0208",
+        "meaning_ja": "意味監査待ち（E0063の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "to go",
+        "sense_key": "takeaway_food",
+        "meaning_ja": "持ち帰りの"
+      },
+      "reason": "『持ち帰りの』をto goの代表義として確定する。原文の時制・特定対象を混入せず、takeaway_foodとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01282",
+      "kind": "expression",
+      "before": {
+        "canonical": "be in",
+        "sense_key": "pending_admission_0209",
+        "meaning_ja": "Indiana"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "be in",
+        "sense_key": "be_fashionable",
+        "meaning_ja": "流行している"
+      },
+      "reason": "Indianaはinの誤展開であり、be inの流行義を確定。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01284",
+      "kind": "expression",
+      "before": {
+        "canonical": "break one's promise",
+        "sense_key": "pending_admission_0211",
+        "meaning_ja": "意味監査待ち（E0073の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "break one's promise",
+        "sense_key": "fail_to_keep_promise",
+        "meaning_ja": "約束を破る"
+      },
+      "reason": "『約束を破る』をbreak one's promiseの代表義として確定する。原文の時制・特定対象を混入せず、fail_to_keep_promiseとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01297",
+      "kind": "expression",
+      "before": {
+        "canonical": "capacity for doing something",
+        "sense_key": "pending_admission_0224",
+        "meaning_ja": "意味監査待ち（E0090の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "capacity for doing something",
+        "sense_key": "ability_to_do",
+        "meaning_ja": "〜する能力"
+      },
+      "reason": "『〜する能力』をcapacity for doing somethingの代表義として確定する。原文の時制・特定対象を混入せず、ability_to_doとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01303",
+      "kind": "expression",
+      "before": {
+        "canonical": "in a sense",
+        "sense_key": "pending_admission_0230",
+        "meaning_ja": "意味監査待ち（E0099の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "in a sense",
+        "sense_key": "from_one_perspective",
+        "meaning_ja": "ある意味では"
+      },
+      "reason": "『ある意味では』をin a senseの代表義として確定する。原文の時制・特定対象を混入せず、from_one_perspectiveとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01372",
+      "kind": "expression",
+      "before": {
+        "canonical": "utility bill",
+        "sense_key": "pending_admission_0299",
+        "meaning_ja": "意味監査待ち（E0101の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "utility bill",
+        "sense_key": "bill_for_public_utilities",
+        "meaning_ja": "公共料金の請求書"
+      },
+      "reason": "『公共料金の請求書』をutility billの代表義として確定する。原文の時制・特定対象を混入せず、bill_for_public_utilitiesとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01382",
+      "kind": "expression",
+      "before": {
+        "canonical": "do the dishes",
+        "sense_key": "pending_admission_0309",
+        "meaning_ja": "意味監査待ち（E0121の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "do the dishes",
+        "sense_key": "wash_dishes",
+        "meaning_ja": "食器を洗う"
+      },
+      "reason": "『食器を洗う』をdo the dishesの代表義として確定する。原文の時制・特定対象を混入せず、wash_dishesとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01388",
+      "kind": "expression",
+      "before": {
+        "canonical": "real estate",
+        "sense_key": "pending_admission_0315",
+        "meaning_ja": "不動産"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "real estate",
+        "sense_key": "land_and_buildings",
+        "meaning_ja": "不動産"
+      },
+      "reason": "『不動産』をreal estateの代表義として確定する。原文の時制・特定対象を混入せず、land_and_buildingsとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01391",
+      "kind": "expression",
+      "before": {
+        "canonical": "discourage someone from doing something",
+        "sense_key": "pending_admission_0318",
+        "meaning_ja": "意味監査待ち（E0131の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "discourage someone from doing something",
+        "sense_key": "deter_from_doing",
+        "meaning_ja": "人に〜するのを思いとどまらせる"
+      },
+      "reason": "『人に〜するのを思いとどまらせる』をdiscourage someone from doing somethingの代表義として確定する。原文の時制・特定対象を混入せず、deter_from_doingとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01393",
+      "kind": "expression",
+      "before": {
+        "canonical": "manufactured goods",
+        "sense_key": "pending_admission_0320",
+        "meaning_ja": "意味監査待ち（E0132の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "manufactured goods",
+        "sense_key": "products_of_manufacturing",
+        "meaning_ja": "工業製品"
+      },
+      "reason": "『工業製品』をmanufactured goodsの代表義として確定する。原文の時制・特定対象を混入せず、products_of_manufacturingとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01399",
+      "kind": "expression",
+      "before": {
+        "canonical": "there is little prospect that something",
+        "sense_key": "pending_admission_0326",
+        "meaning_ja": "意味監査待ち（E0141の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "there is little prospect that clause",
+        "sense_key": "unlikely_future_event",
+        "meaning_ja": "〜する見込みがほとんどない"
+      },
+      "reason": "『〜する見込みがほとんどない』をthere is little prospect that clauseの代表義として確定する。原文の時制・特定対象を混入せず、unlikely_future_eventとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": true
+    },
+    {
+      "id": "vocab:01498",
+      "kind": "expression",
+      "before": {
+        "canonical": "I bet something",
+        "sense_key": "pending_admission_0425",
+        "meaning_ja": "意味監査待ち（E0162の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "I bet clause",
+        "sense_key": "confident_prediction",
+        "meaning_ja": "きっと〜だと思う"
+      },
+      "reason": "『きっと〜だと思う』をI bet clauseの代表義として確定する。原文の時制・特定対象を混入せず、confident_predictionとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": true
+    },
+    {
+      "id": "vocab:01499",
+      "kind": "expression",
+      "before": {
+        "canonical": "apart from",
+        "sense_key": "pending_admission_0426",
+        "meaning_ja": "意味監査待ち（E0163の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "apart from",
+        "sense_key": "except_for",
+        "meaning_ja": "〜を除けば"
+      },
+      "reason": "『〜を除けば』をapart fromの代表義として確定する。原文の時制・特定対象を混入せず、except_forとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01504",
+      "kind": "expression",
+      "before": {
+        "canonical": "by chance",
+        "sense_key": "pending_admission_0431",
+        "meaning_ja": "偶然の"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "by chance",
+        "sense_key": "without_planning",
+        "meaning_ja": "偶然に"
+      },
+      "reason": "『偶然に』をby chanceの代表義として確定する。原文の時制・特定対象を混入せず、without_planningとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01505",
+      "kind": "expression",
+      "before": {
+        "canonical": "introduce something to something else",
+        "sense_key": "pending_admission_0432",
+        "meaning_ja": "意味監査待ち（E0181の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "introduce someone to someone else",
+        "sense_key": "introduce_people",
+        "meaning_ja": "人を別の人に紹介する"
+      },
+      "reason": "紹介される人・相手を無生物placeholderからsomeoneへ正常化。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": true
+    },
+    {
+      "id": "vocab:01511",
+      "kind": "expression",
+      "before": {
+        "canonical": "feel contempt for someone",
+        "sense_key": "pending_admission_0438",
+        "meaning_ja": "意味監査待ち（E0186の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "feel contempt for someone",
+        "sense_key": "feel_disdain_for_person",
+        "meaning_ja": "人を軽蔑する"
+      },
+      "reason": "『人を軽蔑する』をfeel contempt for someoneの代表義として確定する。原文の時制・特定対象を混入せず、feel_disdain_for_personとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01515",
+      "kind": "expression",
+      "before": {
+        "canonical": "leap over something",
+        "sense_key": "pending_admission_0442",
+        "meaning_ja": "意味監査待ち（E0190の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "leap over something",
+        "sense_key": "jump_over_obstacle",
+        "meaning_ja": "〜を飛び越える"
+      },
+      "reason": "『〜を飛び越える』をleap over somethingの代表義として確定する。原文の時制・特定対象を混入せず、jump_over_obstacleとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01632",
+      "kind": "expression",
+      "before": {
+        "canonical": "not at all",
+        "sense_key": "pending_admission_0559",
+        "meaning_ja": "少しも~でない"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "not at all",
+        "sense_key": "not_in_the_least",
+        "meaning_ja": "少しも〜ない"
+      },
+      "reason": "『少しも〜ない』をnot at allの代表義として確定する。原文の時制・特定対象を混入せず、not_in_the_leastとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01635",
+      "kind": "expression",
+      "before": {
+        "canonical": "be through",
+        "sense_key": "pending_admission_0562",
+        "meaning_ja": "(一方の端から他方へ)"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "be through",
+        "sense_key": "relationship_is_over",
+        "meaning_ja": "関係が終わっている"
+      },
+      "reason": "Cambridge throughの関係終了義を確認。通過義を混入させない。",
+      "confidence": "high",
+      "cross_shard_note": "同一canonicalの他senseがある場合は中央でmeaning_ja重複とsense分離を確認。",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01642",
+      "kind": "expression",
+      "before": {
+        "canonical": "the other day",
+        "sense_key": "pending_admission_0569",
+        "meaning_ja": "意味監査待ち（E0214の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "the other day",
+        "sense_key": "a_recent_past_day",
+        "meaning_ja": "先日"
+      },
+      "reason": "『先日』をthe other dayの代表義として確定する。原文の時制・特定対象を混入せず、a_recent_past_dayとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01643",
+      "kind": "expression",
+      "before": {
+        "canonical": "ahead of",
+        "sense_key": "pending_admission_0570",
+        "meaning_ja": "意味監査待ち（E0215の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "ahead of",
+        "sense_key": "in_front_of",
+        "meaning_ja": "〜の前に"
+      },
+      "reason": "『〜の前に』をahead ofの代表義として確定する。原文の時制・特定対象を混入せず、in_front_ofとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01652",
+      "kind": "expression",
+      "before": {
+        "canonical": "zero gravity",
+        "sense_key": "pending_admission_0579",
+        "meaning_ja": "意味監査待ち（E0226の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "zero gravity",
+        "sense_key": "absence_of_gravity",
+        "meaning_ja": "無重力"
+      },
+      "reason": "『無重力』をzero gravityの代表義として確定する。原文の時制・特定対象を混入せず、absence_of_gravityとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01657",
+      "kind": "expression",
+      "before": {
+        "canonical": "on the verge of",
+        "sense_key": "pending_admission_0584",
+        "meaning_ja": "意味監査待ち（E0234の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "on the verge of",
+        "sense_key": "very_close_to_event",
+        "meaning_ja": "〜の瀬戸際に"
+      },
+      "reason": "『〜の瀬戸際に』をon the verge ofの代表義として確定する。原文の時制・特定対象を混入せず、very_close_to_eventとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01664",
+      "kind": "expression",
+      "before": {
+        "canonical": "global warming",
+        "sense_key": "pending_admission_0591",
+        "meaning_ja": "地球温暖化"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "global warming",
+        "sense_key": "increase_in_global_temperature",
+        "meaning_ja": "地球温暖化"
+      },
+      "reason": "『地球温暖化』をglobal warmingの代表義として確定する。原文の時制・特定対象を混入せず、increase_in_global_temperatureとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01665",
+      "kind": "expression",
+      "before": {
+        "canonical": "be related to",
+        "sense_key": "pending_admission_0592",
+        "meaning_ja": "意味監査待ち（E0237の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "be related to",
+        "sense_key": "have_connection_with",
+        "meaning_ja": "〜と関係がある"
+      },
+      "reason": "『〜と関係がある』をbe related toの代表義として確定する。原文の時制・特定対象を混入せず、have_connection_withとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01788",
+      "kind": "expression",
+      "before": {
+        "canonical": "state capital",
+        "sense_key": "pending_admission_0715",
+        "meaning_ja": "意味監査待ち（E0251の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "state capital",
+        "sense_key": "capital_city_of_state",
+        "meaning_ja": "州都"
+      },
+      "reason": "『州都』をstate capitalの代表義として確定する。原文の時制・特定対象を混入せず、capital_city_of_stateとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01793",
+      "kind": "expression",
+      "before": {
+        "canonical": "appear to be",
+        "sense_key": "pending_admission_0720",
+        "meaning_ja": "意味監査待ち（E0257の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "appear to be",
+        "sense_key": "seem_to_be",
+        "meaning_ja": "〜であるように見える"
+      },
+      "reason": "『〜であるように見える』をappear to beの代表義として確定する。原文の時制・特定対象を混入せず、seem_to_beとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01795",
+      "kind": "expression",
+      "before": {
+        "canonical": "household appliance",
+        "sense_key": "pending_admission_0722",
+        "meaning_ja": "意味監査待ち（E0259の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "household appliance",
+        "sense_key": "electrical_device_for_home",
+        "meaning_ja": "家庭用電化製品"
+      },
+      "reason": "『家庭用電化製品』をhousehold applianceの代表義として確定する。原文の時制・特定対象を混入せず、electrical_device_for_homeとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01800",
+      "kind": "expression",
+      "before": {
+        "canonical": "be superior to something",
+        "sense_key": "pending_admission_0727",
+        "meaning_ja": "意味監査待ち（E0268の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "be superior to something",
+        "sense_key": "better_than",
+        "meaning_ja": "〜より優れている"
+      },
+      "reason": "『〜より優れている』をbe superior to somethingの代表義として確定する。原文の時制・特定対象を混入せず、better_thanとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01810",
+      "kind": "expression",
+      "before": {
+        "canonical": "be willing to do something",
+        "sense_key": "pending_admission_0737",
+        "meaning_ja": "意味監査待ち（E0282の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "be willing to do something",
+        "sense_key": "ready_and_willing_to_do",
+        "meaning_ja": "進んで〜する気がある"
+      },
+      "reason": "『進んで〜する気がある』をbe willing to do somethingの代表義として確定する。原文の時制・特定対象を混入せず、ready_and_willing_to_doとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01812",
+      "kind": "expression",
+      "before": {
+        "canonical": "work overtime",
+        "sense_key": "pending_admission_0739",
+        "meaning_ja": "意味監査待ち（E0283の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "work overtime",
+        "sense_key": "work_extra_hours",
+        "meaning_ja": "残業する"
+      },
+      "reason": "『残業する』をwork overtimeの代表義として確定する。原文の時制・特定対象を混入せず、work_extra_hoursとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01819",
+      "kind": "expression",
+      "before": {
+        "canonical": "check in",
+        "sense_key": "pending_admission_0746",
+        "meaning_ja": "チェックインする"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "check in",
+        "sense_key": "register_arrival",
+        "meaning_ja": "チェックインする"
+      },
+      "reason": "『チェックインする』をcheck inの代表義として確定する。原文の時制・特定対象を混入せず、register_arrivalとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01915",
+      "kind": "expression",
+      "before": {
+        "canonical": "jet lag",
+        "sense_key": "pending_admission_0842",
+        "meaning_ja": "意味監査待ち（E0314の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "jet lag",
+        "sense_key": "disrupted_body_clock_after_travel",
+        "meaning_ja": "時差ぼけ"
+      },
+      "reason": "『時差ぼけ』をjet lagの代表義として確定する。原文の時制・特定対象を混入せず、disrupted_body_clock_after_travelとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01918",
+      "kind": "expression",
+      "before": {
+        "canonical": "persuade someone to do something",
+        "sense_key": "pending_admission_0845",
+        "meaning_ja": "意味監査待ち（E0324の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "persuade someone to do something",
+        "sense_key": "convince_person_to_do",
+        "meaning_ja": "人を説得して〜させる"
+      },
+      "reason": "『人を説得して〜させる』をpersuade someone to do somethingの代表義として確定する。原文の時制・特定対象を混入せず、convince_person_to_doとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01923",
+      "kind": "expression",
+      "before": {
+        "canonical": "fulfill an ambition",
+        "sense_key": "pending_admission_0850",
+        "meaning_ja": "意味監査待ち（E0330の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "fulfill an ambition",
+        "sense_key": "achieve_ambition",
+        "meaning_ja": "大きな目標を実現する"
+      },
+      "reason": "『大きな目標を実現する』をfulfill an ambitionの代表義として確定する。原文の時制・特定対象を混入せず、achieve_ambitionとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01925",
+      "kind": "expression",
+      "before": {
+        "canonical": "What do you do?",
+        "sense_key": "pending_admission_0852",
+        "meaning_ja": "意味監査待ち（E0332の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "What do you do?",
+        "sense_key": "ask_occupation",
+        "meaning_ja": "お仕事は何ですか"
+      },
+      "reason": "『お仕事は何ですか』をWhat do you do?の代表義として確定する。原文の時制・特定対象を混入せず、ask_occupationとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01934",
+      "kind": "expression",
+      "before": {
+        "canonical": "I mean",
+        "sense_key": "pending_admission_0861",
+        "meaning_ja": "意味監査待ち（E0341の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "I mean",
+        "sense_key": "clarify_previous_statement",
+        "meaning_ja": "つまり"
+      },
+      "reason": "『つまり』をI meanの代表義として確定する。原文の時制・特定対象を混入せず、clarify_previous_statementとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02047",
+      "kind": "expression",
+      "before": {
+        "canonical": "be well off",
+        "sense_key": "pending_admission_0974",
+        "meaning_ja": "意味監査待ち（E0353の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "be well off",
+        "sense_key": "be_financially_comfortable",
+        "meaning_ja": "裕福である"
+      },
+      "reason": "『裕福である』をbe well offの代表義として確定する。原文の時制・特定対象を混入せず、be_financially_comfortableとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02053",
+      "kind": "expression",
+      "before": {
+        "canonical": "fifty-fifty chance",
+        "sense_key": "pending_admission_0980",
+        "meaning_ja": "意味監査待ち（E0362の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "fifty-fifty chance",
+        "sense_key": "equal_chance_of_success_or_failure",
+        "meaning_ja": "五分五分の可能性"
+      },
+      "reason": "『五分五分の可能性』をfifty-fifty chanceの代表義として確定する。原文の時制・特定対象を混入せず、equal_chance_of_success_or_failureとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02063",
+      "kind": "expression",
+      "before": {
+        "canonical": "run for office",
+        "sense_key": "pending_admission_0990",
+        "meaning_ja": "意味監査待ち（E0388の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "run for office",
+        "sense_key": "stand_as_candidate",
+        "meaning_ja": "公職に立候補する"
+      },
+      "reason": "『公職に立候補する』をrun for officeの代表義として確定する。原文の時制・特定対象を混入せず、stand_as_candidateとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02064",
+      "kind": "expression",
+      "before": {
+        "canonical": "be disappointed by something",
+        "sense_key": "pending_admission_0991",
+        "meaning_ja": "意味監査待ち（E0389の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "be disappointed by something",
+        "sense_key": "feel_disappointment_at",
+        "meaning_ja": "〜に失望する"
+      },
+      "reason": "『〜に失望する』をbe disappointed by somethingの代表義として確定する。原文の時制・特定対象を混入せず、feel_disappointment_atとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02069",
+      "kind": "expression",
+      "before": {
+        "canonical": "living standard",
+        "sense_key": "pending_admission_0996",
+        "meaning_ja": "生活水準(=standard of living)"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "living standard",
+        "sense_key": "level_of_material_wellbeing",
+        "meaning_ja": "生活水準"
+      },
+      "reason": "『生活水準』をliving standardの代表義として確定する。原文の時制・特定対象を混入せず、level_of_material_wellbeingとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02074",
+      "kind": "expression",
+      "before": {
+        "canonical": "dare to do something",
+        "sense_key": "pending_admission_1001",
+        "meaning_ja": "意味監査待ち（E0400の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "dare to do something",
+        "sense_key": "have_courage_to_do",
+        "meaning_ja": "あえて〜する"
+      },
+      "reason": "『あえて〜する』をdare to do somethingの代表義として確定する。原文の時制・特定対象を混入せず、have_courage_to_doとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02210",
+      "kind": "expression",
+      "before": {
+        "canonical": "be in charge of something",
+        "sense_key": "pending_admission_1137",
+        "meaning_ja": "意味監査待ち（E0406の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "be in charge of something",
+        "sense_key": "have_responsibility_for",
+        "meaning_ja": "〜を担当している"
+      },
+      "reason": "『〜を担当している』をbe in charge of somethingの代表義として確定する。原文の時制・特定対象を混入せず、have_responsibility_forとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02211",
+      "kind": "expression",
+      "before": {
+        "canonical": "to one's knowledge",
+        "sense_key": "pending_admission_1138",
+        "meaning_ja": "意味監査待ち（E0407の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "to one's knowledge",
+        "sense_key": "as_far_as_one_knows",
+        "meaning_ja": "自分の知る限りでは"
+      },
+      "reason": "『自分の知る限りでは』をto one's knowledgeの代表義として確定する。原文の時制・特定対象を混入せず、as_far_as_one_knowsとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02216",
+      "kind": "expression",
+      "before": {
+        "canonical": "hesitate to do something",
+        "sense_key": "pending_admission_1143",
+        "meaning_ja": "意味監査待ち（E0413の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "hesitate to do something",
+        "sense_key": "be_reluctant_to_do",
+        "meaning_ja": "〜するのをためらう"
+      },
+      "reason": "『〜するのをためらう』をhesitate to do somethingの代表義として確定する。原文の時制・特定対象を混入せず、be_reluctant_to_doとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02223",
+      "kind": "expression",
+      "before": {
+        "canonical": "call in",
+        "sense_key": "pending_admission_1150",
+        "meaning_ja": "意味監査待ち（E0421の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "call someone in",
+        "sense_key": "summon_people_for_help",
+        "meaning_ja": "人を応援に呼ぶ"
+      },
+      "reason": "Cambridge call someone inの援助者を呼ぶ義を確認。受動原文を能動辞書形へ戻す。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": true
+    },
+    {
+      "id": "vocab:02228",
+      "kind": "expression",
+      "before": {
+        "canonical": "armed forces",
+        "sense_key": "pending_admission_1155",
+        "meaning_ja": "軍隊(陸・海・空の全軍)"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "armed forces",
+        "sense_key": "military_forces",
+        "meaning_ja": "軍隊"
+      },
+      "reason": "『軍隊』をarmed forcesの代表義として確定する。原文の時制・特定対象を混入せず、military_forcesとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02235",
+      "kind": "expression",
+      "before": {
+        "canonical": "protest against something",
+        "sense_key": "pending_admission_1162",
+        "meaning_ja": "意味監査待ち（E0436の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "protest against something",
+        "sense_key": "express_opposition_to",
+        "meaning_ja": "〜に抗議する"
+      },
+      "reason": "『〜に抗議する』をprotest against somethingの代表義として確定する。原文の時制・特定対象を混入せず、express_opposition_toとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02244",
+      "kind": "expression",
+      "before": {
+        "canonical": "foreign affairs",
+        "sense_key": "pending_admission_1171",
+        "meaning_ja": "意味監査待ち（E0449の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "foreign affairs",
+        "sense_key": "international_relations_matters",
+        "meaning_ja": "外交問題"
+      },
+      "reason": "『外交問題』をforeign affairsの代表義として確定する。原文の時制・特定対象を混入せず、international_relations_mattersとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02367",
+      "kind": "expression",
+      "before": {
+        "canonical": "look for something",
+        "sense_key": "pending_admission_1294",
+        "meaning_ja": "探す"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "look for something",
+        "sense_key": "try_to_find",
+        "meaning_ja": "〜を探す"
+      },
+      "reason": "『〜を探す』をlook for somethingの代表義として確定する。原文の時制・特定対象を混入せず、try_to_findとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02368",
+      "kind": "expression",
+      "before": {
+        "canonical": "search for something",
+        "sense_key": "pending_admission_1295",
+        "meaning_ja": "意味監査待ち（E0457の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "search for something",
+        "sense_key": "search_to_find",
+        "meaning_ja": "〜を探す"
+      },
+      "reason": "『〜を探す』をsearch for somethingの代表義として確定する。原文の時制・特定対象を混入せず、search_to_findとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02369",
+      "kind": "expression",
+      "before": {
+        "canonical": "distinguish something from something else",
+        "sense_key": "pending_admission_1296",
+        "meaning_ja": "意味監査待ち（E0458の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "distinguish something from something else",
+        "sense_key": "tell_two_things_apart",
+        "meaning_ja": "〜と別のものを区別する"
+      },
+      "reason": "『〜と別のものを区別する』をdistinguish something from something elseの代表義として確定する。原文の時制・特定対象を混入せず、tell_two_things_apartとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02373",
+      "kind": "expression",
+      "before": {
+        "canonical": "become aware of something",
+        "sense_key": "pending_admission_1300",
+        "meaning_ja": "意味監査待ち（E0466の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "become aware of something",
+        "sense_key": "come_to_notice",
+        "meaning_ja": "〜に気づく"
+      },
+      "reason": "『〜に気づく』をbecome aware of somethingの代表義として確定する。原文の時制・特定対象を混入せず、come_to_noticeとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02375",
+      "kind": "expression",
+      "before": {
+        "canonical": "turn around",
+        "sense_key": "pending_admission_1302",
+        "meaning_ja": "turnaroundの異綴"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "turn around",
+        "sense_key": "turn_to_face_opposite_direction",
+        "meaning_ja": "振り向く"
+      },
+      "reason": "『振り向く』をturn aroundの代表義として確定する。原文の時制・特定対象を混入せず、turn_to_face_opposite_directionとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02432",
+      "kind": "expression",
+      "before": {
+        "canonical": "be in disguise",
+        "sense_key": "pending_admission_1359",
+        "meaning_ja": "意味監査待ち（E0505の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "be in disguise",
+        "sense_key": "be_disguised",
+        "meaning_ja": "変装している"
+      },
+      "reason": "『変装している』をbe in disguiseの代表義として確定する。原文の時制・特定対象を混入せず、be_disguisedとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02434",
+      "kind": "expression",
+      "before": {
+        "canonical": "make friends",
+        "sense_key": "pending_admission_1361",
+        "meaning_ja": "意味監査待ち（E0507の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "make friends",
+        "sense_key": "form_friendships",
+        "meaning_ja": "友達を作る"
+      },
+      "reason": "『友達を作る』をmake friendsの代表義として確定する。原文の時制・特定対象を混入せず、form_friendshipsとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02444",
+      "kind": "expression",
+      "before": {
+        "canonical": "between you and me",
+        "sense_key": "pending_admission_1371",
+        "meaning_ja": "内緒だが。ここだけの事だが"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "between you and me",
+        "sense_key": "introduce_confidential_information",
+        "meaning_ja": "ここだけの話だが"
+      },
+      "reason": "『ここだけの話だが』をbetween you and meの代表義として確定する。原文の時制・特定対象を混入せず、introduce_confidential_informationとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02445",
+      "kind": "expression",
+      "before": {
+        "canonical": "apologize to someone for doing something",
+        "sense_key": "pending_admission_1372",
+        "meaning_ja": "意味監査待ち（E0528の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "apologize to someone for doing something",
+        "sense_key": "apologize_for_action_to_person",
+        "meaning_ja": "人に〜したことを謝る"
+      },
+      "reason": "『人に〜したことを謝る』をapologize to someone for doing somethingの代表義として確定する。原文の時制・特定対象を混入せず、apologize_for_action_to_personとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02447",
+      "kind": "expression",
+      "before": {
+        "canonical": "leave someone for someone else",
+        "sense_key": "pending_admission_1374",
+        "meaning_ja": "意味監査待ち（E0534の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "leave someone for someone else",
+        "sense_key": "leave_partner_for_another",
+        "meaning_ja": "人と別れて別の人のもとへ行く"
+      },
+      "reason": "『人と別れて別の人のもとへ行く』をleave someone for someone elseの代表義として確定する。原文の時制・特定対象を混入せず、leave_partner_for_anotherとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02449",
+      "kind": "expression",
+      "before": {
+        "canonical": "How come?",
+        "sense_key": "pending_admission_1376",
+        "meaning_ja": "意味監査待ち（E0535の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "How come?",
+        "sense_key": "ask_reason_informally",
+        "meaning_ja": "どうして"
+      },
+      "reason": "『どうして』をHow come?の代表義として確定する。原文の時制・特定対象を混入せず、ask_reason_informallyとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02457",
+      "kind": "expression",
+      "before": {
+        "canonical": "a couple of",
+        "sense_key": "pending_admission_1384",
+        "meaning_ja": "意味監査待ち（E0546の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "a couple of",
+        "sense_key": "a_small_number",
+        "meaning_ja": "二、三の"
+      },
+      "reason": "『二、三の』をa couple ofの代表義として確定する。原文の時制・特定対象を混入せず、a_small_numberとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02480",
+      "kind": "expression",
+      "before": {
+        "canonical": "let's see",
+        "sense_key": "pending_admission_1407",
+        "meaning_ja": "意味監査待ち（E0559の原文訳を参照）"
+      },
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "let's see",
+        "sense_key": "pause_to_consider",
+        "meaning_ja": "ええと"
+      },
+      "reason": "『ええと』をlet's seeの代表義として確定する。原文の時制・特定対象を混入せず、pause_to_considerとして固定concept内の意味を明示する。",
+      "confidence": "high",
+      "cross_shard_note": null,
+      "paraphrase_followup_required": false
+    }
+  ],
+  "dictionary_checks": [
+    {
+      "url": "https://dictionary.cambridge.org/dictionary/english/through",
+      "supports": "relationship-is-over sense of be through"
+    },
+    {
+      "url": "https://dictionary.cambridge.org/dictionary/english/call-in",
+      "supports": "call someone in: summon for help"
+    },
+    {
+      "url": "https://dictionary.cambridge.org/dictionary/english/stiff",
+      "supports": "stiff neck: neck difficult to turn"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+* { box-sizing: border-box; }
+html,
+body {
+  height: 100%;
+  margin: 0;
+  background: var(--bg);
+  color: var(--txt);
+  font-family: system-ui, "Segoe UI", "Noto Sans JP", sans-serif;
+  overscroll-behavior-y: contain;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.grow { flex: 1; }
+.muted { color: var(--muted); }

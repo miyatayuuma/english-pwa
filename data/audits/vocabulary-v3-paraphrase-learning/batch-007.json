@@ -1,0 +1,3453 @@
+{
+  "schema_version": 1,
+  "policy_version": "prompt-learning-value-v1",
+  "batch": 7,
+  "ordinal_start": 601,
+  "ordinal_end": 700,
+  "claim_main": "4a096add99a3ebe1c90e904a8cc0713e34603394",
+  "reviewed_against_main": "41a99c5cc72250944a376423fdc1a38614d254e6",
+  "reviewed_count": 100,
+  "entry_ids": [
+    "vocab:00603",
+    "vocab:00604",
+    "vocab:00605",
+    "vocab:00606",
+    "vocab:00607",
+    "vocab:00608",
+    "vocab:00609",
+    "vocab:00610",
+    "vocab:00611",
+    "vocab:00612",
+    "vocab:00613",
+    "vocab:00614",
+    "vocab:00615",
+    "vocab:00616",
+    "vocab:00617",
+    "vocab:00618",
+    "vocab:00619",
+    "vocab:00620",
+    "vocab:00621",
+    "vocab:00622",
+    "vocab:00623",
+    "vocab:00624",
+    "vocab:00625",
+    "vocab:00627",
+    "vocab:00628",
+    "vocab:00629",
+    "vocab:00630",
+    "vocab:00631",
+    "vocab:00632",
+    "vocab:00633",
+    "vocab:00634",
+    "vocab:00635",
+    "vocab:00636",
+    "vocab:00637",
+    "vocab:00638",
+    "vocab:00639",
+    "vocab:00640",
+    "vocab:00641",
+    "vocab:00642",
+    "vocab:00643",
+    "vocab:00644",
+    "vocab:00645",
+    "vocab:00646",
+    "vocab:00647",
+    "vocab:00648",
+    "vocab:00649",
+    "vocab:00650",
+    "vocab:00651",
+    "vocab:00652",
+    "vocab:00653",
+    "vocab:00654",
+    "vocab:00655",
+    "vocab:00656",
+    "vocab:00657",
+    "vocab:00658",
+    "vocab:00659",
+    "vocab:00660",
+    "vocab:00661",
+    "vocab:00662",
+    "vocab:00663",
+    "vocab:00664",
+    "vocab:00665",
+    "vocab:00666",
+    "vocab:00667",
+    "vocab:00668",
+    "vocab:00669",
+    "vocab:00670",
+    "vocab:00671",
+    "vocab:00672",
+    "vocab:00673",
+    "vocab:00674",
+    "vocab:00675",
+    "vocab:00676",
+    "vocab:00677",
+    "vocab:00678",
+    "vocab:00679",
+    "vocab:00680",
+    "vocab:00681",
+    "vocab:00682",
+    "vocab:00683",
+    "vocab:00684",
+    "vocab:00685",
+    "vocab:00686",
+    "vocab:00687",
+    "vocab:00688",
+    "vocab:00689",
+    "vocab:00690",
+    "vocab:00691",
+    "vocab:00692",
+    "vocab:00693",
+    "vocab:00694",
+    "vocab:00695",
+    "vocab:00696",
+    "vocab:00697",
+    "vocab:00698",
+    "vocab:00699",
+    "vocab:00700",
+    "vocab:00701",
+    "vocab:00702",
+    "vocab:00703"
+  ],
+  "results": [
+    {
+      "entry_id": "vocab:00603",
+      "prompt_ja": "一目で",
+      "canonical_snapshot": "at a glance",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "at a glance"
+      ],
+      "candidate_review": [
+        {
+          "expression": "at a glance",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「一目で」についてblind候補を再検証したが、canonical/TARGET重複または意味範囲・文脈依存・増分価値の不足により、独立して登録すべき主要paraphraseは残らない。"
+    },
+    {
+      "entry_id": "vocab:00604",
+      "prompt_ja": "somethingを後ろ前に着ている",
+      "canonical_snapshot": "have something on backwards",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "wear something backwards",
+        "have something on backwards"
+      ],
+      "candidate_review": [
+        {
+          "expression": "wear something backwards",
+          "decision": "ACCEPT",
+          "reason": "「somethingを後ろ前に着ている」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "have something on backwards",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        }
+      ],
+      "after_paraphrases": [
+        "wear something backwards"
+      ],
+      "decision": "CHANGED",
+      "reason": "「somethingを後ろ前に着ている」に対する主要な別英答として wear something backwards を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00605",
+      "prompt_ja": "人付き合いを避けて一人でいる",
+      "canonical_snapshot": "keep to yourself",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "keep to oneself"
+      ],
+      "candidate_review": [
+        {
+          "expression": "keep to oneself",
+          "decision": "REJECT",
+          "reason": "canonical の keep to yourself に対する人称・再帰代名詞の機械的置換に近く、surface variant を paraphrase として登録しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「人付き合いを避けて一人でいる」についてblind候補を再検証したが、canonical/TARGET重複または意味範囲・文脈依存・増分価値の不足により、独立して登録すべき主要paraphraseは残らない。"
+    },
+    {
+      "entry_id": "vocab:00606",
+      "prompt_ja": "somethingに順応する",
+      "canonical_snapshot": "adjust to something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "adapt to something",
+        "adjust to something",
+        "acclimate to something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "adapt to something",
+          "decision": "ACCEPT",
+          "reason": "「somethingに順応する」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "adjust to something",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "acclimate to something",
+          "decision": "REJECT",
+          "reason": "成立するが、環境・気候などへの順化に寄りやすく、generic な「順応する」には adapt / get used to より適用範囲が狭い。"
+        },
+        {
+          "expression": "get used to something",
+          "decision": "ACCEPT",
+          "reason": "「somethingに順応する」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "adapt to something",
+        "get used to something"
+      ],
+      "decision": "CHANGED",
+      "reason": "「somethingに順応する」に対する主要な別英答として adapt to something / get used to something を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00607",
+      "prompt_ja": "場違いで",
+      "canonical_snapshot": "out of place",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "out of place"
+      ],
+      "candidate_review": [
+        {
+          "expression": "out of place",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「場違いで」についてblind候補を再検証したが、canonical/TARGET重複または意味範囲・文脈依存・増分価値の不足により、独立して登録すべき主要paraphraseは残らない。"
+    },
+    {
+      "entry_id": "vocab:00608",
+      "prompt_ja": "正直に言うと",
+      "canonical_snapshot": "to tell the truth",
+      "answers_snapshot": [],
+      "existing_paraphrases": [
+        "to be honest"
+      ],
+      "blind_candidates": [
+        "to be honest",
+        "honestly",
+        "frankly",
+        "to tell the truth"
+      ],
+      "candidate_review": [
+        {
+          "expression": "to be honest",
+          "decision": "ACCEPT",
+          "reason": "「正直に言うと」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "honestly",
+          "decision": "ACCEPT",
+          "reason": "「正直に言うと」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "frankly",
+          "decision": "ACCEPT",
+          "reason": "「正直に言うと」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "to tell the truth",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        }
+      ],
+      "after_paraphrases": [
+        "to be honest",
+        "honestly",
+        "frankly"
+      ],
+      "decision": "CHANGED",
+      "reason": "「正直に言うと」に対する主要な別英答として to be honest / honestly / frankly を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00609",
+      "prompt_ja": "一方で",
+      "canonical_snapshot": "on the other hand",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "on the other hand",
+        "by contrast"
+      ],
+      "candidate_review": [
+        {
+          "expression": "on the other hand",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "by contrast",
+          "decision": "ACCEPT",
+          "reason": "「一方で」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "by contrast"
+      ],
+      "decision": "CHANGED",
+      "reason": "「一方で」に対する主要な別英答として by contrast を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00610",
+      "prompt_ja": "somethingにはまっている",
+      "canonical_snapshot": "be into something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be into something",
+        "be hooked on something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be into something",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "be hooked on something",
+          "decision": "ACCEPT",
+          "reason": "「somethingにはまっている」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "be hooked on something"
+      ],
+      "decision": "CHANGED",
+      "reason": "「somethingにはまっている」に対する主要な別英答として be hooked on something を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00611",
+      "prompt_ja": "somethingに楽しみを感じる",
+      "canonical_snapshot": "derive pleasure from something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "enjoy something",
+        "take pleasure in something",
+        "get a kick out of something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "enjoy something",
+          "decision": "ACCEPT",
+          "reason": "「somethingに楽しみを感じる」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "take pleasure in something",
+          "decision": "ACCEPT",
+          "reason": "「somethingに楽しみを感じる」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "get a kick out of something",
+          "decision": "REJECT",
+          "reason": "成立するが、面白がる・強い楽しみという口語ニュアンスが強く、一般的な「楽しみを感じる」より狭い。"
+        }
+      ],
+      "after_paraphrases": [
+        "enjoy something",
+        "take pleasure in something"
+      ],
+      "decision": "CHANGED",
+      "reason": "「somethingに楽しみを感じる」に対する主要な別英答として enjoy something / take pleasure in something を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00612",
+      "prompt_ja": "気分転換に",
+      "canonical_snapshot": "for a change",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "for a change"
+      ],
+      "candidate_review": [
+        {
+          "expression": "for a change",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「気分転換に」についてblind候補を再検証したが、canonical/TARGET重複または意味範囲・文脈依存・増分価値の不足により、独立して登録すべき主要paraphraseは残らない。"
+    },
+    {
+      "entry_id": "vocab:00613",
+      "prompt_ja": "somethingをする気がある",
+      "canonical_snapshot": "be up for something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be willing to do something",
+        "be prepared to do something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be willing to do something",
+          "decision": "ACCEPT",
+          "reason": "「somethingをする気がある」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "be prepared to do something",
+          "decision": "REJECT",
+          "reason": "willing の意味にもなるが、単なる readiness の解釈も強く、「する気がある」への対応が不安定。"
+        }
+      ],
+      "after_paraphrases": [
+        "be willing to do something"
+      ],
+      "decision": "CHANGED",
+      "reason": "「somethingをする気がある」に対する主要な別英答として be willing to do something を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00614",
+      "prompt_ja": "お先にどうぞ",
+      "canonical_snapshot": "after you",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "after you",
+        "go ahead"
+      ],
+      "candidate_review": [
+        {
+          "expression": "after you",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "go ahead",
+          "decision": "ACCEPT",
+          "reason": "「お先にどうぞ」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "go ahead"
+      ],
+      "decision": "CHANGED",
+      "reason": "「お先にどうぞ」に対する主要な別英答として go ahead を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00615",
+      "prompt_ja": "先に進む・始める／（許可して）どうぞ",
+      "canonical_snapshot": "go ahead",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "go ahead",
+        "proceed"
+      ],
+      "candidate_review": [
+        {
+          "expression": "go ahead",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "proceed",
+          "decision": "ACCEPT",
+          "reason": "「先に進む・始める／（許可して）どうぞ」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "proceed"
+      ],
+      "decision": "CHANGED",
+      "reason": "「先に進む・始める／（許可して）どうぞ」に対する主要な別英答として proceed を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00616",
+      "prompt_ja": "someoneとして通用する",
+      "canonical_snapshot": "pass for someone",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "pass for someone"
+      ],
+      "candidate_review": [
+        {
+          "expression": "pass for someone",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「someoneとして通用する」についてblind候補を再検証したが、canonical/TARGET重複または意味範囲・文脈依存・増分価値の不足により、独立して登録すべき主要paraphraseは残らない。"
+    },
+    {
+      "entry_id": "vocab:00617",
+      "prompt_ja": "someoneによろしく伝える",
+      "canonical_snapshot": "say hi to someone",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "give someone my regards",
+        "say hello to someone for me",
+        "give my best to someone"
+      ],
+      "candidate_review": [
+        {
+          "expression": "give someone my regards",
+          "decision": "ACCEPT",
+          "reason": "「someoneによろしく伝える」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "say hello to someone for me",
+          "decision": "ACCEPT",
+          "reason": "「someoneによろしく伝える」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "give my best to someone",
+          "decision": "REJECT",
+          "reason": "自然な挨拶だが warm personal regards に寄り、採用した二表現に加える独立学習価値が相対的に小さい。"
+        }
+      ],
+      "after_paraphrases": [
+        "say hello to someone for me",
+        "give someone my regards"
+      ],
+      "decision": "CHANGED",
+      "reason": "「someoneによろしく伝える」に対する主要な別英答として say hello to someone for me / give someone my regards を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00618",
+      "prompt_ja": "somethingするのを楽しみにする",
+      "canonical_snapshot": "look forward to doing something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "look forward to doing something",
+        "can't wait to do something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "look forward to doing something",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "can't wait to do something",
+          "decision": "ACCEPT",
+          "reason": "「somethingするのを楽しみにする」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "can't wait to do something"
+      ],
+      "decision": "CHANGED",
+      "reason": "「somethingするのを楽しみにする」に対する主要な別英答として can't wait to do something を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00619",
+      "prompt_ja": "少し時間を割く",
+      "canonical_snapshot": "spare a minute",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "spare some time",
+        "make some time",
+        "take some time"
+      ],
+      "candidate_review": [
+        {
+          "expression": "spare some time",
+          "decision": "REJECT",
+          "reason": "canonical spare a minute と同じ spare 構文の量表現差で、独立paraphraseよりsurface variantに近い。"
+        },
+        {
+          "expression": "make some time",
+          "decision": "ACCEPT",
+          "reason": "「少し時間を割く」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "take some time",
+          "decision": "REJECT",
+          "reason": "時間を取る／かける一般で、他の用事から少し時間を「割く」ことを必ずしも表さない。"
+        }
+      ],
+      "after_paraphrases": [
+        "make some time"
+      ],
+      "decision": "CHANGED",
+      "reason": "「少し時間を割く」に対する主要な別英答として make some time を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00620",
+      "prompt_ja": "somethingする価値がある",
+      "canonical_snapshot": "be worth doing something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be worth doing something",
+        "it is worthwhile to do something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be worth doing something",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "it is worthwhile to do something",
+          "decision": "ACCEPT",
+          "reason": "「somethingする価値がある」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "it is worthwhile to do something"
+      ],
+      "decision": "CHANGED",
+      "reason": "「somethingする価値がある」に対する主要な別英答として it is worthwhile to do something を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00621",
+      "prompt_ja": "somethingに注意を払う",
+      "canonical_snapshot": "pay attention to something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "pay attention to something",
+        "take notice of something",
+        "be mindful of something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "pay attention to something",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "take notice of something",
+          "decision": "REJECT",
+          "reason": "気づく・注目する寄りで、継続的に「注意を払う」ことを必ずしも表さない。"
+        },
+        {
+          "expression": "be mindful of something",
+          "decision": "ACCEPT",
+          "reason": "「somethingに注意を払う」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "be mindful of something"
+      ],
+      "decision": "CHANGED",
+      "reason": "「somethingに注意を払う」に対する主要な別英答として be mindful of something を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00622",
+      "prompt_ja": "someoneについて言えば",
+      "canonical_snapshot": "as far as someone is concerned",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "as for someone",
+        "when it comes to someone"
+      ],
+      "candidate_review": [
+        {
+          "expression": "as for someone",
+          "decision": "ACCEPT",
+          "reason": "「someoneについて言えば」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "when it comes to someone",
+          "decision": "ACCEPT",
+          "reason": "「someoneについて言えば」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "as for someone",
+        "when it comes to someone"
+      ],
+      "decision": "CHANGED",
+      "reason": "「someoneについて言えば」に対する主要な別英答として as for someone / when it comes to someone を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00623",
+      "prompt_ja": "何でもありだ",
+      "canonical_snapshot": "anything goes",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "anything goes"
+      ],
+      "candidate_review": [
+        {
+          "expression": "anything goes",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「何でもありだ」についてblind候補を再検証したが、canonical/TARGET重複または意味範囲・文脈依存・増分価値の不足により、独立して登録すべき主要paraphraseは残らない。"
+    },
+    {
+      "entry_id": "vocab:00624",
+      "prompt_ja": "対照的に",
+      "canonical_snapshot": "by contrast",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "in contrast",
+        "by contrast"
+      ],
+      "candidate_review": [
+        {
+          "expression": "in contrast",
+          "decision": "ACCEPT",
+          "reason": "「対照的に」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "by contrast",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        }
+      ],
+      "after_paraphrases": [
+        "in contrast"
+      ],
+      "decision": "CHANGED",
+      "reason": "「対照的に」に対する主要な別英答として in contrast を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00625",
+      "prompt_ja": "someoneの手を取る",
+      "canonical_snapshot": "take someone by the hand",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "take someone's hand"
+      ],
+      "candidate_review": [
+        {
+          "expression": "take someone's hand",
+          "decision": "ACCEPT",
+          "reason": "「someoneの手を取る」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "take someone's hand"
+      ],
+      "decision": "CHANGED",
+      "reason": "「someoneの手を取る」に対する主要な別英答として take someone's hand を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00627",
+      "prompt_ja": "somethingをsomething elseだと解釈する",
+      "canonical_snapshot": "interpret something as something else",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "interpret something as something else",
+        "take something to mean something else",
+        "read something as something else"
+      ],
+      "candidate_review": [
+        {
+          "expression": "interpret something as something else",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "take something to mean something else",
+          "decision": "ACCEPT",
+          "reason": "「somethingをsomething elseだと解釈する」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "read something as something else",
+          "decision": "REJECT",
+          "reason": "文章・発言・兆候など『読む』対象に寄りやすく、generic prompt への追加表現としては適用範囲が狭い。"
+        }
+      ],
+      "after_paraphrases": [
+        "take something to mean something else"
+      ],
+      "decision": "CHANGED",
+      "reason": "「somethingをsomething elseだと解釈する」に対する主要な別英答として take something to mean something else を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00628",
+      "prompt_ja": "somethingを招きやすい",
+      "canonical_snapshot": "be open to something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be likely to cause something",
+        "tend to cause something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be likely to cause something",
+          "decision": "ACCEPT",
+          "reason": "「somethingを招きやすい」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "tend to cause something",
+          "decision": "ACCEPT",
+          "reason": "「somethingを招きやすい」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "be likely to cause something",
+        "tend to cause something"
+      ],
+      "decision": "CHANGED",
+      "reason": "「somethingを招きやすい」に対する主要な別英答として be likely to cause something / tend to cause something を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00629",
+      "prompt_ja": "somethingに我慢できない",
+      "canonical_snapshot": "can't stand something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "can't stand something",
+        "can't bear something",
+        "cannot tolerate something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "can't stand something",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "can't bear something",
+          "decision": "ACCEPT",
+          "reason": "「somethingに我慢できない」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "cannot tolerate something",
+          "decision": "ACCEPT",
+          "reason": "「somethingに我慢できない」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "can't put up with something",
+          "decision": "ACCEPT",
+          "reason": "「somethingに我慢できない」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "can't bear something",
+        "can't put up with something",
+        "cannot tolerate something"
+      ],
+      "decision": "CHANGED",
+      "reason": "「somethingに我慢できない」に対する主要な別英答として can't bear something / can't put up with something / cannot tolerate something を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00630",
+      "prompt_ja": "落ち着く",
+      "canonical_snapshot": "calm down",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "calm down",
+        "settle down",
+        "relax"
+      ],
+      "candidate_review": [
+        {
+          "expression": "calm down",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "settle down",
+          "decision": "ACCEPT",
+          "reason": "「落ち着く」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "relax",
+          "decision": "ACCEPT",
+          "reason": "「落ち着く」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "settle down",
+        "relax"
+      ],
+      "decision": "CHANGED",
+      "reason": "「落ち着く」に対する主要な別英答として settle down / relax を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00631",
+      "prompt_ja": "人のところに来る",
+      "canonical_snapshot": "come over",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "come over",
+        "come by"
+      ],
+      "candidate_review": [
+        {
+          "expression": "come over",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "come by",
+          "decision": "ACCEPT",
+          "reason": "「人のところに来る」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "come by"
+      ],
+      "decision": "CHANGED",
+      "reason": "「人のところに来る」に対する主要な別英答として come by を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00632",
+      "prompt_ja": "できるだけ早く",
+      "canonical_snapshot": "as soon as possible",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "as soon as possible",
+        "as quickly as possible"
+      ],
+      "candidate_review": [
+        {
+          "expression": "as soon as possible",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "as quickly as possible",
+          "decision": "ACCEPT",
+          "reason": "「できるだけ早く」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "as quickly as possible"
+      ],
+      "decision": "CHANGED",
+      "reason": "「できるだけ早く」に対する主要な別英答として as quickly as possible を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00633",
+      "prompt_ja": "somethingを文字どおりに受け取る",
+      "canonical_snapshot": "take something literally",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "take something literally",
+        "interpret something literally"
+      ],
+      "candidate_review": [
+        {
+          "expression": "take something literally",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "interpret something literally",
+          "decision": "ACCEPT",
+          "reason": "「somethingを文字どおりに受け取る」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "interpret something literally"
+      ],
+      "decision": "CHANGED",
+      "reason": "「somethingを文字どおりに受け取る」に対する主要な別英答として interpret something literally を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00634",
+      "prompt_ja": "somethingする傾向がある",
+      "canonical_snapshot": "be inclined to do something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [
+        "tend to do something"
+      ],
+      "blind_candidates": [
+        "tend to do something",
+        "be inclined to do something",
+        "have a tendency to do something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "tend to do something",
+          "decision": "ACCEPT",
+          "reason": "「somethingする傾向がある」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "be inclined to do something",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "have a tendency to do something",
+          "decision": "ACCEPT",
+          "reason": "「somethingする傾向がある」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "tend to do something",
+        "have a tendency to do something"
+      ],
+      "decision": "CHANGED",
+      "reason": "「somethingする傾向がある」に対する主要な別英答として tend to do something / have a tendency to do something を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00635",
+      "prompt_ja": "someoneをからかう",
+      "canonical_snapshot": "make fun of someone",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "tease someone",
+        "make fun of someone",
+        "poke fun at someone",
+        "kid someone"
+      ],
+      "candidate_review": [
+        {
+          "expression": "tease someone",
+          "decision": "ACCEPT",
+          "reason": "「someoneをからかう」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "make fun of someone",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "poke fun at someone",
+          "decision": "ACCEPT",
+          "reason": "「someoneをからかう」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "kid someone",
+          "decision": "REJECT",
+          "reason": "口語で成立するが、単に冗談を言う用法との曖昧さがあり、tease / poke fun at より対応が不安定。"
+        }
+      ],
+      "after_paraphrases": [
+        "tease someone",
+        "poke fun at someone"
+      ],
+      "decision": "CHANGED",
+      "reason": "「someoneをからかう」に対する主要な別英答として tease someone / poke fun at someone を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00636",
+      "prompt_ja": "度を越す",
+      "canonical_snapshot": "go too far",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "go too far",
+        "cross the line",
+        "overdo it"
+      ],
+      "candidate_review": [
+        {
+          "expression": "go too far",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "cross the line",
+          "decision": "ACCEPT",
+          "reason": "「度を越す」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "overdo it",
+          "decision": "ACCEPT",
+          "reason": "「度を越す」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "cross the line",
+        "overdo it"
+      ],
+      "decision": "CHANGED",
+      "reason": "「度を越す」に対する主要な別英答として cross the line / overdo it を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00637",
+      "prompt_ja": "機嫌がいい",
+      "canonical_snapshot": "be in a good mood",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be in a good mood",
+        "be in good spirits"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be in a good mood",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "be in good spirits",
+          "decision": "ACCEPT",
+          "reason": "「機嫌がいい」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "be in good spirits"
+      ],
+      "decision": "CHANGED",
+      "reason": "「機嫌がいい」に対する主要な別英答として be in good spirits を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00638",
+      "prompt_ja": "時々",
+      "canonical_snapshot": "once in a while",
+      "answers_snapshot": [],
+      "existing_paraphrases": [
+        "every now and then"
+      ],
+      "blind_candidates": [
+        "sometimes",
+        "from time to time",
+        "now and then",
+        "occasionally",
+        "every now and then"
+      ],
+      "candidate_review": [
+        {
+          "expression": "sometimes",
+          "decision": "ACCEPT",
+          "reason": "「時々」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "from time to time",
+          "decision": "ACCEPT",
+          "reason": "「時々」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "now and then",
+          "decision": "REJECT",
+          "reason": "既存 every now and then の短縮的surface variantに近く、独立表現としての増分価値が小さい。"
+        },
+        {
+          "expression": "occasionally",
+          "decision": "ACCEPT",
+          "reason": "「時々」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "every now and then",
+          "decision": "ACCEPT",
+          "reason": "「時々」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "sometimes",
+        "occasionally",
+        "from time to time",
+        "every now and then"
+      ],
+      "decision": "CHANGED",
+      "reason": "「時々」に対する主要な別英答として sometimes / occasionally / from time to time / every now and then を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00639",
+      "prompt_ja": "someoneとうまくやっていく",
+      "canonical_snapshot": "get along with someone",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "get along with someone",
+        "get on with someone",
+        "be on good terms with someone"
+      ],
+      "candidate_review": [
+        {
+          "expression": "get along with someone",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "get on with someone",
+          "decision": "ACCEPT",
+          "reason": "「someoneとうまくやっていく」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "be on good terms with someone",
+          "decision": "ACCEPT",
+          "reason": "「someoneとうまくやっていく」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "get on with someone",
+        "be on good terms with someone"
+      ],
+      "decision": "CHANGED",
+      "reason": "「someoneとうまくやっていく」に対する主要な別英答として get on with someone / be on good terms with someone を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00640",
+      "prompt_ja": "冗談を言っている",
+      "canonical_snapshot": "be kidding",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be kidding",
+        "be joking"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be kidding",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "be joking",
+          "decision": "ACCEPT",
+          "reason": "「冗談を言っている」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "be joking"
+      ],
+      "decision": "CHANGED",
+      "reason": "「冗談を言っている」に対する主要な別英答として be joking を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00641",
+      "prompt_ja": "涙を流して",
+      "canonical_snapshot": "in tears",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "in tears",
+        "shedding tears"
+      ],
+      "candidate_review": [
+        {
+          "expression": "in tears",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "shedding tears",
+          "decision": "REJECT",
+          "reason": "意味は成立するが描写的な分詞句で、主要回答として crying より頻度・増分価値が低い。"
+        },
+        {
+          "expression": "crying",
+          "decision": "ACCEPT",
+          "reason": "「涙を流して」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "crying"
+      ],
+      "decision": "CHANGED",
+      "reason": "「涙を流して」に対する主要な別英答として crying を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00642",
+      "prompt_ja": "somethingをびりびりに破る",
+      "canonical_snapshot": "tear something up",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "tear something to pieces",
+        "rip something to shreds",
+        "tear something up"
+      ],
+      "candidate_review": [
+        {
+          "expression": "tear something to pieces",
+          "decision": "ACCEPT",
+          "reason": "「somethingをびりびりに破る」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "rip something to shreds",
+          "decision": "ACCEPT",
+          "reason": "「somethingをびりびりに破る」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "tear something up",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        }
+      ],
+      "after_paraphrases": [
+        "tear something to pieces",
+        "rip something to shreds"
+      ],
+      "decision": "CHANGED",
+      "reason": "「somethingをびりびりに破る」に対する主要な別英答として tear something to pieces / rip something to shreds を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00643",
+      "prompt_ja": "somethingを捨てる",
+      "canonical_snapshot": "throw something away",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "throw something away",
+        "get rid of something",
+        "discard something",
+        "toss something out",
+        "dispose of something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "throw something away",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "get rid of something",
+          "decision": "ACCEPT",
+          "reason": "「somethingを捨てる」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "discard something",
+          "decision": "ACCEPT",
+          "reason": "「somethingを捨てる」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "toss something out",
+          "decision": "ACCEPT",
+          "reason": "「somethingを捨てる」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "dispose of something",
+          "decision": "REJECT",
+          "reason": "廃棄に使えるが、適切に処分するという事務的・広い意味も強く、generic「捨てる」には優先度が下がる。"
+        }
+      ],
+      "after_paraphrases": [
+        "get rid of something",
+        "discard something",
+        "toss something out"
+      ],
+      "decision": "CHANGED",
+      "reason": "「somethingを捨てる」に対する主要な別英答として get rid of something / discard something / toss something out を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00644",
+      "prompt_ja": "somethingしないだけの分別がある",
+      "canonical_snapshot": "know better than to do something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "know better than to do something",
+        "have the sense not to do something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "know better than to do something",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "have the sense not to do something",
+          "decision": "REJECT",
+          "reason": "説明的で固定度が低く、canonical 以外に独立して覚えさせる価値が低い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「somethingしないだけの分別がある」についてblind候補を再検証したが、canonical/TARGET重複または意味範囲・文脈依存・増分価値の不足により、独立して登録すべき主要paraphraseは残らない。"
+    },
+    {
+      "entry_id": "vocab:00645",
+      "prompt_ja": "somethingしたことを後悔する",
+      "canonical_snapshot": "regret doing something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "regret doing something",
+        "be sorry for doing something",
+        "feel bad about doing something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "regret doing something",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "be sorry for doing something",
+          "decision": "REJECT",
+          "reason": "後悔を含みうる一方、謝罪の意味も強く、「したことを後悔する」への対応が一意でない。"
+        },
+        {
+          "expression": "feel bad about doing something",
+          "decision": "REJECT",
+          "reason": "後悔より広い罪悪感・気まずさも表し、promptとの対応が弱い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「somethingしたことを後悔する」についてblind候補を再検証したが、canonical/TARGET重複または意味範囲・文脈依存・増分価値の不足により、独立して登録すべき主要paraphraseは残らない。"
+    },
+    {
+      "entry_id": "vocab:00646",
+      "prompt_ja": "かなり多くのsomething",
+      "canonical_snapshot": "a great deal of something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "quite a few",
+        "a fair number of something",
+        "a good many"
+      ],
+      "candidate_review": [
+        {
+          "expression": "quite a few",
+          "decision": "REJECT",
+          "reason": "複数可算名詞向けで、generic something を保持するこのカードの自然なテンプレートにしにくい。"
+        },
+        {
+          "expression": "a fair number of something",
+          "decision": "REJECT",
+          "reason": "通常は複数可算名詞を要求し、generic something との表面形が不自然。"
+        },
+        {
+          "expression": "a good many",
+          "decision": "REJECT",
+          "reason": "複数可算名詞に強く依存し、generic something を含む自然な表示・発話テンプレートにしにくい。"
+        },
+        {
+          "expression": "quite a lot of something",
+          "decision": "ACCEPT",
+          "reason": "「かなり多くのsomething」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "quite a lot of something"
+      ],
+      "decision": "CHANGED",
+      "reason": "「かなり多くのsomething」に対する主要な別英答として quite a lot of something を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00647",
+      "prompt_ja": "somethingを振り返る",
+      "canonical_snapshot": "look back on something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "look back on something",
+        "reflect on something",
+        "think back on something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "look back on something",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "reflect on something",
+          "decision": "ACCEPT",
+          "reason": "「somethingを振り返る」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "think back on something",
+          "decision": "ACCEPT",
+          "reason": "「somethingを振り返る」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "reflect on something",
+        "think back on something"
+      ],
+      "decision": "CHANGED",
+      "reason": "「somethingを振り返る」に対する主要な別英答として reflect on something / think back on something を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00648",
+      "prompt_ja": "somethingに慣れている",
+      "canonical_snapshot": "be used to something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be used to something",
+        "be accustomed to something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be used to something",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "be accustomed to something",
+          "decision": "ACCEPT",
+          "reason": "「somethingに慣れている」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "be accustomed to something"
+      ],
+      "decision": "CHANGED",
+      "reason": "「somethingに慣れている」に対する主要な別英答として be accustomed to something を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00649",
+      "prompt_ja": "〜も当然だ",
+      "canonical_snapshot": "no wonder",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "no wonder"
+      ],
+      "candidate_review": [
+        {
+          "expression": "no wonder",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「〜も当然だ」についてblind候補を再検証したが、canonical/TARGET重複または意味範囲・文脈依存・増分価値の不足により、独立して登録すべき主要paraphraseは残らない。"
+    },
+    {
+      "entry_id": "vocab:00650",
+      "prompt_ja": "現れる",
+      "canonical_snapshot": "show up",
+      "answers_snapshot": [],
+      "existing_paraphrases": [
+        "turn up"
+      ],
+      "blind_candidates": [
+        "appear",
+        "show up",
+        "turn up"
+      ],
+      "candidate_review": [
+        {
+          "expression": "appear",
+          "decision": "ACCEPT",
+          "reason": "「現れる」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "show up",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "turn up",
+          "decision": "ACCEPT",
+          "reason": "「現れる」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "appear",
+        "turn up"
+      ],
+      "decision": "CHANGED",
+      "reason": "「現れる」に対する主要な別英答として appear / turn up を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00651",
+      "prompt_ja": "someoneを見送る",
+      "canonical_snapshot": "see someone off",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "see someone off",
+        "say goodbye to someone"
+      ],
+      "candidate_review": [
+        {
+          "expression": "see someone off",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "say goodbye to someone",
+          "decision": "REJECT",
+          "reason": "別れの挨拶は表すが、出発を見届ける「見送る」ことまでは含意しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「someoneを見送る」についてblind候補を再検証したが、canonical/TARGET重複または意味範囲・文脈依存・増分価値の不足により、独立して登録すべき主要paraphraseは残らない。"
+    },
+    {
+      "entry_id": "vocab:00652",
+      "prompt_ja": "（恋人同士が）別れる",
+      "canonical_snapshot": "break up",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "break up",
+        "split up",
+        "part ways"
+      ],
+      "candidate_review": [
+        {
+          "expression": "break up",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "split up",
+          "decision": "ACCEPT",
+          "reason": "「（恋人同士が）別れる」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "part ways",
+          "decision": "ACCEPT",
+          "reason": "「（恋人同士が）別れる」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "split up",
+        "part ways"
+      ],
+      "decision": "CHANGED",
+      "reason": "「（恋人同士が）別れる」に対する主要な別英答として split up / part ways を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00653",
+      "prompt_ja": "一人きりで",
+      "canonical_snapshot": "all by myself",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "alone",
+        "all by oneself",
+        "on one's own"
+      ],
+      "candidate_review": [
+        {
+          "expression": "alone",
+          "decision": "ACCEPT",
+          "reason": "「一人きりで」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "all by oneself",
+          "decision": "REJECT",
+          "reason": "canonical all by myself の人称・再帰代名詞置換に近いsurface variant。"
+        },
+        {
+          "expression": "on one's own",
+          "decision": "ACCEPT",
+          "reason": "「一人きりで」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "alone",
+        "on one's own"
+      ],
+      "decision": "CHANGED",
+      "reason": "「一人きりで」に対する主要な別英答として alone / on one's own を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00654",
+      "prompt_ja": "正直に言うと",
+      "canonical_snapshot": "to be honest",
+      "answers_snapshot": [],
+      "existing_paraphrases": [
+        "to tell the truth"
+      ],
+      "blind_candidates": [
+        "to be honest",
+        "honestly",
+        "frankly",
+        "to tell the truth"
+      ],
+      "candidate_review": [
+        {
+          "expression": "to be honest",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "honestly",
+          "decision": "ACCEPT",
+          "reason": "「正直に言うと」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "frankly",
+          "decision": "ACCEPT",
+          "reason": "「正直に言うと」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "to tell the truth",
+          "decision": "ACCEPT",
+          "reason": "「正直に言うと」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "to tell the truth",
+        "honestly",
+        "frankly"
+      ],
+      "decision": "CHANGED",
+      "reason": "「正直に言うと」に対する主要な別英答として to tell the truth / honestly / frankly を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00655",
+      "prompt_ja": "someoneに夢中である",
+      "canonical_snapshot": "be crazy about someone",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be crazy about someone",
+        "be into someone",
+        "be infatuated with someone",
+        "have a crush on someone"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be crazy about someone",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "be into someone",
+          "decision": "ACCEPT",
+          "reason": "「someoneに夢中である」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "be infatuated with someone",
+          "decision": "ACCEPT",
+          "reason": "「someoneに夢中である」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "have a crush on someone",
+          "decision": "REJECT",
+          "reason": "片思い・初期的な好意に寄り、「夢中である」より意味範囲が狭い。"
+        }
+      ],
+      "after_paraphrases": [
+        "be into someone",
+        "be infatuated with someone"
+      ],
+      "decision": "CHANGED",
+      "reason": "「someoneに夢中である」に対する主要な別英答として be into someone / be infatuated with someone を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00656",
+      "prompt_ja": "危険を冒す",
+      "canonical_snapshot": "take risks",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "take a risk",
+        "run a risk",
+        "risk it"
+      ],
+      "candidate_review": [
+        {
+          "expression": "take a risk",
+          "decision": "REJECT",
+          "reason": "canonical take risks の単数・複数variantで、paraphraseではなくTARGET/answers側の問題。"
+        },
+        {
+          "expression": "run a risk",
+          "decision": "REJECT",
+          "reason": "現代英語では run the risk of ... が中心で、単独 run a risk は take a chance より学習優先度が低い。"
+        },
+        {
+          "expression": "risk it",
+          "decision": "REJECT",
+          "reason": "既知対象を it で受ける文脈依存があり、generic「危険を冒す」への独立テンプレートとして弱い。"
+        },
+        {
+          "expression": "take a chance",
+          "decision": "ACCEPT",
+          "reason": "「危険を冒す」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "take a chance"
+      ],
+      "decision": "CHANGED",
+      "reason": "「危険を冒す」に対する主要な別英答として take a chance を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00657",
+      "prompt_ja": "someoneをデートに誘う",
+      "canonical_snapshot": "ask someone out",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "ask someone out",
+        "invite someone on a date"
+      ],
+      "candidate_review": [
+        {
+          "expression": "ask someone out",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "invite someone on a date",
+          "decision": "ACCEPT",
+          "reason": "「someoneをデートに誘う」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "invite someone on a date"
+      ],
+      "decision": "CHANGED",
+      "reason": "「someoneをデートに誘う」に対する主要な別英答として invite someone on a date を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00658",
+      "prompt_ja": "断続的に",
+      "canonical_snapshot": "on and off",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "on and off",
+        "intermittently"
+      ],
+      "candidate_review": [
+        {
+          "expression": "on and off",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "intermittently",
+          "decision": "ACCEPT",
+          "reason": "「断続的に」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "intermittently"
+      ],
+      "decision": "CHANGED",
+      "reason": "「断続的に」に対する主要な別英答として intermittently を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00659",
+      "prompt_ja": "長い間",
+      "canonical_snapshot": "for ages",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "for a long time",
+        "for ages",
+        "for quite a while"
+      ],
+      "candidate_review": [
+        {
+          "expression": "for a long time",
+          "decision": "ACCEPT",
+          "reason": "「長い間」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "for ages",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "for quite a while",
+          "decision": "ACCEPT",
+          "reason": "「長い間」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "for a long time",
+        "for quite a while"
+      ],
+      "decision": "CHANGED",
+      "reason": "「長い間」に対する主要な別英答として for a long time / for quite a while を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00660",
+      "prompt_ja": "身を落ち着ける",
+      "canonical_snapshot": "settle down",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "settle down",
+        "put down roots"
+      ],
+      "candidate_review": [
+        {
+          "expression": "settle down",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "put down roots",
+          "decision": "ACCEPT",
+          "reason": "「身を落ち着ける」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "put down roots"
+      ],
+      "decision": "CHANGED",
+      "reason": "「身を落ち着ける」に対する主要な別英答として put down roots を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00661",
+      "prompt_ja": "自分が間違っていたと気づいた",
+      "canonical_snapshot": "it dawned on me that I was wrong",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "realize one was wrong",
+        "see the error of one's ways"
+      ],
+      "candidate_review": [
+        {
+          "expression": "realize one was wrong",
+          "decision": "REJECT",
+          "reason": "意味は正しいが one の一般化が会話的カードでは不自然。自然な I realized I was wrong を採用する。"
+        },
+        {
+          "expression": "see the error of one's ways",
+          "decision": "REJECT",
+          "reason": "単なる誤りへの気づきより、行い・生き方の誤りを悟って改める強い含意がある。"
+        },
+        {
+          "expression": "I realized I was wrong",
+          "decision": "ACCEPT",
+          "reason": "「自分が間違っていたと気づいた」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "I realized I was wrong"
+      ],
+      "decision": "CHANGED",
+      "reason": "「自分が間違っていたと気づいた」に対する主要な別英答として I realized I was wrong を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00662",
+      "prompt_ja": "someoneをだます",
+      "canonical_snapshot": "take someone in",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "deceive someone",
+        "trick someone",
+        "fool someone",
+        "con someone"
+      ],
+      "candidate_review": [
+        {
+          "expression": "deceive someone",
+          "decision": "ACCEPT",
+          "reason": "「someoneをだます」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "trick someone",
+          "decision": "ACCEPT",
+          "reason": "「someoneをだます」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "fool someone",
+          "decision": "ACCEPT",
+          "reason": "「someoneをだます」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "con someone",
+          "decision": "REJECT",
+          "reason": "詐欺・金銭的だましの含意が強く、generic「だます」には狭い。"
+        }
+      ],
+      "after_paraphrases": [
+        "deceive someone",
+        "trick someone",
+        "fool someone"
+      ],
+      "decision": "CHANGED",
+      "reason": "「someoneをだます」に対する主要な別英答として deceive someone / trick someone / fool someone を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00663",
+      "prompt_ja": "ずっと",
+      "canonical_snapshot": "all along",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "all along",
+        "the whole time",
+        "all the time"
+      ],
+      "candidate_review": [
+        {
+          "expression": "all along",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "the whole time",
+          "decision": "ACCEPT",
+          "reason": "「ずっと」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "all the time",
+          "decision": "REJECT",
+          "reason": "「頻繁に／いつも」という habitual 読みが強く、期間継続の「ずっと」には対応が不安定。"
+        }
+      ],
+      "after_paraphrases": [
+        "the whole time"
+      ],
+      "decision": "CHANGED",
+      "reason": "「ずっと」に対する主要な別英答として the whole time を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00664",
+      "prompt_ja": "someoneの本性やうそを見抜く",
+      "canonical_snapshot": "see through someone",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "see through someone",
+        "see someone for what they are"
+      ],
+      "candidate_review": [
+        {
+          "expression": "see through someone",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "see someone for what they are",
+          "decision": "ACCEPT",
+          "reason": "「someoneの本性やうそを見抜く」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "see someone for what they are"
+      ],
+      "decision": "CHANGED",
+      "reason": "「someoneの本性やうそを見抜く」に対する主要な別英答として see someone for what they are を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00665",
+      "prompt_ja": "someoneと付き合っている",
+      "canonical_snapshot": "be seeing someone",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be seeing someone",
+        "be dating someone",
+        "go out with someone",
+        "be in a relationship with someone"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be seeing someone",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "be dating someone",
+          "decision": "ACCEPT",
+          "reason": "「someoneと付き合っている」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "go out with someone",
+          "decision": "ACCEPT",
+          "reason": "「someoneと付き合っている」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "be in a relationship with someone",
+          "decision": "ACCEPT",
+          "reason": "「someoneと付き合っている」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "be dating someone",
+        "go out with someone",
+        "be in a relationship with someone"
+      ],
+      "decision": "CHANGED",
+      "reason": "「someoneと付き合っている」に対する主要な別英答として be dating someone / go out with someone / be in a relationship with someone を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00666",
+      "prompt_ja": "最近どう？",
+      "canonical_snapshot": "what's up",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "How have you been?",
+        "How's it going?",
+        "What's new?"
+      ],
+      "candidate_review": [
+        {
+          "expression": "How have you been?",
+          "decision": "ACCEPT",
+          "reason": "「最近どう？」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "How's it going?",
+          "decision": "ACCEPT",
+          "reason": "「最近どう？」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "What's new?",
+          "decision": "ACCEPT",
+          "reason": "「最近どう？」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "How have you been?",
+        "How's it going?",
+        "What's new?"
+      ],
+      "decision": "CHANGED",
+      "reason": "「最近どう？」に対する主要な別英答として How have you been? / How's it going? / What's new? を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00667",
+      "prompt_ja": "特に何もないよ",
+      "canonical_snapshot": "not much",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "Nothing much.",
+        "Not much.",
+        "Nothing in particular."
+      ],
+      "candidate_review": [
+        {
+          "expression": "Nothing much.",
+          "decision": "ACCEPT",
+          "reason": "「特に何もないよ」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "Not much.",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "Nothing in particular.",
+          "decision": "ACCEPT",
+          "reason": "「特に何もないよ」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "Nothing much.",
+        "Nothing in particular."
+      ],
+      "decision": "CHANGED",
+      "reason": "「特に何もないよ」に対する主要な別英答として Nothing much. / Nothing in particular. を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00668",
+      "prompt_ja": "someoneと結婚する",
+      "canonical_snapshot": "get married to someone",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "marry someone",
+        "get married to someone",
+        "tie the knot with someone"
+      ],
+      "candidate_review": [
+        {
+          "expression": "marry someone",
+          "decision": "ACCEPT",
+          "reason": "「someoneと結婚する」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "get married to someone",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "tie the knot with someone",
+          "decision": "ACCEPT",
+          "reason": "「someoneと結婚する」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "marry someone",
+        "tie the knot with someone"
+      ],
+      "decision": "CHANGED",
+      "reason": "「someoneと結婚する」に対する主要な別英答として marry someone / tie the knot with someone を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00669",
+      "prompt_ja": "困った状況にある",
+      "canonical_snapshot": "be in trouble",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be in trouble",
+        "be in a bind",
+        "be in a tight spot"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be in trouble",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "be in a bind",
+          "decision": "ACCEPT",
+          "reason": "「困った状況にある」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "be in a tight spot",
+          "decision": "ACCEPT",
+          "reason": "「困った状況にある」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "be in a bind",
+        "be in a tight spot"
+      ],
+      "decision": "CHANGED",
+      "reason": "「困った状況にある」に対する主要な別英答として be in a bind / be in a tight spot を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00670",
+      "prompt_ja": "落ち込んでいる",
+      "canonical_snapshot": "feel down",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be down",
+        "feel low",
+        "be depressed",
+        "feel blue"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be down",
+          "decision": "REJECT",
+          "reason": "落ち込む意味はあるが「参加する気がある」等の別義も強く、単独回答として曖昧。"
+        },
+        {
+          "expression": "feel low",
+          "decision": "ACCEPT",
+          "reason": "「落ち込んでいる」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "be depressed",
+          "decision": "ACCEPT",
+          "reason": "「落ち込んでいる」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "feel blue",
+          "decision": "REJECT",
+          "reason": "成立するが、現代の中立的主要表現として feel low / be depressed より学習優先度が低い。"
+        }
+      ],
+      "after_paraphrases": [
+        "feel low",
+        "be depressed"
+      ],
+      "decision": "CHANGED",
+      "reason": "「落ち込んでいる」に対する主要な別英答として feel low / be depressed を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00671",
+      "prompt_ja": "someoneのそばにいて支える",
+      "canonical_snapshot": "be there for someone",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be there for someone",
+        "stand by someone",
+        "support someone"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be there for someone",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "stand by someone",
+          "decision": "ACCEPT",
+          "reason": "「someoneのそばにいて支える」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "support someone",
+          "decision": "ACCEPT",
+          "reason": "「someoneのそばにいて支える」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "have someone's back",
+          "decision": "ACCEPT",
+          "reason": "「someoneのそばにいて支える」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "stand by someone",
+        "have someone's back",
+        "support someone"
+      ],
+      "decision": "CHANGED",
+      "reason": "「someoneのそばにいて支える」に対する主要な別英答として stand by someone / have someone's back / support someone を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00672",
+      "prompt_ja": "somethingの反対",
+      "canonical_snapshot": "the opposite of something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "the opposite of something",
+        "the reverse of something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "the opposite of something",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "the reverse of something",
+          "decision": "REJECT",
+          "reason": "方向・順序・状態の反転には強いが、一般的な「反対」すべてを覆わない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「somethingの反対」についてblind候補を再検証したが、canonical/TARGET重複または意味範囲・文脈依存・増分価値の不足により、独立して登録すべき主要paraphraseは残らない。"
+    },
+    {
+      "entry_id": "vocab:00673",
+      "prompt_ja": "somethingまでする",
+      "canonical_snapshot": "go so far as to do something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "go so far as to do something",
+        "even do something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "go so far as to do something",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "even do something",
+          "decision": "REJECT",
+          "reason": "一般的な focus particle の組成で、独立して教える lexical/construction value が低い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「somethingまでする」についてblind候補を再検証したが、canonical/TARGET重複または意味範囲・文脈依存・増分価値の不足により、独立して登録すべき主要paraphraseは残らない。"
+    },
+    {
+      "entry_id": "vocab:00674",
+      "prompt_ja": "somethingを撤回する",
+      "canonical_snapshot": "take something back",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "take something back",
+        "retract something",
+        "withdraw something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "take something back",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "retract something",
+          "decision": "ACCEPT",
+          "reason": "「somethingを撤回する」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "withdraw something",
+          "decision": "ACCEPT",
+          "reason": "「somethingを撤回する」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "retract something",
+        "withdraw something"
+      ],
+      "decision": "CHANGED",
+      "reason": "「somethingを撤回する」に対する主要な別英答として retract something / withdraw something を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00675",
+      "prompt_ja": "someoneには当然の報いだ",
+      "canonical_snapshot": "serve someone right",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "it serves someone right",
+        "someone deserves it"
+      ],
+      "candidate_review": [
+        {
+          "expression": "it serves someone right",
+          "decision": "REJECT",
+          "reason": "canonical serve someone right に it を加えた同一idiomのsurface frame。"
+        },
+        {
+          "expression": "someone deserves it",
+          "decision": "ACCEPT",
+          "reason": "「someoneには当然の報いだ」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "someone deserves it"
+      ],
+      "decision": "CHANGED",
+      "reason": "「someoneには当然の報いだ」に対する主要な別英答として someone deserves it を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00676",
+      "prompt_ja": "somethingに我慢する",
+      "canonical_snapshot": "put up with something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "put up with something",
+        "tolerate something",
+        "endure something",
+        "bear something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "put up with something",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "tolerate something",
+          "decision": "ACCEPT",
+          "reason": "「somethingに我慢する」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "endure something",
+          "decision": "ACCEPT",
+          "reason": "「somethingに我慢する」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "bear something",
+          "decision": "REJECT",
+          "reason": "目的語選択と文脈依存が強く、generic prompt では tolerate / endure より対応が不安定。"
+        }
+      ],
+      "after_paraphrases": [
+        "tolerate something",
+        "endure something"
+      ],
+      "decision": "CHANGED",
+      "reason": "「somethingに我慢する」に対する主要な別英答として tolerate something / endure something を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00677",
+      "prompt_ja": "someoneを利用する",
+      "canonical_snapshot": "take advantage of someone",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "take advantage of someone",
+        "use someone",
+        "exploit someone"
+      ],
+      "candidate_review": [
+        {
+          "expression": "take advantage of someone",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "use someone",
+          "decision": "ACCEPT",
+          "reason": "「someoneを利用する」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "exploit someone",
+          "decision": "ACCEPT",
+          "reason": "「someoneを利用する」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "use someone",
+        "exploit someone"
+      ],
+      "decision": "CHANGED",
+      "reason": "「someoneを利用する」に対する主要な別英答として use someone / exploit someone を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00678",
+      "prompt_ja": "黙る",
+      "canonical_snapshot": "shut up",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "shut up",
+        "be quiet",
+        "keep quiet",
+        "fall silent"
+      ],
+      "candidate_review": [
+        {
+          "expression": "shut up",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "be quiet",
+          "decision": "ACCEPT",
+          "reason": "「黙る」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "keep quiet",
+          "decision": "REJECT",
+          "reason": "「黙っている／秘密を守る」という持続状態にもなり、変化としての「黙る」には fall silent よりずれやすい。"
+        },
+        {
+          "expression": "fall silent",
+          "decision": "ACCEPT",
+          "reason": "「黙る」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "be quiet",
+        "fall silent"
+      ],
+      "decision": "CHANGED",
+      "reason": "「黙る」に対する主要な別英答として be quiet / fall silent を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00679",
+      "prompt_ja": "ゆっくりでいい",
+      "canonical_snapshot": "take your time",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "take your time",
+        "no rush",
+        "there's no hurry"
+      ],
+      "candidate_review": [
+        {
+          "expression": "take your time",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "no rush",
+          "decision": "ACCEPT",
+          "reason": "「ゆっくりでいい」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "there's no hurry",
+          "decision": "ACCEPT",
+          "reason": "「ゆっくりでいい」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "no rush",
+        "there's no hurry"
+      ],
+      "decision": "CHANGED",
+      "reason": "「ゆっくりでいい」に対する主要な別英答として no rush / there's no hurry を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00680",
+      "prompt_ja": "somethingについてじっくり考える",
+      "canonical_snapshot": "reflect on something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "think something over",
+        "think carefully about something",
+        "mull something over",
+        "give something some thought"
+      ],
+      "candidate_review": [
+        {
+          "expression": "think something over",
+          "decision": "ACCEPT",
+          "reason": "「somethingについてじっくり考える」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "think carefully about something",
+          "decision": "REJECT",
+          "reason": "意味は成立するが一般語の説明的組成で、採用した三表現ほど独立学習価値が高くない。"
+        },
+        {
+          "expression": "mull something over",
+          "decision": "ACCEPT",
+          "reason": "「somethingについてじっくり考える」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "give something some thought",
+          "decision": "ACCEPT",
+          "reason": "「somethingについてじっくり考える」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "think something over",
+        "mull something over",
+        "give something some thought"
+      ],
+      "decision": "CHANGED",
+      "reason": "「somethingについてじっくり考える」に対する主要な別英答として think something over / mull something over / give something some thought を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00681",
+      "prompt_ja": "somethingを乗り切る",
+      "canonical_snapshot": "get through something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "get through something",
+        "make it through something",
+        "weather something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "get through something",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "make it through something",
+          "decision": "ACCEPT",
+          "reason": "「somethingを乗り切る」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "weather something",
+          "decision": "ACCEPT",
+          "reason": "「somethingを乗り切る」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "make it through something",
+        "weather something"
+      ],
+      "decision": "CHANGED",
+      "reason": "「somethingを乗り切る」に対する主要な別英答として make it through something / weather something を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00682",
+      "prompt_ja": "自分一人で",
+      "canonical_snapshot": "on my own",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "by oneself",
+        "on one's own",
+        "alone"
+      ],
+      "candidate_review": [
+        {
+          "expression": "by oneself",
+          "decision": "ACCEPT",
+          "reason": "「自分一人で」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "on one's own",
+          "decision": "REJECT",
+          "reason": "canonical on my own の人称・所有格置換に当たり、surface variant として paraphrase から除外する。"
+        },
+        {
+          "expression": "alone",
+          "decision": "ACCEPT",
+          "reason": "「自分一人で」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "alone",
+        "by oneself"
+      ],
+      "decision": "CHANGED",
+      "reason": "「自分一人で」に対する主要な別英答として alone / by oneself を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00683",
+      "prompt_ja": "somethingの邪魔をする",
+      "canonical_snapshot": "interfere with something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "get in the way of something",
+        "interfere with something",
+        "hinder something",
+        "obstruct something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "get in the way of something",
+          "decision": "ACCEPT",
+          "reason": "「somethingの邪魔をする」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "interfere with something",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "hinder something",
+          "decision": "ACCEPT",
+          "reason": "「somethingの邪魔をする」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "obstruct something",
+          "decision": "REJECT",
+          "reason": "物理的・制度的な妨害に寄りやすく、generic「邪魔をする」では採用表現より狭い。"
+        }
+      ],
+      "after_paraphrases": [
+        "get in the way of something",
+        "hinder something"
+      ],
+      "decision": "CHANGED",
+      "reason": "「somethingの邪魔をする」に対する主要な別英答として get in the way of something / hinder something を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00684",
+      "prompt_ja": "行われる",
+      "canonical_snapshot": "take place",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "take place",
+        "be held",
+        "occur",
+        "be carried out",
+        "be conducted"
+      ],
+      "candidate_review": [
+        {
+          "expression": "take place",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "be held",
+          "decision": "ACCEPT",
+          "reason": "「行われる」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "occur",
+          "decision": "REJECT",
+          "reason": "単に「起こる」で、人為的な行為・会議等が「行われる」ことを必ずしも表さない。"
+        },
+        {
+          "expression": "be carried out",
+          "decision": "ACCEPT",
+          "reason": "「行われる」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "be conducted",
+          "decision": "ACCEPT",
+          "reason": "「行われる」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "be held",
+        "be carried out",
+        "be conducted"
+      ],
+      "decision": "CHANGED",
+      "reason": "「行われる」に対する主要な別英答として be held / be carried out / be conducted を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00685",
+      "prompt_ja": "突然",
+      "canonical_snapshot": "all at once",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "suddenly",
+        "all of a sudden",
+        "abruptly"
+      ],
+      "candidate_review": [
+        {
+          "expression": "suddenly",
+          "decision": "ACCEPT",
+          "reason": "「突然」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "all of a sudden",
+          "decision": "ACCEPT",
+          "reason": "「突然」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "abruptly",
+          "decision": "REJECT",
+          "reason": "動作の仕方が唐突という manner 読みも強く、単純な時点副詞「突然」には採用表現が優先。"
+        }
+      ],
+      "after_paraphrases": [
+        "suddenly",
+        "all of a sudden"
+      ],
+      "decision": "CHANGED",
+      "reason": "「突然」に対する主要な別英答として suddenly / all of a sudden を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00686",
+      "prompt_ja": "急に笑い出す",
+      "canonical_snapshot": "burst into laughter",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "burst out laughing",
+        "burst into laughter"
+      ],
+      "candidate_review": [
+        {
+          "expression": "burst out laughing",
+          "decision": "ACCEPT",
+          "reason": "「急に笑い出す」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "burst into laughter",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        }
+      ],
+      "after_paraphrases": [
+        "burst out laughing"
+      ],
+      "decision": "CHANGED",
+      "reason": "「急に笑い出す」に対する主要な別英答として burst out laughing を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00687",
+      "prompt_ja": "雰囲気などを台無しにする",
+      "canonical_snapshot": "spoil",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "spoil the mood",
+        "ruin the atmosphere",
+        "kill the mood"
+      ],
+      "candidate_review": [
+        {
+          "expression": "spoil the mood",
+          "decision": "REJECT",
+          "reason": "canonical spoil と同じ語彙を目的語付きで具体化した形に近く、独立paraphraseとしての増分が小さい。"
+        },
+        {
+          "expression": "ruin the atmosphere",
+          "decision": "ACCEPT",
+          "reason": "「雰囲気などを台無しにする」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "kill the mood",
+          "decision": "ACCEPT",
+          "reason": "「雰囲気などを台無しにする」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "kill the mood",
+        "ruin the atmosphere"
+      ],
+      "decision": "CHANGED",
+      "reason": "「雰囲気などを台無しにする」に対する主要な別英答として kill the mood / ruin the atmosphere を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00688",
+      "prompt_ja": "亡くなる",
+      "canonical_snapshot": "pass away",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "die",
+        "pass away",
+        "pass on"
+      ],
+      "candidate_review": [
+        {
+          "expression": "die",
+          "decision": "ACCEPT",
+          "reason": "「亡くなる」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "pass away",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "pass on",
+          "decision": "REJECT",
+          "reason": "死の婉曲表現として成立するが、「渡す」等の別義が強く、主要回答として曖昧。"
+        }
+      ],
+      "after_paraphrases": [
+        "die"
+      ],
+      "decision": "CHANGED",
+      "reason": "「亡くなる」に対する主要な別英答として die を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00689",
+      "prompt_ja": "〜に加えて",
+      "canonical_snapshot": "besides",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "in addition to something",
+        "besides something",
+        "as well as something",
+        "on top of something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "in addition to something",
+          "decision": "ACCEPT",
+          "reason": "「〜に加えて」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "besides something",
+          "decision": "REJECT",
+          "reason": "「〜に加えて」への回答として部分的には成立しうるが、意味範囲・文脈依存・頻度または独立学習価値の点で採用候補より弱いため登録しない。"
+        },
+        {
+          "expression": "as well as something",
+          "decision": "ACCEPT",
+          "reason": "「〜に加えて」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "on top of something",
+          "decision": "REJECT",
+          "reason": "負担の累積・さらにその上という強調を伴いやすく、中立的な「〜に加えて」より狭い。"
+        }
+      ],
+      "after_paraphrases": [
+        "in addition to something",
+        "as well as something"
+      ],
+      "decision": "CHANGED",
+      "reason": "「〜に加えて」に対する主要な別英答として in addition to something / as well as something を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00690",
+      "prompt_ja": "手配する",
+      "canonical_snapshot": "make arrangements",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "arrange something",
+        "make arrangements",
+        "set something up",
+        "organize something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "arrange something",
+          "decision": "ACCEPT",
+          "reason": "「手配する」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "make arrangements",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "set something up",
+          "decision": "ACCEPT",
+          "reason": "「手配する」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "organize something",
+          "decision": "REJECT",
+          "reason": "企画・整理・組織化まで広く、generic「手配する」への対応は arrange / set up より弱い。"
+        }
+      ],
+      "after_paraphrases": [
+        "arrange something",
+        "set something up"
+      ],
+      "decision": "CHANGED",
+      "reason": "「手配する」に対する主要な別英答として arrange something / set something up を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00691",
+      "prompt_ja": "someoneに同情する",
+      "canonical_snapshot": "feel for someone",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "feel sorry for someone",
+        "sympathize with someone",
+        "have sympathy for someone"
+      ],
+      "candidate_review": [
+        {
+          "expression": "feel sorry for someone",
+          "decision": "ACCEPT",
+          "reason": "「someoneに同情する」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "sympathize with someone",
+          "decision": "ACCEPT",
+          "reason": "「someoneに同情する」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "have sympathy for someone",
+          "decision": "REJECT",
+          "reason": "意味は正しいが名詞化した説明的variantで、採用二表現に加える独立学習価値が小さい。"
+        }
+      ],
+      "after_paraphrases": [
+        "feel sorry for someone",
+        "sympathize with someone"
+      ],
+      "decision": "CHANGED",
+      "reason": "「someoneに同情する」に対する主要な別英答として feel sorry for someone / sympathize with someone を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00692",
+      "prompt_ja": "徐々に消えていく",
+      "canonical_snapshot": "fade away",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "fade away",
+        "die away",
+        "gradually disappear"
+      ],
+      "candidate_review": [
+        {
+          "expression": "fade away",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "die away",
+          "decision": "REJECT",
+          "reason": "音・風・感情などが弱まって消える対象に寄り、generic「徐々に消えていく」には狭い。"
+        },
+        {
+          "expression": "gradually disappear",
+          "decision": "REJECT",
+          "reason": "逐語的な説明表現で、canonical以外に独立して覚えさせる価値が低い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「徐々に消えていく」についてblind候補を再検証したが、canonical/TARGET重複または意味範囲・文脈依存・増分価値の不足により、独立して登録すべき主要paraphraseは残らない。"
+    },
+    {
+      "entry_id": "vocab:00693",
+      "prompt_ja": "somethingを乗り越える",
+      "canonical_snapshot": "get over something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "get over something",
+        "overcome something",
+        "move past something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "get over something",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "overcome something",
+          "decision": "ACCEPT",
+          "reason": "「somethingを乗り越える」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "move past something",
+          "decision": "ACCEPT",
+          "reason": "「somethingを乗り越える」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "overcome something",
+        "move past something"
+      ],
+      "decision": "CHANGED",
+      "reason": "「somethingを乗り越える」に対する主要な別英答として overcome something / move past something を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00694",
+      "prompt_ja": "somethingの思い出を大切にする",
+      "canonical_snapshot": "cherish memories of something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "cherish the memory of something",
+        "treasure memories of something",
+        "hold memories of something dear"
+      ],
+      "candidate_review": [
+        {
+          "expression": "cherish the memory of something",
+          "decision": "REJECT",
+          "reason": "canonical cherish memories of something と同一語彙の単複・冠詞差に近いsurface variant。"
+        },
+        {
+          "expression": "treasure memories of something",
+          "decision": "ACCEPT",
+          "reason": "「somethingの思い出を大切にする」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "hold memories of something dear",
+          "decision": "REJECT",
+          "reason": "成立するが文体的で頻度が低く、treasure memories ... より実用上の追加価値が小さい。"
+        }
+      ],
+      "after_paraphrases": [
+        "treasure memories of something"
+      ],
+      "decision": "CHANGED",
+      "reason": "「somethingの思い出を大切にする」に対する主要な別英答として treasure memories of something を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00695",
+      "prompt_ja": "somethingと言えば",
+      "canonical_snapshot": "speaking of something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "speaking of something",
+        "talking of something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "speaking of something",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "talking of something",
+          "decision": "ACCEPT",
+          "reason": "「somethingと言えば」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "talking of something"
+      ],
+      "decision": "CHANGED",
+      "reason": "「somethingと言えば」に対する主要な別英答として talking of something を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00696",
+      "prompt_ja": "言葉を失う",
+      "canonical_snapshot": "be at a loss for words",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be speechless",
+        "be lost for words",
+        "be at a loss for words"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be speechless",
+          "decision": "ACCEPT",
+          "reason": "「言葉を失う」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "be lost for words",
+          "decision": "ACCEPT",
+          "reason": "「言葉を失う」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "be at a loss for words",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        }
+      ],
+      "after_paraphrases": [
+        "be speechless",
+        "be lost for words"
+      ],
+      "decision": "CHANGED",
+      "reason": "「言葉を失う」に対する主要な別英答として be speechless / be lost for words を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00697",
+      "prompt_ja": "someoneと婚約する",
+      "canonical_snapshot": "get engaged to someone",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "get engaged to someone",
+        "become engaged to someone"
+      ],
+      "candidate_review": [
+        {
+          "expression": "get engaged to someone",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "become engaged to someone",
+          "decision": "REJECT",
+          "reason": "get engaged to someone の説明的・formal な言い換えに近く、独立表現としての増分が小さい。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「someoneと婚約する」についてblind候補を再検証したが、canonical/TARGET重複または意味範囲・文脈依存・増分価値の不足により、独立して登録すべき主要paraphraseは残らない。"
+    },
+    {
+      "entry_id": "vocab:00698",
+      "prompt_ja": "somethingを打ち切る",
+      "canonical_snapshot": "break something off",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "call something off",
+        "discontinue something",
+        "terminate something",
+        "end something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "call something off",
+          "decision": "ACCEPT",
+          "reason": "「somethingを打ち切る」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "discontinue something",
+          "decision": "ACCEPT",
+          "reason": "「somethingを打ち切る」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "terminate something",
+          "decision": "REJECT",
+          "reason": "成立するが法務・契約・プロセス等のformal contextに寄り、generic「打ち切る」には採用表現より狭い。"
+        },
+        {
+          "expression": "end something",
+          "decision": "REJECT",
+          "reason": "単に「終える」全般で、「打ち切る」の中途終了・取消しの含意を弱める。"
+        },
+        {
+          "expression": "pull the plug on something",
+          "decision": "ACCEPT",
+          "reason": "「somethingを打ち切る」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "call something off",
+        "discontinue something",
+        "pull the plug on something"
+      ],
+      "decision": "CHANGED",
+      "reason": "「somethingを打ち切る」に対する主要な別英答として call something off / discontinue something / pull the plug on something を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00699",
+      "prompt_ja": "必ずしも〜とは限らない",
+      "canonical_snapshot": "not necessarily",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "not necessarily",
+        "not always"
+      ],
+      "candidate_review": [
+        {
+          "expression": "not necessarily",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "not always",
+          "decision": "REJECT",
+          "reason": "「常にそうではない」であり、可能性を否定する not necessarily と論理スコープが異なる。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「必ずしも〜とは限らない」についてblind候補を再検証したが、canonical/TARGET重複または意味範囲・文脈依存・増分価値の不足により、独立して登録すべき主要paraphraseは残らない。"
+    },
+    {
+      "entry_id": "vocab:00700",
+      "prompt_ja": "somethingを例に挙げる",
+      "canonical_snapshot": "take something for example",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "take something as an example",
+        "use something as an example",
+        "cite something as an example"
+      ],
+      "candidate_review": [
+        {
+          "expression": "take something as an example",
+          "decision": "REJECT",
+          "reason": "canonical take something for example と同じ take 構文の前置詞variantに近く、独立学習価値が小さい。"
+        },
+        {
+          "expression": "use something as an example",
+          "decision": "ACCEPT",
+          "reason": "「somethingを例に挙げる」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "cite something as an example",
+          "decision": "ACCEPT",
+          "reason": "「somethingを例に挙げる」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "use something as an example",
+        "cite something as an example"
+      ],
+      "decision": "CHANGED",
+      "reason": "「somethingを例に挙げる」に対する主要な別英答として use something as an example / cite something as an example を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00701",
+      "prompt_ja": "someoneを大目に見る",
+      "canonical_snapshot": "go easy on someone",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "go easy on someone",
+        "cut someone some slack",
+        "let someone off lightly",
+        "be lenient with someone"
+      ],
+      "candidate_review": [
+        {
+          "expression": "go easy on someone",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "cut someone some slack",
+          "decision": "ACCEPT",
+          "reason": "「someoneを大目に見る」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "let someone off lightly",
+          "decision": "REJECT",
+          "reason": "処罰・叱責を軽く済ませる場面に寄り、一般的な「大目に見る」より適用範囲が狭い。"
+        },
+        {
+          "expression": "be lenient with someone",
+          "decision": "ACCEPT",
+          "reason": "「someoneを大目に見る」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "give someone a break",
+          "decision": "ACCEPT",
+          "reason": "「someoneを大目に見る」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "give someone a break",
+        "cut someone some slack",
+        "be lenient with someone"
+      ],
+      "decision": "CHANGED",
+      "reason": "「someoneを大目に見る」に対する主要な別英答として give someone a break / cut someone some slack / be lenient with someone を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00702",
+      "prompt_ja": "somethingを経験する",
+      "canonical_snapshot": "go through something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "experience something",
+        "go through something",
+        "undergo something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "experience something",
+          "decision": "ACCEPT",
+          "reason": "「somethingを経験する」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        },
+        {
+          "expression": "go through something",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "undergo something",
+          "decision": "ACCEPT",
+          "reason": "「somethingを経験する」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "experience something",
+        "undergo something"
+      ],
+      "decision": "CHANGED",
+      "reason": "「somethingを経験する」に対する主要な別英答として experience something / undergo something を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    },
+    {
+      "entry_id": "vocab:00703",
+      "prompt_ja": "ところで",
+      "canonical_snapshot": "by the way",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "by the way",
+        "incidentally"
+      ],
+      "candidate_review": [
+        {
+          "expression": "by the way",
+          "decision": "REJECT",
+          "reason": "canonical / answers[] と実質同一であり、別paraphraseとして登録しない。"
+        },
+        {
+          "expression": "incidentally",
+          "decision": "ACCEPT",
+          "reason": "「ところで」への自然な主要英答として成立し、canonicalとは別の実用的表現として学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "incidentally"
+      ],
+      "decision": "CHANGED",
+      "reason": "「ところで」に対する主要な別英答として incidentally を採用。回答成立性に加え、頻度・実用性・独立表現価値を満たすものだけに絞った。"
+    }
+  ],
+  "followups": [
+    {
+      "entry_id": "vocab:00605",
+      "type": "target_variant_review",
+      "detail": "`keep to oneself` is a natural generic-person surface variant of canonical `keep to yourself`; excluded from paraphrases under the person/surface-variant policy. Review TARGET/answers handling separately if this generic form should be accepted."
+    },
+    {
+      "entry_id": "vocab:00656",
+      "type": "target_variant_review",
+      "detail": "`take a risk` differs from canonical `take risks` only by number; excluded from paraphrases. Review TARGET/answers normalization separately if singular/plural variants are not already covered."
+    },
+    {
+      "entry_id": "vocab:00682",
+      "type": "target_variant_review",
+      "detail": "`on one's own` is a person/possessive surface variant of canonical `on my own`; excluded from paraphrases. Review TARGET/answers handling separately if generic-person forms should be accepted."
+    }
+  ]
+}

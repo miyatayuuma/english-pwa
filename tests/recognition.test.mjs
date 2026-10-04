@@ -1,0 +1,109 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+
+import { appendRawTranscriptFinal, createRecognitionController } from '../scripts/speech/recognition.js';
+
+test('Vocabulary raw transcript stitching preserves words, contractions, numbers, and compound punctuation',()=>{
+  assert.equal(appendRawTranscriptFinal('','I’m ready to pay two dollars.'),'I’m ready to pay two dollars.');
+  assert.equal(appendRawTranscriptFinal('well-known','story begins'),'well-known story begins');
+  assert.equal(appendRawTranscriptFinal('turn the faucet','the faucet off now'),'turn the faucet off now');
+  assert.equal(appendRawTranscriptFinal('despite','despise'),'despite despise');
+});
+
+test('matchAndHighlight treats split and fused compound words as equivalent', () => {
+  const controller = createRecognitionController();
+
+  const matchFusedHyp = controller.matchAndHighlight(
+    'The rain forest is lush',
+    'the rainforest is lush'
+  );
+
+  assert.equal(matchFusedHyp.missing.length, 0, 'split reference tokens matched fused hypothesis');
+  assert.equal(
+    matchFusedHyp.matchedCounts.get('rainforest'),
+    1,
+    'rain forest merged to rainforest for matching'
+  );
+
+  const matchSplitHyp = controller.matchAndHighlight(
+    'The rainforest is lush',
+    'the rain forest is lush'
+  );
+
+  assert.equal(matchSplitHyp.missing.length, 0, 'fused reference token matched split hypothesis');
+  assert.equal(
+    matchSplitHyp.matchedCounts.get('rainforest'),
+    1,
+    'rainforest recognized from rain forest tokens'
+  );
+});
+
+test('matchAndHighlight treats common homophones as matches', () => {
+  const controller = createRecognitionController();
+
+  const sweetSuite = controller.matchAndHighlight('book the suite now', 'book the sweet now');
+
+  assert.equal(sweetSuite.missing.length, 0, 'suite matched sweet in hypothesis');
+  assert.equal(sweetSuite.matchedCounts.get('suite'), 1, 'suite counted as matched token');
+
+  const hearHere = controller.matchAndHighlight('hear the bell', 'here the bell');
+
+  assert.equal(hearHere.missing.length, 0, 'hear matched homophonic here token');
+  assert.equal(hearHere.matchedCounts.get('hear'), 1, 'hear token counted despite homophone spelling');
+});
+
+test('homophone matches normalize UI transcript to reference spelling', () => {
+  const controller = createRecognitionController();
+
+  const sweetSuite = controller.matchAndHighlight('book the suite now', 'book the sweet now');
+
+  assert.equal(sweetSuite.transcript, 'book the sweet now', 'raw transcript preserves recognition output');
+  assert.equal(
+    sweetSuite.normalizedTranscript,
+    'book the suite now',
+    'normalized transcript aligns UI text to reference spelling'
+  );
+
+  const hearHere = controller.matchAndHighlight('hear the bell', 'here the bell');
+
+  assert.equal(hearHere.transcript, 'here the bell', 'raw transcript keeps homophone spelling');
+  assert.equal(
+    hearHere.normalizedTranscript,
+    'hear the bell',
+    'normalized transcript replaces homophone with reference spelling'
+  );
+});
+
+test('matchAndHighlight preserves consecutive duplicate tokens', () => {
+  const controller = createRecognitionController();
+
+  const repeated = controller.matchAndHighlight(
+    'you you can do it',
+    'you you can do it'
+  );
+
+  assert.equal(repeated.missing.length, 0, 'all reference tokens matched despite repetition');
+  assert.equal(
+    repeated.matchedCounts.get('you'),
+    2,
+    'both repeated you tokens counted in matches'
+  );
+  assert.deepEqual(
+    repeated.hypTokens,
+    ['you', 'you', 'can', 'do', 'it'],
+    'hypothesis tokens retain consecutive duplicates'
+  );
+});
+
+test('matchAndHighlight requires tokens to appear in order', () => {
+  const controller = createRecognitionController();
+
+  const outOfOrder = controller.matchAndHighlight('say hello world', 'world say hello');
+
+  assert.equal(outOfOrder.matchedCounts.get('say'), 1, 'matched later tokens still counted when aligned');
+  assert.equal(outOfOrder.matchedCounts.get('hello'), 1, 'hello recognized despite earlier misplaced word');
+  assert.equal(outOfOrder.matchedCounts.get('world') || 0, 0, 'world before say is ignored for ordered matching');
+  assert.ok(outOfOrder.missing.includes('world'), 'world missing when tokens spoken out of order');
+  assert.ok(outOfOrder.recall < 1, 'recall reduced when hypothesis order mismatches reference');
+  assert.deepEqual(outOfOrder.hypTokens, ['say', 'hello'], 'best match window trims out-of-order prefix');
+});
