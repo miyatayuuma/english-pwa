@@ -1,0 +1,3296 @@
+{
+  "schema_version": 1,
+  "policy_version": "prompt-learning-value-v1",
+  "batch": 1,
+  "ordinal_start": 1,
+  "ordinal_end": 100,
+  "claim_main": "dbe0bd91b56e63a5367940f7e4bc7672d09fce43",
+  "reviewed_against_main": "dbe0bd91b56e63a5367940f7e4bc7672d09fce43",
+  "reviewed_count": 100,
+  "entry_ids": [
+    "vocab:00001",
+    "vocab:00002",
+    "vocab:00003",
+    "vocab:00004",
+    "vocab:00005",
+    "vocab:00006",
+    "vocab:00007",
+    "vocab:00008",
+    "vocab:00009",
+    "vocab:00010",
+    "vocab:00011",
+    "vocab:00012",
+    "vocab:00013",
+    "vocab:00014",
+    "vocab:00015",
+    "vocab:00016",
+    "vocab:00017",
+    "vocab:00018",
+    "vocab:00019",
+    "vocab:00020",
+    "vocab:00021",
+    "vocab:00022",
+    "vocab:00023",
+    "vocab:00024",
+    "vocab:00025",
+    "vocab:00026",
+    "vocab:00027",
+    "vocab:00028",
+    "vocab:00029",
+    "vocab:00030",
+    "vocab:00031",
+    "vocab:00032",
+    "vocab:00033",
+    "vocab:00034",
+    "vocab:00035",
+    "vocab:00036",
+    "vocab:00037",
+    "vocab:00038",
+    "vocab:00039",
+    "vocab:00040",
+    "vocab:00041",
+    "vocab:00042",
+    "vocab:00043",
+    "vocab:00044",
+    "vocab:00045",
+    "vocab:00046",
+    "vocab:00047",
+    "vocab:00048",
+    "vocab:00049",
+    "vocab:00050",
+    "vocab:00051",
+    "vocab:00052",
+    "vocab:00053",
+    "vocab:00054",
+    "vocab:00055",
+    "vocab:00056",
+    "vocab:00057",
+    "vocab:00058",
+    "vocab:00059",
+    "vocab:00060",
+    "vocab:00061",
+    "vocab:00062",
+    "vocab:00063",
+    "vocab:00064",
+    "vocab:00065",
+    "vocab:00066",
+    "vocab:00067",
+    "vocab:00068",
+    "vocab:00069",
+    "vocab:00070",
+    "vocab:00071",
+    "vocab:00072",
+    "vocab:00073",
+    "vocab:00074",
+    "vocab:00075",
+    "vocab:00076",
+    "vocab:00077",
+    "vocab:00078",
+    "vocab:00079",
+    "vocab:00080",
+    "vocab:00081",
+    "vocab:00082",
+    "vocab:00083",
+    "vocab:00084",
+    "vocab:00085",
+    "vocab:00086",
+    "vocab:00087",
+    "vocab:00088",
+    "vocab:00089",
+    "vocab:00090",
+    "vocab:00091",
+    "vocab:00092",
+    "vocab:00093",
+    "vocab:00094",
+    "vocab:00095",
+    "vocab:00096",
+    "vocab:00097",
+    "vocab:00098",
+    "vocab:00099",
+    "vocab:00100"
+  ],
+  "results": [
+    {
+      "entry_id": "vocab:00001",
+      "prompt_ja": "（場所・時間などを）占める",
+      "canonical_snapshot": "take up",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "take up",
+        "occupy"
+      ],
+      "candidate_review": [
+        {
+          "expression": "take up",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "occupy",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "occupy"
+      ],
+      "decision": "CHANGED",
+      "reason": "occupy はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00002",
+      "prompt_ja": "somethingを止める・切る",
+      "canonical_snapshot": "turn something off",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "cut something off",
+        "stop something",
+        "turn something off"
+      ],
+      "candidate_review": [
+        {
+          "expression": "cut something off",
+          "decision": "REJECT",
+          "reason": "promptへの回答として成立する場面はあるが、意味範囲・文脈依存性・独立学習価値のいずれかで主要paraphraseとしては弱い。"
+        },
+        {
+          "expression": "stop something",
+          "decision": "REJECT",
+          "reason": "promptへの回答として成立する場面はあるが、意味範囲・文脈依存性・独立学習価値のいずれかで主要paraphraseとしては弱い。"
+        },
+        {
+          "expression": "turn something off",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "switch something off",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "switch something off"
+      ],
+      "decision": "CHANGED",
+      "reason": "switch something off はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00003",
+      "prompt_ja": "someoneに偶然出会う",
+      "canonical_snapshot": "come across someone",
+      "answers_snapshot": [],
+      "existing_paraphrases": [
+        "run into someone"
+      ],
+      "blind_candidates": [
+        "run into someone",
+        "bump into someone",
+        "come across someone"
+      ],
+      "candidate_review": [
+        {
+          "expression": "run into someone",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "bump into someone",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "come across someone",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        }
+      ],
+      "after_paraphrases": [
+        "run into someone",
+        "bump into someone"
+      ],
+      "decision": "CHANGED",
+      "reason": "既存の run into someone はpromptへの自然な主要回答で学習価値が高いため保持。bump into someone はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00004",
+      "prompt_ja": "someoneにsomethingさせる",
+      "canonical_snapshot": "make someone do something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "make someone do something",
+        "get someone to do something",
+        "have someone do something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "make someone do something",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "get someone to do something",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "have someone do something",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "get someone to do something",
+        "have someone do something"
+      ],
+      "decision": "CHANGED",
+      "reason": "get someone to do something / have someone do something はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00005",
+      "prompt_ja": "ひどく取り乱している",
+      "canonical_snapshot": "I'm beside myself",
+      "answers_snapshot": [
+        "be beside yourself",
+        "be beside himself",
+        "be beside herself"
+      ],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be beside yourself",
+        "be distraught"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be beside yourself",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "be distraught",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "be distraught"
+      ],
+      "decision": "CHANGED",
+      "reason": "be distraught はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00006",
+      "prompt_ja": "ぐっすり眠っている",
+      "canonical_snapshot": "sound asleep",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "sound asleep",
+        "fast asleep"
+      ],
+      "candidate_review": [
+        {
+          "expression": "sound asleep",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "fast asleep",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "fast asleep"
+      ],
+      "decision": "CHANGED",
+      "reason": "fast asleep はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00007",
+      "prompt_ja": "足首を捻挫する",
+      "canonical_snapshot": "twist your ankle",
+      "answers_snapshot": [
+        "twist my ankle",
+        "twist his ankle",
+        "twist her ankle"
+      ],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "sprain your ankle",
+        "twist your ankle"
+      ],
+      "candidate_review": [
+        {
+          "expression": "sprain your ankle",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "twist your ankle",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        }
+      ],
+      "after_paraphrases": [
+        "sprain your ankle"
+      ],
+      "decision": "CHANGED",
+      "reason": "sprain your ankle はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00008",
+      "prompt_ja": "〜だと仮定する",
+      "canonical_snapshot": "assume",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "assume",
+        "suppose",
+        "presume"
+      ],
+      "candidate_review": [
+        {
+          "expression": "assume",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "suppose",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "presume",
+          "decision": "REJECT",
+          "reason": "「仮定する」より、根拠に基づき「推定する」含意が強く、promptとの対応を広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "suppose"
+      ],
+      "decision": "CHANGED",
+      "reason": "suppose はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00009",
+      "prompt_ja": "就職面接",
+      "canonical_snapshot": "job interview",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "job interview",
+        "employment interview"
+      ],
+      "candidate_review": [
+        {
+          "expression": "job interview",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "employment interview",
+          "decision": "REJECT",
+          "reason": "成立はするが job interview より非典型で、別表現として追加学習する価値が低い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "canonical以外に検討した候補は、説明的・表層的・文脈依存・意味範囲のずれのいずれかがあり、このpromptで独立して学ばせる主要paraphraseは残さない。"
+    },
+    {
+      "entry_id": "vocab:00010",
+      "prompt_ja": "someoneを断る",
+      "canonical_snapshot": "turn someone down",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "turn someone down",
+        "reject someone"
+      ],
+      "candidate_review": [
+        {
+          "expression": "turn someone down",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "reject someone",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "reject someone"
+      ],
+      "decision": "CHANGED",
+      "reason": "reject someone はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00011",
+      "prompt_ja": "somethingを身につける",
+      "canonical_snapshot": "put something on",
+      "answers_snapshot": [
+        "put my gloves on",
+        "put gloves on"
+      ],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "put something on",
+        "wear something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "put something on",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "wear something",
+          "decision": "REJECT",
+          "reason": "状態の「身につけている」が中心で、動作の「身につける」promptにはずれが残る。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "canonical以外に検討した候補は、説明的・表層的・文脈依存・意味範囲のずれのいずれかがあり、このpromptで独立して学ばせる主要paraphraseは残さない。"
+    },
+    {
+      "entry_id": "vocab:00012",
+      "prompt_ja": "お腹がぺこぺこだ",
+      "canonical_snapshot": "be starved",
+      "answers_snapshot": [],
+      "existing_paraphrases": [
+        "be starving"
+      ],
+      "blind_candidates": [
+        "be starving",
+        "be famished"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be starving",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "be famished",
+          "decision": "REJECT",
+          "reason": "意味は成立するが、既存の be starving に比べ頻度・追加価値が低く、同カードで増やす必要性が弱い。"
+        }
+      ],
+      "after_paraphrases": [
+        "be starving"
+      ],
+      "decision": "UNCHANGED",
+      "reason": "既存の be starving はpromptへの自然な主要回答で学習価値が高いため保持。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00013",
+      "prompt_ja": "疲れすぎて眠ってしまった",
+      "canonical_snapshot": "so tired that I fell asleep",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "so tired that I fell asleep",
+        "fall asleep from exhaustion"
+      ],
+      "candidate_review": [
+        {
+          "expression": "so tired that I fell asleep",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "fall asleep from exhaustion",
+          "decision": "REJECT",
+          "reason": "意味は近いが、固定的な学習表現というより説明的な言い換えである。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "canonical以外に検討した候補は、説明的・表層的・文脈依存・意味範囲のずれのいずれかがあり、このpromptで独立して学ばせる主要paraphraseは残さない。"
+    },
+    {
+      "entry_id": "vocab:00014",
+      "prompt_ja": "（本・作品などが）刊行される",
+      "canonical_snapshot": "come out",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be published",
+        "come out"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be published",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "come out",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        }
+      ],
+      "after_paraphrases": [
+        "be published"
+      ],
+      "decision": "CHANGED",
+      "reason": "be published はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00015",
+      "prompt_ja": "someoneに恋をする",
+      "canonical_snapshot": "fall in love with someone",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "fall in love with someone"
+      ],
+      "candidate_review": [
+        {
+          "expression": "fall in love with someone",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "canonical以外に検討した候補は、説明的・表層的・文脈依存・意味範囲のずれのいずれかがあり、このpromptで独立して学ばせる主要paraphraseは残さない。"
+    },
+    {
+      "entry_id": "vocab:00016",
+      "prompt_ja": "一目で",
+      "canonical_snapshot": "at first sight",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "at a glance",
+        "at first sight"
+      ],
+      "candidate_review": [
+        {
+          "expression": "at a glance",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "at first sight",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        }
+      ],
+      "after_paraphrases": [
+        "at a glance"
+      ],
+      "decision": "CHANGED",
+      "reason": "at a glance はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00017",
+      "prompt_ja": "思い切ってやってみる",
+      "canonical_snapshot": "take a chance",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "give it a try",
+        "give it a shot",
+        "take the plunge"
+      ],
+      "candidate_review": [
+        {
+          "expression": "give it a try",
+          "decision": "REJECT",
+          "reason": "「やってみる」は表すが、promptの「思い切って」という決断・踏み切りの含意が弱い。"
+        },
+        {
+          "expression": "give it a shot",
+          "decision": "REJECT",
+          "reason": "「やってみる」は表すが、promptの「思い切って」という決断・踏み切りの含意が弱い。"
+        },
+        {
+          "expression": "take the plunge",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "take the plunge"
+      ],
+      "decision": "CHANGED",
+      "reason": "take the plunge はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00018",
+      "prompt_ja": "someoneに結婚を申し込む",
+      "canonical_snapshot": "propose to someone",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "propose to someone",
+        "ask someone to marry you"
+      ],
+      "candidate_review": [
+        {
+          "expression": "propose to someone",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "ask someone to marry you",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "ask someone to marry you"
+      ],
+      "decision": "CHANGED",
+      "reason": "ask someone to marry you はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00019",
+      "prompt_ja": "これ以上ないほどよい",
+      "canonical_snapshot": "couldn't be better",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "couldn't be better",
+        "as good as it gets"
+      ],
+      "candidate_review": [
+        {
+          "expression": "couldn't be better",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "as good as it gets",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "as good as it gets"
+      ],
+      "decision": "CHANGED",
+      "reason": "as good as it gets はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00020",
+      "prompt_ja": "よかったね",
+      "canonical_snapshot": "good for you",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "good for you",
+        "I'm happy for you"
+      ],
+      "candidate_review": [
+        {
+          "expression": "good for you",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "I'm happy for you",
+          "decision": "REJECT",
+          "reason": "promptへの回答として成立する場面はあるが、意味範囲・文脈依存性・独立学習価値のいずれかで主要paraphraseとしては弱い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "canonical以外に検討した候補は、説明的・表層的・文脈依存・意味範囲のずれのいずれかがあり、このpromptで独立して学ばせる主要paraphraseは残さない。"
+    },
+    {
+      "entry_id": "vocab:00021",
+      "prompt_ja": "調子はどう？",
+      "canonical_snapshot": "how's it going?",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "How are you?",
+        "How's it going?",
+        "How are you doing?"
+      ],
+      "candidate_review": [
+        {
+          "expression": "How are you?",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "How's it going?",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "How are you doing?",
+          "decision": "REJECT",
+          "reason": "promptへの回答として成立する場面はあるが、意味範囲・文脈依存性・独立学習価値のいずれかで主要paraphraseとしては弱い。"
+        }
+      ],
+      "after_paraphrases": [
+        "How are you?"
+      ],
+      "decision": "CHANGED",
+      "reason": "How are you? はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00022",
+      "prompt_ja": "今日はここまでにする",
+      "canonical_snapshot": "call it a day",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "call it a day",
+        "stop for today"
+      ],
+      "candidate_review": [
+        {
+          "expression": "call it a day",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "stop for today",
+          "decision": "REJECT",
+          "reason": "promptへの回答として成立する場面はあるが、意味範囲・文脈依存性・独立学習価値のいずれかで主要paraphraseとしては弱い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "canonical以外に検討した候補は、説明的・表層的・文脈依存・意味範囲のずれのいずれかがあり、このpromptで独立して学ばせる主要paraphraseは残さない。"
+    },
+    {
+      "entry_id": "vocab:00023",
+      "prompt_ja": "someoneに夕食をおごる",
+      "canonical_snapshot": "buy someone dinner",
+      "answers_snapshot": [
+        "buy you dinner"
+      ],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "treat someone to dinner",
+        "buy someone dinner"
+      ],
+      "candidate_review": [
+        {
+          "expression": "treat someone to dinner",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "buy someone dinner",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        }
+      ],
+      "after_paraphrases": [
+        "treat someone to dinner"
+      ],
+      "decision": "CHANGED",
+      "reason": "treat someone to dinner はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00024",
+      "prompt_ja": "〜という結果になる",
+      "canonical_snapshot": "turn out",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "turn out",
+        "end up",
+        "result in"
+      ],
+      "candidate_review": [
+        {
+          "expression": "turn out",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "end up",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "result in",
+          "decision": "REJECT",
+          "reason": "通常は「〜をもたらす」という因果構文で、turn out 型の「〜という結果になる」とargument structureがずれる。"
+        }
+      ],
+      "after_paraphrases": [
+        "end up"
+      ],
+      "decision": "CHANGED",
+      "reason": "end up はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00025",
+      "prompt_ja": "somethingが不足している",
+      "canonical_snapshot": "be short of something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be short of something",
+        "lack something",
+        "run short of something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be short of something",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "lack something",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "run short of something",
+          "decision": "REJECT",
+          "reason": "「不足している」状態より「不足してくる」変化を表すため、promptより狭い。"
+        }
+      ],
+      "after_paraphrases": [
+        "lack something"
+      ],
+      "decision": "CHANGED",
+      "reason": "lack something はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00026",
+      "prompt_ja": "（預金などを）引き出す",
+      "canonical_snapshot": "withdraw",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "withdraw",
+        "take money out"
+      ],
+      "candidate_review": [
+        {
+          "expression": "withdraw",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "take money out",
+          "decision": "REJECT",
+          "reason": "会話では成立するが、預金引出し専用の独立表現ではなく説明的である。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "canonical以外に検討した候補は、説明的・表層的・文脈依存・意味範囲のずれのいずれかがあり、このpromptで独立して学ばせる主要paraphraseは残さない。"
+    },
+    {
+      "entry_id": "vocab:00027",
+      "prompt_ja": "（預金として）預け入れる",
+      "canonical_snapshot": "deposit",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "deposit",
+        "put money in"
+      ],
+      "candidate_review": [
+        {
+          "expression": "deposit",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "put money in",
+          "decision": "REJECT",
+          "reason": "会話では成立するが、預入れ専用の独立表現ではなく説明的である。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "canonical以外に検討した候補は、説明的・表層的・文脈依存・意味範囲のずれのいずれかがあり、このpromptで独立して学ばせる主要paraphraseは残さない。"
+    },
+    {
+      "entry_id": "vocab:00028",
+      "prompt_ja": "尊重する",
+      "canonical_snapshot": "respect",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "respect",
+        "show respect for"
+      ],
+      "candidate_review": [
+        {
+          "expression": "respect",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "show respect for",
+          "decision": "REJECT",
+          "reason": "意味は近いが respect の分析的言い換えで、追加登録の独立学習価値が低い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "canonical以外に検討した候補は、説明的・表層的・文脈依存・意味範囲のずれのいずれかがあり、このpromptで独立して学ばせる主要paraphraseは残さない。"
+    },
+    {
+      "entry_id": "vocab:00029",
+      "prompt_ja": "急いで",
+      "canonical_snapshot": "in a hurry",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "in a hurry",
+        "in haste"
+      ],
+      "candidate_review": [
+        {
+          "expression": "in a hurry",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "in haste",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "in haste"
+      ],
+      "decision": "CHANGED",
+      "reason": "in haste はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00030",
+      "prompt_ja": "裏返しに",
+      "canonical_snapshot": "inside out",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "inside out",
+        "the wrong way round"
+      ],
+      "candidate_review": [
+        {
+          "expression": "inside out",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "the wrong way round",
+          "decision": "REJECT",
+          "reason": "向き・順序が逆の意味まで広く、inside out の「裏返し」と一致しない場合がある。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "canonical以外に検討した候補は、説明的・表層的・文脈依存・意味範囲のずれのいずれかがあり、このpromptで独立して学ばせる主要paraphraseは残さない。"
+    },
+    {
+      "entry_id": "vocab:00031",
+      "prompt_ja": "間違えて",
+      "canonical_snapshot": "by mistake",
+      "answers_snapshot": [],
+      "existing_paraphrases": [
+        "by accident"
+      ],
+      "blind_candidates": [
+        "by mistake",
+        "by accident",
+        "accidentally"
+      ],
+      "candidate_review": [
+        {
+          "expression": "by mistake",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "by accident",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "accidentally",
+          "decision": "REJECT",
+          "reason": "成立するが既存 by accident と同一概念の単純な語形選択で、追加価値が小さい。"
+        }
+      ],
+      "after_paraphrases": [
+        "by accident"
+      ],
+      "decision": "UNCHANGED",
+      "reason": "既存の by accident はpromptへの自然な主要回答で学習価値が高いため保持。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00032",
+      "prompt_ja": "確かめる",
+      "canonical_snapshot": "make sure",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "make sure",
+        "check",
+        "verify"
+      ],
+      "candidate_review": [
+        {
+          "expression": "make sure",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "check",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "verify",
+          "decision": "REJECT",
+          "reason": "確認対象の真偽・正確性に寄るため、一般的な「確かめる」より用法が狭い。"
+        }
+      ],
+      "after_paraphrases": [
+        "check"
+      ],
+      "decision": "CHANGED",
+      "reason": "check はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00033",
+      "prompt_ja": "出発する",
+      "canonical_snapshot": "set off",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "set off",
+        "leave",
+        "depart"
+      ],
+      "candidate_review": [
+        {
+          "expression": "set off",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "leave",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "depart",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "leave",
+        "depart"
+      ],
+      "decision": "CHANGED",
+      "reason": "leave / depart はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00034",
+      "prompt_ja": "誘惑に抵抗する",
+      "canonical_snapshot": "resist temptation",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "resist temptation",
+        "avoid temptation"
+      ],
+      "candidate_review": [
+        {
+          "expression": "resist temptation",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "avoid temptation",
+          "decision": "REJECT",
+          "reason": "誘惑を避けることであり、誘惑に直面して「抵抗する」とは異なる。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "canonical以外に検討した候補は、説明的・表層的・文脈依存・意味範囲のずれのいずれかがあり、このpromptで独立して学ばせる主要paraphraseは残さない。"
+    },
+    {
+      "entry_id": "vocab:00035",
+      "prompt_ja": "事実と作り話を見分ける",
+      "canonical_snapshot": "tell fact from fiction",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "tell fact from fiction",
+        "distinguish fact from fiction",
+        "separate fact from fiction"
+      ],
+      "candidate_review": [
+        {
+          "expression": "tell fact from fiction",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "distinguish fact from fiction",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "separate fact from fiction",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "distinguish fact from fiction",
+        "separate fact from fiction"
+      ],
+      "decision": "CHANGED",
+      "reason": "distinguish fact from fiction / separate fact from fiction はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00036",
+      "prompt_ja": "気楽にする・無理をしない",
+      "canonical_snapshot": "take it easy",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "take it easy",
+        "don't overdo it",
+        "relax"
+      ],
+      "candidate_review": [
+        {
+          "expression": "take it easy",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "don't overdo it",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "relax",
+          "decision": "REJECT",
+          "reason": "「気楽にする」は表せるが「無理をしない」まで含まず、prompt全体への対応が弱い。"
+        }
+      ],
+      "after_paraphrases": [
+        "don't overdo it"
+      ],
+      "decision": "CHANGED",
+      "reason": "don't overdo it はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00037",
+      "prompt_ja": "somethingを手放す",
+      "canonical_snapshot": "let go of something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "let go of something",
+        "part with something",
+        "give something up"
+      ],
+      "candidate_review": [
+        {
+          "expression": "let go of something",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "part with something",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "give something up",
+          "decision": "REJECT",
+          "reason": "所有物を手放す以外に「諦める・やめる」が中心になり得て、generic promptとの対応が不安定。"
+        }
+      ],
+      "after_paraphrases": [
+        "part with something"
+      ],
+      "decision": "CHANGED",
+      "reason": "part with something はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00038",
+      "prompt_ja": "〜にかかわらず",
+      "canonical_snapshot": "regardless of",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "regardless of",
+        "irrespective of"
+      ],
+      "candidate_review": [
+        {
+          "expression": "regardless of",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "irrespective of",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "irrespective of"
+      ],
+      "decision": "CHANGED",
+      "reason": "irrespective of はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00039",
+      "prompt_ja": "somethingを発する",
+      "canonical_snapshot": "give off something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "give off something",
+        "emit something",
+        "release something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "give off something",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "emit something",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "release something",
+          "decision": "REJECT",
+          "reason": "放出・解放など意味範囲が広く、「発する」の主要代替としては過剰。"
+        }
+      ],
+      "after_paraphrases": [
+        "emit something"
+      ],
+      "decision": "CHANGED",
+      "reason": "emit something はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00040",
+      "prompt_ja": "someoneにsomethingを思い出させる",
+      "canonical_snapshot": "remind someone of something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "remind someone of something",
+        "make someone remember something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "remind someone of something",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "make someone remember something",
+          "decision": "REJECT",
+          "reason": "意味説明としては成立するが、独立した学習表現ではない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "canonical以外に検討した候補は、説明的・表層的・文脈依存・意味範囲のずれのいずれかがあり、このpromptで独立して学ばせる主要paraphraseは残さない。"
+    },
+    {
+      "entry_id": "vocab:00041",
+      "prompt_ja": "〜に詳しい",
+      "canonical_snapshot": "be familiar with",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be familiar with",
+        "know a lot about",
+        "be well-versed in"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be familiar with",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "know a lot about",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "be well-versed in",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "know a lot about",
+        "be well-versed in"
+      ],
+      "decision": "CHANGED",
+      "reason": "know a lot about / be well-versed in はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00042",
+      "prompt_ja": "ほとんど何も〜ない",
+      "canonical_snapshot": "next to nothing",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "almost nothing",
+        "hardly anything",
+        "next to nothing"
+      ],
+      "candidate_review": [
+        {
+          "expression": "almost nothing",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "hardly anything",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "next to nothing",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        }
+      ],
+      "after_paraphrases": [
+        "almost nothing",
+        "hardly anything"
+      ],
+      "decision": "CHANGED",
+      "reason": "almost nothing / hardly anything はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00043",
+      "prompt_ja": "だいたい",
+      "canonical_snapshot": "more or less",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "roughly",
+        "approximately",
+        "more or less"
+      ],
+      "candidate_review": [
+        {
+          "expression": "roughly",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "approximately",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "more or less",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        }
+      ],
+      "after_paraphrases": [
+        "roughly",
+        "approximately"
+      ],
+      "decision": "CHANGED",
+      "reason": "roughly / approximately はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00044",
+      "prompt_ja": "somethingすることを強く望む",
+      "canonical_snapshot": "be eager to do something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be eager to do something",
+        "long to do something",
+        "be keen to do something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be eager to do something",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "long to do something",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "be keen to do something",
+          "decision": "REJECT",
+          "reason": "成立するが地域差とニュアンス差があり、long to より追加優先度が低い。"
+        }
+      ],
+      "after_paraphrases": [
+        "long to do something"
+      ],
+      "decision": "CHANGED",
+      "reason": "long to do something はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00045",
+      "prompt_ja": "展示されて",
+      "canonical_snapshot": "on display",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "on display",
+        "on exhibit",
+        "on show"
+      ],
+      "candidate_review": [
+        {
+          "expression": "on display",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "on exhibit",
+          "decision": "REJECT",
+          "reason": "成立するが on display / on show に対する追加学習価値が相対的に低い。"
+        },
+        {
+          "expression": "on show",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "on show"
+      ],
+      "decision": "CHANGED",
+      "reason": "on show はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00046",
+      "prompt_ja": "言葉で表せないほど",
+      "canonical_snapshot": "beyond description",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "beyond words",
+        "beyond description"
+      ],
+      "candidate_review": [
+        {
+          "expression": "beyond words",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "beyond description",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        }
+      ],
+      "after_paraphrases": [
+        "beyond words"
+      ],
+      "decision": "CHANGED",
+      "reason": "beyond words はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00047",
+      "prompt_ja": "someoneにsomethingするよう懇願する",
+      "canonical_snapshot": "beg someone to do something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "beg someone to do something",
+        "plead with someone to do something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "beg someone to do something",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "plead with someone to do something",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "plead with someone to do something"
+      ],
+      "decision": "CHANGED",
+      "reason": "plead with someone to do something はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00048",
+      "prompt_ja": "一文なしだ",
+      "canonical_snapshot": "be broke",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be broke",
+        "be penniless",
+        "have no money"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be broke",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "be penniless",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "have no money",
+          "decision": "REJECT",
+          "reason": "意味は成立するが、説明的な基本句で be broke / penniless ほど独立表現価値がない。"
+        }
+      ],
+      "after_paraphrases": [
+        "be penniless"
+      ],
+      "decision": "CHANGED",
+      "reason": "be penniless はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00049",
+      "prompt_ja": "衝動的に",
+      "canonical_snapshot": "on impulse",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "on impulse",
+        "impulsively",
+        "on a whim"
+      ],
+      "candidate_review": [
+        {
+          "expression": "on impulse",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "impulsively",
+          "decision": "REJECT",
+          "reason": "意味は正しいが on impulse の単語置換的な対応で、同カードに追加する増分価値が小さい。"
+        },
+        {
+          "expression": "on a whim",
+          "decision": "REJECT",
+          "reason": "「気まぐれに」の含意が強く、純粋な「衝動的に」とはずれる。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "canonical以外に検討した候補は、説明的・表層的・文脈依存・意味範囲のずれのいずれかがあり、このpromptで独立して学ばせる主要paraphraseは残さない。"
+    },
+    {
+      "entry_id": "vocab:00050",
+      "prompt_ja": "特売中の",
+      "canonical_snapshot": "on sale",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "on sale",
+        "discounted",
+        "marked down"
+      ],
+      "candidate_review": [
+        {
+          "expression": "on sale",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "discounted",
+          "decision": "REJECT",
+          "reason": "意味は成立するが価格状態を説明する一般形で、marked down の方が別表現としての学習価値が高い。"
+        },
+        {
+          "expression": "marked down",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "marked down"
+      ],
+      "decision": "CHANGED",
+      "reason": "marked down はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00051",
+      "prompt_ja": "連続して",
+      "canonical_snapshot": "in a row",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "in a row",
+        "consecutively",
+        "one after another"
+      ],
+      "candidate_review": [
+        {
+          "expression": "in a row",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "consecutively",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "one after another",
+          "decision": "REJECT",
+          "reason": "連続順序は表せるが、必ずしも中断なしの「連続して」を表さない。"
+        }
+      ],
+      "after_paraphrases": [
+        "consecutively"
+      ],
+      "decision": "CHANGED",
+      "reason": "consecutively はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00052",
+      "prompt_ja": "これからは",
+      "canonical_snapshot": "from now on",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "from now on",
+        "going forward",
+        "henceforth"
+      ],
+      "candidate_review": [
+        {
+          "expression": "from now on",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "going forward",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "henceforth",
+          "decision": "REJECT",
+          "reason": "正確だが現代一般英語では硬く低頻度で、going forward より優先度が低い。"
+        }
+      ],
+      "after_paraphrases": [
+        "going forward"
+      ],
+      "decision": "CHANGED",
+      "reason": "going forward はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00053",
+      "prompt_ja": "somethingを継続的に把握する",
+      "canonical_snapshot": "keep track of something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "keep track of something",
+        "monitor something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "keep track of something",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "monitor something",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "monitor something"
+      ],
+      "decision": "CHANGED",
+      "reason": "monitor something はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00054",
+      "prompt_ja": "いずれにしても",
+      "canonical_snapshot": "in any case",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "in any case",
+        "anyway",
+        "at any rate"
+      ],
+      "candidate_review": [
+        {
+          "expression": "in any case",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "anyway",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "at any rate",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "anyway",
+        "at any rate"
+      ],
+      "decision": "CHANGED",
+      "reason": "anyway / at any rate はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00055",
+      "prompt_ja": "ある程度",
+      "canonical_snapshot": "to a certain extent",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "to a certain extent",
+        "to some extent",
+        "somewhat"
+      ],
+      "candidate_review": [
+        {
+          "expression": "to a certain extent",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "to some extent",
+          "decision": "REJECT",
+          "reason": "canonical と語彙置換だけの近接variantで、独立した追加学習価値が小さい。"
+        },
+        {
+          "expression": "somewhat",
+          "decision": "REJECT",
+          "reason": "通常は形容詞・副詞を修飾し、句としての「ある程度」と構文分布が異なる。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "canonical以外に検討した候補は、説明的・表層的・文脈依存・意味範囲のずれのいずれかがあり、このpromptで独立して学ばせる主要paraphraseは残さない。"
+    },
+    {
+      "entry_id": "vocab:00056",
+      "prompt_ja": "需要がある",
+      "canonical_snapshot": "be in demand",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be in demand",
+        "be sought after"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be in demand",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "be sought after",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "be sought after"
+      ],
+      "decision": "CHANGED",
+      "reason": "be sought after はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00057",
+      "prompt_ja": "きっと",
+      "canonical_snapshot": "no doubt",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "no doubt",
+        "surely",
+        "definitely"
+      ],
+      "candidate_review": [
+        {
+          "expression": "no doubt",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "surely",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "definitely",
+          "decision": "REJECT",
+          "reason": "「きっと」より確信度が強く、promptとの対応を強めすぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "surely"
+      ],
+      "decision": "CHANGED",
+      "reason": "surely はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00058",
+      "prompt_ja": "〜につながる",
+      "canonical_snapshot": "lead to",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "lead to",
+        "result in",
+        "give rise to"
+      ],
+      "candidate_review": [
+        {
+          "expression": "lead to",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "result in",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "give rise to",
+          "decision": "REJECT",
+          "reason": "このentryでは因果結果として成立するが、result in の方がpromptへの直接性と実用性で優先される。"
+        }
+      ],
+      "after_paraphrases": [
+        "result in"
+      ],
+      "decision": "CHANGED",
+      "reason": "result in はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00059",
+      "prompt_ja": "練習が大切なのは言うまでもない",
+      "canonical_snapshot": "it goes without saying that practice matters",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "it goes without saying that practice matters",
+        "needless to say, practice is important"
+      ],
+      "candidate_review": [
+        {
+          "expression": "it goes without saying that practice matters",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "needless to say, practice is important",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "needless to say, practice is important"
+      ],
+      "decision": "CHANGED",
+      "reason": "needless to say, practice is important はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00060",
+      "prompt_ja": "somethingをちょっと見る",
+      "canonical_snapshot": "take a look at something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "take a look at something",
+        "have a look at something",
+        "look at something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "take a look at something",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "have a look at something",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "look at something",
+          "decision": "REJECT",
+          "reason": "「ちょっと見る」の軽い試行・確認ニュアンスがなく、一般的すぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "have a look at something"
+      ],
+      "decision": "CHANGED",
+      "reason": "have a look at something はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00061",
+      "prompt_ja": "増加している",
+      "canonical_snapshot": "be on the increase",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be on the increase",
+        "be on the rise",
+        "be increasing"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be on the increase",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "be on the rise",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "be increasing",
+          "decision": "REJECT",
+          "reason": "意味は正しいが、固定表現としての独立学習価値が be on the rise より低い。"
+        }
+      ],
+      "after_paraphrases": [
+        "be on the rise"
+      ],
+      "decision": "CHANGED",
+      "reason": "be on the rise はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00062",
+      "prompt_ja": "売りに出されている",
+      "canonical_snapshot": "be for sale",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be for sale",
+        "be on the market",
+        "be up for sale"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be for sale",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "be on the market",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "be up for sale",
+          "decision": "REJECT",
+          "reason": "成立するが be for sale に近い表層variantで、on the market ほど独立価値がない。"
+        }
+      ],
+      "after_paraphrases": [
+        "be on the market"
+      ],
+      "decision": "CHANGED",
+      "reason": "be on the market はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00063",
+      "prompt_ja": "おそらく",
+      "canonical_snapshot": "in all likelihood",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "in all likelihood",
+        "probably",
+        "most likely",
+        "perhaps"
+      ],
+      "candidate_review": [
+        {
+          "expression": "in all likelihood",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "probably",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "most likely",
+          "decision": "REJECT",
+          "reason": "成立するが probably と同一カードで併記する増分価値が小さい。"
+        },
+        {
+          "expression": "perhaps",
+          "decision": "REJECT",
+          "reason": "「おそらく」より弱い可能性を表す場合が多く、mappingを広げすぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "probably"
+      ],
+      "decision": "CHANGED",
+      "reason": "probably はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00064",
+      "prompt_ja": "本人が直接",
+      "canonical_snapshot": "in person",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "in person",
+        "personally",
+        "face-to-face"
+      ],
+      "candidate_review": [
+        {
+          "expression": "in person",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "personally",
+          "decision": "REJECT",
+          "reason": "「本人が直接」の用法もあるが「個人的には」の多義性が強く、単独promptとの対応が不安定。"
+        },
+        {
+          "expression": "face-to-face",
+          "decision": "REJECT",
+          "reason": "対面であることを表し、「本人が直接行う」とは意味範囲が異なる。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "canonical以外に検討した候補は、説明的・表層的・文脈依存・意味範囲のずれのいずれかがあり、このpromptで独立して学ばせる主要paraphraseは残さない。"
+    },
+    {
+      "entry_id": "vocab:00065",
+      "prompt_ja": "断然",
+      "canonical_snapshot": "by far",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "by far",
+        "hands down",
+        "easily"
+      ],
+      "candidate_review": [
+        {
+          "expression": "by far",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "hands down",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "easily",
+          "decision": "REJECT",
+          "reason": "「断然〜だ」の強調に使えるが、単独では「容易に」の意味が強く曖昧。"
+        }
+      ],
+      "after_paraphrases": [
+        "hands down"
+      ],
+      "decision": "CHANGED",
+      "reason": "hands down はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00066",
+      "prompt_ja": "念のため",
+      "canonical_snapshot": "just in case",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "just in case",
+        "to be safe"
+      ],
+      "candidate_review": [
+        {
+          "expression": "just in case",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "to be safe",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "to be safe"
+      ],
+      "decision": "CHANGED",
+      "reason": "to be safe はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00067",
+      "prompt_ja": "行動を起こす",
+      "canonical_snapshot": "take action",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "take action",
+        "act",
+        "do something about it"
+      ],
+      "candidate_review": [
+        {
+          "expression": "take action",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "act",
+          "decision": "REJECT",
+          "reason": "「行動する」は成立するが意味範囲が広く、take action の代替として登録する独立価値が弱い。"
+        },
+        {
+          "expression": "do something about it",
+          "decision": "REJECT",
+          "reason": "問題への対処を前提にし、genericな「行動を起こす」より文脈依存が強い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "canonical以外に検討した候補は、説明的・表層的・文脈依存・意味範囲のずれのいずれかがあり、このpromptで独立して学ばせる主要paraphraseは残さない。"
+    },
+    {
+      "entry_id": "vocab:00068",
+      "prompt_ja": "今のところ",
+      "canonical_snapshot": "so far",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "so far",
+        "for now",
+        "at present",
+        "currently"
+      ],
+      "candidate_review": [
+        {
+          "expression": "so far",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "for now",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "at present",
+          "decision": "REJECT",
+          "reason": "成立するが for now / so far との差をpromptが示さず、追加表現を増やす増分価値が低い。"
+        },
+        {
+          "expression": "currently",
+          "decision": "REJECT",
+          "reason": "意味は成立するが単純な一般副詞で、同カードに追加する独立価値が低い。"
+        }
+      ],
+      "after_paraphrases": [
+        "for now"
+      ],
+      "decision": "CHANGED",
+      "reason": "for now はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00069",
+      "prompt_ja": "（数量が）〜も",
+      "canonical_snapshot": "no less than",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "no less than",
+        "as many as",
+        "as much as"
+      ],
+      "candidate_review": [
+        {
+          "expression": "no less than",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "as many as",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "as much as",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "as many as",
+        "as much as"
+      ],
+      "decision": "CHANGED",
+      "reason": "as many as / as much as はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00070",
+      "prompt_ja": "somethingで亡くなる",
+      "canonical_snapshot": "die of something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "die of something",
+        "die from something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "die of something",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "die from something",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "die from something"
+      ],
+      "decision": "CHANGED",
+      "reason": "die from something はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00071",
+      "prompt_ja": "somethingする癖がある",
+      "canonical_snapshot": "have a habit of doing something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "have a habit of doing something",
+        "be in the habit of doing something",
+        "tend to do something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "have a habit of doing something",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "be in the habit of doing something",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "tend to do something",
+          "decision": "REJECT",
+          "reason": "反復傾向は表すが、本人の「癖・習慣」を明示する構文より意味が広い。"
+        }
+      ],
+      "after_paraphrases": [
+        "be in the habit of doing something"
+      ],
+      "decision": "CHANGED",
+      "reason": "be in the habit of doing something はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00072",
+      "prompt_ja": "somethingを引き起こす",
+      "canonical_snapshot": "bring about something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [
+        "give rise to something"
+      ],
+      "blind_candidates": [
+        "bring about something",
+        "cause something",
+        "trigger something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "bring about something",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "cause something",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "trigger something",
+          "decision": "REJECT",
+          "reason": "急激な開始・反応を引き起こす含意があり、genericな「引き起こす」より狭い。"
+        },
+        {
+          "expression": "give rise to something",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "cause something",
+        "give rise to something"
+      ],
+      "decision": "CHANGED",
+      "reason": "既存の give rise to something はpromptへの自然な主要回答で学習価値が高いため保持。cause something はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00073",
+      "prompt_ja": "全体として",
+      "canonical_snapshot": "as a whole",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "as a whole",
+        "overall",
+        "on the whole"
+      ],
+      "candidate_review": [
+        {
+          "expression": "as a whole",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "overall",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "on the whole",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "overall",
+        "on the whole"
+      ],
+      "decision": "CHANGED",
+      "reason": "overall / on the whole はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00074",
+      "prompt_ja": "まして〜はなおさら",
+      "canonical_snapshot": "let alone",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "let alone",
+        "much less",
+        "not to mention"
+      ],
+      "candidate_review": [
+        {
+          "expression": "let alone",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "much less",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "not to mention",
+          "decision": "REJECT",
+          "reason": "追加列挙の意味が中心で、「まして〜はなおさら」の強い比較関係を必ずしも表さない。"
+        }
+      ],
+      "after_paraphrases": [
+        "much less"
+      ],
+      "decision": "CHANGED",
+      "reason": "much less はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00075",
+      "prompt_ja": "somethingの及ぶ範囲を超えている",
+      "canonical_snapshot": "beyond the reach of something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "beyond the reach of something",
+        "beyond the scope of something",
+        "out of reach of something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "beyond the reach of something",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "beyond the scope of something",
+          "decision": "REJECT",
+          "reason": "scope の意味に限定され、reach を含むgeneric promptへの対応としては狭い。"
+        },
+        {
+          "expression": "out of reach of something",
+          "decision": "REJECT",
+          "reason": "物理的・能力的な到達不能に寄り、genericな「及ぶ範囲」を安定して表せない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "canonical以外に検討した候補は、説明的・表層的・文脈依存・意味範囲のずれのいずれかがあり、このpromptで独立して学ばせる主要paraphraseは残さない。"
+    },
+    {
+      "entry_id": "vocab:00076",
+      "prompt_ja": "somethingを誇りに思う",
+      "canonical_snapshot": "be proud of something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be proud of something",
+        "take pride in something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be proud of something",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "take pride in something",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "take pride in something"
+      ],
+      "decision": "CHANGED",
+      "reason": "take pride in something はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00077",
+      "prompt_ja": "somethingを自慢する",
+      "canonical_snapshot": "boast about something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "boast about something",
+        "brag about something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "boast about something",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "brag about something",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "brag about something"
+      ],
+      "decision": "CHANGED",
+      "reason": "brag about something はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00078",
+      "prompt_ja": "somethingに反対している",
+      "canonical_snapshot": "be opposed to something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be opposed to something",
+        "be against something",
+        "object to something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be opposed to something",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "be against something",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "object to something",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "be against something",
+        "object to something"
+      ],
+      "decision": "CHANGED",
+      "reason": "be against something / object to something はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00079",
+      "prompt_ja": "〜が原因で",
+      "canonical_snapshot": "owing to",
+      "answers_snapshot": [],
+      "existing_paraphrases": [
+        "on account of"
+      ],
+      "blind_candidates": [
+        "owing to",
+        "because of",
+        "due to",
+        "on account of"
+      ],
+      "candidate_review": [
+        {
+          "expression": "owing to",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "because of",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "due to",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "on account of",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "because of",
+        "due to",
+        "on account of"
+      ],
+      "decision": "CHANGED",
+      "reason": "既存の on account of はpromptへの自然な主要回答で学習価値が高いため保持。because of / due to はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00080",
+      "prompt_ja": "somethingを欠席している",
+      "canonical_snapshot": "be absent from something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be absent from something",
+        "miss something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be absent from something",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "miss something",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "miss something"
+      ],
+      "decision": "CHANGED",
+      "reason": "miss something はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00081",
+      "prompt_ja": "少しずつ",
+      "canonical_snapshot": "little by little",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "little by little",
+        "gradually",
+        "bit by bit"
+      ],
+      "candidate_review": [
+        {
+          "expression": "little by little",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "gradually",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "bit by bit",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "gradually",
+        "bit by bit"
+      ],
+      "decision": "CHANGED",
+      "reason": "gradually / bit by bit はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00082",
+      "prompt_ja": "somethingから回復する",
+      "canonical_snapshot": "recover from something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "recover from something",
+        "get over something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "recover from something",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "get over something",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "get over something"
+      ],
+      "decision": "CHANGED",
+      "reason": "get over something はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00083",
+      "prompt_ja": "まさか",
+      "canonical_snapshot": "no way",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "no way",
+        "surely not",
+        "you can't be serious"
+      ],
+      "candidate_review": [
+        {
+          "expression": "no way",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "surely not",
+          "decision": "REJECT",
+          "reason": "反語・否定推量寄りで、「まさか」全般の主要代替としては文脈依存が強い。"
+        },
+        {
+          "expression": "you can't be serious",
+          "decision": "REJECT",
+          "reason": "驚き・不信の一場面には合うが、「まさか」全般を教える対応として狭い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "canonical以外に検討した候補は、説明的・表層的・文脈依存・意味範囲のずれのいずれかがあり、このpromptで独立して学ばせる主要paraphraseは残さない。"
+    },
+    {
+      "entry_id": "vocab:00084",
+      "prompt_ja": "それだけです",
+      "canonical_snapshot": "that's it",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "that's it",
+        "that's all"
+      ],
+      "candidate_review": [
+        {
+          "expression": "that's it",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "that's all",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "that's all"
+      ],
+      "decision": "CHANGED",
+      "reason": "that's all はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00085",
+      "prompt_ja": "それにします",
+      "canonical_snapshot": "I'll take it",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "I'll take it",
+        "I'll go with that",
+        "I'll have that"
+      ],
+      "candidate_review": [
+        {
+          "expression": "I'll take it",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "I'll go with that",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "I'll have that",
+          "decision": "REJECT",
+          "reason": "注文・購入場面では自然だが、一般的な選択「それにします」より文脈が狭い。"
+        }
+      ],
+      "after_paraphrases": [
+        "I'll go with that"
+      ],
+      "decision": "CHANGED",
+      "reason": "I'll go with that はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00086",
+      "prompt_ja": "someoneによく似合う",
+      "canonical_snapshot": "look good on someone",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "look good on someone",
+        "suit someone"
+      ],
+      "candidate_review": [
+        {
+          "expression": "look good on someone",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "suit someone",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "suit someone"
+      ],
+      "decision": "CHANGED",
+      "reason": "suit someone はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00087",
+      "prompt_ja": "somethingを試着する",
+      "canonical_snapshot": "try something on",
+      "answers_snapshot": [
+        "try these on"
+      ],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "try something on"
+      ],
+      "candidate_review": [
+        {
+          "expression": "try something on",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "canonical以外に検討した候補は、説明的・表層的・文脈依存・意味範囲のずれのいずれかがあり、このpromptで独立して学ばせる主要paraphraseは残さない。"
+    },
+    {
+      "entry_id": "vocab:00088",
+      "prompt_ja": "somethingから降りる・出る",
+      "canonical_snapshot": "get out of something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "get out of something",
+        "get off something",
+        "leave something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "get out of something",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "get off something",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "leave something",
+          "decision": "REJECT",
+          "reason": "「出る」は表すが、乗り物から「降りる」を含むpromptの主要代替としては広すぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "get off something"
+      ],
+      "decision": "CHANGED",
+      "reason": "get off something はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00089",
+      "prompt_ja": "急いで",
+      "canonical_snapshot": "in haste",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "in haste",
+        "in a hurry",
+        "hurriedly"
+      ],
+      "candidate_review": [
+        {
+          "expression": "in haste",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "in a hurry",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "hurriedly",
+          "decision": "REJECT",
+          "reason": "意味は成立するが低頻度で、in a hurry の方が主要かつ実用的。"
+        }
+      ],
+      "after_paraphrases": [
+        "in a hurry"
+      ],
+      "decision": "CHANGED",
+      "reason": "in a hurry はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00090",
+      "prompt_ja": "おつりは取っておいて",
+      "canonical_snapshot": "keep the change",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "keep the change"
+      ],
+      "candidate_review": [
+        {
+          "expression": "keep the change",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "canonical以外に検討した候補は、説明的・表層的・文脈依存・意味範囲のずれのいずれかがあり、このpromptで独立して学ばせる主要paraphraseは残さない。"
+    },
+    {
+      "entry_id": "vocab:00091",
+      "prompt_ja": "ここは私がおごるよ",
+      "canonical_snapshot": "it's on me",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "it's on me",
+        "my treat",
+        "I'll get this"
+      ],
+      "candidate_review": [
+        {
+          "expression": "it's on me",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "my treat",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "I'll get this",
+          "decision": "REJECT",
+          "reason": "支払い場面では成立するが、「取ってくる」の多義性があり単独カード対応が弱い。"
+        }
+      ],
+      "after_paraphrases": [
+        "my treat"
+      ],
+      "decision": "CHANGED",
+      "reason": "my treat はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00092",
+      "prompt_ja": "外食する",
+      "canonical_snapshot": "eat out",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "eat out",
+        "dine out"
+      ],
+      "candidate_review": [
+        {
+          "expression": "eat out",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "dine out",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "dine out"
+      ],
+      "decision": "CHANGED",
+      "reason": "dine out はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00093",
+      "prompt_ja": "会計を割り勘にする",
+      "canonical_snapshot": "split the check",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "split the check",
+        "split the bill",
+        "go Dutch"
+      ],
+      "candidate_review": [
+        {
+          "expression": "split the check",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "split the bill",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "go Dutch",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "split the bill",
+        "go Dutch"
+      ],
+      "decision": "CHANGED",
+      "reason": "split the bill / go Dutch はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00094",
+      "prompt_ja": "ぶらぶら過ごす",
+      "canonical_snapshot": "hang out",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "hang out",
+        "hang around",
+        "loaf around"
+      ],
+      "candidate_review": [
+        {
+          "expression": "hang out",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "hang around",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "loaf around",
+          "decision": "REJECT",
+          "reason": "「怠けてぶらぶらする」という否定的含意が強く、generic promptより狭い。"
+        }
+      ],
+      "after_paraphrases": [
+        "hang around"
+      ],
+      "decision": "CHANGED",
+      "reason": "hang around はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00095",
+      "prompt_ja": "someoneに偶然出会う",
+      "canonical_snapshot": "run into someone",
+      "answers_snapshot": [],
+      "existing_paraphrases": [
+        "come across someone"
+      ],
+      "blind_candidates": [
+        "run into someone",
+        "come across someone",
+        "bump into someone"
+      ],
+      "candidate_review": [
+        {
+          "expression": "run into someone",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "come across someone",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "bump into someone",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "come across someone",
+        "bump into someone"
+      ],
+      "decision": "CHANGED",
+      "reason": "既存の come across someone はpromptへの自然な主要回答で学習価値が高いため保持。bump into someone はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00096",
+      "prompt_ja": "someoneからsomethingを奪う",
+      "canonical_snapshot": "rob someone of something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "rob someone of something",
+        "deprive someone of something",
+        "take something away from someone"
+      ],
+      "candidate_review": [
+        {
+          "expression": "rob someone of something",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "deprive someone of something",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "take something away from someone",
+          "decision": "REJECT",
+          "reason": "物理的取得に寄り、権利・機会なども含む「奪う」の独立表現としては弱い。"
+        }
+      ],
+      "after_paraphrases": [
+        "deprive someone of something"
+      ],
+      "decision": "CHANGED",
+      "reason": "deprive someone of something はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00097",
+      "prompt_ja": "someoneにsomethingを説明する",
+      "canonical_snapshot": "explain something to someone",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "explain something to someone",
+        "tell someone about something",
+        "clarify something for someone"
+      ],
+      "candidate_review": [
+        {
+          "expression": "explain something to someone",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "tell someone about something",
+          "decision": "REJECT",
+          "reason": "情報を伝えるだけでも成立し、「説明する」の説明性を必ずしも含まない。"
+        },
+        {
+          "expression": "clarify something for someone",
+          "decision": "REJECT",
+          "reason": "「明確にする」に限定され、一般的な「説明する」より狭い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "canonical以外に検討した候補は、説明的・表層的・文脈依存・意味範囲のずれのいずれかがあり、このpromptで独立して学ばせる主要paraphraseは残さない。"
+    },
+    {
+      "entry_id": "vocab:00098",
+      "prompt_ja": "ことわざにあるように",
+      "canonical_snapshot": "as the proverb goes",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "as the proverb goes",
+        "as the saying goes"
+      ],
+      "candidate_review": [
+        {
+          "expression": "as the proverb goes",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "as the saying goes",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "as the saying goes"
+      ],
+      "decision": "CHANGED",
+      "reason": "as the saying goes はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00099",
+      "prompt_ja": "someoneに頼る",
+      "canonical_snapshot": "turn to someone",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "turn to someone",
+        "rely on someone",
+        "depend on someone",
+        "count on someone"
+      ],
+      "candidate_review": [
+        {
+          "expression": "turn to someone",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "rely on someone",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "depend on someone",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        },
+        {
+          "expression": "count on someone",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "rely on someone",
+        "depend on someone",
+        "count on someone"
+      ],
+      "decision": "CHANGED",
+      "reason": "rely on someone / depend on someone / count on someone はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    },
+    {
+      "entry_id": "vocab:00100",
+      "prompt_ja": "自分の力でやっていく",
+      "canonical_snapshot": "stand on your own two feet",
+      "answers_snapshot": [
+        "stand on my own two feet"
+      ],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "stand on your own two feet",
+        "make it on your own",
+        "fend for yourself"
+      ],
+      "candidate_review": [
+        {
+          "expression": "stand on your own two feet",
+          "decision": "REJECT",
+          "reason": "canonical / answers のTARGET表現と実質同一で、paraphraseとしては重複する。"
+        },
+        {
+          "expression": "make it on your own",
+          "decision": "REJECT",
+          "reason": "独力で成功する含意が強く、日常的に「自分の力でやっていく」より狭い。"
+        },
+        {
+          "expression": "fend for yourself",
+          "decision": "ACCEPT",
+          "reason": "日本語promptへの自然な主要回答で、canonicalとは別の語彙・構文・registerとして独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "fend for yourself"
+      ],
+      "decision": "CHANGED",
+      "reason": "fend for yourself はpromptに直接対応し、別語彙・別構文・主要registerとして独立した学習価値が高いため採用。それ以外の候補は意味のずれ、文脈依存、表層variant、または増分学習価値不足で除外。"
+    }
+  ],
+  "followups": [
+    {
+      "entry_id": "vocab:00007",
+      "type": "canonical_prompt_precision",
+      "note": "meaning_ja は「足首を捻挫する」だが canonical は twist your ankle。sprain your ankle の方が医学的には直接対応するため、canonical authority側で別途確認余地がある。今回scopeではparaphrase追加のみ。"
+    },
+    {
+      "entry_id": "vocab:00016",
+      "type": "canonical_prompt_precision",
+      "note": "meaning_ja は「一目で」だが canonical の at first sight は「初めて見た時」の意味が中心。at a glance がpromptへより直接対応するため、canonical/meaning authorityの後続確認候補。今回scopeではparaphrase追加のみ。"
+    }
+  ]
+}
