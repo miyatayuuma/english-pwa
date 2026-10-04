@@ -1,0 +1,108 @@
+name: Guard paraphrase batch PR scope
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  batch-scope:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check whether this is a paraphrase batch branch
+        id: batch
+        shell: bash
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+        run: |
+          if [[ "$HEAD_REF" =~ ^audit/paraphrase-learning-v1-batch-([0-9]{3})$ ]]; then
+            echo "is_batch=true" >> "$GITHUB_OUTPUT"
+            echo "batch=${BASH_REMATCH[1]}" >> "$GITHUB_OUTPUT"
+          else
+            echo "is_batch=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.batch.outputs.is_batch == 'true'
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Enforce one-artifact-only diff
+        if: steps.batch.outputs.is_batch == 'true'
+        shell: bash
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          BATCH: ${{ steps.batch.outputs.batch }}
+        run: |
+          set -euo pipefail
+          expected="data/audits/vocabulary-v3-paraphrase-learning/batch-${BATCH}.json"
+
+          mapfile -t changed < <(git diff --name-only "$BASE_SHA...HEAD")
+          printf 'Changed paths:\n'
+          printf '  %s\n' "${changed[@]}"
+
+          if [[ "${#changed[@]}" -ne 1 || "${changed[0]}" != "$expected" ]]; then
+            echo "::error::Batch PR must change exactly $expected and no other path."
+            exit 1
+          fi
+
+          if [[ -n "$(git diff --diff-filter=D --name-only "$BASE_SHA...HEAD")" ]]; then
+            echo "::error::Batch PR must not delete any path."
+            exit 1
+          fi
+
+      - name: Validate partition authority is intact
+        if: steps.batch.outputs.is_batch == 'true'
+        run: node scripts/vocabulary/validate-paraphrase-learning-manifest.mjs
+
+      - name: Validate batch artifact structure
+        if: steps.batch.outputs.is_batch == 'true'
+        shell: bash
+        env:
+          BATCH: ${{ steps.batch.outputs.batch }}
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+
+          const batch = String(process.env.BATCH);
+          const path = `data/audits/vocabulary-v3-paraphrase-learning/batch-${batch}.json`;
+          const manifest = JSON.parse(fs.readFileSync('data/audits/vocabulary-v3-paraphrase-learning/manifest.json','utf8'));
+          const artifact = JSON.parse(fs.readFileSync(path,'utf8'));
+          const spec = manifest.batches.find(row => String(row.batch).padStart(3,'0') === batch);
+
+          const errors = [];
+          if (!spec) errors.push('batch missing from manifest');
+          if (artifact.schema_version !== 1) errors.push('schema_version must be 1');
+          if (artifact.policy_version !== manifest.policy_version) errors.push('policy_version mismatch');
+          if (artifact.batch !== spec?.batch) errors.push('batch number mismatch');
+          if (artifact.ordinal_start !== spec?.ordinal_start || artifact.ordinal_end !== spec?.ordinal_end) errors.push('ordinal range mismatch');
+          if (artifact.reviewed_count !== spec?.entry_count) errors.push('reviewed_count mismatch');
+
+          const ids = Array.isArray(artifact.entry_ids) ? artifact.entry_ids.map(String) : [];
+          const expected = spec?.entry_ids?.map(String) || [];
+          const resultIds = Array.isArray(artifact.results) ? artifact.results.map(row => String(row?.entry_id || '')) : [];
+
+          if (JSON.stringify(ids) !== JSON.stringify(expected)) errors.push('entry_ids do not exactly match manifest');
+          if (resultIds.length !== expected.length) errors.push('results length mismatch');
+          if (new Set(resultIds).size !== resultIds.length) errors.push('duplicate result entry_id');
+          if (expected.some(id => !resultIds.includes(id))) errors.push('missing result entry_id');
+
+          for (const row of Array.isArray(artifact.results) ? artifact.results : []) {
+            if (!String(row?.prompt_ja || '').trim()) errors.push(`${row?.entry_id}: missing prompt_ja`);
+            if (!Array.isArray(row?.blind_candidates)) errors.push(`${row?.entry_id}: blind_candidates missing`);
+            if (!Array.isArray(row?.candidate_review)) errors.push(`${row?.entry_id}: candidate_review missing`);
+            if (!Array.isArray(row?.after_paraphrases)) errors.push(`${row?.entry_id}: after_paraphrases missing`);
+            if (!['CHANGED','UNCHANGED'].includes(row?.decision)) errors.push(`${row?.entry_id}: invalid decision`);
+            if (!String(row?.reason || '').trim()) errors.push(`${row?.entry_id}: missing reason`);
+          }
+
+          if (errors.length) {
+            console.error('Paraphrase batch artifact validation FAILED');
+            for (const error of errors) console.error(`- ${error}`);
+            process.exit(1);
+          }
+
+          console.log(`Paraphrase batch ${batch} scope/artifact OK`);
+          NODE
