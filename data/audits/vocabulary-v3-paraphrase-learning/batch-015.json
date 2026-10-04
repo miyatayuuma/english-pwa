@@ -1189,8 +1189,8 @@
         },
         {
           "expression": "idea",
-          "decision": "ACCEPT",
-          "reason": "「概念」への自然な主要英答として成立し、canonicalとは別の実用的な表現として独立した学習価値がある。MISS扱いより登録する方が教育的に妥当。"
+          "decision": "REJECT",
+          "reason": "idea は「考え・発想」まで非常に広く、学習カードで「概念」と一対一に対応づけるには意味範囲が広すぎる。"
         },
         {
           "expression": "notion",
@@ -1199,11 +1199,10 @@
         }
       ],
       "after_paraphrases": [
-        "idea",
         "notion"
       ],
       "decision": "CHANGED",
-      "reason": "「概念」について、主要な別英答 idea / notion を採用。promptへの成立性に加え、頻度・register・独立表現としての学習価値を確認し、狭すぎる候補やsurface variantは除外した。"
+      "reason": "「概念」では notion を独立した主要別英答として採用。idea は成立する文脈もあるが範囲が広すぎるため、第二パスで過剰登録を避けて除外した。"
     },
     {
       "entry_id": "vocab:01439",
@@ -1416,11 +1415,11 @@
         }
       ],
       "after_paraphrases": [
-        "apparatus",
-        "device"
+        "device",
+        "apparatus"
       ],
       "decision": "CHANGED",
-      "reason": "「器具」について、主要な別英答 apparatus / device を採用。promptへの成立性に加え、頻度・register・独立表現としての学習価値を確認し、狭すぎる候補やsurface variantは除外した。"
+      "reason": "「器具」では一般性・実用性の高い device を先に、科学・技術registerで重要な apparatus を次に採用。集合語 equipment と用途の狭い tool は除外した。"
     },
     {
       "entry_id": "vocab:01446",
