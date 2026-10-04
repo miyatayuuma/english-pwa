@@ -63,3 +63,31 @@ After all 25 batch artifacts are merged, one finalizer claims:
 `audit/paraphrase-learning-v1-finalize`
 
 and performs reconciliation/materialization.
+
+## Batch-branch safety
+
+A batch branch is a narrow review branch, not a general reconciliation branch.
+
+For any branch matching:
+
+`audit/paraphrase-learning-v1-batch-XXX`
+
+the final PR diff against its current base must contain **exactly one changed file**:
+
+`data/audits/vocabulary-v3-paraphrase-learning/batch-XXX.json`
+
+No other path may be added, modified, renamed, or deleted.
+
+Batch workers must **not** synthesize Git trees or merge commits with low-level Git Database operations. In particular, do not use tree creation, custom commit creation, force ref movement, or any equivalent operation to "reconcile" a behind branch. A malformed tree can silently delete the repository while preserving the batch artifact.
+
+If a batch branch is behind `main`:
+
+1. refresh the PR/base state;
+2. update only the batch artifact as needed against current semantic data;
+3. use a normal GitHub branch/PR update path if available; or
+4. if a safe normal update cannot be performed, stop and report the branch as needing reconciliation.
+
+Never solve drift by constructing a replacement tree.
+
+The CI workflow `.github/workflows/paraphrase-batch-scope.yml` enforces this invariant for batch PRs and must pass before merge.
+
