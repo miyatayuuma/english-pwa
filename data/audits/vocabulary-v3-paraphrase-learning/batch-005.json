@@ -600,11 +600,18 @@
           "expression": "leave school",
           "decision": "REJECT",
           "reason": "卒業・修了を含み得て、「中退する」を保証しない。"
+        },
+        {
+          "expression": "quit school",
+          "decision": "ACCEPT",
+          "reason": "「学校を中退する」への自然で高頻度な直接表現。drop out of schoolとは別の基本語彙で、これをMISSにする教育的不利益が大きい。"
         }
       ],
-      "after_paraphrases": [],
-      "decision": "UNCHANGED",
-      "reason": "「学校を中退する」をblind-firstで再検討し、Reveal後にcanonical/TARGET重複と意味のずれを除外した結果、独立して教える価値が十分高い別表現は残らなかった。"
+      "after_paraphrases": [
+        "quit school"
+      ],
+      "decision": "CHANGED",
+      "reason": "Second-passを含む逆方向検証後、「学校を中退する」への回答成立性・一般性・実用性・独立学習価値を満たす quit school を最終登録対象とした。"
     },
     {
       "entry_id": "vocab:00418",
@@ -1179,11 +1186,18 @@
           "expression": "defend something",
           "decision": "REJECT",
           "reason": "「守る」は表すが「立ち上がる／声を上げる」の行動ニュアンスを落とすため、主要別表現としては弱い。"
+        },
+        {
+          "expression": "stick up for something",
+          "decision": "ACCEPT",
+          "reason": "「somethingを守るために立ち上がる」に対応する実用的なphrasal verbで、stand up forとは別表現として会話上の学習価値が高い。"
         }
       ],
-      "after_paraphrases": [],
-      "decision": "UNCHANGED",
-      "reason": "「somethingを守るために立ち上がる」をblind-firstで再検討し、Reveal後にcanonical/TARGET重複と意味のずれを除外した結果、独立して教える価値が十分高い別表現は残らなかった。"
+      "after_paraphrases": [
+        "stick up for something"
+      ],
+      "decision": "CHANGED",
+      "reason": "Second-passを含む逆方向検証後、「somethingを守るために立ち上がる」への回答成立性・一般性・実用性・独立学習価値を満たす stick up for something を最終登録対象とした。"
     },
     {
       "entry_id": "vocab:00437",
@@ -1482,13 +1496,19 @@
           "expression": "be praiseworthy",
           "decision": "REJECT",
           "reason": "「称賛に値する」への候補として検討したが、意味のずれ・文脈依存・低い増分価値のいずれかが残り、curated paraphraseとして教える閾値を満たさない。"
+        },
+        {
+          "expression": "commendable",
+          "decision": "ACCEPT",
+          "reason": "「称賛に値する」への直接的で現代的な形容詞表現。読解・formal registerでも有用で、独立語彙として学習価値が高い。"
         }
       ],
       "after_paraphrases": [
+        "commendable",
         "be worthy of praise"
       ],
       "decision": "CHANGED",
-      "reason": "「称賛に値する」に対し、prompt-only候補をReveal後にTARGET重複排除・逆方向検証し、実用性とmapping精度を満たす be worthy of praise のみを最終登録対象とした。"
+      "reason": "Second-passを含む逆方向検証後、「称賛に値する」への回答成立性・一般性・実用性・独立学習価値を満たす commendable / be worthy of praise を最終登録対象とした。"
     },
     {
       "entry_id": "vocab:00447",
@@ -1609,15 +1629,16 @@
         },
         {
           "expression": "be happy with something",
-          "decision": "REJECT",
-          "reason": "満足の意味は成立するが、感情的な「うれしい」との曖昧さがあり、既により精確な主要表現がある。"
+          "decision": "ACCEPT",
+          "reason": "「somethingに満足している」への非常に一般的な会話表現で、promptが区別していない細かな感情差を理由にMISSにすべきではない。"
         }
       ],
       "after_paraphrases": [
+        "be happy with something",
         "be content with something"
       ],
       "decision": "CHANGED",
-      "reason": "「somethingに満足している」に対し、prompt-only候補をReveal後にTARGET重複排除・逆方向検証し、実用性とmapping精度を満たす be content with something のみを最終登録対象とした。"
+      "reason": "Second-passを含む逆方向検証後、「somethingに満足している」への回答成立性・一般性・実用性・独立学習価値を満たす be happy with something / be content with something を最終登録対象とした。"
     },
     {
       "entry_id": "vocab:00451",
@@ -1972,13 +1993,19 @@
           "expression": "sooner or later",
           "decision": "REJECT",
           "reason": "「遅かれ早かれ＝いずれ必ず」の含意があり、単なる「いつかそのうち」より確実性が強い。"
+        },
+        {
+          "expression": "one day",
+          "decision": "ACCEPT",
+          "reason": "「いつかそのうち」への基本・高頻度表現で、one of these days / somedayとは別に自然な回答として成立する。"
         }
       ],
       "after_paraphrases": [
-        "someday"
+        "someday",
+        "one day"
       ],
       "decision": "CHANGED",
-      "reason": "「いつかそのうち」に対し、prompt-only候補をReveal後にTARGET重複排除・逆方向検証し、実用性とmapping精度を満たす someday のみを最終登録対象とした。"
+      "reason": "Second-passを含む逆方向検証後、「いつかそのうち」への回答成立性・一般性・実用性・独立学習価値を満たす someday / one day を最終登録対象とした。"
     },
     {
       "entry_id": "vocab:00462",
@@ -2730,13 +2757,19 @@
           "expression": "have respect for someone",
           "decision": "REJECT",
           "reason": "成立するが `respect someone` とほぼ同じ基本語彙の構文化で、独立した学習価値が小さい。"
+        },
+        {
+          "expression": "admire someone",
+          "decision": "ACCEPT",
+          "reason": "「someoneを尊敬する」への主要な基本表現。respectとはニュアンス差があるがpromptはその差を区別せず、自然な英答として学習価値が高い。"
         }
       ],
       "after_paraphrases": [
-        "respect someone"
+        "respect someone",
+        "admire someone"
       ],
       "decision": "CHANGED",
-      "reason": "「someoneを尊敬する」に対し、prompt-only候補をReveal後にTARGET重複排除・逆方向検証し、実用性とmapping精度を満たす respect someone のみを最終登録対象とした。"
+      "reason": "Second-passを含む逆方向検証後、「someoneを尊敬する」への回答成立性・一般性・実用性・独立学習価値を満たす respect someone / admire someone を最終登録対象とした。"
     },
     {
       "entry_id": "vocab:00484",
@@ -3026,13 +3059,19 @@
           "expression": "focus on something",
           "decision": "REJECT",
           "reason": "「集中する」であり、長期的な「専念する」より弱く一時的でも成立する。"
+        },
+        {
+          "expression": "commit yourself to something",
+          "decision": "ACCEPT",
+          "reason": "「somethingに専念する」に対応する主要constructionで、devote/dedicateとは別の実用的な表現として学習価値が高い。"
         }
       ],
       "after_paraphrases": [
-        "dedicate yourself to something"
+        "dedicate yourself to something",
+        "commit yourself to something"
       ],
       "decision": "CHANGED",
-      "reason": "「somethingに専念する」に対し、prompt-only候補をReveal後にTARGET重複排除・逆方向検証し、実用性とmapping精度を満たす dedicate yourself to something のみを最終登録対象とした。"
+      "reason": "Second-passを含む逆方向検証後、「somethingに専念する」への回答成立性・一般性・実用性・独立学習価値を満たす dedicate yourself to something / commit yourself to something を最終登録対象とした。"
     },
     {
       "entry_id": "vocab:00493",
@@ -3319,13 +3358,19 @@
           "expression": "be a long way from something",
           "decision": "REJECT",
           "reason": "主に物理距離として解釈されやすく、比喩的な「〜とはほど遠い」への対応が弱い。"
+        },
+        {
+          "expression": "be a far cry from something",
+          "decision": "ACCEPT",
+          "reason": "「somethingとはほど遠い」に強く対応する高価値idiomで、比喩的距離を自然に表せるため独立して学ばせる価値が高い。"
         }
       ],
       "after_paraphrases": [
-        "be nowhere near something"
+        "be nowhere near something",
+        "be a far cry from something"
       ],
       "decision": "CHANGED",
-      "reason": "「somethingとはほど遠い」に対し、prompt-only候補をReveal後にTARGET重複排除・逆方向検証し、実用性とmapping精度を満たす be nowhere near something のみを最終登録対象とした。"
+      "reason": "Second-passを含む逆方向検証後、「somethingとはほど遠い」への回答成立性・一般性・実用性・独立学習価値を満たす be nowhere near something / be a far cry from something を最終登録対象とした。"
     }
   ],
   "followups": [
