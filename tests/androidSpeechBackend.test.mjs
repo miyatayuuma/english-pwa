@@ -10,7 +10,7 @@ function fixture({ available = true, granted = true, permission, startError } = 
   const calls = [];
   let callback;
   const plugin = {
-    isAvailable: async () => ({ available, apiLevel: 35, biasSupported: true }),
+    isAvailable: async () => ({ available, apiLevel: 35 }),
     requestPermission: async () => permission ? permission : { granted },
     addListener: async (_event, listener) => { callback = listener; return { remove: async () => calls.push(['remove']) }; },
     start: async options => { calls.push(['start', options]); if (startError) throw startError; },
@@ -18,7 +18,7 @@ function fixture({ available = true, granted = true, permission, startError } = 
     cancel: async options => calls.push(['cancel', options]),
   };
   const make = () => {
-    const driver = new AndroidSpeechRecognizerBackend({ pluginProvider: async () => plugin, biasProvider: async () => ['The cat', 'sat down'] });
+    const driver = new AndroidSpeechRecognizerBackend({ pluginProvider: async () => plugin });
     driver.context = { itemId: 'E0001' };
     drivers.push(driver);
     return driver;
@@ -38,7 +38,7 @@ test('routing selects native only for the actual Android shell and excludes Reor
   assert.equal(selectRecognitionBackend(scope), Web);
 });
 
-test('native start passes only exact strings, preserves ranked final-only evidence and ignores stale callbacks', async () => {
+test('native start passes only session identity, preserves ranked final-only evidence and ignores stale callbacks', async () => {
   const f = fixture();
   const driver = f.make();
   const results = [];
@@ -48,7 +48,7 @@ test('native start passes only exact strings, preserves ranked final-only eviden
   driver.onend = () => ends++;
   driver.start();
   await driver.startup;
-  assert.deepEqual(f.calls[0][1], { sessionId: driver.sessionId, biasStrings: ['The cat', 'sat down'] });
+  assert.deepEqual(f.calls[0][1], { sessionId: driver.sessionId });
   f.emit(driver, 'ready'); f.emit(driver, 'started');
   assert.equal(starts, 1);
   f.emit(driver, 'partial', [{ transcript: 'stale' }], 'old-session');
@@ -112,7 +112,7 @@ test('cancel tears down active session once and late native results cannot escap
 test('production controller manual native stop waits for final and preserves common N-best schema', async () => {
   const f = fixture(); let driver;
   class Backend extends AndroidSpeechRecognizerBackend {
-    constructor() { super({ pluginProvider: async () => f.plugin, biasProvider: async () => ['yield to something'] }); driver = this; drivers.push(this); }
+    constructor() { super({ pluginProvider: async () => f.plugin }); driver = this; drivers.push(this); }
   }
   const controller = createRecognitionController({ recognitionBackend: Backend, shouldEvaluate: () => false });
   assert.equal(controller.start().ok, true); await driver.startup;
@@ -123,15 +123,15 @@ test('production controller manual native stop waits for final and preserves com
   f.emit(driver, 'end');
   const result = await promise;
   assert.equal(result.transcript, 'YouTube');
-  assert.deepEqual(result.nativeSegments[0].alternatives.map(c => c.asrRank), [0, 1]);
-  assert.equal(result.nativeSegments[0].isFinal, true);
+  assert.deepEqual(result.recognitionSegments[0].alternatives.map(c => c.asrRank), [0, 1]);
+  assert.equal(result.recognitionSegments[0].isFinal, true);
   assert.equal(controller.isActive(), false);
 });
 
 test('native error and cancellation settle pending manual stop without grading partial speech', async () => {
   for (const cancel of [false, true]) {
     const f = fixture(); let driver, errors = 0, grades = 0;
-    class Backend extends AndroidSpeechRecognizerBackend { constructor() { super({ pluginProvider: async () => f.plugin, biasProvider: async () => [] }); driver = this; drivers.push(this); } }
+    class Backend extends AndroidSpeechRecognizerBackend { constructor() { super({ pluginProvider: async () => f.plugin }); driver = this; drivers.push(this); } }
     const controller = createRecognitionController({ recognitionBackend: Backend, shouldEvaluate: () => false, onError: () => errors++, onAutoStop: () => grades++ });
     controller.start(); await driver.startup;
     f.emit(driver, 'partial', [{ transcript: 'I' }]);
@@ -144,13 +144,13 @@ test('native error and cancellation settle pending manual stop without grading p
 
 test('native production controller retains all twenty original provider candidates and exports counts',async()=>{
   const f=fixture();let driver;
-  class Backend extends AndroidSpeechRecognizerBackend{constructor(){super({pluginProvider:async()=>f.plugin,biasProvider:async()=>[]});driver=this;drivers.push(this);}}
+  class Backend extends AndroidSpeechRecognizerBackend{constructor(){super({pluginProvider:async()=>f.plugin});driver=this;drivers.push(this);}}
   const controller=createRecognitionController({recognitionBackend:Backend,shouldEvaluate:()=>false});
   controller.start();await driver.startup;
   assert.equal(driver.maxAlternatives,20);
   const values=Array.from({length:20},(_,i)=>({transcript:i===19?'yell':i<2?'yeah':i===2?'':'wrong '+i,asrRank:i,confidence:0.05}));
   f.emit(driver,'final',values);
-  const segment=controller.getNativeRecognitionSegments()[0];
+  const segment=controller.getRecognitionSegments()[0];
   assert.equal(segment.alternatives.length,20);
   assert.equal(segment.alternatives[2].transcript,'');
   assert.equal(segment.alternatives.at(-1).asrRank,19);

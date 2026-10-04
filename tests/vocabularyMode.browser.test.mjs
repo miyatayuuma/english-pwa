@@ -97,7 +97,7 @@ async function newPage(source,{reducedMotion='reduce',entryState:entryStateOverr
       const state=window.__mockNative;
       state.emit=(type,transcripts=[])=>{for(const listener of state.listeners) listener({type,sessionId:state.session.sessionId,alternatives:transcripts.map((transcript,asrRank)=>({transcript,asrRank,confidence:null}))});};
       window.__nativePlugin={
-        isAvailable:async()=>({available:true,apiLevel:35,biasSupported:true}),
+        isAvailable:async()=>({available:true,apiLevel:35,requestedMaxResults:20}),
         requestPermission:async()=>{state.permission=nativePermission;return {granted:nativePermission};},
         addListener:async(_,listener)=>{state.listeners.add(listener);return {remove:async()=>state.listeners.delete(listener)};},
         start:async options=>{state.session=options;state.starts++;state.emit('started');},
@@ -383,10 +383,8 @@ browserTest('Web Vocabulary retains strict TARGET context and N-best without phr
       await page.waitForFunction(()=>window.__mockSpeech.startCount>0);
       const phrases=await page.evaluate(()=>window.__mockSpeech.latest.phrasesAtStart);
       assert.deepEqual(phrases,[]);
-      const bias=await page.evaluate(()=>window.__mockSpeech.latest.context.biasStrings);
-      assert.ok(bias.includes(target));
-      assert.ok(!bias.includes('run into someone'));
-      assert.equal(await page.evaluate(()=>window.__mockSpeech.latest.maxAlternatives),5);
+      assert.equal(await page.evaluate(()=>window.__mockSpeech.latest.context.biasStrings),undefined);
+      assert.equal(await page.evaluate(()=>window.__mockSpeech.latest.maxAlternatives),20);
       await inject(page,target);
       await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='正解');
       assert.equal(await page.locator('.vocab-heard__text').innerText(),target);
@@ -609,7 +607,7 @@ for(const technical of [false,true]) browserTest(`Vocabulary correction ${techni
       await page.locator('.vocab-mic').click();
       await page.waitForFunction(count=>window.__mockSpeech.startCount>=count,attempt+1);
       assert.deepEqual(await page.evaluate(()=>window.__mockSpeech.latest.phrasesAtStart),[]);
-      assert.ok((await page.evaluate(()=>window.__mockSpeech.latest.context.biasStrings)).includes('despite'));
+      assert.equal(await page.evaluate(()=>window.__mockSpeech.latest.maxAlternatives),20);
       if(technical) await recognitionError(page,attempt===1?'no-speech':'network');
       else {await inject(page,'banana');await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent.length>0);}
       assert.equal(await page.locator('.vocab-answer').count(),1);
@@ -626,12 +624,12 @@ browserTest('Web technical error does not automatically retry or grade stale spe
   const opened=await newPage(sources[3]);const {page}=opened;
   try{
     await page.waitForFunction(()=>window.__mockSpeech.startCount===1);
-    await page.evaluate(()=>{window.__biasedRecognition=window.__mockSpeech.latest;window.__biasedRecognition.injectError('network');window.__biasedRecognition.onend?.();});
+    await page.evaluate(()=>{window.__failedRecognition=window.__mockSpeech.latest;window.__failedRecognition.injectError('network');window.__failedRecognition.onend?.();});
     await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent.includes('認識できません'));
     assert.equal(await page.evaluate(()=>window.__mockSpeech.startCount),1);
     assert.deepEqual(await page.evaluate(()=>window.__mockSpeech.latest.phrasesAtStart),[]);
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0);
-    await page.evaluate(()=>window.__biasedRecognition.inject('despite'));
+    await page.evaluate(()=>window.__failedRecognition.inject('despite'));
     assert.equal(await page.locator('.vocab-answer').count(),0);
     await page.locator('.vocab-mic').click();
     await page.waitForFunction(()=>window.__mockSpeech.startCount===2);
@@ -681,7 +679,7 @@ browserTest('Android Vocabulary preview never grades partials; manual stop waits
   try{
     await page.waitForFunction(()=>window.__mockNative.starts===1);
     assert.equal(await page.evaluate(()=>window.__mockSpeech.startCount),0);
-    assert.ok((await page.evaluate(()=>window.__mockNative.session.biasStrings)).includes('yield to something'));
+    assert.equal(await page.evaluate(()=>window.__mockNative.session.biasStrings),undefined);
     await page.evaluate(()=>window.__mockNative.emit('partial',['yield to something']));
     await page.waitForTimeout(1500);
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0);
@@ -708,5 +706,18 @@ browserTest('Android microphone denial is explicit in Vocabulary UI, creates no 
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0);
     assert.equal(await page.locator('.vocab-answer').count(),0);
     assert.equal(await page.locator('.vocab-mic').isEnabled(),true);
+  }finally{await closePage(opened);}
+});
+
+for(const rank of [1,6,12,20]) browserTest(`Web production Vocabulary strict TARGET at provider rank ${rank} writes SRS once`,async()=>{
+  const opened=await newPage(sources[4]);const {page}=opened;
+  try{
+    await page.waitForFunction(()=>window.__mockSpeech.startCount>0);
+    assert.equal(await page.evaluate(()=>window.__mockSpeech.latest.maxAlternatives),20);
+    const alternatives=Array.from({length:20},(_,i)=>i===rank-1?'yield to something':'years to something');
+    await inject(page,alternatives);
+    await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='正解');
+    assert.equal(await page.locator('.vocab-heard__text').innerText(),alternatives[0]);
+    assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);
   }finally{await closePage(opened);}
 });

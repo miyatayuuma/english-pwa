@@ -1,5 +1,5 @@
-import { ANDROID_NATIVE_MAX_RESULTS } from '../native/recognitionEvidence.js';
-import { LEARNING_MAX_ALTERNATIVES } from './contextualBias.js';
+import { recognitionSegment } from './recognitionEvidence.js';
+import { REQUESTED_MAX_ALTERNATIVES } from './recognitionPolicy.js';
 import { selectRecognitionBackend } from '../native/androidSpeechBackend.js';
 import { approxTokensMatch, toks, mergeCompoundWords } from '../utils/text.js';
 
@@ -360,7 +360,7 @@ export function createRecognitionController(options = {}) {
     onTranscriptInterim = () => {},
     onTranscriptFinal = () => {},
     onTranscriptPreview = () => {},
-    getRecognitionBiasContext = () => null,
+    getRecognitionContext = () => null,
     onRecognitionConfigured = () => {},
     recognitionBackend = SR,
     onMatchEvaluated = () => {},
@@ -386,7 +386,7 @@ export function createRecognitionController(options = {}) {
     pendingStop=null;
     pending?.resolve(result);
   }
-  function getNativeRecognitionSegments(){
+  function getRecognitionSegments(){
     return segments.filter(Boolean).map(segment=>({...segment,alternatives:segment.alternatives.map(candidate=>({...candidate}))}));
   }
   function evaluateTranscript(refText){
@@ -421,7 +421,7 @@ export function createRecognitionController(options = {}) {
 
   function finalize({ triggeredByOnEnd = false } = {}) {
     if (!active && !triggeredByOnEnd) {
-      return { ok: false, reason: 'inactive', transcript: stableText.trim(), previewTranscript:latestPreview, nativeSegments:getNativeRecognitionSegments(), matchInfo: lastMatch };
+      return { ok: false, reason: 'inactive', transcript: stableText.trim(), previewTranscript:latestPreview, recognitionSegments:getRecognitionSegments(), matchInfo: lastMatch };
     }
     active = false;
     finalized = true;
@@ -438,7 +438,7 @@ export function createRecognitionController(options = {}) {
       lastMatch = null;
     }
     recognition = null;
-    return { ok: true, transcript, previewTranscript:latestPreview, nativeSegments:getNativeRecognitionSegments(), matchInfo: lastMatch };
+    return { ok: true, transcript, previewTranscript:latestPreview, recognitionSegments:getRecognitionSegments(), matchInfo: lastMatch };
   }
 
   function handleAutoStop() {
@@ -447,7 +447,7 @@ export function createRecognitionController(options = {}) {
   }
 
   function start() {
-    const context=getRecognitionBiasContext?.();
+    const context=getRecognitionContext?.();
     if (!recognitionBackend || context?.speechDisabled) {
       onUnsupported?.();
       return { ok: false, reason: 'unsupported' };
@@ -468,8 +468,7 @@ export function createRecognitionController(options = {}) {
     currentRecognition.continuous = true;
     currentRecognition.interimResults = true;
     currentRecognition.context=context;
-    currentRecognition.maxAlternatives=context?.maxAlternatives===LEARNING_MAX_ALTERNATIVES?LEARNING_MAX_ALTERNATIVES:1;
-    if(currentRecognition.waitsForFinalResult) currentRecognition.maxAlternatives=ANDROID_NATIVE_MAX_RESULTS;
+    currentRecognition.maxAlternatives=REQUESTED_MAX_ALTERNATIVES;
     onRecognitionConfigured?.({maxAlternatives:currentRecognition.maxAlternatives,backend:currentRecognition.waitsForFinalResult?'android-native':'web'});
 
     stableText = '';
@@ -491,19 +490,14 @@ export function createRecognitionController(options = {}) {
     currentRecognition.onresult = (event) => {
       if (recognition!==currentRecognition || !active || finalized) return;
       const firstChanged=Number.isInteger(event.resultIndex)?event.resultIndex:0;
-      // Results are cumulative within a native session; replace changed segments.
+      // Results are cumulative within a recognition session; replace changed segments.
       segments.length=event.results.length;
       for(let i=firstChanged;i<event.results.length;i+=1){
         const result=event.results[i];
-        const alternatives=[];
-        const seen=new Set();
-        for(let rank=0;rank<Math.min(result.length,currentRecognition.maxAlternatives);rank++){
-          const value=result[rank],transcript=String(value?.transcript??'');
-          const key=transcript.normalize('NFKC').toLocaleLowerCase('en-US').replace(/\s+/g,' ').trim();
-          if(!currentRecognition.waitsForFinalResult && (!key || seen.has(key))) continue;
-          seen.add(key);alternatives.push({transcript,asrRank:Number.isInteger(value?.asrRank)?value.asrRank:rank,confidence:Number.isFinite(value?.confidence)?value.confidence:null});
-        }
-        segments[i]={segmentIndex:i,primaryTranscript:String(result[0]?.transcript??''),alternatives,isFinal:!!result.isFinal,requestedMaxResults:result.requestedMaxResults,providerReturnedCount:result.providerReturnedCount,retainedCandidateCount:result.retainedCandidateCount};
+        segments[i]=recognitionSegment({segmentIndex:i, alternatives:Array.from(result),
+          primaryTranscript:String(result[0]?.transcript??''),isFinal:result.isFinal,
+          requestedMaxResults:result.requestedMaxResults??currentRecognition.maxAlternatives,
+          providerReturnedCount:result.providerReturnedCount??result.length});
       }
       const present=segments.filter(Boolean);
       latestPreview=present.reduce((text,segment)=>appendRawTranscriptFinal(text,segment.primaryTranscript),'');
@@ -558,7 +552,7 @@ export function createRecognitionController(options = {}) {
   function stop() {
     if(pendingStop) return pendingStop.promise;
     if (!active) {
-      return { ok: false, reason: 'inactive', transcript: stableText.trim(), previewTranscript:latestPreview, nativeSegments:getNativeRecognitionSegments(), matchInfo: lastMatch };
+      return { ok: false, reason: 'inactive', transcript: stableText.trim(), previewTranscript:latestPreview, recognitionSegments:getRecognitionSegments(), matchInfo: lastMatch };
     }
     stopRequested=true;
     const currentRecognition=recognition;
@@ -614,7 +608,7 @@ export function createRecognitionController(options = {}) {
     matchAndHighlight,
     getStableTranscript,
     getPreviewTranscript,
-    getNativeRecognitionSegments,
+    getRecognitionSegments,
     getLastMatch,
   };
 }

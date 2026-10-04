@@ -21,7 +21,6 @@ import com.getcapacitor.annotation.CapacitorPlugin;
 import com.getcapacitor.annotation.Permission;
 import com.getcapacitor.annotation.PermissionCallback;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 
 @CapacitorPlugin(name = "NativeSpeech", permissions = {
     @Permission(alias = "microphone", strings = { Manifest.permission.RECORD_AUDIO })
@@ -49,9 +48,7 @@ public class NativeSpeechPlugin extends Plugin {
             result.put("available", SpeechRecognizer.isRecognitionAvailable(getContext()));
             result.put("apiLevel", Build.VERSION.SDK_INT);
             result.put("provider", Settings.Secure.getString(getContext().getContentResolver(), "voice_recognition_service"));
-            // Intent support is a platform capability, not proof the provider
-            // honors bias. OFF/ON device measurements remain necessary.
-            result.put("biasSupported", Build.VERSION.SDK_INT >= 33);
+
             result.put("microphone", getPermissionState("microphone").toString());
             call.resolve(result);
         });
@@ -81,19 +78,6 @@ public class NativeSpeechPlugin extends Plugin {
             call.reject("sessionId is required", "INVALID_SESSION");
             return;
         }
-        final ArrayList<String> bias = new ArrayList<>();
-        JSArray supplied = call.getArray("biasStrings", new JSArray());
-        LinkedHashSet<String> unique = new LinkedHashSet<>();
-        for (int i = 0; i < supplied.length(); i++) {
-            Object value = supplied.opt(i);
-            if (!(value instanceof String) || ((String) value).trim().isEmpty()) {
-                call.reject("biasStrings must contain nonempty strings", "INVALID_BIAS");
-                return;
-            }
-            // Validation only: preserve bytes, punctuation, case and order.
-            unique.add((String) value);
-        }
-        bias.addAll(unique);
         main.post(() -> {
             if (active != null) {
                 call.reject("Recognition is already active or awaiting a final callback", "BUSY");
@@ -118,10 +102,7 @@ public class NativeSpeechPlugin extends Plugin {
                 intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en-US");
                 intent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
                 intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, REQUESTED_MAX_RESULTS);
-                if (Build.VERSION.SDK_INT >= 33) {
-                    intent.putStringArrayListExtra(RecognizerIntent.EXTRA_BIASING_STRINGS, bias);
-                }
-                debug("start " + id + " API=" + Build.VERSION.SDK_INT + " bias=" + bias);
+                debug("start " + id + " API=" + Build.VERSION.SDK_INT + " requestedMaxResults=" + REQUESTED_MAX_RESULTS);
                 recognizer.startListening(intent);
                 emit(session, "started", new JSObject());
                 call.resolve();

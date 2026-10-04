@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {classifyVocabularySpeechAnswer,isTargetSpeechProduction} from '../scripts/speech/vocabularySpeechEvidence.js';
 import {classifyVocabularyAnswer} from '../scripts/app/vocabularyLearningCore.js';
 const segment=(values,index=0)=>({segmentIndex:index,primaryTranscript:values[0],isFinal:true,alternatives:values.map((transcript,asrRank)=>({transcript,asrRank,confidence:0}))});
-const grade=(canonical,values,options={})=>classifyVocabularySpeechAnswer({entry:{canonical},transcript:values[0],nativeSegments:[segment(values)],...options});
+const grade=(canonical,values,options={})=>classifyVocabularySpeechAnswer({entry:{canonical},transcript:values[0],recognitionSegments:[segment(values)],...options});
 
 for(const [target,native] of [
   ['yield to something',['YouTube something','yield to something','able to something']],
@@ -11,7 +11,7 @@ for(const [target,native] of [
   ['confuse',['confused','confuse']],
 ]) test(`observed PWA false-negative fixture ${target} is rescued by actual native TARGET`,()=>{
   const result=grade(target,native);assert.equal(result.type,'target');assert.equal(result.targetRescued,true);
-  assert.equal(result.primaryTranscript,native[0]);assert.equal(result.nativeRank,1);assert.equal(result.nativeSegmentIndex,0);
+  assert.equal(result.primaryTranscript,native[0]);assert.equal(result.asrRank,1);assert.equal(result.recognitionSegmentIndex,0);
   assert.equal(classifyVocabularyAnswer({entry:{canonical:target},transcript:native[0]}).type,'miss');
 });
 test('meaningful wrong words and lower-rank paraphrases are not promoted, primary PARAPHRASE survives',()=>{
@@ -35,7 +35,7 @@ test('limited fillers and exact target-prefix restarts pass without changing raw
 });
 test('native TARGET evidence cannot discard meaningful words in other segments or synthesize cross-result candidates',()=>{
   const entry={canonical:'yield to something'};
-  const run=nativeSegments=>classifyVocabularySpeechAnswer({entry,transcript:nativeSegments.map(s=>s.primaryTranscript).join(' '),nativeSegments});
+  const run=recognitionSegments=>classifyVocabularySpeechAnswer({entry,transcript:recognitionSegments.map(s=>s.primaryTranscript).join(' '),recognitionSegments});
   assert.equal(run([segment(['YouTube','yield to'],0),segment(['anything','something'],1)]).type,'miss');
   assert.equal(run([segment(['not'],0),segment(['YouTube something','yield to something'],1)]).type,'miss');
   assert.equal(run([segment(['YouTube something','yield to something'],0),segment(['not'],1)]).type,'miss');

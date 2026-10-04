@@ -1,5 +1,5 @@
 import { classifyVocabularySpeechAnswer } from '../speech/vocabularySpeechEvidence.js';
-import { buildRecognitionBiasContext } from '../speech/contextualBias.js';
+import { buildRecognitionContext } from '../speech/recognitionPolicy.js';
 import { createCorrectionProgress, recordCorrectionAttempt } from '../speech/correctionProgress.js';
 import { createLevelStateManager } from './levelState.js';
 import { createRecognitionController, isRecognitionSupported } from '../speech/recognition.js';
@@ -277,7 +277,7 @@ function latestNonEmptyTranscript(...values){
 }
 
 function hasNativeSpeech(){
-  return state.recognition?.getNativeRecognitionSegments?.().some(segment=>segment.alternatives.some(candidate=>candidate.transcript.trim()));
+  return state.recognition?.getRecognitionSegments?.().some(segment=>segment.alternatives.some(candidate=>candidate.transcript.trim()));
 }
 
 function scheduleTranscriptGrade(text){
@@ -322,8 +322,8 @@ function showRecognitionFailure(error){
 
 function setupRecognition(){
   state.recognition=createRecognitionController({
-    // Bias strict TARGET utterances; native evidence never rewrites raw primary text.
-    getRecognitionBiasContext:()=>buildRecognitionBiasContext({mode:'vocabulary',vocabularyEntry:state.current,activeOccurrence:activeSource(),correction:state.correction}),
+    // Shared provider evidence never rewrites raw primary text.
+    getRecognitionContext:()=>buildRecognitionContext({mode:'vocabulary'}),
     shouldEvaluate:()=>false,
     onTranscriptReset:()=>{clearGradeTimer();state.liveTranscript='';state.lastAttemptTranscript='';setTranscript('');},
     onTranscriptPreview:text=>{
@@ -637,7 +637,7 @@ function gradeTranscript(text){
   state.liveTranscript=transcript;
   state.lastAttemptTranscript=transcript;
   setTranscript(transcript);
-  const result=classifyVocabularySpeechAnswer({entry:state.current,activeOccurrence:activeSource(),transcript,nativeSegments:state.recognition?.getNativeRecognitionSegments?.()||[],correction:state.correction});
+  const result=classifyVocabularySpeechAnswer({entry:state.current,activeOccurrence:activeSource(),transcript,recognitionSegments:state.recognition?.getRecognitionSegments?.()||[],correction:state.correction});
   state.lastRecognitionDecision=result;
   nativeSpeechDiagnostic('grading',{mode:'vocabulary',entryId:state.current.id,decision:result});
   if(state.recognition?.isActive()) state.recognition.cancel();

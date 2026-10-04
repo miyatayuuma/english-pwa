@@ -78,10 +78,10 @@ public class NativeShellGateTest {
         device.executeShellCommand("pm grant com.miyatayuuma.englishpwa android.permission.RECORD_AUDIO");
         try (ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class)) {
             awaitTrue(scenario, "document.readyState === 'complete' && !!window.Capacitor");
-            eval(scenario, "window.__productionGate={}; Promise.all([import('https://localhost/scripts/native/androidSpeechBackend.js'),import('https://localhost/scripts/speech/contextualBias.js')]).then(async ([b,c])=>{ const driver=new b.AndroidSpeechRecognizerBackend(); window.__productionDriver=driver; driver.context=c.buildRecognitionBiasContext({mode:'read',itemId:'E0102'}); window.__productionGate.bias=await c.resolveNativeBiasStrings(driver.context); driver.onstart=()=>{window.__productionGate.started=true;driver.abort();}; driver.onerror=e=>window.__productionGate.error=e; driver.onend=()=>window.__productionGate.ended=true; window.__productionGate.route=b.selectRecognitionBackend()===b.AndroidSpeechRecognizerBackend; driver.start(); }).catch(e=>window.__productionGate.error=e.message); true");
+            eval(scenario, "window.__productionGate={}; Promise.all([import('https://localhost/scripts/native/androidSpeechBackend.js'),import('https://localhost/scripts/speech/recognitionPolicy.js')]).then(async ([b,c])=>{ const driver=new b.AndroidSpeechRecognizerBackend(); window.__productionDriver=driver; driver.context=c.buildRecognitionContext({mode:'read',itemId:'E0102'}); driver.onstart=()=>{window.__productionGate.started=true;driver.abort();}; driver.onerror=e=>window.__productionGate.error=e; driver.onend=()=>window.__productionGate.ended=true; window.__productionGate.route=b.selectRecognitionBackend()===b.AndroidSpeechRecognizerBackend; driver.start(); }).catch(e=>window.__productionGate.error=e.message); true");
             awaitTrue(scenario, "window.__productionGate?.ended === true");
             assertEquals("true", eval(scenario, "window.__productionGate.route === true && window.__productionGate.started === true && !window.__productionGate.error"));
-            assertEquals("true", eval(scenario, "Array.isArray(window.__productionGate.bias) && window.__productionGate.bias.length > 0 && window.__productionDriver.state === 'idle'"));
+            assertEquals("true", eval(scenario, "window.__productionDriver.maxAlternatives === 20 && window.__productionDriver.state === 'idle'"));
         }
     }
 
@@ -92,7 +92,7 @@ public class NativeShellGateTest {
         try (ActivityScenario<MainActivity> scenario = ActivityScenario.launch(intent)) {
             awaitTrue(scenario, "document.querySelector('#expected')?.textContent.includes('yield to something') === true");
             assertEquals("true", eval(scenario, "document.querySelector('#expected').textContent.includes('yield to any threats')"));
-            assertEquals("true", eval(scenario, "Capacitor.DEBUG === true && document.querySelector('#condition').options.length === 2"));
+            assertEquals("true", eval(scenario, "Capacitor.DEBUG === true && !document.querySelector('#condition')"));
             eval(scenario, "document.querySelector('#fixture').value='vocab:01306'; document.querySelector('#fixture').dispatchEvent(new Event('change')); true");
             assertEquals("true", eval(scenario, "document.querySelector('#expected').textContent.includes('yelled')"));
             eval(scenario, "document.querySelector('#fixture').value='word:yield'; document.querySelector('#fixture').dispatchEvent(new Event('change')); true");

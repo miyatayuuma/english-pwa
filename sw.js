@@ -1,4 +1,4 @@
-// sw.js: cache name follows the app version. v5.80
+// sw.js: cache name follows the app version. v5.82
 // Version the import itself so the browser cannot reuse an older worker import.
 importScripts('./scripts/version.js?v=5.66');
 const CACHE = self.APP_VERSION;
@@ -63,7 +63,8 @@ self.addEventListener('install', e => {
     './scripts/audio/resolver.js',
     './scripts/tagging/quotedTurns.js',
     './scripts/speech/recognition.js',
-    './scripts/speech/contextualBias.js',
+    './scripts/speech/recognitionPolicy.js',
+    './scripts/speech/recognitionEvidence.js',
     './scripts/native/androidSpeechBackend.js',
     './scripts/native/nativeSpeech.js',
     './scripts/native/recognitionEvidence.js',

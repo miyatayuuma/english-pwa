@@ -6,22 +6,21 @@
 <style>body{font:16px system-ui;margin:16px}label,button{display:inline-block;margin:8px}pre{white-space:pre-wrap;overflow-wrap:anywhere}td,th{border:1px solid #aaa;padding:4px}table{border-collapse:collapse}</style>
 <h1>ASR実機テスト</h1>
 <p>これを発音してください</p><p id="prompt" style="font-size:2rem;font-weight:bold"></p>
-<p>debug APKのみ。同一端末・system default recognizerでOFF/ONを比較します。音声は保存しません。記録はこの画面のメモリ内のみです。</p>
+<p>debug APKのみ。system default recognizerのN-best候補を検証します。biasは使用しません。音声は保存しません。記録はこの画面のメモリ内のみです。</p>
 <a href="/index.html">既存UIへ戻る</a>
 <button id="capabilities">Bridge / capability</button><button id="permission">マイク権限</button>
 <label>case <select id="fixture"><option value="word:yield">yield</option><option value="word:yell">yell</option><option value="vocab:00437" selected>yield to something</option><option value="vocab:00353">see to something</option><option value="vocab:01282">be in</option><option value="vocab:01306">yelled (Vocabulary source)</option><option value="E0102">yelled (actual whole source)</option></select></label>
-<label>bias <select id="condition"><option>ON</option><option>OFF</option></select></label>
 <label>control <select id="control"><option value="positive">正解発話</option><option>数語抜け</option><option>chunk丸ごと抜け</option><option>content word違い</option><option>時制違い</option><option>chunk順序入れ替え</option><option>言いかけ停止</option></select></label>
 <label>発話内容（negativeでは実際に言う内容を入力）<input id="intended"></label>
 <p>現在の正解 authority: <span id="expected"></span></p>
 <button id="start">Start</button><button id="stop" disabled>Stop</button><button id="cancel" disabled>Cancel</button><button id="clear">Clear records</button><button id="copy">結果をコピー</button><button id="export">結果を表示してコピー</button><textarea id="exportText" hidden rows="10" style="width:100%"></textarea>
 <p id="status"></p><pre id="preview"></pre><pre id="configuration"></pre>
-<table><thead><tr><th>case / bias / control</th><th>attempts</th><th>rank-1 exact TARGET</th><th>N-best TARGET</th><th>accepted</th><th>MISS</th><th>technical</th></tr></thead><tbody id="summary"></tbody></table>
+<table><thead><tr><th>case / control</th><th>attempts</th><th>rank-1 exact TARGET</th><th>N-best TARGET</th><th>accepted</th><th>MISS</th><th>technical</th></tr></thead><tbody id="summary"></tbody></table>
 <pre id="output"></pre>
 <script type="module">
 import { getNativeSpeech } from '/scripts/native/nativeSpeech.js';
 import { createRecognitionController, matchTranscript, calcMatchScore } from '/scripts/speech/recognition.js';
-import { buildRecognitionBiasContext, resolveNativeBiasStrings } from '/scripts/speech/contextualBias.js';
+import { buildRecognitionContext } from '/scripts/speech/recognitionPolicy.js';
 import { answerVariants, normalizeVocabularyAnswer } from '/scripts/app/vocabularyLearningCore.js';
 import { classifyVocabularySpeechAnswer } from '/scripts/speech/vocabularySpeechEvidence.js';
 const $=id=>document.getElementById(id);
@@ -47,33 +46,30 @@ function selected(){
  if($('control').value==='positive') $('intended').value=f.key==='vocab:01306'?'yelled':targets[0];
  $('prompt').textContent=$('intended').value;
 }
-function locks(active){for(const id of ['fixture','condition','control','intended','start','clear']) $(id).disabled=active; $('stop').disabled=!active;$('cancel').disabled=!active;}
+function locks(active){for(const id of ['fixture','control','intended','start','clear']) $(id).disabled=active; $('stop').disabled=!active;$('cancel').disabled=!active;}
 function record(result){
  if(finished) return;finished=true;
- const segments=result?.nativeSegments||[];
+ const segments=result?.recognitionSegments||[];
  const primary=segments[0]?.primaryTranscript??result?.previewTranscript??result?.transcript??'';
  const alternatives=segments.flatMap(segment=>segment.alternatives);
  const targets=attempt.targets;
  const exact=text=>targets.some(target=>normalizeVocabularyAnswer(text)===normalizeVocabularyAnswer(target));
  const targetIndex=alternatives.findIndex(c=>exact(c.transcript));
- const grade=attempt.fixture.entry?classifyVocabularySpeechAnswer({entry:attempt.fixture.entry,activeOccurrence:attempt.fixture.activeOccurrence,transcript:primary,nativeSegments:segments}):(()=>{const m=matchTranscript(attempt.fixture.item.en,primary);return {type:calcMatchScore(m.refCount,m.recall,m.precision)>=0.7?'accepted':'miss'};})();
+ const grade=attempt.fixture.entry?classifyVocabularySpeechAnswer({entry:attempt.fixture.entry,activeOccurrence:attempt.fixture.activeOccurrence,transcript:primary,recognitionSegments:segments}):(()=>{const m=matchTranscript(attempt.fixture.item.en,primary);return {type:calcMatchScore(m.refCount,m.recall,m.precision)>=0.7?'accepted':'miss'};})();
  const technical=result?.ok===false?result.reason||'technical':!primary.trim()?'no-speech':null;
- const row={timestamp:new Date().toISOString(),case:attempt.fixture.key,bias:attempt.condition,control:attempt.control,intended:attempt.intended,targets,biasStrings:attempt.biasStrings,backend:'Android SpeechRecognizer',requestedMaxResults:segments[0]?.requestedMaxResults??20,providerReturnedCount:segments[0]?.providerReturnedCount??null,retainedCandidateCount:segments[0]?.retainedCandidateCount??0,rescue:grade.targetRescued??false,recognitionAuthority:grade.recognitionAuthority??null,finalGrade:technical?null:grade.type,capabilities,primary,alternatives,targetRank:targetIndex<0?null:alternatives[targetIndex].asrRank+1,grade:technical?null:grade,rank1Target:exact(primary),nbestTarget:alternatives.some(c=>exact(c.transcript)),accepted:!technical&&grade.type!=='miss',technical};
+ const row={timestamp:new Date().toISOString(),case:attempt.fixture.key,control:attempt.control,intended:attempt.intended,targets,backend:'Android SpeechRecognizer',requestedMaxResults:segments[0]?.requestedMaxResults??20,providerReturnedCount:segments[0]?.providerReturnedCount??null,retainedCandidateCount:segments[0]?.retainedCandidateCount??0,rescue:grade.targetRescued??false,recognitionAuthority:grade.recognitionAuthority??null,finalGrade:technical?null:grade.type,capabilities,primary,alternatives,targetRank:targetIndex<0?null:alternatives[targetIndex].asrRank+1,grade:technical?null:grade,rank1Target:exact(primary),nbestTarget:alternatives.some(c=>exact(c.transcript)),accepted:!technical&&grade.type!=='miss',technical};
  rows.push(row);locks(false);$('status').textContent=technical||grade.type;log(rows);
  $('summary').replaceChildren();
- const groups=new Map();for(const row of rows){const key=[row.case,row.bias,row.control].join(' / ');if(!groups.has(key)) groups.set(key,[]);groups.get(key).push(row);}
+ const groups=new Map();for(const row of rows){const key=[row.case,row.control].join(' / ');if(!groups.has(key)) groups.set(key,[]);groups.get(key).push(row);}
  for(const [key,group] of groups){const tr=document.createElement('tr');for(const value of [key,group.length,group.filter(r=>r.rank1Target).length,group.filter(r=>r.nbestTarget).length,group.filter(r=>r.accepted).length,group.filter(r=>!r.technical&&!r.accepted).length,group.filter(r=>r.technical).length]){const td=document.createElement('td');td.textContent=value;tr.append(td);} $('summary').append(tr);}
 }
 $('start').onclick=async()=>{
  attempt=null;
  try{
-  const f=fixture();const context=buildRecognitionBiasContext(f.entry?{mode:'vocabulary',vocabularyEntry:f.entry,activeOccurrence:f.activeOccurrence}:{mode:'read',itemId:f.key});
-  const authority=await resolveNativeBiasStrings(context);const condition=$('condition').value;
-  globalThis.__nativeSpeechBiasOff=condition==='OFF';
-  if(condition==='OFF'&&Capacitor.DEBUG!==true) throw Error('OFF requires a debug build');
-  attempt={fixture:f,targets:f.entry?answerVariants(f.entry,f.activeOccurrence):[f.item.en],condition,control:$('control').value,intended:$('intended').value,biasStrings:condition==='OFF'?[]:authority};
-  finished=false;locks(true);$('preview').textContent='';$('configuration').textContent=JSON.stringify({capabilities,biasStrings:attempt.biasStrings},null,2);
-  controller=createRecognitionController({shouldEvaluate:()=>false,getRecognitionBiasContext:()=>context,onTranscriptPreview:text=>$('preview').textContent=text,onAutoStop:record,onError:event=>record({ok:false,reason:event.error}),onUnsupported:()=>record({ok:false,reason:'unsupported'})});
+  const f=fixture();const context=buildRecognitionContext(f.entry?{mode:'vocabulary',vocabularyEntry:f.entry,activeOccurrence:f.activeOccurrence}:{mode:'read',itemId:f.key});
+  attempt={fixture:f,targets:f.entry?answerVariants(f.entry,f.activeOccurrence):[f.item.en],control:$('control').value,intended:$('intended').value};
+  finished=false;locks(true);$('preview').textContent='';$('configuration').textContent=JSON.stringify({capabilities,requestedMaxResults:20},null,2);
+  controller=createRecognitionController({shouldEvaluate:()=>false,getRecognitionContext:()=>context,onTranscriptPreview:text=>$('preview').textContent=text,onAutoStop:record,onError:event=>record({ok:false,reason:event.error}),onUnsupported:()=>record({ok:false,reason:'unsupported'})});
   const started=controller.start();if(!started.ok) record(started);else $('status').textContent='録音中';
  }catch(error){if(attempt&&!finished) record({ok:false,reason:error.message});else {locks(false);$('status').textContent=error.message;}}
 };

@@ -1,7 +1,7 @@
 import { getNativeSpeech } from './nativeSpeech.js';
 import { isNativeAndroid } from './runtimePlatform.js';
-import { nativeWebResultEvent, ANDROID_NATIVE_MAX_RESULTS } from './recognitionEvidence.js';
-import { resolveNativeBiasStrings, SPEECH_DISABLED_MODES } from '../speech/contextualBias.js';
+import { nativeWebResultEvent } from './recognitionEvidence.js';
+import { REQUESTED_MAX_ALTERNATIVES, SPEECH_DISABLED_MODES } from '../speech/recognitionPolicy.js';
 
 let sequence = 0;
 let owner = null;
@@ -22,12 +22,11 @@ export function nativeSpeechDiagnostic(type, value, scope = globalThis) {
 // Web-Speech-shaped events adapt native candidates to existing JS grading.
 // This backend never rewrites transcripts or decides correctness.
 export class AndroidSpeechRecognizerBackend {
-  constructor({ pluginProvider = getNativeSpeech, biasProvider = resolveNativeBiasStrings } = {}) {
+  constructor({ pluginProvider = getNativeSpeech } = {}) {
     this.pluginProvider = pluginProvider;
-    this.biasProvider = biasProvider;
     this.waitsForFinalResult = true;
     this.state = 'idle';
-    this.maxAlternatives = ANDROID_NATIVE_MAX_RESULTS;
+    this.maxAlternatives = REQUESTED_MAX_ALTERNATIVES;
   }
 
   start() {
@@ -53,15 +52,11 @@ export class AndroidSpeechRecognizerBackend {
     const permission = await this.plugin.requestPermission();
     if (this.cancelRequested) { this.finish(); return; }
     if (!permission.granted) throw Object.assign(new Error('Microphone permission was denied'), { code: 'PERMISSION_DENIED' });
-    const authority = await this.biasProvider(this.context);
-    if (this.cancelRequested) { this.finish(); return; }
-    // OFF is available only for debug measurements; release always uses authority.
-    const biasStrings = globalThis.Capacitor?.DEBUG === true && globalThis.__nativeSpeechBiasOff === true ? [] : authority;
     this.listener = await this.plugin.addListener('recognition', event => this.receive(event));
     if (this.cancelRequested) { this.finish(); return; }
     this.nativeStarted = true;
-    nativeSpeechDiagnostic('configuration', { backend: 'Android SpeechRecognizer', sessionId: this.sessionId, ...capabilities, biasStrings });
-    await this.plugin.start({ sessionId: this.sessionId, biasStrings });
+    nativeSpeechDiagnostic('configuration', { backend: 'Android SpeechRecognizer', sessionId: this.sessionId, ...capabilities, requestedMaxResults: REQUESTED_MAX_ALTERNATIVES });
+    await this.plugin.start({ sessionId: this.sessionId });
     if (this.state === 'idle') return;
     this.state = this.stopRequested ? 'stopping' : 'listening';
     if (this.cancelRequested) await this.cancelNative();
@@ -105,7 +100,7 @@ export class AndroidSpeechRecognizerBackend {
     this.cancelRequested = true;
     this.state = 'cancelling';
     if (this.nativeStarted) this.startup.then(() => this.cancelNative()).catch(() => this.finish());
-    // Pending permission/authority work checks cancellation before native start.
+    // Pending permission work checks cancellation before native start.
   }
 
   async cancelNative() {

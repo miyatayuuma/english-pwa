@@ -12,4 +12,4 @@ One-time migration marker: zeroSetupMigrationV1. appConfigV3 deletes apiUrl/apiK
 
 GAS runtime (remote status/online flush/pending queue/srs+attempt+speech+session+shadowing sends) is removed. Local level/SRS/study history/session summary/shadowing/relationship logic remains. GAS/WebApp.gs and GAS/SRS.gs are deleted. GAS/ExportItems.gs and narrowed source-only GAS/Setup.gs remain as offline spreadsheet source-export tools and are excluded from native staging/runtime.
 
-Physical-device accuracy/false-accept measurement belongs to #264's Deep N-best handoff; emulator/unit tests cannot substitute for it.
+Shared Web/Android twenty-candidate evidence and strict TARGET rescue arrive via reconciled #264. Production uses no contextual bias. Device accuracy remains observational follow-up, not this production merge gate.

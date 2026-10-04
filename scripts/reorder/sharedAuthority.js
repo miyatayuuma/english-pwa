@@ -2,7 +2,7 @@ import { REORDER_SCHEMA_VERSION } from './reorderCore.js';
 
 let metadataPromise = null;
 
-// One loader and schema interpretation for Reordering and sentence speech.
+// Shared partition loader and schema interpretation for Reordering.
 // Neither consumer generates or edits partitions.
 export async function loadSharedChunkAuthority() {
   if (!metadataPromise) {

@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import { sharedLearningTexts } from '../scripts/reorder/sharedAuthority.js';
 
 const corpus = JSON.parse(fs.readFileSync(new URL('../data/reorder-v1.json', import.meta.url)));
-test('every sentence bias is exactly shared learningText, including fixed contexts', () => {
+test('every shared partition retains learningText, including fixed contexts', () => {
   let sentences = 0;
   let fixed = 0;
   for (const item of corpus.items) {
