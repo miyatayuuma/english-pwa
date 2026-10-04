@@ -1,0 +1,3124 @@
+{
+  "schema_version": 1,
+  "policy_version": "prompt-learning-value-v1",
+  "batch": 23,
+  "ordinal_start": 2201,
+  "ordinal_end": 2300,
+  "claim_main": "e3b494a3892a7f571f9ae0cccb1ee277c223f075",
+  "reviewed_against_main": "e3b494a3892a7f571f9ae0cccb1ee277c223f075",
+  "reviewed_count": 100,
+  "entry_ids": [
+    "vocab:02204",
+    "vocab:02205",
+    "vocab:02206",
+    "vocab:02207",
+    "vocab:02208",
+    "vocab:02209",
+    "vocab:02210",
+    "vocab:02211",
+    "vocab:02212",
+    "vocab:02213",
+    "vocab:02214",
+    "vocab:02215",
+    "vocab:02216",
+    "vocab:02217",
+    "vocab:02218",
+    "vocab:02219",
+    "vocab:02220",
+    "vocab:02221",
+    "vocab:02222",
+    "vocab:02223",
+    "vocab:02224",
+    "vocab:02225",
+    "vocab:02226",
+    "vocab:02227",
+    "vocab:02228",
+    "vocab:02229",
+    "vocab:02230",
+    "vocab:02231",
+    "vocab:02232",
+    "vocab:02233",
+    "vocab:02234",
+    "vocab:02235",
+    "vocab:02236",
+    "vocab:02237",
+    "vocab:02238",
+    "vocab:02239",
+    "vocab:02240",
+    "vocab:02241",
+    "vocab:02242",
+    "vocab:02243",
+    "vocab:02244",
+    "vocab:02245",
+    "vocab:02246",
+    "vocab:02247",
+    "vocab:02248",
+    "vocab:02249",
+    "vocab:02250",
+    "vocab:02251",
+    "vocab:02252",
+    "vocab:02253",
+    "vocab:02254",
+    "vocab:02255",
+    "vocab:02256",
+    "vocab:02257",
+    "vocab:02258",
+    "vocab:02259",
+    "vocab:02260",
+    "vocab:02261",
+    "vocab:02262",
+    "vocab:02263",
+    "vocab:02264",
+    "vocab:02265",
+    "vocab:02266",
+    "vocab:02267",
+    "vocab:02268",
+    "vocab:02269",
+    "vocab:02270",
+    "vocab:02271",
+    "vocab:02272",
+    "vocab:02273",
+    "vocab:02274",
+    "vocab:02275",
+    "vocab:02276",
+    "vocab:02277",
+    "vocab:02278",
+    "vocab:02279",
+    "vocab:02280",
+    "vocab:02281",
+    "vocab:02282",
+    "vocab:02283",
+    "vocab:02284",
+    "vocab:02285",
+    "vocab:02286",
+    "vocab:02287",
+    "vocab:02288",
+    "vocab:02289",
+    "vocab:02290",
+    "vocab:02291",
+    "vocab:02292",
+    "vocab:02293",
+    "vocab:02294",
+    "vocab:02295",
+    "vocab:02296",
+    "vocab:02297",
+    "vocab:02298",
+    "vocab:02299",
+    "vocab:02300",
+    "vocab:02301",
+    "vocab:02302",
+    "vocab:02303"
+  ],
+  "results": [
+    {
+      "entry_id": "vocab:02204",
+      "prompt_ja": "まさにsomethingしようとしている",
+      "canonical_snapshot": "be about to do something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be about to do something",
+        "be on the verge of doing something",
+        "be just about to do something",
+        "be on the point of doing something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be on the verge of doing something",
+          "decision": "ACCEPT",
+          "reason": "「まさに〜しようとしている／寸前だ」を表す頻出の独立したidiomで、canonicalとは別に学習価値が高い。"
+        },
+        {
+          "expression": "be just about to do something",
+          "decision": "REJECT",
+          "reason": "意味は成立するが、canonicalにjustを足した同一construction寄りのsurface variantで独立学習価値が低い。"
+        },
+        {
+          "expression": "be on the point of doing something",
+          "decision": "REJECT",
+          "reason": "意味は成立するが、on the verge ofより頻度・実用性が低く、追加登録の増分価値が小さい。"
+        }
+      ],
+      "after_paraphrases": [
+        "be on the verge of doing something"
+      ],
+      "decision": "CHANGED",
+      "reason": "canonical以外では on the verge of が高頻度・高実用の主要表現。近接variantは増やさない。"
+    },
+    {
+      "entry_id": "vocab:02205",
+      "prompt_ja": "自殺する",
+      "canonical_snapshot": "commit suicide",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "commit suicide",
+        "take one's own life",
+        "kill oneself",
+        "die by suicide"
+      ],
+      "candidate_review": [
+        {
+          "expression": "take one's own life",
+          "decision": "ACCEPT",
+          "reason": "「自殺する」を表す確立した婉曲表現で、読解・報道でも重要な別表現。"
+        },
+        {
+          "expression": "die by suicide",
+          "decision": "ACCEPT",
+          "reason": "現代の医療・報道等で使われる中立的な表現で、register差として学習価値が高い。"
+        },
+        {
+          "expression": "kill oneself",
+          "decision": "REJECT",
+          "reason": "意味は成立するが、構成的に推測しやすく、採用2表現に比べ独立した学習価値が低い。"
+        }
+      ],
+      "after_paraphrases": [
+        "take one's own life",
+        "die by suicide"
+      ],
+      "decision": "CHANGED",
+      "reason": "婉曲表現と現代的な中立表現を残し、単なる直訳的構成は増やさない。"
+    },
+    {
+      "entry_id": "vocab:02206",
+      "prompt_ja": "考え直してsomethingをやめる",
+      "canonical_snapshot": "think better of something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "think better of doing something",
+        "decide against doing something",
+        "change one's mind about something",
+        "have second thoughts about doing something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "decide against doing something",
+          "decision": "ACCEPT",
+          "reason": "考え直した結果「しないと決める」まで含み、promptの停止含意に合う主要construction。"
+        },
+        {
+          "expression": "change one's mind about something",
+          "decision": "REJECT",
+          "reason": "考えが変わること自体は表すが、実行をやめることまでは必ずしも含意しない。"
+        },
+        {
+          "expression": "have second thoughts about doing something",
+          "decision": "REJECT",
+          "reason": "再考・迷いは表すが、最終的にやめることを保証せずpromptより弱い。"
+        }
+      ],
+      "after_paraphrases": [
+        "decide against doing something"
+      ],
+      "decision": "CHANGED",
+      "reason": "promptは再考だけでなく中止まで要求するため、その含意を持つ decide against のみ追加する。"
+    },
+    {
+      "entry_id": "vocab:02207",
+      "prompt_ja": "〜であることが分かる・〜だと判明する",
+      "canonical_snapshot": "prove to be",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "turn out to be",
+        "prove to be",
+        "be found to be"
+      ],
+      "candidate_review": [
+        {
+          "expression": "turn out to be",
+          "decision": "ACCEPT",
+          "reason": "「〜だと判明する」の最も一般的な主要表現の一つで、会話・文章とも高頻度。"
+        },
+        {
+          "expression": "be found to be",
+          "decision": "ACCEPT",
+          "reason": "調査・観察の結果「〜であることが分かる」を表すformalな主要constructionで独立価値がある。"
+        }
+      ],
+      "after_paraphrases": [
+        "turn out to be",
+        "be found to be"
+      ],
+      "decision": "CHANGED",
+      "reason": "日常的な turn out to be とformalな be found to be は、どちらもpromptへの主要回答として価値が高い。"
+    },
+    {
+      "entry_id": "vocab:02208",
+      "prompt_ja": "somethingした疑いをかけられる",
+      "canonical_snapshot": "be suspected of doing something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be suspected of doing something"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "prompt-onlyで主要な定型表現はcanonicalそのもので、独立して教える価値の高い別表現は見当たらない。"
+    },
+    {
+      "entry_id": "vocab:02209",
+      "prompt_ja": "賄賂を受け取る",
+      "canonical_snapshot": "accept a bribe",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "take a bribe",
+        "accept a bribe"
+      ],
+      "candidate_review": [
+        {
+          "expression": "take a bribe",
+          "decision": "ACCEPT",
+          "reason": "「賄賂を受け取る」の自然で高頻度な別表現。acceptとは別の基本collocationとして価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "take a bribe"
+      ],
+      "decision": "CHANGED",
+      "reason": "take a bribe は会話・報道で十分一般的で、canonicalだけに限定すると主要回答をMISSにする。"
+    },
+    {
+      "entry_id": "vocab:02210",
+      "prompt_ja": "somethingを担当している",
+      "canonical_snapshot": "be in charge of something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be in charge of something",
+        "be responsible for something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be responsible for something",
+          "decision": "ACCEPT",
+          "reason": "担当・責任を持つという意味でpromptに自然に対応し、実務英語でも頻出する。"
+        }
+      ],
+      "after_paraphrases": [
+        "be responsible for something"
+      ],
+      "decision": "CHANGED",
+      "reason": "be responsible for は「担当している」の主要な実務表現で、独立して学ばせる価値が高い。"
+    },
+    {
+      "entry_id": "vocab:02211",
+      "prompt_ja": "私の知る限りでは",
+      "canonical_snapshot": "to my knowledge",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "as far as I know",
+        "to the best of my knowledge",
+        "to my knowledge"
+      ],
+      "candidate_review": [
+        {
+          "expression": "as far as I know",
+          "decision": "ACCEPT",
+          "reason": "「私の知る限りでは」の高頻度な会話表現で、最優先の別回答。"
+        },
+        {
+          "expression": "to the best of my knowledge",
+          "decision": "ACCEPT",
+          "reason": "同義のformalな定型句で、文章・business registerとして学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "as far as I know",
+        "to the best of my knowledge"
+      ],
+      "decision": "CHANGED",
+      "reason": "会話の主要表現とformalな定型句を追加し、register差を学べる構成にする。"
+    },
+    {
+      "entry_id": "vocab:02212",
+      "prompt_ja": "山積みの〜／たくさんの〜",
+      "canonical_snapshot": "a pile of",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "a pile of",
+        "heaps of",
+        "loads of",
+        "tons of",
+        "a lot of"
+      ],
+      "candidate_review": [
+        {
+          "expression": "a lot of",
+          "decision": "ACCEPT",
+          "reason": "promptの「たくさんの」に対する最も基本的な主要表現で、MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "heaps of",
+          "decision": "ACCEPT",
+          "reason": "「山ほどの／たくさんの」を表す口語的な主要表現で、pileとは別の定型用法。"
+        },
+        {
+          "expression": "loads of",
+          "decision": "ACCEPT",
+          "reason": "「たくさんの」を表す高頻度の口語表現で、独立した実用価値が高い。"
+        },
+        {
+          "expression": "tons of",
+          "decision": "REJECT",
+          "reason": "意味は成立するが、誇張的な口語量表現として heaps/loads と役割が重なり増分価値が小さい。"
+        }
+      ],
+      "after_paraphrases": [
+        "a lot of",
+        "heaps of",
+        "loads of"
+      ],
+      "decision": "CHANGED",
+      "reason": "prompt自体が「山積み」と「たくさん」を併記するため、基本量表現と主要口語表現を採用する。"
+    },
+    {
+      "entry_id": "vocab:02213",
+      "prompt_ja": "隠蔽する",
+      "canonical_snapshot": "cover up",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "cover up",
+        "conceal",
+        "hide"
+      ],
+      "candidate_review": [
+        {
+          "expression": "conceal",
+          "decision": "ACCEPT",
+          "reason": "「隠蔽する」のformalで直接的な主要語。情報・事実を意図的に隠す用法で学習価値が高い。"
+        },
+        {
+          "expression": "hide",
+          "decision": "REJECT",
+          "reason": "非常に高頻度だが意味範囲が広く、単に物を隠す場合まで含むため「隠蔽する」との対応が粗い。"
+        }
+      ],
+      "after_paraphrases": [
+        "conceal"
+      ],
+      "decision": "CHANGED",
+      "reason": "conceal はpromptに精密に対応する主要語だが、hide は広すぎるため登録しない。"
+    },
+    {
+      "entry_id": "vocab:02214",
+      "prompt_ja": "初めて",
+      "canonical_snapshot": "for the first time",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "for the first time"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "promptに対する自然な主要定型はcanonicalそのもので、別表現を増やすと説明的・surface variantになりやすい。"
+    },
+    {
+      "entry_id": "vocab:02215",
+      "prompt_ja": "良心の痛み",
+      "canonical_snapshot": "a pang of conscience",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "a pang of conscience",
+        "a guilty conscience",
+        "remorse"
+      ],
+      "candidate_review": [
+        {
+          "expression": "a guilty conscience",
+          "decision": "ACCEPT",
+          "reason": "「良心の痛み／呵責」を表す高頻度の定型表現で、canonicalとは別に実用価値が高い。"
+        },
+        {
+          "expression": "remorse",
+          "decision": "REJECT",
+          "reason": "強い後悔・自責を表すが、promptの「良心の痛み」という表現との対応はより広く、主要別表現としては粗い。"
+        }
+      ],
+      "after_paraphrases": [
+        "a guilty conscience"
+      ],
+      "decision": "CHANGED",
+      "reason": "良心の呵責を直接表す a guilty conscience を採用し、より広い感情語 remorse は外す。"
+    },
+    {
+      "entry_id": "vocab:02216",
+      "prompt_ja": "somethingするのをためらう",
+      "canonical_snapshot": "hesitate to do something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "hesitate to do something",
+        "be reluctant to do something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be reluctant to do something",
+          "decision": "ACCEPT",
+          "reason": "「〜するのをためらう／気が進まない」に自然に対応し、頻度も高い主要construction。"
+        }
+      ],
+      "after_paraphrases": [
+        "be reluctant to do something"
+      ],
+      "decision": "CHANGED",
+      "reason": "hesitateとは異なる構文で同promptに高頻度で対応するため、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02217",
+      "prompt_ja": "somethingに立ち入る",
+      "canonical_snapshot": "intrude on something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "enter something",
+        "go into something",
+        "step into something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "enter something",
+          "decision": "ACCEPT",
+          "reason": "表示prompt「somethingに立ち入る」への最も基本的な回答で、一般的な場所への立入りを直接表す。"
+        },
+        {
+          "expression": "go into something",
+          "decision": "REJECT",
+          "reason": "場所への立入りにも使えるが意味範囲が非常に広く、enter追加後の増分学習価値が低い。"
+        },
+        {
+          "expression": "step into something",
+          "decision": "REJECT",
+          "reason": "物理的に一歩入る／役割に就く等の特殊文脈を持ち、genericな「立ち入る」には狭い。"
+        }
+      ],
+      "after_paraphrases": [
+        "enter something"
+      ],
+      "decision": "CHANGED",
+      "reason": "canonicalの侵入ニュアンスにpromptを引っ張らず、genericな「立ち入る」への基本回答 enter を採用する。"
+    },
+    {
+      "entry_id": "vocab:02218",
+      "prompt_ja": "someoneのあら探しをする",
+      "canonical_snapshot": "find fault with someone",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "find fault with someone",
+        "criticize someone",
+        "pick on someone"
+      ],
+      "candidate_review": [
+        {
+          "expression": "criticize someone",
+          "decision": "REJECT",
+          "reason": "「批判する」全般で、欠点を探して責めるという「あら探し」の含意が不足する。"
+        },
+        {
+          "expression": "pick on someone",
+          "decision": "REJECT",
+          "reason": "継続的にいじめる・標的にする意味が中心で、あら探しそのものとは一致しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "関連する criticize/pick on は意味範囲がずれるため、promptに精密なcanonical以外を登録しない。"
+    },
+    {
+      "entry_id": "vocab:02219",
+      "prompt_ja": "somethingに敏感である",
+      "canonical_snapshot": "be sensitive to something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be sensitive to something",
+        "be responsive to something",
+        "be alert to something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be responsive to something",
+          "decision": "REJECT",
+          "reason": "刺激・要請に反応する意味が中心で、「敏感である」と常に対応するわけではない。"
+        },
+        {
+          "expression": "be alert to something",
+          "decision": "REJECT",
+          "reason": "注意して認識している意味で、感受性・反応性を表すpromptとは別概念。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "promptに直接対応する主要表現はcanonicalで、近接語は反応性・警戒の別概念になる。"
+    },
+    {
+      "entry_id": "vocab:02220",
+      "prompt_ja": "薬物依存者",
+      "canonical_snapshot": "drug addict",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "drug addict",
+        "drug user",
+        "person with a drug addiction"
+      ],
+      "candidate_review": [
+        {
+          "expression": "person with a drug addiction",
+          "decision": "ACCEPT",
+          "reason": "依存状態を保ったまま人を主語に置く現代的なperson-first表現で、register差として価値がある。"
+        },
+        {
+          "expression": "drug user",
+          "decision": "REJECT",
+          "reason": "薬物使用者を指すだけで依存を含意せず、「薬物依存者」より意味が広い。"
+        }
+      ],
+      "after_paraphrases": [
+        "person with a drug addiction"
+      ],
+      "decision": "CHANGED",
+      "reason": "依存を明示する現代的な別表現は採用し、単なる使用者まで広げる語は除外する。"
+    },
+    {
+      "entry_id": "vocab:02221",
+      "prompt_ja": "somethingに従事する",
+      "canonical_snapshot": "engage in something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "engage in something",
+        "be engaged in something",
+        "work on something",
+        "take part in something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be engaged in something",
+          "decision": "REJECT",
+          "reason": "同一lexemeの態・形の差が中心で、独立paraphraseとしての増分価値が低い。"
+        },
+        {
+          "expression": "work on something",
+          "decision": "REJECT",
+          "reason": "仕事・課題への従事に狭まり、活動一般に使えるpromptより範囲が狭い。"
+        },
+        {
+          "expression": "take part in something",
+          "decision": "REJECT",
+          "reason": "参加の意味が中心で、従事・取り組み全般とは一致しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "近接候補はいずれもsurface variantか意味範囲の偏りがあり、canonical以外を増やさない。"
+    },
+    {
+      "entry_id": "vocab:02222",
+      "prompt_ja": "somethingをsomething elseに限定する",
+      "canonical_snapshot": "confine something to something else",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "confine something to something else",
+        "limit something to something else",
+        "restrict something to something else"
+      ],
+      "candidate_review": [
+        {
+          "expression": "limit something to something else",
+          "decision": "ACCEPT",
+          "reason": "「〜を〜に限定する」の最も基本的な別constructionで、高頻度・高実用。"
+        },
+        {
+          "expression": "restrict something to something else",
+          "decision": "ACCEPT",
+          "reason": "範囲を制限する意味でpromptに直接対応し、formal/businessでも重要。"
+        }
+      ],
+      "after_paraphrases": [
+        "limit something to something else",
+        "restrict something to something else"
+      ],
+      "decision": "CHANGED",
+      "reason": "基本語 limit とformal寄りの restrict はともに主要回答で、独立した学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02223",
+      "prompt_ja": "someoneを応援に呼ぶ",
+      "canonical_snapshot": "call someone in",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "call someone in",
+        "call in someone",
+        "summon someone",
+        "send for someone"
+      ],
+      "candidate_review": [
+        {
+          "expression": "call in someone",
+          "decision": "REJECT",
+          "reason": "canonicalと同一句動詞のparticle placement差だけで、paraphraseではない。"
+        },
+        {
+          "expression": "summon someone",
+          "decision": "REJECT",
+          "reason": "来るよう命じる意味はあるが、応援・助力のために呼ぶというpromptの含意を必ずしも持たない。"
+        },
+        {
+          "expression": "send for someone",
+          "decision": "ACCEPT",
+          "reason": "人に来てもらうよう呼びにやる定型表現で、助けを求めて呼ぶ文脈にも自然で独立価値がある。"
+        }
+      ],
+      "after_paraphrases": [
+        "send for someone"
+      ],
+      "decision": "CHANGED",
+      "reason": "surface variantは除外し、別idiomとして自然に「呼び寄せる」を表す send for を採用する。"
+    },
+    {
+      "entry_id": "vocab:02224",
+      "prompt_ja": "鎮圧する",
+      "canonical_snapshot": "put down",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "put down",
+        "suppress",
+        "quell",
+        "subdue"
+      ],
+      "candidate_review": [
+        {
+          "expression": "suppress",
+          "decision": "ACCEPT",
+          "reason": "暴動・反乱などを「鎮圧する」の高頻度なformal語で、ニュース読解でも重要。"
+        },
+        {
+          "expression": "quell",
+          "decision": "ACCEPT",
+          "reason": "騒乱・反乱・不安などを鎮める意味に精密で、独立語彙として学習価値が高い。"
+        },
+        {
+          "expression": "subdue",
+          "decision": "REJECT",
+          "reason": "人や対象を制圧する意味に寄り、騒乱等の「鎮圧する」一般には候補2語よりcontext依存。"
+        }
+      ],
+      "after_paraphrases": [
+        "suppress",
+        "quell"
+      ],
+      "decision": "CHANGED",
+      "reason": "現代英語で重要な suppress と意味精度の高い quell を残し、より対象依存の語は削る。"
+    },
+    {
+      "entry_id": "vocab:02225",
+      "prompt_ja": "〜の代わりに",
+      "canonical_snapshot": "instead of",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "instead of",
+        "in place of",
+        "rather than",
+        "in lieu of"
+      ],
+      "candidate_review": [
+        {
+          "expression": "in place of",
+          "decision": "ACCEPT",
+          "reason": "「〜の代わりに」を直接表す一般的な句で、canonicalとは別の高実用表現。"
+        },
+        {
+          "expression": "rather than",
+          "decision": "ACCEPT",
+          "reason": "選択・代替を示す主要constructionで、promptへの自然な回答として頻出する。"
+        },
+        {
+          "expression": "in lieu of",
+          "decision": "ACCEPT",
+          "reason": "formal/business/legal registerで使われる確立した「〜の代わりに」で、register差として学習価値がある。"
+        }
+      ],
+      "after_paraphrases": [
+        "in place of",
+        "rather than",
+        "in lieu of"
+      ],
+      "decision": "CHANGED",
+      "reason": "一般・construction・formalの3つはいずれも独立した主要表現で、人工的に削る理由がない。"
+    },
+    {
+      "entry_id": "vocab:02226",
+      "prompt_ja": "somethingに頼る",
+      "canonical_snapshot": "resort to something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "rely on something",
+        "depend on something",
+        "resort to something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "rely on something",
+          "decision": "ACCEPT",
+          "reason": "genericな「somethingに頼る」への最も基本的な高頻度回答で、MISS扱いは不適切。"
+        },
+        {
+          "expression": "depend on something",
+          "decision": "ACCEPT",
+          "reason": "「〜を頼りにする／依存する」の主要表現で、会話・文章とも高頻度。"
+        }
+      ],
+      "after_paraphrases": [
+        "rely on something",
+        "depend on something"
+      ],
+      "decision": "CHANGED",
+      "reason": "promptはgenericな「頼る」なので、より基本的な rely on / depend on をcanonicalの特殊ニュアンスに関係なく採用する。"
+    },
+    {
+      "entry_id": "vocab:02227",
+      "prompt_ja": "somethingを提案する",
+      "canonical_snapshot": "suggest something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "suggest something",
+        "propose something",
+        "recommend something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "propose something",
+          "decision": "ACCEPT",
+          "reason": "案・計画を「提案する」の主要語で、suggestとは別にacademic/businessでも重要。"
+        },
+        {
+          "expression": "recommend something",
+          "decision": "REJECT",
+          "reason": "通常は勧める・推奨する意味が中心で、一般的な「提案する」より助言ニュアンスが強い。"
+        }
+      ],
+      "after_paraphrases": [
+        "propose something"
+      ],
+      "decision": "CHANGED",
+      "reason": "propose はpromptへの主要な別回答で、recommend は意味役割がずれるため採用しない。"
+    },
+    {
+      "entry_id": "vocab:02228",
+      "prompt_ja": "軍隊",
+      "canonical_snapshot": "armed forces",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "army",
+        "military",
+        "armed forces",
+        "troops"
+      ],
+      "candidate_review": [
+        {
+          "expression": "the military",
+          "decision": "ACCEPT",
+          "reason": "軍組織全般を指す高頻度の集合名詞で、「軍隊」への主要回答として学習価値が高い。"
+        },
+        {
+          "expression": "army",
+          "decision": "REJECT",
+          "reason": "通常は陸軍を指し、軍隊全般を表すpromptに対しては下位概念に狭まりやすい。"
+        },
+        {
+          "expression": "troops",
+          "decision": "REJECT",
+          "reason": "兵士・部隊を指す語で、組織としての「軍隊」とは焦点が異なる。"
+        }
+      ],
+      "after_paraphrases": [
+        "the military"
+      ],
+      "decision": "CHANGED",
+      "reason": "軍全体を表す the military は主要回答だが、army/troops は下位・構成員側にずれる。"
+    },
+    {
+      "entry_id": "vocab:02229",
+      "prompt_ja": "これ以上",
+      "canonical_snapshot": "any longer",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "any more",
+        "any longer",
+        "further"
+      ],
+      "candidate_review": [
+        {
+          "expression": "any more",
+          "decision": "ACCEPT",
+          "reason": "量・程度・継続について「これ以上」を表す高頻度表現で、promptへの主要回答。"
+        },
+        {
+          "expression": "further",
+          "decision": "REJECT",
+          "reason": "「さらに」まで含む広い副詞で、単独ではpromptの上限・否定方向が弱い。"
+        },
+        {
+          "expression": "any further",
+          "decision": "ACCEPT",
+          "reason": "程度・距離・進行について「これ以上」を直接表す主要表現で、canonicalの時間用法を補完する。"
+        }
+      ],
+      "after_paraphrases": [
+        "any more",
+        "any further"
+      ],
+      "decision": "CHANGED",
+      "reason": "「これ以上」は時間に限られないため、量・程度・進行に使える主要表現を採用する。"
+    },
+    {
+      "entry_id": "vocab:02230",
+      "prompt_ja": "解放する",
+      "canonical_snapshot": "set free",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "release",
+        "free",
+        "liberate",
+        "set free"
+      ],
+      "candidate_review": [
+        {
+          "expression": "release",
+          "decision": "ACCEPT",
+          "reason": "人・拘束物を「解放する」の極めて高頻度な基本語で、主要回答として必須。"
+        },
+        {
+          "expression": "free",
+          "decision": "ACCEPT",
+          "reason": "拘束・制約から解放する意味の基本動詞で、canonical句とは別の有用語。"
+        },
+        {
+          "expression": "liberate",
+          "decision": "ACCEPT",
+          "reason": "抑圧・占領などから解放するformalな主要語で、歴史・報道読解でも価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "release",
+        "free",
+        "liberate"
+      ],
+      "decision": "CHANGED",
+      "reason": "基本語2つとformalな主要語はいずれもpromptに自然に対応し、学習上の役割が異なる。"
+    },
+    {
+      "entry_id": "vocab:02231",
+      "prompt_ja": "someoneからsomethingを奪う",
+      "canonical_snapshot": "deprive someone of something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "deprive someone of something",
+        "rob someone of something",
+        "take something away from someone",
+        "strip someone of something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "take something away from someone",
+          "decision": "ACCEPT",
+          "reason": "「someoneからsomethingを奪う」を最も基本的に表す高頻度construction。"
+        },
+        {
+          "expression": "rob someone of something",
+          "decision": "ACCEPT",
+          "reason": "所有物・権利・機会等を奪う定型constructionで、独立した語法学習価値が高い。"
+        },
+        {
+          "expression": "strip someone of something",
+          "decision": "ACCEPT",
+          "reason": "権利・地位・財産等を奪うformalな主要constructionで、ニュース・文章で重要。"
+        }
+      ],
+      "after_paraphrases": [
+        "take something away from someone",
+        "rob someone of something",
+        "strip someone of something"
+      ],
+      "decision": "CHANGED",
+      "reason": "基本constructionと2つの重要な定型表現はいずれもpromptに対応し、用途・registerの学習価値がある。"
+    },
+    {
+      "entry_id": "vocab:02232",
+      "prompt_ja": "somethingをsomething elseだと非難する",
+      "canonical_snapshot": "condemn something as something else",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "condemn something as something else",
+        "denounce something as something else",
+        "criticize something as something else"
+      ],
+      "candidate_review": [
+        {
+          "expression": "denounce something as something else",
+          "decision": "ACCEPT",
+          "reason": "somethingをsomething elseだとして公然と強く非難するformalな主要construction。"
+        },
+        {
+          "expression": "criticize something as something else",
+          "decision": "REJECT",
+          "reason": "批判一般に広く、condemn/denounceほど「〜だと非難する」の強さを安定して持たない。"
+        }
+      ],
+      "after_paraphrases": [
+        "denounce something as something else"
+      ],
+      "decision": "CHANGED",
+      "reason": "強い非難とas補語を自然に取る denounce を採用し、より広い criticize は外す。"
+    },
+    {
+      "entry_id": "vocab:02233",
+      "prompt_ja": "内乱",
+      "canonical_snapshot": "civil war",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "civil war",
+        "civil conflict",
+        "internal conflict"
+      ],
+      "candidate_review": [
+        {
+          "expression": "civil conflict",
+          "decision": "REJECT",
+          "reason": "国内対立全般を含み、必ずしも「内乱／内戦」のwar水準に達しない。"
+        },
+        {
+          "expression": "internal conflict",
+          "decision": "REJECT",
+          "reason": "組織内・国内の対立まで広く指し、promptより意味範囲が大きすぎる。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "近接候補は戦争未満の対立も含むため、promptに最も精密なcanonicalのみを残す。"
+    },
+    {
+      "entry_id": "vocab:02234",
+      "prompt_ja": "独立を宣言する",
+      "canonical_snapshot": "declare independence",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "declare independence",
+        "proclaim independence"
+      ],
+      "candidate_review": [
+        {
+          "expression": "proclaim independence",
+          "decision": "ACCEPT",
+          "reason": "独立を公式・公然に宣言する意味でpromptに直接対応するformalな主要表現。"
+        }
+      ],
+      "after_paraphrases": [
+        "proclaim independence"
+      ],
+      "decision": "CHANGED",
+      "reason": "proclaim independence は歴史・政治文脈で重要な別collocationとして学習価値が高い。"
+    },
+    {
+      "entry_id": "vocab:02235",
+      "prompt_ja": "somethingに抗議する",
+      "canonical_snapshot": "protest against something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "protest against something",
+        "protest something",
+        "object to something",
+        "demonstrate against something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "protest something",
+          "decision": "REJECT",
+          "reason": "同一lexemeのargument-structure variantで、独立paraphraseとしての価値が低い。"
+        },
+        {
+          "expression": "object to something",
+          "decision": "REJECT",
+          "reason": "反対・異議を唱える意味で、必ずしも公的な「抗議する」まで含まない。"
+        },
+        {
+          "expression": "demonstrate against something",
+          "decision": "ACCEPT",
+          "reason": "公にデモをして抗議する主要表現で、「抗議する」の重要な別construction。"
+        }
+      ],
+      "after_paraphrases": [
+        "demonstrate against something"
+      ],
+      "decision": "CHANGED",
+      "reason": "同一verbのvariantは除外し、公的抗議を表す独立した高価値constructionのみ追加する。"
+    },
+    {
+      "entry_id": "vocab:02236",
+      "prompt_ja": "もはや〜ない",
+      "canonical_snapshot": "no longer",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "no longer",
+        "not anymore",
+        "not any longer"
+      ],
+      "candidate_review": [
+        {
+          "expression": "not anymore",
+          "decision": "ACCEPT",
+          "reason": "「もはや〜ない」を日常会話で表す高頻度な別construction。"
+        },
+        {
+          "expression": "not any longer",
+          "decision": "REJECT",
+          "reason": "意味は成立するがcanonicalと同じ longer を用いる機械的な否定構文差に近く、増分価値が小さい。"
+        }
+      ],
+      "after_paraphrases": [
+        "not anymore"
+      ],
+      "decision": "CHANGED",
+      "reason": "会話で非常に重要な not anymore を追加し、同一lexeme中心のvariantは増やさない。"
+    },
+    {
+      "entry_id": "vocab:02237",
+      "prompt_ja": "首脳会談",
+      "canonical_snapshot": "summit talks",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "summit talks",
+        "summit",
+        "summit meeting"
+      ],
+      "candidate_review": [
+        {
+          "expression": "summit meeting",
+          "decision": "ACCEPT",
+          "reason": "「首脳会談」を明示的に表す主要collocationで、canonicalとは別に高実用。"
+        },
+        {
+          "expression": "summit",
+          "decision": "ACCEPT",
+          "reason": "国・組織の首脳会談を指す高頻度名詞で、ニュース読解で重要。"
+        }
+      ],
+      "after_paraphrases": [
+        "summit meeting",
+        "summit"
+      ],
+      "decision": "CHANGED",
+      "reason": "明示的なcollocationと単独名詞の両方が政治報道で主要で、promptへの回答価値が高い。"
+    },
+    {
+      "entry_id": "vocab:02238",
+      "prompt_ja": "〜に任命される",
+      "canonical_snapshot": "be appointed as",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be appointed as",
+        "be named as",
+        "be appointed to"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be named as",
+          "decision": "ACCEPT",
+          "reason": "役職等に「任命される」を表す主要な報道・business表現で、独立lexemeとして価値が高い。"
+        },
+        {
+          "expression": "be appointed to",
+          "decision": "REJECT",
+          "reason": "同じ appoint の補語形式差が中心で、paraphraseよりanswers authority側のsurface variantに近い。"
+        }
+      ],
+      "after_paraphrases": [
+        "be named as"
+      ],
+      "decision": "CHANGED",
+      "reason": "appointとは別lexemeの named を採用し、同一lexemeの前置詞variantは登録しない。"
+    },
+    {
+      "entry_id": "vocab:02239",
+      "prompt_ja": "私の考えでは",
+      "canonical_snapshot": "in my opinion",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "in my opinion",
+        "in my view",
+        "as I see it",
+        "to my mind"
+      ],
+      "candidate_review": [
+        {
+          "expression": "in my view",
+          "decision": "ACCEPT",
+          "reason": "「私の考えでは」の高頻度なneutral表現で、会話・文章とも有用。"
+        },
+        {
+          "expression": "as I see it",
+          "decision": "ACCEPT",
+          "reason": "話者の見方を示す自然な会話表現で、独立したconstructionとして価値が高い。"
+        },
+        {
+          "expression": "to my mind",
+          "decision": "ACCEPT",
+          "reason": "ややformal/BrE寄りだが現代英語で使われる確立表現で、register差として有用。"
+        }
+      ],
+      "after_paraphrases": [
+        "in my view",
+        "as I see it",
+        "to my mind"
+      ],
+      "decision": "CHANGED",
+      "reason": "同promptに対する主要な視点提示表現で、頻度・registerの役割が異なるため3つとも価値がある。"
+    },
+    {
+      "entry_id": "vocab:02240",
+      "prompt_ja": "少数民族",
+      "canonical_snapshot": "ethnic minority",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "ethnic minority",
+        "minority ethnic group",
+        "minority group"
+      ],
+      "candidate_review": [
+        {
+          "expression": "minority ethnic group",
+          "decision": "REJECT",
+          "reason": "意味は成立するが語順・地域的表現差の側面が強く、canonicalに対する増分価値が限定的。"
+        },
+        {
+          "expression": "minority group",
+          "decision": "REJECT",
+          "reason": "民族以外の少数集団も含み、「少数民族」より上位概念に広すぎる。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "canonicalがpromptに精密で、候補はsurface差か上位概念への拡張になるため追加しない。"
+    },
+    {
+      "entry_id": "vocab:02241",
+      "prompt_ja": "somethingを切望する",
+      "canonical_snapshot": "long for something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "long for something",
+        "yearn for something",
+        "crave something",
+        "be eager for something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "yearn for something",
+          "decision": "ACCEPT",
+          "reason": "「〜を切望する」を直接表す主要語で、文学・一般文とも重要。"
+        },
+        {
+          "expression": "crave something",
+          "decision": "ACCEPT",
+          "reason": "強く欲する意味の高頻度動詞で、食物以外にも承認・刺激等へ広く使える。"
+        },
+        {
+          "expression": "be eager for something",
+          "decision": "REJECT",
+          "reason": "強く望むことは表すが、期待・意欲寄りで「切望」の強さと質が安定しない。"
+        }
+      ],
+      "after_paraphrases": [
+        "yearn for something",
+        "crave something"
+      ],
+      "decision": "CHANGED",
+      "reason": "強い欲求を直接表す2語は独立価値が高く、eagerは意味の質がやや異なるため外す。"
+    },
+    {
+      "entry_id": "vocab:02242",
+      "prompt_ja": "〜によると",
+      "canonical_snapshot": "according to",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "according to"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「〜によると」の主要な引用・情報源提示表現はcanonicalが支配的で、別表現は文脈依存または説明的になる。"
+    },
+    {
+      "entry_id": "vocab:02243",
+      "prompt_ja": "5人中3人",
+      "canonical_snapshot": "three in five",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "three out of five",
+        "three in five"
+      ],
+      "candidate_review": [
+        {
+          "expression": "three out of five",
+          "decision": "ACCEPT",
+          "reason": "「5人中3人」を表す最も一般的で直感的な比率constructionの一つ。"
+        }
+      ],
+      "after_paraphrases": [
+        "three out of five"
+      ],
+      "decision": "CHANGED",
+      "reason": "three out of five はpromptへの高頻度な自然回答で、canonicalだけに限定する理由がない。"
+    },
+    {
+      "entry_id": "vocab:02244",
+      "prompt_ja": "外交問題",
+      "canonical_snapshot": "foreign affairs",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "diplomatic issue",
+        "diplomatic problem",
+        "foreign-affairs issue"
+      ],
+      "candidate_review": [
+        {
+          "expression": "diplomatic issue",
+          "decision": "ACCEPT",
+          "reason": "国際関係上の「外交問題」を直接表す自然なcollocationで、promptへの主要回答。"
+        },
+        {
+          "expression": "diplomatic problem",
+          "decision": "REJECT",
+          "reason": "意味は成立しうるが「問題」をproblemに限定し、issueより否定的・狭い。"
+        },
+        {
+          "expression": "foreign-affairs issue",
+          "decision": "REJECT",
+          "reason": "理解可能だが通常の主要collocationとしては diplomatic issue より不自然で増分価値が低い。"
+        }
+      ],
+      "after_paraphrases": [
+        "diplomatic issue"
+      ],
+      "decision": "CHANGED",
+      "reason": "promptに直接対応する自然なcollocationとして diplomatic issue を採用し、弱い候補は削る。"
+    },
+    {
+      "entry_id": "vocab:02245",
+      "prompt_ja": "安全保障条約",
+      "canonical_snapshot": "security treaty",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "security treaty",
+        "defense treaty"
+      ],
+      "candidate_review": [
+        {
+          "expression": "defense treaty",
+          "decision": "REJECT",
+          "reason": "防衛協力に焦点が狭まり、安全保障条約全般を表すpromptより下位概念になりうる。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "canonicalがgenericな安全保障条約を直接表し、defense treaty は防衛領域へ狭まるため追加しない。"
+    },
+    {
+      "entry_id": "vocab:02246",
+      "prompt_ja": "取り除く",
+      "canonical_snapshot": "eliminate",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "remove",
+        "get rid of",
+        "eliminate",
+        "take away"
+      ],
+      "candidate_review": [
+        {
+          "expression": "remove",
+          "decision": "ACCEPT",
+          "reason": "「取り除く」の最も基本的な高頻度動詞で、promptへの主要回答として必須。"
+        },
+        {
+          "expression": "get rid of",
+          "decision": "ACCEPT",
+          "reason": "不要なものを「取り除く／なくす」の高頻度な会話phrasal expressionで独立価値が高い。"
+        },
+        {
+          "expression": "take away",
+          "decision": "REJECT",
+          "reason": "物をその場から持ち去る意味が強く、除去・排除一般への対応としては広すぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "remove",
+        "get rid of"
+      ],
+      "decision": "CHANGED",
+      "reason": "基本語 remove と高頻度句 get rid of は主要回答。take away は移動の意味が強いため除外する。"
+    },
+    {
+      "entry_id": "vocab:02247",
+      "prompt_ja": "不公平な",
+      "canonical_snapshot": "unfair",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "unfair",
+        "unjust",
+        "inequitable"
+      ],
+      "candidate_review": [
+        {
+          "expression": "unjust",
+          "decision": "ACCEPT",
+          "reason": "「不公平な／不当な」を表す高頻度の主要形容詞で、法律・一般文とも重要。"
+        },
+        {
+          "expression": "inequitable",
+          "decision": "REJECT",
+          "reason": "不公正な配分・制度に特に使われるformal語で、genericなpromptに対する増分価値は限定的。"
+        }
+      ],
+      "after_paraphrases": [
+        "unjust"
+      ],
+      "decision": "CHANGED",
+      "reason": "genericなpromptに広く対応する unjust を採用し、より専門的な inequitable は削る。"
+    },
+    {
+      "entry_id": "vocab:02248",
+      "prompt_ja": "課す",
+      "canonical_snapshot": "impose",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "impose",
+        "levy",
+        "inflict"
+      ],
+      "candidate_review": [
+        {
+          "expression": "levy",
+          "decision": "REJECT",
+          "reason": "主に税・料金等を課す場合に限定され、genericな「課す」よりcontext依存。"
+        },
+        {
+          "expression": "inflict",
+          "decision": "REJECT",
+          "reason": "苦痛・損害等を与える意味で、日本語では通常「加える」に近くgenericな「課す」とはずれる。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "特殊目的語に依存する候補は登録せず、幅広く使えるcanonicalを維持する。"
+    },
+    {
+      "entry_id": "vocab:02249",
+      "prompt_ja": "生じる",
+      "canonical_snapshot": "arise",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "arise",
+        "occur",
+        "happen",
+        "emerge"
+      ],
+      "candidate_review": [
+        {
+          "expression": "occur",
+          "decision": "ACCEPT",
+          "reason": "出来事・問題・変化が「生じる」のformal-neutralな基本語で、非常に高頻度。"
+        },
+        {
+          "expression": "happen",
+          "decision": "ACCEPT",
+          "reason": "出来事が「生じる／起こる」の最も基本的な会話語で、answer-valueが高い。"
+        },
+        {
+          "expression": "emerge",
+          "decision": "REJECT",
+          "reason": "現れる・明らかになる意味が中心で、出来事が生じる一般には範囲がずれる。"
+        }
+      ],
+      "after_paraphrases": [
+        "occur",
+        "happen"
+      ],
+      "decision": "CHANGED",
+      "reason": "formal-neutralな occur と基本会話語 happen はpromptへの主要回答で、両方学習価値が高い。"
+    },
+    {
+      "entry_id": "vocab:02250",
+      "prompt_ja": "優先事項",
+      "canonical_snapshot": "priority",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "priority"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「優先事項」への基本名詞はcanonicalが主要で、別候補は説明句か意味範囲のずれになる。"
+    },
+    {
+      "entry_id": "vocab:02251",
+      "prompt_ja": "解決する・決着をつける／定住する・落ち着く",
+      "canonical_snapshot": "settle",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "settle",
+        "resolve",
+        "settle down"
+      ],
+      "candidate_review": [
+        {
+          "expression": "resolve",
+          "decision": "ACCEPT",
+          "reason": "prompt前半の「解決する・決着をつける」に直接対応する高頻度なformal-neutral語。"
+        },
+        {
+          "expression": "settle down",
+          "decision": "ACCEPT",
+          "reason": "prompt後半の「定住する・落ち着く」を表す主要phrasal verbで、独立して学ぶ価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "resolve",
+        "settle down"
+      ],
+      "decision": "CHANGED",
+      "reason": "promptが2つの主要senseを明示しているため、それぞれを代表する高価値表現を1つずつ採用する。"
+    },
+    {
+      "entry_id": "vocab:02252",
+      "prompt_ja": "連邦の",
+      "canonical_snapshot": "federal",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "federal",
+        "federated"
+      ],
+      "candidate_review": [
+        {
+          "expression": "federated",
+          "decision": "REJECT",
+          "reason": "連合・連邦化された状態を表し、「連邦の」という所属・制度上の形容詞とは用法が異なる。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "canonicalが制度上の「連邦の」を直接表し、federated は別の状態形容詞なので登録しない。"
+    },
+    {
+      "entry_id": "vocab:02253",
+      "prompt_ja": "予算",
+      "canonical_snapshot": "budget",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "budget",
+        "spending plan"
+      ],
+      "candidate_review": [
+        {
+          "expression": "spending plan",
+          "decision": "REJECT",
+          "reason": "意味説明としては成立するが、独立した語彙・定型表現としての学習増分が小さい。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "promptに対する主要語はcanonicalで、説明的な言い換えをparaphraseとして増やす価値は低い。"
+    },
+    {
+      "entry_id": "vocab:02254",
+      "prompt_ja": "かろうじて",
+      "canonical_snapshot": "narrowly",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "narrowly",
+        "barely",
+        "scarcely",
+        "hardly",
+        "just"
+      ],
+      "candidate_review": [
+        {
+          "expression": "barely",
+          "decision": "ACCEPT",
+          "reason": "「かろうじて／ほんのわずかな差で」を表す高頻度副詞で、promptへの主要回答。"
+        },
+        {
+          "expression": "scarcely",
+          "decision": "REJECT",
+          "reason": "意味は近いが現代日常英語では頻度が低く、barely採用後の増分価値が小さい。"
+        },
+        {
+          "expression": "hardly",
+          "decision": "REJECT",
+          "reason": "「ほとんど〜ない」の否定極性が強く、成功・回避を表す「かろうじて」と常に対応しない。"
+        },
+        {
+          "expression": "just",
+          "decision": "REJECT",
+          "reason": "単独では多義性が高く、「たった今」「ちょうど」等への誤学習リスクがある。"
+        },
+        {
+          "expression": "only just",
+          "decision": "ACCEPT",
+          "reason": "「ほとんど〜できなかったが、かろうじて」の意味を明示する高頻度な句。"
+        }
+      ],
+      "after_paraphrases": [
+        "barely",
+        "only just"
+      ],
+      "decision": "CHANGED",
+      "reason": "barely と only just はpromptへの主要回答。多義なjust単独や低増分候補は除外する。"
+    },
+    {
+      "entry_id": "vocab:02255",
+      "prompt_ja": "承認する",
+      "canonical_snapshot": "approve",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "approve",
+        "authorize",
+        "endorse",
+        "recognize",
+        "acknowledge"
+      ],
+      "candidate_review": [
+        {
+          "expression": "authorize",
+          "decision": "REJECT",
+          "reason": "公式に許可する意味に限定され、「承認する」全般より狭い。"
+        },
+        {
+          "expression": "endorse",
+          "decision": "REJECT",
+          "reason": "支持・推薦の意味が中心で、一般的な承認とは異なる。"
+        },
+        {
+          "expression": "recognize",
+          "decision": "REJECT",
+          "reason": "正当性・存在を認める意味に寄り、approvalとは別のsemantic role。"
+        },
+        {
+          "expression": "acknowledge",
+          "decision": "REJECT",
+          "reason": "事実を認める意味が中心で、許可・承認を与える意味ではない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "日本語が広いからといって異なる種類の「認める」を一括登録すると誤学習になるため、canonicalのみ。"
+    },
+    {
+      "entry_id": "vocab:02256",
+      "prompt_ja": "主張する",
+      "canonical_snapshot": "argue",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "argue",
+        "claim",
+        "assert",
+        "insist",
+        "maintain",
+        "contend"
+      ],
+      "candidate_review": [
+        {
+          "expression": "claim",
+          "decision": "ACCEPT",
+          "reason": "事実・見解を「主張する」の最も重要な報告動詞の一つで、会話・記事とも高頻度。"
+        },
+        {
+          "expression": "assert",
+          "decision": "ACCEPT",
+          "reason": "自信をもって断言・主張するformalな主要語で、academic/business読解でも重要。"
+        },
+        {
+          "expression": "insist",
+          "decision": "ACCEPT",
+          "reason": "強く主張する意味の高頻度語で、態度の強さという独立した学習価値がある。"
+        },
+        {
+          "expression": "maintain",
+          "decision": "ACCEPT",
+          "reason": "ある主張を変えずに述べ続ける意味で、報道・formal文脈の重要語。"
+        },
+        {
+          "expression": "contend",
+          "decision": "REJECT",
+          "reason": "意味は成立するが、頻度・実用性で上記formal候補に劣り、このcardでの追加価値は相対的に低い。"
+        }
+      ],
+      "after_paraphrases": [
+        "claim",
+        "assert",
+        "insist",
+        "maintain"
+      ],
+      "decision": "CHANGED",
+      "reason": "「主張する」は英語で主要reporting verbが複数あり、頻度・強さ・registerの違いを学ぶ価値が高い。"
+    },
+    {
+      "entry_id": "vocab:02257",
+      "prompt_ja": "政府",
+      "canonical_snapshot": "administration",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "government",
+        "administration",
+        "state"
+      ],
+      "candidate_review": [
+        {
+          "expression": "government",
+          "decision": "ACCEPT",
+          "reason": "genericな「政府」への最も基本的かつ国際的に通用する主要語で、MISS扱いは不適切。"
+        },
+        {
+          "expression": "state",
+          "decision": "REJECT",
+          "reason": "国家・国家機構を広く指し、個別の「政府」とは同一でない場合が多い。"
+        }
+      ],
+      "after_paraphrases": [
+        "government"
+      ],
+      "decision": "CHANGED",
+      "reason": "promptはgenericな「政府」なので、より基本的な government をcanonicalの地域・制度用法に関係なく採用する。"
+    },
+    {
+      "entry_id": "vocab:02258",
+      "prompt_ja": "供給源",
+      "canonical_snapshot": "source",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "source",
+        "supplier"
+      ],
+      "candidate_review": [
+        {
+          "expression": "supplier",
+          "decision": "REJECT",
+          "reason": "供給する人・企業を指し、物・情報・資源の「供給源」一般とは意味範囲が異なる。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "canonicalが人・場所・起源を含むgenericな「供給源」に最もよく対応し、supplierは狭い。"
+    },
+    {
+      "entry_id": "vocab:02259",
+      "prompt_ja": "世論調査",
+      "canonical_snapshot": "poll",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "poll",
+        "opinion poll",
+        "public opinion poll"
+      ],
+      "candidate_review": [
+        {
+          "expression": "opinion poll",
+          "decision": "ACCEPT",
+          "reason": "「世論調査」を明示する標準的なcollocationで、pollの多義性を避けられる高価値表現。"
+        },
+        {
+          "expression": "public opinion poll",
+          "decision": "REJECT",
+          "reason": "意味は正確だが opinion poll の透明な拡張で、追加登録する独立価値は小さい。"
+        }
+      ],
+      "after_paraphrases": [
+        "opinion poll"
+      ],
+      "decision": "CHANGED",
+      "reason": "opinion poll はpromptを明示する主要collocationで、冗長な拡張形は増やさない。"
+    },
+    {
+      "entry_id": "vocab:02260",
+      "prompt_ja": "圧倒的な",
+      "canonical_snapshot": "overwhelming",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "overwhelming",
+        "dominant",
+        "staggering"
+      ],
+      "candidate_review": [
+        {
+          "expression": "dominant",
+          "decision": "REJECT",
+          "reason": "優勢・支配的を表すが、量・感情・証拠等の「圧倒的な」一般には対応しない。"
+        },
+        {
+          "expression": "staggering",
+          "decision": "REJECT",
+          "reason": "驚くほど大きいという評価を含み、genericな「圧倒的な」とは意味がずれる。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "関連形容詞は支配性・驚異性など別ニュアンスを持ち、canonicalほどpromptに広く対応しない。"
+    },
+    {
+      "entry_id": "vocab:02261",
+      "prompt_ja": "過半数",
+      "canonical_snapshot": "majority",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "majority",
+        "more than half"
+      ],
+      "candidate_review": [
+        {
+          "expression": "more than half",
+          "decision": "ACCEPT",
+          "reason": "「過半数」の数量的意味を直接表す高頻度な自然句で、説明にも会話にも有用。"
+        }
+      ],
+      "after_paraphrases": [
+        "more than half"
+      ],
+      "decision": "CHANGED",
+      "reason": "majority以外にも、数量を明示する more than half はanswer-valueと実用性が高い。"
+    },
+    {
+      "entry_id": "vocab:02262",
+      "prompt_ja": "警官",
+      "canonical_snapshot": "cop",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "cop",
+        "police officer",
+        "policeman"
+      ],
+      "candidate_review": [
+        {
+          "expression": "police officer",
+          "decision": "ACCEPT",
+          "reason": "「警官」の標準的・gender-neutralな主要表現で、formal-neutral registerとして必須。"
+        },
+        {
+          "expression": "policeman",
+          "decision": "REJECT",
+          "reason": "意味は成立するがgender-specificで、police officerが一般的な標準表現として優先される。"
+        }
+      ],
+      "after_paraphrases": [
+        "police officer"
+      ],
+      "decision": "CHANGED",
+      "reason": "口語canonicalに対し、標準的でgender-neutralな police officer を追加する価値が高い。"
+    },
+    {
+      "entry_id": "vocab:02263",
+      "prompt_ja": "手がかり",
+      "canonical_snapshot": "clue",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "clue",
+        "lead",
+        "hint"
+      ],
+      "candidate_review": [
+        {
+          "expression": "lead",
+          "decision": "ACCEPT",
+          "reason": "特に捜査・調査で「手がかり」を表す高頻度名詞で、clueとは別の実務的語彙価値がある。"
+        },
+        {
+          "expression": "hint",
+          "decision": "REJECT",
+          "reason": "ほのめかし・ヒントの意味が強く、証拠や捜査上の「手がかり」一般には弱い。"
+        }
+      ],
+      "after_paraphrases": [
+        "lead"
+      ],
+      "decision": "CHANGED",
+      "reason": "捜査・調査文脈で重要な lead を採用し、より弱いhintは除外する。"
+    },
+    {
+      "entry_id": "vocab:02264",
+      "prompt_ja": "残忍な",
+      "canonical_snapshot": "brutal",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "brutal",
+        "cruel",
+        "ruthless",
+        "savage"
+      ],
+      "candidate_review": [
+        {
+          "expression": "cruel",
+          "decision": "ACCEPT",
+          "reason": "「残忍な／むごい」を表す最も基本的な主要形容詞の一つで、高頻度。"
+        },
+        {
+          "expression": "ruthless",
+          "decision": "ACCEPT",
+          "reason": "容赦なく残酷なという意味で「残忍な」に自然に対応し、business/政治文脈でも重要。"
+        },
+        {
+          "expression": "savage",
+          "decision": "REJECT",
+          "reason": "暴力的・獰猛など意味の広がりがあり、現代用法では人を指す際の語用上の注意も必要で優先度が低い。"
+        }
+      ],
+      "after_paraphrases": [
+        "cruel",
+        "ruthless"
+      ],
+      "decision": "CHANGED",
+      "reason": "基本語cruelと容赦のなさを表すruthlessは高価値。より語用・意味幅の大きい語は削る。"
+    },
+    {
+      "entry_id": "vocab:02265",
+      "prompt_ja": "殺人",
+      "canonical_snapshot": "murder",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "murder",
+        "homicide",
+        "killing"
+      ],
+      "candidate_review": [
+        {
+          "expression": "homicide",
+          "decision": "ACCEPT",
+          "reason": "人を死なせる行為を指す法律・報道の重要語で、「殺人」のformal/legal表現として学習価値が高い。"
+        },
+        {
+          "expression": "killing",
+          "decision": "REJECT",
+          "reason": "人を殺す出来事全般を指し、犯罪としての「殺人」を必ずしも含意しない。"
+        }
+      ],
+      "after_paraphrases": [
+        "homicide"
+      ],
+      "decision": "CHANGED",
+      "reason": "legal/reporting registerの homicide は重要だが、犯罪性を限定しない killing は広すぎる。"
+    },
+    {
+      "entry_id": "vocab:02266",
+      "prompt_ja": "正気でない",
+      "canonical_snapshot": "insane",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "insane",
+        "crazy",
+        "out of one's mind",
+        "not sane"
+      ],
+      "candidate_review": [
+        {
+          "expression": "crazy",
+          "decision": "ACCEPT",
+          "reason": "「正気でない」を口語で表す非常に高頻度な形容詞で、register差として重要。"
+        },
+        {
+          "expression": "out of one's mind",
+          "decision": "ACCEPT",
+          "reason": "「正気ではない」を表す確立したidiomで、会話理解に高い学習価値がある。"
+        },
+        {
+          "expression": "not sane",
+          "decision": "REJECT",
+          "reason": "意味は成立するが単純な否定による構成で、独立表現としての増分価値が低い。"
+        }
+      ],
+      "after_paraphrases": [
+        "crazy",
+        "out of one's mind"
+      ],
+      "decision": "CHANGED",
+      "reason": "高頻度口語語と重要idiomを採用し、機械的な否定表現は除外する。"
+    },
+    {
+      "entry_id": "vocab:02267",
+      "prompt_ja": "悪徳",
+      "canonical_snapshot": "vice",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "vice",
+        "corruption",
+        "immorality",
+        "wrongdoing"
+      ],
+      "candidate_review": [
+        {
+          "expression": "corruption",
+          "decision": "REJECT",
+          "reason": "制度・権力の腐敗や汚職に強く寄り、個人の「悪徳」一般より狭い。"
+        },
+        {
+          "expression": "immorality",
+          "decision": "REJECT",
+          "reason": "不道徳という抽象概念で、個々の悪徳・悪習を指すviceとは焦点が異なる。"
+        },
+        {
+          "expression": "wrongdoing",
+          "decision": "REJECT",
+          "reason": "不正行為全般で、性向・悪習としての「悪徳」とは一致しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "近接候補は腐敗・不道徳・不正行為へ意味が分岐するため、promptに精密なcanonicalのみ。"
+    },
+    {
+      "entry_id": "vocab:02268",
+      "prompt_ja": "指紋",
+      "canonical_snapshot": "fingerprint",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "fingerprint"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「指紋」の一般的な英語名詞はcanonicalが支配的で、独立して学ばせる主要別語はない。"
+    },
+    {
+      "entry_id": "vocab:02269",
+      "prompt_ja": "武器",
+      "canonical_snapshot": "weapon",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "weapon",
+        "arms",
+        "armament"
+      ],
+      "candidate_review": [
+        {
+          "expression": "arms",
+          "decision": "ACCEPT",
+          "reason": "武器類を集合的に指す高頻度語で、政治・軍事・報道の読解に重要な別表現。"
+        },
+        {
+          "expression": "armament",
+          "decision": "REJECT",
+          "reason": "軍備・武装全体を指すtechnical/formal語で、個別・genericな「武器」より範囲がずれる。"
+        }
+      ],
+      "after_paraphrases": [
+        "arms"
+      ],
+      "decision": "CHANGED",
+      "reason": "集合名詞 arms は主要かつ実用的。よりtechnicalなarmamentはgeneric promptには過剰。"
+    },
+    {
+      "entry_id": "vocab:02270",
+      "prompt_ja": "著名な",
+      "canonical_snapshot": "noted",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "noted",
+        "famous",
+        "well-known",
+        "renowned",
+        "prominent",
+        "distinguished",
+        "notable"
+      ],
+      "candidate_review": [
+        {
+          "expression": "famous",
+          "decision": "ACCEPT",
+          "reason": "「著名な」の最も基本的で高頻度な形容詞の一つ。"
+        },
+        {
+          "expression": "well-known",
+          "decision": "ACCEPT",
+          "reason": "「よく知られた／著名な」を表す非常に実用的な複合形容詞。"
+        },
+        {
+          "expression": "renowned",
+          "decision": "ACCEPT",
+          "reason": "功績・品質などで広く名高いというformal寄りの主要語で、読解価値が高い。"
+        },
+        {
+          "expression": "prominent",
+          "decision": "ACCEPT",
+          "reason": "社会・分野で著名・有力な人や組織に使う主要語で、ニュース・businessで重要。"
+        },
+        {
+          "expression": "distinguished",
+          "decision": "REJECT",
+          "reason": "卓越した業績・品格の含意が強く、単なる「著名な」より評価的。"
+        },
+        {
+          "expression": "notable",
+          "decision": "REJECT",
+          "reason": "意味は成立するが、既に採用する頻出・register別候補に比べ増分価値が小さい。"
+        }
+      ],
+      "after_paraphrases": [
+        "famous",
+        "well-known",
+        "renowned",
+        "prominent"
+      ],
+      "decision": "CHANGED",
+      "reason": "基本語・複合語・formal語・報道語の各役割が明確で、いずれも「著名な」への主要回答。"
+    },
+    {
+      "entry_id": "vocab:02271",
+      "prompt_ja": "心理学者",
+      "canonical_snapshot": "psychologist",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "psychologist"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「心理学者」を指す標準語はcanonicalで、主要な独立別表現はない。"
+    },
+    {
+      "entry_id": "vocab:02272",
+      "prompt_ja": "誘拐する",
+      "canonical_snapshot": "kidnap",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "kidnap",
+        "abduct"
+      ],
+      "candidate_review": [
+        {
+          "expression": "abduct",
+          "decision": "ACCEPT",
+          "reason": "「誘拐する」のformalな主要動詞で、報道・法律文脈でも頻出し独立価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "abduct"
+      ],
+      "decision": "CHANGED",
+      "reason": "kidnapとabductはともに主要語でregister差があり、両方学ばせる価値が高い。"
+    },
+    {
+      "entry_id": "vocab:02273",
+      "prompt_ja": "有罪の",
+      "canonical_snapshot": "guilty",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "guilty",
+        "culpable",
+        "convicted"
+      ],
+      "candidate_review": [
+        {
+          "expression": "culpable",
+          "decision": "REJECT",
+          "reason": "責任・非難に値する意味で、法的に「有罪の」と同一ではない。"
+        },
+        {
+          "expression": "convicted",
+          "decision": "REJECT",
+          "reason": "有罪判決を受けた状態を表し、guiltyという評価そのものとは異なる。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "法的責任・判決済みを表す近接語はpromptとsemantic roleが異なるため追加しない。"
+    },
+    {
+      "entry_id": "vocab:02274",
+      "prompt_ja": "広範囲に及ぶ",
+      "canonical_snapshot": "widespread",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "widespread",
+        "extensive",
+        "far-reaching",
+        "wide-ranging"
+      ],
+      "candidate_review": [
+        {
+          "expression": "extensive",
+          "decision": "ACCEPT",
+          "reason": "範囲・規模が広いという意味で「広範囲に及ぶ」に直接対応する高頻度語。"
+        },
+        {
+          "expression": "far-reaching",
+          "decision": "ACCEPT",
+          "reason": "影響・効果が広範囲に及ぶことを表す主要形容詞で、独立した語彙価値が高い。"
+        },
+        {
+          "expression": "wide-ranging",
+          "decision": "ACCEPT",
+          "reason": "対象範囲が広いことを表す高頻度の複合形容詞で、academic/businessでも重要。"
+        }
+      ],
+      "after_paraphrases": [
+        "extensive",
+        "far-reaching",
+        "wide-ranging"
+      ],
+      "decision": "CHANGED",
+      "reason": "広さの種類が異なる主要3語はいずれもpromptに自然に対応し、実用性も高い。"
+    },
+    {
+      "entry_id": "vocab:02275",
+      "prompt_ja": "討論",
+      "canonical_snapshot": "debate",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "debate",
+        "discussion",
+        "argument"
+      ],
+      "candidate_review": [
+        {
+          "expression": "discussion",
+          "decision": "REJECT",
+          "reason": "意見交換全般で、賛否を戦わせる「討論」より広い。"
+        },
+        {
+          "expression": "argument",
+          "decision": "REJECT",
+          "reason": "論争・口論や論証を指し、formalな討論というpromptと安定して一致しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "discussion/argument は上位・別概念に広がるため、討論に最も直接的なcanonicalのみ。"
+    },
+    {
+      "entry_id": "vocab:02276",
+      "prompt_ja": "慈悲",
+      "canonical_snapshot": "mercy",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "mercy",
+        "compassion",
+        "clemency"
+      ],
+      "candidate_review": [
+        {
+          "expression": "compassion",
+          "decision": "ACCEPT",
+          "reason": "苦しむ人への慈悲・思いやりを表す高頻度語で、「慈悲」への主要な別回答。"
+        },
+        {
+          "expression": "clemency",
+          "decision": "REJECT",
+          "reason": "処罰を軽くする寛大さに特化し、genericな「慈悲」より文脈が狭い。"
+        }
+      ],
+      "after_paraphrases": [
+        "compassion"
+      ],
+      "decision": "CHANGED",
+      "reason": "genericな慈悲に広く対応するcompassionを採用し、刑罰等に限られるclemencyは外す。"
+    },
+    {
+      "entry_id": "vocab:02277",
+      "prompt_ja": "刑務所",
+      "canonical_snapshot": "prison",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "prison",
+        "jail",
+        "penitentiary"
+      ],
+      "candidate_review": [
+        {
+          "expression": "jail",
+          "decision": "ACCEPT",
+          "reason": "「刑務所／拘置施設」を表す非常に高頻度な主要語で、地域・制度差を含め学習価値が高い。"
+        },
+        {
+          "expression": "penitentiary",
+          "decision": "REJECT",
+          "reason": "特定制度・長期刑施設を指すformal/AmE語で、genericなpromptには狭い。"
+        }
+      ],
+      "after_paraphrases": [
+        "jail"
+      ],
+      "decision": "CHANGED",
+      "reason": "制度上の細差をpromptが区別していないため、高頻度のjailを主要variantとして採用する。"
+    },
+    {
+      "entry_id": "vocab:02278",
+      "prompt_ja": "犯罪",
+      "canonical_snapshot": "crime",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "crime",
+        "criminal offense",
+        "offense"
+      ],
+      "candidate_review": [
+        {
+          "expression": "criminal offense",
+          "decision": "ACCEPT",
+          "reason": "法律上の「犯罪」を明示するformalな主要表現で、独立したregister価値がある。"
+        },
+        {
+          "expression": "offense",
+          "decision": "REJECT",
+          "reason": "軽微な違反や不快行為まで含み、単独では「犯罪」より意味が広い。"
+        }
+      ],
+      "after_paraphrases": [
+        "criminal offense"
+      ],
+      "decision": "CHANGED",
+      "reason": "legal registerで精密な criminal offense を採用し、単独offenseは広すぎるため除外する。"
+    },
+    {
+      "entry_id": "vocab:02279",
+      "prompt_ja": "警官",
+      "canonical_snapshot": "officer",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "police officer",
+        "cop",
+        "officer",
+        "policeman"
+      ],
+      "candidate_review": [
+        {
+          "expression": "police officer",
+          "decision": "ACCEPT",
+          "reason": "「警官」を曖昧さなく表す標準的・gender-neutralな主要表現。"
+        },
+        {
+          "expression": "cop",
+          "decision": "ACCEPT",
+          "reason": "「警官」の非常に高頻度な口語語で、register差として独立価値が高い。"
+        },
+        {
+          "expression": "policeman",
+          "decision": "REJECT",
+          "reason": "意味は成立するがgender-specificで、標準的には police officer が優先される。"
+        }
+      ],
+      "after_paraphrases": [
+        "police officer",
+        "cop"
+      ],
+      "decision": "CHANGED",
+      "reason": "canonical officer は多義なので、標準表現 police officer と高頻度口語 cop を両方採用する。"
+    },
+    {
+      "entry_id": "vocab:02280",
+      "prompt_ja": "年配の",
+      "canonical_snapshot": "elderly",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "elderly",
+        "older",
+        "senior",
+        "aged"
+      ],
+      "candidate_review": [
+        {
+          "expression": "older",
+          "decision": "ACCEPT",
+          "reason": "「年配の」を自然かつ中立的に表す高頻度形容詞で、現代英語で実用性が高い。"
+        },
+        {
+          "expression": "senior",
+          "decision": "REJECT",
+          "reason": "通常はsenior citizen等の名詞修飾や地位の意味も強く、単独でgenericな「年配の」とはずれやすい。"
+        },
+        {
+          "expression": "aged",
+          "decision": "REJECT",
+          "reason": "意味は成立するが現代の日常表現としては頻度・自然さでolderに劣る。"
+        }
+      ],
+      "after_paraphrases": [
+        "older"
+      ],
+      "decision": "CHANGED",
+      "reason": "現代的で中立な older を主要回答として追加し、より限定的・低頻度な候補は削る。"
+    },
+    {
+      "entry_id": "vocab:02281",
+      "prompt_ja": "泥棒",
+      "canonical_snapshot": "thief",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "thief",
+        "robber",
+        "burglar",
+        "crook"
+      ],
+      "candidate_review": [
+        {
+          "expression": "robber",
+          "decision": "REJECT",
+          "reason": "暴力・威嚇を伴う強盗に狭まり、genericな「泥棒」より下位概念。"
+        },
+        {
+          "expression": "burglar",
+          "decision": "REJECT",
+          "reason": "建物への侵入窃盗に限定され、genericな「泥棒」より狭い。"
+        },
+        {
+          "expression": "crook",
+          "decision": "REJECT",
+          "reason": "犯罪者・詐欺師など広く指す口語で、窃盗者に限定されない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "robber/burglarは下位概念、crookは上位概念で、genericなpromptにはcanonicalが最も精密。"
+    },
+    {
+      "entry_id": "vocab:02282",
+      "prompt_ja": "試みる",
+      "canonical_snapshot": "attempt",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "attempt",
+        "try",
+        "endeavor"
+      ],
+      "candidate_review": [
+        {
+          "expression": "try",
+          "decision": "ACCEPT",
+          "reason": "「試みる」の最も基本的で高頻度な動詞で、promptへの主要回答として必須。"
+        },
+        {
+          "expression": "endeavor",
+          "decision": "REJECT",
+          "reason": "通常は「努力する」ニュアンスが強く、単なる試行を表すpromptより意味が重い。"
+        }
+      ],
+      "after_paraphrases": [
+        "try"
+      ],
+      "decision": "CHANGED",
+      "reason": "基本語tryをMISSにするのは不適切。努力性の強いendeavorはpromptとの対応が弱い。"
+    },
+    {
+      "entry_id": "vocab:02283",
+      "prompt_ja": "目撃する",
+      "canonical_snapshot": "witness",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "witness",
+        "see",
+        "observe"
+      ],
+      "candidate_review": [
+        {
+          "expression": "see",
+          "decision": "REJECT",
+          "reason": "出来事を偶然見る場合は成立するが意味範囲が非常に広く、「目撃する」との対応を学ばせるには粗い。"
+        },
+        {
+          "expression": "observe",
+          "decision": "REJECT",
+          "reason": "注意して観察する意味が中心で、出来事を目撃することと常に一致しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "高頻度でも広すぎるseeや観察語observeは誤対応を生みうるため、canonicalのみ。"
+    },
+    {
+      "entry_id": "vocab:02284",
+      "prompt_ja": "原野",
+      "canonical_snapshot": "wilderness",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "wilderness",
+        "the wilds",
+        "wasteland"
+      ],
+      "candidate_review": [
+        {
+          "expression": "the wilds",
+          "decision": "REJECT",
+          "reason": "意味は近いが文学的・低頻度で、canonicalに追加する実用上の増分が小さい。"
+        },
+        {
+          "expression": "wasteland",
+          "decision": "REJECT",
+          "reason": "不毛・荒廃した土地を指し、「原野」一般より意味が狭く評価的。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "主要語はcanonicalで、他候補は低頻度または荒廃ニュアンスが強い。"
+    },
+    {
+      "entry_id": "vocab:02285",
+      "prompt_ja": "通路",
+      "canonical_snapshot": "aisle",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "aisle",
+        "corridor",
+        "passage",
+        "passageway",
+        "walkway"
+      ],
+      "candidate_review": [
+        {
+          "expression": "corridor",
+          "decision": "ACCEPT",
+          "reason": "建物・列車等の「通路」を表す非常に一般的な名詞で、aisleとは異なる主要contextを担う。"
+        },
+        {
+          "expression": "passageway",
+          "decision": "ACCEPT",
+          "reason": "場所を通り抜けるための「通路」をgenericに表す自然な名詞で、独立価値が高い。"
+        },
+        {
+          "expression": "passage",
+          "decision": "REJECT",
+          "reason": "通路の意味もあるが文章・通過等の多義性が大きく、このcardでの対応が粗い。"
+        },
+        {
+          "expression": "walkway",
+          "decision": "REJECT",
+          "reason": "歩行者用通路に限定され、genericな「通路」より範囲が狭い。"
+        }
+      ],
+      "after_paraphrases": [
+        "corridor",
+        "passageway"
+      ],
+      "decision": "CHANGED",
+      "reason": "日本語promptがaisle/corridor等を区別しないため、主要な通路語2つを採用し、より多義・限定的な語は削る。"
+    },
+    {
+      "entry_id": "vocab:02286",
+      "prompt_ja": "悲鳴をあげる",
+      "canonical_snapshot": "scream",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "scream",
+        "shriek",
+        "cry out",
+        "let out a scream"
+      ],
+      "candidate_review": [
+        {
+          "expression": "shriek",
+          "decision": "ACCEPT",
+          "reason": "甲高い悲鳴を上げる意味の主要動詞で、「悲鳴をあげる」への独立した有用語。"
+        },
+        {
+          "expression": "cry out",
+          "decision": "REJECT",
+          "reason": "大声で叫ぶことを広く表し、必ずしも悲鳴ではない。"
+        },
+        {
+          "expression": "let out a scream",
+          "decision": "REJECT",
+          "reason": "意味は成立するがcanonical語screamを名詞化した透明なconstructionで増分価値が小さい。"
+        }
+      ],
+      "after_paraphrases": [
+        "shriek"
+      ],
+      "decision": "CHANGED",
+      "reason": "独立語として重要なshriekのみ追加し、叫ぶ一般やcanonical由来の透明構文は増やさない。"
+    },
+    {
+      "entry_id": "vocab:02287",
+      "prompt_ja": "知らせる",
+      "canonical_snapshot": "inform",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "inform",
+        "notify",
+        "let someone know",
+        "tell"
+      ],
+      "candidate_review": [
+        {
+          "expression": "let someone know",
+          "decision": "ACCEPT",
+          "reason": "「知らせる」の極めて高頻度な会話表現で、実用上のanswer-valueが高い。"
+        },
+        {
+          "expression": "notify",
+          "decision": "ACCEPT",
+          "reason": "正式に知らせる意味の主要語で、business・system message等でも頻出する。"
+        },
+        {
+          "expression": "tell",
+          "decision": "REJECT",
+          "reason": "非常に広い伝達動詞で、単独では「知らせる」との対応が粗く誤学習しやすい。"
+        }
+      ],
+      "after_paraphrases": [
+        "let someone know",
+        "notify"
+      ],
+      "decision": "CHANGED",
+      "reason": "会話の主要句とformalな主要語を採用し、多義すぎるtellは外す。"
+    },
+    {
+      "entry_id": "vocab:02288",
+      "prompt_ja": "安全",
+      "canonical_snapshot": "safety",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "safety",
+        "security"
+      ],
+      "candidate_review": [
+        {
+          "expression": "security",
+          "decision": "ACCEPT",
+          "reason": "危険・脅威から守られた「安全」を表す主要語で、IT・国家・施設等の文脈で高価値。"
+        }
+      ],
+      "after_paraphrases": [
+        "security"
+      ],
+      "decision": "CHANGED",
+      "reason": "日本語promptが安全性と脅威からの安全を区別しないため、主要語securityにも十分な登録価値がある。"
+    },
+    {
+      "entry_id": "vocab:02289",
+      "prompt_ja": "弾丸",
+      "canonical_snapshot": "bullet",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "bullet",
+        "round",
+        "projectile"
+      ],
+      "candidate_review": [
+        {
+          "expression": "round",
+          "decision": "REJECT",
+          "reason": "弾薬一発（薬莢等を含む）を指し、弾丸そのものより意味範囲が異なる。"
+        },
+        {
+          "expression": "projectile",
+          "decision": "REJECT",
+          "reason": "発射物全般の上位概念で、銃弾に限定されない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "roundは弾薬単位、projectileは上位概念であり、prompt「弾丸」に精密なcanonicalのみ。"
+    },
+    {
+      "entry_id": "vocab:02290",
+      "prompt_ja": "胸",
+      "canonical_snapshot": "chest",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "chest",
+        "breast",
+        "bosom"
+      ],
+      "candidate_review": [
+        {
+          "expression": "breast",
+          "decision": "REJECT",
+          "reason": "胸部の一部または乳房を指す用法が強く、genericな「胸」より範囲が狭い。"
+        },
+        {
+          "expression": "bosom",
+          "decision": "REJECT",
+          "reason": "文学的・婉曲的で現代の基本語としての実用性が低い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "promptのgenericな身体部位にはcanonicalが最も一般的で、他候補は狭いか低頻度。"
+    },
+    {
+      "entry_id": "vocab:02291",
+      "prompt_ja": "状態",
+      "canonical_snapshot": "condition",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "condition",
+        "state",
+        "status"
+      ],
+      "candidate_review": [
+        {
+          "expression": "state",
+          "decision": "ACCEPT",
+          "reason": "物・人・状況の「状態」を表す非常に基本的な名詞で、promptへの主要回答。"
+        },
+        {
+          "expression": "status",
+          "decision": "ACCEPT",
+          "reason": "進行状況・現在の状態を表す高頻度語で、system/business文脈でも重要。"
+        }
+      ],
+      "after_paraphrases": [
+        "state",
+        "status"
+      ],
+      "decision": "CHANGED",
+      "reason": "state はgeneric、status は進行・制度上の状態に高頻度で使われ、どちらも独立した学習価値が高い。"
+    },
+    {
+      "entry_id": "vocab:02292",
+      "prompt_ja": "確かでない",
+      "canonical_snapshot": "uncertain",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "uncertain",
+        "unsure",
+        "not sure",
+        "doubtful"
+      ],
+      "candidate_review": [
+        {
+          "expression": "unsure",
+          "decision": "ACCEPT",
+          "reason": "「確かでない」を表す高頻度の基本形容詞で、会話で特に重要。"
+        },
+        {
+          "expression": "not sure",
+          "decision": "ACCEPT",
+          "reason": "「確かでない／自信がない」を表す最も実用的な会話句の一つ。"
+        },
+        {
+          "expression": "doubtful",
+          "decision": "REJECT",
+          "reason": "疑わしい・起こりそうにない等の意味も強く、話者が確かでない状態と必ずしも一致しない。"
+        }
+      ],
+      "after_paraphrases": [
+        "unsure",
+        "not sure"
+      ],
+      "decision": "CHANGED",
+      "reason": "基本形容詞unsureと高頻度会話句not sureを採用し、doubtfulの別意味は混ぜない。"
+    },
+    {
+      "entry_id": "vocab:02293",
+      "prompt_ja": "山積み",
+      "canonical_snapshot": "heap",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "heap",
+        "pile",
+        "stack"
+      ],
+      "candidate_review": [
+        {
+          "expression": "pile",
+          "decision": "ACCEPT",
+          "reason": "物が積み重なった「山積み」を表す最も基本的な別名詞で、高頻度。"
+        },
+        {
+          "expression": "stack",
+          "decision": "REJECT",
+          "reason": "通常は整然と積み重ねたものを指し、heap型の「山積み」とは形状含意が異なる。"
+        }
+      ],
+      "after_paraphrases": [
+        "pile"
+      ],
+      "decision": "CHANGED",
+      "reason": "pile はpromptへの主要基本語。stackは整然性の含意がありgenericな山積みには狭い。"
+    },
+    {
+      "entry_id": "vocab:02294",
+      "prompt_ja": "灰",
+      "canonical_snapshot": "ash",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "ash",
+        "ashes"
+      ],
+      "candidate_review": [
+        {
+          "expression": "ashes",
+          "decision": "REJECT",
+          "reason": "文脈により焼け残りを集合的に指すが、基本的には同一語の数variantで今回のparaphrase対象ではない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "主要語はcanonicalで、ashes は独立lexemeではなく数・集合用法のsurface差として扱う。"
+    },
+    {
+      "entry_id": "vocab:02295",
+      "prompt_ja": "花火",
+      "canonical_snapshot": "fireworks",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "fireworks",
+        "firework",
+        "pyrotechnics"
+      ],
+      "candidate_review": [
+        {
+          "expression": "firework",
+          "decision": "REJECT",
+          "reason": "canonicalとの単数・複数差であり、今回のsurface variant禁止に該当する。"
+        },
+        {
+          "expression": "pyrotechnics",
+          "decision": "REJECT",
+          "reason": "花火技術・演出全般を指すtechnicalな集合概念で、日常の「花火」より広い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "単複variantとtechnical上位概念しかなく、独立した高価値paraphraseはない。"
+    },
+    {
+      "entry_id": "vocab:02296",
+      "prompt_ja": "倉庫",
+      "canonical_snapshot": "warehouse",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "warehouse",
+        "storehouse",
+        "depot",
+        "storage facility"
+      ],
+      "candidate_review": [
+        {
+          "expression": "storehouse",
+          "decision": "REJECT",
+          "reason": "意味は成立するが現代の一般用語としてwarehouseより頻度が低く、増分価値が小さい。"
+        },
+        {
+          "expression": "depot",
+          "decision": "REJECT",
+          "reason": "車両基地・集積所・燃料庫等の特定施設にも使われ、genericな「倉庫」とはずれる。"
+        },
+        {
+          "expression": "storage facility",
+          "decision": "REJECT",
+          "reason": "説明的な一般句で、独立語彙として追加する学習価値が低い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "canonicalが現代の主要語で、他候補は低頻度・施設限定・説明句にとどまる。"
+    },
+    {
+      "entry_id": "vocab:02297",
+      "prompt_ja": "大火",
+      "canonical_snapshot": "blaze",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "blaze",
+        "conflagration",
+        "major fire"
+      ],
+      "candidate_review": [
+        {
+          "expression": "conflagration",
+          "decision": "REJECT",
+          "reason": "大火を精密に表すが非常にformal・低頻度で、一般学習上の優先度が低い。"
+        },
+        {
+          "expression": "major fire",
+          "decision": "REJECT",
+          "reason": "意味説明としては自然だが、独立した語彙・定型表現としての増分価値が小さい。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "高価値の主要語はcanonicalで、rare synonymや説明句を増やさない。"
+    },
+    {
+      "entry_id": "vocab:02298",
+      "prompt_ja": "爆弾",
+      "canonical_snapshot": "bomb",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "bomb",
+        "explosive device"
+      ],
+      "candidate_review": [
+        {
+          "expression": "explosive device",
+          "decision": "REJECT",
+          "reason": "爆発装置全般の上位概念で、必ずしもbombと同一ではない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "promptに対する基本語はcanonicalで、上位概念をparaphraseとして登録しない。"
+    },
+    {
+      "entry_id": "vocab:02299",
+      "prompt_ja": "階",
+      "canonical_snapshot": "story",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "story",
+        "floor",
+        "level"
+      ],
+      "candidate_review": [
+        {
+          "expression": "floor",
+          "decision": "ACCEPT",
+          "reason": "建物の「階」を表す最も一般的な語の一つで、storyと直接対応する主要variant。"
+        },
+        {
+          "expression": "level",
+          "decision": "ACCEPT",
+          "reason": "建物の階層を指す高頻度語で、駐車場・商業施設等でも実用性が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "floor",
+        "level"
+      ],
+      "decision": "CHANGED",
+      "reason": "floor は主要同義語、level も建物階層で高頻度のため、promptが区別しない以上どちらも高価値。"
+    },
+    {
+      "entry_id": "vocab:02300",
+      "prompt_ja": "真剣に／深刻に",
+      "canonical_snapshot": "seriously",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "seriously",
+        "earnestly",
+        "gravely"
+      ],
+      "candidate_review": [
+        {
+          "expression": "earnestly",
+          "decision": "ACCEPT",
+          "reason": "prompt前半「真剣に」を表すformal-neutralな主要副詞で、誠実な真剣さを示す。"
+        },
+        {
+          "expression": "gravely",
+          "decision": "ACCEPT",
+          "reason": "prompt後半「深刻に」を表すformalな主要副詞で、深刻な態度・状況の記述に有用。"
+        }
+      ],
+      "after_paraphrases": [
+        "earnestly",
+        "gravely"
+      ],
+      "decision": "CHANGED",
+      "reason": "promptが「真剣に／深刻に」の2senseを明示するため、それぞれを代表する高価値副詞を採用する。"
+    },
+    {
+      "entry_id": "vocab:02301",
+      "prompt_ja": "負傷させる",
+      "canonical_snapshot": "wound",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "wound",
+        "injure",
+        "hurt"
+      ],
+      "candidate_review": [
+        {
+          "expression": "injure",
+          "decision": "ACCEPT",
+          "reason": "「負傷させる」をgenericに表す最も重要な基本動詞で、事故・スポーツ・災害等に広く使う。"
+        },
+        {
+          "expression": "hurt",
+          "decision": "REJECT",
+          "reason": "身体的に傷つける意味もあるが感情的苦痛まで広く、多義性が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "injure"
+      ],
+      "decision": "CHANGED",
+      "reason": "genericな負傷を表すinjureは主要回答として必須で、より多義なhurtは登録しない。"
+    },
+    {
+      "entry_id": "vocab:02302",
+      "prompt_ja": "沈む",
+      "canonical_snapshot": "sink",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "sink",
+        "go under",
+        "submerge"
+      ],
+      "candidate_review": [
+        {
+          "expression": "go under",
+          "decision": "REJECT",
+          "reason": "船などが沈む意味はあるが、倒産・意識喪失等のidiomatic用法も強く、genericなpromptには粗い。"
+        },
+        {
+          "expression": "submerge",
+          "decision": "REJECT",
+          "reason": "水面下に入る／沈める意味で、水以外にも使えるsinkより用途が限定される。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "genericな「沈む」にはcanonicalが最も広く自然で、候補は文脈限定・多義性が大きい。"
+    },
+    {
+      "entry_id": "vocab:02303",
+      "prompt_ja": "痕跡",
+      "canonical_snapshot": "trace",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "trace",
+        "sign",
+        "mark",
+        "evidence"
+      ],
+      "candidate_review": [
+        {
+          "expression": "sign",
+          "decision": "REJECT",
+          "reason": "徴候・標識など広い概念で、残された「痕跡」との対応は粗い。"
+        },
+        {
+          "expression": "mark",
+          "decision": "REJECT",
+          "reason": "物理的な跡には使えるが、痕跡一般や証拠的traceより範囲が狭い。"
+        },
+        {
+          "expression": "evidence",
+          "decision": "REJECT",
+          "reason": "証拠という機能概念で、痕跡そのものと同義ではない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "近接候補は徴候・物理的跡・証拠へ意味が分かれるため、genericな痕跡にはcanonicalのみ。"
+    }
+  ],
+  "followups": [
+    {
+      "entry_id": "vocab:02217",
+      "issue": "prompt/canonical semantic breadth should be reviewed outside this paraphrase batch",
+      "observation": "meaning_ja「somethingに立ち入る」はgenericなenterを自然に許す一方、canonical_snapshot「intrude on something」は通常、歓迎されない／期待されない場所・状況へ入り込むニュアンスを持つ。Prompt authorityに従い enter something をparaphrase採用した。",
+      "recommended_followup": "canonical/meaning_ja sense alignmentを別のcanonical/answers監査で確認する。"
+    },
+    {
+      "entry_id": "vocab:02226",
+      "issue": "prompt/canonical semantic breadth should be reviewed outside this paraphrase batch",
+      "observation": "meaning_ja「somethingに頼る」はgenericだが、canonical_snapshot「resort to something」は通常、他に手段がないため仕方なく用いる含意を持つ。Prompt authorityに従い rely on / depend on をparaphrase採用した。",
+      "recommended_followup": "generic promptに対してcanonicalが狭すぎないか、canonical/meaning_ja authority側で確認する。"
+    },
+    {
+      "entry_id": "vocab:02229",
+      "issue": "prompt/canonical semantic breadth should be reviewed outside this paraphrase batch",
+      "observation": "meaning_ja「これ以上」は量・程度・進行にも使える一方、canonical_snapshot「any longer」は主に時間的継続を表す。Prompt authorityに従い any more / any further をparaphrase採用した。",
+      "recommended_followup": "promptを時間用法に限定する意図か、canonicalをgeneric promptへ合わせる意図かを別監査で確認する。"
+    },
+    {
+      "entry_id": "vocab:02257",
+      "issue": "prompt/canonical granularity should be reviewed outside this paraphrase batch",
+      "observation": "meaning_ja「政府」はgenericだが、canonical_snapshot「administration」は特に米国英語で特定政権・行政府を指す用法が中心。Prompt authorityに従い government をparaphrase採用した。",
+      "recommended_followup": "generic「政府」cardとしてcanonicalが適切か、canonical/meaning_ja監査で確認する。"
+    }
+  ]
+}
