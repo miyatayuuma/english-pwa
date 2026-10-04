@@ -54,16 +54,13 @@ test('shadowing exposure is a separate duration/count record',()=>{
 });
 
 test('runtime keeps shadowing capture outside scoring, SRS, achievements, and intimacy paths',async()=>{
-  const [main,shell,gas]=await Promise.all([
+  const [main,shell]=await Promise.all([
     readFile(new URL('../scripts/app/main.js',import.meta.url),'utf8'),
     readFile(new URL('../scripts/app/sessionShell.js',import.meta.url),'utf8'),
-    readFile(new URL('../GAS/WebApp.gs',import.meta.url),'utf8'),
   ]);
   assert.match(shell,/data-training-mode="\$\{TRAINING_MODES\.CONTINUOUS_SHADOWING\}"/);
   assert.match(main,/shouldEvaluate:\(\)=>!isShadowingSession\(\)/);
   assert.match(main,/if\(isShadowingSession\(\)\) recognitionController\.cancel\(\);\s*else await stopRec\(\)/);
   assert.match(main,/recordShadowingExposure\(\{cards:1,durationMs:exposure\.durationMs\}\)/);
-  assert.match(main,/sendLog\('shadowing'/);
-  assert.match(gas,/shadowing:appendShadowing_/);
-  assert.match(gas,/shadowing_practice/);
+  assert.doesNotMatch(main,/sendLog|flushPendingLogs/);
 });

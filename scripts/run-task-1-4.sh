@@ -31,9 +31,8 @@ fi
 rg -n "privacy\.html|terms\.html|contact\.html" index.html signup.html >/dev/null || fail "Task3: trust links are not wired to real pages"
 pass "Task3 checks (trust links)"
 
-# Task 4: onboarding recommendation flow should exist
-rg -n "personalPlanSummary|onboardingCard|ONBOARDING_COMPLETED|buildOnboardingRecommendation|applyOnboardingPlan" index.html scripts/app/main.js scripts/storage/local.js >/dev/null || fail "Task4: onboarding recommendation wiring is incomplete"
-pass "Task4 checks (onboarding flow)"
-
-echo
-echo "All task 1-4 checks passed."
+# Task 4: zero-setup replaces the retired questionnaire.
+if rg -n "onboardingCard|buildOnboardingRecommendation|applyOnboardingPlan" index.html scripts/app/main.js; then
+  fail "Task4: retired onboarding remains"
+fi
+pass "Task4 checks (zero setup)"

@@ -93,11 +93,12 @@ export function setMilestoneEffectIntensity(level = MILESTONE_INTENSITY.normal) 
 }
 
 export function triggerMilestoneEffect(type, { level, previous, matchRate, hasPriorProgress = true, bestUpdated = false, streakUpdated = false } = {}) {
+  const intensity = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? MILESTONE_INTENSITY.subtle : milestoneIntensity;
   const layer = ensureMilestoneLayer();
   if (!layer) return;
 
   const effect = document.createElement('div');
-  effect.className = ['milestone-effect', type || '', `intensity-${milestoneIntensity}`].filter(Boolean).join(' ');
+  effect.className = ['milestone-effect', type || '', `intensity-${intensity}`].filter(Boolean).join(' ');
 
   const template = pickMessageTemplate(type, { hasPriorProgress, bestUpdated, streakUpdated });
   let title = template.title || 'Great!';
@@ -148,9 +149,9 @@ export function triggerMilestoneEffect(type, { level, previous, matchRate, hasPr
   effect.innerHTML = `<div class="effect-title">${title}</div>${sub ? `<div class="effect-sub">${sub}</div>` : ''}`;
   layer.appendChild(effect);
   requestAnimationFrame(() => effect.classList.add('show'));
-  const duration = milestoneIntensity === MILESTONE_INTENSITY.subtle
+  const duration = intensity === MILESTONE_INTENSITY.subtle
     ? Math.max(1600, MILESTONE_EFFECT_DURATION - 800)
-    : milestoneIntensity === MILESTONE_INTENSITY.strong
+    : intensity === MILESTONE_INTENSITY.strong
     ? MILESTONE_EFFECT_DURATION + 400
     : MILESTONE_EFFECT_DURATION;
   setTimeout(() => effect.classList.add('hide'), Math.max(700, duration - 400));

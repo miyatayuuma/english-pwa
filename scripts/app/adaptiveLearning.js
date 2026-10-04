@@ -118,7 +118,7 @@ function takeHighest(bucket,count){
   return bucket.slice().sort(byPriority).slice(0,Math.max(0,count));
 }
 
-function chooseComposition(metas,size,mode='auto'){
+function chooseComposition(metas,size,mode='auto',fillRequestedCount=false){
   const buckets={review:[],weak:[],new:[],maintenance:[]};
   for(const meta of metas) buckets[meta.reason].push(meta);
   const dueAvailable=buckets.review.length;
@@ -129,7 +129,7 @@ function chooseComposition(metas,size,mode='auto'){
     mode==='review'?Math.max(3,Math.ceil(size*0.6)):
     autoReviewTarget);
   let remaining=Math.max(0,size-reviewTarget);
-  const newCap=mode==='review'?1:(mode==='new'?Math.max(2,Math.ceil(size*0.5)):2);
+  const newCap=fillRequestedCount?size:(mode==='review'?1:(mode==='new'?Math.max(2,Math.ceil(size*0.5)):2));
   const reserveNew=buckets.new.length&&remaining&&mode!=='review'
     ?Math.min(remaining,mode==='new'?Math.min(newCap,buckets.new.length):1)
     :0;
@@ -204,14 +204,14 @@ export function buildAutomaticSession(items,levelState={},options={}){
   const scoped=filterByScope(items,scope);
   const requested=Number(options.size);
   const target=Number.isFinite(requested)&&requested>0
-    ?Math.min(scoped.length,Math.max(1,Math.round(requested)))
+    ?(options.fillRequestedCount?Math.max(1,Math.round(requested)):Math.min(scoped.length,Math.max(1,Math.round(requested))))
     :desiredSessionSize(scoped,levelState,now,options);
   const recentIds=new Set(Array.from(options.recentItemIds||[],String));
   const allMetas=scoped.map((item,index)=>candidateMeta(item,levelState,now,index));
   const metas=allMetas.filter(meta=>!recentIds.has(String(meta.item?.id))||meta.due||meta.failedRecently);
   const recentExcluded=allMetas.length-metas.length;
   const mode=['auto','review','new'].includes(options.mode)?options.mode:'auto';
-  const selected=interleave(chooseComposition(metas,target,mode));
+  const selected=interleave(chooseComposition(metas,target,mode,!!options.fillRequestedCount));
   const itemsOut=selected.map(meta=>meta.item);
   const counts={review:0,weak:0,new:0,maintenance:0};
   for(const meta of selected) counts[meta.reason]+=1;

@@ -6,8 +6,7 @@ import {
 
 const {
   STUDY_LOG: STUDY_LOG_KEY,
-  NOTIF_STATE: NOTIF_STATE_KEY,
-  NOTIF_SETTINGS: NOTIF_SETTINGS_KEY
+  NOTIF_STATE: NOTIF_STATE_KEY
 } = STORAGE_KEYS;
 
 const DAY_MS = 86400000;
@@ -143,28 +142,17 @@ function pruneStudyLog(log) {
 
 let STUDY_LOG = pruneStudyLog(loadStudyLog());
 
-function loadNotificationSettings() {
-  const parsed = loadJson(NOTIF_SETTINGS_KEY, {});
-  return normalizeNotificationSettings(parsed || {});
-}
-
 function getNotificationSettings() {
   return JSON.parse(JSON.stringify(NOTIF_SETTINGS));
 }
 
-function setNotificationSettings(settings, { persist = false } = {}) {
+function setNotificationSettings(settings) {
   NOTIF_SETTINGS = normalizeNotificationSettings(settings);
-  if (persist) {
-    saveJson(NOTIF_SETTINGS_KEY, NOTIF_SETTINGS);
-  }
   return NOTIF_SETTINGS;
 }
 
-function saveNotificationSettings(settings) {
-  return setNotificationSettings(settings, { persist: true });
-}
 
-let NOTIF_SETTINGS = loadNotificationSettings();
+let NOTIF_SETTINGS = normalizeNotificationSettings(DEFAULT_NOTIFICATION_SETTINGS);
 
 function recordStudyProgress({
   pass = false,
@@ -917,32 +905,7 @@ function initNotificationSystem({ statusEl, buttonEl, toast, nextLabelEl, settin
       runNotificationChecks({ force: true, settings: NOTIF_SETTINGS }).catch(() => {});
     }
   };
-  const applySettings = (nextSettings, { persist = false, message } = {}) => {
-    const normalized = persist
-      ? saveNotificationSettings(nextSettings)
-      : setNotificationSettings(nextSettings);
-    const nextAt = ensureNotificationLoop(normalized, { resetInterval: true });
-    const discardedCount = Array.isArray(normalized.discardedReminderTimes)
-      ? normalized.discardedReminderTimes.length
-      : 0;
-    const statusMessage =
-      message ||
-      (discardedCount
-        ? '無効な時刻を除外しました'
-        : persist
-        ? '通知設定を保存しました'
-        : undefined);
-    updateNotificationUi({
-      statusEl,
-      buttonEl,
-      nextLabelEl,
-      plannedAt: nextAt,
-      settings: normalized,
-      message: statusMessage
-    });
-    return { settings: normalized, plannedAt: nextAt };
-  };
-  return { handleClick, handleVisibilityChange, applySettings };
+  return { handleClick, handleVisibilityChange };
 }
 
 export {
@@ -961,7 +924,6 @@ export {
   sumRange,
   computeWeeklyHighlights,
   getNotificationSettings,
-  saveNotificationSettings,
   normalizeNotificationSettings,
   computeNextNotificationCheckTime,
   formatNotificationTimeLabel,

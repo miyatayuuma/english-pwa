@@ -1,31 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { configureSharedAudioResolver, createAudioUrlResolver, resolveSharedAudioUrl } from '../scripts/audio/resolver.js';
-
-test('audio resolution keeps directory, OPFS, then configured base precedence and caches results',async()=>{
-  const calls=[];
-  const resolver=createAudioUrlResolver({
-    resolveFromDirectory:async name=>{calls.push(`directory:${name}`);return '';},
-    resolveFromOPFS:async name=>{calls.push(`opfs:${name}`);return 'blob:stored-audio';},
-    getBaseUrl:()=> 'https://audio.example.test',
-    fetchImpl:async()=>{calls.push('base-probe');return {ok:true,status:200};},
-  });
-  assert.equal(await resolver.resolveAudioUrl('sample.mp3'),'blob:stored-audio');
-  assert.equal(await resolver.resolveAudioUrl('sample.mp3'),'blob:stored-audio');
-  assert.deepEqual(calls,['directory:sample.mp3','opfs:sample.mp3']);
+test('directory wins, OPFS is fallback, and clearing resolves the new folder immediately',async()=>{
+  let folder='blob:folder';let opfsCalls=0;
+  const resolver=createAudioUrlResolver({resolveFromDirectory:async()=>folder,resolveFromOPFS:async()=>{opfsCalls++;return 'blob:opfs';}});
+  assert.equal(await resolver.resolveAudioUrl('clip.mp3'),'blob:folder');assert.equal(opfsCalls,0);
+  folder='';resolver.clear();assert.equal(await resolver.resolveAudioUrl('clip.mp3'),'blob:opfs');
 });
-
-test('shared source audio uses base resolution only after local stores miss',async()=>{
-  const calls=[];
-  const resolver=createAudioUrlResolver({
-    resolveFromDirectory:async()=>{calls.push('directory');return '';},
-    resolveFromOPFS:async()=>{calls.push('opfs');return '';},
-    getBaseUrl:()=> 'https://audio.example.test',
-    fetchImpl:async(url,options)=>{calls.push(`${options.method}:${url}`);return {ok:true,status:200};},
-  });
-  configureSharedAudioResolver(resolver);
-  assert.equal(await resolveSharedAudioUrl('clip one.mp3'),'https://audio.example.test/clip%20one.mp3');
-  assert.deepEqual(calls,['directory','opfs','HEAD:https://audio.example.test/clip%20one.mp3']);
+test('unavailable local source never probes remote audio and resolves empty for TTS fallback',async()=>{
+  let fetches=0;
+  const resolver=createAudioUrlResolver({resolveFromDirectory:async()=>{throw Error('permission');},resolveFromOPFS:async()=>'',getBaseUrl:()=> 'https://old.example',fetchImpl:async()=>{fetches++;}});
+  configureSharedAudioResolver(resolver);assert.equal(await resolveSharedAudioUrl('clip.mp3'),'');assert.equal(fetches,0);
   configureSharedAudioResolver(null);
-  assert.equal(await resolveSharedAudioUrl('clip one.mp3'),'');
 });

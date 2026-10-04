@@ -1,3 +1,5 @@
+import { migrateZeroSetupStorage } from '../storage/zeroSetupMigration.js';
+migrateZeroSetupStorage();
 import { isNativeAndroid } from '../native/runtimePlatform.js';
 import { nativeDirectory } from '../native/media.js';
 import { buildRecognitionContext } from '../speech/recognitionPolicy.js';
@@ -25,15 +27,10 @@ import {
 } from '../ui/milestones.js';
 import {
   recordStudyProgress,
-  updateNotificationUi,
   initNotificationSystem,
   getDailyStats,
   localDateKey,
   getNotificationSettings,
-  saveNotificationSettings,
-  normalizeNotificationSettings,
-  computeNextNotificationCheckTime,
-  ensureNotificationLoop,
   getConsecutiveNoStudyDays,
   computeWeeklyHighlights,
   recordSessionClosureSummary,
@@ -57,12 +54,10 @@ import {
   normalizeTrainingMode,
 } from './continuousShadowing.js';
 import { MIC_UI_STATES, applyMicStatus } from './micStatus.js';
-import { createResultFeedbackQueue, normalizeResultSoundMode } from './resultFeedbackSound.js';
+import { createResultFeedbackQueue } from './resultFeedbackSound.js';
 import { createOverlayController } from './overlay.js';
 import { createCardTransitionQueue } from './cardTransitions.js';
 import { createReorderGuide } from './reorderGuide.js';
-import { createReorderSrsPayload } from './reorderGrading.js';
-import { createLogManager } from './logManager.js';
 import { qs, qsa } from './dom.js';
 import { createLevelStateManager, LEVEL_CHOICES, retainHighestHintStageUsed } from './levelState.js';
 import { createViewStateController, VIEW_HOME, VIEW_STUDYING, VIEW_REVIEW_COMPLETE } from './viewState.js';
@@ -78,28 +73,10 @@ import '../version.js';
 const APP_VERSION = globalThis.APP_VERSION;
 function createAppRuntime(){
   // ===== Utilities =====
-  const now=()=>Date.now(); const UA=(()=>navigator.userAgent||'')();
+  const now=()=>Date.now();
   const DAY_MS=86400000;
 
-  function toIsoString(value){
-    if(value instanceof Date){
-      return value.toISOString();
-    }
-    if(typeof value==='number'){
-      if(!Number.isFinite(value) || value<=0) return '';
-      try{ return new Date(value).toISOString(); }catch(_){ return ''; }
-    }
-    if(typeof value==='string'){
-      const trimmed=value.trim();
-      return trimmed;
-    }
-    return '';
-  }
 
-  function numericOrEmpty(value){
-    const num=Number(value);
-    return Number.isFinite(num)?num:'';
-  }
 
   const DEFAULT_FOOTER_HINT='左右スワイプ：戻る/進む　下スワイプ：ヒント切替（英文・和訳・音声）';
   const LEVEL_DESCRIPTIONS={
@@ -124,11 +101,9 @@ function createAppRuntime(){
   let lastPromotionGoal=null;
   let overviewCollapsed=false;
   const goalCollapsed={ daily:false, session:false };
-  const onboardingState={ step:1, level:'', purpose:'', minutes:0, completed:false };
-  let onboardingPlanSummary='';
 
 
-  const { SEARCH, SPEED, CONFIG, DAILY_GOAL: DAILY_GOAL_KEY, SESSION_GOAL: SESSION_GOAL_KEY, PENDING_LOGS: PENDING_LOGS_KEY, SECTION_SELECTION, ORDER_SELECTION, DAILY_OVERVIEW, DAILY_GOAL_COLLAPSE, SESSION_GOAL_COLLAPSE, ONBOARDING_COMPLETED, ONBOARDING_PLAN, ONBOARDING_PLAN_COLLAPSE_DATE } = STORAGE_KEYS;
+  const { SEARCH, SPEED, CONFIG, DAILY_GOAL: DAILY_GOAL_KEY, SESSION_GOAL: SESSION_GOAL_KEY, SECTION_SELECTION, ORDER_SELECTION, DAILY_OVERVIEW, DAILY_GOAL_COLLAPSE, SESSION_GOAL_COLLAPSE } = STORAGE_KEYS;
 
   const BASE_HINT_STAGE=0;
   const COMPOSE_HINT_STAGE_JA=BASE_HINT_STAGE+1;
@@ -179,7 +154,7 @@ function createAppRuntime(){
 
 
   // ===== Elements =====
-  const el={ app:qs('#app'), homeView:qs('#homeView'), studyView:qs('#studyView'), reviewCompleteView:qs('#reviewCompleteView'), startStudyCta:qs('#startStudyCta'), reviewCompleteMessage:qs('#reviewCompleteMessage'), reviewActionContinue:qs('#reviewActionContinue'), reviewActionFocusReview:qs('#reviewActionFocusReview'), reviewActionFinish:qs('#reviewActionFinish'), headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerMessage'), nextAction:qs('#nextActionMessage'), footerInfoContainer:qs('#footerInfo'), footerInfoBtn:qs('#footerInfoBtn'), footerInfoDialog:qs('#footerInfoDialog'), footerInfoDialogBody:qs('#footerInfoDialogBody'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), play:qs('#btnPlay'), mic:qs('#btnMic'), micStatus:qs('#micStatus'), card:qs('#card'), secSel:qs('#secSel'), studySecSel:qs('#studySecSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), composeGuide:qs('#composeGuide'), composeTokens:qs('#composeTokens'), composeAnswer:qs('#composeAnswer'), composeContext:qs('#composeContext'), composeFeedback:qs('#composeFeedback'), composeControls:qs('#composeControls'), composeNote:qs('#composeNote'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgUrl:qs('#cfgUrl'), cfgKey:qs('#cfgKey'), cfgAudioBase:qs('#cfgAudioBase'), cfgSpeechVoice:qs('#cfgSpeechVoice'), cfgResultSound:qs('#cfgResultSound'), cfgSave:qs('#cfgSave'), cfgClose:qs('#cfgClose'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), dirPermOverlay:qs('#dirPermOverlay'), dirPermAllow:qs('#dirPermAllow'), dirPermLater:qs('#dirPermLater'), dirPermStatus:qs('#dirPermStatus'), speedCtrl:qs('#speedCtrl'), speedToggle:qs('#speedToggle'), speedCtrlBody:qs('#speedCtrlBody'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), notifBtn:qs('#btnNotifPerm'), notifStatus:qs('#notifStatus'), notifTimeList:qs('#notifTimeList'), notifTimeAdd:qs('#notifTimeAdd'), notifTriggerDailyZero:qs('#notifTriggerDailyZero'), notifTriggerDailyCompare:qs('#notifTriggerDailyCompare'), notifTriggerWeekly:qs('#notifTriggerWeekly'), notifTriggerRestartTone:qs('#notifTriggerRestartTone'), milestoneIntensity:qs('#cfgMilestoneIntensity'), notifHelp:qs('#notifHelp'), dailyGoalCard:qs('#dailyGoalCard'), dailyGoalBody:qs('#dailyGoalBody'), dailyGoalToggle:qs('#dailyGoalToggle'), dailyGoalToggleState:qs('#dailyGoalToggleState'), dailyGoalRing:qs('#dailyGoalRing'), dailyGoalPercent:qs('#dailyGoalPercent'), dailyGoalTag:qs('#dailyGoalTag'), dailyGoalDone:qs('#dailyGoalDone'), dailyGoalTarget:qs('#dailyGoalTarget'), dailyGoalHint:qs('#dailyGoalHint'), sessionGoalCard:qs('#sessionGoalCard'), sessionGoalBody:qs('#sessionGoalBody'), sessionGoalToggle:qs('#sessionGoalToggle'), sessionGoalRing:qs('#sessionGoalRing'), sessionGoalPercent:qs('#sessionGoalPercent'), sessionGoalTag:qs('#sessionGoalTag'), sessionGoalDone:qs('#sessionGoalDone'), sessionGoalTarget:qs('#sessionGoalTarget'), sessionGoalSlider:qs('#sessionGoalSlider'), sessionGoalBarFill:qs('#sessionGoalBarFill'), dailyOverviewCard:qs('#dailyOverviewCard'), dailyOverviewBody:qs('#dailyOverviewBody'), dailyOverviewToggle:qs('#dailyOverviewToggle'), dailyOverviewToggleState:qs('#dailyOverviewToggleState'), dailyOverviewDiff:qs('#dailyOverviewDiff'), dailyOverviewTrendStatus:qs('#dailyOverviewTrendStatus'), dailyOverviewNote:qs('#dailyOverviewNote'), overviewHighlights:qs('#dailyOverviewHighlights'), overviewTodayFill:qs('#overviewTodayFill'), overviewYesterdayFill:qs('#overviewYesterdayFill'), overviewTodayValue:qs('#overviewTodayValue'), overviewYesterdayValue:qs('#overviewYesterdayValue'), overviewPromotionStatus:qs('#overviewPromotionStatus'), overviewTaskBalance:qs('#overviewTaskBalance'), overviewMilestones:qs('#overviewMilestones'), overviewQuickStart:qs('#overviewQuickStart'), onboardingCard:qs('#onboardingCard'), onboardingStepLabel:qs('#onboardingStepLabel'), onboardingLevel:qs('#onboardingLevel'), onboardingPurpose:qs('#onboardingPurpose'), onboardingMinutes:qs('#onboardingMinutes'), onboardingBack:qs('#onboardingBack'), onboardingNext:qs('#onboardingNext'), personalPlanSummary:qs('#personalPlanSummary'), personalPlanBody:qs('#personalPlanBody'), personalPlanToggle:qs('#personalPlanToggle') };
+  const el={ app:qs('#app'), homeView:qs('#homeView'), studyView:qs('#studyView'), reviewCompleteView:qs('#reviewCompleteView'), startStudyCta:qs('#startStudyCta'), reviewCompleteMessage:qs('#reviewCompleteMessage'), reviewActionContinue:qs('#reviewActionContinue'), reviewActionFocusReview:qs('#reviewActionFocusReview'), reviewActionFinish:qs('#reviewActionFinish'), headerSection:qs('#statSection'), headerLevelAvg:qs('#statLevelAvg'), headerProgressCurrent:qs('#statProgressCurrent'), headerProgressTotal:qs('#statProgressTotal'), pbar:qs('#pbar'), footer:qs('#footerMessage'), nextAction:qs('#nextActionMessage'), footerInfoContainer:qs('#footerInfo'), footerInfoBtn:qs('#footerInfoBtn'), footerInfoDialog:qs('#footerInfoDialog'), footerInfoDialogBody:qs('#footerInfoDialogBody'), en:qs('#enText'), ja:qs('#jaText'), chips:qs('#chips'), match:qs('#valMatch'), level:qs('#valLevel'), attempt:qs('#attemptInfo'), play:qs('#btnPlay'), mic:qs('#btnMic'), micStatus:qs('#micStatus'), card:qs('#card'), secSel:qs('#secSel'), studySecSel:qs('#studySecSel'), orderSel:qs('#orderSel'), search:qs('#rangeSearch'), levelFilter:qs('#levelFilter'), composeGuide:qs('#composeGuide'), composeTokens:qs('#composeTokens'), composeAnswer:qs('#composeAnswer'), composeContext:qs('#composeContext'), composeFeedback:qs('#composeFeedback'), composeControls:qs('#composeControls'), composeNote:qs('#composeNote'), cfgBtn:qs('#btnCfg'), cfgModal:qs('#cfgModal'), cfgClose:qs('#cfgClose'), btnPickDir:qs('#btnPickDir'), btnClearDir:qs('#btnClearDir'), dirStatus:qs('#dirStatus'), overlay:qs('#loadingOverlay'), speedCtrl:qs('#speedCtrl'), speedToggle:qs('#speedToggle'), speedCtrlBody:qs('#speedCtrlBody'), speed:qs('#speedSlider'), speedDown:qs('#speedDown'), speedUp:qs('#speedUp'), speedValue:qs('#speedValue'), dailyGoalCard:qs('#dailyGoalCard'), dailyGoalBody:qs('#dailyGoalBody'), dailyGoalToggle:qs('#dailyGoalToggle'), dailyGoalToggleState:qs('#dailyGoalToggleState'), dailyGoalRing:qs('#dailyGoalRing'), dailyGoalPercent:qs('#dailyGoalPercent'), dailyGoalTag:qs('#dailyGoalTag'), dailyGoalDone:qs('#dailyGoalDone'), dailyGoalTarget:qs('#dailyGoalTarget'), dailyGoalHint:qs('#dailyGoalHint'), sessionGoalCard:qs('#sessionGoalCard'), sessionGoalBody:qs('#sessionGoalBody'), sessionGoalToggle:qs('#sessionGoalToggle'), sessionGoalRing:qs('#sessionGoalRing'), sessionGoalPercent:qs('#sessionGoalPercent'), sessionGoalTag:qs('#sessionGoalTag'), sessionGoalDone:qs('#sessionGoalDone'), sessionGoalTarget:qs('#sessionGoalTarget'), sessionGoalSlider:qs('#sessionGoalSlider'), sessionGoalBarFill:qs('#sessionGoalBarFill'), dailyOverviewCard:qs('#dailyOverviewCard'), dailyOverviewBody:qs('#dailyOverviewBody'), dailyOverviewToggle:qs('#dailyOverviewToggle'), dailyOverviewToggleState:qs('#dailyOverviewToggleState'), dailyOverviewDiff:qs('#dailyOverviewDiff'), dailyOverviewTrendStatus:qs('#dailyOverviewTrendStatus'), dailyOverviewNote:qs('#dailyOverviewNote'), overviewHighlights:qs('#dailyOverviewHighlights'), overviewTodayFill:qs('#overviewTodayFill'), overviewYesterdayFill:qs('#overviewYesterdayFill'), overviewTodayValue:qs('#overviewTodayValue'), overviewYesterdayValue:qs('#overviewYesterdayValue'), overviewPromotionStatus:qs('#overviewPromotionStatus'), overviewTaskBalance:qs('#overviewTaskBalance'), overviewMilestones:qs('#overviewMilestones'), overviewQuickStart:qs('#overviewQuickStart'), };
   const viewStateController=createViewStateController({ el });
   const applyViewState=(...args)=>viewStateController.applyViewState(...args);
   const getCurrentViewState=(...args)=>viewStateController.getCurrentViewState(...args);
@@ -249,8 +224,6 @@ function createAppRuntime(){
     saveString(ORDER_SELECTION,'asc');
   }
   document.addEventListener(FOCUSED_SESSION_PREPARE_EVENT,resetLegacyFiltersForFocusedSession);
-  el.cfgPlaybackMode=qsa('input[name="cfgPlaybackMode"]');
-  el.cfgStudyMode=qsa('input[name="cfgStudyMode"]');
   const versionTargets=qsa('[data-app-version]');
   const appVersionText=`バージョン: ${APP_VERSION}`;
   function initAppVersion(){
@@ -289,10 +262,6 @@ function createAppRuntime(){
       if (pass) incrementGoalProgressForPass();
       recordStudyProgress({ pass, newLevel5: false, noHint: false, perfect: false, mode: getStudyMode() });
       resultFeedbackQueue.enqueue(pass ? 'success' : 'fail', { itemId: currentItem.id });
-      sendLog('srs', createReorderSrsPayload(currentItem.id, update));
-      sendLog('attempt', { id: currentItem.id, ts: new Date().toISOString(),
-        mode: 'compose', result: pass ? 'pass' : 'fail', reorder_grade: result.grade,
-        reorder_sentences: result.sentences });
     },
     onNext: () => nextCard(false, false),
   });
@@ -766,133 +735,13 @@ function createAppRuntime(){
     }
   }
 
-  function parseOnboardingPlan(){
-    const saved=loadJson(ONBOARDING_PLAN, null);
-    if(!saved || typeof saved!=='object') return null;
-    return saved;
-  }
 
-  function applyRecommendedSection(sectionValue=''){
-    const value=typeof sectionValue==='string'?sectionValue:'';
-    saveString(SECTION_SELECTION, value);
-    if(el.secSel){
-      const options=[...el.secSel.options].map(opt=>opt.value);
-      if(options.includes(value)){
-        el.secSel.value=value;
-      }
-    }
-    if(el.studySecSel){
-      const options=[...el.studySecSel.options].map(opt=>opt.value);
-      if(options.includes(value)){
-        el.studySecSel.value=value;
-      }
-    }
-  }
 
-  function chooseRecommendedSection(level){
-    const units=[...ITEMS_BY_SECTION.keys()].sort((a,b)=>{
-      const na=+String(a).replace(/\D+/g,'')||0;
-      const nb=+String(b).replace(/\D+/g,'')||0;
-      if(na!==nb) return na-nb;
-      return String(a).localeCompare(String(b));
-    });
-    if(!units.length) return '';
-    if(level==='advanced') return units[Math.max(0, units.length-1)];
-    if(level==='intermediate') return units[Math.min(units.length-1, Math.floor(units.length/2))];
-    return units[0];
-  }
 
-  function buildOnboardingRecommendation({level,purpose,minutes}){
-    const minuteNum=Number(minutes)||10;
-    const isLight=minuteNum<=10;
-    const isDeep=minuteNum>=30;
-    const dailyGoal=isDeep?18:(isLight?8:12);
-    const sessionGoal=isDeep?8:(isLight?4:6);
-    const levelFilters=level==='advanced'?[3,4,5]:level==='intermediate'?[1,2,3]:[0,1,2];
-    const orderByPurpose=purpose==='exam'?'srs':(purpose==='business'?'asc':'rnd');
-    const section=chooseRecommendedSection(level);
-    const purposeLabel=purpose==='business'?'仕事会話重視':purpose==='exam'?'試験対策重視':'日常会話重視';
-    const levelLabel=level==='advanced'?'応用レベル':level==='intermediate'?'標準レベル':'基礎レベル';
-    const summary=`${purposeLabel}・${levelLabel}で、1日${dailyGoal}件（1回${sessionGoal}件）から開始します。`;
-    return { dailyGoal, sessionGoal, levelFilters, section, order:orderByPurpose, summary, createdAt:new Date().toISOString() };
-  }
 
-  function applyOnboardingPlan(plan,{persist=true}={}){
-    if(!plan) return;
-    goalState.dailyTarget=normalizeGoalValue(plan.dailyGoal, DEFAULT_DAILY_GOAL);
-    goalState.sessionTarget=normalizeGoalValue(plan.sessionGoal, DEFAULT_SESSION_GOAL);
-    saveNumber(DAILY_GOAL_KEY, goalState.dailyTarget);
-    saveNumber(SESSION_GOAL_KEY, goalState.sessionTarget);
-    setLevelFilterSet(new Set(Array.isArray(plan.levelFilters)?plan.levelFilters:LEVEL_CHOICES));
-    updateLevelFilterButtons();
-    applyRecommendedSection(plan.section||'');
-    if(el.orderSel && ['asc','rnd','srs'].includes(plan.order)){
-      el.orderSel.value=plan.order;
-      saveString(ORDER_SELECTION, plan.order);
-    }
-    onboardingPlanSummary=String(plan.summary||'').trim();
-    if(persist){
-      saveString(ONBOARDING_COMPLETED, '1');
-      saveJson(ONBOARDING_PLAN, plan);
-    }
-    applyGoalTargetsToControls();
-    updateGoalProgressFromMetrics();
-  }
 
-  function setOnboardingStep(step){
-    const next=Math.max(1, Math.min(3, Number(step)||1));
-    onboardingState.step=next;
-    const labels=['ステップ1/3：現在の英語レベルを選んでください','ステップ2/3：学習目的を選んでください','ステップ3/3：1日の学習可能時間を選んでください'];
-    if(el.onboardingStepLabel){
-      el.onboardingStepLabel.textContent=labels[next-1]||labels[0];
-    }
-    qsa('.onboarding-step', el.onboardingCard).forEach(node=>{
-      const nodeStep=Number(node?.dataset?.step||'0');
-      node.hidden=nodeStep!==next;
-    });
-    if(el.onboardingBack){
-      el.onboardingBack.hidden=next===1;
-    }
-    if(el.onboardingNext){
-      el.onboardingNext.textContent=next===3?'プランを作成':'次へ';
-    }
-  }
 
-  function updatePersonalPlanVisibility(forceExpand=false){
-    if(!el.personalPlanSummary || !el.personalPlanBody) return;
-    const text=onboardingPlanSummary || (parseOnboardingPlan()?.summary||'');
-    if(!text){
-      el.personalPlanSummary.hidden=true;
-      return;
-    }
-    el.personalPlanSummary.hidden=false;
-    el.personalPlanBody.textContent=text;
-    const today=localDateKey();
-    const collapseDate=loadString(ONBOARDING_PLAN_COLLAPSE_DATE, '');
-    const collapsed=!forceExpand && collapseDate && collapseDate!==today;
-    el.personalPlanBody.hidden=collapsed;
-    if(el.personalPlanToggle){
-      el.personalPlanToggle.classList.toggle('is-collapsed', collapsed);
-      el.personalPlanToggle.setAttribute('aria-expanded', collapsed?'false':'true');
-      el.personalPlanToggle.setAttribute('aria-label', collapsed?'あなた向けプランを展開する':'あなた向けプランを折りたたむ');
-    }
-  }
 
-  function bindPersonalPlanToggle(){
-    if(!el.personalPlanToggle || !el.personalPlanBody) return;
-    el.personalPlanToggle.addEventListener('click',()=>{
-      const next=!el.personalPlanBody.hidden;
-      el.personalPlanBody.hidden=next;
-      if(el.personalPlanToggle){
-        el.personalPlanToggle.classList.toggle('is-collapsed', next);
-        el.personalPlanToggle.setAttribute('aria-expanded', next?'false':'true');
-        el.personalPlanToggle.setAttribute('aria-label', next?'あなた向けプランを展開する':'あなた向けプランを折りたたむ');
-      }
-      if(!next){
-        saveString(ONBOARDING_PLAN_COLLAPSE_DATE, localDateKey());
-      }
-    });
-  }
 
   function initSpeedControlCollapse(){
     if(!el.speedCtrl || !el.speedToggle) return;
@@ -924,53 +773,6 @@ function createAppRuntime(){
     }
   }
 
-  function initOnboardingFlow(){
-    onboardingState.completed=loadString(ONBOARDING_COMPLETED, '0')==='1';
-    const savedPlan=parseOnboardingPlan();
-    if(savedPlan){
-      onboardingPlanSummary=String(savedPlan.summary||'').trim();
-      applyOnboardingPlan(savedPlan,{persist:false});
-    }
-    if(el.onboardingCard){
-      el.onboardingCard.hidden=onboardingState.completed;
-    }
-    updatePersonalPlanVisibility(false);
-    if(onboardingState.completed || !el.onboardingCard) return;
-    setOnboardingStep(1);
-    if(el.onboardingBack){
-      el.onboardingBack.addEventListener('click',()=>{ setOnboardingStep(onboardingState.step-1); });
-    }
-    if(el.onboardingNext){
-      el.onboardingNext.addEventListener('click',()=>{
-        if(onboardingState.step===1){
-          const value=String(el.onboardingLevel?.value||'').trim();
-          if(!value){ toast('自己申告レベルを選択してください'); return; }
-          onboardingState.level=value;
-          setOnboardingStep(2);
-          return;
-        }
-        if(onboardingState.step===2){
-          const value=String(el.onboardingPurpose?.value||'').trim();
-          if(!value){ toast('学習目的を選択してください'); return; }
-          onboardingState.purpose=value;
-          setOnboardingStep(3);
-          return;
-        }
-        const value=Number(el.onboardingMinutes?.value||0);
-        if(!value){ toast('1日の学習可能時間を選択してください'); return; }
-        onboardingState.minutes=value;
-        const plan=buildOnboardingRecommendation({ level:onboardingState.level, purpose:onboardingState.purpose, minutes:onboardingState.minutes });
-        applyOnboardingPlan(plan);
-        onboardingState.completed=true;
-        saveString(ONBOARDING_PLAN_COLLAPSE_DATE, localDateKey());
-        if(el.onboardingCard) el.onboardingCard.hidden=true;
-        updatePersonalPlanVisibility(true);
-        updateSectionOptions({preferSaved:true});
-        rebuildAndRender(true,{autoStart:false}).catch(()=>{});
-        toast('診断が完了しました。あなた向けプランを設定しました。', 2600);
-      });
-    }
-  }
 
   function renderOverviewTrend(model){
     if(el.dailyOverviewDiff){
@@ -1322,7 +1124,6 @@ function createAppRuntime(){
   initFooterInfoButton();
   initGoalCollapseState();
   initOverviewCollapseState();
-  bindPersonalPlanToggle();
   initSpeedControlCollapse();
   if(el.overviewQuickStart){
     el.overviewQuickStart.addEventListener('click', handleQuickStart);
@@ -1390,7 +1191,7 @@ function createAppRuntime(){
     return applied;
   }
   const resultFeedbackQueue=createResultFeedbackQueue({
-    getMode:()=>CFG.resultSound,
+    getMode:()=> 'standard',
     isUnlocked:()=>getAudioLockState()===AUDIO_LOCK_STATES.UNLOCKED,
     playTone,
     vibrate:(duration)=>navigator.vibrate?.(duration),
@@ -1407,11 +1208,9 @@ function createAppRuntime(){
   let shadowCycleState=null;
   let shadowingPaused=false;
   const shadowingSessionMetrics={cards:0,durationMs:0};
-  let remoteStatus=null;
   let QUEUE=[];
   let idx=-1;
   let sessionStart=0;
-  let cardStart=0;
   const FATIGUE_CONSECUTIVE_THRESHOLD=8;
   const FATIGUE_FAIL_RATE_THRESHOLD=0.45;
   const FATIGUE_MIN_ATTEMPTS=6;
@@ -1576,27 +1375,6 @@ function createAppRuntime(){
       sessionMetrics=createEmptySessionMetrics();
       return;
     }
-    const finishedAt=now();
-    const elapsedMinutes=Math.max(0, (finishedAt-sessionMetrics.startMs)/60000);
-    const roundedMinutes=Math.round(elapsedMinutes*100)/100;
-    const payload={
-      date:new Date(sessionMetrics.startMs).toISOString(),
-      minutes:roundedMinutes,
-      cards_done:sessionMetrics.cardsDone,
-      new_introduced:sessionMetrics.newIntroduced,
-      streak:sessionMetrics.highestStreak,
-      attempts:sessionMetrics.attempts,
-      failures:sessionMetrics.failures,
-    };
-    try{
-      const maybePromise=sendLog('session', payload);
-      if(maybePromise && typeof maybePromise.catch==='function'){
-        maybePromise.catch(()=>{});
-      }
-    }catch(_){ }
-    if((CFG.apiUrl||'').trim()){
-      Promise.resolve(syncProgressAndStatus()).catch(()=>{});
-    }
     const closureSummary=buildSessionClosureSummary(reason);
     recordSessionClosureSummary({ summary:closureSummary });
     presentSessionClosureSummary(closureSummary);
@@ -1634,19 +1412,7 @@ function createAppRuntime(){
     };
   }
 
-  function getSpeechAttemptStats(itemId){
-    if(!itemId) return { submissions:0, correct:0 };
-    const key=String(itemId);
-    return {
-      submissions: speechSessionStats.submissions.get(key)||0,
-      correct: speechSessionStats.correct.get(key)||0
-    };
-  }
 
-  function applyRemoteStatus(status){
-    remoteStatus = status ? Object.assign({}, status) : null;
-    updateHeaderStats();
-  }
 
 
   let hintStage=BASE_HINT_STAGE;
@@ -1953,35 +1719,11 @@ function createAppRuntime(){
     const cfg=loadJson(CONFIG, {});
     return cfg && typeof cfg==='object'?cfg:{};
   }
-  function saveCfg(o){
-    saveJson(CONFIG, o||{});
-  }
-  let CFG=Object.assign({ apiUrl:'', apiKey:'', audioBase:'', speechVoice:'', playbackMode:'audio', studyMode:STUDY_MODE_READ, milestoneIntensity:'normal', resultSound:'standard' }, loadCfg());
-  if(typeof CFG.speechVoice!=='string'){ CFG.speechVoice=''; }
-  const legacyFallback=CFG && typeof CFG.speechFallback!=='undefined' ? !!CFG.speechFallback : false;
-  if(CFG && typeof CFG.playbackMode!=='string'){ CFG.playbackMode=''; }
-  const normalizedMode = (CFG.playbackMode||'').toLowerCase();
-  CFG.playbackMode = normalizedMode==='speech' ? 'speech' : (normalizedMode==='audio' ? 'audio' : (legacyFallback ? 'speech' : 'audio'));
-  if(CFG && Object.prototype.hasOwnProperty.call(CFG,'speechFallback')){ delete CFG.speechFallback; }
-  if(typeof CFG.studyMode!=='string'){ CFG.studyMode=STUDY_MODE_READ; }
-  else {
-    const normalizedStudy=(CFG.studyMode||'').toLowerCase();
-    CFG.studyMode = normalizedStudy===STUDY_MODE_COMPOSE ? STUDY_MODE_COMPOSE : STUDY_MODE_READ;
-  }
-  CFG.milestoneIntensity=getMilestoneIntensity();
-  CFG.resultSound=normalizeResultSoundMode(CFG.resultSound);
-  setMilestoneEffectIntensity(CFG.milestoneIntensity);
+  let CFG=Object.assign({ studyMode:STUDY_MODE_READ }, loadCfg());
+  setMilestoneEffectIntensity('normal');
 
-  function getPlaybackMode(){
-    return CFG.playbackMode==='speech' ? 'speech' : 'audio';
-  }
   function getStudyMode(){
     return CFG.studyMode===STUDY_MODE_COMPOSE ? STUDY_MODE_COMPOSE : STUDY_MODE_READ;
-  }
-  function getMilestoneIntensity(){
-    const value=(CFG.milestoneIntensity||'').toLowerCase();
-    if(value==='subtle' || value==='strong') return value;
-    return 'normal';
   }
   function getCurrentTaskType(item=currentItem){
     const type=String(item?.taskType||'').toLowerCase();
@@ -2008,222 +1750,27 @@ function createAppRuntime(){
   function shouldUseSpeechForItem(item){
     if(!item) return false;
     if(item.forceSpeech){ return true; }
-    return getPlaybackMode()==='speech';
+    return !audio?.dataset?.srcKey;
   }
   function shouldUseAudioForItem(item){
     if(!item) return false;
     if(item.forceSpeech){ return false; }
-    return getPlaybackMode()!=='speech';
+    return true;
   }
 
-  function populateVoiceOptions(){
-    if(!el.cfgSpeechVoice){ return; }
-    const sel=el.cfgSpeechVoice;
-    const priorValue=sel.value;
-    const stored=CFG.speechVoice||'';
-    const result = speechController.populateVoiceOptions(sel, { storedVoiceId: stored, currentValue: priorValue });
-    if(result && typeof result.selected==='string'){
-      sel.value = result.selected;
-    }
-  }
 
-  if(el.cfgSpeechVoice){
-    populateVoiceOptions();
-    speechController.attachVoicesChangedListener(populateVoiceOptions);
-  }
 
   // ===== Notification settings =====
-  let notifSettings=getNotificationSettings();
 
-  function reminderValueFromSlot(slot){
-    if(!slot) return '';
-    if(typeof slot==='string'){
-      const match=slot.match?.(/^(\d{1,2}):(\d{2})$/);
-      if(match){
-        const h=String(Math.max(0, Math.min(23, Number(match[1])||0))).padStart(2,'0');
-        const m=String(Math.max(0, Math.min(59, Number(match[2])||0))).padStart(2,'0');
-        return `${h}:${m}`;
-      }
-    }
-    const hour=Number.isFinite(slot.hour)?slot.hour:0;
-    const minute=Number.isFinite(slot.minute)?slot.minute:0;
-    return `${String(hour).padStart(2,'0')}:${String(minute).padStart(2,'0')}`;
-  }
 
-  function renderNotificationTimes(times){
-    if(!el.notifTimeList) return;
-    el.notifTimeList.innerHTML='';
-    const normalized=normalizeNotificationSettings({ reminderTimes: times }).reminderTimes;
-    normalized.sort((a,b)=> (a.hour||0)*60+(a.minute||0) - ((b.hour||0)*60+(b.minute||0)));
-    if(!normalized.length){
-      addReminderRow('');
-      return;
-    }
-    normalized.forEach(slot=>{ addReminderRow(reminderValueFromSlot(slot)); });
-  }
 
-  function addReminderRow(value){
-    if(!el.notifTimeList) return;
-    const row=document.createElement('div');
-    row.className='notif-time-row';
-    const input=document.createElement('input');
-    input.type='time';
-    input.inputMode='numeric';
-    input.dataset.reminderTime='1';
-    if(value) input.value=value;
-    const remove=document.createElement('button');
-    remove.type='button';
-    remove.className='btn btn-ghost';
-    remove.textContent='削除';
-    remove.addEventListener('click',()=>{ row.remove(); previewNotificationSettings(); });
-    row.appendChild(input);
-    row.appendChild(remove);
-    el.notifTimeList.appendChild(row);
-  }
 
-  function suggestReminderTime(){
-    const now=new Date();
-    const nextHour=(now.getHours()+1)%24;
-    return `${String(nextHour).padStart(2,'0')}:00`;
-  }
 
-  function applyNotificationToggles(settings){
-    const triggers=settings?.triggers||{};
-    if(el.notifTriggerDailyZero){ el.notifTriggerDailyZero.checked = triggers.dailyZero!==false; }
-    if(el.notifTriggerDailyCompare){ el.notifTriggerDailyCompare.checked = triggers.dailyCompare!==false; }
-    if(el.notifTriggerWeekly){ el.notifTriggerWeekly.checked = triggers.weeklyCompare!==false; }
-    if(el.notifTriggerRestartTone){ el.notifTriggerRestartTone.checked = settings?.restartModeGentle !== false; }
-  }
 
-  function setReminderRowError(row, message){
-    if(!row) return;
-    const input=row.querySelector('input[data-reminder-time]');
-    row.classList.toggle('has-error', !!message);
-    if(input){
-      input.classList.toggle('input-error', !!message);
-      input.setAttribute('aria-invalid', message ? 'true' : 'false');
-    }
-    let note=row.querySelector('.notif-time-error');
-    if(!note && message){
-      note=document.createElement('div');
-      note.className='notif-time-error';
-      row.appendChild(note);
-    }
-    if(note){
-      if(message){
-        note.textContent=message;
-      }else{
-        note.remove();
-      }
-    }
-  }
 
-  function validateNotificationTimeInputs(){
-    const times=[];
-    const entries=[];
-    const seen=new Map();
-    if(el.notifTimeList){
-      qsa('input[data-reminder-time]', el.notifTimeList).forEach(input=>{
-        const row=input.closest('.notif-time-row');
-        setReminderRowError(row, '');
-        const raw=(input && typeof input.value==='string') ? input.value.trim() : '';
-        const entry={ input, row, raw, errors:[], label:'' };
-        if(raw){
-          const match=raw.match(/^(\d{1,2}):(\d{2})$/);
-          if(!match){
-            entry.errors.push('時刻はHH:MM形式で入力してください');
-          }else{
-            const hour=Number(match[1]);
-            const minute=Number(match[2]);
-            const inRange=Number.isFinite(hour) && Number.isFinite(minute) && hour>=0 && hour<=23 && minute>=0 && minute<=59;
-            if(!inRange){
-              entry.errors.push('0〜23時、0〜59分で入力してください');
-            }else{
-              entry.label=`${String(hour).padStart(2,'0')}:${String(minute).padStart(2,'0')}`;
-              if(!seen.has(entry.label)) seen.set(entry.label, []);
-              seen.get(entry.label).push(entry);
-            }
-          }
-        }
-        entries.push(entry);
-      });
-    }
-    let duplicateCount=0;
-    seen.forEach(group=>{
-      if(group.length>1){
-        duplicateCount++;
-        group.forEach(entry=>entry.errors.push('同じ時刻が重複しています'));
-      }
-    });
-    let invalidCount=0;
-    entries.forEach(entry=>{
-      const message=entry.errors[0]||'';
-      if(message && message!=='同じ時刻が重複しています') invalidCount++;
-      setReminderRowError(entry.row, message);
-      if(!entry.errors.length && entry.label){
-        times.push(entry.label);
-      }
-    });
-    const hasErrors=entries.some(entry=>entry.errors.length>0);
-    const errorParts=[];
-    if(invalidCount) errorParts.push('時刻の形式を確認してください');
-    if(duplicateCount) errorParts.push('同じ時刻が重複しています');
-    const errorMessage=errorParts.join(' / ');
-    if(el.cfgSave){ el.cfgSave.disabled=hasErrors; }
-    if(el.notifHelp && hasErrors){
-      el.notifHelp.textContent=errorMessage || '通知時刻にエラーがあります';
-    }
-    return { validTimes: times, hasErrors, invalidCount, duplicateCount, errorMessage };
-  }
 
-  function readNotificationSettingsFromForm(){
-    const validation=validateNotificationTimeInputs();
-    const settings=normalizeNotificationSettings({
-      reminderTimes: validation.validTimes,
-      triggers:{
-        dailyZero: !el.notifTriggerDailyZero || el.notifTriggerDailyZero.checked,
-        dailyCompare: !el.notifTriggerDailyCompare || el.notifTriggerDailyCompare.checked,
-        weeklyCompare: !el.notifTriggerWeekly || el.notifTriggerWeekly.checked
-      },
-      restartModeGentle: !el.notifTriggerRestartTone || el.notifTriggerRestartTone.checked
-    });
-    return {
-      settings,
-      validation: Object.assign({}, validation, {
-        discardedReminderTimes: settings.discardedReminderTimes || []
-      })
-    };
-  }
 
-  function previewNotificationSettings(){
-    const { settings: draft, validation } = readNotificationSettingsFromForm();
-    if(validation.hasErrors){
-      if(el.notifStatus){ el.notifStatus.textContent='通知時刻を修正してください'; }
-      return;
-    }
-    if(el.notifHelp){ el.notifHelp.textContent=''; }
-    const plannedAt=computeNextNotificationCheckTime(draft);
-    const hasDiscarded=(validation.discardedReminderTimes||[]).length>0;
-    const messageParts=['未保存の通知設定があります'];
-    if(hasDiscarded) messageParts.push('無効な時刻を除外しました');
-    updateNotificationUi({
-      statusEl: el.notifStatus,
-      buttonEl: el.notifBtn,
-      nextLabelEl: el.notifHelp,
-      plannedAt,
-      settings: draft,
-      message: messageParts.join(' / ')
-    });
-    if(el.cfgSave){ el.cfgSave.disabled=false; }
-  }
 
-  const logManager=createLogManager({
-    loadJson,
-    saveJson,
-    storageKey: PENDING_LOGS_KEY,
-    getConfig: ()=>CFG,
-  });
-  const { sendLog, flushPendingLogs, setEndpointForPending, clearPendingEndpoints } = logManager;
 
   // ===== IndexedDB for DirectoryHandle =====
   const DB='fs-handles', STORE='dir';
@@ -2234,8 +1781,7 @@ function createAppRuntime(){
 
   let DIR=null; // FileSystemDirectoryHandle
   let dirNeedsGesture=false;
-  let dirPromptArmed=false;
-  async function ensureDir({prompt=true, forceCheck=false, allowSchedule=true}={}){
+  async function ensureDir({prompt=false, forceCheck=false}={}){
     if(!DIR || forceCheck){
       if(!DIR){
         try{
@@ -2256,13 +1802,11 @@ function createAppRuntime(){
     }catch(_){ state='prompt'; }
     if(state==='granted'){
       dirNeedsGesture=false;
-      dirPromptArmed=false;
       refreshDirStatus();
       return DIR;
     }
     if(!prompt){
       dirNeedsGesture = state!=='granted';
-      if(dirNeedsGesture && allowSchedule) scheduleDirPrompt();
       refreshDirStatus();
       return null;
     }
@@ -2271,7 +1815,6 @@ function createAppRuntime(){
     }catch(err){
       if(err && (err.name==='InvalidStateError' || /user activation/i.test(err.message||''))){
         dirNeedsGesture=true;
-        if(allowSchedule) scheduleDirPrompt();
         refreshDirStatus();
         return null;
       }
@@ -2283,351 +1826,36 @@ function createAppRuntime(){
     }
       if(state==='granted'){
         dirNeedsGesture=false;
-        dirPromptArmed=false;
         refreshDirStatus();
         return DIR;
       }
       if(state==='prompt'){
         dirNeedsGesture=true;
-        if(allowSchedule) scheduleDirPrompt();
         refreshDirStatus();
         return null;
       }
       // denied or unknown
       dirNeedsGesture=false;
-      dirPromptArmed=false;
       DIR=null;
       try{ await clearDirHandle(); }catch(_){ }
       refreshDirStatus();
       return null;
   }
-  function scheduleDirPrompt(){
-    if(!DIR || !dirNeedsGesture || dirPromptArmed) return;
-    dirPromptArmed=true;
-    const handler=async()=>{
-      window.removeEventListener('pointerdown', handler, true);
-      window.removeEventListener('keydown', handler, true);
-      dirPromptArmed=false;
-      const release=acquireOverlay('dir');
-      try{
-        await ensureDir({prompt:true});
-      }finally{
-        release();
-      }
-    };
-    window.addEventListener('pointerdown', handler, true);
-    window.addEventListener('keydown', handler, true);
-  }
 
-  async function gateDirPermissionBeforeBoot(){
-    await ensureDir({prompt:false, forceCheck:true, allowSchedule:false});
-    if(!DIR || !dirNeedsGesture){
-      return;
-    }
-    refreshDirStatus();
-    if(el.dirPermOverlay && el.dirPermAllow){
-      const overlay=el.dirPermOverlay;
-      const statusEl=el.dirPermStatus;
-      const allowBtn=el.dirPermAllow;
-      const laterBtn=el.dirPermLater;
-      function hideOverlay(){
-        overlay.classList.remove('show');
-        overlay.setAttribute('hidden','');
-        overlay.setAttribute('aria-hidden','true');
-      }
-      function showOverlay(){
-        overlay.removeAttribute('hidden');
-        overlay.classList.add('show');
-        overlay.setAttribute('aria-hidden','false');
-        setTimeout(()=>{ try{ allowBtn?.focus?.(); }catch(_){ } }, 0);
-      }
-      await new Promise(resolve=>{
-        if(laterBtn){ laterBtn.hidden=true; }
-        const attempt=async(fromUser=false)=>{
-          statusEl && (statusEl.textContent='');
-          const release=acquireOverlay('dir-permission');
-          try{
-            const handle=await ensureDir({prompt:true, forceCheck:true, allowSchedule:false});
-            if(handle){
-              cleanup();
-              hideOverlay();
-              resolve();
-              return;
-            }
-            if(statusEl){
-              statusEl.textContent = fromUser
-                ? 'アクセスが許可されませんでした。端末のダイアログで「許可する」を選んでください。'
-                : '音声フォルダへのアクセス許可が必要です。「許可を開く」をタップしてください。';
-            }
-            if(fromUser && laterBtn){
-              laterBtn.hidden=false;
-            }
-          }catch(err){
-            console.warn('dir permission attempt failed', err);
-            if(statusEl){
-              statusEl.textContent = fromUser
-                ? 'アクセス許可のリクエストに失敗しました。もう一度お試しください。'
-                : 'アクセス許可のリクエストを開始できませんでした。「許可を開く」をタップしてください。';
-            }
-            if(fromUser && laterBtn){
-              laterBtn.hidden=false;
-            }
-          }finally{
-            release();
-          }
-        };
-        const skip=()=>{
-          cleanup();
-          hideOverlay();
-          resolve();
-        };
-        const onKey=ev=>{ if(ev.key==='Enter'){ ev.preventDefault(); attempt(true); } };
-        const onAllow=()=>{ attempt(true); };
-        function cleanup(){
-          allowBtn.removeEventListener('click', onAllow);
-          laterBtn?.removeEventListener('click', skip);
-          overlay.removeEventListener('keydown', onKey);
-        }
-        showOverlay();
-        allowBtn.addEventListener('click', onAllow);
-        laterBtn?.addEventListener('click', skip);
-        overlay.addEventListener('keydown', onKey);
-        setTimeout(()=>{ attempt(false).catch(()=>{}); }, 0);
-      });
-    }else{
-      await ensureDir({prompt:true, forceCheck:true, allowSchedule:false});
-    }
-  }
 
-  // Settings modal
-  if(el.cfgBtn && el.cfgModal && el.cfgUrl && el.cfgKey && el.cfgAudioBase){
-    el.cfgBtn.addEventListener('click', ()=>{
-      el.cfgUrl.value=CFG.apiUrl||'';
-      el.cfgKey.value=CFG.apiKey||'';
-      el.cfgAudioBase.value=CFG.audioBase||'';
-      if(el.cfgPlaybackMode && el.cfgPlaybackMode.length){
-        const mode=getPlaybackMode();
-        el.cfgPlaybackMode.forEach(input=>{ input.checked = (input.value===mode); });
-      }
-      if(el.cfgStudyMode && el.cfgStudyMode.length){
-        const studyMode=getStudyMode();
-        el.cfgStudyMode.forEach(input=>{ input.checked = (input.value===studyMode); });
-      }
-      if(el.cfgSpeechVoice){
-        populateVoiceOptions();
-        const desired=CFG.speechVoice||'';
-        if(desired){
-          el.cfgSpeechVoice.value=desired;
-          if(el.cfgSpeechVoice.value!==desired){ el.cfgSpeechVoice.value=''; }
-        }else{
-          el.cfgSpeechVoice.value='';
-        }
-      }
-      if(el.milestoneIntensity){
-        el.milestoneIntensity.value=getMilestoneIntensity();
-      }
-      if(el.cfgResultSound){ el.cfgResultSound.value=normalizeResultSoundMode(CFG.resultSound); }
-      notifSettings=getNotificationSettings();
-      renderNotificationTimes(notifSettings.reminderTimes);
-      applyNotificationToggles(notifSettings);
+  // Folder changes are applied immediately; no duplicate settings authority.
+  if(el.cfgBtn && el.cfgModal){
+    el.cfgBtn.addEventListener('click',()=>{
       refreshDirStatus();
-      updateNotificationUi({
-        statusEl: el.notifStatus,
-        buttonEl: el.notifBtn,
-        nextLabelEl: el.notifHelp,
-        plannedAt: computeNextNotificationCheckTime(notifSettings),
-        settings: notifSettings
-      });
-      if(el.cfgSave){ el.cfgSave.disabled=false; }
       el.cfgModal.style.display='flex';
     });
   }
-  function setupNotifications(){
-    const handlers=initNotificationSystem({
-      statusEl: el.notifStatus,
-      buttonEl: el.notifBtn,
-      nextLabelEl: el.notifHelp,
-      settings: notifSettings,
-      toast
-    });
-    if(el.notifBtn && handlers?.handleClick){
-      el.notifBtn.addEventListener('click', handlers.handleClick);
-    }
-    if(typeof document!=='undefined' && handlers?.handleVisibilityChange){
-      document.addEventListener('visibilitychange', handlers.handleVisibilityChange);
-    }
-    return handlers;
-  }
-
-  const notifHandlers=setupNotifications();
-  if(el.notifTimeAdd){
-    el.notifTimeAdd.addEventListener('click',()=>{
-      addReminderRow(suggestReminderTime());
-      previewNotificationSettings();
-      const lastInput=el.notifTimeList?.querySelector('input[data-reminder-time]:last-of-type');
-      if(lastInput){ try{ lastInput.focus(); }catch(_){ } }
-    });
-  }
-  if(el.notifTimeList){
-    el.notifTimeList.addEventListener('input', previewNotificationSettings);
-  }
-  if(el.notifTriggerDailyZero){
-    el.notifTriggerDailyZero.addEventListener('change', previewNotificationSettings);
-  }
-  if(el.notifTriggerDailyCompare){
-    el.notifTriggerDailyCompare.addEventListener('change', previewNotificationSettings);
-  }
-  if(el.notifTriggerWeekly){
-    el.notifTriggerWeekly.addEventListener('change', previewNotificationSettings);
-  }
-  if(el.notifTriggerRestartTone){
-    el.notifTriggerRestartTone.addEventListener('change', previewNotificationSettings);
-  }
   if(el.cfgClose && el.cfgModal){
-    el.cfgClose.addEventListener('click', ()=>{ el.cfgModal.style.display='none'; });
+    el.cfgClose.addEventListener('click',()=>{el.cfgModal.style.display='none';});
   }
-  if(el.cfgSave && el.cfgModal && el.cfgUrl && el.cfgKey && el.cfgAudioBase){
-    el.cfgSave.addEventListener('click', ()=>{
-      const prevStudyMode=getStudyMode();
-      const prevApiUrl=(CFG.apiUrl||'').trim();
-      const prevAudioBase=(CFG.audioBase||'').trim();
-      const nextApiUrl=(el.cfgUrl.value||'').trim();
-      CFG.apiUrl=nextApiUrl;
-      CFG.apiKey=(el.cfgKey.value||'').trim();
-      CFG.audioBase=(el.cfgAudioBase.value||'').trim();
-      if(el.cfgPlaybackMode && el.cfgPlaybackMode.length){
-        const selected=el.cfgPlaybackMode.find(input=>input.checked);
-        CFG.playbackMode = selected ? (selected.value==='speech' ? 'speech' : 'audio') : 'audio';
-      }else{
-        CFG.playbackMode='audio';
-      }
-      if(el.cfgStudyMode && el.cfgStudyMode.length){
-        const selectedStudy=el.cfgStudyMode.find(input=>input.checked);
-        CFG.studyMode = selectedStudy && selectedStudy.value===STUDY_MODE_COMPOSE ? STUDY_MODE_COMPOSE : STUDY_MODE_READ;
-      }else{
-        CFG.studyMode=STUDY_MODE_READ;
-      }
-      if(el.cfgSpeechVoice){ CFG.speechVoice=el.cfgSpeechVoice.value||''; }
-      if(el.milestoneIntensity){
-        const value=(el.milestoneIntensity.value||'normal').toLowerCase();
-        CFG.milestoneIntensity = (value==='subtle' || value==='strong') ? value : 'normal';
-      }
-      if(el.cfgResultSound){ CFG.resultSound=normalizeResultSoundMode(el.cfgResultSound.value); }
-      setMilestoneEffectIntensity(getMilestoneIntensity());
-      const { settings: nextNotifSettings, validation: notifValidation } = readNotificationSettingsFromForm();
-      if(notifValidation.hasErrors){
-        toast('通知時刻を修正してください');
-        previewNotificationSettings();
-        return;
-      }
-      const notifMessage=(notifValidation.discardedReminderTimes||[]).length
-        ? '通知設定を保存しました（無効な時刻を除外しました）'
-        : '通知設定を保存しました';
-      const appliedNotif=notifHandlers?.applySettings
-        ? notifHandlers.applySettings(nextNotifSettings, { persist:true, message: notifMessage })
-        : null;
-      if(appliedNotif && appliedNotif.settings){
-        notifSettings=appliedNotif.settings;
-      }else if(!appliedNotif){
-        notifSettings=saveNotificationSettings(nextNotifSettings);
-        const plannedAt=ensureNotificationLoop(notifSettings, { resetInterval:true }) || computeNextNotificationCheckTime(notifSettings);
-        updateNotificationUi({
-          statusEl: el.notifStatus,
-          buttonEl: el.notifBtn,
-          nextLabelEl: el.notifHelp,
-          plannedAt,
-          settings: notifSettings,
-          message: notifMessage
-        });
-      }
-      if(CFG.audioBase!==prevAudioBase){
-        audioUrlResolver.clear();
-      }
-      saveCfg(CFG);
-      if((nextApiUrl && nextApiUrl!==prevApiUrl) || (!nextApiUrl && prevApiUrl)){
-        resetSpeechSessionStats();
-      }
-      const newStudyMode=getStudyMode();
-      if((CFG.apiUrl||'').trim()){
-        setEndpointForPending(CFG.apiUrl.trim(), (CFG.apiKey||'')||undefined);
-      } else {
-        clearPendingEndpoints();
-        applyRemoteStatus(null);
-      }
-      el.cfgModal.style.display='none';
-      toast('設定を保存しました');
-      if(currentItem){
-        const wantsSpeech=shouldUseSpeechForItem(currentItem);
-        if(wantsSpeech){
-          clearAudioSource();
-          currentShouldUseSpeech=true;
-        }else{
-          currentShouldUseSpeech=false;
-          speechController.cancelSpeech();
-          if(shouldUseAudioForItem(currentItem) && !audio.dataset.srcKey && currentItem.audio_fn){
-            (async()=>{
-              try{
-                const url=await resolveAudioUrl(currentItem.audio_fn);
-                if(url){
-                  await setAudioSource(url);
-                }else{
-                  clearAudioSource();
-                }
-              }catch(err){
-                console.warn('audio reload after config failed', err);
-              }
-            })();
-          }
-        }
-        if(prevStudyMode!==newStudyMode){
-          if(recognitionController){ recognitionController.clearHighlight(); }
-          if(newStudyMode===STUDY_MODE_COMPOSE){
-            el.mic.disabled=true;
-            el.en.textContent='文の語順を組み立ててください';
-            el.en.setAttribute('aria-label','並べ替えチャレンジ。語句を並べ終えると英文が表示されます。');
-          }
-          setupComposeGuide(currentItem).then((reorderState)=>{
-            currentReorderSetupReason=String(reorderState?.reason||'');
-            if(reorderState?.active){
-              el.en.classList.remove('concealed');
-              el.en.textContent='文の語順を組み立ててください';
-              el.en.setAttribute('aria-label','並べ替えチャレンジ。語句を並べ終えると英文が表示されます。');
-              el.mic.disabled=true;
-            }else{
-              showCanonicalEnglishAfterReorderSetup(currentItem,reorderState);
-              el.mic.disabled=isComposeMode();
-            }
-            if(reorderState?.reason) setFooterMessages('並べ替えを安全に停止しました',reorderState.reason);
-          }).catch((error)=>{
-            console.warn('Reordering mode update failed',error);
-            resetComposeGuide();
-            const fallback={
-              active:false,
-              reason:'語順データを確認できないため、並べ替えを停止しました。この項目をスキップしてください。',
-            };
-            currentReorderSetupReason=fallback.reason;
-            showCanonicalEnglishAfterReorderSetup(currentItem,fallback);
-            el.mic.disabled=isComposeMode();
-            setFooterMessages('並べ替えを安全に停止しました',fallback.reason);
-          });
-          if(recognitionController && lastMatchEval && lastMatchEval.source){
-            const rerun=recognitionController.matchAndHighlight(currentItem.en, lastMatchEval.source);
-            lastMatchEval=Object.assign({}, rerun);
-            const score=calcMatchScore(rerun.refCount, rerun.recall, rerun.precision);
-            updateMatch(score);
-          }
-        }
-      }else{
-        currentShouldUseSpeech=false;
-        if(prevStudyMode!==newStudyMode){
-          resetComposeGuide();
-        }
-      }
-      updatePlayButtonAvailability();
-      if((CFG.apiUrl||'').trim()){
-        syncProgressAndStatus().catch(()=>{});
-      }
-    });
+  const notifHandlers=initNotificationSystem({settings:getNotificationSettings(),toast});
+  if(notifHandlers?.handleVisibilityChange){
+    document.addEventListener('visibilitychange',notifHandlers.handleVisibilityChange);
   }
   if(el.btnPickDir){
     el.btnPickDir.addEventListener('click', async()=>{
@@ -2641,6 +1869,7 @@ function createAppRuntime(){
         refreshDirStatus();
         await ensureDir({prompt:true, forceCheck:true});
         refreshDirStatus();
+        await refreshCurrentAudioSource();
         toast(dirNeedsGesture ? 'フォルダを保存（許可待ち）' : 'フォルダを保存しました');
       }catch(e){
         if(e&&e.name!=='AbortError') toast('フォルダ選択に失敗');
@@ -2653,40 +1882,16 @@ function createAppRuntime(){
       audioUrlResolver.clear();
       DIR=null;
       dirNeedsGesture=false;
-      dirPromptArmed=false;
       refreshDirStatus();
+      await refreshCurrentAudioSource();
       toast('フォルダ設定を解除');
     });
   }
   function refreshDirStatus(){ if(!el.dirStatus) return; if(DIR){ el.dirStatus.textContent = dirNeedsGesture ? '許可待ち' : '保存済み'; } else { el.dirStatus.textContent = '未設定'; } }
 
   // GAS Bridge
-  async function refreshRemoteStatus(){
-    const url=(CFG.apiUrl||'').trim();
-    if(!url) return null;
-    try{
-      const payload={type:'status', apiKey:CFG.apiKey||undefined};
-      const res=await fetch(url,{method:'POST',headers:{'Content-Type':'text/plain;charset=UTF-8'},body:JSON.stringify(payload)});
-      if(!res.ok) throw new Error('status '+res.status);
-      const json=await res.json();
-      if(json && json.ok && json.status){
-        applyRemoteStatus(json.status);
-        return json.status;
-      }
-    }catch(err){ console.warn('refreshRemoteStatus', err); }
-    return null;
-  }
 
-  async function syncProgressAndStatus(){
-    const url=(CFG.apiUrl||'').trim();
-    if(!url) return null;
-    try{ await flushPendingLogs(); }catch(err){ console.warn('syncProgressAndStatus', err); }
-    return refreshRemoteStatus();
-  }
 
-  window.addEventListener('online', ()=>{
-    flushPendingLogs().then(()=>refreshRemoteStatus()).catch(()=>{});
-  });
 
   // Data
   const DATA_URL='./data/items.json';
@@ -2805,7 +2010,7 @@ function createAppRuntime(){
   }
 
   // Build section options (All/単一)
-  async function finalizeActiveSession({ flushLogs=false, reason='manual' }={}){
+  async function finalizeActiveSession({ reason='manual' }={}){
     if(!(sessionActive || sessionStarting)){
       setViewState(VIEW_HOME);
       return false;
@@ -2834,14 +2039,10 @@ function createAppRuntime(){
     }else{
       setViewState(VIEW_HOME);
     }
-    if(reason==='completed'&&isShadowingSession()&&normalizeResultSoundMode(CFG.resultSound)!=='off'){
+    if(reason==='completed'&&isShadowingSession()){
       setTimeout(()=>{
-        if(getAudioLockState()===AUDIO_LOCK_STATES.UNLOCKED) playTone('complete',{intensity:normalizeResultSoundMode(CFG.resultSound)});
+        if(getAudioLockState()===AUDIO_LOCK_STATES.UNLOCKED) playTone('complete',{intensity:'standard'});
       },MIC_RELEASE_SETTLE_MS+100);
-    }
-    if(flushLogs){
-      try{ await flushPendingLogs(); }
-      catch(err){ console.warn('finalizeActiveSession', err); }
     }
     return true;
   }
@@ -2849,7 +2050,7 @@ function createAppRuntime(){
   if(typeof document!=='undefined'){
     const handleVisibilityExit=()=>{
       if(document.visibilityState !== 'hidden') return;
-      finalizeActiveSession({ flushLogs:true, reason:'background' }).catch(()=>{});
+      finalizeActiveSession({ reason:'background' }).catch(()=>{});
     };
     document.addEventListener('visibilitychange', handleVisibilityExit);
   }
@@ -2993,16 +2194,28 @@ function createAppRuntime(){
     return queue;
   }
 
-  // Audio resolve: DIR (folder) -> OPFS -> base URL
+  // Audio resolve: selected folder -> OPFS. Missing audio uses automatic TTS.
   async function resolveFromDir(name){ try{ const d=await ensureDir(); if(!d||!name) return ''; const fh=await d.getFileHandle(name).catch(()=>null); if(!fh) return ''; const f=await fh.getFile(); return URL.createObjectURL(f); }catch(_){ return ''; } }
   async function resolveFromOPFS(name){ if(!name) return ''; try{ if(!(navigator.storage&&navigator.storage.getDirectory)) return ''; const root=await navigator.storage.getDirectory(); const fh=await root.getFileHandle(name).catch(()=>null); if(!fh) return ''; const file=await fh.getFile(); return URL.createObjectURL(file); }catch(_){ return ''; } }
   const audioUrlResolver=createAudioUrlResolver({
     resolveFromDirectory:resolveFromDir,
     resolveFromOPFS,
-    getBaseUrl:()=>CFG.audioBase,
   });
   const resolveAudioUrl=audioUrlResolver.resolveAudioUrl;
   configureSharedAudioResolver(audioUrlResolver);
+
+  let folderAudioGeneration=0;
+  async function refreshCurrentAudioSource(){
+    const generation=++folderAudioGeneration;
+    const item=currentItem;
+    if(!item) return;
+    stopAudio();
+    const url=item.forceSpeech?'':await resolveAudioUrl(item.audio_fn);
+    if(generation!==folderAudioGeneration || currentItem!==item) return;
+    if(url) await setAudioSource(url); else clearAudioSource();
+    currentShouldUseSpeech=shouldUseSpeechForItem(item);
+    updatePlayButtonAvailability();
+  }
 
   // Render & navigation
   function stopAudio(){ try{audio.pause();}catch(_){ } audio.currentTime=0; speechController.cancelSpeech(); }
@@ -3013,10 +2226,9 @@ function createAppRuntime(){
     if(shadowingPlayback&&!authorizeUserPlayback()) return false;
     const hasSrc=!!(audio?.dataset?.srcKey);
     const item=currentItem;
-    const playbackMode=getPlaybackMode();
     const speechForced=!!(item&&item.forceSpeech);
     const speechDesired=!!currentShouldUseSpeech;
-    const speechAllowed=speechDesired && (playbackMode==='speech' || speechForced);
+    const speechAllowed=speechDesired;
     const audioAllowed=shouldUseAudioForItem(item);
     if(speechAllowed){
       if(getAudioLockState()!==AUDIO_LOCK_STATES.UNLOCKED) return false;
@@ -3028,7 +2240,7 @@ function createAppRuntime(){
         }
         return false;
       }
-      const speechOk=await speechController.speakCurrentCard({ preferredVoiceId: CFG.speechVoice });
+      const speechOk=await speechController.speakCurrentCard();
       if(speechOk){
         if(userInitiated){
           autoPlayUnlocked=true;
@@ -3049,15 +2261,15 @@ function createAppRuntime(){
     }
     if(!audioAllowed){
       if(userInitiated){
-        if(playbackMode==='speech' || speechForced){
+        if(speechForced){
           if(!speechController || !speechController.supported()){ toast('音声合成に未対応のため再生できません'); }
         }
       }
       return false;
     }
     if(!hasSrc){
-      if(userInitiated) toast('音声が見つかりません');
-      return false;
+      currentShouldUseSpeech=true;
+      return tryPlayAudio({userInitiated,resetPosition,shadowingPlayback});
     }
     if(resetPosition){
       try{ audio.currentTime=0; }catch(_){ }
@@ -3075,6 +2287,11 @@ function createAppRuntime(){
       return true;
     }catch(err){
       console.warn('audio play failed', err);
+      if(err?.name!=='NotAllowedError'){
+        clearAudioSource();
+        currentShouldUseSpeech=true;
+        return tryPlayAudio({userInitiated,resetPosition,shadowingPlayback});
+      }
       if(userInitiated){
         let reason='音声を再生できませんでした';
         if(err){
@@ -3128,7 +2345,6 @@ function createAppRuntime(){
     hintStage=BASE_HINT_STAGE;
     maxHintStageUsed=BASE_HINT_STAGE;
     refreshLevelDisplay(null);
-    cardStart = now();
     sessionStart = 0;
     lastErrorType='';
     sameErrorStreak=0;
@@ -3257,6 +2473,8 @@ function createAppRuntime(){
               await setAudioSource(url,{timeout:4000, forceReload:true});
               if(audio.readyState<2){
                 console.warn('Audio not ready after retry', it && it.id, url);
+                clearAudioSource();
+                url='';
               }
             }
           }finally{
@@ -3271,7 +2489,6 @@ function createAppRuntime(){
       }
       currentShouldUseSpeech=shouldUseSpeechForItem(it);
       updatePlayButtonAvailability();
-      cardStart=now();
       resetResult();
       resetTranscript();
       lastMatchEval=null;
@@ -3463,9 +2680,6 @@ function createAppRuntime(){
     if(!QUEUE.length){ showIdleCard(); return; }
     sessionStarting=true;
     try{
-      if((CFG.apiUrl||'').trim()){
-        syncProgressAndStatus().catch(err=>{ console.warn('startSession status', err); });
-      }
       await ensureDir();
       sessionActive=true;
       shadowingPaused=false;
@@ -3895,12 +3109,6 @@ function createAppRuntime(){
     if(recognitionController?.isActive?.()) recognitionController.cancel();
     if(exposure.completed){
       recordShadowingExposure({cards:1,durationMs:exposure.durationMs});
-      sendLog('shadowing',{
-        ts:new Date().toISOString(),
-        id:exposure.itemId,
-        duration_ms:exposure.durationMs,
-        mode:TRAINING_MODES.CONTINUOUS_SHADOWING,
-      });
       shadowingSessionMetrics.cards+=1;
       shadowingSessionMetrics.durationMs+=exposure.durationMs;
       try{navigator.vibrate?.(8);}catch(_){ }
@@ -4124,54 +3332,7 @@ function createAppRuntime(){
       }
     }
 
-    const responseMs = cardStart>0 ? Math.max(0, now()-cardStart) : '';
-    const nativeSpeechStats = isRecognitionSupported()
-      ? recordSpeechAttempt(it.id, pass)
-      : getSpeechAttemptStats(it.id);
-    const srsPayload = (()=>{
-      const info=levelInfo||{};
-      const historyRaw=Array.isArray(info.noHintHistory)?info.noHintHistory:[];
-      const history=historyRaw
-        .map(v=>Number(v))
-        .filter(v=>Number.isFinite(v) && v>0);
-      const promotionBlockedRaw=levelUpdate?.promotionBlocked || null;
-      const promotionBlocked=promotionBlockedRaw?Object.assign({}, promotionBlockedRaw):null;
-      const nextTargetRaw=levelUpdate?.nextTarget || null;
-      const nextTarget=nextTargetRaw?Object.assign({}, nextTargetRaw):null;
-      return {
-        ts: toIsoString(updateTs) || new Date().toISOString(),
-        id: it.id,
-        level_candidate: numericOrEmpty(levelCandidate),
-        level_final: numericOrEmpty(levelUpdate?.finalLevel),
-        level_last: numericOrEmpty(info.last),
-        level_best: numericOrEmpty(info.best),
-        hint_stage: numericOrEmpty(info.hintStage),
-        last_match: numericOrEmpty(info.lastMatch),
-        no_hint_streak: numericOrEmpty(info.noHintStreak),
-        no_hint_history: history,
-        last_no_hint_at: toIsoString(info.lastNoHintAt),
-        level5_count: numericOrEmpty(info.level5Count),
-        level_updated_at: toIsoString(info.updatedAt),
-        promotion_blocked: promotionBlocked,
-        next_target: nextTarget,
-      };
-    })();
-    const attemptPayload = {
-      ts: new Date().toISOString(),
-      id: it.id,
-      result: pass ? 'pass' : 'fail',
-      auto_recall: +recall.toFixed(3),
-      auto_precision: +precision.toFixed(3),
-      response_ms: responseMs,
-      hint_used: stageUsed>BASE_HINT_STAGE ? 1 : 0,
-      hint_stage: stageUsed,
-      hint_en_used: stageUsed>=getEnglishRevealStage() ? 1 : 0,
-      error_type: primaryErrorType,
-      error_types_json: JSON.stringify(errorAnalysis.errorTypes),
-      missing_tokens_json: JSON.stringify(errorAnalysis.missingTokens),
-      spoken_tokens_json: JSON.stringify(errorAnalysis.spokenTokens),
-      device: UA
-    };
+    if(isRecognitionSupported()) recordSpeechAttempt(it.id, pass);
     const progressNote = buildNoHintProgressNote(levelUpdate?.nextTarget);
     if(pass){
       setLastProgressNote(progressNote, levelUpdate?.nextTarget);
@@ -4245,37 +3406,7 @@ function createAppRuntime(){
     }
     updateAttemptInfo();
 
-    // Persist the locally-tracked level information to the GAS spreadsheet log as well.
-    const payload = {
-      ts: new Date().toISOString(), id: it.id, mode: studyMode,
-      wer: +(1-recall).toFixed(3), cer: +(1-precision).toFixed(3),
-      latency_ms: 0,
-      words_spoken: (hypTokens||toks(hyp)).length,
-      transcript: transcript || hyp,
-      transcript_raw: hyp,
-      matched_tokens_json: JSON.stringify(matched),
-      missing_tokens_json: JSON.stringify(missing),
-      recall:+recall.toFixed(3), precision:+precision.toFixed(3),
-      match:+(matchRate||0).toFixed(3),
-      hint_stage:stageUsed,
-      level_last:levelInfo?.last ?? levelCandidate,
-      level_best:levelInfo?.best ?? levelCandidate,
-      level5_count:levelInfo?.level5Count||0,
-      streak:levelInfo?.noHintStreak||0,
-      no_hint_successes:Array.isArray(levelInfo?.noHintHistory)?levelInfo.noHintHistory.length:0,
-      next_level_target:levelUpdate?.nextTarget?.target||null,
-      next_level_remaining:levelUpdate?.nextTarget?.remaining ?? null,
-      next_level_available_at:levelUpdate?.nextTarget?.nextEligibleAt ? new Date(levelUpdate.nextTarget.nextEligibleAt).toISOString() : null,
-      study_mode: studyMode,
-      error_type: primaryErrorType,
-      error_types_json: JSON.stringify(errorAnalysis.errorTypes),
-      next_action: errorAnalysis.actionMessage,
-      native_sr_submissions: numericOrEmpty(nativeSpeechStats?.submissions),
-      native_sr_successes: numericOrEmpty(nativeSpeechStats?.correct)
-    };
-    sendLog('srs', srsPayload);
-    sendLog('attempt', attemptPayload);
-    sendLog('speech', payload);
+
   }
 
   el.mic.onclick=()=>{
@@ -4304,22 +3435,17 @@ function createAppRuntime(){
   async function bootApp(){
     const releaseBoot=acquireOverlay('boot');
     try{
-      await ensureDir({prompt:true, forceCheck:true, allowSchedule:false});
-      if(DIR && dirNeedsGesture){
-        await gateDirPermissionBeforeBoot();
-      }
+      await ensureDir({prompt:false, forceCheck:true});
       await ensureDataLoaded();
       initGoals();
       updateHeaderStats();
       initSectionPicker();
-      initOnboardingFlow();
       refreshDirStatus();
       // Opening the app must stay on Home. A saved legacy section must never
       // start itself before the focused character/training shell is ready.
       await rebuildAndRender(true,{autoStart:false});
       maybeShowFooterInfoIntroToast();
       maybeShowGoalOverview();
-      syncProgressAndStatus().catch(()=>{});
     }catch(e){
       console.error(e);
       toast('初期化失敗: '+(e&&e.message||e));
