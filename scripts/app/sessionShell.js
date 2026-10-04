@@ -95,7 +95,7 @@ function injectStyles(){
   const style=document.createElement('style');
   style.id='sessionShellStyles';
   style.textContent=`
-    #dailyGoalCard,#dailyOverviewCard,#sessionGoalCard,#personalPlanSummary{display:none!important}
+    #dailyGoalCard,#dailyOverviewCard,#sessionGoalCard{display:none!important}
     #homeView>#rangeBar{display:none!important}
     body.focus-home-view header .stat{display:none!important}
     body.focus-home-view main{padding-top:4px}

@@ -5,7 +5,6 @@ function injectCleanupStyles(){
   style.textContent=`
     body.focus-home-view #homeView>.goal-row,
     body.focus-home-view #homeView>#dailyOverviewCard,
-    body.focus-home-view #homeView>#personalPlanSummary,
     body.focus-home-view #homeView>#rangeBar{display:none!important}
 
     body.focus-home-view #app>header{

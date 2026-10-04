@@ -1719,9 +1719,6 @@ function createAppRuntime(){
     const cfg=loadJson(CONFIG, {});
     return cfg && typeof cfg==='object'?cfg:{};
   }
-  function saveCfg(o){
-    saveJson(CONFIG, o||{});
-  }
   let CFG=Object.assign({ studyMode:STUDY_MODE_READ }, loadCfg());
   setMilestoneEffectIntensity('normal');
 
