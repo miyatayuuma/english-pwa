@@ -60,6 +60,9 @@ browserTest('fresh install opens home without questionnaire/permissions and star
     await page.locator('#btnCfg').click();
     assert.deepEqual(await page.locator('#cfgBox button').evaluateAll(nodes=>nodes.map(node=>node.id)),['btnPickDir','btnClearDir','cfgClose']);
     assert.equal(await page.locator('#cfgBox input,#cfgBox select').count(),0);
+    const version=await page.locator('#cfgBox [data-app-version]').innerText();
+    assert.equal(version,await page.evaluate(()=>`バージョン: ${window.APP_VERSION}`));
+    assert.ok(version.trim());
     await page.locator('#cfgClose').click();await page.locator('.friendship-hero__cta').click();
     await page.waitForFunction(()=>!document.querySelector('#studyView').hidden&&Number(document.querySelector('#statProgressTotal').textContent)>0);
     assert.equal(await page.evaluate(()=>window.__permissionCalls),0);assert.deepEqual(errors,[]);
