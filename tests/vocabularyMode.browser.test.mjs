@@ -407,7 +407,7 @@ browserTest('native TARGET rescue preserves raw primary, answer authority and ex
   }
 });
 
-browserTest('wrong native candidates and meaningful other segments stay provisional; lower PARAPHRASE is not rescued',async()=>{
+browserTest('a lower contained TARGET is rescued despite extra words in another segment',async()=>{
   const opened=await newPage(sources[0]);const {page}=opened;
   try{
     await inject(page,['banana','run into someone']);
@@ -415,13 +415,9 @@ browserTest('wrong native candidates and meaningful other segments stay provisio
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0);
     await page.locator('.vocab-mic').click();await page.waitForFunction(()=>window.__mockSpeech.startCount===2);
     await injectFinal(page,'not');await injectInterim(page,['wrong','come across someone']);
-    await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent.includes('聞き取りを確認'));
+    await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='正解');
     assert.equal(await page.locator('.vocab-heard__text').innerText(),'not wrong');
-    assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0);
-    await page.locator('.vocab-mic').click();await page.waitForFunction(()=>window.__mockSpeech.startCount===3);
-    await inject(page,['run into someone','come across someone']);
-    await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='意味はOK');
-    assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0);
+    assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);
   }finally{await closePage(opened);}
 });
 
