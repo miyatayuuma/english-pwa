@@ -276,7 +276,7 @@ function latestNonEmptyTranscript(...values){
   return '';
 }
 
-function hasNativeSpeech(){
+function hasRecognitionEvidence(){
   return state.recognition?.getRecognitionSegments?.().some(segment=>segment.alternatives.some(candidate=>candidate.transcript.trim()));
 }
 
@@ -287,7 +287,7 @@ function scheduleTranscriptGrade(text){
   clearGradeTimer();
   // Native previews are display-only; wait for the terminal result/error.
   if(isNativeAndroid()) return;
-  if(!state.liveTranscript.trim()&&!hasNativeSpeech()) return;
+  if(!state.liveTranscript.trim()&&!hasRecognitionEvidence()) return;
   const delay=state.current.kind==='word'?650:1200;
   state.gradeTimer=setTimeout(()=>{
     state.gradeTimer=0;
@@ -334,7 +334,7 @@ function setupRecognition(){
       if(state.processing||!state.current) return;
       clearGradeTimer();
       const text=latestNonEmptyTranscript(result?.previewTranscript,state.liveTranscript,result?.transcript);
-      if(text||hasNativeSpeech()){state.liveTranscript=text;setTranscript(text);gradeTranscript(text);}
+      if(text||hasRecognitionEvidence()){state.liveTranscript=text;setTranscript(text);gradeTranscript(text);}
       else showRecognitionFailure();
     },
     onUnsupported:()=>{
@@ -370,7 +370,7 @@ async function startListening(){
     if(generation!==state.micGeneration||current!==state.current||!result?.ok) return;
     clearGradeTimer();
     const text=latestNonEmptyTranscript(result?.previewTranscript,state.liveTranscript,result?.transcript);
-    if((text||hasNativeSpeech())&&!state.processing) gradeTranscript(text);
+    if((text||hasRecognitionEvidence())&&!state.processing) gradeTranscript(text);
     else if(!state.processing) showRecognitionFailure();
     return;
   }
@@ -631,7 +631,7 @@ function renderAnswerContext({result=null,heardTranscript=state.lastAttemptTrans
 function gradeTranscript(text){
   if(state.processing||!state.current) return;
   const transcript=String(text??'');
-  if(!transcript.trim()&&!hasNativeSpeech()) return;
+  if(!transcript.trim()&&!hasRecognitionEvidence()) return;
   state.processing=true;
   clearGradeTimer();
   state.liveTranscript=transcript;

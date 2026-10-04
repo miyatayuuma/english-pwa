@@ -160,3 +160,17 @@ test('native production controller retains all twenty original provider candidat
   assert.equal(segment.requestedMaxResults,20);
   controller.cancel();await turn();
 });
+
+for(const rank of [6,12,20]) test(`Android adapter/controller uses shared TARGET rescue at provider rank ${rank}`,async()=>{
+  const {classifyVocabularySpeechAnswer}=await import('../scripts/speech/vocabularySpeechEvidence.js');
+  const f=fixture();let driver;
+  class Backend extends AndroidSpeechRecognizerBackend{constructor(){super({pluginProvider:async()=>f.plugin});driver=this;drivers.push(this);}}
+  const controller=createRecognitionController({recognitionBackend:Backend,shouldEvaluate:()=>false});
+  controller.start();await driver.startup;
+  const promise=controller.stop();
+  f.emit(driver,'final',Array.from({length:20},(_,i)=>({transcript:i===rank-1?'yell':'yeah',asrRank:i,confidence:0})));
+  f.emit(driver,'end');const result=await promise;
+  const grade=classifyVocabularySpeechAnswer({entry:{canonical:'yell'},...result});
+  assert.equal(grade.type,'target');assert.equal(grade.recognitionAuthority,'nbest-target');
+  assert.equal(grade.asrRank,rank-1);assert.equal(result.recognitionSegments[0].alternatives.length,20);
+});
