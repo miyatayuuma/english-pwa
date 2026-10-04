@@ -34,6 +34,18 @@ async function open(existing=false){
   },existing);
   const page=await context.newPage();const errors=[];page.on('pageerror',error=>errors.push(error.message));
   const remote=[];page.on('request',req=>{if(/script.google.com|old-audio.example/.test(req.url()))remote.push(req.url());});
+  if(existing){
+    await page.goto(url+'/seed');
+    await page.evaluate(async()=>{
+      const handle=await navigator.storage.getDirectory();
+      await new Promise((resolve,reject)=>{
+        const request=indexedDB.open('fs-handles',1);
+        request.onupgradeneeded=()=>request.result.createObjectStore('dir');
+        request.onerror=()=>reject(request.error);
+        request.onsuccess=()=>{const db=request.result;const tx=db.transaction('dir','readwrite');tx.objectStore('dir').put(handle,'audio');tx.oncomplete=()=>{db.close();resolve();};tx.onerror=()=>reject(tx.error);};
+      });
+    });
+  }
   await page.goto(url+'/index.html');
   await page.waitForFunction(()=>window.ALL_ITEMS?.length && document.querySelector('#sessionShellStyles') && typeof window.__OPEN_SESSION_OPTIONS__==='function');
   await page.waitForFunction(()=>!document.querySelector('#loadingOverlay')?.classList.contains('show'));
@@ -58,6 +70,12 @@ browserTest('existing migration preserves progress/method/speed/goals without re
     const state=await page.evaluate(()=>({cfg:JSON.parse(localStorage.getItem('appConfigV3')),level:JSON.parse(localStorage.getItem('itemLevelV1')),goal:localStorage.getItem('dailyGoalV1'),session:localStorage.getItem('sessionGoalV1'),speed:localStorage.getItem('audioSpeedV1'),retired:['pendingLogsV1','onboardingPlanV1','hasCompletedOnboardingV1','notifSettingsV1'].map(key=>localStorage.getItem(key))}));
     assert.deepEqual(state.cfg,{studyMode:'compose'});assert.equal(state.level.E0001.best,4);assert.equal(state.level.E0001.review.nextDueAt,123);
     assert.equal(state.goal,'18');assert.equal(state.session,'8');assert.equal(state.speed,'1.25');assert.deepEqual(state.retired,[null,null,null,null]);
+    assert.equal(await page.evaluate(async()=>{
+      const expected=await navigator.storage.getDirectory();
+      const saved=await new Promise((resolve,reject)=>{const request=indexedDB.open('fs-handles',1);request.onsuccess=()=>{const db=request.result;const read=db.transaction('dir','readonly').objectStore('dir').get('audio');read.onsuccess=()=>{db.close();resolve(read.result);};read.onerror=()=>reject(read.error);};request.onerror=()=>reject(request.error);});
+      return saved?.kind==='directory' && await saved.isSameEntry(expected);
+    }),true,'selected browser directory identity survives the migration');
+    assert.equal(await page.locator('#dirStatus').textContent(),'保存済み');
     assert.deepEqual(remote,[]);assert.deepEqual(errors,[]);assert.equal(await page.evaluate(()=>window.__permissionCalls),0);
   }finally{await context.close();}
 });
