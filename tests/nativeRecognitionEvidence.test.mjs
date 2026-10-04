@@ -13,23 +13,23 @@ test('native final-only mapping preserves rank zero, caps at twenty, and optiona
   const evidence = nativeRecognitionEvidence(event);
   assert.equal(evidence.transcript, 'YouTube');
   assert.equal(evidence.previewTranscript, 'YouTube');
-  const segment = evidence.nativeSegments[0];
+  const segment = evidence.recognitionSegments[0];
   assert.equal(segment.isFinal, true);
   assert.deepEqual(segment.alternatives.map(c => c.asrRank), [0, 1, 2, 3, 4, 5]);
   assert.deepEqual(segment.alternatives.map(c => c.confidence), [0.7, null, null, null, 0, null]);
   assert.equal(nativeWebResultEvent(event).results[0][0].transcript, 'YouTube');
 });
 test('partial absence is normal and empty/partial callbacks retain schema compatibility', () => {
-  assert.equal(nativeRecognitionEvidence({ type: 'partial', alternatives: [{ transcript: 'I' }] }).nativeSegments[0].isFinal, false);
+  assert.equal(nativeRecognitionEvidence({ type: 'partial', alternatives: [{ transcript: 'I' }] }).recognitionSegments[0].isFinal, false);
   assert.equal(nativeRecognitionEvidence({ type: 'final' }).transcript, '');
-  assert.deepEqual(nativeRecognitionEvidence({ type: 'final' }).nativeSegments[0].alternatives, []);
+  assert.deepEqual(nativeRecognitionEvidence({ type: 'final' }).recognitionSegments[0].alternatives, []);
 });
 test('mapped native candidates preserve existing strict TARGET rescue and exclude lower paraphrases', () => {
   const entry = { canonical: 'yield to something', paraphrases: ['give in to something'] };
   const grade = alternatives => classifyVocabularySpeechAnswer({ entry, ...nativeRecognitionEvidence({ type: 'final', alternatives: alternatives.map(transcript => ({ transcript })) }) });
   const rescued = grade(['YouTube', 'yield to something']);
   assert.equal(rescued.type, 'target');
-  assert.equal(rescued.nativeRank, 1);
+  assert.equal(rescued.asrRank, 1);
   assert.equal(rescued.primaryTranscript, 'YouTube');
   assert.equal(grade(['YouTube', 'give in to something']).type, 'miss');
   for (const text of ['yield', 'yield from something', 'something to yield', 'I like cats']) assert.equal(grade([text]).type, 'miss');
@@ -41,12 +41,12 @@ for (const rank of [1, 6, 12, 20]) test(`strict TARGET at provider rank ${rank}`
   const grade = classifyVocabularySpeechAnswer({entry:{canonical:'yell'},...evidence});
   assert.equal(grade.type,'target');
   assert.equal(grade.targetRescued,rank!==1);
-  if(rank!==1) assert.equal(grade.nativeRank,rank-1);
+  if(rank!==1) assert.equal(grade.asrRank,rank-1);
 });
 test('native range and original provider ranks are preserved with shortfall and overflow',()=>{
   for(const count of [1,7,20,25]){
     const alternatives=Array.from({length:count},(_,i)=>({transcript:'candidate '+i,asrRank:i+3,confidence:0.1}));
-    const segment=nativeRecognitionEvidence({type:'final',alternatives,providerReturnedCount:count}).nativeSegments[0];
+    const segment=nativeRecognitionEvidence({type:'final',alternatives,providerReturnedCount:count}).recognitionSegments[0];
     assert.equal(segment.alternatives.length,Math.min(20,count));
     assert.equal(segment.providerReturnedCount,count);
     assert.equal(segment.alternatives.at(-1).asrRank,Math.min(20,count)+2);

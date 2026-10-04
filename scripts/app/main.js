@@ -1,9 +1,9 @@
 import { isNativeAndroid } from '../native/runtimePlatform.js';
 import { nativeDirectory } from '../native/media.js';
-import { buildRecognitionBiasContext } from '../speech/contextualBias.js';
+import { buildRecognitionContext } from '../speech/recognitionPolicy.js';
 import { nativeSpeechDiagnostic } from '../native/androidSpeechBackend.js';
 import { createCorrectionProgress, recordCorrectionAttempt } from '../speech/correctionProgress.js';
-import { getActiveClozeRecognitionContext, clearActiveClozeRecognitionContext } from './clozeRecognitionContext.js';
+import { clearActiveClozeRecognitionContext } from './clozeRecognitionContext.js';
 import {
   STORAGE_KEYS,
   loadJson,
@@ -3786,7 +3786,7 @@ function createAppRuntime(){
         return refItem ? refItem.en : el.en.textContent;
       },
       shouldEvaluate:()=>!isShadowingSession(),
-      getRecognitionBiasContext:()=>buildRecognitionBiasContext({mode:isShadowingSession()?'shadowing':getStudyMode(),itemId:QUEUE[idx]?.id,clozeContext:getActiveClozeRecognitionContext(QUEUE[idx]?.id)}),
+      getRecognitionContext:()=>buildRecognitionContext({mode:isShadowingSession()?'shadowing':getStudyMode()}),
       onTranscriptPreview:text=>{if(!isShadowingSession()) showTranscriptFinal(text);},
       onTranscriptReset: resetTranscript,
       onTranscriptInterim: (text)=>{ if(!isShadowingSession()) showTranscriptInterim(text); },

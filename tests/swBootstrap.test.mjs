@@ -22,7 +22,7 @@ test('the current worker precaches its update bootstrap',()=>{
 
 test('the worker installs vocabulary v3 and one-time progress migration assets',()=>{
   const version=fs.readFileSync(new URL('../scripts/version.js',import.meta.url),'utf8');
-  assert.match(version,/APP_VERSION\s*=\s*'v5\.79'/);
+  assert.match(version,/APP_VERSION\s*=\s*'v5\.81'/);
   assert.match(worker,/\.\/data\/vocabulary-v3\.json/);
   assert.match(worker,/\.\/data\/vocabulary-v3-paraphrase-audit\.json/);
   assert.match(worker,/\.\/data\/vocabulary-v2-v3-migration\.json/);
@@ -30,7 +30,7 @@ test('the worker installs vocabulary v3 and one-time progress migration assets',
   for(const asset of [
     './scripts/app/vocabularyMigration.js',
     './scripts/app/clozeRecognitionContext.js',
-    './scripts/speech/contextualBias.js',
+    './scripts/speech/recognitionPolicy.js',
     './scripts/native/androidSpeechBackend.js',
     './scripts/native/nativeSpeech.js',
     './scripts/native/recognitionEvidence.js',

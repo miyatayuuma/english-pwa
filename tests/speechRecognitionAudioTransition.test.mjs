@@ -94,7 +94,7 @@ test('continuous shadowing capture never evaluates or returns a score',async()=>
     const outcome=controller.stop();
     assert.equal(finalText,'wrong primary');
     assert.equal(outcome.hypotheses,undefined);
-    assert.equal(recognition.maxAlternatives,1);
+    assert.equal(recognition.maxAlternatives,20);
     assert.equal(evaluated,0);
     assert.equal(outcome.matchInfo,null);
   }finally{
