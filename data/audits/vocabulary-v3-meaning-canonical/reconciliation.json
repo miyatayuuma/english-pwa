@@ -2,12 +2,12 @@
   "schema_version": 1,
   "baseline_main": "85506d6ce258d2bd12f8ec80e937fbdd5e7a098d",
   "baseline_blob": "ddc77e399048fc622605f4837f1487763e489624",
-  "status": "CENTRALLY_RECONCILED",
+  "status": "SECOND_PASS_LEARNING_VALUE_RECONCILED",
   "policy": {
-    "meaning": "代表辞書義。明示独立sense内に限定。Vocabulary prompt must make the required spoken TARGET recoverable: when canonical requires someone/something/something else, meaning_ja mirrors those placeholder tokens literally. Source contextual meaning remains occurrence authority and is not rewritten by this learning-surface task.",
+    "meaning": "Learning value first: choose a high-value major/core sense or a meaning close to the headword's semantic center rather than mirroring the source occurrence. Japanese prompts prioritize recoverability of the English target; concise meta explanation and multiple major senses are allowed when one natural Japanese gloss would over-narrow the card. Source contextual meaning remains occurrence evidence, not the authority for representative card meaning.",
     "canonical": "base/dictionary form for lexical items; every canonical TARGET must be directly speakable. Productive variable arguments use natural spoken placeholders such as someone, something, something else, and doing something. Fixed idioms use the natural fixed spoken chunk. Clause-taking patterns may use a short complete representative clause when a bare stem would be syntactically incomplete. Non-spoken meta notation (+ clause, + noun, slash alternatives, one's/oneself) is prohibited.",
     "capitalization": "nonproper lexical heads lowercase; English I/proper names preserved",
-    "scope": "canonical/meaning_ja learning surfaces only; sense boundaries, source occurrences, contextual meanings, population, answers and paraphrases unchanged unless a target-authority regression requires fixture synchronization."
+    "scope": "Second-pass semantic reconciliation may widen or correct canonical/meaning_ja/sense_key when needed to restore a high-value major/core learning surface. Source occurrences, contextual meanings, population, answers and paraphrases remain unchanged; paraphrase expansion is a separate follow-up concern."
   },
   "coverage": {
     "reviewed": 2478,
@@ -2789,13 +2789,13 @@
       "id": "vocab:00418",
       "decision": "MODIFY",
       "after": {
-        "canonical": "make your way to the exit",
+        "canonical": "make your way to a place",
         "sense_key": "travel_toward_a_place",
-        "meaning_ja": "出口へ向かう"
+        "meaning_ja": "ある場所へ向かって進む"
       },
-      "reason": "Learning-surface refinement: replace an over-abstracted dictionary/meta form with a short idiomatic speakable target. The representative sense boundary remains travel_toward_a_place.",
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
       "confidence": "high",
-      "cross_shard_note": null,
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
       "paraphrase_followup_required": false
     },
     {
@@ -5221,12 +5221,12 @@
       "decision": "MODIFY",
       "after": {
         "canonical": "on safety grounds",
-        "sense_key": "on_specified_basis",
-        "meaning_ja": "安全上の理由で"
+        "sense_key": "because_of_safety_considerations",
+        "meaning_ja": "安全上の理由で（on X grounds＝Xを理由に）"
       },
-      "reason": "Concrete learning-surface normalization: replace abstract slot notation with a short, idiomatic, speakable example that preserves sense on_specified_basis.",
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
       "confidence": "high",
-      "cross_shard_note": "形容詞slot表記を中央で統一する。",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
       "paraphrase_followup_required": false
     },
     {
@@ -5494,12 +5494,12 @@
       "decision": "MODIFY",
       "after": {
         "canonical": "title",
-        "sense_key": "name_of_book_or_work",
-        "meaning_ja": "題名"
+        "sense_key": "name_of_work_or_rank",
+        "meaning_ja": "題名・タイトル／肩書き・称号"
       },
-      "reason": "新規単独nounで肩書きはsource sense。一般代表義優先なら題名。ただしAdmissionがRANK NAMEを明示固定した場合は現案を保持。",
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
       "confidence": "high",
-      "cross_shard_note": "pos が汎用 word のまま。canonical/senseの判断は上記で確定したが、posの具体化は本Taskの変更対象外。",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
       "paraphrase_followup_required": true
     },
     {
@@ -5676,12 +5676,12 @@
       "decision": "MODIFY",
       "after": {
         "canonical": "curse",
-        "sense_key": "words_intended_to_bring_bad_luck",
-        "meaning_ja": "呪い"
+        "sense_key": "supernatural_harm_or_words_invoking_it",
+        "meaning_ja": "呪い／呪う"
       },
-      "reason": "generic noun curseの一般的代表義を選択。source比喩の災いへ限定しない。",
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
       "confidence": "high",
-      "cross_shard_note": "",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
       "paraphrase_followup_required": true
     },
     {
@@ -6184,11 +6184,11 @@
       "after": {
         "canonical": "sum",
         "sense_key": "total_amount",
-        "meaning_ja": "合計"
+        "meaning_ja": "合計・総額"
       },
-      "reason": "generic noun sumの代表的な合計義を選択。金額限定にしない。",
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
       "confidence": "high",
-      "cross_shard_note": "",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
       "paraphrase_followup_required": true
     },
     {
@@ -7028,12 +7028,12 @@
       "decision": "MODIFY",
       "after": {
         "canonical": "it's about time",
-        "sense_key": "overdue_action",
-        "meaning_ja": "もう〜すべき頃だ"
+        "sense_key": "overdue_or_appropriate_time_for_action",
+        "meaning_ja": "もう〜してよい頃だ／いい加減〜すべきだ"
       },
-      "reason": "Vocabulary answer-surface normalization: \"it's about time + clause (past tense)\" used a non-spoken trailing meta slot. Canonical target is normalized to the single speakable surface \"it's about time\" without changing the fixed sense boundary.",
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
       "confidence": "high",
-      "cross_shard_note": "",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
       "paraphrase_followup_required": true
     },
     {
@@ -7073,6 +7073,734 @@
       "reason": "Learning-surface refinement: replace an over-abstracted dictionary/meta form with a short idiomatic speakable target. The representative sense boundary remains fifteen_minutes_before_hour.",
       "confidence": "high",
       "cross_shard_note": "",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00036",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "take it easy",
+        "sense_key": "relax_or_avoid_overexertion",
+        "meaning_ja": "気楽にする・無理をしない"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00272",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "pay off",
+        "sense_key": "settle_debt_or_yield_reward",
+        "meaning_ja": "（借金などを）完済する／（努力などが）報われる"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00381",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "as many as",
+        "sense_key": "surprisingly_large_number",
+        "meaning_ja": "（数が）〜もの、〜も"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00403",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "get into shape",
+        "sense_key": "become_physically_fit",
+        "meaning_ja": "体を良い状態にする（運動などで体を鍛える）"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00574",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "go off",
+        "sense_key": "explode_or_sound",
+        "meaning_ja": "（爆弾が）爆発する／（警報などが）鳴る"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00581",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "date back to a time",
+        "sense_key": "originate_at_a_past_time",
+        "meaning_ja": "（起源・歴史が）〜までさかのぼる"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00615",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "go ahead",
+        "sense_key": "proceed_or_give_permission",
+        "meaning_ja": "先に進む・始める／（許可して）どうぞ"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00729",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "timid",
+        "sense_key": "lacking_courage_or_confidence",
+        "meaning_ja": "臆病な・気の弱い"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00739",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "regardless",
+        "sense_key": "without_regard_or_despite_that",
+        "meaning_ja": "それでも・かまわず"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00828",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "capacity",
+        "sense_key": "amount_held_or_ability",
+        "meaning_ja": "容量・収容力／能力"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00862",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "alter",
+        "sense_key": "change_partially",
+        "meaning_ja": "変える・変わる（部分的に変更する）"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00932",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "undergo",
+        "sense_key": "experience_or_be_subject_to",
+        "meaning_ja": "（治療・変化・試練などを）受ける・経験する"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:00969",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "dignity",
+        "sense_key": "worth_or_self_respect",
+        "meaning_ja": "尊厳・品位"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01039",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "prevail",
+        "sense_key": "be_victorious_or_widespread",
+        "meaning_ja": "優勢になる・勝つ／広く行き渡る"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01076",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "assure",
+        "sense_key": "state_confidently_to_reassure",
+        "meaning_ja": "（人に）確かだと保証して安心させる"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01167",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "as it is",
+        "sense_key": "in_current_state_or_circumstances",
+        "meaning_ja": "そのままで／現状では"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01258",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "cabin",
+        "sense_key": "small_shelter_or_private_room",
+        "meaning_ja": "小屋／（船・航空機の）客室"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01259",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "item",
+        "sense_key": "individual_thing_or_list_entry",
+        "meaning_ja": "一つの品物・項目（個別に扱うもの）"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01260",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "flight",
+        "sense_key": "journey_or_travel_by_air",
+        "meaning_ja": "飛行／航空便（フライト）"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01353",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "undertake",
+        "sense_key": "take_on_or_begin_a_task",
+        "meaning_ja": "（仕事・責任などを）引き受ける・着手する"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01369",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "suspend",
+        "sense_key": "temporarily_stop_or_exclude",
+        "meaning_ja": "一時停止・中断する（人なら停職・停学にする）"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01588",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "disappear",
+        "sense_key": "cease_to_be_visible_or_present",
+        "meaning_ja": "消える・姿を消す（見えなくなる）"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01615",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "production",
+        "sense_key": "process_of_making_or_creating",
+        "meaning_ja": "生産・製造（作品なら制作）"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01637",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "come on",
+        "sense_key": "urge_or_protest",
+        "meaning_ja": "さあ・ほら（促し）／おい・もう（抗議・不信）"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01721",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "unique",
+        "sense_key": "one_of_a_kind_or_distinctive",
+        "meaning_ja": "唯一の・他にない／独自の"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01732",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "unit",
+        "sense_key": "single_entity_or_standard_measure",
+        "meaning_ja": "単位・一つのまとまり（1個として扱うもの）"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01746",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "transfer",
+        "sense_key": "move_to_another_place_or_position",
+        "meaning_ja": "移す・移る（別の場所・所属などへ）"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01776",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "print",
+        "sense_key": "produce_printed_text_or_write_in_block_letters",
+        "meaning_ja": "印刷する／活字体で書く"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01959",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "position",
+        "sense_key": "location_status_or_job_post",
+        "meaning_ja": "位置・立場／地位・役職"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01961",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "enclose",
+        "sense_key": "surround_or_include_inside",
+        "meaning_ja": "囲む／同封する"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01970",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "workshop",
+        "sense_key": "workroom_or_practical_training_session",
+        "meaning_ja": "作業場／実習・研修会"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02037",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "exclusive",
+        "sense_key": "excluding_others_or_limited_access",
+        "meaning_ja": "排他的な・独占的な／限定の"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02118",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "confine",
+        "sense_key": "restrict_within_limits_or_enclose",
+        "meaning_ja": "（範囲内に）制限する／閉じ込める"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02134",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "reign",
+        "sense_key": "rule_or_period_of_a_monarch",
+        "meaning_ja": "（君主の）統治・治世／君臨する"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02142",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "resolution",
+        "sense_key": "firm_or_formal_decision_or_solution",
+        "meaning_ja": "決意・決議／解決"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02193",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "amendment",
+        "sense_key": "change_or_formal_revision",
+        "meaning_ja": "修正・改正（案）"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02207",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "prove to be",
+        "sense_key": "turn_out_to_be",
+        "meaning_ja": "〜であることが分かる・〜だと判明する"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02212",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "a pile of",
+        "sense_key": "heap_or_large_amount",
+        "meaning_ja": "山積みの〜／たくさんの〜"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02238",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "be appointed as",
+        "sense_key": "be_assigned_to_a_position",
+        "meaning_ja": "〜に任命される"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02251",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "settle",
+        "sense_key": "resolve_or_become_established",
+        "meaning_ja": "解決する・決着をつける／定住する・落ち着く"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02300",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "seriously",
+        "sense_key": "earnestly_or_gravely",
+        "meaning_ja": "真剣に／深刻に"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02306",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "offer",
+        "sense_key": "propose_or_make_available",
+        "meaning_ja": "申し出る・提供する"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02310",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "mount",
+        "sense_key": "climb_or_attach",
+        "meaning_ja": "登る・上がる／取り付ける"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02319",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "bury",
+        "sense_key": "put_under_ground_or_inter",
+        "meaning_ja": "埋める・埋葬する"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02321",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "insist",
+        "sense_key": "assert_or_demand_firmly",
+        "meaning_ja": "強く主張する・言い張る／強く要求する"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02330",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "wicked",
+        "sense_key": "morally_evil",
+        "meaning_ja": "邪悪な（道徳的にひどく悪い）"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02356",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "occasion",
+        "sense_key": "particular_time_event_or_opportunity",
+        "meaning_ja": "機会・場合／特定の出来事"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02357",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "casual",
+        "sense_key": "informal_or_unplanned",
+        "meaning_ja": "気軽な・形式ばらない／何気ない"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02376",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "be bound for",
+        "sense_key": "travel_towards_destination",
+        "meaning_ja": "〜行きである・〜へ向かっている"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02392",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "backwards",
+        "sense_key": "toward_the_back_or_in_reverse",
+        "meaning_ja": "後ろ向きに／逆方向に・逆に"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02393",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "belong",
+        "sense_key": "be_owned_by_or_be_part_of",
+        "meaning_ja": "属する／（人など）のものである"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02407",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "sincerely",
+        "sense_key": "genuinely_or_honestly",
+        "meaning_ja": "心から・誠実に"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02448",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "not really",
+        "sense_key": "qualified_negative",
+        "meaning_ja": "そういうわけでもない／あまり〜ない"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02471",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "pure",
+        "sense_key": "unmixed_or_free_from_impurity",
+        "meaning_ja": "純粋な・混じりけのない"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02473",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "rough",
+        "sense_key": "uneven_or_approximate",
+        "meaning_ja": "粗い・ざらざらした／おおよその"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
+      "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:02478",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "these days",
+        "sense_key": "nowadays",
+        "meaning_ja": "最近・近ごろ"
+      },
+      "reason": "Second-pass learning-value audit: prioritize a high-value major/core or root-adjacent sense over source-local wording. The Japanese prompt may be explanatory or multi-sense when that improves target recoverability; sense_key is aligned to the finalized learning surface.",
+      "confidence": "high",
+      "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
       "paraphrase_followup_required": false
     }
   ],
@@ -8849,5 +9577,74 @@
     "canonical_changes": 1,
     "meaning_ja_refinements": 23,
     "closure_note": "All 452 entries changed by learning_surface_refinement were human-reviewed for learning value, representative sense alignment, placeholder visibility, and spoken-target naturalness. No population, stable-ID, kind, source-occurrence, paraphrase-authority, or contextual-meaning changes were made in this human-review pass."
+  },
+  "second_pass_learning_value_audit": {
+    "status": "CLOSED",
+    "reviewed_entries": 62,
+    "rule": "Prioritize major/core/root-adjacent learning value; allow explanatory or multi-sense Japanese prompts when needed for target recoverability; do not let source-local wording dictate representative meaning.",
+    "entry_ids": [
+      "vocab:00036",
+      "vocab:00272",
+      "vocab:00381",
+      "vocab:00403",
+      "vocab:00418",
+      "vocab:00574",
+      "vocab:00581",
+      "vocab:00615",
+      "vocab:00729",
+      "vocab:00739",
+      "vocab:00828",
+      "vocab:00862",
+      "vocab:00932",
+      "vocab:00969",
+      "vocab:01039",
+      "vocab:01076",
+      "vocab:01167",
+      "vocab:01258",
+      "vocab:01259",
+      "vocab:01260",
+      "vocab:01276",
+      "vocab:01353",
+      "vocab:01369",
+      "vocab:01470",
+      "vocab:01588",
+      "vocab:01606",
+      "vocab:01615",
+      "vocab:01637",
+      "vocab:01721",
+      "vocab:01732",
+      "vocab:01746",
+      "vocab:01776",
+      "vocab:01951",
+      "vocab:01959",
+      "vocab:01961",
+      "vocab:01970",
+      "vocab:02037",
+      "vocab:02118",
+      "vocab:02134",
+      "vocab:02142",
+      "vocab:02193",
+      "vocab:02207",
+      "vocab:02212",
+      "vocab:02238",
+      "vocab:02251",
+      "vocab:02300",
+      "vocab:02306",
+      "vocab:02310",
+      "vocab:02319",
+      "vocab:02321",
+      "vocab:02330",
+      "vocab:02356",
+      "vocab:02357",
+      "vocab:02376",
+      "vocab:02392",
+      "vocab:02393",
+      "vocab:02407",
+      "vocab:02448",
+      "vocab:02454",
+      "vocab:02471",
+      "vocab:02473",
+      "vocab:02478"
+    ]
   }
 }
