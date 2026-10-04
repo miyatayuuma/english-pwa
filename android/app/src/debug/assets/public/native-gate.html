@@ -50,8 +50,8 @@ function selected(){
 function locks(active){for(const id of ['fixture','condition','control','intended','start','clear']) $(id).disabled=active; $('stop').disabled=!active;$('cancel').disabled=!active;}
 function record(result){
  if(finished) return;finished=true;
- const primary=result?.previewTranscript||result?.transcript||'';
  const segments=result?.nativeSegments||[];
+ const primary=segments[0]?.primaryTranscript??result?.previewTranscript??result?.transcript??'';
  const alternatives=segments.flatMap(segment=>segment.alternatives);
  const targets=attempt.targets;
  const exact=text=>targets.some(target=>normalizeVocabularyAnswer(text)===normalizeVocabularyAnswer(target));

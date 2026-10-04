@@ -148,10 +148,11 @@ test('native production controller retains all twenty original provider candidat
   const controller=createRecognitionController({recognitionBackend:Backend,shouldEvaluate:()=>false});
   controller.start();await driver.startup;
   assert.equal(driver.maxAlternatives,20);
-  const values=Array.from({length:20},(_,i)=>({transcript:i===19?'yell':i<2?'yeah':'wrong '+i,asrRank:i,confidence:0.05}));
+  const values=Array.from({length:20},(_,i)=>({transcript:i===19?'yell':i<2?'yeah':i===2?'':'wrong '+i,asrRank:i,confidence:0.05}));
   f.emit(driver,'final',values);
   const segment=controller.getNativeRecognitionSegments()[0];
   assert.equal(segment.alternatives.length,20);
+  assert.equal(segment.alternatives[2].transcript,'');
   assert.equal(segment.alternatives.at(-1).asrRank,19);
   assert.equal(segment.alternatives.at(-1).transcript,'yell');
   assert.equal(segment.providerReturnedCount,20);
