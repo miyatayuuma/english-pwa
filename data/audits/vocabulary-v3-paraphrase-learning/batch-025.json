@@ -806,7 +806,8 @@
         "delight",
         "joy",
         "be delighted",
-        "be overjoyed"
+        "be overjoyed",
+        "be thrilled"
       ],
       "candidate_review": [
         {
@@ -828,14 +829,20 @@
           "expression": "be overjoyed",
           "decision": "ACCEPT",
           "reason": "「大喜び」の強い喜びを直接表す主要形容詞表現で、学習価値が高い。"
+        },
+        {
+          "expression": "be thrilled",
+          "decision": "ACCEPT",
+          "reason": "「大喜びである」を表す非常に一般的な口語表現で、delighted/overjoyedとは異なる主要表現として学習価値が高い。"
         }
       ],
       "after_paraphrases": [
         "be delighted",
-        "be overjoyed"
+        "be overjoyed",
+        "be thrilled"
       ],
       "decision": "CHANGED",
-      "reason": "主要な別回答として 「be delighted」、「be overjoyed」 を採用。日本語promptへの対応が自然で、canonicalとは独立した学習価値がある。"
+      "reason": "主要な別回答として 「be delighted」、「be overjoyed」、「be thrilled」 を採用。日本語promptへの対応が自然で、canonicalとは独立した学習価値がある。"
     },
     {
       "entry_id": "vocab:02428",
@@ -1050,7 +1057,8 @@
       "blind_candidates": [
         "how about doing something",
         "what about doing something",
-        "why not do something"
+        "why not do something",
+        "why don't you do something"
       ],
       "candidate_review": [
         {
@@ -1067,14 +1075,20 @@
           "expression": "why not do something",
           "decision": "ACCEPT",
           "reason": "相手への提案として同じ日本語promptに自然に答えられる高頻度construction。"
+        },
+        {
+          "expression": "why don't you do something",
+          "decision": "ACCEPT",
+          "reason": "相手への提案として「somethingするのはどうですか」に直接対応する最重要constructionの一つ。"
         }
       ],
       "after_paraphrases": [
         "what about doing something",
-        "why not do something"
+        "why not do something",
+        "why don't you do something"
       ],
       "decision": "CHANGED",
-      "reason": "主要な別回答として 「what about doing something」、「why not do something」 を採用。日本語promptへの対応が自然で、canonicalとは独立した学習価値がある。"
+      "reason": "主要な別回答として 「what about doing something」、「why not do something」、「why don't you do something」 を採用。日本語promptへの対応が自然で、canonicalとは独立した学習価値がある。"
     },
     {
       "entry_id": "vocab:02436",
@@ -1601,17 +1615,16 @@
         },
         {
           "expression": "it's a pity.",
-          "decision": "ACCEPT",
-          "reason": "「残念だ」を直接表す基本constructionで、what a pityとは別の自然な言い方。"
+          "decision": "REJECT",
+          "reason": "意味は成立するがcanonical「what a pity!」と同語根の近接constructionで、別表現として追加する増分学習価値が小さい。"
         }
       ],
       "after_paraphrases": [
         "what a shame!",
-        "that's too bad.",
-        "it's a pity."
+        "that's too bad."
       ],
       "decision": "CHANGED",
-      "reason": "主要な別回答として 「what a shame!」、「that's too bad.」、「it's a pity.」 を採用。日本語promptへの対応が自然で、canonicalとは独立した学習価値がある。"
+      "reason": "主要な別回答として 「what a shame!」、「that's too bad.」 を採用。日本語promptへの対応が自然で、canonicalとは独立した学習価値がある。"
     },
     {
       "entry_id": "vocab:02451",
