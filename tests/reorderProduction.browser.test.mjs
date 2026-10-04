@@ -460,7 +460,7 @@ browserTest('normal read FAIL correction is practice-only through repeated failu
   }finally{await context.close();}
 });
 
-for(const count of [1,3]) browserTest(`390×844 read Cloze ${count} targets injects internal target/local context, preserves concealment and full-sentence grading`,async()=>{
+for(const count of [1,3]) browserTest(`390×844 read Cloze ${count} targets preserve internal concealment and full-sentence grading without recognizer bias`,async()=>{
   const sentence=count===1?'He refused to yield to any threats from them.':'Today I came across him near the old bridge when I was looking for the station and decided to yield to his request before continuing my long journey home again.';
   const surfaces=count===1?['yield to']:['came across','looking for','yield to'];
   const sourceItem={...item,en:sentence};
@@ -493,19 +493,17 @@ for(const count of [1,3]) browserTest(`390×844 read Cloze ${count} targets inje
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
     await speechAttempt(page,[registry.targets[0].surface,sentence]);
     const phrases=await page.evaluate(()=>window.__testSpeech.latest.phrasesAtStart);
-    assert.ok(phrases.length<=24);
-    assert.equal(await page.evaluate(()=>window.__testSpeech.latest.maxAlternatives),5);
-    for(const target of registry.targets) assert.ok(phrases.some(p=>p.text===target.surface&&p.boost===7));
-    assert.ok(phrases.some(p=>p.boost===6));
-    assert.ok(phrases.some(p=>p.boost===5),'surrounding sentence context');
-    assert.ok(!phrases.some(p=>p.text===sentence));
+    assert.deepEqual(phrases,[]);
+    assert.equal(await page.evaluate(()=>window.__testSpeech.latest.maxAlternatives),20);
+    assert.equal(await page.evaluate(()=>window.__testSpeech.latest.context.itemId),undefined);
+    assert.equal(await page.evaluate(()=>window.__testSpeech.latest.context.sentenceIndex),undefined);
     await page.waitForFunction(()=>JSON.parse(localStorage.getItem('itemLevelV1')).RPROD1.lastMatch<0.7);
     assert.equal(await page.locator('#enText').innerText(),sentence,'grading still covers the full sentence');
     assert.equal(await page.evaluate(async()=> (await import('./scripts/app/clozeRecognitionContext.js')).getActiveClozeRecognitionContext()),null,'canonical reveal clears hidden context');
     await speechAttempt(page,sentence);
     const correctionPhrases=await page.evaluate(()=>window.__testSpeech.latest.phrasesAtStart);
-    assert.equal(correctionPhrases[0].text,sentence);assert.equal(correctionPhrases[0].boost,8);
-    assert.ok(correctionPhrases.some(p=>p.boost===7.5));
+    assert.deepEqual(correctionPhrases,[]);
+    assert.equal(await page.evaluate(()=>window.__testSpeech.latest.context.itemId),undefined);
     assert.equal(await page.evaluate(()=>window.__testSpeech.srsWrites),1);
   }finally{await context.close();}
 });

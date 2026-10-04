@@ -1,8 +1,10 @@
 import { classifyVocabularySpeechAnswer } from '../speech/vocabularySpeechEvidence.js';
-import { buildRecognitionBiasContext } from '../speech/contextualBias.js';
+import { buildRecognitionContext } from '../speech/recognitionPolicy.js';
 import { createCorrectionProgress, recordCorrectionAttempt } from '../speech/correctionProgress.js';
 import { createLevelStateManager } from './levelState.js';
 import { createRecognitionController, isRecognitionSupported } from '../speech/recognition.js';
+import { nativeSpeechDiagnostic } from '../native/androidSpeechBackend.js';
+import { isNativeAndroid } from '../native/runtimePlatform.js';
 import { createSpeechSynthesisController } from '../speech/synthesis.js';
 import {
   buildVocabularySession,
@@ -38,7 +40,6 @@ const state={
   correction:false,
   lastRecognitionDecision:null,
   correctionProgress:createCorrectionProgress(),
-  biasCapability:{unavailable:false},
   audioGeneration:0,
   micGeneration:0,
   audioReleaseAt:0,
@@ -184,7 +185,7 @@ function stopListening(){
   clearTimeout(state.timer);
   state.timer=0;
   clearGradeTimer();
-  if(state.recognition?.isActive?.()) state.recognition.stop();
+  if(state.recognition?.isActive?.()) state.recognition.cancel();
 }
 
 function closeDialog(){
@@ -260,7 +261,6 @@ function startSession(){
   state.completed=0;
   state.outcomes=new Map();
   state.retried=new Set();
-  state.biasCapability={unavailable:false};
   state.liveTranscript='';
   state.lastAttemptTranscript='';
   state.lastRecognitionDecision=null;
@@ -276,8 +276,8 @@ function latestNonEmptyTranscript(...values){
   return '';
 }
 
-function hasNativeSpeech(){
-  return state.recognition?.getNativeRecognitionSegments?.().some(segment=>segment.alternatives.some(candidate=>candidate.transcript.trim()));
+function hasRecognitionEvidence(){
+  return state.recognition?.getRecognitionSegments?.().some(segment=>segment.alternatives.some(candidate=>candidate.transcript.trim()));
 }
 
 function scheduleTranscriptGrade(text){
@@ -285,7 +285,9 @@ function scheduleTranscriptGrade(text){
   state.liveTranscript=String(text??'');
   setTranscript(state.liveTranscript);
   clearGradeTimer();
-  if(!state.liveTranscript.trim()&&!hasNativeSpeech()) return;
+  // Native previews are display-only; wait for the terminal result/error.
+  if(isNativeAndroid()) return;
+  if(!state.liveTranscript.trim()&&!hasRecognitionEvidence()) return;
   const delay=state.current.kind==='word'?650:1200;
   state.gradeTimer=setTimeout(()=>{
     state.gradeTimer=0;
@@ -299,28 +301,29 @@ function showRecognitionStatus(message){
   if(prompt) prompt.textContent=message;
 }
 
-function showRecognitionFailure(){
+function showRecognitionFailure(error){
+  const retryMessage=error==='PERMISSION_DENIED'?'マイクの権限が拒否されました。端末の設定で許可して再試行してください。':error==='UNAVAILABLE'?'端末の音声認識サービスが利用できません。':'マイクを押してもう一度話してください。';
+  const explicitError=error==='PERMISSION_DENIED'||error==='UNAVAILABLE';
   if(state.correction&&!state.processing){
     const result=recordCorrectionAttempt(state.correctionProgress,{technical:true});
     const feedback=state.screen?.querySelector('.vocab-feedback');
-    if(feedback) feedback.textContent=result.message;
+    if(feedback) feedback.textContent=explicitError?`${result.message} ${retryMessage}`:result.message;
     clearGradeTimer();setListening(false);
     if(result.complete) completeCorrectionPractice();
-    else showRecognitionStatus('マイクを押してもう一度話してください。');
+    else showRecognitionStatus(retryMessage);
     return;
   }
   clearGradeTimer();
   setListening(false);
   const feedback=state.screen?.querySelector('.vocab-feedback');
-  if(feedback){feedback.className='vocab-feedback';feedback.textContent='認識できませんでした。もう一度。';}
-  showRecognitionStatus('マイクを押してもう一度話してください。');
+  if(feedback){feedback.className='vocab-feedback';feedback.textContent=explicitError?retryMessage:'認識できませんでした。もう一度。';}
+  showRecognitionStatus(retryMessage);
 }
 
 function setupRecognition(){
   state.recognition=createRecognitionController({
-    // Bias strict TARGET utterances; native evidence never rewrites raw primary text.
-    biasCapability:state.biasCapability,
-    getRecognitionBiasContext:()=>buildRecognitionBiasContext({mode:'vocabulary',vocabularyEntry:state.current,activeOccurrence:activeSource(),correction:state.correction}),
+    // Shared provider evidence never rewrites raw primary text.
+    getRecognitionContext:()=>buildRecognitionContext({mode:'vocabulary'}),
     shouldEvaluate:()=>false,
     onTranscriptReset:()=>{clearGradeTimer();state.liveTranscript='';state.lastAttemptTranscript='';setTranscript('');},
     onTranscriptPreview:text=>{
@@ -331,14 +334,14 @@ function setupRecognition(){
       if(state.processing||!state.current) return;
       clearGradeTimer();
       const text=latestNonEmptyTranscript(result?.previewTranscript,state.liveTranscript,result?.transcript);
-      if(text||hasNativeSpeech()){state.liveTranscript=text;setTranscript(text);gradeTranscript(text);}
+      if(text||hasRecognitionEvidence()){state.liveTranscript=text;setTranscript(text);gradeTranscript(text);}
       else showRecognitionFailure();
     },
     onUnsupported:()=>{
       setListening(false);
       showRecognitionStatus('音声認識に対応していないため、このモードは利用できません。');
     },
-    onError:()=>showRecognitionFailure(),
+    onError:event=>showRecognitionFailure(event.error),
     setMicState:setListening,
   });
 }
@@ -361,10 +364,13 @@ async function startListening(){
   clearTimeout(state.timer);
   state.timer=0;
   if(state.recognition.isActive()){
-    const result=state.recognition.stop();
+    const generation=state.micGeneration;
+    const current=state.current;
+    const result=await state.recognition.stop();
+    if(generation!==state.micGeneration||current!==state.current||!result?.ok) return;
     clearGradeTimer();
     const text=latestNonEmptyTranscript(result?.previewTranscript,state.liveTranscript,result?.transcript);
-    if((text||hasNativeSpeech())&&!state.processing) gradeTranscript(text);
+    if((text||hasRecognitionEvidence())&&!state.processing) gradeTranscript(text);
     else if(!state.processing) showRecognitionFailure();
     return;
   }
@@ -625,15 +631,16 @@ function renderAnswerContext({result=null,heardTranscript=state.lastAttemptTrans
 function gradeTranscript(text){
   if(state.processing||!state.current) return;
   const transcript=String(text??'');
-  if(!transcript.trim()&&!hasNativeSpeech()) return;
+  if(!transcript.trim()&&!hasRecognitionEvidence()) return;
   state.processing=true;
   clearGradeTimer();
   state.liveTranscript=transcript;
   state.lastAttemptTranscript=transcript;
   setTranscript(transcript);
-  const result=classifyVocabularySpeechAnswer({entry:state.current,activeOccurrence:activeSource(),transcript,nativeSegments:state.recognition?.getNativeRecognitionSegments?.()||[],correction:state.correction});
+  const result=classifyVocabularySpeechAnswer({entry:state.current,activeOccurrence:activeSource(),transcript,recognitionSegments:state.recognition?.getRecognitionSegments?.()||[],correction:state.correction});
   state.lastRecognitionDecision=result;
-  if(state.recognition?.isActive()) state.recognition.stop();
+  nativeSpeechDiagnostic('grading',{mode:'vocabulary',entryId:state.current.id,decision:result});
+  if(state.recognition?.isActive()) state.recognition.cancel();
   setListening(false);
   if(state.correction){
     const feedback=state.screen.querySelector('.vocab-feedback');

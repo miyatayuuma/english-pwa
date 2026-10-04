@@ -8,9 +8,18 @@
     "vocab:check-derived": "node scripts/vocabulary/validate-vocabulary-v3.mjs --check-report && node scripts/vocabulary/validate-final-admission-materialization.mjs && node scripts/vocabulary/validate-meaning-canonical-audit.mjs --check-production",
     "vocab:validate": "node scripts/vocabulary/validate-vocabulary-v3.mjs --check-report && node scripts/vocabulary/validate-source-sentence-integrity.mjs && node scripts/vocabulary/validate-final-admission-occurrences.mjs && node scripts/vocabulary/validate-final-admission-materialization.mjs && node scripts/vocabulary/validate-meaning-canonical-audit.mjs --check-production",
     "vocab:sync-derived": "node scripts/vocabulary/validate-vocabulary-v3.mjs && node scripts/vocabulary/validate-final-admission-materialization.mjs --sync-inventory",
-    "vocab:validate-admission-occurrences": "node scripts/vocabulary/validate-final-admission-occurrences.mjs"
+    "vocab:validate-admission-occurrences": "node scripts/vocabulary/validate-final-admission-occurrences.mjs",
+    "native:stage": "node scripts/native/stage-web.mjs",
+    "native:sync": "npm run native:stage && cap sync android",
+    "native:build": "npm run native:sync && cd android && ./gradlew assembleDebug"
   },
   "devDependencies": {
+    "@capacitor/cli": "8.5.2",
+    "es-module-lexer": "1.7.0",
     "playwright": "1.62.1"
+  },
+  "dependencies": {
+    "@capacitor/android": "8.5.2",
+    "@capacitor/core": "8.5.2"
   }
 }

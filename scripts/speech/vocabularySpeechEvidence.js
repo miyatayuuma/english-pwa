@@ -39,19 +39,19 @@ function outsideSegmentIsHarmless(segments,index,expected){
   return !after.length&&isRestartPrefix(before,target);
 }
 
-// Native alternatives are evidence from ONE segment. Never synthesize an alternative utterance.
-export function classifyVocabularySpeechAnswer({entry,activeOccurrence=null,transcript='',nativeSegments=[],correction=false}={}){
+// Provider alternatives are evidence from ONE segment. Never synthesize an alternative utterance.
+export function classifyVocabularySpeechAnswer({entry,activeOccurrence=null,transcript='',recognitionSegments=[],correction=false}={}){
   const primary=classifyVocabularyAnswer({entry,activeOccurrence,transcript});
-  const metadata={primaryTranscript:transcript,targetRescued:false,nativeSegmentIndex:null,nativeRank:null};
+  const metadata={primaryTranscript:transcript,targetRescued:false,recognitionSegmentIndex:null,asrRank:null};
   if(primary.type==='target'||(primary.type==='paraphrase'&&!correction)) return {...primary,...metadata,recognitionAuthority:'primary'};
   const tolerated=targetProduction({entry,activeOccurrence,transcript});
   if(tolerated) return {...tolerated,...metadata,recognitionAuthority:'filler-restart'};
-  for(const [index,segment] of nativeSegments.entries()){
+  for(const [index,segment] of recognitionSegments.entries()){
     for(const candidate of segment.alternatives||[]){
       if(candidate.asrRank===0) continue;
       const accepted=targetProduction({entry,activeOccurrence,transcript:candidate.transcript});
-      if(!accepted||!outsideSegmentIsHarmless(nativeSegments,index,accepted.matchedText)) continue;
-      return {...accepted,...metadata,targetRescued:true,recognitionAuthority:'native-target',nativeSegmentIndex:segment.segmentIndex??index,nativeRank:candidate.asrRank};
+      if(!accepted||!outsideSegmentIsHarmless(recognitionSegments,index,accepted.matchedText)) continue;
+      return {...accepted,...metadata,targetRescued:true,recognitionAuthority:'nbest-target',recognitionSegmentIndex:segment.segmentIndex??index,asrRank:candidate.asrRank};
     }
   }
   return {type:'miss',matchedText:'',matchedAuthority:null,...metadata,recognitionAuthority:'unmatched'};

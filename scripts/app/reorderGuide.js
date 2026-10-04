@@ -11,26 +11,7 @@ import {
   validateCanonicalVariant,
 } from '../reorder/reorderCore.js';
 import { reduceReorderResult } from './reorderGrading.js';
-
-let metadataPromise = null;
-
-async function loadReorderMetadata() {
-  if (!metadataPromise) {
-    const metadataUrl = new URL('../../data/reorder-v1.json', import.meta.url);
-    metadataPromise = fetch(metadataUrl, { cache: 'no-cache' }).then(async (response) => {
-      if (!response.ok) throw new Error(`reorder metadata unavailable (${response.status})`);
-      const data = await response.json();
-      if (data?.schemaVersion !== REORDER_SCHEMA_VERSION || !Array.isArray(data?.items)) {
-        throw new Error('reorder metadata schema mismatch');
-      }
-      return { data, byId: new Map(data.items.map((item) => [String(item.itemId), item])) };
-    }).catch((error) => {
-      metadataPromise = null;
-      throw error;
-    });
-  }
-  return metadataPromise;
-}
+import { loadSharedChunkAuthority as loadReorderMetadata } from '../reorder/sharedAuthority.js';
 
 async function sourceHash(value) {
   const subtle = globalThis.crypto?.subtle;

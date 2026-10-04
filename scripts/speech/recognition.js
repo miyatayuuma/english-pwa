@@ -1,9 +1,9 @@
-import { applyRecognitionBias, LEARNING_MAX_ALTERNATIVES } from './contextualBias.js';
+import { recognitionSegment } from './recognitionEvidence.js';
+import { REQUESTED_MAX_ALTERNATIVES } from './recognitionPolicy.js';
+import { selectRecognitionBackend } from '../native/androidSpeechBackend.js';
 import { approxTokensMatch, toks, mergeCompoundWords } from '../utils/text.js';
 
-const SR = typeof window !== 'undefined'
-  ? (window.SpeechRecognition || window.webkitSpeechRecognition)
-  : null;
+const SR = selectRecognitionBackend();
 
 export function isRecognitionSupported() {
   return !!SR;
@@ -360,9 +360,9 @@ export function createRecognitionController(options = {}) {
     onTranscriptInterim = () => {},
     onTranscriptFinal = () => {},
     onTranscriptPreview = () => {},
-    getRecognitionBiasContext = () => null,
+    getRecognitionContext = () => null,
     onRecognitionConfigured = () => {},
-    biasCapability = {unavailable:false},
+    recognitionBackend = SR,
     onMatchEvaluated = () => {},
     onStart = () => {},
     onStop = () => {},
@@ -380,7 +380,13 @@ export function createRecognitionController(options = {}) {
   let stopRequested = false;
   let lastMatch = null;
   let segments=[];
-  function getNativeRecognitionSegments(){
+  let pendingStop=null;
+  function settleStop(result){
+    const pending=pendingStop;
+    pendingStop=null;
+    pending?.resolve(result);
+  }
+  function getRecognitionSegments(){
     return segments.filter(Boolean).map(segment=>({...segment,alternatives:segment.alternatives.map(candidate=>({...candidate}))}));
   }
   function evaluateTranscript(refText){
@@ -415,7 +421,7 @@ export function createRecognitionController(options = {}) {
 
   function finalize({ triggeredByOnEnd = false } = {}) {
     if (!active && !triggeredByOnEnd) {
-      return { ok: false, reason: 'inactive', transcript: stableText.trim(), previewTranscript:latestPreview, nativeSegments:getNativeRecognitionSegments(), matchInfo: lastMatch };
+      return { ok: false, reason: 'inactive', transcript: stableText.trim(), previewTranscript:latestPreview, recognitionSegments:getRecognitionSegments(), matchInfo: lastMatch };
     }
     active = false;
     finalized = true;
@@ -432,7 +438,7 @@ export function createRecognitionController(options = {}) {
       lastMatch = null;
     }
     recognition = null;
-    return { ok: true, transcript, previewTranscript:latestPreview, nativeSegments:getNativeRecognitionSegments(), matchInfo: lastMatch };
+    return { ok: true, transcript, previewTranscript:latestPreview, recognitionSegments:getRecognitionSegments(), matchInfo: lastMatch };
   }
 
   function handleAutoStop() {
@@ -440,8 +446,9 @@ export function createRecognitionController(options = {}) {
     onAutoStop?.(result);
   }
 
-  function start({fallbackAttempt=false}={}) {
-    if (!SR) {
+  function start() {
+    const context=getRecognitionContext?.();
+    if (!recognitionBackend || context?.speechDisabled) {
       onUnsupported?.();
       return { ok: false, reason: 'unsupported' };
     }
@@ -450,7 +457,7 @@ export function createRecognitionController(options = {}) {
     }
     let currentRecognition;
     try{
-      currentRecognition=new SR();
+      currentRecognition=new recognitionBackend();
     }catch(error){
       setMicState?.(false);
       onError?.({error:'start-failed',cause:error});
@@ -460,10 +467,9 @@ export function createRecognitionController(options = {}) {
     currentRecognition.lang = 'en-US';
     currentRecognition.continuous = true;
     currentRecognition.interimResults = true;
-    const context=getRecognitionBiasContext?.();
-    currentRecognition.maxAlternatives=context?.maxAlternatives===LEARNING_MAX_ALTERNATIVES?LEARNING_MAX_ALTERNATIVES:1;
-    const biased=!biasCapability.unavailable&&applyRecognitionBias(currentRecognition,context);
-    onRecognitionConfigured?.({maxAlternatives:currentRecognition.maxAlternatives,biasApplied:!!biased,biasDisabled:biasCapability.unavailable});
+    currentRecognition.context=context;
+    currentRecognition.maxAlternatives=REQUESTED_MAX_ALTERNATIVES;
+    onRecognitionConfigured?.({maxAlternatives:currentRecognition.maxAlternatives,backend:currentRecognition.waitsForFinalResult?'android-native':'web'});
 
     stableText = '';
     segments=[];
@@ -484,19 +490,14 @@ export function createRecognitionController(options = {}) {
     currentRecognition.onresult = (event) => {
       if (recognition!==currentRecognition || !active || finalized) return;
       const firstChanged=Number.isInteger(event.resultIndex)?event.resultIndex:0;
-      // Results are cumulative within a native session; replace changed segments.
+      // Results are cumulative within a recognition session; replace changed segments.
       segments.length=event.results.length;
       for(let i=firstChanged;i<event.results.length;i+=1){
         const result=event.results[i];
-        const alternatives=[];
-        const seen=new Set();
-        for(let rank=0;rank<Math.min(result.length,currentRecognition.maxAlternatives);rank++){
-          const value=result[rank],transcript=String(value?.transcript??'');
-          const key=transcript.normalize('NFKC').toLocaleLowerCase('en-US').replace(/\s+/g,' ').trim();
-          if(!key||seen.has(key)) continue;
-          seen.add(key);alternatives.push({transcript,asrRank:rank,confidence:Number.isFinite(value?.confidence)?value.confidence:null});
-        }
-        segments[i]={segmentIndex:i,primaryTranscript:String(result[0]?.transcript??''),alternatives,isFinal:!!result.isFinal};
+        segments[i]=recognitionSegment({segmentIndex:i, alternatives:Array.from(result),
+          primaryTranscript:String(result[0]?.transcript??''),isFinal:result.isFinal,
+          requestedMaxResults:result.requestedMaxResults??currentRecognition.maxAlternatives,
+          providerReturnedCount:result.providerReturnedCount??result.length});
       }
       const present=segments.filter(Boolean);
       latestPreview=present.reduce((text,segment)=>appendRawTranscriptFinal(text,segment.primaryTranscript),'');
@@ -515,18 +516,20 @@ export function createRecognitionController(options = {}) {
 
     currentRecognition.onerror = (event) => {
       if(recognition!==currentRecognition||!active||finalized) return;
-      const canFallback=event.error==='phrases-not-supported'&&biased&&!fallbackAttempt&&!segments.some(segment=>segment?.alternatives.some(candidate=>candidate.transcript.trim()));
-      if(event.error==='phrases-not-supported') biasCapability.unavailable=true;
       active=false;finalized=true;recognition=null;
       try { currentRecognition.abort?.(); } catch (_) {}
       setMicState?.(false);onStop?.();
-      if(canFallback) { start({fallbackAttempt:true}); return; }
+      settleStop({ok:false,reason:event.error||'recognition-error'});
       // Errors never finalize a learning result, including errors after a partial result.
       onError?.(event);
     };
 
     currentRecognition.onend = () => {
-      if (recognition!==currentRecognition || finalized || stopRequested) {
+      if (recognition!==currentRecognition || finalized) {
+        return;
+      }
+      if(stopRequested){
+        if(currentRecognition.waitsForFinalResult) settleStop(finalize({triggeredByOnEnd:true}));
         return;
       }
       handleAutoStop();
@@ -547,17 +550,37 @@ export function createRecognitionController(options = {}) {
   }
 
   function stop() {
+    if(pendingStop) return pendingStop.promise;
     if (!active) {
-      return { ok: false, reason: 'inactive', transcript: stableText.trim(), previewTranscript:latestPreview, nativeSegments:getNativeRecognitionSegments(), matchInfo: lastMatch };
+      return { ok: false, reason: 'inactive', transcript: stableText.trim(), previewTranscript:latestPreview, recognitionSegments:getRecognitionSegments(), matchInfo: lastMatch };
     }
     stopRequested=true;
     const currentRecognition=recognition;
+    if(currentRecognition?.waitsForFinalResult){
+      let resolve;
+      const promise=new Promise(done=>{resolve=done;});
+      pendingStop={promise,resolve};
+      try { currentRecognition.stop(); }
+      catch(error){
+        cancel();
+        onError?.({error:'stop-failed',cause:error});
+      }
+      return promise;
+    }
     try {
       currentRecognition?.stop?.();
     } catch (_) {
       // ignore stop failures
     }
     return finalize({ triggeredByOnEnd: false });
+  }
+
+  function cancel(){
+    const currentRecognition=recognition;
+    active=false;finalized=true;stopRequested=false;recognition=null;
+    settleStop({ok:false,reason:'cancelled'});
+    try { currentRecognition?.abort?.(); } catch (_) {}
+    setMicState?.(false);onStop?.();
   }
 
   function isActive() {
@@ -579,12 +602,13 @@ export function createRecognitionController(options = {}) {
   return {
     start,
     stop,
+    cancel,
     isActive,
     clearHighlight,
     matchAndHighlight,
     getStableTranscript,
     getPreviewTranscript,
-    getNativeRecognitionSegments,
+    getRecognitionSegments,
     getLastMatch,
   };
 }
