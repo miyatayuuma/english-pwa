@@ -1,3 +1,4 @@
+import { ANDROID_NATIVE_MAX_RESULTS } from '../native/recognitionEvidence.js';
 import { LEARNING_MAX_ALTERNATIVES } from './contextualBias.js';
 import { selectRecognitionBackend } from '../native/androidSpeechBackend.js';
 import { approxTokensMatch, toks, mergeCompoundWords } from '../utils/text.js';
@@ -468,7 +469,7 @@ export function createRecognitionController(options = {}) {
     currentRecognition.interimResults = true;
     currentRecognition.context=context;
     currentRecognition.maxAlternatives=context?.maxAlternatives===LEARNING_MAX_ALTERNATIVES?LEARNING_MAX_ALTERNATIVES:1;
-    if(currentRecognition.waitsForFinalResult) currentRecognition.maxAlternatives=LEARNING_MAX_ALTERNATIVES;
+    if(currentRecognition.waitsForFinalResult) currentRecognition.maxAlternatives=ANDROID_NATIVE_MAX_RESULTS;
     onRecognitionConfigured?.({maxAlternatives:currentRecognition.maxAlternatives,backend:currentRecognition.waitsForFinalResult?'android-native':'web'});
 
     stableText = '';
@@ -500,9 +501,9 @@ export function createRecognitionController(options = {}) {
           const value=result[rank],transcript=String(value?.transcript??'');
           const key=transcript.normalize('NFKC').toLocaleLowerCase('en-US').replace(/\s+/g,' ').trim();
           if(!key||seen.has(key)) continue;
-          seen.add(key);alternatives.push({transcript,asrRank:rank,confidence:Number.isFinite(value?.confidence)?value.confidence:null});
+          seen.add(key);alternatives.push({transcript,asrRank:Number.isInteger(value?.asrRank)?value.asrRank:rank,confidence:Number.isFinite(value?.confidence)?value.confidence:null});
         }
-        segments[i]={segmentIndex:i,primaryTranscript:String(result[0]?.transcript??''),alternatives,isFinal:!!result.isFinal};
+        segments[i]={segmentIndex:i,primaryTranscript:String(result[0]?.transcript??''),alternatives,isFinal:!!result.isFinal,requestedMaxResults:result.requestedMaxResults,providerReturnedCount:result.providerReturnedCount,retainedCandidateCount:result.retainedCandidateCount};
       }
       const present=segments.filter(Boolean);
       latestPreview=present.reduce((text,segment)=>appendRawTranscriptFinal(text,segment.primaryTranscript),'');

@@ -36,7 +36,7 @@ release APK assets. `biasSupported` means API >=33 accepts the intent extra;
 it does **not** prove the selected recognizer honors it. No audio is saved.
 
 Recognition uses the system default provider, en-US/free-form/partial request/
-maximum five alternatives. Exact strings are preserved; only empty rejection
+maximum twenty alternatives (Android only; Web remains five). Exact strings are preserved; only empty rejection
 and exact dedupe occur. API <33 omits bias. There is no boost, silence tuning,
 offline preference, custom provider, on-device switch, alias or speech chunker.
 Each session uses a distinct recognizer/listener, created on the main thread.
@@ -89,7 +89,7 @@ authority. Do not assume `yelled` is the card canonical; validate its accepted
 source surface. For sentence speech use only the E0102 shared partition strings.
 
 On one device/provider record 10–20 trials per case per bias condition: rank-1
-strict TARGET, strict TARGET anywhere in five candidates, grading accepted,
+strict TARGET, strict TARGET anywhere in retained native candidates (up to twenty), grading accepted,
 MISS, technical error. Alternate OFF/ON trial order to reduce learning/order bias.
 Record provider/device/API explicitly. No real-device measurements exist yet. The debug validation page offers the
 actual fixtures, OFF/ON selection, negative-control labels, intended utterance,
@@ -121,10 +121,12 @@ grading or add fuzzy/phonetic rescue to hide recognition defects.
 
 SystemBars automatic CSS handling is disabled only in the Capacitor config. MainActivity applies systemBars/displayCutout/IME insets once to the WebView parent, so all pages and fixed overlays share a viewport inside system UI. This avoids WebView-version-dependent safe-area env handling and leaves browser CSS unchanged.
 
-Debug home has an ASR実機テスト button. The debug-only asset now includes isolated yield/yell, source yelled and the three short expressions, an explicit large spoken prompt, ON/OFF, negative controls, one-based exact TARGET rank, up to five provider alternatives with nullable confidence, unchanged final grading and technical errors. Copy exports JSON; selectable textarea is the clipboard fallback. No recording/audio is stored; rows live only while the page remains open. Technical outcomes have no grade. A negative control starts with hello and can be edited; its actual intended utterance must be entered before starting.
+Debug home has an ASR実機テスト button. The debug-only asset now includes isolated yield/yell, source yelled and the three short expressions, an explicit large spoken prompt, ON/OFF, negative controls, one-based exact TARGET rank, up to twenty provider alternatives with nullable confidence, unchanged final grading and technical errors. Copy exports JSON; selectable textarea is the clipboard fallback. No recording/audio is stored; rows live only while the page remains open. Technical outcomes have no grade. A negative control starts with hello and can be edited; its actual intended utterance must be entered before starting.
 
 Android NativeMedia owns ACTION_OPEN_DOCUMENT_TREE, read-only persistable grants and exact direct-child filename lookup. The existing folder setting selects/clears it; status restores after process restart. Reselect if a provider revokes access or moves/deletes files. Audio passes through bounded (32 MiB per file) base64 to Blob URLs, preserving the existing HTML audio controller and source fallback order. No broad storage permission is requested. Current filenames are direct children, as in the Web directory resolver.
 
 Native TextToSpeech is a private synthesis backend preserving the existing controller interface, rate/pitch/volume/voice selection and native completion/error/cancel lifecycle. Browser synthesis is unchanged. English voice data must be present in the Android TTS engine; unsupported/missing English data is an explicit playback failure. The sentence fallback also uses this backend. No ASR, shared partition, vocabulary answers or grading authority changes are included.
 
 Device protocol: install the new debug artifact, tap ASR実機テスト, speak each displayed yield / yield to something / yell / yelled / see to something / be in with ON and OFF (10–20 attempts per condition when assessing accuracy). Use negative control hello for each case/condition. Copy the final JSON. Separately verify settings/close controls, folder playback after app restart, and word-card TTS. Emulator checks validate shell/bridge/lifecycle, not real recognizer accuracy or external document providers.
+
+Deep N-best requests 20; providers may return fewer. Export distinguishes requestedMaxResults, providerReturnedCount and retainedCandidateCount, preserves provider asrRank/confidence, and reports TARGET rank from asrRank + 1 after deduplication. Strict TARGET rescue accepts any retained native rank; lower paraphrases and phonetic/fuzzy near misses are not promoted. No physical-device deep-N-best accuracy or safety claim is made until ON/OFF positives and near-target negatives (including yell versus yeah) are measured.

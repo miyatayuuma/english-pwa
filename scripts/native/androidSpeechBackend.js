@@ -1,6 +1,6 @@
 import { getNativeSpeech } from './nativeSpeech.js';
 import { isNativeAndroid } from './runtimePlatform.js';
-import { nativeWebResultEvent } from './recognitionEvidence.js';
+import { nativeWebResultEvent, ANDROID_NATIVE_MAX_RESULTS } from './recognitionEvidence.js';
 import { resolveNativeBiasStrings, SPEECH_DISABLED_MODES } from '../speech/contextualBias.js';
 
 let sequence = 0;
@@ -27,7 +27,7 @@ export class AndroidSpeechRecognizerBackend {
     this.biasProvider = biasProvider;
     this.waitsForFinalResult = true;
     this.state = 'idle';
-    this.maxAlternatives = 5;
+    this.maxAlternatives = ANDROID_NATIVE_MAX_RESULTS;
   }
 
   start() {

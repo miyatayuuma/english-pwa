@@ -52,13 +52,13 @@ function record(result){
  if(finished) return;finished=true;
  const primary=result?.previewTranscript||result?.transcript||'';
  const segments=result?.nativeSegments||[];
- const alternatives=segments.flatMap(segment=>segment.alternatives).slice(0,5);
+ const alternatives=segments.flatMap(segment=>segment.alternatives);
  const targets=attempt.targets;
  const exact=text=>targets.some(target=>normalizeVocabularyAnswer(text)===normalizeVocabularyAnswer(target));
  const targetIndex=alternatives.findIndex(c=>exact(c.transcript));
  const grade=attempt.fixture.entry?classifyVocabularySpeechAnswer({entry:attempt.fixture.entry,activeOccurrence:attempt.fixture.activeOccurrence,transcript:primary,nativeSegments:segments}):(()=>{const m=matchTranscript(attempt.fixture.item.en,primary);return {type:calcMatchScore(m.refCount,m.recall,m.precision)>=0.7?'accepted':'miss'};})();
  const technical=result?.ok===false?result.reason||'technical':!primary.trim()?'no-speech':null;
- const row={timestamp:new Date().toISOString(),case:attempt.fixture.key,bias:attempt.condition,control:attempt.control,intended:attempt.intended,targets,biasStrings:attempt.biasStrings,backend:'Android SpeechRecognizer',capabilities,primary,alternatives,targetRank:targetIndex<0?null:targetIndex+1,grade:technical?null:grade,rank1Target:exact(primary),nbestTarget:alternatives.some(c=>exact(c.transcript)),accepted:!technical&&grade.type!=='miss',technical};
+ const row={timestamp:new Date().toISOString(),case:attempt.fixture.key,bias:attempt.condition,control:attempt.control,intended:attempt.intended,targets,biasStrings:attempt.biasStrings,backend:'Android SpeechRecognizer',requestedMaxResults:segments[0]?.requestedMaxResults??20,providerReturnedCount:segments[0]?.providerReturnedCount??null,retainedCandidateCount:segments[0]?.retainedCandidateCount??0,rescue:grade.targetRescued??false,recognitionAuthority:grade.recognitionAuthority??null,finalGrade:technical?null:grade.type,capabilities,primary,alternatives,targetRank:targetIndex<0?null:alternatives[targetIndex].asrRank+1,grade:technical?null:grade,rank1Target:exact(primary),nbestTarget:alternatives.some(c=>exact(c.transcript)),accepted:!technical&&grade.type!=='miss',technical};
  rows.push(row);locks(false);$('status').textContent=technical||grade.type;log(rows);
  $('summary').replaceChildren();
  const groups=new Map();for(const row of rows){const key=[row.case,row.bias,row.control].join(' / ');if(!groups.has(key)) groups.set(key,[]);groups.get(key).push(row);}

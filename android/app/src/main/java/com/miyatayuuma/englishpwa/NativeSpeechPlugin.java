@@ -116,7 +116,7 @@ public class NativeSpeechPlugin extends Plugin {
                 intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
                 intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en-US");
                 intent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
-                intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5);
+                intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 20);
                 if (Build.VERSION.SDK_INT >= 33) {
                     intent.putStringArrayListExtra(RecognizerIntent.EXTRA_BIASING_STRINGS, bias);
                 }
@@ -231,7 +231,7 @@ public class NativeSpeechPlugin extends Plugin {
         float[] confidence = bundle == null ? null : bundle.getFloatArray(SpeechRecognizer.CONFIDENCE_SCORES);
         JSArray alternatives = new JSArray();
         if (transcripts != null) {
-            for (int i = 0; i < Math.min(5, transcripts.size()); i++) {
+            for (int i = 0; i < Math.min(20, transcripts.size()); i++) {
                 JSObject candidate = new JSObject();
                 candidate.put("transcript", transcripts.get(i));
                 candidate.put("asrRank", i);
@@ -242,6 +242,9 @@ public class NativeSpeechPlugin extends Plugin {
         }
         JSObject payload = new JSObject();
         payload.put("alternatives", alternatives);
+        payload.put("requestedMaxResults", 20);
+        payload.put("providerReturnedCount", transcripts == null ? 0 : transcripts.size());
+        payload.put("retainedCandidateCount", alternatives.length());
         return payload;
     }
 
