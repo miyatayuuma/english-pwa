@@ -1,0 +1,2976 @@
+{
+  "schema_version": 1,
+  "policy_version": "prompt-learning-value-v1",
+  "batch": 19,
+  "ordinal_start": 1801,
+  "ordinal_end": 1900,
+  "claim_main": "e3b494a3892a7f571f9ae0cccb1ee277c223f075",
+  "reviewed_against_main": "8417ba73fa816e78e3b8836a01b4efe998c52ca6",
+  "reviewed_count": 100,
+  "entry_ids": [
+    "vocab:01804",
+    "vocab:01805",
+    "vocab:01806",
+    "vocab:01807",
+    "vocab:01808",
+    "vocab:01809",
+    "vocab:01810",
+    "vocab:01811",
+    "vocab:01812",
+    "vocab:01813",
+    "vocab:01814",
+    "vocab:01815",
+    "vocab:01816",
+    "vocab:01817",
+    "vocab:01818",
+    "vocab:01819",
+    "vocab:01820",
+    "vocab:01821",
+    "vocab:01822",
+    "vocab:01823",
+    "vocab:01824",
+    "vocab:01825",
+    "vocab:01826",
+    "vocab:01827",
+    "vocab:01828",
+    "vocab:01829",
+    "vocab:01830",
+    "vocab:01831",
+    "vocab:01832",
+    "vocab:01833",
+    "vocab:01834",
+    "vocab:01835",
+    "vocab:01836",
+    "vocab:01837",
+    "vocab:01838",
+    "vocab:01839",
+    "vocab:01840",
+    "vocab:01841",
+    "vocab:01842",
+    "vocab:01843",
+    "vocab:01844",
+    "vocab:01845",
+    "vocab:01846",
+    "vocab:01847",
+    "vocab:01848",
+    "vocab:01849",
+    "vocab:01850",
+    "vocab:01851",
+    "vocab:01852",
+    "vocab:01853",
+    "vocab:01854",
+    "vocab:01855",
+    "vocab:01856",
+    "vocab:01857",
+    "vocab:01858",
+    "vocab:01859",
+    "vocab:01860",
+    "vocab:01861",
+    "vocab:01862",
+    "vocab:01863",
+    "vocab:01864",
+    "vocab:01865",
+    "vocab:01866",
+    "vocab:01867",
+    "vocab:01868",
+    "vocab:01869",
+    "vocab:01870",
+    "vocab:01871",
+    "vocab:01872",
+    "vocab:01873",
+    "vocab:01874",
+    "vocab:01875",
+    "vocab:01876",
+    "vocab:01877",
+    "vocab:01878",
+    "vocab:01879",
+    "vocab:01880",
+    "vocab:01881",
+    "vocab:01882",
+    "vocab:01883",
+    "vocab:01884",
+    "vocab:01885",
+    "vocab:01886",
+    "vocab:01887",
+    "vocab:01888",
+    "vocab:01889",
+    "vocab:01890",
+    "vocab:01891",
+    "vocab:01892",
+    "vocab:01893",
+    "vocab:01894",
+    "vocab:01895",
+    "vocab:01896",
+    "vocab:01897",
+    "vocab:01898",
+    "vocab:01899",
+    "vocab:01900",
+    "vocab:01901",
+    "vocab:01902",
+    "vocab:01903"
+  ],
+  "results": [
+    {
+      "entry_id": "vocab:01804",
+      "prompt_ja": "一日当たり",
+      "canonical_snapshot": "per day",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "per day",
+        "a day",
+        "daily"
+      ],
+      "candidate_review": [
+        {
+          "expression": "a day",
+          "decision": "ACCEPT",
+          "reason": "「一日当たり」の高頻度な率表現で、per dayとは別に会話・実用文で頻出する。"
+        },
+        {
+          "expression": "daily",
+          "decision": "REJECT",
+          "reason": "「毎日」の反復頻度を表す読みが中心で、無標の率「一日当たり」への対応としては広すぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "a day"
+      ],
+      "decision": "CHANGED",
+      "reason": "率を表す主要な口語表現a dayを追加し、dailyは意味範囲のずれから外す。"
+    },
+    {
+      "entry_id": "vocab:01805",
+      "prompt_ja": "肉体労働",
+      "canonical_snapshot": "manual labor",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "manual labor",
+        "physical labor",
+        "manual work"
+      ],
+      "candidate_review": [
+        {
+          "expression": "physical labor",
+          "decision": "ACCEPT",
+          "reason": "肉体を使う労働を表す自然で一般的な表現で、manual laborとは別の主要回答。"
+        },
+        {
+          "expression": "manual work",
+          "decision": "REJECT",
+          "reason": "成立する場面はあるが「手作業」の意味にも寄りやすく、肉体労働との対応がやや不安定。"
+        }
+      ],
+      "after_paraphrases": [
+        "physical labor"
+      ],
+      "decision": "CHANGED",
+      "reason": "肉体労働への直接的な主要表現physical laborだけを追加する。"
+    },
+    {
+      "entry_id": "vocab:01806",
+      "prompt_ja": "〜の結果として",
+      "canonical_snapshot": "as a result of",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "as a result of",
+        "as a consequence of",
+        "because of"
+      ],
+      "candidate_review": [
+        {
+          "expression": "as a consequence of",
+          "decision": "ACCEPT",
+          "reason": "「〜の結果として」を明示する主要なややフォーマルな句で、独立した学習価値がある。"
+        },
+        {
+          "expression": "because of",
+          "decision": "REJECT",
+          "reason": "原因を示す一般表現で、結果として生じたことを明示するpromptより意味が広い。"
+        }
+      ],
+      "after_paraphrases": [
+        "as a consequence of"
+      ],
+      "decision": "CHANGED",
+      "reason": "結果関係を明示する高価値な別表現だけを採用する。"
+    },
+    {
+      "entry_id": "vocab:01807",
+      "prompt_ja": "破産する",
+      "canonical_snapshot": "go bankrupt",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "go bankrupt",
+        "go broke",
+        "become bankrupt"
+      ],
+      "candidate_review": [
+        {
+          "expression": "go broke",
+          "decision": "ACCEPT",
+          "reason": "「破産する」の非常に一般的な口語表現で、register差として学習価値が高い。"
+        },
+        {
+          "expression": "become bankrupt",
+          "decision": "REJECT",
+          "reason": "意味は成立するがcanonicalの形容詞を用いた機械的な言い換えで、追加学習価値が低い。"
+        }
+      ],
+      "after_paraphrases": [
+        "go broke"
+      ],
+      "decision": "CHANGED",
+      "reason": "高頻度の口語表現go brokeを追加する。"
+    },
+    {
+      "entry_id": "vocab:01808",
+      "prompt_ja": "〜と比べて",
+      "canonical_snapshot": "compared to",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "compared to",
+        "compared with",
+        "in comparison with"
+      ],
+      "candidate_review": [
+        {
+          "expression": "compared with",
+          "decision": "ACCEPT",
+          "reason": "「〜と比べて」の主要variantで、compared toと並んで実用頻度が高い。"
+        },
+        {
+          "expression": "in comparison with",
+          "decision": "REJECT",
+          "reason": "自然だが同じ比較関係を冗長に言い換えるだけで、追加学習価値は相対的に低い。"
+        }
+      ],
+      "after_paraphrases": [
+        "compared with"
+      ],
+      "decision": "CHANGED",
+      "reason": "主要variant compared withのみを追加する。"
+    },
+    {
+      "entry_id": "vocab:01809",
+      "prompt_ja": "利益を得る",
+      "canonical_snapshot": "make a profit",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "make a profit",
+        "turn a profit",
+        "profit"
+      ],
+      "candidate_review": [
+        {
+          "expression": "turn a profit",
+          "decision": "ACCEPT",
+          "reason": "利益を出すことを表す定着したbusiness表現で、独立したidiomとして価値が高い。"
+        },
+        {
+          "expression": "profit",
+          "decision": "REJECT",
+          "reason": "動詞では通常profit from等の補語構造が必要で、promptへの単独回答として不安定。"
+        }
+      ],
+      "after_paraphrases": [
+        "turn a profit"
+      ],
+      "decision": "CHANGED",
+      "reason": "businessで有用な定着表現turn a profitを追加する。"
+    },
+    {
+      "entry_id": "vocab:01810",
+      "prompt_ja": "進んでsomethingする気がある",
+      "canonical_snapshot": "be willing to do something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "be willing to do something",
+        "be prepared to do something",
+        "be ready to do something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be prepared to do something",
+          "decision": "ACCEPT",
+          "reason": "「進んで〜する／〜する覚悟がある」の意味でwillingと同義に使われる主要construction。"
+        },
+        {
+          "expression": "be ready to do something",
+          "decision": "REJECT",
+          "reason": "意志だけでなく単なる準備完了を表すことが多く、promptへの対応が広すぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "be prepared to do something"
+      ],
+      "decision": "CHANGED",
+      "reason": "意志を表す用法が確立したbe prepared toを追加し、readyは除外する。"
+    },
+    {
+      "entry_id": "vocab:01811",
+      "prompt_ja": "somethingするつもりである",
+      "canonical_snapshot": "intend to do something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "intend to do something",
+        "plan to do something",
+        "mean to do something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "plan to do something",
+          "decision": "ACCEPT",
+          "reason": "「〜するつもりである」の最も一般的な表現の一つで、会話・文章とも高頻度。"
+        },
+        {
+          "expression": "mean to do something",
+          "decision": "ACCEPT",
+          "reason": "意図を表す主要constructionで、plan/intendとは別に日常英語で重要。"
+        }
+      ],
+      "after_paraphrases": [
+        "plan to do something",
+        "mean to do something"
+      ],
+      "decision": "CHANGED",
+      "reason": "意図を表す高頻度の2表現を追加する。"
+    },
+    {
+      "entry_id": "vocab:01812",
+      "prompt_ja": "残業する",
+      "canonical_snapshot": "work overtime",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "work overtime",
+        "do overtime",
+        "work late"
+      ],
+      "candidate_review": [
+        {
+          "expression": "do overtime",
+          "decision": "ACCEPT",
+          "reason": "特に英国英語で一般的な「残業する」の表現で、主要地域variantとして価値がある。"
+        },
+        {
+          "expression": "work late",
+          "decision": "REJECT",
+          "reason": "遅くまで働くことを示すだけで、必ずしも残業を意味しない。"
+        }
+      ],
+      "after_paraphrases": [
+        "do overtime"
+      ],
+      "decision": "CHANGED",
+      "reason": "主要な英国英語variantのみを追加する。"
+    },
+    {
+      "entry_id": "vocab:01813",
+      "prompt_ja": "昇進する",
+      "canonical_snapshot": "get promoted",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "get promoted",
+        "be promoted",
+        "move up"
+      ],
+      "candidate_review": [
+        {
+          "expression": "be promoted",
+          "decision": "REJECT",
+          "reason": "同じpromoteを用いる受動構文の差で、独立した別語彙としての増分価値が低い。"
+        },
+        {
+          "expression": "move up",
+          "decision": "REJECT",
+          "reason": "職位上昇を表せるがcareer等の文脈が必要で、単独では意味が広い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "canonical以外は表層的な構文差か文脈依存で、登録価値が不足する。"
+    },
+    {
+      "entry_id": "vocab:01814",
+      "prompt_ja": "somethingしようと努力する",
+      "canonical_snapshot": "strive to do something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "try to do something",
+        "make an effort to do something",
+        "strive to do something",
+        "endeavor to do something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "try to do something",
+          "decision": "ACCEPT",
+          "reason": "「〜しようと努力する」の最も基本的で高頻度な表現で、MISS扱いは教育的に不適切。"
+        },
+        {
+          "expression": "make an effort to do something",
+          "decision": "ACCEPT",
+          "reason": "努力を明示する主要constructionで、try/striveとは独立して覚える価値が高い。"
+        },
+        {
+          "expression": "endeavor to do something",
+          "decision": "REJECT",
+          "reason": "意味は成立するが現代一般英語では比較的硬く低頻度で、追加優先度が低い。"
+        }
+      ],
+      "after_paraphrases": [
+        "try to do something",
+        "make an effort to do something"
+      ],
+      "decision": "CHANGED",
+      "reason": "基本表現tryと努力を明示するconstructionを採用し、低頻度語は外す。"
+    },
+    {
+      "entry_id": "vocab:01815",
+      "prompt_ja": "ドアを閉めた状態で",
+      "canonical_snapshot": "with the door closed",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "with the door closed",
+        "behind closed doors"
+      ],
+      "candidate_review": [
+        {
+          "expression": "behind closed doors",
+          "decision": "REJECT",
+          "reason": "通常は「非公開で／秘密裏に」のidiomで、文字通りドアを閉めた状態とは対応がずれる。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "promptの物理的状態に対する主要回答はcanonicalで足り、idiomは意味ずれのため採用しない。"
+    },
+    {
+      "entry_id": "vocab:01816",
+      "prompt_ja": "健康ほど大切なものはない",
+      "canonical_snapshot": "nothing is more important than health",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "nothing is more important than health",
+        "nothing matters more than health",
+        "health is the most important thing"
+      ],
+      "candidate_review": [
+        {
+          "expression": "nothing matters more than health",
+          "decision": "ACCEPT",
+          "reason": "同じ命題を自然に表す高頻度な比較constructionで、実用的な別表現。"
+        },
+        {
+          "expression": "health is the most important thing",
+          "decision": "ACCEPT",
+          "reason": "同じ意味を最上級で表す自然な文で、独立した言い換えとして価値がある。"
+        }
+      ],
+      "after_paraphrases": [
+        "nothing matters more than health",
+        "health is the most important thing"
+      ],
+      "decision": "CHANGED",
+      "reason": "意味を保った自然な比較表現と最上級表現を追加する。"
+    },
+    {
+      "entry_id": "vocab:01817",
+      "prompt_ja": "無料で",
+      "canonical_snapshot": "for free",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "for free",
+        "free of charge",
+        "at no charge"
+      ],
+      "candidate_review": [
+        {
+          "expression": "free of charge",
+          "decision": "ACCEPT",
+          "reason": "「無料で」の定着した中立〜ややフォーマルな表現で、register差として重要。"
+        },
+        {
+          "expression": "at no charge",
+          "decision": "REJECT",
+          "reason": "自然だがfree of chargeと機能がほぼ重なり、追加学習価値は相対的に低い。"
+        }
+      ],
+      "after_paraphrases": [
+        "free of charge"
+      ],
+      "decision": "CHANGED",
+      "reason": "主要な定着表現free of chargeのみを追加する。"
+    },
+    {
+      "entry_id": "vocab:01818",
+      "prompt_ja": "必ずsomethingする",
+      "canonical_snapshot": "be sure to do something",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "make sure to do something",
+        "be sure to do something",
+        "never fail to do something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "make sure to do something",
+          "decision": "ACCEPT",
+          "reason": "「必ず〜する」の非常に一般的な指示・確認表現で、canonicalと並ぶ主要回答。"
+        },
+        {
+          "expression": "never fail to do something",
+          "decision": "REJECT",
+          "reason": "習慣的に必ず行うという強い意味を帯び、無標のpromptより限定的。"
+        }
+      ],
+      "after_paraphrases": [
+        "make sure to do something"
+      ],
+      "decision": "CHANGED",
+      "reason": "高頻度construction make sure toを追加する。"
+    },
+    {
+      "entry_id": "vocab:01819",
+      "prompt_ja": "チェックインする",
+      "canonical_snapshot": "check in",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "check in",
+        "register"
+      ],
+      "candidate_review": [
+        {
+          "expression": "register",
+          "decision": "REJECT",
+          "reason": "ホテル等で重なる場合はあるが、空港などを含むcheck-in全般の置換語にはならない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "check inがpromptに対する標準表現で、別候補は適用範囲が狭い。"
+    },
+    {
+      "entry_id": "vocab:01820",
+      "prompt_ja": "少なくとも",
+      "canonical_snapshot": "at least",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "at least",
+        "at the very least",
+        "no less than"
+      ],
+      "candidate_review": [
+        {
+          "expression": "at the very least",
+          "decision": "REJECT",
+          "reason": "意味は成立するが強調を加えた同一表現の拡張で、独立学習価値が低い。"
+        },
+        {
+          "expression": "no less than",
+          "decision": "REJECT",
+          "reason": "数量下限に限定され、一般的な「少なくとも」より用途が狭い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "無標の主要表現はcanonicalで十分。"
+    },
+    {
+      "entry_id": "vocab:01821",
+      "prompt_ja": "somethingをsomething elseに取り付ける",
+      "canonical_snapshot": "attach something to something else",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "attach something to something else",
+        "fasten something to something else",
+        "fix something to something else"
+      ],
+      "candidate_review": [
+        {
+          "expression": "fasten something to something else",
+          "decision": "ACCEPT",
+          "reason": "物を別の物に留め付けることを表す主要動詞で、独立した語彙価値が高い。"
+        },
+        {
+          "expression": "fix something to something else",
+          "decision": "REJECT",
+          "reason": "主に英国英語で成立するがfixの多義性が大きく、このpromptへの対応が不安定。"
+        }
+      ],
+      "after_paraphrases": [
+        "fasten something to something else"
+      ],
+      "decision": "CHANGED",
+      "reason": "直接的な別動詞fastenのみを採用する。"
+    },
+    {
+      "entry_id": "vocab:01822",
+      "prompt_ja": "名札",
+      "canonical_snapshot": "name tag",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "name tag",
+        "name badge",
+        "nameplate"
+      ],
+      "candidate_review": [
+        {
+          "expression": "name badge",
+          "decision": "ACCEPT",
+          "reason": "身に付ける名札を表す主要variantで、特に英語圏で広く使われる。"
+        },
+        {
+          "expression": "nameplate",
+          "decision": "REJECT",
+          "reason": "机・扉等の表示板を指すことが多く、一般的な名札より対象がずれる。"
+        }
+      ],
+      "after_paraphrases": [
+        "name badge"
+      ],
+      "decision": "CHANGED",
+      "reason": "主要variant name badgeを追加する。"
+    },
+    {
+      "entry_id": "vocab:01823",
+      "prompt_ja": "小包",
+      "canonical_snapshot": "package",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "package",
+        "parcel"
+      ],
+      "candidate_review": [
+        {
+          "expression": "parcel",
+          "decision": "ACCEPT",
+          "reason": "「小包」の主要な英国英語表現で、地域variantとして学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "parcel"
+      ],
+      "decision": "CHANGED",
+      "reason": "US/UKの主要variantとしてparcelを追加する。"
+    },
+    {
+      "entry_id": "vocab:01824",
+      "prompt_ja": "重さを量る",
+      "canonical_snapshot": "weigh",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "weigh",
+        "measure the weight of something"
+      ],
+      "candidate_review": [
+        {
+          "expression": "measure the weight of something",
+          "decision": "REJECT",
+          "reason": "意味説明としては正しいが、独立した語彙・定着表現としての増分価値が低い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "主要な英答はcanonical weighで十分。"
+    },
+    {
+      "entry_id": "vocab:01825",
+      "prompt_ja": "ポンド",
+      "canonical_snapshot": "pound",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "pound",
+        "lb"
+      ],
+      "candidate_review": [
+        {
+          "expression": "lb",
+          "decision": "REJECT",
+          "reason": "単位の略記であり、別の英語表現として学ばせるparaphraseではない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "略記をparaphrase化せず、canonicalのみとする。"
+    },
+    {
+      "entry_id": "vocab:01826",
+      "prompt_ja": "プラスチック製の",
+      "canonical_snapshot": "plastic",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "plastic",
+        "made of plastic"
+      ],
+      "candidate_review": [
+        {
+          "expression": "made of plastic",
+          "decision": "REJECT",
+          "reason": "意味は成立するがcanonicalを説明的に展開しただけで、独立した表現価値が低い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "canonical以外に高価値な独立表現はない。"
+    },
+    {
+      "entry_id": "vocab:01827",
+      "prompt_ja": "危険な",
+      "canonical_snapshot": "hazardous",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "dangerous",
+        "hazardous",
+        "risky"
+      ],
+      "candidate_review": [
+        {
+          "expression": "dangerous",
+          "decision": "ACCEPT",
+          "reason": "「危険な」の最も基本的で高頻度な形容詞で、MISS扱いは不適切。"
+        },
+        {
+          "expression": "risky",
+          "decision": "REJECT",
+          "reason": "損失・失敗の可能性が高いというrisk中心の語で、危険一般より意味が狭い。"
+        }
+      ],
+      "after_paraphrases": [
+        "dangerous"
+      ],
+      "decision": "CHANGED",
+      "reason": "基本語dangerousを追加し、意味軸の異なるriskyは外す。"
+    },
+    {
+      "entry_id": "vocab:01828",
+      "prompt_ja": "化学物質",
+      "canonical_snapshot": "chemical",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "chemical",
+        "chemical substance"
+      ],
+      "candidate_review": [
+        {
+          "expression": "chemical substance",
+          "decision": "REJECT",
+          "reason": "canonicalに一般名詞を足した説明的表現で、独立した学習価値が低い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "canonical chemicalが標準的で十分。"
+    },
+    {
+      "entry_id": "vocab:01829",
+      "prompt_ja": "懐中電灯",
+      "canonical_snapshot": "flashlight",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "flashlight",
+        "torch"
+      ],
+      "candidate_review": [
+        {
+          "expression": "torch",
+          "decision": "ACCEPT",
+          "reason": "英国英語で「懐中電灯」の標準語で、主要地域variantとして必須度が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "torch"
+      ],
+      "decision": "CHANGED",
+      "reason": "主要US/UK variantとしてtorchを追加する。"
+    },
+    {
+      "entry_id": "vocab:01830",
+      "prompt_ja": "薄暗い",
+      "canonical_snapshot": "dim",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "dim",
+        "faint",
+        "gloomy"
+      ],
+      "candidate_review": [
+        {
+          "expression": "faint",
+          "decision": "REJECT",
+          "reason": "光について成立するが音・輪郭等にも広く、無標の「薄暗い」への対応が限定的。"
+        },
+        {
+          "expression": "gloomy",
+          "decision": "REJECT",
+          "reason": "暗さに加えて陰鬱な雰囲気を含みやすく、promptより意味が強い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "無標の「薄暗い」にはcanonical dimが最も安定し、他候補は意味差が大きい。"
+    },
+    {
+      "entry_id": "vocab:01831",
+      "prompt_ja": "電池",
+      "canonical_snapshot": "battery",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "battery",
+        "cell"
+      ],
+      "candidate_review": [
+        {
+          "expression": "cell",
+          "decision": "REJECT",
+          "reason": "単電池・電気化学セルを指す技術的用法で、一般的な「電池」への対応範囲が狭い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "一般語batteryで十分で、下位概念cellは登録しない。"
+    },
+    {
+      "entry_id": "vocab:01832",
+      "prompt_ja": "中心街へ",
+      "canonical_snapshot": "downtown",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "downtown",
+        "to the city center"
+      ],
+      "candidate_review": [
+        {
+          "expression": "to the city center",
+          "decision": "ACCEPT",
+          "reason": "「中心街へ」を透明かつ自然に表す主要表現で、downtownとは異なる地域・registerでも有用。"
+        }
+      ],
+      "after_paraphrases": [
+        "to the city center"
+      ],
+      "decision": "CHANGED",
+      "reason": "一般的な句表現to the city centerを追加する。"
+    },
+    {
+      "entry_id": "vocab:01833",
+      "prompt_ja": "運行する",
+      "canonical_snapshot": "run",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "run",
+        "operate",
+        "be in service"
+      ],
+      "candidate_review": [
+        {
+          "expression": "operate",
+          "decision": "ACCEPT",
+          "reason": "交通機関などが「運行する」を表す主要動詞で、文章・案内で有用。"
+        },
+        {
+          "expression": "be in service",
+          "decision": "REJECT",
+          "reason": "運行中という状態を表すことが中心で、動作としての「運行する」とはずれる。"
+        }
+      ],
+      "after_paraphrases": [
+        "operate"
+      ],
+      "decision": "CHANGED",
+      "reason": "主要動詞operateを追加し、状態表現は除外する。"
+    },
+    {
+      "entry_id": "vocab:01834",
+      "prompt_ja": "モーテル",
+      "canonical_snapshot": "motel",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "motel"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "promptに対応する一般的な英語名詞はcanonical motelそのもので、別表現を足す必要がない。"
+    },
+    {
+      "entry_id": "vocab:01835",
+      "prompt_ja": "客",
+      "canonical_snapshot": "guest",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "guest",
+        "customer",
+        "client",
+        "visitor"
+      ],
+      "candidate_review": [
+        {
+          "expression": "customer",
+          "decision": "ACCEPT",
+          "reason": "商店・サービス利用者としての「客」を表す最重要基本語で、promptへの主要回答。"
+        },
+        {
+          "expression": "client",
+          "decision": "ACCEPT",
+          "reason": "専門サービスを受ける「客・顧客」を表す重要語で、独立したbusiness語彙価値が高い。"
+        },
+        {
+          "expression": "visitor",
+          "decision": "REJECT",
+          "reason": "訪問者一般を表し、必ずしも「客」として扱われる関係を含まない。"
+        }
+      ],
+      "after_paraphrases": [
+        "customer",
+        "client"
+      ],
+      "decision": "CHANGED",
+      "reason": "promptが区別しない主要な「客」の語義としてcustomerとclientを採用し、単なる訪問者は外す。"
+    },
+    {
+      "entry_id": "vocab:01836",
+      "prompt_ja": "スイートルーム",
+      "canonical_snapshot": "suite",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "suite",
+        "hotel suite"
+      ],
+      "candidate_review": [
+        {
+          "expression": "hotel suite",
+          "decision": "REJECT",
+          "reason": "canonicalに場所を明示しただけで、独立したparaphraseとしての価値が低い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "suiteが標準語で、追加表現は不要。"
+    },
+    {
+      "entry_id": "vocab:01837",
+      "prompt_ja": "分譲マンション",
+      "canonical_snapshot": "condominium",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "condominium",
+        "condo"
+      ],
+      "candidate_review": [
+        {
+          "expression": "condo",
+          "decision": "ACCEPT",
+          "reason": "condominiumの非常に一般的な短縮語で、実生活・不動産英語で高頻度。"
+        }
+      ],
+      "after_paraphrases": [
+        "condo"
+      ],
+      "decision": "CHANGED",
+      "reason": "実用頻度の高い独立語彙としてcondoを追加する。"
+    },
+    {
+      "entry_id": "vocab:01838",
+      "prompt_ja": "ごみを散らかす",
+      "canonical_snapshot": "litter",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "litter",
+        "drop litter",
+        "leave trash around"
+      ],
+      "candidate_review": [
+        {
+          "expression": "drop litter",
+          "decision": "REJECT",
+          "reason": "litterと同じ語彙を用いた説明的constructionで、独立した増分価値が小さい。"
+        },
+        {
+          "expression": "leave trash around",
+          "decision": "REJECT",
+          "reason": "状況説明としては成立するが定着した対応表現ではなく、語彙カードとして冗長。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "定着した動詞litterが主要回答で、説明的表現は追加しない。"
+    },
+    {
+      "entry_id": "vocab:01839",
+      "prompt_ja": "施設",
+      "canonical_snapshot": "facility",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "facility",
+        "institution",
+        "amenity"
+      ],
+      "candidate_review": [
+        {
+          "expression": "institution",
+          "decision": "REJECT",
+          "reason": "組織・制度を指す意味が中心で、「施設」一般より狭く別概念になりやすい。"
+        },
+        {
+          "expression": "amenity",
+          "decision": "REJECT",
+          "reason": "利便設備・付帯設備を指すことが多く、「施設」全般の対応語ではない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "facility以外は意味範囲が異なり、誤対応を避けるため登録しない。"
+    },
+    {
+      "entry_id": "vocab:01840",
+      "prompt_ja": "最大の",
+      "canonical_snapshot": "maximum",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "maximum",
+        "largest",
+        "biggest",
+        "greatest"
+      ],
+      "candidate_review": [
+        {
+          "expression": "largest",
+          "decision": "ACCEPT",
+          "reason": "「最大の」の最も基本的な比較・サイズ表現の一つで、一般性が高い。"
+        },
+        {
+          "expression": "biggest",
+          "decision": "ACCEPT",
+          "reason": "日常英語で極めて高頻度な「最大の」の表現で、largestとはregister差もある。"
+        },
+        {
+          "expression": "greatest",
+          "decision": "REJECT",
+          "reason": "重要度・程度など抽象尺度に寄ることが多く、無標のpromptへの対応範囲が広すぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "largest",
+        "biggest"
+      ],
+      "decision": "CHANGED",
+      "reason": "一般性の高いlargestと会話的なbiggestを追加する。"
+    },
+    {
+      "entry_id": "vocab:01841",
+      "prompt_ja": "罰金",
+      "canonical_snapshot": "fine",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "fine",
+        "penalty"
+      ],
+      "candidate_review": [
+        {
+          "expression": "penalty",
+          "decision": "REJECT",
+          "reason": "制裁一般を表し、金銭の支払いに限定されないため「罰金」より広い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "金銭罰を直接表すcanonical fineが最も適切。"
+    },
+    {
+      "entry_id": "vocab:01842",
+      "prompt_ja": "満員の",
+      "canonical_snapshot": "packed",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "packed",
+        "full",
+        "crowded",
+        "sold out"
+      ],
+      "candidate_review": [
+        {
+          "expression": "full",
+          "decision": "ACCEPT",
+          "reason": "定員に達している「満員の」を直接表す基本語で、高頻度。"
+        },
+        {
+          "expression": "crowded",
+          "decision": "REJECT",
+          "reason": "人が多い状態であって定員到達を必ずしも意味しない。"
+        },
+        {
+          "expression": "sold out",
+          "decision": "REJECT",
+          "reason": "券・商品が売り切れた状態であり、場所自体の「満員」とは異なる。"
+        }
+      ],
+      "after_paraphrases": [
+        "full"
+      ],
+      "decision": "CHANGED",
+      "reason": "定員到達を直接表すfullのみを追加する。"
+    },
+    {
+      "entry_id": "vocab:01843",
+      "prompt_ja": "前もって",
+      "canonical_snapshot": "beforehand",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "beforehand",
+        "in advance",
+        "ahead of time"
+      ],
+      "candidate_review": [
+        {
+          "expression": "in advance",
+          "decision": "ACCEPT",
+          "reason": "「前もって」の最重要定着句の一つで、会話・文章とも高頻度。"
+        },
+        {
+          "expression": "ahead of time",
+          "decision": "ACCEPT",
+          "reason": "予定より前／事前にを表す一般的な句で、独立した学習価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "in advance",
+        "ahead of time"
+      ],
+      "decision": "CHANGED",
+      "reason": "高頻度の主要2表現を追加する。"
+    },
+    {
+      "entry_id": "vocab:01844",
+      "prompt_ja": "さえぎる",
+      "canonical_snapshot": "interrupt",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "interrupt",
+        "block",
+        "obstruct",
+        "cut off"
+      ],
+      "candidate_review": [
+        {
+          "expression": "block",
+          "decision": "ACCEPT",
+          "reason": "光・視界・通路などを「さえぎる」基本動詞で、promptの主要な別義をカバーする。"
+        },
+        {
+          "expression": "obstruct",
+          "decision": "ACCEPT",
+          "reason": "通行・視界などをさえぎるフォーマルな主要動詞で、読解価値が高い。"
+        },
+        {
+          "expression": "cut off",
+          "decision": "REJECT",
+          "reason": "遮断・中断など意味範囲が広く、単独では「さえぎる」への対応が不安定。"
+        }
+      ],
+      "after_paraphrases": [
+        "block",
+        "obstruct"
+      ],
+      "decision": "CHANGED",
+      "reason": "promptが許す物理的遮蔽の主要語block/obstructを追加する。"
+    },
+    {
+      "entry_id": "vocab:01845",
+      "prompt_ja": "驚いている",
+      "canonical_snapshot": "astonished",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "surprised",
+        "amazed",
+        "astonished",
+        "shocked"
+      ],
+      "candidate_review": [
+        {
+          "expression": "surprised",
+          "decision": "ACCEPT",
+          "reason": "「驚いている」の最も基本的で高頻度な形容詞で、MISS扱いは不適切。"
+        },
+        {
+          "expression": "amazed",
+          "decision": "ACCEPT",
+          "reason": "強い驚きを表す一般的な形容詞で、astonishedと並ぶ主要表現。"
+        },
+        {
+          "expression": "shocked",
+          "decision": "REJECT",
+          "reason": "不快・衝撃的な驚きを含むことが多く、無標のpromptより意味が強い。"
+        }
+      ],
+      "after_paraphrases": [
+        "surprised",
+        "amazed"
+      ],
+      "decision": "CHANGED",
+      "reason": "基本語surprisedと主要強意語amazedを追加する。"
+    },
+    {
+      "entry_id": "vocab:01846",
+      "prompt_ja": "信じられない",
+      "canonical_snapshot": "incredible",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "unbelievable",
+        "incredible",
+        "hard to believe"
+      ],
+      "candidate_review": [
+        {
+          "expression": "unbelievable",
+          "decision": "ACCEPT",
+          "reason": "「信じられない」の直接的で高頻度な形容詞で、主要回答。"
+        },
+        {
+          "expression": "hard to believe",
+          "decision": "ACCEPT",
+          "reason": "同じ意味を自然に表す非常に実用的なconstructionで、会話・文章とも有用。"
+        }
+      ],
+      "after_paraphrases": [
+        "unbelievable",
+        "hard to believe"
+      ],
+      "decision": "CHANGED",
+      "reason": "基本形容詞と高頻度constructionを追加する。"
+    },
+    {
+      "entry_id": "vocab:01847",
+      "prompt_ja": "好奇心の強い",
+      "canonical_snapshot": "curious",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "curious",
+        "inquisitive",
+        "nosy"
+      ],
+      "candidate_review": [
+        {
+          "expression": "inquisitive",
+          "decision": "ACCEPT",
+          "reason": "知りたがる・好奇心旺盛な性質を表す主要語で、読解でも有用。"
+        },
+        {
+          "expression": "nosy",
+          "decision": "REJECT",
+          "reason": "他人事に詮索好きという否定的ニュアンスが強く、単なる好奇心とはずれる。"
+        }
+      ],
+      "after_paraphrases": [
+        "inquisitive"
+      ],
+      "decision": "CHANGED",
+      "reason": "中立的な主要語inquisitiveを追加する。"
+    },
+    {
+      "entry_id": "vocab:01848",
+      "prompt_ja": "後部",
+      "canonical_snapshot": "rear",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "rear",
+        "back"
+      ],
+      "candidate_review": [
+        {
+          "expression": "back",
+          "decision": "ACCEPT",
+          "reason": "「後部」を表す最も一般的な語の一つで、日常英語で高頻度。"
+        }
+      ],
+      "after_paraphrases": [
+        "back"
+      ],
+      "decision": "CHANGED",
+      "reason": "基本語backを追加する。"
+    },
+    {
+      "entry_id": "vocab:01849",
+      "prompt_ja": "偶然出会う",
+      "canonical_snapshot": "encounter",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "run into",
+        "bump into",
+        "come across",
+        "encounter"
+      ],
+      "candidate_review": [
+        {
+          "expression": "run into",
+          "decision": "ACCEPT",
+          "reason": "人に「偶然出会う」の非常に高頻度な会話句動詞。"
+        },
+        {
+          "expression": "bump into",
+          "decision": "ACCEPT",
+          "reason": "偶然の遭遇を明示する定着した会話表現で、独立した学習価値が高い。"
+        },
+        {
+          "expression": "come across",
+          "decision": "ACCEPT",
+          "reason": "人・物に偶然出会う／見つける主要句動詞で、読解・会話とも重要。"
+        }
+      ],
+      "after_paraphrases": [
+        "run into",
+        "bump into",
+        "come across"
+      ],
+      "decision": "CHANGED",
+      "reason": "偶然性を自然に表す主要句動詞3種を採用する。"
+    },
+    {
+      "entry_id": "vocab:01850",
+      "prompt_ja": "有名人",
+      "canonical_snapshot": "celebrity",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "celebrity",
+        "famous person",
+        "public figure"
+      ],
+      "candidate_review": [
+        {
+          "expression": "famous person",
+          "decision": "REJECT",
+          "reason": "意味説明としては正しいが、独立語彙として覚える増分価値が低い。"
+        },
+        {
+          "expression": "public figure",
+          "decision": "REJECT",
+          "reason": "公的活動で注目される人物に限定され、有名人一般とは一致しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "独立した主要語celebrityで十分。"
+    },
+    {
+      "entry_id": "vocab:01851",
+      "prompt_ja": "有名人のサイン",
+      "canonical_snapshot": "autograph",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "autograph",
+        "signature"
+      ],
+      "candidate_review": [
+        {
+          "expression": "signature",
+          "decision": "REJECT",
+          "reason": "署名一般を表し、「有名人にもらうサイン」というpromptの文化的用法より広い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "celebrity autographを表す独立語はcanonical autographが中心。"
+    },
+    {
+      "entry_id": "vocab:01852",
+      "prompt_ja": "海外へ",
+      "canonical_snapshot": "abroad",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "abroad",
+        "overseas"
+      ],
+      "candidate_review": [
+        {
+          "expression": "overseas",
+          "decision": "ACCEPT",
+          "reason": "「海外へ／海外で」を表す主要な副詞・形容詞で、abroadとは別に高頻度。"
+        }
+      ],
+      "after_paraphrases": [
+        "overseas"
+      ],
+      "decision": "CHANGED",
+      "reason": "主要表現overseasを追加する。"
+    },
+    {
+      "entry_id": "vocab:01853",
+      "prompt_ja": "下痢",
+      "canonical_snapshot": "diarrhea",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "diarrhea",
+        "the runs"
+      ],
+      "candidate_review": [
+        {
+          "expression": "the runs",
+          "decision": "ACCEPT",
+          "reason": "「下痢」を表す非常に一般的な口語表現で、会話上のregister差として価値がある。"
+        }
+      ],
+      "after_paraphrases": [
+        "the runs"
+      ],
+      "decision": "CHANGED",
+      "reason": "日常会話で頻出する口語表現the runsを追加する。"
+    },
+    {
+      "entry_id": "vocab:01854",
+      "prompt_ja": "めまいがする",
+      "canonical_snapshot": "dizzy",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "dizzy",
+        "feel dizzy",
+        "light-headed"
+      ],
+      "candidate_review": [
+        {
+          "expression": "feel dizzy",
+          "decision": "ACCEPT",
+          "reason": "日本語の状態表現「めまいがする」に自然に対応する高頻度construction。"
+        },
+        {
+          "expression": "light-headed",
+          "decision": "REJECT",
+          "reason": "ふらつき・頭が軽い感覚を指し、dizzyと完全には重ならない。"
+        }
+      ],
+      "after_paraphrases": [
+        "feel dizzy"
+      ],
+      "decision": "CHANGED",
+      "reason": "実際の発話で自然なfeel dizzyを追加する。"
+    },
+    {
+      "entry_id": "vocab:01855",
+      "prompt_ja": "青白い",
+      "canonical_snapshot": "pale",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "pale",
+        "pallid",
+        "white"
+      ],
+      "candidate_review": [
+        {
+          "expression": "pallid",
+          "decision": "REJECT",
+          "reason": "意味は近いが一般学習者に対する頻度・実用性が低い。"
+        },
+        {
+          "expression": "white",
+          "decision": "REJECT",
+          "reason": "顔色について成立する場面はあるが、単独では色そのものを指し意味が広い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "高頻度かつ直接的なcanonical paleで十分。"
+    },
+    {
+      "entry_id": "vocab:01856",
+      "prompt_ja": "治す",
+      "canonical_snapshot": "cure",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "cure",
+        "heal",
+        "treat",
+        "remedy"
+      ],
+      "candidate_review": [
+        {
+          "expression": "heal",
+          "decision": "ACCEPT",
+          "reason": "傷・身体などを「治す」の主要動詞で、cureとは対象差を含め独立した学習価値が高い。"
+        },
+        {
+          "expression": "treat",
+          "decision": "REJECT",
+          "reason": "治療を施すことを表し、治癒という結果を必ずしも含まない。"
+        },
+        {
+          "expression": "remedy",
+          "decision": "REJECT",
+          "reason": "動詞用法はあるが一般会話では頻度が低く、追加優先度が低い。"
+        }
+      ],
+      "after_paraphrases": [
+        "heal"
+      ],
+      "decision": "CHANGED",
+      "reason": "主要別動詞healを採用し、治療行為だけを示す語は外す。"
+    },
+    {
+      "entry_id": "vocab:01857",
+      "prompt_ja": "アスピリン",
+      "canonical_snapshot": "aspirin",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "aspirin"
+      ],
+      "candidate_review": [],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "固有の薬剤名であり、一般的な別英語表現はない。"
+    },
+    {
+      "entry_id": "vocab:01858",
+      "prompt_ja": "材料",
+      "canonical_snapshot": "ingredient",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "ingredient",
+        "material",
+        "component"
+      ],
+      "candidate_review": [
+        {
+          "expression": "material",
+          "decision": "ACCEPT",
+          "reason": "物を作る「材料」を表す最重要基本語で、食品中心のingredientとは別の主要回答。"
+        },
+        {
+          "expression": "component",
+          "decision": "REJECT",
+          "reason": "構成要素一般を表し、素材としての「材料」より概念が広い。"
+        }
+      ],
+      "after_paraphrases": [
+        "material"
+      ],
+      "decision": "CHANGED",
+      "reason": "promptの主要な非食品用法をカバーするmaterialを追加する。"
+    },
+    {
+      "entry_id": "vocab:01859",
+      "prompt_ja": "飲み物",
+      "canonical_snapshot": "beverage",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "beverage",
+        "drink"
+      ],
+      "candidate_review": [
+        {
+          "expression": "drink",
+          "decision": "ACCEPT",
+          "reason": "「飲み物」の最も基本的で高頻度な日常語で、MISS扱いは不適切。"
+        }
+      ],
+      "after_paraphrases": [
+        "drink"
+      ],
+      "decision": "CHANGED",
+      "reason": "基本語drinkを追加する。"
+    },
+    {
+      "entry_id": "vocab:01860",
+      "prompt_ja": "有害な",
+      "canonical_snapshot": "harmful",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "harmful",
+        "detrimental",
+        "damaging",
+        "toxic"
+      ],
+      "candidate_review": [
+        {
+          "expression": "detrimental",
+          "decision": "ACCEPT",
+          "reason": "「有害な」を表す主要なフォーマル語で、academic/business読解で価値が高い。"
+        },
+        {
+          "expression": "damaging",
+          "decision": "ACCEPT",
+          "reason": "害・損傷を与えることを表す一般的な形容詞で、実用頻度が高い。"
+        },
+        {
+          "expression": "toxic",
+          "decision": "REJECT",
+          "reason": "毒性や比喩的な有毒性に意味が寄り、害一般より狭い。"
+        }
+      ],
+      "after_paraphrases": [
+        "detrimental",
+        "damaging"
+      ],
+      "decision": "CHANGED",
+      "reason": "一般語とフォーマル語の高価値な2表現を追加する。"
+    },
+    {
+      "entry_id": "vocab:01861",
+      "prompt_ja": "特に",
+      "canonical_snapshot": "especially",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "especially",
+        "particularly",
+        "in particular"
+      ],
+      "candidate_review": [
+        {
+          "expression": "particularly",
+          "decision": "ACCEPT",
+          "reason": "「特に」の主要な高頻度副詞で、会話・文章とも重要。"
+        },
+        {
+          "expression": "in particular",
+          "decision": "ACCEPT",
+          "reason": "対象を特定して強調する定着句で、独立した実用価値が高い。"
+        }
+      ],
+      "after_paraphrases": [
+        "particularly",
+        "in particular"
+      ],
+      "decision": "CHANGED",
+      "reason": "主要副詞と定着句を追加する。"
+    },
+    {
+      "entry_id": "vocab:01862",
+      "prompt_ja": "妊娠している",
+      "canonical_snapshot": "pregnant",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "pregnant",
+        "expecting"
+      ],
+      "candidate_review": [
+        {
+          "expression": "expecting",
+          "decision": "REJECT",
+          "reason": "文脈があれば妊娠を表せるが、単独では「予期している」の意味も強く曖昧。"
+        },
+        {
+          "expression": "expecting a baby",
+          "decision": "ACCEPT",
+          "reason": "妊娠していることを婉曲に表す非常に一般的な会話表現。"
+        }
+      ],
+      "after_paraphrases": [
+        "expecting a baby"
+      ],
+      "decision": "CHANGED",
+      "reason": "曖昧な単独expectingではなく、明確で高頻度なexpecting a babyを追加する。"
+    },
+    {
+      "entry_id": "vocab:01863",
+      "prompt_ja": "乳児",
+      "canonical_snapshot": "infant",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "infant",
+        "baby",
+        "newborn"
+      ],
+      "candidate_review": [
+        {
+          "expression": "baby",
+          "decision": "ACCEPT",
+          "reason": "「乳児」の最も一般的で高頻度な日常語。"
+        },
+        {
+          "expression": "newborn",
+          "decision": "REJECT",
+          "reason": "出生直後に限定され、乳児全般より範囲が狭い。"
+        }
+      ],
+      "after_paraphrases": [
+        "baby"
+      ],
+      "decision": "CHANGED",
+      "reason": "基本語babyを追加する。"
+    },
+    {
+      "entry_id": "vocab:01864",
+      "prompt_ja": "成長",
+      "canonical_snapshot": "growth",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "growth",
+        "development",
+        "maturation"
+      ],
+      "candidate_review": [
+        {
+          "expression": "development",
+          "decision": "ACCEPT",
+          "reason": "人・能力・組織などの「成長」を表す主要語で、growthとは別に高頻度。"
+        },
+        {
+          "expression": "maturation",
+          "decision": "REJECT",
+          "reason": "成熟過程に限定され、一般的な成長より意味が狭い。"
+        }
+      ],
+      "after_paraphrases": [
+        "development"
+      ],
+      "decision": "CHANGED",
+      "reason": "主要な抽象的成長表現developmentを追加する。"
+    },
+    {
+      "entry_id": "vocab:01865",
+      "prompt_ja": "適度な",
+      "canonical_snapshot": "moderate",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "moderate",
+        "reasonable",
+        "modest"
+      ],
+      "candidate_review": [
+        {
+          "expression": "reasonable",
+          "decision": "REJECT",
+          "reason": "「妥当な」の意味が中心で、程度が適度というpromptと常には一致しない。"
+        },
+        {
+          "expression": "modest",
+          "decision": "REJECT",
+          "reason": "量・規模が控えめという含意が強く、適度一般より狭い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "無標の「適度な」にはcanonical moderateが最も安定する。"
+    },
+    {
+      "entry_id": "vocab:01866",
+      "prompt_ja": "運動",
+      "canonical_snapshot": "exercise",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "exercise",
+        "physical activity",
+        "workout"
+      ],
+      "candidate_review": [
+        {
+          "expression": "physical activity",
+          "decision": "ACCEPT",
+          "reason": "健康・身体活動としての「運動」を表す主要表現で、exerciseより広い実用語。"
+        },
+        {
+          "expression": "workout",
+          "decision": "REJECT",
+          "reason": "一回のトレーニングや運動メニューを指すことが多く、運動一般より狭い。"
+        }
+      ],
+      "after_paraphrases": [
+        "physical activity"
+      ],
+      "decision": "CHANGED",
+      "reason": "健康文脈でも一般性の高いphysical activityを追加する。"
+    },
+    {
+      "entry_id": "vocab:01867",
+      "prompt_ja": "刺激する",
+      "canonical_snapshot": "stimulate",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "stimulate",
+        "spur",
+        "encourage",
+        "motivate"
+      ],
+      "candidate_review": [
+        {
+          "expression": "spur",
+          "decision": "ACCEPT",
+          "reason": "活動・成長などを「刺激して促す」主要動詞で、business/academicでも有用。"
+        },
+        {
+          "expression": "encourage",
+          "decision": "REJECT",
+          "reason": "奨励する意味が中心で、刺激するという作用一般とは一致しない。"
+        },
+        {
+          "expression": "motivate",
+          "decision": "REJECT",
+          "reason": "人の動機付けに限定されやすく、刺激する対象一般より狭い。"
+        }
+      ],
+      "after_paraphrases": [
+        "spur"
+      ],
+      "decision": "CHANGED",
+      "reason": "促進刺激を表す主要動詞spurのみを追加する。"
+    },
+    {
+      "entry_id": "vocab:01868",
+      "prompt_ja": "血液の循環",
+      "canonical_snapshot": "circulation",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "blood circulation",
+        "circulation",
+        "blood flow"
+      ],
+      "candidate_review": [
+        {
+          "expression": "blood circulation",
+          "decision": "REJECT",
+          "reason": "canonicalに対象を明示しただけで、独立した別表現としての価値が低い。"
+        },
+        {
+          "expression": "blood flow",
+          "decision": "REJECT",
+          "reason": "血流量・流れを指し、循環系としてのcirculationと完全には同一でない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "canonical circulationがpromptの中心概念を十分表す。"
+    },
+    {
+      "entry_id": "vocab:01869",
+      "prompt_ja": "アルコール",
+      "canonical_snapshot": "alcohol",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "alcohol",
+        "liquor",
+        "alcoholic drink"
+      ],
+      "candidate_review": [
+        {
+          "expression": "liquor",
+          "decision": "REJECT",
+          "reason": "蒸留酒を指すことが多く、アルコール一般より狭い。"
+        },
+        {
+          "expression": "alcoholic drink",
+          "decision": "REJECT",
+          "reason": "酒類という下位概念で、物質としてのアルコールまで含まない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "一般概念はcanonical alcoholのみで十分。"
+    },
+    {
+      "entry_id": "vocab:01870",
+      "prompt_ja": "不快な",
+      "canonical_snapshot": "nasty",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "unpleasant",
+        "uncomfortable",
+        "nasty",
+        "disagreeable"
+      ],
+      "candidate_review": [
+        {
+          "expression": "unpleasant",
+          "decision": "ACCEPT",
+          "reason": "「不快な」の最も直接的で中立的な基本語の一つで、高頻度。"
+        },
+        {
+          "expression": "uncomfortable",
+          "decision": "REJECT",
+          "reason": "身体的・心理的に居心地が悪い意味に寄り、不快一般とは範囲が異なる。"
+        },
+        {
+          "expression": "disagreeable",
+          "decision": "REJECT",
+          "reason": "意味は成立するが現代一般英語での優先度が低い。"
+        }
+      ],
+      "after_paraphrases": [
+        "unpleasant"
+      ],
+      "decision": "CHANGED",
+      "reason": "直接的な基本語unpleasantを追加する。"
+    },
+    {
+      "entry_id": "vocab:01871",
+      "prompt_ja": "移植",
+      "canonical_snapshot": "transplant",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "transplant",
+        "transplantation"
+      ],
+      "candidate_review": [
+        {
+          "expression": "transplantation",
+          "decision": "REJECT",
+          "reason": "同一語根の抽象名詞化で、独立した別表現としての増分価値が小さい。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "canonical transplantが一般的で、派生形はparaphrase化しない。"
+    },
+    {
+      "entry_id": "vocab:01872",
+      "prompt_ja": "寝たきりの",
+      "canonical_snapshot": "bedridden",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "bedridden",
+        "confined to bed",
+        "bedbound"
+      ],
+      "candidate_review": [
+        {
+          "expression": "confined to bed",
+          "decision": "ACCEPT",
+          "reason": "「寝たきりの」を自然に説明する定着表現で、医療・一般文脈とも有用。"
+        },
+        {
+          "expression": "bedbound",
+          "decision": "REJECT",
+          "reason": "医療・介護で使うが一般頻度が低く、既存2表現に対する増分価値が小さい。"
+        }
+      ],
+      "after_paraphrases": [
+        "confined to bed"
+      ],
+      "decision": "CHANGED",
+      "reason": "一般性の高い定着表現confined to bedを追加する。"
+    },
+    {
+      "entry_id": "vocab:01873",
+      "prompt_ja": "量",
+      "canonical_snapshot": "amount",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "amount",
+        "quantity",
+        "volume"
+      ],
+      "candidate_review": [
+        {
+          "expression": "quantity",
+          "decision": "ACCEPT",
+          "reason": "「量」の主要な中立語で、amountとは可算性・register差もあり学習価値が高い。"
+        },
+        {
+          "expression": "volume",
+          "decision": "REJECT",
+          "reason": "容量・体積・総量など特定の尺度に寄り、量一般より狭い。"
+        }
+      ],
+      "after_paraphrases": [
+        "quantity"
+      ],
+      "decision": "CHANGED",
+      "reason": "主要語quantityを追加する。"
+    },
+    {
+      "entry_id": "vocab:01874",
+      "prompt_ja": "適切な",
+      "canonical_snapshot": "appropriate",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "appropriate",
+        "suitable",
+        "proper",
+        "fitting"
+      ],
+      "candidate_review": [
+        {
+          "expression": "suitable",
+          "decision": "ACCEPT",
+          "reason": "目的・状況に「適切な」を表す主要基本語で、高頻度。"
+        },
+        {
+          "expression": "proper",
+          "decision": "ACCEPT",
+          "reason": "正しい・ふさわしいという意味で「適切な」に対応する重要語。"
+        },
+        {
+          "expression": "fitting",
+          "decision": "REJECT",
+          "reason": "「ふさわしい」の評価的ニュアンスが強く、用途が限定される。"
+        }
+      ],
+      "after_paraphrases": [
+        "suitable",
+        "proper"
+      ],
+      "decision": "CHANGED",
+      "reason": "高頻度なsuitableとproperを追加する。"
+    },
+    {
+      "entry_id": "vocab:01875",
+      "prompt_ja": "措置",
+      "canonical_snapshot": "measure",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "measure",
+        "step",
+        "action"
+      ],
+      "candidate_review": [
+        {
+          "expression": "step",
+          "decision": "ACCEPT",
+          "reason": "問題対応の「措置」を表す定着した基本語で、take steps等の重要collocationにつながる。"
+        },
+        {
+          "expression": "action",
+          "decision": "REJECT",
+          "reason": "行動一般を指し、対応策としての「措置」より意味が広い。"
+        }
+      ],
+      "after_paraphrases": [
+        "step"
+      ],
+      "decision": "CHANGED",
+      "reason": "対応策として定着したstepを追加する。"
+    },
+    {
+      "entry_id": "vocab:01876",
+      "prompt_ja": "広がる",
+      "canonical_snapshot": "spread",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "spread",
+        "expand",
+        "extend",
+        "widen"
+      ],
+      "candidate_review": [
+        {
+          "expression": "expand",
+          "decision": "ACCEPT",
+          "reason": "範囲・規模が「広がる」を表す主要な自動詞で、academic/businessでも高頻度。"
+        },
+        {
+          "expression": "extend",
+          "decision": "REJECT",
+          "reason": "他動詞用法や期間延長も多く、無標の「広がる」への対応が不安定。"
+        },
+        {
+          "expression": "widen",
+          "decision": "REJECT",
+          "reason": "幅が広がることに意味が限定される。"
+        }
+      ],
+      "after_paraphrases": [
+        "expand"
+      ],
+      "decision": "CHANGED",
+      "reason": "範囲・規模拡大を表す主要語expandを追加する。"
+    },
+    {
+      "entry_id": "vocab:01877",
+      "prompt_ja": "大臣",
+      "canonical_snapshot": "minister",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "minister",
+        "cabinet minister",
+        "secretary"
+      ],
+      "candidate_review": [
+        {
+          "expression": "cabinet minister",
+          "decision": "REJECT",
+          "reason": "canonicalに所属を付加した下位表現で、独立paraphraseとしての価値が低い。"
+        },
+        {
+          "expression": "secretary",
+          "decision": "REJECT",
+          "reason": "米国等の特定制度で大臣相当になる語で、一般的な対応語にはできない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "制度横断で最も安定するcanonical ministerのみとする。"
+    },
+    {
+      "entry_id": "vocab:01878",
+      "prompt_ja": "内閣",
+      "canonical_snapshot": "cabinet",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "cabinet",
+        "government"
+      ],
+      "candidate_review": [
+        {
+          "expression": "government",
+          "decision": "REJECT",
+          "reason": "行政・政府全体を指し、閣僚集団としての内閣より範囲が広い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "内閣を直接表すcanonical cabinetが唯一の主要回答。"
+    },
+    {
+      "entry_id": "vocab:01879",
+      "prompt_ja": "果たす",
+      "canonical_snapshot": "fulfill",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "fulfill",
+        "carry out",
+        "perform",
+        "accomplish"
+      ],
+      "candidate_review": [
+        {
+          "expression": "carry out",
+          "decision": "ACCEPT",
+          "reason": "任務・義務などを「果たす／遂行する」の主要句動詞で、実用性が高い。"
+        },
+        {
+          "expression": "perform",
+          "decision": "REJECT",
+          "reason": "役割・職務では成立するが、演技等の多義性が大きくprompt単独では広い。"
+        },
+        {
+          "expression": "accomplish",
+          "decision": "REJECT",
+          "reason": "目標・成果を達成する意味に寄り、「果たす」一般より限定的。"
+        }
+      ],
+      "after_paraphrases": [
+        "carry out"
+      ],
+      "decision": "CHANGED",
+      "reason": "任務遂行に使う主要句動詞carry outを追加する。"
+    },
+    {
+      "entry_id": "vocab:01880",
+      "prompt_ja": "授業料",
+      "canonical_snapshot": "tuition",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "tuition",
+        "tuition fees",
+        "school fees"
+      ],
+      "candidate_review": [
+        {
+          "expression": "tuition fees",
+          "decision": "REJECT",
+          "reason": "canonicalにfeesを付した同概念の表現で、独立した語彙価値が小さい。"
+        },
+        {
+          "expression": "school fees",
+          "decision": "REJECT",
+          "reason": "授業料以外の学校関連費用も含み得て、promptより広い。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "canonical tuitionで十分。"
+    },
+    {
+      "entry_id": "vocab:01881",
+      "prompt_ja": "値上げする",
+      "canonical_snapshot": "raise",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "raise the price",
+        "increase the price",
+        "put up the price",
+        "hike the price"
+      ],
+      "candidate_review": [
+        {
+          "expression": "increase the price",
+          "decision": "ACCEPT",
+          "reason": "「値上げする」を透明に表す高頻度な一般表現で、raiseとは別動詞。"
+        },
+        {
+          "expression": "put up the price",
+          "decision": "ACCEPT",
+          "reason": "特に英国英語で一般的な「値上げする」の句動詞表現。"
+        },
+        {
+          "expression": "hike the price",
+          "decision": "REJECT",
+          "reason": "大幅な値上げというニュアンスを帯びやすく、無標のpromptより強い。"
+        }
+      ],
+      "after_paraphrases": [
+        "increase the price",
+        "put up the price"
+      ],
+      "decision": "CHANGED",
+      "reason": "一般表現increaseと主要英国英語variant put upを追加する。"
+    },
+    {
+      "entry_id": "vocab:01882",
+      "prompt_ja": "ほとんど",
+      "canonical_snapshot": "nearly",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "almost",
+        "nearly",
+        "mostly",
+        "practically"
+      ],
+      "candidate_review": [
+        {
+          "expression": "almost",
+          "decision": "ACCEPT",
+          "reason": "「ほとんど」の最も基本的で高頻度な副詞で、nearlyと並ぶ主要回答。"
+        },
+        {
+          "expression": "mostly",
+          "decision": "REJECT",
+          "reason": "「大部分は／主に」の意味が中心で、完了度・近接を表すpromptの無標読みとは異なる。"
+        },
+        {
+          "expression": "practically",
+          "decision": "REJECT",
+          "reason": "「事実上ほとんど」の強い語用的意味を帯び、一般的な回答としては限定的。"
+        }
+      ],
+      "after_paraphrases": [
+        "almost"
+      ],
+      "decision": "CHANGED",
+      "reason": "主要な近接表現almostを追加し、別義寄りの候補は外す。"
+    },
+    {
+      "entry_id": "vocab:01883",
+      "prompt_ja": "軍事の",
+      "canonical_snapshot": "military",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "military",
+        "martial",
+        "armed-forces"
+      ],
+      "candidate_review": [
+        {
+          "expression": "martial",
+          "decision": "REJECT",
+          "reason": "戦争・軍人らしさ等の特定collocationに限られ、軍事一般の形容詞ではない。"
+        },
+        {
+          "expression": "armed-forces",
+          "decision": "REJECT",
+          "reason": "名詞的複合表現で、一般形容詞「軍事の」の直接代替にならない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "軍事一般を表すcanonical militaryが最も安定する。"
+    },
+    {
+      "entry_id": "vocab:01884",
+      "prompt_ja": "固く決心した",
+      "canonical_snapshot": "determined",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "determined",
+        "resolved",
+        "resolute"
+      ],
+      "candidate_review": [
+        {
+          "expression": "resolved",
+          "decision": "ACCEPT",
+          "reason": "「固く決心した」を表す主要なややフォーマルな形容詞で、独立した読解価値がある。"
+        },
+        {
+          "expression": "resolute",
+          "decision": "REJECT",
+          "reason": "意志の強い性格・態度を表すことが多く、「決心した」という結果状態とはずれる。"
+        }
+      ],
+      "after_paraphrases": [
+        "resolved"
+      ],
+      "decision": "CHANGED",
+      "reason": "決心済みの状態を直接表すresolvedを追加する。"
+    },
+    {
+      "entry_id": "vocab:01885",
+      "prompt_ja": "劇作家",
+      "canonical_snapshot": "playwright",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "playwright",
+        "dramatist"
+      ],
+      "candidate_review": [
+        {
+          "expression": "dramatist",
+          "decision": "ACCEPT",
+          "reason": "「劇作家」を表す確立した語で、文学・読解文脈で学習価値がある。"
+        }
+      ],
+      "after_paraphrases": [
+        "dramatist"
+      ],
+      "decision": "CHANGED",
+      "reason": "文学registerで有用なdramatistを追加する。"
+    },
+    {
+      "entry_id": "vocab:01886",
+      "prompt_ja": "要素",
+      "canonical_snapshot": "element",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "element",
+        "factor",
+        "component",
+        "aspect"
+      ],
+      "candidate_review": [
+        {
+          "expression": "factor",
+          "decision": "ACCEPT",
+          "reason": "結果・状況を構成する「要素」を表す主要語で、academic/businessで高頻度。"
+        },
+        {
+          "expression": "component",
+          "decision": "ACCEPT",
+          "reason": "全体を構成する「要素・構成部分」を表す主要語で、技術・一般文脈に有用。"
+        },
+        {
+          "expression": "aspect",
+          "decision": "REJECT",
+          "reason": "側面・観点を表し、構成要素一般とは概念が異なる。"
+        }
+      ],
+      "after_paraphrases": [
+        "factor",
+        "component"
+      ],
+      "decision": "CHANGED",
+      "reason": "原因的要素factorと構成要素componentを主要別表現として追加する。"
+    },
+    {
+      "entry_id": "vocab:01887",
+      "prompt_ja": "同質の",
+      "canonical_snapshot": "homogeneous",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "homogeneous",
+        "uniform"
+      ],
+      "candidate_review": [
+        {
+          "expression": "uniform",
+          "decision": "REJECT",
+          "reason": "均一であることを表すが、同じ種類・性質から成るというhomogeneousの意味とは必ずしも一致しない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「同質の」を直接表すcanonical homogeneousが最も精確。"
+    },
+    {
+      "entry_id": "vocab:01888",
+      "prompt_ja": "地域社会",
+      "canonical_snapshot": "community",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "community",
+        "local community",
+        "neighborhood"
+      ],
+      "candidate_review": [
+        {
+          "expression": "local community",
+          "decision": "REJECT",
+          "reason": "canonicalにlocalを加えただけで独立した別表現としての価値が低い。"
+        },
+        {
+          "expression": "neighborhood",
+          "decision": "REJECT",
+          "reason": "地域・近隣そのものを指す意味が中心で、社会集団としての地域社会とはずれる。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "canonical communityが主要回答で十分。"
+    },
+    {
+      "entry_id": "vocab:01889",
+      "prompt_ja": "個性",
+      "canonical_snapshot": "personality",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "individuality",
+        "personality",
+        "character"
+      ],
+      "candidate_review": [
+        {
+          "expression": "individuality",
+          "decision": "ACCEPT",
+          "reason": "他者と異なる「個性」を直接表す主要名詞で、canonicalとは別の重要語。"
+        },
+        {
+          "expression": "character",
+          "decision": "REJECT",
+          "reason": "性格・人格・登場人物など多義性が大きく、promptへの対応が広すぎる。"
+        }
+      ],
+      "after_paraphrases": [
+        "individuality"
+      ],
+      "decision": "CHANGED",
+      "reason": "「その人らしさ」を直接表すindividualityを追加する。"
+    },
+    {
+      "entry_id": "vocab:01890",
+      "prompt_ja": "頑固な",
+      "canonical_snapshot": "obstinate",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "stubborn",
+        "obstinate",
+        "headstrong",
+        "inflexible"
+      ],
+      "candidate_review": [
+        {
+          "expression": "stubborn",
+          "decision": "ACCEPT",
+          "reason": "「頑固な」の最も基本的で高頻度な形容詞で、MISS扱いは不適切。"
+        },
+        {
+          "expression": "headstrong",
+          "decision": "REJECT",
+          "reason": "自分の考えを押し通す性向に特化し、頑固一般より狭い。"
+        },
+        {
+          "expression": "inflexible",
+          "decision": "REJECT",
+          "reason": "規則・方針・態度が柔軟でない意味にも広く、人物の頑固さと常には一致しない。"
+        }
+      ],
+      "after_paraphrases": [
+        "stubborn"
+      ],
+      "decision": "CHANGED",
+      "reason": "基本語stubbornを追加する。"
+    },
+    {
+      "entry_id": "vocab:01891",
+      "prompt_ja": "大胆な",
+      "canonical_snapshot": "bold",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "bold",
+        "daring",
+        "audacious",
+        "brave"
+      ],
+      "candidate_review": [
+        {
+          "expression": "daring",
+          "decision": "ACCEPT",
+          "reason": "危険を恐れない「大胆な」を表す主要形容詞で、高頻度。"
+        },
+        {
+          "expression": "audacious",
+          "decision": "ACCEPT",
+          "reason": "大胆さを強く表す主要な読解語で、肯定・否定双方のregister差が学習価値を持つ。"
+        },
+        {
+          "expression": "brave",
+          "decision": "REJECT",
+          "reason": "勇敢さ・恐怖に立ち向かう意味が中心で、大胆さ一般とはずれる。"
+        }
+      ],
+      "after_paraphrases": [
+        "daring",
+        "audacious"
+      ],
+      "decision": "CHANGED",
+      "reason": "主要語daringと読解価値の高いaudaciousを追加する。"
+    },
+    {
+      "entry_id": "vocab:01892",
+      "prompt_ja": "脅し",
+      "canonical_snapshot": "threat",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "threat",
+        "intimidation",
+        "menace"
+      ],
+      "candidate_review": [
+        {
+          "expression": "intimidation",
+          "decision": "REJECT",
+          "reason": "脅す行為・威圧を表し、個々の「脅し」という発言・事物とは一致しない。"
+        },
+        {
+          "expression": "menace",
+          "decision": "REJECT",
+          "reason": "脅威となる人・物の意味が強く、無標の「脅し」への対応が不安定。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "個々の脅しを直接表すcanonical threatが最も一般的。"
+    },
+    {
+      "entry_id": "vocab:01893",
+      "prompt_ja": "克服する",
+      "canonical_snapshot": "conquer",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "overcome",
+        "conquer",
+        "get over",
+        "surmount"
+      ],
+      "candidate_review": [
+        {
+          "expression": "overcome",
+          "decision": "ACCEPT",
+          "reason": "困難・弱点・恐怖などを「克服する」の最も一般的な動詞で、MISS扱いは不適切。"
+        },
+        {
+          "expression": "get over",
+          "decision": "REJECT",
+          "reason": "病気・ショック等から回復する用法に寄り、克服対象一般より狭い。"
+        },
+        {
+          "expression": "surmount",
+          "decision": "REJECT",
+          "reason": "意味は正確だが一般学習者に対する頻度・実用性が低い。"
+        }
+      ],
+      "after_paraphrases": [
+        "overcome"
+      ],
+      "decision": "CHANGED",
+      "reason": "最重要基本語overcomeを追加する。"
+    },
+    {
+      "entry_id": "vocab:01894",
+      "prompt_ja": "弱点",
+      "canonical_snapshot": "weakness",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "weakness",
+        "weak point",
+        "shortcoming",
+        "vulnerability"
+      ],
+      "candidate_review": [
+        {
+          "expression": "weak point",
+          "decision": "ACCEPT",
+          "reason": "「弱点」を直接表す透明で高頻度な句で、日常英語で有用。"
+        },
+        {
+          "expression": "shortcoming",
+          "decision": "REJECT",
+          "reason": "欠点・不十分な点に寄り、能力上・構造上の弱点全般より狭い。"
+        },
+        {
+          "expression": "vulnerability",
+          "decision": "REJECT",
+          "reason": "攻撃・損害を受けやすい脆弱性を指し、弱点一般とは異なる。"
+        }
+      ],
+      "after_paraphrases": [
+        "weak point"
+      ],
+      "decision": "CHANGED",
+      "reason": "一般性の高いweak pointを追加する。"
+    },
+    {
+      "entry_id": "vocab:01895",
+      "prompt_ja": "まれな",
+      "canonical_snapshot": "rare",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "rare",
+        "uncommon",
+        "scarce",
+        "infrequent"
+      ],
+      "candidate_review": [
+        {
+          "expression": "uncommon",
+          "decision": "ACCEPT",
+          "reason": "「まれな／普通でない」を表す主要な中立語で、rareと並び高頻度。"
+        },
+        {
+          "expression": "scarce",
+          "decision": "REJECT",
+          "reason": "不足している・手に入りにくい意味が中心で、単なる稀少性とは異なる。"
+        },
+        {
+          "expression": "infrequent",
+          "decision": "REJECT",
+          "reason": "出来事の頻度が低いことに特化し、物・性質の「まれな」には使えない。"
+        }
+      ],
+      "after_paraphrases": [
+        "uncommon"
+      ],
+      "decision": "CHANGED",
+      "reason": "一般的な別形容詞uncommonを追加する。"
+    },
+    {
+      "entry_id": "vocab:01896",
+      "prompt_ja": "機会",
+      "canonical_snapshot": "opportunity",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "opportunity",
+        "chance",
+        "occasion"
+      ],
+      "candidate_review": [
+        {
+          "expression": "chance",
+          "decision": "ACCEPT",
+          "reason": "「機会」の最も一般的な語の一つで、会話・文章とも極めて高頻度。"
+        },
+        {
+          "expression": "occasion",
+          "decision": "REJECT",
+          "reason": "特定の時・出来事という意味が中心で、機会一般とは一致しない。"
+        }
+      ],
+      "after_paraphrases": [
+        "chance"
+      ],
+      "decision": "CHANGED",
+      "reason": "基本語chanceを追加する。"
+    },
+    {
+      "entry_id": "vocab:01897",
+      "prompt_ja": "示す",
+      "canonical_snapshot": "demonstrate",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "show",
+        "indicate",
+        "demonstrate",
+        "reveal"
+      ],
+      "candidate_review": [
+        {
+          "expression": "show",
+          "decision": "ACCEPT",
+          "reason": "「示す」の最も基本的で高頻度な動詞で、MISS扱いは不適切。"
+        },
+        {
+          "expression": "indicate",
+          "decision": "ACCEPT",
+          "reason": "徴候・データなどが「示す」を表す主要語で、academic/businessでも高頻度。"
+        },
+        {
+          "expression": "reveal",
+          "decision": "REJECT",
+          "reason": "隠れていた情報を明らかにする含意が強く、示す一般より狭い。"
+        }
+      ],
+      "after_paraphrases": [
+        "show",
+        "indicate"
+      ],
+      "decision": "CHANGED",
+      "reason": "基本語showとフォーマルな主要語indicateを追加する。"
+    },
+    {
+      "entry_id": "vocab:01898",
+      "prompt_ja": "才能",
+      "canonical_snapshot": "talent",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "talent",
+        "gift",
+        "aptitude",
+        "ability"
+      ],
+      "candidate_review": [
+        {
+          "expression": "gift",
+          "decision": "ACCEPT",
+          "reason": "生まれつきの「才能」を表す高頻度な比喩的名詞で、独立した学習価値が高い。"
+        },
+        {
+          "expression": "aptitude",
+          "decision": "ACCEPT",
+          "reason": "特定分野への素質・適性としての「才能」を表す主要語で、academic/career文脈に有用。"
+        },
+        {
+          "expression": "ability",
+          "decision": "REJECT",
+          "reason": "能力一般を表し、生得的・特定分野の才能というpromptより範囲が広い。"
+        }
+      ],
+      "after_paraphrases": [
+        "gift",
+        "aptitude"
+      ],
+      "decision": "CHANGED",
+      "reason": "自然な才能giftと適性を表すaptitudeを追加する。"
+    },
+    {
+      "entry_id": "vocab:01899",
+      "prompt_ja": "信頼",
+      "canonical_snapshot": "faith",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "trust",
+        "confidence",
+        "faith",
+        "reliance"
+      ],
+      "candidate_review": [
+        {
+          "expression": "trust",
+          "decision": "ACCEPT",
+          "reason": "「信頼」の最も基本的で高頻度な名詞で、MISS扱いは不適切。"
+        },
+        {
+          "expression": "confidence",
+          "decision": "ACCEPT",
+          "reason": "人・計画への信頼を表す主要名詞で、business/一般文脈とも高頻度。"
+        },
+        {
+          "expression": "reliance",
+          "decision": "REJECT",
+          "reason": "頼ること・依存を表す意味が中心で、信頼そのものとは異なる。"
+        }
+      ],
+      "after_paraphrases": [
+        "trust",
+        "confidence"
+      ],
+      "decision": "CHANGED",
+      "reason": "基本語trustと主要語confidenceを追加する。"
+    },
+    {
+      "entry_id": "vocab:01900",
+      "prompt_ja": "観客",
+      "canonical_snapshot": "spectator",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "audience",
+        "spectator",
+        "viewer",
+        "onlooker"
+      ],
+      "candidate_review": [
+        {
+          "expression": "audience",
+          "decision": "ACCEPT",
+          "reason": "演劇・演奏等の「観客」を集合的に表す最重要基本語で、canonicalと補完関係にある。"
+        },
+        {
+          "expression": "viewer",
+          "decision": "REJECT",
+          "reason": "テレビ・映像等の視聴者に限定され、観客一般より狭い。"
+        },
+        {
+          "expression": "onlooker",
+          "decision": "REJECT",
+          "reason": "偶然その場で見ている傍観者を指し、上演・競技の観客とは異なる。"
+        }
+      ],
+      "after_paraphrases": [
+        "audience"
+      ],
+      "decision": "CHANGED",
+      "reason": "集合的な基本語audienceを追加する。"
+    },
+    {
+      "entry_id": "vocab:01901",
+      "prompt_ja": "優雅な",
+      "canonical_snapshot": "graceful",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "elegant",
+        "graceful",
+        "refined"
+      ],
+      "candidate_review": [
+        {
+          "expression": "elegant",
+          "decision": "ACCEPT",
+          "reason": "「優雅な」の主要な高頻度形容詞で、外見・様式・動作に広く使える。"
+        },
+        {
+          "expression": "refined",
+          "decision": "REJECT",
+          "reason": "洗練されていることを表すが、動作の優雅さ等には必ずしも対応しない。"
+        }
+      ],
+      "after_paraphrases": [
+        "elegant"
+      ],
+      "decision": "CHANGED",
+      "reason": "主要語elegantを追加する。"
+    },
+    {
+      "entry_id": "vocab:01902",
+      "prompt_ja": "演技・演奏",
+      "canonical_snapshot": "performance",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "performance",
+        "acting",
+        "rendition",
+        "playing"
+      ],
+      "candidate_review": [
+        {
+          "expression": "acting",
+          "decision": "REJECT",
+          "reason": "演技だけを表し、promptが併記する演奏をカバーしない。"
+        },
+        {
+          "expression": "rendition",
+          "decision": "REJECT",
+          "reason": "楽曲・作品の演奏解釈に寄り、演技全般をカバーしない。"
+        },
+        {
+          "expression": "playing",
+          "decision": "REJECT",
+          "reason": "楽器演奏等には使えるが演技まで含む一般語ではない。"
+        }
+      ],
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "演技と演奏の双方を包括するcanonical performanceが最も適切。"
+    },
+    {
+      "entry_id": "vocab:01903",
+      "prompt_ja": "建築",
+      "canonical_snapshot": "architecture",
+      "answers_snapshot": [],
+      "existing_paraphrases": [],
+      "blind_candidates": [
+        "architecture",
+        "construction",
+        "building"
+      ],
+      "candidate_review": [
+        {
+          "expression": "construction",
+          "decision": "ACCEPT",
+          "reason": "建物を「建築する行為・工程」を表す主要語で、分野・様式としてのarchitectureとは別の重要義。"
+        },
+        {
+          "expression": "building",
+          "decision": "REJECT",
+          "reason": "建物そのもの／建てる行為の両方に広く、prompt単独では曖昧さが大きい。"
+        }
+      ],
+      "after_paraphrases": [
+        "construction"
+      ],
+      "decision": "CHANGED",
+      "reason": "建築行為を表す主要語constructionを追加する。"
+    }
+  ],
+  "followups": []
+}
