@@ -162,15 +162,16 @@
         },
         {
           "expression": "hopeful",
-          "decision": "REJECT",
-          "reason": "「楽観的な」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+          "decision": "ACCEPT",
+          "reason": "「楽観的な」への自然で高頻度な回答。optimistic/positiveとは別語彙で、将来への楽観を表す主要表現として学習価値が高い。"
         }
       ],
       "after_paraphrases": [
-        "positive"
+        "positive",
+        "hopeful"
       ],
       "decision": "CHANGED",
-      "reason": "「楽観的な」に対する主要な別英答として positive を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+      "reason": "「楽観的な」に対する主要な別英答として positive / hopeful を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
     },
     {
       "entry_id": "vocab:00706",
@@ -267,8 +268,8 @@
         },
         {
           "expression": "disrespect",
-          "decision": "ACCEPT",
-          "reason": "「侮辱」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+          "decision": "REJECT",
+          "reason": "`disrespect` は「無礼・軽視」を広く表し、行為として侮辱に当たる場合はあるが、日本語prompt「侮辱」への主要な名詞回答としては対応が広すぎるため登録しない。"
         },
         {
           "expression": "offense",
@@ -276,11 +277,9 @@
           "reason": "「侮辱」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
         }
       ],
-      "after_paraphrases": [
-        "disrespect"
-      ],
-      "decision": "CHANGED",
-      "reason": "「侮辱」に対する主要な別英答として disrespect を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "「侮辱」について候補を再検討したが、意味範囲・用法または学習価値の基準を満たすcanonical以外の主要表現は残らない。"
     },
     {
       "entry_id": "vocab:00709",
@@ -306,15 +305,16 @@
         },
         {
           "expression": "silly",
-          "decision": "REJECT",
-          "reason": "「ばかげた」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+          "decision": "ACCEPT",
+          "reason": "「ばかげた」への非常に一般的な英答。口語で重要で、absurd / ridiculous とregister差もあり独立学習価値が高い。"
         }
       ],
       "after_paraphrases": [
-        "ridiculous"
+        "ridiculous",
+        "silly"
       ],
       "decision": "CHANGED",
-      "reason": "「ばかげた」に対する主要な別英答として ridiculous を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+      "reason": "「ばかげた」に対する主要な別英答として ridiculous / silly を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
     },
     {
       "entry_id": "vocab:00710",
@@ -390,8 +390,8 @@
         },
         {
           "expression": "giving",
-          "decision": "REJECT",
-          "reason": "「気前のよい」に成立する場面はあるが、頻度・register・独立学習価値を踏まえると今回のcurated paraphraseに加える優先度は低い。"
+          "decision": "ACCEPT",
+          "reason": "人の性質として「気前のよい」を表す一般的な形容詞で、generousとは別語彙として会話上の学習価値がある。"
         },
         {
           "expression": "big-hearted",
@@ -399,9 +399,11 @@
           "reason": "「気前のよい」に成立する場面はあるが、頻度・register・独立学習価値を踏まえると今回のcurated paraphraseに加える優先度は低い。"
         }
       ],
-      "after_paraphrases": [],
-      "decision": "UNCHANGED",
-      "reason": "「気前のよい」について主要候補を再検討したが、TARGET重複、surface variant、意味ずれ・文脈依存、または追加学習価値不足のため登録なし。"
+      "after_paraphrases": [
+        "giving"
+      ],
+      "decision": "CHANGED",
+      "reason": "「気前のよい」に対する主要な別英答として giving を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
     },
     {
       "entry_id": "vocab:00713",
@@ -461,14 +463,20 @@
           "expression": "consequence",
           "decision": "ACCEPT",
           "reason": "「結果」への自然な主要英答として成立し、canonicalとは別の表現として実用・読解上の学習価値が高い。"
+        },
+        {
+          "expression": "effect",
+          "decision": "ACCEPT",
+          "reason": "因果関係における「結果」の主要語。result/outcome/consequenceとは別のacademic基本語として学習価値が高い。"
         }
       ],
       "after_paraphrases": [
         "result",
-        "consequence"
+        "consequence",
+        "effect"
       ],
       "decision": "CHANGED",
-      "reason": "「結果」に対する主要な別英答として result / consequence を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+      "reason": "「結果」に対する主要な別英答として result / consequence / effect を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
     },
     {
       "entry_id": "vocab:00715",
@@ -500,16 +508,17 @@
         },
         {
           "expression": "correct",
-          "decision": "REJECT",
-          "reason": "「正確な」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+          "decision": "ACCEPT",
+          "reason": "情報・答えなどが「正確な」を表す基本語で、日本語promptへの自然な主要英答として成立する。"
         }
       ],
       "after_paraphrases": [
+        "correct",
         "precise",
         "exact"
       ],
       "decision": "CHANGED",
-      "reason": "「正確な」に対する主要な別英答として precise / exact を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+      "reason": "「正確な」に対する主要な別英答として correct / precise / exact を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
     },
     {
       "entry_id": "vocab:00716",
@@ -606,8 +615,8 @@
         },
         {
           "expression": "gossip",
-          "decision": "REJECT",
-          "reason": "「噂」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+          "decision": "ACCEPT",
+          "reason": "人についての「噂・噂話」を表す高頻度語で、rumorとは異なる使用域も含め学習価値が高い。"
         },
         {
           "expression": "hearsay",
@@ -615,9 +624,11 @@
           "reason": "「噂」に成立する場面はあるが、頻度・register・独立学習価値を踏まえると今回のcurated paraphraseに加える優先度は低い。"
         }
       ],
-      "after_paraphrases": [],
-      "decision": "UNCHANGED",
-      "reason": "「噂」について主要候補を再検討したが、TARGET重複、surface variant、意味ずれ・文脈依存、または追加学習価値不足のため登録なし。"
+      "after_paraphrases": [
+        "gossip"
+      ],
+      "decision": "CHANGED",
+      "reason": "「噂」に対する主要な別英答として gossip を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
     },
     {
       "entry_id": "vocab:00719",
@@ -888,15 +899,16 @@
         },
         {
           "expression": "embarrassing",
-          "decision": "REJECT",
-          "reason": "「気まずい」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+          "decision": "ACCEPT",
+          "reason": "状況などが「気まずい」を表す主要な形容詞。awkward/uncomfortableとは別の有用な表現として成立する。"
         }
       ],
       "after_paraphrases": [
-        "uncomfortable"
+        "uncomfortable",
+        "embarrassing"
       ],
       "decision": "CHANGED",
-      "reason": "「気まずい」に対する主要な別英答として uncomfortable を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+      "reason": "「気まずい」に対する主要な別英答として uncomfortable / embarrassing を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
     },
     {
       "entry_id": "vocab:00727",
@@ -1169,15 +1181,16 @@
         },
         {
           "expression": "heartbreak",
-          "decision": "REJECT",
-          "reason": "「深い悲しみ」に成立する場面はあるが、頻度・register・独立学習価値を踏まえると今回のcurated paraphraseに加える優先度は低い。"
+          "decision": "ACCEPT",
+          "reason": "「深い悲しみ」を直接表す高頻度名詞で、grief/sorrowとは別の感情語として学習価値がある。"
         }
       ],
       "after_paraphrases": [
-        "sorrow"
+        "sorrow",
+        "heartbreak"
       ],
       "decision": "CHANGED",
-      "reason": "「深い悲しみ」に対する主要な別英答として sorrow を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+      "reason": "「深い悲しみ」に対する主要な別英答として sorrow / heartbreak を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
     },
     {
       "entry_id": "vocab:00735",
@@ -1204,8 +1217,8 @@
         },
         {
           "expression": "perspective",
-          "decision": "REJECT",
-          "reason": "「考え方」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+          "decision": "ACCEPT",
+          "reason": "「考え方・物の見方」を表す主要語で、mindset/way of thinkingとは別の読解・会話上の価値が高い。"
         },
         {
           "expression": "viewpoint",
@@ -1214,11 +1227,12 @@
         }
       ],
       "after_paraphrases": [
+        "way of thinking",
         "mindset",
-        "way of thinking"
+        "perspective"
       ],
       "decision": "CHANGED",
-      "reason": "「考え方」に対する主要な別英答として mindset / way of thinking を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+      "reason": "「考え方」に対する主要な別英答として way of thinking / mindset / perspective を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
     },
     {
       "entry_id": "vocab:00736",
@@ -1442,16 +1456,17 @@
         },
         {
           "expression": "smell",
-          "decision": "REJECT",
-          "reason": "「香り」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+          "decision": "ACCEPT",
+          "reason": "「香り」を含む匂いを表す最も基本的な語。pleasant限定ではないがpromptへの回答として成立し、基本語としてMISSにする教育的不利益が大きい。"
         }
       ],
       "after_paraphrases": [
         "fragrance",
-        "aroma"
+        "aroma",
+        "smell"
       ],
       "decision": "CHANGED",
-      "reason": "「香り」に対する主要な別英答として fragrance / aroma を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+      "reason": "「香り」に対する主要な別英答として fragrance / aroma / smell を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
     },
     {
       "entry_id": "vocab:00742",
@@ -1652,16 +1667,17 @@
         },
         {
           "expression": "know something well",
-          "decision": "REJECT",
-          "reason": "「精通している」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+          "decision": "ACCEPT",
+          "reason": "「somethingに精通している」を表す高頻度の基本構文で、別constructionとして実用価値が高い。"
         }
       ],
       "after_paraphrases": [
+        "know something well",
         "be well versed in",
         "be knowledgeable about"
       ],
       "decision": "CHANGED",
-      "reason": "「精通している」に対する主要な別英答として be well versed in / be knowledgeable about を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+      "reason": "「精通している」に対する主要な別英答として know something well / be well versed in / be knowledgeable about を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
     },
     {
       "entry_id": "vocab:00748",
@@ -1774,16 +1790,17 @@
         },
         {
           "expression": "yearn to",
-          "decision": "REJECT",
-          "reason": "「熱望している」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+          "decision": "ACCEPT",
+          "reason": "「熱望している」を表す主要な動詞構文で、long toよりやや強いがpromptがその差を区別しておらず読解価値も高い。"
         }
       ],
       "after_paraphrases": [
         "be keen to",
-        "long to"
+        "long to",
+        "yearn to"
       ],
       "decision": "CHANGED",
-      "reason": "「熱望している」に対する主要な別英答として be keen to / long to を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+      "reason": "「熱望している」に対する主要な別英答として be keen to / long to / yearn to を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
     },
     {
       "entry_id": "vocab:00752",
@@ -2014,16 +2031,17 @@
         },
         {
           "expression": "percentage",
-          "decision": "REJECT",
-          "reason": "「率」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+          "decision": "ACCEPT",
+          "reason": "数値上の「率」を表す主要語で、日常・academic双方で重要な独立表現。"
         }
       ],
       "after_paraphrases": [
+        "percentage",
         "ratio",
         "proportion"
       ],
       "decision": "CHANGED",
-      "reason": "「率」に対する主要な別英答として ratio / proportion を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+      "reason": "「率」に対する主要な別英答として percentage / ratio / proportion を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
     },
     {
       "entry_id": "vocab:00759",
@@ -2116,8 +2134,8 @@
         },
         {
           "expression": "able",
-          "decision": "REJECT",
-          "reason": "「有能な」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+          "decision": "ACCEPT",
+          "reason": "人物が「有能な」を表す用法（an able leader等）が確立した基本語で、capable/competentとは別の読解価値がある。"
         },
         {
           "expression": "skilled",
@@ -2126,10 +2144,11 @@
         }
       ],
       "after_paraphrases": [
-        "capable"
+        "capable",
+        "able"
       ],
       "decision": "CHANGED",
-      "reason": "「有能な」に対する主要な別英答として capable を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+      "reason": "「有能な」に対する主要な別英答として capable / able を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
     },
     {
       "entry_id": "vocab:00762",
@@ -2151,13 +2170,13 @@
         },
         {
           "expression": "reasonable",
-          "decision": "REJECT",
-          "reason": "「まともな」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+          "decision": "ACCEPT",
+          "reason": "判断・説明・水準などが「まともな」を表す高頻度語で、promptが文脈を限定していないため主要回答として成立する。"
         },
         {
           "expression": "respectable",
-          "decision": "REJECT",
-          "reason": "「まともな」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+          "decision": "ACCEPT",
+          "reason": "人・仕事・水準などが「まともな／ちゃんとした」を表す主要語で、decentとは別の有用な語彙。"
         },
         {
           "expression": "proper",
@@ -2165,9 +2184,12 @@
           "reason": "「まともな」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
         }
       ],
-      "after_paraphrases": [],
-      "decision": "UNCHANGED",
-      "reason": "「まともな」について主要候補を再検討したが、TARGET重複、surface variant、意味ずれ・文脈依存、または追加学習価値不足のため登録なし。"
+      "after_paraphrases": [
+        "reasonable",
+        "respectable"
+      ],
+      "decision": "CHANGED",
+      "reason": "「まともな」に対する主要な別英答として reasonable / respectable を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
     },
     {
       "entry_id": "vocab:00763",
@@ -2354,8 +2376,8 @@
         },
         {
           "expression": "dim",
-          "decision": "REJECT",
-          "reason": "「暗い」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+          "decision": "ACCEPT",
+          "reason": "光・視界などが「暗い」を表す主要語で、prompt-onlyでは自然な回答。dark/gloomy/bleakとは別の意味領域を学べる。"
         },
         {
           "expression": "bleak",
@@ -2371,10 +2393,11 @@
       "after_paraphrases": [
         "dark",
         "gloomy",
-        "bleak"
+        "bleak",
+        "dim"
       ],
       "decision": "CHANGED",
-      "reason": "「暗い」に対する主要な別英答として dark / gloomy / bleak を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+      "reason": "「暗い」に対する主要な別英答として dark / gloomy / bleak / dim を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
     },
     {
       "entry_id": "vocab:00769",
@@ -2400,15 +2423,16 @@
         },
         {
           "expression": "inescapable",
-          "decision": "REJECT",
-          "reason": "「避けられない」に成立する場面はあるが、頻度・register・独立学習価値を踏まえると今回のcurated paraphraseに加える優先度は低い。"
+          "decision": "ACCEPT",
+          "reason": "「避けられない」を直接表す読解上重要な形容詞で、unavoidableとは別語彙として価値がある。"
         }
       ],
       "after_paraphrases": [
-        "unavoidable"
+        "unavoidable",
+        "inescapable"
       ],
       "decision": "CHANGED",
-      "reason": "「避けられない」に対する主要な別英答として unavoidable を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+      "reason": "「避けられない」に対する主要な別英答として unavoidable / inescapable を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
     },
     {
       "entry_id": "vocab:00770",
@@ -2481,15 +2505,16 @@
         },
         {
           "expression": "speed of change",
-          "decision": "REJECT",
-          "reason": "「変化の速度」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+          "decision": "ACCEPT",
+          "reason": "日本語prompt「変化の速度」への直接的で自然な英答。pace of changeとは別の基本表現としてMISSにすべきでない。"
         }
       ],
       "after_paraphrases": [
-        "pace of change"
+        "pace of change",
+        "speed of change"
       ],
       "decision": "CHANGED",
-      "reason": "「変化の速度」に対する主要な別英答として pace of change を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+      "reason": "「変化の速度」に対する主要な別英答として pace of change / speed of change を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
     },
     {
       "entry_id": "vocab:00772",
@@ -2521,16 +2546,17 @@
         },
         {
           "expression": "free",
-          "decision": "REJECT",
-          "reason": "「空いている」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+          "decision": "ACCEPT",
+          "reason": "席・時間・人などが「空いている」を表す非常に高頻度な基本語で、available/vacantと並ぶ主要回答。"
         }
       ],
       "after_paraphrases": [
         "available",
-        "empty"
+        "empty",
+        "free"
       ],
       "decision": "CHANGED",
-      "reason": "「空いている」に対する主要な別英答として available / empty を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+      "reason": "「空いている」に対する主要な別英答として available / empty / free を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
     },
     {
       "entry_id": "vocab:00773",
@@ -2568,17 +2594,18 @@
         },
         {
           "expression": "diminish",
-          "decision": "REJECT",
-          "reason": "「減少する」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+          "decision": "ACCEPT",
+          "reason": "「減少する」を表す一般的な動詞で、特に書き言葉・academicで重要な独立語彙。"
         }
       ],
       "after_paraphrases": [
         "decrease",
         "drop",
-        "fall"
+        "fall",
+        "diminish"
       ],
       "decision": "CHANGED",
-      "reason": "「減少する」に対する主要な別英答として decrease / drop / fall を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+      "reason": "「減少する」に対する主要な別英答として decrease / drop / fall / diminish を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
     },
     {
       "entry_id": "vocab:00774",
@@ -2688,8 +2715,8 @@
         },
         {
           "expression": "control",
-          "decision": "REJECT",
-          "reason": "「操作する」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+          "decision": "ACCEPT",
+          "reason": "機械・装置等を「操作する」を表す基本動詞で、operate/manipulateとは別の高頻度表現。"
         },
         {
           "expression": "handle",
@@ -2698,10 +2725,11 @@
         }
       ],
       "after_paraphrases": [
-        "manipulate"
+        "manipulate",
+        "control"
       ],
       "decision": "CHANGED",
-      "reason": "「操作する」に対する主要な別英答として manipulate を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+      "reason": "「操作する」に対する主要な別英答として manipulate / control を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
     },
     {
       "entry_id": "vocab:00777",
@@ -2728,8 +2756,8 @@
         },
         {
           "expression": "approval",
-          "decision": "REJECT",
-          "reason": "「許可」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+          "decision": "ACCEPT",
+          "reason": "「許可・承認」を表す高頻度名詞で、permission/authorizationとは別のbusiness・日常上の学習価値が高い。"
         },
         {
           "expression": "consent",
@@ -2738,10 +2766,11 @@
         }
       ],
       "after_paraphrases": [
-        "authorization"
+        "authorization",
+        "approval"
       ],
       "decision": "CHANGED",
-      "reason": "「許可」に対する主要な別英答として authorization を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+      "reason": "「許可」に対する主要な別英答として authorization / approval を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
     },
     {
       "entry_id": "vocab:00778",
@@ -2984,17 +3013,18 @@
         },
         {
           "expression": "distinguished",
-          "decision": "REJECT",
-          "reason": "「著名な」に成立する場面はあるが、頻度・register・独立学習価値を踏まえると今回のcurated paraphraseに加える優先度は低い。"
+          "decision": "ACCEPT",
+          "reason": "人物などが「著名な／名高い」を表す主要なformal語で、academic読解上の価値が高い。"
         }
       ],
       "after_paraphrases": [
         "famous",
         "renowned",
-        "notable"
+        "notable",
+        "distinguished"
       ],
       "decision": "CHANGED",
-      "reason": "「著名な」に対する主要な別英答として famous / renowned / notable を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+      "reason": "「著名な」に対する主要な別英答として famous / renowned / notable / distinguished を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
     },
     {
       "entry_id": "vocab:00785",
@@ -3090,16 +3120,17 @@
         },
         {
           "expression": "urge",
-          "decision": "REJECT",
-          "reason": "「勧める」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+          "decision": "ACCEPT",
+          "reason": "「強く勧める」を表す主要動詞。強さの差はあるがprompt「勧める」が区別しておらず、独立語彙として学習価値が高い。"
         }
       ],
       "after_paraphrases": [
         "advise",
-        "suggest"
+        "suggest",
+        "urge"
       ],
       "decision": "CHANGED",
-      "reason": "「勧める」に対する主要な別英答として advise / suggest を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+      "reason": "「勧める」に対する主要な別英答として advise / suggest / urge を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
     },
     {
       "entry_id": "vocab:00788",
@@ -3368,16 +3399,17 @@
         },
         {
           "expression": "quantum leap",
-          "decision": "REJECT",
-          "reason": "「飛躍的な進歩」に成立する場面はあるが、頻度・register・独立学習価値を踏まえると今回のcurated paraphraseに加える優先度は低い。"
+          "decision": "ACCEPT",
+          "reason": "「飛躍的な進歩」を表す定着したidiomで、literalな物理用語とは別に実用・読解上の学習価値が高い。"
         }
       ],
       "after_paraphrases": [
         "major advance",
-        "leap forward"
+        "leap forward",
+        "quantum leap"
       ],
       "decision": "CHANGED",
-      "reason": "「飛躍的な進歩」に対する主要な別英答として major advance / leap forward を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+      "reason": "「飛躍的な進歩」に対する主要な別英答として major advance / leap forward / quantum leap を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
     },
     {
       "entry_id": "vocab:00795",
@@ -3665,8 +3697,8 @@
         },
         {
           "expression": "disagree with",
-          "decision": "REJECT",
-          "reason": "「反対する」に一部文脈で近づくが、意味範囲・強弱・用法のずれ、または文脈依存が大きく、汎用の別英答として登録すると対応を広げすぎる。"
+          "decision": "ACCEPT",
+          "reason": "意見・提案などに「反対する」を表す非常に高頻度なconstructionで、oppose/object toとは別の実用価値が高い。"
         },
         {
           "expression": "resist",
@@ -3676,10 +3708,11 @@
       ],
       "after_paraphrases": [
         "object to",
-        "be against"
+        "be against",
+        "disagree with"
       ],
       "decision": "CHANGED",
-      "reason": "「反対する」に対する主要な別英答として object to / be against を採用。成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
+      "reason": "「反対する」に対する主要な別英答として object to / be against / disagree with を採用。prompt-only成立性に加え、頻度・実用性・独立表現価値を満たすものに限定した。"
     },
     {
       "entry_id": "vocab:00803",
