@@ -340,7 +340,7 @@ browserTest('result tap ignores audio/context controls and selected text, then a
     assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical,'active text selection suppresses tap advance');
     await page.evaluate(()=>getSelection()?.removeAllRanges());
     await tapResult(page);
-    await page.waitForFunction(prompt=>document.querySelector('.vocab-meaning')?.textContent!==prompt,firstPrompt);
+    await page.waitForFunction(prompt=>document.querySelector('.vocab-meaning')?.textContent===prompt,nextEntry.meaning_ja);
     assert.equal(await page.locator('.vocab-meaning').innerText(),nextEntry.meaning_ja,'one tap advances to the next expression');
     assert.equal(await page.locator('.vocab-done').count(),0,'one tap advances exactly one card in a two-card session');
   }finally{await closePage(opened);}
@@ -359,15 +359,15 @@ browserTest('only a dominant left swipe advances; short, vertical, and right mov
     await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='正解');
     await swipeResult(page,-42);
     assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical,'short horizontal movement is ignored');
-    assert.equal(await page.locator('.vocab-meaning').innerText(),firstPrompt,'short horizontal movement keeps the current card');
+    assert.equal(await page.locator('.vocab-result-prompt').innerText(),firstPrompt,'short horizontal movement keeps the current result');
     await swipeResult(page,-8,105);
     assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical,'vertical gesture is ignored');
-    assert.equal(await page.locator('.vocab-meaning').innerText(),firstPrompt,'vertical movement keeps the current card');
+    assert.equal(await page.locator('.vocab-result-prompt').innerText(),firstPrompt,'vertical movement keeps the current result');
     await swipeResult(page,105,4);
     assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical,'right swipe is ignored');
-    assert.equal(await page.locator('.vocab-meaning').innerText(),firstPrompt,'right swipe keeps the current card');
+    assert.equal(await page.locator('.vocab-result-prompt').innerText(),firstPrompt,'right swipe keeps the current result');
     await swipeResult(page,-100,10);
-    await page.waitForFunction(prompt=>document.querySelector('.vocab-meaning')?.textContent!==prompt,firstPrompt);
+    await page.waitForFunction(prompt=>document.querySelector('.vocab-meaning')?.textContent===prompt,nextEntry.meaning_ja);
     assert.equal(await page.locator('.vocab-meaning').innerText(),nextEntry.meaning_ja,'left swipe advances to the next expression');
     assert.equal(await page.locator('.vocab-done').count(),0,'one left swipe advances exactly one card');
   }finally{await closePage(opened);}
