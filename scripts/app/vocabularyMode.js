@@ -677,7 +677,7 @@ function bindResultGestures(surface){
     const elapsed=Date.now()-gesture.at;
     const width=Math.max(1,surface.getBoundingClientRect().width);
     const validLeftSwipe=dx<=-Math.max(70,width*.18)&&Math.abs(dx)>=Math.abs(dy)*1.25;
-    if(validLeftSwipe){advanceVocabularyCard();return;}
+    if(validLeftSwipe&&elapsed<=1200){advanceVocabularyCard();return;}
     if(isExpanded()||gesture.inExpandedContext) return;
     if(Math.hypot(dx,dy)<=10&&elapsed<=600) advanceVocabularyCard();
   });

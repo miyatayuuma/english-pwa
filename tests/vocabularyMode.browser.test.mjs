@@ -175,6 +175,22 @@ async function swipeResult(page,dx,dy=0,{xRatio=0.6,yRatio=null}={}){
   await page.mouse.move(x,y);await page.mouse.down();
   await page.mouse.move(x+dx,y+dy,{steps:8});await page.mouse.up();
 }
+async function startResultPointerTrace(page){
+  await page.evaluate(()=>{
+    const surface=document.querySelector('.vocab-context-state');
+    window.__vocabularyGestureDiagnosticEnabled=true;
+    window.__vocabularyGestureDiagnostic=[];
+    window.__resultPointerTrace=[];
+    for(const type of ['pointerdown','pointermove','pointerup','pointercancel']) document.addEventListener(type,event=>{
+      const rect=surface?.getBoundingClientRect();
+      window.__resultPointerTrace.push({type,pointerId:event.pointerId,target:event.target?.className||event.target?.tagName,interactive:!!event.target?.closest?.('button,a[href],input,textarea,select,[role="button"],[role="slider"],[contenteditable="true"]'),inside:!!surface?.contains(event.target),x:event.clientX,y:event.clientY,isPrimary:event.isPrimary,button:event.button,rect:rect&&{left:rect.left,top:rect.top,width:rect.width,height:rect.height},viewport:{width:innerWidth,height:innerHeight,scrollX,scrollY},selected:String(getSelection()||'')});
+    },true);
+  });
+}
+async function reportResultPointerTrace(page,label){
+  const trace=await page.evaluate(()=>({events:window.__resultPointerTrace,decisions:window.__vocabularyGestureDiagnostic}));
+  console.log(`${label} ${JSON.stringify(trace)}`);
+}
 async function captureAcceptanceScreenshot(page,name){
   const directory=process.env.VOCAB_ACCEPTANCE_SCREENSHOT_DIR;
   if(!directory) return;
@@ -413,8 +429,10 @@ browserTest('only a dominant left swipe advances; short, vertical, and right mov
     await swipeResult(page,105,4);
     assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical,'right swipe is ignored');
     assert.equal(await page.locator('.vocab-result-prompt').innerText(),firstPrompt,'right swipe keeps the current result');
+    await startResultPointerTrace(page);
     await swipeResult(page,-100);
-    await page.waitForFunction(prompt=>document.querySelector('.vocab-meaning')?.textContent===prompt,nextEntry.meaning_ja);
+    await reportResultPointerTrace(page,'RESULT_POINTER_TRACE');
+    await page.waitForFunction(prompt=>document.querySelector('.vocab-meaning')?.textContent===prompt,nextEntry.meaning_ja,{timeout:2500});
     assert.equal(await page.locator('.vocab-meaning').innerText(),nextEntry.meaning_ja,'left swipe advances to the next expression');
     assert.equal(await page.locator('.vocab-done').count(),0,'one left swipe advances exactly one card');
   }finally{await closePage(opened);}
@@ -764,7 +782,9 @@ browserTest('correction completion and source audio end keep the result until ex
     assert.equal(await page.locator('.vocab-answer').count(),1,'the result remains while source audio plays');
     await page.evaluate(()=>window.__mockSpeech.latestAudio?.onended?.());
     assert.equal(await page.locator('.vocab-answer').count(),1,'source audio end does not advance');
+    await startResultPointerTrace(page);
     await swipeResult(page,-100);
+    await reportResultPointerTrace(page,'CORRECTION_RESULT_POINTER_TRACE');
     await page.waitForFunction(prompt=>document.querySelector('.vocab-meaning')?.textContent===prompt,nextEntry.meaning_ja);
     assert.equal(await page.locator('.vocab-meaning').innerText(),nextEntry.meaning_ja,'post-correction left swipe advances once');
     assert.equal(await page.locator('.vocab-answer').count(),0);
