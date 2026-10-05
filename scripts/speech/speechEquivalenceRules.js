@@ -7,6 +7,7 @@ const pair = ({ id, expected, recognized, kind, display = 'raw' }) => [
 
 export const speechEquivalenceRules = Object.freeze([
   ...pair({ id: 'prose-pros', expected: 'prose', recognized: 'pros', kind: 'homophone', display: 'expected' }),
+  ...pair({ id: 'dye-die', expected: 'dye', recognized: 'die', kind: 'homophone' }),
   ...pair({ id: 'postwar-post-war', expected: 'postwar', recognized: 'post war', kind: 'segmentation-equivalence' }),
   ...pair({ id: 'rain-forest-rainforest', expected: 'rain forest', recognized: 'rainforest', kind: 'segmentation-equivalence' }),
   ...pair({ id: 'suite-sweet', expected: 'suite', recognized: 'sweet', kind: 'homophone' }),

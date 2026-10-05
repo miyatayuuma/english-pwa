@@ -50,6 +50,11 @@ const state={
   speechPromise:null,
   sourceAudioUrl:'',
   sourceAudio:null,
+  resultGesture:null,
+  advanceBusy:false,
+  advanceLockUntil:0,
+  advanceHintCount:0,
+  resultResizeHandler:null,
 };
 const RECENT_VOCAB_KEY='recentVocabularySessionIdsV1';
 const VOCAB_ROTATION_KEY='vocabularyRotationSeedV1';
@@ -124,6 +129,65 @@ function injectStyles(){
     @media(max-width:390px){.vocab-body{padding:12px}.vocab-shell{border-radius:18px}.vocab-card{padding-inline:3px}.vocab-meta{margin-bottom:10px}.vocab-meaning{font-size:26px}.vocab-meaning.is-long{font-size:22px}.vocab-meaning.is-xlong{font-size:19px}.vocab-mic{min-width:72px;width:auto;max-width:100%;height:72px;padding-inline:12px}}
     @media(max-height:650px){.vocab-head{padding-block:9px}.vocab-body{padding-block:10px}.vocab-card{padding-block:10px 5px}.vocab-meta{margin-bottom:8px}.vocab-meaning{font-size:clamp(22px,6vw,31px)}.vocab-prompt{margin-top:7px}.vocab-answer-wrap{margin-top:10px}.vocab-mic{width:66px;height:66px}.vocab-controls{gap:4px;margin-top:3px}}
     @media(prefers-reduced-motion:reduce){.vocab-progress__bar i,.vocab-mic{transition:none!important}}
+    .vocab-head{min-height:52px;max-height:56px;padding:4px 8px}
+    .vocab-head strong{font-size:16px}
+    .vocab-body{padding:10px 12px}
+    .vocab-context-state{position:relative;gap:4px;touch-action:pan-y;user-select:text;-webkit-user-select:text}
+    .vocab-context-scroll{display:flex;flex:1;min-height:0;flex-direction:column;align-items:stretch;gap:5px;overflow:hidden;padding:0 2px 2px}
+    .vocab-context-state.is-density-compact .vocab-context-scroll{gap:3px}
+    .vocab-context-state.is-density-tight .vocab-context-scroll{gap:2px}
+    .vocab-context-state.is-context-expanded .vocab-context-scroll,.vocab-context-state.is-scroll-fallback .vocab-context-scroll{overflow:auto;overscroll-behavior:contain;scrollbar-width:thin}
+    .vocab-context-state .vocab-feedback{flex:0 0 auto;min-height:18px;margin:0;text-align:center;font-size:12px;line-height:1.35}
+    .vocab-result-prompt{max-width:100%;margin:0 auto;text-align:center;font-size:clamp(20px,5.2vw,26px);font-weight:800;line-height:1.22;letter-spacing:.005em;overflow-wrap:anywhere;line-break:strict}
+    .vocab-answer-block{display:flex;max-width:100%;flex-direction:column;align-items:center;gap:4px;margin:0 auto}
+    .vocab-context-state .vocab-answer{max-width:100%;margin:0;text-align:center;font-size:clamp(22px,5.8vw,30px);font-weight:850;line-height:1.22;letter-spacing:.005em;overflow-wrap:anywhere;word-break:normal;hyphens:auto}
+    .vocab-context-state .vocab-expression-audio{min-height:44px;padding:5px 12px}
+    .vocab-paraphrases{display:flex;flex:0 0 auto;flex-wrap:wrap;justify-content:center;align-items:center;gap:3px 9px;max-width:100%;margin:0 auto;text-align:center;font-size:clamp(12px,3.3vw,14px);line-height:1.35;opacity:1}
+    .vocab-paraphrases__label{flex:0 0 100%;font-size:11px;font-weight:750;opacity:.62}
+    .vocab-paraphrase{max-width:100%;overflow-wrap:anywhere;opacity:.78}
+    .vocab-paraphrase.is-spoken{color:#a7f3d0;font-weight:750;opacity:1}
+    .vocab-source-block{display:flex;flex:0 0 auto;max-width:100%;flex-direction:column;align-items:stretch;gap:3px;margin:1px auto 0}
+    .vocab-source-heading{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:5px 8px;min-height:20px;font-size:9px;letter-spacing:.08em;font-weight:800;opacity:.57}
+    .vocab-source-heading .vocab-speaker{min-height:24px;font-size:11px;letter-spacing:0;opacity:.92}
+    .vocab-source-heading .vocab-speaker img{width:24px;height:24px;flex-basis:24px}
+    .vocab-context-state .vocab-source-line{max-width:560px;margin:0 auto;font-size:clamp(15px,3.9vw,19px);line-height:1.35;text-align:center;overflow-wrap:anywhere}
+    .vocab-context-line{display:flex;flex:0 0 auto;flex-wrap:wrap;justify-content:center;align-items:baseline;gap:3px 6px;margin:0 auto;text-align:center;font-size:clamp(12px,3.4vw,14px);line-height:1.35;overflow-wrap:anywhere}
+    .vocab-context-line__label{font-size:11px;opacity:.58;white-space:nowrap}
+    .vocab-contextual-meaning{display:inline;margin:0;font-size:inherit;line-height:inherit;text-align:inherit;overflow-wrap:anywhere}
+    .vocab-contextual-meaning span{display:inline;font-size:inherit;opacity:1}
+    .vocab-context-actions{flex:0 0 auto;justify-content:center;gap:6px;margin:0}
+    .vocab-context-state .vocab-audio,.vocab-context-state .vocab-expand-context{min-height:44px}
+    .vocab-context-state .vocab-audio{padding:5px 11px;font-size:10px}
+    .vocab-context-state .vocab-expand-context{padding:5px 10px;font-size:11px}
+    .vocab-source-audio-status{min-height:0;font-size:9px;line-height:1.2}
+    .vocab-context-full{flex:0 0 auto;margin:2px 0 0;padding:8px}
+    .vocab-context-full .vocab-source-line{font-size:14px;line-height:1.4}
+    .vocab-context-full .vocab-source-ja{margin:5px 0 0;font-size:12px;line-height:1.4}
+    .vocab-heard{display:flex;flex:0 0 auto;flex-wrap:wrap;justify-content:center;align-items:baseline;gap:3px 6px;width:100%;margin:0 auto;text-align:center;line-height:1.35}
+    .vocab-heard__label{font-size:10px;white-space:nowrap;opacity:.58}
+    .vocab-heard__text{font-size:11px;line-height:1.35;opacity:.7}
+    .vocab-advance-hint{flex:0 0 auto;margin:0;text-align:center;font-size:10px;line-height:1.25;opacity:.42;pointer-events:none}
+    .vocab-context-state .vocab-controls{display:flex;flex:0 0 auto;flex-direction:row;align-items:center;justify-content:center;gap:8px;margin:0;padding:0 0 env(safe-area-inset-bottom)}
+    .vocab-context-state .vocab-controls:empty{display:none}
+    .vocab-correction-footer{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:68px}
+    .vocab-correction-footer [data-vocab-listening-host]{min-width:0;flex:0 1 auto}
+    .vocab-context-state .vocab-mic{width:68px;height:68px;min-width:68px;min-height:68px;padding:0;font-size:13px}
+    .vocab-context-state .vocab-listening-indicator{min-height:28px;margin:0;padding:3px 9px;font-size:10px}
+    .vocab-context-state .vocab-listening-indicator__dot{width:6px;height:6px;flex:0 0 6px}
+    .vocab-context-state.is-density-compact .vocab-result-prompt{font-size:clamp(20px,4.9vw,24px);line-height:1.17}
+    .vocab-context-state.is-density-compact .vocab-answer{font-size:clamp(22px,5.3vw,27px);line-height:1.16}
+    .vocab-context-state.is-density-compact .vocab-source-line{font-size:15px;line-height:1.28}
+    .vocab-context-state.is-density-compact .vocab-context-line{font-size:12px;line-height:1.25}
+    .vocab-context-state.is-density-compact .vocab-heard__text{font-size:10.5px}
+    .vocab-context-state.is-density-tight .vocab-result-prompt{font-size:20px;line-height:1.12}
+    .vocab-context-state.is-density-tight .vocab-answer{font-size:22px;line-height:1.12}
+    .vocab-context-state.is-density-tight .vocab-paraphrases{font-size:12px;line-height:1.2}
+    .vocab-context-state.is-density-tight .vocab-source-line{font-size:14px;line-height:1.2}
+    .vocab-context-state.is-density-tight .vocab-context-line{font-size:11px;line-height:1.2}
+    .vocab-context-state.is-density-tight .vocab-context-actions{gap:3px}
+    .vocab-context-state.is-scroll-fallback .vocab-context-scroll{overflow:auto;overscroll-behavior:contain;scrollbar-width:thin}
+    @media(max-width:600px){.vocab-dialog{width:calc(100% - 8px);max-width:none;max-height:calc(100dvh - 8px);margin:auto}.vocab-shell{width:100%;height:calc(100dvh - 8px);max-height:calc(100dvh - 8px);border-radius:18px}.vocab-body{padding:8px 10px}}
+    @media(max-width:370px){.vocab-context-state .vocab-source-line{font-size:14px}.vocab-paraphrases{gap:2px 6px}.vocab-correction-footer{gap:6px}}
   `;
   document.head.appendChild(style);
 }
@@ -189,6 +253,10 @@ function stopListening(){
 }
 
 function closeDialog(){
+  if(state.resultResizeHandler) window.removeEventListener('resize',state.resultResizeHandler);
+  state.resultResizeHandler=null;
+  state.resultGesture=null;
+  state.advanceBusy=false;
   stopListening();
   cancelPronunciation();
   state.processing=false;
@@ -263,6 +331,9 @@ function startSession(){
   state.retried=new Set();
   state.liveTranscript='';
   state.lastAttemptTranscript='';
+  state.advanceHintCount=0;
+  state.advanceBusy=false;
+  state.advanceLockUntil=0;
   state.lastRecognitionDecision=null;
   state.correction=false;
   showNextCard();
@@ -431,7 +502,6 @@ function speakAnswer(text=canonicalAnswer()){
   }
   stopListening();
   const generation=++state.audioGeneration;
-  const current=state.current,position=state.position;
   state.sourceAudio?.pause?.();
   state.speechText=value;
   let tracked;
@@ -441,7 +511,6 @@ function speakAnswer(text=canonicalAnswer()){
       if(state.speechPromise===tracked) state.speechPromise=null;
       if(generation===state.audioGeneration){
         state.audioReleaseAt=Date.now()+800;
-        if(state.current===current&&state.position===position&&state.processing&&!state.correction) scheduleVocabularyAdvance();
       }
     });
   state.speechPromise=tracked;
@@ -509,6 +578,7 @@ function bindSourceAudio(){
     if(!url||state.current!==expected||!state.screen?.contains(button)) return;
     state.sourceAudioUrl=url;
     button.hidden=false;
+    requestAnimationFrame(fitVocabularyResult);
   }).catch(()=>{});
   button.addEventListener('click',async()=>{
     if(!state.sourceAudioUrl) return;
@@ -518,7 +588,7 @@ function bindSourceAudio(){
     state.audioReleaseAt=Date.now()+800;
     const audio=new Audio(state.sourceAudioUrl);
     state.sourceAudio=audio;
-    audio.onended=()=>{if(state.current===expected&&state.sourceAudio===audio&&state.processing&&!state.correction) scheduleVocabularyAdvance();};
+    audio.onended=()=>{if(state.current===expected&&state.sourceAudio===audio) state.audioReleaseAt=Date.now()+250;};
     try{await audio.play();}catch(_){
       const status=state.screen?.querySelector('.vocab-source-audio-status');
       if(status) status.textContent='この例文音声を再生できませんでした。';
@@ -534,18 +604,95 @@ function revealFullContext(){
   const button=state.screen?.querySelector('.vocab-expand-context');
   if(!host||!button) return;
   if(button.dataset.expanded==='true'){
-    host.hidden=true;button.dataset.expanded='false';button.textContent='前後を見る';button.setAttribute('aria-expanded','false');return;
+    host.hidden=true;button.dataset.expanded='false';button.textContent='前後を見る';button.setAttribute('aria-expanded','false');
+    const surface=state.screen.querySelector('.vocab-context-state');
+    surface?.classList.remove('is-context-expanded');
+    const scroll=state.screen.querySelector('.vocab-context-scroll');
+    if(scroll) scroll.scrollTop=0;
+    fitVocabularyResult();
+    return;
   }
   host.innerHTML=`<p class="vocab-source-line" lang="en" dir="ltr">${sourceSegment(item,active.occurrence,{full:true})}</p>${fullSpeakerContext(item)}<p class="vocab-source-ja" lang="ja">${escapeHtml(item.ja||'')}</p>`;
   host.hidden=false;button.dataset.expanded='true';button.textContent='前後を閉じる';button.setAttribute('aria-expanded','true');
+  state.screen.querySelector('.vocab-context-state')?.classList.add('is-context-expanded');
   bindSpeakerImageFallback(host);
+  requestAnimationFrame(()=>host.scrollIntoView({block:'nearest'}));
 }
 
-function nextButton(){
-  const button=document.createElement('button');
-  button.type='button';button.className='vocab-next';button.textContent='次へ';
-  button.addEventListener('click',()=>{state.position+=1;showNextCard();});
-  return button;
+function fitVocabularyResult(){
+  const surface=state.screen?.querySelector('.vocab-context-state');
+  const scroll=surface?.querySelector('.vocab-context-scroll');
+  if(!surface||!scroll||surface.classList.contains('is-context-expanded')) return;
+  surface.classList.remove('is-density-compact','is-density-tight','is-scroll-fallback');
+  const overflows=()=>scroll.scrollHeight>scroll.clientHeight+1;
+  if(overflows()) surface.classList.add('is-density-compact');
+  if(overflows()) surface.classList.add('is-density-tight');
+  if(overflows()) surface.classList.add('is-scroll-fallback');
+}
+
+function selectionIsActive(){
+  const selection=window.getSelection?.();
+  return !!selection&&(!selection.isCollapsed||String(selection).trim().length>0);
+}
+
+function isInteractiveAdvanceTarget(target){
+  return !!target?.closest?.('button,a[href],input,textarea,select,[role="button"],[role="slider"],[contenteditable="true"]');
+}
+
+function advanceVocabularyCard(){
+  if(!state.current||state.correction||state.advanceBusy||Date.now()<state.advanceLockUntil) return false;
+  state.advanceBusy=true;
+  state.advanceLockUntil=Date.now()+350;
+  stopListening();
+  clearGradeTimer();
+  cancelPronunciation();
+  state.sourceAudio?.pause?.();
+  state.sourceAudio=null;
+  state.sourceAudioUrl='';
+  state.resultGesture=null;
+  state.position+=1;
+  showNextCard();
+  return true;
+}
+
+function bindResultGestures(surface){
+  const isExpanded=()=>surface.classList.contains('is-context-expanded');
+  const reset=()=>{state.resultGesture=null;};
+  surface.tabIndex=-1;
+  surface.addEventListener('pointerdown',event=>{
+    if(!event.isPrimary||event.button!==0){reset();return;}
+    state.resultGesture={
+      pointerId:event.pointerId,x:event.clientX,y:event.clientY,at:Date.now(),
+      interactive:isInteractiveAdvanceTarget(event.target),
+      inExpandedContext:!!event.target.closest?.('.vocab-context-full'),
+    };
+  });
+  surface.addEventListener('pointercancel',reset);
+  surface.addEventListener('pointerup',event=>{
+    const gesture=state.resultGesture;
+    reset();
+    if(!gesture||gesture.pointerId!==event.pointerId||gesture.interactive||isInteractiveAdvanceTarget(event.target)) return;
+    if(state.correction||state.advanceBusy||Date.now()<state.advanceLockUntil||selectionIsActive()) return;
+    const dx=event.clientX-gesture.x,dy=event.clientY-gesture.y;
+    const elapsed=Date.now()-gesture.at;
+    const width=Math.max(1,surface.getBoundingClientRect().width);
+    const validLeftSwipe=dx<=-Math.max(70,width*.18)&&Math.abs(dx)>=Math.abs(dy)*1.25;
+    if(validLeftSwipe&&elapsed<=1200){advanceVocabularyCard();return;}
+    if(isExpanded()||gesture.inExpandedContext) return;
+    if(Math.hypot(dx,dy)<=10&&elapsed<=600) advanceVocabularyCard();
+  });
+  surface.addEventListener('keydown',event=>{
+    if(!['Enter',' ','ArrowRight'].includes(event.key)||isInteractiveAdvanceTarget(event.target)||state.correction) return;
+    if(selectionIsActive()||state.advanceBusy||Date.now()<state.advanceLockUntil) return;
+    event.preventDefault();
+    advanceVocabularyCard();
+  });
+  state.resultResizeHandler=()=>fitVocabularyResult();
+  window.addEventListener('resize',state.resultResizeHandler,{passive:true});
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    fitVocabularyResult();
+    setTimeout(fitVocabularyResult,80);
+  }));
 }
 
 function completeCorrectionPractice(){
@@ -553,23 +700,26 @@ function completeCorrectionPractice(){
   state.processing=true;
   clearGradeTimer();
   setListening(false);
-  const prompt=state.screen?.querySelector('.vocab-prompt');
-  if(prompt) prompt.textContent='修正練習完了';
+  const feedback=state.screen?.querySelector('.vocab-feedback');
+  if(feedback){feedback.className='vocab-feedback is-ok';feedback.textContent='修正練習完了';}
   const controls=state.screen?.querySelector('.vocab-controls');
-  if(controls){
-    controls.replaceChildren(nextButton());
-    controls.querySelector('.vocab-next')?.focus({preventScroll:true});
-  }
-  scheduleVocabularyAdvance();
+  if(controls) controls.replaceChildren();
+  state.processing=true;
+  state.advanceLockUntil=Date.now()+350;
+  state.screen?.querySelector('.vocab-context-state')?.focus({preventScroll:true});
+  requestAnimationFrame(fitVocabularyResult);
 }
 
 function heardTranscriptMarkup(text){
   const raw=String(text??'');
   if(!raw.trim()) return '';
-  return `<div class="vocab-heard"><span class="vocab-heard__label" id="vocabHeardLabel">聞き取り</span><span class="vocab-heard__text" lang="en" dir="ltr" aria-labelledby="vocabHeardLabel">${escapeHtml(raw)}</span></div>`;
+  return `<div class="vocab-heard"><span class="vocab-heard__label" id="vocabHeardLabel">聞き取り：</span><span class="vocab-heard__text" lang="en" dir="ltr" aria-labelledby="vocabHeardLabel">${escapeHtml(raw)}</span></div>`;
 }
 
 function renderAnswerContext({result=null,heardTranscript=state.lastAttemptTranscript}={}){
+  if(state.resultResizeHandler) window.removeEventListener('resize',state.resultResizeHandler);
+  state.resultResizeHandler=null;
+  state.advanceBusy=false;
   stopListening();
   state.sourceAudio?.pause?.();state.sourceAudio=null;state.sourceAudioUrl='';
   const active=activeSource();
@@ -577,54 +727,65 @@ function renderAnswerContext({result=null,heardTranscript=state.lastAttemptTrans
   const {item,occurrence}=active;
   const speaker=active.sourceSpeaker?.profile||null;
   const answer=canonicalAnswer();
+  const meaning=displayMeaning(state.current);
   const resultType=result?.type||null;
   const feedbackText=resultType==='target'?'正解':resultType==='paraphrase'?'意味はOK':resultType==='miss'?'あとでもう一度':'';
   const feedbackClass=resultType==='target'?'is-ok':resultType==='paraphrase'?'is-paraphrase':resultType==='miss'?'is-miss':'';
-  const resultDetails=resultType==='paraphrase'
-    ?`<div class="vocab-answer-detail" lang="ja">このカードの表現：<strong lang="en">${escapeHtml(answer)}</strong><br>別の言い方：<strong lang="en">${escapeHtml(result.matchedText||'')}</strong></div>`
-    :'';
   const paraphraseList=Array.isArray(state.current?.paraphrases)?state.current.paraphrases:[];
+  const matchedParaphrase=String(result?.type==='paraphrase'?result?.matchedText||'':'').trim().toLocaleLowerCase().replace(/\s+/gu,' ');
   const paraphraseMarkup=paraphraseList.length
-    ?`<div class="vocab-paraphrases"><span>別の言い方：</span>${paraphraseList.map(value=>`<span lang="en">${escapeHtml(value)}</span>`).join('、 ')}</div>`
+    ?`<div class="vocab-paraphrases"><span class="vocab-paraphrases__label">別の言い方</span>${paraphraseList.map(value=>{
+      const spoken=String(value||'').trim().toLocaleLowerCase().replace(/\s+/gu,' ')===matchedParaphrase;
+      return `<span class="vocab-paraphrase${spoken?' is-spoken':''}" lang="en">${spoken?'<span class="vocab-paraphrase__check" aria-hidden="true">✓ </span>':''}${escapeHtml(value)}</span>`;
+    }).join('')}</div>`
     :'';
+  const showAdvanceHint=state.advanceHintCount<2;
+  if(showAdvanceHint) state.advanceHintCount+=1;
   state.screen.innerHTML=`
     <section class="vocab-study vocab-context-state">
       <div class="vocab-context-scroll">
-        ${heardTranscriptMarkup(heardTranscript)}
-        <div class="vocab-context-top"><div class="vocab-answer" lang="en" dir="ltr" tabindex="-1">${escapeHtml(answer)}</div>${speakerCue(speaker)}</div>
-        <button type="button" class="vocab-audio vocab-expression-audio" aria-label="英語の表現を再生" ${speech.supported()?'':'hidden'}>表現を聞く</button>
-        <p class="vocab-source-line" lang="en" dir="ltr">${sourceSegment(item,occurrence)}</p>
-        <p class="vocab-contextual-meaning" lang="ja"><span>この文では：</span>${escapeHtml(occurrence.contextual_meaning_ja)}</p>
-        <div class="vocab-context-actions">
-          <button type="button" class="vocab-audio vocab-source-audio" aria-label="例文の音声を再生" hidden>例文音声</button>
-          <button type="button" class="vocab-expand-context" aria-expanded="false">前後を見る</button>
-        </div>
-        <div class="vocab-source-audio-status" aria-live="polite"></div>
-        <div class="vocab-context-full" hidden></div>
-        ${resultDetails}${paraphraseMarkup}
-        ${state.correction?'<div class="vocab-prompt" role="status">正解音声を聞いて、表示された表現を話してください</div><div class="vocab-transcript" lang="en" aria-label="修正練習の聞き取り" aria-live="off"></div>':''}
         <div class="vocab-feedback ${feedbackClass}" role="status" aria-live="polite" aria-atomic="true">${feedbackText}</div>
+        <div class="vocab-result-prompt" lang="ja">${escapeHtml(meaning)}</div>
+        <div class="vocab-answer-block">
+          <div class="vocab-answer" lang="en" dir="ltr">${escapeHtml(answer)}</div>
+          <button type="button" class="vocab-audio vocab-expression-audio" aria-label="英語の表現を再生" ${speech.supported()?'':'hidden'}>表現を聞く</button>
+        </div>
+        ${paraphraseMarkup}
+        <section class="vocab-source-block" aria-label="例文">
+          <div class="vocab-source-heading"><span>SOURCE EXAMPLE</span>${speakerCue(speaker)}</div>
+          <p class="vocab-source-line" lang="en" dir="ltr">${sourceSegment(item,occurrence)}</p>
+          <div class="vocab-context-line" lang="ja"><span class="vocab-context-line__label">この文では：</span><span class="vocab-contextual-meaning">${escapeHtml(occurrence.contextual_meaning_ja)}</span></div>
+          <div class="vocab-context-actions">
+            <button type="button" class="vocab-audio vocab-source-audio" aria-label="例文の音声を再生" hidden>例文音声</button>
+            <button type="button" class="vocab-expand-context" aria-expanded="false">前後を見る</button>
+          </div>
+          <div class="vocab-source-audio-status" aria-live="polite"></div>
+          <div class="vocab-context-full" hidden></div>
+        </section>
+        ${heardTranscriptMarkup(heardTranscript)}
+        ${state.correction?'<div class="vocab-transcript" lang="en" aria-label="修正練習の聞き取り" aria-live="off"></div>':''}
       </div>
       <div class="vocab-controls"></div>
+      ${showAdvanceHint?'<div class="vocab-advance-hint" aria-hidden="true">タップ / ←スワイプで次へ</div>':''}
     </section>`;
   bindSpeakerImageFallback();
   bindPronunciationButton();
   bindSourceAudio();
   state.screen.querySelector('.vocab-expand-context')?.addEventListener('click',revealFullContext);
+  bindResultGestures(state.screen.querySelector('.vocab-context-state'));
+  state.advanceLockUntil=Date.now()+350;
   const controls=state.screen.querySelector('.vocab-controls');
   if(state.correction){
-    controls.innerHTML='<button type="button" class="vocab-mic" aria-label="表示された表現を話す">話す</button>';
+    controls.innerHTML='<div class="vocab-correction-footer"><div data-vocab-listening-host></div><button type="button" class="vocab-mic" aria-label="表示された表現を話す">話す</button></div>';
     controls.querySelector('.vocab-mic').addEventListener('click',startListening);
     const audioButton=state.screen.querySelector('.vocab-expression-audio');
     (audioButton&&!audioButton.hidden?audioButton:controls.querySelector('.vocab-mic'))?.focus({preventScroll:true});
     state.processing=false;
     setupRecognition();
   }else{
-    controls.appendChild(nextButton());
-    controls.querySelector('.vocab-next').focus({preventScroll:true});
+    state.screen.querySelector('.vocab-context-state')?.focus({preventScroll:true});
   }
   if(result!==null) speakAnswer(answer);
-  if(!state.correction) scheduleVocabularyAdvance();
 }
 
 function gradeTranscript(text){
@@ -652,16 +813,6 @@ function gradeTranscript(text){
   }
   if(result.type==='miss'){renderTranscriptReview();return;}
   finalizeVocabularyAnswer(result);
-}
-
-function scheduleVocabularyAdvance(){
-  clearTimeout(state.timer);
-  const current=state.current,position=state.position;
-  state.timer=setTimeout(()=>{
-    state.timer=0;
-    if(state.current!==current||state.position!==position||!state.processing) return;
-    state.position+=1;showNextCard();
-  },1900);
 }
 
 function renderTranscriptReview(){
@@ -710,6 +861,10 @@ function revealAnswer(){
 }
 
 function showNextCard(){
+  if(state.resultResizeHandler) window.removeEventListener('resize',state.resultResizeHandler);
+  state.resultResizeHandler=null;
+  state.resultGesture=null;
+  state.advanceBusy=false;
   clearTimeout(state.timer);
   clearGradeTimer();
   cancelPronunciation();

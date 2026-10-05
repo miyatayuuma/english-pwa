@@ -7802,6 +7802,24 @@
       "confidence": "high",
       "cross_shard_note": "Second-pass 62-item learning-value closure; source occurrence/contextual meaning unchanged.",
       "paraphrase_followup_required": false
+    },
+    {
+      "id": "vocab:01387",
+      "decision": "MODIFY",
+      "after": {
+        "canonical": "will do",
+        "sense_key": "be_sufficient",
+        "meaning_ja": "用が足りる"
+      },
+      "reason": "「will do」は十分・許容可能を表す。時間的な「間に合う」ではなく、意味promptをsense_keyに一致させる。",
+      "confidence": "high",
+      "cross_shard_note": "Any apartment will do is sufficiency/acceptability, not temporal arrival. The active E0127 contextual meaning was also corrected from an intention gloss to 「どんなアパートでも構わない」.",
+      "source_contextual_meaning_ja": {
+        "item_id": "E0127",
+        "before": "...『するつもりです』",
+        "after": "どんなアパートでも構わない"
+      },
+      "paraphrase_followup_required": false
     }
   ],
   "followup_scope": "pos/source contextual corruption and canonical/paraphrase relationships are recorded; not repaired in this task.",

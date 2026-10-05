@@ -115,6 +115,22 @@ test('prose/pros is TARGET with rule provenance while raw provider evidence stay
   assert.equal(segment.alternatives[0].transcript,'pros');
 });
 
+test('vocab:01314 dye accepts the die homophone while preserving raw display evidence',()=>{
+  const result=classifyVocabularySpeechAnswer({
+    entry:{id:'vocab:01314',canonical:'dye'},
+    transcript:'die',
+    recognitionSegments:[segmentFactory(['die'])],
+  });
+  assert.equal(result.type,'target');
+  assert.equal(result.recognitionAuthority,'explicit-equivalence');
+  assert.equal(result.matchedExpected,'dye');
+  assert.equal(result.observed,'die');
+  assert.equal(result.rawTranscript,'die');
+  assert.equal(result.displayTranscript,'die');
+  assert.equal(result.speechMatch.ruleId,'dye-die');
+  assert.equal(result.speechMatch.ruleKind,'homophone');
+});
+
 test('lower N-best explicit TARGET equivalence records selected raw segment/rank without paraphrase rescue',()=>{
   const recognitionSegments=[segmentFactory(['wrong','pros'])];
   const result=classifyVocabularySpeechAnswer({

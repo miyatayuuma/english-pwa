@@ -50,6 +50,23 @@ test('prose/pros is an explicit global homophone with provenance and target-spel
   assert.equal(match.asrRank, 0);
 });
 
+test('dye/die is a symmetric explicit homophone and preserves the provider spelling',()=>{
+  for(const [expected,recognized,ruleId] of [['dye','die','dye-die'],['die','dye','die-dye']]){
+    const result=alignSpeech(expected,recognized);
+    assert.equal(result.matchRate,1);
+    assert.equal(result.rawTranscript,recognized);
+    assert.equal(result.displayTranscript,recognized);
+    const match=result.alignment.find(event=>event.ruleId===ruleId);
+    assert.ok(match);
+    assert.equal(match.authority,'explicit-equivalence');
+    assert.equal(match.ruleKind,'homophone');
+    assert.equal(match.expected,expected);
+    assert.equal(match.observed,recognized);
+  }
+  assert.equal(findSpeechSurfaceMatch('dye','die')?.ruleId,'dye-die');
+  assert.equal(findSpeechSurfaceMatch('die','dye')?.ruleId,'die-dye');
+});
+
 test('postwar/post war is an explicit segmentation equivalence with raw display and exact-equivalent score', () => {
   const result = alignSpeech('The postwar era.', 'The post war era.');
   assert.equal(result.matchRate, 1);
