@@ -5,7 +5,7 @@ import { validateVocabularyV3 } from '../scripts/vocabulary/validate-vocabulary-
 
 const read=name=>JSON.parse(fs.readFileSync(new URL(`../data/${name}`,import.meta.url),'utf8'));
 
-test('the paraphrase audit preserves historical review, explicitly marks pending entries and mirrors curated data',()=>{
+test('the paraphrase audit preserves history and mirrors fully materialized curated authority',()=>{
   const db=read('vocabulary-v3.json');
   const items=read('items.json');
   const characters=read('characters.json').characters;
@@ -16,12 +16,15 @@ test('the paraphrase audit preserves historical review, explicitly marks pending
   const result=validateVocabularyV3(db,items,characters,migration,v2,wordAudit,audit);
   assert.deepEqual(result.errors,[]);
   assert.equal(audit.historical_reviewed_entries.length,1072);
-  assert.equal(audit.reviewed_entries.length,1045);
-  assert.equal(audit.pending_entries.length,1433);
+  assert.equal(audit.reviewed_entries.length,2478);
+  assert.equal(audit.pending_entries.length,0);
   assert.equal(audit.retired_entries.length,2);
   assert.equal(result.report.answer_authority.source_realizations_audited,2481);
-  assert.equal(result.report.answer_authority.entries_with_paraphrases,35);
-  assert.equal(result.report.answer_authority.total_paraphrases,35);
+  assert.equal(result.report.answer_authority.entries_with_paraphrases,1835);
+  assert.equal(result.report.answer_authority.total_paraphrases,2931);
+  assert.deepEqual(db.entries.find(entry=>entry.id==='vocab:00121').paraphrases,['in spite of something','although','even though']);
+  assert.deepEqual(db.entries.find(entry=>entry.id==='vocab:00182').paraphrases,['despite something','notwithstanding something']);
+  assert.equal(db.entries.find(entry=>entry.id==='vocab:00182').paraphrases.includes('despite'),false);
   assert.equal(result.report.cloze_generation_audit.cards_audited,560*3*6);
   assert.equal(result.report.cloze_generation_audit.zero_target_cards,0);
   assert.deepEqual(result.report.cloze_generation_audit.zero_target_items,{level_0:0,level_2:0,level_5:0});
