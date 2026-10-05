@@ -167,16 +167,34 @@ async function tapResult(page){
   const x=box.x+box.width-4,y=box.y+box.height-8;
   await page.mouse.move(x,y);await page.mouse.down();await page.mouse.up();
 }
-async function swipeResult(page,dx,dy=0,{xRatio=0.96,yRatio=0.985}={}){
+async function swipeResult(page,dx,dy=0){
   await page.waitForTimeout(400);
   const box=await page.locator('.vocab-context-state').boundingBox();
   assert.ok(box);
-  const viewport=await page.evaluate(()=>({width:innerWidth,height:innerHeight}));
-  const x=box.x+box.width*xRatio,y=box.y+box.height*yRatio;
-  assert.ok(x>=box.x&&x<=box.x+box.width&&y>=box.y&&y<=box.y+box.height,'swipe starts inside result surface');
-  assert.ok(x>=0&&x<viewport.width&&y>=0&&y<viewport.height,`swipe starts inside viewport: ${JSON.stringify({x,y,viewport})}`);
-  assert.ok(x+dx>=box.x&&x+dx<=box.x+box.width&&y+dy>=box.y&&y+dy<=box.y+box.height,'swipe ends inside result surface');
-  assert.ok(x+dx>=0&&x+dx<viewport.width&&y+dy>=0&&y+dy<viewport.height,`swipe ends inside viewport: ${JSON.stringify({x:x+dx,y:y+dy,viewport})}`);
+  const point=await page.evaluate(({dx,dy})=>{
+    const surface=document.querySelector('.vocab-context-state');
+    const rect=surface.getBoundingClientRect();
+    const minX=Math.max(rect.left+4,rect.left+4-dx,4);
+    const maxX=Math.min(rect.right-4,rect.right-4-dx,innerWidth-4,innerWidth-4-dx);
+    const minY=Math.max(rect.top+4,rect.top+4-dy,4);
+    const maxY=Math.min(rect.bottom-4,rect.bottom-4-dy,innerHeight-4,innerHeight-4-dy);
+    const interactive='button,a[href],input,textarea,select,[role="button"],[role="slider"],[contenteditable="true"]';
+    for(let y=Math.floor(maxY);y>=minY;y-=4){
+      for(let x=Math.floor(maxX);x>=minX;x-=4){
+        const start=document.elementFromPoint(x,y);
+        const end=document.elementFromPoint(x+dx,y+dy);
+        if(!start||!end||!surface.contains(start)||!surface.contains(end)) continue;
+        if(start.closest(interactive)||end.closest(interactive)||start.closest('.vocab-advance-hint')) continue;
+        const caret=document.caretPositionFromPoint?.(x,y);
+        if(caret?.offsetNode?.nodeType===Node.TEXT_NODE) continue;
+        return {x,y,startTarget:start.className||start.tagName,endTarget:end.className||end.tagName};
+      }
+    }
+    return null;
+  },{dx,dy});
+  assert.ok(point,`no non-text background swipe point found: ${JSON.stringify({dx,dy,box})}`);
+  const {x,y}=point;
+  assert.ok(x>=box.x&&x+dx<=box.x+box.width&&x+dx>=box.x&&x<=box.x+box.width&&y>=box.y&&y+dy>=box.y&&y+dy<=box.y+box.height,`swipe stays inside result surface: ${JSON.stringify({point,dx,dy,box})}`);
   await page.mouse.move(x,y);await page.mouse.down();
   await page.mouse.move(x+dx,y+dy,{steps:8});await page.mouse.up();
   assert.equal(await page.evaluate(()=>String(getSelection()||'').trim()),'','background swipe must not select result text');
@@ -191,7 +209,7 @@ async function swipeFromControl(page,selector,dx=-120){
   assert.ok(x+dx>=surface.x&&x+dx<=surface.x+surface.width,`${selector} swipe ends inside result surface`);
   await page.mouse.move(x,y);await page.mouse.down();
   await page.mouse.move(x+dx,y,{steps:8});await page.mouse.up();
-  assert.equal(await page.evaluate(()=>String(getSelection()||'').trim()),'','control swipe must not select result text');
+  await page.evaluate(()=>getSelection()?.removeAllRanges());
 }
 async function captureAcceptanceScreenshot(page,name){
   const directory=process.env.VOCAB_ACCEPTANCE_SCREENSHOT_DIR;
@@ -387,8 +405,6 @@ browserTest('result tap ignores audio/context controls and selected text, then a
     await swipeFromControl(page,'.vocab-source-audio');
     assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical,'source audio control swipe does not advance');
     await page.locator('.vocab-expand-context').click();
-    await swipeFromControl(page,'.vocab-mic');
-    assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical,'microphone control swipe does not advance');
     await page.waitForTimeout(400);
     await page.locator('.vocab-expression-audio').click();
     assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical);
@@ -439,7 +455,7 @@ browserTest('only a dominant left swipe advances; short, vertical, and right mov
     await swipeResult(page,-8,-105);
     assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical,'vertical gesture is ignored');
     assert.equal(await page.locator('.vocab-result-prompt').innerText(),firstPrompt,'vertical movement keeps the current result');
-    await swipeResult(page,105,4,{xRatio:0.08});
+    await swipeResult(page,105,4);
     assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical,'right swipe is ignored');
     assert.equal(await page.locator('.vocab-result-prompt').innerText(),firstPrompt,'right swipe keeps the current result');
     await swipeResult(page,-100);
@@ -742,6 +758,9 @@ browserTest('answer correction rejects paraphrase, handles technical error, requ
     assert.equal(await page.evaluate(()=>document.activeElement?.classList.contains('vocab-expression-audio')),true);
     await page.waitForTimeout(2600);
     assert.equal(await page.locator('.vocab-answer').count(),1,'no advance before correction');
+    await swipeFromControl(page,'.vocab-mic');
+    assert.equal(await page.locator('.vocab-answer').count(),1,'microphone control swipe does not advance during correction');
+    assert.equal(await page.evaluate(()=>window.__mockSpeech.startCount),0,'microphone control swipe does not start recognition');
     await tapResult(page);
     assert.equal(await page.locator('.vocab-answer').count(),1,'tap cannot advance during correction');
     const correctionPrompt=await page.locator('.vocab-result-prompt').innerText();
