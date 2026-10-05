@@ -180,29 +180,38 @@ async function swipeResult(page,dx,dy=0){
     const maxY=Math.min(rect.bottom-4,rect.bottom-4-dy,innerHeight-4,innerHeight-4-dy);
     const interactive='button,a[href],input,textarea,select,[role="button"],[role="slider"],[contenteditable="true"]';
     const textBearing='.vocab-feedback,.vocab-result-prompt,.vocab-answer,.vocab-paraphrases,.vocab-source-block,.vocab-heard,.vocab-transcript,.vocab-advance-hint,.vocab-speaker';
-    for(let y=Math.floor(maxY);y>=minY;y-=4){
-      for(let x=Math.floor(maxX);x>=minX;x-=4){
-        let pathSafe=true;
-        const targets=[];
-        for(let step=0;step<=24;step++){
-          const progress=step/24;
-          const target=document.elementFromPoint(x+dx*progress,y+dy*progress);
-          if(!target||!surface.contains(target)||target.closest(interactive)||target.closest(textBearing)){
-            pathSafe=false;break;
+    const textRects=[...surface.querySelectorAll(textBearing)].flatMap(node=>{
+      const range=document.createRange();range.selectNodeContents(node);
+      return [...range.getClientRects()].map(value=>({left:value.left-4,right:value.right+4,top:value.top-4,bottom:value.bottom+4}));
+    });
+    const findPoint=gridStep=>{
+      for(let y=Math.floor(maxY);y>=minY;y-=gridStep){
+        for(let x=Math.floor(maxX);x>=minX;x-=gridStep){
+          let pathSafe=true;
+          const targets=[];
+          for(let step=0;step<=24;step++){
+            const progress=step/24;
+            const px=x+dx*progress,py=y+dy*progress;
+            const target=document.elementFromPoint(px,py);
+            if(!target||!surface.contains(target)||target.closest(interactive)||target.closest(textBearing)||textRects.some(value=>px>=value.left&&px<=value.right&&py>=value.top&&py<=value.bottom)){
+              pathSafe=false;break;
+            }
+            targets.push(target.className||target.tagName);
           }
-          targets.push(target.className||target.tagName);
+          if(pathSafe) return {x,y,startTarget:targets[0],endTarget:targets.at(-1),pathTargets:targets};
         }
-        if(pathSafe) return {x,y,startTarget:targets[0],endTarget:targets.at(-1),pathTargets:targets};
       }
-    }
-    return null;
+      return null;
+    };
+    return findPoint(8)||findPoint(4);
   },{dx,dy});
   assert.ok(point,`no non-text background swipe point found: ${JSON.stringify({dx,dy,box})}`);
   const {x,y}=point;
   assert.ok(x>=box.x&&x+dx<=box.x+box.width&&x+dx>=box.x&&x<=box.x+box.width&&y>=box.y&&y+dy>=box.y&&y+dy<=box.y+box.height,`swipe stays inside result surface: ${JSON.stringify({point,dx,dy,box})}`);
   await page.mouse.move(x,y);await page.mouse.down();
   await page.mouse.move(x+dx,y+dy,{steps:8});await page.mouse.up();
-  assert.equal(await page.evaluate(()=>String(getSelection()||'').trim()),'','background swipe must not select result text');
+  const selected=await page.evaluate(()=>String(getSelection()||'').trim());
+  assert.equal(selected,'',`background swipe selected text: ${JSON.stringify({dx,dy,point,selected})}`);
 }
 async function swipeFromControl(page,selector,dx=-120){
   await page.waitForTimeout(400);
