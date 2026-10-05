@@ -167,29 +167,31 @@ async function tapResult(page){
   const x=box.x+box.width-4,y=box.y+box.height-8;
   await page.mouse.move(x,y);await page.mouse.down();await page.mouse.up();
 }
-async function swipeResult(page,dx,dy=0,{xRatio=0.6,yRatio=null}={}){
+async function swipeResult(page,dx,dy=0,{xRatio=0.96,yRatio=0.985}={}){
   await page.waitForTimeout(400);
   const box=await page.locator('.vocab-context-state').boundingBox();
   assert.ok(box);
-  const x=box.x+box.width*xRatio,y=yRatio===null?box.y+box.height-8:box.y+box.height*yRatio;
+  const viewport=await page.evaluate(()=>({width:innerWidth,height:innerHeight}));
+  const x=box.x+box.width*xRatio,y=box.y+box.height*yRatio;
+  assert.ok(x>=box.x&&x<=box.x+box.width&&y>=box.y&&y<=box.y+box.height,'swipe starts inside result surface');
+  assert.ok(x>=0&&x<viewport.width&&y>=0&&y<viewport.height,`swipe starts inside viewport: ${JSON.stringify({x,y,viewport})}`);
+  assert.ok(x+dx>=box.x&&x+dx<=box.x+box.width&&y+dy>=box.y&&y+dy<=box.y+box.height,'swipe ends inside result surface');
+  assert.ok(x+dx>=0&&x+dx<viewport.width&&y+dy>=0&&y+dy<viewport.height,`swipe ends inside viewport: ${JSON.stringify({x:x+dx,y:y+dy,viewport})}`);
   await page.mouse.move(x,y);await page.mouse.down();
   await page.mouse.move(x+dx,y+dy,{steps:8});await page.mouse.up();
+  assert.equal(await page.evaluate(()=>String(getSelection()||'').trim()),'','background swipe must not select result text');
 }
-async function startResultPointerTrace(page){
-  await page.evaluate(()=>{
-    const surface=document.querySelector('.vocab-context-state');
-    window.__vocabularyGestureDiagnosticEnabled=true;
-    window.__vocabularyGestureDiagnostic=[];
-    window.__resultPointerTrace=[];
-    for(const type of ['pointerdown','pointermove','pointerup','pointercancel']) document.addEventListener(type,event=>{
-      const rect=surface?.getBoundingClientRect();
-      window.__resultPointerTrace.push({type,pointerId:event.pointerId,target:event.target?.className||event.target?.tagName,interactive:!!event.target?.closest?.('button,a[href],input,textarea,select,[role="button"],[role="slider"],[contenteditable="true"]'),inside:!!surface?.contains(event.target),x:event.clientX,y:event.clientY,isPrimary:event.isPrimary,button:event.button,rect:rect&&{left:rect.left,top:rect.top,width:rect.width,height:rect.height},viewport:{width:innerWidth,height:innerHeight,scrollX,scrollY},selected:String(getSelection()||'')});
-    },true);
-  });
-}
-async function reportResultPointerTrace(page,label){
-  const trace=await page.evaluate(()=>({events:window.__resultPointerTrace,decisions:window.__vocabularyGestureDiagnostic}));
-  console.log(`${label} ${JSON.stringify(trace)}`);
+async function swipeFromControl(page,selector,dx=-120){
+  await page.waitForTimeout(400);
+  const box=await page.locator(selector).boundingBox();
+  const surface=await page.locator('.vocab-context-state').boundingBox();
+  assert.ok(box&&surface,`${selector} and result surface are visible`);
+  const x=box.x+box.width/2,y=box.y+box.height/2;
+  assert.ok(surface.x<=x&&x<=surface.x+surface.width&&surface.y<=y&&y<=surface.y+surface.height,`${selector} starts inside result surface`);
+  assert.ok(x+dx>=surface.x&&x+dx<=surface.x+surface.width,`${selector} swipe ends inside result surface`);
+  await page.mouse.move(x,y);await page.mouse.down();
+  await page.mouse.move(x+dx,y,{steps:8});await page.mouse.up();
+  assert.equal(await page.evaluate(()=>String(getSelection()||'').trim()),'','control swipe must not select result text');
 }
 async function captureAcceptanceScreenshot(page,name){
   const directory=process.env.VOCAB_ACCEPTANCE_SCREENSHOT_DIR;
@@ -376,6 +378,17 @@ browserTest('result tap ignores audio/context controls and selected text, then a
     assert.ok(nextEntry,'two expression fixtures are available for a manual advance');
     await inject(page,sourceSurface(entry,entry.occurrences[0].item_id));
     await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='正解');
+    await swipeFromControl(page,'.vocab-expression-audio');
+    assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical,'expression audio control swipe does not advance');
+    await swipeFromControl(page,'.vocab-expand-context');
+    assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical,'context control swipe does not advance');
+    await page.locator('.vocab-expand-context').click();
+    await page.locator('.vocab-source-audio').waitFor({state:'visible'});
+    await swipeFromControl(page,'.vocab-source-audio');
+    assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical,'source audio control swipe does not advance');
+    await page.locator('.vocab-expand-context').click();
+    await swipeFromControl(page,'.vocab-mic');
+    assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical,'microphone control swipe does not advance');
     await page.waitForTimeout(400);
     await page.locator('.vocab-expression-audio').click();
     assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical);
@@ -423,15 +436,13 @@ browserTest('only a dominant left swipe advances; short, vertical, and right mov
     await swipeResult(page,-42);
     assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical,'short horizontal movement is ignored');
     assert.equal(await page.locator('.vocab-result-prompt').innerText(),firstPrompt,'short horizontal movement keeps the current result');
-    await swipeResult(page,-8,105,{xRatio:0.98,yRatio:0.35});
+    await swipeResult(page,-8,-105);
     assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical,'vertical gesture is ignored');
     assert.equal(await page.locator('.vocab-result-prompt').innerText(),firstPrompt,'vertical movement keeps the current result');
-    await swipeResult(page,105,4);
+    await swipeResult(page,105,4,{xRatio:0.08});
     assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical,'right swipe is ignored');
     assert.equal(await page.locator('.vocab-result-prompt').innerText(),firstPrompt,'right swipe keeps the current result');
-    await startResultPointerTrace(page);
     await swipeResult(page,-100);
-    await reportResultPointerTrace(page,'RESULT_POINTER_TRACE');
     await page.waitForFunction(prompt=>document.querySelector('.vocab-meaning')?.textContent===prompt,nextEntry.meaning_ja,{timeout:2500});
     assert.equal(await page.locator('.vocab-meaning').innerText(),nextEntry.meaning_ja,'left swipe advances to the next expression');
     assert.equal(await page.locator('.vocab-done').count(),0,'one left swipe advances exactly one card');
@@ -733,6 +744,10 @@ browserTest('answer correction rejects paraphrase, handles technical error, requ
     assert.equal(await page.locator('.vocab-answer').count(),1,'no advance before correction');
     await tapResult(page);
     assert.equal(await page.locator('.vocab-answer').count(),1,'tap cannot advance during correction');
+    const correctionPrompt=await page.locator('.vocab-result-prompt').innerText();
+    await swipeResult(page,-100);
+    assert.equal(await page.locator('.vocab-answer').count(),1,'swipe cannot advance during correction');
+    assert.equal(await page.locator('.vocab-result-prompt').innerText(),correctionPrompt,'correction swipe keeps the current result');
     await page.locator('.vocab-mic').click();
     await page.waitForFunction(()=>window.__mockSpeech.startCount>0);
     assert.equal(await page.locator('.vocab-listening-indicator').evaluate(node=>node.parentElement.matches('[data-vocab-listening-host]')),true,'correction indicator uses the explicit footer host');
@@ -782,9 +797,7 @@ browserTest('correction completion and source audio end keep the result until ex
     assert.equal(await page.locator('.vocab-answer').count(),1,'the result remains while source audio plays');
     await page.evaluate(()=>window.__mockSpeech.latestAudio?.onended?.());
     assert.equal(await page.locator('.vocab-answer').count(),1,'source audio end does not advance');
-    await startResultPointerTrace(page);
     await swipeResult(page,-100);
-    await reportResultPointerTrace(page,'CORRECTION_RESULT_POINTER_TRACE');
     await page.waitForFunction(prompt=>document.querySelector('.vocab-meaning')?.textContent===prompt,nextEntry.meaning_ja);
     assert.equal(await page.locator('.vocab-meaning').innerText(),nextEntry.meaning_ja,'post-correction left swipe advances once');
     assert.equal(await page.locator('.vocab-answer').count(),0);
