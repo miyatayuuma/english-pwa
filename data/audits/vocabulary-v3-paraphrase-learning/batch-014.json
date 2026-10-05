@@ -2171,7 +2171,7 @@
     },
     {
       "entry_id": "vocab:01387",
-      "prompt_ja": "間に合う",
+      "prompt_ja": "用が足りる",
       "canonical_snapshot": "will do",
       "answers_snapshot": [],
       "existing_paraphrases": [],
@@ -2184,25 +2184,23 @@
       "candidate_review": [
         {
           "expression": "make it in time",
-          "decision": "ACCEPT",
-          "reason": "時間的に「間に合う」を明確かつ自然に表す高頻度表現。"
+          "decision": "REJECT",
+          "reason": "時間的に「間に合う」を表す表現であり、be_sufficient の will do とは別sense。"
         },
         {
           "expression": "make it",
           "decision": "REJECT",
-          "reason": "「間に合う」に使えるが成功・参加可能等の別義が広く、単独登録より in time を伴う形が安全。"
+          "reason": "「成功する・参加できる」などの意味にも広く使われ、「用が足りる」の独立した別表現として対応が不安定。"
         },
         {
           "expression": "be in time",
           "decision": "REJECT",
-          "reason": "意味は成立するが辞書的断片になりやすく、make it in timeの方が自然な回答表現として高価値。"
+          "reason": "時間的な「間に合う」を表すため、sufficiency / acceptability の will do とは別sense。"
         }
       ],
-      "after_paraphrases": [
-        "make it in time"
-      ],
-      "decision": "CHANGED",
-      "reason": "promptの通常の時間義を明確に表す主要表現を追加する。canonicalは別義を含むためfollow-up対象。"
+      "after_paraphrases": [],
+      "decision": "UNCHANGED",
+      "reason": "will do は「用が足りる」を表す。このpromptに対して別の学習価値の高いparaphraseは採用しない。"
     },
     {
       "entry_id": "vocab:01388",
@@ -2687,12 +2685,6 @@
       "issue": "TARGET/answers surface-form authority should be reviewed outside this paraphrase batch",
       "observation": "meaning_ja「価値観」に対する最も自然な英語は通常 plural の values だが、canonical_snapshot は value。単複差はparaphraseではなくTARGET/answers側の問題なので登録していない。",
       "recommended_followup": "canonical/answers authorityで values をTARGETとして扱うべきか確認する。"
-    },
-    {
-      "entry_id": "vocab:01387",
-      "issue": "prompt/canonical semantic alignment should be reviewed outside this paraphrase batch",
-      "observation": "meaning_ja「間に合う」は通常、時間的に間に合う意味を強く許す一方、canonical_snapshot「will do」は主に「それで足りる・用が足りる」等の別義で使われる。Prompt-only authorityに従い make it in time をparaphrase採用した。",
-      "recommended_followup": "meaning_jaとcanonicalが意図するsenseを別監査し、必要ならpromptまたはTARGET authorityを整理する。"
     },
     {
       "entry_id": "vocab:01392",

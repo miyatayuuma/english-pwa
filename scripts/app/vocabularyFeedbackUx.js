@@ -68,7 +68,8 @@ function playGradeSound(pass){
 
 function ensureIndicator(screen){
   const controls=screen?.querySelector('.vocab-controls');
-  if(!controls) return null;
+  const explicitHost=screen?.querySelector('[data-vocab-listening-host]');
+  if(!explicitHost&&!controls) return null;
   let indicator=screen.querySelector('.vocab-listening-indicator');
   if(!indicator){
     indicator=document.createElement('div');
@@ -76,6 +77,10 @@ function ensureIndicator(screen){
     indicator.setAttribute('role','status');
     indicator.setAttribute('aria-live','polite');
     indicator.innerHTML='<span class="vocab-listening-indicator__dot" aria-hidden="true"></span><span class="vocab-listening-indicator__text">マイク待機</span>';
+  }
+  if(explicitHost){
+    if(indicator.parentNode!==explicitHost) explicitHost.appendChild(indicator);
+  }else if(indicator.parentNode!==controls.parentNode){
     controls.parentNode?.insertBefore(indicator,controls);
   }
   return indicator;

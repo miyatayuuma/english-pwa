@@ -20,8 +20,8 @@ test('the paraphrase audit preserves history and mirrors fully materialized cura
   assert.equal(audit.pending_entries.length,0);
   assert.equal(audit.retired_entries.length,2);
   assert.equal(result.report.answer_authority.source_realizations_audited,2481);
-  assert.equal(result.report.answer_authority.entries_with_paraphrases,1835);
-  assert.equal(result.report.answer_authority.total_paraphrases,2931);
+  assert.equal(result.report.answer_authority.entries_with_paraphrases,1834);
+  assert.equal(result.report.answer_authority.total_paraphrases,2930);
   assert.deepEqual(db.entries.find(entry=>entry.id==='vocab:00121').paraphrases,['in spite of something','although','even though']);
   assert.deepEqual(db.entries.find(entry=>entry.id==='vocab:00182').paraphrases,['despite something','notwithstanding something']);
   assert.equal(db.entries.find(entry=>entry.id==='vocab:00182').paraphrases.includes('despite'),false);
