@@ -167,6 +167,41 @@ async function tapResult(page){
   const x=box.x+box.width-4,y=box.y+box.height-8;
   await page.mouse.move(x,y);await page.mouse.down();await page.mouse.up();
 }
+async function touchSwipe(page,x,y,dx,dy){
+  await page.evaluate(()=>{
+    window.__resultSwipePointerTrace=[];
+    if(window.__resultSwipePointerTraceInstalled) return;
+    window.__resultSwipePointerTraceInstalled=true;
+    for(const type of ['pointerdown','pointermove','pointerup','pointercancel']) document.addEventListener(type,event=>{
+      const surface=document.querySelector('.vocab-context-state');
+      window.__resultSwipePointerTrace.push({type,pointerId:event.pointerId,pointerType:event.pointerType,isPrimary:event.isPrimary,isTrusted:event.isTrusted,button:event.button,x:event.clientX,y:event.clientY,target:event.target?.className||event.target?.tagName,insideSurface:!!surface?.contains(event.target),interactive:!!event.target?.closest?.('button,a[href],input,textarea,select,[role="button"],[role="slider"],[contenteditable="true"]')});
+    },true);
+  });
+  const cdp=await page.context().newCDPSession(page);
+  try{
+    await cdp.send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:1});
+    await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{id:1,x,y,force:1}]});
+    for(let step=1;step<=8;step++){
+      const progress=step/8;
+      await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{id:1,x:x+dx*progress,y:y+dy*progress,force:1}]});
+    }
+    await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+    const trace=await page.evaluate(()=>window.__resultSwipePointerTrace);
+    const down=trace.find(event=>event.type==='pointerdown');
+    assert.ok(down,`touch gesture dispatched pointerdown: ${JSON.stringify(trace)}`);
+    assert.equal(down.pointerType,'touch',JSON.stringify(trace));
+    assert.equal(down.isTrusted,true,JSON.stringify(trace));
+    assert.equal(down.isPrimary,true,JSON.stringify(trace));
+    assert.equal(down.button,0,JSON.stringify(trace));
+    assert.equal(down.insideSurface,true,JSON.stringify(trace));
+    assert.ok(trace.some(event=>event.type==='pointermove'),`touch gesture dispatched pointermove: ${JSON.stringify(trace)}`);
+    assert.ok(trace.some(event=>event.type==='pointerup'||event.type==='pointercancel'),`touch gesture terminated with pointerup or pointercancel: ${JSON.stringify(trace)}`);
+    assert.ok(trace.every(event=>event.pointerId===down.pointerId),JSON.stringify(trace));
+  }finally{
+    await cdp.send('Emulation.setTouchEmulationEnabled',{enabled:false});
+    await cdp.detach();
+  }
+}
 async function swipeResult(page,dx,dy=0){
   await page.waitForTimeout(400);
   const box=await page.locator('.vocab-context-state').boundingBox();
@@ -208,8 +243,7 @@ async function swipeResult(page,dx,dy=0){
   assert.ok(point,`no non-text background swipe point found: ${JSON.stringify({dx,dy,box})}`);
   const {x,y}=point;
   assert.ok(x>=box.x&&x+dx<=box.x+box.width&&x+dx>=box.x&&x<=box.x+box.width&&y>=box.y&&y+dy>=box.y&&y+dy<=box.y+box.height,`swipe stays inside result surface: ${JSON.stringify({point,dx,dy,box})}`);
-  await page.mouse.move(x,y);await page.mouse.down();
-  await page.mouse.move(x+dx,y+dy,{steps:8});await page.mouse.up();
+  await touchSwipe(page,x,y,dx,dy);
   const selected=await page.evaluate(()=>String(getSelection()||'').trim());
   assert.equal(selected,'',`background swipe selected text: ${JSON.stringify({dx,dy,point,selected})}`);
 }
@@ -221,9 +255,7 @@ async function swipeFromControl(page,selector,dx=-120){
   const x=box.x+box.width/2,y=box.y+box.height/2;
   assert.ok(surface.x<=x&&x<=surface.x+surface.width&&surface.y<=y&&y<=surface.y+surface.height,`${selector} starts inside result surface`);
   assert.ok(x+dx>=surface.x&&x+dx<=surface.x+surface.width,`${selector} swipe ends inside result surface`);
-  await page.mouse.move(x,y);await page.mouse.down();
-  await page.mouse.move(x+dx,y,{steps:8});await page.mouse.up();
-  await page.evaluate(()=>getSelection()?.removeAllRanges());
+  await touchSwipe(page,x,y,dx,0);
 }
 async function captureAcceptanceScreenshot(page,name){
   const directory=process.env.VOCAB_ACCEPTANCE_SCREENSHOT_DIR;
