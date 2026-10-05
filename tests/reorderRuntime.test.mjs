@@ -5,17 +5,17 @@ import { readFile } from 'node:fs/promises';
 const root = new URL('../', import.meta.url);
 const read = (path) => readFile(new URL(path, root), 'utf8');
 
-test('the full item remains the ASR reference, and ASR cannot decide tile order', async () => {
+test('the app aligns full sentence evidence outside the provider controller', async () => {
   const [main, recognition, reorderGuide] = await Promise.all([
     read('scripts/app/main.js'),
     read('scripts/speech/recognition.js'),
     read('scripts/app/reorderGuide.js'),
   ]);
-  assert.match(main, /getReferenceText:\s*\(\)=>\{\s*const refItem=QUEUE\[idx\];\s*return refItem \? refItem\.en : el\.en\.textContent;/);
-  assert.match(main, /getComposeNodes:\s*\(\)=>composeGuide\.getNodes\(\)/);
+  assert.match(main, /alignAndHighlight\(refText,hyp/);
+  assert.doesNotMatch(recognition, /matchAndHighlight|applySpeechHighlight|calcMatchScore/);
   assert.match(reorderGuide, /getNodes:\s*\(\)\s*=>\s*\[\]/);
   assert.doesNotMatch(recognition, /answerIsCorrect|acceptedOrders|reorder-v1/);
-  assert.match(main, /calcMatchScore\(info\.refCount, info\.recall, info\.precision\)/);
+  assert.match(main, /gradeReadSpeech\(lastMatchEval\)\.score/);
 });
 
 test('Reordering guards speech and uses dedicated completion', async () => {

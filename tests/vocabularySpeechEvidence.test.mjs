@@ -15,7 +15,7 @@ test('strict TARGET token sequence anywhere in primary utterance is accepted and
     assert.equal(result.targetRescued,false,spoken);
     assert.equal(result.primaryTranscript,spoken,spoken);
     assert.equal(result.matchedText,target,spoken);
-    assert.equal(result.recognitionAuthority,spoken===target?'primary':'contained-target',spoken);
+    assert.equal(result.recognitionAuthority,'exact',spoken);
   }
   for(const spoken of ['not yield to something',"I won't yield to something",'I refuse to yield to something']){
     assert.equal(grade(target,spoken).type,'target','meaning and negation are deliberately not evaluated: '+spoken);
@@ -55,7 +55,7 @@ test('lower N-best rank 20 rescues an independent contained TARGET candidate and
   const result=classifyVocabularySpeechAnswer({entry:entry('yield to something'),transcript:alternatives[0],recognitionSegments});
   assert.equal(result.type,'target');
   assert.equal(result.targetRescued,true);
-  assert.equal(result.recognitionAuthority,'nbest-target');
+  assert.equal(result.recognitionAuthority,'nbest-exact');
   assert.equal(result.asrRank,19);
   assert.equal(result.primaryTranscript,alternatives[0]);
 });
@@ -75,19 +75,83 @@ test('lower candidates stay independent across segments; primary accumulation re
   const oneCandidateAlongsideOtherWords=[segment(['not','years to something'],0),segment(['other','yield to something'],1)];
   const rescued=classifyVocabularySpeechAnswer({entry:e,transcript:'not other',recognitionSegments:oneCandidateAlongsideOtherWords});
   assert.equal(rescued.type,'target');
-  assert.equal(rescued.recognitionAuthority,'nbest-target');
+  assert.equal(rescued.recognitionAuthority,'nbest-exact');
   assert.equal(rescued.asrRank,1);
   assert.equal(rescued.recognitionSegmentIndex,1);
   const primary=classifyVocabularySpeechAnswer({entry:e,transcript:'yield to something',recognitionSegments:[segment(['yield to'],0),segment(['something'],1)]});
   assert.equal(primary.type,'target');
-  assert.equal(primary.recognitionAuthority,'primary');
+  assert.equal(primary.recognitionAuthority,'exact');
+  assert.equal(primary.recognitionSegmentIndex,null,'a TARGET joined across two primary segments has no single supporting segment');
 });
 
 test('correction accepts contained strict TARGET while preserving correction and paraphrase rules',()=>{
   const e=entry('come across someone',{paraphrases:['run into someone']});
   const target=classifyVocabularySpeechAnswer({entry:e,transcript:'okay come across someone again',correction:true});
   assert.equal(target.type,'target');assert.equal(target.targetRescued,false);
-  assert.equal(target.recognitionAuthority,'contained-target');
+  assert.equal(target.recognitionAuthority,'exact');
+  assert.equal(target.targetMatchKind,'contained-target');
   assert.equal(classifyVocabularySpeechAnswer({entry:e,transcript:'run into someone',correction:true}).type,'miss');
   assert.equal(classifyVocabularySpeechAnswer({entry:e,transcript:'run into someone'}).type,'paraphrase');
 });
+
+test('prose/pros is TARGET with rule provenance while raw provider evidence stays pros',()=>{
+  const segment=segmentFactory(['pros']);
+  const result=classifyVocabularySpeechAnswer({
+    entry:{id:'vocab:01089',canonical:'prose'},
+    transcript:'pros',
+    recognitionSegments:[segment],
+  });
+  assert.equal(result.type,'target');
+  assert.equal(result.matchedAuthority,'canonical');
+  assert.equal(result.recognitionAuthority,'explicit-equivalence');
+  assert.equal(result.matchedExpected,'prose');
+  assert.equal(result.observed,'pros');
+  assert.equal(result.rawTranscript,'pros');
+  assert.equal(result.displayTranscript,'prose');
+  assert.equal(result.speechMatch.ruleId,'prose-pros');
+  assert.equal(result.speechMatch.ruleKind,'homophone');
+  assert.equal(result.recognitionSegmentIndex,0);
+  assert.equal(result.asrRank,0);
+  assert.equal(segment.alternatives[0].transcript,'pros');
+});
+
+test('lower N-best explicit TARGET equivalence records selected raw segment/rank without paraphrase rescue',()=>{
+  const recognitionSegments=[segmentFactory(['wrong','pros'])];
+  const result=classifyVocabularySpeechAnswer({
+    entry:{id:'vocab:01089',canonical:'prose'},
+    transcript:'wrong',
+    recognitionSegments,
+  });
+  assert.equal(result.type,'target');
+  assert.equal(result.targetRescued,true);
+  assert.equal(result.recognitionAuthority,'explicit-equivalence');
+  assert.equal(result.primaryTranscript,'wrong');
+  assert.equal(result.rawTranscript,'pros');
+  assert.equal(result.displayTranscript,'prose');
+  assert.equal(result.asrRank,1);
+  assert.equal(result.recognitionSegmentIndex,0);
+  assert.equal(recognitionSegments[0].alternatives[1].transcript,'pros');
+});
+
+test('postwar/post war is explicit TARGET equivalence with raw transcript display',()=>{
+  const result=classifyVocabularySpeechAnswer({
+    entry:{id:'vocab:01943',canonical:'postwar'},
+    transcript:'post war',
+  });
+  assert.equal(result.type,'target');
+  assert.equal(result.recognitionAuthority,'explicit-equivalence');
+  assert.equal(result.speechMatch.ruleId,'postwar-post-war');
+  assert.equal(result.rawTranscript,'post war');
+  assert.equal(result.displayTranscript,'post war');
+});
+
+test('legacy phonetic/one-edit examples remain Vocabulary MISS',()=>{
+  for(const [canonical,spoken] of [['yell','yeah'],['live','love'],['cat','cut'],['price','prize'],['walk','talk']]){
+    assert.equal(classifyVocabularySpeechAnswer({entry:{canonical},transcript:spoken}).type,'miss',`${canonical} / ${spoken}`);
+  }
+});
+
+function segmentFactory(values,index=0){
+  return {segmentIndex:index,primaryTranscript:values[0],isFinal:true,
+    alternatives:values.map((transcript,asrRank)=>({transcript,asrRank,confidence:null}))};
+}

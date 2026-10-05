@@ -324,7 +324,6 @@ function setupRecognition(){
   state.recognition=createRecognitionController({
     // Shared provider evidence never rewrites raw primary text.
     getRecognitionContext:()=>buildRecognitionContext({mode:'vocabulary'}),
-    shouldEvaluate:()=>false,
     onTranscriptReset:()=>{clearGradeTimer();state.liveTranscript='';state.lastAttemptTranscript='';setTranscript('');},
     onTranscriptPreview:text=>{
       if(state.processing||!state.current) return;
@@ -639,6 +638,7 @@ function gradeTranscript(text){
   setTranscript(transcript);
   const result=classifyVocabularySpeechAnswer({entry:state.current,activeOccurrence:activeSource(),transcript,recognitionSegments:state.recognition?.getRecognitionSegments?.()||[],correction:state.correction});
   state.lastRecognitionDecision=result;
+  if(result.type==='target'&&result.displayTranscript) setTranscript(result.displayTranscript);
   nativeSpeechDiagnostic('grading',{mode:'vocabulary',entryId:state.current.id,decision:result});
   if(state.recognition?.isActive()) state.recognition.cancel();
   setListening(false);

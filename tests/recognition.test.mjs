@@ -1,109 +1,155 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { appendRawTranscriptFinal } from '../scripts/speech/recognition.js';
+import { alignSpeech, findSpeechSurfaceMatch } from '../scripts/speech/speechAlignment.js';
+import { gradeReadSpeech } from '../scripts/speech/readSpeechGrader.js';
+import { applySpeechHighlight } from '../scripts/speech/speechPresentation.js';
 
-import { appendRawTranscriptFinal, createRecognitionController } from '../scripts/speech/recognition.js';
+function tokenSpan(text) {
+  const classes = new Set();
+  return {
+    textContent: text,
+    dataset: { w: text },
+    classes,
+    classList: {
+      add: name => classes.add(name),
+      remove: name => classes.delete(name),
+      toggle: (name, enabled) => enabled ? classes.add(name) : classes.delete(name),
+    },
+  };
+}
 
-test('Vocabulary raw transcript stitching preserves words, contractions, numbers, and compound punctuation',()=>{
-  assert.equal(appendRawTranscriptFinal('','I’m ready to pay two dollars.'),'I’m ready to pay two dollars.');
-  assert.equal(appendRawTranscriptFinal('well-known','story begins'),'well-known story begins');
-  assert.equal(appendRawTranscriptFinal('turn the faucet','the faucet off now'),'turn the faucet off now');
-  assert.equal(appendRawTranscriptFinal('despite','despise'),'despite despise');
+function presentAlignment(reference, observed, surfaces) {
+  const alignment = alignSpeech(reference, observed);
+  const spans = surfaces.map(tokenSpan);
+  applySpeechHighlight(alignment, { querySelectorAll: () => spans }, () => []);
+  return { alignment, spans };
+}
+
+test('raw provider transcript stitching preserves supplied words and punctuation', () => {
+  assert.equal(appendRawTranscriptFinal('', 'I’m ready to pay two dollars.'), 'I’m ready to pay two dollars.');
+  assert.equal(appendRawTranscriptFinal('well-known', 'story begins'), 'well-known story begins');
+  assert.equal(appendRawTranscriptFinal('turn the faucet', 'the faucet off now'), 'turn the faucet off now');
+  assert.equal(appendRawTranscriptFinal('despite', 'despise'), 'despite despise');
 });
 
-test('matchAndHighlight treats split and fused compound words as equivalent', () => {
-  const controller = createRecognitionController();
-
-  const matchFusedHyp = controller.matchAndHighlight(
-    'The rain forest is lush',
-    'the rainforest is lush'
-  );
-
-  assert.equal(matchFusedHyp.missing.length, 0, 'split reference tokens matched fused hypothesis');
-  assert.equal(
-    matchFusedHyp.matchedCounts.get('rainforest'),
-    1,
-    'rain forest merged to rainforest for matching'
-  );
-
-  const matchSplitHyp = controller.matchAndHighlight(
-    'The rainforest is lush',
-    'the rain forest is lush'
-  );
-
-  assert.equal(matchSplitHyp.missing.length, 0, 'fused reference token matched split hypothesis');
-  assert.equal(
-    matchSplitHyp.matchedCounts.get('rainforest'),
-    1,
-    'rainforest recognized from rain forest tokens'
-  );
+test('prose/pros is an explicit global homophone with provenance and target-spelling display', () => {
+  const result = alignSpeech('prose', 'pros', {
+    context: { mode: 'read' }, recognitionSegmentIndex: 0, asrRank: 0,
+  });
+  assert.equal(result.matchRate, 1);
+  assert.equal(result.rawTranscript, 'pros');
+  assert.equal(result.displayTranscript, 'prose');
+  const match = result.alignment[0];
+  assert.equal(match.authority, 'explicit-equivalence');
+  assert.equal(match.ruleId, 'prose-pros');
+  assert.equal(match.ruleKind, 'homophone');
+  assert.equal(match.expected, 'prose');
+  assert.equal(match.observed, 'pros');
+  assert.equal(match.recognitionSegmentIndex, 0);
+  assert.equal(match.asrRank, 0);
 });
 
-test('matchAndHighlight treats common homophones as matches', () => {
-  const controller = createRecognitionController();
-
-  const sweetSuite = controller.matchAndHighlight('book the suite now', 'book the sweet now');
-
-  assert.equal(sweetSuite.missing.length, 0, 'suite matched sweet in hypothesis');
-  assert.equal(sweetSuite.matchedCounts.get('suite'), 1, 'suite counted as matched token');
-
-  const hearHere = controller.matchAndHighlight('hear the bell', 'here the bell');
-
-  assert.equal(hearHere.missing.length, 0, 'hear matched homophonic here token');
-  assert.equal(hearHere.matchedCounts.get('hear'), 1, 'hear token counted despite homophone spelling');
+test('postwar/post war is an explicit segmentation equivalence with raw display and exact-equivalent score', () => {
+  const result = alignSpeech('The postwar era.', 'The post war era.');
+  assert.equal(result.matchRate, 1);
+  assert.equal(result.displayTranscript, 'The post war era.');
+  const match = result.alignment.find(event => event.ruleId === 'postwar-post-war');
+  assert.ok(match);
+  assert.equal(match.expected, 'postwar');
+  assert.equal(match.observed, 'post war');
+  assert.equal(match.authority, 'explicit-equivalence');
 });
 
-test('homophone matches normalize UI transcript to reference spelling', () => {
-  const controller = createRecognitionController();
+test('equivalences work inside sentence alignment and do not rewrite raw transcript evidence', () => {
+  const prose = alignSpeech('His prose is clear.', 'His pros is clear.');
+  assert.equal(prose.recall, 1);
+  assert.equal(prose.precision, 1);
+  assert.equal(prose.rawTranscript, 'His pros is clear.');
+  assert.equal(prose.displayTranscript, 'His prose is clear.');
 
-  const sweetSuite = controller.matchAndHighlight('book the suite now', 'book the sweet now');
-
-  assert.equal(sweetSuite.transcript, 'book the sweet now', 'raw transcript preserves recognition output');
-  assert.equal(
-    sweetSuite.normalizedTranscript,
-    'book the suite now',
-    'normalized transcript aligns UI text to reference spelling'
-  );
-
-  const hearHere = controller.matchAndHighlight('hear the bell', 'here the bell');
-
-  assert.equal(hearHere.transcript, 'here the bell', 'raw transcript keeps homophone spelling');
-  assert.equal(
-    hearHere.normalizedTranscript,
-    'hear the bell',
-    'normalized transcript replaces homophone with reference spelling'
-  );
+  const postwar = alignSpeech('The postwar era began.', 'The post war era began.');
+  assert.equal(postwar.matchRate, 1);
+  assert.equal(postwar.rawTranscript, 'The post war era began.');
+  assert.equal(postwar.displayTranscript, 'The post war era began.');
 });
 
-test('matchAndHighlight preserves consecutive duplicate tokens', () => {
-  const controller = createRecognitionController();
-
-  const repeated = controller.matchAndHighlight(
-    'you you can do it',
-    'you you can do it'
-  );
-
-  assert.equal(repeated.missing.length, 0, 'all reference tokens matched despite repetition');
-  assert.equal(
-    repeated.matchedCounts.get('you'),
-    2,
-    'both repeated you tokens counted in matches'
-  );
-  assert.deepEqual(
-    repeated.hypTokens,
-    ['you', 'you', 'can', 'do', 'it'],
-    'hypothesis tokens retain consecutive duplicates'
-  );
+test('expected-spelling display maps back to raw offsets after safe Unicode and unit normalization', () => {
+  for (const [reference, observed] of [['$5 prose', '$5 pros'], ['ﬃ prose', 'ﬃ pros']]) {
+    const result = alignSpeech(reference, observed);
+    assert.equal(result.matchRate, 1);
+    assert.equal(result.rawTranscript, observed);
+    assert.equal(result.displayTranscript, reference);
+    const equivalent = result.alignment.find(event => event.ruleId === 'prose-pros');
+    assert.equal(equivalent?.observed, 'pros');
+  }
 });
 
-test('matchAndHighlight requires tokens to appear in order', () => {
-  const controller = createRecognitionController();
+test('approved homophone directions are explicit; unknown pairs do not inherit a rule', () => {
+  assert.equal(findSpeechSurfaceMatch('prose', 'pros')?.ruleId, 'prose-pros');
+  assert.equal(findSpeechSurfaceMatch('pros', 'prose')?.ruleId, 'pros-prose');
+  assert.equal(findSpeechSurfaceMatch('prose', 'praise'), null);
+  assert.equal(findSpeechSurfaceMatch('postwar', 'post word'), null);
+});
 
-  const outOfOrder = controller.matchAndHighlight('say hello world', 'world say hello');
+test('edit-distance, Soundex, and apart/a part negatives receive no matching authority', () => {
+  for (const [expected, observed] of [
+    ['cat', 'cut'],
+    ['live', 'love'],
+    ['price', 'prize'],
+    ['walk', 'talk'],
+    ['yell', 'yeah'],
+    ['apart', 'a part'],
+  ]) {
+    const result = alignSpeech(expected, observed);
+    assert.equal(result.alignment.length, 0, `${expected} / ${observed}`);
+    assert.equal(gradeReadSpeech(result).score, 0, `${expected} / ${observed}`);
+  }
+});
 
-  assert.equal(outOfOrder.matchedCounts.get('say'), 1, 'matched later tokens still counted when aligned');
-  assert.equal(outOfOrder.matchedCounts.get('hello'), 1, 'hello recognized despite earlier misplaced word');
-  assert.equal(outOfOrder.matchedCounts.get('world') || 0, 0, 'world before say is ignored for ordered matching');
-  assert.ok(outOfOrder.missing.includes('world'), 'world missing when tokens spoken out of order');
-  assert.ok(outOfOrder.recall < 1, 'recall reduced when hypothesis order mismatches reference');
-  assert.deepEqual(outOfOrder.hypTokens, ['say', 'hello'], 'best match window trims out-of-order prefix');
+test('to/too is not an unconditional equivalence because to can be reduced', () => {
+  for (const [expected, observed] of [['too', 'to'], ['to', 'too']]) {
+    const result = alignSpeech(expected, observed);
+    assert.equal(result.alignment.length, 0, `${expected} / ${observed}`);
+    assert.equal(gradeReadSpeech(result).score, 0, `${expected} / ${observed}`);
+  }
+});
+
+test('alignment presentation applies only matched reference token indices', () => {
+  const { spans } = presentAlignment('Prose is ready', 'Pros is poor', ['Prose', 'is', 'ready']);
+  assert.deepEqual(spans.map(span => span.classes.has('hit')), [true, true, false]);
+  assert.deepEqual(spans.map(span => span.classes.has('miss')), [false, false, true]);
+});
+
+test('presentation source offsets keep highlights aligned after currency adds a synthetic token', () => {
+  const { alignment, spans } = presentAlignment(
+    'I paid $5 for prose',
+    'I paid $5 prose',
+    ['I', 'paid', '5', 'for', 'prose'],
+  );
+  assert.deepEqual(alignment.missing, ['for']);
+  assert.deepEqual(spans.map(span => span.classes.has('hit')), [true, true, true, false, true]);
+  assert.deepEqual(spans.map(span => span.classes.has('miss')), [false, false, false, true, false]);
+});
+
+test('presentation offsets preserve currency and explicit prose/pros equivalence together', () => {
+  const { alignment, spans } = presentAlignment(
+    'I paid $5 for prose',
+    'I paid $5 for pros',
+    ['I', 'paid', '5', 'for', 'prose'],
+  );
+  assert.equal(alignment.rawTranscript, 'I paid $5 for pros');
+  assert.equal(alignment.alignment.some(event => event.ruleId === 'prose-pros'), true);
+  assert.deepEqual(spans.map(span => span.classes.has('hit')), [true, true, true, true, true]);
+});
+
+test('presentation source offsets keep later highlights aligned after Celsius normalization', () => {
+  const { alignment, spans } = presentAlignment(
+    'I used 20℃ for prose',
+    'I used 20℃ prose',
+    ['I', 'used', '20', 'for', 'prose'],
+  );
+  assert.deepEqual(alignment.missing, ['for']);
+  assert.deepEqual(spans.map(span => span.classes.has('hit')), [true, true, true, false, true]);
+  assert.deepEqual(spans.map(span => span.classes.has('miss')), [false, false, false, true, false]);
 });

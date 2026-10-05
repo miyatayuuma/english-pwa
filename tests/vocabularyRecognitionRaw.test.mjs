@@ -22,19 +22,17 @@ const {composeRawTranscriptPreview}=await import('../scripts/speech/recognition.
 
 test('Vocabulary recognition preserves raw final transcript instead of shared fuzzy/token canonicalization',()=>{
   const finals=[];
-  const evaluated=[];
+  const evidence=[];
   const controller=createRecognitionController({
-    getReferenceText:()=> 'despite one hundred dollars',
-    shouldEvaluate:()=>false,
-    preserveRawTranscript:true,
     onTranscriptFinal:text=>finals.push(text),
-    onMatchEvaluated:value=>evaluated.push(value),
+    onTranscriptPreview:(text,providerEvidence)=>evidence.push({text,providerEvidence}),
   });
   assert.deepEqual(controller.start(),{ok:true});
   MockRecognition.instance.emit('despise one');
   MockRecognition.instance.emit('hundred dollars');
   assert.deepEqual(finals,['despise one','despise one hundred dollars']);
-  assert.deepEqual(evaluated,[]);
+  assert.equal(evidence.at(-1).text,'despise one hundred dollars');
+  assert.equal(evidence.at(-1).providerEvidence.recognitionSegments[1].alternatives[0].transcript,'hundred dollars');
 });
 
 test('raw preview composes stable and interim text without duplicated overlap or rewriting',()=>{
@@ -46,8 +44,6 @@ test('raw preview composes stable and interim text without duplicated overlap or
 test('preview callback reports cumulative stable plus changing interim text and finalizes without duplication',()=>{
   const previews=[];
   const controller=createRecognitionController({
-    shouldEvaluate:()=>false,
-    preserveRawTranscript:true,
     onTranscriptPreview:text=>previews.push(text),
   });
   controller.start();
@@ -65,8 +61,6 @@ test('preview callback reports cumulative stable plus changing interim text and 
 test('preview includes multiple interim results from one recognition event in order',()=>{
   const previews=[];
   const controller=createRecognitionController({
-    shouldEvaluate:()=>false,
-    preserveRawTranscript:true,
     onTranscriptPreview:text=>previews.push(text),
   });
   controller.start();

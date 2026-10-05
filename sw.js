@@ -1,6 +1,6 @@
-// sw.js: cache name follows the app version. v5.85
+// sw.js: cache name follows the app version. v5.86
 // Version the import itself so the browser cannot reuse an older worker import.
-importScripts('./scripts/version.js?v=5.66');
+importScripts('./scripts/version.js?v=5.86');
 const CACHE = self.APP_VERSION;
 
 self.addEventListener('install', e => {
@@ -25,8 +25,8 @@ self.addEventListener('install', e => {
     './icons/maskable-512.png',
     './scripts/version.js',
     './scripts/app/main.js',
-    './scripts/app/swBootstrap.js?v=5.66',
-    './scripts/app/swUpdatePrompt.js?v=5.66',
+    './scripts/app/swBootstrap.js?v=5.86',
+    './scripts/app/swUpdatePrompt.js?v=5.86',
     './scripts/native/runtimePlatform.js',
     './scripts/native/media.js',
     './scripts/reorder/sharedAuthority.js',
@@ -65,6 +65,14 @@ self.addEventListener('install', e => {
     './scripts/speech/recognition.js',
     './scripts/speech/recognitionPolicy.js',
     './scripts/speech/recognitionEvidence.js',
+    './scripts/speech/safeSpeechNormalization.js',
+    './scripts/speech/speechEquivalenceRules.js',
+    './scripts/speech/speechEquivalence.js',
+    './scripts/speech/speechAlignment.js',
+    './scripts/speech/readSpeechGrader.js',
+    './scripts/speech/correctionSpeechGrader.js',
+    './scripts/speech/clozeSpeechGrader.js',
+    './scripts/speech/speechPresentation.js',
     './scripts/native/androidSpeechBackend.js',
     './scripts/native/nativeSpeech.js',
     './scripts/native/recognitionEvidence.js',

@@ -59,7 +59,7 @@ test('runtime keeps shadowing capture outside scoring, SRS, achievements, and in
     readFile(new URL('../scripts/app/sessionShell.js',import.meta.url),'utf8'),
   ]);
   assert.match(shell,/data-training-mode="\$\{TRAINING_MODES\.CONTINUOUS_SHADOWING\}"/);
-  assert.match(main,/shouldEvaluate:\(\)=>!isShadowingSession\(\)/);
+  assert.doesNotMatch(main,/shouldEvaluate/);
   assert.match(main,/if\(isShadowingSession\(\)\) recognitionController\.cancel\(\);\s*else await stopRec\(\)/);
   assert.match(main,/recordShadowingExposure\(\{cards:1,durationMs:exposure\.durationMs\}\)/);
   assert.doesNotMatch(main,/sendLog|flushPendingLogs/);
