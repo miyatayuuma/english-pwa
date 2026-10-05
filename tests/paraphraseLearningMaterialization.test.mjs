@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {buildParaphraseFinalization} from '../scripts/vocabulary/materialize-paraphrase-learning-audit.mjs';
+import {assertExpectedFinalState,buildParaphraseFinalization} from '../scripts/vocabulary/materialize-paraphrase-learning-audit.mjs';
 
 const CLAIM_BASE='a'.repeat(40),CLAIM_COMMIT='b'.repeat(40),MAIN='c'.repeat(40);
 
@@ -71,6 +71,28 @@ test('detects PRE and POST; POST builder is idempotent',()=>{
   assert.equal(post.state,'POST');
   assert.deepEqual(post.nextVocabulary,input.vocabulary);
   assert.deepEqual(post.nextParaphraseAudit,pre.nextParaphraseAudit);
+});
+
+test('verifies every persisted output in POST state before a --write no-op',()=>{
+  const pre=build();
+  const expected={
+    nextVocabulary:pre.nextVocabulary,
+    nextParaphraseAudit:pre.nextParaphraseAudit,
+    summary:pre.summary,
+    reconciliation:pre.reconciliation,
+  };
+  const actual={
+    vocabulary:structuredClone(expected.nextVocabulary),
+    paraphraseAudit:structuredClone(expected.nextParaphraseAudit),
+    summary:structuredClone(expected.summary),
+    reconciliation:structuredClone(expected.reconciliation),
+  };
+  assert.equal(assertExpectedFinalState(actual,expected),true);
+  for(const field of ['paraphraseAudit','summary','reconciliation']){
+    const stale=structuredClone(actual);
+    stale[field].stale=true;
+    assert.throws(()=>assertExpectedFinalState(stale,expected),/does not equal deterministic|differs from deterministic/);
+  }
 });
 
 test('rejects a MIXED production state',()=>{
