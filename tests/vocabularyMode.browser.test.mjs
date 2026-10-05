@@ -305,12 +305,14 @@ for(const viewport of [{width:390,height:844},{width:360,height:640},{width:1280
 });
 
 browserTest('result tap ignores audio/context controls and selected text, then advances once',async()=>{
-  const opened=await newPage(sources[0],{additionalEntries:[fixtureFor(sources[3])]});
+  const opened=await newPage(sources[0],{additionalEntries:[fixtureFor(sources[4])]});
   const {page,entries}=opened;
   try{
     const firstPrompt=await page.locator('.vocab-meaning').innerText();
     const entry=entries.find(value=>value.meaning_ja===firstPrompt);
     assert.ok(entry,`current prompt fixture: ${firstPrompt}`);
+    const nextEntry=entries.find(value=>value.id!==entry.id);
+    assert.ok(nextEntry,'two expression fixtures are available for a manual advance');
     await inject(page,sourceSurface(entry,entry.occurrences[0].item_id));
     await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='正解');
     await page.waitForTimeout(400);
@@ -338,28 +340,35 @@ browserTest('result tap ignores audio/context controls and selected text, then a
     assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical,'active text selection suppresses tap advance');
     await page.evaluate(()=>getSelection()?.removeAllRanges());
     await tapResult(page);
-    await page.waitForSelector('.vocab-meaning');
+    await page.waitForFunction(prompt=>document.querySelector('.vocab-meaning')?.textContent!==prompt,firstPrompt);
+    assert.equal(await page.locator('.vocab-meaning').innerText(),nextEntry.meaning_ja,'one tap advances to the next expression');
     assert.equal(await page.locator('.vocab-done').count(),0,'one tap advances exactly one card in a two-card session');
   }finally{await closePage(opened);}
 });
 
 browserTest('only a dominant left swipe advances; short, vertical, and right movements do nothing',async()=>{
-  const opened=await newPage(sources[0],{additionalEntries:[fixtureFor(sources[3])]});
+  const opened=await newPage(sources[0],{additionalEntries:[fixtureFor(sources[4])]});
   const {page,entries}=opened;
   try{
     const firstPrompt=await page.locator('.vocab-meaning').innerText();
     const entry=entries.find(value=>value.meaning_ja===firstPrompt);
     assert.ok(entry,`current prompt fixture: ${firstPrompt}`);
+    const nextEntry=entries.find(value=>value.id!==entry.id);
+    assert.ok(nextEntry,'two expression fixtures are available for a manual advance');
     await inject(page,sourceSurface(entry,entry.occurrences[0].item_id));
     await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='正解');
     await swipeResult(page,-42);
     assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical,'short horizontal movement is ignored');
+    assert.equal(await page.locator('.vocab-meaning').innerText(),firstPrompt,'short horizontal movement keeps the current card');
     await swipeResult(page,-8,105);
     assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical,'vertical gesture is ignored');
+    assert.equal(await page.locator('.vocab-meaning').innerText(),firstPrompt,'vertical movement keeps the current card');
     await swipeResult(page,105,4);
     assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical,'right swipe is ignored');
+    assert.equal(await page.locator('.vocab-meaning').innerText(),firstPrompt,'right swipe keeps the current card');
     await swipeResult(page,-100,10);
-    await page.waitForSelector('.vocab-meaning');
+    await page.waitForFunction(prompt=>document.querySelector('.vocab-meaning')?.textContent!==prompt,firstPrompt);
+    assert.equal(await page.locator('.vocab-meaning').innerText(),nextEntry.meaning_ja,'left swipe advances to the next expression');
     assert.equal(await page.locator('.vocab-done').count(),0,'one left swipe advances exactly one card');
   }finally{await closePage(opened);}
 });
