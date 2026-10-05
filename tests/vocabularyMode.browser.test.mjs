@@ -195,8 +195,22 @@ async function swipeResult(page,dx,dy=0){
   assert.ok(point,`no non-text background swipe point found: ${JSON.stringify({dx,dy,box})}`);
   const {x,y}=point;
   assert.ok(x>=box.x&&x+dx<=box.x+box.width&&x+dx>=box.x&&x<=box.x+box.width&&y>=box.y&&y+dy>=box.y&&y+dy<=box.y+box.height,`swipe stays inside result surface: ${JSON.stringify({point,dx,dy,box})}`);
+  await page.evaluate(()=>{
+    window.__vocabularyGestureDiagnosticEnabled=true;
+    window.__vocabularyGestureDiagnostic=[];
+    window.__vocabularyPointerDocumentTrace=[];
+    if(!window.__vocabularyPointerDocumentTraceInstalled){
+      window.__vocabularyPointerDocumentTraceInstalled=true;
+      for(const type of ['pointerdown','pointermove','pointerup','pointercancel']) document.addEventListener(type,event=>{
+        const surface=document.querySelector('.vocab-context-state');
+        window.__vocabularyPointerDocumentTrace.push({type,pointerId:event.pointerId,target:event.target?.className||event.target?.tagName,inside:!!surface?.contains(event.target),interactive:!!event.target?.closest?.('button,a[href],input,textarea,select,[role="button"],[role="slider"],[contenteditable="true"]'),x:event.clientX,y:event.clientY,isPrimary:event.isPrimary,button:event.button,selected:String(getSelection()||'')});
+      },true);
+    }
+  });
   await page.mouse.move(x,y);await page.mouse.down();
   await page.mouse.move(x+dx,y+dy,{steps:8});await page.mouse.up();
+  const trace=await page.evaluate(()=>({document:window.__vocabularyPointerDocumentTrace,handler:window.__vocabularyGestureDiagnostic}));
+  console.log(`VOCAB_SWIPE_DIAGNOSTIC ${JSON.stringify({dx,dy,point,trace})}`);
   assert.equal(await page.evaluate(()=>String(getSelection()||'').trim()),'','background swipe must not select result text');
 }
 async function swipeFromControl(page,selector,dx=-120){

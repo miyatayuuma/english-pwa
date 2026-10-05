@@ -639,8 +639,29 @@ function isInteractiveAdvanceTarget(target){
   return !!target?.closest?.('button,a[href],input,textarea,select,[role="button"],[role="slider"],[contenteditable="true"]');
 }
 
+function traceVocabularyGesture(type,event=null,details={}){
+  if(window.__vocabularyGestureDiagnosticEnabled!==true) return;
+  const surface=state.screen?.querySelector('.vocab-context-state');
+  const gesture=state.resultGesture;
+  const rect=surface?.getBoundingClientRect();
+  (window.__vocabularyGestureDiagnostic??=[]).push({
+    type,pointerId:event?.pointerId??null,x:event?.clientX??null,y:event?.clientY??null,
+    target:event?.target?.className||event?.target?.tagName||null,
+    insideSurface:!!surface?.contains(event?.target),interactive:isInteractiveAdvanceTarget(event?.target),
+    correction:state.correction,advanceBusy:state.advanceBusy,
+    advanceLockRemainingMs:Math.max(0,state.advanceLockUntil-Date.now()),
+    textSelection:selectionIsActive(),
+    gestureStart:gesture?{pointerId:gesture.pointerId,x:gesture.x,y:gesture.y,interactive:gesture.interactive,inExpandedContext:gesture.inExpandedContext}:null,
+    dx:gesture&&event?event.clientX-gesture.x:null,dy:gesture&&event?event.clientY-gesture.y:null,
+    surfaceRect:rect?{x:rect.x,y:rect.y,width:rect.width,height:rect.height}:null,
+    ...details,
+  });
+}
+
 function advanceVocabularyCard(){
-  if(!state.current||state.correction||state.advanceBusy||Date.now()<state.advanceLockUntil) return false;
+  const blocked=!state.current?'no_current':state.correction?'correction':state.advanceBusy?'advance_busy':Date.now()<state.advanceLockUntil?'advance_lock':null;
+  traceVocabularyGesture('advanceVocabularyCard',null,{called:true,blocked,currentId:state.current?.id??null});
+  if(blocked) return false;
   state.advanceBusy=true;
   state.advanceLockUntil=Date.now()+350;
   stopListening();
@@ -660,23 +681,33 @@ function bindResultGestures(surface){
   const reset=()=>{state.resultGesture=null;};
   surface.tabIndex=-1;
   surface.addEventListener('pointerdown',event=>{
-    if(!event.isPrimary||event.button!==0){reset();return;}
+    if(!event.isPrimary||event.button!==0){traceVocabularyGesture('pointerdown',event,{decision:'non_primary_or_button'});reset();return;}
     state.resultGesture={
       pointerId:event.pointerId,x:event.clientX,y:event.clientY,at:Date.now(),
       interactive:isInteractiveAdvanceTarget(event.target),
       inExpandedContext:!!event.target.closest?.('.vocab-context-full'),
     };
+    traceVocabularyGesture('pointerdown',event);
   });
-  surface.addEventListener('pointercancel',reset);
+  surface.addEventListener('pointermove',event=>traceVocabularyGesture('pointermove',event),{passive:true});
+  surface.addEventListener('pointercancel',event=>{traceVocabularyGesture('pointercancel',event);reset();});
   surface.addEventListener('pointerup',event=>{
     const gesture=state.resultGesture;
-    reset();
-    if(!gesture||gesture.pointerId!==event.pointerId||gesture.interactive||isInteractiveAdvanceTarget(event.target)) return;
-    if(state.correction||state.advanceBusy||Date.now()<state.advanceLockUntil||selectionIsActive()) return;
+    if(!gesture){traceVocabularyGesture('pointerup',event,{decision:'no_gesture'});reset();return;}
+    if(gesture.pointerId!==event.pointerId){traceVocabularyGesture('pointerup',event,{decision:'pointer_id_mismatch'});reset();return;}
+    if(gesture.interactive||isInteractiveAdvanceTarget(event.target)){traceVocabularyGesture('pointerup',event,{decision:'interactive_target'});reset();return;}
+    if(state.correction||state.advanceBusy||Date.now()<state.advanceLockUntil||selectionIsActive()){
+      const decision=state.correction?'correction':state.advanceBusy?'advance_busy':Date.now()<state.advanceLockUntil?'advance_lock':'text_selection';
+      traceVocabularyGesture('pointerup',event,{decision});reset();return;
+    }
     const dx=event.clientX-gesture.x,dy=event.clientY-gesture.y;
     const elapsed=Date.now()-gesture.at;
     const width=Math.max(1,surface.getBoundingClientRect().width);
-    const validLeftSwipe=dx<=-Math.max(70,width*.18)&&Math.abs(dx)>=Math.abs(dy)*1.25;
+    const threshold=Math.max(70,width*.18);
+    const dominantHorizontal=Math.abs(dx)>=Math.abs(dy)*1.25;
+    const validLeftSwipe=dx<=-threshold&&dominantHorizontal;
+    traceVocabularyGesture('pointerup',event,{decision:validLeftSwipe?'advance_left_swipe':'not_left_swipe',dx,dy,elapsed,threshold,dominantHorizontal,validLeftSwipe});
+    reset();
     if(validLeftSwipe&&elapsed<=1200){advanceVocabularyCard();return;}
     if(isExpanded()||gesture.inExpandedContext) return;
     if(Math.hypot(dx,dy)<=10&&elapsed<=600) advanceVocabularyCard();
