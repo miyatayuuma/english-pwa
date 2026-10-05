@@ -21,6 +21,7 @@ const sources=[
   {kind:'word',canonical:'confuse',itemId:'E0016'},
   {kind:'expression',canonical:'learn your lesson',itemId:'E0187'},
   {kind:'construction',canonical:'talk someone into doing something',itemId:'E0081',entryId:'vocab:00111'},
+  {kind:'expression',canonical:'will do',itemId:'E0127',entryId:'vocab:01387'},
 ];
 const fixtureFor=source=>source.entryId?vocabulary.entries.find(entry=>entry.id===source.entryId):vocabulary.entries.find(entry=>entry.kind===source.kind&&entry.canonical===source.canonical&&entry.occurrences.some(occurrence=>occurrence.item_id===source.itemId));
 const sourceSurface=(entry,itemId)=>{const occurrence=entry.occurrences.find(value=>String(value.item_id)===String(itemId));const item=itemById.get(String(itemId));return occurrence&&item?item.en.slice(occurrence.start,occurrence.end):''};
@@ -174,6 +175,12 @@ async function swipeResult(page,dx,dy=0){
   await page.mouse.move(x,y);await page.mouse.down();
   await page.mouse.move(x+dx,y+dy,{steps:8});await page.mouse.up();
 }
+async function captureAcceptanceScreenshot(page,name){
+  const directory=process.env.VOCAB_ACCEPTANCE_SCREENSHOT_DIR;
+  if(!directory) return;
+  await fs.mkdir(directory,{recursive:true});
+  await page.screenshot({path:path.join(directory,name)});
+}
 function browserTest(name,run){
   test(name,async t=>{
     if(!browser){t.skip(`Chromium is unavailable in this environment: ${browserError||'browser launch failed'}`);return;}
@@ -225,7 +232,7 @@ browserTest('390×844 expression card preserves active source, strict paraphrase
     assert.equal(await page.locator('.vocab-result-prompt').innerText(),entry.meaning_ja);
     assert.equal(await page.locator('.vocab-source-heading').innerText().then(text=>text.includes('SOURCE EXAMPLE')),true);
     assert.match(await page.locator('.vocab-paraphrases').innerText(),/run into someone/);
-    await page.waitForTimeout(2200);
+    await page.waitForTimeout(2600);
     assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical,'result remains after the former auto-advance delay');
     const audio=page.locator('.vocab-expression-audio');
     await audio.waitFor({state:'visible'});
@@ -291,6 +298,8 @@ for(const viewport of [{width:390,height:844},{width:360,height:640},{width:1280
     assert.match(layout.hint,/タップ \/ ←スワイプで次へ/);
     assert.ok(layout.headerHeight>=50&&layout.headerHeight<=58,`header ${layout.headerHeight}px`);
     assert.ok(layout.closeHeight>=44,`close target ${layout.closeHeight}px`);
+    if(process.env.VOCAB_ACCEPTANCE_REPORT==='1') console.log(`VOCAB_LAYOUT ${viewport.width}x${viewport.height} ${JSON.stringify(layout)}`);
+    await captureAcceptanceScreenshot(page,`vocab-00111-${viewport.width}x${viewport.height}.png`);
     const expressionAudio=page.locator('.vocab-expression-audio');
     const sourceAudio=page.locator('.vocab-source-audio');
     await sourceAudio.waitFor({state:'visible'});
@@ -299,8 +308,44 @@ for(const viewport of [{width:390,height:844},{width:360,height:640},{width:1280
     await page.locator('.vocab-expand-context').click();
     assert.equal(await page.locator('.vocab-context-state').evaluate(node=>getComputedStyle(node.querySelector('.vocab-context-scroll')).overflowY),'auto');
     assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical);
+    if(viewport.height===640){
+      const scroll=page.locator('.vocab-context-scroll');
+      const metrics=await scroll.evaluate(node=>({scrollHeight:node.scrollHeight,clientHeight:node.clientHeight,scrollTop:node.scrollTop}));
+      assert.ok(metrics.scrollHeight>metrics.clientHeight,JSON.stringify(metrics));
+      const box=await scroll.boundingBox();assert.ok(box);
+      await page.mouse.move(box.x+box.width/2,box.y+box.height/2);
+      await page.mouse.wheel(0,metrics.scrollTop>0?-180:180);
+      await page.waitForFunction(previous=>document.querySelector('.vocab-context-scroll')?.scrollTop!==previous,metrics.scrollTop);
+      assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical,'expanded vertical scrolling keeps the result visible');
+    }
     await page.locator('.vocab-expand-context').click();
     assert.equal(await page.locator('.vocab-context-scroll').evaluate(node=>node.scrollHeight<=node.clientHeight+1),true);
+  }finally{await closePage(opened);}
+});
+
+browserTest('vocab:01387 shows the sufficiency prompt and will do target without a temporal paraphrase',async()=>{
+  const source=sources[9];
+  const opened=await newPage(source,{viewport:{width:390,height:844}});
+  const {page,entry}=opened;
+  try{
+    assert.equal(entry.canonical,'will do');
+    assert.equal(entry.sense_key,'be_sufficient');
+    assert.equal(entry.meaning_ja,'用が足りる');
+    assert.deepEqual(entry.paraphrases||[],[]);
+    assert.equal(await page.locator('.vocab-meaning').innerText(),'用が足りる');
+    await inject(page,sourceSurface(entry,source.itemId));
+    await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='正解');
+    assert.equal(await page.locator('.vocab-result-prompt').innerText(),'用が足りる');
+    assert.equal(await page.locator('.vocab-answer').innerText(),'will do');
+    assert.equal(await page.locator('.vocab-paraphrases').count(),0);
+    assert.match(await page.locator('.vocab-source-block').innerText(),/どんなアパートでも構わない/);
+    assert.doesNotMatch(await page.locator('.vocab-context-state').innerText(),/make it in time/i);
+    const layout=await page.locator('.vocab-context-scroll').evaluate(node=>({scrollHeight:node.scrollHeight,clientHeight:node.clientHeight}));
+    assert.ok(layout.scrollHeight<=layout.clientHeight+1,JSON.stringify(layout));
+    await captureAcceptanceScreenshot(page,'vocab-01387-will-do-390x844.png');
+    await page.waitForTimeout(2600);
+    assert.equal(await page.locator('.vocab-answer').innerText(),'will do','the result remains after 2.5 seconds');
+    assert.equal(await page.locator('.vocab-result-prompt').innerText(),'用が足りる');
   }finally{await closePage(opened);}
 });
 
@@ -327,17 +372,19 @@ browserTest('result tap ignores audio/context controls and selected text, then a
     assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical,'expanded context taps do not advance');
     await page.locator('.vocab-expand-context').click();
 
-    const box=await page.locator('.vocab-context-state').boundingBox();
-    assert.ok(box);
-    const x=box.x+box.width-4,y=box.y+box.height-8;
-    await page.mouse.move(x,y);await page.mouse.down();
-    await page.evaluate(()=>{
-      const node=document.querySelector('.vocab-source-line');
+    const selectionPoint=await page.locator('.vocab-source-line').first().evaluate(node=>{
       const range=document.createRange();range.selectNodeContents(node);
-      const selection=getSelection();selection.removeAllRanges();selection.addRange(range);
+      const rect=range.getClientRects()[0];
+      return rect?{x:rect.x,y:rect.y,width:rect.width,height:rect.height}:null;
     });
+    assert.ok(selectionPoint);
+    await page.mouse.move(selectionPoint.x+1,selectionPoint.y+selectionPoint.height/2);
+    await page.mouse.down();
+    await page.mouse.move(selectionPoint.x+selectionPoint.width-1,selectionPoint.y+selectionPoint.height/2,{steps:6});
     await page.mouse.up();
-    assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical,'active text selection suppresses tap advance');
+    const selectedText=await page.evaluate(()=>String(getSelection()||'').trim());
+    assert.ok(selectedText.length>0,'pointer drag selects example text');
+    assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical,'pointer text selection suppresses advance');
     await page.evaluate(()=>getSelection()?.removeAllRanges());
     await tapResult(page);
     await page.waitForFunction(prompt=>document.querySelector('.vocab-meaning')?.textContent===prompt,nextEntry.meaning_ja);
@@ -664,7 +711,7 @@ browserTest('answer correction rejects paraphrase, handles technical error, requ
     await page.waitForFunction(()=>window.__mockSpeech.spoken.includes('come across someone'));
     assert.equal(await page.locator('.vocab-expression-audio').getAttribute('aria-label'),'英語の表現を再生');
     assert.equal(await page.evaluate(()=>document.activeElement?.classList.contains('vocab-expression-audio')),true);
-    await page.waitForTimeout(2100);
+    await page.waitForTimeout(2600);
     assert.equal(await page.locator('.vocab-answer').count(),1,'no advance before correction');
     await tapResult(page);
     assert.equal(await page.locator('.vocab-answer').count(),1,'tap cannot advance during correction');
@@ -699,6 +746,7 @@ browserTest('correction completion and source audio end keep the result until ex
   try{
     await page.locator('.vocab-reveal').click();
     await page.waitForSelector('.vocab-answer');
+    await captureAcceptanceScreenshot(page,'correction-footer-390x844.png');
     await page.locator('.vocab-source-audio').waitFor({state:'visible'});
     await page.locator('.vocab-mic').click();
     await page.waitForFunction(()=>window.__mockSpeech.startCount>0);
@@ -707,7 +755,7 @@ browserTest('correction completion and source audio end keep the result until ex
     assert.equal(await page.locator('.vocab-next').count(),0);
     await page.locator('.vocab-source-audio').click();
     await page.waitForFunction(()=>window.__mockSpeech.audioPlayed.length>0);
-    await page.waitForTimeout(2100);
+    await page.waitForTimeout(2600);
     assert.equal(await page.locator('.vocab-answer').count(),1,'the result remains while source audio plays');
     await page.evaluate(()=>window.__mockSpeech.latestAudio?.onended?.());
     assert.equal(await page.locator('.vocab-answer').count(),1,'source audio end does not advance');
@@ -759,7 +807,7 @@ browserTest('correct-answer playback holds capture until release and replay safe
     assert.notEqual(await page.locator('.vocab-feedback').innerText(),'修正練習完了');
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);
     await page.evaluate(()=>window.__heldUtterance.onend?.());
-    await page.waitForTimeout(2100);
+    await page.waitForTimeout(2600);
     assert.equal(await page.locator('.vocab-answer').count(),1);
   }finally{await closePage(opened);}
 });
