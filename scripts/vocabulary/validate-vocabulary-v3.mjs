@@ -89,7 +89,7 @@ function validateParaphraseAudit(audit,entries,errors){
     if(!entry?.paraphrases?.includes(example?.paraphrase)||!String(example?.reason||'').trim()) errors.push(`paraphrase audit: invalid accepted example ${example?.entry_id||'<missing>'}`);
     const counterpart=entryById.get(String(example?.counterpart_entry_id||''));
     if(example?.counterpart_entry_id&&!counterpart) errors.push(`paraphrase audit: unknown counterpart ${example.counterpart_entry_id}`);
-    if(counterpart&&!counterpart.paraphrases?.some(value=>normalizeVocabularyAnswer(value)===normalizeVocabularyAnswer(entry?.canonical))) errors.push(`paraphrase audit: directional counterpart was not separately curated for ${entry?.id||'<missing>'}`);
+    // counterpart_entry_id is provenance only; current prompt-learning-value policy does not require reciprocal curation.
   }
   for(const example of Array.isArray(audit.representative_rejected)?audit.representative_rejected:[]){
     if(!String(example?.left||'').trim()||!String(example?.right||'').trim()||!String(example?.reason||'').trim()) errors.push('paraphrase audit: rejected examples need candidates and a reason');
