@@ -179,15 +179,20 @@ async function swipeResult(page,dx,dy=0){
     const minY=Math.max(rect.top+4,rect.top+4-dy,4);
     const maxY=Math.min(rect.bottom-4,rect.bottom-4-dy,innerHeight-4,innerHeight-4-dy);
     const interactive='button,a[href],input,textarea,select,[role="button"],[role="slider"],[contenteditable="true"]';
+    const textBearing='.vocab-feedback,.vocab-result-prompt,.vocab-answer,.vocab-paraphrases,.vocab-source-block,.vocab-heard,.vocab-transcript,.vocab-advance-hint,.vocab-speaker';
     for(let y=Math.floor(maxY);y>=minY;y-=4){
       for(let x=Math.floor(maxX);x>=minX;x-=4){
-        const start=document.elementFromPoint(x,y);
-        const end=document.elementFromPoint(x+dx,y+dy);
-        if(!start||!end||!surface.contains(start)||!surface.contains(end)) continue;
-        if(start.closest(interactive)||end.closest(interactive)||start.closest('.vocab-advance-hint')) continue;
-        const caret=document.caretPositionFromPoint?.(x,y);
-        if(caret?.offsetNode?.nodeType===Node.TEXT_NODE) continue;
-        return {x,y,startTarget:start.className||start.tagName,endTarget:end.className||end.tagName};
+        let pathSafe=true;
+        const targets=[];
+        for(let step=0;step<=24;step++){
+          const progress=step/24;
+          const target=document.elementFromPoint(x+dx*progress,y+dy*progress);
+          if(!target||!surface.contains(target)||target.closest(interactive)||target.closest(textBearing)){
+            pathSafe=false;break;
+          }
+          targets.push(target.className||target.tagName);
+        }
+        if(pathSafe) return {x,y,startTarget:targets[0],endTarget:targets.at(-1),pathTargets:targets};
       }
     }
     return null;
@@ -195,22 +200,8 @@ async function swipeResult(page,dx,dy=0){
   assert.ok(point,`no non-text background swipe point found: ${JSON.stringify({dx,dy,box})}`);
   const {x,y}=point;
   assert.ok(x>=box.x&&x+dx<=box.x+box.width&&x+dx>=box.x&&x<=box.x+box.width&&y>=box.y&&y+dy>=box.y&&y+dy<=box.y+box.height,`swipe stays inside result surface: ${JSON.stringify({point,dx,dy,box})}`);
-  await page.evaluate(()=>{
-    window.__vocabularyGestureDiagnosticEnabled=true;
-    window.__vocabularyGestureDiagnostic=[];
-    window.__vocabularyPointerDocumentTrace=[];
-    if(!window.__vocabularyPointerDocumentTraceInstalled){
-      window.__vocabularyPointerDocumentTraceInstalled=true;
-      for(const type of ['pointerdown','pointermove','pointerup','pointercancel']) document.addEventListener(type,event=>{
-        const surface=document.querySelector('.vocab-context-state');
-        window.__vocabularyPointerDocumentTrace.push({type,pointerId:event.pointerId,target:event.target?.className||event.target?.tagName,inside:!!surface?.contains(event.target),interactive:!!event.target?.closest?.('button,a[href],input,textarea,select,[role="button"],[role="slider"],[contenteditable="true"]'),x:event.clientX,y:event.clientY,isPrimary:event.isPrimary,button:event.button,selected:String(getSelection()||'')});
-      },true);
-    }
-  });
   await page.mouse.move(x,y);await page.mouse.down();
   await page.mouse.move(x+dx,y+dy,{steps:8});await page.mouse.up();
-  const trace=await page.evaluate(()=>({document:window.__vocabularyPointerDocumentTrace,handler:window.__vocabularyGestureDiagnostic}));
-  console.log(`VOCAB_SWIPE_DIAGNOSTIC ${JSON.stringify({dx,dy,point,trace})}`);
   assert.equal(await page.evaluate(()=>String(getSelection()||'').trim()),'','background swipe must not select result text');
 }
 async function swipeFromControl(page,selector,dx=-120){
