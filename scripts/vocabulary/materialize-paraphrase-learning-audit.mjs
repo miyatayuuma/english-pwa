@@ -258,6 +258,14 @@ export function buildParaphraseFinalization({
   return {state,nextVocabulary,nextParaphraseAudit,summary,reconciliation};
 }
 
+export function assertExpectedFinalState({vocabulary,paraphraseAudit,summary,reconciliation},expected){
+  if(!eq(vocabulary,expected.nextVocabulary)) throw new Error('production does not equal deterministic final paraphrase authority');
+  if(!eq(paraphraseAudit,expected.nextParaphraseAudit)) throw new Error('global audit does not equal deterministic final projection');
+  if(!eq(summary,expected.summary)) throw new Error('summary.json differs from deterministic output');
+  if(!eq(reconciliation,expected.reconciliation)) throw new Error('reconciliation.json differs from deterministic output');
+  return true;
+}
+
 function readJson(file){return JSON.parse(fs.readFileSync(path.join(ROOT,file),'utf8'));}
 function readLoadedBatch(number){
   const key=String(number).padStart(3,'0');
@@ -299,11 +307,6 @@ function loadInputs({forCheck}){
 }
 
 function writeJson(rel,value){fs.writeFileSync(path.join(ROOT,rel),`${JSON.stringify(value,null,2)}\n`);}
-function sameFile(rel,expected){
-  const file=path.join(ROOT,rel);
-  if(!fs.existsSync(file)) return false;
-  try{return eq(JSON.parse(fs.readFileSync(file,'utf8')),expected);}catch{return false;}
-}
 function displaySummary(result){
   console.log(JSON.stringify({state:result.state,...result.summary,coverage:result.reconciliation.coverage,semantic_drift:result.reconciliation.semantic_drift.count,structural_errors:0},null,2));
 }
@@ -321,10 +324,12 @@ function main(){
   const summaryPath=`${AUDIT_DIR}/summary.json`,reconciliationPath=`${AUDIT_DIR}/reconciliation.json`;
   if(mode==='--check'){
     if(result.state!=='POST') throw new Error(`--check requires POST state; got ${result.state}`);
-    if(!eq(loaded.vocabulary,result.nextVocabulary)) throw new Error('production does not equal deterministic final paraphrase authority');
-    if(!eq(loaded.paraphraseAudit,result.nextParaphraseAudit)) throw new Error('global audit does not equal deterministic final projection');
-    if(!sameFile(summaryPath,result.summary)) throw new Error('summary.json differs from deterministic output');
-    if(!sameFile(reconciliationPath,result.reconciliation)) throw new Error('reconciliation.json differs from deterministic output');
+    assertExpectedFinalState({
+      vocabulary:loaded.vocabulary,
+      paraphraseAudit:loaded.paraphraseAudit,
+      summary:readJson(summaryPath),
+      reconciliation:readJson(reconciliationPath),
+    },result);
     console.log('Paraphrase finalization check: PASS');displaySummary(result);return;
   }
   if(mode==='--write'){
@@ -334,7 +339,15 @@ function main(){
       writeJson(summaryPath,result.summary);
       writeJson(reconciliationPath,result.reconciliation);
       console.log('Paraphrase finalization materialized.');
-    }else console.log('POST state already materialized; no files written.');
+    }else{
+      assertExpectedFinalState({
+        vocabulary:loaded.vocabulary,
+        paraphraseAudit:loaded.paraphraseAudit,
+        summary:readJson(summaryPath),
+        reconciliation:readJson(reconciliationPath),
+      },result);
+      console.log('POST state already materialized and verified; no files written.');
+    }
   }else console.log('Dry run; no files written.');
   displaySummary(result);
 }
