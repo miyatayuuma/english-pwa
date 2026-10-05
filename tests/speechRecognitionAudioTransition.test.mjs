@@ -17,7 +17,6 @@ test('silent recognition produces no evaluable match or start achievement',async
     assert.equal(hasRecognizedSpeech('  ...  '),false);
     assert.equal(hasRecognizedSpeech('hello'),true);
     const controller=createRecognitionController({
-      getReferenceText:()=>'Hello world',
       playTone:(kind)=>events.push(`tone-${kind}`),
     });
     assert.deepEqual(controller.start(),{ok:true});
@@ -26,7 +25,7 @@ test('silent recognition produces no evaluable match or start achievement',async
     assert.deepEqual(events,['recognition-start-requested']);
     const outcome=controller.stop();
     assert.equal(outcome.transcript,'');
-    assert.equal(outcome.matchInfo,null);
+    assert.equal('matchInfo' in outcome,false);
   }finally{
     if(previousWindow===undefined) delete globalThis.window;
     else globalThis.window=previousWindow;
@@ -68,9 +67,8 @@ test('audio transition lock blocks pending and release but enables active shadow
   assert.equal(playButton.disabled,false);
 });
 
-test('continuous shadowing capture never evaluates or returns a score',async()=>{
+test('recognition controller returns provider evidence without owning grading',async()=>{
   let recognition=null;
-  let evaluated=0;
   let finalText='';
   class FakeSpeechRecognition{
     constructor(){recognition=this;}
@@ -82,10 +80,7 @@ test('continuous shadowing capture never evaluates or returns a score',async()=>
   try{
     const {createRecognitionController}=await import(`../scripts/speech/recognition.js?shadow-capture=${Date.now()}`);
     const controller=createRecognitionController({
-      getReferenceText:()=>'Canonical source audio',
-      shouldEvaluate:()=>false,
       onTranscriptFinal:text=>{finalText=text;},
-      onMatchEvaluated:()=>{evaluated+=1;},
     });
     controller.start();
     recognition.onstart();
@@ -95,8 +90,9 @@ test('continuous shadowing capture never evaluates or returns a score',async()=>
     assert.equal(finalText,'wrong primary');
     assert.equal(outcome.hypotheses,undefined);
     assert.equal(recognition.maxAlternatives,20);
-    assert.equal(evaluated,0);
-    assert.equal(outcome.matchInfo,null);
+    assert.equal(outcome.transcript,'wrong primary');
+    assert.equal(outcome.recognitionSegments[0].alternatives[1].transcript,'canonical source audio');
+    assert.equal('matchInfo' in outcome,false);
   }finally{
     if(previousWindow===undefined) delete globalThis.window;
     else globalThis.window=previousWindow;

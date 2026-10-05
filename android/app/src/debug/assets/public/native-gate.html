@@ -19,7 +19,9 @@
 <pre id="output"></pre>
 <script type="module">
 import { getNativeSpeech } from '/scripts/native/nativeSpeech.js';
-import { createRecognitionController, matchTranscript, calcMatchScore } from '/scripts/speech/recognition.js';
+import { createRecognitionController } from '/scripts/speech/recognition.js';
+import { alignSpeech } from '/scripts/speech/speechAlignment.js';
+import { gradeReadSpeech } from '/scripts/speech/readSpeechGrader.js';
 import { buildRecognitionContext } from '/scripts/speech/recognitionPolicy.js';
 import { answerVariants, normalizeVocabularyAnswer } from '/scripts/app/vocabularyLearningCore.js';
 import { classifyVocabularySpeechAnswer } from '/scripts/speech/vocabularySpeechEvidence.js';
@@ -55,7 +57,7 @@ function record(result){
  const targets=attempt.targets;
  const exact=text=>targets.some(target=>normalizeVocabularyAnswer(text)===normalizeVocabularyAnswer(target));
  const targetIndex=alternatives.findIndex(c=>exact(c.transcript));
- const grade=attempt.fixture.entry?classifyVocabularySpeechAnswer({entry:attempt.fixture.entry,activeOccurrence:attempt.fixture.activeOccurrence,transcript:primary,recognitionSegments:segments}):(()=>{const m=matchTranscript(attempt.fixture.item.en,primary);return {type:calcMatchScore(m.refCount,m.recall,m.precision)>=0.7?'accepted':'miss'};})();
+ const grade=attempt.fixture.entry?classifyVocabularySpeechAnswer({entry:attempt.fixture.entry,activeOccurrence:attempt.fixture.activeOccurrence,transcript:primary,recognitionSegments:segments}):(()=>{const m=alignSpeech(attempt.fixture.item.en,primary,{context:{mode:'read'}});return {type:gradeReadSpeech(m).score>=0.7?'accepted':'miss'};})();
  const technical=result?.ok===false?result.reason||'technical':!primary.trim()?'no-speech':null;
  const row={timestamp:new Date().toISOString(),case:attempt.fixture.key,control:attempt.control,intended:attempt.intended,targets,backend:'Android SpeechRecognizer',requestedMaxResults:segments[0]?.requestedMaxResults??20,providerReturnedCount:segments[0]?.providerReturnedCount??null,retainedCandidateCount:segments[0]?.retainedCandidateCount??0,rescue:grade.targetRescued??false,recognitionAuthority:grade.recognitionAuthority??null,finalGrade:technical?null:grade.type,capabilities,primary,alternatives,targetRank:targetIndex<0?null:alternatives[targetIndex].asrRank+1,grade:technical?null:grade,rank1Target:exact(primary),nbestTarget:alternatives.some(c=>exact(c.transcript)),accepted:!technical&&grade.type!=='miss',technical};
  rows.push(row);locks(false);$('status').textContent=technical||grade.type;log(rows);
@@ -69,7 +71,7 @@ $('start').onclick=async()=>{
   const f=fixture();const context=buildRecognitionContext(f.entry?{mode:'vocabulary',vocabularyEntry:f.entry,activeOccurrence:f.activeOccurrence}:{mode:'read',itemId:f.key});
   attempt={fixture:f,targets:f.entry?answerVariants(f.entry,f.activeOccurrence):[f.item.en],control:$('control').value,intended:$('intended').value};
   finished=false;locks(true);$('preview').textContent='';$('configuration').textContent=JSON.stringify({capabilities,requestedMaxResults:20},null,2);
-  controller=createRecognitionController({shouldEvaluate:()=>false,getRecognitionContext:()=>context,onTranscriptPreview:text=>$('preview').textContent=text,onAutoStop:record,onError:event=>record({ok:false,reason:event.error}),onUnsupported:()=>record({ok:false,reason:'unsupported'})});
+  controller=createRecognitionController({getRecognitionContext:()=>context,onTranscriptPreview:text=>$('preview').textContent=text,onAutoStop:record,onError:event=>record({ok:false,reason:event.error}),onUnsupported:()=>record({ok:false,reason:'unsupported'})});
   const started=controller.start();if(!started.ok) record(started);else $('status').textContent='録音中';
  }catch(error){if(attempt&&!finished) record({ok:false,reason:error.message});else {locks(false);$('status').textContent=error.message;}}
 };

@@ -77,50 +77,6 @@ const UNIT_MAP = new Map([
   ['celsius', 'celsius']
 ]);
 
-const SOUNDEX_MAP = new Map([
-  ['B', '1'],
-  ['F', '1'],
-  ['P', '1'],
-  ['V', '1'],
-  ['C', '2'],
-  ['G', '2'],
-  ['J', '2'],
-  ['K', '2'],
-  ['Q', '2'],
-  ['S', '2'],
-  ['X', '2'],
-  ['Z', '2'],
-  ['D', '3'],
-  ['T', '3'],
-  ['L', '4'],
-  ['M', '5'],
-  ['N', '5'],
-  ['R', '6'],
-]);
-
-export function phoneticKey(token) {
-  if (!token) return '';
-  const cleaned = token
-    .toUpperCase()
-    .normalize('NFKD')
-    .replace(/[^A-Z]/g, '');
-  if (!cleaned) return '';
-  let key = cleaned[0];
-  let prevCode = SOUNDEX_MAP.get(key) || '';
-  for (let i = 1; i < cleaned.length && key.length < 4; i++) {
-    const letter = cleaned[i];
-    const code = SOUNDEX_MAP.get(letter) || '';
-    if (!code) {
-      prevCode = '';
-      continue;
-    }
-    if (code === prevCode) continue;
-    key += code;
-    prevCode = code;
-  }
-  return key.padEnd(4, '0').slice(0, 4);
-}
-
 export function mergeContractions(tokens) {
   if (!tokens.length) return tokens;
   const out = [];
@@ -164,48 +120,7 @@ export function canonicalizeToken(token) {
   return token;
 }
 
-export function mergeCompoundWords(tokens, comparisonTokens) {
-  if (!Array.isArray(tokens)) return [];
-  if (tokens.length <= 1) return [...tokens];
-
-  let comparisonSet;
-  if (comparisonTokens instanceof Set) {
-    comparisonSet = comparisonTokens;
-  } else if (Array.isArray(comparisonTokens)) {
-    comparisonSet = new Set(comparisonTokens);
-  } else if (comparisonTokens && typeof comparisonTokens[Symbol.iterator] === 'function') {
-    comparisonSet = new Set(comparisonTokens);
-  } else {
-    comparisonSet = new Set();
-  }
-
-  if (!comparisonSet.size) {
-    return [...tokens];
-  }
-
-  const out = [];
-  for (let i = 0; i < tokens.length; i++) {
-    let bestEnd = -1;
-    let bestValue = '';
-    let combined = tokens[i];
-    for (let j = i + 1; j < tokens.length; j++) {
-      combined += tokens[j];
-      if (comparisonSet.has(combined)) {
-        bestEnd = j;
-        bestValue = combined;
-      }
-    }
-    if (bestEnd >= 0) {
-      out.push(bestValue);
-      i = bestEnd;
-    } else {
-      out.push(tokens[i]);
-    }
-  }
-  return out;
-}
-
-export function canonicalTokens(input, comparisonTokens) {
+export function canonicalTokens(input) {
   if (!input) return [];
   let text = (input || '').toLowerCase().normalize('NFKC');
   text = text.replace(/℃/g, ' degree celsius ');
@@ -218,16 +133,12 @@ export function canonicalTokens(input, comparisonTokens) {
   const raw = text.split(/\s+/).filter(Boolean);
   if (!raw.length) return [];
   const merged = mergeContractions(raw);
-  const canonical = merged.map(canonicalizeToken).filter(Boolean);
-  if (!comparisonTokens) {
-    return canonical;
-  }
-  return mergeCompoundWords(canonical, comparisonTokens);
+  return merged.map(canonicalizeToken).filter(Boolean);
 }
 
-export const toks = (input, comparisonTokens) => canonicalTokens(input, comparisonTokens);
+export const toks = input => canonicalTokens(input);
 
-export const norm = (input, comparisonTokens) => canonicalTokens(input, comparisonTokens).join(' ');
+export const norm = input => canonicalTokens(input).join(' ');
 
 export function dedupeRuns(arr) {
   const out = [];
@@ -236,74 +147,6 @@ export function dedupeRuns(arr) {
     out.push(w);
   }
   return out;
-}
-
-export function approxWithin1(a, b) {
-  if (!a || !b) return false;
-  if (a === b) return true;
-  const la = a.length;
-  const lb = b.length;
-  if (Math.abs(la - lb) > 1) return false;
-  let i = 0;
-  let j = 0;
-  let diff = 0;
-  while (i < la && j < lb) {
-    if (a[i] === b[j]) {
-      i++;
-      j++;
-      continue;
-    }
-    if (++diff > 1) return false;
-    if (la > lb) i++;
-    else if (lb > la) j++;
-    else {
-      i++;
-      j++;
-    }
-  }
-  diff += (la - i) + (lb - j);
-  return diff <= 1;
-}
-
-export function approxTokensMatch(a, b) {
-  if (approxWithin1(a, b)) return true;
-  const keyA = phoneticKey(a);
-  if (!keyA) return false;
-  const keyB = phoneticKey(b);
-  if (!keyB) return false;
-  return keyA === keyB;
-}
-
-export function appendStableFinal(stable, fragment) {
-  const A = canonicalTokens(stable);
-  const B = canonicalTokens(fragment);
-  if (!B.length) return A.join(' ');
-  if (!A.length) return B.join(' ');
-
-  const strA = A.join(' ');
-  const strB = B.join(' ');
-
-  if (strB.includes(strA)) {
-    return B.join(' ');
-  }
-  if (strA.includes(strB)) {
-    return A.join(' ');
-  }
-
-  let overlap = 0;
-  const maxOverlap = Math.min(A.length, B.length);
-  outer: for (let k = maxOverlap; k > 0; k--) {
-    for (let i = 0; i < k; i++) {
-      if (!approxWithin1(A[A.length - k + i], B[i])) continue outer;
-    }
-    overlap = k;
-    break;
-  }
-  if (overlap > 0) {
-    return A.concat(B.slice(overlap)).join(' ');
-  }
-
-  return (B.length >= A.length ? B : A).join(' ');
 }
 
 export function spanify(text) {
