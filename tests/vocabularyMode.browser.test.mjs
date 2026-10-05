@@ -167,11 +167,11 @@ async function tapResult(page){
   const x=box.x+box.width-4,y=box.y+box.height-8;
   await page.mouse.move(x,y);await page.mouse.down();await page.mouse.up();
 }
-async function swipeResult(page,dx,dy=0){
+async function swipeResult(page,dx,dy=0,{xRatio=0.6,yRatio=null}={}){
   await page.waitForTimeout(400);
   const box=await page.locator('.vocab-context-state').boundingBox();
   assert.ok(box);
-  const x=box.x+box.width-4,y=box.y+box.height-8;
+  const x=box.x+box.width*xRatio,y=yRatio===null?box.y+box.height-8:box.y+box.height*yRatio;
   await page.mouse.move(x,y);await page.mouse.down();
   await page.mouse.move(x+dx,y+dy,{steps:8});await page.mouse.up();
 }
@@ -407,13 +407,13 @@ browserTest('only a dominant left swipe advances; short, vertical, and right mov
     await swipeResult(page,-42);
     assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical,'short horizontal movement is ignored');
     assert.equal(await page.locator('.vocab-result-prompt').innerText(),firstPrompt,'short horizontal movement keeps the current result');
-    await swipeResult(page,-8,105);
+    await swipeResult(page,-8,105,{xRatio:0.98,yRatio:0.35});
     assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical,'vertical gesture is ignored');
     assert.equal(await page.locator('.vocab-result-prompt').innerText(),firstPrompt,'vertical movement keeps the current result');
     await swipeResult(page,105,4);
     assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical,'right swipe is ignored');
     assert.equal(await page.locator('.vocab-result-prompt').innerText(),firstPrompt,'right swipe keeps the current result');
-    await swipeResult(page,-100,10);
+    await swipeResult(page,-100);
     await page.waitForFunction(prompt=>document.querySelector('.vocab-meaning')?.textContent===prompt,nextEntry.meaning_ja);
     assert.equal(await page.locator('.vocab-meaning').innerText(),nextEntry.meaning_ja,'left swipe advances to the next expression');
     assert.equal(await page.locator('.vocab-done').count(),0,'one left swipe advances exactly one card');
@@ -741,16 +741,21 @@ browserTest('answer correction rejects paraphrase, handles technical error, requ
   }finally{await closePage(opened);}
 });
 
-browserTest('correction completion and source audio end keep the result until explicit tap',async()=>{
-  const opened=await newPage(sources[0],{entryState:lv5State()});const {page}=opened;
+browserTest('correction completion and source audio end keep the result until explicit swipe',async()=>{
+  const opened=await newPage(sources[0],{entryState:lv5State(),additionalEntries:[fixtureFor(sources[4])]});const {page,entries}=opened;
   try{
+    const firstPrompt=await page.locator('.vocab-meaning').innerText();
+    const entry=entries.find(value=>value.meaning_ja===firstPrompt);
+    assert.ok(entry,`current prompt fixture: ${firstPrompt}`);
+    const nextEntry=entries.find(value=>value.id!==entry.id);
+    assert.ok(nextEntry,'second expression fixture is available after correction');
     await page.locator('.vocab-reveal').click();
     await page.waitForSelector('.vocab-answer');
     await captureAcceptanceScreenshot(page,'correction-footer-390x844.png');
     await page.locator('.vocab-source-audio').waitFor({state:'visible'});
     await page.locator('.vocab-mic').click();
     await page.waitForFunction(()=>window.__mockSpeech.startCount>0);
-    await inject(page,'come across someone');
+    await inject(page,entry.canonical);
     await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='修正練習完了');
     assert.equal(await page.locator('.vocab-next').count(),0);
     await page.locator('.vocab-source-audio').click();
@@ -759,9 +764,10 @@ browserTest('correction completion and source audio end keep the result until ex
     assert.equal(await page.locator('.vocab-answer').count(),1,'the result remains while source audio plays');
     await page.evaluate(()=>window.__mockSpeech.latestAudio?.onended?.());
     assert.equal(await page.locator('.vocab-answer').count(),1,'source audio end does not advance');
-    await tapResult(page);
-    await page.waitForSelector('.vocab-meaning');
-    assert.equal(await page.locator('.vocab-answer').count(),0,'tap advances exactly once');
+    await swipeResult(page,-100);
+    await page.waitForFunction(prompt=>document.querySelector('.vocab-meaning')?.textContent===prompt,nextEntry.meaning_ja);
+    assert.equal(await page.locator('.vocab-meaning').innerText(),nextEntry.meaning_ja,'post-correction left swipe advances once');
+    assert.equal(await page.locator('.vocab-answer').count(),0);
   }finally{await closePage(opened);}
 });
 
