@@ -5,6 +5,27 @@ import { alignSpeech, findSpeechSurfaceMatch } from '../scripts/speech/speechAli
 import { gradeReadSpeech } from '../scripts/speech/readSpeechGrader.js';
 import { applySpeechHighlight } from '../scripts/speech/speechPresentation.js';
 
+function tokenSpan(text) {
+  const classes = new Set();
+  return {
+    textContent: text,
+    dataset: { w: text },
+    classes,
+    classList: {
+      add: name => classes.add(name),
+      remove: name => classes.delete(name),
+      toggle: (name, enabled) => enabled ? classes.add(name) : classes.delete(name),
+    },
+  };
+}
+
+function presentAlignment(reference, observed, surfaces) {
+  const alignment = alignSpeech(reference, observed);
+  const spans = surfaces.map(tokenSpan);
+  applySpeechHighlight(alignment, { querySelectorAll: () => spans }, () => []);
+  return { alignment, spans };
+}
+
 test('raw provider transcript stitching preserves supplied words and punctuation', () => {
   assert.equal(appendRawTranscriptFinal('', 'I’m ready to pay two dollars.'), 'I’m ready to pay two dollars.');
   assert.equal(appendRawTranscriptFinal('well-known', 'story begins'), 'well-known story begins');
@@ -95,20 +116,40 @@ test('to/too is not an unconditional equivalence because to can be reduced', () 
 });
 
 test('alignment presentation applies only matched reference token indices', () => {
-  const spans = ['Prose', 'is', 'ready'].map(word => {
-    const classes = new Set();
-    return {
-      dataset: { w: word },
-      classes,
-      classList: {
-        add: name => classes.add(name),
-        remove: name => classes.delete(name),
-        toggle: (name, enabled) => enabled ? classes.add(name) : classes.delete(name),
-      },
-    };
-  });
-  const alignment = alignSpeech('Prose is ready', 'Pros is poor');
-  applySpeechHighlight(alignment, { querySelectorAll: () => spans }, () => []);
+  const { spans } = presentAlignment('Prose is ready', 'Pros is poor', ['Prose', 'is', 'ready']);
   assert.deepEqual(spans.map(span => span.classes.has('hit')), [true, true, false]);
   assert.deepEqual(spans.map(span => span.classes.has('miss')), [false, false, true]);
+});
+
+test('presentation source offsets keep highlights aligned after currency adds a synthetic token', () => {
+  const { alignment, spans } = presentAlignment(
+    'I paid $5 for prose',
+    'I paid $5 prose',
+    ['I', 'paid', '5', 'for', 'prose'],
+  );
+  assert.deepEqual(alignment.missing, ['for']);
+  assert.deepEqual(spans.map(span => span.classes.has('hit')), [true, true, true, false, true]);
+  assert.deepEqual(spans.map(span => span.classes.has('miss')), [false, false, false, true, false]);
+});
+
+test('presentation offsets preserve currency and explicit prose/pros equivalence together', () => {
+  const { alignment, spans } = presentAlignment(
+    'I paid $5 for prose',
+    'I paid $5 for pros',
+    ['I', 'paid', '5', 'for', 'prose'],
+  );
+  assert.equal(alignment.rawTranscript, 'I paid $5 for pros');
+  assert.equal(alignment.alignment.some(event => event.ruleId === 'prose-pros'), true);
+  assert.deepEqual(spans.map(span => span.classes.has('hit')), [true, true, true, true, true]);
+});
+
+test('presentation source offsets keep later highlights aligned after Celsius normalization', () => {
+  const { alignment, spans } = presentAlignment(
+    'I used 20℃ for prose',
+    'I used 20℃ prose',
+    ['I', 'used', '20', 'for', 'prose'],
+  );
+  assert.deepEqual(alignment.missing, ['for']);
+  assert.deepEqual(spans.map(span => span.classes.has('hit')), [true, true, true, false, true]);
+  assert.deepEqual(spans.map(span => span.classes.has('miss')), [false, false, false, true, false]);
 });

@@ -1,5 +1,3 @@
-import { safeSpeechTokens } from './safeSpeechNormalization.js';
-
 function tokenSpans(element) {
   return element && typeof element.querySelectorAll === 'function'
     ? Array.from(element.querySelectorAll('.tok'))
@@ -26,13 +24,25 @@ function clearCounts(map) {
   return new Map(map || []);
 }
 
+function sourceSpanForToken(span, referenceText, searchFrom) {
+  const surface = String(span?.textContent ?? span?.dataset?.w ?? '');
+  if (!surface) return null;
+  const start = referenceText.indexOf(surface, searchFrom);
+  if (start < 0) return null;
+  return { start, end: start + surface.length };
+}
+
 export function applySpeechHighlight(alignment, element, getComposeNodes) {
   const matchedIndexes = new Set(alignment?.matchedReferenceTokenIndexes || []);
-  let referenceCursor = 0;
+  const referenceText = String(alignment?.referenceText ?? '');
+  const referenceTokens = Array.isArray(alignment?.referenceTokens) ? alignment.referenceTokens : [];
+  let sourceCursor = 0;
   for (const span of tokenSpans(element)) {
-    const spanTokens = safeSpeechTokens(span?.dataset?.w || '');
-    const indexes = Array.from({ length: spanTokens.length }, (_, offset) => referenceCursor + offset);
-    referenceCursor += spanTokens.length;
+    const sourceSpan = sourceSpanForToken(span, referenceText, sourceCursor);
+    if (sourceSpan) sourceCursor = sourceSpan.end;
+    const indexes = sourceSpan
+      ? referenceTokens.flatMap((token, index) => token.start < sourceSpan.end && token.end > sourceSpan.start ? [index] : [])
+      : [];
     const hit = indexes.length > 0 && indexes.every(index => matchedIndexes.has(index));
     span.classList.toggle('hit', hit);
     span.classList.toggle('miss', !hit);
