@@ -283,19 +283,28 @@ before(async()=>{
       response.writeHead(200,{'content-type':type,'cache-control':'no-cache'});response.end(content);
     }catch{response.writeHead(404).end('not found');}
   });
-  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+  try{
+    await new Promise((resolve,reject)=>{
+      server.once('error',reject);
+      server.listen(0,'127.0.0.1',resolve);
+    });
+  }catch(error){
+    browserError=`local test server unavailable: ${error?.code||error?.message||error}`;
+    return;
+  }
   baseUrl=`http://127.0.0.1:${server.address().port}`;
   try{browser=await chromium.launch({headless:true});}catch(error){browserError=String(error?.message??error).split('\n')[0];}
 });
 
-after(async()=>{await browser?.close();await new Promise(resolve=>server?.close(resolve));});
+after(async()=>{await browser?.close();if(server?.listening) await new Promise(resolve=>server.close(resolve));});
 
 browserTest('390×844 expression card preserves active source, strict paraphrase grade, and context/audio',async()=>{
   const opened=await newPage(sources[0]);
   const {context,page,entry}=opened;
   try{
     await page.emulateMedia({reducedMotion:'reduce'});
-    assert.equal(await page.locator('.vocab-meta').innerText().then(text=>text.includes('表現')),true);
+    assert.equal(await page.locator('.vocab-meta').innerText().then(text=>text.includes('動詞')),true);
+    assert.doesNotMatch(await page.locator('.vocab-meta').innerText(),/単語|表現/);
     assert.equal(await page.locator('.vocab-mic').getAttribute('aria-label'),'英語で答える');
     assert.equal(await page.evaluate(()=>document.activeElement?.classList.contains('vocab-mic')),true);
     assert.equal(await page.evaluate(()=>getComputedStyle(document.querySelector('.vocab-mic')).transitionDuration),'0s');
@@ -337,6 +346,16 @@ browserTest('390×844 expression card preserves active source, strict paraphrase
     await tapResult(page);
     assert.match(await page.locator('.vocab-done').innerText(),/ターゲット正解 1　別表現 0　要復習 0/);
 
+  }finally{await closePage(opened);}
+});
+
+browserTest('canonical grammar role wins over paraphrase POS and legacy kind labels',async()=>{
+  const opened=await newPage({kind:'expression',canonical:'despite',itemId:'E0088',entryId:'vocab:00121'});
+  try{
+    const meta=opened.page.locator('.vocab-meta');
+    assert.match(await meta.innerText(),/前置詞/);
+    assert.doesNotMatch(await meta.innerText(),/単語|表現/);
+    assert.equal(await meta.locator('span:not(.vocab-speaker)').count(),1);
   }finally{await closePage(opened);}
 });
 

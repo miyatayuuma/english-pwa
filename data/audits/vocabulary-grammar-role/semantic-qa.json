@@ -1,0 +1,208 @@
+{
+  "schema_version": 1,
+  "audit_population": 2478,
+  "reviewed_boundary_groups": [
+    "pronoun vs determiner",
+    "verb vs auxiliary",
+    "adjective vs adverb",
+    "preposition vs conjunction",
+    "conjunction vs construction",
+    "auxiliary vs construction",
+    "multiword verb",
+    "multiword adjective",
+    "multiword adverb",
+    "multiword preposition",
+    "multiword conjunction",
+    "same surface with different meaning_ja",
+    "quantity phrase: determiner vs pronoun",
+    "fixed-frame construction vs lexical category",
+    "conventional discourse response: interjection"
+  ],
+  "representative_decisions": [
+    {
+      "id": "vocab:00009",
+      "grammarRole": "noun",
+      "reason": "job interview is a noun phrase naming an event."
+    },
+    {
+      "id": "vocab:00042",
+      "grammarRole": "pronoun",
+      "reason": "nothing/anything are pronominal heads; the expression does not modify an expressed noun."
+    },
+    {
+      "id": "vocab:00001",
+      "grammarRole": "verb",
+      "reason": "take up/occupy are multiword and single-word lexical predicates with the same verb function."
+    },
+    {
+      "id": "vocab:01278",
+      "grammarRole": "adjective",
+      "reason": "in good spirits/in a good mood function as predicative state complements."
+    },
+    {
+      "id": "vocab:01404",
+      "grammarRole": "adverb",
+      "reason": "on purpose/deliberately/intentionally modify an action as manner or intent adjuncts."
+    },
+    {
+      "id": "vocab:00182",
+      "grammarRole": "preposition",
+      "reason": "in spite of/despite/notwithstanding take an NP complement and head a relation."
+    },
+    {
+      "id": "vocab:01928",
+      "grammarRole": "conjunction",
+      "reason": "as soon as/the moment introduce a temporal subordinate clause."
+    },
+    {
+      "id": "vocab:02204",
+      "grammarRole": "auxiliary",
+      "reason": "be about to/be on the verge of share an imminent-action quasi-modal function."
+    },
+    {
+      "id": "vocab:02457",
+      "grammarRole": "determiner",
+      "reason": "a couple of/two or three/a few express quantity for a noun complement."
+    },
+    {
+      "id": "vocab:02426",
+      "grammarRole": "interjection",
+      "reason": "congratulations/congrats are standalone felicitation responses."
+    },
+    {
+      "id": "vocab:01191",
+      "grammarRole": "construction",
+      "reason": "cannot/can never do something too much share a multi-slot degree construction."
+    },
+    {
+      "id": "vocab:00230",
+      "grammarRole": "verb",
+      "reason": "can’t help doing/can’t resist doing are lexical verb phrases; can does not give the complete answer set a prompt-level auxiliary role."
+    },
+    {
+      "id": "vocab:02046",
+      "grammarRole": "auxiliary",
+      "reason": "used to do expresses past habitual/state aspect as a quasi-modal."
+    },
+    {
+      "id": "vocab:01657",
+      "grammarRole": "preposition",
+      "reason": "on the verge of/on the brink of take a complement and express a boundary relation."
+    },
+    {
+      "id": "vocab:02369",
+      "grammarRole": "verb",
+      "reason": "distinguish/tell apart/differentiate are lexical verbs."
+    },
+    {
+      "id": "vocab:02372",
+      "grammarRole": "adverb",
+      "reason": "the day before yesterday functions as a temporal adjunct."
+    }
+  ],
+  "same_surface_different_usage": [
+    {
+      "surface": "suspect",
+      "entries": [
+        {
+          "id": "vocab:00977",
+          "meaning_ja": "疑う",
+          "grammarRole": "verb"
+        },
+        {
+          "id": "vocab:01006",
+          "meaning_ja": "容疑者",
+          "grammarRole": "noun"
+        }
+      ]
+    },
+    {
+      "surface": "work",
+      "entries": [
+        {
+          "id": "vocab:01092",
+          "meaning_ja": "作品",
+          "grammarRole": "noun"
+        },
+        {
+          "id": "vocab:01247",
+          "meaning_ja": "機能する",
+          "grammarRole": "verb"
+        }
+      ]
+    }
+  ],
+  "pending_examples": [],
+  "resolved_pending_examples": [
+    {
+      "id": "vocab:00313",
+      "meaning_ja": "おそらく",
+      "canonical": "chances are",
+      "grammarRole": "construction",
+      "reason": "The prompt uses chances are as the fixed frame chances are (that) S; the open clause slot completes the pattern, so the frame is the learning target."
+    },
+    {
+      "id": "vocab:00520",
+      "meaning_ja": "somethingに関しては",
+      "canonical": "when it comes to something",
+      "grammarRole": "conjunction",
+      "reason": "'when it comes to X' is a subordinate topic-setting clause frame, classified as conjunction."
+    },
+    {
+      "id": "vocab:00622",
+      "meaning_ja": "someoneについて言えば",
+      "canonical": "as far as someone is concerned",
+      "grammarRole": "conjunction",
+      "reason": "'as far as X is concerned' is a topic-setting subordinate clause frame, classified as conjunction."
+    },
+    {
+      "id": "vocab:00666",
+      "meaning_ja": "最近どう？",
+      "canonical": "what's up",
+      "grammarRole": "interjection",
+      "reason": "'what's up' is treated in this prompt as a conventional standalone small-talk greeting, hence interjection."
+    },
+    {
+      "id": "vocab:01289",
+      "meaning_ja": "まだsomethingしていない",
+      "canonical": "be yet to do something",
+      "grammarRole": "construction",
+      "reason": "The canonical be yet to do something is the fixed be yet to + VP frame specified by the final boundary rule; paraphrase forms do not determine the tag."
+    },
+    {
+      "id": "vocab:01379",
+      "meaning_ja": "問題ない",
+      "canonical": "no problem",
+      "grammarRole": "interjection",
+      "reason": "Canonical expression is a conventional standalone discourse response/reaction in the specified use. Paraphrase POS differences are ignored for grammarRole."
+    },
+    {
+      "id": "vocab:01384",
+      "meaning_ja": "いいとも",
+      "canonical": "why not?",
+      "grammarRole": "interjection",
+      "reason": "Canonical expression is a conventional standalone discourse response/reaction in the specified use. Paraphrase POS differences are ignored for grammarRole."
+    },
+    {
+      "id": "vocab:01606",
+      "meaning_ja": "呪い",
+      "canonical": "curse",
+      "grammarRole": "noun",
+      "reason": "The approved Japanese prompt is the noun sense 呪い; canonical curse is used as a noun."
+    },
+    {
+      "id": "vocab:02134",
+      "meaning_ja": "（君主の）治世",
+      "canonical": "reign",
+      "grammarRole": "noun",
+      "reason": "The approved Japanese prompt is the noun sense 治世; canonical reign is used as a noun. Existing paraphrase rule is retained."
+    },
+    {
+      "id": "vocab:02243",
+      "meaning_ja": "5人中3人",
+      "canonical": "three in five",
+      "grammarRole": "pronoun",
+      "reason": "With no following noun in the canonical and the gloss '5人中3人', the quantified phrase is treated as pronominal."
+    }
+  ]
+}
