@@ -20,4 +20,7 @@ export const speechEquivalenceRules = Object.freeze([
   ...pair({ id: 'their-there', expected: 'their', recognized: 'there', kind: 'homophone' }),
   ...pair({ id: 'weather-whether', expected: 'weather', recognized: 'whether', kind: 'homophone' }),
   ...pair({ id: 'principal-principle', expected: 'principal', recognized: 'principle', kind: 'homophone' }),
+  ...pair({ id: 'altogether-all-together', expected: 'altogether', recognized: 'all together', kind: 'segmentation-equivalence' }),
+  ...pair({ id: 'oh-owe', expected: 'oh', recognized: 'owe', kind: 'homophone' }),
+  ...pair({ id: 'sent-scent', expected: 'sent', recognized: 'scent', kind: 'homophone' }),
 ]);

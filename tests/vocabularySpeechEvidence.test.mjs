@@ -131,6 +131,32 @@ test('vocab:01314 dye accepts the die homophone while preserving raw display evi
   assert.equal(result.speechMatch.ruleKind,'homophone');
 });
 
+test('registered ASR homophone and segmentation equivalents rescue TARGET in both directions',()=>{
+  const cases=[
+    ['altogether','all together','altogether-all-together','segmentation-equivalence'],
+    ['oh','owe','oh-owe','homophone'],
+    ['sent','scent','sent-scent','homophone'],
+  ];
+  for(const [expected,recognized,ruleId,ruleKind] of cases){
+    const forward=classifyVocabularySpeechAnswer({entry:{canonical:expected},transcript:recognized,recognitionSegments:[segmentFactory([recognized])]});
+    assert.equal(forward.type,'target',expected+' / '+recognized);
+    assert.equal(forward.recognitionAuthority,'explicit-equivalence');
+    assert.equal(forward.matchedExpected,expected);
+    assert.equal(forward.observed,recognized);
+    assert.equal(forward.rawTranscript,recognized);
+    assert.equal(forward.speechMatch.ruleId,ruleId);
+    assert.equal(forward.speechMatch.ruleKind,ruleKind);
+
+    const reverse=classifyVocabularySpeechAnswer({entry:{canonical:recognized},transcript:expected,recognitionSegments:[segmentFactory([expected])]});
+    assert.equal(reverse.type,'target',recognized+' / '+expected);
+    assert.equal(reverse.recognitionAuthority,'explicit-equivalence');
+    assert.equal(reverse.matchedExpected,recognized);
+    assert.equal(reverse.observed,expected);
+    assert.equal(reverse.rawTranscript,expected);
+    assert.equal(reverse.speechMatch.ruleKind,ruleKind);
+  }
+});
+
 test('lower N-best explicit TARGET equivalence records selected raw segment/rank without paraphrase rescue',()=>{
   const recognitionSegments=[segmentFactory(['wrong','pros'])];
   const result=classifyVocabularySpeechAnswer({
