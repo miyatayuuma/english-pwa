@@ -10,7 +10,8 @@ const KIND=new Set(['word','expression','construction']);
 const SUBTYPE=new Set(['phrasal_verb','idiom','collocation','fixed_expression','discourse_expression']);
 const ID=/^vocab:\d{5}$/;
 const MIGRATION_SLOTS=new Set(['someone','somebody','something','somewhere','someplace','one','ones']);
-const ENTRY_FIELDS=new Set(['id','kind','subtype','canonical','sense_key','pos','meaning_ja','answers','paraphrases','occurrences']);
+const ENTRY_FIELDS=new Set(['id','kind','subtype','canonical','sense_key','pos','grammarRole','meaning_ja','answers','paraphrases','occurrences']);
+const GRAMMAR_ROLES=new Set(['noun','pronoun','verb','adjective','adverb','preposition','conjunction','auxiliary','determiner','interjection','construction']);
 const OCCURRENCE_FIELDS=new Set(['item_id','start','end','contextual_meaning_ja']);
 
 function isNaturalAnswer(value){
@@ -240,6 +241,7 @@ export function validateVocabularyV3(db,items,characters,migration,v2,wordAudit=
     if(!isNaturalAnswer(entry?.canonical)) errors.push(`${id}: canonical contains dictionary notation`);
     if(!String(entry?.sense_key||'').trim()) errors.push(`${id}: empty sense_key`);
     if(!String(entry?.pos||'').trim()) errors.push(`${id}: empty part of speech`);
+    if(entry?.grammarRole!=null&&!GRAMMAR_ROLES.has(entry.grammarRole)) errors.push(`${id}: invalid grammar role ${entry.grammarRole}`);
     const senseKey=`${String(entry?.canonical||'').normalize('NFKC').toLocaleLowerCase('en-US')}\u0000${entry?.sense_key||''}`;
     if(senses.has(senseKey)) errors.push(`${id}: duplicate canonical+sense_key`);senses.add(senseKey);
     if(!String(entry?.meaning_ja||'').trim()) errors.push(`${id}: empty representative Japanese meaning`);

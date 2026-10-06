@@ -20,6 +20,12 @@ import { migrateVocabularyProgress, migrateFinalAdmissionProgress } from './voca
 import { extractQuotedTurns, quotedTurnContainingSpan } from '../tagging/quotedTurns.js';
 import { resolveSharedAudioUrl } from '../audio/resolver.js';
 
+const GRAMMAR_ROLE_LABELS=Object.freeze({
+  noun:'名詞',pronoun:'代名詞',verb:'動詞',adjective:'形容詞',adverb:'副詞',
+  preposition:'前置詞',conjunction:'接続詞',auxiliary:'助動詞',determiner:'限定詞',
+  interjection:'間投詞',construction:'構文',
+});
+
 const state={
   entries:[],
   characters:[],
@@ -879,12 +885,12 @@ function showNextCard(){
   state.hintUsed=false;
   state.processing=false;
   const meaning=displayMeaning(state.current);
-  const kindLabel=state.current.kind==='word'?'単語':'表現';
+  const grammarRoleLabel=GRAMMAR_ROLE_LABELS[state.current.grammarRole]||'';
   const speaker=state.current.activeOccurrence?.sourceSpeaker?.profile||null;
   state.screen.innerHTML=`
     <section class="vocab-study">
       <div class="vocab-card">
-        <div class="vocab-meta">${speakerCue(speaker)}<span>${kindLabel}</span></div>
+      <div class="vocab-meta">${speakerCue(speaker)}${grammarRoleLabel?`<span>${grammarRoleLabel}</span>`:''}</div>
         <div class="${densityClass('vocab-meaning',meaning,{long:20,xlong:34})}" lang="ja">${escapeHtml(meaning)}</div>
         <div class="vocab-prompt">英語で答える</div>
         <div class="vocab-transcript" lang="en" dir="ltr" aria-label="音声認識中の全文" aria-live="off"></div>
