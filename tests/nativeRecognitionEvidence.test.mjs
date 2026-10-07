@@ -35,6 +35,25 @@ test('mapped native candidates preserve existing strict TARGET rescue and exclud
   for (const text of ['yield', 'yield from something', 'something to yield', 'I like cats']) assert.equal(grade([text]).type, 'miss');
 });
 
+test('native provider chunks reach the same curated Vocabulary rescue authority',()=>{
+  const primary='no sooner had I sat down then the phone rang';
+  const evidence=nativeRecognitionEvidence({type:'final',alternatives:[
+    {transcript:primary},
+    {transcript:'unrelated'},
+    {transcript:'than the phone rang'},
+  ]});
+  const grade=classifyVocabularySpeechAnswer({
+    entry:{id:'vocab:00139',canonical:'no sooner had I sat down than the phone rang'},
+    ...evidence,
+  });
+  assert.equal(grade.type,'target');
+  assert.equal(grade.recognitionAuthority,'nbest-chunk-exact');
+  assert.equal(grade.asrRank,2);
+  assert.equal(grade.primaryTranscript,primary);
+  assert.equal(evidence.transcript,primary);
+  assert.equal(evidence.recognitionSegments[0].alternatives.length,3);
+});
+
 for (const rank of [1, 6, 12, 20]) test(`strict TARGET at provider rank ${rank}`, () => {
   const alternatives = Array.from({length:20}, (_,i)=>({transcript:i===rank-1?'yell':'yeah',asrRank:i,confidence:0.2}));
   const evidence = nativeRecognitionEvidence({type:'final', alternatives, providerReturnedCount:20});

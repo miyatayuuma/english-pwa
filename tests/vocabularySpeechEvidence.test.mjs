@@ -1,7 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
 import {classifyVocabularySpeechAnswer,isTargetSpeechProduction} from '../scripts/speech/vocabularySpeechEvidence.js';
 import {classifyVocabularyAnswer} from '../scripts/app/vocabularyLearningCore.js';
+import {safeSpeechTokens} from '../scripts/speech/safeSpeechNormalization.js';
+import {VOCABULARY_CHUNK_RESCUE_AUTHORITY,VOCABULARY_CHUNK_RESCUE_AUTHORITY_ENTRIES} from '../scripts/speech/vocabularyChunkRescueAuthority.js';
 const segment=(values,index=0)=>({segmentIndex:index,primaryTranscript:values[0],isFinal:true,alternatives:values.map((transcript,asrRank)=>({transcript,asrRank,confidence:0}))});
 const entry=(canonical,extra={})=>({canonical,...extra});
 const grade=(canonical,transcript,options={})=>classifyVocabularySpeechAnswer({entry:entry(canonical),transcript,...options});
@@ -173,6 +176,243 @@ test('lower N-best explicit TARGET equivalence records selected raw segment/rank
   assert.equal(result.asrRank,1);
   assert.equal(result.recognitionSegmentIndex,0);
   assert.equal(recognitionSegments[0].alternatives[1].transcript,'pros');
+});
+
+test('curated chunk authority has exactly the approved 18 canonical two-chunk surfaces',()=>{
+  const expectedIds=[
+    'vocab:00059','vocab:00139','vocab:00185','vocab:00225','vocab:00244','vocab:00300',
+    'vocab:00328','vocab:00370','vocab:00427','vocab:00528','vocab:00661','vocab:00673',
+    'vocab:01631','vocab:01671','vocab:02060','vocab:02202','vocab:02384','vocab:02452',
+  ];
+  const nonTargetIds=[
+    'vocab:00013','vocab:00071','vocab:00100','vocab:00151','vocab:00237','vocab:00250',
+    'vocab:00341','vocab:00418','vocab:00420','vocab:00469','vocab:00478','vocab:00491',
+    'vocab:00546','vocab:00578','vocab:00622','vocab:00644','vocab:00696','vocab:01153',
+    'vocab:01514','vocab:01654','vocab:01668','vocab:01816','vocab:01912','vocab:02445',
+  ];
+  const ids=VOCABULARY_CHUNK_RESCUE_AUTHORITY_ENTRIES.map(([id])=>id);
+  assert.equal(ids.length,18);
+  assert.equal(new Set(ids).size,18);
+  assert.deepEqual(ids.sort(),expectedIds.sort());
+
+  const entries=JSON.parse(readFileSync(new URL('../data/vocabulary-v3.json',import.meta.url),'utf8')).entries;
+  const byId=new Map(entries.map(value=>[value.id,value]));
+  for(const id of expectedIds){
+    const chunks=VOCABULARY_CHUNK_RESCUE_AUTHORITY[id];
+    assert.equal(chunks.length,2,id);
+    assert.ok(chunks.every(chunk=>typeof chunk==='string'&&chunk.trim()),id);
+    const canonicalTokens=safeSpeechTokens(byId.get(id)?.canonical).map(token=>token.value);
+    const chunkTokens=safeSpeechTokens(chunks.join(' ')).map(token=>token.value);
+    assert.ok(byId.has(id),id+' exists in production vocabulary');
+    assert.deepEqual(chunkTokens,canonicalTokens,id+' chunks reconstruct canonical after safe normalization');
+  }
+  for(const id of nonTargetIds) assert.equal(Object.hasOwn(VOCABULARY_CHUNK_RESCUE_AUTHORITY,id),false,id);
+});
+
+test('vocab:00139 chunk N-best rescue accepts either rank-zero chunk plus one strict lower candidate',()=>{
+  const canonical='no sooner had I sat down than the phone rang';
+  const primary='no sooner had I sat down then the phone rang';
+  const result=classifyVocabularySpeechAnswer({
+    entry:{id:'vocab:00139',canonical},
+    transcript:primary,
+    recognitionSegments:[segmentFactory([primary,'unrelated','than the phone rang'])],
+  });
+  assert.equal(result.type,'target');
+  assert.equal(result.targetRescued,true);
+  assert.equal(result.recognitionAuthority,'nbest-chunk-exact');
+  assert.equal(result.asrRank,2);
+  assert.equal(result.recognitionSegmentIndex,0);
+  assert.equal(result.matchedExpected,canonical);
+  assert.equal(result.primaryTranscript,primary);
+  assert.equal(result.displayTranscript,primary);
+  assert.equal(result.rawTranscript,'than the phone rang');
+  assert.equal(result.rescuedChunk.expected,'than the phone rang');
+  assert.equal(result.supportingPrimaryChunk.expected,'no sooner had I sat down');
+  assert.equal(result.chunkRescue.authority,'nbest-chunk-exact');
+
+  const reversed=classifyVocabularySpeechAnswer({
+    entry:{id:'vocab:00139',canonical},
+    transcript:'please than the phone rang, thanks',
+    recognitionSegments:[segmentFactory(['please than the phone rang, thanks','no sooner had I sat down'])],
+  });
+  assert.equal(reversed.type,'target');
+  assert.equal(reversed.rescuedChunk.expected,'no sooner had I sat down');
+  assert.equal(reversed.supportingPrimaryChunk.expected,'than the phone rang');
+});
+
+test('vocab:00328 chunks reconstruct the current canonical and rescue either strict split direction',()=>{
+  const canonical='something has something to do with something else';
+  const chunks=VOCABULARY_CHUNK_RESCUE_AUTHORITY['vocab:00328'];
+  assert.deepEqual(chunks,['something has something to do','with something else']);
+  assert.deepEqual(
+    safeSpeechTokens(chunks.join(' ')).map(token=>token.value),
+    safeSpeechTokens(canonical).map(token=>token.value),
+  );
+  const placeholders=text=>text.match(/\b(?:something else|something|someone)\b/g)||[];
+  assert.deepEqual(placeholders(chunks.join(' ')),placeholders(canonical));
+  assert.equal(chunks.includes('have something to do'),false);
+  assert.equal(chunks.join(' ').includes('is related to'),false);
+
+  const positive=classifyVocabularySpeechAnswer({
+    entry:{id:'vocab:00328',canonical},
+    transcript:chunks[0],
+    recognitionSegments:[segmentFactory([chunks[0],chunks[1]])],
+  });
+  assert.equal(positive.type,'target');
+  assert.equal(positive.recognitionAuthority,'nbest-chunk-exact');
+  assert.equal(positive.rescuedChunk.expected,chunks[1]);
+  assert.equal(positive.supportingPrimaryChunk.expected,chunks[0]);
+
+  const reversed=classifyVocabularySpeechAnswer({
+    entry:{id:'vocab:00328',canonical},
+    transcript:chunks[1],
+    recognitionSegments:[segmentFactory([chunks[1],chunks[0]])],
+  });
+  assert.equal(reversed.type,'target');
+  assert.equal(reversed.recognitionAuthority,'nbest-chunk-exact');
+  assert.equal(reversed.rescuedChunk.expected,chunks[0]);
+  assert.equal(reversed.supportingPrimaryChunk.expected,chunks[1]);
+});
+
+test('vocab:00328 rejects stale chunks, paraphrase mixing, and fuzzy chunk candidates',()=>{
+  const canonical='something has something to do with something else';
+  const oldFirst='have something to do';
+  const second='with something else';
+  const stale=classifyVocabularySpeechAnswer({
+    entry:{id:'vocab:00328',canonical},
+    transcript:oldFirst,
+    recognitionSegments:[segmentFactory([oldFirst,second])],
+  });
+  assert.equal(stale.type,'miss');
+  assert.equal(stale.chunkRescue,undefined);
+
+  const paraphrase='something is related to something else';
+  const paraphrased=classifyVocabularySpeechAnswer({
+    entry:{id:'vocab:00328',canonical,paraphrases:[paraphrase]},
+    transcript:paraphrase,
+  });
+  assert.equal(paraphrased.type,'paraphrase');
+  assert.equal(paraphrased.chunkRescue,undefined);
+
+  const mixed=classifyVocabularySpeechAnswer({
+    entry:{id:'vocab:00328',canonical,paraphrases:[paraphrase]},
+    transcript:'something has something to do',
+    recognitionSegments:[segmentFactory(['something has something to do',paraphrase])],
+  });
+  assert.equal(mixed.type,'miss');
+
+  const fuzzy=classifyVocabularySpeechAnswer({
+    entry:{id:'vocab:00328',canonical},
+    transcript:'something has something to do',
+    recognitionSegments:[segmentFactory(['something has something to do','with something els'])],
+  });
+  assert.equal(fuzzy.type,'miss');
+});
+
+test('chunk rescue retains explicit-equivalence provenance on either supporting chunk',()=>{
+  const canonical='not so much by something as by something else';
+  const lowerEquivalent=classifyVocabularySpeechAnswer({
+    entry:{id:'vocab:00225',canonical},
+    transcript:'not so much by something',
+    recognitionSegments:[segmentFactory(['not so much by something','as buy something else'])],
+  });
+  assert.equal(lowerEquivalent.type,'target');
+  assert.equal(lowerEquivalent.recognitionAuthority,'nbest-chunk-exact');
+  assert.equal(lowerEquivalent.rescuedChunk.authority,'explicit-equivalence');
+  assert.equal(lowerEquivalent.rescuedChunk.ruleId,'by-buy');
+  assert.equal(lowerEquivalent.speechMatch.authority,'explicit-equivalence');
+  assert.equal(lowerEquivalent.speechMatch.ruleKind,'homophone');
+  assert.equal(lowerEquivalent.displayTranscript,'not so much by something');
+
+  const primaryEquivalent=classifyVocabularySpeechAnswer({
+    entry:{id:'vocab:00225',canonical},
+    transcript:'not so much buy something',
+    recognitionSegments:[segmentFactory(['not so much buy something','as by something else'])],
+  });
+  assert.equal(primaryEquivalent.type,'target');
+  assert.equal(primaryEquivalent.recognitionAuthority,'nbest-chunk-exact');
+  assert.equal(primaryEquivalent.supportingPrimaryChunk.authority,'explicit-equivalence');
+  assert.equal(primaryEquivalent.supportingPrimaryChunk.ruleId,'by-buy');
+});
+
+test('chunk rescue rejects missing, partial, split-candidate, paraphrase, and uncurated evidence',()=>{
+  const id='vocab:00139';
+  const canonical='no sooner had I sat down than the phone rang';
+  const cases=[
+    ['both primary chunks missing','something entirely unrelated',[segmentFactory(['something entirely unrelated','than the phone rang'])]],
+    ['lower candidate has only a partial chunk','no sooner had I sat down then the phone rang',[segmentFactory(['no sooner had I sat down then the phone rang','the phone rang'])]],
+    ['chunks only appear in different lower candidates','something entirely unrelated',[segmentFactory(['something entirely unrelated','no sooner had I sat down']),segmentFactory(['something else','than the phone rang'])]],
+    ['TARGET chunk cannot be completed by a PARAPHRASE', 'no sooner had I sat down then the phone rang', [segmentFactory(['no sooner had I sat down then the phone rang','than the phone rang'])]],
+    ['correction cannot combine a primary PARAPHRASE with a lower TARGET chunk','no sooner had I sat down',[segmentFactory(['no sooner had I sat down','than the phone rang'])]],
+  ];
+  for(const [label,transcript,recognitionSegments] of cases){
+    const paraphrases=label.includes('PARAPHRASE')
+      ?(label.startsWith('correction')?['no sooner had I sat down']:['than the phone rang'])
+      :[];
+    const result=classifyVocabularySpeechAnswer({entry:{id,canonical,paraphrases},transcript,recognitionSegments,correction:label.startsWith('correction')});
+    assert.equal(result.type,'miss',label);
+  }
+
+  assert.equal(classifyVocabularySpeechAnswer({
+    entry:{id,canonical:'changed canonical'},
+    transcript:'no sooner had I sat down then the phone rang',
+    recognitionSegments:[segmentFactory(['no sooner had I sat down then the phone rang','than the phone rang'])],
+  }).type,'miss','stale curated chunks fail closed after a canonical change');
+
+  const entryMap=new Map(JSON.parse(readFileSync(new URL('../data/vocabulary-v3.json',import.meta.url),'utf8')).entries.map(value=>[value.id,value]));
+  const nonTargetIds=[
+    'vocab:00013','vocab:00071','vocab:00100','vocab:00151','vocab:00237','vocab:00250',
+    'vocab:00341','vocab:00418','vocab:00420','vocab:00469','vocab:00478','vocab:00491',
+    'vocab:00546','vocab:00578','vocab:00622','vocab:00644','vocab:00696','vocab:01153',
+    'vocab:01514','vocab:01654','vocab:01668','vocab:01816','vocab:01912','vocab:02445',
+  ];
+  for(const nonTargetId of nonTargetIds){
+    const target=entryMap.get(nonTargetId);
+    const words=safeSpeechTokens(target.canonical).map(token=>token.value);
+    const cut=Math.floor(words.length/2);
+    const first=words.slice(0,cut).join(' ');
+    const second=words.slice(cut).join(' ');
+    const result=classifyVocabularySpeechAnswer({
+      entry:{id:nonTargetId,canonical:target.canonical},
+      transcript:first,
+      recognitionSegments:[segmentFactory([first,second])],
+    });
+    assert.equal(result.type,'miss',nonTargetId+' stays outside curated chunk authority');
+  }
+  assert.equal(classifyVocabularySpeechAnswer({
+    entry:{canonical},
+    transcript:'no sooner had I sat down then the phone rang',
+    recognitionSegments:[segmentFactory(['no sooner had I sat down then the phone rang','than the phone rang'])],
+  }).type,'miss','an uncurated entry with the same text stays unchanged');
+});
+
+test('existing lower full TARGET rescue wins before curated chunk rescue',()=>{
+  const canonical='no sooner had I sat down than the phone rang';
+  const primary='no sooner had I sat down then the phone rang';
+  const result=classifyVocabularySpeechAnswer({
+    entry:{id:'vocab:00139',canonical},
+    transcript:primary,
+    recognitionSegments:[segmentFactory([primary,'unrelated',canonical])],
+  });
+  assert.equal(result.type,'target');
+  assert.equal(result.recognitionAuthority,'nbest-exact');
+  assert.equal(result.asrRank,2);
+  assert.equal(result.targetMatchKind,'full-surface');
+  assert.equal(result.chunkRescue,undefined);
+});
+
+test('curated chunk rescue can use the existing deepest retained strict N-best rank',()=>{
+  const canonical='no sooner had I sat down than the phone rang';
+  const primary='no sooner had I sat down then the phone rang';
+  const alternatives=Array.from({length:20},(_,index)=>index===0?primary:index===19?'than the phone rang':`unrelated ${index}`);
+  const result=classifyVocabularySpeechAnswer({
+    entry:{id:'vocab:00139',canonical},
+    transcript:primary,
+    recognitionSegments:[segmentFactory(alternatives)],
+  });
+  assert.equal(result.type,'target');
+  assert.equal(result.asrRank,19,'provider rank 20 is retained with zero-based metadata');
+  assert.equal(result.recognitionAuthority,'nbest-chunk-exact');
 });
 
 test('postwar/post war is explicit TARGET equivalence with raw transcript display',()=>{

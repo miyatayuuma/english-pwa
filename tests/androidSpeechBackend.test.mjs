@@ -174,3 +174,31 @@ for(const rank of [6,12,20]) test(`Android adapter/controller uses shared TARGET
   assert.equal(grade.type,'target');assert.equal(grade.recognitionAuthority,'nbest-exact');
   assert.equal(grade.asrRank,rank-1);assert.equal(result.recognitionSegments[0].alternatives.length,20);
 });
+
+test('Android provider evidence reaches shared curated Vocabulary chunk rescue at retained N-best rank',async()=>{
+  const {classifyVocabularySpeechAnswer}=await import('../scripts/speech/vocabularySpeechEvidence.js');
+  const f=fixture();let driver;
+  class Backend extends AndroidSpeechRecognizerBackend{constructor(){super({pluginProvider:async()=>f.plugin});driver=this;drivers.push(this);}}
+  const controller=createRecognitionController({recognitionBackend:Backend});
+  controller.start();await driver.startup;
+  const primary='no sooner had I sat down then the phone rang';
+  const alternatives=Array.from({length:20},(_,index)=>({
+    transcript:index===0?primary:index===19?'than the phone rang':`unrelated ${index}`,
+    asrRank:index,
+    confidence:0,
+  }));
+  const promise=controller.stop();
+  f.emit(driver,'final',alternatives);f.emit(driver,'end');
+  const evidence=await promise;
+  const grade=classifyVocabularySpeechAnswer({
+    entry:{id:'vocab:00139',canonical:'no sooner had I sat down than the phone rang'},
+    ...evidence,
+  });
+  assert.equal(grade.type,'target');
+  assert.equal(grade.recognitionAuthority,'nbest-chunk-exact');
+  assert.equal(grade.asrRank,19);
+  assert.equal(grade.primaryTranscript,primary);
+  assert.equal(grade.displayTranscript,primary);
+  assert.equal(evidence.recognitionSegments[0].alternatives.length,20);
+  assert.equal(evidence.recognitionSegments[0].alternatives[19].transcript,'than the phone rang');
+});

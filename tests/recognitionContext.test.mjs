@@ -70,6 +70,26 @@ test('Web preserves duplicate provider candidates and ranks',()=>fixture(async({
   assert.equal(alternatives.at(-1).transcript,'yield');controller.cancel();
 }));
 
+test('Web provider evidence reaches shared curated Vocabulary chunk rescue without changing rank-one transcript',()=>fixture(async({createRecognitionController},instances)=>{
+  const {classifyVocabularySpeechAnswer}=await import('../scripts/speech/vocabularySpeechEvidence.js');
+  const primary='no sooner had I sat down then the phone rang';
+  const controller=createRecognitionController({getRecognitionContext:()=>({mode:'vocabulary'})});
+  controller.start();
+  instances[0].inject([result([primary,'unrelated','than the phone rang'])]);
+  const evidence=controller.stop();
+  const grade=classifyVocabularySpeechAnswer({
+    entry:{id:'vocab:00139',canonical:'no sooner had I sat down than the phone rang'},
+    ...evidence,
+  });
+  assert.equal(grade.type,'target');
+  assert.equal(grade.recognitionAuthority,'nbest-chunk-exact');
+  assert.equal(grade.asrRank,2);
+  assert.equal(grade.primaryTranscript,primary);
+  assert.equal(grade.displayTranscript,primary);
+  assert.equal(evidence.transcript,primary);
+  assert.equal(evidence.recognitionSegments[0].alternatives[2].transcript,'than the phone rang');
+}));
+
 for(const rank of [1,6,8,12,20]) test(`Web provider rank ${rank} uses shared strict TARGET authority`,()=>fixture(async({createRecognitionController},instances)=>{
   const {classifyVocabularySpeechAnswer}=await import('../scripts/speech/vocabularySpeechEvidence.js');
   const controller=createRecognitionController();controller.start();

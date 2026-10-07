@@ -1,5 +1,6 @@
 import { answerVariants, classifyVocabularyAnswer } from '../app/vocabularyLearningCore.js';
 import { findSpeechSurfaceMatch } from './speechAlignment.js';
+import { vocabularyChunkRescueChunks } from './vocabularyChunkRescueAuthority.js';
 
 function evidenceMetadata(transcript) {
   return {
@@ -50,6 +51,125 @@ function targetProduction({ entry, activeOccurrence, transcript, segmentIndex, r
       match,
       targetMatchKind: match.observed === String(transcript).trim() ? 'full-surface' : 'contained-target',
     };
+  }
+  return null;
+}
+
+function isStrictMatch(match) {
+  return match?.authority === 'exact' || match?.authority === 'explicit-equivalence';
+}
+
+function chunkMatch(expected, transcript, entry, segmentIndex, rank) {
+  const match = speechMatch(expected, transcript, entry, segmentIndex, rank, false);
+  return isStrictMatch(match) ? match : null;
+}
+
+function chunkRescueProduction({ entry, activeOccurrence, primaryTranscript, metadata, recognitionSegments }) {
+  const chunks = vocabularyChunkRescueChunks(entry);
+  if (!chunks) return null;
+
+  const primaryClassification = classifyVocabularyAnswer({ entry, activeOccurrence, transcript: primaryTranscript });
+  if (primaryClassification.type === 'paraphrase') return null;
+
+  const primaryMatches = chunks.map((chunk, index) => {
+    const segmentIndex = primarySegmentIndexFor(chunk, entry, recognitionSegments);
+    const match = chunkMatch(chunk, primaryTranscript, entry, segmentIndex, 0);
+    return match ? { index, chunk, match } : null;
+  });
+
+  // The curated rule only combines one rank-zero chunk with the opposite
+  // chunk from a single lower provider candidate.
+  const primaryIndexes = primaryMatches.flatMap((value, index) => value ? [index] : []);
+  if (primaryIndexes.length !== 1) return null;
+  const primaryIndex = primaryIndexes[0];
+  const missingIndex = primaryIndex === 0 ? 1 : 0;
+  const primarySupport = primaryMatches[primaryIndex];
+
+  for (const [index, segment] of recognitionSegments.entries()) {
+    const segmentIndex = segment.segmentIndex ?? index;
+    for (const candidate of segment.alternatives || []) {
+      if (!Number.isInteger(candidate.asrRank) || candidate.asrRank <= 0) continue;
+      const candidateTranscript = String(candidate.transcript ?? '');
+      if (!candidateTranscript) continue;
+
+      // A full answer variant or paraphrase cannot be joined to a canonical
+      // chunk from the other candidate surface.
+      const candidateClassification = classifyVocabularyAnswer({
+        entry,
+        activeOccurrence,
+        transcript: candidateTranscript,
+      });
+      if (candidateClassification.type !== 'miss') continue;
+
+      const match = chunkMatch(chunks[missingIndex], candidateTranscript, entry, segmentIndex, candidate.asrRank);
+      if (!match) continue;
+
+      const target = classifyVocabularyAnswer({
+        entry,
+        activeOccurrence,
+        transcript: entry.canonical,
+      });
+      if (target.type !== 'target') return null;
+
+      const recognitionAuthority = 'nbest-chunk-exact';
+      const rescuedChunk = {
+        index: missingIndex,
+        expected: chunks[missingIndex],
+        observed: match.observed,
+        authority: match.authority,
+        ruleId: match.ruleId,
+        ruleKind: match.ruleKind,
+        recognitionSegmentIndex: segmentIndex,
+        asrRank: candidate.asrRank,
+        rawTranscript: candidateTranscript,
+      };
+      const supportingPrimaryChunk = {
+        index: primaryIndex,
+        expected: chunks[primaryIndex],
+        observed: primarySupport.match.observed,
+        authority: primarySupport.match.authority,
+        ruleId: primarySupport.match.ruleId,
+        ruleKind: primarySupport.match.ruleKind,
+        recognitionSegmentIndex: primarySupport.match.recognitionSegmentIndex,
+        asrRank: 0,
+        rawTranscript: primaryTranscript,
+      };
+      const displayTranscript = metadata.primaryTranscript;
+
+      return {
+        ...target,
+        ...metadata,
+        matched: true,
+        matchedExpected: target.matchedText,
+        observed: match.observed,
+        rawTranscript: candidateTranscript,
+        displayTranscript,
+        targetRescued: true,
+        recognitionSegmentIndex: segmentIndex,
+        asrRank: candidate.asrRank,
+        recognitionAuthority,
+        targetMatchKind: 'chunk-rescued-target',
+        rescuedChunk,
+        supportingPrimaryChunk,
+        chunkRescue: {
+          authority: 'nbest-chunk-exact',
+          rescuedChunk,
+          supportingPrimaryChunk,
+        },
+        speechMatch: {
+          matched: true,
+          expected: chunks[missingIndex],
+          observed: match.observed,
+          authority: match.authority,
+          ruleId: match.ruleId,
+          ruleKind: match.ruleKind,
+          recognitionSegmentIndex: segmentIndex,
+          asrRank: candidate.asrRank,
+          rawTranscript: candidateTranscript,
+          displayTranscript,
+        },
+      };
+    }
   }
   return null;
 }
@@ -205,6 +325,15 @@ export function classifyVocabularySpeechAnswer({ entry, activeOccurrence = null,
       });
     }
   }
+
+  const chunkRescued = chunkRescueProduction({
+    entry,
+    activeOccurrence,
+    primaryTranscript,
+    metadata,
+    recognitionSegments,
+  });
+  if (chunkRescued) return chunkRescued;
 
   return { type: 'miss', matchedText: '', matchedAuthority: null, ...metadata };
 }
