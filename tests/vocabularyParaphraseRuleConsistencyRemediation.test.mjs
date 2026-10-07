@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import {collapseDuplicateVocabularyCards} from '../scripts/app/vocabularyLearningCore.js';
 
 const db=JSON.parse(fs.readFileSync(new URL('../data/vocabulary-v3.json',import.meta.url),'utf8'));
 const paraphraseAudit=JSON.parse(fs.readFileSync(new URL('../data/vocabulary-v3-paraphrase-audit.json',import.meta.url),'utf8'));
@@ -654,4 +655,31 @@ test('vocab:00328 keeps the same subject and related-target roles on every surfa
   for(const surface of entry.paraphrases) assert.deepEqual(slotSignature(surface,entry.id,'paraphrase'),roles);
   assert.equal(entry.canonical,'something has something to do with something else');
   assert.deepEqual(entry.paraphrases,['something is related to something else']);
+});
+
+test('all-mode collapses the six confirmed cross-kind cards sharing a source and canonical',()=>{
+  const pairs=[
+    ['vocab:00863','vocab:01400'],
+    ['vocab:00933','vocab:00409'],
+    ['vocab:00988','vocab:02231'],
+    ['vocab:01762','vocab:00363'],
+    ['vocab:01786','vocab:01821'],
+    ['vocab:01979','vocab:00474'],
+  ];
+  for(const [wordId,expressionId] of pairs){
+    const wordEntry=byId.get(wordId),expressionEntry=byId.get(expressionId);
+    assert.ok(wordEntry&&expressionEntry,`${wordId}/${expressionId} exist`);
+    assert.equal(wordEntry.kind,'word');
+    assert.equal(expressionEntry.kind,'expression');
+    assert.equal(wordEntry.canonical,expressionEntry.canonical,`${wordId}/${expressionId} canonical`);
+    const sharedItemIds=wordEntry.occurrences.map(value=>String(value.item_id)).filter(id=>expressionEntry.occurrences.some(value=>String(value.item_id)===id));
+    assert.ok(sharedItemIds.length>0,`${wordId}/${expressionId} share a source item`);
+    const active=entry=>({...entry,activeOccurrence:{item:{id:sharedItemIds[0]},occurrence:entry.occurrences.find(value=>String(value.item_id)===sharedItemIds[0])}});
+    const merged=collapseDuplicateVocabularyCards([active(expressionEntry),active(wordEntry)]);
+    assert.deepEqual(merged.map(value=>value.id),[wordId],`${wordId}/${expressionId} all-mode duplicate`);
+    assert.equal(merged[0].meaning_ja,wordEntry.meaning_ja,`${wordId} remains the authoritative prompt`);
+    assert.deepEqual(merged[0].paraphrases,wordEntry.paraphrases,`${wordId} keeps the confirmed paraphrases`);
+    assert.deepEqual(collapseDuplicateVocabularyCards([active(wordEntry)]).map(value=>value.id),[wordId],`${wordId} remains available in the word filter`);
+    assert.deepEqual(collapseDuplicateVocabularyCards([active(expressionEntry)]).map(value=>value.id),[expressionId],`${expressionId} remains available in the expression filter`);
+  }
 });

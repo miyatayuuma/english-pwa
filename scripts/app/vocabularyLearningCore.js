@@ -87,6 +87,27 @@ export function eligibleVocabularyEntries(entries,levelState={}){
   return eligible;
 }
 
+export function collapseDuplicateVocabularyCards(entries){
+  // In the combined deck, a confirmed word card supersedes an expression card
+  // with the same source item and canonical; explicit kind filters stay separate.
+  const groups=new Map();
+  for(const entry of Array.isArray(entries)?entries:[]){
+    const kind=entry?.kind;
+    const itemId=String(entry?.activeOccurrence?.item?.id||entry?.activeOccurrence?.occurrence?.item_id||'');
+    const canonical=String(entry?.canonical||'').trim().replace(/\s+/g,' ').toLowerCase();
+    if(!itemId||!canonical||!['word','expression'].includes(kind)) continue;
+    const key=`${itemId}\u0000${canonical}`;
+    if(!groups.has(key)) groups.set(key,[]);
+    groups.get(key).push(entry);
+  }
+  const duplicateExpressions=new Set();
+  for(const group of groups.values()){
+    if(!group.some(entry=>entry.kind==='word')||!group.some(entry=>entry.kind==='expression')) continue;
+    for(const entry of group) if(entry.kind==='expression') duplicateExpressions.add(entry);
+  }
+  return (Array.isArray(entries)?entries:[]).filter(entry=>!duplicateExpressions.has(entry));
+}
+
 export function vocabularyLevelInfo(levelState,entry){
   const id=vocabStateId(entry);
   const info=(id&&levelState?.[id]&&typeof levelState[id]==='object')?levelState[id]:{};
