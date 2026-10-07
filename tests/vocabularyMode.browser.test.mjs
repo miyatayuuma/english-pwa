@@ -15,7 +15,7 @@ const sources=[
   {kind:'expression',canonical:'come across someone',itemId:'E0524'},
   {kind:'word',canonical:'faint',itemId:'E0125'},
   {kind:'construction',canonical:'make someone do something',itemId:'E0130'},
-  {kind:'word',canonical:'despite',itemId:'E0088'},
+  {kind:'word',canonical:'despite something',itemId:'E0088',entryId:'vocab:00121'},
   {kind:'expression',canonical:'yield to something',itemId:'E0343'},
   {kind:'word',canonical:'scarcely',itemId:'E0010'},
   {kind:'word',canonical:'confuse',itemId:'E0016'},
@@ -354,7 +354,7 @@ browserTest('canonical grammar role wins over paraphrase POS and legacy kind lab
     {source:{kind:'expression',canonical:'job interview',itemId:'E0366'},label:'名詞'},
     {source:{kind:'expression',canonical:'take up',itemId:'E0020'},label:'動詞'},
     {source:{kind:'construction',canonical:'so tired that I fell asleep',itemId:'E0371'},label:'構文'},
-    {source:{kind:'expression',canonical:'despite',itemId:'E0088',entryId:'vocab:00121'},label:'前置詞'},
+    {source:{kind:'word',canonical:'despite something',itemId:'E0088',entryId:'vocab:00121'},label:'前置詞'},
   ];
   for(const {source,label} of cases){
     const opened=await newPage(source);
@@ -699,7 +699,7 @@ browserTest('unsupported speech disables Vocabulary start and never offers manua
 });
 
 browserTest('Web Vocabulary retains strict TARGET context and N-best without phrase bias, preserves raw output',async()=>{
-  for(const [source,target] of [[sources[3],'despite'],[sources[0],'come across someone']]){
+  for(const [source,target] of [[sources[3],'despite something'],[sources[0],'come across someone']]){
     const opened=await newPage(source);const {page}=opened;
     try{
       await page.waitForFunction(()=>window.__mockSpeech.startCount>0);
@@ -711,7 +711,7 @@ browserTest('Web Vocabulary retains strict TARGET context and N-best without phr
       await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='正解');
       assert.equal(await page.locator('.vocab-heard__text').innerText(),target);
       assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);
-      assert.equal(await page.locator('.vocab-answer').innerText(),target);
+      assert.equal(await page.locator('.vocab-answer').innerText(),fixtureFor(source).canonical);
       await tapResult(page);
       await page.waitForSelector('.vocab-done');
     }finally{await closePage(opened);}
