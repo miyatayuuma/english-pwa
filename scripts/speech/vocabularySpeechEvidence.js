@@ -1,5 +1,6 @@
 import { answerVariants, classifyVocabularyAnswer } from '../app/vocabularyLearningCore.js';
 import { findSpeechSurfaceMatch } from './speechAlignment.js';
+import { safeSpeechTokens } from './safeSpeechNormalization.js';
 import { vocabularyChunkRescueChunks } from './vocabularyChunkRescueAuthority.js';
 
 function evidenceMetadata(transcript) {
@@ -51,6 +52,25 @@ function targetProduction({ entry, activeOccurrence, transcript, segmentIndex, r
       match,
       targetMatchKind: match.observed === String(transcript).trim() ? 'full-surface' : 'contained-target',
     };
+  }
+  return null;
+}
+
+function explicitParaphraseProduction({ entry, activeOccurrence, transcript, recognitionSegments }) {
+  const observedTokens = safeSpeechTokens(transcript).map(token => token.value);
+  for (const expected of Array.isArray(entry?.paraphrases) ? entry.paraphrases : []) {
+    const segmentIndex = primarySegmentIndexFor(expected, entry, recognitionSegments);
+    const match = speechMatch(expected, transcript, entry, segmentIndex, 0, false);
+    if (match?.authority !== 'explicit-equivalence') continue;
+    const matchedTokens = safeSpeechTokens(match.observed).map(token => token.value);
+    // Preserve current paraphrase behavior: only the complete accepted surface
+    // is a paraphrase answer. The new authority changes its anchored word pair,
+    // not the existing containment policy for paraphrases.
+    if (observedTokens.length !== matchedTokens.length
+      || observedTokens.some((token, index) => token !== matchedTokens[index])) continue;
+    const classified = classifyVocabularyAnswer({ entry, activeOccurrence, transcript: expected });
+    if (classified.type !== 'paraphrase') continue;
+    return { ...classified, matchedText: expected, match };
   }
   return null;
 }
@@ -300,6 +320,31 @@ export function classifyVocabularySpeechAnswer({ entry, activeOccurrence = null,
       rank: 0,
       primaryDisplay: true,
     });
+  }
+
+  if (!correction) {
+    const paraphrase = explicitParaphraseProduction({
+      entry,
+      activeOccurrence,
+      transcript: primaryTranscript,
+      recognitionSegments,
+    });
+    if (paraphrase) {
+      return {
+        ...paraphrase,
+        ...metadata,
+        matched: true,
+        matchedExpected: paraphrase.matchedText,
+        observed: paraphrase.match.observed,
+        rawTranscript: primaryTranscript,
+        displayTranscript: primaryTranscript,
+        recognitionSegmentIndex: paraphrase.match.recognitionSegmentIndex,
+        asrRank: 0,
+        recognitionAuthority: 'explicit-equivalence',
+        targetRescued: false,
+        speechMatch: paraphrase.match,
+      };
+    }
   }
 
   for (const [index, segment] of recognitionSegments.entries()) {

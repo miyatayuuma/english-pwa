@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "test": "node --test tests/*.test.mjs",
+    "speech:validate-td-cluster-before-to": "node scripts/speech/validate-vocabulary-td-cluster-before-to.mjs",
     "test:reorder-browser": "node --test tests/reorderBrowser.test.mjs",
     "vocab:check-derived": "node scripts/vocabulary/validate-vocabulary-v3.mjs --check-report && node scripts/vocabulary/validate-vocabulary-grammar-role.mjs && node scripts/vocabulary/validate-final-admission-materialization.mjs && node scripts/vocabulary/validate-meaning-canonical-audit.mjs --check-production",
     "vocab:validate": "node scripts/vocabulary/validate-vocabulary-v3.mjs --check-report && node scripts/vocabulary/validate-vocabulary-grammar-role.mjs && node scripts/vocabulary/validate-source-sentence-integrity.mjs && node scripts/vocabulary/validate-final-admission-occurrences.mjs && node scripts/vocabulary/validate-final-admission-materialization.mjs && node scripts/vocabulary/validate-meaning-canonical-audit.mjs --check-production",
