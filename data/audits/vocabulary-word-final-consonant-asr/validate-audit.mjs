@@ -8,6 +8,7 @@ const coda = readJson('coda-sites.json').sites;
 const candidateDoc = readJson('candidates.json');
 const safeDoc = readJson('safe.json');
 const reviewDoc = readJson('review.json');
+const reviewAdjudication = readJson('review-adjudication.json');
 const rejectedDoc = readJson('rejected.json');
 const registrationDoc = readJson('registration-candidates.json');
 const controls = readJson('controls.json');
@@ -110,7 +111,7 @@ check('no explicit-equivalence duplicates', () => assert.equal(manifest.summary.
 check('contextual homograph senses are preserved', () => {
   const windWine = candidates.filter((x) => x.entry_id === 'vocab:00102' && x.target_word === 'wind' && x.collision_word === 'wine');
   const windWin = candidates.filter((x) => x.entry_id === 'vocab:00102' && x.target_word === 'wind' && x.collision_word === 'win');
-  assert.ok(windWine.length > 0 && windWine.every((x) => x.decision === 'REVIEW' && x.vowel_identity_preserved));
+  assert.ok(windWine.length > 0 && windWine.every((x) => x.decision === 'REJECT' && x.vowel_identity_preserved));
   assert.ok(windWin.length > 0 && windWin.every((x) => x.decision === 'REJECT' && !x.vowel_identity_preserved));
   for (const c of candidates.filter((x) => x.entry_id === 'vocab:00448' && x.target_word === 'lives')) {
     assert.ok(c.phonetic_paths.every((p) => p.target_pronunciation === 'L IH1 V Z'));
@@ -122,6 +123,39 @@ check('contextual homograph senses are preserved', () => {
 check('vowel-substitution controls are not SAFE', () => {
   assert.ok(!candidates.some((x) => x.decision === 'SAFE' && x.target_word === 'see' && x.collision_word === 'say'));
   assert.ok(!candidates.some((x) => x.decision === 'SAFE' && x.target_word === 'yield' && x.collision_word === 'yelled'));
+});
+check('final REVIEW set is empty', () => { assert.equal(reviewDoc.candidates.length, 0); assert.equal(manifest.counts.REVIEW, 0); });
+check('all 209 original REVIEW records have exactly one final disposition', () => {
+  const decisions = reviewAdjudication.decisions;
+  assert.equal(decisions.length, 209);
+  assert.equal(new Set(decisions.map((x) => x.candidate_id)).size, 209);
+  for (const d of decisions) {
+    const c = candidateById.get(d.candidate_id);
+    assert.ok(c && c.initial_review_decision === 'REVIEW');
+    assert.equal(c.decision, d.decision);
+    assert.equal(c.final_adjudication?.source_decision, 'REVIEW');
+    assert.ok(['SAFE','REJECT'].includes(d.decision));
+    assert.ok(d.reason && d.confidence && d.target_pronunciation && d.candidate_pronunciation);
+  }
+  assert.equal(decisions.filter((x) => x.decision === 'SAFE').length, 6);
+  assert.equal(decisions.filter((x) => x.decision === 'REJECT').length, 203);
+});
+check('new SAFE records have positive weak-form evidence and exact scope', () => {
+  const expected = ['wfc-02515','wfc-02523','wfc-03391','wfc-03392','wfc-04076','wfc-04078'].sort();
+  const actual = reviewAdjudication.decisions.filter((x) => x.decision === 'SAFE').map((x) => x.candidate_id).sort();
+  assert.deepEqual(actual, expected);
+  for (const id of expected) {
+    const c = candidateById.get(id);
+    assert.ok(c.reason.includes('weak') && c.reason.includes('surface'));
+    assert.equal(c.adjudication_confidence, 'medium-high');
+    assert.equal(c.final_adjudication.same_entry_target_overlap, false);
+    assert.equal(c.existing_equivalence_status, 'NEW_CANDIDATE');
+  }
+});
+check('final decision totals match all 4,666 records', () => {
+  assert.deepEqual(manifest.counts, { SAFE: 8, REVIEW: 0, REJECT: 4658, unclassified: 0 });
+  assert.equal(safeDoc.candidates.length, 8);
+  assert.equal(rejectedDoc.candidate_ids.length, 4658);
 });
 check('every candidate classified', () => {
   assert.equal(candidates.filter((x) => ['SAFE','REVIEW','REJECT'].includes(x.decision)).length, candidates.length);

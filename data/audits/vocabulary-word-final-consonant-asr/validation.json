@@ -2,97 +2,117 @@
   "schema_version": 1,
   "audit_date": "2026-10-07",
   "result": "PASS",
+  "validator": {
+    "command": "node data/audits/vocabulary-word-final-consonant-asr/validate-audit.mjs",
+    "execution": "actual local Node execution",
+    "exit_code": 0,
+    "check_count": 19
+  },
   "checks": [
     {
-      "name": "population entries = 2478",
-      "result": "PASS",
-      "actual": 2478
-    },
-    {
-      "name": "TARGET surface authority reconstructed",
-      "result": "PASS",
-      "actual": 4970
-    },
-    {
-      "name": "all source slices valid",
-      "result": "PASS",
-      "invalid": 0
-    },
-    {
-      "name": "word-final coda token sites scanned",
-      "result": "PASS",
-      "actual": 7870
-    },
-    {
-      "name": "candidate identity duplicates",
-      "result": "PASS",
-      "duplicates": 0
-    },
-    {
-      "name": "all candidates classified",
-      "result": "PASS",
-      "unclassified": 0
-    },
-    {
-      "name": "decision totals consistent",
-      "result": "PASS",
-      "sum": 4666,
-      "SAFE": 2,
-      "REVIEW": 209,
-      "REJECT": 4455
-    },
-    {
-      "name": "SAFE registration list equals SAFE audit records",
-      "result": "PASS",
-      "safe_records": 2,
-      "registration_records": 2
-    },
-    {
-      "name": "entry and surface references valid",
+      "name": "population is 2,478",
       "result": "PASS"
     },
     {
-      "name": "apt to → app to SAFE",
-      "result": "PASS",
-      "candidate_ids": [
-        "wfc-02939",
-        "wfc-02946"
-      ]
+      "name": "surface authority reconstructed exactly",
+      "result": "PASS"
     },
     {
-      "name": "apt to → up to REJECT",
-      "result": "PASS",
-      "candidate_generated": false
+      "name": "all source spans reproduce their TARGET surface",
+      "result": "PASS"
     },
     {
-      "name": "see → say / yield → yelled not SAFE",
+      "name": "coda site coverage count",
+      "result": "PASS"
+    },
+    {
+      "name": "candidate IDs and identities are unique",
+      "result": "PASS"
+    },
+    {
+      "name": "candidate TARGET references are valid",
+      "result": "PASS"
+    },
+    {
+      "name": "all candidate paths are exact one-final-consonant deletion",
+      "result": "PASS"
+    },
+    {
+      "name": "split decision sets partition all candidates",
+      "result": "PASS"
+    },
+    {
+      "name": "SAFE registration list equals SAFE audit records",
+      "result": "PASS"
+    },
+    {
+      "name": "apt to → app to seed is SAFE",
+      "result": "PASS"
+    },
+    {
+      "name": "apt to → up to is REJECT and absent from candidate generation",
       "result": "PASS"
     },
     {
       "name": "no explicit-equivalence duplicates",
-      "result": "PASS",
-      "duplicates": 0
-    },
-    {
-      "name": "target-sense homograph paths disambiguated",
-      "result": "PASS",
-      "excluded_paths": 9,
-      "valid_unique_phonetic_pairs": 773
-    },
-    {
-      "name": "wind /wɪnd/ collision paths rejected; /waɪnd/ → wine kept REVIEW",
       "result": "PASS"
     },
     {
-      "name": "no production files changed",
-      "result": "PASS",
-      "changed_paths": "audit directory only"
+      "name": "contextual homograph senses are preserved",
+      "result": "PASS"
+    },
+    {
+      "name": "vowel-substitution controls are not SAFE",
+      "result": "PASS"
+    },
+    {
+      "name": "final REVIEW set is empty",
+      "result": "PASS"
+    },
+    {
+      "name": "all 209 original REVIEW records have exactly one final disposition",
+      "result": "PASS"
+    },
+    {
+      "name": "new SAFE records have positive weak-form evidence and exact scope",
+      "result": "PASS"
+    },
+    {
+      "name": "final decision totals match all 4,666 records",
+      "result": "PASS"
+    },
+    {
+      "name": "every candidate classified",
+      "result": "PASS"
     }
   ],
   "candidate_counts": {
-    "SAFE": 2,
-    "REVIEW": 209,
-    "REJECT": 4455,
+    "SAFE": 8,
+    "REVIEW": 0,
+    "REJECT": 4658,
     "unclassified": 0
+  },
+  "review_resolution": {
+    "source_review_count": 209,
+    "SAFE": 6,
+    "REJECT": 203,
+    "REVIEW": 0,
+    "unclassified": 0
+  },
+  "safe_accounting": {
+    "surface_records": 8,
+    "entries": 4,
+    "unique_collision_pairs": 3,
+    "explicit_equivalence_overlap": {
+      "NEW_CANDIDATE": 8
+    },
+    "same_entry_target_overlap_records": 0
+  },
+  "production_files_changed": 0,
+  "controls": {
+    "positive": "apt to → app to SAFE",
+    "negative": "apt to → up to REJECT",
+    "see_say": "not SAFE",
+    "yield_yelled": "not SAFE"
   }
 }
