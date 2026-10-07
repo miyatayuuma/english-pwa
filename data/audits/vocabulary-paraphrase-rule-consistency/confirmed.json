@@ -1,0 +1,1528 @@
+[
+  {
+    "id": "vocab:00121",
+    "kind": "word",
+    "pos": "preposition",
+    "sense_key": "in_spite_of",
+    "prompt_ja": "〜にもかかわらず",
+    "target": "despite",
+    "paraphrases": [
+      "in spite of something",
+      "although",
+      "even though"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "INTERNAL_PARAPHRASE_INCONSISTENCY",
+      "SYNTACTIC_FRAME_MISMATCH",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"despite\"=no explicit slot / \"in spite of something\"=THING:1 / \"although\"=no explicit slot / \"even though\"=no explicit slot. The Japanese prompt does not explicitly identify something (thing/event).",
+    "recommended_direction": "Japanese promptを「somethingにもかかわらず」（または「何かにもかかわらず」）へ明示化し、TARGETを「despite something」に揃える。paraphrasesは「in spite of something」だけを同一slot候補に残し、「although / even though」は節slotを要求するためこのpromptから除外候補にする。`+ clause`は使わない。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0088",
+      "target_span": "despite",
+      "sentence_en": "Ironically, despite their best endeavors, their mission resulted in complete failure.",
+      "sentence_ja": "皮肉なことだが、彼らの最善の努力にもかかわらず、任務は完全な失敗に終わった。",
+      "contextual_meaning_ja": "〜にもかかわらず"
+    }
+  },
+  {
+    "id": "vocab:00217",
+    "kind": "expression",
+    "pos": "verb",
+    "sense_key": "boast_or_display",
+    "prompt_ja": "見せびらかす",
+    "target": "show off",
+    "paraphrases": [
+      "flaunt something"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"show off\"=no explicit slot / \"flaunt something\"=THING:1. The Japanese prompt does not explicitly identify something (thing/event).",
+    "recommended_direction": "Promptを「somethingを見せびらかす」にし、TARGETを「show something off」、paraphraseを「flaunt something」に揃える。自然な目的語slotを置けない回答形は除外する。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0177",
+      "target_span": "show off her perfect figure",
+      "sentence_en": "\"Naomi likes to show off her perfect figure. I wish I were thin like her. I envy her.\" \"You could go on a diet.\"",
+      "sentence_ja": "「ナオミは自分の完璧なスタイルをひけらかしたがる。私も彼女みたいに痩せていればなあ。彼女が羨ましいわ。」 「ダイエットすれば。」",
+      "contextual_meaning_ja": "完璧なスタイルをひけらかす"
+    }
+  },
+  {
+    "id": "vocab:00219",
+    "kind": "word",
+    "pos": "verb",
+    "sense_key": "feel_envy",
+    "prompt_ja": "〜をうらやむ",
+    "target": "envy",
+    "paraphrases": [
+      "be envious of someone"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"envy\"=no explicit slot / \"be envious of someone\"=PERSON:1. The Japanese prompt does not explicitly identify someone (person).",
+    "recommended_direction": "promptの目的語が人限定か物事も含むかを決める。person限定なら「someoneをうらやむ / envy someone / be envious of someone」に揃え、thingも許すならその対象型のparaphraseを追加し、「someone」だけの回答を単独追加しない。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0177",
+      "target_span": "envy",
+      "sentence_en": "\"Naomi likes to show off her perfect figure. I wish I were thin like her. I envy her.\" \"You could go on a diet.\"",
+      "sentence_ja": "「ナオミは自分の完璧なスタイルをひけらかしたがる。私も彼女みたいに痩せていればなあ。彼女が羨ましいわ。」 「ダイエットすれば。」",
+      "contextual_meaning_ja": "彼女が羨ましい"
+    }
+  },
+  {
+    "id": "vocab:00266",
+    "kind": "expression",
+    "pos": "verb",
+    "sense_key": "retaliate",
+    "prompt_ja": "仕返しをする",
+    "target": "get even",
+    "paraphrases": [
+      "get revenge",
+      "get back at someone",
+      "take revenge"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "INTERNAL_PARAPHRASE_INCONSISTENCY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"get even\"=no explicit slot / \"get revenge\"=no explicit slot / \"get back at someone\"=PERSON:1 / \"take revenge\"=no explicit slot. The Japanese prompt does not explicitly identify someone (person).",
+    "recommended_direction": "promptを「someoneに仕返しをする」にし、TARGETを「get even with someone」、他の回答を「get revenge on someone / get back at someone / take revenge on someone」に揃える。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0207",
+      "target_span": "get even",
+      "sentence_en": "\"You betrayed me!\" \"Please forgive me. How can I make it up to you?\" \"I'll get even!\"",
+      "sentence_ja": "「私を裏切ったわね！」 「許してくれよ。どうしたら埋め合わせができるかなあ？」 「仕返ししてやるっ！」",
+      "contextual_meaning_ja": "仕返ししてやる"
+    }
+  },
+  {
+    "id": "vocab:00328",
+    "kind": "expression",
+    "pos": "verb",
+    "sense_key": "be_related_to",
+    "prompt_ja": "somethingはsomething elseと関係がある",
+    "target": "have something to do with something else",
+    "paraphrases": [
+      "be related to something else"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"have something to do with something else\"=THING:2 / \"be related to something else\"=THING:1.",
+    "recommended_direction": "Japanese promptの主語slotと対象slotを明示したまま、全回答に同じ2つのNP役割を持たせる。例: targetを「something has something to do with something else」、paraphraseを「something is related to something else」に揃え、2番目のsomethingは同一slot名に統一する。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0265",
+      "target_span": "has something to do with the ability",
+      "sentence_en": "Innovation has something to do with the ability to notice unusual phenomena.",
+      "sentence_ja": "革新的なものを生み出すこと、それは変わった現象を見逃さない能力と何らかの関係がある。",
+      "contextual_meaning_ja": "能力と何らかの関係がある"
+    }
+  },
+  {
+    "id": "vocab:00552",
+    "kind": "expression",
+    "pos": "adverb",
+    "sense_key": "very_soon_or_without_warning",
+    "prompt_ja": "今にも",
+    "target": "at any moment",
+    "paraphrases": [
+      "be about to do something",
+      "any minute now"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "INTERNAL_PARAPHRASE_INCONSISTENCY",
+      "SYNTACTIC_FRAME_MISMATCH",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"at any moment\"=no explicit slot / \"be about to do something\"=THING:1 / \"any minute now\"=no explicit slot. The Japanese prompt does not explicitly identify something (thing/event).",
+    "recommended_direction": "「今にも」の副詞promptを維持するなら「be about to do something」をparaphraseから除外し、「at any moment / any minute now」に揃える。行為を答えさせるなら行為slotを含む日本語promptとpredicate型TARGETを別に立てる。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0452",
+      "target_span": "at any moment",
+      "sentence_en": "Trade friction might arise between the two nations at any moment.",
+      "sentence_ja": "両国の間では貿易摩擦がいつ生じてもおかしくない。",
+      "contextual_meaning_ja": "いつ生じてもおかしくない"
+    }
+  },
+  {
+    "id": "vocab:00689",
+    "kind": "word",
+    "pos": "preposition",
+    "sense_key": "in_addition_to",
+    "prompt_ja": "〜に加えて",
+    "target": "besides",
+    "paraphrases": [
+      "in addition to something",
+      "as well as something"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"besides\"=no explicit slot / \"in addition to something\"=THING:1 / \"as well as something\"=THING:1. The Japanese prompt does not explicitly identify something (thing/event).",
+    "recommended_direction": "promptを「somethingに加えて」にし、TARGETを「besides something」に揃える。`in addition to something / as well as something`は維持候補。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0553",
+      "target_span": "Besides",
+      "sentence_en": "Besides attending the funeral, she needs to make all the arrangements.",
+      "sentence_ja": "彼女は葬儀に参列するだけでなく、すべての段取りをつけなければならない。",
+      "contextual_meaning_ja": "葬儀に参列するだけでなく"
+    }
+  },
+  {
+    "id": "vocab:00690",
+    "kind": "expression",
+    "pos": "verb",
+    "sense_key": "organize_plans_or_details",
+    "prompt_ja": "手配する",
+    "target": "make arrangements",
+    "paraphrases": [
+      "arrange something",
+      "set something up"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"make arrangements\"=no explicit slot / \"arrange something\"=THING:1 / \"set something up\"=THING:1. The Japanese prompt does not explicitly identify something (thing/event).",
+    "recommended_direction": "promptを「somethingを手配する」にし、TARGETを「make arrangements for something」にする。`arrange something / set something up`は同じ対象slotとして残す候補。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0553",
+      "target_span": "make all the arrangements",
+      "sentence_en": "Besides attending the funeral, she needs to make all the arrangements.",
+      "sentence_ja": "彼女は葬儀に参列するだけでなく、すべての段取りをつけなければならない。",
+      "contextual_meaning_ja": "すべての段取りをつける"
+    }
+  },
+  {
+    "id": "vocab:00707",
+    "kind": "word",
+    "pos": "verb",
+    "sense_key": "feel_strong_dislike",
+    "prompt_ja": "軽蔑する",
+    "target": "despise",
+    "paraphrases": [
+      "look down on someone",
+      "scorn"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "INTERNAL_PARAPHRASE_INCONSISTENCY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"despise\"=no explicit slot / \"look down on someone\"=PERSON:1 / \"scorn\"=no explicit slot. The Japanese prompt does not explicitly identify someone (person).",
+    "recommended_direction": "promptを「someoneを軽蔑する」に限定し、TARGETと全paraphraseを「despise someone / look down on someone / scorn someone」にそろえる。物事も対象に含めるpromptならperson限定のparaphraseは除外候補。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0375",
+      "target_span": "despise",
+      "sentence_en": "\"You despise Nick, don't you?\" \"On the contrary! I look up to him.\"",
+      "sentence_ja": "「ニックを軽蔑しているんだろう？」 「とんでもない！尊敬しているわ。」",
+      "contextual_meaning_ja": "ニックを軽蔑している"
+    }
+  },
+  {
+    "id": "vocab:00747",
+    "kind": "word",
+    "pos": "adjective",
+    "sense_key": "knowledgeable_about_a_subject",
+    "prompt_ja": "精通している",
+    "target": "familiar",
+    "paraphrases": [
+      "know something well",
+      "be well versed in",
+      "be knowledgeable about"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "INTERNAL_PARAPHRASE_INCONSISTENCY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"familiar\"=no explicit slot / \"know something well\"=THING:1 / \"be well versed in\"=no explicit slot / \"be knowledgeable about\"=no explicit slot. The Japanese prompt does not explicitly identify something (thing/event).",
+    "recommended_direction": "promptを「somethingに精通している」にし、TARGETを「be familiar with something」にする。`know something well / be well versed in something / be knowledgeable about something`へ同じ対象slotを明示する。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0015",
+      "target_span": "familiar",
+      "sentence_en": "\"Are you familiar with contemporary literature?\" \"I know next to nothing about it.\"",
+      "sentence_ja": "「現代文学に詳しいですか？」 「ほとんど知りません。」",
+      "contextual_meaning_ja": "文学に通じている"
+    }
+  },
+  {
+    "id": "vocab:00760",
+    "kind": "word",
+    "pos": "verb",
+    "sense_key": "reach_a_mutual_agreement",
+    "prompt_ja": "妥協する",
+    "target": "compromise",
+    "paraphrases": [
+      "meet someone halfway"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"compromise\"=no explicit slot / \"meet someone halfway\"=PERSON:1. The Japanese prompt does not explicitly identify someone (person).",
+    "recommended_direction": "promptを「someoneと妥協する」にし、TARGETを「compromise with someone」、paraphraseを「meet someone halfway」に揃える。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0027",
+      "target_span": "compromise",
+      "sentence_en": "In any case, the union has to compromise to a certain extent.",
+      "sentence_ja": "いずれにせよ、組合側はある程度妥協しなければならない",
+      "contextual_meaning_ja": "妥協する"
+    }
+  },
+  {
+    "id": "vocab:00778",
+    "kind": "word",
+    "pos": "verb",
+    "sense_key": "put_in_harm_or_view",
+    "prompt_ja": "さらす",
+    "target": "expose",
+    "paraphrases": [
+      "subject someone to something"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"expose\"=no explicit slot / \"subject someone to something\"=PERSON:1,THING:1. The Japanese prompt does not explicitly identify someone (person) and something (thing/event).",
+    "recommended_direction": "promptを「someoneをsomethingにさらす」にし、TARGETを「expose someone to something」、paraphrase「subject someone to something」と2slotをそろえる。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0038",
+      "target_span": "exposed",
+      "sentence_en": "In fact, the inhabitants have been exposed to radiation.",
+      "sentence_ja": "実は、住民たちは放射能にさらされてきた。",
+      "contextual_meaning_ja": "さらす"
+    }
+  },
+  {
+    "id": "vocab:00853",
+    "kind": "word",
+    "pos": "verb",
+    "sense_key": "put_money_or_effort_into_for_future_gain",
+    "prompt_ja": "投資する",
+    "target": "invest",
+    "paraphrases": [
+      "put money into something"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"invest\"=no explicit slot / \"put money into something\"=THING:1. The Japanese prompt does not explicitly identify something (thing/event).",
+    "recommended_direction": "promptを「somethingに投資する」にし、TARGETを「invest in something」、paraphraseを「put money into something」に揃える。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0131",
+      "target_span": "investing",
+      "sentence_en": "There are a number of factors discouraging us from investing in stocks.",
+      "sentence_ja": "私たちの株式投資への意欲をそぐような要因がかなりある。",
+      "contextual_meaning_ja": "投資する"
+    }
+  },
+  {
+    "id": "vocab:00863",
+    "kind": "word",
+    "pos": "adjective",
+    "sense_key": "eagerly_wanting_to_do_something",
+    "prompt_ja": "切望している",
+    "target": "anxious",
+    "paraphrases": [
+      "eager",
+      "long for something",
+      "yearn for something"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "INTERNAL_PARAPHRASE_INCONSISTENCY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"anxious\"=no explicit slot / \"eager\"=no explicit slot / \"long for something\"=THING:1 / \"yearn for something\"=THING:1. The Japanese prompt does not explicitly identify something (thing/event).",
+    "recommended_direction": "promptに「something/to do somethingを切望する」を明示し、TARGETを「be anxious to do something」など一つの補語型へそろえる。`eager`は同型に拡張し、`long for/yearn for something`は同じslot・語義に揃わなければ除外する。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0143",
+      "target_span": "anxious",
+      "sentence_en": "The slaves were anxious to alter their destinies.",
+      "sentence_ja": "奴隷たちは自分たちの運命を変えたいと切望していた。",
+      "contextual_meaning_ja": "切望している"
+    }
+  },
+  {
+    "id": "vocab:00933",
+    "kind": "word",
+    "pos": "verb",
+    "sense_key": "help_cause_or_make_something_happen",
+    "prompt_ja": "寄与する",
+    "target": "contribute",
+    "paraphrases": [
+      "help",
+      "play a part in something"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "INTERNAL_PARAPHRASE_INCONSISTENCY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"contribute\"=no explicit slot / \"help\"=no explicit slot / \"play a part in something\"=THING:1. The Japanese prompt does not explicitly identify something (thing/event).",
+    "recommended_direction": "promptを「somethingに寄与する」にし、TARGETを「contribute to something」、`play a part in something`を同じ対象slotに揃える。`help`は同じslotで回答できる形のみ残す。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0326",
+      "target_span": "contributes",
+      "sentence_en": "Our hypothesis is that eating excessive amounts of junk food contributes to early mortality.",
+      "sentence_ja": "ジャンクフードの過剰な摂取は早死にの一因になる、というのが我々の仮説だ。",
+      "contextual_meaning_ja": "寄与する"
+    }
+  },
+  {
+    "id": "vocab:00951",
+    "kind": "word",
+    "pos": "verb",
+    "sense_key": "be_worthy_of_something",
+    "prompt_ja": "値する",
+    "target": "deserve",
+    "paraphrases": [
+      "be worth something",
+      "be worthy of something"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"deserve\"=no explicit slot / \"be worth something\"=THING:1 / \"be worthy of something\"=THING:1. The Japanese prompt does not explicitly identify something (thing/event).",
+    "recommended_direction": "promptを「somethingに値する」にし、TARGETを「deserve something」、`be worth something / be worthy of something`と同じ対象slotにする。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0349",
+      "target_span": "deserves",
+      "sentence_en": "In the face of adversity, Mike accomplished an extraordinary feat. He deserves praise.",
+      "sentence_ja": "逆境をものともせず、マイクはすばらしい偉業を成し遂げた。称賛を受けるのは当然だ。",
+      "contextual_meaning_ja": "値する"
+    }
+  },
+  {
+    "id": "vocab:00967",
+    "kind": "word",
+    "pos": "verb",
+    "sense_key": "use_someone_or_something_unfairly",
+    "prompt_ja": "搾取する",
+    "target": "exploit",
+    "paraphrases": [
+      "take advantage of someone"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"exploit\"=no explicit slot / \"take advantage of someone\"=PERSON:1. The Japanese prompt does not explicitly identify someone (person).",
+    "recommended_direction": "対象を人に限定してpromptを「someoneを搾取する」にし、TARGETを「exploit someone」、paraphraseを「take advantage of someone」にそろえる。対象を物事まで含むならperson限定案を除外。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0394",
+      "target_span": "exploiting",
+      "sentence_en": "They are primarily concerned with exploiting us, not with enhancing our living standards.",
+      "sentence_ja": "彼らの一番の関心事は、私たちの生活水準を高めることではなく、私たちから搾取することだ。",
+      "contextual_meaning_ja": "搾取する"
+    }
+  },
+  {
+    "id": "vocab:00985",
+    "kind": "word",
+    "pos": "verb",
+    "sense_key": "accept_or_endure_something_unpleasant",
+    "prompt_ja": "我慢する",
+    "target": "tolerate",
+    "paraphrases": [
+      "put up with something",
+      "endure",
+      "bear"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "INTERNAL_PARAPHRASE_INCONSISTENCY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"tolerate\"=no explicit slot / \"put up with something\"=THING:1 / \"endure\"=no explicit slot / \"bear\"=no explicit slot. The Japanese prompt does not explicitly identify something (thing/event).",
+    "recommended_direction": "promptを「somethingを我慢する」にし、TARGETと全paraphraseを「tolerate/endure/bear something」「put up with something」にそろえる。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0419",
+      "target_span": "tolerate",
+      "sentence_en": "We will not tolerate anyone who engages in terrorism.",
+      "sentence_ja": "我々は、誰であろうとテロ活動に携わる者に寛容でいるつもりはない。",
+      "contextual_meaning_ja": "我慢する"
+    }
+  },
+  {
+    "id": "vocab:00988",
+    "kind": "word",
+    "pos": "verb",
+    "sense_key": "prevent_someone_from_having",
+    "prompt_ja": "奪う",
+    "target": "deprive",
+    "paraphrases": [
+      "take something away",
+      "seize something",
+      "rob someone of something"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "INTERNAL_PARAPHRASE_INCONSISTENCY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"deprive\"=no explicit slot / \"take something away\"=THING:1 / \"seize something\"=THING:1 / \"rob someone of something\"=PERSON:1,THING:1. The Japanese prompt does not explicitly identify someone (person) and something (thing/event).",
+    "recommended_direction": "TARGETを「deprive someone of something」に具体化し、日本語promptも「someoneからsomethingを奪う」にする。各paraphraseも同じperson+thingの2slotに揃え、「take something away / seize something」のようにperson slotを落とす候補は除外または補完する。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0427",
+      "target_span": "deprived",
+      "sentence_en": "Under the reign of tyranny, innocent people were deprived of their citizenship.",
+      "sentence_ja": "専制政治による支配のもとで、罪のない人々が市民権を剥奪された。",
+      "contextual_meaning_ja": "奪う"
+    }
+  },
+  {
+    "id": "vocab:01007",
+    "kind": "word",
+    "pos": "verb",
+    "sense_key": "claim_someone_did_something_wrong",
+    "prompt_ja": "告発する",
+    "target": "accuse",
+    "paraphrases": [
+      "charge someone with something"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"accuse\"=no explicit slot / \"charge someone with something\"=PERSON:1,THING:1. The Japanese prompt does not explicitly identify someone (person) and something (thing/event).",
+    "recommended_direction": "Japanese promptへ告発対象者と告発内容の2slotを提示し、TARGETを「accuse someone of something」へ正規化する。paraphrase「charge someone with something」は対応する同一slotとして保持候補。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0460",
+      "target_span": "accused",
+      "sentence_en": "It took us all by surprise when the noted psychologist was accused of kidnapping.",
+      "sentence_ja": "その著名な心理学者が誘拐罪で訴えられたことに、私たちはみな驚いた。",
+      "contextual_meaning_ja": "告発する"
+    }
+  },
+  {
+    "id": "vocab:01057",
+    "kind": "word",
+    "pos": "verb",
+    "sense_key": "feel_sad_about_a_past_action",
+    "prompt_ja": "後悔する",
+    "target": "regret",
+    "paraphrases": [
+      "be sorry about something"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"regret\"=no explicit slot / \"be sorry about something\"=THING:1. The Japanese prompt does not explicitly identify something (thing/event).",
+    "recommended_direction": "promptを「somethingを後悔する」にし、TARGETを「regret something」、paraphraseを「be sorry about something」にそろえる。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0532",
+      "target_span": "regretted",
+      "sentence_en": "Tom regretted having wasted a great deal of his life.",
+      "sentence_ja": "トムは自分の人生の多くを無駄にしてきたことを後悔した。",
+      "contextual_meaning_ja": "後悔する"
+    }
+  },
+  {
+    "id": "vocab:01067",
+    "kind": "word",
+    "pos": "verb",
+    "sense_key": "arrange_for_something_to_happen_later",
+    "prompt_ja": "延期する",
+    "target": "postpone",
+    "paraphrases": [
+      "delay",
+      "put something off",
+      "defer"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "INTERNAL_PARAPHRASE_INCONSISTENCY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"postpone\"=no explicit slot / \"delay\"=no explicit slot / \"put something off\"=THING:1 / \"defer\"=no explicit slot. The Japanese prompt does not explicitly identify something (thing/event).",
+    "recommended_direction": "promptを「somethingを延期する」にし、TARGETを「postpone something」。`delay/defer something`と`put something off`も同じ対象slotを表す形にする。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0549",
+      "target_span": "postponed",
+      "sentence_en": "The sacred ritual took place after being postponed twice.",
+      "sentence_ja": "2度の延期の後、その神聖な儀式は執り行われた。",
+      "contextual_meaning_ja": "延期する"
+    }
+  },
+  {
+    "id": "vocab:01088",
+    "kind": "word",
+    "pos": "verb",
+    "sense_key": "join_together",
+    "prompt_ja": "組み合わせる",
+    "target": "combine",
+    "paraphrases": [
+      "put something together"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"combine\"=no explicit slot / \"put something together\"=THING:1. The Japanese prompt does not explicitly identify something (thing/event).",
+    "recommended_direction": "promptを「somethingを組み合わせる」にし、TARGETを「combine something」、paraphraseを「put something together」にする。複数材料が必須の語義なら日本語promptと全回答に2つの入力slotを出す。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0011",
+      "target_span": "combines",
+      "sentence_en": "His new novel, which combines prose with his gift for poetry, is going to be published.",
+      "sentence_ja": "まもなく出版になる彼の小説は、散文に彼の詩の才能を融合させたものだ。",
+      "contextual_meaning_ja": "…を化合させる"
+    }
+  },
+  {
+    "id": "vocab:01110",
+    "kind": "word",
+    "pos": "word",
+    "sense_key": "become_aware",
+    "prompt_ja": "気づく",
+    "target": "realize",
+    "paraphrases": [
+      "notice",
+      "become aware of something"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "INTERNAL_PARAPHRASE_INCONSISTENCY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"realize\"=no explicit slot / \"notice\"=no explicit slot / \"become aware of something\"=THING:1. The Japanese prompt does not explicitly identify something (thing/event).",
+    "recommended_direction": "promptを「somethingに気づく」にし、TARGETを「realize something」。`notice something / become aware of something`も同じ対象slotでそろえる。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0020",
+      "target_span": "realize",
+      "sentence_en": "\"Could you move over a little?\" \"Oh, sorry. I didn't realize I was taking up so much space.\"",
+      "sentence_ja": "「少し詰めていただけませんか？」「あ、ごめんなさい。こんなに場所を取っていたなんて気付きませんでした。」",
+      "contextual_meaning_ja": "...を『完全に理解する』"
+    }
+  },
+  {
+    "id": "vocab:01240",
+    "kind": "word",
+    "pos": "verb",
+    "sense_key": "praise_to_please",
+    "prompt_ja": "お世辞を言う",
+    "target": "flatter",
+    "paraphrases": [
+      "butter someone up"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"flatter\"=no explicit slot / \"butter someone up\"=PERSON:1. The Japanese prompt does not explicitly identify someone (person).",
+    "recommended_direction": "promptを「someoneにお世辞を言う」にし、TARGETを「flatter someone」、paraphraseを「butter someone up」にそろえる。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0082",
+      "target_span": "flatter",
+      "sentence_en": "\"I admire your perseverance, courage and wisdom.\" \"You flatter me!\"",
+      "sentence_ja": "「君の不屈の努力、勇気、そして知恵には感心するよ。」「お世辞でもうれしいわ！」",
+      "contextual_meaning_ja": "(…について)に『おせじをいう』"
+    }
+  },
+  {
+    "id": "vocab:01293",
+    "kind": "construction",
+    "pos": "construction",
+    "sense_key": "contrast_second_not_first",
+    "prompt_ja": "somethingではなくsomething else",
+    "target": "not something but something else",
+    "paraphrases": [
+      "rather than",
+      "instead of"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"not something but something else\"=THING:2 / \"rather than\"=no explicit slot / \"instead of\"=no explicit slot.",
+    "recommended_direction": "TARGETが示す対比2slotを日本語promptに残し、paraphrasesを「not X but Y」相当の2slot構文へ揃える。「rather than / instead of」はこのままでは二つの項を示さないため、現promptからは除外候補。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0083",
+      "target_span": "not on logic but on instinct",
+      "sentence_en": "In making a decision, I rely not on logic but on instinct.",
+      "sentence_ja": "どうするかを決めるとき、僕は論理ではなく本能を当てにする。",
+      "contextual_meaning_ja": "どうするかを決めるとき、僕は論理ではなく本能を当てにする。"
+    }
+  },
+  {
+    "id": "vocab:01513",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "make_an_error",
+    "prompt_ja": "間違える",
+    "target": "make a mistake",
+    "paraphrases": [
+      "get something wrong"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"make a mistake\"=no explicit slot / \"get something wrong\"=THING:1. The Japanese prompt does not explicitly identify something (thing/event).",
+    "recommended_direction": "誤りの対象をpromptに出すなら「somethingを間違える / get something wrong」にそろえる。TARGET「make a mistake」を残す場合は対象slotを要求しない共通promptとしてparaphrasesも見直す。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0187",
+      "target_span": "making stupid mistakes",
+      "sentence_en": "I can't help laughing at him because he keeps on making stupid mistakes. He'd be the last person to learn his lesson.",
+      "sentence_ja": "彼のことを笑わずにはいられない。ばかな間違いを繰り返すからね。きっと彼は懲りないんだろうな。",
+      "contextual_meaning_ja": "彼のことを笑わずにはいられない。ばかな間違いを繰り返すからね。きっと彼は懲りないんだろうな。"
+    }
+  },
+  {
+    "id": "vocab:01538",
+    "kind": "word",
+    "pos": "word",
+    "sense_key": "move_in_a_direction",
+    "prompt_ja": "向かう",
+    "target": "head",
+    "paraphrases": [
+      "make for somewhere"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"head\"=no explicit slot / \"make for somewhere\"=PLACE:1.",
+    "recommended_direction": "promptを「somewhereへ向かう」にし、TARGETを「head somewhere」、paraphraseを「make for somewhere」にそろえる。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0218",
+      "target_span": "heading",
+      "sentence_en": "\"Jane, where are we heading?\" \"I think we're lost. We went in the wrong direction.\" \"Damn! Pull over!\"",
+      "sentence_ja": "「ジェーン、俺たちはどこに向かってるんだ？」 「迷ったみたい。違う方向に来ちゃったわ。」 「何だよ。車を止めてくれ！」",
+      "contextual_meaning_ja": "進む・「give a head」で「オーラルセックスをする・相手の性器をなめる」"
+    }
+  },
+  {
+    "id": "vocab:01645",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "throughout_a_place",
+    "prompt_ja": "〜の至る所に",
+    "target": "all over",
+    "paraphrases": [
+      "throughout something"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"all over\"=no explicit slot / \"throughout something\"=THING:1. The Japanese prompt does not explicitly identify something (thing/event).",
+    "recommended_direction": "promptの場所slotを「somethingの至る所に」と明示し、TARGETを「all over something」、paraphraseを「throughout something」にする。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0215",
+      "target_span": "all over",
+      "sentence_en": "A truck driving ahead of me skidded, turned over, and scattered its load all over the road.",
+      "sentence_ja": "私の前を走っていたトラックがスリップして横転し、積み荷を路面いっぱいに散乱させた。",
+      "contextual_meaning_ja": "私の前を走っていたトラックがスリップして横転し、積み荷を路面いっぱいに散乱させた。"
+    }
+  },
+  {
+    "id": "vocab:01651",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "sequence_of_related_things",
+    "prompt_ja": "一連の〜",
+    "target": "a series of",
+    "paraphrases": [
+      "a sequence of something"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH",
+      "INCOMPLETE_SURFACE"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"a series of\"=no explicit slot / \"a sequence of something\"=THING:1. The Japanese prompt does not explicitly identify something (thing/event). The target also ends at a complement-taking preposition/conjunction without its argument.",
+    "recommended_direction": "TARGETを「a series of something」にし、paraphraseを「a sequence of something」に揃える。promptの「一連の〜」は対象slotを明示し、単独の「a series of」で止めない。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0226",
+      "target_span": "a series of",
+      "sentence_en": "They conducted a series of experiments under zero gravity.",
+      "sentence_ja": "彼らは無重力状態で一連の実験をおこなった。",
+      "contextual_meaning_ja": "彼らは無重力状態で一連の実験をおこなった。"
+    }
+  },
+  {
+    "id": "vocab:01656",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "have_a_function_in",
+    "prompt_ja": "〜で役割を果たす",
+    "target": "play a role in",
+    "paraphrases": [
+      "play a part in something"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH",
+      "INCOMPLETE_SURFACE"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"play a role in\"=no explicit slot / \"play a part in something\"=THING:1. The Japanese prompt does not explicitly identify something (thing/event). The target also ends at a complement-taking preposition/conjunction without its argument.",
+    "recommended_direction": "TARGETを「play a role in something」、paraphraseを「play a part in something」にし、日本語promptの「〜で」を活動/領域slotとして明示する。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0233",
+      "target_span": "plays a principal role in wildlife conservation",
+      "sentence_en": "The organization plays a principal role in wildlife conservation.",
+      "sentence_ja": "その団体は野生動物の保護において、最も重要な役割を果たしている。",
+      "contextual_meaning_ja": "その団体は野生動物の保護において、最も重要な役割を果たしている。"
+    }
+  },
+  {
+    "id": "vocab:01657",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "very_close_to_event",
+    "prompt_ja": "〜の瀬戸際に",
+    "target": "on the verge of",
+    "paraphrases": [
+      "on the brink of something"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH",
+      "INCOMPLETE_SURFACE"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"on the verge of\"=no explicit slot / \"on the brink of something\"=THING:1. The Japanese prompt does not explicitly identify something (thing/event). The target also ends at a complement-taking preposition/conjunction without its argument.",
+    "recommended_direction": "TARGETとparaphraseを「on the verge of something / on the brink of something」に揃え、Japanese promptに瀬戸際となる出来事slotを明記する。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0234",
+      "target_span": "on the verge of",
+      "sentence_en": "Many fragile species are on the verge of extinction.",
+      "sentence_ja": "多くの弱い生物種が絶滅の危機に瀕している。",
+      "contextual_meaning_ja": "多くの弱い生物種が絶滅の危機に瀕している。"
+    }
+  },
+  {
+    "id": "vocab:01658",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "harm",
+    "prompt_ja": "〜に損害を与える",
+    "target": "do damage to",
+    "paraphrases": [
+      "damage something",
+      "cause damage to something",
+      "harm something"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH",
+      "INCOMPLETE_SURFACE"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"do damage to\"=no explicit slot / \"damage something\"=THING:1 / \"cause damage to something\"=THING:1 / \"harm something\"=THING:1. The Japanese prompt does not explicitly identify something (thing/event). The target also ends at a complement-taking preposition/conjunction without its argument.",
+    "recommended_direction": "TARGETを「do damage to something」とし、paraphraseの「damage/harm something」「cause damage to something」と同じ被害対象slotを日本語promptにも明示する。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0235",
+      "target_span": "did severe damage to the crops",
+      "sentence_en": "The prolonged drought did severe damage to the crops.",
+      "sentence_ja": "長引く干ばつが収穫に甚大な被害をもたらした。",
+      "contextual_meaning_ja": "長引く干ばつが収穫に甚大な被害をもたらした。"
+    }
+  },
+  {
+    "id": "vocab:01662",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "caused_by",
+    "prompt_ja": "〜が原因である",
+    "target": "be due to",
+    "paraphrases": [
+      "be caused by something",
+      "result from something",
+      "stem from something"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH",
+      "INCOMPLETE_SURFACE"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"be due to\"=no explicit slot / \"be caused by something\"=THING:1 / \"result from something\"=THING:1 / \"stem from something\"=THING:1. The Japanese prompt does not explicitly identify something (thing/event). The target also ends at a complement-taking preposition/conjunction without its argument.",
+    "recommended_direction": "TARGETを「be due to something」にし、全paraphraseを原因slotが明示された形に揃える。日本語promptも「somethingが原因である」とする。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0236",
+      "target_span": "it's due to acid rain",
+      "sentence_en": "Tropical rain forests are quickly disappearing on a global scale. In part, it's due to acid rain.",
+      "sentence_ja": "熱帯雨林の消滅が地球規模で急速に進んでいます。その原因の一つは酸性雨です。",
+      "contextual_meaning_ja": "熱帯雨林の消滅が地球規模で急速に進んでいます。その原因の一つは酸性雨です。"
+    }
+  },
+  {
+    "id": "vocab:01665",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "have_connection_with",
+    "prompt_ja": "〜と関係がある",
+    "target": "be related to",
+    "paraphrases": [
+      "have something to do with something",
+      "be connected with something",
+      "be associated with something"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "INTERNAL_PARAPHRASE_INCONSISTENCY",
+      "SYNTACTIC_FRAME_MISMATCH",
+      "PROMPT_SLOT_MISMATCH",
+      "INCOMPLETE_SURFACE"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"be related to\"=no explicit slot / \"have something to do with something\"=THING:2 / \"be connected with something\"=THING:1 / \"be associated with something\"=THING:1. The Japanese prompt does not explicitly identify something (thing/event). The target also ends at a complement-taking preposition/conjunction without its argument.",
+    "recommended_direction": "TARGETを「be related to something」にし、他paraphrasesも同じ一つの関連対象slotで揃える。「have something to do with something」の最初のsomethingは自由slotか固定idiom要素かを個別に分離して確認する。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0237",
+      "target_span": "is directly related to carbon dioxide emissions",
+      "sentence_en": "It is said that global warming is directly related to carbon dioxide emissions.",
+      "sentence_ja": "地球温暖化は、二酸化炭素の排出と直接の関係があると言われている。",
+      "contextual_meaning_ja": "地球温暖化は、二酸化炭素の排出と直接の関係があると言われている。"
+    }
+  },
+  {
+    "id": "vocab:01673",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "contain_abundant_resources",
+    "prompt_ja": "〜が豊富である",
+    "target": "be rich in",
+    "paraphrases": [
+      "abound in something"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH",
+      "INCOMPLETE_SURFACE"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"be rich in\"=no explicit slot / \"abound in something\"=THING:1. The Japanese prompt does not explicitly identify something (thing/event). The target also ends at a complement-taking preposition/conjunction without its argument.",
+    "recommended_direction": "TARGETを「be rich in something」、paraphraseを「abound in something」に揃え、日本語promptへ豊富さの対象slotを明示する。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0243",
+      "target_span": "is relatively rich in mineral resources",
+      "sentence_en": "The region is relatively rich in mineral resources.",
+      "sentence_ja": "その地域は鉱物資源が比較的豊かだ。",
+      "contextual_meaning_ja": "その地域は鉱物資源が比較的豊かだ。"
+    }
+  },
+  {
+    "id": "vocab:01674",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "typical_of",
+    "prompt_ja": "〜に特有である",
+    "target": "be characteristic of",
+    "paraphrases": [
+      "be unique to something",
+      "be peculiar to something"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH",
+      "INCOMPLETE_SURFACE"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"be characteristic of\"=no explicit slot / \"be unique to something\"=THING:1 / \"be peculiar to something\"=THING:1. The Japanese prompt does not explicitly identify something (thing/event). The target also ends at a complement-taking preposition/conjunction without its argument.",
+    "recommended_direction": "TARGETに「something」を補って「be characteristic of something」にし、`be unique to something / be peculiar to something`と同じ対象slotに揃える。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0246",
+      "target_span": "is characteristic of",
+      "sentence_en": "A humid climate is characteristic of the peninsula.",
+      "sentence_ja": "湿気の多い気候はその半島の特色です。",
+      "contextual_meaning_ja": "湿気の多い気候はその半島の特色です。"
+    }
+  },
+  {
+    "id": "vocab:01676",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "resemble",
+    "prompt_ja": "〜に似ている",
+    "target": "be similar to",
+    "paraphrases": [
+      "resemble something"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH",
+      "INCOMPLETE_SURFACE"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"be similar to\"=no explicit slot / \"resemble something\"=THING:1. The Japanese prompt does not explicitly identify something (thing/event). The target also ends at a complement-taking preposition/conjunction without its argument.",
+    "recommended_direction": "TARGETを「be similar to something」にし、paraphrase「resemble something」と同じ一つの類似対象slotで揃える。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0249",
+      "target_span": "are similar to",
+      "sentence_en": "The geographical features here are similar to those of our prefecture.",
+      "sentence_ja": "ここの地理的特徴は、私たちの県のそれと似ている。",
+      "contextual_meaning_ja": "ここの地理的特徴は、私たちの県のそれと似ている。"
+    }
+  },
+  {
+    "id": "vocab:01708",
+    "kind": "word",
+    "pos": "word",
+    "sense_key": "become_aware",
+    "prompt_ja": "気づく",
+    "target": "notice",
+    "paraphrases": [
+      "realize",
+      "become aware of something"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "INTERNAL_PARAPHRASE_INCONSISTENCY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"notice\"=no explicit slot / \"realize\"=no explicit slot / \"become aware of something\"=THING:1. The Japanese prompt does not explicitly identify something (thing/event).",
+    "recommended_direction": "promptを「somethingに気づく」にし、TARGET「notice something」と「realize something / become aware of something」の対象slotを統一する。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0265",
+      "target_span": "notice",
+      "sentence_en": "Innovation has something to do with the ability to notice unusual phenomena.",
+      "sentence_ja": "革新的なものを生み出すこと、それは変わった現象を見逃さない能力と何らかの関係がある。",
+      "contextual_meaning_ja": "『人目を引くこと』"
+    }
+  },
+  {
+    "id": "vocab:01731",
+    "kind": "word",
+    "pos": "word",
+    "sense_key": "put_parts_together",
+    "prompt_ja": "組み立てる",
+    "target": "assemble",
+    "paraphrases": [
+      "put something together"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"assemble\"=no explicit slot / \"put something together\"=THING:1. The Japanese prompt does not explicitly identify something (thing/event).",
+    "recommended_direction": "promptを「somethingを組み立てる」にし、TARGETを「assemble something」、paraphraseを「put something together」にそろえる。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0274",
+      "target_span": "assemble",
+      "sentence_en": "The factory now under construction will assemble 1,000 VCR units per day.",
+      "sentence_ja": "現在建設中のその工場は、一日当たり1000台のビデオデッキを組立てることになる。",
+      "contextual_meaning_ja": "を『組み立てる』"
+    }
+  },
+  {
+    "id": "vocab:01734",
+    "kind": "word",
+    "pos": "word",
+    "sense_key": "take_the_place_of",
+    "prompt_ja": "取って代わる",
+    "target": "replace",
+    "paraphrases": [
+      "take the place of something"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"replace\"=no explicit slot / \"take the place of something\"=THING:1. The Japanese prompt does not explicitly identify something (thing/event).",
+    "recommended_direction": "promptを「somethingに取って代わる」にし、TARGETを「replace something」、paraphraseを「take the place of something」にそろえる。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0275",
+      "target_span": "replaced",
+      "sentence_en": "Efficient machinery replaced manual labor.",
+      "sentence_ja": "効率的な機械が、肉体労働に取って代わった。",
+      "contextual_meaning_ja": "...に『取って代わる』"
+    }
+  },
+  {
+    "id": "vocab:01741",
+    "kind": "word",
+    "pos": "word",
+    "sense_key": "take_away",
+    "prompt_ja": "取り去る",
+    "target": "remove",
+    "paraphrases": [
+      "take something away"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"remove\"=no explicit slot / \"take something away\"=THING:1. The Japanese prompt does not explicitly identify something (thing/event).",
+    "recommended_direction": "promptを「somethingを取り去る」にし、TARGETを「remove something」、paraphraseを「take something away」にそろえる。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0277",
+      "target_span": "removed",
+      "sentence_en": "With restrictions removed, thousands of new enterprises have come into being.",
+      "sentence_ja": "制限が解除され、数千の新しい企業が誕生した。",
+      "contextual_meaning_ja": "...を『取り去る』"
+    }
+  },
+  {
+    "id": "vocab:01754",
+    "kind": "word",
+    "pos": "word",
+    "sense_key": "succeed_despite_difficulty",
+    "prompt_ja": "なんとか成し遂げる",
+    "target": "manage",
+    "paraphrases": [
+      "pull something off"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"manage\"=no explicit slot / \"pull something off\"=THING:1. The Japanese prompt does not explicitly identify something (thing/event).",
+    "recommended_direction": "promptに達成対象を明示し、TARGETを「manage to do something」、paraphraseを「pull something off」にする。両回答を同じaction slotにそろえる。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0284",
+      "target_span": "manage",
+      "sentence_en": "\"Please estimate the losses by Friday at the latest.\" \"I'll manage it somehow.\"",
+      "sentence_ja": "「遅くとも金曜日までには損失の見積りを出して下さい。」 「何とかやってみましょう。」",
+      "contextual_meaning_ja": "なんとかやっていく"
+    }
+  },
+  {
+    "id": "vocab:01762",
+    "kind": "word",
+    "pos": "adjective",
+    "sense_key": "having_responsibility",
+    "prompt_ja": "責任を負っている",
+    "target": "responsible",
+    "paraphrases": [
+      "be accountable for something"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"responsible\"=no explicit slot / \"be accountable for something\"=THING:1. The Japanese prompt does not explicitly identify something (thing/event).",
+    "recommended_direction": "promptを「somethingについて責任を負っている」にし、TARGETを「be responsible for something」、paraphraseを「be accountable for something」にそろえる。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0289",
+      "target_span": "responsible",
+      "sentence_en": "Nowadays, many people are out of work against their will. Who is responsible for that?",
+      "sentence_ja": "最近では、多くの人々が職に就きたくても就けないでいる。誰の責任だろう？",
+      "contextual_meaning_ja": "(人が)(…に対して人に)『責任を負っている』"
+    }
+  },
+  {
+    "id": "vocab:01773",
+    "kind": "word",
+    "pos": "word",
+    "sense_key": "give_out",
+    "prompt_ja": "配布する",
+    "target": "distribute",
+    "paraphrases": [
+      "hand something out"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"distribute\"=no explicit slot / \"hand something out\"=THING:1. The Japanese prompt does not explicitly identify something (thing/event).",
+    "recommended_direction": "promptを「somethingを配布する」にし、TARGETを「distribute something」、paraphraseを「hand something out」にそろえる。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0294",
+      "target_span": "distributed",
+      "sentence_en": "The questionnaires were distributed at random.",
+      "sentence_ja": "アンケート用紙が無作為に配布された。",
+      "contextual_meaning_ja": "...を『散らばらせる』"
+    }
+  },
+  {
+    "id": "vocab:01786",
+    "kind": "word",
+    "pos": "word",
+    "sense_key": "fasten_or_join",
+    "prompt_ja": "つける",
+    "target": "attach",
+    "paraphrases": [
+      "put on something",
+      "turn something on",
+      "apply something"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"attach\"=no explicit slot / \"put on something\"=THING:1 / \"turn something on\"=THING:1 / \"apply something\"=THING:1. The Japanese prompt does not explicitly identify something (thing/event).",
+    "recommended_direction": "promptに何を「つける」かを明記し、TARGETを「attach something」にする。各paraphraseにも同じthing slotを置き、slotを自然にそろえられない候補は除外する。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0300",
+      "target_span": "attached",
+      "sentence_en": "I attached my name tag to my baggage, but it soon came off.",
+      "sentence_ja": "自分の荷物に名札を付けたけれども、すぐに取れてしまった。",
+      "contextual_meaning_ja": "...を『つける』"
+    }
+  },
+  {
+    "id": "vocab:01948",
+    "kind": "word",
+    "pos": "verb",
+    "sense_key": "be_in_debt",
+    "prompt_ja": "借りがある",
+    "target": "owe",
+    "paraphrases": [
+      "be indebted to someone"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"owe\"=no explicit slot / \"be indebted to someone\"=PERSON:1. The Japanese prompt does not explicitly identify someone (person).",
+    "recommended_direction": "promptを「someoneに借りがある」にし、TARGETを「owe someone」、paraphraseを「be indebted to someone」にそろえる。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0355",
+      "target_span": "owe",
+      "sentence_en": "\"You owe me $200 altogether, Bob. When are you going to pay me back?\" \"I'm sorry. I'm hard up.\" \"There you go again!\"",
+      "sentence_ja": "「全部で200ドル貸してるの、ボブ。いつ返すつもりなの？」 「ごめん、金欠なんだ。」 「またなの？」",
+      "contextual_meaning_ja": "…を『借りている』"
+    }
+  },
+  {
+    "id": "vocab:01977",
+    "kind": "word",
+    "pos": "word",
+    "sense_key": "interrupt_or_disrupt",
+    "prompt_ja": "邪魔する",
+    "target": "disturb",
+    "paraphrases": [
+      "bother",
+      "interrupt",
+      "interfere with something"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "INTERNAL_PARAPHRASE_INCONSISTENCY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"disturb\"=no explicit slot / \"bother\"=no explicit slot / \"interrupt\"=no explicit slot / \"interfere with something\"=THING:1. The Japanese prompt does not explicitly identify something (thing/event).",
+    "recommended_direction": "邪魔される対象slotを明示して、TARGETを「disturb something」、`bother/interrupt something`、`interfere with something`へそろえる。人に限定するならprompt側でsomeoneを指定する。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0369",
+      "target_span": "disturb",
+      "sentence_en": "\"Bob, don't disturb her. Mind your own business\", he whispered.",
+      "sentence_ja": "「ボブ、彼女の邪魔をしちゃだめだぞ。ちょっかいを出すなよ。」と彼は小声で言った。",
+      "contextual_meaning_ja": "を『邪魔をする』"
+    }
+  },
+  {
+    "id": "vocab:01979",
+    "kind": "word",
+    "pos": "verb",
+    "sense_key": "continue_despite_difficulty",
+    "prompt_ja": "粘り強く続ける",
+    "target": "persist",
+    "paraphrases": [
+      "persevere",
+      "keep at it",
+      "stick with something"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "INTERNAL_PARAPHRASE_INCONSISTENCY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"persist\"=no explicit slot / \"persevere\"=no explicit slot / \"keep at it\"=no explicit slot / \"stick with something\"=THING:1. The Japanese prompt does not explicitly identify something (thing/event).",
+    "recommended_direction": "続ける行為をpromptに明示し、TARGETを「persist in doing something」、`persevere/keep at something/stick with something`を同じaction slotにそろえる。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0370",
+      "target_span": "persist",
+      "sentence_en": "If you persist in bothering her like that, she'll lose her temper.",
+      "sentence_ja": "そうやってしつこく彼女を困らせると、彼女も怒り出すぞ。",
+      "contextual_meaning_ja": "(困難・障害に屈せず)『あくまでも続ける』(『やり抜く』)"
+    }
+  },
+  {
+    "id": "vocab:02138",
+    "kind": "word",
+    "pos": "word",
+    "sense_key": "do_as_commanded",
+    "prompt_ja": "従う",
+    "target": "obey",
+    "paraphrases": [
+      "follow",
+      "comply with something"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "INTERNAL_PARAPHRASE_INCONSISTENCY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"obey\"=no explicit slot / \"follow\"=no explicit slot / \"comply with something\"=THING:1. The Japanese prompt does not explicitly identify something (thing/event).",
+    "recommended_direction": "promptを「somethingに従う」にし、TARGETを「obey something」、paraphrasesを「follow something / comply with something」にそろえる。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0428",
+      "target_span": "obey",
+      "sentence_en": "Some soldiers were reluctant to obey the commands.",
+      "sentence_ja": "その命令にいやいや従う兵士もいた。",
+      "contextual_meaning_ja": "命令に従う"
+    }
+  },
+  {
+    "id": "vocab:02158",
+    "kind": "word",
+    "pos": "verb",
+    "sense_key": "express_objection",
+    "prompt_ja": "抗議する",
+    "target": "protest",
+    "paraphrases": [
+      "object to something",
+      "demonstrate against something"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"protest\"=no explicit slot / \"object to something\"=THING:1 / \"demonstrate against something\"=THING:1. The Japanese prompt does not explicitly identify something (thing/event).",
+    "recommended_direction": "promptを「somethingに抗議する」にし、TARGETを「protest something」、paraphrasesを「object to something / demonstrate against something」にそろえる。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0436",
+      "target_span": "protested",
+      "sentence_en": "The pro-choice group protested against a ban on abortion.",
+      "sentence_ja": "中絶合法賛成派グループが中絶の禁止に対して抗議した。",
+      "contextual_meaning_ja": "(…に対して"
+    }
+  },
+  {
+    "id": "vocab:02362",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "apply_sanctions",
+    "prompt_ja": "制裁を科す",
+    "target": "impose sanctions",
+    "paraphrases": [
+      "sanction someone"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"impose sanctions\"=no explicit slot / \"sanction someone\"=PERSON:1. The Japanese prompt does not explicitly identify someone (person).",
+    "recommended_direction": "制裁対象者をpromptに明記し、TARGETを「impose sanctions on someone」、paraphraseを「sanction someone」にそろえる。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0451",
+      "target_span": "impose sanctions",
+      "sentence_en": "Unless Japan eliminates its unfair tariffs, the U.S. will impose sanctions.",
+      "sentence_ja": "日本が不公平な関税を撤廃しなければ、米国は制裁措置を取るだろう。",
+      "contextual_meaning_ja": "日本が不公平な関税を撤廃しなければ、米国は制裁措置を取るだろう。"
+    }
+  },
+  {
+    "id": "vocab:02376",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "travel_towards_destination",
+    "prompt_ja": "〜行きである・〜へ向かっている",
+    "target": "be bound for",
+    "paraphrases": [
+      "be headed for somewhere",
+      "be on one's way to somewhere"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "INCOMPLETE_SURFACE"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"be bound for\"=no explicit slot / \"be headed for somewhere\"=PLACE:1 / \"be on one's way to somewhere\"=PLACE:1. The target also ends at a complement-taking preposition/conjunction without its argument.",
+    "recommended_direction": "TARGETを「be bound for somewhere」にし、他paraphrasesのsomewhere/location slotと一致させる。日本語promptのdestination slotは維持し、`one's`が独立slotでないことを確認する。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0474",
+      "target_span": "bound for Athens",
+      "sentence_en": "A cargo vessel, bound for Athens, sank in the Mediterranean without a trace.",
+      "sentence_ja": "アテネへ向かう一隻の貨物船が、何の痕跡も残さずに地中海で沈没した。",
+      "contextual_meaning_ja": "アテネへ向かう一隻の貨物船が、何の痕跡も残さずに地中海で沈没した。"
+    }
+  },
+  {
+    "id": "vocab:02408",
+    "kind": "word",
+    "pos": "word",
+    "sense_key": "talk_about_a_subject",
+    "prompt_ja": "話し合う",
+    "target": "discuss",
+    "paraphrases": [
+      "talk about something",
+      "talk something over"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"discuss\"=no explicit slot / \"talk about something\"=THING:1 / \"talk something over\"=THING:1. The Japanese prompt does not explicitly identify something (thing/event).",
+    "recommended_direction": "promptを「somethingについて話し合う」にし、TARGETを「discuss something」、paraphrasesを「talk about something / talk something over」にそろえる。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0518",
+      "target_span": "discuss",
+      "sentence_en": "Can you spare a minute? I'd like to discuss something of importance to both of us.",
+      "sentence_ja": "ちょっと時間を割いてくれませんか？二人にとって大事なことを話し合いたいんです。",
+      "contextual_meaning_ja": "...を『論ずる』"
+    }
+  },
+  {
+    "id": "vocab:02456",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "despite_actual_fact",
+    "prompt_ja": "〜であるにもかかわらず",
+    "target": "even though",
+    "paraphrases": [
+      "although",
+      "though",
+      "despite",
+      "in spite of"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"even though\"=no explicit slot / \"although\"=no explicit slot / \"though\"=no explicit slot / \"despite\"=no explicit slot / \"in spite of\"=no explicit slot.",
+    "recommended_direction": "このpromptは「〜であるにもかかわらず」という命題/節型なので、TARGET「even though」と「although / though」を維持し、「despite / in spite of」はNP型の別prompt（例:「somethingにもかかわらず」）へ分離する候補とする。`+ clause`は使わない。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0540",
+      "target_span": "Even though",
+      "sentence_en": "Even though she is seeing someone else, I won't give her up.",
+      "sentence_ja": "実際、彼女は誰かと付き合っているけれども、僕は彼女を諦めない。",
+      "contextual_meaning_ja": "例え~でも"
+    }
+  },
+  {
+    "id": "vocab:02417",
+    "kind": "word",
+    "pos": "word",
+    "sense_key": "believe_in_reliability",
+    "prompt_ja": "信頼する",
+    "target": "trust",
+    "paraphrases": [
+      "have confidence in someone",
+      "rely on someone"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "The prompt「信頼する」allows a person or a thing as its object, and TARGET `trust` likewise accepts both. Both paraphrases explicitly restrict that object to `someone`. A person-only answer therefore requires a narrower object type than the Japanese prompt supplies. The source example (`trust her`) confirms a person use but does not narrow the prompt's broader meaning.",
+    "recommended_direction": "Promptを「someoneを信頼する」にし、TARGETを「trust someone」に揃える。既存paraphrasesの「have confidence in someone」「rely on someone」は同じperson slotの候補として残す。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0531",
+      "target_span": "trust",
+      "sentence_en": "\"Jennifer deceived me!\" \"You should have known better than to trust her.\"",
+      "sentence_ja": "「ジェニファーにだまされた！」「彼女を信じないくらいの分別があっても良かったのに。」",
+      "contextual_meaning_ja": "責務"
+    }
+  }
+]

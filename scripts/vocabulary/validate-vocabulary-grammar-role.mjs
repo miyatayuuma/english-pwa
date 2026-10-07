@@ -11,7 +11,14 @@ export const GRAMMAR_ROLES=Object.freeze([
 
 const readJson=file=>JSON.parse(fs.readFileSync(file,'utf8'));
 
-export function validateVocabularyGrammarRoleAudit({vocabulary,manifest,batches,pendingRegistry,semanticQa,finalResolutions,pendingHistory}){
+const surfaceOf=value=>({
+  meaning_ja:value?.meaning_ja,
+  canonical:value?.canonical,
+  paraphrases:Array.isArray(value?.paraphrases)?value.paraphrases:[],
+});
+const sameSurface=(left,right)=>JSON.stringify(surfaceOf(left))===JSON.stringify(surfaceOf(right));
+
+export function validateVocabularyGrammarRoleAudit({vocabulary,manifest,batches,pendingRegistry,semanticQa,finalResolutions,pendingHistory,paraphraseManifest=null,confirmedAuthority=null,materialization=null}){
   const errors=[];
   const source=Array.isArray(vocabulary?.entries)?vocabulary.entries:[];
   const sourceById=new Map();
@@ -36,6 +43,30 @@ export function validateVocabularyGrammarRoleAudit({vocabulary,manifest,batches,
   if(source.length!==manifest?.population) errors.push(`manifest: population ${manifest?.population} differs from source ${source.length}`);
   if(auditRows.length!==source.length) errors.push(`coverage: ${auditRows.length} audit rows for ${source.length} vocabulary entries`);
   if(batchIds.size!==manifest?.batch_count) errors.push(`manifest: expected ${manifest?.batch_count} batches, found ${batchIds.size}`);
+  const confirmedRows=Array.isArray(confirmedAuthority)?confirmedAuthority:[];
+  const confirmedById=new Map(confirmedRows.map(row=>[String(row?.id||''),row]));
+  const materializationRows=Array.isArray(materialization?.entries)?materialization.entries:[];
+  const materializationById=new Map();
+  if(materialization){
+    if(materialization.schema_version!==1||!['MATERIALIZED','MATERIALIZED_WITH_BLOCKED'].includes(materialization.status)) errors.push('paraphrase materialization: invalid schema or status');
+    const accounted=(materialization.accounting?.APPLY||0)+(materialization.accounting?.ALREADY_RESOLVED||0)+(materialization.accounting?.BLOCKED||0);
+    if(materialization.accounting?.total!==56||accounted!==56||materializationRows.length!==56||materialization.accounting?.APPLY!==56||materialization.accounting?.ALREADY_RESOLVED!==0||materialization.accounting?.BLOCKED!==0) errors.push('paraphrase materialization: accounting must cover 56 rows with 56 APPLY and no BLOCKED entries');
+    if(paraphraseManifest?.population!==2478||paraphraseManifest?.candidate_count!==137||paraphraseManifest?.status_counts?.CONFIRMED!==56||paraphraseManifest?.status_counts?.REVIEW!==0||paraphraseManifest?.status_counts?.FALSE_POSITIVE!==81||paraphraseManifest?.unclassified_count!==0) errors.push('paraphrase materialization: source audit counts mismatch');
+    if(confirmedRows.length!==56||confirmedById.size!==56) errors.push('paraphrase materialization: confirmed authority must contain 56 unique entries');
+    if(materialization.source_audit?.commit!=='b1c93dfc4f455e55bf58db34942a7857b68777e9'||materialization.source_audit?.base_sha!==paraphraseManifest?.base_sha) errors.push('paraphrase materialization: source audit ref mismatch');
+    for(const row of materializationRows){
+      const id=String(row?.id||'');
+      if(materializationById.has(id)) errors.push(`paraphrase materialization: duplicate ID ${id}`);
+      materializationById.set(id,row);
+      const authority=confirmedById.get(id);
+      if(!authority||authority.status!=='CONFIRMED') errors.push(`paraphrase materialization: ID is not CONFIRMED ${id}`);
+      if(!['APPLY','BLOCKED'].includes(row.status)||!sameSurface(row.before,{meaning_ja:authority?.prompt_ja,canonical:authority?.target,paraphrases:authority?.paraphrases})) errors.push(`paraphrase materialization: before authority mismatch ${id}`);
+      if(!row.after||typeof row.after.meaning_ja!=='string'||typeof row.after.canonical!=='string'||!Array.isArray(row.after.paraphrases)) errors.push(`paraphrase materialization: invalid after surface ${id}`);
+      if(row.status==='BLOCKED'&&(!row.block_reason||!sameSurface(row.after,row.before))) errors.push(`paraphrase materialization: blocked entry must retain production before-state and include a reason ${id}`);
+      if(row.status==='APPLY'&&row.block_reason) errors.push(`paraphrase materialization: applied entry has a block reason ${id}`);
+    }
+    if(materializationById.size!==confirmedById.size||[...confirmedById.keys()].some(id=>!materializationById.has(id))) errors.push('paraphrase materialization: ID set differs from CONFIRMED authority');
+  }
   const seen=new Set(),classified=new Map(),pending=new Map(),auditById=new Map();
   for(const row of auditRows){
     const id=String(row?.id||'');
@@ -44,7 +75,12 @@ export function validateVocabularyGrammarRoleAudit({vocabulary,manifest,batches,
     auditById.set(id,row);
     const entry=sourceById.get(id);
     if(!entry){errors.push(`coverage: orphan audit ID ${id}`);continue;}
-    if(row.meaning_ja!==entry.meaning_ja||row.canonical!==entry.canonical||JSON.stringify(row.paraphrases)!==JSON.stringify(entry.paraphrases||[])) errors.push(`snapshot: meaning/answer/paraphrases differ for ${id}`);
+    const remediation=materializationById.get(id);
+    if(remediation){
+      if(!sameSurface(row,remediation.before)) errors.push(`paraphrase materialization: before differs from grammar-role snapshot for ${id}`);
+      if(!sameSurface(entry,remediation.after)) errors.push(`paraphrase materialization: production differs from approved after-state for ${id}`);
+      if(entry.grammarRole!==remediation.grammarRole||row.grammarRole!==remediation.grammarRole) errors.push(`paraphrase materialization: grammarRole changed for ${id}`);
+    }else if(!sameSurface(row,entry)) errors.push(`snapshot: meaning/answer/paraphrases differ for ${id}`);
     if(row.status==='classified'){
       if(!GRAMMAR_ROLES.includes(row.grammarRole)) errors.push(`classification: invalid grammarRole for ${id}`);
       if(entry.grammarRole!==row.grammarRole) errors.push(`production: grammarRole mismatch for ${id}`);
@@ -87,9 +123,15 @@ export function validateVocabularyGrammarRoleAudit({vocabulary,manifest,batches,
     const sourceEntry=sourceById.get(row?.id),auditEntry=auditById.get(row?.id);
     if(!sourceEntry||!auditEntry){errors.push(`final resolutions: ID absent from source/audit ${row?.id}`);continue;}
     if(sourceEntry.grammarRole!==row.grammarRole||auditEntry.grammarRole!==row.grammarRole||auditEntry.status!=='classified') errors.push(`final resolutions: decision mismatch for ${row.id}`);
-    if(sourceEntry.meaning_ja!==row.meaning_ja||auditEntry.meaning_ja!==row.meaning_ja) errors.push(`final resolutions: prompt mismatch for ${row.id}`);
-    if(sourceEntry.canonical!==row.canonical||auditEntry.canonical!==row.canonical) errors.push(`final resolutions: canonical mismatch for ${row.id}`);
-    if(JSON.stringify(sourceEntry.paraphrases||[])!==JSON.stringify(row.paraphrases||[])||JSON.stringify(auditEntry.paraphrases||[])!==JSON.stringify(row.paraphrases||[])) errors.push(`final resolutions: paraphrases changed for ${row.id}`);
+    const remediation=materializationById.get(row.id);
+    if(remediation){
+      if(!sameSurface(row,remediation.before)||!sameSurface(auditEntry,remediation.before)||!sameSurface(sourceEntry,remediation.after)) errors.push(`final resolutions: paraphrase materialization mismatch for ${row.id}`);
+      if(remediation.grammarRole!==row.grammarRole) errors.push(`final resolutions: grammarRole changed by paraphrase materialization for ${row.id}`);
+    }else{
+      if(sourceEntry.meaning_ja!==row.meaning_ja||auditEntry.meaning_ja!==row.meaning_ja) errors.push(`final resolutions: prompt mismatch for ${row.id}`);
+      if(sourceEntry.canonical!==row.canonical||auditEntry.canonical!==row.canonical) errors.push(`final resolutions: canonical mismatch for ${row.id}`);
+      if(JSON.stringify(sourceEntry.paraphrases||[])!==JSON.stringify(row.paraphrases||[])||JSON.stringify(auditEntry.paraphrases||[])!==JSON.stringify(row.paraphrases||[])) errors.push(`final resolutions: paraphrases changed for ${row.id}`);
+    }
     if(auditEntry.final_resolution_ref!=='final-resolutions.json'||auditEntry.resolution_reason!==row.decision_rationale) errors.push(`final resolutions: audit decision reference missing for ${row.id}`);
     if(!row.previous?.reason||!Array.isArray(row.previous?.candidates)||row.previous.candidates.length===0) errors.push(`final resolutions: prior pending evidence missing for ${row.id}`);
   }
@@ -143,7 +185,11 @@ export function loadVocabularyGrammarRoleAudit(){
   const semanticQa=readJson(path.join(AUDIT_DIR,'semantic-qa.json'));
   const finalResolutions=readJson(path.join(AUDIT_DIR,'final-resolutions.json'));
   const pendingHistory=readJson(path.join(AUDIT_DIR,'pending-history.json'));
-  return validateVocabularyGrammarRoleAudit({vocabulary,manifest,batches,pendingRegistry,semanticQa,finalResolutions,pendingHistory});
+  const paraphraseDir=path.join(ROOT,'data/audits/vocabulary-paraphrase-rule-consistency');
+  const paraphraseManifest=readJson(path.join(paraphraseDir,'manifest.json'));
+  const confirmedAuthority=readJson(path.join(paraphraseDir,'confirmed.json'));
+  const materialization=readJson(path.join(paraphraseDir,'materialization.json'));
+  return validateVocabularyGrammarRoleAudit({vocabulary,manifest,batches,pendingRegistry,semanticQa,finalResolutions,pendingHistory,paraphraseManifest,confirmedAuthority,materialization});
 }
 
 if(import.meta.url===`file://${process.argv[1]}`){

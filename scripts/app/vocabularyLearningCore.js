@@ -87,6 +87,39 @@ export function eligibleVocabularyEntries(entries,levelState={}){
   return eligible;
 }
 
+export function collapseDuplicateVocabularyCards(entries,levelState={},now=Date.now()){
+  // In the combined deck, a confirmed word card supersedes an expression card
+  // with the same source item and canonical when neither has stronger SRS state.
+  // Explicit kind filters stay separate, and the selected entry keeps its own SRS ID.
+  const groups=new Map();
+  for(const entry of Array.isArray(entries)?entries:[]){
+    const kind=entry?.kind;
+    const itemId=String(entry?.activeOccurrence?.item?.id||entry?.activeOccurrence?.occurrence?.item_id||'');
+    const canonical=String(entry?.canonical||'').trim().replace(/\s+/g,' ').toLowerCase();
+    if(!itemId||!canonical||!['word','expression'].includes(kind)) continue;
+    const key=`${itemId}\u0000${canonical}`;
+    if(!groups.has(key)) groups.set(key,[]);
+    groups.get(key).push(entry);
+  }
+  const duplicates=new Set();
+  for(const group of groups.values()){
+    if(!group.some(entry=>entry.kind==='word')||!group.some(entry=>entry.kind==='expression')) continue;
+    const preferred=group.reduce((best,entry)=>{
+      const left=vocabularyLevelInfo(levelState,entry),right=vocabularyLevelInfo(levelState,best);
+      const leftDue=left.dueAt>0&&left.dueAt<=now,rightDue=right.dueAt>0&&right.dueAt<=now;
+      if(leftDue!==rightDue) return leftDue?entry:best;
+      if(leftDue&&rightDue&&left.dueAt!==right.dueAt) return left.dueAt<right.dueAt?entry:best;
+      if(left.hasProgress!==right.hasProgress) return left.hasProgress?entry:best;
+      if(left.dueAt>0&&right.dueAt>0&&left.dueAt!==right.dueAt) return left.dueAt<right.dueAt?entry:best;
+      if(left.updatedAt!==right.updatedAt) return left.updatedAt>right.updatedAt?entry:best;
+      if(left.level!==right.level) return left.level<right.level?entry:best;
+      return entry.kind==='word'&&best.kind!=='word'?entry:best;
+    },group[0]);
+    for(const entry of group) if(entry!==preferred) duplicates.add(entry);
+  }
+  return (Array.isArray(entries)?entries:[]).filter(entry=>!duplicates.has(entry));
+}
+
 export function vocabularyLevelInfo(levelState,entry){
   const id=vocabStateId(entry);
   const info=(id&&levelState?.[id]&&typeof levelState[id]==='object')?levelState[id]:{};
@@ -107,7 +140,7 @@ export function vocabularyLevelInfo(levelState,entry){
 }
 
 export function vocabularyStats(entries,levelState={},now=Date.now()){
-  const safe=Array.isArray(entries)?entries:[];
+  const safe=collapseDuplicateVocabularyCards(entries,levelState,now);
   let due=0,fresh=0,learning=0,stable=0;
   for(const entry of safe){
     const meta=vocabularyLevelInfo(levelState,entry);
@@ -154,8 +187,9 @@ export function buildVocabularySession(entries,levelState={},options={}){
   const newCap=Number.isFinite(newCapRaw)
     ? Math.max(0,Math.min(requested,Math.round(newCapRaw)))
     : Math.min(8,requested);
-  const source=(Array.isArray(entries)?entries:[]).filter(entry=>kind==='all'
+  const filtered=(Array.isArray(entries)?entries:[]).filter(entry=>kind==='all'
     ||(kind==='word'?entry?.kind==='word':entry?.kind==='expression'||entry?.kind==='construction'));
+  const source=kind==='all'?collapseDuplicateVocabularyCards(filtered,levelState,now):filtered;
   const rotationSeed=Math.max(0,Math.round(Number(options.rotationSeed)||0));
   const recentIds=new Set(Array.from(options.recentItemIds||[],String));
   const allMetas=source.map((entry,index)=>candidate(entry,levelState,now,index,rotationSeed));
