@@ -23,20 +23,24 @@
     "rawLexiconMatchPaths": 4966,
     "excludedSameSpellingRecords": 23,
     "uniqueWordPairCount": 1107,
-    "uniquePhoneticPairs": 776,
+    "uniquePhoneticPairs": 773,
+    "rawUniquePhoneticPairsIncludingExcludedHomographs": 776,
+    "validPhoneticPathInstances": 4934,
+    "excludedTargetSensePathInstances": 9,
     "affectedEntries": 1124,
     "existingDuplicates": 247,
     "explicitRuleDuplicates": 0,
     "existingSameEntryTargets": 247,
+    "newCandidateRecords": 4419,
     "unclassified": 0,
     "SAFE": 2,
-    "REVIEW": 207,
-    "REJECT": 4457
+    "REVIEW": 209,
+    "REJECT": 4455
   },
   "counts": {
     "SAFE": 2,
-    "REVIEW": 207,
-    "REJECT": 4457,
+    "REVIEW": 209,
+    "REJECT": 4455,
     "unclassified": 0
   },
   "candidate_definition": {
@@ -122,5 +126,51 @@
     "controls.json": "mandatory positive/negative controls",
     "validation.json": "validation results from audit construction",
     "validate-audit.mjs": "standalone Node validator against repository data files"
-  }
+  },
+  "target_sense_pronunciation_disambiguation": [
+    {
+      "entry_id": "vocab:00102",
+      "target_word": "wind",
+      "target_sense": "verb 'wind something up'",
+      "pronunciation": "W AY1 N D",
+      "excluded_homograph": "W IH1 N D",
+      "note": "Keep vowel-preserving wind→wine paths as REVIEW; reject /wɪnd/→win/when paths."
+    },
+    {
+      "entry_id": "vocab:00448",
+      "target_word": "lives",
+      "target_sense": "third-person singular verb",
+      "pronunciation": "L IH1 V Z",
+      "excluded_homograph": "L AY1 V Z",
+      "note": "The /laɪvz/ plural-noun pronunciation is not a target-sense path."
+    },
+    {
+      "entry_id": "vocab:00641",
+      "target_word": "tears",
+      "target_sense": "crying",
+      "pronunciation": "T IH1 R Z",
+      "excluded_homograph": "T EH1 R Z",
+      "note": "The /tɛrz/ ripping-sense pronunciation is not a target-sense path."
+    },
+    {
+      "entry_id": "vocab:00058",
+      "target_word": "lead",
+      "target_sense": "verb 'lead to'",
+      "pronunciation": "L IY1 D",
+      "excluded_homograph": "L EH1 D",
+      "note": "The target is the verb, not lead/metal."
+    },
+    {
+      "entry_id": "vocab:02068",
+      "target_word": "lead",
+      "target_sense": "verb 'lead a hard life'",
+      "pronunciation": "L IY1 D",
+      "excluded_homograph": "L EH1 D",
+      "note": "The target is the verb, not lead/metal."
+    }
+  ],
+  "method_additions": [
+    "CMUdict homograph pronunciations are screened against target phrase sense before candidate paths are retained. Excluded paths remain in each audit record with the target-sense pronunciation and exclusion reason.",
+    "The production authority remains explicit entry-specific only; discovery rules are not grader rules."
+  ]
 }

@@ -36,7 +36,10 @@
     {
       "name": "decision totals consistent",
       "result": "PASS",
-      "sum": 4666
+      "sum": 4666,
+      "SAFE": 2,
+      "REVIEW": 209,
+      "REJECT": 4455
     },
     {
       "name": "SAFE registration list equals SAFE audit records",
@@ -50,11 +53,16 @@
     },
     {
       "name": "apt to → app to SAFE",
-      "result": "PASS"
+      "result": "PASS",
+      "candidate_ids": [
+        "wfc-02939",
+        "wfc-02946"
+      ]
     },
     {
       "name": "apt to → up to REJECT",
-      "result": "PASS"
+      "result": "PASS",
+      "candidate_generated": false
     },
     {
       "name": "see → say / yield → yelled not SAFE",
@@ -66,6 +74,16 @@
       "duplicates": 0
     },
     {
+      "name": "target-sense homograph paths disambiguated",
+      "result": "PASS",
+      "excluded_paths": 9,
+      "valid_unique_phonetic_pairs": 773
+    },
+    {
+      "name": "wind /wɪnd/ collision paths rejected; /waɪnd/ → wine kept REVIEW",
+      "result": "PASS"
+    },
+    {
       "name": "no production files changed",
       "result": "PASS",
       "changed_paths": "audit directory only"
@@ -73,8 +91,8 @@
   ],
   "candidate_counts": {
     "SAFE": 2,
-    "REVIEW": 207,
-    "REJECT": 4457,
+    "REVIEW": 209,
+    "REJECT": 4455,
     "unclassified": 0
   }
 }

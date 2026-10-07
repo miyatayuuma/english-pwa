@@ -71,7 +71,7 @@ check('all candidate paths are exact one-final-consonant deletion', () => {
       resulting_pronunciation: c.resulting_pronunciation,
       collision_pronunciation: c.collision_pronunciation
     }];
-    for (const p of paths) {
+    for (const p of [...paths, ...(c.excluded_target_sense_paths || [])]) {
       const target = p.target_pronunciation.split(' ');
       const reduced = p.resulting_pronunciation.split(' ');
       assert.equal(target.slice(0, -1).join(' '), reduced.join(' '));
@@ -107,6 +107,18 @@ check('apt to → up to is REJECT and absent from candidate generation', () => {
   assert.ok(!registrationDoc.candidates.some((x) => x.recognized_surface.toLowerCase().includes('up to')));
 });
 check('no explicit-equivalence duplicates', () => assert.equal(manifest.summary.explicitRuleDuplicates, 0));
+check('contextual homograph senses are preserved', () => {
+  const windWine = candidates.filter((x) => x.entry_id === 'vocab:00102' && x.target_word === 'wind' && x.collision_word === 'wine');
+  const windWin = candidates.filter((x) => x.entry_id === 'vocab:00102' && x.target_word === 'wind' && x.collision_word === 'win');
+  assert.ok(windWine.length > 0 && windWine.every((x) => x.decision === 'REVIEW' && x.vowel_identity_preserved));
+  assert.ok(windWin.length > 0 && windWin.every((x) => x.decision === 'REJECT' && !x.vowel_identity_preserved));
+  for (const c of candidates.filter((x) => x.entry_id === 'vocab:00448' && x.target_word === 'lives')) {
+    assert.ok(c.phonetic_paths.every((p) => p.target_pronunciation === 'L IH1 V Z'));
+  }
+  for (const c of candidates.filter((x) => x.entry_id === 'vocab:00641' && x.target_word === 'tears')) {
+    assert.ok(c.phonetic_paths.every((p) => p.target_pronunciation === 'T IH1 R Z'));
+  }
+});
 check('vowel-substitution controls are not SAFE', () => {
   assert.ok(!candidates.some((x) => x.decision === 'SAFE' && x.target_word === 'see' && x.collision_word === 'say'));
   assert.ok(!candidates.some((x) => x.decision === 'SAFE' && x.target_word === 'yield' && x.collision_word === 'yelled'));

@@ -19,8 +19,10 @@ Research supports the conservative emphasis on context: spontaneous American Eng
 ## Decision policy
 
 - `SAFE`: only the user-specified apt/app seed is approved, and only for the two exact TARGET surfaces in `vocab:01166`.
-- `REVIEW`: the exact vowel-preserving deletion path is plausible in its recorded consonant context, but lexical/grammar risk or unmeasured ASR behavior prevents approval.
-- `REJECT`: the collision is not a major standard word, requires a target-sense mismatch, depends on a weak or non-natural reduction environment, or is only a dictionary/spelling hit.
+- `REVIEW`: the target-sense exact vowel-preserving deletion path is plausible in its recorded consonant context, but lexical/grammar risk or unmeasured ASR behavior prevents approval.
+- `REJECT`: the collision is not a major standard word, uses a dictionary homograph pronunciation that conflicts with the target phrase, depends on a weak or non-natural reduction environment, or is only a dictionary/spelling hit.
+
+CMUdict homograph paths were checked against the contextual target sense. For example, `wind something up` is /waɪnd/ (not noun /wɪnd/), `lives from hand to mouth` is /lɪvz/, and `in tears` is /tɪrz/. Wrong-sense paths are retained as excluded traces in `candidates.json`; the vowel-preserving `wind → wine` paths are REVIEW.
 
 `apt to → app to` is SAFE. `apt to → up to` is an explicit REJECT control because /æ/→/ʌ/ changes the vowel. `see → say` and `yield → yelled` remain out of scope. No general coda-deletion rule was added to production.
 
