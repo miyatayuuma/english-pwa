@@ -283,19 +283,28 @@ before(async()=>{
       response.writeHead(200,{'content-type':type,'cache-control':'no-cache'});response.end(content);
     }catch{response.writeHead(404).end('not found');}
   });
-  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+  try{
+    await new Promise((resolve,reject)=>{
+      server.once('error',reject);
+      server.listen(0,'127.0.0.1',resolve);
+    });
+  }catch(error){
+    browserError=`local test server unavailable: ${error?.code||error?.message||error}`;
+    return;
+  }
   baseUrl=`http://127.0.0.1:${server.address().port}`;
   try{browser=await chromium.launch({headless:true});}catch(error){browserError=String(error?.message??error).split('\n')[0];}
 });
 
-after(async()=>{await browser?.close();await new Promise(resolve=>server?.close(resolve));});
+after(async()=>{await browser?.close();if(server?.listening) await new Promise(resolve=>server.close(resolve));});
 
 browserTest('390×844 expression card preserves active source, strict paraphrase grade, and context/audio',async()=>{
   const opened=await newPage(sources[0]);
   const {context,page,entry}=opened;
   try{
     await page.emulateMedia({reducedMotion:'reduce'});
-    assert.equal(await page.locator('.vocab-meta').innerText().then(text=>text.includes('表現')),true);
+    assert.equal(await page.locator('.vocab-meta').innerText().then(text=>text.includes('動詞')),true);
+    assert.doesNotMatch(await page.locator('.vocab-meta').innerText(),/単語|表現/);
     assert.equal(await page.locator('.vocab-mic').getAttribute('aria-label'),'英語で答える');
     assert.equal(await page.evaluate(()=>document.activeElement?.classList.contains('vocab-mic')),true);
     assert.equal(await page.evaluate(()=>getComputedStyle(document.querySelector('.vocab-mic')).transitionDuration),'0s');
@@ -338,6 +347,25 @@ browserTest('390×844 expression card preserves active source, strict paraphrase
     assert.match(await page.locator('.vocab-done').innerText(),/ターゲット正解 1　別表現 0　要復習 0/);
 
   }finally{await closePage(opened);}
+});
+
+browserTest('canonical grammar role wins over paraphrase POS and legacy kind labels',async()=>{
+  const cases=[
+    {source:{kind:'expression',canonical:'job interview',itemId:'E0366'},label:'名詞'},
+    {source:{kind:'expression',canonical:'take up',itemId:'E0020'},label:'動詞'},
+    {source:{kind:'construction',canonical:'so tired that I fell asleep',itemId:'E0371'},label:'構文'},
+    {source:{kind:'expression',canonical:'despite',itemId:'E0088',entryId:'vocab:00121'},label:'前置詞'},
+  ];
+  for(const {source,label} of cases){
+    const opened=await newPage(source);
+    try{
+      const meta=opened.page.locator('.vocab-meta');
+      assert.doesNotMatch(await meta.innerText(),/単語|表現/);
+      const roleTags=meta.locator(':scope > span:not(.vocab-speaker)');
+      assert.equal(await roleTags.count(),1,label);
+      assert.equal((await roleTags.first().innerText()).trim(),label);
+    }finally{await closePage(opened);}
+  }
 });
 
 for(const viewport of [{width:390,height:844},{width:360,height:640},{width:1280,height:900}]) browserTest(`${viewport.width}×${viewport.height} vocab:00111 result hierarchy fits without collapsed scrolling`,async()=>{

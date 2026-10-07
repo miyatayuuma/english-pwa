@@ -1,0 +1,1884 @@
+{
+  "schema_version": 1,
+  "authority": "meaning_ja selects the target sense/use; canonical answer determines grammarRole. paraphrases[] is semantic-equivalence authority and does not determine grammarRole.",
+  "rules": [
+    {
+      "id": "R001",
+      "rule": "Multiword lexical verbs, including phrasal and prepositional verbs, are verb."
+    },
+    {
+      "id": "R002",
+      "rule": "Multiword prepositions are preposition when the complete expression heads a relation and takes its complement."
+    },
+    {
+      "id": "R003",
+      "rule": "Multiword conjunctions are conjunction when they connect clauses or constituents."
+    },
+    {
+      "id": "R004",
+      "rule": "Semi-modals are auxiliary only when they share modal/auxiliary grammatical function for the prompt; lexical predicates stay verb."
+    },
+    {
+      "id": "R005",
+      "rule": "Pronoun versus determiner follows the specified use in meaning_ja; pronominal heads are not merged into noun."
+    },
+    {
+      "id": "R006",
+      "rule": "Predicative adjective expressions may include be; classify the predicate complement function as adjective when canonical and paraphrases share it."
+    },
+    {
+      "id": "R007",
+      "rule": "Independent conventional reactions/responses are interjection only when the accepted answer set shares that discourse-response use."
+    },
+    {
+      "id": "R008",
+      "rule": "Construction is reserved for a reusable multi-slot or word-order template; an ordinary phrase or a complete fixed clause is not automatically construction."
+    },
+    {
+      "id": "R009",
+      "rule": "Paraphrase POS differences do not affect grammarRole. Resolve from the canonical answer under meaning_ja; use pending only for a genuinely unresolved canonical usage."
+    },
+    {
+      "id": "R010",
+      "rule": "A surface fragment may be classified by its syntactic function when the prompt supplies it (e.g. predicate adjective, adverbial, NP); utterance pragmatics alone does not override form unless the entry is a conventional standalone reaction."
+    },
+    {
+      "id": "R011",
+      "rule": "Construction is used when a fixed syntactic frame itself carries the learning target and open slots are central; examples include the comparative-correlative, chances are (that) S, be yet to do, and not only A but also B."
+    },
+    {
+      "id": "R012",
+      "rule": "when it comes to X and as far as X is concerned are conjunctions in the specified topic-setting use."
+    },
+    {
+      "id": "R013",
+      "rule": "Auxiliary is limited to productive modal or semi-modal operators assigning possibility, obligation, intention, necessity, or imminence to a following VP; a fixed be yet to do frame is construction."
+    },
+    {
+      "id": "R014",
+      "rule": "A standalone conventional discourse act/response is interjection, including no problem, why not?, be my guest, so much for X, there you go again, and small-talk what’s up."
+    },
+    {
+      "id": "R015",
+      "rule": "A canonical quantified expression with no following noun functions as pronoun; when it precedes a noun and restricts its quantity it functions as determiner."
+    }
+  ],
+  "ledger_notes": [
+    {
+      "entry_id": "vocab:00313",
+      "decision": "construction",
+      "reason": "chances are (that) S is a fixed clause frame whose open complement is central to the card."
+    },
+    {
+      "entry_id": "vocab:01289",
+      "decision": "construction",
+      "reason": "be yet to do is classified as the fixed syntactic frame under the final boundary rule."
+    },
+    {
+      "entry_id": "vocab:01606",
+      "decision": "noun",
+      "reason": "The confirmed prompt is 呪い; canonical curse is the noun sense."
+    },
+    {
+      "entry_id": "vocab:02134",
+      "decision": "noun",
+      "reason": "The confirmed prompt is （君主の）治世; canonical reign is the noun sense."
+    },
+    {
+      "entry_id": "vocab:02243",
+      "decision": "pronoun",
+      "reason": "three in five is an independent quantified NP with no following noun."
+    }
+  ],
+  "superseded_ledger_notes": [
+    {
+      "entry_id": "vocab:00044",
+      "decision": "pending",
+      "reason": "be eager to do something is an adjective predicate, while long to do something is a lexical verb predicate; the accepted answer set does not share one grammatical role."
+    },
+    {
+      "entry_id": "vocab:00091",
+      "decision": "pending",
+      "reason": "It's on me is a clause with a prepositional predicate; my treat is a noun phrase. The Japanese payment-response meaning does not make their grammatical roles identical."
+    },
+    {
+      "entry_id": "vocab:00104",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "verb"
+      ],
+      "reason": "be on someone’s side is a predicative prepositional/adjectival complement, while side with someone is a lexical verb phrase; the accepted answer set does not share one grammatical role."
+    },
+    {
+      "entry_id": "vocab:00106",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "verb"
+      ],
+      "reason": "differ from something is a lexical verb predicate, while be different from something is an adjective predicate. Both express the prompt meaning but do not share one grammatical role."
+    },
+    {
+      "entry_id": "vocab:00112",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "adjective"
+      ],
+      "reason": "go along with and support are verb phrases, but be in favor of something is a predicative adjective/prepositional phrase. The accepted answer set spans roles."
+    },
+    {
+      "entry_id": "vocab:00121",
+      "decision": "pending",
+      "candidates": [
+        "preposition",
+        "conjunction"
+      ],
+      "reason": "despite and in spite of take noun phrase complements (prepositions), while although and even though introduce clauses (conjunctions). The accepted answer set crosses the boundary."
+    },
+    {
+      "entry_id": "vocab:00157",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "adjective"
+      ],
+      "reason": "be dying of thirst is a verbal predicate, while be parched is a predicative adjective. The answer set has no shared role."
+    },
+    {
+      "entry_id": "vocab:00162",
+      "decision": "pending",
+      "candidates": [
+        "adverb",
+        "verb"
+      ],
+      "reason": "so much for something is a discourse-level closing formula, while leave it at that is a lexical verb clause. The prompt does not align these to one shared grammatical category."
+    },
+    {
+      "entry_id": "vocab:00165",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "adjective"
+      ],
+      "reason": "be faced with is a participial/adjectival predicate in this state meaning, while face and be confronted with are verbal predicates. The accepted forms do not establish a single role."
+    },
+    {
+      "entry_id": "vocab:00180",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "verb"
+      ],
+      "reason": "be jealous of someone is an adjective predicate, while envy someone is a lexical verb. The accepted answer set crosses categories."
+    },
+    {
+      "entry_id": "vocab:00185",
+      "decision": "pending",
+      "candidates": [
+        "construction",
+        "verb"
+      ],
+      "reason": "the canonical is a comparative-correlative multi-clause pattern; practice makes perfect is a fixed declarative clause, not the same reusable construction. No single allowed role covers both forms."
+    },
+    {
+      "entry_id": "vocab:00188",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "construction"
+      ],
+      "reason": "time will tell is a complete fixed assertion, not a reusable slot template; the taxonomy has no clause/sentence category, and no paraphrase provides a shared narrower role."
+    },
+    {
+      "entry_id": "vocab:00199",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "adjective"
+      ],
+      "reason": "have one’s hands full is a verb predicate, while be tied up is an adjective/participial predicate. The answer set crosses categories."
+    },
+    {
+      "entry_id": "vocab:00113",
+      "decision": "verb",
+      "reason": "You flatter me and You’re flattering me share the lexical verb predicate flatter; standalone conversational use does not alter their common grammar role."
+    },
+    {
+      "entry_id": "vocab:00139",
+      "decision": "construction",
+      "reason": "no sooner...than and hardly...when are multi-slot correlative inversion patterns; classify the entry by this paired clause pattern, despite the as soon as conjunction paraphrase."
+    },
+    {
+      "entry_id": "vocab:00154",
+      "decision": "conjunction",
+      "reason": "and so on / and so forth / et cetera extend a coordinated list; classify their shared list-coordination function."
+    },
+    {
+      "entry_id": "vocab:00196",
+      "decision": "noun",
+      "reason": "a piece of cake and child’s play are noun phrases denoting an easy task."
+    },
+    {
+      "entry_id": "vocab:00202",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "adjective"
+      ],
+      "reason": "leave nothing to be desired is a lexical verb phrase, while perfect is an adjective. They share the “excellent” meaning but not a grammatical role."
+    },
+    {
+      "entry_id": "vocab:00205",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "adjective"
+      ],
+      "reason": "call for / need / require are lexical verbs, while be in need of something is a predicative adjective phrase. The accepted answer set crosses categories."
+    },
+    {
+      "entry_id": "vocab:00208",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "verb"
+      ],
+      "reason": "be interested in is an adjective predicate; have an interest in is a lexical verb phrase. Same prompt meaning, different grammatical roles."
+    },
+    {
+      "entry_id": "vocab:00212",
+      "decision": "pending",
+      "candidates": [
+        "preposition",
+        "adverb"
+      ],
+      "reason": "such as and like take noun phrase complements as prepositions, while for example is an adverbial. The accepted set has no single role."
+    },
+    {
+      "entry_id": "vocab:00218",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "adjective"
+      ],
+      "reason": "go on a diet and diet are verbal predicates, while be on a diet is a state predicate with an adjectival complement. The accepted set crosses roles."
+    },
+    {
+      "entry_id": "vocab:00219",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "adjective"
+      ],
+      "reason": "envy someone is a lexical verb, while be envious of someone is an adjective predicate."
+    },
+    {
+      "entry_id": "vocab:00226",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "adjective"
+      ],
+      "reason": "count and matter are lexical verbs; be important and be significant are adjective predicates. The accepted set does not share one category."
+    },
+    {
+      "entry_id": "vocab:00250",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "verb"
+      ],
+      "reason": "be on good terms is a predicative phrase, while get along/get on are lexical verb predicates. The accepted set crosses categories."
+    },
+    {
+      "entry_id": "vocab:00252",
+      "decision": "pending",
+      "candidates": [
+        "interjection",
+        "verb"
+      ],
+      "reason": "be my guest is a conventional permission response, but go ahead and please include imperative verb forms; these do not share a grammatical role."
+    },
+    {
+      "entry_id": "vocab:00253",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "noun"
+      ],
+      "reason": "hold on/hang on are imperative verbs; just a moment/wait a second include a noun phrase. The shared request meaning does not determine one grammatical category."
+    },
+    {
+      "entry_id": "vocab:00267",
+      "decision": "pending",
+      "candidates": [
+        "preposition",
+        "conjunction"
+      ],
+      "reason": "rather than can connect clauses or constituents, while instead of is a preposition taking a noun/gerund complement. The Japanese gloss does not disambiguate complement type."
+    },
+    {
+      "entry_id": "vocab:00279",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "adjective"
+      ],
+      "reason": "be tied up is a participial/adjectival predicate; have your hands full is a lexical verb predicate. The answer set crosses roles."
+    },
+    {
+      "entry_id": "vocab:00287",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "verb"
+      ],
+      "reason": "be lost is an adjective/state predicate, while have lost your way is a perfect-tense verb predicate. No single role is shared."
+    },
+    {
+      "entry_id": "vocab:00290",
+      "decision": "pending",
+      "candidates": [
+        "construction",
+        "adjective",
+        "noun"
+      ],
+      "reason": "there’s no use doing / there’s no point in doing are existential noun constructions, while it’s pointless to do is an adjective clause. The answer set has different structures and roles."
+    },
+    {
+      "entry_id": "vocab:00294",
+      "decision": "pending",
+      "candidates": [
+        "adverb",
+        "verb"
+      ],
+      "reason": "in time is an adverbial phrase, while make it in time is a verb clause. The answer set does not share one grammatical role."
+    },
+    {
+      "entry_id": "vocab:00300",
+      "decision": "pending",
+      "candidates": [
+        "construction",
+        "conjunction"
+      ],
+      "reason": "not only A but also B is a paired multi-slot construction, whereas A as well as B is a coordinating conjunction phrase. The accepted set crosses the construction/conjunction boundary."
+    },
+    {
+      "entry_id": "vocab:00301",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "verb"
+      ],
+      "reason": "be abundant/rich in is an adjective predicate; abound in is a lexical verb. The answer set crosses categories."
+    },
+    {
+      "entry_id": "vocab:00225",
+      "decision": "construction",
+      "reason": "not so much X as Y is a balanced focus/contrast template whose constituent slots and parallel ordering are the learning target."
+    },
+    {
+      "entry_id": "vocab:00230",
+      "decision": "auxiliary",
+      "reason": "can’t help doing and can’t resist doing share the negated modal can’s inability/avoidance force; classify by the modal function for this prompt."
+    },
+    {
+      "entry_id": "vocab:00259",
+      "decision": "adverb",
+      "reason": "back and forth expresses direction/frequency of movement as an adverbial, not an action predicate."
+    },
+    {
+      "entry_id": "vocab:00297",
+      "decision": "verb",
+      "reason": "come close to doing / almost do / nearly do are all verbal predicates in the target infinitive frame; almost/nearly modify the lexical verb internally."
+    },
+    {
+      "entry_id": "vocab:00308",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "adjective"
+      ],
+      "reason": "watch out/look out are imperative lexical verb predicates, while be careful is an adjective predicate. The response meaning does not make the accepted forms share one grammatical role."
+    },
+    {
+      "entry_id": "vocab:00313",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "adverb"
+      ],
+      "reason": "chances are is a complete clause, while probably is an adverb. Both express likelihood but the prompt does not define a common grammatical role."
+    },
+    {
+      "entry_id": "vocab:00328",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "adjective"
+      ],
+      "reason": "have something to do with is a lexical verb phrase; be related to is an adjective predicate. The answer set crosses roles."
+    },
+    {
+      "entry_id": "vocab:00331",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "adjective"
+      ],
+      "reason": "be attributed to is a passive verbal predicate, while be due to is an adjective predicate. They do not share one grammatical category."
+    },
+    {
+      "entry_id": "vocab:00334",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "adjective"
+      ],
+      "reason": "come in handy is a lexical verb predicate, while be useful is an adjective predicate."
+    },
+    {
+      "entry_id": "vocab:00335",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "preposition"
+      ],
+      "reason": "close at hand is an adjective phrase; within easy reach is a prepositional phrase. The prompt gives a state/location meaning but does not select one role."
+    },
+    {
+      "entry_id": "vocab:00338",
+      "decision": "pending",
+      "candidates": [
+        "preposition",
+        "verb"
+      ],
+      "reason": "under construction is a prepositional state phrase, while be being built is a passive verb clause. The accepted set crosses roles."
+    },
+    {
+      "entry_id": "vocab:00341",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "verb"
+      ],
+      "reason": "be in danger of doing is an adjective predicate, while risk doing is a lexical verb predicate."
+    },
+    {
+      "entry_id": "vocab:00350",
+      "decision": "pending",
+      "candidates": [
+        "adverb",
+        "preposition"
+      ],
+      "reason": "at the latest is an adverbial phrase, while no later than takes a time complement as a complex preposition. The answer set does not share one category; this same contrast is added to the cross-batch rule ledger."
+    },
+    {
+      "entry_id": "vocab:00370",
+      "decision": "pending",
+      "candidates": [
+        "auxiliary",
+        "construction"
+      ],
+      "reason": "all someone has to do is do something is a multi-slot focus construction; someone only has to do something is a semi-modal auxiliary pattern. The accepted set spans the template and auxiliary functions."
+    },
+    {
+      "entry_id": "vocab:00379",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "verb"
+      ],
+      "reason": "be free of is an adjective predicate, while not contain something is a lexical verb predicate."
+    },
+    {
+      "entry_id": "vocab:00387",
+      "decision": "pending",
+      "candidates": [
+        "construction",
+        "verb"
+      ],
+      "reason": "what’s going on / what’s happening are complete interrogative clauses rather than a single lexical category. The taxonomy has no sentence class and these are not clearly a slot template."
+    },
+    {
+      "entry_id": "vocab:00394",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "adjective"
+      ],
+      "reason": "feel like doing is a lexical verb phrase; be in the mood to do is an adjective predicate. The accepted answer set crosses roles."
+    },
+    {
+      "entry_id": "vocab:00190",
+      "decision": "pending",
+      "candidates": [
+        "preposition",
+        "adverb"
+      ],
+      "reason": "no later than takes a time complement as a complex preposition, while at the latest is adverbial; shared time-limit meaning does not establish one role."
+    },
+    {
+      "entry_id": "vocab:00354",
+      "decision": "interjection",
+      "reason": "The canonical and paraphrases are all conventional standalone replies to thanks; classify their shared discourse-response function as interjection despite syntactic variation."
+    },
+    {
+      "entry_id": "vocab:00362",
+      "decision": "preposition",
+      "reason": "against someone’s will is headed by the preposition against and takes a noun-phrase complement; its phrase-level adverbial use does not change its category."
+    },
+    {
+      "entry_id": "vocab:00366",
+      "decision": "adjective",
+      "reason": "be confronted with / be faced with both express a stative condition through participial adjective predicates."
+    },
+    {
+      "entry_id": "vocab:00380",
+      "decision": "adverb",
+      "reason": "how often / how frequently are interrogative adverb phrases asking about frequency, not a separate question category."
+    },
+    {
+      "entry_id": "vocab:00381",
+      "decision": "determiner",
+      "reason": "as many as / no fewer than quantify an ensuing nominal quantity; function is determiner/quantifier."
+    },
+    {
+      "entry_id": "vocab:00409",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "noun"
+      ],
+      "reason": "contribute to / play a part in are verb predicates, but be a factor in something is a noun predicate. Their contribution meaning does not give one shared grammatical role."
+    },
+    {
+      "entry_id": "vocab:00425",
+      "decision": "pending",
+      "candidates": [
+        "adverb",
+        "construction"
+      ],
+      "reason": "at all costs is an adverbial phrase, while whatever it takes is a free relative clause. They share a resolve-at-any-price meaning, not a grammatical category."
+    },
+    {
+      "entry_id": "vocab:00427",
+      "decision": "pending",
+      "candidates": [
+        "auxiliary",
+        "verb"
+      ],
+      "reason": "would rather do is a modal auxiliary plus bare infinitive preference construction, while prefer doing is a lexical verb predicate. The answer set crosses auxiliary/verb function."
+    },
+    {
+      "entry_id": "vocab:00435",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "adjective"
+      ],
+      "reason": "stand by someone is a lexical verb phrase, while be there for someone is a predicative locative/adjectival phrase. The accepted set has no shared role."
+    },
+    {
+      "entry_id": "vocab:00439",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "verb"
+      ],
+      "reason": "be up to someone is a predicative phrase; depend on someone is a lexical verb predicate. The prompt does not align their grammatical roles."
+    },
+    {
+      "entry_id": "vocab:00445",
+      "decision": "pending",
+      "candidates": [
+        "preposition",
+        "adjective"
+      ],
+      "reason": "in the face of something is a preposition phrase, while faced with something is a participial adjective/passive predicate. The answer set crosses categories."
+    },
+    {
+      "entry_id": "vocab:00446",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "adjective"
+      ],
+      "reason": "deserve praise is a lexical verb, while commendable and be worthy of praise are adjective predicates."
+    },
+    {
+      "entry_id": "vocab:00453",
+      "decision": "pending",
+      "candidates": [
+        "construction",
+        "verb"
+      ],
+      "reason": "there you go again / here we go again are complete fixed clauses used as discourse reactions, not a reusable slot template with one lexical category."
+    },
+    {
+      "entry_id": "vocab:00463",
+      "decision": "pending",
+      "candidates": [
+        "noun",
+        "adjective"
+      ],
+      "reason": "be a must has a noun complement, while be essential / indispensable are adjective predicates. The answer set crosses categories."
+    },
+    {
+      "entry_id": "vocab:00468",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "verb"
+      ],
+      "reason": "feel free to do is an adjective predicate, while don’t hesitate to do is an imperative verb clause. Their permission meaning does not give one shared role."
+    },
+    {
+      "entry_id": "vocab:00488",
+      "decision": "pending",
+      "candidates": [
+        "auxiliary",
+        "verb"
+      ],
+      "reason": "may well do uses a modal auxiliary, while have good reason to do is a lexical verb predicate. The accepted set crosses auxiliary/verb function."
+    },
+    {
+      "entry_id": "vocab:00501",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "preposition",
+        "noun"
+      ],
+      "reason": "be far from is an adjective predicate with a prepositional complement; nowhere near is a prepositional phrase and a far cry from is a noun phrase. The prompt does not resolve a shared grammatical role."
+    },
+    {
+      "entry_id": "vocab:00412",
+      "decision": "auxiliary",
+      "reason": "be obliged to / have no choice but to / be forced to share an obligation/necessity operator function at prompt level; treated as semi-modal auxiliary in this taxonomy."
+    },
+    {
+      "entry_id": "vocab:00433",
+      "decision": "adjective",
+      "reason": "the time is ripe / the time is right share the same predicative adjective function for maturity/readiness."
+    },
+    {
+      "entry_id": "vocab:00438",
+      "decision": "construction",
+      "reason": "if only + clause / I wish + clause are reusable multi-slot wish templates, and the template is the learning target."
+    },
+    {
+      "entry_id": "vocab:00462",
+      "decision": "adjective",
+      "reason": "required / necessary / needed for something function as state/property predicates in this meaning."
+    },
+    {
+      "entry_id": "vocab:00473",
+      "decision": "verb",
+      "reason": "mind your own business / stay out of it share imperative lexical verb predicates."
+    },
+    {
+      "entry_id": "vocab:00478",
+      "decision": "construction",
+      "reason": "there’s no point/use + gerund is a reusable slot construction; both accepted answers share that existential template."
+    },
+    {
+      "entry_id": "vocab:00481",
+      "decision": "preposition",
+      "reason": "behind someone’s back / without someone knowing / without someone’s knowledge introduce NP or gerund complements as prepositional expressions."
+    },
+    {
+      "entry_id": "vocab:00499",
+      "decision": "auxiliary",
+      "reason": "be forced to / have no choice but to / be obliged to share a necessity/obligation function at prompt level; treated as semi-modal auxiliary."
+    },
+    {
+      "entry_id": "vocab:00502",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "adjective",
+        "noun"
+      ],
+      "reason": "The canonical tend to do is a lexical verb; be inclined to is an adjective predicate; have a tendency to is a noun phrase predicate. The answer set has no shared grammatical role."
+    },
+    {
+      "entry_id": "vocab:00504",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "verb"
+      ],
+      "reason": "be concerned with is an adjective predicate in this focus sense, while focus on/center on/deal with are lexical verb predicates."
+    },
+    {
+      "entry_id": "vocab:00510",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "verb"
+      ],
+      "reason": "be involved in is an adjective/stative participial predicate; take part in/participate in are lexical verbs."
+    },
+    {
+      "entry_id": "vocab:00512",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "adjective"
+      ],
+      "reason": "come to light is a lexical verb phrase, while become clear/apparent are copular adjective predicates."
+    },
+    {
+      "entry_id": "vocab:00520",
+      "decision": "pending",
+      "candidates": [
+        "preposition",
+        "conjunction"
+      ],
+      "reason": "when it comes to is a subordinate clause frame; as for/regarding/with regard to are prepositional expressions and as far as ... is concerned is a clause."
+    },
+    {
+      "entry_id": "vocab:00539",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "auxiliary",
+        "noun"
+      ],
+      "reason": "be capable of is an adjective predicate, be able to is semi-modal, and have the ability to is a noun-headed verb phrase."
+    },
+    {
+      "entry_id": "vocab:00544",
+      "decision": "pending",
+      "candidates": [
+        "pronoun",
+        "adjective"
+      ],
+      "reason": "nothing but/nothing more than is a pronoun/determiner phrase; be merely something is a clause with merely modifying the predicate."
+    },
+    {
+      "entry_id": "vocab:00551",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "construction"
+      ],
+      "reason": "what will become/happen to us are complete interrogative clauses, not a single lexical category or a clear reusable slot template."
+    },
+    {
+      "entry_id": "vocab:00552",
+      "decision": "pending",
+      "candidates": [
+        "adverb",
+        "auxiliary"
+      ],
+      "reason": "at any moment/any minute now are adverbials, while be about to do is a semi-modal auxiliary construction."
+    },
+    {
+      "entry_id": "vocab:00555",
+      "decision": "pending",
+      "candidates": [
+        "preposition",
+        "verb"
+      ],
+      "reason": "in favor of is a prepositional phrase; support/back are lexical verbs."
+    },
+    {
+      "entry_id": "vocab:00557",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "adjective"
+      ],
+      "reason": "correspond/match/agree are lexical verbs, while be consistent with is an adjective predicate."
+    },
+    {
+      "entry_id": "vocab:00565",
+      "decision": "pending",
+      "candidates": [
+        "preposition",
+        "adjective"
+      ],
+      "reason": "in sight/within sight are prepositional phrases, while visible is an adjective; prompt does not privilege one category."
+    },
+    {
+      "entry_id": "vocab:00578",
+      "decision": "pending",
+      "candidates": [
+        "conjunction",
+        "verb"
+      ],
+      "reason": "so as not to/in order not to introduce purpose infinitives, while to avoid doing is a lexical verb phrase."
+    },
+    {
+      "entry_id": "vocab:00582",
+      "decision": "pending",
+      "candidates": [
+        "preposition",
+        "verb"
+      ],
+      "reason": "in search of is a prepositional phrase; look for/seek are lexical verbs."
+    },
+    {
+      "entry_id": "vocab:00586",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "conjunction"
+      ],
+      "reason": "believe it or not is an imperative parenthetical; you may not believe this, but is a clause coordinated with but."
+    },
+    {
+      "entry_id": "vocab:00590",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "adjective"
+      ],
+      "reason": "help yourself is an imperative verb phrase; feel free to take is an adjective predicate."
+    },
+    {
+      "entry_id": "vocab:00591",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "adjective"
+      ],
+      "reason": "stand out/catch the eye are verb predicates; be noticeable/be conspicuous are adjective predicates."
+    },
+    {
+      "entry_id": "vocab:00600",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "adjective",
+        "noun"
+      ],
+      "reason": "what’s the matter uses a noun phrase, what’s wrong an adjective complement, and what happened a verb; the accepted question set has no shared role."
+    },
+    {
+      "entry_id": "vocab:00602",
+      "decision": "pending",
+      "candidates": [
+        "noun",
+        "verb"
+      ],
+      "reason": "none of someone’s business is a noun phrase; have nothing to do with someone is a verb clause."
+    },
+    {
+      "entry_id": "vocab:00528",
+      "decision": "auxiliary",
+      "reason": "have no choice but to / be forced to / be compelled to share a strong necessity function; classify as prompt-level semi-modal auxiliary."
+    },
+    {
+      "entry_id": "vocab:00532",
+      "decision": "adjective",
+      "reason": "bound/sure/certain to do are property/epistemic adjective predicates; modal-like meaning alone is insufficient to reclassify them as auxiliary."
+    },
+    {
+      "entry_id": "vocab:00541",
+      "decision": "auxiliary",
+      "reason": "be to / be supposed to / be expected to do share an expectation/obligation semi-modal function."
+    },
+    {
+      "entry_id": "vocab:00587",
+      "decision": "interjection",
+      "reason": "give me a break / you must be joking / are you kidding me are conventional standalone reactions expressing disbelief; classify their shared response function as interjection."
+    },
+    {
+      "entry_id": "vocab:00597",
+      "decision": "preposition",
+      "reason": "in front of / in someone’s presence head noun-phrase complements and function as prepositions."
+    },
+    {
+      "entry_id": "vocab:00621",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "adjective"
+      ],
+      "reason": "pay attention to is a lexical verb phrase, while be mindful of is an adjective predicate. The answer set crosses roles."
+    },
+    {
+      "entry_id": "vocab:00622",
+      "decision": "pending",
+      "candidates": [
+        "preposition",
+        "conjunction"
+      ],
+      "reason": "as far as someone is concerned / when it comes to are clause frames, while as for is a prepositional phrase. The topic-setting meaning does not give one shared category."
+    },
+    {
+      "entry_id": "vocab:00628",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "verb"
+      ],
+      "reason": "be open to / be likely to are adjective predicates, while tend to cause is a lexical verb predicate. The accepted set crosses roles."
+    },
+    {
+      "entry_id": "vocab:00634",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "verb",
+        "noun"
+      ],
+      "reason": "be inclined to is an adjective predicate, tend to is a lexical verb, and have a tendency to is noun-headed. The answer set has no shared role."
+    },
+    {
+      "entry_id": "vocab:00639",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "adjective"
+      ],
+      "reason": "get along/get on are lexical verbs, while be on good terms is a predicative adjective phrase."
+    },
+    {
+      "entry_id": "vocab:00641",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "verb"
+      ],
+      "reason": "in tears is a prepositional state predicate, while crying is a progressive verbal predicate. The prompt does not disambiguate a common role."
+    },
+    {
+      "entry_id": "vocab:00665",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "noun"
+      ],
+      "reason": "be seeing/date/go out with are verb predicates, while be in a relationship with someone is noun-headed. The accepted set crosses roles."
+    },
+    {
+      "entry_id": "vocab:00666",
+      "decision": "pending",
+      "candidates": [
+        "construction",
+        "verb",
+        "adjective"
+      ],
+      "reason": "what’s up / how have you been / how’s it going / what’s new are full interrogative clauses with different heads; the taxonomy has no question/sentence category."
+    },
+    {
+      "entry_id": "vocab:00671",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "adverb",
+        "noun"
+      ],
+      "reason": "be there for someone uses a locative complement, stand by/support are verb predicates, and have someone’s back is noun-headed. The answer set does not share a category."
+    },
+    {
+      "entry_id": "vocab:00678",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "adjective"
+      ],
+      "reason": "shut up is a verb imperative, be quiet is an adjective predicate, and fall silent is verbal. The accepted set crosses categories."
+    },
+    {
+      "entry_id": "vocab:00701",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "adjective"
+      ],
+      "reason": "go easy/give a break/cut slack are verb predicates, while be lenient is an adjective predicate. The answer set crosses roles."
+    },
+    {
+      "entry_id": "vocab:00608",
+      "decision": "adverb",
+      "reason": "to tell the truth / to be honest / honestly / frankly all function as sentence-level candor adjuncts (adverbial discourse markers)."
+    },
+    {
+      "entry_id": "vocab:00614",
+      "decision": "interjection",
+      "reason": "after you / go ahead are standalone conventional yielding/permission responses; the taxonomy’s response-use interjection class captures their shared discourse function."
+    },
+    {
+      "entry_id": "vocab:00623",
+      "decision": "verb",
+      "reason": "anything goes has the lexical verb go as its predicate and no paraphrases contradict that function."
+    },
+    {
+      "entry_id": "vocab:00649",
+      "decision": "interjection",
+      "reason": "no wonder is a conventional standalone reaction expressing that something is unsurprising."
+    },
+    {
+      "entry_id": "vocab:00667",
+      "decision": "pronoun",
+      "reason": "not much / nothing much / nothing in particular are pronominal noun phrases in the elliptical reply use."
+    },
+    {
+      "entry_id": "vocab:00670",
+      "decision": "adjective",
+      "reason": "feel down / feel low / be depressed share a state adjective predicate; feel is copular in this meaning."
+    },
+    {
+      "entry_id": "vocab:00679",
+      "decision": "interjection",
+      "reason": "take your time / no rush / there’s no hurry are standalone reassuring permission responses; interjection is their shared discourse-response role."
+    },
+    {
+      "entry_id": "vocab:00720",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "verb"
+      ],
+      "reason": "relevant is an adjective, while relate to something is a lexical verb; be related to is participial/adjectival. The accepted set crosses roles."
+    },
+    {
+      "entry_id": "vocab:00747",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "verb"
+      ],
+      "reason": "familiar / be well versed / be knowledgeable are adjective predicates, while know something well is a lexical verb. The answer set crosses categories."
+    },
+    {
+      "entry_id": "vocab:00751",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "verb"
+      ],
+      "reason": "eager / be keen are adjective predicates, while long to / yearn to are lexical verbs. The accepted answer set crosses roles."
+    },
+    {
+      "entry_id": "vocab:00770",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "verb"
+      ],
+      "reason": "alarming is an adjective, while worry someone / make someone anxious are lexical verb predicates. Same causative meaning, different grammatical roles."
+    },
+    {
+      "entry_id": "vocab:00704",
+      "decision": "construction",
+      "reason": "do you have the time? / what time is it? are reusable multi-slot interrogative templates asking for the current time; question function has no separate class."
+    },
+    {
+      "entry_id": "vocab:00812",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "adjective"
+      ],
+      "reason": "differ is a lexical verb, while different is an adjective; the Japanese gloss does not resolve the accepted canonical/paraphrase split."
+    },
+    {
+      "entry_id": "vocab:00843",
+      "decision": "pending",
+      "candidates": [
+        "noun",
+        "adjective"
+      ],
+      "reason": "necessity / must-have are noun uses, while essential is an adjective. The Japanese “必需品” is nominal, but the allowed answer set includes adjective paraphrase essential."
+    },
+    {
+      "entry_id": "vocab:00848",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "adjective"
+      ],
+      "reason": "resemble/look like are lexical verb predicates, while be similar to is an adjective predicate. The answer set crosses roles."
+    },
+    {
+      "entry_id": "vocab:00863",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "verb"
+      ],
+      "reason": "anxious/eager are adjective predicates, while long for/yearn for are lexical verbs. The prompt’s longing meaning does not create one shared role."
+    },
+    {
+      "entry_id": "vocab:00951",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "adjective"
+      ],
+      "reason": "deserve is a lexical verb; be worth something and be worthy of something are adjective predicates. The answer set crosses roles."
+    },
+    {
+      "entry_id": "vocab:01000",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "noun"
+      ],
+      "reason": "alternative is an adjective in the prompt sense, while replacement/substitute are commonly nouns in this accepted set. The entry does not identify the intended syntactic use."
+    },
+    {
+      "entry_id": "vocab:01057",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "adjective"
+      ],
+      "reason": "regret doing is a lexical verb construction, while be sorry about something is an adjective predicate. The prompt “後悔する” fits the canonical verb, but the accepted answer set crosses categories."
+    },
+    {
+      "entry_id": "vocab:01110",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "adjective"
+      ],
+      "reason": "realize/notice are lexical verbs, whereas become aware of something is an adjective predicate. The answer set crosses roles."
+    },
+    {
+      "entry_id": "vocab:01166",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "verb"
+      ],
+      "reason": "be apt to / be prone to are adjective predicates, while tend to is a lexical verb. The propensity meaning is shared but the grammar category is not."
+    },
+    {
+      "entry_id": "vocab:01188",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "verb",
+        "noun"
+      ],
+      "reason": "be entitled to is an adjective predicate; have the right to is a verb phrase with a noun complement. The prompt-level entitlement meaning does not make them one grammatical role."
+    },
+    {
+      "entry_id": "vocab:01177",
+      "decision": "auxiliary",
+      "reason": "be allowed/permitted to and have permission to all encode deontic permission as semi-modal expressions in this prompt-level function."
+    },
+    {
+      "entry_id": "vocab:01191",
+      "decision": "construction",
+      "reason": "cannot/never do something too much is the degree/result-like multi-slot template; its paired word order is the target."
+    },
+    {
+      "entry_id": "vocab:01192",
+      "decision": "construction",
+      "reason": "why don’t you / how about / what about + action are reusable suggestion templates, and the template itself is the target."
+    },
+    {
+      "entry_id": "vocab:01205",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "adjective"
+      ],
+      "reason": "mind/dislike are lexical verbs, while be reluctant to is an adjective predicate. The accepted answer set crosses roles."
+    },
+    {
+      "entry_id": "vocab:01237",
+      "decision": "pending",
+      "candidates": [
+        "adverb",
+        "determiner",
+        "pronoun"
+      ],
+      "reason": "somewhat/to some extent are adverbial; some/a little can be determiners or pronouns. The Japanese gloss alone does not identify the intended syntactic use."
+    },
+    {
+      "entry_id": "vocab:01285",
+      "decision": "pending",
+      "candidates": [
+        "construction",
+        "verb",
+        "adverb"
+      ],
+      "reason": "the end justifies the means is a complete declarative clause; by any means necessary is adverbial, and whatever it takes is a free relative clause. The answer set has no shared grammatical category."
+    },
+    {
+      "entry_id": "vocab:01293",
+      "decision": "pending",
+      "candidates": [
+        "construction",
+        "preposition",
+        "conjunction"
+      ],
+      "reason": "not X but Y is a multi-slot contrast construction, while rather than/instead of are connector/preposition expressions. The accepted answer set crosses roles."
+    },
+    {
+      "entry_id": "vocab:01277",
+      "decision": "noun",
+      "reason": "sore throat is a compound noun denoting the symptom."
+    },
+    {
+      "entry_id": "vocab:01278",
+      "decision": "adjective",
+      "reason": "in good spirits/in a good mood are predicative state complements, functioning adjectivally."
+    },
+    {
+      "entry_id": "vocab:01280",
+      "decision": "construction",
+      "reason": "for here or to go / eat in or take away are multi-slot choice-question templates; the contrasting slots and order are the learning target."
+    },
+    {
+      "entry_id": "vocab:01289",
+      "decision": "auxiliary",
+      "reason": "be yet to / have yet to / have not ... yet share an incomplete/non-fulfillment aspectual auxiliary function."
+    },
+    {
+      "entry_id": "vocab:01294",
+      "decision": "adverb",
+      "reason": "from an objective viewpoint/perspective and objectively speaking all function as sentence-level viewpoint adjuncts."
+    },
+    {
+      "entry_id": "vocab:01340",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "adjective"
+      ],
+      "reason": "resent is a lexical verb, while get angry/get mad are predicative adjective phrases. The accepted answer set crosses grammatical roles."
+    },
+    {
+      "entry_id": "vocab:01380",
+      "decision": "adverb",
+      "candidates": [],
+      "reason": "In every way/in every respect are manner/extent adjuncts."
+    },
+    {
+      "entry_id": "vocab:01385",
+      "decision": "adverb",
+      "candidates": [],
+      "reason": "After a while is a temporal adjunct."
+    },
+    {
+      "entry_id": "vocab:01386",
+      "decision": "preposition",
+      "candidates": [],
+      "reason": "Except for/apart from/other than head an excluding relation and take an NP complement."
+    },
+    {
+      "entry_id": "vocab:01399",
+      "decision": "pending",
+      "candidates": [
+        "construction",
+        "noun",
+        "adjective",
+        "verb"
+      ],
+      "reason": "There is little prospect that is an existential clause with a noun head; be unlikely to is an adjective predicate; have little chance of is a verb phrase with a noun complement. They express the same prompt meaning but do not share one of the taxonomy’s grammatical roles."
+    },
+    {
+      "entry_id": "vocab:01400",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "verb"
+      ],
+      "reason": "be anxious to and be dying to are adjective predicates, while can’t wait to is a lexical verb phrase with modal can. The accepted answer set crosses roles."
+    },
+    {
+      "entry_id": "vocab:01401",
+      "decision": "adverb",
+      "candidates": [],
+      "reason": "In itself/in and of itself/per se function as adverbial modifiers."
+    },
+    {
+      "entry_id": "vocab:01402",
+      "decision": "adverb",
+      "candidates": [],
+      "reason": "After all/in the end/ultimately function as sentence or clause adverbs."
+    },
+    {
+      "entry_id": "vocab:01403",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "verb"
+      ],
+      "reason": "be against something is a predicative adjective/prepositional complement, while oppose something and object to something are lexical verb phrases. The accepted answer set crosses roles."
+    },
+    {
+      "entry_id": "vocab:01408",
+      "decision": "noun",
+      "reason": "somebody has the specified sense “important person”; the accepted VIP/key figure/big shot answers are noun phrases, so the prompt-level use is nominal."
+    },
+    {
+      "entry_id": "vocab:01495",
+      "decision": "auxiliary",
+      "reason": "be supposed to, be expected to, and be meant to share a deontic/expectation semi-modal function in this prompt."
+    },
+    {
+      "entry_id": "vocab:01497",
+      "decision": "construction",
+      "reason": "what if it rains and what will you do if it rains are reusable multi-slot hypothetical-question templates."
+    },
+    {
+      "entry_id": "vocab:01498",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "adjective"
+      ],
+      "reason": "I bet is a lexical verb clause expressing confident belief, while I’m sure is an adjective predicate. The accepted answer set expresses the same certainty meaning but crosses grammatical roles."
+    },
+    {
+      "entry_id": "vocab:01500",
+      "decision": "auxiliary",
+      "reason": "ought to and should express advice/obligation as modal or semi-modal auxiliaries."
+    },
+    {
+      "entry_id": "vocab:01501",
+      "decision": "conjunction",
+      "reason": "whether or not and if introduce an embedded alternative/interrogative clause."
+    },
+    {
+      "entry_id": "vocab:01502",
+      "decision": "adverb",
+      "reason": "first of all and to begin with are sentence-organizing sequencing adjuncts."
+    },
+    {
+      "entry_id": "vocab:01509",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "adjective"
+      ],
+      "reason": "make good/succeed/make it are lexical verb predicates, while be successful is an adjective predicate. The accepted answer set crosses roles."
+    },
+    {
+      "entry_id": "vocab:01514",
+      "decision": "construction",
+      "reason": "the last person to do something / the least likely person to do something instantiate a reusable superlative likelihood template with an open action slot."
+    },
+    {
+      "entry_id": "vocab:01526",
+      "decision": "pending",
+      "candidates": [
+        "adverb",
+        "conjunction"
+      ],
+      "reason": "Otherwise functions as a conjunctive adverb, while if not introduces a conditional clause. The Japanese “そうでなければ” does not determine whether the target is a clause connector or an adverbial conjunct."
+    },
+    {
+      "entry_id": "vocab:01563",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "verb"
+      ],
+      "reason": "spontaneous is an adjective, while occur naturally/happen naturally are verb clauses. The answer set shares the notion of happening without external cause but not a grammatical category."
+    },
+    {
+      "entry_id": "vocab:01584",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "verb"
+      ],
+      "reason": "prolonged is an adjective/past participle modifier, while drag on/linger/persist are lexical verb predicates. The accepted set crosses roles."
+    },
+    {
+      "entry_id": "vocab:01606",
+      "decision": "pending",
+      "candidates": [
+        "noun",
+        "verb"
+      ],
+      "reason": "The Japanese meaning explicitly includes both “呪い” (curse as a noun) and “呪う” (curse as a verb), and the entry accepts no alternatives that resolve the intended use."
+    },
+    {
+      "entry_id": "vocab:01631",
+      "decision": "construction",
+      "reason": "Do you mind if I sit here / Can I / May I / Is it okay if I sit here are permission-request question templates."
+    },
+    {
+      "entry_id": "vocab:01637",
+      "decision": "interjection",
+      "reason": "Come on in both meanings is a conventional standalone urging/protest response."
+    },
+    {
+      "entry_id": "vocab:01638",
+      "decision": "pending",
+      "candidates": [
+        "auxiliary",
+        "verb",
+        "construction"
+      ],
+      "reason": "can’t help it/can’t be helped contain modal auxiliary constructions, while there’s nothing you can do is a complete existential clause. The prompt alone does not establish one shared grammatical role."
+    },
+    {
+      "entry_id": "vocab:01640",
+      "decision": "construction",
+      "reason": "I wish I could is a multi-slot wish template with an elliptical infinitive recoverable from context."
+    },
+    {
+      "entry_id": "vocab:01648",
+      "decision": "interjection",
+      "reason": "I’d be glad/happy/love to and with pleasure are conventional affirmative response formulas."
+    },
+    {
+      "entry_id": "vocab:01651",
+      "decision": "determiner",
+      "reason": "a series of / a sequence of introduce a quantified noun complement and function as determiner-like quantity expressions in the prompt."
+    },
+    {
+      "entry_id": "vocab:01654",
+      "decision": "pending",
+      "candidates": [
+        "preposition",
+        "conjunction"
+      ],
+      "reason": "with a view to doing something is a prepositional phrase, while to do/in order to/so as to introduce infinitival purpose clauses. They share an adjunct meaning but not a grammatical category."
+    },
+    {
+      "entry_id": "vocab:01657",
+      "decision": "preposition",
+      "reason": "on the verge of/on the brink of take an NP complement and express a state boundary."
+    },
+    {
+      "entry_id": "vocab:01662",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "verb"
+      ],
+      "reason": "be due to and be caused by are predicative adjective/participle phrases, while result from and stem from are lexical verb phrases. The accepted answer set crosses roles."
+    },
+    {
+      "entry_id": "vocab:01665",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "verb"
+      ],
+      "reason": "be related/connected/associated to are adjective predicates, while have something to do with is a lexical verb phrase. The accepted answer set crosses roles."
+    },
+    {
+      "entry_id": "vocab:01673",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "verb"
+      ],
+      "reason": "be rich in is an adjective predicate, while abound in is a lexical verb predicate. The accepted set crosses roles."
+    },
+    {
+      "entry_id": "vocab:01676",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "verb"
+      ],
+      "reason": "be similar to is an adjective predicate, while resemble is a lexical verb. The accepted set crosses roles."
+    },
+    {
+      "entry_id": "vocab:01674",
+      "decision": "adjective",
+      "reason": "be characteristic of/be unique to/be peculiar to are all predicative adjective phrases under the Japanese relationship meaning."
+    },
+    {
+      "entry_id": "vocab:01775",
+      "decision": "pending",
+      "candidates": [
+        "adverb",
+        "preposition"
+      ],
+      "reason": "below and under can be adverbs without a complement or prepositions taking an NP; the Japanese “下に” and listed alternatives do not establish whether the target use includes a complement."
+    },
+    {
+      "entry_id": "vocab:01789",
+      "decision": "determiner",
+      "reason": "tens of thousands of is a multiword quantity expression selecting a noun complement."
+    },
+    {
+      "entry_id": "vocab:01791",
+      "decision": "interjection",
+      "reason": "so what?/what of it? are standalone dismissive challenge/reaction forms."
+    },
+    {
+      "entry_id": "vocab:01798",
+      "decision": "determiner",
+      "reason": "a bunch of/a lot of/many express quantity and select a noun complement in this prompt."
+    },
+    {
+      "entry_id": "vocab:01801",
+      "decision": "adverb",
+      "reason": "from coast to coast/across the country function as spatial extent adjuncts."
+    },
+    {
+      "entry_id": "vocab:01818",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "verb"
+      ],
+      "reason": "be sure to do something is an adjective predicate, while make sure to do something is a lexical verb phrase. The accepted answer set expresses certainty/ensuring but crosses roles."
+    },
+    {
+      "entry_id": "vocab:01804",
+      "decision": "preposition",
+      "reason": "per day/a day express a rate per temporal unit and function as a prepositional rate adjunct."
+    },
+    {
+      "entry_id": "vocab:01815",
+      "decision": "construction",
+      "reason": "with + NP + participial complement is an open-slot absolute construction."
+    },
+    {
+      "entry_id": "vocab:01816",
+      "decision": "construction",
+      "reason": "the comparative proposition alternatives share a reusable superlative comparison template."
+    },
+    {
+      "entry_id": "vocab:01817",
+      "decision": "adverb",
+      "reason": "for free/free of charge function as manner or cost adjuncts."
+    },
+    {
+      "entry_id": "vocab:01820",
+      "decision": "adverb",
+      "reason": "at least expresses a lower bound on degree/quantity."
+    },
+    {
+      "entry_id": "vocab:01912",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "noun"
+      ],
+      "reason": "three times as large as mine is an adjective phrase, while three times the size of mine is an NP predicate. The answer set does not share one grammatical category."
+    },
+    {
+      "entry_id": "vocab:01916",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "adverb",
+        "verb"
+      ],
+      "reason": "I’m afraid is an adjective clause, unfortunately is an adverb, and I think is a lexical verb clause. These stance markers share the sentence-level meaning “it is unfortunate that…”, but not one grammatical category."
+    },
+    {
+      "entry_id": "vocab:01948",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "adjective"
+      ],
+      "reason": "owe is a lexical verb, while be indebted to someone is an adjective predicate. The accepted answer set crosses roles."
+    },
+    {
+      "entry_id": "vocab:01934",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "adverb"
+      ],
+      "reason": "I mean is a lexical verb clause used as a reformulation marker, while in other words/that is are adverbial discourse markers. The Japanese “つまり” does not select one shared category."
+    },
+    {
+      "entry_id": "vocab:01914",
+      "decision": "preposition",
+      "reason": "on/upon doing and immediately after doing all use a preposition with a gerundial or temporal complement."
+    },
+    {
+      "entry_id": "vocab:01925",
+      "decision": "construction",
+      "reason": "what do you do/what do you do for a living/what is your job are reusable occupation-question templates."
+    },
+    {
+      "entry_id": "vocab:01926",
+      "decision": "construction",
+      "reason": "what is your major/what are you majoring in are reusable field-of-study question templates."
+    },
+    {
+      "entry_id": "vocab:01928",
+      "decision": "conjunction",
+      "reason": "as soon as/the moment connect a temporal subordinate clause to a main clause."
+    },
+    {
+      "entry_id": "vocab:01937",
+      "decision": "verb",
+      "reason": "find it hard to adjust/have difficulty adjusting/struggle to adjust all function as lexical verb predicates."
+    },
+    {
+      "entry_id": "vocab:02048",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "adjective"
+      ],
+      "reason": "owe someone something is a lexical verb construction, while be indebted to someone for something is an adjective predicate. The accepted answer set crosses roles."
+    },
+    {
+      "entry_id": "vocab:02095",
+      "decision": "pending",
+      "candidates": [
+        "noun",
+        "adverb",
+        "preposition"
+      ],
+      "reason": "decade is a noun, while for ten years is a prepositional duration phrase used adverbially. The prompt meaning and answer set do not select one shared grammatical category."
+    },
+    {
+      "entry_id": "vocab:02046",
+      "decision": "auxiliary",
+      "reason": "used to do expresses past habitual/state aspect as a quasi-modal and is grouped with auxiliary in this taxonomy."
+    },
+    {
+      "entry_id": "vocab:02066",
+      "decision": "construction",
+      "reason": "it is the case/true that is an open-slot extraposition/focus template."
+    },
+    {
+      "entry_id": "vocab:02074",
+      "decision": "verb",
+      "reason": "dare to do is a lexical verb meaning to have the courage to do something in this prompt."
+    },
+    {
+      "entry_id": "vocab:02113",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "determiner"
+      ],
+      "reason": "numerous is an adjective, while many and a large number of function as quantity determiners. The Japanese prompt identifies quantity but not a shared syntactic category."
+    },
+    {
+      "entry_id": "vocab:02134",
+      "decision": "pending",
+      "candidates": [
+        "noun",
+        "verb"
+      ],
+      "reason": "reign is specified as both “統治・治世” (noun) and “君臨する” (verb), while rule is accepted as a verb; the entry combines nominal and verbal uses."
+    },
+    {
+      "entry_id": "vocab:02142",
+      "decision": "pending",
+      "candidates": [
+        "noun",
+        "verb"
+      ],
+      "reason": "resolution and solution are nouns, while resolve is a lexical verb. The Japanese meaning spans determination/resolution senses and the accepted set crosses roles."
+    },
+    {
+      "entry_id": "vocab:02157",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "verb"
+      ],
+      "reason": "pro-choice is an adjective, while support abortion rights is a lexical verb phrase. The accepted answer set crosses grammatical roles."
+    },
+    {
+      "entry_id": "vocab:02202",
+      "decision": "construction",
+      "reason": "might as well do A as do B / would rather do A than do B share a multi-slot comparative preference template."
+    },
+    {
+      "entry_id": "vocab:02168",
+      "decision": "preposition",
+      "reason": "throughout/all over express a spatial relation with a location complement."
+    },
+    {
+      "entry_id": "vocab:02216",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "adjective"
+      ],
+      "reason": "hesitate to do is a lexical verb predicate, while be reluctant to do is an adjective predicate. The accepted answer set crosses grammatical roles."
+    },
+    {
+      "entry_id": "vocab:02225",
+      "decision": "pending",
+      "candidates": [
+        "preposition",
+        "conjunction"
+      ],
+      "reason": "instead of/in place of/in lieu of are prepositional expressions, while rather than can function as a conjunction connecting clauses or constituents. The prompt does not resolve the complement structure."
+    },
+    {
+      "entry_id": "vocab:02243",
+      "decision": "pending",
+      "candidates": [
+        "noun",
+        "determiner",
+        "pronoun"
+      ],
+      "reason": "three in five/three out of five can be a quantified noun phrase or a determiner/pronominal numeral depending on whether a following noun is supplied. The Japanese fraction prompt gives no syntactic context."
+    },
+    {
+      "entry_id": "vocab:02204",
+      "decision": "auxiliary",
+      "reason": "be about to/be on the verge of doing share a prompt-level imminent-action quasi-modal function."
+    },
+    {
+      "entry_id": "vocab:02212",
+      "decision": "determiner",
+      "reason": "a pile of/a lot of/heaps of/loads of quantify a following noun."
+    },
+    {
+      "entry_id": "vocab:02242",
+      "decision": "preposition",
+      "reason": "according to introduces a source/basis complement."
+    },
+    {
+      "entry_id": "vocab:02359",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "verb"
+      ],
+      "reason": "offensive is an adjective meaning causing offense, while offend is a lexical verb. The accepted answer set crosses roles."
+    },
+    {
+      "entry_id": "vocab:02376",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "preposition"
+      ],
+      "reason": "be bound for and be headed for are adjective/participle predicates, while be on one’s way to is a prepositional predicate. The shared destination meaning does not yield one role."
+    },
+    {
+      "entry_id": "vocab:02384",
+      "decision": "pending",
+      "candidates": [
+        "construction",
+        "verb",
+        "adverb"
+      ],
+      "reason": "it won’t be long before everything is ready is a reusable clause template; everything will be ready soon is a declarative verb clause with a sentence-level adverb. The answer set does not share one grammar category."
+    },
+    {
+      "entry_id": "vocab:02372",
+      "decision": "verb",
+      "reason": "turn around/look back are multiword lexical verbs in the specified “振り向く” sense."
+    },
+    {
+      "entry_id": "vocab:02379",
+      "decision": "adverb",
+      "reason": "from generation to generation/for generations/generation after generation function as temporal adjuncts."
+    },
+    {
+      "entry_id": "vocab:02382",
+      "decision": "noun",
+      "reason": "access to something denotes the ability/right of use and functions as a noun phrase."
+    },
+    {
+      "entry_id": "vocab:02406",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "noun",
+        "preposition"
+      ],
+      "reason": "twenty-something can be an attributive adjective or a nominal label for a person in their twenties; in one’s twenties is a prepositional phrase. The Japanese gloss does not specify the syntactic environment."
+    },
+    {
+      "entry_id": "vocab:02427",
+      "decision": "pending",
+      "candidates": [
+        "noun",
+        "adjective"
+      ],
+      "reason": "delight is a noun, while be delighted/be overjoyed/be thrilled are adjective predicates. The answer set crosses roles."
+    },
+    {
+      "entry_id": "vocab:02433",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "verb"
+      ],
+      "reason": "be good/skilled at doing something are adjective predicates, while excel at doing something is a lexical verb. The accepted answer set crosses roles."
+    },
+    {
+      "entry_id": "vocab:02451",
+      "decision": "pending",
+      "candidates": [
+        "adjective",
+        "verb"
+      ],
+      "reason": "be afraid/be scared are adjective predicates, while fear doing something is a lexical verb. The accepted answer set crosses roles."
+    },
+    {
+      "entry_id": "vocab:02456",
+      "decision": "pending",
+      "candidates": [
+        "conjunction",
+        "preposition"
+      ],
+      "reason": "even though/although/though introduce clauses as conjunctions, while despite/in spite of take noun or gerund complements as prepositions. The accepted answer set crosses categories."
+    },
+    {
+      "entry_id": "vocab:02475",
+      "decision": "pending",
+      "candidates": [
+        "verb",
+        "preposition"
+      ],
+      "reason": "cover your mouth is an imperative verb phrase, while with a hand over one’s mouth is a prepositional phrase. The Japanese context gives the action but the accepted answers do not share a grammar category."
+    },
+    {
+      "entry_id": "vocab:02426",
+      "decision": "interjection",
+      "reason": "congratulations/congrats are standalone conventional felicitation reactions."
+    },
+    {
+      "entry_id": "vocab:02437",
+      "decision": "interjection",
+      "reason": "you’re welcome/no problem/my pleasure/don’t mention it/not at all are conventional response formulas."
+    },
+    {
+      "entry_id": "vocab:02440",
+      "decision": "interjection",
+      "reason": "see you later/see you function as conventional standalone farewells."
+    },
+    {
+      "entry_id": "vocab:02444",
+      "decision": "adverb",
+      "reason": "between you and me/just between us are parenthetical confidential-aside adjuncts."
+    },
+    {
+      "entry_id": "vocab:02449",
+      "decision": "adverb",
+      "reason": "how come/why are interrogative adverbs asking for a reason."
+    },
+    {
+      "entry_id": "vocab:02476",
+      "decision": "interjection",
+      "reason": "that’s too bad/I’m sorry to hear that are conventional sympathy responses."
+    },
+    {
+      "entry_id": "vocab:02477",
+      "decision": "interjection",
+      "reason": "I’m sorry/that’s a shame are conventional standalone sympathy responses."
+    },
+    {
+      "entry_id": "vocab:02479",
+      "decision": "interjection",
+      "reason": "you know is an attention-getting/discourse filler in the specified use."
+    },
+    {
+      "entry_id": "vocab:02480",
+      "decision": "interjection",
+      "reason": "let’s see/well/um/let me see are standalone hesitation/filler responses."
+    }
+  ],
+  "final_authority_confirmed": true
+}
