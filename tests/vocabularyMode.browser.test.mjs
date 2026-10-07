@@ -1,6 +1,3 @@
-Warning: truncated output (original token count: 17885)
-Total output lines: 1096
-
 import test, { after, before } from 'node:test';
 import assert from 'node:assert/strict';
 import http from 'node:http';
@@ -486,7 +483,114 @@ browserTest('result tap ignores audio/context controls and selected text, then a
     await page.locator('.vocab-expression-audio').click();
     assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical);
     await page.locator('.vocab-source-audio').waitFor({state:'visible'});
-    await page.locator('.…1885 tokens truncated…d],entry.id);
+    await page.locator('.vocab-source-audio').click();
+    assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical);
+    await page.locator('.vocab-expand-context').click();
+    assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical);
+    await page.locator('.vocab-context-full .vocab-source-line').click();
+    assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical,'expanded context taps do not advance');
+    await page.locator('.vocab-expand-context').click();
+
+    const selectionPoint=await page.locator('.vocab-source-line').first().evaluate(node=>{
+      const range=document.createRange();range.selectNodeContents(node);
+      const rect=range.getClientRects()[0];
+      return rect?{x:rect.x,y:rect.y,width:rect.width,height:rect.height}:null;
+    });
+    assert.ok(selectionPoint);
+    await page.mouse.move(selectionPoint.x+1,selectionPoint.y+selectionPoint.height/2);
+    await page.mouse.down();
+    await page.mouse.move(selectionPoint.x+selectionPoint.width-1,selectionPoint.y+selectionPoint.height/2,{steps:6});
+    await page.mouse.up();
+    const selectedText=await page.evaluate(()=>String(getSelection()||'').trim());
+    assert.ok(selectedText.length>0,'pointer drag selects example text');
+    assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical,'pointer text selection suppresses advance');
+    await page.evaluate(()=>getSelection()?.removeAllRanges());
+    await tapResult(page);
+    await page.waitForFunction(prompt=>document.querySelector('.vocab-meaning')?.textContent===prompt,nextEntry.meaning_ja);
+    assert.equal(await page.locator('.vocab-meaning').innerText(),nextEntry.meaning_ja,'one tap advances to the next expression');
+    assert.equal(await page.locator('.vocab-done').count(),0,'one tap advances exactly one card in a two-card session');
+  }finally{await closePage(opened);}
+});
+
+browserTest('only a dominant left swipe advances; short, vertical, and right movements do nothing',async()=>{
+  const opened=await newPage(sources[0],{additionalEntries:[fixtureFor(sources[4])]});
+  const {page,entries}=opened;
+  try{
+    const firstPrompt=await page.locator('.vocab-meaning').innerText();
+    const entry=entries.find(value=>value.meaning_ja===firstPrompt);
+    assert.ok(entry,`current prompt fixture: ${firstPrompt}`);
+    const nextEntry=entries.find(value=>value.id!==entry.id);
+    assert.ok(nextEntry,'two expression fixtures are available for a manual advance');
+    await inject(page,sourceSurface(entry,entry.occurrences[0].item_id));
+    await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='正解');
+    await swipeResult(page,-42);
+    assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical,'short horizontal movement is ignored');
+    assert.equal(await page.locator('.vocab-result-prompt').innerText(),firstPrompt,'short horizontal movement keeps the current result');
+    await swipeResult(page,-8,-105);
+    assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical,'vertical gesture is ignored');
+    assert.equal(await page.locator('.vocab-result-prompt').innerText(),firstPrompt,'vertical movement keeps the current result');
+    await swipeResult(page,105,4);
+    assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical,'right swipe is ignored');
+    assert.equal(await page.locator('.vocab-result-prompt').innerText(),firstPrompt,'right swipe keeps the current result');
+    await swipeResult(page,-100);
+    await page.waitForFunction(prompt=>document.querySelector('.vocab-meaning')?.textContent===prompt,nextEntry.meaning_ja,{timeout:2500});
+    assert.equal(await page.locator('.vocab-meaning').innerText(),nextEntry.meaning_ja,'left swipe advances to the next expression');
+    assert.equal(await page.locator('.vocab-done').count(),0,'one left swipe advances exactly one card');
+  }finally{await closePage(opened);}
+});
+
+const lv5State=()=>({last:5,best:5,noHintHistory:[1700000000000,1700100000000,1700200000000],noHintStreak:3,level5Count:8,review:{nextDueAt:1,intervalMs:86400000},stability:8.4,difficulty:2.2});
+
+browserTest('PARAPHRASE result uses the shared target-first answer block without duplicate explanation',async()=>{
+  const opened=await newPage(sources[0],{entryState:lv5State()});
+  const {page,entry}=opened;
+  try{
+    const before=await page.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id],entry.id);
+    await inject(page,'run into someone');
+    await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='意味はOK');
+    assert.equal(await page.locator('.vocab-answer-detail').count(),0);
+    assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical);
+    assert.equal(await page.locator('.vocab-paraphrase.is-spoken').innerText(),'✓ run into someone');
+    assert.deepEqual(await page.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id],entry.id),before,'automatic paraphrase must not mutate Lv5 target state');
+    await tapResult(page);
+    assert.match(await page.locator('.vocab-done').innerText(),/ターゲット正解 0　別表現 1　要復習 0/);
+  }finally{await closePage(opened);}
+});
+
+browserTest('audited t-d reduction stays an accepted PARAPHRASE in the Vocabulary UI without TARGET SRS credit',async()=>{
+  const source={kind:'construction',canonical:'have no choice but to do something',itemId:'E0425',entryId:'vocab:00528'};
+  const opened=await newPage(source);const {page,entry}=opened;
+  try{
+    const before=await page.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id],entry.id);
+    await inject(page,'be force to do something');
+    await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='意味はOK');
+    assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical);
+    assert.equal(await page.locator('.vocab-paraphrase.is-spoken').innerText(),'✓ be forced to do something');
+    assert.equal(await page.locator('.vocab-heard__text').innerText(),'be force to do something','raw ASR surface remains visible');
+    assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0,'automatic paraphrase does not receive TARGET SRS credit');
+    assert.deepEqual(await page.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id],entry.id),before);
+  }finally{await closePage(opened);}
+});
+
+
+browserTest('word reveal is MISS while construction source realization remains automatic TARGET',async()=>{
+  for(const source of [sources[1],sources[2]]){
+    const opened=await newPage(source);
+    const {context,page,entry}=opened;
+    try{
+      const occurrence=entry.occurrences.find(value=>value.item_id===source.itemId);
+      const text=sourceSurface(entry,source.itemId);
+      if(source===sources[1]){
+        await page.locator('.vocab-reveal').click();
+        await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='あとでもう一度');
+        assert.equal(await page.locator('.vocab-manual, [data-grade]').count(),0);
+        assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);
+        assert.equal(await page.locator('.vocab-heard').count(),0);
+      }else{
+        assert.ok(occurrence);
+        await inject(page,text);
+        await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='正解');
+        const state=await page.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id],entry.id);
         assert.equal(state.lastMatch,1,'strict TARGET classification must pass perfect lexical credit');
         assert.equal(state.level5Count,1,'TARGET must update mastery counters');
         assert.equal(state.noHintHistory.length,1,'TARGET must update no-hint history');
