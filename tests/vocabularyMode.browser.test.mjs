@@ -350,15 +350,22 @@ browserTest('390×844 expression card preserves active source, strict paraphrase
 });
 
 browserTest('canonical grammar role wins over paraphrase POS and legacy kind labels',async()=>{
-  const opened=await newPage({kind:'expression',canonical:'despite',itemId:'E0088',entryId:'vocab:00121'});
-  try{
-    const meta=opened.page.locator('.vocab-meta');
-    assert.match(await meta.innerText(),/前置詞/);
-    assert.doesNotMatch(await meta.innerText(),/単語|表現/);
-    const roleTags=meta.locator(':scope > span:not(.vocab-speaker)');
-    assert.equal(await roleTags.count(),1);
-    assert.equal((await roleTags.first().innerText()).trim(),'前置詞');
-  }finally{await closePage(opened);}
+  const cases=[
+    {source:{kind:'expression',canonical:'job interview',itemId:'E0366'},label:'名詞'},
+    {source:{kind:'expression',canonical:'take up',itemId:'E0020'},label:'動詞'},
+    {source:{kind:'construction',canonical:'so tired that I fell asleep',itemId:'E0371'},label:'構文'},
+    {source:{kind:'expression',canonical:'despite',itemId:'E0088',entryId:'vocab:00121'},label:'前置詞'},
+  ];
+  for(const {source,label} of cases){
+    const opened=await newPage(source);
+    try{
+      const meta=opened.page.locator('.vocab-meta');
+      assert.doesNotMatch(await meta.innerText(),/単語|表現/);
+      const roleTags=meta.locator(':scope > span:not(.vocab-speaker)');
+      assert.equal(await roleTags.count(),1,label);
+      assert.equal((await roleTags.first().innerText()).trim(),label);
+    }finally{await closePage(opened);}
+  }
 });
 
 for(const viewport of [{width:390,height:844},{width:360,height:640},{width:1280,height:900}]) browserTest(`${viewport.width}×${viewport.height} vocab:00111 result hierarchy fits without collapsed scrolling`,async()=>{
