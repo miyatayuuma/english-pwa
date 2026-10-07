@@ -8,7 +8,9 @@
 - Population: 2478
 - Scanned: 2478
 - Candidate count: 137
-- Statuses: CONFIRMED 57; REVIEW 8; FALSE_POSITIVE 72; unclassified 0
+- Statuses: CONFIRMED 58; REVIEW 0; FALSE_POSITIVE 79; unclassified 0
+- Starting audit commit: `08908d275e65e769cedaee751802ef425bccbdc6`
+- Current remote main at resolution: `dff23a3d92895c9db621ced662734fee76e395c9`
 - Production vocabulary, prompts, paraphrases, tests, UI, and service worker: unchanged.
 
 ## Method
@@ -19,7 +21,11 @@ Existing meaning/paraphrase audit artifacts were read-only references. Their sem
 
 ## Rule counts
 
-| Rule | Candidate signals |
+Rule counts overlap: one candidate can carry multiple rules.
+
+### A. All candidates (137)
+
+| Rule | Count |
 |---|---:|
 | PLACEHOLDER_ASYMMETRY | 67 |
 | PROMPT_SLOT_MISMATCH | 61 |
@@ -28,7 +34,17 @@ Existing meaning/paraphrase audit artifacts were read-only references. Their sem
 | ILLEGAL_META_PLACEHOLDER | 0 |
 | INTERNAL_PARAPHRASE_INCONSISTENCY | 21 |
 
-Rule counts include candidates later classified FALSE_POSITIVE; the status split records the semantic review result.
+### B. CONFIRMED only (58)
+
+| Rule | Count |
+|---|---:|
+| PLACEHOLDER_ASYMMETRY | 57 |
+| PROMPT_SLOT_MISMATCH | 54 |
+| SYNTACTIC_FRAME_MISMATCH | 6 |
+| INCOMPLETE_SURFACE | 10 |
+| ILLEGAL_META_PLACEHOLDER | 0 |
+| INTERNAL_PARAPHRASE_INCONSISTENCY | 17 |
+
 
 ## CONFIRMED candidates
 
@@ -583,6 +599,16 @@ Rule counts include candidates later classified FALSE_POSITIVE; the status split
 - Recommended direction: promptを「somethingについて話し合う」にし、TARGETを「discuss something」、paraphrasesを「talk about something / talk something over」にそろえる。
 - Source example (E0518): “Can you spare a minute? I'd like to discuss something of importance to both of us.” / ちょっと時間を割いてくれませんか？二人にとって大事なことを話し合いたいんです。
 
+### vocab:02417
+
+- Prompt: 信頼する
+- TARGET: `trust`
+- Current paraphrases: `have confidence in someone`, `rely on someone`
+- Rules: PLACEHOLDER_ASYMMETRY, PROMPT_SLOT_MISMATCH
+- Problem: The prompt「信頼する」allows a person or a thing as its object, and TARGET `trust` likewise accepts both. Both paraphrases explicitly restrict that object to `someone`. A person-only answer therefore requires a narrower object type than the Japanese prompt supplies. The source example (`trust her`) confirms a person use but does not narrow the prompt's broader meaning.
+- Recommended direction: Promptを「someoneを信頼する」にし、TARGETを「trust someone」に揃える。既存paraphrasesの「have confidence in someone」「rely on someone」は同じperson slotの候補として残す。
+- Source example (E0531): “"Jennifer deceived me!" "You should have known better than to trust her."” / 「ジェニファーにだまされた！」「彼女を信じないくらいの分別があっても良かったのに。」
+
 ### vocab:02454
 
 - Prompt: もう〜してよい頃だ／いい加減〜すべきだ
@@ -603,82 +629,104 @@ Rule counts include candidates later classified FALSE_POSITIVE; the status split
 - Recommended direction: このpromptは「〜であるにもかかわらず」という命題/節型なので、TARGET「even though」と「although / though」を維持し、「despite / in spite of」はNP型の別prompt（例:「somethingにもかかわらず」）へ分離する候補とする。`+ clause`は使わない。
 - Source example (E0540): “Even though she is seeing someone else, I won't give her up.” / 実際、彼女は誰かと付き合っているけれども、僕は彼女を諦めない。
 
-## REVIEW
+## Final resolution of the 8 former REVIEW candidates
 
-These records have a real structural signal, but their correction direction depends on the intended meaning or whether the argument is contextually recoverable. Resolve from the included source example and meaning authority before production edits.
-
-### vocab:01010
+### vocab:01010 — FALSE_POSITIVE
 
 - Prompt: 判決を言い渡す
 - TARGET: `sentence`
 - Current paraphrases: `pass sentence on someone`, `hand down a sentence`
-- Problem: The surface forms expose different argument or complement frames: "sentence"=no explicit slot / "pass sentence on someone"=PERSON:1 / "hand down a sentence"=no explicit slot. The source meaning and example leave a material ambiguity about whether this is an actual prompt mismatch or an accepted implicit/optional argument.
-- Recommended direction: REVIEW: 例文で「sentence someone」と「hand down a sentence」の受け手/判決slotを照合してから、誰に言い渡すかを日本語promptに加えるか、受け手を明示するparaphraseを整理する。
+- Rules: PLACEHOLDER_ASYMMETRY, INTERNAL_PARAPHRASE_INCONSISTENCY, PROMPT_SLOT_MISMATCH
+- Decision reason: The person receiving the sentence is inherent in 判決を言い渡す and is naturally omitted in Japanese. In the source example, he is the person sentenced. `pass sentence on someone` makes that same recipient explicit; it does not add a different answer slot that the prompt cannot support. The bare TARGET `sentence` and `hand down a sentence` are valid vocabulary/action surfaces with the recipient left implicit.
+- Recommended direction: このslot整合性監査では変更不要。受け手を明示する別カードにする場合だけ、promptを「someoneに判決を言い渡す」とし、TARGET/paraphrasesにも同じ受け手slotを付ける。
+- Confidence: HIGH
 - Source example (E0462): “The man pleaded for mercy, but he was sentenced to twenty years in prison for his crime.” / 男は情状酌量を求めたが、犯した罪に対して20年の懲役刑が言い渡された。
 
-### vocab:01063
+### vocab:01063 — FALSE_POSITIVE
 
 - Prompt: 熟考する
 - TARGET: `reflect`
 - Current paraphrases: `contemplate`, `ponder`, `deliberate`, `think over something`
-- Problem: The surface forms expose different argument or complement frames: "reflect"=no explicit slot / "contemplate"=no explicit slot / "ponder"=no explicit slot / "deliberate"=no explicit slot / "think over something"=THING:1. The source meaning and example leave a material ambiguity about whether this is an actual prompt mismatch or an accepted implicit/optional argument.
-- Recommended direction: REVIEW: 出典例のreflectがintransitiveか対象付きかを確かめ、対象を必要とする「think over something」だけに追加対象slotがあるのか判断してからpromptを補う/その表現を外す。
+- Rules: PLACEHOLDER_ASYMMETRY, INTERNAL_PARAPHRASE_INCONSISTENCY, PROMPT_SLOT_MISMATCH
+- Decision reason: The topic being considered is a shared, naturally implicit object. Japanese「熟考する」can omit it, and the source example explicitly supplies the topic for `reflect on it`. `think over something` names that same generic topic; it does not add a different slot type or information absent from the prompt.
+- Recommended direction: 現promptと回答形を維持する。対象が文脈から分かるときに省略可能な思考対象の表出差であり、slot追加・paraphrase除外は不要。
+- Confidence: HIGH
 - Source example (E0546): “Take your time. I know you need a couple of days to reflect on it.” / 慌てなくていいですよ。そのことをじっくり考えるには、2、3日必要でしょうから。
 
-### vocab:01399
+### vocab:01399 — FALSE_POSITIVE
 
 - Prompt: 〜する見込みがほとんどない
 - TARGET: `there is little prospect that`
 - Current paraphrases: `be unlikely to do something`, `have little chance of doing something`
-- Problem: The surface forms expose different argument or complement frames: "there is little prospect that"=no explicit slot / "be unlikely to do something"=THING:1 / "have little chance of doing something"=THING:1. The source meaning and example leave a material ambiguity about whether this is an actual prompt mismatch or an accepted implicit/optional argument.
-- Recommended direction: REVIEWのため変更案は確定しない。例文と学習上の回答surfaceを確認し、finite that-clause・to-infinitive・gerundのどれをこのpromptの共通authorityとするか決める。必要なら日本語に主語/出来事slotを明示し、`+ clause`を回答文字列へ入れない。
+- Rules: PLACEHOLDER_ASYMMETRY, SYNTACTIC_FRAME_MISMATCH, INCOMPLETE_SURFACE
+- Decision reason: The Japanese pattern「〜する見込みがほとんどない」provides an event/proposition slot. The TARGET's that-clause and the paraphrases' infinitive or gerund patterns express that same event; the source example supplies the two countries and their progress as the proposition. Their clause shapes differ, but the required event slot is shared. These are actual answer patterns, not a `+ clause` metalinguistic placeholder.
+- Recommended direction: 「〜する」のevent slotを維持し、各回答surfaceは現状のままとする。`+ clause`を回答文字列へ追加しない。
+- Confidence: HIGH
 - Source example (E0141): “There's little prospect that the two countries will make significant progress in disarmament.” / 軍縮において、両国が大きな進展を遂げる見込みはほとんどない。
 
-### vocab:02098
+### vocab:02098 — FALSE_POSITIVE
 
 - Prompt: 付きまとう
 - TARGET: `haunt`
 - Current paraphrases: `follow someone around`
-- Problem: The surface forms expose different argument or complement frames: "haunt"=no explicit slot / "follow someone around"=PERSON:1. The source meaning and example leave a material ambiguity about whether this is an actual prompt mismatch or an accepted implicit/optional argument.
-- Recommended direction: REVIEW: `haunt`の対象は人以外（記憶・不安等）にもなる一方、`follow someone around`は人に限定される。Japanese promptを人に限定するか、この人slotを要求するparaphraseを除外するか、出典用例で確定する。
+- Rules: PLACEHOLDER_ASYMMETRY, PROMPT_SLOT_MISMATCH
+- Decision reason: The affected person in `follow someone around` is the same implicit target of「付きまとう」and the person haunted in the source example (`I'm still haunted ...`). The Japanese prompt naturally leaves that affected person unspoken; the paraphrase only surfaces the same participant, not a new person slot.
+- Recommended direction: 人の対象を含意する現promptを維持する。今回の例では人slotの追加や `follow someone around` の除外は不要。
+- Confidence: HIGH
 - Source example (E0412): “I'm still haunted by a vivid nightmare I had last night.” / 昨日の夜に見た生々しい悪夢がまだ頭から離れない。
 
-### vocab:02287
+### vocab:02287 — FALSE_POSITIVE
 
 - Prompt: 知らせる
 - TARGET: `inform`
 - Current paraphrases: `let someone know`, `notify`
-- Problem: The surface forms expose different argument or complement frames: "inform"=no explicit slot / "let someone know"=PERSON:1 / "notify"=no explicit slot. The source meaning and example leave a material ambiguity about whether this is an actual prompt mismatch or an accepted implicit/optional argument.
-- Recommended direction: REVIEW: `inform/notify`の受け手slotと`let someone know`のperson slotが同じかを例文で確認し、日本語promptに「誰かに」を加えるか、slotなしのparaphraseへ揃える。
+- Rules: PLACEHOLDER_ASYMMETRY, INTERNAL_PARAPHRASE_INCONSISTENCY, PROMPT_SLOT_MISMATCH
+- Decision reason: `inform`, `notify`, and `let someone know` share the recipient role; the first two are bare verb headwords while the last spells out that same role. Japanese「知らせる」also entails a recipient that is routinely omitted. The source example uses a passive (`he was informed`) and its Japanese translation likewise omits the recipient, confirming natural ellipsis rather than a prompt/answer mismatch.
+- Recommended direction: 現promptと3つの回答形を維持する。受け手は共通の省略可能な役割であり、person slotを新たにpromptへ追加する必要はない。
+- Confidence: HIGH
 - Source example (E0468): “Informed of her safety, he breathed a sigh of relief.” / 彼女の無事を知らされて、彼は安堵のため息をついた。
 
-### vocab:02417
+### vocab:02417 — CONFIRMED
 
 - Prompt: 信頼する
 - TARGET: `trust`
 - Current paraphrases: `have confidence in someone`, `rely on someone`
-- Problem: The surface forms expose different argument or complement frames: "trust"=no explicit slot / "have confidence in someone"=PERSON:1 / "rely on someone"=PERSON:1. The source meaning and example leave a material ambiguity about whether this is an actual prompt mismatch or an accepted implicit/optional argument.
-- Recommended direction: REVIEW: `trust`は人/物事を目的語に取れるが、両paraphraseはsomeoneに限定する。person限定の日本語promptにするか、somethingにも対応する言い方に揃えるかを語義authorityで確定する。
+- Rules: PLACEHOLDER_ASYMMETRY, PROMPT_SLOT_MISMATCH
+- Decision reason: The prompt「信頼する」allows a person or a thing as its object, and TARGET `trust` likewise accepts both. Both paraphrases explicitly restrict that object to `someone`. A person-only answer therefore requires a narrower object type than the Japanese prompt supplies. The source example (`trust her`) confirms a person use but does not narrow the prompt's broader meaning.
+- Recommended direction: Promptを「someoneを信頼する」にし、TARGETを「trust someone」に揃える。既存paraphrasesの「have confidence in someone」「rely on someone」は同じperson slotの候補として残す。
+- Confidence: HIGH
 - Source example (E0531): “"Jennifer deceived me!" "You should have known better than to trust her."” / 「ジェニファーにだまされた！」「彼女を信じないくらいの分別があっても良かったのに。」
 
-### vocab:02443
+### vocab:02443 — FALSE_POSITIVE
 
 - Prompt: 恋愛感情
 - TARGET: `romantic interest`
 - Current paraphrases: `romantic feelings`, `feelings for someone`
-- Problem: The surface forms expose different argument or complement frames: "romantic interest"=no explicit slot / "romantic feelings"=no explicit slot / "feelings for someone"=PERSON:1. The source meaning and example leave a material ambiguity about whether this is an actual prompt mismatch or an accepted implicit/optional argument.
-- Recommended direction: REVIEW: `romantic interest/feelings`と`feelings for someone`の関係対象slotがpromptに含まれるか、例文とmeaning authorityで確認し、対象者を明記するかparaを外す。
+- Rules: PLACEHOLDER_ASYMMETRY, INTERNAL_PARAPHRASE_INCONSISTENCY, PROMPT_SLOT_MISMATCH
+- Decision reason: In this entry,「恋愛感情」and `romantic interest` / `romantic feelings` inherently describe a relation to a person. `feelings for someone` spells out that same naturally understood target; it does not add an independent slot the learner must infer. The source example also identifies Bill as the person Monica's romantic interest concerns.
+- Recommended direction: 現promptとparaphrasesを維持する。恋愛感情の関係対象は語義に内在しており、person slotの追加や `feelings for someone` の除外は不要。
+- Confidence: HIGH
 - Source example (E0522): “Bill just wanted to comfort Monica, but she interpreted it as romantic interest.” / ビルはただモニカを慰めたかっただけなのに、彼女は彼が自分に気があるのだと解釈した。
 
-### vocab:02451
+### vocab:02451 — FALSE_POSITIVE
 
 - Prompt: somethingすることを恐れている
 - TARGET: `be afraid of doing something`
 - Current paraphrases: `be afraid to do something`, `be scared to do something`, `fear doing something`
-- Problem: The surface forms expose different argument or complement frames: "be afraid of doing something"=THING:1 / "be afraid to do something"=THING:1 / "be scared to do something"=THING:1 / "fear doing something"=THING:1. The source meaning and example leave a material ambiguity about whether this is an actual prompt mismatch or an accepted implicit/optional argument.
-- Recommended direction: REVIEW: `be afraid of doing`と`be afraid to do`は補語形が違うだけでなく、恐怖対象と行動を避ける意味がずれることがある。日本語promptがどちらの意味を教えるか確認し、gerund/infinitiveの回答を分けるか除外する。
+- Rules: SYNTACTIC_FRAME_MISMATCH
+- Decision reason: The prompt explicitly supplies the action slot with「somethingすること」. Every answer form takes that same action as its complement; `of + gerund` and `to-infinitive` are different surface frames but do not change the slot count or type. The source example's `taking risks` is the same kind of action slot. Possible nuance differences do not establish a structural rule violation.
+- Recommended direction: 「somethingすること」のprompt slotを維持し、現行のgerund/to-infinitive answer surfacesを構造不整合として除外しない。
+- Confidence: HIGH
 - Source example (E0537): “"To be honest, I'm crazy about Ken because he's brave, self-confident, and never afraid of taking risks." "If I were you, I'd ask him out!"” / 「正直言うと私、ケンに夢中なの。だって、勇敢で自分に自信を持っていて、それに危険を冒すことを決して恐れないでしょ。」「私ならデートに誘うわ。」
 
 ## FALSE_POSITIVE review
 
-All 72 records are retained in `false-positive.json` with the triggering signal and exclusion reason. Repeated examples include clause-word substring matches where the expression is actually NP-taking (`because of`), fixed idioms (`something of a surprise`, `just in case`), anaphoric `it/that`, and matched event/person slots expressed through different but equivalent frames.
+All 79 records are retained in `false-positive.json` with the triggering signal and exclusion reason. Seven former REVIEW candidates moved to FALSE_POSITIVE: vocab:01010, vocab:01063, vocab:01399, vocab:02098, vocab:02287, vocab:02443, and vocab:02451. Repeated examples include clause-word substring matches where the expression is actually NP-taking (`because of`), fixed idioms (`something of a surprise`, `just in case`), anaphoric `it/that`, and matched event/person slots expressed through different but equivalent frames.
+
+
+## Resolution closure
+
+- REVIEW candidates resolved: 8 / 8; final REVIEW count: 0.
+- Candidate population remains 137; CONFIRMED 58 + FALSE_POSITIVE 79 = 137; unclassified 0.
+- The resolution read current `main` at the same SHA as the audit base; no source drift affected the eight entries.
+- Production data, tests, UI, ASR, grammar-role data, and service worker remain unchanged. No merge was performed.

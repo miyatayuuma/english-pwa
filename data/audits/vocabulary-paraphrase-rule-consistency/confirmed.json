@@ -1552,5 +1552,32 @@
       "sentence_ja": "実際、彼女は誰かと付き合っているけれども、僕は彼女を諦めない。",
       "contextual_meaning_ja": "例え~でも"
     }
+  },
+  {
+    "id": "vocab:02417",
+    "kind": "word",
+    "pos": "word",
+    "sense_key": "believe_in_reliability",
+    "prompt_ja": "信頼する",
+    "target": "trust",
+    "paraphrases": [
+      "have confidence in someone",
+      "rely on someone"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "CONFIRMED",
+    "problem": "The prompt「信頼する」allows a person or a thing as its object, and TARGET `trust` likewise accepts both. Both paraphrases explicitly restrict that object to `someone`. A person-only answer therefore requires a narrower object type than the Japanese prompt supplies. The source example (`trust her`) confirms a person use but does not narrow the prompt's broader meaning.",
+    "recommended_direction": "Promptを「someoneを信頼する」にし、TARGETを「trust someone」に揃える。既存paraphrasesの「have confidence in someone」「rely on someone」は同じperson slotの候補として残す。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0531",
+      "target_span": "trust",
+      "sentence_en": "\"Jennifer deceived me!\" \"You should have known better than to trust her.\"",
+      "sentence_ja": "「ジェニファーにだまされた！」「彼女を信じないくらいの分別があっても良かったのに。」",
+      "contextual_meaning_ja": "責務"
+    }
   }
 ]

@@ -1851,5 +1851,200 @@
       "sentence_ja": "石油は天の恵みであると同時に災いのもとであると、その生態学者は我々に繰り返し警告してきた。",
       "contextual_meaning_ja": "石油は天の恵みであると同時に災いのもとであると、その生態学者は我々に繰り返し警告してきた。"
     }
+  },
+  {
+    "id": "vocab:01010",
+    "kind": "word",
+    "pos": "verb",
+    "sense_key": "give_a_criminal_a_punishment",
+    "prompt_ja": "判決を言い渡す",
+    "target": "sentence",
+    "paraphrases": [
+      "pass sentence on someone",
+      "hand down a sentence"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "INTERNAL_PARAPHRASE_INCONSISTENCY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The person receiving the sentence is inherent in 判決を言い渡す and is naturally omitted in Japanese. In the source example, he is the person sentenced. `pass sentence on someone` makes that same recipient explicit; it does not add a different answer slot that the prompt cannot support. The bare TARGET `sentence` and `hand down a sentence` are valid vocabulary/action surfaces with the recipient left implicit.",
+    "recommended_direction": "このslot整合性監査では変更不要。受け手を明示する別カードにする場合だけ、promptを「someoneに判決を言い渡す」とし、TARGET/paraphrasesにも同じ受け手slotを付ける。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0462",
+      "target_span": "sentenced",
+      "sentence_en": "The man pleaded for mercy, but he was sentenced to twenty years in prison for his crime.",
+      "sentence_ja": "男は情状酌量を求めたが、犯した罪に対して20年の懲役刑が言い渡された。",
+      "contextual_meaning_ja": "判決を言い渡す"
+    }
+  },
+  {
+    "id": "vocab:01063",
+    "kind": "word",
+    "pos": "verb",
+    "sense_key": "think_carefully_about",
+    "prompt_ja": "熟考する",
+    "target": "reflect",
+    "paraphrases": [
+      "contemplate",
+      "ponder",
+      "deliberate",
+      "think over something"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "INTERNAL_PARAPHRASE_INCONSISTENCY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The topic being considered is a shared, naturally implicit object. Japanese「熟考する」can omit it, and the source example explicitly supplies the topic for `reflect on it`. `think over something` names that same generic topic; it does not add a different slot type or information absent from the prompt.",
+    "recommended_direction": "現promptと回答形を維持する。対象が文脈から分かるときに省略可能な思考対象の表出差であり、slot追加・paraphrase除外は不要。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0546",
+      "target_span": "reflect",
+      "sentence_en": "Take your time. I know you need a couple of days to reflect on it.",
+      "sentence_ja": "慌てなくていいですよ。そのことをじっくり考えるには、2、3日必要でしょうから。",
+      "contextual_meaning_ja": "熟考する"
+    }
+  },
+  {
+    "id": "vocab:01399",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "unlikely_future_event",
+    "prompt_ja": "〜する見込みがほとんどない",
+    "target": "there is little prospect that",
+    "paraphrases": [
+      "be unlikely to do something",
+      "have little chance of doing something"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "SYNTACTIC_FRAME_MISMATCH",
+      "INCOMPLETE_SURFACE"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The Japanese pattern「〜する見込みがほとんどない」provides an event/proposition slot. The TARGET's that-clause and the paraphrases' infinitive or gerund patterns express that same event; the source example supplies the two countries and their progress as the proposition. Their clause shapes differ, but the required event slot is shared. These are actual answer patterns, not a `+ clause` metalinguistic placeholder.",
+    "recommended_direction": "「〜する」のevent slotを維持し、各回答surfaceは現状のままとする。`+ clause`を回答文字列へ追加しない。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0141",
+      "target_span": "There's little prospect that the two countries will make significant progress in disarmament",
+      "sentence_en": "There's little prospect that the two countries will make significant progress in disarmament.",
+      "sentence_ja": "軍縮において、両国が大きな進展を遂げる見込みはほとんどない。",
+      "contextual_meaning_ja": "軍縮において、両国が大きな進展を遂げる見込みはほとんどない。"
+    }
+  },
+  {
+    "id": "vocab:02098",
+    "kind": "word",
+    "pos": "word",
+    "sense_key": "persistently_trouble",
+    "prompt_ja": "付きまとう",
+    "target": "haunt",
+    "paraphrases": [
+      "follow someone around"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The affected person in `follow someone around` is the same implicit target of「付きまとう」and the person haunted in the source example (`I'm still haunted ...`). The Japanese prompt naturally leaves that affected person unspoken; the paraphrase only surfaces the same participant, not a new person slot.",
+    "recommended_direction": "人の対象を含意する現promptを維持する。今回の例では人slotの追加や `follow someone around` の除外は不要。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0412",
+      "target_span": "haunted",
+      "sentence_en": "I'm still haunted by a vivid nightmare I had last night.",
+      "sentence_ja": "昨日の夜に見た生々しい悪夢がまだ頭から離れない。",
+      "contextual_meaning_ja": "...に『しばしば行く』"
+    }
+  },
+  {
+    "id": "vocab:02287",
+    "kind": "word",
+    "pos": "verb",
+    "sense_key": "give_information",
+    "prompt_ja": "知らせる",
+    "target": "inform",
+    "paraphrases": [
+      "let someone know",
+      "notify"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "INTERNAL_PARAPHRASE_INCONSISTENCY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "`inform`, `notify`, and `let someone know` share the recipient role; the first two are bare verb headwords while the last spells out that same role. Japanese「知らせる」also entails a recipient that is routinely omitted. The source example uses a passive (`he was informed`) and its Japanese translation likewise omits the recipient, confirming natural ellipsis rather than a prompt/answer mismatch.",
+    "recommended_direction": "現promptと3つの回答形を維持する。受け手は共通の省略可能な役割であり、person slotを新たにpromptへ追加する必要はない。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0468",
+      "target_span": "Informed",
+      "sentence_en": "Informed of her safety, he breathed a sigh of relief.",
+      "sentence_ja": "彼女の無事を知らされて、彼は安堵のため息をついた。",
+      "contextual_meaning_ja": "に『知らせる』"
+    }
+  },
+  {
+    "id": "vocab:02443",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "amorous_interest",
+    "prompt_ja": "恋愛感情",
+    "target": "romantic interest",
+    "paraphrases": [
+      "romantic feelings",
+      "feelings for someone"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "INTERNAL_PARAPHRASE_INCONSISTENCY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "In this entry,「恋愛感情」and `romantic interest` / `romantic feelings` inherently describe a relation to a person. `feelings for someone` spells out that same naturally understood target; it does not add an independent slot the learner must infer. The source example also identifies Bill as the person Monica's romantic interest concerns.",
+    "recommended_direction": "現promptとparaphrasesを維持する。恋愛感情の関係対象は語義に内在しており、person slotの追加や `feelings for someone` の除外は不要。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0522",
+      "target_span": "romantic interest",
+      "sentence_en": "Bill just wanted to comfort Monica, but she interpreted it as romantic interest.",
+      "sentence_ja": "ビルはただモニカを慰めたかっただけなのに、彼女は彼が自分に気があるのだと解釈した。",
+      "contextual_meaning_ja": "ビルはただモニカを慰めたかっただけなのに、彼女は彼が自分に気があるのだと解釈した。"
+    }
+  },
+  {
+    "id": "vocab:02451",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "fear_doing",
+    "prompt_ja": "somethingすることを恐れている",
+    "target": "be afraid of doing something",
+    "paraphrases": [
+      "be afraid to do something",
+      "be scared to do something",
+      "fear doing something"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The prompt explicitly supplies the action slot with「somethingすること」. Every answer form takes that same action as its complement; `of + gerund` and `to-infinitive` are different surface frames but do not change the slot count or type. The source example's `taking risks` is the same kind of action slot. Possible nuance differences do not establish a structural rule violation.",
+    "recommended_direction": "「somethingすること」のprompt slotを維持し、現行のgerund/to-infinitive answer surfacesを構造不整合として除外しない。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0537",
+      "target_span": "afraid of taking risks",
+      "sentence_en": "\"To be honest, I'm crazy about Ken because he's brave, self-confident, and never afraid of taking risks.\" \"If I were you, I'd ask him out!\"",
+      "sentence_ja": "「正直言うと私、ケンに夢中なの。だって、勇敢で自分に自信を持っていて、それに危険を冒すことを決して恐れないでしょ。」「私ならデートに誘うわ。」",
+      "contextual_meaning_ja": "「正直言うと私、ケンに夢中なの。だって、勇敢で自分に自信を持っていて、それに危険を冒すことを決して恐れないでしょ。」「私ならデートに誘うわ。」"
+    }
   }
 ]

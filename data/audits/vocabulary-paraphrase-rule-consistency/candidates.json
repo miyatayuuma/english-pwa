@@ -618,10 +618,10 @@
       "INTERNAL_PARAPHRASE_INCONSISTENCY",
       "PROMPT_SLOT_MISMATCH"
     ],
-    "status": "REVIEW",
-    "problem": "The surface forms expose different argument or complement frames: \"sentence\"=no explicit slot / \"pass sentence on someone\"=PERSON:1 / \"hand down a sentence\"=no explicit slot. The source meaning and example leave a material ambiguity about whether this is an actual prompt mismatch or an accepted implicit/optional argument.",
-    "recommended_direction": "REVIEW: 例文で「sentence someone」と「hand down a sentence」の受け手/判決slotを照合してから、誰に言い渡すかを日本語promptに加えるか、受け手を明示するparaphraseを整理する。",
-    "confidence": "MEDIUM",
+    "status": "FALSE_POSITIVE",
+    "problem": "The person receiving the sentence is inherent in 判決を言い渡す and is naturally omitted in Japanese. In the source example, he is the person sentenced. `pass sentence on someone` makes that same recipient explicit; it does not add a different answer slot that the prompt cannot support. The bare TARGET `sentence` and `hand down a sentence` are valid vocabulary/action surfaces with the recipient left implicit.",
+    "recommended_direction": "このslot整合性監査では変更不要。受け手を明示する別カードにする場合だけ、promptを「someoneに判決を言い渡す」とし、TARGET/paraphrasesにも同じ受け手slotを付ける。",
+    "confidence": "HIGH",
     "source_example": {
       "item_id": "E0462",
       "target_span": "sentenced",
@@ -674,10 +674,10 @@
       "INTERNAL_PARAPHRASE_INCONSISTENCY",
       "PROMPT_SLOT_MISMATCH"
     ],
-    "status": "REVIEW",
-    "problem": "The surface forms expose different argument or complement frames: \"reflect\"=no explicit slot / \"contemplate\"=no explicit slot / \"ponder\"=no explicit slot / \"deliberate\"=no explicit slot / \"think over something\"=THING:1. The source meaning and example leave a material ambiguity about whether this is an actual prompt mismatch or an accepted implicit/optional argument.",
-    "recommended_direction": "REVIEW: 出典例のreflectがintransitiveか対象付きかを確かめ、対象を必要とする「think over something」だけに追加対象slotがあるのか判断してからpromptを補う/その表現を外す。",
-    "confidence": "MEDIUM",
+    "status": "FALSE_POSITIVE",
+    "problem": "The topic being considered is a shared, naturally implicit object. Japanese「熟考する」can omit it, and the source example explicitly supplies the topic for `reflect on it`. `think over something` names that same generic topic; it does not add a different slot type or information absent from the prompt.",
+    "recommended_direction": "現promptと回答形を維持する。対象が文脈から分かるときに省略可能な思考対象の表出差であり、slot追加・paraphrase除外は不要。",
+    "confidence": "HIGH",
     "source_example": {
       "item_id": "E0546",
       "target_span": "reflect",
@@ -863,10 +863,10 @@
       "SYNTACTIC_FRAME_MISMATCH",
       "INCOMPLETE_SURFACE"
     ],
-    "status": "REVIEW",
-    "problem": "The surface forms expose different argument or complement frames: \"there is little prospect that\"=no explicit slot / \"be unlikely to do something\"=THING:1 / \"have little chance of doing something\"=THING:1. The source meaning and example leave a material ambiguity about whether this is an actual prompt mismatch or an accepted implicit/optional argument.",
-    "recommended_direction": "REVIEWのため変更案は確定しない。例文と学習上の回答surfaceを確認し、finite that-clause・to-infinitive・gerundのどれをこのpromptの共通authorityとするか決める。必要なら日本語に主語/出来事slotを明示し、`+ clause`を回答文字列へ入れない。",
-    "confidence": "MEDIUM",
+    "status": "FALSE_POSITIVE",
+    "problem": "The Japanese pattern「〜する見込みがほとんどない」provides an event/proposition slot. The TARGET's that-clause and the paraphrases' infinitive or gerund patterns express that same event; the source example supplies the two countries and their progress as the proposition. Their clause shapes differ, but the required event slot is shared. These are actual answer patterns, not a `+ clause` metalinguistic placeholder.",
+    "recommended_direction": "「〜する」のevent slotを維持し、各回答surfaceは現状のままとする。`+ clause`を回答文字列へ追加しない。",
+    "confidence": "HIGH",
     "source_example": {
       "item_id": "E0141",
       "target_span": "There's little prospect that the two countries will make significant progress in disarmament",
@@ -1514,10 +1514,10 @@
       "PLACEHOLDER_ASYMMETRY",
       "PROMPT_SLOT_MISMATCH"
     ],
-    "status": "REVIEW",
-    "problem": "The surface forms expose different argument or complement frames: \"haunt\"=no explicit slot / \"follow someone around\"=PERSON:1. The source meaning and example leave a material ambiguity about whether this is an actual prompt mismatch or an accepted implicit/optional argument.",
-    "recommended_direction": "REVIEW: `haunt`の対象は人以外（記憶・不安等）にもなる一方、`follow someone around`は人に限定される。Japanese promptを人に限定するか、この人slotを要求するparaphraseを除外するか、出典用例で確定する。",
-    "confidence": "MEDIUM",
+    "status": "FALSE_POSITIVE",
+    "problem": "The affected person in `follow someone around` is the same implicit target of「付きまとう」and the person haunted in the source example (`I'm still haunted ...`). The Japanese prompt naturally leaves that affected person unspoken; the paraphrase only surfaces the same participant, not a new person slot.",
+    "recommended_direction": "人の対象を含意する現promptを維持する。今回の例では人slotの追加や `follow someone around` の除外は不要。",
+    "confidence": "HIGH",
     "source_example": {
       "item_id": "E0412",
       "target_span": "haunted",
@@ -1597,10 +1597,10 @@
       "INTERNAL_PARAPHRASE_INCONSISTENCY",
       "PROMPT_SLOT_MISMATCH"
     ],
-    "status": "REVIEW",
-    "problem": "The surface forms expose different argument or complement frames: \"inform\"=no explicit slot / \"let someone know\"=PERSON:1 / \"notify\"=no explicit slot. The source meaning and example leave a material ambiguity about whether this is an actual prompt mismatch or an accepted implicit/optional argument.",
-    "recommended_direction": "REVIEW: `inform/notify`の受け手slotと`let someone know`のperson slotが同じかを例文で確認し、日本語promptに「誰かに」を加えるか、slotなしのparaphraseへ揃える。",
-    "confidence": "MEDIUM",
+    "status": "FALSE_POSITIVE",
+    "problem": "`inform`, `notify`, and `let someone know` share the recipient role; the first two are bare verb headwords while the last spells out that same role. Japanese「知らせる」also entails a recipient that is routinely omitted. The source example uses a passive (`he was informed`) and its Japanese translation likewise omits the recipient, confirming natural ellipsis rather than a prompt/answer mismatch.",
+    "recommended_direction": "現promptと3つの回答形を維持する。受け手は共通の省略可能な役割であり、person slotを新たにpromptへ追加する必要はない。",
+    "confidence": "HIGH",
     "source_example": {
       "item_id": "E0468",
       "target_span": "Informed",
@@ -1755,10 +1755,10 @@
       "PLACEHOLDER_ASYMMETRY",
       "PROMPT_SLOT_MISMATCH"
     ],
-    "status": "REVIEW",
-    "problem": "The surface forms expose different argument or complement frames: \"trust\"=no explicit slot / \"have confidence in someone\"=PERSON:1 / \"rely on someone\"=PERSON:1. The source meaning and example leave a material ambiguity about whether this is an actual prompt mismatch or an accepted implicit/optional argument.",
-    "recommended_direction": "REVIEW: `trust`は人/物事を目的語に取れるが、両paraphraseはsomeoneに限定する。person限定の日本語promptにするか、somethingにも対応する言い方に揃えるかを語義authorityで確定する。",
-    "confidence": "MEDIUM",
+    "status": "CONFIRMED",
+    "problem": "The prompt「信頼する」allows a person or a thing as its object, and TARGET `trust` likewise accepts both. Both paraphrases explicitly restrict that object to `someone`. A person-only answer therefore requires a narrower object type than the Japanese prompt supplies. The source example (`trust her`) confirms a person use but does not narrow the prompt's broader meaning.",
+    "recommended_direction": "Promptを「someoneを信頼する」にし、TARGETを「trust someone」に揃える。既存paraphrasesの「have confidence in someone」「rely on someone」は同じperson slotの候補として残す。",
+    "confidence": "HIGH",
     "source_example": {
       "item_id": "E0531",
       "target_span": "trust",
@@ -1783,10 +1783,10 @@
       "INTERNAL_PARAPHRASE_INCONSISTENCY",
       "PROMPT_SLOT_MISMATCH"
     ],
-    "status": "REVIEW",
-    "problem": "The surface forms expose different argument or complement frames: \"romantic interest\"=no explicit slot / \"romantic feelings\"=no explicit slot / \"feelings for someone\"=PERSON:1. The source meaning and example leave a material ambiguity about whether this is an actual prompt mismatch or an accepted implicit/optional argument.",
-    "recommended_direction": "REVIEW: `romantic interest/feelings`と`feelings for someone`の関係対象slotがpromptに含まれるか、例文とmeaning authorityで確認し、対象者を明記するかparaを外す。",
-    "confidence": "MEDIUM",
+    "status": "FALSE_POSITIVE",
+    "problem": "In this entry,「恋愛感情」and `romantic interest` / `romantic feelings` inherently describe a relation to a person. `feelings for someone` spells out that same naturally understood target; it does not add an independent slot the learner must infer. The source example also identifies Bill as the person Monica's romantic interest concerns.",
+    "recommended_direction": "現promptとparaphrasesを維持する。恋愛感情の関係対象は語義に内在しており、person slotの追加や `feelings for someone` の除外は不要。",
+    "confidence": "HIGH",
     "source_example": {
       "item_id": "E0522",
       "target_span": "romantic interest",
@@ -3457,10 +3457,10 @@
     "rule": [
       "SYNTACTIC_FRAME_MISMATCH"
     ],
-    "status": "REVIEW",
-    "problem": "The surface forms expose different argument or complement frames: \"be afraid of doing something\"=THING:1 / \"be afraid to do something\"=THING:1 / \"be scared to do something\"=THING:1 / \"fear doing something\"=THING:1. The source meaning and example leave a material ambiguity about whether this is an actual prompt mismatch or an accepted implicit/optional argument.",
-    "recommended_direction": "REVIEW: `be afraid of doing`と`be afraid to do`は補語形が違うだけでなく、恐怖対象と行動を避ける意味がずれることがある。日本語promptがどちらの意味を教えるか確認し、gerund/infinitiveの回答を分けるか除外する。",
-    "confidence": "MEDIUM",
+    "status": "FALSE_POSITIVE",
+    "problem": "The prompt explicitly supplies the action slot with「somethingすること」. Every answer form takes that same action as its complement; `of + gerund` and `to-infinitive` are different surface frames but do not change the slot count or type. The source example's `taking risks` is the same kind of action slot. Possible nuance differences do not establish a structural rule violation.",
+    "recommended_direction": "「somethingすること」のprompt slotを維持し、現行のgerund/to-infinitive answer surfacesを構造不整合として除外しない。",
+    "confidence": "HIGH",
     "source_example": {
       "item_id": "E0537",
       "target_span": "afraid of taking risks",
