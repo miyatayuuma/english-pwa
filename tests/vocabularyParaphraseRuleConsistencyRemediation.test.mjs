@@ -523,15 +523,6 @@ const expected=[
     "grammarRole": "adjective"
   },
   {
-    "id": "vocab:02393",
-    "meaning_ja": "someoneに属する／someoneのものである",
-    "canonical": "belong to someone",
-    "paraphrases": [
-      "be someone's"
-    ],
-    "grammarRole": "verb"
-  },
-  {
     "id": "vocab:02408",
     "meaning_ja": "somethingについて話し合う",
     "canonical": "discuss something",
@@ -585,21 +576,21 @@ function slotSignature(text,id,field){
     .map(match=>match[0].toLowerCase()).sort();
 }
 
-test('all 58 confirmed paraphrase remediations are materialized exactly and grammarRole is preserved',()=>{
-  assert.equal(expected.length,58);
+test('all 57 confirmed paraphrase remediations are materialized exactly and grammarRole is preserved',()=>{
+  assert.equal(expected.length,57);
   const ids=expected.map(row=>row.id);
-  assert.equal(new Set(ids).size,58);
+  assert.equal(new Set(ids).size,57);
   assert.equal(db.entries.length,2478);
   assert.equal(byId.size,2478);
   assert.equal(ruleManifest.population,2478);
   assert.equal(ruleManifest.scanned,2478);
   assert.equal(ruleManifest.candidate_count,137);
-  assert.equal(ruleManifest.status_counts.CONFIRMED,58);
+  assert.equal(ruleManifest.status_counts.CONFIRMED,57);
   assert.equal(ruleManifest.status_counts.REVIEW,0);
-  assert.equal(ruleManifest.status_counts.FALSE_POSITIVE,79);
+  assert.equal(ruleManifest.status_counts.FALSE_POSITIVE,80);
   assert.equal(ruleManifest.unclassified_count,0);
   assert.equal(review.length,0);
-  assert.deepEqual(materialization.accounting,{APPLY:57,ALREADY_RESOLVED:0,BLOCKED:1,total:58});
+  assert.deepEqual(materialization.accounting,{APPLY:57,ALREADY_RESOLVED:0,BLOCKED:0,total:57});
   assert.deepEqual([...materializationById.keys()].sort(),[...confirmedById.keys()].sort());
   for(const row of expected){
     const entry=byId.get(row.id);
@@ -607,29 +598,19 @@ test('all 58 confirmed paraphrase remediations are materialized exactly and gram
     const ledger=materializationById.get(row.id);
     assert.ok(entry,`${row.id} exists`);
     assert.equal(authority?.status,'CONFIRMED',`${row.id} confirmed authority`);
-    const blocked=row.id==='vocab:02393';
-    assert.equal(ledger?.status,blocked?'BLOCKED':'APPLY',`${row.id} accounting`);
+    assert.equal(ledger?.status,'APPLY',`${row.id} accounting`);
     assert.deepEqual(ledger.before,{meaning_ja:authority.prompt_ja,canonical:authority.target,paraphrases:authority.paraphrases},`${row.id} audited before-state`);
-    if(blocked){
-      assert.ok(ledger.block_reason,`${row.id} records the source-sense conflict`);
-      assert.deepEqual(ledger.after,ledger.before,`${row.id} blocked before-state is preserved`);
-      assert.equal(entry.meaning_ja,ledger.before.meaning_ja,`${row.id} blocked prompt remains unchanged`);
-      assert.equal(entry.canonical,ledger.before.canonical,`${row.id} blocked canonical remains unchanged`);
-      assert.deepEqual(entry.paraphrases,ledger.before.paraphrases,`${row.id} blocked paraphrases remain unchanged`);
-      assert.deepEqual(curatedById.get(row.id),ledger.before.paraphrases,`${row.id} blocked mirror remains unchanged`);
-    }else{
-      assert.deepEqual(ledger.after,{meaning_ja:row.meaning_ja,canonical:row.canonical,paraphrases:row.paraphrases},`${row.id} materialized after-state`);
-      assert.equal(entry.meaning_ja,row.meaning_ja,`${row.id} prompt`);
-      assert.equal(entry.canonical,row.canonical,`${row.id} canonical`);
-      assert.deepEqual(entry.paraphrases,row.paraphrases,`${row.id} paraphrases`);
-      assert.deepEqual(curatedById.get(row.id),row.paraphrases,`${row.id} legacy curated-audit mirror`);
-    }
+    assert.deepEqual(ledger.after,{meaning_ja:row.meaning_ja,canonical:row.canonical,paraphrases:row.paraphrases},`${row.id} materialized after-state`);
+    assert.equal(entry.meaning_ja,row.meaning_ja,`${row.id} prompt`);
+    assert.equal(entry.canonical,row.canonical,`${row.id} canonical`);
+    assert.deepEqual(entry.paraphrases,row.paraphrases,`${row.id} paraphrases`);
+    assert.deepEqual(curatedById.get(row.id),row.paraphrases,`${row.id} legacy curated-audit mirror`);
     assert.equal(entry.grammarRole,row.grammarRole,`${row.id} grammarRole remains authoritative`);
   }
 });
 
-test('all 79 FALSE_POSITIVE entries and the zero-REVIEW classification remain unchanged',()=>{
-  assert.equal(falsePositive.length,79);
+test('all 80 FALSE_POSITIVE entries and the zero-REVIEW classification remain unchanged',()=>{
+  assert.equal(falsePositive.length,80);
   assert.equal(falsePositive.every(row=>row.status==='FALSE_POSITIVE'),true);
   for(const row of falsePositive){
     const candidate=candidatesById.get(row.id);
@@ -668,18 +649,25 @@ test('vocab:00328 keeps the same subject and related-target roles on every surfa
   assert.deepEqual(entry.paraphrases,['something is related to something else']);
 });
 
-test('vocab:02393 stays BLOCKED because E0508 is a location sense, without changing CONFIRMED audit status',()=>{
+test('vocab:02393 is a FALSE_POSITIVE under its upstream multi-sense authority and needs no materialization',()=>{
   const id='vocab:02393';
-  const authority=confirmedById.get(id),ledger=materializationById.get(id),entry=byId.get(id);
+  const candidate=candidatesById.get(id);
+  const falsePositiveEntry=falsePositive.find(row=>row.id===id);
+  const entry=byId.get(id);
   const source=items.find(value=>value.id==='E0508');
-  assert.equal(authority.status,'CONFIRMED');
-  assert.equal(ledger.status,'BLOCKED');
+  assert.equal(confirmedById.has(id),false);
+  assert.equal(materializationById.has(id),false);
+  assert.equal(candidate.status,'FALSE_POSITIVE');
+  assert.equal(falsePositiveEntry.status,'FALSE_POSITIVE');
+  assert.match(candidate.problem,/intentionally multi-sense card/);
+  assert.match(candidate.recommended_direction,/do not narrow the canonical/);
   assert.match(source.en,/no place he felt he belonged/);
   assert.match(source.ja,/受け入れられる場所/);
-  assert.equal(ledger.before.canonical,'belong');
-  assert.equal(ledger.after.canonical,'belong');
+  assert.equal(candidate.source_example.contextual_meaning_ja,'その場所に属する／なじめる');
+  assert.equal(entry.meaning_ja,'属する／（人など）のものである');
   assert.equal(entry.canonical,'belong');
-  assert.deepEqual(ledger.after,ledger.before);
+  assert.deepEqual(entry.paraphrases,["be someone's"]);
+  assert.deepEqual(curatedById.get(id),["be someone's"]);
 });
 
 test('all-mode collapses the six confirmed cross-kind cards sharing a source and canonical',()=>{

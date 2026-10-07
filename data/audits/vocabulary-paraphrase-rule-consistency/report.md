@@ -8,7 +8,7 @@
 - Population: 2478
 - Scanned: 2478
 - Candidate count: 137
-- Statuses: CONFIRMED 58; REVIEW 0; FALSE_POSITIVE 79; unclassified 0
+- Statuses: CONFIRMED 57; REVIEW 0; FALSE_POSITIVE 80; unclassified 0
 - Starting audit commit: `08908d275e65e769cedaee751802ef425bccbdc6`
 - Current remote main at resolution: `dff23a3d92895c9db621ced662734fee76e395c9`
 - Production vocabulary, prompts, paraphrases, tests, UI, and service worker: unchanged.
@@ -34,12 +34,12 @@ Rule counts overlap: one candidate can carry multiple rules.
 | ILLEGAL_META_PLACEHOLDER | 0 |
 | INTERNAL_PARAPHRASE_INCONSISTENCY | 21 |
 
-### B. CONFIRMED only (58)
+### B. CONFIRMED only (57)
 
 | Rule | Count |
 |---|---:|
-| PLACEHOLDER_ASYMMETRY | 57 |
-| PROMPT_SLOT_MISMATCH | 54 |
+| PLACEHOLDER_ASYMMETRY | 56 |
+| PROMPT_SLOT_MISMATCH | 53 |
 | SYNTACTIC_FRAME_MISMATCH | 6 |
 | INCOMPLETE_SURFACE | 10 |
 | ILLEGAL_META_PLACEHOLDER | 0 |
@@ -579,15 +579,6 @@ Rule counts overlap: one candidate can carry multiple rules.
 - Recommended direction: TARGETを「be bound for somewhere」にし、他paraphrasesのsomewhere/location slotと一致させる。日本語promptのdestination slotは維持し、`one's`が独立slotでないことを確認する。
 - Source example (E0474): “A cargo vessel, bound for Athens, sank in the Mediterranean without a trace.” / アテネへ向かう一隻の貨物船が、何の痕跡も残さずに地中海で沈没した。
 
-### vocab:02393
-
-- Prompt: 属する／（人など）のものである
-- TARGET: `belong`
-- Current paraphrases: `be someone's`
-- Rules: PLACEHOLDER_ASYMMETRY, PROMPT_SLOT_MISMATCH
-- Problem: Answer surfaces do not use a consistent explicit slot profile: "belong"=no explicit slot / "be someone's"=PERSON:1.
-- Recommended direction: promptの「（人など）のものである」を保持し、TARGETを「belong to someone」、paraphraseを「be someone's」にそろえる。
-- Source example (E0508): “Having found no place he felt he belonged, he was extremely uneasy and lonely.” / 自分が受け入れられる場所を見つけられず、彼は極度の不安と孤独に陥っていた。
 
 ### vocab:02408
 
@@ -721,12 +712,12 @@ Rule counts overlap: one candidate can carry multiple rules.
 
 ## FALSE_POSITIVE review
 
-All 79 records are retained in `false-positive.json` with the triggering signal and exclusion reason. Seven former REVIEW candidates moved to FALSE_POSITIVE: vocab:01010, vocab:01063, vocab:01399, vocab:02098, vocab:02287, vocab:02443, and vocab:02451. Repeated examples include clause-word substring matches where the expression is actually NP-taking (`because of`), fixed idioms (`something of a surprise`, `just in case`), anaphoric `it/that`, and matched event/person slots expressed through different but equivalent frames.
+All 80 records are retained in `false-positive.json` with the triggering signal and exclusion reason. Seven former REVIEW candidates moved to FALSE_POSITIVE: vocab:01010, vocab:01063, vocab:01399, vocab:02098, vocab:02287, vocab:02443, and vocab:02451. One former CONFIRMED candidate, vocab:02393, was reclassified after upstream Meaning / Canonical authority confirmed an intentional multi-sense card: `be someone's` expresses its ownership sense, while E0508 means fitting in / belonging to a place. Corrected contextual gloss: 「その場所に属する／なじめる」. Preserve canonical `belong`; no production remediation is needed. Repeated examples include clause-word substring matches where the expression is actually NP-taking (`because of`), fixed idioms (`something of a surprise`, `just in case`), anaphoric `it/that`, and matched event/person slots expressed through different but equivalent frames.
 
 
 ## Resolution closure
 
 - REVIEW candidates resolved: 8 / 8; final REVIEW count: 0.
-- Candidate population remains 137; CONFIRMED 58 + FALSE_POSITIVE 79 = 137; unclassified 0.
+- Candidate population remains 137; CONFIRMED 57 + FALSE_POSITIVE 80 = 137; unclassified 0.
 - The resolution read current `main` at the same SHA as the audit base; no source drift affected the eight entries.
 - Production data, tests, UI, ASR, grammar-role data, and service worker remain unchanged. No merge was performed.

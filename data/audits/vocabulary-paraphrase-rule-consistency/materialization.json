@@ -1,27 +1,27 @@
 {
   "schema_version": 1,
-  "status": "MATERIALIZED_WITH_BLOCKED",
+  "status": "MATERIALIZED",
   "production_base_sha": "49184d2f3324f1a6af05f6e2d13e17c94bc5ddee",
   "source_audit": {
     "branch": "audit/vocabulary-paraphrase-rule-consistency",
-    "commit": "713e4bb720429090782ebc59578b476adb5302f8",
+    "commit": "111bc22426cf57923ceb6bd517736a9e173aa88f",
     "base_sha": "dff23a3d92895c9db621ced662734fee76e395c9",
-    "manifest_sha256": "3db7cb2a547027685f8431f46707425466b31c87240ba67b3e055da4d97ae245",
-    "confirmed_sha256": "a8e704574d4a7b63927c20acab7d2f730de90f6bcbbaba6f33f91e4e3333d6fd"
+    "manifest_sha256": "3d7efea63281c5b7e5ddad8f18abf1f7524f1c62862cc6d9f5b9a0bd1cc39961",
+    "confirmed_sha256": "5d7137c5c9f3e27ef22e6e11f0ab1c5da73785ee6c7bd12106a30dd2aad15dba"
   },
   "audit_counts": {
     "population": 2478,
     "candidates": 137,
-    "CONFIRMED": 58,
+    "CONFIRMED": 57,
     "REVIEW": 0,
-    "FALSE_POSITIVE": 79,
+    "FALSE_POSITIVE": 80,
     "unclassified": 0
   },
   "accounting": {
     "APPLY": 57,
     "ALREADY_RESOLVED": 0,
-    "BLOCKED": 1,
-    "total": 58
+    "BLOCKED": 0,
+    "total": 57
   },
   "entries": [
     {
@@ -1152,27 +1152,6 @@
         ]
       },
       "grammarRole": "adjective"
-    },
-    {
-      "id": "vocab:02393",
-      "kind": "word",
-      "status": "BLOCKED",
-      "before": {
-        "meaning_ja": "属する／（人など）のものである",
-        "canonical": "belong",
-        "paraphrases": [
-          "be someone's"
-        ]
-      },
-      "after": {
-        "meaning_ja": "属する／（人など）のものである",
-        "canonical": "belong",
-        "paraphrases": [
-          "be someone's"
-        ]
-      },
-      "grammarRole": "verb",
-      "block_reason": "Confirmed recommendation conflicts with the cited E0508 location/acceptance sense; retain the current production surface pending audit-authority resolution."
     },
     {
       "id": "vocab:02408",
