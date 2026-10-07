@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "authority_status": "AUDIT_ONLY_NOT_PRODUCTION",
+  "count": 2,
+  "candidates": [
+    {
+      "candidate_id": "wfc-02939",
+      "entry_id": "vocab:01166",
+      "surface_ref": "vocab:01166:canonical",
+      "expected_surface": "be apt to do something",
+      "recognized_surface": "be app to do something",
+      "substitution": {
+        "target_word": "apt",
+        "recognized_word": "app"
+      },
+      "reduction": "word-final /t/ deletion",
+      "following_context": "to",
+      "decision": "SAFE",
+      "source": "audit only; requires separate production integration task"
+    },
+    {
+      "candidate_id": "wfc-02946",
+      "entry_id": "vocab:01166",
+      "surface_ref": "vocab:01166:source:0",
+      "expected_surface": "I'm apt to buy",
+      "recognized_surface": "I'm app to buy",
+      "substitution": {
+        "target_word": "apt",
+        "recognized_word": "app"
+      },
+      "reduction": "word-final /t/ deletion",
+      "following_context": "to",
+      "decision": "SAFE",
+      "source": "audit only; requires separate production integration task"
+    }
+  ]
+}

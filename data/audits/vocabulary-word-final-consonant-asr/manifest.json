@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "audit": "Vocabulary Word-Final Consonant ASR Collision Audit",
+  "audit_date": "2026-10-07",
+  "repository": "miyatayuuma/english-pwa",
+  "branch": "audit/vocabulary-word-final-consonant-asr",
+  "base_main_sha": "49184d2f3324f1a6af05f6e2d13e17c94bc5ddee",
+  "production_population_authority": "data/vocabulary-v3.json at base_main_sha",
+  "target_authority": {
+    "fields": [
+      "canonical",
+      "answers[]",
+      "source occurrence surface derived from data/items.json using occurrence start/end"
+    ],
+    "paraphrases_included": false,
+    "entries_with_answers": 6,
+    "answer_surfaces": 11,
+    "source_occurrence_surfaces": 2481,
+    "surface_inventory_ref": "surface-inventory.json"
+  },
+  "summary": {
+    "candidateCollisionRecords": 4666,
+    "rawLexiconMatchPaths": 4966,
+    "excludedSameSpellingRecords": 23,
+    "uniqueWordPairCount": 1107,
+    "uniquePhoneticPairs": 776,
+    "affectedEntries": 1124,
+    "existingDuplicates": 247,
+    "explicitRuleDuplicates": 0,
+    "existingSameEntryTargets": 247,
+    "unclassified": 0,
+    "SAFE": 2,
+    "REVIEW": 207,
+    "REJECT": 4457
+  },
+  "counts": {
+    "SAFE": 2,
+    "REVIEW": 207,
+    "REJECT": 4457,
+    "unclassified": 0
+  },
+  "candidate_definition": {
+    "record_key": "surface_ref + target word index + deleted final phone + collision word",
+    "generated_paths": "remove exactly one final consonant phone from each CMUdict target pronunciation; exact match against a pronunciation of a different 20k frequency-list word",
+    "lexical_major_word_screen": "candidate lexical rank <= 10,000, with explicit exclusions for names, letter names, interjections, abbreviations, and nonstandard forms",
+    "phonetic_scope": "all terminal consonant phones were enumerated; each resulting pronunciation had to preserve the entire vowel sequence and all remaining segments exactly",
+    "context": "following token and its first American English phone recorded from the exact TARGET surface; phrase-final sites retained for audit and generally rejected absent masking",
+    "duplicate_policy": "same-spelling lexical alternatives are not different-word collisions and were excluded; grouped pronunciation paths retain source surface and entry identity"
+  },
+  "pronunciation_sources": [
+    {
+      "name": "CMU Pronouncing Dictionary",
+      "repository": "cmusphinx/cmudict",
+      "source_commit": "74790861f652b15e4ac49015a90074ad62a27690",
+      "blob_sha": "2c0411740cce3e2026a80b90b650d5f6a7258164",
+      "use": "American English pronunciation candidate generation; no runtime dependency"
+    },
+    {
+      "name": "Google 10k English words, 20k file",
+      "repository": "first20hours/google-10000-english",
+      "path": "20k.txt",
+      "blob_sha": "11432858e83b52d62740ca173551904611bec5c6",
+      "use": "broad collision-word search to rank 20k; top-10k plus exclusions used as the major-word screen"
+    }
+  ],
+  "pronunciation_coverage": {
+    "distinct_target_token_types": 2813,
+    "uncovered_tokens_after_supplement": 0,
+    "supplement": {
+      "word": "hemispheres",
+      "derivation": "hemisphere + plural /z/",
+      "instances": 2
+    }
+  },
+  "authority_files_checked": [
+    {
+      "path": "data/vocabulary-v3.json",
+      "blob_sha": "ed7d2f363969f884feed8cf69053c03bc71e2e38"
+    },
+    {
+      "path": "data/items.json",
+      "blob_sha": "ae2aca768b784199b77ac1cf8c0c5a80fd5725bb"
+    },
+    {
+      "path": "scripts/speech/vocabularySpeechEvidence.js",
+      "blob_sha": "22db9efe069730791d71af98aa76570d6a044bab"
+    },
+    {
+      "path": "scripts/speech/speechEquivalenceRules.js",
+      "blob_sha": "9603a8cdcdc851ca6aef29440237f01d36352a7b"
+    },
+    {
+      "path": "scripts/speech/speechEquivalence.js",
+      "blob_sha": "0bce9d439192bc0301c659ae925defe78832289f"
+    },
+    {
+      "path": "scripts/app/vocabularyLearningCore.js",
+      "blob_sha": "98a54792e60cc7455a9df81c2f1d0ec7feaa3675"
+    },
+    {
+      "path": "scripts/app/vocabularyMode.js",
+      "blob_sha": "4efe1efbf00392dfa42f20773d289264a14e3bd9"
+    }
+  ],
+  "existing_authority": {
+    "speech_equivalence_rule_pairs": 17,
+    "note": "Strict TARGET surface acceptance, existing shared equivalence rules, and current Vocabulary speech evidence were inspected. No authority source or precedence was changed."
+  },
+  "parallel_state": {
+    "related_open_pr": "#306 (Vocabulary chunk N-best rescue), left untouched",
+    "audit_branch_base": "current main only; no PR #306 changes included"
+  },
+  "production_boundary": "Audit-only artifacts. No equivalence, grader, normalizer, Vocabulary data, UI, N-best, or Android changes.",
+  "artifact_roles": {
+    "surface-inventory.json": "one row for every current TARGET authority surface",
+    "coda-sites.json": "all pronunciation-backed word-final coda token sites",
+    "candidates.json": "complete classified candidate master records",
+    "safe.json": "full SAFE records",
+    "review.json": "full REVIEW records",
+    "rejected.json": "REJECT candidate ID index; full reasons remain in candidates.json",
+    "registration-candidates.json": "SAFE-only entry-specific integration inputs; not production authority",
+    "controls.json": "mandatory positive/negative controls",
+    "validation.json": "validation results from audit construction",
+    "validate-audit.mjs": "standalone Node validator against repository data files"
+  }
+}

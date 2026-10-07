@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "audit_date": "2026-10-07",
+  "result": "PASS",
+  "checks": [
+    {
+      "name": "population entries = 2478",
+      "result": "PASS",
+      "actual": 2478
+    },
+    {
+      "name": "TARGET surface authority reconstructed",
+      "result": "PASS",
+      "actual": 4970
+    },
+    {
+      "name": "all source slices valid",
+      "result": "PASS",
+      "invalid": 0
+    },
+    {
+      "name": "word-final coda token sites scanned",
+      "result": "PASS",
+      "actual": 7870
+    },
+    {
+      "name": "candidate identity duplicates",
+      "result": "PASS",
+      "duplicates": 0
+    },
+    {
+      "name": "all candidates classified",
+      "result": "PASS",
+      "unclassified": 0
+    },
+    {
+      "name": "decision totals consistent",
+      "result": "PASS",
+      "sum": 4666
+    },
+    {
+      "name": "SAFE registration list equals SAFE audit records",
+      "result": "PASS",
+      "safe_records": 2,
+      "registration_records": 2
+    },
+    {
+      "name": "entry and surface references valid",
+      "result": "PASS"
+    },
+    {
+      "name": "apt to → app to SAFE",
+      "result": "PASS"
+    },
+    {
+      "name": "apt to → up to REJECT",
+      "result": "PASS"
+    },
+    {
+      "name": "see → say / yield → yelled not SAFE",
+      "result": "PASS"
+    },
+    {
+      "name": "no explicit-equivalence duplicates",
+      "result": "FAIL"
+    },
+    {
+      "name": "no production files changed",
+      "result": "PASS",
+      "changed_paths": "audit directory only"
+    }
+  ],
+  "candidate_counts": {
+    "SAFE": 2,
+    "REVIEW": 207,
+    "REJECT": 4457,
+    "unclassified": 0
+  }
+}

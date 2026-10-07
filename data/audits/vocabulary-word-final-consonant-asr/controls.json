@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "positive_seed": {
+    "target_fragment": "apt to",
+    "asr_fragment": "app to",
+    "decision": "SAFE",
+    "candidate_ids": [
+      "wfc-02939",
+      "wfc-02946"
+    ],
+    "full_target_surfaces": [
+      "be apt to do something",
+      "I'm apt to buy"
+    ],
+    "reason": "Vowel /æ/ retained; coda cluster /pt/; final /t/ weakened/masked against following weak to /tə/; app /æp/ is a common orthographic ASR collision."
+  },
+  "negative_controls": [
+    {
+      "target_fragment": "apt to",
+      "asr_fragment": "up to",
+      "decision": "REJECT",
+      "candidate_generated": false,
+      "reason": "Requires /æ/→/ʌ/ vowel substitution; not explained by coda loss."
+    },
+    {
+      "target_fragment": "see",
+      "asr_fragment": "say",
+      "decision": "REJECT",
+      "candidate_generated": false,
+      "reason": "Vowel change /i/→/eɪ/; out of scope."
+    },
+    {
+      "target_fragment": "yield",
+      "asr_fragment": "yelled",
+      "decision": "REJECT",
+      "candidate_generated": false,
+      "reason": "Requires vowel/other segment changes, not word-final coda reduction."
+    }
+  ],
+  "production_boundary": {
+    "production_equivalence_added": false,
+    "speech_grader_changed": false,
+    "normalizer_changed": false,
+    "vocabulary_data_changed": false,
+    "ui_changed": false,
+    "n_best_rescue_changed": false,
+    "android_backend_changed": false
+  }
+}
