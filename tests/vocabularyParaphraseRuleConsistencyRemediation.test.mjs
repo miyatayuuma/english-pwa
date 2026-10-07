@@ -1,10 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {buildVocabularySession,collapseDuplicateVocabularyCards} from '../scripts/app/vocabularyLearningCore.js';
+import {buildVocabularySession,collapseDuplicateVocabularyCards,vocabularyStats} from '../scripts/app/vocabularyLearningCore.js';
 
 const db=JSON.parse(fs.readFileSync(new URL('../data/vocabulary-v3.json',import.meta.url),'utf8'));
 const paraphraseAudit=JSON.parse(fs.readFileSync(new URL('../data/vocabulary-v3-paraphrase-audit.json',import.meta.url),'utf8'));
+const items=JSON.parse(fs.readFileSync(new URL('../data/items.json',import.meta.url),'utf8'));
 const ruleAuditDir='../data/audits/vocabulary-paraphrase-rule-consistency/';
 const readRuleAudit=name=>JSON.parse(fs.readFileSync(new URL(`${ruleAuditDir}${name}`,import.meta.url),'utf8'));
 const ruleManifest=readRuleAudit('manifest.json');
@@ -598,7 +599,7 @@ test('all 58 confirmed paraphrase remediations are materialized exactly and gram
   assert.equal(ruleManifest.status_counts.FALSE_POSITIVE,79);
   assert.equal(ruleManifest.unclassified_count,0);
   assert.equal(review.length,0);
-  assert.deepEqual(materialization.accounting,{APPLY:58,ALREADY_RESOLVED:0,BLOCKED:0,total:58});
+  assert.deepEqual(materialization.accounting,{APPLY:57,ALREADY_RESOLVED:0,BLOCKED:1,total:58});
   assert.deepEqual([...materializationById.keys()].sort(),[...confirmedById.keys()].sort());
   for(const row of expected){
     const entry=byId.get(row.id);
@@ -606,14 +607,24 @@ test('all 58 confirmed paraphrase remediations are materialized exactly and gram
     const ledger=materializationById.get(row.id);
     assert.ok(entry,`${row.id} exists`);
     assert.equal(authority?.status,'CONFIRMED',`${row.id} confirmed authority`);
-    assert.equal(ledger?.status,'APPLY',`${row.id} accounting`);
+    const blocked=row.id==='vocab:02393';
+    assert.equal(ledger?.status,blocked?'BLOCKED':'APPLY',`${row.id} accounting`);
     assert.deepEqual(ledger.before,{meaning_ja:authority.prompt_ja,canonical:authority.target,paraphrases:authority.paraphrases},`${row.id} audited before-state`);
-    assert.deepEqual(ledger.after,{meaning_ja:row.meaning_ja,canonical:row.canonical,paraphrases:row.paraphrases},`${row.id} materialized after-state`);
-    assert.equal(entry.meaning_ja,row.meaning_ja,`${row.id} prompt`);
-    assert.equal(entry.canonical,row.canonical,`${row.id} canonical`);
-    assert.deepEqual(entry.paraphrases,row.paraphrases,`${row.id} paraphrases`);
+    if(blocked){
+      assert.ok(ledger.block_reason,`${row.id} records the source-sense conflict`);
+      assert.deepEqual(ledger.after,ledger.before,`${row.id} blocked before-state is preserved`);
+      assert.equal(entry.meaning_ja,ledger.before.meaning_ja,`${row.id} blocked prompt remains unchanged`);
+      assert.equal(entry.canonical,ledger.before.canonical,`${row.id} blocked canonical remains unchanged`);
+      assert.deepEqual(entry.paraphrases,ledger.before.paraphrases,`${row.id} blocked paraphrases remain unchanged`);
+      assert.deepEqual(curatedById.get(row.id),ledger.before.paraphrases,`${row.id} blocked mirror remains unchanged`);
+    }else{
+      assert.deepEqual(ledger.after,{meaning_ja:row.meaning_ja,canonical:row.canonical,paraphrases:row.paraphrases},`${row.id} materialized after-state`);
+      assert.equal(entry.meaning_ja,row.meaning_ja,`${row.id} prompt`);
+      assert.equal(entry.canonical,row.canonical,`${row.id} canonical`);
+      assert.deepEqual(entry.paraphrases,row.paraphrases,`${row.id} paraphrases`);
+      assert.deepEqual(curatedById.get(row.id),row.paraphrases,`${row.id} legacy curated-audit mirror`);
+    }
     assert.equal(entry.grammarRole,row.grammarRole,`${row.id} grammarRole remains authoritative`);
-    assert.deepEqual(curatedById.get(row.id),row.paraphrases,`${row.id} legacy curated-audit mirror`);
   }
 });
 
@@ -657,6 +668,20 @@ test('vocab:00328 keeps the same subject and related-target roles on every surfa
   assert.deepEqual(entry.paraphrases,['something is related to something else']);
 });
 
+test('vocab:02393 stays BLOCKED because E0508 is a location sense, without changing CONFIRMED audit status',()=>{
+  const id='vocab:02393';
+  const authority=confirmedById.get(id),ledger=materializationById.get(id),entry=byId.get(id);
+  const source=items.find(value=>value.id==='E0508');
+  assert.equal(authority.status,'CONFIRMED');
+  assert.equal(ledger.status,'BLOCKED');
+  assert.match(source.en,/no place he felt he belonged/);
+  assert.match(source.ja,/受け入れられる場所/);
+  assert.equal(ledger.before.canonical,'belong');
+  assert.equal(ledger.after.canonical,'belong');
+  assert.equal(entry.canonical,'belong');
+  assert.deepEqual(ledger.after,ledger.before);
+});
+
 test('all-mode collapses the six confirmed cross-kind cards sharing a source and canonical',()=>{
   const pairs=[
     ['vocab:00863','vocab:01400'],
@@ -685,5 +710,12 @@ test('all-mode collapses the six confirmed cross-kind cards sharing a source and
     assert.deepEqual(allMode.entries.map(value=>value.id),[wordId],`${wordId}/${expressionId} yields one all-mode SRS card`);
     assert.deepEqual(buildVocabularySession([active(expressionEntry),active(wordEntry)],{}, {kind:'word',size:12,now:1_800_000_000_000}).entries.map(value=>value.id),[wordId],`${wordId} remains in word sessions`);
     assert.deepEqual(buildVocabularySession([active(expressionEntry),active(wordEntry)],{}, {kind:'expression',size:12,now:1_800_000_000_000}).entries.map(value=>value.id),[expressionId],`${expressionId} remains in expression sessions`);
+    const now=1_800_000_000_000;
+    const expressionDue={[expressionId]:{last:2,best:2,updatedAt:now-5000,review:{nextDueAt:now-1}}};
+    assert.deepEqual(collapseDuplicateVocabularyCards([active(wordEntry),active(expressionEntry)],expressionDue,now).map(value=>value.id),[expressionId],`${expressionId} remains the representative when its SRS review is due`);
+    const duePlan=buildVocabularySession([active(wordEntry),active(expressionEntry)],expressionDue,{kind:'all',size:12,now});
+    assert.deepEqual(duePlan.entries.map(value=>value.id),[expressionId],`${expressionId} due state is selected in the all-mode deck`);
+    assert.equal(duePlan.due,1);
+    assert.equal(vocabularyStats([active(wordEntry),active(expressionEntry)],expressionDue,now).due,1,`${expressionId} due state remains visible in all-mode counts`);
   }
 });

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "MATERIALIZED",
+  "status": "MATERIALIZED_WITH_BLOCKED",
   "production_base_sha": "49184d2f3324f1a6af05f6e2d13e17c94bc5ddee",
   "source_audit": {
     "branch": "audit/vocabulary-paraphrase-rule-consistency",
@@ -18,9 +18,9 @@
     "unclassified": 0
   },
   "accounting": {
-    "APPLY": 58,
+    "APPLY": 57,
     "ALREADY_RESOLVED": 0,
-    "BLOCKED": 0,
+    "BLOCKED": 1,
     "total": 58
   },
   "entries": [
@@ -1156,7 +1156,7 @@
     {
       "id": "vocab:02393",
       "kind": "word",
-      "status": "APPLY",
+      "status": "BLOCKED",
       "before": {
         "meaning_ja": "属する／（人など）のものである",
         "canonical": "belong",
@@ -1165,13 +1165,14 @@
         ]
       },
       "after": {
-        "meaning_ja": "someoneに属する／someoneのものである",
-        "canonical": "belong to someone",
+        "meaning_ja": "属する／（人など）のものである",
+        "canonical": "belong",
         "paraphrases": [
           "be someone's"
         ]
       },
-      "grammarRole": "verb"
+      "grammarRole": "verb",
+      "block_reason": "Confirmed recommendation conflicts with the cited E0508 location/acceptance sense; retain the current production surface pending audit-authority resolution."
     },
     {
       "id": "vocab:02408",

@@ -55,8 +55,10 @@ if(fs.existsSync(materializationFile)){
   const confirmed=read(path.join(paraphraseAuditDir,'confirmed.json'));
   const confirmedById=new Map(confirmed.map(row=>[row.id,row]));
   const materialized=Array.isArray(materialization.entries)?materialization.entries:[];
-  check(materialization.schema_version===1&&materialization.status==='MATERIALIZED','Paraphrase remediation materialization schema/status mismatch');
-  check(materialization.accounting?.APPLY===58&&materialization.accounting?.ALREADY_RESOLVED===0&&materialization.accounting?.BLOCKED===0&&materialization.accounting?.total===58&&materialized.length===58,'Paraphrase remediation accounting must be 58/0/0');
+  const accounted=(materialization.accounting?.APPLY||0)+(materialization.accounting?.ALREADY_RESOLVED||0)+(materialization.accounting?.BLOCKED||0);
+  const hasBlocked=materialization.accounting?.BLOCKED>0;
+  check(materialization.schema_version===1&&materialization.status===(hasBlocked?'MATERIALIZED_WITH_BLOCKED':'MATERIALIZED'),'Paraphrase remediation materialization schema/status mismatch');
+  check(materialization.accounting?.total===58&&accounted===58&&materialized.length===58&&materialized.filter(row=>row.status==='APPLY').length===materialization.accounting?.APPLY&&materialized.filter(row=>row.status==='BLOCKED').length===materialization.accounting?.BLOCKED&&materialized.filter(row=>row.status==='ALREADY_RESOLVED').length===materialization.accounting?.ALREADY_RESOLVED,'Paraphrase remediation accounting must cover all 58 rows');
   check(confirmed.length===58&&confirmedById.size===58,'Paraphrase remediation must use 58 unique confirmed audit rows');
   check(materialization.source_audit?.commit==='713e4bb720429090782ebc59578b476adb5302f8','Paraphrase remediation source commit mismatch');
   const seenMaterialized=new Set();
@@ -70,8 +72,14 @@ if(fs.existsSync(materializationFile)){
     if(!authority||!expected) continue;
     check(row.before?.meaning_ja===authority.prompt_ja&&row.before?.canonical===authority.target,`Paraphrase remediation before-state differs from confirmed snapshot ${row.id}`);
     check(expected.after.meaning_ja===row.before.meaning_ja&&expected.after.canonical===row.before.canonical,`Paraphrase remediation does not supersede the prior semantic authority from its audited state ${row.id}`);
-    expected.after.meaning_ja=row.after.meaning_ja;
-    expected.after.canonical=row.after.canonical;
+    if(row.status==='APPLY'){
+      expected.after.meaning_ja=row.after.meaning_ja;
+      expected.after.canonical=row.after.canonical;
+    }else if(row.status==='BLOCKED'){
+      check(!!row.block_reason&&row.after.meaning_ja===row.before.meaning_ja&&row.after.canonical===row.before.canonical,'Blocked paraphrase row must preserve its audited production before-state');
+    }else if(row.status==='ALREADY_RESOLVED'){
+      check(row.after.meaning_ja===row.before.meaning_ja&&row.after.canonical===row.before.canonical,'Already resolved paraphrase row must preserve its current production surface');
+    }else check(false,`Invalid paraphrase materialization status ${row.id}`);
   }
   check(seenMaterialized.size===confirmedById.size&&[...confirmedById.keys()].every(id=>seenMaterialized.has(id)),'Paraphrase remediation ID set differs from CONFIRMED authority');
 }

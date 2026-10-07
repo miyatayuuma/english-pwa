@@ -48,8 +48,9 @@ export function validateVocabularyGrammarRoleAudit({vocabulary,manifest,batches,
   const materializationRows=Array.isArray(materialization?.entries)?materialization.entries:[];
   const materializationById=new Map();
   if(materialization){
-    if(materialization.schema_version!==1||materialization.status!=='MATERIALIZED') errors.push('paraphrase materialization: invalid schema or status');
-    if(materialization.accounting?.APPLY!==58||materialization.accounting?.ALREADY_RESOLVED!==0||materialization.accounting?.BLOCKED!==0||materialization.accounting?.total!==58||materializationRows.length!==58) errors.push('paraphrase materialization: expected 58 fully applied entries');
+    if(materialization.schema_version!==1||!['MATERIALIZED','MATERIALIZED_WITH_BLOCKED'].includes(materialization.status)) errors.push('paraphrase materialization: invalid schema or status');
+    const accounted=(materialization.accounting?.APPLY||0)+(materialization.accounting?.ALREADY_RESOLVED||0)+(materialization.accounting?.BLOCKED||0);
+    if(materialization.accounting?.total!==58||accounted!==58||materializationRows.length!==58||materialization.accounting?.APPLY!==57||materialization.accounting?.ALREADY_RESOLVED!==0||materialization.accounting?.BLOCKED!==1) errors.push('paraphrase materialization: accounting must cover 58 rows with 57 APPLY and any authority-blocked entries recorded');
     if(paraphraseManifest?.population!==2478||paraphraseManifest?.candidate_count!==137||paraphraseManifest?.status_counts?.CONFIRMED!==58||paraphraseManifest?.status_counts?.REVIEW!==0||paraphraseManifest?.status_counts?.FALSE_POSITIVE!==79||paraphraseManifest?.unclassified_count!==0) errors.push('paraphrase materialization: source audit counts mismatch');
     if(confirmedRows.length!==58||confirmedById.size!==58) errors.push('paraphrase materialization: confirmed authority must contain 58 unique entries');
     if(materialization.source_audit?.commit!=='713e4bb720429090782ebc59578b476adb5302f8'||materialization.source_audit?.base_sha!==paraphraseManifest?.base_sha) errors.push('paraphrase materialization: source audit ref mismatch');
@@ -59,8 +60,10 @@ export function validateVocabularyGrammarRoleAudit({vocabulary,manifest,batches,
       materializationById.set(id,row);
       const authority=confirmedById.get(id);
       if(!authority||authority.status!=='CONFIRMED') errors.push(`paraphrase materialization: ID is not CONFIRMED ${id}`);
-      if(row.status!=='APPLY'||!sameSurface(row.before,{meaning_ja:authority?.prompt_ja,canonical:authority?.target,paraphrases:authority?.paraphrases})) errors.push(`paraphrase materialization: before authority mismatch ${id}`);
+      if(!['APPLY','BLOCKED'].includes(row.status)||!sameSurface(row.before,{meaning_ja:authority?.prompt_ja,canonical:authority?.target,paraphrases:authority?.paraphrases})) errors.push(`paraphrase materialization: before authority mismatch ${id}`);
       if(!row.after||typeof row.after.meaning_ja!=='string'||typeof row.after.canonical!=='string'||!Array.isArray(row.after.paraphrases)) errors.push(`paraphrase materialization: invalid after surface ${id}`);
+      if(row.status==='BLOCKED'&&(!row.block_reason||!sameSurface(row.after,row.before))) errors.push(`paraphrase materialization: blocked entry must retain production before-state and include a reason ${id}`);
+      if(row.status==='APPLY'&&row.block_reason) errors.push(`paraphrase materialization: applied entry has a block reason ${id}`);
     }
     if(materializationById.size!==confirmedById.size||[...confirmedById.keys()].some(id=>!materializationById.has(id))) errors.push('paraphrase materialization: ID set differs from CONFIRMED authority');
   }

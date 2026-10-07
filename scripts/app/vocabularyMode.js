@@ -281,7 +281,7 @@ function renderLobby(){
   levels.refreshLevelState();
   const levelState=JSON.parse(localStorage.getItem('itemLevelV1')||'{}');
   const eligible=eligibleVocabularyEntries(state.entries,levelState);
-  const entries=state.kind==='all'?collapseDuplicateVocabularyCards(eligible):eligible.filter(x=>state.kind==='word'
+  const entries=state.kind==='all'?collapseDuplicateVocabularyCards(eligible,levelState):eligible.filter(x=>state.kind==='word'
     ?x.kind==='word':x.kind==='expression'||x.kind==='construction');
   const stats=vocabularyStats(entries,levelState);
   const plan=buildVocabularySession(entries,levelState,{size:12,kind:'all'});
