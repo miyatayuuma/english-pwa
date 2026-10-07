@@ -106,6 +106,7 @@ check('apt to → up to is REJECT and absent from candidate generation', () => {
   assert.ok(!candidates.some((x) => x.target_word === 'apt' && x.collision_word === 'up'));
   assert.ok(!registrationDoc.candidates.some((x) => x.recognized_surface.toLowerCase().includes('up to')));
 });
+check('no explicit-equivalence duplicates', () => assert.equal(manifest.summary.explicitRuleDuplicates, 0));
 check('vowel-substitution controls are not SAFE', () => {
   assert.ok(!candidates.some((x) => x.decision === 'SAFE' && x.target_word === 'see' && x.collision_word === 'say'));
   assert.ok(!candidates.some((x) => x.decision === 'SAFE' && x.target_word === 'yield' && x.collision_word === 'yelled'));
