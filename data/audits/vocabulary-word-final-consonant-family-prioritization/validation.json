@@ -1,0 +1,154 @@
+{
+  "schema_version": 1,
+  "audit": "④-C REJECT Family Prioritization Audit",
+  "status": "PASS",
+  "validated_at_utc": "2026-10-07T00:00:00Z",
+  "validator": "validate-audit.mjs",
+  "validation_mode": "Source-backed in-memory validation; standalone validator syntax checked with node --check.",
+  "counts": {
+    "original_reject": 4658,
+    "promoted_by_a2": 17,
+    "already_reconsidered_reject": 16,
+    "remaining_discovery": 4625,
+    "family_member_records": 4625,
+    "primary_families": 169,
+    "unclassified_family_records": 0
+  },
+  "production_files_changed": 0,
+  "checks": [
+    {
+      "name": "original REJECT = 4658",
+      "status": "PASS",
+      "details": {
+        "count": 4658
+      }
+    },
+    {
+      "name": "17 promoted IDs unique and source-backed",
+      "status": "PASS",
+      "details": {
+        "count": 17
+      }
+    },
+    {
+      "name": "16 A2 reconsidered REJECT IDs unique and indexed",
+      "status": "PASS",
+      "details": {
+        "count": 16
+      }
+    },
+    {
+      "name": "promoted / reconsidered overlap = 0",
+      "status": "PASS",
+      "details": {
+        "overlap": 0
+      }
+    },
+    {
+      "name": "partition is 4658 - 17 - 16 = 4625",
+      "status": "PASS",
+      "details": {
+        "remaining": 4625
+      }
+    },
+    {
+      "name": "population ID partitions match source",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "all remaining IDs are unique original REJECTs",
+      "status": "PASS",
+      "details": {
+        "memberRows": 4625
+      }
+    },
+    {
+      "name": "no original SAFE / A2 promoted / A2 rerejected included",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "A2 counts SAFE36 / REJECT19",
+      "status": "PASS",
+      "details": {
+        "safe": 36,
+        "reject": 19
+      }
+    },
+    {
+      "name": "primary family assignments are complete and exclusive",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "unclassified family records = 0",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "family member counts match summaries",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "A2 /t,d/ C+final before to candidates = 0",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "recommendation is and→an /AH0 N/ family (24 / 16)",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "top family/ranking limit is five",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "original source inventory is 4666 unique, SAFE=8",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "original SAFE IDs partition retained exactly",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "A2 existing-audit partition 41 = 8 old SAFE + 17 promoted + 16 retained REJECT",
+      "status": "PASS",
+      "details": {
+        "a2Overlap": 33
+      }
+    },
+    {
+      "name": "score formula reproducible",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "all family rows contain required metrics",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "ranked family members exclude following token to",
+      "status": "PASS",
+      "details": {}
+    },
+    {
+      "name": "audit-only changed path boundary / production changes=0",
+      "status": "PASS",
+      "details": {
+        "paths": 34
+      }
+    },
+    {
+      "name": "A2 provenance base and current main recorded without drift check",
+      "status": "PASS",
+      "details": {}
+    }
+  ]
+}

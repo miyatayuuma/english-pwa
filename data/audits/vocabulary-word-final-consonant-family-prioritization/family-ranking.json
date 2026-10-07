@@ -1,0 +1,157 @@
+{
+  "schema_version": 1,
+  "formula": {
+    "definition": "Score = round(20 × [0.25E + 0.20P + 0.15B + 0.15V + 0.15F + 0.10R]); each rating 1–5.",
+    "dimensions": {
+      "E": "family-level phonetic evidence",
+      "P": "productive connected-speech naturalness",
+      "B": "runtime boundability",
+      "V": "practical value from affected accepted entries/surfaces, discounted for lexical-screen failures",
+      "F": "false-positive control strength (higher means risk can be constrained)",
+      "R": "rejection-reason reopenability (higher means the family reason can be addressed without overturning other rejection gates)"
+    },
+    "limitations": "Scores are prioritization rubrics, not probabilities or SAFE decisions. Rubric ratings are explicit judgment; population counts and reason distributions are mechanical."
+  },
+  "ranked_families": [
+    {
+      "family_id": "AND_AH0_N_D_TO_AN_BEFORE_NON_TO_CONSONANT",
+      "priority_score": 83,
+      "score_scale": "0-100; 1-5 weighted rubric ratings multiplied by 20",
+      "score_inputs": {
+        "evidence": 5,
+        "productivity": 5,
+        "boundability": 5,
+        "practical_value": 3,
+        "false_positive_control": 2,
+        "rejection_reopenability": 4
+      },
+      "weights": {
+        "evidence": 0.25,
+        "productivity": 0.2,
+        "boundability": 0.15,
+        "practical_value": 0.15,
+        "false_positive_control": 0.15,
+        "rejection_reopenability": 0.1
+      },
+      "records": 24,
+      "unique_entries": 16,
+      "unique_target_surface_to_asr_surface_pairs": 20,
+      "evidence_grade": "A",
+      "runtime_boundability": "HIGH",
+      "false_positive_risk": "HIGH: and/an changes grammatical function; actual ASR confusion is unmeasured.",
+      "rationale": "Only reviewed row cluster with a dictionary-listed weak form matching exact one-phone loss, exact lexical target and bounded consonant context; high false-positive risk remains."
+    },
+    {
+      "family_id": "DELETE_D__CODA_C_FINAL__NEXT_FRICATIVE",
+      "priority_score": 69,
+      "score_scale": "0-100; 1-5 weighted rubric ratings multiplied by 20",
+      "score_inputs": {
+        "evidence": 4,
+        "productivity": 4,
+        "boundability": 4,
+        "practical_value": 3,
+        "false_positive_control": 2,
+        "rejection_reopenability": 3
+      },
+      "weights": {
+        "evidence": 0.25,
+        "productivity": 0.2,
+        "boundability": 0.15,
+        "practical_value": 0.15,
+        "false_positive_control": 0.15,
+        "rejection_reopenability": 0.1
+      },
+      "records": 48,
+      "unique_entries": 21,
+      "unique_target_surface_to_asr_surface_pairs": 40,
+      "evidence_grade": "B",
+      "runtime_boundability": "MEDIUM",
+      "false_positive_risk": "HIGH: deletion can change lexical or inflectional identity; residual cues and provider confusion remain unmeasured.",
+      "rationale": "Research supports context-sensitive /d/ deletion, but the source REJECTs still report residual cues, lexical or inflectional change, and unmeasured provider confusion."
+    },
+    {
+      "family_id": "DELETE_D__CODA_C_FINAL__NEXT_NASAL",
+      "priority_score": 68,
+      "score_scale": "0-100; 1-5 weighted rubric ratings multiplied by 20",
+      "score_inputs": {
+        "evidence": 4,
+        "productivity": 4,
+        "boundability": 4,
+        "practical_value": 2,
+        "false_positive_control": 2,
+        "rejection_reopenability": 4
+      },
+      "weights": {
+        "evidence": 0.25,
+        "productivity": 0.2,
+        "boundability": 0.15,
+        "practical_value": 0.15,
+        "false_positive_control": 0.15,
+        "rejection_reopenability": 0.1
+      },
+      "records": 12,
+      "unique_entries": 6,
+      "unique_target_surface_to_asr_surface_pairs": 12,
+      "evidence_grade": "B",
+      "runtime_boundability": "MEDIUM",
+      "false_positive_risk": "HIGH: deletion can change lexical or inflectional identity; residual cues and provider confusion remain unmeasured.",
+      "rationale": "Research supports context-sensitive /d/ deletion, but the source REJECTs still report residual cues, lexical or inflectional change, and unmeasured provider confusion."
+    },
+    {
+      "family_id": "DELETE_T__CODA_C_FINAL__NEXT_FRICATIVE",
+      "priority_score": 61,
+      "score_scale": "0-100; 1-5 weighted rubric ratings multiplied by 20",
+      "score_inputs": {
+        "evidence": 3,
+        "productivity": 4,
+        "boundability": 4,
+        "practical_value": 2,
+        "false_positive_control": 2,
+        "rejection_reopenability": 3
+      },
+      "weights": {
+        "evidence": 0.25,
+        "productivity": 0.2,
+        "boundability": 0.15,
+        "practical_value": 0.15,
+        "false_positive_control": 0.15,
+        "rejection_reopenability": 0.1
+      },
+      "records": 23,
+      "unique_entries": 9,
+      "unique_target_surface_to_asr_surface_pairs": 22,
+      "evidence_grade": "B",
+      "runtime_boundability": "MEDIUM",
+      "false_positive_risk": "HIGH: deletion can change lexical or inflectional identity; residual cues and provider confusion remain unmeasured.",
+      "rationale": "Research supports context-sensitive /t/ deletion, but the source REJECTs still report residual cues, lexical or inflectional change, and unmeasured provider confusion."
+    },
+    {
+      "family_id": "DELETE_T__CODA_C_FINAL__NEXT_STOP",
+      "priority_score": 57,
+      "score_scale": "0-100; 1-5 weighted rubric ratings multiplied by 20",
+      "score_inputs": {
+        "evidence": 3,
+        "productivity": 3,
+        "boundability": 4,
+        "practical_value": 3,
+        "false_positive_control": 1,
+        "rejection_reopenability": 3
+      },
+      "weights": {
+        "evidence": 0.25,
+        "productivity": 0.2,
+        "boundability": 0.15,
+        "practical_value": 0.15,
+        "false_positive_control": 0.15,
+        "rejection_reopenability": 0.1
+      },
+      "records": 16,
+      "unique_entries": 8,
+      "unique_target_surface_to_asr_surface_pairs": 16,
+      "evidence_grade": "C",
+      "runtime_boundability": "MEDIUM",
+      "false_positive_risk": "HIGH: deletion can change lexical or inflectional identity; residual cues and provider confusion remain unmeasured.",
+      "rationale": "Research supports context-sensitive /t/ deletion, but the source REJECTs still report residual cues, lexical or inflectional change, and unmeasured provider confusion."
+    }
+  ]
+}

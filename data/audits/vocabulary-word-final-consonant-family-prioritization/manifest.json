@@ -1,0 +1,143 @@
+{
+  "schema_version": 1,
+  "audit": "④-C REJECT Family Prioritization Audit",
+  "status": "CLOSED",
+  "audit_only": true,
+  "repository": "miyatayuuma/english-pwa",
+  "branch": "audit/vocabulary-word-final-consonant-family-prioritization",
+  "base_commit": "76085365bd3f5759bf3048df427574f350d01191",
+  "source_authorities": {
+    "closed_audit_head": "7ba04b6e11b18950f4dbcf9526350be524a599eb",
+    "a2_head": "76085365bd3f5759bf3048df427574f350d01191",
+    "current_main_head": "f448394e3052c686d8cad97912c3b779345b758e",
+    "original_candidates_blob_sha": "2181b520147be2bba5925bd2dfeb34d9b6428107"
+  },
+  "source_paths": [
+    "data/audits/vocabulary-word-final-consonant-asr/candidates.json",
+    "data/audits/vocabulary-word-final-consonant-asr/safe.json",
+    "data/audits/vocabulary-td-cluster-before-to/candidates.json",
+    "data/audits/vocabulary-td-cluster-before-to/safe.json",
+    "data/audits/vocabulary-td-cluster-before-to/rejected.json",
+    "data/audits/vocabulary-td-cluster-before-to/existing-audit-overrides.json",
+    "data/audits/vocabulary-td-cluster-before-to/manifest.json"
+  ],
+  "counts": {
+    "original_REJECT": 4658,
+    "A2_promoted_REJECT_to_SAFE": 17,
+    "A2_reconsidered_REJECT_retained": 16,
+    "remaining_discovery": 4625,
+    "primary_families": 169,
+    "production_files_changed": 0
+  },
+  "controls": {
+    "current_main_drift_check": "DEFERRED until a next family is chosen",
+    "production_changes": 0,
+    "vocabulary_changes": 0,
+    "speech_code_changes": 0,
+    "production_test_changes": 0,
+    "version_changes": 0,
+    "individual_rejudication": false,
+    "SAFE_REJECT_reclassification": false,
+    "PR308_changes": false,
+    "merge_current_main": false
+  },
+  "evidence_sources": [
+    {
+      "citation": "Cambridge Dictionary, and",
+      "url": "https://dictionary.cambridge.org/dictionary/english/and",
+      "use": "lists weak pronunciations including /ənd/ and /ən/; family-level weak-form evidence only"
+    },
+    {
+      "citation": "Park (2020), English word-final coronal stop deletion in high frequency words",
+      "url": "https://doi.org/10.18095/meeso.2020.21.1.56",
+      "use": "context-sensitive C/t,d/#C deletion; more frequent before sonorants than obstruents in the cited corpus analysis"
+    },
+    {
+      "citation": "Davidson (2010), Variation in stop releases in American English spontaneous speech",
+      "url": "https://doi.org/10.1121/1.3508799",
+      "use": "non-release and complete deletion are distinct; residual cues must be considered"
+    },
+    {
+      "citation": "Tagliamonte et al. (2020), Morphological and phonological effects in t,d deletion",
+      "url": "https://doi.org/10.1017/S0954394520000034",
+      "use": "morphological and phonological context are factors; no candidate-specific decision authority"
+    }
+  ],
+  "artifact_paths": [
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/README.md",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-01.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-02.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-03.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-04.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-05.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-06.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-07.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-08.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-09.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-10.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-11.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-12.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-13.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-14.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-15.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-16.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-17.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-18.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-19.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-20.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-21.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-22.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-23.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-24.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-ranking.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-summary.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/manifest.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/next-addendum-recommendation.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/population.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/rationale-catalog.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/top-families.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/validate-audit.mjs",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/validation.json"
+  ],
+  "changed_paths": [
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/README.md",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-01.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-02.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-03.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-04.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-05.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-06.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-07.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-08.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-09.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-10.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-11.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-12.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-13.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-14.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-15.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-16.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-17.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-18.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-19.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-20.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-21.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-22.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-23.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-members/part-24.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-ranking.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/family-summary.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/manifest.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/next-addendum-recommendation.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/population.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/rationale-catalog.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/top-families.json",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/validate-audit.mjs",
+    "data/audits/vocabulary-word-final-consonant-family-prioritization/validation.json"
+  ],
+  "remote_publication": {
+    "required": true,
+    "production_PR": false,
+    "force_push": false
+  }
+}

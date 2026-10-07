@@ -1,0 +1,168 @@
+{
+  "schema_version": 1,
+  "status": "RECOMMEND ONE FAMILY FOR NEXT ADDENDUM REVIEW; NO CANDIDATE PROMOTIONS",
+  "family_id": "AND_AH0_N_D_TO_AN_BEFORE_NON_TO_CONSONANT",
+  "family_name": "Unstressed and /AH0 N D/ → an /AH0 N/ before an immediate consonant (excluding to)",
+  "evidence_grade": "A",
+  "runtime_boundability": "HIGH",
+  "false_positive_risk": "HIGH",
+  "exact_mechanical_inclusion_rule": [
+    "candidate is one of the 4625 remaining original REJECT records",
+    "target_word is and and the selected context-filtered target pronunciation is exactly AH0 N D",
+    "coda is N D and deleted_consonant is exactly D",
+    "collision_word is an and the collision pronunciation is exactly AH0 N",
+    "the immediate following token is consonant-initial and is not to",
+    "no phrase-final candidate; entry_id + surface_ref + exact accepted surface remain the implementation boundary"
+  ],
+  "exact_exclusions": [
+    "all 17 A2 REJECT→SAFE promoted IDs",
+    "all 16 A2 previously reconsidered REJECT IDs",
+    "all A2 reviewed to-family candidates (no such ID remains in the 4625 population)",
+    "strong-stress and pronunciations (for example AE1 N D), Ann/Anne or other lexical candidate spellings",
+    "vowel-following, phrase-final, non-/d/ deletion, and generic C+/t,d/ clusters"
+  ],
+  "estimated_population": {
+    "candidate_records": 24,
+    "unique_entries": 16,
+    "unique_target_surface_to_collision_surface_pairs": 20,
+    "unique_word_pairs": 1
+  },
+  "representative_candidates": [
+    {
+      "candidate_id": "wfc-00456",
+      "entry_id": "vocab:00139",
+      "surface_ref": "vocab:00139:source:0",
+      "target_surface": "No sooner had I sat back and relaxed than",
+      "collision_surface": "No sooner had I sat back an relaxed than",
+      "deleted_consonant": "D",
+      "preceding_phone": "N",
+      "coda": "N D",
+      "following_token": "relaxed",
+      "following_initial_phone": "/r/",
+      "lexical_frequency_rank": 29
+    },
+    {
+      "candidate_id": "wfc-00507",
+      "entry_id": "vocab:00151",
+      "surface_ref": "vocab:00151:canonical",
+      "target_surface": "tell someone and someone else apart",
+      "collision_surface": "tell someone an someone else apart",
+      "deleted_consonant": "D",
+      "preceding_phone": "N",
+      "coda": "N D",
+      "following_token": "someone",
+      "following_initial_phone": "/s/",
+      "lexical_frequency_rank": 29
+    },
+    {
+      "candidate_id": "wfc-00526",
+      "entry_id": "vocab:00154",
+      "surface_ref": "vocab:00154:canonical",
+      "target_surface": "and so on",
+      "collision_surface": "an so on",
+      "deleted_consonant": "D",
+      "preceding_phone": "N",
+      "coda": "N D",
+      "following_token": "so",
+      "following_initial_phone": "/s/",
+      "lexical_frequency_rank": 29
+    },
+    {
+      "candidate_id": "wfc-00630",
+      "entry_id": "vocab:00180",
+      "surface_ref": "vocab:00180:source:0",
+      "target_surface": "jealous of his wealth and status",
+      "collision_surface": "jealous of his wealth an status",
+      "deleted_consonant": "D",
+      "preceding_phone": "N",
+      "coda": "N D",
+      "following_token": "status",
+      "following_initial_phone": "/s/",
+      "lexical_frequency_rank": 29
+    },
+    {
+      "candidate_id": "wfc-00661",
+      "entry_id": "vocab:00187",
+      "surface_ref": "vocab:00187:canonical",
+      "target_surface": "wait and see",
+      "collision_surface": "wait an see",
+      "deleted_consonant": "D",
+      "preceding_phone": "N",
+      "coda": "N D",
+      "following_token": "see",
+      "following_initial_phone": "/s/",
+      "lexical_frequency_rank": 29
+    },
+    {
+      "candidate_id": "wfc-00894",
+      "entry_id": "vocab:00249",
+      "surface_ref": "vocab:00249:canonical",
+      "target_surface": "every now and then",
+      "collision_surface": "every now an then",
+      "deleted_consonant": "D",
+      "preceding_phone": "N",
+      "coda": "N D",
+      "following_token": "then",
+      "following_initial_phone": "/dh/",
+      "lexical_frequency_rank": 29
+    },
+    {
+      "candidate_id": "wfc-00938",
+      "entry_id": "vocab:00259",
+      "surface_ref": "vocab:00259:canonical",
+      "target_surface": "back and forth",
+      "collision_surface": "back an forth",
+      "deleted_consonant": "D",
+      "preceding_phone": "N",
+      "coda": "N D",
+      "following_token": "forth",
+      "following_initial_phone": "/f/",
+      "lexical_frequency_rank": 29
+    },
+    {
+      "candidate_id": "wfc-00944",
+      "entry_id": "vocab:00259",
+      "surface_ref": "vocab:00259:source:0",
+      "target_surface": "pacing back and forth",
+      "collision_surface": "pacing back an forth",
+      "deleted_consonant": "D",
+      "preceding_phone": "N",
+      "coda": "N D",
+      "following_token": "forth",
+      "following_initial_phone": "/f/",
+      "lexical_frequency_rank": 29
+    }
+  ],
+  "why_this_is_next": "This is the strongest narrow family in the population: the dictionary-listed weak form supplies a family-level pronunciation path; exact lexical, phonetic, and immediate-boundary anchors constrain it. The old rejection reason is mostly absence of individual weak-form citation, which a family addendum can address. This does not establish ASR-provider confusion or low false-positive risk.",
+  "accepted_paraphrase_rescan": "YES. A dedicated addendum must rescan the current accepted paraphrase set and accepted production surfaces for the exact family after the family is selected; record current-main drift then. No rescan is performed in this prioritization phase.",
+  "expected_false_positive_controls": [
+    "Require the unstressed AH0 N D path and exact and→an one-segment deletion; no AE1 N D or homograph substitution.",
+    "Keep any eventual authority to specific entry_id + surface_ref + accepted surface; no generic /d/ deletion rule.",
+    "Add grammar-context negative controls for ill-formed strings such as 'an relaxed' and 'an someone'.",
+    "Keep Ann/Anne lexical outputs as rejected negative controls.",
+    "Do not infer ASR confusion from a dictionary weak form; measure or explicitly bound provider confusion in the addendum.",
+    "Retain stop closure/timing/glottalization and other residual cue checks; non-release is not deletion."
+  ],
+  "expected_implementation_boundary": "Audit-only addendum first. If later authorized by evidence, exact Vocabulary entry + exact accepted surface + target word and immediate consonant boundary only. Do not modify production in this task.",
+  "supporting_family_metrics": {
+    "candidate_records": 24,
+    "entries": 16,
+    "deleted_phone_distribution": {
+      "D": 24
+    },
+    "following_phone_class_distribution": {
+      "fricative": 15,
+      "nasal": 4,
+      "liquid": 3,
+      "stop": 2
+    },
+    "original_rejection_reason_distribution": {
+      "lexical_identity_change": 24,
+      "morphology_change": 24,
+      "provider_confusion_unmeasured": 24,
+      "residual_acoustic_cue_risk": 24,
+      "unreleased_not_deleted": 24,
+      "weak_form_evidence_insufficient": 24
+    }
+  }
+}
