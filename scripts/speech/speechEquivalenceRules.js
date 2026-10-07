@@ -1,3 +1,5 @@
+import { VOCABULARY_TD_CLUSTER_BEFORE_TO_AUTHORITY } from './vocabularyTdClusterBeforeToAuthority.js';
+
 const pair = ({ id, expected, recognized, kind, display = 'raw' }) => [
   { id, expected, recognized, kind, credit: 'exact-equivalent', scope: { type: 'global' }, display },
   { id: `${recognized.replace(/\s+/gu, '-')}-${expected.replace(/\s+/gu, '-')}`,
@@ -23,4 +25,5 @@ export const speechEquivalenceRules = Object.freeze([
   ...pair({ id: 'altogether-all-together', expected: 'altogether', recognized: 'all together', kind: 'segmentation-equivalence' }),
   ...pair({ id: 'oh-owe', expected: 'oh', recognized: 'owe', kind: 'homophone' }),
   ...pair({ id: 'sent-scent', expected: 'sent', recognized: 'scent', kind: 'homophone' }),
+  ...VOCABULARY_TD_CLUSTER_BEFORE_TO_AUTHORITY,
 ]);

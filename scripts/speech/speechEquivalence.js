@@ -4,7 +4,10 @@ import { speechEquivalenceRules } from './speechEquivalenceRules.js';
 function scopeAllows(rule, context = {}) {
   const scope = rule?.scope || { type: 'global' };
   if (scope.type === 'global') return true;
-  if (scope.type === 'entry') return (scope.entryIds || []).includes(String(context.entryId || ''));
+  if (scope.type === 'entry') {
+    return (scope.entryIds || []).includes(String(context.entryId || ''))
+      && (!scope.mode || scope.mode === String(context.mode || ''));
+  }
   if (scope.type === 'mode') return (scope.modes || []).includes(String(context.mode || ''));
   if (scope.type === 'provider') return (scope.providers || []).includes(String(context.provider || ''));
   return false;
