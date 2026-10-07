@@ -355,7 +355,9 @@ browserTest('canonical grammar role wins over paraphrase POS and legacy kind lab
     const meta=opened.page.locator('.vocab-meta');
     assert.match(await meta.innerText(),/前置詞/);
     assert.doesNotMatch(await meta.innerText(),/単語|表現/);
-    assert.equal(await meta.locator('span:not(.vocab-speaker)').count(),1);
+    const roleTags=meta.locator(':scope > span:not(.vocab-speaker)');
+    assert.equal(await roleTags.count(),1);
+    assert.equal((await roleTags.first().innerText()).trim(),'前置詞');
   }finally{await closePage(opened);}
 });
 
