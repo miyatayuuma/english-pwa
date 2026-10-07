@@ -50,10 +50,10 @@ export function validateVocabularyGrammarRoleAudit({vocabulary,manifest,batches,
   if(materialization){
     if(materialization.schema_version!==1||!['MATERIALIZED','MATERIALIZED_WITH_BLOCKED'].includes(materialization.status)) errors.push('paraphrase materialization: invalid schema or status');
     const accounted=(materialization.accounting?.APPLY||0)+(materialization.accounting?.ALREADY_RESOLVED||0)+(materialization.accounting?.BLOCKED||0);
-    if(materialization.accounting?.total!==57||accounted!==57||materializationRows.length!==57||materialization.accounting?.APPLY!==57||materialization.accounting?.ALREADY_RESOLVED!==0||materialization.accounting?.BLOCKED!==0) errors.push('paraphrase materialization: accounting must cover 57 rows with 57 APPLY and no BLOCKED entries');
-    if(paraphraseManifest?.population!==2478||paraphraseManifest?.candidate_count!==137||paraphraseManifest?.status_counts?.CONFIRMED!==57||paraphraseManifest?.status_counts?.REVIEW!==0||paraphraseManifest?.status_counts?.FALSE_POSITIVE!==80||paraphraseManifest?.unclassified_count!==0) errors.push('paraphrase materialization: source audit counts mismatch');
-    if(confirmedRows.length!==57||confirmedById.size!==57) errors.push('paraphrase materialization: confirmed authority must contain 57 unique entries');
-    if(materialization.source_audit?.commit!=='111bc22426cf57923ceb6bd517736a9e173aa88f'||materialization.source_audit?.base_sha!==paraphraseManifest?.base_sha) errors.push('paraphrase materialization: source audit ref mismatch');
+    if(materialization.accounting?.total!==56||accounted!==56||materializationRows.length!==56||materialization.accounting?.APPLY!==56||materialization.accounting?.ALREADY_RESOLVED!==0||materialization.accounting?.BLOCKED!==0) errors.push('paraphrase materialization: accounting must cover 56 rows with 56 APPLY and no BLOCKED entries');
+    if(paraphraseManifest?.population!==2478||paraphraseManifest?.candidate_count!==137||paraphraseManifest?.status_counts?.CONFIRMED!==56||paraphraseManifest?.status_counts?.REVIEW!==0||paraphraseManifest?.status_counts?.FALSE_POSITIVE!==81||paraphraseManifest?.unclassified_count!==0) errors.push('paraphrase materialization: source audit counts mismatch');
+    if(confirmedRows.length!==56||confirmedById.size!==56) errors.push('paraphrase materialization: confirmed authority must contain 56 unique entries');
+    if(materialization.source_audit?.commit!=='b1c93dfc4f455e55bf58db34942a7857b68777e9'||materialization.source_audit?.base_sha!==paraphraseManifest?.base_sha) errors.push('paraphrase materialization: source audit ref mismatch');
     for(const row of materializationRows){
       const id=String(row?.id||'');
       if(materializationById.has(id)) errors.push(`paraphrase materialization: duplicate ID ${id}`);

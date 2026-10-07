@@ -533,15 +533,6 @@ const expected=[
     "grammarRole": "verb"
   },
   {
-    "id": "vocab:02454",
-    "meaning_ja": "もうsomethingする頃だ",
-    "canonical": "it's about time to do something",
-    "paraphrases": [
-      "it's time to do something"
-    ],
-    "grammarRole": "construction"
-  },
-  {
     "id": "vocab:02456",
     "meaning_ja": "〜であるにもかかわらず",
     "canonical": "even though",
@@ -576,21 +567,21 @@ function slotSignature(text,id,field){
     .map(match=>match[0].toLowerCase()).sort();
 }
 
-test('all 57 confirmed paraphrase remediations are materialized exactly and grammarRole is preserved',()=>{
-  assert.equal(expected.length,57);
+test('all 56 confirmed paraphrase remediations are materialized exactly and grammarRole is preserved',()=>{
+  assert.equal(expected.length,56);
   const ids=expected.map(row=>row.id);
-  assert.equal(new Set(ids).size,57);
+  assert.equal(new Set(ids).size,56);
   assert.equal(db.entries.length,2478);
   assert.equal(byId.size,2478);
   assert.equal(ruleManifest.population,2478);
   assert.equal(ruleManifest.scanned,2478);
   assert.equal(ruleManifest.candidate_count,137);
-  assert.equal(ruleManifest.status_counts.CONFIRMED,57);
+  assert.equal(ruleManifest.status_counts.CONFIRMED,56);
   assert.equal(ruleManifest.status_counts.REVIEW,0);
-  assert.equal(ruleManifest.status_counts.FALSE_POSITIVE,80);
+  assert.equal(ruleManifest.status_counts.FALSE_POSITIVE,81);
   assert.equal(ruleManifest.unclassified_count,0);
   assert.equal(review.length,0);
-  assert.deepEqual(materialization.accounting,{APPLY:57,ALREADY_RESOLVED:0,BLOCKED:0,total:57});
+  assert.deepEqual(materialization.accounting,{APPLY:56,ALREADY_RESOLVED:0,BLOCKED:0,total:56});
   assert.deepEqual([...materializationById.keys()].sort(),[...confirmedById.keys()].sort());
   for(const row of expected){
     const entry=byId.get(row.id);
@@ -609,8 +600,8 @@ test('all 57 confirmed paraphrase remediations are materialized exactly and gram
   }
 });
 
-test('all 80 FALSE_POSITIVE entries and the zero-REVIEW classification remain unchanged',()=>{
-  assert.equal(falsePositive.length,80);
+test('all 81 FALSE_POSITIVE entries and the zero-REVIEW classification remain unchanged',()=>{
+  assert.equal(falsePositive.length,81);
   assert.equal(falsePositive.every(row=>row.status==='FALSE_POSITIVE'),true);
   for(const row of falsePositive){
     const candidate=candidatesById.get(row.id);
@@ -668,6 +659,29 @@ test('vocab:02393 is a FALSE_POSITIVE under its upstream multi-sense authority a
   assert.equal(entry.canonical,'belong');
   assert.deepEqual(entry.paraphrases,["be someone's"]);
   assert.deepEqual(curatedById.get(id),["be someone's"]);
+});
+
+
+
+test('vocab:02454 is a FALSE_POSITIVE multi-construction card and remains unchanged in production',()=>{
+  const id='vocab:02454';
+  const candidate=candidatesById.get(id);
+  const falsePositiveEntry=falsePositive.find(row=>row.id===id);
+  const entry=byId.get(id);
+  const source=items.find(value=>value.id==='E0538');
+  assert.equal(confirmedById.has(id),false);
+  assert.equal(materializationById.has(id),false);
+  assert.equal(candidate.status,'FALSE_POSITIVE');
+  assert.equal(falsePositiveEntry.status,'FALSE_POSITIVE');
+  assert.match(candidate.problem,/intentional.*multi-construction authority/);
+  assert.match(candidate.problem,/subject \+ past/);
+  assert.match(candidate.recommended_direction,/Do not narrow the canonical/);
+  assert.match(source.en,/Isn't it about time you settled down/);
+  assert.match(source.en,/settled down/);
+  assert.equal(entry.meaning_ja,'もう〜してよい頃だ／いい加減〜すべきだ');
+  assert.equal(entry.canonical,"it's about time");
+  assert.deepEqual(entry.paraphrases,["it's time to do something","it's high time someone did something"]);
+  assert.deepEqual(curatedById.get(id),entry.paraphrases);
 });
 
 test('all-mode collapses the six confirmed cross-kind cards sharing a source and canonical',()=>{

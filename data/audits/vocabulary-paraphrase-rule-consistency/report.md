@@ -8,7 +8,7 @@
 - Population: 2478
 - Scanned: 2478
 - Candidate count: 137
-- Statuses: CONFIRMED 57; REVIEW 0; FALSE_POSITIVE 80; unclassified 0
+- Statuses: CONFIRMED 56; REVIEW 0; FALSE_POSITIVE 81; unclassified 0
 - Starting audit commit: `08908d275e65e769cedaee751802ef425bccbdc6`
 - Current remote main at resolution: `dff23a3d92895c9db621ced662734fee76e395c9`
 - Production vocabulary, prompts, paraphrases, tests, UI, and service worker: unchanged.
@@ -34,16 +34,16 @@ Rule counts overlap: one candidate can carry multiple rules.
 | ILLEGAL_META_PLACEHOLDER | 0 |
 | INTERNAL_PARAPHRASE_INCONSISTENCY | 21 |
 
-### B. CONFIRMED only (57)
+### B. CONFIRMED only (56)
 
 | Rule | Count |
 |---|---:|
-| PLACEHOLDER_ASYMMETRY | 56 |
-| PROMPT_SLOT_MISMATCH | 53 |
-| SYNTACTIC_FRAME_MISMATCH | 6 |
+| PLACEHOLDER_ASYMMETRY | 55 |
+| PROMPT_SLOT_MISMATCH | 52 |
+| SYNTACTIC_FRAME_MISMATCH | 5 |
 | INCOMPLETE_SURFACE | 10 |
 | ILLEGAL_META_PLACEHOLDER | 0 |
-| INTERNAL_PARAPHRASE_INCONSISTENCY | 17 |
+| INTERNAL_PARAPHRASE_INCONSISTENCY | 16 |
 
 
 ## CONFIRMED candidates
@@ -600,16 +600,6 @@ Rule counts overlap: one candidate can carry multiple rules.
 - Recommended direction: Promptを「someoneを信頼する」にし、TARGETを「trust someone」に揃える。既存paraphrasesの「have confidence in someone」「rely on someone」は同じperson slotの候補として残す。
 - Source example (E0531): “"Jennifer deceived me!" "You should have known better than to trust her."” / 「ジェニファーにだまされた！」「彼女を信じないくらいの分別があっても良かったのに。」
 
-### vocab:02454
-
-- Prompt: もう〜してよい頃だ／いい加減〜すべきだ
-- TARGET: `it's about time`
-- Current paraphrases: `it's time to do something`, `it's high time someone did something`
-- Rules: PLACEHOLDER_ASYMMETRY, INTERNAL_PARAPHRASE_INCONSISTENCY, SYNTACTIC_FRAME_MISMATCH, PROMPT_SLOT_MISMATCH
-- Problem: Answer surfaces do not use a consistent explicit slot profile: "it's about time"=no explicit slot / "it's time to do something"=THING:1 / "it's high time someone did something"=PERSON:1,THING:1. The Japanese prompt does not explicitly identify someone (person).
-- Recommended direction: 対象行為slotをpromptに明示し、TARGETを含め全回答をその行為slotへ揃える。「someone did something」型を残すなら、行為者slotも日本語に明示する。`+ clause`は使わない。
-- Source example (E0538): “"I've been going with Jennifer on and off for ages." "You're as indecisive as ever. Isn't it about time you settled down?"” / 「ずいぶん長い間、ジェニファーとは付き合ったり別れたりの繰り返しだよ。」「相変わらず優柔不断ね。そろそろ落ち着いたらどう？」
-
 ### vocab:02456
 
 - Prompt: 〜であるにもかかわらず
@@ -712,12 +702,19 @@ Rule counts overlap: one candidate can carry multiple rules.
 
 ## FALSE_POSITIVE review
 
-All 80 records are retained in `false-positive.json` with the triggering signal and exclusion reason. Seven former REVIEW candidates moved to FALSE_POSITIVE: vocab:01010, vocab:01063, vocab:01399, vocab:02098, vocab:02287, vocab:02443, and vocab:02451. One former CONFIRMED candidate, vocab:02393, was reclassified after upstream Meaning / Canonical authority confirmed an intentional multi-sense card: `be someone's` expresses its ownership sense, while E0508 means fitting in / belonging to a place. Corrected contextual gloss: 「その場所に属する／なじめる」. Preserve canonical `belong`; no production remediation is needed. Repeated examples include clause-word substring matches where the expression is actually NP-taking (`because of`), fixed idioms (`something of a surprise`, `just in case`), anaphoric `it/that`, and matched event/person slots expressed through different but equivalent frames.
+### vocab:02454 — FALSE_POSITIVE
+
+- Canonical: `it's about time`
+- Accepted paraphrases: neutral `it's time to do something`; overdue/admonishing `it's high time someone did something`
+- Decision: The different syntactic frames are intentional related constructions, not a slot-authority inconsistency. Source E0538, “Isn't it about time you settled down?”, demonstrates `it's about time + subject + past`.
+- Production direction: Preserve the canonical and both paraphrases; no production remediation.
+
+All 81 records are retained in `false-positive.json` with the triggering signal and exclusion reason. Seven former REVIEW candidates moved to FALSE_POSITIVE: vocab:01010, vocab:01063, vocab:01399, vocab:02098, vocab:02287, vocab:02443, and vocab:02451. One former CONFIRMED candidate, vocab:02393, was reclassified after upstream Meaning / Canonical authority confirmed an intentional multi-sense card: `be someone's` expresses its ownership sense, while E0508 means fitting in / belonging to a place. Corrected contextual gloss: 「その場所に属する／なじめる」. Preserve canonical `belong`; no production remediation is needed. Repeated examples include clause-word substring matches where the expression is actually NP-taking (`because of`), fixed idioms (`something of a surprise`, `just in case`), anaphoric `it/that`, and matched event/person slots expressed through different but equivalent frames.
 
 
 ## Resolution closure
 
 - REVIEW candidates resolved: 8 / 8; final REVIEW count: 0.
-- Candidate population remains 137; CONFIRMED 57 + FALSE_POSITIVE 80 = 137; unclassified 0.
-- The resolution read current `main` at the same SHA as the audit base; no source drift affected the eight entries.
+- Candidate population remains 137; CONFIRMED 56 + FALSE_POSITIVE 81 = 137; unclassified 0.
+- The resolution read current `main` at the same SHA as the audit base. The eight former REVIEW candidates and the single targeted vocab:02454 reclassification were resolved without a broader re-audit.
 - Production data, tests, UI, ASR, grammar-role data, and service worker remain unchanged. No merge was performed.

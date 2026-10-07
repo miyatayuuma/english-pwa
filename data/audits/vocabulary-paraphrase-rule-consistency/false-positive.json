@@ -2072,5 +2072,34 @@
       "sentence_ja": "自分が受け入れられる場所を見つけられず、彼は極度の不安と孤独に陥っていた。",
       "contextual_meaning_ja": "その場所に属する／なじめる"
     }
+  },
+  {
+    "id": "vocab:02454",
+    "kind": "construction",
+    "pos": "construction",
+    "sense_key": "overdue_or_appropriate_time_for_action",
+    "prompt_ja": "もう〜してよい頃だ／いい加減〜すべきだ",
+    "target": "it's about time",
+    "paraphrases": [
+      "it's time to do something",
+      "it's high time someone did something"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "INTERNAL_PARAPHRASE_INCONSISTENCY",
+      "SYNTACTIC_FRAME_MISMATCH",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The slot-profile difference is intentional for this entry's multi-construction authority: canonical \"it's about time\" is the head construction; neutral \"it's time to do something\" and overdue/admonishing \"it's high time someone did something\" are both accepted paraphrases. Source E0538 (\"Isn't it about time you settled down?\") directly demonstrates \"it's about time + subject + past\". These related constructions have different frames by design; that difference is not a prompt/answer slot inconsistency.",
+    "recommended_direction": "No production remediation. Preserve canonical \"it's about time\", neutral \"it's time to do something\", and overdue/admonishing \"it's high time someone did something\". Do not narrow the canonical to the infinitive frame or remove the subject + past construction demonstrated by E0538.",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0538",
+      "target_span": "Isn't it about time you settled down",
+      "sentence_en": "\"I've been going with Jennifer on and off for ages.\" \"You're as indecisive as ever. Isn't it about time you settled down?\"",
+      "sentence_ja": "「ずいぶん長い間、ジェニファーとは付き合ったり別れたりの繰り返しだよ。」「相変わらず優柔不断ね。そろそろ落ち着いたらどう？」",
+      "contextual_meaning_ja": "「ずいぶん長い間、ジェニファーとは付き合ったり別れたりの繰り返しだよ。」「相変わらず優柔不断ね。そろそろ落ち着いたらどう？」"
+    }
   }
 ]

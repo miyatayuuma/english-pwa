@@ -58,9 +58,9 @@ if(fs.existsSync(materializationFile)){
   const accounted=(materialization.accounting?.APPLY||0)+(materialization.accounting?.ALREADY_RESOLVED||0)+(materialization.accounting?.BLOCKED||0);
   const hasBlocked=materialization.accounting?.BLOCKED>0;
   check(materialization.schema_version===1&&materialization.status===(hasBlocked?'MATERIALIZED_WITH_BLOCKED':'MATERIALIZED'),'Paraphrase remediation materialization schema/status mismatch');
-  check(materialization.accounting?.total===57&&accounted===57&&materialized.length===57&&materialized.filter(row=>row.status==='APPLY').length===materialization.accounting?.APPLY&&materialized.filter(row=>row.status==='BLOCKED').length===materialization.accounting?.BLOCKED&&materialized.filter(row=>row.status==='ALREADY_RESOLVED').length===materialization.accounting?.ALREADY_RESOLVED,'Paraphrase remediation accounting must cover all 57 rows');
-  check(confirmed.length===57&&confirmedById.size===57,'Paraphrase remediation must use 57 unique confirmed audit rows');
-  check(materialization.source_audit?.commit==='111bc22426cf57923ceb6bd517736a9e173aa88f','Paraphrase remediation source commit mismatch');
+  check(materialization.accounting?.total===56&&accounted===56&&materialized.length===56&&materialized.filter(row=>row.status==='APPLY').length===materialization.accounting?.APPLY&&materialized.filter(row=>row.status==='BLOCKED').length===materialization.accounting?.BLOCKED&&materialized.filter(row=>row.status==='ALREADY_RESOLVED').length===materialization.accounting?.ALREADY_RESOLVED,'Paraphrase remediation accounting must cover all 56 rows');
+  check(confirmed.length===56&&confirmedById.size===56,'Paraphrase remediation must use 56 unique confirmed audit rows');
+  check(materialization.source_audit?.commit==='b1c93dfc4f455e55bf58db34942a7857b68777e9','Paraphrase remediation source commit mismatch');
   const seenMaterialized=new Set();
   for(const row of materialized){
     const authority=confirmedById.get(row.id);
