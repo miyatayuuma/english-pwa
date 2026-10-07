@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "status": "PASS",
+  "base_commit": "7ba04b6e11b18950f4dbcf9526350be524a599eb",
+  "recovery_status": "REPRODUCED",
+  "reproduction_checksum": "EXACT_MATCH",
+  "manual_adjustment_to_match_expected": false,
+  "closed_audit": {
+    "status": "PASS",
+    "validator": "data/audits/vocabulary-word-final-consonant-asr/validate-audit.mjs",
+    "checks": 19,
+    "output": "PASS: 19 audit validation checks\n- population is 2,478\n- surface authority reconstructed exactly\n- all source spans reproduce their TARGET surface\n- coda site coverage count\n- candidate IDs and identities are unique\n- candidate TARGET references are valid\n- all candidate paths are exact one-final-consonant deletion\n- split decision sets partition all candidates\n- SAFE registration list equals SAFE audit records\n- apt to → app to seed is SAFE\n- apt to → up to is REJECT and absent from candidate generation\n- no explicit-equivalence duplicates\n- contextual homograph senses are preserved\n- vowel-substitution controls are not SAFE\n- final REVIEW set is empty\n- all 209 original REVIEW records have exactly one final disposition\n- new SAFE records have positive weak-form evidence and exact scope\n- final decision totals match all 4,666 records\n- every candidate classified"
+  },
+  "addendum": {
+    "status": "PASS",
+    "validator": "validate-addendum.mjs",
+    "checks": 15,
+    "check_names": [
+      "immutable base and source authorities",
+      "eligible target sites reproduce 102",
+      "existing candidate extraction reproduces 41",
+      "paraphrase candidate population reproduces 14",
+      "candidate IDs and generation keys are unique",
+      "SAFE REVIEW REJECT sets partition all candidates",
+      "all SAFE phone paths are a single final /t,d/ deletion before to",
+      "SAFE target and recognized surfaces differ only at the target word",
+      "prior SAFE set retained and old REJECT promotions are sourced",
+      "mandatory canonical and source tend-to cases are SAFE",
+      "negative controls are absent from SAFE",
+      "production boundary and current-main drift check are explicit",
+      "reproduction checksum matches without adjustment",
+      "historical and paraphrase decision components reproduce",
+      "rejected records are explained and fully accounted"
+    ],
+    "output": "PASS: 15 addendum validation checks\n- immutable base and source authorities\n- eligible target sites reproduce 102\n- existing candidate extraction reproduces 41\n- paraphrase candidate population reproduces 14\n- candidate IDs and generation keys are unique\n- SAFE REVIEW REJECT sets partition all candidates\n- all SAFE phone paths are a single final /t,d/ deletion before to\n- SAFE target and recognized surfaces differ only at the target word\n- prior SAFE set retained and old REJECT promotions are sourced\n- mandatory canonical and source tend-to cases are SAFE\n- negative controls are absent from SAFE\n- production boundary and current-main drift check are explicit\n- reproduction checksum matches without adjustment\n- historical and paraphrase decision components reproduce\n- rejected records are explained and fully accounted"
+  },
+  "production_changes": 0,
+  "negative_controls": "PASS"
+}

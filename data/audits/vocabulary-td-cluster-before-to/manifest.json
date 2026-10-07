@@ -1,0 +1,165 @@
+{
+  "schema_version": 1,
+  "audit": "Word-Final /t,d/ Cluster Reduction Before to — ASR Collision Audit Addendum",
+  "status": "REPRODUCED",
+  "recovery_mode": "CONTROLLED REGENERATION",
+  "repository": "miyatayuuma/english-pwa",
+  "audit_branch": "audit/vocabulary-td-cluster-before-to",
+  "immutable_base_commit": "7ba04b6e11b18950f4dbcf9526350be524a599eb",
+  "parent_commit": "7ba04b6e11b18950f4dbcf9526350be524a599eb",
+  "current_main_at_recovery": "22d4f37b48177b9a42a4b215330f0d7231400779",
+  "prior_expected_result": {
+    "eligibleTargetSites": 102,
+    "existingAuditCandidateMatches": 41,
+    "newParaphraseCandidates": 14,
+    "adjudicatedCandidates": 55,
+    "SAFE": 36,
+    "REVIEW": 0,
+    "REJECT": 19,
+    "oldSafeRetained": 8,
+    "oldRejectToSafe": 17
+  },
+  "actual_result": {
+    "eligibleTargetSites": 102,
+    "existingAuditCandidateMatches": 41,
+    "newParaphraseCandidates": 14,
+    "adjudicatedCandidates": 55,
+    "SAFE": 36,
+    "REVIEW": 0,
+    "REJECT": 19,
+    "oldSafeRetained": 8,
+    "oldRejectToSafe": 17
+  },
+  "candidate_generation": {
+    "existing_candidate_rule": "Filter immutable closed-audit candidates to target word-final consonant cluster ending /t/ or /d/, following token to with initial /t/, and exact one-final-phone deletion. No candidate generation rerun for other environments.",
+    "accepted_surface_scope": [
+      "canonical",
+      "answers[]",
+      "active source occurrence TARGET",
+      "accepted paraphrases[]"
+    ],
+    "paraphrase_rule": "Enumerate only accepted paraphrase surfaces with a word immediately before token to; use the pinned CMUdict pronunciations and require a word-final coda cluster whose last segment is /t/ or /d/.",
+    "new_candidate_rule": "Delete only that final /t/ or /d/ segment, preserve all other phones exactly, and match against a different-spelling CMUdict word present in the pinned 20k frequency list. Rank/manual major-word screening is applied at adjudication.",
+    "morphology": "Spelling or morphology differences alone do not cause REJECT if the phonetic conditions hold.",
+    "duplicate_key": "surface_ref + target_word_index + deleted final phone + collision word",
+    "phonetic_assets": {
+      "cmudict": {
+        "repository": "cmusphinx/cmudict",
+        "source_commit": "74790861f652b15e4ac49015a90074ad62a27690",
+        "git_blob_sha": "2c0411740cce3e2026a80b90b650d5f6a7258164"
+      },
+      "frequency_list": {
+        "repository": "first20hours/google-10000-english",
+        "path": "20k.txt",
+        "git_blob_sha": "11432858e83b52d62740ca173551904611bec5c6"
+      }
+    }
+  },
+  "source_authorities": {
+    "closed_audit": {
+      "branch": "audit/vocabulary-word-final-consonant-asr",
+      "head": "7ba04b6e11b18950f4dbcf9526350be524a599eb",
+      "candidate_file_blob_sha": "2181b520147be2bba5925bd2dfeb34d9b6428107",
+      "counts": {
+        "candidates": 4666,
+        "SAFE": 8,
+        "REVIEW": 0,
+        "REJECT": 4658
+      }
+    },
+    "vocabulary": {
+      "path": "data/vocabulary-v3.json",
+      "blob_sha": "ed7d2f363969f884feed8cf69053c03bc71e2e38"
+    },
+    "items": {
+      "path": "data/items.json",
+      "blob_sha": "ae2aca768b784199b77ac1cf8c0c5a80fd5725bb"
+    },
+    "coda_sites": {
+      "path": "data/audits/vocabulary-word-final-consonant-asr/coda-sites.json",
+      "blob_sha": "25411a352f3af998cf2f184d332568033760be44"
+    },
+    "surface_inventory": {
+      "path": "data/audits/vocabulary-word-final-consonant-asr/surface-inventory.json",
+      "blob_sha": "d6a7e3248d7233ed2a3a04147c25f0984db60c97"
+    }
+  },
+  "adjudication": {
+    "family": "word-final consonant cluster + final /t/ or /d/ + immediately following token to /t/",
+    "authority": "productive connected-speech cluster reduction or strong masking; individual dictionary weak-form evidence is not required",
+    "safe_invariants": [
+      "one-segment final /t,d/ deletion only",
+      "vowel sequence identical",
+      "word onset and all remaining phones identical",
+      "token count and order unchanged",
+      "no insertion, deletion, substitution, or generic fuzzy match"
+    ],
+    "historical": {
+      "oldSafeRetained": 8,
+      "oldRejectPromoted": 17,
+      "oldRejectRetained": 16
+    },
+    "paraphrase": {
+      "candidates": 14,
+      "SAFE": 11,
+      "REJECT": 3,
+      "REVIEW": 0
+    },
+    "review_policy": "REVIEW is reserved for pronunciation authority ambiguity, homograph ambiguity, non-exact deletion, unsupported phrase boundary, or generation defect; none remained."
+  },
+  "controls": [
+    {
+      "target": "apt to",
+      "asr": "up to",
+      "decision": "REJECT",
+      "safe": false,
+      "reason": "vowel mismatch"
+    },
+    {
+      "target": "see",
+      "asr": "say",
+      "decision": "REJECT",
+      "safe": false,
+      "reason": "outside the /t,d/ before to family and vowel mismatch"
+    },
+    {
+      "target": "yield",
+      "asr": "yelled",
+      "decision": "REJECT",
+      "safe": false,
+      "reason": "outside the /t,d/ before to family and vowel mismatch"
+    }
+  ],
+  "mandatory_positive": {
+    "canonical": {
+      "entry_id": "vocab:00502",
+      "target": "tend to do something",
+      "recognized": "ten to do something",
+      "decision": "SAFE"
+    },
+    "source": {
+      "entry_id": "vocab:00502",
+      "target": "tend to associate politicians with hypocrisy",
+      "recognized": "ten to associate politicians with hypocrisy",
+      "decision": "SAFE"
+    }
+  },
+  "production_boundary": {
+    "changed_files": [],
+    "production_changes": 0,
+    "pr306_changes": 0,
+    "pr307_changes": 0,
+    "main_rebase": false
+  },
+  "current_main_compatibility": {
+    "sha": "22d4f37b48177b9a42a4b215330f0d7231400779",
+    "drift_check_required_before_production": true,
+    "phase": "④-B"
+  },
+  "validation": {
+    "closed_audit_status": "PASS",
+    "closed_audit_checks": 19,
+    "addendum_status": "PASS",
+    "addendum_checks": 15
+  }
+}
