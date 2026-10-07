@@ -1,0 +1,225 @@
+{
+  "schema_version": 1,
+  "artifact_type": "single_entry_meaning_canonical_authority_resolution",
+  "repository": "miyatayuuma/english-pwa",
+  "starting_main_sha": "49184d2f3324f1a6af05f6e2d13e17c94bc5ddee",
+  "subject": {
+    "id": "vocab:02393",
+    "kind": "word",
+    "headword": "belong"
+  },
+  "resolution": {
+    "outcome": "A",
+    "status": "RESOLVED",
+    "effective_authority_before": {
+      "canonical": "belong",
+      "sense_key": "be_owned_by_or_be_part_of",
+      "meaning_ja": "属する／（人など）のものである"
+    },
+    "final_authority": {
+      "canonical": "belong",
+      "sense_key": "be_owned_by_or_be_part_of",
+      "meaning_ja": "属する／（人など）のものである"
+    },
+    "central_authority_changed": false,
+    "ownership_sense": "retained",
+    "ownership_authority_basis": "The final Admission concept is the unqualified headword belong, not an explicit ownership-only concept. The item-specific second-pass reconciliation row deliberately adopts both belong senses under the repository policy that permits a representative dictionary meaning and multiple major senses when one Japanese gloss would over-narrow the card. The legacy gloss 所有である is provenance only because Admission marks it semantic_review=pending; it corroborates the history but is not treated as controlling authority.",
+    "source_alignment_policy": "The source occurrence demonstrates one sense and is not required to match every sense in a representative multi-sense card. E0508 is evidence for the fit-in/social-belonging sense only, not for ownership.",
+    "word_07_status": "superseded by the effective central reconciliation for this ID",
+    "reconciliation_status": "valid; this artifact clarifies the item-specific application of the existing policy",
+    "schema_and_card_assessment": {
+      "sense_key_valid": true,
+      "sense_key_reason": "It is a valid lower_snake_case semantic key naming the two included sense families; it is unique for this canonical in the production Vocabulary.",
+      "canonical_valid": true,
+      "canonical_reason": "belong is the speakable dictionary headword. The ownership construction can be realized as belong to someone, while the fit-in sense can occur without that complement.",
+      "single_card_assessment": "Acceptable under the explicit multi-sense policy because the Japanese prompt visibly marks both senses. This is broader than the single E0508 occurrence, so that occurrence must not be presented as an ownership example."
+    }
+  },
+  "authority_ledger": [
+    {
+      "stage": "Admission authority",
+      "file_artifact": "data/vocabulary-v3-final-admission-authority.json",
+      "commit_branch": "e2b8c2c2f410c4feb385b518ef65c2ac3729cc58; present on main at 49184d2f3324f1a6af05f6e2d13e17c94bc5ddee",
+      "artifact_blob_sha": "03249db6bde93bb5788d8aa88bc938d105b6ec83",
+      "meaning_ja": null,
+      "sense_key": null,
+      "canonical": "belong (concept)",
+      "source_example": "E0508 is linked in the separate occurrence authority.",
+      "decision": "Final add; audit_batch 11; kind word; concept exactly belong.",
+      "reason": "The concept contains no parenthetical or explicit ownership sense and does not narrow the admitted headword to ownership alone.",
+      "supersedes": null,
+      "authority_level": "Admission boundary authority",
+      "notes": "The record does not say belong to someone, ownership, or be someone's."
+    },
+    {
+      "stage": "Admission materialization / initial semantic evidence",
+      "file_artifact": "data/vocabulary-v3-final-admission-materialization.json",
+      "commit_branch": "e2b8c2c2f410c4feb385b518ef65c2ac3729cc58; present on main at 49184d2f3324f1a6af05f6e2d13e17c94bc5ddee",
+      "artifact_blob_sha": "6cfa7b7750d77935934fcf5ac7bbbc5437792c44",
+      "meaning_ja": "所有である (original_meaning_ja; semantic_review=pending)",
+      "sense_key": null,
+      "canonical": "belong",
+      "source_example": "E0508; the linked source occurrence is belonged.",
+      "decision": "Preserved the prior V2 gloss as initial evidence and explicitly left its semantic review pending.",
+      "reason": "This is historical/provisional evidence, not an explicit final Admission sense and not authority to override the later reviewed central meaning.",
+      "supersedes": null,
+      "authority_level": "Provisional source-history evidence",
+      "notes": "Source entry is data/vocabulary-v2.json, entry duo:42:2257."
+    },
+    {
+      "stage": "Initial meaning/canonical audit baseline",
+      "file_artifact": "data/audits/vocabulary-v3-meaning-canonical/manifest.json",
+      "commit_branch": "cb42db31206a52eec590158c76c11cec34777f14; initial 2,478-entry audit",
+      "artifact_blob_sha": "e3d59abbc4e8fcb9130c20b5d402749dc9d6f3d4",
+      "meaning_ja": "所有である",
+      "sense_key": "pending_admission_1320",
+      "canonical": "belong",
+      "source_example": "E0508 / belonged",
+      "decision": "Frozen baseline before the representative-meaning review.",
+      "reason": "The sense key was provisional and the gloss came from pre-admission materialization.",
+      "supersedes": null,
+      "authority_level": "Audit baseline, not final semantic decision",
+      "notes": "Baseline main recorded in the audit is 85506d6ce258d2bd12f8ec80e937fbdd5e7a098d."
+    },
+    {
+      "stage": "Initial shard decision: word-07",
+      "file_artifact": "data/audits/vocabulary-v3-meaning-canonical/word-07.json",
+      "commit_branch": "cb42db31206a52eec590158c76c11cec34777f14; proposal preserved on main at 49184d2f3324f1a6af05f6e2d13e17c94bc5ddee",
+      "artifact_blob_sha": "211c8280c148d335ceed3fe3094080778b062793",
+      "meaning_ja": "属する",
+      "sense_key": "be_part_of_or_fit_in",
+      "canonical": "belong",
+      "source_example": "E0508 / belonged; social acceptance or fitting in",
+      "decision": "MODIFY from pending_admission_1320 / 所有である to be_part_of_or_fit_in / 属する.",
+      "reason": "The shard reason rechecked Admission concept=belong and selected the representative fit-in sense; it does not record an explicit ownership boundary.",
+      "supersedes": "Admission's pending V2 gloss as the shard-level proposal",
+      "authority_level": "Initial shard proposal; later superseded by central reconciliation",
+      "notes": "The audit README declares reconciliation.json to be the effective central authority."
+    },
+    {
+      "stage": "Central second-pass reconciliation",
+      "file_artifact": "data/audits/vocabulary-v3-meaning-canonical/reconciliation.json",
+      "commit_branch": "8de42bb9b4387d31e39327e147e2284c6bdd7f3c; effective on main at 49184d2f3324f1a6af05f6e2d13e17c94bc5ddee",
+      "artifact_blob_sha": "866abf86aef7e269e615c2461ba3b249712b7bf9",
+      "meaning_ja": "属する／（人など）のものである",
+      "sense_key": "be_owned_by_or_be_part_of",
+      "canonical": "belong",
+      "source_example": "E0508 remains occurrence evidence and demonstrates only the fit-in/social-belonging sense.",
+      "decision": "MODIFY; second-pass 62-item learning-value closure.",
+      "reason": "The repository policy prioritizes a high-value major/core or root-adjacent meaning over source-local wording and permits explanatory or multi-sense prompts when they improve target recoverability. The exact after fields for this ID explicitly include ownership and part-of senses.",
+      "supersedes": "word-07 after-value for vocab:02393",
+      "authority_level": "Effective central meaning/canonical authority",
+      "notes": "The row's reason is templated, so this resolution supplies the item-specific provenance and states explicitly that E0508 is not ownership evidence."
+    },
+    {
+      "stage": "Semantic inventory and production materialization",
+      "file_artifact": "data/vocabulary-v3-semantic-audit-inventory.json; data/vocabulary-v3.json",
+      "commit_branch": "main at 49184d2f3324f1a6af05f6e2d13e17c94bc5ddee",
+      "artifact_blob_sha": "inventory 59b8781028e73a06738f7f141b80b54cccd4cd47; production ed7d2f363969f884feed8cf69053c03bc71e2e38",
+      "meaning_ja": "属する／（人など）のものである",
+      "sense_key": "be_owned_by_or_be_part_of",
+      "canonical": "belong",
+      "source_example": "E0508 span 33–41; production occurrence retains contextual_meaning_ja=所有である.",
+      "decision": "Current inventory and production fields match the effective reconciliation.",
+      "reason": "The meaning/canonical production validator derives effective rows from the shard proposals plus reconciliation overrides and requires production fields to match them.",
+      "supersedes": "The prior production semantic fields after their authorized reconciliation materialization",
+      "authority_level": "Current materialized state; confirmation of integration, not independent sense provenance",
+      "notes": "The stored contextual_meaning_ja does not match the E0508 source translation and is not changed by this task."
+    },
+    {
+      "stage": "Source occurrence",
+      "file_artifact": "data/items.json; data/vocabulary-v3-final-admission-occurrences.json",
+      "commit_branch": "source read at main 49184d2f3324f1a6af05f6e2d13e17c94bc5ddee; occurrence authority introduced with e2b8c2c2f410c4feb385b518ef65c2ac3729cc58",
+      "artifact_blob_sha": "items ae2aca768b784199b77ac1cf8c0c5a80fd5725bb; occurrences 1815eb2d944b30ab53d6d5f8c044deab91c03814",
+      "meaning_ja": "自分が受け入れられる場所を見つけられず、彼は極度の不安と孤独に陥っていた。",
+      "sense_key": null,
+      "canonical": "belong (surface belonged)",
+      "source_example": "Having found no place he felt he belonged, he was extremely uneasy and lonely. / E0508, span 33–41.",
+      "decision": "Classify this occurrence as place/situation fit-in or social belonging, not ownership.",
+      "reason": "The clause no place he felt he belonged and the Japanese translation describe a place where he could be accepted.",
+      "supersedes": "No representative card meaning; this is occurrence-level evidence only",
+      "authority_level": "Primary source occurrence and contextual evidence",
+      "notes": "The production contextual_meaning_ja=所有である and the rule-consistency audit's copied source_example.contextual_meaning_ja are stale/misleading relative to the actual source text and translation."
+    },
+    {
+      "stage": "Paraphrase-learning audit",
+      "file_artifact": "data/audits/vocabulary-v3-paraphrase-learning/batch-024.json; data/vocabulary-v3-paraphrase-audit.json",
+      "commit_branch": "main at 49184d2f3324f1a6af05f6e2d13e17c94bc5ddee",
+      "artifact_blob_sha": "batch-024 1d4b283ff55b797baac7930213c445d14824e84d; paraphrase audit 0c6b627d9e6a386561b47ccf892313b8603bce8e",
+      "meaning_ja": "属する／（人など）のものである",
+      "sense_key": "be_owned_by_or_be_part_of",
+      "canonical": "belong",
+      "source_example": "Audit was prompt-only for this decision.",
+      "decision": "ACCEPT be someone's; REJECT belong to someone as an independent paraphrase because it adds the canonical's required argument; after_paraphrases=[be someone's].",
+      "reason": "The accepted alternative is independently useful and maps to the explicitly included ownership gloss.",
+      "supersedes": null,
+      "authority_level": "Paraphrase acceptance authority under the effective prompt",
+      "notes": "The audit does not use E0508 to establish the ownership sense."
+    },
+    {
+      "stage": "Paraphrase rule-consistency audit",
+      "file_artifact": "data/audits/vocabulary-paraphrase-rule-consistency/candidates.json; confirmed.json",
+      "commit_branch": "audit/vocabulary-paraphrase-rule-consistency at 713e4bb720429090782ebc59578b476adb5302f8",
+      "artifact_blob_sha": "candidates faa1bd0a6299113dc010783f766aaeb86932fd7e; confirmed cdd3e0b00d25edcf99fc9e9cf676102f9b6745f3",
+      "meaning_ja": "属する／（人など）のものである",
+      "sense_key": "be_owned_by_or_be_part_of",
+      "canonical": "belong",
+      "source_example": "It cites E0508 but labels contextual_meaning_ja as 所有である, which conflicts with the cited English/Japanese occurrence.",
+      "decision": "CONFIRMED classification remains unchanged in this task; its recommended direction and source-example attribution require downstream correction against this resolution.",
+      "reason": "The source example cannot be used as ownership evidence. The current central prompt nevertheless includes ownership, while the lexical canonical policy still favors the headword belong rather than narrowing the whole multi-sense card to belong to someone.",
+      "supersedes": null,
+      "authority_level": "Downstream audit authority; subordinate to meaning/canonical authority for the card's sense boundary",
+      "notes": "The generic slot-mismatch rationale does not override the effective canonical or source-sense finding."
+    },
+    {
+      "stage": "PR #307 materialization checkpoint",
+      "file_artifact": "PR #307: fix: materialize confirmed vocabulary paraphrase audit",
+      "commit_branch": "fix/vocabulary-paraphrase-confirmed-remediation at 4797c8f84b830dbbf2b0764925f57e69720fee8b; open/draft/not merged at audit start",
+      "artifact_blob_sha": null,
+      "meaning_ja": "属する／（人など）のものである",
+      "sense_key": "be_owned_by_or_be_part_of",
+      "canonical": "belong",
+      "source_example": "PR description marks vocab:02393 BLOCKED because the audit's ownership recommendation conflicts with its cited E0508 source.",
+      "decision": "No PR change, review action, or merge in this task.",
+      "reason": "This resolution establishes the card authority and separates its multi-sense prompt from the single-sense source occurrence; the downstream audit recommendation must be repaired in a separate task.",
+      "supersedes": null,
+      "authority_level": "Production remediation checkpoint; not upstream semantic authority",
+      "notes": "PR #306 is untouched."
+    }
+  ],
+  "adjudication_answers": {
+    "current_effective_authority": "reconciliation.json's vocab:02393 override",
+    "why_effective": "The meaning/canonical README explicitly declares reconciliation.json the effective central authority; the validator merges overrides over word-07 and --check-production requires production meaning/canonical fields to equal that effective row.",
+    "explicit_admission_ownership_sense": false,
+    "formal_ownership_basis": "The central second-pass row is the formal item-level decision adopting both senses under the documented dictionary-representative and multi-sense policy. The unqualified Admission concept belong sets the boundary; the pending legacy gloss is provenance only.",
+    "is_source_mismatch_allowed": true,
+    "was_word_07_superseded": true,
+    "is_reconciliation_valid": true,
+    "final_canonical": "belong",
+    "final_sense_key": "be_owned_by_or_be_part_of",
+    "final_meaning_ja": "属する／（人など）のものである",
+    "paraphrase_implication": "The ownership paraphrase may be justified by the effective multi-sense prompt, but E0508 must not be labeled or cited as an ownership occurrence. Downstream rule-consistency/materialization work must preserve this authority unless it completes a separately authorized semantic change."
+  },
+  "external_semantic_references": [
+    {
+      "source": "Cambridge Dictionary",
+      "url": "https://dictionary.cambridge.org/dictionary/english/belong",
+      "use": "Confirms belong can describe being in the right or suitable place; used only to distinguish sense interpretation, not to override repository authority."
+    },
+    {
+      "source": "Cambridge Dictionary",
+      "url": "https://dictionary.cambridge.org/dictionary/english/belong-to",
+      "use": "Confirms belong to someone has the property/ownership sense; used only to distinguish sense interpretation, not to override repository authority."
+    }
+  ],
+  "scope_and_protection": {
+    "affected_semantic_ids": ["vocab:02393"],
+    "semantic_authority_values_changed": 0,
+    "production_vocabulary_changed": 0,
+    "paraphrase_audit_changed": 0,
+    "pr_307_changed": false,
+    "pr_306_changed": false,
+    "meaning_canonical_audit_rewritten": false,
+    "notes": "This file records the adjudication only. The stale occurrence contextual annotation is called out but intentionally unchanged."
+  }
+}
