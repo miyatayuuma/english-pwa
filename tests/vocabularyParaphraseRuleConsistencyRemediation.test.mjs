@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {collapseDuplicateVocabularyCards} from '../scripts/app/vocabularyLearningCore.js';
+import {buildVocabularySession,collapseDuplicateVocabularyCards} from '../scripts/app/vocabularyLearningCore.js';
 
 const db=JSON.parse(fs.readFileSync(new URL('../data/vocabulary-v3.json',import.meta.url),'utf8'));
 const paraphraseAudit=JSON.parse(fs.readFileSync(new URL('../data/vocabulary-v3-paraphrase-audit.json',import.meta.url),'utf8'));
@@ -681,5 +681,9 @@ test('all-mode collapses the six confirmed cross-kind cards sharing a source and
     assert.deepEqual(merged[0].paraphrases,wordEntry.paraphrases,`${wordId} keeps the confirmed paraphrases`);
     assert.deepEqual(collapseDuplicateVocabularyCards([active(wordEntry)]).map(value=>value.id),[wordId],`${wordId} remains available in the word filter`);
     assert.deepEqual(collapseDuplicateVocabularyCards([active(expressionEntry)]).map(value=>value.id),[expressionId],`${expressionId} remains available in the expression filter`);
+    const allMode=buildVocabularySession([active(expressionEntry),active(wordEntry)],{}, {kind:'all',size:12,now:1_800_000_000_000});
+    assert.deepEqual(allMode.entries.map(value=>value.id),[wordId],`${wordId}/${expressionId} yields one all-mode SRS card`);
+    assert.deepEqual(buildVocabularySession([active(expressionEntry),active(wordEntry)],{}, {kind:'word',size:12,now:1_800_000_000_000}).entries.map(value=>value.id),[wordId],`${wordId} remains in word sessions`);
+    assert.deepEqual(buildVocabularySession([active(expressionEntry),active(wordEntry)],{}, {kind:'expression',size:12,now:1_800_000_000_000}).entries.map(value=>value.id),[expressionId],`${expressionId} remains in expression sessions`);
   }
 });

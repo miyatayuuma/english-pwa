@@ -323,8 +323,7 @@ function startSession(){
   cancelPronunciation();
   const levelState=JSON.parse(localStorage.getItem('itemLevelV1')||'{}');
   const eligible=eligibleVocabularyEntries(state.entries,levelState);
-  const sessionEntries=state.kind==='all'?collapseDuplicateVocabularyCards(eligible):eligible;
-  const plan=buildVocabularySession(sessionEntries,levelState,{
+  const plan=buildVocabularySession(eligible,levelState,{
     size:12,
     kind:state.kind,
     recentItemIds:loadRecentVocabularyIds(),

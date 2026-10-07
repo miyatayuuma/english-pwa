@@ -175,8 +175,9 @@ export function buildVocabularySession(entries,levelState={},options={}){
   const newCap=Number.isFinite(newCapRaw)
     ? Math.max(0,Math.min(requested,Math.round(newCapRaw)))
     : Math.min(8,requested);
-  const source=(Array.isArray(entries)?entries:[]).filter(entry=>kind==='all'
+  const filtered=(Array.isArray(entries)?entries:[]).filter(entry=>kind==='all'
     ||(kind==='word'?entry?.kind==='word':entry?.kind==='expression'||entry?.kind==='construction'));
+  const source=kind==='all'?collapseDuplicateVocabularyCards(filtered):filtered;
   const rotationSeed=Math.max(0,Math.round(Number(options.rotationSeed)||0));
   const recentIds=new Set(Array.from(options.recentItemIds||[],String));
   const allMetas=source.map((entry,index)=>candidate(entry,levelState,now,index,rotationSeed));
