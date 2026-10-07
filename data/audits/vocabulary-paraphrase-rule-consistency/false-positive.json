@@ -1,5 +1,109 @@
 [
   {
+    "id": "vocab:00162",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "end_or_dismiss_topic",
+    "prompt_ja": "somethingはこの辺までにする",
+    "target": "so much for something",
+    "paraphrases": [
+      "leave it at that"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "SYNTACTIC_FRAME_MISMATCH",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The Japanese prompt explicitly supplies “something”, but the paraphrase “leave it at that” refers to the same topic through anaphoric “it/that”; those pronouns are not additional free answer slots.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0129",
+      "target_span": "So much for small talk",
+      "sentence_en": "So much for small talk. Let's get down to business.",
+      "sentence_ja": "雑談はこの辺にして、本題に入りましょう。",
+      "contextual_meaning_ja": "雑談はこの辺にして"
+    }
+  },
+  {
+    "id": "vocab:00770",
+    "kind": "word",
+    "pos": "adjective",
+    "sense_key": "causing_worry",
+    "prompt_ja": "人を不安にさせる",
+    "target": "alarming",
+    "paraphrases": [
+      "worry someone",
+      "make someone anxious"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The prompt already identifies the affected person (“人を”), while “alarming” describes the cause of that effect and the two paraphrases express the causative relation. The person is not an extra unsupplied slot.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0032",
+      "target_span": "alarming",
+      "sentence_en": "Please take a look at this chart. It indicates that juvenile delinquency is on the increase at an alarming rate.",
+      "sentence_ja": "この表をご覧になってください。少年非行が深刻な割合で増加していることを示しています。",
+      "contextual_meaning_ja": "人を不安にさせる"
+    }
+  },
+  {
+    "id": "vocab:01377",
+    "kind": "construction",
+    "pos": "construction",
+    "sense_key": "to_some_degree_a",
+    "prompt_ja": "ちょっとした驚き",
+    "target": "something of a surprise",
+    "paraphrases": [
+      "a bit of a surprise"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "In “something of a surprise”, “something of” is a degree idiom (“a bit of”), not a variable thing slot; “a bit of a surprise” matches the prompt.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0111",
+      "target_span": "something of a necessity",
+      "sentence_en": "A cell phone has become something of a necessity, and I can't do without one.",
+      "sentence_ja": "携帯電話はちょっとした必需品になったことだし、それなしではやっていけない。",
+      "contextual_meaning_ja": "OLD French古フランス語"
+    }
+  },
+  {
+    "id": "vocab:02406",
+    "kind": "word",
+    "pos": "word",
+    "sense_key": "aged_between_twenty_and_twenty_nine",
+    "prompt_ja": "20代の",
+    "target": "twenty-something",
+    "paraphrases": [
+      "in one's twenties"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "“Twenty-something” is a lexicalized age-group word. In “in one’s twenties”, “one’s” is bound to the person being described rather than an independent prompt slot; both can answer “20代の” in context.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0515",
+      "target_span": "twenty-something",
+      "sentence_en": "His niece is sociable and mature for her age. She could pass for twenty-something.",
+      "sentence_ja": "彼の姪は年の割には社交的で大人だ。二十代と言っても通用する。",
+      "contextual_meaning_ja": "『20』"
+    }
+  },
+  {
     "id": "vocab:00004",
     "kind": "construction",
     "pos": "verb",
@@ -101,33 +205,6 @@
     }
   },
   {
-    "id": "vocab:00079",
-    "kind": "expression",
-    "pos": "preposition",
-    "sense_key": "because_of",
-    "prompt_ja": "〜が原因で",
-    "target": "owing to",
-    "paraphrases": [
-      "because of",
-      "due to",
-      "on account of"
-    ],
-    "rule": [
-      "SYNTACTIC_FRAME_MISMATCH"
-    ],
-    "status": "FALSE_POSITIVE",
-    "problem": "“Because of” is an NP-taking preposition, as are “owing to”, “due to”, and “on account of”. The substring “because” alone falsely suggested a clause-taking conjunction.",
-    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
-    "confidence": "HIGH",
-    "source_example": {
-      "item_id": "E0060",
-      "target_span": "Owing to",
-      "sentence_en": "Owing to illness, some representatives were absent from the annual conference.",
-      "sentence_ja": "病気のために年次会議を欠席した代表者もいた。",
-      "contextual_meaning_ja": "病気のため"
-    }
-  },
-  {
     "id": "vocab:00085",
     "kind": "expression",
     "pos": "expression",
@@ -204,34 +281,6 @@
     }
   },
   {
-    "id": "vocab:00126",
-    "kind": "expression",
-    "pos": "preposition",
-    "sense_key": "because_of",
-    "prompt_ja": "〜が原因で",
-    "target": "on account of",
-    "paraphrases": [
-      "because of",
-      "due to",
-      "owing to",
-      "as a result of"
-    ],
-    "rule": [
-      "SYNTACTIC_FRAME_MISMATCH"
-    ],
-    "status": "FALSE_POSITIVE",
-    "problem": "“Because of” is an NP-taking preposition, as are “on account of”, “due to”, “owing to”, and “as a result of”. The substring “because” alone falsely suggested a clause-taking conjunction.",
-    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
-    "confidence": "HIGH",
-    "source_example": {
-      "item_id": "E0093",
-      "target_span": "on account of",
-      "sentence_en": "Our flight to Vienna was delayed on account of a minor accident.",
-      "sentence_ja": "ちょっとした事故が原因で、私たちのウィーン行きの便に遅れが出た。",
-      "contextual_meaning_ja": "〜が原因で"
-    }
-  },
-  {
     "id": "vocab:00160",
     "kind": "construction",
     "pos": "conjunction",
@@ -255,33 +304,6 @@
       "sentence_en": "Any apartment will do as long as the rent is low. I'm not particular about it.",
       "sentence_ja": "家賃が安ければ、どんなマンションでも構いません。こだわりはありませんから。",
       "contextual_meaning_ja": "〜であれば"
-    }
-  },
-  {
-    "id": "vocab:00162",
-    "kind": "expression",
-    "pos": "expression",
-    "sense_key": "end_or_dismiss_topic",
-    "prompt_ja": "somethingはこの辺までにする",
-    "target": "so much for something",
-    "paraphrases": [
-      "leave it at that"
-    ],
-    "rule": [
-      "PLACEHOLDER_ASYMMETRY",
-      "SYNTACTIC_FRAME_MISMATCH",
-      "PROMPT_SLOT_MISMATCH"
-    ],
-    "status": "FALSE_POSITIVE",
-    "problem": "The Japanese prompt explicitly supplies “something”, but the paraphrase “leave it at that” refers to the same topic through anaphoric “it/that”; those pronouns are not additional free answer slots.",
-    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
-    "confidence": "HIGH",
-    "source_example": {
-      "item_id": "E0129",
-      "target_span": "So much for small talk",
-      "sentence_en": "So much for small talk. Let's get down to business.",
-      "sentence_ja": "雑談はこの辺にして、本題に入りましょう。",
-      "contextual_meaning_ja": "雑談はこの辺にして"
     }
   },
   {
@@ -1056,91 +1078,6 @@
     }
   },
   {
-    "id": "vocab:00770",
-    "kind": "word",
-    "pos": "adjective",
-    "sense_key": "causing_worry",
-    "prompt_ja": "人を不安にさせる",
-    "target": "alarming",
-    "paraphrases": [
-      "worry someone",
-      "make someone anxious"
-    ],
-    "rule": [
-      "PLACEHOLDER_ASYMMETRY",
-      "PROMPT_SLOT_MISMATCH"
-    ],
-    "status": "FALSE_POSITIVE",
-    "problem": "The prompt already identifies the affected person (“人を”), while “alarming” describes the cause of that effect and the two paraphrases express the causative relation. The person is not an extra unsupplied slot.",
-    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
-    "confidence": "HIGH",
-    "source_example": {
-      "item_id": "E0032",
-      "target_span": "alarming",
-      "sentence_en": "Please take a look at this chart. It indicates that juvenile delinquency is on the increase at an alarming rate.",
-      "sentence_ja": "この表をご覧になってください。少年非行が深刻な割合で増加していることを示しています。",
-      "contextual_meaning_ja": "人を不安にさせる"
-    }
-  },
-  {
-    "id": "vocab:01010",
-    "kind": "word",
-    "pos": "verb",
-    "sense_key": "give_a_criminal_a_punishment",
-    "prompt_ja": "判決を言い渡す",
-    "target": "sentence",
-    "paraphrases": [
-      "pass sentence on someone",
-      "hand down a sentence"
-    ],
-    "rule": [
-      "PLACEHOLDER_ASYMMETRY",
-      "INTERNAL_PARAPHRASE_INCONSISTENCY",
-      "PROMPT_SLOT_MISMATCH"
-    ],
-    "status": "FALSE_POSITIVE",
-    "problem": "The person receiving the sentence is inherent in 判決を言い渡す and is naturally omitted in Japanese. In the source example, he is the person sentenced. `pass sentence on someone` makes that same recipient explicit; it does not add a different answer slot that the prompt cannot support. The bare TARGET `sentence` and `hand down a sentence` are valid vocabulary/action surfaces with the recipient left implicit.",
-    "recommended_direction": "このslot整合性監査では変更不要。受け手を明示する別カードにする場合だけ、promptを「someoneに判決を言い渡す」とし、TARGET/paraphrasesにも同じ受け手slotを付ける。",
-    "confidence": "HIGH",
-    "source_example": {
-      "item_id": "E0462",
-      "target_span": "sentenced",
-      "sentence_en": "The man pleaded for mercy, but he was sentenced to twenty years in prison for his crime.",
-      "sentence_ja": "男は情状酌量を求めたが、犯した罪に対して20年の懲役刑が言い渡された。",
-      "contextual_meaning_ja": "判決を言い渡す"
-    }
-  },
-  {
-    "id": "vocab:01063",
-    "kind": "word",
-    "pos": "verb",
-    "sense_key": "think_carefully_about",
-    "prompt_ja": "熟考する",
-    "target": "reflect",
-    "paraphrases": [
-      "contemplate",
-      "ponder",
-      "deliberate",
-      "think over something"
-    ],
-    "rule": [
-      "PLACEHOLDER_ASYMMETRY",
-      "INTERNAL_PARAPHRASE_INCONSISTENCY",
-      "PROMPT_SLOT_MISMATCH"
-    ],
-    "status": "FALSE_POSITIVE",
-    "problem": "The topic being considered is a shared, naturally implicit object. Japanese「熟考する」can omit it, and the source example explicitly supplies the topic for `reflect on it`. `think over something` names that same generic topic; it does not add a different slot type or information absent from the prompt.",
-    "recommended_direction": "現promptと回答形を維持する。対象が文脈から分かるときに省略可能な思考対象の表出差であり、slot追加・paraphrase除外は不要。",
-    "confidence": "HIGH",
-    "source_example": {
-      "item_id": "E0546",
-      "target_span": "reflect",
-      "sentence_en": "Take your time. I know you need a couple of days to reflect on it.",
-      "sentence_ja": "慌てなくていいですよ。そのことをじっくり考えるには、2、3日必要でしょうから。",
-      "contextual_meaning_ja": "熟考する"
-    }
-  },
-  {
     "id": "vocab:01166",
     "kind": "expression",
     "pos": "expression",
@@ -1321,31 +1258,6 @@
     }
   },
   {
-    "id": "vocab:01377",
-    "kind": "construction",
-    "pos": "construction",
-    "sense_key": "to_some_degree_a",
-    "prompt_ja": "ちょっとした驚き",
-    "target": "something of a surprise",
-    "paraphrases": [
-      "a bit of a surprise"
-    ],
-    "rule": [
-      "PLACEHOLDER_ASYMMETRY"
-    ],
-    "status": "FALSE_POSITIVE",
-    "problem": "In “something of a surprise”, “something of” is a degree idiom (“a bit of”), not a variable thing slot; “a bit of a surprise” matches the prompt.",
-    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
-    "confidence": "HIGH",
-    "source_example": {
-      "item_id": "E0111",
-      "target_span": "something of a necessity",
-      "sentence_en": "A cell phone has become something of a necessity, and I can't do without one.",
-      "sentence_ja": "携帯電話はちょっとした必需品になったことだし、それなしではやっていけない。",
-      "contextual_meaning_ja": "OLD French古フランス語"
-    }
-  },
-  {
     "id": "vocab:01381",
     "kind": "expression",
     "pos": "expression",
@@ -1395,34 +1307,6 @@
       "sentence_en": "There are a number of factors discouraging us from investing in stocks.",
       "sentence_ja": "私たちの株式投資への意欲をそぐような要因がかなりある。",
       "contextual_meaning_ja": "私たちの株式投資への意欲をそぐような要因がかなりある。"
-    }
-  },
-  {
-    "id": "vocab:01399",
-    "kind": "expression",
-    "pos": "expression",
-    "sense_key": "unlikely_future_event",
-    "prompt_ja": "〜する見込みがほとんどない",
-    "target": "there is little prospect that",
-    "paraphrases": [
-      "be unlikely to do something",
-      "have little chance of doing something"
-    ],
-    "rule": [
-      "PLACEHOLDER_ASYMMETRY",
-      "SYNTACTIC_FRAME_MISMATCH",
-      "INCOMPLETE_SURFACE"
-    ],
-    "status": "FALSE_POSITIVE",
-    "problem": "The Japanese pattern「〜する見込みがほとんどない」provides an event/proposition slot. The TARGET's that-clause and the paraphrases' infinitive or gerund patterns express that same event; the source example supplies the two countries and their progress as the proposition. Their clause shapes differ, but the required event slot is shared. These are actual answer patterns, not a `+ clause` metalinguistic placeholder.",
-    "recommended_direction": "「〜する」のevent slotを維持し、各回答surfaceは現状のままとする。`+ clause`を回答文字列へ追加しない。",
-    "confidence": "HIGH",
-    "source_example": {
-      "item_id": "E0141",
-      "target_span": "There's little prospect that the two countries will make significant progress in disarmament",
-      "sentence_en": "There's little prospect that the two countries will make significant progress in disarmament.",
-      "sentence_ja": "軍縮において、両国が大きな進展を遂げる見込みはほとんどない。",
-      "contextual_meaning_ja": "軍縮において、両国が大きな進展を遂げる見込みはほとんどない。"
     }
   },
   {
@@ -1551,31 +1435,6 @@
       "sentence_en": "The committee called on all nations to work side by side to curb air pollution.",
       "sentence_ja": "委員会は、大気汚染を抑制するために互いに協力し合うよう各国に要請した。",
       "contextual_meaning_ja": "委員会は、大気汚染を抑制するために互いに協力し合うよう各国に要請した。"
-    }
-  },
-  {
-    "id": "vocab:01671",
-    "kind": "expression",
-    "pos": "expression",
-    "sense_key": "warn_person_that",
-    "prompt_ja": "someoneにsomethingは危険だと警告する",
-    "target": "warn someone that something is dangerous",
-    "paraphrases": [
-      "warn someone about the danger of something"
-    ],
-    "rule": [
-      "SYNTACTIC_FRAME_MISMATCH"
-    ],
-    "status": "FALSE_POSITIVE",
-    "problem": "Both answers preserve the prompted person and the proposition/content being warned about. “Warn someone that …” and “warn someone about …” are alternate realizations of the same slots explicitly present in the Japanese prompt.",
-    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
-    "confidence": "HIGH",
-    "source_example": {
-      "item_id": "E0241",
-      "target_span": "warned us time and again that petroleum is not only a blessing but also a curse",
-      "sentence_en": "The ecologist has warned us time and again that petroleum is not only a blessing but also a curse.",
-      "sentence_ja": "石油は天の恵みであると同時に災いのもとであると、その生態学者は我々に繰り返し警告してきた。",
-      "contextual_meaning_ja": "石油は天の恵みであると同時に災いのもとであると、その生態学者は我々に繰り返し警告してきた。"
     }
   },
   {
@@ -1759,32 +1618,6 @@
     }
   },
   {
-    "id": "vocab:02098",
-    "kind": "word",
-    "pos": "word",
-    "sense_key": "persistently_trouble",
-    "prompt_ja": "付きまとう",
-    "target": "haunt",
-    "paraphrases": [
-      "follow someone around"
-    ],
-    "rule": [
-      "PLACEHOLDER_ASYMMETRY",
-      "PROMPT_SLOT_MISMATCH"
-    ],
-    "status": "FALSE_POSITIVE",
-    "problem": "The affected person in `follow someone around` is the same implicit target of「付きまとう」and the person haunted in the source example (`I'm still haunted ...`). The Japanese prompt naturally leaves that affected person unspoken; the paraphrase only surfaces the same participant, not a new person slot.",
-    "recommended_direction": "人の対象を含意する現promptを維持する。今回の例では人slotの追加や `follow someone around` の除外は不要。",
-    "confidence": "HIGH",
-    "source_example": {
-      "item_id": "E0412",
-      "target_span": "haunted",
-      "sentence_en": "I'm still haunted by a vivid nightmare I had last night.",
-      "sentence_ja": "昨日の夜に見た生々しい悪夢がまだ頭から離れない。",
-      "contextual_meaning_ja": "...に『しばしば行く』"
-    }
-  },
-  {
     "id": "vocab:02204",
     "kind": "expression",
     "pos": "expression",
@@ -1807,34 +1640,6 @@
       "sentence_en": "He was about to commit suicide by swallowing poison when he thought better of it.",
       "sentence_ja": "毒物を飲んで自殺しようとした直前に彼は思いとどまった。",
       "contextual_meaning_ja": "毒物を飲んで自殺しようとした直前に彼は思いとどまった。"
-    }
-  },
-  {
-    "id": "vocab:02287",
-    "kind": "word",
-    "pos": "verb",
-    "sense_key": "give_information",
-    "prompt_ja": "知らせる",
-    "target": "inform",
-    "paraphrases": [
-      "let someone know",
-      "notify"
-    ],
-    "rule": [
-      "PLACEHOLDER_ASYMMETRY",
-      "INTERNAL_PARAPHRASE_INCONSISTENCY",
-      "PROMPT_SLOT_MISMATCH"
-    ],
-    "status": "FALSE_POSITIVE",
-    "problem": "`inform`, `notify`, and `let someone know` share the recipient role; the first two are bare verb headwords while the last spells out that same role. Japanese「知らせる」also entails a recipient that is routinely omitted. The source example uses a passive (`he was informed`) and its Japanese translation likewise omits the recipient, confirming natural ellipsis rather than a prompt/answer mismatch.",
-    "recommended_direction": "現promptと3つの回答形を維持する。受け手は共通の省略可能な役割であり、person slotを新たにpromptへ追加する必要はない。",
-    "confidence": "HIGH",
-    "source_example": {
-      "item_id": "E0468",
-      "target_span": "Informed",
-      "sentence_en": "Informed of her safety, he breathed a sigh of relief.",
-      "sentence_ja": "彼女の無事を知らされて、彼は安堵のため息をついた。",
-      "contextual_meaning_ja": "に『知らせる』"
     }
   },
   {
@@ -1861,57 +1666,6 @@
       "sentence_en": "It won't be long before everything is ready. In the meantime, help yourself to some snacks.",
       "sentence_ja": "もうすぐ準備完了です。その間、軽食をご自由につまんでください。",
       "contextual_meaning_ja": "『軽食』"
-    }
-  },
-  {
-    "id": "vocab:02393",
-    "kind": "word",
-    "pos": "word",
-    "sense_key": "be_owned_by_or_be_part_of",
-    "prompt_ja": "属する／（人など）のものである",
-    "target": "belong",
-    "paraphrases": [
-      "be someone's"
-    ],
-    "rule": [
-      "PLACEHOLDER_ASYMMETRY",
-      "PROMPT_SLOT_MISMATCH"
-    ],
-    "status": "FALSE_POSITIVE",
-    "problem": "The answer-surface slot asymmetry is an audit signal, but not a rule violation for this intentionally multi-sense card: the upstream Meaning / Canonical authority accepts both the sense-neutral headword and a sense-specific answer surface. “be someone's” represents the ownership sense, while cited source E0508 expresses fit-in / social belonging, not ownership.",
-    "recommended_direction": "No production correction. Preserve canonical “belong” and the accepted paraphrase “be someone's” for the ownership sense. Accepted answer surfaces on this multi-sense card do not need to express every sense; do not narrow the canonical to “belong to someone”.",
-    "confidence": "HIGH",
-    "source_example": {
-      "item_id": "E0508",
-      "target_span": "belonged",
-      "sentence_en": "Having found no place he felt he belonged, he was extremely uneasy and lonely.",
-      "sentence_ja": "自分が受け入れられる場所を見つけられず、彼は極度の不安と孤独に陥っていた。",
-      "contextual_meaning_ja": "その場所に属する／なじめる"
-    }
-  },
-  {
-    "id": "vocab:02406",
-    "kind": "word",
-    "pos": "word",
-    "sense_key": "aged_between_twenty_and_twenty_nine",
-    "prompt_ja": "20代の",
-    "target": "twenty-something",
-    "paraphrases": [
-      "in one's twenties"
-    ],
-    "rule": [
-      "PLACEHOLDER_ASYMMETRY"
-    ],
-    "status": "FALSE_POSITIVE",
-    "problem": "“Twenty-something” is a lexicalized age-group word. In “in one’s twenties”, “one’s” is bound to the person being described rather than an independent prompt slot; both can answer “20代の” in context.",
-    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
-    "confidence": "HIGH",
-    "source_example": {
-      "item_id": "E0515",
-      "target_span": "twenty-something",
-      "sentence_en": "His niece is sociable and mature for her age. She could pass for twenty-something.",
-      "sentence_ja": "彼の姪は年の割には社交的で大人だ。二十代と言っても通用する。",
-      "contextual_meaning_ja": "『20』"
     }
   },
   {
@@ -1942,34 +1696,6 @@
     }
   },
   {
-    "id": "vocab:02443",
-    "kind": "expression",
-    "pos": "expression",
-    "sense_key": "amorous_interest",
-    "prompt_ja": "恋愛感情",
-    "target": "romantic interest",
-    "paraphrases": [
-      "romantic feelings",
-      "feelings for someone"
-    ],
-    "rule": [
-      "PLACEHOLDER_ASYMMETRY",
-      "INTERNAL_PARAPHRASE_INCONSISTENCY",
-      "PROMPT_SLOT_MISMATCH"
-    ],
-    "status": "FALSE_POSITIVE",
-    "problem": "In this entry,「恋愛感情」and `romantic interest` / `romantic feelings` inherently describe a relation to a person. `feelings for someone` spells out that same naturally understood target; it does not add an independent slot the learner must infer. The source example also identifies Bill as the person Monica's romantic interest concerns.",
-    "recommended_direction": "現promptとparaphrasesを維持する。恋愛感情の関係対象は語義に内在しており、person slotの追加や `feelings for someone` の除外は不要。",
-    "confidence": "HIGH",
-    "source_example": {
-      "item_id": "E0522",
-      "target_span": "romantic interest",
-      "sentence_en": "Bill just wanted to comfort Monica, but she interpreted it as romantic interest.",
-      "sentence_ja": "ビルはただモニカを慰めたかっただけなのに、彼女は彼が自分に気があるのだと解釈した。",
-      "contextual_meaning_ja": "ビルはただモニカを慰めたかっただけなのに、彼女は彼が自分に気があるのだと解釈した。"
-    }
-  },
-  {
     "id": "vocab:02446",
     "kind": "expression",
     "pos": "expression",
@@ -1993,62 +1719,6 @@
       "sentence_en": "\"Lisa, are you getting along with Nick?\" \"Once in a while, I think of divorcing him.\" \"You must be kidding!\"",
       "sentence_ja": "「リサ、ニックとうまくやってる？」「時々、離婚を考えることがあるわ。」「冗談だろ！」",
       "contextual_meaning_ja": "「リサ、ニックとうまくやってる？」「時々、離婚を考えることがあるわ。」「冗談だろ！」"
-    }
-  },
-  {
-    "id": "vocab:02451",
-    "kind": "expression",
-    "pos": "expression",
-    "sense_key": "fear_doing",
-    "prompt_ja": "somethingすることを恐れている",
-    "target": "be afraid of doing something",
-    "paraphrases": [
-      "be afraid to do something",
-      "be scared to do something",
-      "fear doing something"
-    ],
-    "rule": [
-      "SYNTACTIC_FRAME_MISMATCH"
-    ],
-    "status": "FALSE_POSITIVE",
-    "problem": "The prompt explicitly supplies the action slot with「somethingすること」. Every answer form takes that same action as its complement; `of + gerund` and `to-infinitive` are different surface frames but do not change the slot count or type. The source example's `taking risks` is the same kind of action slot. Possible nuance differences do not establish a structural rule violation.",
-    "recommended_direction": "「somethingすること」のprompt slotを維持し、現行のgerund/to-infinitive answer surfacesを構造不整合として除外しない。",
-    "confidence": "HIGH",
-    "source_example": {
-      "item_id": "E0537",
-      "target_span": "afraid of taking risks",
-      "sentence_en": "\"To be honest, I'm crazy about Ken because he's brave, self-confident, and never afraid of taking risks.\" \"If I were you, I'd ask him out!\"",
-      "sentence_ja": "「正直言うと私、ケンに夢中なの。だって、勇敢で自分に自信を持っていて、それに危険を冒すことを決して恐れないでしょ。」「私ならデートに誘うわ。」",
-      "contextual_meaning_ja": "「正直言うと私、ケンに夢中なの。だって、勇敢で自分に自信を持っていて、それに危険を冒すことを決して恐れないでしょ。」「私ならデートに誘うわ。」"
-    }
-  },
-  {
-    "id": "vocab:02454",
-    "kind": "construction",
-    "pos": "construction",
-    "sense_key": "overdue_or_appropriate_time_for_action",
-    "prompt_ja": "もう〜してよい頃だ／いい加減〜すべきだ",
-    "target": "it's about time",
-    "paraphrases": [
-      "it's time to do something",
-      "it's high time someone did something"
-    ],
-    "rule": [
-      "PLACEHOLDER_ASYMMETRY",
-      "INTERNAL_PARAPHRASE_INCONSISTENCY",
-      "SYNTACTIC_FRAME_MISMATCH",
-      "PROMPT_SLOT_MISMATCH"
-    ],
-    "status": "FALSE_POSITIVE",
-    "problem": "The slot-profile difference is intentional for this entry's multi-construction authority: canonical \"it's about time\" is the head construction; neutral \"it's time to do something\" and overdue/admonishing \"it's high time someone did something\" are both accepted paraphrases. Source E0538 (\"Isn't it about time you settled down?\") directly demonstrates \"it's about time + subject + past\". These related constructions have different frames by design; that difference is not a prompt/answer slot inconsistency.",
-    "recommended_direction": "No production remediation. Preserve canonical \"it's about time\", neutral \"it's time to do something\", and overdue/admonishing \"it's high time someone did something\". Do not narrow the canonical to the infinitive frame or remove the subject + past construction demonstrated by E0538.",
-    "confidence": "HIGH",
-    "source_example": {
-      "item_id": "E0538",
-      "target_span": "Isn't it about time you settled down",
-      "sentence_en": "\"I've been going with Jennifer on and off for ages.\" \"You're as indecisive as ever. Isn't it about time you settled down?\"",
-      "sentence_ja": "「ずいぶん長い間、ジェニファーとは付き合ったり別れたりの繰り返しだよ。」「相変わらず優柔不断ね。そろそろ落ち着いたらどう？」",
-      "contextual_meaning_ja": "「ずいぶん長い間、ジェニファーとは付き合ったり別れたりの繰り返しだよ。」「相変わらず優柔不断ね。そろそろ落ち着いたらどう？」"
     }
   },
   {
@@ -2100,6 +1770,336 @@
       "sentence_en": "\"One of her relatives passed away three days ago.\" \"Oh, that's too bad. I'm so sorry.\"",
       "sentence_ja": "「彼女の親戚が3日前に亡くなったんだ。」「えっ、それは大変ね。お気の毒だわ。」",
       "contextual_meaning_ja": "「彼女の親戚が3日前に亡くなったんだ。」「えっ、それは大変ね。お気の毒だわ。」"
+    }
+  },
+  {
+    "id": "vocab:00079",
+    "kind": "expression",
+    "pos": "preposition",
+    "sense_key": "because_of",
+    "prompt_ja": "〜が原因で",
+    "target": "owing to",
+    "paraphrases": [
+      "because of",
+      "due to",
+      "on account of"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "“Because of” is an NP-taking preposition, as are “owing to”, “due to”, and “on account of”. The substring “because” alone falsely suggested a clause-taking conjunction.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0060",
+      "target_span": "Owing to",
+      "sentence_en": "Owing to illness, some representatives were absent from the annual conference.",
+      "sentence_ja": "病気のために年次会議を欠席した代表者もいた。",
+      "contextual_meaning_ja": "病気のため"
+    }
+  },
+  {
+    "id": "vocab:00126",
+    "kind": "expression",
+    "pos": "preposition",
+    "sense_key": "because_of",
+    "prompt_ja": "〜が原因で",
+    "target": "on account of",
+    "paraphrases": [
+      "because of",
+      "due to",
+      "owing to",
+      "as a result of"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "“Because of” is an NP-taking preposition, as are “on account of”, “due to”, “owing to”, and “as a result of”. The substring “because” alone falsely suggested a clause-taking conjunction.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0093",
+      "target_span": "on account of",
+      "sentence_en": "Our flight to Vienna was delayed on account of a minor accident.",
+      "sentence_ja": "ちょっとした事故が原因で、私たちのウィーン行きの便に遅れが出た。",
+      "contextual_meaning_ja": "〜が原因で"
+    }
+  },
+  {
+    "id": "vocab:01671",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "warn_person_that",
+    "prompt_ja": "someoneにsomethingは危険だと警告する",
+    "target": "warn someone that something is dangerous",
+    "paraphrases": [
+      "warn someone about the danger of something"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "Both answers preserve the prompted person and the proposition/content being warned about. “Warn someone that …” and “warn someone about …” are alternate realizations of the same slots explicitly present in the Japanese prompt.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0241",
+      "target_span": "warned us time and again that petroleum is not only a blessing but also a curse",
+      "sentence_en": "The ecologist has warned us time and again that petroleum is not only a blessing but also a curse.",
+      "sentence_ja": "石油は天の恵みであると同時に災いのもとであると、その生態学者は我々に繰り返し警告してきた。",
+      "contextual_meaning_ja": "石油は天の恵みであると同時に災いのもとであると、その生態学者は我々に繰り返し警告してきた。"
+    }
+  },
+  {
+    "id": "vocab:01010",
+    "kind": "word",
+    "pos": "verb",
+    "sense_key": "give_a_criminal_a_punishment",
+    "prompt_ja": "判決を言い渡す",
+    "target": "sentence",
+    "paraphrases": [
+      "pass sentence on someone",
+      "hand down a sentence"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "INTERNAL_PARAPHRASE_INCONSISTENCY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The person receiving the sentence is inherent in 判決を言い渡す and is naturally omitted in Japanese. In the source example, he is the person sentenced. `pass sentence on someone` makes that same recipient explicit; it does not add a different answer slot that the prompt cannot support. The bare TARGET `sentence` and `hand down a sentence` are valid vocabulary/action surfaces with the recipient left implicit.",
+    "recommended_direction": "このslot整合性監査では変更不要。受け手を明示する別カードにする場合だけ、promptを「someoneに判決を言い渡す」とし、TARGET/paraphrasesにも同じ受け手slotを付ける。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0462",
+      "target_span": "sentenced",
+      "sentence_en": "The man pleaded for mercy, but he was sentenced to twenty years in prison for his crime.",
+      "sentence_ja": "男は情状酌量を求めたが、犯した罪に対して20年の懲役刑が言い渡された。",
+      "contextual_meaning_ja": "判決を言い渡す"
+    }
+  },
+  {
+    "id": "vocab:01063",
+    "kind": "word",
+    "pos": "verb",
+    "sense_key": "think_carefully_about",
+    "prompt_ja": "熟考する",
+    "target": "reflect",
+    "paraphrases": [
+      "contemplate",
+      "ponder",
+      "deliberate",
+      "think over something"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "INTERNAL_PARAPHRASE_INCONSISTENCY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The topic being considered is a shared, naturally implicit object. Japanese「熟考する」can omit it, and the source example explicitly supplies the topic for `reflect on it`. `think over something` names that same generic topic; it does not add a different slot type or information absent from the prompt.",
+    "recommended_direction": "現promptと回答形を維持する。対象が文脈から分かるときに省略可能な思考対象の表出差であり、slot追加・paraphrase除外は不要。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0546",
+      "target_span": "reflect",
+      "sentence_en": "Take your time. I know you need a couple of days to reflect on it.",
+      "sentence_ja": "慌てなくていいですよ。そのことをじっくり考えるには、2、3日必要でしょうから。",
+      "contextual_meaning_ja": "熟考する"
+    }
+  },
+  {
+    "id": "vocab:01399",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "unlikely_future_event",
+    "prompt_ja": "〜する見込みがほとんどない",
+    "target": "there is little prospect that",
+    "paraphrases": [
+      "be unlikely to do something",
+      "have little chance of doing something"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "SYNTACTIC_FRAME_MISMATCH",
+      "INCOMPLETE_SURFACE"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The Japanese pattern「〜する見込みがほとんどない」provides an event/proposition slot. The TARGET's that-clause and the paraphrases' infinitive or gerund patterns express that same event; the source example supplies the two countries and their progress as the proposition. Their clause shapes differ, but the required event slot is shared. These are actual answer patterns, not a `+ clause` metalinguistic placeholder.",
+    "recommended_direction": "「〜する」のevent slotを維持し、各回答surfaceは現状のままとする。`+ clause`を回答文字列へ追加しない。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0141",
+      "target_span": "There's little prospect that the two countries will make significant progress in disarmament",
+      "sentence_en": "There's little prospect that the two countries will make significant progress in disarmament.",
+      "sentence_ja": "軍縮において、両国が大きな進展を遂げる見込みはほとんどない。",
+      "contextual_meaning_ja": "軍縮において、両国が大きな進展を遂げる見込みはほとんどない。"
+    }
+  },
+  {
+    "id": "vocab:02098",
+    "kind": "word",
+    "pos": "word",
+    "sense_key": "persistently_trouble",
+    "prompt_ja": "付きまとう",
+    "target": "haunt",
+    "paraphrases": [
+      "follow someone around"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The affected person in `follow someone around` is the same implicit target of「付きまとう」and the person haunted in the source example (`I'm still haunted ...`). The Japanese prompt naturally leaves that affected person unspoken; the paraphrase only surfaces the same participant, not a new person slot.",
+    "recommended_direction": "人の対象を含意する現promptを維持する。今回の例では人slotの追加や `follow someone around` の除外は不要。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0412",
+      "target_span": "haunted",
+      "sentence_en": "I'm still haunted by a vivid nightmare I had last night.",
+      "sentence_ja": "昨日の夜に見た生々しい悪夢がまだ頭から離れない。",
+      "contextual_meaning_ja": "...に『しばしば行く』"
+    }
+  },
+  {
+    "id": "vocab:02287",
+    "kind": "word",
+    "pos": "verb",
+    "sense_key": "give_information",
+    "prompt_ja": "知らせる",
+    "target": "inform",
+    "paraphrases": [
+      "let someone know",
+      "notify"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "INTERNAL_PARAPHRASE_INCONSISTENCY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "`inform`, `notify`, and `let someone know` share the recipient role; the first two are bare verb headwords while the last spells out that same role. Japanese「知らせる」also entails a recipient that is routinely omitted. The source example uses a passive (`he was informed`) and its Japanese translation likewise omits the recipient, confirming natural ellipsis rather than a prompt/answer mismatch.",
+    "recommended_direction": "現promptと3つの回答形を維持する。受け手は共通の省略可能な役割であり、person slotを新たにpromptへ追加する必要はない。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0468",
+      "target_span": "Informed",
+      "sentence_en": "Informed of her safety, he breathed a sigh of relief.",
+      "sentence_ja": "彼女の無事を知らされて、彼は安堵のため息をついた。",
+      "contextual_meaning_ja": "に『知らせる』"
+    }
+  },
+  {
+    "id": "vocab:02443",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "amorous_interest",
+    "prompt_ja": "恋愛感情",
+    "target": "romantic interest",
+    "paraphrases": [
+      "romantic feelings",
+      "feelings for someone"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "INTERNAL_PARAPHRASE_INCONSISTENCY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "In this entry,「恋愛感情」and `romantic interest` / `romantic feelings` inherently describe a relation to a person. `feelings for someone` spells out that same naturally understood target; it does not add an independent slot the learner must infer. The source example also identifies Bill as the person Monica's romantic interest concerns.",
+    "recommended_direction": "現promptとparaphrasesを維持する。恋愛感情の関係対象は語義に内在しており、person slotの追加や `feelings for someone` の除外は不要。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0522",
+      "target_span": "romantic interest",
+      "sentence_en": "Bill just wanted to comfort Monica, but she interpreted it as romantic interest.",
+      "sentence_ja": "ビルはただモニカを慰めたかっただけなのに、彼女は彼が自分に気があるのだと解釈した。",
+      "contextual_meaning_ja": "ビルはただモニカを慰めたかっただけなのに、彼女は彼が自分に気があるのだと解釈した。"
+    }
+  },
+  {
+    "id": "vocab:02451",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "fear_doing",
+    "prompt_ja": "somethingすることを恐れている",
+    "target": "be afraid of doing something",
+    "paraphrases": [
+      "be afraid to do something",
+      "be scared to do something",
+      "fear doing something"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The prompt explicitly supplies the action slot with「somethingすること」. Every answer form takes that same action as its complement; `of + gerund` and `to-infinitive` are different surface frames but do not change the slot count or type. The source example's `taking risks` is the same kind of action slot. Possible nuance differences do not establish a structural rule violation.",
+    "recommended_direction": "「somethingすること」のprompt slotを維持し、現行のgerund/to-infinitive answer surfacesを構造不整合として除外しない。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0537",
+      "target_span": "afraid of taking risks",
+      "sentence_en": "\"To be honest, I'm crazy about Ken because he's brave, self-confident, and never afraid of taking risks.\" \"If I were you, I'd ask him out!\"",
+      "sentence_ja": "「正直言うと私、ケンに夢中なの。だって、勇敢で自分に自信を持っていて、それに危険を冒すことを決して恐れないでしょ。」「私ならデートに誘うわ。」",
+      "contextual_meaning_ja": "「正直言うと私、ケンに夢中なの。だって、勇敢で自分に自信を持っていて、それに危険を冒すことを決して恐れないでしょ。」「私ならデートに誘うわ。」"
+    }
+  },
+  {
+    "id": "vocab:02393",
+    "kind": "word",
+    "pos": "word",
+    "sense_key": "be_owned_by_or_be_part_of",
+    "prompt_ja": "属する／（人など）のものである",
+    "target": "belong",
+    "paraphrases": [
+      "be someone's"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The answer-surface slot asymmetry is an audit signal, but not a rule violation for this intentionally multi-sense card: the upstream Meaning / Canonical authority accepts both the sense-neutral headword and a sense-specific answer surface. “be someone's” represents the ownership sense, while cited source E0508 expresses fit-in / social belonging, not ownership.",
+    "recommended_direction": "No production correction. Preserve canonical “belong” and the accepted paraphrase “be someone's” for the ownership sense. Accepted answer surfaces on this multi-sense card do not need to express every sense; do not narrow the canonical to “belong to someone”.",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0508",
+      "target_span": "belonged",
+      "sentence_en": "Having found no place he felt he belonged, he was extremely uneasy and lonely.",
+      "sentence_ja": "自分が受け入れられる場所を見つけられず、彼は極度の不安と孤独に陥っていた。",
+      "contextual_meaning_ja": "その場所に属する／なじめる"
+    }
+  },
+  {
+    "id": "vocab:02454",
+    "kind": "construction",
+    "pos": "construction",
+    "sense_key": "overdue_or_appropriate_time_for_action",
+    "prompt_ja": "もう〜してよい頃だ／いい加減〜すべきだ",
+    "target": "it's about time",
+    "paraphrases": [
+      "it's time to do something",
+      "it's high time someone did something"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "INTERNAL_PARAPHRASE_INCONSISTENCY",
+      "SYNTACTIC_FRAME_MISMATCH",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The slot-profile difference is intentional for this entry's multi-construction authority: canonical \"it's about time\" is the head construction; neutral \"it's time to do something\" and overdue/admonishing \"it's high time someone did something\" are both accepted paraphrases. Source E0538 (\"Isn't it about time you settled down?\") directly demonstrates \"it's about time + subject + past\". These related constructions have different frames by design; that difference is not a prompt/answer slot inconsistency.",
+    "recommended_direction": "No production remediation. Preserve canonical \"it's about time\", neutral \"it's time to do something\", and overdue/admonishing \"it's high time someone did something\". Do not narrow the canonical to the infinitive frame or remove the subject + past construction demonstrated by E0538.",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0538",
+      "target_span": "Isn't it about time you settled down",
+      "sentence_en": "\"I've been going with Jennifer on and off for ages.\" \"You're as indecisive as ever. Isn't it about time you settled down?\"",
+      "sentence_ja": "「ずいぶん長い間、ジェニファーとは付き合ったり別れたりの繰り返しだよ。」「相変わらず優柔不断ね。そろそろ落ち着いたらどう？」",
+      "contextual_meaning_ja": "「ずいぶん長い間、ジェニファーとは付き合ったり別れたりの繰り返しだよ。」「相変わらず優柔不断ね。そろそろ落ち着いたらどう？」"
     }
   }
 ]
