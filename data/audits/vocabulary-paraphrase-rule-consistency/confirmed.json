@@ -1471,35 +1471,6 @@
     }
   },
   {
-    "id": "vocab:02454",
-    "kind": "construction",
-    "pos": "construction",
-    "sense_key": "overdue_or_appropriate_time_for_action",
-    "prompt_ja": "もう〜してよい頃だ／いい加減〜すべきだ",
-    "target": "it's about time",
-    "paraphrases": [
-      "it's time to do something",
-      "it's high time someone did something"
-    ],
-    "rule": [
-      "PLACEHOLDER_ASYMMETRY",
-      "INTERNAL_PARAPHRASE_INCONSISTENCY",
-      "SYNTACTIC_FRAME_MISMATCH",
-      "PROMPT_SLOT_MISMATCH"
-    ],
-    "status": "CONFIRMED",
-    "problem": "Answer surfaces do not use a consistent explicit slot profile: \"it's about time\"=no explicit slot / \"it's time to do something\"=THING:1 / \"it's high time someone did something\"=PERSON:1,THING:1. The Japanese prompt does not explicitly identify someone (person).",
-    "recommended_direction": "対象行為slotをpromptに明示し、TARGETを含め全回答をその行為slotへ揃える。「someone did something」型を残すなら、行為者slotも日本語に明示する。`+ clause`は使わない。",
-    "confidence": "HIGH",
-    "source_example": {
-      "item_id": "E0538",
-      "target_span": "Isn't it about time you settled down",
-      "sentence_en": "\"I've been going with Jennifer on and off for ages.\" \"You're as indecisive as ever. Isn't it about time you settled down?\"",
-      "sentence_ja": "「ずいぶん長い間、ジェニファーとは付き合ったり別れたりの繰り返しだよ。」「相変わらず優柔不断ね。そろそろ落ち着いたらどう？」",
-      "contextual_meaning_ja": "「ずいぶん長い間、ジェニファーとは付き合ったり別れたりの繰り返しだよ。」「相変わらず優柔不断ね。そろそろ落ち着いたらどう？」"
-    }
-  },
-  {
     "id": "vocab:02456",
     "kind": "expression",
     "pos": "expression",
