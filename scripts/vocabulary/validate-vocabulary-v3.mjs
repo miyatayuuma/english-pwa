@@ -157,6 +157,11 @@ function lexicalWords(value,{legacy=false}={}){
   return text.match(/[a-z]+(?:['’][a-z]+)*/g)||[];
 }
 
+function wordAuditLemma(value){
+  const words=lexicalWords(value).filter(word=>!MIGRATION_SLOTS.has(word));
+  return words[0]==='be'?(words[1]||'be'):(words[0]||'');
+}
+
 function migrationExpressionMatches(old,next){
   const oldHeadword=String(old?.headword||'');
   if(!oldHeadword||/[~～]|(?<![A-Za-z])[AB](?![A-Za-z])|\(\d+\)/.test(oldHeadword)) return false;
@@ -205,7 +210,7 @@ function validateWordExpansionAudit(audit,entries,items,errors){
     const item=itemById.get(String(correction?.item_id||''));
     const occurrence=entry?.occurrences?.find(value=>String(value.item_id)===String(correction?.item_id));
     const actual=occurrence&&item?item.en.slice(occurrence.start,occurrence.end):'';
-    if(!entry||entry.kind!=='word'||addedIds.has(entry.id)||entry.canonical!==correction.canonical||!occurrence||actual!==correction.to_surface||correction.from_surface===correction.to_surface) errors.push(`word audit: existing word span correction is inconsistent for ${correction?.entry_id||'<missing>'}`);
+    if(!entry||entry.kind!=='word'||addedIds.has(entry.id)||wordAuditLemma(entry.canonical)!==wordAuditLemma(correction.canonical)||!occurrence||actual!==correction.to_surface||correction.from_surface===correction.to_surface) errors.push(`word audit: existing word span correction is inconsistent for ${correction?.entry_id||'<missing>'}`);
   }
   for(const example of Array.isArray(audit.rejected_examples)?audit.rejected_examples:[]){
     const item=itemById.get(String(example?.item_id||''));
@@ -218,8 +223,9 @@ function validateWordExpansionAudit(audit,entries,items,errors){
     if(!entry||!example.item_ids?.every(id=>actualIds.includes(String(id)))||actualIds.length!==new Set(actualIds).size) errors.push(`word audit: same-sense occurrences are not consolidated for ${example?.canonical||'<missing>'}`);
   }
   for(const example of Array.isArray(audit.same_canonical_different_sense_examples)?audit.same_canonical_different_sense_examples:[]){
-    const senses=wordEntries.filter(value=>value.canonical===example.canonical).map(value=>value.sense_key);
-    const ids=wordEntries.filter(value=>value.canonical===example.canonical).flatMap(value=>(value.occurrences||[]).map(occurrence=>String(occurrence.item_id)));
+    const exampleLemma=wordAuditLemma(example.canonical);
+    const senses=wordEntries.filter(value=>wordAuditLemma(value.canonical)===exampleLemma).map(value=>value.sense_key);
+    const ids=wordEntries.filter(value=>wordAuditLemma(value.canonical)===exampleLemma).flatMap(value=>(value.occurrences||[]).map(occurrence=>String(occurrence.item_id)));
     if(!example.sense_keys?.every(key=>senses.includes(key))||new Set(senses).size<senses.length||!example.item_ids?.every(id=>ids.includes(String(id)))) errors.push(`word audit: distinct senses are not represented separately for ${example?.canonical||'<missing>'}`);
   }
 }

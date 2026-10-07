@@ -1,0 +1,2050 @@
+[
+  {
+    "id": "vocab:00162",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "end_or_dismiss_topic",
+    "prompt_ja": "somethingはこの辺までにする",
+    "target": "so much for something",
+    "paraphrases": [
+      "leave it at that"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "SYNTACTIC_FRAME_MISMATCH",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The Japanese prompt explicitly supplies “something”, but the paraphrase “leave it at that” refers to the same topic through anaphoric “it/that”; those pronouns are not additional free answer slots.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0129",
+      "target_span": "So much for small talk",
+      "sentence_en": "So much for small talk. Let's get down to business.",
+      "sentence_ja": "雑談はこの辺にして、本題に入りましょう。",
+      "contextual_meaning_ja": "雑談はこの辺にして"
+    }
+  },
+  {
+    "id": "vocab:00770",
+    "kind": "word",
+    "pos": "adjective",
+    "sense_key": "causing_worry",
+    "prompt_ja": "人を不安にさせる",
+    "target": "alarming",
+    "paraphrases": [
+      "worry someone",
+      "make someone anxious"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The prompt already identifies the affected person (“人を”), while “alarming” describes the cause of that effect and the two paraphrases express the causative relation. The person is not an extra unsupplied slot.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0032",
+      "target_span": "alarming",
+      "sentence_en": "Please take a look at this chart. It indicates that juvenile delinquency is on the increase at an alarming rate.",
+      "sentence_ja": "この表をご覧になってください。少年非行が深刻な割合で増加していることを示しています。",
+      "contextual_meaning_ja": "人を不安にさせる"
+    }
+  },
+  {
+    "id": "vocab:01377",
+    "kind": "construction",
+    "pos": "construction",
+    "sense_key": "to_some_degree_a",
+    "prompt_ja": "ちょっとした驚き",
+    "target": "something of a surprise",
+    "paraphrases": [
+      "a bit of a surprise"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "In “something of a surprise”, “something of” is a degree idiom (“a bit of”), not a variable thing slot; “a bit of a surprise” matches the prompt.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0111",
+      "target_span": "something of a necessity",
+      "sentence_en": "A cell phone has become something of a necessity, and I can't do without one.",
+      "sentence_ja": "携帯電話はちょっとした必需品になったことだし、それなしではやっていけない。",
+      "contextual_meaning_ja": "OLD French古フランス語"
+    }
+  },
+  {
+    "id": "vocab:02406",
+    "kind": "word",
+    "pos": "word",
+    "sense_key": "aged_between_twenty_and_twenty_nine",
+    "prompt_ja": "20代の",
+    "target": "twenty-something",
+    "paraphrases": [
+      "in one's twenties"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "“Twenty-something” is a lexicalized age-group word. In “in one’s twenties”, “one’s” is bound to the person being described rather than an independent prompt slot; both can answer “20代の” in context.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0515",
+      "target_span": "twenty-something",
+      "sentence_en": "His niece is sociable and mature for her age. She could pass for twenty-something.",
+      "sentence_ja": "彼の姪は年の割には社交的で大人だ。二十代と言っても通用する。",
+      "contextual_meaning_ja": "『20』"
+    }
+  },
+  {
+    "id": "vocab:00004",
+    "kind": "construction",
+    "pos": "verb",
+    "sense_key": "causative_make",
+    "prompt_ja": "someoneにsomethingさせる",
+    "target": "make someone do something",
+    "paraphrases": [
+      "get someone to do something",
+      "have someone do something"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"make someone do something\"=PERSON:1,THING:1 / \"get someone to do something\"=PERSON:1,THING:1 / \"have someone do something\"=PERSON:1,THING:1.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0130",
+      "target_span": "make her sign",
+      "sentence_en": "Lucy resented the aggressive salesman trying to make her sign the contract.",
+      "sentence_ja": "ルーシーは、契約書にサインさせようとする強引な販売員に腹を立てた。",
+      "contextual_meaning_ja": "彼女に署名させる"
+    }
+  },
+  {
+    "id": "vocab:00018",
+    "kind": "expression",
+    "pos": "verb",
+    "sense_key": "ask_to_marry",
+    "prompt_ja": "someoneに結婚を申し込む",
+    "target": "propose to someone",
+    "paraphrases": [
+      "ask someone to marry you"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "“Ask someone to marry you” and “propose to someone” have the same intended addressee; “you” is the person being proposed to marry and is co-referential with the subject/proposer, not an extra variable slot.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0178",
+      "target_span": "proposed to her",
+      "sentence_en": "I fell in love with Naomi at first sight. Three months later, I took a chance and proposed to her, but she turned me down.",
+      "sentence_ja": "ナオミに一目惚れした。3ヶ月後、思い切って彼女にプロポーズしてみたが振られてしまった。",
+      "contextual_meaning_ja": "彼女にプロポーズした"
+    }
+  },
+  {
+    "id": "vocab:00059",
+    "kind": "construction",
+    "pos": "construction",
+    "sense_key": "obvious_that",
+    "prompt_ja": "練習が大切なのは言うまでもない",
+    "target": "it goes without saying that practice matters",
+    "paraphrases": [
+      "needless to say, practice is important"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"it goes without saying that practice matters\"=no explicit slot / \"needless to say, practice is important\"=no explicit slot.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0031",
+      "target_span": "It goes without saying that",
+      "sentence_en": "It goes without saying that the aging of society is inevitable.",
+      "sentence_ja": "社会の高齢化が避けられないことは言うまでもない。",
+      "contextual_meaning_ja": "〜は言うまでもない"
+    }
+  },
+  {
+    "id": "vocab:00066",
+    "kind": "expression",
+    "pos": "adverb",
+    "sense_key": "as_a_precaution",
+    "prompt_ja": "念のため",
+    "target": "just in case",
+    "paraphrases": [
+      "to be safe"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "“Just in case” is a complete lexicalized precautionary adverbial. Here “in case” does not introduce an unfilled clause, so “to be safe” does not add a required clause slot.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0044",
+      "target_span": "just in case",
+      "sentence_en": "I'll write it down just in case, because I have a bad memory.",
+      "sentence_ja": "念のためメモしておきます。記憶力が悪いから。",
+      "contextual_meaning_ja": "念のため"
+    }
+  },
+  {
+    "id": "vocab:00085",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "agree_to_buy_or_choose",
+    "prompt_ja": "それにします",
+    "target": "I'll take it",
+    "paraphrases": [
+      "I'll go with that"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "“It” and “that” are anaphoric references to the chosen item, already supplied by the prompt context; the alternatives do not ask for different free information.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0064",
+      "target_span": "I'll take it",
+      "sentence_en": "\"How much is this rug?\" \"$100 including tax.\" \"OK, I'll take it.\"",
+      "sentence_ja": "「この敷物はおいくらですか？」「税込みで100ドルです」「じゃあ、これにします。」",
+      "contextual_meaning_ja": "それにします"
+    }
+  },
+  {
+    "id": "vocab:00109",
+    "kind": "expression",
+    "pos": "verb",
+    "sense_key": "mean_or_imply",
+    "prompt_ja": "somethingを言おうとする",
+    "target": "get at something",
+    "paraphrases": [
+      "try to say something"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"get at something\"=THING:1 / \"try to say something\"=THING:1.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0080",
+      "target_span": "getting at",
+      "sentence_en": "Could you go over it again? I couldn't make out what you were getting at.",
+      "sentence_ja": "もう一度詳しく説明していただけませんか？お話の意図がわかりませんでした。",
+      "contextual_meaning_ja": "言おうとしていた"
+    }
+  },
+  {
+    "id": "vocab:00111",
+    "kind": "construction",
+    "pos": "verb",
+    "sense_key": "persuade_someone_to_do",
+    "prompt_ja": "someoneを説得してsomethingさせる",
+    "target": "talk someone into doing something",
+    "paraphrases": [
+      "persuade someone to do something",
+      "convince someone to do something"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"talk someone into doing something\"=PERSON:1,THING:1 / \"persuade someone to do something\"=PERSON:1,THING:1 / \"convince someone to do something\"=PERSON:1,THING:1.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0081",
+      "target_span": "talked everyone into going along",
+      "sentence_en": "No one backed me up at first, but eventually I talked everyone into going along with my plan.",
+      "sentence_ja": "僕の案を支持してくれる人は最初は誰もいなかったけれど、最後にはみんなを説得して賛同してもらうことができた。",
+      "contextual_meaning_ja": "みんなを説得して賛同させた"
+    }
+  },
+  {
+    "id": "vocab:00160",
+    "kind": "construction",
+    "pos": "conjunction",
+    "sense_key": "condition_provided_that",
+    "prompt_ja": "〜でありさえすれば",
+    "target": "as long as",
+    "paraphrases": [
+      "provided that",
+      "so long as"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"as long as\"=no explicit slot / \"provided that\"=no explicit slot / \"so long as\"=no explicit slot.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0127",
+      "target_span": "as long as",
+      "sentence_en": "Any apartment will do as long as the rent is low. I'm not particular about it.",
+      "sentence_ja": "家賃が安ければ、どんなマンションでも構いません。こだわりはありませんから。",
+      "contextual_meaning_ja": "〜であれば"
+    }
+  },
+  {
+    "id": "vocab:00176",
+    "kind": "expression",
+    "pos": "verb",
+    "sense_key": "deliberately_ignore",
+    "prompt_ja": "見て見ぬふりをする",
+    "target": "turn a blind eye",
+    "paraphrases": [
+      "pretend not to see",
+      "look the other way"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"turn a blind eye\"=no explicit slot / \"pretend not to see\"=no explicit slot / \"look the other way\"=no explicit slot.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0148",
+      "target_span": "turned a blind eye",
+      "sentence_en": "He saw someone being bullied, but he turned a blind eye.",
+      "sentence_ja": "誰かがいじめられているのを見たのに、彼は見ないふりをした。",
+      "contextual_meaning_ja": "見ないふりをした"
+    }
+  },
+  {
+    "id": "vocab:00202",
+    "kind": "expression",
+    "pos": "idiom",
+    "sense_key": "be_perfect_or_complete",
+    "prompt_ja": "申し分がない",
+    "target": "leave nothing to be desired",
+    "paraphrases": [
+      "perfect"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "“Leave nothing to be desired” is a complete lexicalized idiom; “nothing” is a fixed quantifier, not a missing prompt slot.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0163",
+      "target_span": "leaves nothing to be desired",
+      "sentence_en": "Your summary leaves nothing to be desired apart from the terrible handwriting.",
+      "sentence_ja": "字が汚いことを別にすれば、君の要約は完璧だ。",
+      "contextual_meaning_ja": "完璧だ"
+    }
+  },
+  {
+    "id": "vocab:00224",
+    "kind": "expression",
+    "pos": "verb",
+    "sense_key": "begin_to_like",
+    "prompt_ja": "someoneを好きになる",
+    "target": "take to someone",
+    "paraphrases": [
+      "come to like someone",
+      "grow fond of someone",
+      "take a liking to someone"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"take to someone\"=PERSON:1 / \"come to like someone\"=PERSON:1 / \"grow fond of someone\"=PERSON:1 / \"take a liking to someone\"=PERSON:1.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0181",
+      "target_span": "took to him",
+      "sentence_en": "I introduced Bob to my folks, and they took to him at once.",
+      "sentence_ja": "私の両親にボブを紹介したら、二人ともすぐに彼のことが好きになった。",
+      "contextual_meaning_ja": "彼のことが好きになった"
+    }
+  },
+  {
+    "id": "vocab:00231",
+    "kind": "expression",
+    "pos": "verb",
+    "sense_key": "continue_repeatedly",
+    "prompt_ja": "somethingし続ける",
+    "target": "keep on doing something",
+    "paraphrases": [
+      "keep doing something",
+      "continue doing something",
+      "go on doing something"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"keep on doing something\"=THING:1 / \"keep doing something\"=THING:1 / \"continue doing something\"=THING:1 / \"go on doing something\"=THING:1.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0187",
+      "target_span": "keeps on making stupid mistakes",
+      "sentence_en": "I can't help laughing at him because he keeps on making stupid mistakes. He'd be the last person to learn his lesson.",
+      "sentence_ja": "彼のことを笑わずにはいられない。ばかな間違いを繰り返すからね。きっと彼は懲りないんだろうな。",
+      "contextual_meaning_ja": "ばかな間違いを繰り返す"
+    }
+  },
+  {
+    "id": "vocab:00233",
+    "kind": "expression",
+    "pos": "adverb",
+    "sense_key": "introduce_additional_problem",
+    "prompt_ja": "さらに悪いことに",
+    "target": "to make matters worse",
+    "paraphrases": [
+      "what's worse",
+      "worse still"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"to make matters worse\"=no explicit slot / \"what's worse\"=no explicit slot / \"worse still\"=no explicit slot.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0188",
+      "target_span": "To make matters worse",
+      "sentence_en": "To make matters worse, he isn't even conscious of annoying us.",
+      "sentence_ja": "さらに厄介なことに、彼は私たちに迷惑をかけていることさえわかっていない。",
+      "contextual_meaning_ja": "さらに厄介なことに"
+    }
+  },
+  {
+    "id": "vocab:00235",
+    "kind": "expression",
+    "pos": "adverb",
+    "sense_key": "almost_never",
+    "prompt_ja": "あるとしてもめったに〜ない",
+    "target": "if ever",
+    "paraphrases": [
+      "rarely, if ever"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "“If ever” is a fixed concessive adverbial (“rarely, if ever”), not a conditional requiring a clause.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0192",
+      "target_span": "seldom, if ever, expresses himself",
+      "sentence_en": "The passive man seldom, if ever, expresses himself in public.",
+      "sentence_ja": "消極的なその男性が、人前で自己表現をすることはまずない。",
+      "contextual_meaning_ja": "自己表現をすることはまずない"
+    }
+  },
+  {
+    "id": "vocab:00256",
+    "kind": "expression",
+    "pos": "verb",
+    "sense_key": "provide_temporary_lodging",
+    "prompt_ja": "someoneを泊める",
+    "target": "put someone up",
+    "paraphrases": [
+      "give someone a place to stay",
+      "accommodate someone"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"put someone up\"=PERSON:1 / \"give someone a place to stay\"=PERSON:1 / \"accommodate someone\"=PERSON:1.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0203",
+      "target_span": "put you up",
+      "sentence_en": "I can't put you up. For one thing, my dad drops in on me from time to time.",
+      "sentence_ja": "うちには泊められないわ。一つには、時々お父さんがふらっとやって来るから。",
+      "contextual_meaning_ja": "泊められない"
+    }
+  },
+  {
+    "id": "vocab:00290",
+    "kind": "construction",
+    "pos": "verb",
+    "sense_key": "action_is_pointless",
+    "prompt_ja": "somethingしても無駄だ",
+    "target": "there's no use doing something",
+    "paraphrases": [
+      "there's no point in doing something",
+      "it's pointless to do something"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"there's no use doing something\"=THING:1 / \"there's no point in doing something\"=THING:1 / \"it's pointless to do something\"=THING:1.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0220",
+      "target_span": "it's no use polishing it",
+      "sentence_en": "There are so many fine scratches and dents on its surface, it's no use polishing it.",
+      "sentence_ja": "表面に細かい傷やへこみがたくさんあるから、磨いても無駄だよ。",
+      "contextual_meaning_ja": "磨いても無駄だ"
+    }
+  },
+  {
+    "id": "vocab:00341",
+    "kind": "expression",
+    "pos": "adjective",
+    "sense_key": "risk_something_bad",
+    "prompt_ja": "somethingする危険がある",
+    "target": "be in danger of doing something",
+    "paraphrases": [
+      "risk doing something"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"be in danger of doing something\"=THING:1 / \"risk doing something\"=THING:1.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0278",
+      "target_span": "is in danger of going bankrupt",
+      "sentence_en": "As a result of his ridiculous venture, he is in danger of going bankrupt.",
+      "sentence_ja": "ばかげた新事業の結果、彼は破産の危機に瀕している。",
+      "contextual_meaning_ja": "破産の危機に瀕している"
+    }
+  },
+  {
+    "id": "vocab:00383",
+    "kind": "expression",
+    "pos": "verb",
+    "sense_key": "strong_advice",
+    "prompt_ja": "somethingしたほうがよい",
+    "target": "had better do something",
+    "paraphrases": [
+      "should do something",
+      "ought to do something"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"had better do something\"=THING:1 / \"should do something\"=THING:1 / \"ought to do something\"=THING:1.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0308",
+      "target_span": "We'd better make a reservation",
+      "sentence_en": "That restaurant is always packed. We'd better make a reservation beforehand.",
+      "sentence_ja": "あのレストランはいつでも混んでいるから、事前に予約をした方がいい。",
+      "contextual_meaning_ja": "予約をした方がいい"
+    }
+  },
+  {
+    "id": "vocab:00394",
+    "kind": "construction",
+    "pos": "verb",
+    "sense_key": "want_to_do_or_have_a_sensation",
+    "prompt_ja": "somethingしたい気がする",
+    "target": "feel like doing something",
+    "paraphrases": [
+      "be in the mood to do something"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"feel like doing something\"=THING:1 / \"be in the mood to do something\"=THING:1.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0315",
+      "target_span": "feel like throwing up",
+      "sentence_en": "\"I feel sort of dizzy and I feel like throwing up.\" \"You look pale!\"",
+      "sentence_ja": "「何だか目まいと吐き気がするよ。」 「顔が真っ青よ。」",
+      "contextual_meaning_ja": "吐き気がする"
+    }
+  },
+  {
+    "id": "vocab:00407",
+    "kind": "expression",
+    "pos": "verb",
+    "sense_key": "do_something_in_rotation",
+    "prompt_ja": "交代でsomethingする",
+    "target": "take turns doing something",
+    "paraphrases": [
+      "take it in turns to do something"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"take turns doing something\"=THING:1 / \"take it in turns to do something\"=THING:1.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0325",
+      "target_span": "take turns looking after him",
+      "sentence_en": "Since our father is bedridden, we take turns looking after him.",
+      "sentence_ja": "父が寝たきりなので私たちが交代で面倒を見ています。",
+      "contextual_meaning_ja": "交代で面倒を見ています"
+    }
+  },
+  {
+    "id": "vocab:00413",
+    "kind": "expression",
+    "pos": "verb",
+    "sense_key": "consider_to_be",
+    "prompt_ja": "somethingをsomething elseと見なす",
+    "target": "regard something as something else",
+    "paraphrases": [
+      "see something as something else",
+      "view something as something else",
+      "consider something to be something else"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"regard something as something else\"=THING:2 / \"see something as something else\"=THING:2 / \"view something as something else\"=THING:2 / \"consider something to be something else\"=THING:2.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0329",
+      "target_span": "regard the current compulsory education system as being obsolete",
+      "sentence_en": "Many people regard the current compulsory education system as being obsolete.",
+      "sentence_ja": "多くの人々は、現行の義務教育制度が時代遅れであると考えている。",
+      "contextual_meaning_ja": "現行の義務教育制度が時代遅れだと考える"
+    }
+  },
+  {
+    "id": "vocab:00438",
+    "kind": "construction",
+    "pos": "conjunction",
+    "sense_key": "wish_or_regret",
+    "prompt_ja": "〜であればなあ",
+    "target": "if only",
+    "paraphrases": [
+      "I wish"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"if only\"=no explicit slot / \"I wish\"=no explicit slot.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0344",
+      "target_span": "If only I could conquer my weaknesses",
+      "sentence_en": "\"If only I could conquer my weaknesses!\" \"It's up to you.\"",
+      "sentence_ja": "「自分の弱点を克服できさえすればなあ。」 「あなた次第よ。」",
+      "contextual_meaning_ja": "自分の弱点を克服できさえすれば"
+    }
+  },
+  {
+    "id": "vocab:00474",
+    "kind": "expression",
+    "pos": "verb",
+    "sense_key": "continue_despite_resistance",
+    "prompt_ja": "somethingし続ける",
+    "target": "persist in doing something",
+    "paraphrases": [
+      "keep doing something",
+      "continue doing something"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"persist in doing something\"=THING:1 / \"keep doing something\"=THING:1 / \"continue doing something\"=THING:1.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0370",
+      "target_span": "persist in bothering her",
+      "sentence_en": "If you persist in bothering her like that, she'll lose her temper.",
+      "sentence_ja": "そうやってしつこく彼女を困らせると、彼女も怒り出すぞ。",
+      "contextual_meaning_ja": "しつこく彼女を困らせる"
+    }
+  },
+  {
+    "id": "vocab:00478",
+    "kind": "construction",
+    "pos": "verb",
+    "sense_key": "action_is_useless",
+    "prompt_ja": "somethingしても無駄だ",
+    "target": "there's no point in doing something",
+    "paraphrases": [
+      "there's no use doing something"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"there's no point in doing something\"=THING:1 / \"there's no use doing something\"=THING:1.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0373",
+      "target_span": "There's no point in talking back to Nick",
+      "sentence_en": "There's no point in talking back to Nick. He is a \"dictator,\" so to speak.",
+      "sentence_ja": "ニックに口答えしたって無駄だよ。言ってみりゃ彼は独裁者さ。",
+      "contextual_meaning_ja": "ニックに口答えしても無駄"
+    }
+  },
+  {
+    "id": "vocab:00479",
+    "kind": "expression",
+    "pos": "adverb",
+    "sense_key": "introduce_figural_wording",
+    "prompt_ja": "いわば",
+    "target": "so to speak",
+    "paraphrases": [
+      "as it were"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"so to speak\"=no explicit slot / \"as it were\"=no explicit slot.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0373",
+      "target_span": "so to speak",
+      "sentence_en": "There's no point in talking back to Nick. He is a \"dictator,\" so to speak.",
+      "sentence_ja": "ニックに口答えしたって無駄だよ。言ってみりゃ彼は独裁者さ。",
+      "contextual_meaning_ja": "言ってみりゃ"
+    }
+  },
+  {
+    "id": "vocab:00488",
+    "kind": "expression",
+    "pos": "verb",
+    "sense_key": "have_good_reason_to",
+    "prompt_ja": "somethingするのももっともだ",
+    "target": "may well do something",
+    "paraphrases": [
+      "have good reason to do something"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"may well do something\"=THING:1 / \"have good reason to do something\"=THING:1.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0379",
+      "target_span": "may well complain",
+      "sentence_en": "Female clerks may well complain about their routines, which are not challenging at all.",
+      "sentence_ja": "女性職員が自分たちの日常業務に不満を言うのももっともだ。全くやりがいの無い仕事だから。",
+      "contextual_meaning_ja": "不満を言うのももっともだ"
+    }
+  },
+  {
+    "id": "vocab:00526",
+    "kind": "expression",
+    "pos": "verb",
+    "sense_key": "manage_to_do",
+    "prompt_ja": "somethingすることに成功する",
+    "target": "succeed in doing something",
+    "paraphrases": [
+      "manage to do something",
+      "pull something off"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"succeed in doing something\"=THING:1 / \"manage to do something\"=THING:1 / \"pull something off\"=THING:1.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0424",
+      "target_span": "succeeded in occupying the entire territory",
+      "sentence_en": "The armed forces succeeded in occupying the entire territory.",
+      "sentence_ja": "軍は全領土を占領することに成功した。",
+      "contextual_meaning_ja": "全領土を占領することに成功した"
+    }
+  },
+  {
+    "id": "vocab:00539",
+    "kind": "expression",
+    "pos": "adjective",
+    "sense_key": "have_ability_to_do",
+    "prompt_ja": "somethingする能力がある",
+    "target": "be capable of doing something",
+    "paraphrases": [
+      "be able to do something",
+      "have the ability to do something"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"be capable of doing something\"=THING:1 / \"be able to do something\"=THING:1 / \"have the ability to do something\"=THING:1.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0438",
+      "target_span": "capable of coping with it",
+      "sentence_en": "Ford has been in a difficult situation all week long. He is no longer capable of coping with it.",
+      "sentence_ja": "フォード氏はここ一週間ずっと困難な立場に置かれている。もはや、彼にはどうすることもできない。",
+      "contextual_meaning_ja": "どうすることもできない"
+    }
+  },
+  {
+    "id": "vocab:00549",
+    "kind": "expression",
+    "pos": "adverb",
+    "sense_key": "obviously_or_without_saying",
+    "prompt_ja": "言うまでもなく",
+    "target": "needless to say",
+    "paraphrases": [
+      "it goes without saying"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"needless to say\"=no explicit slot / \"it goes without saying\"=no explicit slot.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0448",
+      "target_span": "Needless to say",
+      "sentence_en": "Needless to say, the refugees were longing for freedom.",
+      "sentence_ja": "言うまでもなく、難民たちは自由を強く求めていた。",
+      "contextual_meaning_ja": "言うまでもなく"
+    }
+  },
+  {
+    "id": "vocab:00590",
+    "kind": "expression",
+    "pos": "verb",
+    "sense_key": "take_food_or_drink_freely",
+    "prompt_ja": "somethingをご自由にどうぞ",
+    "target": "help yourself to something",
+    "paraphrases": [
+      "feel free to take something"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"help yourself to something\"=THING:1 / \"feel free to take something\"=THING:1.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0493",
+      "target_span": "help yourself to some snacks",
+      "sentence_en": "It won't be long before everything is ready. In the meantime, help yourself to some snacks.",
+      "sentence_ja": "もうすぐ準備完了です。その間、軽食をご自由につまんでください。",
+      "contextual_meaning_ja": "軽食をご自由につまんで"
+    }
+  },
+  {
+    "id": "vocab:00602",
+    "kind": "expression",
+    "pos": "noun",
+    "sense_key": "not_someones_concern",
+    "prompt_ja": "someoneには関係のないこと",
+    "target": "none of someone's business",
+    "paraphrases": [
+      "have nothing to do with someone"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"none of someone's business\"=PERSON:1 / \"have nothing to do with someone\"=PERSON:1.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0504",
+      "target_span": "It's none of your business",
+      "sentence_en": "\"What's the matter, Bob? You look so miserable.\" \"Leave me alone. It's none of your business.\"",
+      "sentence_ja": "「どうしたの、ボブ？そんなに暗い顔をして。」「ほっといてくれよ。君には関係ないことだ。」",
+      "contextual_meaning_ja": "君には関係ないことだ"
+    }
+  },
+  {
+    "id": "vocab:00608",
+    "kind": "expression",
+    "pos": "adverb",
+    "sense_key": "introduce_honest_opinion",
+    "prompt_ja": "正直に言うと",
+    "target": "to tell the truth",
+    "paraphrases": [
+      "to be honest",
+      "honestly",
+      "frankly"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"to tell the truth\"=no explicit slot / \"to be honest\"=no explicit slot / \"honestly\"=no explicit slot / \"frankly\"=no explicit slot.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0511",
+      "target_span": "To tell the truth",
+      "sentence_en": "To tell the truth, I don't like classical music. On the other hand, Molly is really into it.",
+      "sentence_ja": "正直言って、私はクラシック音楽は好きじゃない。かたや、モリーのほうは完全にはまっている。",
+      "contextual_meaning_ja": "正直言って"
+    }
+  },
+  {
+    "id": "vocab:00613",
+    "kind": "expression",
+    "pos": "adjective",
+    "sense_key": "feel_willing_or_interested",
+    "prompt_ja": "somethingをする気がある",
+    "target": "be up for something",
+    "paraphrases": [
+      "be willing to do something"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"be up for something\"=THING:1 / \"be willing to do something\"=THING:1.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0513",
+      "target_span": "I'm not up for it",
+      "sentence_en": "\"How about playing cards or something for a change?\" \"Sorry, I'm not up for it.\"",
+      "sentence_ja": "「気分転換にトランプか何かしない？」「わるいけど、そういう気分じゃないよ。」",
+      "contextual_meaning_ja": "そういう気分じゃない"
+    }
+  },
+  {
+    "id": "vocab:00618",
+    "kind": "expression",
+    "pos": "verb",
+    "sense_key": "anticipate_with_pleasure",
+    "prompt_ja": "somethingするのを楽しみにする",
+    "target": "look forward to doing something",
+    "paraphrases": [
+      "can't wait to do something"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"look forward to doing something\"=THING:1 / \"can't wait to do something\"=THING:1.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0517",
+      "target_span": "looking forward to hearing from you",
+      "sentence_en": "I'm looking forward to hearing from you. Sincerely,",
+      "sentence_ja": "お返事頂けるのを楽しみにしております。敬具",
+      "contextual_meaning_ja": "返事をいただくのを楽しみにしている"
+    }
+  },
+  {
+    "id": "vocab:00620",
+    "kind": "construction",
+    "pos": "adjective",
+    "sense_key": "deserve_the_effort",
+    "prompt_ja": "somethingする価値がある",
+    "target": "be worth doing something",
+    "paraphrases": [
+      "it is worthwhile to do something"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"be worth doing something\"=THING:1 / \"it is worthwhile to do something\"=THING:1.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0519",
+      "target_span": "it's worth paying attention to",
+      "sentence_en": "It may seem trivial to you but for me it's worth paying attention to.",
+      "sentence_ja": "あなたには些細なことに思えるかもしれませんが、私にとってそれは注意すべきことなんです。",
+      "contextual_meaning_ja": "注意を払う価値がある"
+    }
+  },
+  {
+    "id": "vocab:00628",
+    "kind": "expression",
+    "pos": "adjective",
+    "sense_key": "likely_to_allow_or_result_in",
+    "prompt_ja": "somethingを招きやすい",
+    "target": "be open to something",
+    "paraphrases": [
+      "be likely to cause something",
+      "tend to cause something"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"be open to something\"=THING:1 / \"be likely to cause something\"=THING:1 / \"tend to cause something\"=THING:1.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0525",
+      "target_span": "is open to misunderstanding",
+      "sentence_en": "Such a remark is open to misunderstanding.",
+      "sentence_ja": "そういう発言は誤解を招きやすい。",
+      "contextual_meaning_ja": "誤解を招きやすい"
+    }
+  },
+  {
+    "id": "vocab:00654",
+    "kind": "expression",
+    "pos": "adverb",
+    "sense_key": "introduce_honest_opinion",
+    "prompt_ja": "正直に言うと",
+    "target": "to be honest",
+    "paraphrases": [
+      "to tell the truth",
+      "honestly",
+      "frankly"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"to be honest\"=no explicit slot / \"to tell the truth\"=no explicit slot / \"honestly\"=no explicit slot / \"frankly\"=no explicit slot.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0537",
+      "target_span": "To be honest",
+      "sentence_en": "\"To be honest, I'm crazy about Ken because he's brave, self-confident, and never afraid of taking risks.\" \"If I were you, I'd ask him out!\"",
+      "sentence_ja": "「正直言うと私、ケンに夢中なの。だって、勇敢で自分に自信を持っていて、それに危険を冒すことを決して恐れないでしょ。」「私ならデートに誘うわ。」",
+      "contextual_meaning_ja": "正直言うと"
+    }
+  },
+  {
+    "id": "vocab:00735",
+    "kind": "word",
+    "pos": "noun",
+    "sense_key": "way_of_thinking_or_feeling",
+    "prompt_ja": "考え方",
+    "target": "attitude",
+    "paraphrases": [
+      "way of thinking",
+      "mindset",
+      "perspective"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"attitude\"=no explicit slot / \"way of thinking\"=no explicit slot / \"mindset\"=no explicit slot / \"perspective\"=no explicit slot.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0003",
+      "target_span": "attitude",
+      "sentence_en": "Let go of your negative outlook on life. Always maintain a positive attitude.",
+      "sentence_ja": "悲観的な人生観を捨てて、前向きな態度を常に持ち続けよう。",
+      "contextual_meaning_ja": "態度・考え方"
+    }
+  },
+  {
+    "id": "vocab:01166",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "likely_to_do",
+    "prompt_ja": "somethingしがちである",
+    "target": "be apt to do something",
+    "paraphrases": [
+      "tend to do something",
+      "be prone to doing something"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"be apt to do something\"=THING:1 / \"tend to do something\"=THING:1 / \"be prone to doing something\"=THING:1.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0023",
+      "target_span": "I'm apt to buy",
+      "sentence_en": "\"I'm apt to buy things on impulse whenever something is on sale.\" \"So am I.\"",
+      "sentence_ja": "「安売りをしているといつも衝動買いしてしまうたちです。」 「私も。」",
+      "contextual_meaning_ja": "「安売りをしているといつも衝動買いしてしまうたちです。」 「私も。」"
+    }
+  },
+  {
+    "id": "vocab:01181",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "if_different_rather_the_opposite",
+    "prompt_ja": "どちらかといえば",
+    "target": "if anything",
+    "paraphrases": [
+      "rather"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "“If anything” is a lexicalized discourse phrase meaning roughly “rather”; it does not request an omitted clause or thing slot.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0040",
+      "target_span": "if anything",
+      "sentence_en": "For years the press overlooked the problem. But now, if anything, they are making too much of it.",
+      "sentence_ja": "過去数年間その問題を見過ごしていた報道機関が、今ではどちらかと言えばそのことを重視し過ぎている。",
+      "contextual_meaning_ja": "intermediate frequency (無電の)中間周波"
+    }
+  },
+  {
+    "id": "vocab:01192",
+    "kind": "construction",
+    "pos": "construction",
+    "sense_key": "suggest_action_to_addressee",
+    "prompt_ja": "somethingしたらどうですか",
+    "target": "why don't you do something",
+    "paraphrases": [
+      "how about doing something",
+      "what about doing something"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"why don't you do something\"=THING:1 / \"how about doing something\"=THING:1 / \"what about doing something\"=THING:1.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0043",
+      "target_span": "Why don't you consult",
+      "sentence_en": "Why don't you consult Starr in person? He's by far the most prominent attorney around here.",
+      "sentence_ja": "スターさんに直接相談したらどうですか？この辺りでは文句なしでいちばん有名な弁護士ですよ。",
+      "contextual_meaning_ja": "スターさんに直接相談したらどうですか？この辺りでは文句なしでいちばん有名な弁護士ですよ。"
+    }
+  },
+  {
+    "id": "vocab:01280",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "ask_eat_in_or_take_away",
+    "prompt_ja": "店内で召し上がりますか、持ち帰りますか",
+    "target": "for here or to go?",
+    "paraphrases": [
+      "eat in or take away"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"for here or to go?\"=no explicit slot / \"eat in or take away\"=no explicit slot.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0063",
+      "target_span": "For here or to go",
+      "sentence_en": "\"Anything else?\" \"That's it.\" \"For here or to go?\" \"To go.\"",
+      "sentence_ja": "「ほかにご注文は？」「以上です。」「こちらでお召し上がりですか？」「持ち帰ります。」",
+      "contextual_meaning_ja": "「ほかにご注文は？」「以上です。」「こちらでお召し上がりですか？」「持ち帰ります。」"
+    }
+  },
+  {
+    "id": "vocab:01281",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "takeaway_food",
+    "prompt_ja": "持ち帰りの",
+    "target": "to go",
+    "paraphrases": [
+      "takeaway",
+      "takeout"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"to go\"=no explicit slot / \"takeaway\"=no explicit slot / \"takeout\"=no explicit slot.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0063",
+      "target_span": "to go",
+      "sentence_en": "\"Anything else?\" \"That's it.\" \"For here or to go?\" \"To go.\"",
+      "sentence_ja": "「ほかにご注文は？」「以上です。」「こちらでお召し上がりですか？」「持ち帰ります。」",
+      "contextual_meaning_ja": "「ほかにご注文は？」「以上です。」「こちらでお召し上がりですか？」「持ち帰ります。」"
+    }
+  },
+  {
+    "id": "vocab:01289",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "have_not_done_yet",
+    "prompt_ja": "まだsomethingしていない",
+    "target": "be yet to do something",
+    "paraphrases": [
+      "have yet to do something",
+      "haven't done something yet"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"be yet to do something\"=THING:1 / \"have yet to do something\"=THING:1 / \"haven't done something yet\"=THING:1.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0077",
+      "target_span": "is yet to be reached regarding this matter",
+      "sentence_en": "We exchanged frank opinions in the meeting, but consensus is yet to be reached regarding this matter.",
+      "sentence_ja": "我々は会議で率直な意見を交わしたが、この件に関してはまだ全体の意見がまとまらない。",
+      "contextual_meaning_ja": "我々は会議で率直な意見を交わしたが、この件に関してはまだ全体の意見がまとまらない。"
+    }
+  },
+  {
+    "id": "vocab:01297",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "ability_to_do",
+    "prompt_ja": "somethingする能力",
+    "target": "capacity for doing something",
+    "paraphrases": [
+      "ability to do something",
+      "capability to do something"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"capacity for doing something\"=THING:1 / \"ability to do something\"=THING:1 / \"capability to do something\"=THING:1.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0090",
+      "target_span": "capacity for overcoming",
+      "sentence_en": "She possesses a great capacity for overcoming any obstacle.",
+      "sentence_ja": "彼女にはどんな障害をも克服できるすばらしい能力がある。",
+      "contextual_meaning_ja": "彼女にはどんな障害をも克服できるすばらしい能力がある。"
+    }
+  },
+  {
+    "id": "vocab:01381",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "weary_of_doing",
+    "prompt_ja": "somethingすることにうんざりしている",
+    "target": "be tired of doing something",
+    "paraphrases": [
+      "be fed up with doing something",
+      "be sick of doing something"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"be tired of doing something\"=THING:1 / \"be fed up with doing something\"=THING:1 / \"be sick of doing something\"=THING:1.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0121",
+      "target_span": "I'm tired of doing the dishes, doing the laundry, and so on",
+      "sentence_en": "I'm tired of doing the dishes, doing the laundry, and so on!",
+      "sentence_ja": "皿洗いとか洗濯とか、そういうことにはもううんざり！",
+      "contextual_meaning_ja": "皿洗いとか洗濯とか、そういうことにはもううんざり！"
+    }
+  },
+  {
+    "id": "vocab:01391",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "deter_from_doing",
+    "prompt_ja": "someoneにsomethingするのを思いとどまらせる",
+    "target": "discourage someone from doing something",
+    "paraphrases": [
+      "deter someone from doing something",
+      "talk someone out of doing something"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"discourage someone from doing something\"=PERSON:1,THING:1 / \"deter someone from doing something\"=PERSON:1,THING:1 / \"talk someone out of doing something\"=PERSON:1,THING:1.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0131",
+      "target_span": "discouraging us from investing",
+      "sentence_en": "There are a number of factors discouraging us from investing in stocks.",
+      "sentence_ja": "私たちの株式投資への意欲をそぐような要因がかなりある。",
+      "contextual_meaning_ja": "私たちの株式投資への意欲をそぐような要因がかなりある。"
+    }
+  },
+  {
+    "id": "vocab:01500",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "ought_to_act",
+    "prompt_ja": "somethingすべきである",
+    "target": "ought to do something",
+    "paraphrases": [
+      "should do something"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"ought to do something\"=THING:1 / \"should do something\"=THING:1.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0164",
+      "target_span": "ought to think",
+      "sentence_en": "You ought to think over whether the premise is valid or not.",
+      "sentence_ja": "その前提が妥当かどうかよく考えるべきだ。",
+      "contextual_meaning_ja": "その前提が妥当かどうかよく考えるべきだ。"
+    }
+  },
+  {
+    "id": "vocab:01501",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "regardless_of_whether",
+    "prompt_ja": "〜かどうか",
+    "target": "whether or not",
+    "paraphrases": [
+      "if"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"whether or not\"=no explicit slot / \"if\"=no explicit slot.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0164",
+      "target_span": "whether the premise is valid or not",
+      "sentence_en": "You ought to think over whether the premise is valid or not.",
+      "sentence_ja": "その前提が妥当かどうかよく考えるべきだ。",
+      "contextual_meaning_ja": "その前提が妥当かどうかよく考えるべきだ。"
+    }
+  },
+  {
+    "id": "vocab:01526",
+    "kind": "word",
+    "pos": "word",
+    "sense_key": "if_not",
+    "prompt_ja": "そうでなければ",
+    "target": "otherwise",
+    "paraphrases": [
+      "if not"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "“Otherwise” and “if not” both refer back to the preceding condition. The Japanese prompt “そうでなければ” supplies that same discourse relation.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0209",
+      "target_span": "otherwise",
+      "sentence_en": "Keep your word; otherwise you'll end up losing face.",
+      "sentence_ja": "約束は守りなさい。そうしないと評判を落としますよ。",
+      "contextual_meaning_ja": "『そうでなければ』"
+    }
+  },
+  {
+    "id": "vocab:01654",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "with_the_aim_of",
+    "prompt_ja": "somethingする目的で",
+    "target": "with a view to doing something",
+    "paraphrases": [
+      "to do something",
+      "in order to do something",
+      "so as to do something"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"with a view to doing something\"=THING:1 / \"to do something\"=THING:1 / \"in order to do something\"=THING:1 / \"so as to do something\"=THING:1.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0229",
+      "target_span": "with a view to preserving",
+      "sentence_en": "A fund was set up with a view to preserving our endangered planet.",
+      "sentence_ja": "滅亡の危機に瀕した地球を守ろうと、ある基金が設立された。",
+      "contextual_meaning_ja": "滅亡の危機に瀕した地球を守ろうと、ある基金が設立された。"
+    }
+  },
+  {
+    "id": "vocab:01668",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "urge_person_to_do",
+    "prompt_ja": "someoneにsomethingするよう要請する",
+    "target": "call on someone to do something",
+    "paraphrases": [
+      "ask someone to do something",
+      "request that someone do something"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"call on someone to do something\"=PERSON:1,THING:1 / \"ask someone to do something\"=PERSON:1,THING:1 / \"request that someone do something\"=PERSON:1,THING:1.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0239",
+      "target_span": "called on all nations to work",
+      "sentence_en": "The committee called on all nations to work side by side to curb air pollution.",
+      "sentence_ja": "委員会は、大気汚染を抑制するために互いに協力し合うよう各国に要請した。",
+      "contextual_meaning_ja": "委員会は、大気汚染を抑制するために互いに協力し合うよう各国に要請した。"
+    }
+  },
+  {
+    "id": "vocab:01914",
+    "kind": "construction",
+    "pos": "construction",
+    "sense_key": "immediately_on_action",
+    "prompt_ja": "somethingするとすぐに",
+    "target": "on doing something",
+    "paraphrases": [
+      "upon doing something",
+      "immediately after doing something"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"on doing something\"=THING:1 / \"upon doing something\"=THING:1 / \"immediately after doing something\"=THING:1.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0313",
+      "target_span": "On encountering the celebrity",
+      "sentence_en": "On encountering the celebrity, they asked for his autograph.",
+      "sentence_ja": "彼らは有名人と出くわすなり、サインをねだった。",
+      "contextual_meaning_ja": "彼らは有名人と出くわすなり、サインをねだった。"
+    }
+  },
+  {
+    "id": "vocab:01917",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "recommend_action_to",
+    "prompt_ja": "someoneにsomethingするよう助言する",
+    "target": "advise someone to do something",
+    "paraphrases": [
+      "recommend that someone do something",
+      "suggest that someone do something"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"advise someone to do something\"=PERSON:1,THING:1 / \"recommend that someone do something\"=PERSON:1,THING:1 / \"suggest that someone do something\"=PERSON:1,THING:1.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0321",
+      "target_span": "advised me to refrain",
+      "sentence_en": "My physician advised me to refrain from alcohol for the time being.",
+      "sentence_ja": "当分の間は酒を控えるようにと、医者に忠告された。",
+      "contextual_meaning_ja": "当分の間は酒を控えるようにと、医者に忠告された。"
+    }
+  },
+  {
+    "id": "vocab:01918",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "convince_person_to_do",
+    "prompt_ja": "someoneを説得してsomethingさせる",
+    "target": "persuade someone to do something",
+    "paraphrases": [
+      "convince someone to do something",
+      "talk someone into doing something"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"persuade someone to do something\"=PERSON:1,THING:1 / \"convince someone to do something\"=PERSON:1,THING:1 / \"talk someone into doing something\"=PERSON:1,THING:1.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0324",
+      "target_span": "persuaded him to undergo",
+      "sentence_en": "The surgeon persuaded him to undergo an organ transplant.",
+      "sentence_ja": "外科医に説得されて、彼は臓器移植手術を受けることにした。",
+      "contextual_meaning_ja": "外科医に説得されて、彼は臓器移植手術を受けることにした。"
+    }
+  },
+  {
+    "id": "vocab:02050",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "to_rephrase",
+    "prompt_ja": "言い換えれば",
+    "target": "in other words",
+    "paraphrases": [
+      "to put it another way"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"in other words\"=no explicit slot / \"to put it another way\"=no explicit slot.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0359",
+      "target_span": "In other words",
+      "sentence_en": "Prosperity does not last forever. In other words, it will come to an end one of these days.",
+      "sentence_ja": "繁栄は永遠に続くものではない。つまり、いつかは終わりを迎えるものだ。",
+      "contextual_meaning_ja": "言い換えれば。つまり"
+    }
+  },
+  {
+    "id": "vocab:02059",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "find_action_difficult",
+    "prompt_ja": "somethingするのに苦労する",
+    "target": "have difficulty doing something",
+    "paraphrases": [
+      "struggle to do something",
+      "have trouble doing something"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"have difficulty doing something\"=THING:1 / \"struggle to do something\"=THING:1 / \"have trouble doing something\"=THING:1.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0378",
+      "target_span": "have difficulty making",
+      "sentence_en": "In reality, many people have difficulty making ends meet. How can you get by on 100,000 yen a month?",
+      "sentence_ja": "実際、多くの人々が家計のやりくりに苦労している。月々10万円でどうしたらやっていけるだろう？",
+      "contextual_meaning_ja": "実際、多くの人々が家計のやりくりに苦労している。月々10万円でどうしたらやっていけるだろう？"
+    }
+  },
+  {
+    "id": "vocab:02060",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "regard_as",
+    "prompt_ja": "somethingをsomething elseと考える",
+    "target": "think of something as something else",
+    "paraphrases": [
+      "regard something as something else",
+      "consider something to be something else"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"think of something as something else\"=THING:2 / \"regard something as something else\"=THING:2 / \"consider something to be something else\"=THING:2.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0381",
+      "target_span": "think of loyalty to a company as an absurd notion",
+      "sentence_en": "Many people today think of loyalty to a company as an absurd notion.",
+      "sentence_ja": "現在の多くの人が、会社に対する忠誠はばかげた考えだと思っている。",
+      "contextual_meaning_ja": "現在の多くの人が、会社に対する忠誠はばかげた考えだと思っている。"
+    }
+  },
+  {
+    "id": "vocab:02069",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "level_of_material_wellbeing",
+    "prompt_ja": "生活水準",
+    "target": "living standard",
+    "paraphrases": [
+      "standard of living"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"living standard\"=no explicit slot / \"standard of living\"=no explicit slot.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0394",
+      "target_span": "living standards",
+      "sentence_en": "They are primarily concerned with exploiting us, not with enhancing our living standards.",
+      "sentence_ja": "彼らの一番の関心事は、私たちの生活水準を高めることではなく、私たちから搾取することだ。",
+      "contextual_meaning_ja": "生活水準(=standard of living)"
+    }
+  },
+  {
+    "id": "vocab:02204",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "on_the_point_of_doing",
+    "prompt_ja": "まさにsomethingしようとしている",
+    "target": "be about to do something",
+    "paraphrases": [
+      "be on the verge of doing something"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"be about to do something\"=THING:1 / \"be on the verge of doing something\"=THING:1.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0403",
+      "target_span": "was about to commit",
+      "sentence_en": "He was about to commit suicide by swallowing poison when he thought better of it.",
+      "sentence_ja": "毒物を飲んで自殺しようとした直前に彼は思いとどまった。",
+      "contextual_meaning_ja": "毒物を飲んで自殺しようとした直前に彼は思いとどまった。"
+    }
+  },
+  {
+    "id": "vocab:02349",
+    "kind": "word",
+    "pos": "word",
+    "sense_key": "small_amount_of_food",
+    "prompt_ja": "軽食",
+    "target": "snack",
+    "paraphrases": [
+      "light meal",
+      "a bite to eat"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"snack\"=no explicit slot / \"light meal\"=no explicit slot / \"a bite to eat\"=no explicit slot.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0493",
+      "target_span": "snacks",
+      "sentence_en": "It won't be long before everything is ready. In the meantime, help yourself to some snacks.",
+      "sentence_ja": "もうすぐ準備完了です。その間、軽食をご自由につまんでください。",
+      "contextual_meaning_ja": "『軽食』"
+    }
+  },
+  {
+    "id": "vocab:02435",
+    "kind": "construction",
+    "pos": "construction",
+    "sense_key": "suggest_activity",
+    "prompt_ja": "somethingするのはどうですか",
+    "target": "how about doing something",
+    "paraphrases": [
+      "what about doing something",
+      "why not do something",
+      "why don't you do something"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"how about doing something\"=THING:1 / \"what about doing something\"=THING:1 / \"why not do something\"=THING:1 / \"why don't you do something\"=THING:1.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0513",
+      "target_span": "How about playing cards or something for a change?",
+      "sentence_en": "\"How about playing cards or something for a change?\" \"Sorry, I'm not up for it.\"",
+      "sentence_ja": "「気分転換にトランプか何かしない？」「わるいけど、そういう気分じゃないよ。」",
+      "contextual_meaning_ja": "「気分転換にトランプか何かしない？」「わるいけど、そういう気分じゃないよ。」"
+    }
+  },
+  {
+    "id": "vocab:02446",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "consider_doing",
+    "prompt_ja": "somethingしようかと考える",
+    "target": "think of doing something",
+    "paraphrases": [
+      "think about doing something",
+      "consider doing something"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The mechanical signal was a surface-form/word-boundary difference. Semantic review found no additional variable slot or answer condition: \"think of doing something\"=THING:1 / \"think about doing something\"=THING:1 / \"consider doing something\"=THING:1.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0529",
+      "target_span": "think of divorcing",
+      "sentence_en": "\"Lisa, are you getting along with Nick?\" \"Once in a while, I think of divorcing him.\" \"You must be kidding!\"",
+      "sentence_ja": "「リサ、ニックとうまくやってる？」「時々、離婚を考えることがあるわ。」「冗談だろ！」",
+      "contextual_meaning_ja": "「リサ、ニックとうまくやってる？」「時々、離婚を考えることがあるわ。」「冗談だろ！」"
+    }
+  },
+  {
+    "id": "vocab:02476",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "express_sympathy_at_bad_news",
+    "prompt_ja": "それはお気の毒に",
+    "target": "that's too bad",
+    "paraphrases": [
+      "I'm sorry to hear that"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "In “I’m sorry to hear that”, “that” points to the bad news already present in the conversation; it is not an extra unprompted clause slot.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0552",
+      "target_span": "that's too bad",
+      "sentence_en": "\"One of her relatives passed away three days ago.\" \"Oh, that's too bad. I'm so sorry.\"",
+      "sentence_ja": "「彼女の親戚が3日前に亡くなったんだ。」「えっ、それは大変ね。お気の毒だわ。」",
+      "contextual_meaning_ja": "「彼女の親戚が3日前に亡くなったんだ。」「えっ、それは大変ね。お気の毒だわ。」"
+    }
+  },
+  {
+    "id": "vocab:02477",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "express_sympathy",
+    "prompt_ja": "お気の毒に",
+    "target": "I'm sorry",
+    "paraphrases": [
+      "I'm sorry to hear that",
+      "that's a shame"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "In “I’m sorry to hear that”, “that” points to the bad news already present in the conversation; it is not an extra unprompted clause slot.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0552",
+      "target_span": "I'm so sorry",
+      "sentence_en": "\"One of her relatives passed away three days ago.\" \"Oh, that's too bad. I'm so sorry.\"",
+      "sentence_ja": "「彼女の親戚が3日前に亡くなったんだ。」「えっ、それは大変ね。お気の毒だわ。」",
+      "contextual_meaning_ja": "「彼女の親戚が3日前に亡くなったんだ。」「えっ、それは大変ね。お気の毒だわ。」"
+    }
+  },
+  {
+    "id": "vocab:00079",
+    "kind": "expression",
+    "pos": "preposition",
+    "sense_key": "because_of",
+    "prompt_ja": "〜が原因で",
+    "target": "owing to",
+    "paraphrases": [
+      "because of",
+      "due to",
+      "on account of"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "“Because of” is an NP-taking preposition, as are “owing to”, “due to”, and “on account of”. The substring “because” alone falsely suggested a clause-taking conjunction.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0060",
+      "target_span": "Owing to",
+      "sentence_en": "Owing to illness, some representatives were absent from the annual conference.",
+      "sentence_ja": "病気のために年次会議を欠席した代表者もいた。",
+      "contextual_meaning_ja": "病気のため"
+    }
+  },
+  {
+    "id": "vocab:00126",
+    "kind": "expression",
+    "pos": "preposition",
+    "sense_key": "because_of",
+    "prompt_ja": "〜が原因で",
+    "target": "on account of",
+    "paraphrases": [
+      "because of",
+      "due to",
+      "owing to",
+      "as a result of"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "“Because of” is an NP-taking preposition, as are “on account of”, “due to”, “owing to”, and “as a result of”. The substring “because” alone falsely suggested a clause-taking conjunction.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0093",
+      "target_span": "on account of",
+      "sentence_en": "Our flight to Vienna was delayed on account of a minor accident.",
+      "sentence_ja": "ちょっとした事故が原因で、私たちのウィーン行きの便に遅れが出た。",
+      "contextual_meaning_ja": "〜が原因で"
+    }
+  },
+  {
+    "id": "vocab:01671",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "warn_person_that",
+    "prompt_ja": "someoneにsomethingは危険だと警告する",
+    "target": "warn someone that something is dangerous",
+    "paraphrases": [
+      "warn someone about the danger of something"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "Both answers preserve the prompted person and the proposition/content being warned about. “Warn someone that …” and “warn someone about …” are alternate realizations of the same slots explicitly present in the Japanese prompt.",
+    "recommended_direction": "No production correction. Keep this candidate out of the fix list: its signal is lexicalized, anaphoric, or a grammar-form alternation with the same prompted slot(s).",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0241",
+      "target_span": "warned us time and again that petroleum is not only a blessing but also a curse",
+      "sentence_en": "The ecologist has warned us time and again that petroleum is not only a blessing but also a curse.",
+      "sentence_ja": "石油は天の恵みであると同時に災いのもとであると、その生態学者は我々に繰り返し警告してきた。",
+      "contextual_meaning_ja": "石油は天の恵みであると同時に災いのもとであると、その生態学者は我々に繰り返し警告してきた。"
+    }
+  },
+  {
+    "id": "vocab:01010",
+    "kind": "word",
+    "pos": "verb",
+    "sense_key": "give_a_criminal_a_punishment",
+    "prompt_ja": "判決を言い渡す",
+    "target": "sentence",
+    "paraphrases": [
+      "pass sentence on someone",
+      "hand down a sentence"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "INTERNAL_PARAPHRASE_INCONSISTENCY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The person receiving the sentence is inherent in 判決を言い渡す and is naturally omitted in Japanese. In the source example, he is the person sentenced. `pass sentence on someone` makes that same recipient explicit; it does not add a different answer slot that the prompt cannot support. The bare TARGET `sentence` and `hand down a sentence` are valid vocabulary/action surfaces with the recipient left implicit.",
+    "recommended_direction": "このslot整合性監査では変更不要。受け手を明示する別カードにする場合だけ、promptを「someoneに判決を言い渡す」とし、TARGET/paraphrasesにも同じ受け手slotを付ける。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0462",
+      "target_span": "sentenced",
+      "sentence_en": "The man pleaded for mercy, but he was sentenced to twenty years in prison for his crime.",
+      "sentence_ja": "男は情状酌量を求めたが、犯した罪に対して20年の懲役刑が言い渡された。",
+      "contextual_meaning_ja": "判決を言い渡す"
+    }
+  },
+  {
+    "id": "vocab:01063",
+    "kind": "word",
+    "pos": "verb",
+    "sense_key": "think_carefully_about",
+    "prompt_ja": "熟考する",
+    "target": "reflect",
+    "paraphrases": [
+      "contemplate",
+      "ponder",
+      "deliberate",
+      "think over something"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "INTERNAL_PARAPHRASE_INCONSISTENCY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The topic being considered is a shared, naturally implicit object. Japanese「熟考する」can omit it, and the source example explicitly supplies the topic for `reflect on it`. `think over something` names that same generic topic; it does not add a different slot type or information absent from the prompt.",
+    "recommended_direction": "現promptと回答形を維持する。対象が文脈から分かるときに省略可能な思考対象の表出差であり、slot追加・paraphrase除外は不要。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0546",
+      "target_span": "reflect",
+      "sentence_en": "Take your time. I know you need a couple of days to reflect on it.",
+      "sentence_ja": "慌てなくていいですよ。そのことをじっくり考えるには、2、3日必要でしょうから。",
+      "contextual_meaning_ja": "熟考する"
+    }
+  },
+  {
+    "id": "vocab:01399",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "unlikely_future_event",
+    "prompt_ja": "〜する見込みがほとんどない",
+    "target": "there is little prospect that",
+    "paraphrases": [
+      "be unlikely to do something",
+      "have little chance of doing something"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "SYNTACTIC_FRAME_MISMATCH",
+      "INCOMPLETE_SURFACE"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The Japanese pattern「〜する見込みがほとんどない」provides an event/proposition slot. The TARGET's that-clause and the paraphrases' infinitive or gerund patterns express that same event; the source example supplies the two countries and their progress as the proposition. Their clause shapes differ, but the required event slot is shared. These are actual answer patterns, not a `+ clause` metalinguistic placeholder.",
+    "recommended_direction": "「〜する」のevent slotを維持し、各回答surfaceは現状のままとする。`+ clause`を回答文字列へ追加しない。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0141",
+      "target_span": "There's little prospect that the two countries will make significant progress in disarmament",
+      "sentence_en": "There's little prospect that the two countries will make significant progress in disarmament.",
+      "sentence_ja": "軍縮において、両国が大きな進展を遂げる見込みはほとんどない。",
+      "contextual_meaning_ja": "軍縮において、両国が大きな進展を遂げる見込みはほとんどない。"
+    }
+  },
+  {
+    "id": "vocab:02098",
+    "kind": "word",
+    "pos": "word",
+    "sense_key": "persistently_trouble",
+    "prompt_ja": "付きまとう",
+    "target": "haunt",
+    "paraphrases": [
+      "follow someone around"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The affected person in `follow someone around` is the same implicit target of「付きまとう」and the person haunted in the source example (`I'm still haunted ...`). The Japanese prompt naturally leaves that affected person unspoken; the paraphrase only surfaces the same participant, not a new person slot.",
+    "recommended_direction": "人の対象を含意する現promptを維持する。今回の例では人slotの追加や `follow someone around` の除外は不要。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0412",
+      "target_span": "haunted",
+      "sentence_en": "I'm still haunted by a vivid nightmare I had last night.",
+      "sentence_ja": "昨日の夜に見た生々しい悪夢がまだ頭から離れない。",
+      "contextual_meaning_ja": "...に『しばしば行く』"
+    }
+  },
+  {
+    "id": "vocab:02287",
+    "kind": "word",
+    "pos": "verb",
+    "sense_key": "give_information",
+    "prompt_ja": "知らせる",
+    "target": "inform",
+    "paraphrases": [
+      "let someone know",
+      "notify"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "INTERNAL_PARAPHRASE_INCONSISTENCY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "`inform`, `notify`, and `let someone know` share the recipient role; the first two are bare verb headwords while the last spells out that same role. Japanese「知らせる」also entails a recipient that is routinely omitted. The source example uses a passive (`he was informed`) and its Japanese translation likewise omits the recipient, confirming natural ellipsis rather than a prompt/answer mismatch.",
+    "recommended_direction": "現promptと3つの回答形を維持する。受け手は共通の省略可能な役割であり、person slotを新たにpromptへ追加する必要はない。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0468",
+      "target_span": "Informed",
+      "sentence_en": "Informed of her safety, he breathed a sigh of relief.",
+      "sentence_ja": "彼女の無事を知らされて、彼は安堵のため息をついた。",
+      "contextual_meaning_ja": "に『知らせる』"
+    }
+  },
+  {
+    "id": "vocab:02443",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "amorous_interest",
+    "prompt_ja": "恋愛感情",
+    "target": "romantic interest",
+    "paraphrases": [
+      "romantic feelings",
+      "feelings for someone"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "INTERNAL_PARAPHRASE_INCONSISTENCY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "In this entry,「恋愛感情」and `romantic interest` / `romantic feelings` inherently describe a relation to a person. `feelings for someone` spells out that same naturally understood target; it does not add an independent slot the learner must infer. The source example also identifies Bill as the person Monica's romantic interest concerns.",
+    "recommended_direction": "現promptとparaphrasesを維持する。恋愛感情の関係対象は語義に内在しており、person slotの追加や `feelings for someone` の除外は不要。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0522",
+      "target_span": "romantic interest",
+      "sentence_en": "Bill just wanted to comfort Monica, but she interpreted it as romantic interest.",
+      "sentence_ja": "ビルはただモニカを慰めたかっただけなのに、彼女は彼が自分に気があるのだと解釈した。",
+      "contextual_meaning_ja": "ビルはただモニカを慰めたかっただけなのに、彼女は彼が自分に気があるのだと解釈した。"
+    }
+  },
+  {
+    "id": "vocab:02451",
+    "kind": "expression",
+    "pos": "expression",
+    "sense_key": "fear_doing",
+    "prompt_ja": "somethingすることを恐れている",
+    "target": "be afraid of doing something",
+    "paraphrases": [
+      "be afraid to do something",
+      "be scared to do something",
+      "fear doing something"
+    ],
+    "rule": [
+      "SYNTACTIC_FRAME_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The prompt explicitly supplies the action slot with「somethingすること」. Every answer form takes that same action as its complement; `of + gerund` and `to-infinitive` are different surface frames but do not change the slot count or type. The source example's `taking risks` is the same kind of action slot. Possible nuance differences do not establish a structural rule violation.",
+    "recommended_direction": "「somethingすること」のprompt slotを維持し、現行のgerund/to-infinitive answer surfacesを構造不整合として除外しない。",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0537",
+      "target_span": "afraid of taking risks",
+      "sentence_en": "\"To be honest, I'm crazy about Ken because he's brave, self-confident, and never afraid of taking risks.\" \"If I were you, I'd ask him out!\"",
+      "sentence_ja": "「正直言うと私、ケンに夢中なの。だって、勇敢で自分に自信を持っていて、それに危険を冒すことを決して恐れないでしょ。」「私ならデートに誘うわ。」",
+      "contextual_meaning_ja": "「正直言うと私、ケンに夢中なの。だって、勇敢で自分に自信を持っていて、それに危険を冒すことを決して恐れないでしょ。」「私ならデートに誘うわ。」"
+    }
+  }
+]

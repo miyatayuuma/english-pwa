@@ -56,7 +56,7 @@ test('new word fixtures preserve source sense, part of speech, and exact inflect
     ['alarming','causing_worry','adjective','E0032','alarming',/不安/],
     ['exhausted','very_tired','adjective','E0123','exhausted',/疲れ切/],
     ['thriving','flourishing_or_successful','adjective','E0267','thriving',/盛ん/],
-    ['familiar','knowledgeable_about_a_subject','adjective','E0015','familiar',/精通/],
+    ['be familiar with something','knowledgeable_about_a_subject','adjective','E0015','familiar',/精通/],
     ['familiar','known_to_someone','adjective','E0486','familiar',/なじみ/],
     ['passionately','with_strong_feeling_or_emotion','adverb','E0524','passionately',/情熱的/],
   ];
@@ -111,6 +111,6 @@ test('word expansion report semantics validate against the current source and vo
   assert.equal(report.source_items_with_word_entries,261);
   assert.equal(report.source_items_newly_covered_by_words,222);
   assert.equal(report.multi_occurrence_word_entries,3);
-  assert.equal(report.multi_sense_word_canonical_count,5);
+  assert.equal(report.multi_sense_word_canonical_count,4);
   assert.equal(report.existing_word_span_correction_count,21);
 });

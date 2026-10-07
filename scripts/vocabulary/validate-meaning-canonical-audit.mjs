@@ -47,6 +47,34 @@ if(fs.existsSync(reconciliationFile)){
   for(const [id,row] of overrides){check(original.has(id),`Unknown override ${id}`);check(!!row.reason,`Override missing reason ${id}`);}
   effective=rows.map(row=>overrides.has(row.id)?{...row,...overrides.get(row.id)}:row);
 }
+const productionExpected=new Map(effective.map(row=>[row.id,{...row,after:{...row.after}}]));
+const paraphraseAuditDir=path.join(root,'data/audits/vocabulary-paraphrase-rule-consistency');
+const materializationFile=path.join(paraphraseAuditDir,'materialization.json');
+if(fs.existsSync(materializationFile)){
+  const materialization=read(materializationFile);
+  const confirmed=read(path.join(paraphraseAuditDir,'confirmed.json'));
+  const confirmedById=new Map(confirmed.map(row=>[row.id,row]));
+  const materialized=Array.isArray(materialization.entries)?materialization.entries:[];
+  check(materialization.schema_version===1&&materialization.status==='MATERIALIZED','Paraphrase remediation materialization schema/status mismatch');
+  check(materialization.accounting?.APPLY===58&&materialization.accounting?.ALREADY_RESOLVED===0&&materialization.accounting?.BLOCKED===0&&materialization.accounting?.total===58&&materialized.length===58,'Paraphrase remediation accounting must be 58/0/0');
+  check(confirmed.length===58&&confirmedById.size===58,'Paraphrase remediation must use 58 unique confirmed audit rows');
+  check(materialization.source_audit?.commit==='713e4bb720429090782ebc59578b476adb5302f8','Paraphrase remediation source commit mismatch');
+  const seenMaterialized=new Set();
+  for(const row of materialized){
+    const authority=confirmedById.get(row.id);
+    const expected=productionExpected.get(row.id);
+    if(seenMaterialized.has(row.id)) check(false,`Duplicate paraphrase remediation ${row.id}`);
+    seenMaterialized.add(row.id);
+    check(!!authority&&authority.status==='CONFIRMED',`Paraphrase remediation is not CONFIRMED ${row.id}`);
+    check(!!expected,`Paraphrase remediation is outside the frozen meaning/canonical audit population ${row.id}`);
+    if(!authority||!expected) continue;
+    check(row.before?.meaning_ja===authority.prompt_ja&&row.before?.canonical===authority.target,`Paraphrase remediation before-state differs from confirmed snapshot ${row.id}`);
+    check(expected.after.meaning_ja===row.before.meaning_ja&&expected.after.canonical===row.before.canonical,`Paraphrase remediation does not supersede the prior semantic authority from its audited state ${row.id}`);
+    expected.after.meaning_ja=row.after.meaning_ja;
+    expected.after.canonical=row.after.canonical;
+  }
+  check(seenMaterialized.size===confirmedById.size&&[...confirmedById.keys()].every(id=>seenMaterialized.has(id)),'Paraphrase remediation ID set differs from CONFIRMED authority');
+}
 const report={assigned:assigned.size,reviewed:rows.length,KEEP:0,MODIFY:0,UNRESOLVED:0,kind_counts:{word:0,expression:0,construction:0},canonical_modifications:0,meaning_ja_modifications:0,sense_key_modifications:0,known_placeholders_reviewed:0,placeholder_meaning_remaining:0};
 const seen=new Set();
 for(const row of effective){
@@ -63,7 +91,7 @@ check(report.placeholder_meaning_remaining===0,'Placeholder meanings remain');
 check(report.known_placeholders_reviewed===330,'Known placeholder coverage differs');
 if(process.argv.includes('--check-production')){
   const production=read(path.join(root,'data/vocabulary-v3.json'));
-  const byId=new Map(effective.map(r=>[r.id,r]));
+  const byId=productionExpected;
   check(JSON.stringify(production.entries.map(e=>[e.id,e.kind]))===JSON.stringify(baseline.entries.map(e=>[e.id,e.kind])),'Population/ID/kind/order changed');
   for(const entry of production.entries){
     check(JSON.stringify(pick(entry))===JSON.stringify(pick(byId.get(entry.id)?.after||{})),`Production proposal mismatch ${entry.id}`);
