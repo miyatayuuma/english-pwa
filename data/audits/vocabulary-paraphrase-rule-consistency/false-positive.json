@@ -2046,5 +2046,31 @@
       "sentence_ja": "「正直言うと私、ケンに夢中なの。だって、勇敢で自分に自信を持っていて、それに危険を冒すことを決して恐れないでしょ。」「私ならデートに誘うわ。」",
       "contextual_meaning_ja": "「正直言うと私、ケンに夢中なの。だって、勇敢で自分に自信を持っていて、それに危険を冒すことを決して恐れないでしょ。」「私ならデートに誘うわ。」"
     }
+  },
+  {
+    "id": "vocab:02393",
+    "kind": "word",
+    "pos": "word",
+    "sense_key": "be_owned_by_or_be_part_of",
+    "prompt_ja": "属する／（人など）のものである",
+    "target": "belong",
+    "paraphrases": [
+      "be someone's"
+    ],
+    "rule": [
+      "PLACEHOLDER_ASYMMETRY",
+      "PROMPT_SLOT_MISMATCH"
+    ],
+    "status": "FALSE_POSITIVE",
+    "problem": "The answer-surface slot asymmetry is an audit signal, but not a rule violation for this intentionally multi-sense card: the upstream Meaning / Canonical authority accepts both the sense-neutral headword and a sense-specific answer surface. “be someone's” represents the ownership sense, while cited source E0508 expresses fit-in / social belonging, not ownership.",
+    "recommended_direction": "No production correction. Preserve canonical “belong” and the accepted paraphrase “be someone's” for the ownership sense. Accepted answer surfaces on this multi-sense card do not need to express every sense; do not narrow the canonical to “belong to someone”.",
+    "confidence": "HIGH",
+    "source_example": {
+      "item_id": "E0508",
+      "target_span": "belonged",
+      "sentence_en": "Having found no place he felt he belonged, he was extremely uneasy and lonely.",
+      "sentence_ja": "自分が受け入れられる場所を見つけられず、彼は極度の不安と孤独に陥っていた。",
+      "contextual_meaning_ja": "その場所に属する／なじめる"
+    }
   }
 ]
