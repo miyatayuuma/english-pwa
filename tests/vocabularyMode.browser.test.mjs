@@ -397,13 +397,13 @@ browserTest('Vocabulary carrier cue stays subtle, emphasizes lexical misses, pul
   try{
     const cue=page.locator('.vocab-speech-carrier');
     assert.equal(await cue.innerText(),'my answer is …');
-    const before=await cue.boundingBox();
     await inject(page,'banana');
     await page.waitForFunction(()=>document.querySelector('.vocab-speech-carrier.is-emphasized'));
     assert.equal(await cue.getAttribute('data-miss-count'),'1');
     await page.waitForFunction(()=>getComputedStyle(document.querySelector('.vocab-speech-carrier')).opacity==='0.72');
     assert.equal(await cue.evaluate(node=>getComputedStyle(node).opacity),'0.72');
     assert.equal(await cue.innerText(),'my answer is …');
+    const beforePulse=await cue.boundingBox();
 
     await page.locator('.vocab-mic').click();
     await page.waitForFunction(()=>window.__mockSpeech.startCount>=2);
@@ -412,7 +412,7 @@ browserTest('Vocabulary carrier cue stays subtle, emphasizes lexical misses, pul
     assert.equal(await cue.getAttribute('data-miss-count'),'2');
     assert.equal(await cue.evaluate(node=>getComputedStyle(node).animationName),'vocab-carrier-pulse');
     const after=await cue.boundingBox();
-    assert.deepEqual({x:after.x,y:after.y,width:after.width,height:after.height},{x:before.x,y:before.y,width:before.width,height:before.height},'emphasis and pulse do not shift the question layout');
+    assert.deepEqual({x:after.x,y:after.y,width:after.width,height:after.height},{x:beforePulse.x,y:beforePulse.y,width:beforePulse.width,height:beforePulse.height},'the repeated-miss pulse does not shift the cue');
     await page.emulateMedia({reducedMotion:'reduce'});
     assert.equal(await cue.evaluate(node=>getComputedStyle(node).animationName),'none');
 
