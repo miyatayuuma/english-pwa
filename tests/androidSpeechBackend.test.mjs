@@ -181,7 +181,7 @@ test('Android provider evidence reaches shared curated Vocabulary chunk rescue a
   class Backend extends AndroidSpeechRecognizerBackend{constructor(){super({pluginProvider:async()=>f.plugin});driver=this;drivers.push(this);}}
   const controller=createRecognitionController({recognitionBackend:Backend});
   controller.start();await driver.startup;
-  const primary='no sooner had I sat down then the phone rang';
+  const primary='no sooner had I arrived then the phone rang';
   const alternatives=Array.from({length:20},(_,index)=>({
     transcript:index===0?primary:index===19?'than the phone rang':`unrelated ${index}`,
     asrRank:index,
@@ -191,7 +191,7 @@ test('Android provider evidence reaches shared curated Vocabulary chunk rescue a
   f.emit(driver,'final',alternatives);f.emit(driver,'end');
   const evidence=await promise;
   const grade=classifyVocabularySpeechAnswer({
-    entry:{id:'vocab:00139',canonical:'no sooner had I sat down than the phone rang'},
+    entry:{id:'vocab:00139',canonical:'no sooner had I arrived than the phone rang'},
     ...evidence,
   });
   assert.equal(grade.type,'target');

@@ -9,7 +9,7 @@
 <p>debug APKのみ。system default recognizerのN-best候補を検証します。biasは使用しません。音声は保存しません。記録はこの画面のメモリ内のみです。</p>
 <a href="/index.html">既存UIへ戻る</a>
 <button id="capabilities">Bridge / capability</button><button id="permission">マイク権限</button>
-<label>case <select id="fixture"><option value="word:yield">yield</option><option value="word:yell">yell</option><option value="vocab:00437" selected>yield to something</option><option value="vocab:00353">see to something</option><option value="vocab:01282">be in</option><option value="vocab:01306">yelled (Vocabulary source)</option><option value="vocab:00139">no sooner had I sat down than the phone rang</option><option value="E0102">yelled (actual whole source)</option></select></label>
+<label>case <select id="fixture"><option value="word:yield">yield</option><option value="word:yell">yell</option><option value="vocab:00437" selected>yield to something</option><option value="vocab:00353">see to something</option><option value="vocab:01282">be in</option><option value="vocab:01306">yelled (Vocabulary source)</option><option value="vocab:00139">no sooner had I arrived than the phone rang</option><option value="E0102">yelled (actual whole source)</option></select></label>
 <label>control <select id="control"><option value="positive">正解発話</option><option>数語抜け</option><option>chunk丸ごと抜け</option><option>content word違い</option><option>時制違い</option><option>chunk順序入れ替え</option><option>言いかけ停止</option></select></label>
 <label>発話内容（negativeでは実際に言う内容を入力）<input id="intended"></label>
 <p>現在の正解 authority: <span id="expected"></span></p>
@@ -19,7 +19,7 @@
 <section id="vocab139Diagnostics" hidden>
 <h2>vocab:00139 — than / then / down と chunk診断</h2>
 <p id="vocab139Summary"></p>
-<table><thead><tr><th>Attempt</th><th>Segment</th><th>Rank</th><th>Transcript</th><th>than</th><th>then</th><th>down</th><th>chunk 1</th><th>chunk 2</th><th>sat down 以降</th></tr></thead><tbody id="vocab139Rows"></tbody></table>
+<table><thead><tr><th>Attempt</th><th>Segment</th><th>Rank</th><th>Transcript</th><th>than</th><th>then</th><th>down</th><th>chunk 1</th><th>chunk 2</th><th>arrived 以降</th></tr></thead><tbody id="vocab139Rows"></tbody></table>
 </section>
 <pre id="output"></pre>
 <script type="module">

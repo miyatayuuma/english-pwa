@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { VOCAB_00139_ASR_REMEDIATION } from './vocabularyEntryRemediationAuthority.js';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -17,6 +18,10 @@ const surfaceOf=value=>({
   paraphrases:Array.isArray(value?.paraphrases)?value.paraphrases:[],
 });
 const sameSurface=(left,right)=>JSON.stringify(surfaceOf(left))===JSON.stringify(surfaceOf(right));
+// Approved post-audit correction: preserve frozen snapshots; validate the exact new entry.
+const approvedVocab139=(audit,production)=>production?.id===VOCAB_00139_ASR_REMEDIATION.id
+  && sameSurface(audit,VOCAB_00139_ASR_REMEDIATION.before)
+  && sameSurface(production,VOCAB_00139_ASR_REMEDIATION.after);
 
 export function validateVocabularyGrammarRoleAudit({vocabulary,manifest,batches,pendingRegistry,semanticQa,finalResolutions,pendingHistory,paraphraseManifest=null,confirmedAuthority=null,materialization=null}){
   const errors=[];
@@ -80,7 +85,7 @@ export function validateVocabularyGrammarRoleAudit({vocabulary,manifest,batches,
       if(!sameSurface(row,remediation.before)) errors.push(`paraphrase materialization: before differs from grammar-role snapshot for ${id}`);
       if(!sameSurface(entry,remediation.after)) errors.push(`paraphrase materialization: production differs from approved after-state for ${id}`);
       if(entry.grammarRole!==remediation.grammarRole||row.grammarRole!==remediation.grammarRole) errors.push(`paraphrase materialization: grammarRole changed for ${id}`);
-    }else if(!sameSurface(row,entry)) errors.push(`snapshot: meaning/answer/paraphrases differ for ${id}`);
+    }else if(!sameSurface(row,entry)&&!approvedVocab139(row,entry)) errors.push(`snapshot: meaning/answer/paraphrases differ for ${id}`);
     if(row.status==='classified'){
       if(!GRAMMAR_ROLES.includes(row.grammarRole)) errors.push(`classification: invalid grammarRole for ${id}`);
       if(entry.grammarRole!==row.grammarRole) errors.push(`production: grammarRole mismatch for ${id}`);
@@ -127,7 +132,7 @@ export function validateVocabularyGrammarRoleAudit({vocabulary,manifest,batches,
     if(remediation){
       if(!sameSurface(row,remediation.before)||!sameSurface(auditEntry,remediation.before)||!sameSurface(sourceEntry,remediation.after)) errors.push(`final resolutions: paraphrase materialization mismatch for ${row.id}`);
       if(remediation.grammarRole!==row.grammarRole) errors.push(`final resolutions: grammarRole changed by paraphrase materialization for ${row.id}`);
-    }else{
+    }else if(!approvedVocab139(row,sourceEntry)||!sameSurface(auditEntry,VOCAB_00139_ASR_REMEDIATION.before)){
       if(sourceEntry.meaning_ja!==row.meaning_ja||auditEntry.meaning_ja!==row.meaning_ja) errors.push(`final resolutions: prompt mismatch for ${row.id}`);
       if(sourceEntry.canonical!==row.canonical||auditEntry.canonical!==row.canonical) errors.push(`final resolutions: canonical mismatch for ${row.id}`);
       if(JSON.stringify(sourceEntry.paraphrases||[])!==JSON.stringify(row.paraphrases||[])||JSON.stringify(auditEntry.paraphrases||[])!==JSON.stringify(row.paraphrases||[])) errors.push(`final resolutions: paraphrases changed for ${row.id}`);

@@ -303,8 +303,8 @@ test('curated chunk authority has exactly the approved 18 canonical two-chunk su
 });
 
 test('vocab:00139 chunk N-best rescue accepts either rank-zero chunk plus one strict lower candidate',()=>{
-  const canonical='no sooner had I sat down than the phone rang';
-  const primary='no sooner had I sat down then the phone rang';
+  const canonical='no sooner had I arrived than the phone rang';
+  const primary='no sooner had I arrived then the phone rang';
   const result=classifyVocabularySpeechAnswer({
     entry:{id:'vocab:00139',canonical},
     transcript:primary,
@@ -320,16 +320,16 @@ test('vocab:00139 chunk N-best rescue accepts either rank-zero chunk plus one st
   assert.equal(result.displayTranscript,primary);
   assert.equal(result.rawTranscript,'than the phone rang');
   assert.equal(result.rescuedChunk.expected,'than the phone rang');
-  assert.equal(result.supportingPrimaryChunk.expected,'no sooner had I sat down');
+  assert.equal(result.supportingPrimaryChunk.expected,'no sooner had I arrived');
   assert.equal(result.chunkRescue.authority,'nbest-chunk-exact');
 
   const reversed=classifyVocabularySpeechAnswer({
     entry:{id:'vocab:00139',canonical},
     transcript:'please than the phone rang, thanks',
-    recognitionSegments:[segmentFactory(['please than the phone rang, thanks','no sooner had I sat down'])],
+    recognitionSegments:[segmentFactory(['please than the phone rang, thanks','no sooner had I arrived'])],
   });
   assert.equal(reversed.type,'target');
-  assert.equal(reversed.rescuedChunk.expected,'no sooner had I sat down');
+  assert.equal(reversed.rescuedChunk.expected,'no sooner had I arrived');
   assert.equal(reversed.supportingPrimaryChunk.expected,'than the phone rang');
 });
 
@@ -430,17 +430,17 @@ test('chunk rescue retains explicit-equivalence provenance on either supporting 
 
 test('chunk rescue rejects missing, partial, split-candidate, paraphrase, and uncurated evidence',()=>{
   const id='vocab:00139';
-  const canonical='no sooner had I sat down than the phone rang';
+  const canonical='no sooner had I arrived than the phone rang';
   const cases=[
     ['both primary chunks missing','something entirely unrelated',[segmentFactory(['something entirely unrelated','than the phone rang'])]],
-    ['lower candidate has only a partial chunk','no sooner had I sat down then the phone rang',[segmentFactory(['no sooner had I sat down then the phone rang','the phone rang'])]],
-    ['chunks only appear in different lower candidates','something entirely unrelated',[segmentFactory(['something entirely unrelated','no sooner had I sat down']),segmentFactory(['something else','than the phone rang'])]],
-    ['TARGET chunk cannot be completed by a PARAPHRASE', 'no sooner had I sat down then the phone rang', [segmentFactory(['no sooner had I sat down then the phone rang','than the phone rang'])]],
-    ['correction cannot combine a primary PARAPHRASE with a lower TARGET chunk','no sooner had I sat down',[segmentFactory(['no sooner had I sat down','than the phone rang'])]],
+    ['lower candidate has only a partial chunk','no sooner had I arrived then the phone rang',[segmentFactory(['no sooner had I arrived then the phone rang','the phone rang'])]],
+    ['chunks only appear in different lower candidates','something entirely unrelated',[segmentFactory(['something entirely unrelated','no sooner had I arrived']),segmentFactory(['something else','than the phone rang'])]],
+    ['TARGET chunk cannot be completed by a PARAPHRASE', 'no sooner had I arrived then the phone rang', [segmentFactory(['no sooner had I arrived then the phone rang','than the phone rang'])]],
+    ['correction cannot combine a primary PARAPHRASE with a lower TARGET chunk','no sooner had I arrived',[segmentFactory(['no sooner had I arrived','than the phone rang'])]],
   ];
   for(const [label,transcript,recognitionSegments] of cases){
     const paraphrases=label.includes('PARAPHRASE')
-      ?(label.startsWith('correction')?['no sooner had I sat down']:['than the phone rang'])
+      ?(label.startsWith('correction')?['no sooner had I arrived']:['than the phone rang'])
       :[];
     const result=classifyVocabularySpeechAnswer({entry:{id,canonical,paraphrases},transcript,recognitionSegments,correction:label.startsWith('correction')});
     assert.equal(result.type,'miss',label);
@@ -448,8 +448,8 @@ test('chunk rescue rejects missing, partial, split-candidate, paraphrase, and un
 
   assert.equal(classifyVocabularySpeechAnswer({
     entry:{id,canonical:'changed canonical'},
-    transcript:'no sooner had I sat down then the phone rang',
-    recognitionSegments:[segmentFactory(['no sooner had I sat down then the phone rang','than the phone rang'])],
+    transcript:'no sooner had I arrived then the phone rang',
+    recognitionSegments:[segmentFactory(['no sooner had I arrived then the phone rang','than the phone rang'])],
   }).type,'miss','stale curated chunks fail closed after a canonical change');
 
   const entryMap=new Map(JSON.parse(readFileSync(new URL('../data/vocabulary-v3.json',import.meta.url),'utf8')).entries.map(value=>[value.id,value]));
@@ -474,14 +474,14 @@ test('chunk rescue rejects missing, partial, split-candidate, paraphrase, and un
   }
   assert.equal(classifyVocabularySpeechAnswer({
     entry:{canonical},
-    transcript:'no sooner had I sat down then the phone rang',
-    recognitionSegments:[segmentFactory(['no sooner had I sat down then the phone rang','than the phone rang'])],
+    transcript:'no sooner had I arrived then the phone rang',
+    recognitionSegments:[segmentFactory(['no sooner had I arrived then the phone rang','than the phone rang'])],
   }).type,'miss','an uncurated entry with the same text stays unchanged');
 });
 
 test('existing lower full TARGET rescue wins before curated chunk rescue',()=>{
-  const canonical='no sooner had I sat down than the phone rang';
-  const primary='no sooner had I sat down then the phone rang';
+  const canonical='no sooner had I arrived than the phone rang';
+  const primary='no sooner had I arrived then the phone rang';
   const result=classifyVocabularySpeechAnswer({
     entry:{id:'vocab:00139',canonical},
     transcript:primary,
@@ -495,8 +495,8 @@ test('existing lower full TARGET rescue wins before curated chunk rescue',()=>{
 });
 
 test('curated chunk rescue can use the existing deepest retained strict N-best rank',()=>{
-  const canonical='no sooner had I sat down than the phone rang';
-  const primary='no sooner had I sat down then the phone rang';
+  const canonical='no sooner had I arrived than the phone rang';
+  const primary='no sooner had I arrived then the phone rang';
   const alternatives=Array.from({length:20},(_,index)=>index===0?primary:index===19?'than the phone rang':`unrelated ${index}`);
   const result=classifyVocabularySpeechAnswer({
     entry:{id:'vocab:00139',canonical},

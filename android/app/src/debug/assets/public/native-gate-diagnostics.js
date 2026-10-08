@@ -1,5 +1,5 @@
 export const VOCAB_00139_CHUNKS = Object.freeze([
-  'no sooner had I sat down',
+  'no sooner had I arrived',
   'than the phone rang',
 ]);
 
@@ -23,10 +23,10 @@ function containsSequence(candidateTokens, expectedTokens) {
 function contextSequences(candidateTokens) {
   const contexts = [];
   for (let index = 0; index < candidateTokens.length - 1; index += 1) {
-    if (candidateTokens[index] !== 'sat' || candidateTokens[index + 1] !== 'down') continue;
+    if (candidateTokens[index] !== 'arrived') continue;
     const limit = Math.min(candidateTokens.length, index + 13);
     let end = limit;
-    for (let cursor = index + 2; cursor < limit; cursor += 1) {
+    for (let cursor = index + 1; cursor < limit; cursor += 1) {
       if (candidateTokens[cursor] === 'rang') {
         end = cursor + 1;
         break;

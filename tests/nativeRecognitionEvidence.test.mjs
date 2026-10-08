@@ -36,14 +36,14 @@ test('mapped native candidates preserve existing strict TARGET rescue and exclud
 });
 
 test('native provider chunks reach the same curated Vocabulary rescue authority',()=>{
-  const primary='no sooner had I sat down then the phone rang';
+  const primary='no sooner had I arrived then the phone rang';
   const evidence=nativeRecognitionEvidence({type:'final',alternatives:[
     {transcript:primary},
     {transcript:'unrelated'},
     {transcript:'than the phone rang'},
   ]});
   const grade=classifyVocabularySpeechAnswer({
-    entry:{id:'vocab:00139',canonical:'no sooner had I sat down than the phone rang'},
+    entry:{id:'vocab:00139',canonical:'no sooner had I arrived than the phone rang'},
     ...evidence,
   });
   assert.equal(grade.type,'target');
