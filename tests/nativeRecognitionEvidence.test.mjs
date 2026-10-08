@@ -36,7 +36,7 @@ test('mapped native candidates preserve existing strict TARGET rescue and exclud
 });
 
 test('native provider chunks reach the same curated Vocabulary rescue authority',()=>{
-  const primary='no sooner had I arrived then the phone rang';
+  const primary='no sooner had I arrived down the phone rang';
   const evidence=nativeRecognitionEvidence({type:'final',alternatives:[
     {transcript:primary},
     {transcript:'unrelated'},
