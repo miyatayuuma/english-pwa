@@ -1,7 +1,17 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { adaptiveClozeCount, buildClozeCard, desiredClozeCount, selectClozeTargets, sentenceTokens } from '../scripts/app/clozeLearningCore.js';
-import { encounterFor } from '../scripts/app/clozeMode.js';
+import { encounterFor, indexVocabulary } from '../scripts/app/clozeMode.js';
+
+test('Cloze indexing retires only toil, not toil away or its source sentence',()=>{
+  const entries=[
+    {id:'vocab:00947',canonical:'toil',occurrences:[{item_id:'E0340',start:30,end:34}]},
+    {id:'vocab:00428',canonical:'toil away',occurrences:[{item_id:'E0340',start:30,end:53}]},
+  ];
+  const indexed=indexVocabulary({entries});
+  assert.deepEqual(indexed.get('E0340')?.map(entry=>entry.id),['vocab:00428']);
+  assert.equal(entries.length,2,'the audit/source population is unchanged');
+});
 
 const e2={id:'E0002',en:'Take it easy. I can assure you that everything will turn out fine.',ja:'気楽にいけよ。大丈夫、すべてうまくいくさ。'};
 const exact=(itemId,text,entry)=>({

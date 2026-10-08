@@ -7,6 +7,7 @@ import {
   displayMeaning,
   eligibleVocabularyEntries,
   joinVocabularyData,
+  isRetiredVocabularyEntry,
   readyVocabularyEntries,
   vocabularyStats,
 } from '../scripts/app/vocabularyLearningCore.js';
@@ -20,6 +21,20 @@ const construction={id:'vocab:00003',kind:'construction',canonical:'make someone
 test('v3 ready entries require a supported kind, canonical sense, meaning, and occurrence',()=>{
   const db={entries:[word,expression,construction,{id:'bad',headword:'legacy',meaning_ja:'古い形式'}]};
   assert.deepEqual(readyVocabularyEntries(db).map(entry=>entry.id),[word.id,expression.id,construction.id]);
+});
+
+test('retired toil word is not offered as a standalone Vocabulary card, while toil away remains',()=>{
+  const occurrenceData=[occurrence('E0340',30,34)];
+  const toil={...word,id:'vocab:00947',canonical:'toil',occurrences:occurrenceData};
+  const toilAway={...expression,id:'vocab:00428',canonical:'toil away',occurrences:[occurrence('E0340',30,53)]};
+  const db={entries:[toil,toilAway]};
+  assert.equal(isRetiredVocabularyEntry(toil),true);
+  assert.equal(isRetiredVocabularyEntry(toilAway),false);
+  assert.deepEqual(readyVocabularyEntries(db).map(entry=>entry.id),['vocab:00428']);
+  const joined=joinVocabularyData(db,[item('E0340','toil away')]);
+  const eligible=eligibleVocabularyEntries(readyVocabularyEntries(joined),{E0340:{updatedAt:1}});
+  assert.deepEqual(eligible.map(entry=>entry.id),['vocab:00428']);
+  assert.deepEqual(buildVocabularySession(eligible,{}, {size:12}).entries.map(entry=>entry.id),['vocab:00428']);
 });
 
 test('new vocabulary stays locked until a source item has recorded progress',()=>{

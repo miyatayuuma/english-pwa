@@ -7,6 +7,12 @@ export function vocabStateId(entry){
   return String(entry?.id||'').trim();
 }
 
+// Retired from learner-facing Vocabulary/Cloze decks; audit population stays frozen.
+export const RETIRED_VOCABULARY_IDS = Object.freeze(['vocab:00947']);
+export function isRetiredVocabularyEntry(entry){
+  return RETIRED_VOCABULARY_IDS.includes(vocabStateId(entry));
+}
+
 function characterList(value){
   return Array.isArray(value)?value:(Array.isArray(value?.characters)?value.characters:[]);
 }
@@ -51,7 +57,7 @@ export function joinVocabularyData(db,items,characters=[]){
 
 export function readyVocabularyEntries(db){
   const entries=Array.isArray(db)?db:(Array.isArray(db?.entries)?db.entries:[]);
-  return entries.filter(entry=>[
+  return entries.filter(entry=>!isRetiredVocabularyEntry(entry)&&[
     'word','expression','construction',
   ].includes(entry?.kind)
     &&String(entry?.canonical||'').trim()
