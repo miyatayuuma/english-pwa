@@ -1,4 +1,4 @@
-import { classifyVocabularySpeechAnswer } from '../speech/vocabularySpeechEvidence.js';
+import { classifyVocabularySpeechAnswer, VOCABULARY_SPEECH_CARRIER_CUE } from '../speech/vocabularySpeechEvidence.js';
 import { buildRecognitionContext } from '../speech/recognitionPolicy.js';
 import { createCorrectionProgress, recordCorrectionAttempt } from '../speech/correctionProgress.js';
 import { createLevelStateManager } from './levelState.js';
@@ -43,6 +43,7 @@ const state={
   timer:0,
   gradeTimer:0,
   liveTranscript:'',
+  carrierCueMissCount:0,
   lastAttemptTranscript:'',
   correction:false,
   lastRecognitionDecision:null,
@@ -123,9 +124,10 @@ function injectStyles(){
     .vocab-note{text-align:center;font-size:10px;line-height:1.45;opacity:.62}
     .vocab-study{display:flex;flex:1;min-height:0;flex-direction:column;overflow:hidden}.vocab-progress{display:flex;flex:0 0 auto;align-items:center;gap:9px;font-size:10px;opacity:.56;white-space:nowrap}.vocab-progress__bar{height:4px;flex:1;min-width:30px;border-radius:99px;background:rgba(148,163,184,.12);overflow:hidden}.vocab-progress__bar i{display:block;height:100%;background:currentColor;transition:width .2s ease}
     .vocab-card{display:flex;flex:1;min-height:0;overflow:auto;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:18px 8px 10px;scrollbar-width:thin}
-    .vocab-meta{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px;margin-bottom:13px}.vocab-meta span{display:inline-flex;align-items:center;min-height:22px;padding:3px 8px;border:1px solid rgba(148,163,184,.12);border-radius:999px;background:rgba(148,163,184,.045);font-size:9px;letter-spacing:.025em;opacity:.56;white-space:nowrap}
+    .vocab-meta{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px;margin-bottom:13px}.vocab-meta span,.vocab-grammar-role{display:inline-flex;align-items:center;min-height:22px;padding:3px 8px;border:1px solid rgba(148,163,184,.12);border-radius:999px;background:rgba(148,163,184,.045);font-size:9px;letter-spacing:.025em;opacity:.56;white-space:nowrap}
     .vocab-meaning{max-width:520px;font-size:clamp(24px,6.8vw,37px);font-weight:850;line-height:1.38;letter-spacing:.005em;line-break:strict;overflow-wrap:break-word}.vocab-meaning.is-long{font-size:clamp(21px,5.8vw,31px);line-height:1.45}.vocab-meaning.is-xlong{font-size:clamp(18px,5vw,27px);line-height:1.5}
     .vocab-prompt{margin-top:11px;font-size:11px;opacity:.42}.vocab-answer-wrap{display:flex;min-height:50px;margin-top:16px;flex-direction:column;align-items:center;justify-content:center;gap:7px;max-width:100%}.vocab-answer{max-width:520px;font-size:clamp(22px,5.8vw,32px);font-weight:850;line-height:1.35;color:#a5b4fc;word-break:normal;overflow-wrap:break-word;hyphens:auto}.vocab-answer.is-long{font-size:clamp(19px,5vw,27px)}.vocab-answer.is-xlong{font-size:clamp(17px,4.5vw,23px);line-height:1.42}.vocab-answer[hidden]{display:block!important;visibility:hidden}.vocab-audio{min-height:44px;border:1px solid rgba(165,180,252,.22);background:rgba(99,102,241,.08);color:#c7d2fe;border-radius:999px;padding:6px 11px;font:inherit;font-size:10px;font-weight:750;cursor:pointer}.vocab-audio[hidden]{display:none!important}
+    .vocab-speech-carrier{max-width:100%;margin-top:3px;color:#cbd5e1;font-size:10px;line-height:1.2;letter-spacing:.02em;opacity:.3;pointer-events:none;transition:color .16s ease,opacity .16s ease,text-shadow .16s ease}.vocab-speech-carrier.is-emphasized{color:#c7d2fe;opacity:.72}.vocab-speech-carrier.is-pulsing{animation:vocab-carrier-pulse .65s ease-out 1}@keyframes vocab-carrier-pulse{0%,100%{text-shadow:0 0 0 rgba(165,180,252,0)}35%{text-shadow:0 0 9px rgba(165,180,252,.72)}}
     .vocab-transcript{min-height:19px;width:100%;max-width:500px;margin-top:7px;font-size:12px;line-height:1.5;opacity:.72;white-space:normal;word-break:normal;overflow-wrap:anywhere}
     .vocab-heard{display:grid;gap:3px;width:min(100%,520px);margin:8px auto;text-align:center;line-height:1.45;overflow-wrap:anywhere}.vocab-heard__label{font-size:10px;opacity:.64}.vocab-heard__text{font-size:12px;opacity:.78;white-space:normal;word-break:normal;overflow-wrap:anywhere}
     .vocab-feedback{flex:0 0 auto;min-height:22px;text-align:center;font-size:12px;font-weight:750}.vocab-feedback.is-ok{color:#86efac}.vocab-feedback.is-paraphrase{color:#99f6e4}.vocab-feedback.is-miss{color:#fca5a5}.vocab-answer-detail,.vocab-paraphrases{margin:7px auto;text-align:center;font-size:12px;line-height:1.7;overflow-wrap:anywhere}.vocab-answer-detail{color:#99f6e4}.vocab-answer-detail strong{color:#e2e8f0}.vocab-paraphrases{opacity:.68}.vocab-paraphrases>span:first-child{font-size:10px;opacity:.8}
@@ -135,7 +137,7 @@ function injectStyles(){
     .vocab-speaker{display:inline-flex;align-items:center;gap:6px;min-height:32px;color:inherit;font-size:12px;font-weight:750;opacity:.84}.vocab-speaker img{width:32px;height:32px;flex:0 0 32px;border-radius:50%;object-fit:cover;background:rgba(148,163,184,.12)}.vocab-meta .vocab-speaker{min-height:32px;padding:0;border:0;background:transparent;font-size:12px;opacity:.9}.vocab-speaker-turns{display:grid;gap:6px;margin-top:10px}.vocab-speaker-turn{display:flex;align-items:center;gap:8px;padding:7px;border:1px solid rgba(148,163,184,.11);border-radius:11px;text-align:left}.vocab-context-state{gap:8px}.vocab-context-scroll{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:8px 2px 4px}.vocab-context-top{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px;margin:2px 0 8px}.vocab-answer{max-width:100%;font-size:clamp(22px,5.8vw,32px);font-weight:850;line-height:1.35;color:#a5b4fc;overflow-wrap:anywhere}.vocab-source-line{margin:14px auto 8px;max-width:560px;font-size:clamp(16px,4.1vw,21px);line-height:1.65;text-align:center;overflow-wrap:anywhere}.vocab-target{color:#fff;background:rgba(99,102,241,.3);border-bottom:2px solid #a5b4fc;border-radius:3px;padding:0 2px}.vocab-contextual-meaning{margin:5px auto 12px;text-align:center;font-size:clamp(14px,3.8vw,17px);line-height:1.65;overflow-wrap:anywhere}.vocab-contextual-meaning span{display:block;font-size:10px;opacity:.55}.vocab-context-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}.vocab-expand-context{min-height:44px;padding:8px 14px;border:1px solid rgba(148,163,184,.16);border-radius:12px;background:rgba(148,163,184,.05);color:inherit;font:inherit;font-size:12px;cursor:pointer}.vocab-context-full{margin-top:12px;padding:11px 10px;border:1px solid rgba(148,163,184,.12);border-radius:13px;background:rgba(148,163,184,.035)}.vocab-context-full[hidden]{display:none}.vocab-context-full .vocab-source-line{margin:0 auto 9px;font-size:15px}.vocab-source-ja{margin:10px 0 2px;font-size:13px;line-height:1.6;opacity:.78;text-align:center;overflow-wrap:anywhere}.vocab-source-audio-status{min-height:17px;font-size:10px;text-align:center;opacity:.64}.vocab-next{width:100%;min-height:52px;border:0;border-radius:14px;background:#6366f1;color:#fff;font:inherit;font-size:15px;font-weight:850;cursor:pointer}.vocab-controls{padding-bottom:env(safe-area-inset-bottom)}.vocab-controls button,.vocab-context-actions button{touch-action:manipulation}.vocab-transcript:empty{display:none}.vocab-answer[hidden]{display:none!important}
     @media(max-width:390px){.vocab-body{padding:12px}.vocab-shell{border-radius:18px}.vocab-card{padding-inline:3px}.vocab-meta{margin-bottom:10px}.vocab-meaning{font-size:26px}.vocab-meaning.is-long{font-size:22px}.vocab-meaning.is-xlong{font-size:19px}.vocab-mic{min-width:72px;width:auto;max-width:100%;height:72px;padding-inline:12px}}
     @media(max-height:650px){.vocab-head{padding-block:9px}.vocab-body{padding-block:10px}.vocab-card{padding-block:10px 5px}.vocab-meta{margin-bottom:8px}.vocab-meaning{font-size:clamp(22px,6vw,31px)}.vocab-prompt{margin-top:7px}.vocab-answer-wrap{margin-top:10px}.vocab-mic{width:66px;height:66px}.vocab-controls{gap:4px;margin-top:3px}}
-    @media(prefers-reduced-motion:reduce){.vocab-progress__bar i,.vocab-mic{transition:none!important}}
+    @media(prefers-reduced-motion:reduce){.vocab-progress__bar i,.vocab-mic{transition:none!important}.vocab-speech-carrier{transition:none!important;animation:none!important}}
     .vocab-head{min-height:52px;max-height:56px;padding:4px 8px}
     .vocab-head strong{font-size:16px}
     .vocab-body{padding:10px 12px}
@@ -735,6 +737,7 @@ function renderAnswerContext({result=null,heardTranscript=state.lastAttemptTrans
   const speaker=active.sourceSpeaker?.profile||null;
   const answer=canonicalAnswer();
   const meaning=displayMeaning(state.current);
+  const grammarRoleLabel=GRAMMAR_ROLE_LABELS[state.current?.grammarRole]||'';
   const resultType=result?.type||null;
   const feedbackText=resultType==='target'?'正解':resultType==='paraphrase'?'意味はOK':resultType==='miss'?'あとでもう一度':'';
   const feedbackClass=resultType==='target'?'is-ok':resultType==='paraphrase'?'is-paraphrase':resultType==='miss'?'is-miss':'';
@@ -754,6 +757,7 @@ function renderAnswerContext({result=null,heardTranscript=state.lastAttemptTrans
         <div class="vocab-feedback ${feedbackClass}" role="status" aria-live="polite" aria-atomic="true">${feedbackText}</div>
         <div class="vocab-result-prompt" lang="ja">${escapeHtml(meaning)}</div>
         <div class="vocab-answer-block">
+          ${grammarRoleLabel?`<span class="vocab-grammar-role vocab-result-grammar-role">${escapeHtml(grammarRoleLabel)}</span>`:''}
           <div class="vocab-answer" lang="en" dir="ltr">${escapeHtml(answer)}</div>
           <button type="button" class="vocab-audio vocab-expression-audio" aria-label="英語の表現を再生" ${speech.supported()?'':'hidden'}>表現を聞く</button>
         </div>
@@ -818,7 +822,7 @@ function gradeTranscript(text){
     else state.processing=false;
     return;
   }
-  if(result.type==='miss'){renderTranscriptReview();return;}
+  if(result.type==='miss'){state.carrierCueMissCount+=1;renderTranscriptReview();return;}
   finalizeVocabularyAnswer(result);
 }
 
@@ -830,6 +834,12 @@ function renderTranscriptReview(){
   setTranscript('');
   const feedback=state.screen.querySelector('.vocab-feedback');
   if(feedback) feedback.textContent='聞き取りを確認して、もう一度話してください。';
+  const carrierCue=state.screen.querySelector('.vocab-speech-carrier');
+  if(carrierCue){
+    carrierCue.classList.add('is-emphasized');
+    carrierCue.classList.toggle('is-pulsing',state.carrierCueMissCount>1);
+    carrierCue.dataset.missCount=String(state.carrierCueMissCount);
+  }
   const mic=state.screen.querySelector('.vocab-mic');
   if(mic){mic.textContent='もう一度話す';mic.setAttribute('aria-label','もう一度話す');mic.focus({preventScroll:true});}
   state.processing=false;
@@ -884,6 +894,7 @@ function showNextCard(){
   if(state.position>=state.queue.length){ renderDone(); return; }
   state.current=state.queue[state.position];
   state.hintUsed=false;
+  state.carrierCueMissCount=0;
   state.processing=false;
   const meaning=displayMeaning(state.current);
   const grammarRoleLabel=GRAMMAR_ROLE_LABELS[state.current.grammarRole]||'';
@@ -891,9 +902,10 @@ function showNextCard(){
   state.screen.innerHTML=`
     <section class="vocab-study">
       <div class="vocab-card">
-      <div class="vocab-meta">${speakerCue(speaker)}${grammarRoleLabel?`<span>${grammarRoleLabel}</span>`:''}</div>
+      <div class="vocab-meta">${speakerCue(speaker)}${grammarRoleLabel?`<span class="vocab-grammar-role">${grammarRoleLabel}</span>`:''}</div>
         <div class="${densityClass('vocab-meaning',meaning,{long:20,xlong:34})}" lang="ja">${escapeHtml(meaning)}</div>
         <div class="vocab-prompt">英語で答える</div>
+        <div class="vocab-speech-carrier" lang="en" dir="ltr">${VOCABULARY_SPEECH_CARRIER_CUE}</div>
         <div class="vocab-transcript" lang="en" dir="ltr" aria-label="音声認識中の全文" aria-live="off"></div>
         <div class="vocab-feedback" role="status" aria-live="polite" aria-atomic="true"></div>
       </div>

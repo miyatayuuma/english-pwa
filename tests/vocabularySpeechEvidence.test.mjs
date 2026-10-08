@@ -41,6 +41,99 @@ test('matching uses normalized word boundaries rather than string substrings',()
   assert.equal(isTargetSpeechProduction('WELL, yield to something, please.','yield to something'),true);
 });
 
+test('Vocabulary accepts the optional exact leading speech carrier while retaining raw TARGET evidence',()=>{
+  const dye={id:'vocab:01314',canonical:'dye'};
+  const direct=classifyVocabularySpeechAnswer({entry:dye,transcript:'dye'});
+  assert.equal(direct.type,'target');
+  assert.equal(direct.rawTranscript,'dye');
+
+  const carried=classifyVocabularySpeechAnswer({entry:dye,transcript:'my answer is dye'});
+  assert.equal(carried.type,'target');
+  assert.equal(carried.matchedExpected,'dye');
+  assert.equal(carried.primaryTranscript,'my answer is dye');
+  assert.equal(carried.rawTranscript,'my answer is dye');
+  assert.equal(carried.displayTranscript,'my answer is dye');
+  assert.equal(carried.speechMatch.rawTranscript,'my answer is dye');
+
+  const homophone=classifyVocabularySpeechAnswer({
+    entry:dye,
+    transcript:'My answer is, die.',
+    recognitionSegments:[segmentFactory(['My answer is, die.'])],
+  });
+  assert.equal(homophone.type,'target');
+  assert.equal(homophone.recognitionAuthority,'explicit-equivalence');
+  assert.equal(homophone.speechMatch.ruleId,'dye-die');
+  assert.equal(homophone.speechMatch.ruleKind,'homophone');
+  assert.equal(homophone.rawTranscript,'My answer is, die.');
+  assert.equal(homophone.displayTranscript,'My answer is, die.');
+
+  assert.equal(classifyVocabularySpeechAnswer({entry:dye,transcript:'my answer is'}).type,'miss');
+  assert.equal(classifyVocabularySpeechAnswer({entry:dye,transcript:'my answer is unrelated'}).type,'miss');
+  assert.equal(classifyVocabularySpeechAnswer({entry:dye,transcript:'my answer is dye',correction:true}).type,'target');
+
+  const carrierlessEquivalent=classifyVocabularySpeechAnswer({
+    entry:dye,
+    transcript:'die',
+    recognitionSegments:[segmentFactory(['die'])],
+  });
+  assert.equal(carrierlessEquivalent.type,'target');
+  assert.equal(carrierlessEquivalent.speechMatch.ruleId,'dye-die');
+});
+
+test('exact leading carrier enables only a complete accepted paraphrase and is removed once',()=>{
+  const e=entry('yield to something',{paraphrases:['give in to something']});
+  const raw='My answer is, give in to something.';
+  const result=classifyVocabularySpeechAnswer({
+    entry:e,
+    transcript:raw,
+    recognitionSegments:[segmentFactory([raw])],
+  });
+  assert.equal(result.type,'paraphrase');
+  assert.equal(result.matchedText,'give in to something');
+  assert.equal(result.recognitionAuthority,'exact');
+  assert.equal(result.primaryTranscript,raw);
+  assert.equal(result.rawTranscript,raw);
+  assert.equal(result.displayTranscript,raw);
+  assert.equal(result.speechMatch.rawTranscript,raw);
+  assert.deepEqual(result.speechCarrier,{prefix:'my answer is',gradingTranscript:', give in to something.'});
+
+  for(const transcript of [
+    'my answer is unrelated give in to something',
+    'my answer is give in to something please',
+    'my answer is my answer is give in to something',
+  ]){
+    assert.equal(classifyVocabularySpeechAnswer({entry:e,transcript}).type,'miss',transcript);
+  }
+  assert.equal(classifyVocabularySpeechAnswer({entry:e,transcript:'give in to something',correction:true}).type,'miss');
+  assert.equal(classifyVocabularySpeechAnswer({entry:e,transcript:'my answer is give in to something',correction:true}).type,'miss');
+});
+
+test('carrier-bearing lower N-best TARGET candidates retain independent raw provenance and rank',()=>{
+  const dye={id:'vocab:01314',canonical:'dye'};
+  for(const candidate of ['my answer is dye','my answer is die']){
+    const primary='unrelated words';
+    const result=classifyVocabularySpeechAnswer({
+      entry:dye,
+      transcript:primary,
+      recognitionSegments:[segmentFactory([primary,candidate])],
+    });
+    assert.equal(result.type,'target',candidate);
+    assert.equal(result.targetRescued,true,candidate);
+    assert.equal(result.primaryTranscript,primary,candidate);
+    assert.equal(result.rawTranscript,candidate,candidate);
+    assert.equal(result.speechMatch.rawTranscript,candidate,candidate);
+    assert.equal(result.recognitionSegmentIndex,0,candidate);
+    assert.equal(result.asrRank,1,candidate);
+  }
+  const explicit=classifyVocabularySpeechAnswer({
+    entry:dye,
+    transcript:'unrelated words',
+    recognitionSegments:[segmentFactory(['unrelated words','my answer is die'])],
+  });
+  assert.equal(explicit.speechMatch.ruleId,'dye-die');
+  assert.equal(explicit.speechMatch.ruleKind,'homophone');
+});
+
 test('canonical, answers, and active source surfaces are containment authorities; paraphrases are not',()=>{
   const withAnswer=entry('yield to something',{answers:['yield to pressure'],paraphrases:['give in to pressure']});
   assert.equal(classifyVocabularySpeechAnswer({entry:withAnswer,transcript:'please yield to pressure again'}).type,'target');
