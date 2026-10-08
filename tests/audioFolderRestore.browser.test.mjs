@@ -80,15 +80,15 @@ async function openApp({saved=false,permission='granted',nextPermission='granted
   },{permission,nextPermission,audioFile:AUDIO_FILE});
   const page=await context.newPage();
   const errors=[];page.on('pageerror',error=>errors.push(error.message));
-  if(saved){
-    await page.goto(url+'/seed');
-    await page.evaluate(async audioFile=>{
-      const root=await navigator.storage.getDirectory();
-      const dir=await root.getDirectoryHandle('selected-audio',{create:true});
-      const file=await dir.getFileHandle(audioFile,{create:true});
-      const writer=await file.createWritable();
-      await writer.write(new Uint8Array([73,68,51,0]));
-      await writer.close();
+  await page.goto(url+'/seed');
+  await page.evaluate(async({audioFile,saved})=>{
+    const root=await navigator.storage.getDirectory();
+    const dir=await root.getDirectoryHandle('selected-audio',{create:true});
+    const file=await dir.getFileHandle(audioFile,{create:true});
+    const writer=await file.createWritable();
+    await writer.write(new Uint8Array([73,68,51,0]));
+    await writer.close();
+    if(saved){
       await new Promise((resolve,reject)=>{
         const request=indexedDB.open('fs-handles',1);
         request.onupgradeneeded=()=>request.result.createObjectStore('dir');
@@ -101,8 +101,8 @@ async function openApp({saved=false,permission='granted',nextPermission='granted
           tx.onerror=()=>reject(tx.error);
         };
       });
-    },AUDIO_FILE);
-  }
+    }
+  },{audioFile:AUDIO_FILE,saved});
   await page.goto(url+'/index.html');
   await page.waitForFunction(()=>window.ALL_ITEMS?.length&&document.querySelector('#sessionShellStyles')&&typeof window.__OPEN_SESSION_OPTIONS__==='function');
   await page.waitForFunction(()=>!document.querySelector('#loadingOverlay')?.classList.contains('show'));
