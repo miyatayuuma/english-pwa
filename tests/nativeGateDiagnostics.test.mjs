@@ -79,6 +79,21 @@ test('down-only alternatives do not create than/then hits or chunk rescue', () =
   assert.match(diagnostics.chunkMatch.reason, /neither strict chunk/);
 });
 
+test('diagnostics explain when a lower full TARGET preempts chunk rescue', () => {
+  const alternatives = segment([
+    'no sooner had I sat down then the phone rang',
+    'unrelated candidate',
+    canonical,
+  ]);
+  const recognitionSegments = [alternatives];
+  const grade = classifyVocabularySpeechAnswer({ entry, transcript: alternatives.primaryTranscript, recognitionSegments });
+  const diagnostics = buildVocabulary139Diagnostics({ primaryTranscript: alternatives.primaryTranscript, recognitionSegments, grade });
+
+  assert.equal(diagnostics.chunkMatch.chunkRescueFired, false);
+  assert.equal(diagnostics.chunkMatch.recognitionAuthority, 'nbest-exact');
+  assert.match(diagnostics.chunkMatch.reason, /full TARGET rescue runs before chunk rescue/);
+});
+
 test('collision detection uses exact tokens rather than substrings', () => {
   const alternatives = segment(['withstand downstairs', 'then again', 'than usual, down below']);
   const diagnostics = buildVocabulary139Diagnostics({

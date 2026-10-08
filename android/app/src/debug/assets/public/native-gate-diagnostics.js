@@ -44,6 +44,12 @@ function noChunkRescueReason({ grade, chunks, primaryStrictMatches, lowerStrictR
   if (grade?.recognitionAuthority === 'nbest-exact') {
     return 'A lower N-best candidate matched the full TARGET; full TARGET rescue runs before chunk rescue.';
   }
+  if (grade?.targetRescued === true) {
+    return `A lower N-best candidate was accepted by ${grade.recognitionAuthority || 'the existing TARGET authority'} before chunk rescue.`;
+  }
+  if (grade?.type === 'target' && grade?.targetRescued !== true) {
+    return `Rank 0 was accepted by ${grade.recognitionAuthority || 'the existing TARGET authority'} before chunk rescue.`;
+  }
   if (grade?.type === 'paraphrase') {
     return 'The primary was classified as a paraphrase; current chunk rescue returns before joining chunks.';
   }
