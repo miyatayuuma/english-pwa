@@ -305,9 +305,18 @@ browserTest('390×844 expression card preserves active source, strict paraphrase
     await page.emulateMedia({reducedMotion:'reduce'});
     assert.equal(await page.locator('.vocab-meta').innerText().then(text=>text.includes('動詞')),true);
     assert.doesNotMatch(await page.locator('.vocab-meta').innerText(),/単語|表現/);
+    const carrier=page.locator('.vocab-speech-carrier');
+    assert.equal(await carrier.innerText(),'my answer is …');
+    assert.equal(await carrier.evaluate(node=>node.tagName),'DIV');
+    assert.equal(await carrier.evaluate(node=>node.closest('button,[role="button"]')===null),true);
+    assert.equal(await carrier.evaluate(node=>getComputedStyle(node).opacity),'0.3');
+    assert.equal(await carrier.evaluate(node=>getComputedStyle(node).pointerEvents),'none');
+    assert.equal(await page.locator('.vocab-prompt').innerText(),'英語で答える');
+    assert.equal(await page.locator('.vocab-result-grammar-role').count(),0);
     assert.equal(await page.locator('.vocab-mic').getAttribute('aria-label'),'英語で答える');
     assert.equal(await page.evaluate(()=>document.activeElement?.classList.contains('vocab-mic')),true);
     assert.equal(await page.evaluate(()=>getComputedStyle(document.querySelector('.vocab-mic')).transitionDuration),'0s');
+    await captureAcceptanceScreenshot(page,'vocab-carrier-question-390x844.png');
     await page.waitForSelector('.vocab-listening-indicator');
     assert.equal(await page.locator('.vocab-listening-indicator').evaluate(node=>node.parentElement.matches('.vocab-study')),true,'question indicator keeps its fallback position');
     assert.ok(await page.locator('.vocab-speaker').count());
@@ -321,6 +330,10 @@ browserTest('390×844 expression card preserves active source, strict paraphrase
     assert.equal(await page.locator('.vocab-feedback').getAttribute('aria-live'),'polite');
     assert.equal(await page.evaluate(()=>document.activeElement?.classList.contains('vocab-context-state')),true);
     assert.equal(await page.locator('.vocab-result-prompt').innerText(),entry.meaning_ja);
+    assert.equal(await page.locator('.vocab-result-grammar-role').innerText(),'動詞');
+    assert.equal(await page.locator('.vocab-meta .vocab-grammar-role').innerText(),'動詞');
+    assert.equal(await page.locator('.vocab-answer-block').evaluate(node=>node.querySelector('.vocab-result-grammar-role').compareDocumentPosition(node.querySelector('.vocab-answer'))&Node.DOCUMENT_POSITION_FOLLOWING?true:false),true);
+    await captureAcceptanceScreenshot(page,'vocab-carrier-result-390x844.png');
     assert.equal(await page.locator('.vocab-source-heading').innerText().then(text=>text.includes('SOURCE EXAMPLE')),true);
     assert.match(await page.locator('.vocab-paraphrases').innerText(),/run into someone/);
     await page.waitForTimeout(2600);
@@ -364,8 +377,72 @@ browserTest('canonical grammar role wins over paraphrase POS and legacy kind lab
       const roleTags=meta.locator(':scope > span:not(.vocab-speaker)');
       assert.equal(await roleTags.count(),1,label);
       assert.equal((await roleTags.first().innerText()).trim(),label);
+      assert.equal(await opened.page.locator('.vocab-speech-carrier').innerText(),'my answer is …');
+      await inject(opened.page,sourceSurface(opened.entry,source.itemId));
+      await opened.page.waitForFunction(()=>document.querySelector('.vocab-answer'));
+      assert.equal(await opened.page.locator('.vocab-result-grammar-role').innerText(),label,label);
+      assert.equal(await opened.page.locator('.vocab-answer-block').evaluate(node=>node.scrollWidth<=node.clientWidth+1),true,label+' answer block fits its viewport');
     }finally{await closePage(opened);}
   }
+});
+
+browserTest('Vocabulary carrier cue stays subtle, emphasizes lexical misses, pulses once, and resets on the next card',async()=>{
+  const extra=fixtureFor(sources[2]);
+  const opened=await newPage(sources[0],{
+    viewport:{width:390,height:844},
+    reducedMotion:'no-preference',
+    additionalEntries:[extra],
+  });
+  const {page,entry}=opened;
+  try{
+    const cue=page.locator('.vocab-speech-carrier');
+    assert.equal(await cue.innerText(),'my answer is …');
+    const before=await cue.boundingBox();
+    await inject(page,'banana');
+    await page.waitForFunction(()=>document.querySelector('.vocab-speech-carrier.is-emphasized'));
+    assert.equal(await cue.getAttribute('data-miss-count'),'1');
+    assert.equal(await cue.evaluate(node=>getComputedStyle(node).opacity),'0.72');
+    assert.equal(await cue.innerText(),'my answer is …');
+
+    await page.locator('.vocab-mic').click();
+    await page.waitForFunction(()=>window.__mockSpeech.startCount>=2);
+    await inject(page,'banana');
+    await page.waitForFunction(()=>document.querySelector('.vocab-speech-carrier.is-pulsing'));
+    assert.equal(await cue.getAttribute('data-miss-count'),'2');
+    assert.equal(await cue.evaluate(node=>getComputedStyle(node).animationName),'vocab-carrier-pulse');
+    const after=await cue.boundingBox();
+    assert.deepEqual({x:after.x,y:after.y,width:after.width,height:after.height},{x:before.x,y:before.y,width:before.width,height:before.height},'emphasis and pulse do not shift the question layout');
+    await page.emulateMedia({reducedMotion:'reduce'});
+    assert.equal(await cue.evaluate(node=>getComputedStyle(node).animationName),'none');
+
+    await page.locator('.vocab-mic').click();
+    await page.waitForFunction(()=>window.__mockSpeech.startCount>=3);
+    await inject(page,sourceSurface(entry,sources[0].itemId));
+    await page.waitForSelector('.vocab-answer');
+    await tapResult(page);
+    await page.waitForFunction(()=>document.querySelector('.vocab-speech-carrier')&&!document.querySelector('.vocab-speech-carrier').classList.contains('is-emphasized'));
+    assert.equal(await page.locator('.vocab-speech-carrier').innerText(),'my answer is …');
+    assert.equal(await page.locator('.vocab-speech-carrier').getAttribute('data-miss-count'),null);
+  }finally{await closePage(opened);}
+});
+
+browserTest('carrier-bearing homophone answer keeps provider transcript visible and uses the result grammarRole',async()=>{
+  const source={kind:'word',canonical:'dye',itemId:'E0106',entryId:'vocab:01314'};
+  const opened=await newPage(source,{viewport:{width:390,height:844}});
+  const {page,entry}=opened;
+  try{
+    assert.equal(await page.locator('.vocab-speech-carrier').innerText(),'my answer is …');
+    await inject(page,'my answer is die');
+    await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='正解');
+    assert.equal(await page.locator('.vocab-heard__text').innerText(),'my answer is die');
+    assert.equal(await page.locator('.vocab-result-grammar-role').innerText(),'動詞');
+    assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical);
+    assert.equal(await page.evaluate(()=>window.__mockSpeech.latest.results[0][0].transcript),'my answer is die');
+    const layout=await page.evaluate(()=>({viewport:innerWidth,document:document.documentElement.scrollWidth,answer:document.querySelector('.vocab-answer').getBoundingClientRect().toJSON(),role:document.querySelector('.vocab-result-grammar-role').getBoundingClientRect().toJSON()}));
+    assert.ok(layout.document<=layout.viewport,JSON.stringify(layout));
+    assert.ok(layout.role.bottom<=layout.answer.top,JSON.stringify(layout));
+    assert.ok(layout.answer.right<=layout.viewport&&layout.answer.left>=0,JSON.stringify(layout));
+  }finally{await closePage(opened);}
 });
 
 for(const viewport of [{width:390,height:844},{width:360,height:640},{width:1280,height:900}]) browserTest(`${viewport.width}×${viewport.height} vocab:00111 result hierarchy fits without collapsed scrolling`,async()=>{
@@ -375,7 +452,7 @@ for(const viewport of [{width:390,height:844},{width:360,height:640},{width:1280
     await inject(page,sourceSurface(entry,sources[8].itemId));
     await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='正解');
     const layout=await page.evaluate(()=>{
-      const selectors=['.vocab-result-prompt','.vocab-answer','.vocab-paraphrases','.vocab-source-block','.vocab-heard'];
+      const selectors=['.vocab-result-prompt','.vocab-result-grammar-role','.vocab-answer','.vocab-paraphrases','.vocab-source-block','.vocab-heard'];
       const nodes=selectors.map(selector=>document.querySelector(selector));
       const scroll=document.querySelector('.vocab-context-scroll');
       const surface=document.querySelector('.vocab-context-state');
@@ -385,7 +462,7 @@ for(const viewport of [{width:390,height:844},{width:360,height:640},{width:1280
         ordered:nodes.every(Boolean)&&nodes.every((node,index)=>!index||nodes[index-1].compareDocumentPosition(node)&Node.DOCUMENT_POSITION_FOLLOWING),
         result:{scrollHeight:scroll.scrollHeight,clientHeight:scroll.clientHeight,density:surface.className},
         document:{width:document.documentElement.scrollWidth,viewport:innerWidth},
-        fontSizes:{prompt:parseFloat(getComputedStyle(nodes[0]).fontSize),target:parseFloat(getComputedStyle(nodes[1]).fontSize)},
+        fontSizes:{prompt:parseFloat(getComputedStyle(nodes[0]).fontSize),target:parseFloat(getComputedStyle(nodes[2]).fontSize)},
         sourceLine:rect(document.querySelector('.vocab-source-line')),
         hint:document.querySelector('.vocab-advance-hint')?.innerText||'',
         shell:rect(document.querySelector('.vocab-shell')),
@@ -395,16 +472,18 @@ for(const viewport of [{width:390,height:844},{width:360,height:640},{width:1280
     });
     assert.equal(layout.ordered,true,JSON.stringify(layout));
     assert.equal(layout.texts[0],entry.meaning_ja);
-    assert.equal(layout.texts[1],entry.canonical);
-    assert.match(layout.texts[2],/persuade someone to do something/);
-    assert.match(layout.texts[2],/convince someone to do something/);
-    assert.match(layout.texts[3],/SOURCE EXAMPLE/);
-    assert.match(layout.texts[3],/みんなを説得して賛同させた/);
-    assert.ok(layout.texts[4].includes(sourceSurface(entry,sources[8].itemId)),layout.texts[4]);
+    assert.equal(layout.texts[1],'構文');
+    assert.equal(layout.texts[2],entry.canonical);
+    assert.match(layout.texts[3],/persuade someone to do something/);
+    assert.match(layout.texts[3],/convince someone to do something/);
+    assert.match(layout.texts[4],/SOURCE EXAMPLE/);
+    assert.match(layout.texts[4],/みんなを説得して賛同させた/);
+    assert.ok(layout.texts[5].includes(sourceSurface(entry,sources[8].itemId)),layout.texts[5]);
     assert.ok(layout.result.scrollHeight<=layout.result.clientHeight+1,JSON.stringify(layout.result));
     assert.doesNotMatch(layout.result.density,/is-scroll-fallback/);
     assert.equal(layout.document.width<=layout.document.viewport,true);
     assert.ok(layout.fontSizes.prompt>=20&&layout.fontSizes.target>=22,JSON.stringify(layout.fontSizes));
+    assert.equal(await page.locator('.vocab-answer-block').evaluate(node=>node.scrollWidth<=node.clientWidth+1),true,'grammar role and long canonical wrap inside the answer block');
     assert.match(layout.hint,/タップ \/ ←スワイプで次へ/);
     assert.ok(layout.headerHeight>=50&&layout.headerHeight<=58,`header ${layout.headerHeight}px`);
     assert.ok(layout.closeHeight>=44,`close target ${layout.closeHeight}px`);

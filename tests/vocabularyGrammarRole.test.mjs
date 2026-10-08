@@ -73,4 +73,7 @@ test('Vocabulary card labels do not use kind as the learner-facing grammar tag',
   assert.match(source,/GRAMMAR_ROLE_LABELS\[state\.current\.grammarRole\]/);
   assert.doesNotMatch(source,/kindLabel=state\.current\.kind/);
   assert.match(source,/grammarRoleLabel\?/);
+  assert.match(source,/vocab-result-grammar-role/);
+  assert.match(source,/GRAMMAR_ROLE_LABELS\[state\.current\?\.grammarRole\]/);
+  assert.match(source,/class="vocab-grammar-role"/);
 });

@@ -3,6 +3,26 @@ import { findSpeechSurfaceMatch } from './speechAlignment.js';
 import { safeSpeechTokens } from './safeSpeechNormalization.js';
 import { vocabularyChunkRescueChunks } from './vocabularyChunkRescueAuthority.js';
 
+export const VOCABULARY_SPEECH_CARRIER = 'my answer is';
+export const VOCABULARY_SPEECH_CARRIER_CUE = `${VOCABULARY_SPEECH_CARRIER} …`;
+const VOCABULARY_SPEECH_CARRIER_TOKENS = Object.freeze(
+  safeSpeechTokens(VOCABULARY_SPEECH_CARRIER).map(token => token.value),
+);
+
+function vocabularyCarrierSurface(value) {
+  const raw = String(value ?? '');
+  const tokens = safeSpeechTokens(raw);
+  if (tokens.length < VOCABULARY_SPEECH_CARRIER_TOKENS.length) return { raw, surface: raw, removed: false };
+  for (let index = 0; index < VOCABULARY_SPEECH_CARRIER_TOKENS.length; index += 1) {
+    if (tokens[index].value !== VOCABULARY_SPEECH_CARRIER_TOKENS[index]) return { raw, surface: raw, removed: false };
+  }
+  return {
+    raw,
+    surface: raw.slice(tokens[VOCABULARY_SPEECH_CARRIER_TOKENS.length - 1].end).trim(),
+    removed: true,
+  };
+}
+
 function evidenceMetadata(transcript) {
   return {
     primaryTranscript: transcript,
@@ -56,21 +76,59 @@ function targetProduction({ entry, activeOccurrence, transcript, segmentIndex, r
   return null;
 }
 
+function targetProductionWithCarrier(options) {
+  const rawTranscript = String(options.transcript ?? '');
+  const candidate = vocabularyCarrierSurface(rawTranscript);
+  const rawMatch = targetProduction({ ...options, transcript: rawTranscript });
+  if (rawMatch || !candidate.removed || !candidate.surface) return rawMatch;
+  const carriedMatch = targetProduction({ ...options, transcript: candidate.surface });
+  if (!carriedMatch) return null;
+  return {
+    ...carriedMatch,
+    match: {
+      ...carriedMatch.match,
+      rawTranscript,
+      displayTranscript: rawTranscript,
+    },
+    speechCarrier: {
+      prefix: VOCABULARY_SPEECH_CARRIER,
+      gradingTranscript: candidate.surface,
+    },
+  };
+}
+
 function explicitParaphraseProduction({ entry, activeOccurrence, transcript, recognitionSegments }) {
-  const observedTokens = safeSpeechTokens(transcript).map(token => token.value);
+  const rawTranscript = String(transcript ?? '');
+  const candidate = vocabularyCarrierSurface(rawTranscript);
+  const gradingTranscript = candidate.removed ? candidate.surface : rawTranscript;
+  const observedTokens = safeSpeechTokens(gradingTranscript).map(token => token.value);
+  if (!observedTokens.length) return null;
   for (const expected of Array.isArray(entry?.paraphrases) ? entry.paraphrases : []) {
     const segmentIndex = primarySegmentIndexFor(expected, entry, recognitionSegments);
-    const match = speechMatch(expected, transcript, entry, segmentIndex, 0, false);
-    if (match?.authority !== 'explicit-equivalence') continue;
+    const match = speechMatch(expected, gradingTranscript, entry, segmentIndex, 0, false);
+    if (!match || (!candidate.removed && match.authority !== 'explicit-equivalence')) continue;
     const matchedTokens = safeSpeechTokens(match.observed).map(token => token.value);
-    // Preserve current paraphrase behavior: only the complete accepted surface
-    // is a paraphrase answer. The new authority changes its anchored word pair,
-    // not the existing containment policy for paraphrases.
+    // Preserve the complete-surface rule: a carrier may precede one accepted
+    // paraphrase, but any additional answer tokens still reject it.
     if (observedTokens.length !== matchedTokens.length
       || observedTokens.some((token, index) => token !== matchedTokens[index])) continue;
     const classified = classifyVocabularyAnswer({ entry, activeOccurrence, transcript: expected });
     if (classified.type !== 'paraphrase') continue;
-    return { ...classified, matchedText: expected, match };
+    return {
+      ...classified,
+      matchedText: expected,
+      match: candidate.removed ? {
+        ...match,
+        rawTranscript,
+        displayTranscript: rawTranscript,
+      } : match,
+      ...(candidate.removed ? {
+        speechCarrier: {
+          prefix: VOCABULARY_SPEECH_CARRIER,
+          gradingTranscript,
+        },
+      } : {}),
+    };
   }
   return null;
 }
@@ -303,7 +361,7 @@ export function classifyVocabularySpeechAnswer({ entry, activeOccurrence = null,
     };
   }
 
-  const contained = targetProduction({
+  const contained = targetProductionWithCarrier({
     entry,
     activeOccurrence,
     transcript: primaryTranscript,
@@ -340,7 +398,7 @@ export function classifyVocabularySpeechAnswer({ entry, activeOccurrence = null,
         displayTranscript: primaryTranscript,
         recognitionSegmentIndex: paraphrase.match.recognitionSegmentIndex,
         asrRank: 0,
-        recognitionAuthority: 'explicit-equivalence',
+        recognitionAuthority: paraphrase.match.authority === 'explicit-equivalence' ? 'explicit-equivalence' : 'exact',
         targetRescued: false,
         speechMatch: paraphrase.match,
       };
@@ -351,7 +409,7 @@ export function classifyVocabularySpeechAnswer({ entry, activeOccurrence = null,
     for (const candidate of segment.alternatives || []) {
       if (!Number.isInteger(candidate.asrRank) || candidate.asrRank <= 0) continue;
       const candidateTranscript = String(candidate.transcript ?? '');
-      const accepted = targetProduction({
+      const accepted = targetProductionWithCarrier({
         entry,
         activeOccurrence,
         transcript: candidateTranscript,
