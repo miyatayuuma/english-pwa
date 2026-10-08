@@ -35,7 +35,7 @@ The seven `semantic-review/batch-001.json`–`batch-007.json` files contain 639 
 
 ## Validation and production boundary
 
-- The first resumed checkpoint passed the WIP validator, drift-only validator, and deterministic 2,478-entry regeneration check. The second checkpoint must pass the same gates before remote publication.
+- Both resumed checkpoints passed the WIP validator, drift-only validator, and deterministic 2,478-entry regeneration check. The second source-order range spans canonical batches 001 and 002; both regenerated batch files are included in its remote checkpoint.
 - `production_changed` is **false**. No production Vocabulary, meaning, paraphrase, runtime, ASR, or UI files are included.
 - No main merge or production remediation is authorized by this audit.
 
