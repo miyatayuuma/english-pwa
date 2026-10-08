@@ -175,6 +175,21 @@ browserTest('denied saved permission keeps the handle and starts with audio fall
   }finally{await context.close();}
 });
 
+browserTest('saved denied handle is reused if permission is later restored outside the app',async()=>{
+  const {context,page,errors}=await openApp({saved:true,permission:'denied'});
+  try{
+    assert.equal(await page.locator('#dirStatus').textContent(),'権限なし');
+    await page.evaluate(()=>{window.__dirPermissionState='granted';});
+    await startDefaultSession(page);
+    await page.waitForFunction(()=>document.querySelector('audio')?.dataset.srcKey?.startsWith('blob:'));
+    assert.equal(await page.locator('#dirStatus').textContent(),'保存済み');
+    assert.equal(await page.evaluate(()=>window.__dirRequestCalls),0);
+    assert.equal(await page.evaluate(()=>window.__folderPickerCalls),0);
+    assert.equal(await savedHandleMatchesSelectedFolder(page),true);
+    assert.deepEqual(errors,[]);
+  }finally{await context.close();}
+});
+
 browserTest('no saved directory boots without picker or permission request',async()=>{
   const {context,page,errors}=await openApp();
   try{

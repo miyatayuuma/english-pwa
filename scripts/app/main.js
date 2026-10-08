@@ -1822,8 +1822,10 @@ function createAppRuntime(){
       }catch(_){ state='unavailable'; }
     }
     if(state==='granted'){
+      const refreshAudioResolver=dirPermissionState!=='granted';
       dirNeedsGesture=false;
       dirPermissionState='granted';
+      if(refreshAudioResolver) audioUrlResolver.clear();
       refreshDirStatus();
       return DIR;
     }
@@ -2266,7 +2268,6 @@ function createAppRuntime(){
     directoryPermissionRequest=ensureDir({prompt:true,userGesture:true})
       .then(async directory=>{
         if(directory && dirPermissionState==='granted'){
-          audioUrlResolver.clear();
           if(currentItem) await refreshCurrentAudioSource();
         }
         return directory;
