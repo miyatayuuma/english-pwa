@@ -240,6 +240,7 @@ browserTest('explicit selection refreshes current audio and explicit clear remov
     await page.waitForFunction(()=>document.querySelector('audio')?.dataset.srcKey?.startsWith('blob:'));
     await page.locator('#btnCfg').click();
     await page.locator('#btnClearDir').click();
+    await page.waitForFunction(()=>document.querySelector('#dirStatus')?.textContent==='未設定');
     assert.equal(await page.locator('#dirStatus').textContent(),'未設定');
     assert.equal(await page.evaluate(()=>{
       const request=indexedDB.open('fs-handles',1);
