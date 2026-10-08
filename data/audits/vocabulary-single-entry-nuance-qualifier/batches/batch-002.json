@@ -1007,28 +1007,41 @@
   {
     "id": "vocab:00139",
     "source_index": 139,
-    "canonical": "no sooner had I sat down than the phone rang",
+    "canonical": "no sooner had I arrived than the phone rang",
     "grammarRole": "construction",
     "kind": "construction",
-    "current_meaning_ja": "座るとすぐに電話が鳴った",
+    "current_meaning_ja": "私が到着するとすぐに、電話が鳴った",
     "sense_key": "immediate_sequence",
     "current_paraphrases": [
-      "the phone rang as soon as I sat down",
-      "hardly had I sat down when the phone rang"
+      "the phone rang as soon as I arrived",
+      "hardly had I arrived when the phone rang"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
-    "single_entry_decision": null,
-    "recommended_prompt": null,
-    "qualifier_dimension": [],
-    "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "review_status": "REVIEWED",
+    "single_entry_decision": "QUALIFIER_ONLY",
+    "recommended_prompt": "私が到着するとすぐに、電話が鳴った（no sooner ... than の、やや改まった倒置による強調表現）",
+    "qualifier_dimension": [
+      "register",
+      "pragmatics"
+    ],
+    "qualifier_text": "やや改まった倒置による強調表現",
+    "recommended_paraphrases": [
+      "the phone rang as soon as I arrived",
+      "hardly had I arrived when the phone rang"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "reason": "現行の日本語promptは到着直後という時間関係を正確に示すが、no soonerを文頭に置く倒置がもつ、より改まった・文学的な文体上の特徴を伝えていない。この構文を学ぶカードでは文体と強調の情報が有用なのでqualifierを加える。as soon as / hardly ... when は時系列の言い換えとして維持でき、paraphraseの削除・追加は不要。",
+    "confidence": "HIGH",
+    "evidence": [
+      "current main data/vocabulary-v3.json and semantic inventory",
+      "https://dictionary.cambridge.org/grammar/british-grammar/no-sooner"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "source_status": "REVALIDATED",
+    "learning_eligible": true,
+    "drift_reason": "canonical / meaning_ja / representative example / paraphrases changed on current main; historical supplemental KEEP invalidated and re-reviewed.",
+    "revalidated_against_main_sha": "794e6cf8c88ed6775be9b56a6f1fddc0775a7130"
   },
   {
     "id": "vocab:00140",

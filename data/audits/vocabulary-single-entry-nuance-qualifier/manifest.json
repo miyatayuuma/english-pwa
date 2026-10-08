@@ -76,39 +76,39 @@
     }
   },
   "population": 2478,
-  "reviewed": 193,
-  "unreviewed": 2285,
+  "reviewed": 194,
+  "unreviewed": 2284,
   "duplicate": 0,
   "order_drift": 0,
   "batch_size": 100,
   "batch_count": 25,
   "review_status_counts": {
-    "PENDING": 2285,
+    "REVIEWED": 78,
+    "PENDING": 2284,
     "PREVIOUS_AUTHORITY_CONFIRMED": 104,
-    "REVIEWED": 77,
     "CROSS_AUDIT_CONFLICT": 5,
     "UPSTREAM_ISOLATED": 7
   },
   "provisional_classification_counts": {
+    "KEEP": 37,
     "QUALIFIER_AND_PARAPHRASE": 125,
-    "QUALIFIER_ONLY": 8,
+    "QUALIFIER_ONLY": 9,
     "PARAPHRASE_REVALIDATION_ONLY": 11,
-    "UPSTREAM_AUTHORITY_REVIEW": 7,
-    "KEEP": 37
+    "UPSTREAM_AUTHORITY_REVIEW": 7
   },
   "previous_affected_entries_imported": 104,
-  "new_semantic_judgments": 46,
-  "new_remediation_judgments": 39,
+  "new_semantic_judgments": 47,
+  "new_remediation_judgments": 40,
   "upstream_isolated": 7,
   "cross_audit_conflicts": 5,
-  "provisional_remediation_candidates": 144,
+  "provisional_remediation_candidates": 145,
   "production_changed": false,
   "all_completion_conditions_met": false,
   "strict_validator_expected_result": "FAIL_INCOMPLETE",
   "provisional_change_counts": {
-    "new_qualifier_additions": 29,
+    "new_qualifier_additions": 30,
     "prior_qualifier_additions": 104,
-    "total_qualifier_additions": 133,
+    "total_qualifier_additions": 134,
     "qualifier_rewrites": 0,
     "qualifier_removals": 0,
     "new_paraphrase_removals": 49,
@@ -119,13 +119,57 @@
     "total_paraphrase_additions": 4
   },
   "confidence_counts": {
-    "HIGH": 13,
-    "MEDIUM": 137,
+    "HIGH": 51,
+    "MEDIUM": 138,
     "LOW": 5,
-    "UNREVIEWED": 2323
+    "UNREVIEWED": 2284
   },
   "existing_parenthetical_meaning_entry_count": 38,
   "existing_parenthetical_meaning_review_complete": false,
   "existing_parentheses_reviewed": 38,
-  "existing_parentheses_review_source": "existing-parentheses-review.json"
+  "existing_parentheses_review_source": "existing-parentheses-review.json",
+  "source_population": 2478,
+  "learning_eligible_population": 2477,
+  "excluded_from_learning": 1,
+  "excluded_learning_entry_ids": [
+    "vocab:00947"
+  ],
+  "learning_eligible_provisional_remediation_candidates": 144,
+  "learning_ineligible_provisional_remediation_candidates": 1,
+  "audit_source_snapshot": {
+    "path": "data/vocabulary-v3.json",
+    "git_blob_sha": "326021c771aa5b4746b120f5d1086ecce33a334f",
+    "sha256": "3b5a3b82d25dfcee5b8593e53835a36577998af3cb42570b1711203ae568ae34"
+  },
+  "current_main_sha": "794e6cf8c88ed6775be9b56a6f1fddc0775a7130",
+  "current_main_source_snapshot": {
+    "path": "data/vocabulary-v3.json",
+    "git_blob_sha": "d1e2076c11cc3db27516f5bf6ff7c77ddf06ac33",
+    "sha256": "c0dfee10995c063c9c2df5c1edd2f5d0edb1efa4a1cef3ed1be7a265aefeb309"
+  },
+  "current_main_semantic_inventory_snapshot": {
+    "path": "data/vocabulary-v3-semantic-audit-inventory.json",
+    "git_blob_sha": "4ff9e6cc01f029a16871f3e505085a2fcebaf98a",
+    "sha256": "f0e65131a05f29cb0053c5ebd37af20e6d92ea372010f03f554f3e028a77117b"
+  },
+  "reconciled_from_audit_head": "a5dbb3273464979255710e474f25cd69dede4a54",
+  "live_main_reconciliation_artifact": "data/audits/vocabulary-single-entry-nuance-qualifier/live-main-drift.json",
+  "resume_readiness": "READY_FOR_SEMANTIC_AUDIT_RESUME",
+  "last_live_main_reconciliation_at": "2026-10-08T10:23:39.523Z",
+  "live_main_reconciliation": {
+    "status": "READY_FOR_SEMANTIC_AUDIT_RESUME",
+    "artifact": "data/audits/vocabulary-single-entry-nuance-qualifier/live-main-drift.json",
+    "current_main_sha": "794e6cf8c88ed6775be9b56a6f1fddc0775a7130",
+    "reconciled_from_audit_head": "a5dbb3273464979255710e474f25cd69dede4a54",
+    "semantic_entry_drift_count": 1,
+    "revalidated_entry_ids": [
+      "vocab:00139"
+    ],
+    "stale_entry_ids": [],
+    "excluded_learning_entry_ids": [
+      "vocab:00947"
+    ],
+    "source_population": 2478,
+    "learning_eligible_population": 2477
+  }
 }

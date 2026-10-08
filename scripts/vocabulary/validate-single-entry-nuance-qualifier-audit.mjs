@@ -6,6 +6,31 @@ import { fileURLToPath } from "node:url";
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const root = path.join(repo,"data/audits/vocabulary-single-entry-nuance-qualifier");
 const read = (name) => JSON.parse(fs.readFileSync(path.join(root,name),"utf8"));
+if(process.argv.includes("--drift-only")){
+ const m=read("manifest.json"),d=read("live-main-drift.json"),errors=[];
+ const assert=(v,s)=>{if(!v)errors.push(s)},unique=a=>Array.isArray(a)&&new Set(a).size===a.length;
+ const sem=d.changes.find(x=>x.entry_id==="vocab:00139"),elig=d.changes.find(x=>x.entry_id==="vocab:00947");
+ assert(d.audit_base_sha===m.audit_base_main_sha,"audit base");
+ assert(d.current_main_sha===m.current_main_sha,"current main SHA");
+ assert(d.previous_audit_head===m.reconciled_from_audit_head,"previous audit head");
+ assert(d.summary.global_authority_drift===false,"global authority drift");
+ assert(d.summary.source_population===2478&&m.population===2478&&m.source_population===2478,"source population");
+ assert(d.summary.learning_eligible_population===2477&&m.learning_eligible_population===2477,"learning population");
+ assert(d.summary.excluded_from_learning===1&&unique(d.excluded_learning_entry_ids)&&d.excluded_learning_entry_ids.length===1&&d.excluded_learning_entry_ids[0]==="vocab:00947","learning exclusion");
+ assert(d.summary.semantic_entry_drift_count===1&&d.summary.learning_eligibility_drift_count===1,"drift counts");
+ assert(d.summary.non_semantic_change_count===6,"non-semantic count");
+ assert(unique(d.initial_stale_entry_ids)&&d.initial_stale_entry_ids.length===1&&d.initial_stale_entry_ids[0]==="vocab:00139","initial stale IDs");
+ assert(unique(d.stale_entry_ids)&&d.stale_entry_ids.length===0,"remaining stale IDs");
+ assert(unique(d.revalidated_entry_ids)&&d.revalidated_entry_ids.length===1&&d.revalidated_entry_ids[0]==="vocab:00139","revalidated IDs");
+ assert(sem&&sem.old_snapshot.canonical==="no sooner had I sat down than the phone rang"&&sem.current_snapshot.canonical==="no sooner had I arrived than the phone rang","00139 snapshots");
+ assert(sem?.revalidation?.decision==="QUALIFIER_ONLY"&&sem?.revalidation?.source_status==="REVALIDATED","00139 revalidation");
+ assert(elig&&elig.semantic_relevance==="LEARNING_ELIGIBILITY_ONLY"&&elig.current_snapshot.learning_eligible===false,"00947 eligibility");
+ assert(d.summary.reviewed===m.reviewed&&d.summary.unreviewed===m.unreviewed,"progress accounting");
+ assert(d.summary.reviewed===194&&d.summary.unreviewed===2284,"resume progress");
+ assert(d.summary.batch_count===25&&d.summary.batch_status_preserved,"batch accounting");
+ if(errors.length){console.error("FAIL [drift-only] ("+errors.length+"): "+errors.join("; "));process.exitCode=1;}
+ else console.log("PASS [drift-only] main="+d.current_main_sha+" source=2478 learningEligible=2477 reviewed="+m.reviewed+" unreviewed="+m.unreviewed+" stale=0");
+}else{
 const snapshot = fs.readFileSync(path.join(repo,"data/vocabulary-v3.json"));
 const entries = JSON.parse(snapshot).entries;
 const m=read("manifest.json"), ix=read("decisions.json").entries, prev=read("previous-near-synonym-authority.json").entries, mem=read("previous-group-membership.json").entries;
@@ -53,3 +78,5 @@ const strict=!process.argv.includes("--allow-incomplete");
 if(strict)assert(pending===0&&conflicts.length===0&&m.all_completion_conditions_met===true&&m.status==="CLOSED","incomplete semantic review; CLOSED forbidden");
 if(errors.length){console.error("FAIL ["+(strict?"strict":"WIP")+"] ("+errors.length+"): "+errors.slice(0,30).join("; "));process.exitCode=1;}
 else console.log("PASS ["+(strict?"strict":"WIP")+"] population=2478 reviewed="+reviewed+" unreviewed="+pending+" batches=25; strict closure="+m.status);
+
+}

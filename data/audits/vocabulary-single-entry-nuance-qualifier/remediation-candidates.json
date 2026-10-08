@@ -847,7 +847,10 @@
       "evidence": [
         "current production canonical / meaning_ja / sense_key / paraphrases"
       ],
-      "ready_for_production": false
+      "ready_for_production": false,
+      "learning_eligible": false,
+      "remediation_eligible": false,
+      "eligibility_exclusion_reason": "vocab:00947 is retired from learner-facing Vocabulary and Cloze selection; preserve its database/audit record and semantic decision."
     },
     {
       "id": "vocab:00955",
@@ -2194,6 +2197,28 @@
         "https://dictionary.cambridge.org/dictionary/english/how-come"
       ],
       "ready_for_production": false
+    },
+    {
+      "id": "vocab:00139",
+      "decision_origin": "SINGLE_ENTRY",
+      "single_entry_decision": "QUALIFIER_ONLY",
+      "recommended_prompt": "私が到着するとすぐに、電話が鳴った（no sooner ... than の、やや改まった倒置による強調表現）",
+      "recommended_paraphrases": [
+        "the phone rang as soon as I arrived",
+        "hardly had I arrived when the phone rang"
+      ],
+      "removed_paraphrases": [],
+      "added_paraphrases": [],
+      "confidence": "HIGH",
+      "evidence": [
+        "current main data/vocabulary-v3.json and semantic inventory",
+        "https://dictionary.cambridge.org/grammar/british-grammar/no-sooner"
+      ],
+      "ready_for_production": false,
+      "source_status": "REVALIDATED",
+      "learning_eligible": true,
+      "remediation_eligible": true,
+      "revalidated_against_main_sha": "794e6cf8c88ed6775be9b56a6f1fddc0775a7130"
     }
   ]
 }
