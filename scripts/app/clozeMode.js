@@ -1,5 +1,6 @@
 import { setActiveClozeRecognitionContext, clearActiveClozeRecognitionContext } from './clozeRecognitionContext.js';
 import { adaptiveClozeCount, buildClozeCard } from './clozeLearningCore.js';
+import { isRetiredVocabularyEntry } from './vocabularyLearningCore.js';
 import {
   inferReadHintStage,
   readHintCopy,
@@ -92,10 +93,11 @@ async function loadJson(path){
   return res.json();
 }
 
-function indexVocabulary(db){
+export function indexVocabulary(db){
   const entries=Array.isArray(db)?db:(Array.isArray(db?.entries)?db.entries:[]);
   const map=new Map();
   for(const entry of entries){
+    if(isRetiredVocabularyEntry(entry)) continue;
     for(const occurrence of Array.isArray(entry?.occurrences)?entry.occurrences:[]){
       const id=String(occurrence?.item_id||'');
       if(!id) continue;

@@ -27,11 +27,15 @@ test('freeze and occurrence gate reject population, kind and span corruption',()
  assert.deepEqual(Object.fromEntries(Object.entries(inventory.partitions).map(([k,v])=>[k,v.length])),{word:1422,expression:997,construction:59});
  assert.equal(inventory.entries.filter(e=>e.origin==='newly_materialized').length,1408);
 });
-test('2478-card load, filters, rotation, exact source answers and curated paraphrases initialize',()=>{
+test('2478 source records with one retired card preserve active filters, source answers and paraphrases',()=>{
  const joined=joinVocabularyData(db,items,read('characters'));
- assert.equal(readyVocabularyEntries(joined).length,2478);
+ assert.equal(joined.length,2478,'frozen audit population remains intact');
+ const ready=readyVocabularyEntries(joined);
+ assert.equal(ready.length,2477,'only the standalone toil card is retired');
  const encountered=Object.fromEntries(items.map(i=>[i.id,{last:2,best:2,updatedAt:1700000000000}]));
- const eligible=eligibleVocabularyEntries(joined,encountered);assert.equal(eligible.length,2478);
+ const eligible=eligibleVocabularyEntries(ready,encountered);assert.equal(eligible.length,2477);
+ assert.equal(eligible.some(entry=>entry.id==='vocab:00947'),false);
+ assert.equal(eligible.some(entry=>entry.id==='vocab:00428'),true);
  for(const entry of eligible){
   const {item,occurrence}=entry.activeOccurrence;
   assert.equal(classifyVocabularyAnswer({entry,activeOccurrence:entry.activeOccurrence,transcript:item.en.slice(occurrence.start,occurrence.end)}).type,'target',entry.id);
