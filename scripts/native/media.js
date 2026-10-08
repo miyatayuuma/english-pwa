@@ -7,13 +7,14 @@ export function getNativeMedia(){
     return Object.fromEntries(['pick','status','clear','read','voices','speak','cancel','addListener'].map(key=>[key,(...args)=>proxy[key](...args)]));
   });
 }
-export async function nativeDirectory(action){
-  const plugin=await getNativeMedia();
+export async function nativeDirectory(action,getPlugin=getNativeMedia){
+  const plugin=await getPlugin();
   const status=await plugin[action]();
   if(action==='clear'||!status.selected) return null;
   return {
-    queryPermission:async()=> (await plugin.status()).granted?'granted':'prompt',
-    requestPermission:async()=> (await plugin.pick()).granted?'granted':'denied',
+    // A lost Android grant is not re-promptable here; only explicit pick may
+    // launch ACTION_OPEN_DOCUMENT_TREE.
+    queryPermission:async()=> (await plugin.status()).granted?'granted':'denied',
     getFileHandle:async name=>({getFile:async()=>{
       const {base64,mime}=await plugin.read({name});
       const bytes=Uint8Array.from(atob(base64),c=>c.charCodeAt(0));
