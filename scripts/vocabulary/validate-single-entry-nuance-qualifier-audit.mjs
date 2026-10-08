@@ -33,7 +33,8 @@ if(process.argv.includes("--drift-only")){
 }else{
 const snapshot = fs.readFileSync(path.join(repo,"data/vocabulary-v3.json"));
 const entries = JSON.parse(snapshot).entries;
-const m=read("manifest.json"), ix=read("decisions.json").entries, prev=read("previous-near-synonym-authority.json").entries, mem=read("previous-group-membership.json").entries;
+const m=read("manifest.json"), live=read("live-main-drift.json"), ix=read("decisions.json").entries, prev=read("previous-near-synonym-authority.json").entries, mem=read("previous-group-membership.json").entries;
+const driftById=new Map(live.changes.filter(x=>x.entry_id).map(x=>[x.entry_id,x]));
 const newJ=read("authored-judgments.json"), existing=read("existing-parentheses-review.json").entries, rem=read("remediation-candidates.json").entries, upstream=read("upstream-review.json"), conflicts=read("cross-audit-conflicts.json");
 const prior=new Map(prev.map(x=>[x.id,x])), memberships=new Map(mem.map(x=>[x.id,x.groups])), fresh=new Map(newJ.map(x=>[x.id,x])), parenthesis=new Map(existing.map(x=>[x.id,x]));
 const errors=[], assert=(v,s)=>{if(!v)errors.push(s)};
@@ -41,18 +42,22 @@ assert(entries.length===2478&&ix.length===2478&&m.population===2478,"population"
 assert(crypto.createHash("sha256").update(snapshot).digest("hex")===m.current_source_snapshot.sha256,"source SHA256 drift");
 assert(new Set(entries.map(x=>x.id)).size===2478,"source duplicate IDs");
 assert(m.batch_size===100&&m.batch_count===25,"batch manifest");
-assert(prev.length===104&&newJ.length===46&&existing.length===38&&conflicts.length===5&&upstream.length===7&&m.existing_parentheses_reviewed===38,"authority import counts");
+assert(prev.length===104&&newJ.length===m.new_semantic_judgments&&existing.length===38&&conflicts.length===5&&upstream.length===7&&m.existing_parentheses_reviewed===38,"authority import counts");
 const decisionEnum=new Set(["KEEP","QUALIFIER_ONLY","QUALIFIER_AND_PARAPHRASE","PARAPHRASE_REVALIDATION_ONLY","UPSTREAM_AUTHORITY_REVIEW"]);
-let pending=0, reviewed=0, duplicate=new Set();const stats={};
+let pending=0, reviewed=0, duplicate=new Set(),allRows=[];const stats={};
 for(let b=0;b<25;b++){
  const name="batches/batch-"+String(b+1).padStart(3,"0")+".json", content=fs.readFileSync(path.join(root,name),"utf8"),rows=JSON.parse(content),start=b*100;
+ allRows.push(...rows);
  assert(rows.length===Math.min(100,2478-start),"batch count "+name);
  assert(content===JSON.stringify(rows,null,2)+"\n","non-deterministic JSON serialization "+name);
  for(let j=0;j<rows.length;j++){
   const i=start+j,s=entries[i],r=rows[j],x=ix[i],pg=memberships.get(r.id)||[],p=prior.get(r.id),n=fresh.get(r.id),q=parenthesis.get(r.id);
   assert(!!s&&s.id===r.id&&x.id===r.id&&r.source_index===i+1&&x.index===i+1,"ID/order "+i);
   assert(!duplicate.has(r.id),"duplicate "+r.id);duplicate.add(r.id);
-  assert(r.canonical===s.canonical&&r.current_meaning_ja===s.meaning_ja&&r.grammarRole===s.grammarRole&&r.sense_key===s.sense_key&&JSON.stringify(r.current_paraphrases)===JSON.stringify(s.paraphrases||[]),"source snapshot "+r.id);
+  const driftSnapshot=r.source_status==="REVALIDATED"?driftById.get(r.id)?.current_snapshot:null, expectedSource=driftSnapshot||s;
+  assert(r.canonical===expectedSource.canonical&&r.current_meaning_ja===(expectedSource.meaning_ja??expectedSource.current_meaning_ja)&&r.grammarRole===expectedSource.grammarRole&&r.sense_key===expectedSource.sense_key&&JSON.stringify(r.current_paraphrases)===JSON.stringify(expectedSource.paraphrases??expectedSource.current_paraphrases??[]),"source snapshot "+r.id);
+  if(r.source_status==="REVALIDATED")assert(driftSnapshot&&r.revalidated_against_main_sha===m.current_main_sha,"revalidation source status "+r.id);
+  if(r.learning_eligible===false)assert(r.id==="vocab:00947"&&r.source_status==="CURRENT","unexpected learning exclusion "+r.id);
   assert(r.review_status===x.status&&r.single_entry_decision===x.classification,"review index drift "+r.id);
   assert(r.previous_near_synonym_authority===(pg.some(y=>y.classification==="PROMPT_AND_PARAPHRASE")?"PROMPT_AND_PARAPHRASE":pg.some(y=>y.classification==="KEEP")?"KEEP":"NONE"),"previous authority membership "+r.id);
   assert(JSON.stringify(r.previous_near_synonym_group_ids)===JSON.stringify(pg.map(y=>y.group_id)),"previous authority groups "+r.id);
@@ -74,6 +79,11 @@ for(const [k,v] of Object.entries(stats))assert(m.review_status_counts[k]===v,"s
 const isolated=new Set([...conflicts,...upstream].map(x=>x.id));
 assert(rem.length===144&&rem.every(x=>x.ready_for_production===false&&x.confidence!=="LOW"&&!isolated.has(x.id)),"unsafe remediation");
 assert(m.production_changed===false&&m.production_materialization_allowed===false,"production boundary");
+const excludedLearning=allRows.filter(x=>x.learning_eligible===false).map(x=>x.id),revalidatedIds=allRows.filter(x=>x.source_status==="REVALIDATED").map(x=>x.id),staleIds=allRows.filter(x=>x.source_status==="STALE").map(x=>x.id);
+assert(m.source_population===2478&&m.learning_eligible_population===2477&&excludedLearning.length===1&&excludedLearning[0]==="vocab:00947","learning eligibility accounting");
+assert(JSON.stringify(excludedLearning)===JSON.stringify(live.excluded_learning_entry_ids),"learning exclusion ledger");
+assert(JSON.stringify(revalidatedIds)===JSON.stringify(live.revalidated_entry_ids)&&staleIds.length===0&&live.stale_entry_ids.length===0,"source status reconciliation");
+assert(m.current_main_sha===live.current_main_sha&&m.reconciled_from_audit_head===live.previous_audit_head,"live main reconciliation source");
 const strict=!process.argv.includes("--allow-incomplete");
 if(strict)assert(pending===0&&conflicts.length===0&&m.all_completion_conditions_met===true&&m.status==="CLOSED","incomplete semantic review; CLOSED forbidden");
 if(errors.length){console.error("FAIL ["+(strict?"strict":"WIP")+"] ("+errors.length+"): "+errors.slice(0,30).join("; "));process.exitCode=1;}
