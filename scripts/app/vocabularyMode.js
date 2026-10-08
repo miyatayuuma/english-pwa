@@ -308,7 +308,10 @@ function renderLobby(){
     state.kind=button.dataset.kind||'all';
     renderLobby();
   }));
-  state.screen.querySelector('.vocab-start')?.addEventListener('click',startSession);
+  state.screen.querySelector('.vocab-start')?.addEventListener('click',async()=>{
+    await globalThis.__REQUEST_SAVED_AUDIO_FOLDER_PERMISSION__?.();
+    startSession();
+  });
 }
 
 function openVocabularyMode(){

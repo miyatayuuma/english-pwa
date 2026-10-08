@@ -374,6 +374,7 @@ function createOptionsDialog(){
     if(!eligibleItemsForSessionOptions(state.items,options,loadLevelState()).length) return;
     state.pendingOptions=options;
     state.optionsDraft=resetSessionOptions(options);
+    globalThis.__REQUEST_SAVED_AUDIO_FOLDER_PERMISSION__?.();
     dialog.close();
     if(options.characterId) globalThis.__PREPARE_CHARACTER_SESSION__?.(options.characterId);
     else globalThis.__CLEAR_ACTIVE_CHARACTER_SESSION__?.();

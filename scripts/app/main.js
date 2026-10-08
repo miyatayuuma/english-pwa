@@ -1151,6 +1151,7 @@ function createAppRuntime(){
   }
   if(el.reviewActionFocusReview){
     el.reviewActionFocusReview.addEventListener('click', ()=>{
+      requestSavedDirectoryPermissionFromGesture();
       if(el.orderSel){
         el.orderSel.value='srs';
         saveString(ORDER_SELECTION, 'srs');
@@ -1793,7 +1794,8 @@ function createAppRuntime(){
 
   let DIR=null; // FileSystemDirectoryHandle
   let dirNeedsGesture=false;
-  async function ensureDir({prompt=false, forceCheck=false}={}){
+  let dirPermissionState='unconfigured';
+  async function ensureDir({prompt=false, forceCheck=false, userGesture=false}={}){
     if(!DIR || forceCheck){
       if(!DIR){
         try{
@@ -1802,56 +1804,75 @@ function createAppRuntime(){
           console.warn('loadDirHandle failed', err);
           DIR=null;
           dirNeedsGesture=false;
+          dirPermissionState='unconfigured';
           refreshDirStatus();
           return null;
         }
       }
     }
-    if(!DIR){ dirNeedsGesture=false; refreshDirStatus(); return null; }
+    if(!DIR){ dirNeedsGesture=false; dirPermissionState='unconfigured'; refreshDirStatus(); return null; }
     let state='granted';
-    try{
-      state = await DIR.queryPermission?.({mode:'read'}) || 'granted';
-    }catch(_){ state='prompt'; }
+    if(userGesture && prompt && dirNeedsGesture){
+      // Boot already found "prompt"; skip another await so requestPermission
+      // is invoked while this click still has transient user activation.
+      state='prompt';
+    }else{
+      try{
+        state = await DIR.queryPermission?.({mode:'read'}) || 'granted';
+      }catch(_){ state='unavailable'; }
+    }
     if(state==='granted'){
       dirNeedsGesture=false;
+      dirPermissionState='granted';
       refreshDirStatus();
       return DIR;
     }
-    if(!prompt){
-      dirNeedsGesture = state!=='granted';
+    if(state==='prompt'){
+      dirNeedsGesture=true;
+      dirPermissionState='prompt';
+    }else if(state==='denied'){
+      dirNeedsGesture=false;
+      dirPermissionState='denied';
+    }else{
+      dirNeedsGesture=false;
+      dirPermissionState='unavailable';
+    }
+    if(!prompt || state!=='prompt'){
       refreshDirStatus();
       return null;
     }
     try{
-      state = await DIR.requestPermission?.({mode:'read'});
+      const request=DIR.requestPermission?.({mode:'read'});
+      state = await request;
     }catch(err){
       if(err && (err.name==='InvalidStateError' || /user activation/i.test(err.message||''))){
         dirNeedsGesture=true;
+        dirPermissionState='prompt';
         refreshDirStatus();
         return null;
       }
       console.warn('requestPermission error', err);
-      DIR=null;
       dirNeedsGesture=false;
+      dirPermissionState=err?.name==='NotAllowedError'?'denied':'unavailable';
       refreshDirStatus();
       return null;
     }
-      if(state==='granted'){
-        dirNeedsGesture=false;
-        refreshDirStatus();
-        return DIR;
-      }
-      if(state==='prompt'){
-        dirNeedsGesture=true;
-        refreshDirStatus();
-        return null;
-      }
-      // denied or unknown
+    if(state==='granted'){
       dirNeedsGesture=false;
-      DIR=null;
-      try{ await clearDirHandle(); }catch(_){ }
+      dirPermissionState='granted';
+      refreshDirStatus();
+      return DIR;
+    }
+    if(state==='prompt'){
+      dirNeedsGesture=true;
+      dirPermissionState='prompt';
       refreshDirStatus();
       return null;
+    }
+    dirNeedsGesture=false;
+    dirPermissionState=state==='denied'?'denied':'unavailable';
+    refreshDirStatus();
+    return null;
   }
 
 
@@ -1878,8 +1899,9 @@ function createAppRuntime(){
         await saveDirHandle(h);
         DIR=h;
         dirNeedsGesture=false;
+        dirPermissionState='unknown';
         refreshDirStatus();
-        await ensureDir({prompt:true, forceCheck:true});
+        await ensureDir({forceCheck:true});
         refreshDirStatus();
         await refreshCurrentAudioSource();
         toast(dirNeedsGesture ? 'フォルダを保存（許可待ち）' : 'フォルダを保存しました');
@@ -1894,12 +1916,20 @@ function createAppRuntime(){
       audioUrlResolver.clear();
       DIR=null;
       dirNeedsGesture=false;
+      dirPermissionState='unconfigured';
       refreshDirStatus();
       await refreshCurrentAudioSource();
       toast('フォルダ設定を解除');
     });
   }
-  function refreshDirStatus(){ if(!el.dirStatus) return; if(DIR){ el.dirStatus.textContent = dirNeedsGesture ? '許可待ち' : '保存済み'; } else { el.dirStatus.textContent = '未設定'; } }
+  function refreshDirStatus(){
+    if(!el.dirStatus) return;
+    if(!DIR){ el.dirStatus.textContent='未設定'; return; }
+    if(dirNeedsGesture || dirPermissionState==='prompt'){ el.dirStatus.textContent='許可待ち'; return; }
+    if(dirPermissionState==='denied'){ el.dirStatus.textContent='権限なし'; return; }
+    if(dirPermissionState==='unavailable'){ el.dirStatus.textContent='確認できません'; return; }
+    el.dirStatus.textContent='保存済み';
+  }
 
   // GAS Bridge
 
@@ -2228,6 +2258,24 @@ function createAppRuntime(){
     currentShouldUseSpeech=shouldUseSpeechForItem(item);
     updatePlayButtonAvailability();
   }
+
+  let directoryPermissionRequest=null;
+  function requestSavedDirectoryPermissionFromGesture(){
+    if(isNativeAndroid() || !DIR || !dirNeedsGesture) return Promise.resolve(null);
+    if(directoryPermissionRequest) return directoryPermissionRequest;
+    directoryPermissionRequest=ensureDir({prompt:true,userGesture:true})
+      .then(async directory=>{
+        if(directory && dirPermissionState==='granted'){
+          audioUrlResolver.clear();
+          if(currentItem) await refreshCurrentAudioSource();
+        }
+        return directory;
+      })
+      .catch(error=>{ console.warn('audio folder permission restore failed',error); return null; })
+      .finally(()=>{ directoryPermissionRequest=null; });
+    return directoryPermissionRequest;
+  }
+  globalThis.__REQUEST_SAVED_AUDIO_FOLDER_PERMISSION__=requestSavedDirectoryPermissionFromGesture;
 
   // Render & navigation
   function stopAudio(){ try{audio.pause();}catch(_){ } audio.currentTime=0; speechController.cancelSpeech(); }
@@ -2597,6 +2645,7 @@ function createAppRuntime(){
   function handleQuickStart(){
     if(sessionStarting) return;
     prepareToneOutput();
+    if(!sessionActive) requestSavedDirectoryPermissionFromGesture();
     consumePendingTrainingMode();
     const allowAuto=isAutoPlayAllowed();
     if(consumeFocusedSessionPending(globalThis)){
@@ -2692,6 +2741,7 @@ function createAppRuntime(){
     if(!QUEUE.length){ showIdleCard(); return; }
     sessionStarting=true;
     try{
+      if(directoryPermissionRequest) await directoryPermissionRequest;
       await ensureDir();
       sessionActive=true;
       shadowingPaused=false;
@@ -2968,11 +3018,11 @@ function createAppRuntime(){
   }
   el.card.addEventListener('touchend',(ev)=>{ handleTouchFinish(ev,false); },{passive:true});
   el.card.addEventListener('touchcancel',(ev)=>{ handleTouchFinish(ev,true); },{passive:true});
-  el.en.addEventListener('click', async ()=>{ if(!sessionActive){ await startSession(false); } });
+  el.en.addEventListener('click', async ()=>{ if(!sessionActive){ globalThis.__REQUEST_SAVED_AUDIO_FOLDER_PERMISSION__?.(); await startSession(false); } });
   el.play.addEventListener('click', async ()=>{
     if(isPlaybackTransitionLocked()) return;
     if(sessionStarting) return;
-    if(!sessionActive){ await startSession(false); }
+    if(!sessionActive){ globalThis.__REQUEST_SAVED_AUDIO_FOLDER_PERMISSION__?.(); await startSession(false); }
     if(sessionStarting) return;
     if(!sessionActive){ return; }
     if(correctiveItemId===QUEUE[idx]?.id){
