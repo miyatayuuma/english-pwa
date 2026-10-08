@@ -81,7 +81,7 @@ test('down-only alternatives do not create than/then hits or chunk rescue', () =
 
 test('diagnostics explain when a lower full TARGET preempts chunk rescue', () => {
   const alternatives = segment([
-    'no sooner had I arrived then the phone rang',
+    'no sooner had I arrived down the phone rang',
     'unrelated candidate',
     canonical,
   ]);

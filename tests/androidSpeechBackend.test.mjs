@@ -181,7 +181,7 @@ test('Android provider evidence reaches shared curated Vocabulary chunk rescue a
   class Backend extends AndroidSpeechRecognizerBackend{constructor(){super({pluginProvider:async()=>f.plugin});driver=this;drivers.push(this);}}
   const controller=createRecognitionController({recognitionBackend:Backend});
   controller.start();await driver.startup;
-  const primary='no sooner had I arrived then the phone rang';
+  const primary='no sooner had I arrived down the phone rang';
   const alternatives=Array.from({length:20},(_,index)=>({
     transcript:index===0?primary:index===19?'than the phone rang':`unrelated ${index}`,
     asrRank:index,

@@ -72,7 +72,7 @@ test('Web preserves duplicate provider candidates and ranks',()=>fixture(async({
 
 test('Web provider evidence reaches shared curated Vocabulary chunk rescue without changing rank-one transcript',()=>fixture(async({createRecognitionController},instances)=>{
   const {classifyVocabularySpeechAnswer}=await import('../scripts/speech/vocabularySpeechEvidence.js');
-  const primary='no sooner had I arrived then the phone rang';
+  const primary='no sooner had I arrived down the phone rang';
   const controller=createRecognitionController({getRecognitionContext:()=>({mode:'vocabulary'})});
   controller.start();
   instances[0].inject([result([primary,'unrelated','than the phone rang'])]);

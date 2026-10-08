@@ -1,13 +1,15 @@
 import { VOCABULARY_TD_CLUSTER_BEFORE_TO_AUTHORITY } from './vocabularyTdClusterBeforeToAuthority.js';
 
-const pair = ({ id, expected, recognized, kind, display = 'raw' }) => [
-  { id, expected, recognized, kind, credit: 'exact-equivalent', scope: { type: 'global' }, display },
+const pair = ({ id, expected, recognized, kind, display = 'raw', scope = { type: 'global' } }) => [
+  { id, expected, recognized, kind, credit: 'exact-equivalent', scope, display },
   { id: `${recognized.replace(/\s+/gu, '-')}-${expected.replace(/\s+/gu, '-')}`,
     expected: recognized, recognized: expected, kind, credit: 'exact-equivalent',
-    scope: { type: 'global' }, display: 'raw' },
+    scope, display: 'raw' },
 ];
 
 export const speechEquivalenceRules = Object.freeze([
+  // Vocabulary ASR may interchange than/then based on language context; preserve the provider transcript.
+  ...pair({ id: 'than-then', expected: 'than', recognized: 'then', kind: 'asr-context-collision', scope: { type: 'mode', modes: ['vocabulary'] } }),
   ...pair({ id: 'prose-pros', expected: 'prose', recognized: 'pros', kind: 'homophone', display: 'expected' }),
   ...pair({ id: 'dye-die', expected: 'dye', recognized: 'die', kind: 'homophone' }),
   ...pair({ id: 'postwar-post-war', expected: 'postwar', recognized: 'post war', kind: 'segmentation-equivalence' }),
