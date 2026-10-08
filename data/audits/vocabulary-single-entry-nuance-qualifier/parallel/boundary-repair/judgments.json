@@ -1,0 +1,205 @@
+[
+  {
+    "index": 544,
+    "id": "vocab:00545",
+    "canonical": "struggle against something",
+    "current_meaning_ja": "somethingに立ち向かう",
+    "grammarRole": "verb",
+    "sense_key": "fight_or_work_against",
+    "current_paraphrases": [
+      "face something",
+      "confront something",
+      "stand up to something"
+    ],
+    "decision": "QUALIFIER_AND_PARAPHRASE",
+    "recommended_prompt": "somethingに抗い、懸命に闘う",
+    "qualifier_dimension": "effortful_resistance",
+    "qualifier_text": "強く抵抗し、懸命に闘う",
+    "recommended_paraphrases": [
+      "fight against something"
+    ],
+    "removed_paraphrases": [
+      "face something",
+      "confront something",
+      "stand up to something"
+    ],
+    "added_paraphrases": [
+      "fight against something"
+    ],
+    "paraphrase_evaluation": [
+      {
+        "text": "face something",
+        "decision": "REMOVE",
+        "main_meaning_match": "PARTIAL",
+        "qualifier_match": false,
+        "register_match": true,
+        "intensity_match": false,
+        "connotation_match": false,
+        "typical_usage_match": "PARTIAL",
+        "preserves_canonical_learning_value": false,
+        "assessment": "困難・問題に直面する／対処するだけでも成立する。againstに対して懸命に抵抗し闘う意味は必須でない。"
+      },
+      {
+        "text": "confront something",
+        "decision": "REMOVE",
+        "main_meaning_match": "PARTIAL",
+        "qualifier_match": false,
+        "register_match": true,
+        "intensity_match": false,
+        "connotation_match": "PARTIAL",
+        "typical_usage_match": "PARTIAL",
+        "preserves_canonical_learning_value": false,
+        "assessment": "難題や相手に向き合う・対峙する行為を指し、強い抵抗と努力を常に含まない。"
+      },
+      {
+        "text": "stand up to something",
+        "decision": "REMOVE",
+        "main_meaning_match": "PARTIAL",
+        "qualifier_match": false,
+        "register_match": true,
+        "intensity_match": false,
+        "connotation_match": false,
+        "typical_usage_match": false,
+        "preserves_canonical_learning_value": false,
+        "assessment": "不当な相手への毅然とした抵抗、または圧力・負荷に耐える意味。抽象的な敵対対象と懸命に闘うstruggle against全体を代表しない。"
+      },
+      {
+        "text": "fight against something",
+        "decision": "ADD",
+        "main_meaning_match": true,
+        "qualifier_match": true,
+        "register_match": true,
+        "intensity_match": true,
+        "connotation_match": true,
+        "typical_usage_match": true,
+        "preserves_canonical_learning_value": true,
+        "assessment": "相手・問題・社会悪などに対して、多大な努力を払って抗う用法で対応する。暴力的行為に限定しない辞書義を確認。"
+      }
+    ],
+    "qualifier_gate": {
+      "stable": true,
+      "material": true,
+      "compact": true,
+      "non_distorting": true,
+      "evidence_supported": true
+    },
+    "reason": "「立ち向かう」だけでは、struggle againstが表す抵抗・難しい状況での強い努力を十分示さない。faceとconfrontは単なる直面・対処を含み、stand up toは毅然とした反抗または耐久を表し得るため、いずれも現行の強い抵抗の義では過大許容となる。fight againstは強い努力を伴う反対・対抗の代表的言い換えとして採用する。既存3件をmain meaning・qualifier・register・intensity・connotation・typical usage・canonical学習価値の7観点で個別再検証した。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable-base 2d60188baaceaf77c4e3370ebb37029c48201e2e / batches/batch-006.json / vocab:00545; review-index index 544 PENDING",
+      {
+        "url": "https://dictionary.cambridge.org/dictionary/english/struggle",
+        "finding": "struggle: to try or fight very hard; struggle against sth のコロケーションを収録"
+      },
+      {
+        "url": "https://dictionary.cambridge.org/dictionary/english/face",
+        "finding": "face a problem: to deal with / accept a difficult situation; 強い抵抗を必須としない"
+      },
+      {
+        "url": "https://dictionary.cambridge.org/dictionary/english/confront",
+        "finding": "confront: face, meet, or deal with a difficult situation/person"
+      },
+      {
+        "url": "https://dictionary.cambridge.org/dictionary/english/stand-up-to",
+        "finding": "stand up to: unfairly powerful personへの抵抗、または物事に耐える"
+      },
+      {
+        "url": "https://dictionary.cambridge.org/dictionary/english/fight-against",
+        "finding": "fight against something: use a lot of effort to defeat/stop something"
+      }
+    ],
+    "source_status": "PENDING_AT_IMMUTABLE_BASE",
+    "automatic_materialization_allowed": false
+  },
+  {
+    "index": 1834,
+    "id": "vocab:01837",
+    "canonical": "condominium",
+    "current_meaning_ja": "分譲マンション",
+    "grammarRole": "noun",
+    "sense_key": "individually_owned_apartment",
+    "current_paraphrases": [
+      "condo"
+    ],
+    "decision": "KEEP",
+    "recommended_prompt": null,
+    "qualifier_dimension": null,
+    "qualifier_text": null,
+    "recommended_paraphrases": [
+      "condo"
+    ],
+    "removed_paraphrases": [],
+    "added_paraphrases": [],
+    "paraphrase_evaluation": [
+      {
+        "text": "condo",
+        "decision": "KEEP",
+        "main_meaning_match": true,
+        "qualifier_match": true,
+        "register_match": "INFORMAL_SHORT_FORM",
+        "intensity_match": true,
+        "connotation_match": true,
+        "typical_usage_match": true,
+        "preserves_canonical_learning_value": true,
+        "assessment": "condoは主に米国での非公式な短縮形。一般的な住宅・不動産文脈では同じ所有形式を指すため採用を維持し、register差は証拠として明記する。"
+      }
+    ],
+    "qualifier_gate": {
+      "stable": true,
+      "material": false,
+      "compact": true,
+      "non_distorting": true,
+      "evidence_supported": true
+    },
+    "reason": "「分譲マンション」は個々の住戸が区分所有されるcondominiumの指定義を十分表す。condoは辞書上US informalとされるが、通常用いられる短縮形であり主義は一致。地域・register補足はこのカードでcanonicalの意味を学ぶための必須情報ではなく、qualifier追加のmaterial条件を満たさない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable-base 2d60188baaceaf77c4e3370ebb37029c48201e2e / batches/batch-019.json / vocab:01837; review-index index 1834 PENDING",
+      {
+        "url": "https://dictionary.cambridge.org/dictionary/english/condominium",
+        "finding": "独立所有される住戸／その建物。US使用例、informal condoの記載"
+      },
+      {
+        "url": "https://dictionary.cambridge.org/dictionary/english/condo",
+        "finding": "condo: US informal short form of condominium"
+      }
+    ],
+    "source_status": "PENDING_AT_IMMUTABLE_BASE",
+    "automatic_materialization_allowed": false
+  },
+  {
+    "index": 2264,
+    "id": "vocab:02267",
+    "canonical": "vice",
+    "current_meaning_ja": "悪徳",
+    "grammarRole": "noun",
+    "sense_key": "immoral_behavior",
+    "current_paraphrases": [],
+    "decision": "KEEP",
+    "recommended_prompt": null,
+    "qualifier_dimension": null,
+    "qualifier_text": null,
+    "recommended_paraphrases": [],
+    "removed_paraphrases": [],
+    "added_paraphrases": [],
+    "paraphrase_evaluation": [],
+    "qualifier_gate": {
+      "stable": true,
+      "material": false,
+      "compact": true,
+      "non_distorting": true,
+      "evidence_supported": true
+    },
+    "reason": "指定sense immoral_behavior のviceは道徳的に悪い行為・悪徳を表し、「悪徳」は代表義に対応する。個々の道徳的欠点や悪癖という派生的・可算の用法まで無理に日本語promptへ拡張する必要はなく、重要なニュアンス欠落は認めない。既存paraphraseは0件。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable-base 2d60188baaceaf77c4e3370ebb37029c48201e2e / batches/batch-023.json / vocab:02267; review-index index 2264 PENDING",
+      {
+        "url": "https://dictionary.cambridge.org/dictionary/english/vice",
+        "finding": "vice: immoral behavior; also moral faults / weaknesses"
+      }
+    ],
+    "source_status": "PENDING_AT_IMMUTABLE_BASE",
+    "automatic_materialization_allowed": false
+  }
+]

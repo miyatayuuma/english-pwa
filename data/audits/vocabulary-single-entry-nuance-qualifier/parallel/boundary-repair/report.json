@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "audit": "vocabulary-single-entry-nuance-qualifier",
+  "status": "COMPLETE_BOUNDARY_REPAIR_NOT_GLOBAL_CLOSED",
+  "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+  "worker_branch": "audit/single-entry-nuance-boundary-repair",
+  "missing_expected": 3,
+  "missing_reviewed": 3,
+  "missing_ids": [
+    "vocab:00545",
+    "vocab:01837",
+    "vocab:02267"
+  ],
+  "KEEP": 2,
+  "QUALIFIER_ONLY": 0,
+  "QUALIFIER_AND_PARAPHRASE": 1,
+  "PARAPHRASE_REVALIDATION_ONLY": 0,
+  "UPSTREAM_AUTHORITY_REVIEW": 0,
+  "CROSS_AUDIT_CONFLICT": 0,
+  "SOURCE_DRIFT_DETECTED": 0,
+  "duplicate_entries_checked": 2,
+  "duplicate_identical": 1,
+  "duplicate_compatible": 0,
+  "duplicate_conflict": 1,
+  "out_of_range_entries_checked": 1,
+  "valid_out_of_range": 1,
+  "requires_aggregator_review": 0,
+  "remaining_missing": 0,
+  "remaining_missing_scope": "three specified repair gaps; global 2478 coverage unverified by repair task",
+  "unresolved_boundary_conflicts": 1,
+  "unresolved_boundary_conflict_ids": [
+    "vocab:00762"
+  ],
+  "production_changed": false,
+  "global_artifacts_changed": false,
+  "aggregator_ready": true,
+  "aggregator_ready_condition": "input handoff ready, but aggregator must resolve vocab:00762 CONFLICT before global closure",
+  "global_audit_closed": false,
+  "automatic_materialization_allowed": false,
+  "validation": {
+    "new_judgment_count": 3,
+    "exact_ids": true,
+    "duplicate_ids": 0,
+    "fixed_base_pending_all": true,
+    "required_fields_complete": true,
+    "decision_enum_valid": true,
+    "qualified_paraphrases_reviewed_individually": true,
+    "only_boundary_repair_paths": true,
+    "production_diff_zero": true,
+    "global_audit_diff_zero": true,
+    "W10_branch_diff_only_worker_artifacts": true
+  },
+  "changed_files": [
+    "data/audits/vocabulary-single-entry-nuance-qualifier/parallel/boundary-repair/judgments.json",
+    "data/audits/vocabulary-single-entry-nuance-qualifier/parallel/boundary-repair/boundary-reconciliation.json",
+    "data/audits/vocabulary-single-entry-nuance-qualifier/parallel/boundary-repair/report.json"
+  ],
+  "commit_sha": null,
+  "commit_sha_note": "A file cannot embed the cryptographic SHA of the commit that includes itself; authoritative repair commit SHA is the published remote branch HEAD and final task report."
+}

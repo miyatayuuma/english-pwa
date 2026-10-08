@@ -1,0 +1,178 @@
+{
+  "schema_version": 1,
+  "audit": "vocabulary-single-entry-nuance-qualifier",
+  "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+  "index_convention": {
+    "review_index": "1-based index from review-index.json; authoritative ID used in lookup",
+    "vocabulary_array_position": "0-based; do not confuse with review-index index",
+    "note": "Do not infer identity from source_index alone."
+  },
+  "missing_entries": [
+    {
+      "id": "vocab:00545",
+      "index": 544,
+      "original_review_status": "PENDING",
+      "repair_decision": "QUALIFIER_AND_PARAPHRASE"
+    },
+    {
+      "id": "vocab:01837",
+      "index": 1834,
+      "original_review_status": "PENDING",
+      "repair_decision": "KEEP"
+    },
+    {
+      "id": "vocab:02267",
+      "index": 2264,
+      "original_review_status": "PENDING",
+      "repair_decision": "KEEP"
+    }
+  ],
+  "duplicate_reviews": [
+    {
+      "id": "vocab:00762",
+      "index": 759,
+      "workers": [
+        "W02",
+        "W03"
+      ],
+      "result": "CONFLICT",
+      "judgments": {
+        "W02": {
+          "decision": "QUALIFIER_AND_PARAPHRASE",
+          "recommended_prompt": "（質・水準が）まずまずの・十分まともな",
+          "qualifier": "質・水準がまずまず十分",
+          "qualifier_dimension": "adequacy_level",
+          "recommended_paraphrases": [
+            "reasonable"
+          ],
+          "removed_paraphrases": [
+            "respectable"
+          ],
+          "added_paraphrases": [],
+          "reason": "decentは高品質というほどではないが満足できる程度で、例文decent wagesに適合する。respectableは立派さ・社会的評判や相応の高さも帯び、adequacyだけのsenseとずれる。reasonableは賃金・価格・水準について維持。",
+          "confidence": "MEDIUM",
+          "worker_source_index": 758
+        },
+        "W03": {
+          "decision": "KEEP",
+          "recommended_prompt": "まともな",
+          "qualifier": null,
+          "qualifier_dimension": null,
+          "recommended_paraphrases": [
+            "reasonable",
+            "respectable"
+          ],
+          "removed_paraphrases": [],
+          "added_paraphrases": [],
+          "reason": "『Competent mechanics ... earn decent wages.』では賃金が十分まともな水準であることを表す。『まともな』はこのacceptable_or_reasonableの主義を伝え、reasonable/respectableは用例にも合う。過度の称賛・高級感を補う必要はない。",
+          "confidence": "HIGH",
+          "worker_source_index": 759
+        }
+      },
+      "field_comparison": {
+        "decision": "CONFLICT: QUALIFIER_AND_PARAPHRASE vs KEEP",
+        "recommended_prompt": "CONFLICT: qualified adequacy wording vs current まともな",
+        "qualifier": "CONFLICT: W02 adequacy_level adds nuance; W03 none",
+        "recommended_paraphrases": "CONFLICT: reasonable only vs reasonable + respectable",
+        "removed_paraphrases": "CONFLICT: W02 removes respectable; W03 keeps",
+        "added_paraphrases": "IDENTICAL: none",
+        "reason": "CONFLICT: respectable register/intensity suitability disputed",
+        "confidence": "DIFFERS: MEDIUM vs HIGH"
+      },
+      "details": "Semantic conflict, not mere index difference. Do not choose a canonical resolution in boundary repair. Aggregator must adjudicate vocab:00762 before union/materialization.",
+      "aggregator_action": "BLOCK_AUTO_RESOLUTION_AND_ADJUDICATE"
+    },
+    {
+      "id": "vocab:02052",
+      "index": 2049,
+      "workers": [
+        "W08",
+        "W09"
+      ],
+      "result": "IDENTICAL",
+      "judgments": {
+        "W08": {
+          "decision": "KEEP",
+          "recommended_prompt": null,
+          "qualifier": null,
+          "qualifier_dimension": null,
+          "recommended_paraphrases": [
+            "human resources",
+            "HR department"
+          ],
+          "removed_paraphrases": [],
+          "added_paraphrases": [],
+          "reason": "「人事部」はpersonnel departmentのsense human_resources_department を表す。代表例文 E0361 の使用義を確認。代替 「human resources」・「HR department」 は主要義として使用でき、学習上必須の語調・強度・文脈制約の欠落を認めない。",
+          "confidence": "HIGH",
+          "worker_source_index": 2048
+        },
+        "W09": {
+          "decision": "KEEP",
+          "recommended_prompt": null,
+          "qualifier": null,
+          "qualifier_dimension": [],
+          "recommended_paraphrases": [
+            "human resources",
+            "HR department"
+          ],
+          "removed_paraphrases": [],
+          "added_paraphrases": [],
+          "reason": "personnel departmentは企業内の人事部門、human resources／HR departmentはいずれもその組織の通常表現。 既存paraphrase human resources / HR department についても指定義の使用文脈で再照合し、除外理由なし。",
+          "confidence": "HIGH",
+          "worker_source_index": 2049
+        }
+      },
+      "field_comparison": {
+        "decision": "IDENTICAL: KEEP",
+        "recommended_prompt": "IDENTICAL: null",
+        "qualifier": "IDENTICAL: no qualifier (null and empty-array normalization)",
+        "recommended_paraphrases": "IDENTICAL: human resources + HR department",
+        "removed_paraphrases": "IDENTICAL: none",
+        "added_paraphrases": "IDENTICAL: none",
+        "reason": "SEMANTICALLY_EQUIVALENT: 人事部の通常の言い換えとして両候補を維持",
+        "confidence": "IDENTICAL: HIGH"
+      },
+      "details": "Same semantic judgment and paraphrase retention. Minor serialization and prose differences carry no semantic conflict.",
+      "aggregator_action": "DEDUPLICATE_ONE_ENTRY_WITHOUT_RE_REVIEW"
+    }
+  ],
+  "out_of_range_reviews": [
+    {
+      "id": "vocab:02481",
+      "index": 2478,
+      "worker": "W10",
+      "assigned_review_index_range": "2264–2477",
+      "worker_source_index": 2477,
+      "result": "VALID_BUT_OUT_OF_ASSIGNED_RANGE",
+      "details": {
+        "fixed_base_review_status": "PENDING",
+        "judgment_decision": "QUALIFIER_ONLY",
+        "required_fields_complete": true,
+        "existing_paraphrase_count": 1,
+        "paraphrases_reviewed": 1,
+        "production_changed": false,
+        "worker_changed_paths": [
+          "data/audits/vocabulary-single-entry-nuance-qualifier/parallel/worker-10/judgments.json",
+          "data/audits/vocabulary-single-entry-nuance-qualifier/parallel/worker-10/report.json"
+        ],
+        "semantic_review_usable": true
+      },
+      "aggregator_action": "ACCEPT_EXISTING_W10_JUDGMENT_AS_COVERAGE_FOR_INDEX_2478; DO_NOT_RE_REVIEW"
+    }
+  ],
+  "remaining_missing_after_repair": 0,
+  "remaining_missing_scope": "The three specified missing IDs only; aggregator must independently validate all 2478 indexes and worker coverage.",
+  "unresolved_boundary_conflicts": 1,
+  "unresolved_boundary_conflict_ids": [
+    "vocab:00762"
+  ],
+  "global_audit_closed": false,
+  "production_changed": false,
+  "aggregator_notes": [
+    "Import judgments.json as exactly three new decisions; do not import duplicates of existing W02/W03, W08/W09 or W10 out-of-range rows.",
+    "Treat vocab:00762 as explicit unresolved CONFLICT; no automatic winner.",
+    "Deduplicate vocab:02052 because W08 and W09 are semantically identical.",
+    "Count vocab:02481 from W10 as valid coverage despite out-of-range assignment.",
+    "Do not modify the immutable base, canonical audit artifacts, production, or announce global CLOSED."
+  ]
+}
