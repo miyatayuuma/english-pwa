@@ -7,19 +7,20 @@
   "source_rows_in_range": 215,
   "already_resolved_skipped": 22,
   "pending_reviewed": 193,
-  "KEEP": 150,
+  "KEEP": 149,
   "QUALIFIER_ONLY": 7,
-  "QUALIFIER_AND_PARAPHRASE": 19,
+  "QUALIFIER_AND_PARAPHRASE": 18,
   "PARAPHRASE_REVALIDATION_ONLY": 14,
-  "UPSTREAM_AUTHORITY_REVIEW": 3,
-  "CROSS_AUDIT_CONFLICT": 0,
+  "UPSTREAM_AUTHORITY_REVIEW": 4,
+  "CROSS_AUDIT_CONFLICT": 1,
   "SOURCE_DRIFT_DETECTED": 0,
-  "HIGH": 167,
-  "MEDIUM": 26,
+  "HIGH": 166,
+  "MEDIUM": 27,
   "LOW": 0,
   "evidence_checked_count": 17,
   "evidence_authority": "Cambridge Dictionary for flagged usage/nuance, immutable-base vocabulary and representative occurrences for all entries",
   "reviewed_ids": [
+    "vocab:00762",
     "vocab:00763",
     "vocab:00764",
     "vocab:00765",
@@ -211,8 +212,7 @@
     "vocab:00973",
     "vocab:00974",
     "vocab:00975",
-    "vocab:00976",
-    "vocab:00977"
+    "vocab:00976"
   ],
   "skipped_ids": [
     "vocab:00773",
@@ -244,22 +244,24 @@
     "UPSTREAM_ISOLATED": 2
   },
   "blocked_ids": [
+    "vocab:00828",
+    "vocab:00861",
     "vocab:00870",
     "vocab:00890",
     "vocab:00972"
   ],
   "first_entry": {
     "source_index": 759,
-    "id": "vocab:00763"
+    "id": "vocab:00762"
   },
   "last_entry": {
     "source_index": 973,
-    "id": "vocab:00977"
+    "id": "vocab:00976"
   },
   "production_changed": false,
   "worker_branch": "audit/single-entry-nuance-worker-03",
-  "worker_commit_sha": "7465002f208b0b81c43cbaa4255ac07c36f2283f",
-  "worker_commit_sha_semantics": "Content commit for the finalized worker judgments. Report is added in a later, report-only commit; a commit cannot contain its own SHA.",
+  "worker_commit_sha": "094eecc32aa4babd996b264f2c5dd68f003efded",
+  "worker_commit_sha_semantics": "Judgments-content commit; report metadata is committed afterward, so the final branch HEAD differs.",
   "status": "COMPLETE",
   "next_source_index": null,
   "judgments_path": "data/audits/vocabulary-single-entry-nuance-qualifier/parallel/worker-03/judgments.json",
@@ -279,13 +281,19 @@
     "low_not_production_ready": true,
     "no_production_changed": true,
     "counts_integrity": true,
-    "evidence_present": true
+    "evidence_present": true,
+    "immutable_batch_source_index_alignment": true,
+    "first_and_last_inclusive": true,
+    "pending_only_at_base": true,
+    "multi_sense_isolated": true,
+    "near_synonym_conflict_isolated": true
   },
   "notes": [
+    "Fixed-base W03 source index 759 maps to vocab:00762, and index 973 maps to vocab:00976. The original draft erroneously treated source index as zero-based array index.",
+    "Corrected the worker-local artifact boundary without changing other workers' ranges or any global audit file.",
+    "Multi-sense capacity isolated for upstream authority; crucial's previous Near-Synonym group requirement isolated for aggregator reconciliation.",
     "No updates to global manifest/checkpoint/review-index/canonical decisions/batches or production.",
-    "Three UPSTREAM_AUTHORITY_REVIEW cases require aggregator or authority review; no upstream changes made.",
-    "No cross-worker branches or artifacts consulted.",
-    "No current-main reconciliation performed.",
-    "Seventeen flagged entries include dictionary URLs; all judgments include immutable-source and representative-occurrence evidence."
+    "No current-main drift reconciliation performed.",
+    "Previously collected Cambridge evidence and representative English occurrences are retained."
   ]
 }
