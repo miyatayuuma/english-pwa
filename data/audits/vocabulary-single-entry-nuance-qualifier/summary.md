@@ -15,6 +15,9 @@ The initial population inventory and a bounded set of semantic judgments are pub
 - Provisional remediation candidates: **143** (104 prior + 39 new; all marked `ready_for_production:false`).
 - Confidence among 155 records: HIGH **13**; MEDIUM **137**; LOW **5** (conflict isolation). Pending confidence not assigned.
 - Combined provisional classification: QUALIFIER_ONLY **8**; QUALIFIER_AND_PARAPHRASE **125**; PARAPHRASE_REVALIDATION_ONLY **10**; UPSTREAM_AUTHORITY_REVIEW **7**; conflict **5**; KEEP **0**. These counts are **not the final whole-population classifications**.
+- Provisional qualifier additions: **133** total (**104** inherited from previous audit, **29** newly proposed); qualifier removals/rewrite proposals: **0** at this WIP stage.
+- Provisional paraphrase removals: **211** total (**162** inherited, **49** new). Provisional additions: **4** (all previous authority, **0** new).
+- Existing Japanese prompts with parenthetical text: **38** source entries; this group has **not** yet received the required complete existing-qualifier audit.
 - Proposed new paraphrase additions: **0**. Proposed removals are in `authored-judgments.json`, `previous-near-synonym-authority.json` and `remediation-candidates.json`.
 
 ## Representative new single-entry candidates
