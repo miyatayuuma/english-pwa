@@ -305,6 +305,7 @@ browserTest('390×844 expression card preserves active source, strict paraphrase
     await page.emulateMedia({reducedMotion:'reduce'});
     assert.equal(await page.locator('.vocab-meta').innerText().then(text=>text.includes('動詞')),true);
     assert.doesNotMatch(await page.locator('.vocab-meta').innerText(),/単語|表現/);
+    const questionGrammarRole=await page.locator('.vocab-meta .vocab-grammar-role').innerText();
     const carrier=page.locator('.vocab-speech-carrier');
     assert.equal(await carrier.innerText(),'my answer is …');
     assert.equal(await carrier.evaluate(node=>node.tagName),'DIV');
@@ -330,8 +331,7 @@ browserTest('390×844 expression card preserves active source, strict paraphrase
     assert.equal(await page.locator('.vocab-feedback').getAttribute('aria-live'),'polite');
     assert.equal(await page.evaluate(()=>document.activeElement?.classList.contains('vocab-context-state')),true);
     assert.equal(await page.locator('.vocab-result-prompt').innerText(),entry.meaning_ja);
-    assert.equal(await page.locator('.vocab-result-grammar-role').innerText(),'動詞');
-    assert.equal(await page.locator('.vocab-meta .vocab-grammar-role').innerText(),'動詞');
+    assert.equal(await page.locator('.vocab-result-grammar-role').innerText(),questionGrammarRole);
     assert.equal(await page.locator('.vocab-answer-block').evaluate(node=>node.querySelector('.vocab-result-grammar-role').compareDocumentPosition(node.querySelector('.vocab-answer'))&Node.DOCUMENT_POSITION_FOLLOWING?true:false),true);
     await captureAcceptanceScreenshot(page,'vocab-carrier-result-390x844.png');
     assert.equal(await page.locator('.vocab-source-heading').innerText().then(text=>text.includes('SOURCE EXAMPLE')),true);
@@ -401,6 +401,7 @@ browserTest('Vocabulary carrier cue stays subtle, emphasizes lexical misses, pul
     await inject(page,'banana');
     await page.waitForFunction(()=>document.querySelector('.vocab-speech-carrier.is-emphasized'));
     assert.equal(await cue.getAttribute('data-miss-count'),'1');
+    await page.waitForFunction(()=>getComputedStyle(document.querySelector('.vocab-speech-carrier')).opacity==='0.72');
     assert.equal(await cue.evaluate(node=>getComputedStyle(node).opacity),'0.72');
     assert.equal(await cue.innerText(),'my answer is …');
 
@@ -472,7 +473,7 @@ for(const viewport of [{width:390,height:844},{width:360,height:640},{width:1280
     });
     assert.equal(layout.ordered,true,JSON.stringify(layout));
     assert.equal(layout.texts[0],entry.meaning_ja);
-    assert.equal(layout.texts[1],'構文');
+    assert.equal(layout.texts[1],'動詞');
     assert.equal(layout.texts[2],entry.canonical);
     assert.match(layout.texts[3],/persuade someone to do something/);
     assert.match(layout.texts[3],/convince someone to do something/);
