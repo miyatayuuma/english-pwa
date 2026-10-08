@@ -4,6 +4,7 @@ import {readFileSync} from 'node:fs';
 import {classifyVocabularySpeechAnswer,isTargetSpeechProduction} from '../scripts/speech/vocabularySpeechEvidence.js';
 import {classifyVocabularyAnswer} from '../scripts/app/vocabularyLearningCore.js';
 import {safeSpeechTokens} from '../scripts/speech/safeSpeechNormalization.js';
+import {findSpeechSurfaceMatch} from '../scripts/speech/speechAlignment.js';
 import {VOCABULARY_CHUNK_RESCUE_AUTHORITY,VOCABULARY_CHUNK_RESCUE_AUTHORITY_ENTRIES} from '../scripts/speech/vocabularyChunkRescueAuthority.js';
 const segment=(values,index=0)=>({segmentIndex:index,primaryTranscript:values[0],isFinal:true,alternatives:values.map((transcript,asrRank)=>({transcript,asrRank,confidence:0}))});
 const entry=(canonical,extra={})=>({canonical,...extra});
