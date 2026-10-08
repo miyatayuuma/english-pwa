@@ -18,7 +18,7 @@ const rows=source.map((s,i)=>{
  const state=index[i],p=prev.get(s.id),n=judgments.get(s.id),c=conflicts.get(s.id),q=existing.get(s.id),g=groups.get(s.id)||[];
  if(state.id!==s.id||state.index!==i+1)throw Error("order drift "+i);
  const prompt=p?.recommended_prompt??n?.recommended_prompt??(q?.decision==="PARAPHRASE_REVALIDATION_ONLY"?q.recommended_prompt:null);
- const match=prompt?.match(/（([^（）]+)）\s*$/);
+ const match=(q&&!p&&!n)?null:prompt?.match(/（([^（）]+)）\s*$/);
  return {
   id:s.id,source_index:i+1,canonical:s.canonical,grammarRole:s.grammarRole,kind:s.kind,
   current_meaning_ja:s.meaning_ja,sense_key:s.sense_key,current_paraphrases:s.paraphrases||[],
