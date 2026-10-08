@@ -61,6 +61,21 @@ async function openApp({saved=false,permission='granted',nextPermission='granted
       const root=await navigator.storage.getDirectory();
       return root.getDirectoryHandle('selected-audio',{create:true});
     }});
+    // These tests verify directory restoration and URL selection, not media
+    // codec support. The tiny OPFS payload below is intentionally not a real
+    // audio file, so make blob URLs immediately media-ready in this fixture.
+    const readyState=Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype,'readyState');
+    Object.defineProperty(HTMLMediaElement.prototype,'readyState',{configurable:true,get(){
+      return this.dataset?.srcKey?.startsWith('blob:')?4:readyState?.get?.call(this)??0;
+    }});
+    const nativeLoad=HTMLMediaElement.prototype.load;
+    HTMLMediaElement.prototype.load=function(){
+      if(this.dataset?.srcKey?.startsWith('blob:')){
+        queueMicrotask(()=>this.dispatchEvent(new Event('canplay')));
+        return;
+      }
+      return nativeLoad.call(this);
+    };
     window.__folderRestoreAudioFile=audioFile;
   },{permission,nextPermission,audioFile:AUDIO_FILE});
   const page=await context.newPage();
