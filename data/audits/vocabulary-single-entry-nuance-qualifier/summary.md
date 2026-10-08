@@ -12,21 +12,21 @@
 
 ## Current checkpoint
 
-- This checkpoint started from remote audit HEAD `4e4d26c7dd343ded04331a83e9d4f110c21bd064`; the re-fetched main was `794e6cf8c88ed6775be9b56a6f1fddc0775a7130`.
+- This checkpoint started from remote audit HEAD `d734e868e890566d0e29138f341145198224ad06`; the re-fetched main was `794e6cf8c88ed6775be9b56a6f1fddc0775a7130`.
 - Source population **2,478**; learning eligible **2,477**; excluded **1** (`vocab:00947`).
-- Reviewed **444**; pending **2,034**; stale **0**; duplicate **0**; order drift **0**.
-- This checkpoint adjudicated 50 pending entries in source indices **220–273** in `batches/batch-003.json`. Four entries inside that source span were already resolved (`vocab:00229`, `00243`, `00247`, `00272`) and were left unchanged. Next pending: `vocab:00275` at source index 274.
-- This batch: KEEP **47**, QUALIFIER_ONLY **1**, QUALIFIER_AND_PARAPHRASE **1**, PARAPHRASE_REVALIDATION_ONLY **0**, UPSTREAM_AUTHORITY_REVIEW **1**. Every qualified prompt received individual paraphrase revalidation.
+- Reviewed **494**; pending **1,984**; stale **0**; duplicate **0**; order drift **0**.
+- This checkpoint adjudicated 50 pending entries in source indices **274–328** across `batches/batch-003.json` and `batches/batch-004.json`. Five entries in the span were already resolved (`vocab:00289`, `00292`, `00302`, `00314`, `00318`) and were left unchanged. Next pending: `vocab:00330` at source index 329.
+- This batch: KEEP **46**, QUALIFIER_ONLY **1**, QUALIFIER_AND_PARAPHRASE **2**, PARAPHRASE_REVALIDATION_ONLY **1**, UPSTREAM_AUTHORITY_REVIEW **0**, CROSS_AUDIT_CONFLICT **0**. Every qualified prompt received individual paraphrase revalidation.
 
 ## Cumulative progress
 
-- Review status: REVIEWED **324**, PREVIOUS_AUTHORITY_CONFIRMED **104**, CROSS_AUDIT_CONFLICT **5**, UPSTREAM_ISOLATED **11**, PENDING **2,034**.
-- Decision classes: KEEP **267**, QUALIFIER_ONLY **16**, QUALIFIER_AND_PARAPHRASE **134**, PARAPHRASE_REVALIDATION_ONLY **11**, UPSTREAM_AUTHORITY_REVIEW **11**; five cross-audit conflicts remain isolated without an asserted decision.
-- Confidence: HIGH **284**, MEDIUM **155**, LOW **5**; pending **2,034**.
+- Review status: REVIEWED **374**, PREVIOUS_AUTHORITY_CONFIRMED **104**, CROSS_AUDIT_CONFLICT **5**, UPSTREAM_ISOLATED **11**, PENDING **1,984**.
+- Decision classes: KEEP **313**, QUALIFIER_ONLY **17**, QUALIFIER_AND_PARAPHRASE **136**, PARAPHRASE_REVALIDATION_ONLY **12**, UPSTREAM_AUTHORITY_REVIEW **11**; five cross-audit conflicts remain isolated without an asserted decision.
+- Confidence: HIGH **334**, MEDIUM **155**, LOW **5**; pending **1,984**.
 - Previous Near-Synonym authority: **104/104** entries individually revalidated; 104 confirmed, zero conflicts.
-- Provisional remediation candidates **161** (**160** learning eligible, **1** excluded), all `ready_for_production: false`.
-- Qualifier additions **150** (104 inherited, 46 new); rewrites **0**; removals **0**.
-- Paraphrase removals **222** (162 inherited, 60 new); additions **5** (4 inherited, 1 new).
+- Provisional remediation candidates **165** (**164** learning eligible, **1** excluded), all `ready_for_production: false`.
+- Qualifier additions **153** (104 inherited, 49 new); rewrites **0**; removals **0**.
+- Paraphrase removals **225** (162 inherited, 63 new); additions **5** (4 inherited, 1 new).
 
 ## Fifth checkpoint findings (source indices 220–273)
 
@@ -35,6 +35,15 @@
 - `vocab:00274` — `cheer up`: isolated because the sense key includes both becoming happier and making someone happier, while the current Japanese gloss covers only the intransitive use.
 - Other 47 entries were individually checked against their canonical, current Japanese prompt, representative occurrence, grammar role, and each registered paraphrase. Existing near-synonym group KEEP decisions encountered in this range were independently confirmed.
 
+## Sixth checkpoint findings (source indices 274–328)
+
+- `vocab:00275` — `dwell on something`: specified the usual focus on something unpleasant; removed the overly broad `keep thinking about something` paraphrase.
+- `vocab:00280` — `turn up`: recorded its informal, usually unexpected arrival sense; retained `show up` and removed the neutral, broader `appear`.
+- `vocab:00306` — `be accompanied by something`: removed `involve something`, which does not encode co-occurrence.
+- `vocab:00320` — `provide for someone`: retained `support someone`; Cambridge also defines supporting someone as providing money or physical necessities, matching the family-income example.
+- `vocab:00321` — `make the best of it`: clarified coping as well as possible with an undesirable situation.
+- The remaining 46 targets were individually checked against their representative occurrence and each registered paraphrase. Existing near-synonym group decisions in the range were confirmed; no cross-audit conflict was introduced.
+
 ## Earlier checkpoint range correction
 
 - The third checkpoint reviewed 50 PENDING entries at source indices **115–167** (ending at `vocab:00168`). Its earlier summary incorrectly said 115–168; index 168 is `vocab:00169`, the first entry of checkpoint four. Checkpoint and reconciliation records now use the correct range.
@@ -42,7 +51,7 @@
 
 ## Resume state and scope
 
-- Persistent resume state is `checkpoint.json`: **444** reviewed, **2,034** unresolved, next `vocab:00275`, stale 0, parent remote HEAD `4e4d26c7dd343ded04331a83e9d4f110c21bd064`.
+- Persistent resume state is `checkpoint.json`: **494** reviewed, **1,984** unresolved, next `vocab:00330`, stale 0, parent remote HEAD `d734e868e890566d0e29138f341145198224ad06`.
 - WIP and drift validators plus deterministic regeneration must pass before each audit-only remote checkpoint. Strict closure is not due until all 2,478 source entries are reviewed.
 - Production Vocabulary, meanings, paraphrases, runtime, ASR, UI, and spelling authority remain unchanged. No main merge is performed.
-- Next batch starts at `vocab:00275`; keep source order and checkpoint after about 50 entries.
+- Next batch starts at `vocab:00330`; keep source order and checkpoint after about 50 entries.
