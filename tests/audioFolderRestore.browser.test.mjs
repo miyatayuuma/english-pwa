@@ -128,8 +128,10 @@ async function savedHandleMatchesSelectedFolder(page){
 }
 
 async function startDefaultSession(page){
-  await page.locator('.friendship-hero__cta').click();
+  await page.evaluate(()=>window.__OPEN_SESSION_OPTIONS__({mode:'manual',manualItemIds:['E0001'],count:'1'}));
+  await page.locator('#playOptionsStart').click();
   await page.waitForFunction(()=>!document.querySelector('#studyView')?.hidden);
+  assert.equal(await page.locator('#enText').getAttribute('data-item-id'),'E0001');
 }
 
 browserTest('saved granted directory restores on boot and supplies audio without permission or picker',async()=>{
@@ -167,7 +169,7 @@ browserTest('saved prompt directory waits silently at boot and reacquires permis
 browserTest('session-options submit requests saved-folder permission before its deferred session launch',async()=>{
   const {context,page,errors}=await openApp({saved:true,permission:'prompt',nextPermission:'granted'});
   try{
-    await page.evaluate(()=>window.__OPEN_SESSION_OPTIONS__());
+    await page.evaluate(()=>window.__OPEN_SESSION_OPTIONS__({mode:'manual',manualItemIds:['E0001'],count:'1'}));
     await page.locator('#playOptionsStart').click();
     await page.waitForFunction(()=>!document.querySelector('#studyView')?.hidden);
     await page.waitForFunction(()=>document.querySelector('audio')?.dataset.srcKey?.startsWith('blob:'));
