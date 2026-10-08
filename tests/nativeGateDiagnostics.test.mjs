@@ -9,7 +9,7 @@ import {
 } from '../android/app/src/debug/assets/public/native-gate-diagnostics.js';
 
 const harnessPath = new URL('../android/app/src/debug/assets/public/native-gate.html', import.meta.url);
-const canonical = 'no sooner had I sat down than the phone rang';
+const canonical = 'no sooner had I arrived than the phone rang';
 const entry = { id: 'vocab:00139', canonical };
 
 function segment(transcripts) {
@@ -26,15 +26,15 @@ function segment(transcripts) {
 
 test('debug fixture selects vocab:00139 and positive prompt is its canonical', async () => {
   const harness = await readFile(harnessPath, 'utf8');
-  assert.match(harness, /<option value="vocab:00139">no sooner had I sat down than the phone rang<\/option>/);
+  assert.match(harness, /<option value="vocab:00139">no sooner had I arrived than the phone rang<\/option>/);
   assert.equal(positiveIntendedText('vocab:00139', canonical, ['different answer variant']), canonical);
   assert.equal(positiveIntendedText('vocab:00437', 'ignored', ['yield to something']), 'yield to something');
 });
 
 test('deep N-best diagnostics show than at provider rank 4 and current chunk rescue', () => {
   const alternatives = segment([
-    'no sooner had I sat down down the phone rang',
-    'no sooner I had a sat down down the terrible rang',
+    'no sooner had I arrived down the phone rang',
+    'no sooner I had arrived down the terrible rang',
     'unrelated candidate',
     'than the phone rang',
   ]);
@@ -54,7 +54,7 @@ test('deep N-best diagnostics show than at provider rank 4 and current chunk res
   assert.equal(diagnostics.chunkMatch.rescuedRank, 4);
   assert.equal(diagnostics.chunkMatch.recognitionAuthority, 'nbest-chunk-exact');
   assert.equal(diagnostics.chunkMatch.rescuedChunk.expected, 'than the phone rang');
-  assert.equal(diagnostics.chunkMatch.supportingPrimaryChunk.expected, 'no sooner had I sat down');
+  assert.equal(diagnostics.chunkMatch.supportingPrimaryChunk.expected, 'no sooner had I arrived');
 
   const exported = JSON.stringify(withVocabulary139Diagnostics({
     intended: canonical,
@@ -81,7 +81,7 @@ test('down-only alternatives do not create than/then hits or chunk rescue', () =
 
 test('diagnostics explain when a lower full TARGET preempts chunk rescue', () => {
   const alternatives = segment([
-    'no sooner had I sat down then the phone rang',
+    'no sooner had I arrived then the phone rang',
     'unrelated candidate',
     canonical,
   ]);

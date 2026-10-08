@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import crypto from 'node:crypto';
+import { VOCAB_00139_ASR_REMEDIATION } from './vocabularyEntryRemediationAuthority.js';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const dir=path.join(root,'data/audits/vocabulary-v3-meaning-canonical');
@@ -102,7 +103,13 @@ if(process.argv.includes('--check-production')){
   const byId=productionExpected;
   check(JSON.stringify(production.entries.map(e=>[e.id,e.kind]))===JSON.stringify(baseline.entries.map(e=>[e.id,e.kind])),'Population/ID/kind/order changed');
   for(const entry of production.entries){
-    check(JSON.stringify(pick(entry))===JSON.stringify(pick(byId.get(entry.id)?.after||{})),`Production proposal mismatch ${entry.id}`);
+    const frozen=byId.get(entry.id)?.after||{};
+    const override=VOCAB_00139_ASR_REMEDIATION;
+    const exactOverride=entry.id===override.id
+      && frozen.canonical===override.before.canonical
+      && frozen.meaning_ja===override.before.meaning_ja;
+    const expected=exactOverride?{...frozen,canonical:override.after.canonical,meaning_ja:override.after.meaning_ja}:frozen;
+    check(JSON.stringify(pick(entry))===JSON.stringify(pick(expected)),`Production proposal mismatch ${entry.id}`);
     const strip=e=>Object.fromEntries(Object.entries(e).filter(([k])=>!fields.includes(k)));
     if(process.argv.includes('--check-integration-scope')){
       const digest=crypto.createHash('sha256').update(JSON.stringify(strip(entry))).digest('hex');

@@ -2,7 +2,7 @@ import { safeSpeechTokens } from './safeSpeechNormalization.js';
 
 const curatedEntries = [
   ['vocab:00059', ['it goes without saying', 'that practice matters']],
-  ['vocab:00139', ['no sooner had I sat down', 'than the phone rang']],
+  ['vocab:00139', ['no sooner had I arrived', 'than the phone rang']],
   ['vocab:00185', ['the more you practice', 'the better you get']],
   ['vocab:00225', ['not so much by something', 'as by something else']],
   ['vocab:00244', ['it occurs to someone', 'that something is wrong']],
