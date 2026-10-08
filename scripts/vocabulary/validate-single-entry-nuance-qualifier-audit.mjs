@@ -46,7 +46,7 @@ assert(entries.length===2478&&ix.length===2478&&m.population===2478,"population"
 assert(crypto.createHash("sha256").update(snapshot).digest("hex")===m.current_source_snapshot.sha256,"source SHA256 drift");
 assert(new Set(entries.map(x=>x.id)).size===2478,"source duplicate IDs");
 assert(m.batch_size===100&&m.batch_count===25,"batch manifest");
-assert(prev.length===104&&newJ.length===m.new_semantic_judgments&&existing.length===38&&conflicts.length===5&&upstream.length===7&&m.existing_parentheses_reviewed===38,"authority import counts");
+assert(prev.length===104&&newJ.length===m.new_semantic_judgments&&existing.length===38&&conflicts.length===5&&upstream.length===m.upstream_isolated&&m.existing_parentheses_reviewed===38,"authority import counts");
 const decisionEnum=new Set(["KEEP","QUALIFIER_ONLY","QUALIFIER_AND_PARAPHRASE","PARAPHRASE_REVALIDATION_ONLY","UPSTREAM_AUTHORITY_REVIEW"]);
 let pending=0, reviewed=0, duplicate=new Set(),allRows=[];const stats={};
 for(let b=0;b<25;b++){
