@@ -74,5 +74,31 @@
       "data/sentence-pattern-analysis.json#E0129"
     ],
     "production_change_allowed": false
+  },
+  {
+    "id": "vocab:00181",
+    "canonical": "as if nothing had happened",
+    "problem": "E0151の実際の英文は“He behaves as if he were somebody.”で、現行canonical “as if nothing had happened”およびparaphraseの「何事もなかったかのように」と一致しない。promptやparaphraseを確定せず、canonical・代表sense・occurrenceのauthority確認へ隔離する。",
+    "source_meaning_ja": "何事もなかったかのように",
+    "sense_key": "as_if_something_were_true",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "evidence": [
+      "data/vocabulary-v3.json#vocab:00181",
+      "data/items.json#E0151"
+    ],
+    "production_change_allowed": false
+  },
+  {
+    "id": "vocab:00192",
+    "canonical": "make sense",
+    "problem": "現訳「筋が通る」は論理性を中心に示す一方、sense_keyはlogicalとunderstandableをまとめ、E0158の“its theme is obscure”は分かりやすさの読みも支える。単体qualifierでどちらかに狭めず、meaning_ja・sense_key・代表senseの対応を上流確認する。",
+    "source_meaning_ja": "筋が通る",
+    "sense_key": "be_logical_or_understandable",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "evidence": [
+      "data/vocabulary-v3.json#vocab:00192",
+      "data/items.json#E0158"
+    ],
+    "production_change_allowed": false
   }
 ]
