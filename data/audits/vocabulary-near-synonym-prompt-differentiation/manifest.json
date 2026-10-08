@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "audit": "vocabulary-near-synonym-prompt-differentiation",
+  "repository": "miyatayuuma/english-pwa",
+  "branch": "audit/vocabulary-near-synonym-prompt-differentiation",
+  "base_main_sha": "f448394e3052c686d8cad97912c3b779345b758e",
+  "source_snapshots": {
+    "data/vocabulary-v3.json": {
+      "sha256": "3b5a3b82d25dfcee5b8593e53835a36577998af3cb42570b1711203ae568ae34",
+      "git_blob_sha": "326021c771aa5b4746b120f5d1086ecce33a334f"
+    },
+    "data/vocabulary-v3-paraphrase-audit.json": {
+      "sha256": "cfebc784ac21e0be7514c9f92def7ce2d71fcfe6757cdccb3245affec6b4558c",
+      "git_blob_sha": "0895e835c2ed445834d0b1a941931f5e9c5c15e7"
+    },
+    "data/vocabulary-v3-final-admission-authority.json": {
+      "sha256": "f7235bffdd629fbde05c4eb1dcede67aa7296ebcff383c9d7439d087f3965d33",
+      "git_blob_sha": "03249db6bde93bb5788d8aa88bc938d105b6ec83"
+    },
+    "data/audits/vocabulary-v3-meaning-canonical/manifest.json": {
+      "sha256": "8cb076f6a561cea5482a182ddc216b1096501156685cd3443e2bbf83564679db",
+      "git_blob_sha": "e3d59abbc4e8fcb9130c20b5d402749dc9d6f3d4"
+    },
+    "data/audits/vocabulary-v3-meaning-canonical/reconciliation.json": {
+      "sha256": "2eae70dc6eebb19286a432ee0a47b6751fde6d69803ce7c5ac829cf03a7002d5",
+      "git_blob_sha": "866abf86aef7e269e615c2461ba3b249712b7bf9"
+    },
+    "data/audits/vocabulary-v3-paraphrase-learning/manifest.json": {
+      "sha256": "ab42dfd28b5e51e09f6804d61f5e0b85a8a60fa0b54791df9e98fef873caf38a",
+      "git_blob_sha": "6867fd418d377e527c5ad6dd94f9d06f3fbfb2ad"
+    },
+    "data/audits/vocabulary-v3-paraphrase-learning/summary.json": {
+      "sha256": "b27071a530600b5aaf2ec8cdeca762327c76b7bc409aeb8619867ad72e64810f",
+      "git_blob_sha": "fcaa674a4338727f601f291dc41aed78b8909d27"
+    },
+    "data/audits/vocabulary-paraphrase-rule-consistency/manifest.json": {
+      "sha256": "e42e1a5449005dc792a65ad14f768511ae11601b8a69e13779c48470deb4cfd4",
+      "git_blob_sha": "c52efc623cced13f9b72f180149b66c6dba289f8"
+    },
+    "data/audits/vocabulary-paraphrase-rule-consistency/candidates.json": {
+      "sha256": "b33012a6b1dd4762d2aa578a94f6cf4ee96c2806acbe7be05d9da345c67cda33",
+      "git_blob_sha": "bca262dea3b31ef83ba0c9c086bbf686ad3e7a0a"
+    },
+    "data/audits/vocabulary-paraphrase-rule-consistency/confirmed.json": {
+      "sha256": "2b22874e1af8e6f255a1a899bfe7721926badc2786c66cf1f86032136c756566",
+      "git_blob_sha": "de88cad0ab1d03d118188869edfb202bb32448ef"
+    },
+    "data/audits/vocabulary-paraphrase-rule-consistency/false-positive.json": {
+      "sha256": "0bcbb3cc6d8981a68aa4416fb6a049ef306e30a985527c0c5369fa80e2f09f44",
+      "git_blob_sha": "0f8e618600a87efa618ca424b1e6eb5a82510212"
+    },
+    "data/audits/vocabulary-paraphrase-rule-consistency/review.json": {
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "git_blob_sha": "fe51488c7066f6687ef680d6bfaa4f7768ef205c"
+    },
+    "data/audits/vocabulary-paraphrase-rule-consistency/materialization.json": {
+      "sha256": "467d8569f26d0bc65000e0c64e5ba3207a2a2b52ffafe4c5f381692bf3f195ec",
+      "git_blob_sha": "73e272de014ff0604f8dfcdcda19cb45caae1ded"
+    },
+    "data/audits/vocabulary-grammar-role/manifest.json": {
+      "sha256": "6efccb1f89fa2b8a5a034fcc8109324def088b21804fdc37df4bbf33ae9e0519",
+      "git_blob_sha": "3f6115cbb945ad8c872bb80c0a376ed5303716c9"
+    },
+    "data/audits/vocabulary-grammar-role/final-resolutions.json": {
+      "sha256": "d68f041807c5214e3532b79b8189250e46721076e0dbe7c23c1a3c4e1764d776",
+      "git_blob_sha": "30908e9aa5f53f764029c003158325ad56a8a5ae"
+    }
+  },
+  "source_population": 2478,
+  "discovery": {
+    "population": 2478,
+    "exact_prompt_collision_groups": 115,
+    "same_sense_key_groups": 47,
+    "direct_canonical_overlap_pairs": 467,
+    "shared_paraphrase_pairs": 385,
+    "shared_paraphrase_pairs_ge_2": 68,
+    "near_prompt_pair_count": 70,
+    "candidate_group_count": 178,
+    "affected_entry_count": 104,
+    "classification_counts": {
+      "KEEP": 136,
+      "PROMPT_QUALIFIER": 0,
+      "PROMPT_AND_PARAPHRASE": 42,
+      "UPSTREAM_AUTHORITY_REVIEW": 0
+    },
+    "paraphrase_removal_count": 162,
+    "paraphrase_addition_count": 4
+  },
+  "scope": {
+    "production_changes": 0,
+    "source_authorities_reaudited": 0,
+    "main_merge": false
+  },
+  "output_files": [
+    "manifest.json",
+    "groups.json",
+    "discovery.json",
+    "remediation-candidates.json",
+    "upstream-review.json",
+    "decisions.json",
+    "summary.md",
+    "scripts/vocabulary/build-near-synonym-prompt-differentiation-audit.mjs",
+    "scripts/vocabulary/validate-near-synonym-prompt-differentiation.mjs"
+  ]
+}

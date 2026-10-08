@@ -1,0 +1,3024 @@
+{
+  "NSD-00003-00095": {
+    "classification": "KEEP",
+    "semantic_relationship": "Closely interchangeable expressions with the same representative sense and Japanese head gloss.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "共通の日本語promptは複数canonicalに共通する中心義を簡潔に表している。現行sense_keyとgrammarRoleも同じで、括弧補足を加えても安定した実用差を作れず、accepted paraphraseも日常的な代替として成立するため現状維持。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense, same_sense_key; current sense_key(s): meet_by_chance."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00016-00603": {
+    "classification": "PROMPT_AND_PARAPHRASE",
+    "semantic_relationship": "初見での反応と、短時間の視認という異なる「ひと目」表現。",
+    "nuance_dimensions": [
+      "time_of_first_encounter",
+      "manner_of_looking"
+    ],
+    "recommended_prompt": {
+      "vocab:00016": "一目見たとき（初見で・第一印象として）",
+      "vocab:00603": "ひと目で（短くざっと見て）"
+    },
+    "recommended_paraphrases": {
+      "vocab:00016": [],
+      "vocab:00603": []
+    },
+    "reason": "at first sightは初めて見た時点・第一印象を表し、at a glanceは短く見る動作を表す。共通の「一目で」だけでは時点と視線の方法が混同される。相互accepted paraphraseを外し、主訳は維持して補足で区別する。",
+    "confidence": "MEDIUM",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): on_first_seeing, with_one_quick_look."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00017-00434": {
+    "classification": "PROMPT_AND_PARAPHRASE",
+    "semantic_relationship": "リスクを取る試みと、実行を促す／決意する表現。",
+    "nuance_dimensions": [
+      "risk",
+      "conversational_pragmatics"
+    ],
+    "recommended_prompt": {
+      "vocab:00017": "思い切ってやってみる（リスクを承知で試す）",
+      "vocab:00434": "思い切ってやってみる（自信をもって挑戦・実行する）"
+    },
+    "recommended_paraphrases": {
+      "vocab:00017": [
+        "take the plunge"
+      ],
+      "vocab:00434": []
+    },
+    "reason": "take a chanceは結果が不確実でも機会を試すこと、go for itは迷わず実行する・相手に実行を促す言い方。共有していたtake the plungeは両promptで成立するが、go for it側の代替としては境界を薄めるため、リスク側に残す。",
+    "confidence": "MEDIUM",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt; current sense_key(s): risk_trying, make_a_confident_attempt."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00029-00089": {
+    "classification": "PROMPT_AND_PARAPHRASE",
+    "semantic_relationship": "会話的な急ぎ方と、より硬い・文章的な急ぎ方。",
+    "nuance_dimensions": [
+      "register"
+    ],
+    "recommended_prompt": {
+      "vocab:00029": "急いで（一般的・会話的な言い方）",
+      "vocab:00089": "急いで（やや改まった表現）"
+    },
+    "recommended_paraphrases": {
+      "vocab:00029": [],
+      "vocab:00089": []
+    },
+    "reason": "in a hurryは日常会話で広く使う表現、in hasteはより改まった・文章寄りの言い方。現行paraphraseが相互canonicalを同じ答えとして吸収しているため、補足でregisterを示し相互受理を除く。",
+    "confidence": "MEDIUM",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): rushing, in_a_hurry."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00031-00570": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense, same_sense_key; current sense_key(s): unintentionally."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00044-00863": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense; current sense_key(s): keen_to_do, eagerly_wanting_to_do_something."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00055-01237": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: same_sense_key; current sense_key(s): to_some_degree."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00057-02470": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: same_sense_key, shared_paraphrases_ge_2; current sense_key(s): certainly, as_a_necessary_result."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00063-00313": {
+    "classification": "KEEP",
+    "semantic_relationship": "近い推量表現だが、語句の構文・grammarRoleが異なる。",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "両方の中心義は「おそらく」で自然に表せる。in all likelihoodは副詞句として文全体の確からしさを示し、chances areは節を導く構文として使われるため、grammarRoleと表現構造で区別できる。語感補足を重ねる必要はなく、probablyも両方の自然な言い換えとして維持する。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt; current sense_key(s): very_probably, probably; grammarRole: adverb / construction."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00068-00569": {
+    "classification": "PROMPT_AND_PARAPHRASE",
+    "semantic_relationship": "現在までの結果と、暫定的な現在時点を表す時間表現。",
+    "nuance_dimensions": [
+      "time_scope",
+      "temporary_vs_up_to_now"
+    ],
+    "recommended_prompt": {
+      "vocab:00068": "今のところ（これまでの結果・進捗）",
+      "vocab:00401": "当分の間（暫定的にしばらく）",
+      "vocab:00525": "今のところ（ひとまずの間）",
+      "vocab:00569": "現在のところ（現時点では）"
+    },
+    "recommended_paraphrases": {
+      "vocab:00068": [],
+      "vocab:00401": [
+        "for now"
+      ],
+      "vocab:00525": [
+        "for now"
+      ],
+      "vocab:00569": [
+        "currently",
+        "at the moment"
+      ]
+    },
+    "reason": "so farは過去から現在までの到達点、for the moment/for the time beingは一時的な状態、at presentは基準時点での現在状態を表す。for nowをso farのaccepted paraphraseから外し、他の句は現在の時点・暫定性に合わせて狭める。",
+    "confidence": "MEDIUM",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense, same_sense_key, shared_paraphrases_ge_2; current sense_key(s): until_now, for_now, currently."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00069-00381": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense; current sense_key(s): at_least_emphatic, surprisingly_large_number."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00072-00559": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense, shared_paraphrases_ge_2; current sense_key(s): cause_to_happen, cause_a_result, cause_or_lead_to."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00073-00521": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): considered_together, considering_everything."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00079-00126": {
+    "classification": "KEEP",
+    "semantic_relationship": "Closely interchangeable expressions with the same representative sense and Japanese head gloss.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "共通の日本語promptは複数canonicalに共通する中心義を簡潔に表している。現行sense_keyとgrammarRoleも同じで、括弧補足を加えても安定した実用差を作れず、accepted paraphraseも日常的な代替として成立するため現状維持。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense, same_sense_key, shared_paraphrases_ge_2; current sense_key(s): because_of."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00082-00693": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense; current sense_key(s): return_to_health, recover_from_difficulty_or_loss."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00094-00389": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense; current sense_key(s): spend_time_relaxing, stay_in_a_place_without_purpose."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00096-02231": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): deprive_by_stealing, prevent_someone_from_having, take_something_away_from_person."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00099-00352": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense, shared_paraphrases_ge_2; current sense_key(s): seek_help_or_support, rely_on_someone."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00106-00812": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: same_sense_key; current sense_key(s): be_unlike."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00108-00228": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense; current sense_key(s): discern_or_understand, understand_or_solve."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00110-00671": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。 kind/grammarRoleにも差がある候補は、Vocabulary上の品詞・表現構造の区別を維持する。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, same_sense_key; current sense_key(s): support_someone."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00111-01918": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): persuade_someone_to_do, convince_person_to_do."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00118-02058": {
+    "classification": "PROMPT_AND_PARAPHRASE",
+    "semantic_relationship": "実際の運用、事実の補足、予想との対比、現実との対比。",
+    "nuance_dimensions": [
+      "practical_vs_factual",
+      "correction_vs_reality"
+    ],
+    "recommended_prompt": {
+      "vocab:00118": "実際には（理論・計画ではなく運用上）",
+      "vocab:00243": "実際のところ（事実を補足・訂正して）",
+      "vocab:01178": "実のところ（事実を補足・強調して）",
+      "vocab:01987": "実際には（予想や思い込みに反して）",
+      "vocab:02058": "実際には（見かけ・理想とは異なる現実では）"
+    },
+    "recommended_paraphrases": {
+      "vocab:00118": [],
+      "vocab:00243": [
+        "in fact"
+      ],
+      "vocab:01178": [
+        "as a matter of fact"
+      ],
+      "vocab:01987": [],
+      "vocab:02058": []
+    },
+    "reason": "これらは日本語では近い訳になるが、in practiceは実運用、actuallyは予想の訂正、in realityは見かけとの対比、in fact/as a matter of factは事実の補足・強調に寄る。汎用的な相互paraphraseを残すとこの学習境界が消えるため、各promptに短い用途補足を付け、補足と両立するものだけ残す。",
+    "confidence": "MEDIUM",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense, same_sense_key, shared_paraphrases_ge_2; current sense_key(s): in_real_conditions, introduce_fact_or_correction, in_reality, in_actual_fact."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00121-00182": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): in_spite_of, despite_something."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00130-02210": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense; current sense_key(s): be_responsible_for_bad_result, be_accountable_for, having_responsibility, have_responsibility_for."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00132-00643": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense; current sense_key(s): remove_or_dispose, abolish_or_remove, discard_something."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00145-01755": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense; current sense_key(s): pretend, act_as_if_something_were_true."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00152-01802": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense, shared_paraphrases_ge_2; current sense_key(s): generally_usually, generally_speaking, in_general, generally."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00165-00366": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): confronted_by, face_a_difficult_situation."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00169-01702": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): advance_or_improve, progress_or_develop."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00189-00198": {
+    "classification": "KEEP",
+    "semantic_relationship": "Closely interchangeable expressions with the same representative sense and Japanese head gloss.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "共通の日本語promptは複数canonicalに共通する中心義を簡潔に表している。現行sense_keyとgrammarRoleも同じで、括弧補足を加えても安定した実用差を作れず、accepted paraphraseも日常的な代替として成立するため現状維持。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense, same_sense_key; current sense_key(s): submit_work."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00190-00350": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense; current sense_key(s): deadline_at_or_before, no_later_than_deadline."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00191-01632": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense; current sense_key(s): far_from, definitely_not, not_in_the_least."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00193-01502": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): introduce_first_reason, before_anything_else."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00195-00540": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense, shared_paraphrases_ge_2; current sense_key(s): handle_a_problem, take_care_of_a_task, deal_with_difficulty."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00199-00279": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。 kind/grammarRoleにも差がある候補は、Vocabulary上の品詞・表現構造の区別を維持する。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt; current sense_key(s): be_very_busy, be_busy_unavailable."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00201-01340": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, same_sense_key, shared_paraphrases_ge_2; current sense_key(s): become_angry, feel_anger_at_unfairness."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00203-01063": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense, same_sense_key; current sense_key(s): consider_carefully, remember_or_reflect_on_past, think_carefully_about."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00207-02065": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense; current sense_key(s): concentrate_attention, focus_attention_on."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00213-02254": {
+    "classification": "PROMPT_AND_PARAPHRASE",
+    "semantic_relationship": "必要最低限に達することと、わずかな差・余裕で成立すること。",
+    "nuance_dimensions": [
+      "degree",
+      "margin"
+    ],
+    "recommended_prompt": {
+      "vocab:00213": "かろうじて（必要最低限の水準で）",
+      "vocab:02254": "かろうじて（僅差・わずかな余裕で）"
+    },
+    "recommended_paraphrases": {
+      "vocab:00213": [
+        "only just"
+      ],
+      "vocab:02254": [
+        "by a narrow margin"
+      ]
+    },
+    "reason": "barelyは基準をぎりぎり満たすこと、narrowlyは僅差・小さな余裕での成立に寄る。narrowlyからbarely/only justを除き、境界を明示する自然な句by a narrow marginを1件追加する。",
+    "confidence": "MEDIUM",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense, same_sense_key; current sense_key(s): only_just."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00215-00216": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense; current sense_key(s): be_composed_of, be_made_up_of."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00231-00474": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, shared_paraphrases_ge_2; current sense_key(s): continue_repeatedly, continue_despite_resistance."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00249-01633": {
+    "classification": "KEEP",
+    "semantic_relationship": "Closely interchangeable expressions with the same representative sense and Japanese head gloss.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "共通の日本語promptは複数canonicalに共通する中心義を簡潔に表している。現行sense_keyとgrammarRoleも同じで、括弧補足を加えても安定した実用差を作れず、accepted paraphraseも日常的な代替として成立するため現状維持。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense, same_sense_key, shared_paraphrases_ge_2; current sense_key(s): occasionally."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00263-02408": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense; current sense_key(s): discuss_carefully, talk_about_a_subject."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00264-01811": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): intend_to_do, plan_to_do."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00276-01962": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: same_sense_key; current sense_key(s): begin_again."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00277-00295": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense, shared_paraphrases_ge_2; current sense_key(s): help_someone_as_a_kindness, help_someone."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00280-02340": {
+    "classification": "PROMPT_AND_PARAPHRASE",
+    "semantic_relationship": "到着・予期せぬ出現と、視界や存在への出現。",
+    "nuance_dimensions": [
+      "arrival_vs_coming_into_view"
+    ],
+    "recommended_prompt": {
+      "vocab:02340": "現れる（隠れていたものが見えるようになる・新たに出てくる）"
+    },
+    "recommended_paraphrases": {
+      "vocab:02340": [
+        "appear"
+      ]
+    },
+    "reason": "turn up/show upは人・物が来る／姿を見せる、emergeは隠れたものが見えるようになる・存在が現れる側に寄る。emergeのshow upを外し、汎用性を保つappearだけを残す。",
+    "confidence": "MEDIUM",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense, same_sense_key, shared_paraphrases_ge_2; current sense_key(s): arrive_or_appear, come_into_view."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00286-01506": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense, same_sense_key, shared_paraphrases_ge_2; current sense_key(s): immediately, without_delay."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00290-00478": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): action_is_pointless, action_is_useless."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00292-00660": {
+    "classification": "PROMPT_AND_PARAPHRASE",
+    "semantic_relationship": "緊張をゆるめる、興奮を静める、生活を安定させる用法。",
+    "nuance_dimensions": [
+      "emotional_state",
+      "life_change",
+      "register"
+    ],
+    "recommended_prompt": {
+      "vocab:00292": "落ち着く（くつろいで力を抜く・口語的）",
+      "vocab:00630": "落ち着く（興奮や怒りが静まる）"
+    },
+    "recommended_paraphrases": {
+      "vocab:00292": [
+        "relax"
+      ],
+      "vocab:00630": []
+    },
+    "reason": "chill outは緊張をゆるめてくつろぐ口語表現、calm downは興奮・怒りを静める表現、settle downは別の代表義として生活を安定させる。chill out/calm downの相互境界とsettle downへの広すぎる受理を除く。",
+    "confidence": "MEDIUM",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense, shared_paraphrases_ge_2; current sense_key(s): relax_or_calm_down, become_less_agitated, begin_a_stable_life."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00299-00518": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense, same_sense_key, shared_paraphrases_ge_2; current sense_key(s): repeatedly."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00301-01673": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): have_a_lot_of, contain_abundant_resources."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00303-02442": {
+    "classification": "PROMPT_AND_PARAPHRASE",
+    "semantic_relationship": "重要性と必要性のうち、必須性・代替不能性・成功への重要度。",
+    "nuance_dimensions": [
+      "necessity_vs_importance",
+      "irreplaceability",
+      "criticality"
+    ],
+    "recommended_prompt": {
+      "vocab:00901": "不可欠な（代わりがきかない）",
+      "vocab:00928": "不可欠な（成功・存続に極めて重要）",
+      "vocab:00946": "不可欠な（必須の条件・基本要素である）"
+    },
+    "recommended_paraphrases": {
+      "vocab:00901": [],
+      "vocab:00928": [],
+      "vocab:00946": []
+    },
+    "reason": "significant/of importance/crucialは重要度を、essential/vital/indispensableは必要性を中心にする。共通prompt「不可欠な」の3語だけを代替不能性・成功への重要性・必須条件に分ける。現在の相互paraphraseはこの差を消すため3語の相互accepted setを除去し、他の重要度語は現行promptのまま維持する。",
+    "confidence": "MEDIUM",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense, same_sense_key, shared_paraphrases_ge_2; current sense_key(s): absolutely_necessary, important_or_large, extremely_important, absolutely_needed, important."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00311-00698": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense; current sense_key(s): cancel_an_event, end_a_relationship_or_agreement."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00315-01457": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): mostly, for_the_most_part."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00317-01861": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): especially, more_than_usual_or_others."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00322-02226": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense, same_sense_key; current sense_key(s): be_decided_by, depend_on, use_as_last_resort."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00323-00326": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense; current sense_key(s): stay_current_or_at_same_pace, stay_at_same_rate."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00330-01380": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): in_all_ways, in_all_respects."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00354-02437": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense, shared_paraphrases_ge_2; current sense_key(s): polite_response_to_thanks, reply_to_thanks."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00359-02085": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense, same_sense_key; current sense_key(s): dismiss_from_employment, remove_from_employment."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00364-00365": {
+    "classification": "PROMPT_AND_PARAPHRASE",
+    "semantic_relationship": "不安を感じる心配と、気にかける・懸念する心配。",
+    "nuance_dimensions": [
+      "emotion_vs_concern"
+    ],
+    "recommended_prompt": {
+      "vocab:00364": "心配している（不安を感じている）",
+      "vocab:00365": "心配している（気にかける・懸念している）"
+    },
+    "recommended_paraphrases": {
+      "vocab:00364": [],
+      "vocab:00365": []
+    },
+    "reason": "worriedは不安・心配の感情、concernedは不安を含み得るが関心や気遣いも表す。現行の相互canonical paraphraseだけではこの広がりが埋もれるため、両promptに短く示し相互受理を外す。",
+    "confidence": "MEDIUM",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): feel_anxious_about, feel_anxious_or_interested."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00372-01183": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense, same_sense_key; current sense_key(s): as_well_as, in_addition_to."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00402-01169": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense; current sense_key(s): deliberately_not_do, reduce_consumption_or_amount."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00408-02062": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense; current sense_key(s): take_care_of_someone, look_after_person."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00412-00528": {
+    "classification": "PROMPT_AND_PARAPHRASE",
+    "semantic_relationship": "義務、外部からの強制、選択肢のなさ。",
+    "nuance_dimensions": [
+      "source_of_obligation",
+      "agency"
+    ],
+    "recommended_prompt": {
+      "vocab:00412": "義務・必要があってsomethingせざるを得ない",
+      "vocab:00499": "外から強制されてsomethingせざるを得ない",
+      "vocab:00528": "他に選択肢がなくsomethingせざるを得ない"
+    },
+    "recommended_paraphrases": {
+      "vocab:00412": [],
+      "vocab:00499": [],
+      "vocab:00528": [
+        "be compelled to do something"
+      ]
+    },
+    "reason": "be obligedは義務・必要、be forcedは外部からの強制、have no choiceは選択肢の欠如を前面に出す。現行の相互受理は構造的な違いをなくすため除き、no choiceのentryに現行のbe compelledだけを残す。",
+    "confidence": "MEDIUM",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): be_forced_or_required, be_made_to_act, only_possible_action."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00413-02060": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense; current sense_key(s): consider_to_be, regard_as."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00432-00948": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): stop_resisting, give_way_or_surrender_to."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00442-02417": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): trust_someone, believe_in_reliability."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00443-02055": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): succeed_or_manage, perform_successfully."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00459-00606": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): adjust_to_new_conditions, become_used_to_new_conditions."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00461-00530": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: same_sense_key; current sense_key(s): at_some_future_time."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00466-01817": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): at_no_cost, without_payment."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00470-02167": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): simultaneously, at_the_same_time."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00480-00597": {
+    "classification": "PROMPT_AND_PARAPHRASE",
+    "semantic_relationship": "同席・その場にいることと、相手の正面・目の前にいること。",
+    "nuance_dimensions": [
+      "social_presence_vs_physical_position"
+    ],
+    "recommended_prompt": {
+      "vocab:00480": "someoneの前で（その人が同席している場で）",
+      "vocab:00597": "someoneの前で（相手の正面・目の前に）"
+    },
+    "recommended_paraphrases": {
+      "vocab:00480": [],
+      "vocab:00597": []
+    },
+    "reason": "in someone’s presenceはその人がいる場・同席を表し、in front of someoneは主に物理的位置を表す。相互paraphraseでは場面の区別を失うため双方から除き、中心訳は維持する。",
+    "confidence": "MEDIUM",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): when_someone_is_present, in_someones_presence."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00484-00490": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): be_tired_of_and_annoyed, be_tired_of."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00502-00634": {
+    "classification": "PROMPT_AND_PARAPHRASE",
+    "semantic_relationship": "一般的・反復的な傾向と、本人の意向・傾き。",
+    "nuance_dimensions": [
+      "habitual_tendency_vs_inclination"
+    ],
+    "recommended_prompt": {
+      "vocab:00502": "somethingする傾向がある（一般にそうなる・繰り返す）",
+      "vocab:00634": "somethingする傾向がある（本人の気持ち・意向として）"
+    },
+    "recommended_paraphrases": {
+      "vocab:00502": [
+        "have a tendency to do something"
+      ],
+      "vocab:00634": [
+        "have a tendency to do something"
+      ]
+    },
+    "reason": "tend toは一般的・反復的な傾向、be inclined toは本人の気持ちや意向に寄りやすい。共有のhave a tendencyは両方で自然なため維持し、相互canonical paraphraseだけ外す。",
+    "confidence": "MEDIUM",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt; current sense_key(s): usually_or_often_do, tend_or_be_likely_to."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00503-01675": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense; current sense_key(s): connect_in_mind, join_two_things."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00513-01186": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): write_down_or_record, record_in_writing."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00516-00820": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): solution_or_escape, answer_to_a_problem."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00522-01882": {
+    "classification": "KEEP",
+    "semantic_relationship": "Closely interchangeable expressions with the same representative sense and Japanese head gloss.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "共通の日本語promptは複数canonicalに共通する中心義を簡潔に表している。現行sense_keyとgrammarRoleも同じで、括弧補足を加えても安定した実用差を作れず、accepted paraphraseも日常的な代替として成立するため現状維持。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense, same_sense_key; current sense_key(s): almost."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00526-01754": {
+    "classification": "PROMPT_AND_PARAPHRASE",
+    "semantic_relationship": "目標の達成と、困難があっても何とか成し遂げること。",
+    "nuance_dimensions": [
+      "achievement_vs_effort"
+    ],
+    "recommended_prompt": {
+      "vocab:00526": "somethingすることに成功する（目標を達成する）",
+      "vocab:01754": "somethingをなんとか成し遂げる（困難や工夫を伴う）"
+    },
+    "recommended_paraphrases": {
+      "vocab:00526": [
+        "pull something off"
+      ],
+      "vocab:01754": [
+        "pull something off"
+      ]
+    },
+    "reason": "succeed in doing somethingは結果として成功したこと、manage to do somethingは困難や工夫を乗り越えて何とか達成したことを含みやすい。相互canonical paraphraseを除き、両方に自然なpull something offは残す。",
+    "confidence": "MEDIUM",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense; current sense_key(s): manage_to_do, succeed_despite_difficulty."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00532-01818": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense; current sense_key(s): certain_to_happen, make_certain_to_do."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00537-00669": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense; current sense_key(s): face_a_problematic_circumstance, have_a_problem_or_difficulty."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00541-01495": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): scheduled_or_expected_action, expected_to_do."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00553-02039": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): finally_and_permanently, firmly_and_definitely."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00554-00760": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense; current sense_key(s): compromise_with_someone, reach_a_mutual_agreement."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00573-00685": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): unexpectedly, suddenly."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00582-02368": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。 kind/grammarRoleにも差がある候補は、Vocabulary上の品詞・表現構造の区別を維持する。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense, shared_paraphrases_ge_2; current sense_key(s): trying_to_find, try_to_find, search_to_find."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00599-01511": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): consider_someone_inferior, feel_strong_dislike, feel_disdain_for_person."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00608-00654": {
+    "classification": "KEEP",
+    "semantic_relationship": "Closely interchangeable expressions with the same representative sense and Japanese head gloss.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "共通の日本語promptは複数canonicalに共通する中心義を簡潔に表している。現行sense_keyとgrammarRoleも同じで、括弧補足を加えても安定した実用差を作れず、accepted paraphraseも日常的な代替として成立するため現状維持。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense, same_sense_key, shared_paraphrases_ge_2; current sense_key(s): introduce_honest_opinion."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00613-01810": {
+    "classification": "PROMPT_AND_PARAPHRASE",
+    "semantic_relationship": "口語的な興味・前向きさと、依頼などを引き受ける意思。",
+    "nuance_dimensions": [
+      "register",
+      "willingness_vs_interest"
+    ],
+    "recommended_prompt": {
+      "vocab:00613": "somethingをする気がある（口語的な興味・前向きな意欲）",
+      "vocab:01810": "進んでsomethingする気がある（依頼・提案を引き受ける意思）"
+    },
+    "recommended_paraphrases": {
+      "vocab:00613": [],
+      "vocab:01810": [
+        "be prepared to do something"
+      ]
+    },
+    "reason": "be up for somethingは口語的に「やりたい・乗り気」、be willing to do somethingは行為をする意思・受諾に寄る。前者のaccepted paraphrase be willing toを外し、後者はprepared toを維持する。",
+    "confidence": "MEDIUM",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense; current sense_key(s): feel_willing_or_interested, ready_and_willing_to_do."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00635-01512": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense; current sense_key(s): mock_someone, ridicule_person."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00676-00985": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense; current sense_key(s): tolerate_someone_or_something, accept_or_endure_something_unpleasant."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00677-00967": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense; current sense_key(s): exploit_someone, use_someone_or_something_unfairly."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00683-01977": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense; current sense_key(s): disrupt_or_get_in_the_way, interrupt_or_disrupt."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00687-02109": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense; current sense_key(s): ruin_a_mood_or_experience, destroy_or_spoil."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00690-01653": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense; current sense_key(s): organize_plans_or_details, establish_organization_or_fund."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00692-02464": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense, same_sense_key; current sense_key(s): gradually_disappear."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00711-01359": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense; current sense_key(s): work_toward_or_follow, try_to_find_or_obtain."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00714-00767": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): result_of_an_event_or_process, result_of_an_action."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00715-01460": {
+    "classification": "PROMPT_AND_PARAPHRASE",
+    "semantic_relationship": "誤りのなさ、細部の明確さ、ぴったりの一致。",
+    "nuance_dimensions": [
+      "correctness",
+      "level_of_detail",
+      "exact_match"
+    ],
+    "recommended_prompt": {
+      "vocab:00715": "正確な（事実・数値に誤りがない）",
+      "vocab:00875": "正確な（細部・数値まで明確で精密）",
+      "vocab:01460": "正確な（別のものとぴったり一致する）"
+    },
+    "recommended_paraphrases": {
+      "vocab:00715": [
+        "correct"
+      ],
+      "vocab:00875": [],
+      "vocab:01460": []
+    },
+    "reason": "accurateは誤りのなさ、preciseは細部の明確さ、exactは一致・厳密な対応を表す。現在の相互paraphraseを絞り、accurateのcorrectだけ残す。",
+    "confidence": "MEDIUM",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): correct_and_exact, exact_and_accurate, accurate_and_precise."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00717-00870": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense, shared_paraphrases_ge_2; current sense_key(s): unclear_or_indefinite, open_to_more_than_one_interpretation, not_clear_or_well_known."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00719-00902": {
+    "classification": "PROMPT_AND_PARAPHRASE",
+    "semantic_relationship": "要件を満たす十分さと、最低基準を満たす適切さ。",
+    "nuance_dimensions": [
+      "sufficiency_vs_adequacy"
+    ],
+    "recommended_prompt": {
+      "vocab:00719": "十分な（必要な量・条件を満たす）",
+      "vocab:00902": "十分な（必要最低限の基準を満たす）"
+    },
+    "recommended_paraphrases": {
+      "vocab:00719": [
+        "enough"
+      ],
+      "vocab:00902": [
+        "ample"
+      ]
+    },
+    "reason": "sufficientは目的に必要な量・条件を満たすこと、adequateはその用途で受け入れられる基準を満たすことを表す。相互canonicalとadequate側のgeneric enoughを外し、それぞれのpromptに自然な代替だけを残す。",
+    "confidence": "MEDIUM",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): enough_for_a_purpose, enough_for_a_need."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00725-01890": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): unwilling_to_change_opinion, refusing_to_change_ones_mind."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00734-01060": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense; current sense_key(s): deep_sorrow, deep_sadness."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00736-00891": {
+    "classification": "PROMPT_AND_PARAPHRASE",
+    "semantic_relationship": "状態・水準を保つことと、損傷・変化から保護すること。",
+    "nuance_dimensions": [
+      "maintenance_vs_preservation"
+    ],
+    "recommended_prompt": {
+      "vocab:00736": "保つ（状態・水準を維持する）",
+      "vocab:00891": "保つ（損傷・劣化・消失から保存する）"
+    },
+    "recommended_paraphrases": {
+      "vocab:00736": [
+        "keep",
+        "retain"
+      ],
+      "vocab:00891": [
+        "keep",
+        "retain"
+      ]
+    },
+    "reason": "maintainは状態や水準を維持すること、preserveは損傷・劣化・消失から保つことに寄る。どちらにも自然なkeep/retainを残し、相互canonicalだけを除く。",
+    "confidence": "MEDIUM",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense, shared_paraphrases_ge_2; current sense_key(s): keep_in_a_condition, keep_something_in_its_existing_state."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00739-00974": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: shared_paraphrases_ge_2; current sense_key(s): without_regard_or_despite_that, despite_what_was_just_said."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00743-02360": {
+    "classification": "KEEP",
+    "semantic_relationship": "Closely interchangeable expressions with the same representative sense and Japanese head gloss.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "共通の日本語promptは複数canonicalに共通する中心義を簡潔に表している。現行sense_keyとgrammarRoleも同じで、括弧補足を加えても安定した実用差を作れず、accepted paraphraseも日常的な代替として成立するため現状維持。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense, same_sense_key; current sense_key(s): almost_not."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00749-01163": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: same_sense_key; current sense_key(s): mistake_one_thing_for_another."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00768-01830": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense; current sense_key(s): very_gloomy, not_brightly_lit."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00773-02029": {
+    "classification": "PROMPT_AND_PARAPHRASE",
+    "semantic_relationship": "量・水準の減少、数値の中立的減少、強さ・重要性の弱まり。",
+    "nuance_dimensions": [
+      "quantity_vs_level",
+      "gradual_weakening"
+    ],
+    "recommended_prompt": {
+      "vocab:00773": "減少する（数・水準が下がる、価値や質が衰える）",
+      "vocab:01131": "減少する（量・数が中立的に少なくなる）",
+      "vocab:02029": "減少する（影響・重要性・強さが次第に弱まる）"
+    },
+    "recommended_paraphrases": {
+      "vocab:00773": [
+        "drop",
+        "fall"
+      ],
+      "vocab:01131": [
+        "go down"
+      ],
+      "vocab:02029": []
+    },
+    "reason": "decreaseは量・数の中立的な減少、declineは数値・水準の下落や衰え、diminishは強さ・重要性などが弱まる用法と相性がよい。共有のdecrease/decline/fall/dropを整理し、固有の用法差をpromptに残す。",
+    "confidence": "MEDIUM",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense, same_sense_key, shared_paraphrases_ge_2; current sense_key(s): become_less."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00774-02143": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense, same_sense_key, shared_paraphrases_ge_2; current sense_key(s): chance_of_happening, possibility_of_future_success_or_progress."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00775-02004": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense, same_sense_key; current sense_key(s): far_away."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00784-02270": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense, shared_paraphrases_ge_2; current sense_key(s): important_and_well_known, having_high_reputation, well_known."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00805-01421": {
+    "classification": "PROMPT_AND_PARAPHRASE",
+    "semantic_relationship": "構成が多く相互に関係する複雑さと、理解・処理の難しさ。",
+    "nuance_dimensions": [
+      "structural_complexity_vs_difficulty"
+    ],
+    "recommended_prompt": {
+      "vocab:00805": "複雑な（多くの要素が相互に関係する）",
+      "vocab:01421": "複雑な（理解・処理が難しい）"
+    },
+    "recommended_paraphrases": {
+      "vocab:00805": [],
+      "vocab:01421": []
+    },
+    "reason": "complexは多くの要素・関係を含む構造、complicatedは理解や処理が難しいことに寄る。現行の相互paraphraseだけでは二つの見方を区別できないため、どちらも外しpromptで説明する。",
+    "confidence": "MEDIUM",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): made_of_many_interrelated_parts, having_many_connected_parts."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00813-02116": {
+    "classification": "PROMPT_AND_PARAPHRASE",
+    "semantic_relationship": "時間経過の後の実現、最終判断・結果、過程の末の結末。",
+    "nuance_dimensions": [
+      "time_course_vs_final_result"
+    ],
+    "recommended_prompt": {
+      "vocab:00813": "最終的に（時間が経った後に実現する）",
+      "vocab:01402": "結局（考慮した末・実は）",
+      "vocab:01510": "結局（過程や時間の末に）",
+      "vocab:02116": "最終的に（最終判断・結果として）"
+    },
+    "recommended_paraphrases": {
+      "vocab:00813": [
+        "finally"
+      ],
+      "vocab:01402": [],
+      "vocab:01510": [],
+      "vocab:02116": [
+        "finally"
+      ]
+    },
+    "reason": "eventuallyは時間が経った後の実現、ultimatelyは最終判断・結論、in the endは過程の末、after allは考え直した結果・事実の補足に寄る。重なるin the end/ultimately/eventuallyを必要な範囲で除き、finallyは時系列・最終結果に合うentryに残す。",
+    "confidence": "MEDIUM",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense, same_sense_key, shared_paraphrases_ge_2; current sense_key(s): in_the_end, ultimately, eventually."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00825-02186": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): serious_effort, attempt_with_exertion."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00830-01893": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): succeed_in_dealing_with, overcome."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00864-00971": {
+    "classification": "PROMPT_AND_PARAPHRASE",
+    "semantic_relationship": "将来へ向かう運命・可能性と、自分では制御できない巡り合わせ。",
+    "nuance_dimensions": [
+      "future_potential_vs_inevitability"
+    ],
+    "recommended_prompt": {
+      "vocab:00864": "運命（将来向かう道・実現する可能性）",
+      "vocab:00971": "運命（自分では変えにくい出来事・巡り合わせ）"
+    },
+    "recommended_paraphrases": {
+      "vocab:00864": [],
+      "vocab:00971": []
+    },
+    "reason": "destinyは将来の行く末・実現する可能性、fateは本人の制御を超えた成り行きに寄る。現行の相互paraphraseが同じ語への置換を許すため外し、中心訳を保ったまま対比する。",
+    "confidence": "MEDIUM",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): future_that_seems_fixed, events_beyond_control."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00869-02147": {
+    "classification": "PROMPT_AND_PARAPHRASE",
+    "semantic_relationship": "一般的な巨大さ、範囲、重厚さ、桁外れの大きさ。",
+    "nuance_dimensions": [
+      "scale",
+      "extent",
+      "mass",
+      "intensity"
+    ],
+    "recommended_prompt": {
+      "vocab:00869": "莫大な（量・程度が非常に大きい）",
+      "vocab:01454": "広大な（範囲・面積が非常に広い）",
+      "vocab:01567": "巨大な（大きく重厚・大量の）",
+      "vocab:01735": "巨大な（桁外れの大きさ）",
+      "vocab:01771": "巨大な（一般的な口語表現）",
+      "vocab:02147": "巨大な（範囲・程度が計り知れないほど）"
+    },
+    "recommended_paraphrases": {
+      "vocab:00869": [],
+      "vocab:01454": [
+        "extensive"
+      ],
+      "vocab:01567": [],
+      "vocab:01735": [],
+      "vocab:01771": [],
+      "vocab:02147": []
+    },
+    "reason": "hugeは一般的な口語の大きさ、giganticは桁外れの大きさ、massiveは重厚・大量、vastは範囲、immenseは計り知れない規模、enormousは量・程度の大きさに寄る。相互generic paraphraseを外し、vastにはextentを表すextensiveを残す。",
+    "confidence": "MEDIUM",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense, same_sense_key, shared_paraphrases_ge_2; current sense_key(s): very_large, very_large_in_extent, very_large_and_heavy, extremely_large."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00878-02125": {
+    "classification": "PROMPT_AND_PARAPHRASE",
+    "semantic_relationship": "計画として正式に提案することと、考え・選択肢を提案すること。",
+    "nuance_dimensions": [
+      "formality",
+      "plan_vs_idea"
+    ],
+    "recommended_prompt": {
+      "vocab:00878": "提案する（計画・案として出す）",
+      "vocab:02125": "提案する（考え・選択肢として勧める）"
+    },
+    "recommended_paraphrases": {
+      "vocab:00878": [],
+      "vocab:02125": []
+    },
+    "reason": "proposeは計画・案を提示する、suggestは考えや選択肢を提案する傾向がある。相互paraphraseを外し、広い中心訳を保ったまま対象を補足する。",
+    "confidence": "MEDIUM",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): suggest_a_plan, put_forward_an_idea."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00893-02309": {
+    "classification": "KEEP",
+    "semantic_relationship": "Japanese gloss collision between distinct English senses; not a near-synonym family.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "「種」は日本語側の多義による一致で、species（分類上の種）と seed（植物の種）は英語では近義語ではない。現行の日本語promptは各entryの代表義として維持し、近義語用の括弧補足やparaphrase移動はしない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt; current sense_key(s): group_of_similar_living_things, plant_reproductive_part."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00895-01016": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: shared_paraphrases_ge_2; current sense_key(s): very_serious_or_intense, dangerously_serious."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00912-01736": {
+    "classification": "PROMPT_AND_PARAPHRASE",
+    "semantic_relationship": "広い意味での事業・企業と、法律上の会社組織。",
+    "nuance_dimensions": [
+      "business_activity_vs_legal_entity"
+    ],
+    "recommended_prompt": {
+      "vocab:00912": "企業（事業・企業活動を広く指す）",
+      "vocab:01736": "企業（法律上の会社組織）"
+    },
+    "recommended_paraphrases": {
+      "vocab:00912": [
+        "business",
+        "firm"
+      ],
+      "vocab:01736": [
+        "company"
+      ]
+    },
+    "reason": "enterpriseは事業・企業活動や事業体を広く指し、corporationは法律上の会社組織を指す。current accepted setの相互canonical/companyの重なりを減らし、promptに対象を明記する。",
+    "confidence": "MEDIUM",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): business_or_project, large_business_company."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00944-01243": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: shared_paraphrases_ge_2; current sense_key(s): way_of_seeing_or_thinking, opinion_or_perspective, point_of_view."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00955-01413": {
+    "classification": "PROMPT_AND_PARAPHRASE",
+    "semantic_relationship": "大きな富・資産全体と、所有物・所有資産。",
+    "nuance_dimensions": [
+      "wealth_vs_owned_assets"
+    ],
+    "recommended_prompt": {
+      "vocab:00955": "財産（大きな富・資産全体）",
+      "vocab:01413": "財産（所有している資産・所有物）"
+    },
+    "recommended_paraphrases": {
+      "vocab:00955": [
+        "assets",
+        "wealth"
+      ],
+      "vocab:01413": [
+        "assets"
+      ]
+    },
+    "reason": "fortuneは大きな富・資産の総体、propertyは所有している財産・資産を指す。相互に広すぎるproperty/wealthを外し、双方で自然なassetsを残す。",
+    "confidence": "MEDIUM",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense, shared_paraphrases_ge_2; current sense_key(s): great_wealth, possessions_or_assets."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00957-01044": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense; current sense_key(s): change_to_suit_new_conditions, adapt_to_new_conditions."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00966-01107": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: shared_paraphrases_ge_2; current sense_key(s): improve_or_increase, make_greater_in_amount."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-00999-02165": {
+    "classification": "PROMPT_AND_PARAPHRASE",
+    "semantic_relationship": "深刻な意見対立と、公の注目を集める論争。",
+    "nuance_dimensions": [
+      "serious_disagreement_vs_public_controversy"
+    ],
+    "recommended_prompt": {
+      "vocab:00999": "論争（深刻な意見の対立）",
+      "vocab:02165": "論争（世間の注目を集める公的な争点）"
+    },
+    "recommended_paraphrases": {
+      "vocab:00999": [
+        "debate"
+      ],
+      "vocab:02165": [
+        "debate"
+      ]
+    },
+    "reason": "disputeは深刻な意見の対立、controversyは公の注目・議論を集める争点に寄る。相互canonicalを除き、両者に自然なdebateは残す。",
+    "confidence": "MEDIUM",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): serious_disagreement, public_disagreement."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-01001-01697": {
+    "classification": "PROMPT_AND_PARAPHRASE",
+    "semantic_relationship": "企業・政府の事業収入と、個人・組織が受け取る所得。",
+    "nuance_dimensions": [
+      "business_revenue_vs_general_income"
+    ],
+    "recommended_prompt": {
+      "vocab:01001": "収入（企業・政府が活動から得る収入）",
+      "vocab:01697": "収入（個人・組織が受け取る所得全般）"
+    },
+    "recommended_paraphrases": {
+      "vocab:01001": [
+        "earnings"
+      ],
+      "vocab:01697": [
+        "earnings"
+      ]
+    },
+    "reason": "revenueは企業・政府の活動で生じる売上・収入、incomeは人や組織が受け取る所得全般。revenueのincomeを除き、両promptに自然なearningsだけを残す。",
+    "confidence": "MEDIUM",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): income_of_business_or_government, money_received."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-01013-02351": {
+    "classification": "PROMPT_AND_PARAPHRASE",
+    "semantic_relationship": "不気味さ・意外さ・独特さの異なる奇妙さ。",
+    "nuance_dimensions": [
+      "strangeness",
+      "unexpectedness",
+      "distinctiveness"
+    ],
+    "recommended_prompt": {
+      "vocab:01013": "奇妙な（不気味・強い違和感がある）",
+      "vocab:01228": "奇妙な（普通と違い、少し意外）",
+      "vocab:02351": "奇妙な（独特で珍しい）"
+    },
+    "recommended_paraphrases": {
+      "vocab:01013": [
+        "strange"
+      ],
+      "vocab:01228": [
+        "strange"
+      ],
+      "vocab:02351": [
+        "strange"
+      ]
+    },
+    "reason": "weirdは強い違和感・不気味さ、oddは普通と違う・意外、peculiarは独特で珍しいという傾向がある。strangeは広い上位語として維持できるが、相互canonical paraphraseは狭める。",
+    "confidence": "MEDIUM",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense, shared_paraphrases_ge_2; current sense_key(s): very_strange, strange, strange_or_unusual."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-01018-01404": {
+    "classification": "KEEP",
+    "semantic_relationship": "Closely interchangeable expressions with the same representative sense and Japanese head gloss.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "共通の日本語promptは複数canonicalに共通する中心義を簡潔に表している。現行sense_keyとgrammarRoleも同じで、括弧補足を加えても安定した実用差を作れず、accepted paraphraseも日常的な代替として成立するため現状維持。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense, same_sense_key; current sense_key(s): intentionally."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-01019-01298": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): burst_violently, explode."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-01030-01246": {
+    "classification": "PROMPT_AND_PARAPHRASE",
+    "semantic_relationship": "勢いのある口語的称賛、感嘆を伴う評価、華やかさ・見事さ。",
+    "nuance_dimensions": [
+      "register",
+      "intensity",
+      "admiration"
+    ],
+    "recommended_prompt": {
+      "vocab:01030": "すばらしい（見事で印象に残る）",
+      "vocab:01084": "すばらしい（口語的で勢いのある強い称賛）",
+      "vocab:01109": "素晴らしい（非常に優れていて魅力的）",
+      "vocab:01246": "すばらしい（良さに感嘆する評価）"
+    },
+    "recommended_paraphrases": {
+      "vocab:01030": [
+        "magnificent"
+      ],
+      "vocab:01084": [
+        "awesome",
+        "fantastic"
+      ],
+      "vocab:01109": [
+        "fantastic"
+      ],
+      "vocab:01246": [
+        "wonderful",
+        "splendid"
+      ]
+    },
+    "reason": "terrificは口語的で勢いのある強い称賛、marvelousは「extremely good」で感嘆を伴う評価、fabulousは非常に優れ魅力的、splendidは見事・印象的な称賛に寄せる。genericなgreat/excellentなどを整理する。ただしmarvelousを古風・上品と固定する根拠は確認できず、その断定は採用しない。",
+    "confidence": "MEDIUM",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense, same_sense_key, shared_paraphrases_ge_2; current sense_key(s): excellent_or_impressive, extremely_good.",
+      "Cambridge Dictionary: terrific is labeled informal; marvelous is defined as extremely good and lists wonderful as a synonym, without an old-fashioned/formal label in the consulted entry. https://dictionary.cambridge.org/dictionary/english/terrific ; https://dictionary.cambridge.org/dictionary/english/marvelous (checked 2026-10-08).",
+      "Cambridge Dictionary defines fabulous as very good/excellent and lists the UK spelling marvellous as the spelling corresponding to US marvelous. https://dictionary.cambridge.org/dictionary/english/fabulous ; https://dictionary.cambridge.org/dictionary/english/marvellous (checked 2026-10-08).",
+      "Runtime check: normalizeVocabularyAnswer() in scripts/app/vocabularyLearningCore.js normalizes case, punctuation, and hyphens but does not map -our/-or spelling; vocab:01246 has no answers[] spelling alias. marvellous is therefore recorded separately from paraphrase recommendations, and is not claimed as currently accepted."
+    ],
+    "spelling_variant_notes": [
+      {
+        "variant": "marvellous",
+        "relation": "British spelling variant of US canonical marvelous",
+        "paraphrase": false,
+        "current_runtime_status": "not explicitly accepted by current canonical/answers/paraphrases or normalization; separate spelling-authority follow-up"
+      }
+    ]
+  },
+  "NSD-01051-01152": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): hold_someone_close, embrace."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-01064-01765": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): very_difficult_or_unpleasant_experience, severe_difficulty_or_suffering."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-01093-01094": {
+    "classification": "PROMPT_AND_PARAPHRASE",
+    "semantic_relationship": "時系列で最も新しいものと、現在の情報・状態を反映しているもの。",
+    "nuance_dimensions": [
+      "recency_vs_currentness"
+    ],
+    "recommended_prompt": {
+      "vocab:01093": "最新の（時系列で最も新しい）",
+      "vocab:01094": "最新の（現在の情報・状態を反映し、古くない）"
+    },
+    "recommended_paraphrases": {
+      "vocab:01093": [
+        "newest",
+        "most recent"
+      ],
+      "vocab:01094": [
+        "current"
+      ]
+    },
+    "reason": "latestは時系列で最も新しいもの、up-to-dateは古くなく現在の状態・情報に合っているもの。相互canonical/newest/most recentを整理し、up-to-dateにはcurrentを1件追加する。",
+    "confidence": "MEDIUM",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense, shared_paraphrases_ge_2; current sense_key(s): most_recent, current_and_modern."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-01110-02373": {
+    "classification": "PROMPT_AND_PARAPHRASE",
+    "semantic_relationship": "知的に理解する気づき、知覚して見つける気づき、認識するようになること。",
+    "nuance_dimensions": [
+      "understanding_vs_perception",
+      "change_of_awareness"
+    ],
+    "recommended_prompt": {
+      "vocab:01110": "somethingに気づく（事実・意味を理解する）",
+      "vocab:01708": "somethingに気づく（変化・細部を見つける）",
+      "vocab:02373": "somethingに気づく（認識するようになる）"
+    },
+    "recommended_paraphrases": {
+      "vocab:01110": [],
+      "vocab:01708": [],
+      "vocab:02373": []
+    },
+    "reason": "realizeは事実・意味を理解する、noticeは知覚・注意で変化を見つける、become aware ofは認識するようになることに寄る。現行の相互受理はこの学習差を消すため外し、代表義は維持する。",
+    "confidence": "MEDIUM",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense, same_sense_key; current sense_key(s): become_aware, come_to_notice."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-01123-02112": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, same_sense_key; current sense_key(s): plan_of_action, planned_set_of_activities."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-01128-01897": {
+    "classification": "PROMPT_AND_PARAPHRASE",
+    "semantic_relationship": "兆候・情報から示すことと、証拠・実演で明らかにすること。",
+    "nuance_dimensions": [
+      "indication_vs_demonstration"
+    ],
+    "recommended_prompt": {
+      "vocab:01128": "示す（兆候・情報からそう判断させる）",
+      "vocab:01897": "示す（証拠・実演で明らかにする）"
+    },
+    "recommended_paraphrases": {
+      "vocab:01128": [],
+      "vocab:01897": []
+    },
+    "reason": "indicateは兆候や情報で示唆・指示する、demonstrateは証拠や実演で明らかに示すことに寄る。互いと汎用showを外し、補足promptで示し方を区別する。",
+    "confidence": "MEDIUM",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): show_or_point_to, show_or_make_clear."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-01137-01679": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): resident_of_a_place, person_living_in_a_place."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-01143-01145": {
+    "classification": "KEEP",
+    "semantic_relationship": "Closely interchangeable expressions with the same representative sense and Japanese head gloss.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "共通の日本語promptは複数canonicalに共通する中心義を簡潔に表している。現行sense_keyとgrammarRoleも同じで、括弧補足を加えても安定した実用差を作れず、accepted paraphraseも日常的な代替として成立するため現状維持。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense, same_sense_key; current sense_key(s): legal_professional."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-01156-02374": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense; current sense_key(s): look_intently_at, look_fixedly_at."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-01176-01395": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense; current sense_key(s): provide_with, furnish_with."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-01192-02435": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense; current sense_key(s): suggest_action_to_addressee, suggest_activity."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-01208-01210": {
+    "classification": "PROMPT_AND_PARAPHRASE",
+    "semantic_relationship": "特定の病気・疾患と、病気である状態。",
+    "nuance_dimensions": [
+      "medical_condition_vs_state_of_illness"
+    ],
+    "recommended_prompt": {
+      "vocab:01208": "病気（特定の疾患・医学的な異常）",
+      "vocab:01210": "病気（病気である状態・体調不良）"
+    },
+    "recommended_paraphrases": {
+      "vocab:01208": [
+        "sickness"
+      ],
+      "vocab:01210": [
+        "sickness"
+      ]
+    },
+    "reason": "diseaseは特定の疾患・医学的な状態、illnessは病気である状態や体調不良に寄る。相互canonicalを外し、双方で自然なsicknessだけ残す。",
+    "confidence": "MEDIUM",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): illness_or_disorder, state_of_being_ill."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-01223-01835": {
+    "classification": "PROMPT_AND_PARAPHRASE",
+    "semantic_relationship": "商品・サービスを買う客と、招かれた人・宿泊客。",
+    "nuance_dimensions": [
+      "customer_vs_invited_guest"
+    ],
+    "recommended_prompt": {
+      "vocab:01223": "客（商品・サービスを買う人）",
+      "vocab:01835": "客（招かれた人・宿泊客）"
+    },
+    "recommended_paraphrases": {
+      "vocab:01223": [
+        "client"
+      ],
+      "vocab:01835": []
+    },
+    "reason": "customerは商品・サービスを買う顧客、guestは招待された人や宿泊客。current paraphraseのguest/customer/client重複を外し、顧客側に自然なclientだけ残す。",
+    "confidence": "MEDIUM",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): person_buying_goods_or_services, person_invited_or_staying."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-01235-01406": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: shared_paraphrases_ge_2; current sense_key(s): concerning, regarding_topic."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-01247-01723": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): function_successfully, operate_as_intended."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-01250-01415": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense, same_sense_key; current sense_key(s): assigned_task."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-01255-02094": {
+    "classification": "PROMPT_AND_PARAPHRASE",
+    "semantic_relationship": "合意・商談としての取引と、売買・処理としての取引。",
+    "nuance_dimensions": [
+      "agreement_vs_exchange"
+    ],
+    "recommended_prompt": {
+      "vocab:01255": "取引（合意・契約・商談）",
+      "vocab:02094": "取引（商品・金銭の売買・処理）"
+    },
+    "recommended_paraphrases": {
+      "vocab:01255": [
+        "trade"
+      ],
+      "vocab:02094": [
+        "trade"
+      ]
+    },
+    "reason": "dealは合意・契約・商談、transactionは商品や金銭の売買・処理に寄る。相互canonicalを除き、両方に自然なtradeを残す。",
+    "confidence": "MEDIUM",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): business_agreement, business_dealing."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-01268-02177": {
+    "classification": "PROMPT_AND_PARAPHRASE",
+    "semantic_relationship": "広い知識・技能を持つ専門家と、特定分野に特化した専門家。",
+    "nuance_dimensions": [
+      "breadth_vs_specialization"
+    ],
+    "recommended_prompt": {
+      "vocab:01268": "専門家（知識・技能に詳しい人）",
+      "vocab:02177": "専門家（特定分野を専門にする人）"
+    },
+    "recommended_paraphrases": {
+      "vocab:01268": [],
+      "vocab:02177": []
+    },
+    "reason": "expertは知識・技能に詳しい人全般、specialistは特定分野に専門化した人。相互canonical paraphraseを外し、promptで専門性の幅を区別する。",
+    "confidence": "MEDIUM",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): person_with_special_knowledge, expert_in_a_field."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-01269-01965": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): employees_of_an_organization, people_employed_by_an_organisation."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-01304-01845": {
+    "classification": "KEEP",
+    "semantic_relationship": "Closely interchangeable expressions with the same representative sense and Japanese head gloss.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "共通の日本語promptは複数canonicalに共通する中心義を簡潔に表している。現行sense_keyとgrammarRoleも同じで、括弧補足を加えても安定した実用差を作れず、accepted paraphraseも日常的な代替として成立するため現状維持。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense, same_sense_key; current sense_key(s): feeling_great_surprise."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-01306-01984": {
+    "classification": "PROMPT_AND_PARAPHRASE",
+    "semantic_relationship": "大声、発話の大きさ、感情を突然声に出すこと。",
+    "nuance_dimensions": [
+      "volume_vs_speech_act",
+      "emotion"
+    ],
+    "recommended_prompt": {
+      "vocab:01306": "大声で叫ぶ（大きな声で強く発する）",
+      "vocab:01471": "叫ぶ（驚き・喜びなどを突然声に出す）",
+      "vocab:01984": "叫ぶ（大声で言う）"
+    },
+    "recommended_paraphrases": {
+      "vocab:01306": [],
+      "vocab:01471": [
+        "cry out"
+      ],
+      "vocab:01984": []
+    },
+    "reason": "yellは大声、shoutは大声で言う発話、exclaimは驚き・喜びなどを突然声に出すことに寄る。相互のyell/shout/scream paraphraseを整理し、感情表出のexclaimにcry outだけを残す。",
+    "confidence": "MEDIUM",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense, shared_paraphrases_ge_2; current sense_key(s): shout_loudly, cry_out_suddenly, say_loudly."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-01354-02274": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, shared_paraphrases_ge_2; current sense_key(s): extensive_in_scope, existing_over_a_large_area."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-01356-02018": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): legislative_body, local_governing_body."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-01386-01499": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense; current sense_key(s): excluding, except_for."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-01412-02256": {
+    "classification": "PROMPT_AND_PARAPHRASE",
+    "semantic_relationship": "事実として述べる、論点を主張する、理由を挙げて論じる。",
+    "nuance_dimensions": [
+      "assertion_vs_argumentation"
+    ],
+    "recommended_prompt": {
+      "vocab:01412": "主張する（事実として述べる）",
+      "vocab:01549": "主張する（論点として強く述べる）",
+      "vocab:02256": "主張する（理由を挙げて論じる）"
+    },
+    "recommended_paraphrases": {
+      "vocab:01412": [
+        "assert",
+        "maintain"
+      ],
+      "vocab:01549": [
+        "assert"
+      ],
+      "vocab:02256": [
+        "insist",
+        "maintain"
+      ]
+    },
+    "reason": "claimは事実だとして述べる、contendは論点として主張する、argueは理由を挙げて論じる傾向がある。交差するclaim/argue/assertを整理し、各prompt全体に自然な回答を残す。",
+    "confidence": "MEDIUM",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense, shared_paraphrases_ge_2; current sense_key(s): state_as_true, assert_an_opinion, give_reasons_for_a_position."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-01443-01444": {
+    "classification": "PROMPT_AND_PARAPHRASE",
+    "semantic_relationship": "修理・復旧としての表現と、広く使う会話的な修理表現。",
+    "nuance_dimensions": [
+      "register",
+      "restoration"
+    ],
+    "recommended_prompt": {
+      "vocab:01443": "修理する（故障・損傷を直し、正常な状態に戻す）",
+      "vocab:01444": "修理する（口語的に広く「直す」）"
+    },
+    "recommended_paraphrases": {
+      "vocab:01443": [
+        "mend"
+      ],
+      "vocab:01444": [
+        "mend"
+      ]
+    },
+    "reason": "repairは故障・損傷を修理して正常な状態へ戻す標準的表現、fixはより会話的で広く「直す」。相互canonicalはprompt境界を消すため外し、両方で自然なmendを残す。",
+    "confidence": "MEDIUM",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): restore_to_working_order, repair_something."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-01453-01578": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense; current sense_key(s): biological_cell_material, organized_group."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-01558-01650": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): all_space_and_matter, space_beyond_earth."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-01592-02397": {
+    "classification": "PROMPT_AND_PARAPHRASE",
+    "semantic_relationship": "周囲の条件全体と、場所の近くにある物・環境。",
+    "nuance_dimensions": [
+      "conditions_vs_physical_surroundings"
+    ],
+    "recommended_prompt": {
+      "vocab:01592": "環境（生活・活動を取り巻く条件全体）",
+      "vocab:02397": "周囲の環境（場所の近くにある物・環境）"
+    },
+    "recommended_paraphrases": {
+      "vocab:01592": [],
+      "vocab:02397": []
+    },
+    "reason": "environmentは生活・活動を取り巻く条件全体、surroundingsは場所の周囲にある物・環境を指しやすい。相互paraphraseを外して中心訳の違いを補足で示す。",
+    "confidence": "MEDIUM",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense; current sense_key(s): surrounding_conditions, things_around_a_place."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-01628-02329": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: same_sense_key; current sense_key(s): administrative_region."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-01689-02017": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: same_sense_key; current sense_key(s): relating_to_a_city."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-01701-02121": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense, same_sense_key; current sense_key(s): quickly."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-01725-01873": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): amount, quantity_of_something."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-01799-02381": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): convert_into, transform_one_thing_into_another."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-01874-01957": {
+    "classification": "KEEP",
+    "semantic_relationship": "Closely interchangeable expressions with the same representative sense and Japanese head gloss.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "共通の日本語promptは複数canonicalに共通する中心義を簡潔に表している。現行sense_keyとgrammarRoleも同じで、括弧補足を加えても安定した実用差を作れず、accepted paraphraseも日常的な代替として成立するため現状維持。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense, same_sense_key; current sense_key(s): suitable."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-02090-02293": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): heap_of_objects, pile."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-02119-02277": {
+    "classification": "KEEP",
+    "semantic_relationship": "Closely interchangeable expressions with the same representative sense and Japanese head gloss.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "共通の日本語promptは複数canonicalに共通する中心義を簡潔に表している。現行sense_keyとgrammarRoleも同じで、括弧補足を加えても安定した実用差を作れず、accepted paraphraseも日常的な代替として成立するため現状維持。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense, same_sense_key; current sense_key(s): place_of_imprisonment."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-02158-02235": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt; current sense_key(s): express_objection, express_opposition_to."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-02200-02288": {
+    "classification": "PROMPT_AND_PARAPHRASE",
+    "semantic_relationship": "脅威から守られていることと、事故・危険がない状態。",
+    "nuance_dimensions": [
+      "protection_vs_absence_of_harm"
+    ],
+    "recommended_prompt": {
+      "vocab:02200": "安全（犯罪・脅威から守られている状態）",
+      "vocab:02288": "安全（事故・危険がない状態）"
+    },
+    "recommended_paraphrases": {
+      "vocab:02200": [],
+      "vocab:02288": []
+    },
+    "reason": "securityは脅威からの保護・防護、safetyは事故や危険がない状態に寄る。共通の「安全」は維持し、相互accepted paraphraseを外して学習上の違いを補足する。",
+    "confidence": "MEDIUM",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): protection_from_danger, freedom_from_danger."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-02262-02279": {
+    "classification": "KEEP",
+    "semantic_relationship": "Same Japanese head gloss across related or distinct English senses; paraphrase overlap was checked for false positives.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "日本語promptは同じだが、現行sense_keyには異なる代表義が含まれる。共通訳だけから英語同士が同義とは結論せず、広い日本語訳だけで近義語扱いすると誤学習を招くため、prompt/paraphraseは変更しない。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: exact_prompt, near_prompt_or_shared_sense; current sense_key(s): police_officer_informal, police_officer."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-02282-02371": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: same_sense_key; current sense_key(s): try_to_do."
+    ],
+    "spelling_variant_notes": []
+  },
+  "NSD-02401-02427": {
+    "classification": "KEEP",
+    "semantic_relationship": "Related English forms surfaced by shared sense or accepted-answer evidence; current Japanese prompts already encode the useful distinction.",
+    "nuance_dimensions": [],
+    "recommended_prompt": {},
+    "recommended_paraphrases": {},
+    "reason": "候補はsame sense_keyまたはaccepted surfaceの重なりから抽出されたが、現行の日本語promptはそれぞれの代表義・構文を既に区別している。近い英語表現でもprompt差が学習上の境界を保っており、括弧補足やparaphrase除去は不要。",
+    "confidence": "HIGH",
+    "evidence_notes": [
+      "current production entry snapshotとsource authority file SHAはmanifest.jsonのsource_snapshotsに固定。",
+      "候補根拠: near_prompt_or_shared_sense; current sense_key(s): feeling_of_enjoyment, great_pleasure."
+    ],
+    "spelling_variant_notes": []
+  }
+}
