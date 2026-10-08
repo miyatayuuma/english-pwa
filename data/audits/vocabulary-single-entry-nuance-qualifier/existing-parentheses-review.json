@@ -1,0 +1,818 @@
+{
+  "source_blob_sha": "326021c771aa5b4746b120f5d1086ecce33a334f",
+  "reviewed": 38,
+  "keep": 37,
+  "paraphrase_revalidation_only": 1,
+  "entries": [
+    {
+      "id": "vocab:00001",
+      "canonical": "take up",
+      "current_meaning_ja": "（場所・時間などを）占める",
+      "review": "EXISTING_PARENTHESIS_REVIEW",
+      "decision": "KEEP",
+      "recommended_prompt": "（場所・時間などを）占める",
+      "original_paraphrases": [
+        "occupy"
+      ],
+      "recommended_paraphrases": [
+        "occupy"
+      ],
+      "removed_paraphrases": [],
+      "qualifier_dimension": "existing_parenthetical_sense",
+      "reason": "場所・時間の占有という限定はtake upの該当語義を正確に示す。occupyもこの語義で自然。",
+      "confidence": "HIGH",
+      "evidence": [
+        "current source sense_key: occupy_space_or_time"
+      ],
+      "ready_for_production": false
+    },
+    {
+      "id": "vocab:00014",
+      "canonical": "come out",
+      "current_meaning_ja": "（本・作品などが）刊行される",
+      "review": "EXISTING_PARENTHESIS_REVIEW",
+      "decision": "KEEP",
+      "recommended_prompt": "（本・作品などが）刊行される",
+      "original_paraphrases": [
+        "be published"
+      ],
+      "recommended_paraphrases": [
+        "be published"
+      ],
+      "removed_paraphrases": [],
+      "qualifier_dimension": "existing_parenthetical_sense",
+      "reason": "本・作品の公開を指す限定はcome outの多義性を安全に切り分け、be publishedと整合。",
+      "confidence": "HIGH",
+      "evidence": [
+        "current source sense_key: be_published"
+      ],
+      "ready_for_production": false
+    },
+    {
+      "id": "vocab:00026",
+      "canonical": "withdraw",
+      "current_meaning_ja": "（預金などを）引き出す",
+      "review": "EXISTING_PARENTHESIS_REVIEW",
+      "decision": "KEEP",
+      "recommended_prompt": "（預金などを）引き出す",
+      "original_paraphrases": [],
+      "recommended_paraphrases": [],
+      "removed_paraphrases": [],
+      "qualifier_dimension": "existing_parenthetical_sense",
+      "reason": "預金の引き出しという対象限定はwithdrawのこの語義を示し、過度な一般化を防ぐ。",
+      "confidence": "HIGH",
+      "evidence": [
+        "current source sense_key: withdraw_money_from_account"
+      ],
+      "ready_for_production": false
+    },
+    {
+      "id": "vocab:00027",
+      "canonical": "deposit",
+      "current_meaning_ja": "（預金として）預け入れる",
+      "review": "EXISTING_PARENTHESIS_REVIEW",
+      "decision": "KEEP",
+      "recommended_prompt": "（預金として）預け入れる",
+      "original_paraphrases": [],
+      "recommended_paraphrases": [],
+      "removed_paraphrases": [],
+      "qualifier_dimension": "existing_parenthetical_sense",
+      "reason": "預金として預けるという金融領域が明確で、補足を増やす実益はない。",
+      "confidence": "HIGH",
+      "evidence": [
+        "current source sense_key: put_money_into_account"
+      ],
+      "ready_for_production": false
+    },
+    {
+      "id": "vocab:00069",
+      "canonical": "no less than",
+      "current_meaning_ja": "（数量が）〜も",
+      "review": "EXISTING_PARENTHESIS_REVIEW",
+      "decision": "KEEP",
+      "recommended_prompt": "（数量が）〜も",
+      "original_paraphrases": [
+        "as many as",
+        "as much as"
+      ],
+      "recommended_paraphrases": [
+        "as many as",
+        "as much as"
+      ],
+      "removed_paraphrases": [],
+      "qualifier_dimension": "existing_parenthetical_sense",
+      "reason": "数量を強調するno less thanの用法を明示済み。as many/much asは数量種に応じた受理。",
+      "confidence": "HIGH",
+      "evidence": [
+        "current source sense_key: at_least_emphatic"
+      ],
+      "ready_for_production": false
+    },
+    {
+      "id": "vocab:00131",
+      "canonical": "go bad",
+      "current_meaning_ja": "（食べ物などが）傷む",
+      "review": "EXISTING_PARENTHESIS_REVIEW",
+      "decision": "KEEP",
+      "recommended_prompt": "（食べ物などが）傷む",
+      "original_paraphrases": [
+        "spoil",
+        "go off"
+      ],
+      "recommended_paraphrases": [
+        "spoil",
+        "go off"
+      ],
+      "removed_paraphrases": [],
+      "qualifier_dimension": "existing_parenthetical_sense",
+      "reason": "食物の傷みというsenseを限定。spoilとgo offは食物の劣化を表しうる。",
+      "confidence": "HIGH",
+      "evidence": [
+        "current source sense_key: spoil_or_decay"
+      ],
+      "ready_for_production": false
+    },
+    {
+      "id": "vocab:00229",
+      "canonical": "on earth",
+      "current_meaning_ja": "いったい（疑問を強める）",
+      "review": "EXISTING_PARENTHESIS_REVIEW",
+      "decision": "KEEP",
+      "recommended_prompt": "いったい（疑問を強める）",
+      "original_paraphrases": [
+        "in the world"
+      ],
+      "recommended_paraphrases": [
+        "in the world"
+      ],
+      "removed_paraphrases": [],
+      "qualifier_dimension": "existing_parenthetical_sense",
+      "reason": "疑問の強調というpragmatic functionが既存の括弧で明示されている。",
+      "confidence": "HIGH",
+      "evidence": [
+        "current source sense_key: emphatic_why_or_how"
+      ],
+      "ready_for_production": false
+    },
+    {
+      "id": "vocab:00247",
+      "canonical": "give out",
+      "current_meaning_ja": "（我慢・力などが）尽きる",
+      "review": "EXISTING_PARENTHESIS_REVIEW",
+      "decision": "KEEP",
+      "recommended_prompt": "（我慢・力などが）尽きる",
+      "original_paraphrases": [
+        "run out"
+      ],
+      "recommended_paraphrases": [
+        "run out"
+      ],
+      "removed_paraphrases": [],
+      "qualifier_dimension": "existing_parenthetical_sense",
+      "reason": "力・我慢が尽きるという代表語義を限定。run outも同じ対象と組み合わせれば成立する。",
+      "confidence": "HIGH",
+      "evidence": [
+        "current source sense_key: come_to_an_end_or_fail"
+      ],
+      "ready_for_production": false
+    },
+    {
+      "id": "vocab:00272",
+      "canonical": "pay off",
+      "current_meaning_ja": "（借金などを）完済する／（努力などが）報われる",
+      "review": "EXISTING_PARENTHESIS_REVIEW",
+      "decision": "KEEP",
+      "recommended_prompt": "（借金などを）完済する／（努力などが）報われる",
+      "original_paraphrases": [],
+      "recommended_paraphrases": [],
+      "removed_paraphrases": [],
+      "qualifier_dimension": "existing_parenthetical_sense",
+      "reason": "借金の完済と努力の報われる結果を併記し、単一senseへの誤限定を回避。",
+      "confidence": "HIGH",
+      "evidence": [
+        "current source sense_key: settle_debt_or_yield_reward"
+      ],
+      "ready_for_production": false
+    },
+    {
+      "id": "vocab:00289",
+      "canonical": "break down",
+      "current_meaning_ja": "（車や機械が）故障する",
+      "review": "EXISTING_PARENTHESIS_REVIEW",
+      "decision": "KEEP",
+      "recommended_prompt": "（車や機械が）故障する",
+      "original_paraphrases": [
+        "malfunction",
+        "stop working"
+      ],
+      "recommended_paraphrases": [
+        "malfunction",
+        "stop working"
+      ],
+      "removed_paraphrases": [],
+      "qualifier_dimension": "existing_parenthetical_sense",
+      "reason": "機械の故障への意味限定が明確。malfunction/stop workingが合致。",
+      "confidence": "HIGH",
+      "evidence": [
+        "current source sense_key: machine_or_vehicle_stop_working"
+      ],
+      "ready_for_production": false
+    },
+    {
+      "id": "vocab:00314",
+      "canonical": "clear up",
+      "current_meaning_ja": "（天気が）晴れる",
+      "review": "EXISTING_PARENTHESIS_REVIEW",
+      "decision": "KEEP",
+      "recommended_prompt": "（天気が）晴れる",
+      "original_paraphrases": [],
+      "recommended_paraphrases": [],
+      "removed_paraphrases": [],
+      "qualifier_dimension": "existing_parenthetical_sense",
+      "reason": "天気が晴れる語義の括弧が必要十分で、paraphraseは空。",
+      "confidence": "HIGH",
+      "evidence": [
+        "current source sense_key: weather_becomes_clear"
+      ],
+      "ready_for_production": false
+    },
+    {
+      "id": "vocab:00318",
+      "canonical": "stand for something",
+      "current_meaning_ja": "（略語などが）somethingを表す",
+      "review": "EXISTING_PARENTHESIS_REVIEW",
+      "decision": "KEEP",
+      "recommended_prompt": "（略語などが）somethingを表す",
+      "original_paraphrases": [
+        "represent something",
+        "mean something"
+      ],
+      "recommended_paraphrases": [
+        "represent something",
+        "mean something"
+      ],
+      "removed_paraphrases": [],
+      "qualifier_dimension": "existing_parenthetical_sense",
+      "reason": "略語などの表す機能が示され、represent/meanはこの用法で自然。",
+      "confidence": "HIGH",
+      "evidence": [
+        "current source sense_key: abbreviation_represents"
+      ],
+      "ready_for_production": false
+    },
+    {
+      "id": "vocab:00358",
+      "canonical": "set in",
+      "current_meaning_ja": "（好ましくない状況が）始まる",
+      "review": "EXISTING_PARENTHESIS_REVIEW",
+      "decision": "KEEP",
+      "recommended_prompt": "（好ましくない状況が）始まる",
+      "original_paraphrases": [],
+      "recommended_paraphrases": [],
+      "removed_paraphrases": [],
+      "qualifier_dimension": "existing_parenthetical_sense",
+      "reason": "好ましくない状況の開始と記載され、set inの典型語用を示す。",
+      "confidence": "HIGH",
+      "evidence": [
+        "current source sense_key: unpleasant_condition_begins"
+      ],
+      "ready_for_production": false
+    },
+    {
+      "id": "vocab:00381",
+      "canonical": "as many as",
+      "current_meaning_ja": "（数が）〜もの、〜も",
+      "review": "EXISTING_PARENTHESIS_REVIEW",
+      "decision": "KEEP",
+      "recommended_prompt": "（数が）〜もの、〜も",
+      "original_paraphrases": [
+        "no fewer than"
+      ],
+      "recommended_paraphrases": [
+        "no fewer than"
+      ],
+      "removed_paraphrases": [],
+      "qualifier_dimension": "existing_parenthetical_sense",
+      "reason": "数について大きさを強調する語用を限定。no fewer thanも近い。",
+      "confidence": "HIGH",
+      "evidence": [
+        "current source sense_key: surprisingly_large_number"
+      ],
+      "ready_for_production": false
+    },
+    {
+      "id": "vocab:00403",
+      "canonical": "get into shape",
+      "current_meaning_ja": "体を良い状態にする（運動などで体を鍛える）",
+      "review": "EXISTING_PARENTHESIS_REVIEW",
+      "decision": "KEEP",
+      "recommended_prompt": "体を良い状態にする（運動などで体を鍛える）",
+      "original_paraphrases": [
+        "get fit"
+      ],
+      "recommended_paraphrases": [
+        "get fit"
+      ],
+      "removed_paraphrases": [],
+      "qualifier_dimension": "existing_parenthetical_sense",
+      "reason": "運動などによる体調改善を明示し、get fitが意味・語用に適合。",
+      "confidence": "HIGH",
+      "evidence": [
+        "current source sense_key: become_physically_fit"
+      ],
+      "ready_for_production": false
+    },
+    {
+      "id": "vocab:00534",
+      "canonical": "break out",
+      "current_meaning_ja": "（戦争や病気などが）勃発する",
+      "review": "EXISTING_PARENTHESIS_REVIEW",
+      "decision": "KEEP",
+      "recommended_prompt": "（戦争や病気などが）勃発する",
+      "original_paraphrases": [],
+      "recommended_paraphrases": [],
+      "removed_paraphrases": [],
+      "qualifier_dimension": "existing_parenthetical_sense",
+      "reason": "戦争・病気などの突然の発生を示す対象限定が妥当。",
+      "confidence": "HIGH",
+      "evidence": [
+        "current source sense_key: war_or_illness_begins"
+      ],
+      "ready_for_production": false
+    },
+    {
+      "id": "vocab:00574",
+      "canonical": "go off",
+      "current_meaning_ja": "（爆弾が）爆発する／（警報などが）鳴る",
+      "review": "EXISTING_PARENTHESIS_REVIEW",
+      "decision": "KEEP",
+      "recommended_prompt": "（爆弾が）爆発する／（警報などが）鳴る",
+      "original_paraphrases": [
+        "explode",
+        "sound"
+      ],
+      "recommended_paraphrases": [
+        "explode",
+        "sound"
+      ],
+      "removed_paraphrases": [],
+      "qualifier_dimension": "existing_parenthetical_sense",
+      "reason": "爆弾の爆発と警報の鳴動を別例で提示し両義を保持。",
+      "confidence": "HIGH",
+      "evidence": [
+        "current source sense_key: explode_or_sound"
+      ],
+      "ready_for_production": false
+    },
+    {
+      "id": "vocab:00581",
+      "canonical": "date back to a time",
+      "current_meaning_ja": "（起源・歴史が）〜までさかのぼる",
+      "review": "EXISTING_PARENTHESIS_REVIEW",
+      "decision": "KEEP",
+      "recommended_prompt": "（起源・歴史が）〜までさかのぼる",
+      "original_paraphrases": [
+        "go back to a time"
+      ],
+      "recommended_paraphrases": [
+        "go back to a time"
+      ],
+      "removed_paraphrases": [],
+      "qualifier_dimension": "existing_parenthetical_sense",
+      "reason": "起源・歴史のさかのぼりという典型用域を明確化。",
+      "confidence": "HIGH",
+      "evidence": [
+        "current source sense_key: originate_at_a_past_time"
+      ],
+      "ready_for_production": false
+    },
+    {
+      "id": "vocab:00615",
+      "canonical": "go ahead",
+      "current_meaning_ja": "先に進む・始める／（許可して）どうぞ",
+      "review": "EXISTING_PARENTHESIS_REVIEW",
+      "decision": "KEEP",
+      "recommended_prompt": "先に進む・始める／（許可して）どうぞ",
+      "original_paraphrases": [
+        "proceed"
+      ],
+      "recommended_paraphrases": [
+        "proceed"
+      ],
+      "removed_paraphrases": [],
+      "qualifier_dimension": "existing_parenthetical_sense",
+      "reason": "進行の指示と許可を併記しており、go aheadの代表的機能を保持。",
+      "confidence": "HIGH",
+      "evidence": [
+        "current source sense_key: proceed_or_give_permission"
+      ],
+      "ready_for_production": false
+    },
+    {
+      "id": "vocab:00652",
+      "canonical": "break up",
+      "current_meaning_ja": "（恋人同士が）別れる",
+      "review": "EXISTING_PARENTHESIS_REVIEW",
+      "decision": "KEEP",
+      "recommended_prompt": "（恋人同士が）別れる",
+      "original_paraphrases": [
+        "split up",
+        "part ways"
+      ],
+      "recommended_paraphrases": [
+        "split up",
+        "part ways"
+      ],
+      "removed_paraphrases": [],
+      "qualifier_dimension": "existing_parenthetical_sense",
+      "reason": "恋人の別れという解釈を明示し、split up/part waysと大きく矛盾しない。",
+      "confidence": "HIGH",
+      "evidence": [
+        "current source sense_key: end_a_romantic_relationship"
+      ],
+      "ready_for_production": false
+    },
+    {
+      "id": "vocab:00862",
+      "canonical": "alter",
+      "current_meaning_ja": "変える・変わる（部分的に変更する）",
+      "review": "EXISTING_PARENTHESIS_REVIEW",
+      "decision": "KEEP",
+      "recommended_prompt": "変える・変わる（部分的に変更する）",
+      "original_paraphrases": [
+        "modify",
+        "adjust"
+      ],
+      "recommended_paraphrases": [
+        "modify",
+        "adjust"
+      ],
+      "removed_paraphrases": [],
+      "qualifier_dimension": "existing_parenthetical_sense",
+      "reason": "部分的な変更に絞り、modify/adjustと整合。",
+      "confidence": "HIGH",
+      "evidence": [
+        "current source sense_key: change_partially"
+      ],
+      "ready_for_production": false
+    },
+    {
+      "id": "vocab:00932",
+      "canonical": "undergo",
+      "current_meaning_ja": "（治療・変化・試練などを）受ける・経験する",
+      "review": "EXISTING_PARENTHESIS_REVIEW",
+      "decision": "KEEP",
+      "recommended_prompt": "（治療・変化・試練などを）受ける・経験する",
+      "original_paraphrases": [
+        "go through",
+        "experience"
+      ],
+      "recommended_paraphrases": [
+        "go through",
+        "experience"
+      ],
+      "removed_paraphrases": [],
+      "qualifier_dimension": "existing_parenthetical_sense",
+      "reason": "治療・変化・試練を経験する意味を具体化し、go through/experienceが用いられる。",
+      "confidence": "HIGH",
+      "evidence": [
+        "current source sense_key: experience_or_be_subject_to"
+      ],
+      "ready_for_production": false
+    },
+    {
+      "id": "vocab:01076",
+      "canonical": "assure",
+      "current_meaning_ja": "（人に）確かだと保証して安心させる",
+      "review": "EXISTING_PARENTHESIS_REVIEW",
+      "decision": "KEEP",
+      "recommended_prompt": "（人に）確かだと保証して安心させる",
+      "original_paraphrases": [
+        "reassure"
+      ],
+      "recommended_paraphrases": [
+        "reassure"
+      ],
+      "removed_paraphrases": [],
+      "qualifier_dimension": "existing_parenthetical_sense",
+      "reason": "人を安心させる保証の対象を示しており、reassureは同じ語用で使える。",
+      "confidence": "HIGH",
+      "evidence": [
+        "current source sense_key: state_confidently_to_reassure"
+      ],
+      "ready_for_production": false
+    },
+    {
+      "id": "vocab:01258",
+      "canonical": "cabin",
+      "current_meaning_ja": "小屋／（船・航空機の）客室",
+      "review": "EXISTING_PARENTHESIS_REVIEW",
+      "decision": "KEEP",
+      "recommended_prompt": "小屋／（船・航空機の）客室",
+      "original_paraphrases": [],
+      "recommended_paraphrases": [],
+      "removed_paraphrases": [],
+      "qualifier_dimension": "existing_parenthetical_sense",
+      "reason": "小屋と乗り物の客室を分けて示し、短い訳として成立。",
+      "confidence": "HIGH",
+      "evidence": [
+        "current source sense_key: small_shelter_or_private_room"
+      ],
+      "ready_for_production": false
+    },
+    {
+      "id": "vocab:01259",
+      "canonical": "item",
+      "current_meaning_ja": "一つの品物・項目（個別に扱うもの）",
+      "review": "EXISTING_PARENTHESIS_REVIEW",
+      "decision": "KEEP",
+      "recommended_prompt": "一つの品物・項目（個別に扱うもの）",
+      "original_paraphrases": [
+        "article"
+      ],
+      "recommended_paraphrases": [
+        "article"
+      ],
+      "removed_paraphrases": [],
+      "qualifier_dimension": "existing_parenthetical_sense",
+      "reason": "独立に扱う品物・項目という意味が示され、articleは物品の語義で対応。",
+      "confidence": "HIGH",
+      "evidence": [
+        "current source sense_key: individual_thing_or_list_entry"
+      ],
+      "ready_for_production": false
+    },
+    {
+      "id": "vocab:01260",
+      "canonical": "flight",
+      "current_meaning_ja": "飛行／航空便（フライト）",
+      "review": "EXISTING_PARENTHESIS_REVIEW",
+      "decision": "KEEP",
+      "recommended_prompt": "飛行／航空便（フライト）",
+      "original_paraphrases": [],
+      "recommended_paraphrases": [],
+      "removed_paraphrases": [],
+      "qualifier_dimension": "existing_parenthetical_sense",
+      "reason": "飛行行為と航空便を併記し、representative multi-senseを保持。",
+      "confidence": "HIGH",
+      "evidence": [
+        "current source sense_key: journey_or_travel_by_air"
+      ],
+      "ready_for_production": false
+    },
+    {
+      "id": "vocab:01276",
+      "canonical": "on safety grounds",
+      "current_meaning_ja": "安全上の理由で（on X grounds＝Xを理由に）",
+      "review": "EXISTING_PARENTHESIS_REVIEW",
+      "decision": "KEEP",
+      "recommended_prompt": "安全上の理由で（on X grounds＝Xを理由に）",
+      "original_paraphrases": [
+        "for safety reasons"
+      ],
+      "recommended_paraphrases": [
+        "for safety reasons"
+      ],
+      "removed_paraphrases": [],
+      "qualifier_dimension": "existing_parenthetical_sense",
+      "reason": "on X groundsの理由説明構文を括弧で示し、for safety reasonsに整合。",
+      "confidence": "HIGH",
+      "evidence": [
+        "current source sense_key: because_of_safety_considerations"
+      ],
+      "ready_for_production": false
+    },
+    {
+      "id": "vocab:01353",
+      "canonical": "undertake",
+      "current_meaning_ja": "（仕事・責任などを）引き受ける・着手する",
+      "review": "EXISTING_PARENTHESIS_REVIEW",
+      "decision": "KEEP",
+      "recommended_prompt": "（仕事・責任などを）引き受ける・着手する",
+      "original_paraphrases": [
+        "take on"
+      ],
+      "recommended_paraphrases": [
+        "take on"
+      ],
+      "removed_paraphrases": [],
+      "qualifier_dimension": "existing_parenthetical_sense",
+      "reason": "仕事・責任を引き受ける／着手する用法を提示。take onが適切。",
+      "confidence": "HIGH",
+      "evidence": [
+        "current source sense_key: take_on_or_begin_a_task"
+      ],
+      "ready_for_production": false
+    },
+    {
+      "id": "vocab:01369",
+      "canonical": "suspend",
+      "current_meaning_ja": "一時停止・中断する（人なら停職・停学にする）",
+      "review": "EXISTING_PARENTHESIS_REVIEW",
+      "decision": "KEEP",
+      "recommended_prompt": "一時停止・中断する（人なら停職・停学にする）",
+      "original_paraphrases": [],
+      "recommended_paraphrases": [],
+      "removed_paraphrases": [],
+      "qualifier_dimension": "existing_parenthetical_sense",
+      "reason": "停止と停職・停学を分けて示し、対象依存の多義性を保持。",
+      "confidence": "HIGH",
+      "evidence": [
+        "current source sense_key: temporarily_stop_or_exclude"
+      ],
+      "ready_for_production": false
+    },
+    {
+      "id": "vocab:01588",
+      "canonical": "disappear",
+      "current_meaning_ja": "消える・姿を消す（見えなくなる）",
+      "review": "EXISTING_PARENTHESIS_REVIEW",
+      "decision": "KEEP",
+      "recommended_prompt": "消える・姿を消す（見えなくなる）",
+      "original_paraphrases": [
+        "vanish"
+      ],
+      "recommended_paraphrases": [
+        "vanish"
+      ],
+      "removed_paraphrases": [],
+      "qualifier_dimension": "existing_parenthetical_sense",
+      "reason": "見えなくなるという限定がdisappear/vanishの代表語義を示す。",
+      "confidence": "HIGH",
+      "evidence": [
+        "current source sense_key: cease_to_be_visible_or_present"
+      ],
+      "ready_for_production": false
+    },
+    {
+      "id": "vocab:01615",
+      "canonical": "production",
+      "current_meaning_ja": "生産・製造（作品なら制作）",
+      "review": "EXISTING_PARENTHESIS_REVIEW",
+      "decision": "KEEP",
+      "recommended_prompt": "生産・製造（作品なら制作）",
+      "original_paraphrases": [
+        "manufacturing"
+      ],
+      "recommended_paraphrases": [
+        "manufacturing"
+      ],
+      "removed_paraphrases": [],
+      "qualifier_dimension": "existing_parenthetical_sense",
+      "reason": "生産・製造と制作の差を括弧で示し、manufacturingは前者の受理として成立。",
+      "confidence": "HIGH",
+      "evidence": [
+        "current source sense_key: process_of_making_or_creating"
+      ],
+      "ready_for_production": false
+    },
+    {
+      "id": "vocab:01637",
+      "canonical": "come on",
+      "current_meaning_ja": "さあ・ほら（促し）／おい・もう（抗議・不信）",
+      "review": "EXISTING_PARENTHESIS_REVIEW",
+      "decision": "KEEP",
+      "recommended_prompt": "さあ・ほら（促し）／おい・もう（抗議・不信）",
+      "original_paraphrases": [],
+      "recommended_paraphrases": [],
+      "removed_paraphrases": [],
+      "qualifier_dimension": "existing_parenthetical_sense",
+      "reason": "促しと抗議・不信の談話機能を併記しており単一の語用に狭めていない。",
+      "confidence": "HIGH",
+      "evidence": [
+        "current source sense_key: urge_or_protest"
+      ],
+      "ready_for_production": false
+    },
+    {
+      "id": "vocab:01732",
+      "canonical": "unit",
+      "current_meaning_ja": "単位・一つのまとまり（1個として扱うもの）",
+      "review": "EXISTING_PARENTHESIS_REVIEW",
+      "decision": "KEEP",
+      "recommended_prompt": "単位・一つのまとまり（1個として扱うもの）",
+      "original_paraphrases": [],
+      "recommended_paraphrases": [],
+      "removed_paraphrases": [],
+      "qualifier_dimension": "existing_parenthetical_sense",
+      "reason": "個別のひとまとまりとしてのunitの語義を明確化。",
+      "confidence": "HIGH",
+      "evidence": [
+        "current source sense_key: single_entity_or_standard_measure"
+      ],
+      "ready_for_production": false
+    },
+    {
+      "id": "vocab:01746",
+      "canonical": "transfer",
+      "current_meaning_ja": "移す・移る（別の場所・所属などへ）",
+      "review": "EXISTING_PARENTHESIS_REVIEW",
+      "decision": "PARAPHRASE_REVALIDATION_ONLY",
+      "recommended_prompt": "移す・移る（別の場所・所属などへ）",
+      "original_paraphrases": [
+        "move"
+      ],
+      "recommended_paraphrases": [],
+      "removed_paraphrases": [
+        "move"
+      ],
+      "qualifier_dimension": "usage_domain",
+      "reason": "moveは単なる移動にも使われ、現行括弧『別の場所・所属などへ』というtransferの語用境界を常に表さない。受理削除を再検討。",
+      "confidence": "MEDIUM",
+      "evidence": [
+        "https://dictionary.cambridge.org/dictionary/english/transfer"
+      ],
+      "ready_for_production": false
+    },
+    {
+      "id": "vocab:02118",
+      "canonical": "confine",
+      "current_meaning_ja": "（範囲内に）制限する／閉じ込める",
+      "review": "EXISTING_PARENTHESIS_REVIEW",
+      "decision": "KEEP",
+      "recommended_prompt": "（範囲内に）制限する／閉じ込める",
+      "original_paraphrases": [
+        "restrict",
+        "limit"
+      ],
+      "recommended_paraphrases": [
+        "restrict",
+        "limit"
+      ],
+      "removed_paraphrases": [],
+      "qualifier_dimension": "existing_parenthetical_sense",
+      "reason": "範囲内への制限と閉じ込めの両義を示す。restrict/limitは制限の語義に適合。",
+      "confidence": "HIGH",
+      "evidence": [
+        "current source sense_key: restrict_within_limits_or_enclose"
+      ],
+      "ready_for_production": false
+    },
+    {
+      "id": "vocab:02134",
+      "canonical": "reign",
+      "current_meaning_ja": "（君主の）治世",
+      "review": "EXISTING_PARENTHESIS_REVIEW",
+      "decision": "KEEP",
+      "recommended_prompt": "（君主の）治世",
+      "original_paraphrases": [
+        "rule"
+      ],
+      "recommended_paraphrases": [
+        "rule"
+      ],
+      "removed_paraphrases": [],
+      "qualifier_dimension": "existing_parenthetical_sense",
+      "reason": "君主の治世と限定する既存説明はreignの名詞用法を正確に示す。",
+      "confidence": "HIGH",
+      "evidence": [
+        "current source sense_key: rule_or_period_of_a_monarch"
+      ],
+      "ready_for_production": false
+    },
+    {
+      "id": "vocab:02330",
+      "canonical": "wicked",
+      "current_meaning_ja": "邪悪な（道徳的にひどく悪い）",
+      "review": "EXISTING_PARENTHESIS_REVIEW",
+      "decision": "KEEP",
+      "recommended_prompt": "邪悪な（道徳的にひどく悪い）",
+      "original_paraphrases": [
+        "evil"
+      ],
+      "recommended_paraphrases": [
+        "evil"
+      ],
+      "removed_paraphrases": [],
+      "qualifier_dimension": "existing_parenthetical_sense",
+      "reason": "道徳的悪という既存の括弧でwickedを区別でき、evilと対応する。",
+      "confidence": "HIGH",
+      "evidence": [
+        "current source sense_key: morally_evil"
+      ],
+      "ready_for_production": false
+    },
+    {
+      "id": "vocab:02393",
+      "canonical": "belong",
+      "current_meaning_ja": "属する／（人など）のものである",
+      "review": "EXISTING_PARENTHESIS_REVIEW",
+      "decision": "KEEP",
+      "recommended_prompt": "属する／（人など）のものである",
+      "original_paraphrases": [
+        "be someone's"
+      ],
+      "recommended_paraphrases": [
+        "be someone's"
+      ],
+      "removed_paraphrases": [],
+      "qualifier_dimension": "existing_parenthetical_sense",
+      "reason": "所属・所有の両義を表示し、be someone'sは所有の語義に適合。",
+      "confidence": "HIGH",
+      "evidence": [
+        "current source sense_key: be_owned_by_or_be_part_of"
+      ],
+      "ready_for_production": false
+    }
+  ]
+}
