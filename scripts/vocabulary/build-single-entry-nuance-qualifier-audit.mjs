@@ -31,7 +31,7 @@ const rows=source.map((s,i)=>{
   added_paraphrases:p?.added_paraphrases??n?.added_paraphrases??[],
   reason:c?.issue??p?.reason??n?.reason??q?.reason??"未裁定。自動KEEPは禁止。",
   confidence:c?"LOW":p?.confidence??n?.confidence??q?.confidence??null,
-  evidence:c?c.previous_group_ids:p?["previous audit commit 25058e095e759fe5de677f8d63267ab9669c4a06","group "+p.group_id]:n?.evidence??q?.evidence??[],
+  evidence:c?["prior KEEP group(s): "+c.previous_group_ids.join(",")]:p?["previous audit commit 25058e095e759fe5de677f8d63267ab9669c4a06","group "+p.group_id]:n?.evidence??q?.evidence??[],
   previous_near_synonym_group_ids:g.map(x=>x.group_id)
  };
 });
