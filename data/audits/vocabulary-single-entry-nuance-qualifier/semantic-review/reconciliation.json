@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "status": "PARTIALLY_RECONCILED",
+  "authority": "canonical review-index and authored-judgments; supplemental semantic-review files remain drafts",
+  "source_files": [
+    "semantic-review/batch-001.json",
+    "semantic-review/batch-002.json",
+    "semantic-review/batch-003.json",
+    "semantic-review/batch-004.json",
+    "semantic-review/batch-005.json",
+    "semantic-review/batch-006.json",
+    "semantic-review/batch-007.json"
+  ],
+  "draft_row_count": 639,
+  "draft_duplicate_ids": 0,
+  "canonical_status_at_resume": {
+    "PENDING": 638,
+    "REVIEWED": 1
+  },
+  "promoted_in_checkpoint": [
+    "vocab:00002",
+    "vocab:00003",
+    "vocab:00004",
+    "vocab:00005",
+    "vocab:00006",
+    "vocab:00007",
+    "vocab:00008",
+    "vocab:00009",
+    "vocab:00010",
+    "vocab:00011",
+    "vocab:00012",
+    "vocab:00013",
+    "vocab:00015",
+    "vocab:00018",
+    "vocab:00019",
+    "vocab:00020",
+    "vocab:00021",
+    "vocab:00022",
+    "vocab:00023",
+    "vocab:00024",
+    "vocab:00025",
+    "vocab:00028",
+    "vocab:00030",
+    "vocab:00031",
+    "vocab:00032",
+    "vocab:00033",
+    "vocab:00034",
+    "vocab:00035",
+    "vocab:00036",
+    "vocab:00037",
+    "vocab:00038",
+    "vocab:00039",
+    "vocab:00040",
+    "vocab:00041",
+    "vocab:00042",
+    "vocab:00043",
+    "vocab:00044",
+    "vocab:00045",
+    "vocab:00046",
+    "vocab:00047",
+    "vocab:00049",
+    "vocab:00050",
+    "vocab:00051",
+    "vocab:00052",
+    "vocab:00053",
+    "vocab:00054",
+    "vocab:00055",
+    "vocab:00056",
+    "vocab:00057",
+    "vocab:00058"
+  ],
+  "promoted_count": 50,
+  "pending_unpromoted_count": 588,
+  "superseded_stale_draft_ids": [
+    "vocab:00139"
+  ],
+  "decision_differences": [
+    {
+      "id": "vocab:00004",
+      "draft_decision": "PARAPHRASE_REVALIDATION_ONLY",
+      "audited_decision": "QUALIFIER_AND_PARAPHRASE",
+      "draft_prompt": "someoneにsomethingさせる",
+      "audited_prompt": "someoneにsomethingをさせる（相手に直接働きかけ、強制する場合も）",
+      "draft_removed": [
+        "get someone to do something",
+        "have someone do something"
+      ],
+      "audited_removed": [
+        "get someone to do something",
+        "have someone do something"
+      ]
+    }
+  ],
+  "notes": [
+    "Rows are not counted as reviewed merely because a semantic-review draft exists.",
+    "The first 50 pending source-order rows were source-checked and written to canonical authored-judgments, decisions, review-index, and batch artifacts.",
+    "vocab:00004 differs from its supplemental draft: the audit adds a causative-force qualifier while retaining the same two paraphrase removals.",
+    "vocab:00139's old supplemental row is superseded by the live-main REVALIDATED canonical judgment."
+  ]
+}

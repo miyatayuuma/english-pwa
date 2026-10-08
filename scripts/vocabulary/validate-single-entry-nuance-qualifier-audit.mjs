@@ -25,8 +25,12 @@ if(process.argv.includes("--drift-only")){
  assert(sem&&sem.old_snapshot.canonical==="no sooner had I sat down than the phone rang"&&sem.current_snapshot.canonical==="no sooner had I arrived than the phone rang","00139 snapshots");
  assert(sem?.revalidation?.decision==="QUALIFIER_ONLY"&&sem?.revalidation?.source_status==="REVALIDATED","00139 revalidation");
  assert(elig&&elig.semantic_relevance==="LEARNING_ELIGIBILITY_ONLY"&&elig.current_snapshot.learning_eligible===false,"00947 eligibility");
- assert(d.summary.reviewed===m.reviewed&&d.summary.unreviewed===m.unreviewed,"progress accounting");
- assert(d.summary.reviewed===194&&d.summary.unreviewed===2284,"resume progress");
+ // The drift artifact records the resume-time ledger (194/2,284). Later
+ // checkpoints may advance the audit while preserving that reconciliation
+ // record, so validate its historical snapshot separately from live progress.
+ assert(d.summary.reviewed===194&&d.summary.unreviewed===2284,"resume snapshot progress");
+ assert(m.reviewed+m.unreviewed===m.population&&m.population===2478,"current progress accounting");
+ assert(m.reviewed>=d.summary.reviewed&&m.unreviewed<=d.summary.unreviewed,"checkpoint regressed from resume snapshot");
  assert(d.summary.batch_count===25&&d.summary.batch_status_preserved,"batch accounting");
  if(errors.length){console.error("FAIL [drift-only] ("+errors.length+"): "+errors.join("; "));process.exitCode=1;}
  else console.log("PASS [drift-only] main="+d.current_main_sha+" source=2478 learningEligible=2477 reviewed="+m.reviewed+" unreviewed="+m.unreviewed+" stale=0");
@@ -58,6 +62,11 @@ for(let b=0;b<25;b++){
   assert(r.canonical===expectedSource.canonical&&r.current_meaning_ja===(expectedSource.meaning_ja??expectedSource.current_meaning_ja)&&r.grammarRole===expectedSource.grammarRole&&r.sense_key===expectedSource.sense_key&&JSON.stringify(r.current_paraphrases)===JSON.stringify(expectedSource.paraphrases??expectedSource.current_paraphrases??[]),"source snapshot "+r.id);
   if(r.source_status==="REVALIDATED")assert(driftSnapshot&&r.revalidated_against_main_sha===m.current_main_sha,"revalidation source status "+r.id);
   if(r.learning_eligible===false)assert(r.id==="vocab:00947"&&r.source_status==="CURRENT","unexpected learning exclusion "+r.id);
+  assert(r.learning_eligible===!live.excluded_learning_entry_ids.includes(r.id),"learning eligibility field "+r.id);
+  assert(r.remediation_eligible===(!live.excluded_learning_entry_ids.includes(r.id)&&!conflicts.some(y=>y.id===r.id)&&!upstream.some(y=>y.id===r.id)),"remediation eligibility field "+r.id);
+  assert(r.previous_authority_imported===prior.has(r.id),"previous authority import field "+r.id);
+  assert(r.single_entry_revalidated===(r.review_status!=="PENDING"),"single-entry revalidation field "+r.id);
+  assert(["CURRENT","REVALIDATED","STALE"].includes(r.source_status),"source status field "+r.id);
   assert(r.review_status===x.status&&r.single_entry_decision===x.classification,"review index drift "+r.id);
   assert(r.previous_near_synonym_authority===(pg.some(y=>y.classification==="PROMPT_AND_PARAPHRASE")?"PROMPT_AND_PARAPHRASE":pg.some(y=>y.classification==="KEEP")?"KEEP":"NONE"),"previous authority membership "+r.id);
   assert(JSON.stringify(r.previous_near_synonym_group_ids)===JSON.stringify(pg.map(y=>y.group_id)),"previous authority groups "+r.id);

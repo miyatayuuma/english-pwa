@@ -1,65 +1,53 @@
 # English PWA — Vocabulary Single-Entry Nuance Qualifier Audit
 
+## Remote resume and source authority
 
-## Live-main drift reconciliation — 2026-10-08T10:23:39.523Z
+- Repository: `miyatayuuma/english-pwa`; audit branch: `audit/vocabulary-single-entry-nuance-qualifier`.
+- Audit base main: `f0ff2e0a6503b234231e6cfa94c45c927fbb8345`.
+- Remote audit HEAD at resume: `f6e72de478c5598fd5ce1be6a17dfa5bcf295ff0`.
+- Current main verified at resume: `794e6cf8c88ed6775be9b56a6f1fddc0775a7130`.
+- Main Vocabulary SHA256: `c0dfee10995c063c9c2df5c1edd2f5d0edb1efa4a1cef3ed1be7a265aefeb309`; semantic inventory SHA256: `f0e65131a05f29cb0053c5ebd37af20e6d92ea372010f03f554f3e028a77117b`.
+- Live-main drift reconciliation found one semantic entry change (`vocab:00139`), six non-semantic commits, and no remaining stale IDs. The `vocab:00139` decision was revalidated against current main. `vocab:00947` (`toil`) remains in source accounting but is excluded from learning and remediation.
 
-- Current main: `794e6cf8c88ed6775be9b56a6f1fddc0775a7130` (v5.95); audit base/merge-base remains `f0ff2e0a6503b234231e6cfa94c45c927fbb8345`.
-- `vocab:00139` was selectively revalidated against its changed arrival example, Japanese meaning, and current paraphrases. Decision: `QUALIFIER_ONLY`; add a register/emphasis qualifier and retain both paraphrases.
-- `vocab:00947` remains in the 2,478-record database and keeps its semantic audit decision; it is excluded from learning and normal remediation. `vocab:00428` (`toil away`) remains eligible.
-- Accounting: one legacy supplemental decision was stale but was not counted in the previous reviewed total; reviewed now **194**, unreviewed **2,284**, remaining stale **0**, source population **2,478**, learning eligible **2,477**.
-- The previous status ledger matched 193/2,285. Its confidence counter and paraphrase-removal total did not match the 25 batch records; both are recomputed here.
+## Current checkpoint
 
-## Status: IN PROGRESS / NOT CLOSED
+- Source population: **2,478**; learning eligible: **2,477**; excluded from learning: **1** (`vocab:00947`).
+- Reviewed or isolated: **244**; pending: **2,234**; stale: **0**; duplicates: **0**; order drift: **0**.
+- This checkpoint reviewed the first **50 PENDING** entries in Vocabulary order, spanning source indices 2–58. The next pending entry is `vocab:00059` at source index 59.
+- Current statuses: REVIEWED **128**, PREVIOUS_AUTHORITY_CONFIRMED **104**, CROSS_AUDIT_CONFLICT **5**, UPSTREAM_ISOLATED **7**, PENDING **2,234**.
+- Current provisional classifications: KEEP **85**, QUALIFIER_ONLY **9**, QUALIFIER_AND_PARAPHRASE **127**, PARAPHRASE_REVALIDATION_ONLY **11**, UPSTREAM_AUTHORITY_REVIEW **7**, plus five isolated cross-audit conflicts.
+- Previous Near-Synonym authority: all **104/104** affected entries have single-entry revalidation; all 104 remain confirmed, with zero conflicts against that authority.
+- Confidence among reviewed or isolated entries: HIGH **100**, MEDIUM **139**, LOW **5**. Pending entries have no confidence assigned.
+- Provisional remediation candidates: **147** (146 learning eligible, one excluded). All remain unauthorized for production materialization.
+- Proposed qualifier additions: **136** total (104 inherited, 32 new); rewrites/removals: **0**. Proposed paraphrase removals: **214** total (162 inherited, 52 new); additions: **4** inherited, **0** new.
 
-The initial population inventory and a bounded set of semantic judgments are published. **No claim of 2,478-entry independent semantic adjudication is made.** Pending records intentionally retain `single_entry_decision: null`. Machine-derived or unexamined KEEP is prohibited.
+## Newly adjudicated cases in this checkpoint
 
-- Audit base main: `f0ff2e0a6503b234231e6cfa94c45c927fbb8345` (PR #309 followed the initial main; Vocabulary and referenced authority blobs were unchanged).
-- Previous Near-Synonym audit: `25058e095e759fe5de677f8d63267ab9669c4a06`; its 104 affected decisions and 178 group memberships have been imported without rewriting.
-- Population and unique IDs: **2,478 / 2,478**; fixed order; 25 batches of ~100.
-- Reviewed or isolated (including imported previous authority): **194**.
-- **Unreviewed: 2,284**.
-- Previous authority: **104**; newly adjudicated semantic candidate records: **47**.
-- New candidate types: qualifier only **2**, qualifier + paraphrase **28**, paraphrase revalidation only **10**, upstream meaning/canonical **7**.
-- Cross-audit conflict isolation: **5** (no previous decision was overwritten).
-- Provisional remediation candidates: **145** (104 prior + 40 new + one existing-parenthesis paraphrase correction; all marked `ready_for_production:false`).
-- Confidence among 194 reviewed or isolated records: HIGH **51**; MEDIUM **138**; LOW **5** (conflict isolation). Pending confidence not assigned.
-- Combined provisional classification: QUALIFIER_ONLY **9**; QUALIFIER_AND_PARAPHRASE **125**; PARAPHRASE_REVALIDATION_ONLY **11**; UPSTREAM_AUTHORITY_REVIEW **7**; conflict **5**; KEEP **37**. These counts are **not the final whole-population classifications**.
-- Provisional qualifier additions: **134** total (**104** inherited from previous audit, **30** newly proposed); qualifier removals/rewrite proposals: **0** at this WIP stage.
-- Provisional paraphrase removals: **211** total (**162** inherited, **49** new). Provisional additions: **4** (all previous authority, **0** new).
-- Existing Japanese prompts with parenthetical text: **38** source entries; this group received an individual review: **37 KEEP**, **1 PARAPHRASE_REVALIDATION_ONLY** (`vocab:01746` / `transfer`, remove broad `move`). See `existing-parentheses-review.json`.
-- Proposed new paraphrase additions: **0**. Proposed removals are in `authored-judgments.json`, `previous-near-synonym-authority.json` and `remediation-candidates.json`.
+- `vocab:00004` — `make someone do something`: QUALIFIER_AND_PARAPHRASE. Prompt: `someoneにsomethingをさせる（相手に直接働きかけ、強制する場合も）`. Re-evaluated both existing paraphrases against the qualified prompt; removed `get someone to do something` and `have someone do something` because their persuade / arrange senses do not preserve the make construction's direct causative nuance. MEDIUM confidence.
+- `vocab:00012` — `be starved`: QUALIFIER_AND_PARAPHRASE. Prompt: `お腹がぺこぺこだ（主に米語のくだけた言い方）`. Re-evaluated its existing paraphrase and removed `be starving` because it does not share the same regional register. HIGH confidence.
+- The other 48 entries received individual KEEP decisions with entry-specific reasons after source, representative sense, grammar role, and paraphrases were checked.
 
-## Representative new single-entry candidates
+## Supplemental semantic-review drafts
 
-| ID | Canonical | Tentative disposition | Rationale |
-| --- | --- | --- | --- |
-| vocab:00756 | purchase | qualifier + remove buy | Formality matters |
-| vocab:01418 | flunk | qualifier + remove fail an exam | Primarily US informal |
-| vocab:01600 | melt | qualifier + remove dissolve | Phase change vs dissolution |
-| vocab:01859 | beverage | qualifier + remove drink | More formal register |
-| vocab:02262 | cop | qualifier + remove police officer | Informal register |
-| vocab:00088 | get out of something | paraphrase-only; remove get off something | Vehicle-preposition usage split |
-| vocab:00884 | forgive | paraphrase-only; remove allow, permit | Forgiveness vs permission |
+The seven `semantic-review/batch-001.json`–`batch-007.json` files contain 639 draft rows. At resume, 638 mapped to PENDING canonical rows and one (`vocab:00139`) was superseded by live-main revalidation. This checkpoint promoted 50 source-checked rows into the canonical authored judgments, decisions, review index, and batch artifacts; 588 supplemental rows remain unpromoted. Draft presence alone does not count as review. The only decision difference among the 50 promoted rows is `vocab:00004`, now QUALIFIER_AND_PARAPHRASE with a causative-force qualifier rather than the draft's PARAPHRASE_REVALIDATION_ONLY. See `semantic-review/reconciliation.json`.
 
-External dictionary evidence is attached to selected high-confidence judgments. The remaining evidence coverage and nuanced removal proposals require independent scrutiny before release authority can be finalized.
+## Validation and production boundary
 
-## Strict closure requirements not yet satisfied
+- WIP validator, drift-only validator, and deterministic regeneration are required before each remote checkpoint; strict closure remains intentionally incomplete while 2,234 entries are pending.
+- `production_changed` is **false**. No production Vocabulary, meaning, paraphrase, runtime, ASR, or UI files are included in this checkpoint.
+- No main merge or production remediation is authorized by this audit.
 
-1. Independently adjudicate **2,284 PENDING** entries, including plain KEEP decisions after actual review.
-2. Existing parenthetical qualifiers have been audited; independently finish the broader multi-sense review before final classification.
-3. Revalidate all accepted paraphrases for every newly qualified prompt; confirm every proposed removal against use evidence and source sense.
-4. Resolve the five previous-KEEP conflicts without silently editing earlier decisions; isolate all upstream authority conflicts.
-5. Run strict validator and source-to-decision deterministic regeneration in a checkout; require no pending records or unresolved conflicts.
-6. Publish a reviewed final audit commit and reverify the remote branch against the latest main. **Do not open a PR, merge to main, or touch production files.**
+## Persistent resume artifacts
 
-## Artifacts
+- `manifest.json`: population, authority hashes, progress, and provisional counts.
+- `checkpoint.json`: completed IDs, unresolved IDs, next source-order position, stale IDs, and remote parent checkpoint.
+- `review-index.json` and `decisions.json`: indexed status and decision ledger for all 2,478 source entries.
+- `batches/batch-001.json`–`batch-025.json`: deterministic per-entry records.
+- `authored-judgments.json`: individually reviewed new judgments and evidence.
+- `remediation-candidates.json`: draft-only recommendations with production materialization disabled.
+- `live-main-drift.json`, `previous-near-synonym-authority.json`, `previous-group-membership.json`, `existing-parentheses-review.json`, `cross-audit-conflicts.json`, and `upstream-review.json`: preserved authorities and isolation records.
+- `semantic-review/reconciliation.json`: accounting for supplemental review drafts.
 
-- `manifest.json`: immutable source hashes and WIP accounting.
-- `decisions.json`: 2,478-entry indexed authority; complete individual records reside in `batches/batch-001.json`–`batch-025.json`.
-- `authored-judgments.json`: independently authored new recommendations and evidence.
-- `previous-near-synonym-authority.json` and `previous-group-membership.json`: previous audit preservation.
-- `remediation-candidates.json`: draft only, all materialization flags disabled.
-- `existing-parentheses-review.json`: 38 individually reviewed pre-existing parenthetical prompts.
-- `cross-audit-conflicts.json`, `upstream-review.json`: isolation lists.
-- `scripts/vocabulary/validate-single-entry-nuance-qualifier-audit.mjs`: strict closure gate; `--allow-incomplete` checks WIP structural integrity only.
-- `scripts/vocabulary/build-single-entry-nuance-qualifier-audit.mjs --check`: deterministic reconstruction comparison (must be executed and verified separately).
+## Next work
+
+Resume from `checkpoint.json`, confirm the current remote branch head and main, then continue from `vocab:00059` in source order. Continue in bounded batches, save every decision and evidence record, run WIP validation and deterministic comparison, and publish audit-only commits. Do not close the audit until all 2,478 entries pass the strict validator and final reconciliation.
