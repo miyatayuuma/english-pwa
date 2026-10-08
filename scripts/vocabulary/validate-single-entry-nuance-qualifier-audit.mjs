@@ -77,7 +77,8 @@ for(let b=0;b<25;b++){
 assert(duplicate.size===2478&&pending===m.unreviewed&&reviewed===m.reviewed,"population accounting");
 for(const [k,v] of Object.entries(stats))assert(m.review_status_counts[k]===v,"status count "+k);
 const isolated=new Set([...conflicts,...upstream].map(x=>x.id));
-assert(rem.length===144&&rem.every(x=>x.ready_for_production===false&&x.confidence!=="LOW"&&!isolated.has(x.id)),"unsafe remediation");
+const learningEligibleRem=rem.filter(x=>x.learning_eligible!==false), learningIneligibleRem=rem.filter(x=>x.learning_eligible===false);
+assert(rem.length===m.provisional_remediation_candidates&&learningEligibleRem.length===m.learning_eligible_provisional_remediation_candidates&&learningIneligibleRem.length===m.learning_ineligible_provisional_remediation_candidates&&rem.every(x=>x.ready_for_production===false&&x.confidence!=="LOW")&&learningEligibleRem.every(x=>!isolated.has(x.id))&&learningIneligibleRem.every(x=>x.remediation_eligible===false),"unsafe remediation");
 assert(m.production_changed===false&&m.production_materialization_allowed===false,"production boundary");
 const excludedLearning=allRows.filter(x=>x.learning_eligible===false).map(x=>x.id),revalidatedIds=allRows.filter(x=>x.source_status==="REVALIDATED").map(x=>x.id),staleIds=allRows.filter(x=>x.source_status==="STALE").map(x=>x.id);
 assert(m.source_population===2478&&m.learning_eligible_population===2477&&excludedLearning.length===1&&excludedLearning[0]==="vocab:00947","learning eligibility accounting");
