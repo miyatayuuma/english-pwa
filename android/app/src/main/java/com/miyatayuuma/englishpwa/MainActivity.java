@@ -1,13 +1,20 @@
 package com.miyatayuuma.englishpwa;
 
 import com.getcapacitor.BridgeActivity;
+import com.getcapacitor.Plugin;
 import android.os.Bundle;
+import android.content.Intent;
 
 public class MainActivity extends BridgeActivity {
+    private boolean nativeSpeechGameTraceLaunch;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        nativeSpeechGameTraceLaunch = BuildConfig.DEBUG
+            && getIntent().getBooleanExtra("nativeSpeechGameTrace", false);
         registerPlugin(NativeSpeechPlugin.class);
         registerPlugin(NativeMediaPlugin.class);
+        registerDebugGameTracePlugin();
         super.onCreate(savedInstanceState);
         // One shell policy for every page, including fixed-position overlays.
         // Keep the WebView viewport inside bars/cutouts/IME instead of relying
@@ -26,6 +33,39 @@ public class MainActivity extends BridgeActivity {
         // Explicit developer entry, absent from release assets and normal UI.
         if (BuildConfig.DEBUG && getIntent().getBooleanExtra("nativeSpeechGate", false)) {
             getBridge().getWebView().loadUrl("https://localhost/native-gate.html");
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void registerDebugGameTracePlugin() {
+        if (!BuildConfig.DEBUG) return;
+        try {
+            Class<?> plugin = Class.forName("com.miyatayuuma.englishpwa.NativeGameTracePlugin");
+            if (Plugin.class.isAssignableFrom(plugin)) {
+                registerPlugin((Class<? extends Plugin>) plugin);
+            }
+        } catch (ClassNotFoundException ignored) {
+            // The bridge capability exists only in the debug source set.
+        }
+    }
+
+    boolean isNativeSpeechGameTraceLaunchEnabled() {
+        return BuildConfig.DEBUG && nativeSpeechGameTraceLaunch;
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        setIntent(intent);
+        super.onNewIntent(intent);
+        nativeSpeechGameTraceLaunch = BuildConfig.DEBUG
+            && intent.getBooleanExtra("nativeSpeechGameTrace", false);
+        if (BuildConfig.DEBUG && intent.getBooleanExtra("nativeSpeechGate", false)) {
+            getBridge().getWebView().loadUrl("https://localhost/native-gate.html");
+            return;
+        }
+        if (getBridge() != null && getBridge().getWebView() != null) {
+            getBridge().getWebView().post(() -> getBridge().getWebView().evaluateJavascript(
+                "window.dispatchEvent(new Event('native-game-trace-launch-updated'))", null));
         }
     }
 }

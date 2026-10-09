@@ -26,6 +26,10 @@ export function createRecognitionController(options = {}) {
     onTranscriptFinal = () => {},
     onTranscriptPreview = () => {},
     getRecognitionContext = () => null,
+    getAttemptContext = () => null,
+    isTracing = () => false,
+    getTraceSessionId = () => null,
+    onTraceEvent = () => {},
     onRecognitionConfigured = () => {},
     recognitionBackend = SR,
     onStart = () => {},
@@ -46,6 +50,32 @@ export function createRecognitionController(options = {}) {
   let pendingStop = null;
   let completionState = 'idle';
   let attemptId = null;
+  let attemptContext = null;
+  let attemptTraceSessionId = null;
+  let traceAttemptActive = false;
+  let backendType = null;
+  let nativeSessionId = null;
+  let providerInfo = null;
+  let requestedMaxAlternatives = REQUESTED_MAX_ALTERNATIVES;
+  let traceEventSequence = 0;
+
+  function trace(type, details = {}) {
+    if (!traceAttemptActive) return;
+    try {
+      onTraceEvent({
+        type,
+        attemptId,
+        traceSessionId: attemptTraceSessionId,
+        nativeSessionId,
+        context: attemptContext,
+        backendType,
+        providerInfo,
+        requestedMaxAlternatives,
+        eventId: `${attemptId}:${type}:${++traceEventSequence}`,
+        ...details,
+      });
+    } catch (_) { /* A diagnostic observer cannot affect recognition. */ }
+  }
 
   function settleStop(result) {
     const pending = pendingStop;
@@ -67,6 +97,12 @@ export function createRecognitionController(options = {}) {
       previewTranscript: latestPreview,
       recognitionSegments: getRecognitionSegments(),
       attemptId,
+      traceSessionId: attemptTraceSessionId,
+      nativeSessionId,
+      backendType,
+      providerInfo,
+      requestedMaxAlternatives,
+      ...(traceAttemptActive ? { gameContext: attemptContext } : {}),
       completionState,
       recognitionComplete: completionState === 'terminal',
       stopReason: stopRequested ? 'manual-stop' : (completionState === 'terminal' ? 'auto-stop' : null),
@@ -83,11 +119,19 @@ export function createRecognitionController(options = {}) {
     setMicState?.(false);
     onStop?.();
     const transcript = (latestPreview || stableText || '').trim();
+    const terminalEvidence = evidence(transcript);
+    trace('terminal-recognition-completed', {
+      ...terminalEvidence,
+      completionState: 'terminal',
+      recognitionComplete: true,
+      stopReason: stopRequested ? 'manual-stop' : 'auto-stop',
+    });
     recognition = null;
-    return { ok: true, ...evidence(transcript) };
+    return { ok: true, ...terminalEvidence };
   }
 
   function handleAutoStop() {
+    trace('auto-stop-detected', { primaryTranscript: latestPreview });
     const result = finalize({ triggeredByOnEnd: true });
     onAutoStop?.(result);
   }
@@ -114,10 +158,10 @@ export function createRecognitionController(options = {}) {
     currentRecognition.interimResults = true;
     currentRecognition.context = context;
     currentRecognition.maxAlternatives = REQUESTED_MAX_ALTERNATIVES;
-    onRecognitionConfigured?.({
-      maxAlternatives: currentRecognition.maxAlternatives,
-      backend: currentRecognition.waitsForFinalResult ? 'android-native' : 'web',
-    });
+    requestedMaxAlternatives = currentRecognition.maxAlternatives;
+    backendType = currentRecognition.waitsForFinalResult ? 'android-native' : 'web-speech';
+    nativeSessionId = currentRecognition.sessionId ?? null;
+    providerInfo = null;
 
     stableText = '';
     segments = [];
@@ -127,11 +171,43 @@ export function createRecognitionController(options = {}) {
     stopRequested = false;
     completionState = 'pending';
     attemptId = nextRecognitionAttemptId++;
+    traceEventSequence = 0;
+    try { traceAttemptActive = isTracing?.() === true; }
+    catch (_) { traceAttemptActive = false; }
+    if (traceAttemptActive) {
+      try { attemptTraceSessionId = getTraceSessionId?.() ?? null; }
+      catch (_) { attemptTraceSessionId = null; }
+      try { attemptContext = JSON.parse(JSON.stringify(getAttemptContext?.() ?? {})); }
+      catch (_) { attemptContext = {}; }
+    } else {
+      attemptTraceSessionId = null;
+      attemptContext = null;
+    }
+    onRecognitionConfigured?.({
+      maxAlternatives: currentRecognition.maxAlternatives,
+      backend: backendType,
+      nativeSessionId,
+      attemptId,
+    });
+    currentRecognition.onconfiguration = info => {
+      if (recognition !== currentRecognition || finalized) return;
+      backendType = info?.backendType ?? backendType;
+      nativeSessionId = info?.nativeSessionId ?? nativeSessionId;
+      providerInfo = info?.providerInfo ?? providerInfo;
+      requestedMaxAlternatives = info?.requestedMaxAlternatives ?? requestedMaxAlternatives;
+      trace('recognition-backend-configured', { providerInfo, requestedMaxAlternatives });
+    };
     onTranscriptReset?.();
+    trace('recognition-start-requested', {
+      recognitionContext: context,
+      completionState: 'pending',
+      recognitionComplete: false,
+    });
 
     currentRecognition.onstart = () => {
       if (recognition !== currentRecognition || !active || finalized) return;
       setMicState?.(true);
+      trace('recognition-started', { completionState: 'pending' });
       onStart?.();
     };
 
@@ -157,9 +233,26 @@ export function createRecognitionController(options = {}) {
         .reduce((text, segment) => appendRawTranscriptFinal(text, segment.primaryTranscript), '');
       const changedFinal = Array.from(event.results).slice(firstChanged).some(result => result.isFinal);
       const currentEvidence = evidence(latestPreview);
-      if (changedFinal) onTranscriptFinal?.(stableText, currentEvidence);
+      if (changedFinal) {
+        trace('final-result-received', {
+          primaryTranscript: latestPreview,
+          finalizedSegments: present.filter(segment => segment.isFinal),
+          completionState: 'pending',
+          recognitionComplete: false,
+        });
+        onTranscriptFinal?.(stableText, currentEvidence);
+      }
       const interim = present.filter(segment => !segment.isFinal).map(segment => segment.primaryTranscript).join(' ');
-      if (interim) onTranscriptInterim?.(interim, currentEvidence);
+      if (interim) {
+        trace('interim-result-received', {
+          primaryTranscript: latestPreview,
+          interimTranscript: interim,
+          interimSegments: present.filter(segment => !segment.isFinal).map(segment => ({ ...segment, isFinal: false })),
+          completionState: 'pending',
+          recognitionComplete: false,
+        });
+        onTranscriptInterim?.(interim, currentEvidence);
+      }
       onTranscriptPreview?.(latestPreview, currentEvidence);
     };
 
@@ -168,12 +261,22 @@ export function createRecognitionController(options = {}) {
       active = false;
       finalized = true;
       completionState = 'error';
+      trace('recognition-failed', {
+        reason: event.error || 'recognition-error',
+        technicalError: event.error || 'recognition-error',
+        completionState: 'error',
+        recognitionComplete: false,
+      });
+      trace('terminal-recognition-completed', {
+        ...evidence(),terminal: true,completionState: 'error',recognitionComplete: false,
+        technicalError: event.error || 'recognition-error',stopReason: 'technical-error',
+      });
       recognition = null;
       try { currentRecognition.abort?.(); } catch (_) {}
       setMicState?.(false);
       onStop?.();
       settleStop({ ok: false, reason: event.error || 'recognition-error', ...evidence() });
-      onError?.(event);
+      onError?.({ ...event, ...evidence(), attemptId, nativeSessionId, backendType });
     };
 
     currentRecognition.onend = () => {
@@ -191,9 +294,19 @@ export function createRecognitionController(options = {}) {
       active = false;
       finalized = true;
       completionState = 'error';
+      trace('recognition-start-failed', {
+        reason: 'start-failed',
+        technicalError: 'start-failed',
+        completionState: 'error',
+        recognitionComplete: false,
+      });
+      trace('terminal-recognition-completed', {
+        ...evidence(),terminal:true,completionState:'error',recognitionComplete:false,
+        technicalError:'start-failed',stopReason:'start-failed',
+      });
       recognition = null;
       setMicState?.(false);
-      onError?.({ error: 'start-failed', cause: error });
+      onError?.({ error: 'start-failed', cause: error, ...evidence(), attemptId, nativeSessionId, backendType });
       return { ok: false, reason: 'start-failed' };
     }
     return { ok: true };
@@ -203,6 +316,11 @@ export function createRecognitionController(options = {}) {
     if (pendingStop) return pendingStop.promise;
     if (!active) return { ok: false, reason: 'inactive', ...evidence(stableText.trim()) };
     stopRequested = true;
+    trace('manual-stop-requested', {
+      stopReason: 'manual-stop',
+      completionState,
+      recognitionComplete: false,
+    });
     const currentRecognition = recognition;
     let resolve;
     const promise = new Promise(done => { resolve = done; });
@@ -212,11 +330,21 @@ export function createRecognitionController(options = {}) {
       active = false;
       finalized = true;
       completionState = 'error';
+      trace('recognition-failed', {
+        reason: 'stop-failed',
+        technicalError: 'stop-failed',
+        completionState: 'error',
+        recognitionComplete: false,
+      });
+      trace('terminal-recognition-completed', {
+        ...evidence(),terminal:true,completionState:'error',recognitionComplete:false,
+        technicalError:'stop-failed',stopReason:'stop-failed',
+      });
       recognition = null;
       settleStop({ ok: false, reason: 'stop-failed', ...evidence() });
       setMicState?.(false);
       onStop?.();
-      onError?.({ error: 'stop-failed', cause: error });
+      onError?.({ error: 'stop-failed', cause: error, ...evidence(), attemptId, nativeSessionId, backendType });
     }
     return promise;
   }
@@ -227,6 +355,16 @@ export function createRecognitionController(options = {}) {
     finalized = true;
     completionState = 'cancelled';
     stopRequested = false;
+    trace('recognition-cancelled', {
+      reason: 'cancelled',
+      stopReason: 'cancelled',
+      completionState: 'cancelled',
+      recognitionComplete: false,
+    });
+    trace('terminal-recognition-completed', {
+      ...evidence(),terminal:true,completionState:'cancelled',recognitionComplete:false,
+      technicalError:null,cancelReason:'cancelled',stopReason:'cancelled',
+    });
     recognition = null;
     settleStop({ ok: false, reason: 'cancelled', ...evidence() });
     try { currentRecognition?.abort?.(); } catch (_) {}
@@ -243,5 +381,8 @@ export function createRecognitionController(options = {}) {
     getPreviewTranscript: () => latestPreview,
     getRecognitionSegments,
     getEvidence: () => evidence(latestPreview),
+    getAttemptId: () => attemptId,
+    getNativeSessionId: () => nativeSessionId,
+    getCompletionState: () => completionState,
   };
 }

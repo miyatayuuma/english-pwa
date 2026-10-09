@@ -16,6 +16,7 @@ const DEFAULT_REVIEW_STATE = Object.freeze({
   difficulty: 5,
   intervalMs: 0,
 });
+const NO_SRS_WRITE_OBSERVER = () => {};
 
 export function retainHighestHintStageUsed(currentStage, requestedStage) {
   const current = Number.isFinite(currentStage) ? Math.max(0, Math.floor(currentStage)) : 0;
@@ -48,7 +49,21 @@ function loadLevelStateFromStorage() {
 }
 
 function saveLevelStateToStorage(state) {
-  saveJson(LEVEL_STATE, state || {});
+  return saveJson(LEVEL_STATE, state || {});
+}
+
+function srsSnapshot(info) {
+  const value = info && typeof info === 'object' ? info : {};
+  return {
+    last: Number(value.last) || 0,
+    best: Number(value.best) || 0,
+    noHintStreak: Number(value.noHintStreak) || 0,
+    level5Count: Number(value.level5Count) || 0,
+    lastMatch: Number(value.lastMatch) || 0,
+    hintStage: Number(value.hintStage) || 0,
+    updatedAt: Number(value.updatedAt) || 0,
+    review: { ...(value.review || {}) },
+  };
 }
 
 function normalizeNoHintHistory(raw) {
@@ -249,9 +264,15 @@ function saveLevelFilterToStorage(set) {
   saveJson(LEVEL_FILTER, arr);
 }
 
-export function createLevelStateManager({ baseHintStage, getFirstHintStage, getEnglishRevealStage }) {
+export function createLevelStateManager({ baseHintStage, getFirstHintStage, getEnglishRevealStage, onSrsWrite = NO_SRS_WRITE_OBSERVER, shouldObserveSrsWrite = null }) {
   let levelStateMap = loadLevelStateFromStorage();
   let levelFilterSet = loadLevelFilterFromStorage();
+
+  function isObservingSrsWrite(){
+    if(typeof shouldObserveSrsWrite!=='function') return onSrsWrite!==NO_SRS_WRITE_OBSERVER;
+    try { return shouldObserveSrsWrite() === true; }
+    catch (_) { return false; }
+  }
 
   function ensureLevelFilterSet(set) {
     if (!(set instanceof Set) || set.size === 0) {
@@ -325,6 +346,8 @@ export function createLevelStateManager({ baseHintStage, getFirstHintStage, getE
       };
     }
     const info = levelStateMap[id] || { best: 0, last: 0 };
+    const observeSrsWrite = isObservingSrsWrite();
+    const before = observeSrsWrite ? srsSnapshot(info) : null;
     const prevLastRaw = Number(info.last);
     const prevBestRaw = Number(info.best);
     const prevLast = Number.isFinite(prevLastRaw) ? prevLastRaw : 0;
@@ -380,7 +403,25 @@ export function createLevelStateManager({ baseHintStage, getFirstHintStage, getE
     info.hintStage = stage;
     info.updatedAt = now;
     levelStateMap[id] = info;
-    saveLevelStateToStorage(levelStateMap);
+    const persisted = saveLevelStateToStorage(levelStateMap);
+    if(observeSrsWrite){
+      try {
+        onSrsWrite({
+          kind: 'speech', id: String(id), before,
+          candidateLevel: candidate,
+          after: srsSnapshot(info),
+          evaluation: {
+            rate,
+            pass: !!evaluation?.pass,
+            noHintSuccess,
+            perfectNoHint,
+            stage,
+          },
+          persisted,
+          persistenceWriteCount: persisted ? 1 : 0,
+        });
+      } catch (_) { /* Diagnostic observers cannot change an SRS update. */ }
+    }
     const nextTarget = determineNextTarget(info, candidate, finalLevel, promotionBlocked, now);
     return {
       info,
@@ -396,6 +437,8 @@ export function createLevelStateManager({ baseHintStage, getFirstHintStage, getE
   function updateReorderLevelInfo(id, result, { now = Date.now() } = {}) {
     const evaluation = evaluateReorder(result.grade);
     const info = levelStateMap[id] || { best: 0, last: 0 };
+    const observeSrsWrite = isObservingSrsWrite();
+    const before = observeSrsWrite ? srsSnapshot(info) : null;
     // Successful word-order evidence cannot invalidate established Lv5 mastery.
     const finalLevel = evaluation.pass && Number(info.last) === 5 ? 5 : evaluation.candidate;
     info.last = finalLevel;
@@ -407,7 +450,19 @@ export function createLevelStateManager({ baseHintStage, getFirstHintStage, getE
     // Do not write noHintHistory, noHintStreak, lastNoHintAt or level5Count.
     // Those remain exclusively ordinary speech/Cloze promotion evidence.
     levelStateMap[id] = info;
-    saveLevelStateToStorage(levelStateMap);
+    const persisted = saveLevelStateToStorage(levelStateMap);
+    if(observeSrsWrite){
+      try {
+        onSrsWrite({
+          kind: 'reorder', id: String(id), before,
+          candidateLevel: evaluation.candidate,
+          after: srsSnapshot(info),
+          evaluation: { rate: evaluation.rate, pass: !!evaluation.pass, stage: evaluation.stage },
+          persisted,
+          persistenceWriteCount: persisted ? 1 : 0,
+        });
+      } catch (_) { /* Diagnostic observers cannot change an SRS update. */ }
+    }
     return { info, candidate: evaluation.candidate, finalLevel, best: info.best,
       evaluation, promotionBlocked: null, nextTarget: null };
   }

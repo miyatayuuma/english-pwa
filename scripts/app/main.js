@@ -2,6 +2,8 @@ import { migrateZeroSetupStorage } from '../storage/zeroSetupMigration.js';
 migrateZeroSetupStorage();
 import { isNativeAndroid } from '../native/runtimePlatform.js';
 import { nativeDirectory } from '../native/media.js';
+import { gameTraceCollector, safeGameTraceRecord } from '../native/gameTrace.js';
+import { initializeGameTracePanel } from '../ui/gameTracePanel.js';
 import { buildRecognitionContext } from '../speech/recognitionPolicy.js';
 import { nativeSpeechDiagnostic } from '../native/androidSpeechBackend.js';
 import { createCorrectionProgress, recordCorrectionAttempt } from '../speech/correctionProgress.js';
@@ -115,6 +117,39 @@ function createAppRuntime(){
   const COMPOSE_HINT_STAGE_AUDIO=BASE_HINT_STAGE+2;
   const COMPOSE_HINT_STAGE_EN=BASE_HINT_STAGE+3;
 
+  const traceSrsCounts=new Map();
+  let traceSrsAttemptId=null;
+  function retainTraceSrsCount(key,count){
+    traceSrsCounts.set(String(key),count);
+    while(traceSrsCounts.size>50) traceSrsCounts.delete(traceSrsCounts.keys().next().value);
+  }
+  function recordTraceSrsWrite(result){
+    const attemptId=traceSrsAttemptId;
+    if(!attemptId||!gameTraceCollector.isEnabled()) return;
+    const count=traceSrsCounts.get(String(attemptId))||{updateInvocationCount:0,persistenceWriteCount:0};
+    count.persistenceWriteCount+=Number(result?.persistenceWriteCount)||0;
+    retainTraceSrsCount(attemptId,count);
+    safeGameTraceRecord({
+      type:'srs-update-completed',attemptId,nativeSessionId:null,
+      updateAttempted:true,updateInvocationCount:count.updateInvocationCount,
+      persistenceWriteCount:count.persistenceWriteCount,persisted:result?.persisted===true,
+      beforeLevel:result?.before?.last??0,candidateLevel:result?.candidateLevel??null,
+      afterLevel:result?.after?.last??null,before:result?.before??null,after:result?.after??null,
+      reviewState:result?.after?.review??null,streak:{before:result?.before?.noHintStreak??0,after:result?.after?.noHintStreak??0},
+      finalOutcome:result?.evaluation?.pass===true?'pass':'fail',duplicateUpdateSuppressed:false,
+    });
+  }
+  function recordTraceSrsAttempt(attemptId){
+    if(!attemptId||!gameTraceCollector.isEnabled()) return;
+    const key=String(attemptId);
+    const count=traceSrsCounts.get(key)||{updateInvocationCount:0,persistenceWriteCount:0};
+    count.updateInvocationCount+=1;
+    retainTraceSrsCount(key,count);
+    safeGameTraceRecord({type:'srs-update-attempted',attemptId,updateAttempted:true,
+      updateInvocationCount:count.updateInvocationCount,persistenceWriteCount:count.persistenceWriteCount,
+      duplicateUpdateSuppressed:false});
+  }
+
   function loadSearchQuery(){
     return loadString(SEARCH, '');
   }
@@ -133,6 +168,8 @@ function createAppRuntime(){
     baseHintStage: BASE_HINT_STAGE,
     getFirstHintStage,
     getEnglishRevealStage,
+    onSrsWrite:recordTraceSrsWrite,
+    shouldObserveSrsWrite:()=>gameTraceCollector.isEnabled()&&!!traceSrsAttemptId,
   });
   const evaluateLevel=(...args)=>levelStateManager.evaluateLevel(...args);
   const getLevelInfo=(...args)=>levelStateManager.getLevelInfo(...args);
@@ -275,6 +312,8 @@ function createAppRuntime(){
   let correctiveItemId=null;
   let correctionProgress=createCorrectionProgress();
   let correctionFinished=false;
+  let correctionAttemptCount=0;
+  let correctionOriginalOutcome=null;
   let recognitionController=null;
   const processedRecognitionAttempts=new Set();
   function alignAndHighlight(referenceText, transcript, { mode = getStudyMode() } = {}){
@@ -3099,6 +3138,22 @@ function createAppRuntime(){
   function initializeRecognitionController(){
     return createRecognitionController({
       getRecognitionContext:()=>buildRecognitionContext({mode:isShadowingSession()?'shadowing':getStudyMode()}),
+      isTracing:()=>gameTraceCollector.isEnabled()&&!isShadowingSession(),
+      getTraceSessionId:()=>gameTraceCollector.getTraceSessionId(),
+      getAttemptContext:()=>{
+        const item=QUEUE[idx];
+        const correctionActive=!!item&&correctiveItemId===item.id;
+        const cloze=correctionActive?null:getActiveClozeRecognitionContext(item?.id);
+        return {
+          itemId:item?.id??null,entryId:null,activeOccurrence:null,gameMode:'Read',
+          learningStage:correctionActive?'Correction':cloze?'Cloze':'Read',
+          correctionActive,
+          clozeContext:cloze?{itemId:cloze.itemId,sentence:cloze.sentence,
+            hiddenTargetEntryIds:cloze.targets.map(target=>target.entry_id),
+            targets:cloze.targets.map(target=>({entryId:target.entry_id,surface:target.surface,start:target.start,end:target.end}))}:null,
+        };
+      },
+      onTraceEvent:safeGameTraceRecord,
       onTranscriptPreview:text=>{if(!isShadowingSession()) showTranscriptFinal(text);},
       onTranscriptReset: ()=>{resetTranscript();clearCurrentSpeechHighlight();},
       onTranscriptInterim: (text)=>{ if(!isShadowingSession()) showTranscriptInterim(text); },
@@ -3114,7 +3169,12 @@ function createAppRuntime(){
       onUnsupported: ()=>toast('この端末では音声認識が使えません'),
       onError: (e)=>{
         toast('ASRエラー: '+(e && e.error || ''));
-        if(correctiveItemId===QUEUE[idx]?.id) handleCorrectionAttempt({technical:true});
+        if(correctiveItemId===QUEUE[idx]?.id) handleCorrectionAttempt({technical:true,attemptId:e?.attemptId});
+        else if(e?.attemptId){
+          safeGameTraceRecord({type:'srs-update-skipped',attemptId:e.attemptId,updateAttempted:false,
+            skippedReason:'technical-recognition-error'});
+          safeGameTraceRecord({type:'attempt-closed',attemptId:e.attemptId,closeReason:e?.error||'recognition-error'});
+        }
         el.mic.disabled=correctionFinished;
         if(isShadowingSession()){
           cancelShadowingCycle({stopOutput:true});
@@ -3318,14 +3378,37 @@ function createAppRuntime(){
   function handleCorrectionAttempt(attempt){
     if(!sessionActive||correctionFinished||correctiveItemId!==QUEUE[idx]?.id) return;
     const result=recordCorrectionAttempt(correctionProgress,attempt);
+    correctionAttemptCount+=1;
+    if(attempt?.attemptId){
+      safeGameTraceRecord({type:'correction-attempt-recorded',attemptId:attempt.attemptId,
+        correctionSource:'Read',correctionAttemptNumber:correctionAttemptCount,
+        success:attempt.success===true,technical:attempt.technical===true,complete:result.complete,
+        underlyingOriginalGradingOutcome:correctionOriginalOutcome});
+      safeGameTraceRecord({type:'srs-update-skipped',attemptId:attempt.attemptId,
+        updateAttempted:false,skippedReason:'read-correction-practice-only',
+        duplicateUpdateSuppressed:false});
+    }
     el.mic.disabled=result.complete;
     setFooterMessages(result.message,result.complete?'':'「聞く」で正解音声を確認できます。');
     if(result.complete){
       correctionFinished=true;
+      if(attempt?.attemptId) safeGameTraceRecord({type:'correction-completed',attemptId:attempt.attemptId,
+        correctionSource:'Read',correctionAttemptNumber:correctionAttemptCount,
+        success:attempt.success===true,advancementRequested:true,
+        underlyingOriginalGradingOutcome:correctionOriginalOutcome});
       clearActiveClozeRecognitionContext();
       if(attempt.success) resultFeedbackQueue.enqueue('success',{itemId:QUEUE[idx].id});
       scheduleAutoAdvance(1900);
     }
+    if(attempt?.attemptId) safeGameTraceRecord({type:'final-ui-result-committed',attemptId:attempt.attemptId,
+      decision:{type:attempt.technical?'CORRECTION_TECHNICAL_ERROR':attempt.success?'CORRECTION_SUCCESS':'CORRECTION_FAILURE',
+        pass:attempt.success===true,complete:result.complete},
+      correctionSource:'Read',correctionAttemptNumber:correctionAttemptCount,
+      displayedFeedback:result.message,correctionActive:!result.complete,
+      srsUpdate:{updateAttempted:false,updateInvocationCount:0,persistenceWriteCount:0,
+        skippedReason:'read-correction-practice-only'}});
+    if(attempt?.attemptId) safeGameTraceRecord({type:'attempt-closed',attemptId:attempt.attemptId,
+      closeReason:result.complete?'correction-completed':'correction-attempt-recorded'});
     updateAttemptInfo();updatePlayButtonAvailability();
   }
 
@@ -3339,15 +3422,41 @@ function createAppRuntime(){
     if(!result) stopRecPending=true;
     try { outcome = result && result.ok ? result : await recognitionController.stop(); }
     finally { if(!result) stopRecPending=false; }
-    if(requestedItemId!==QUEUE[idx]?.id) return;
-    if(!outcome || !outcome.ok) return;
+    const traceAttemptId=outcome?.attemptId??null;
+    const traceContext=outcome?.gameContext??null;
+    const contextItemChanged=traceContext?.itemId!=null&&String(traceContext.itemId)!==String(QUEUE[idx]?.id??'');
+    if(requestedItemId!==QUEUE[idx]?.id||contextItemChanged){
+      if(traceAttemptId){
+        safeGameTraceRecord({type:'stale-callback-observed',attemptId:traceAttemptId,
+          contextAtStart:traceContext,currentItemId:QUEUE[idx]?.id??null});
+        safeGameTraceRecord({type:'attempt-closed',attemptId:traceAttemptId,closeReason:'item-changed-before-grade'});
+      }
+      return;
+    }
+    if(!outcome || !outcome.ok){
+      if(traceAttemptId){
+        safeGameTraceRecord({type:'srs-update-skipped',attemptId:traceAttemptId,updateAttempted:false,
+          skippedReason:outcome?.reason||'recognition-not-completed'});
+        safeGameTraceRecord({type:'attempt-closed',attemptId:traceAttemptId,closeReason:outcome?.reason||'recognition-not-completed'});
+      }
+      return;
+    }
     const it = QUEUE[idx];
     if(!it){
       updateMatch(null);
+      if(traceAttemptId){
+        safeGameTraceRecord({type:'srs-update-skipped',attemptId:traceAttemptId,updateAttempted:false,skippedReason:'missing-read-item'});
+        safeGameTraceRecord({type:'attempt-closed',attemptId:traceAttemptId,closeReason:'missing-read-item'});
+      }
       return;
     }
     const attemptKey=outcome.attemptId===undefined||outcome.attemptId===null?null:`${it.id}:${outcome.attemptId}`;
-    if(attemptKey&&processedRecognitionAttempts.has(attemptKey)) return;
+    if(attemptKey&&processedRecognitionAttempts.has(attemptKey)){
+      safeGameTraceRecord({type:'srs-update-skipped',attemptId:traceAttemptId,updateAttempted:false,
+        skippedReason:'duplicate-attempt-suppressed',duplicateUpdateSuppressed:true});
+      safeGameTraceRecord({type:'attempt-closed',attemptId:traceAttemptId,closeReason:'duplicate-attempt-suppressed'});
+      return;
+    }
     if(attemptKey){
       processedRecognitionAttempts.add(attemptKey);
       if(processedRecognitionAttempts.size>100) processedRecognitionAttempts.delete(processedRecognitionAttempts.values().next().value);
@@ -3355,7 +3464,13 @@ function createAppRuntime(){
     const hyp = String(outcome.primaryTranscript??outcome.transcript??'');
     const hypotheses=recognitionHypotheses(outcome).map(candidate=>({...candidate,attemptId:outcome.attemptId??null}));
     if(!hypotheses.some(candidate=>hasRecognizedSpeech(candidate.transcript))){
-      if(correctiveItemId===it.id){handleCorrectionAttempt({technical:true});return;}
+      if(correctiveItemId===it.id){handleCorrectionAttempt({technical:true,attemptId:traceAttemptId});return;}
+      if(traceAttemptId){
+        safeGameTraceRecord({type:'srs-update-skipped',attemptId:traceAttemptId,updateAttempted:false,skippedReason:'no-recognized-speech'});
+        safeGameTraceRecord({type:'game-grading-completed',attemptId:traceAttemptId,
+          decision:{type:'no-speech',pass:false},primaryTranscript:hyp,selectedCandidate:null});
+        safeGameTraceRecord({type:'attempt-closed',attemptId:traceAttemptId,closeReason:'no-recognized-speech'});
+      }
       lastMatchEval=null;updateMatch(null);resetTranscript();setFooterMessages('発話が検出されませんでした。もう一度話してください。','');el.mic.disabled=false;updatePlayButtonAvailability();return;
     }
     const refItem = QUEUE[idx];
@@ -3379,10 +3494,60 @@ function createAppRuntime(){
       corrective,
     }));
     const selected=selection.selected;
+    for(const checked of selection.checked){
+      safeGameTraceRecord({type:'candidate-evaluated',attemptId:traceAttemptId,
+        candidateSource:checked.candidate?.source??null,candidateRank:checked.candidate?.asrRank??null,
+        candidateSegment:checked.candidate?.segmentIndex??null,candidateTranscript:checked.candidate?.transcript??null,
+        accepted:checked.accepted===true,score:checked.matchRate??null,pass:checked.evaluation?.pass??checked.correctionGrade?.success??false,
+        recognitionAuthority:checked.clozeResult?.targets?.find(target=>target.matched)?.authority
+          ??checked.alignment?.alignment?.find(event=>event?.authority)?.authority??'read-alignment',
+        ruleId:checked.clozeResult?.targets?.find(target=>target.matched)?.ruleId
+          ??checked.alignment?.alignment?.find(event=>event?.authority==='explicit-equivalence')?.ruleId??null,
+        ruleKind:checked.clozeResult?.targets?.find(target=>target.matched)?.ruleKind
+          ??checked.alignment?.alignment?.find(event=>event?.authority==='explicit-equivalence')?.ruleKind??null,
+        cloze:checked.clozeResult?.active?{
+          repair:checked.clozeResult.repair,completeness:checked.clozeResult.completeness,
+          negationPreserved:checked.clozeResult.negationPreserved,
+          hiddenTargetResults:checked.clozeResult.targets,orderedMatchIntegrity:checked.clozeResult.orderedMatchIntegrity,
+          overallScore:checked.clozeResult.overallScore,pass:checked.clozeResult.pass,
+        }:null,
+      });
+    }
+    const selectedForTrace=selected?.candidate??null;
+    safeGameTraceRecord({type:'candidate-selected',attemptId:traceAttemptId,
+      selectedCandidateSource:selectedForTrace?.source??null,
+      selectedCandidateRank:selectedForTrace?.asrRank??null,
+      selectedCandidateSegment:selectedForTrace?.segmentIndex??null,
+      selectedCandidateTranscript:selectedForTrace?.transcript??null,
+      primaryTranscript:hyp,rescueApplied:selection.rescued===true,
+      requestedMaxAlternatives:outcome.requestedMaxAlternatives??null,
+      providerReturnedCandidateCount:outcome.recognitionSegments?.reduce((sum,segment)=>sum+(Number(segment.providerReturnedCount)||0),0)??0,
+      retainedCandidateCount:outcome.recognitionSegments?.reduce((sum,segment)=>sum+(segment.alternatives?.length||0),0)??0,
+      recognitionSegments:outcome.recognitionSegments??[],
+      recognitionAuthority:selected?.clozeResult?.targets?.find(target=>target.matched)?.authority
+        ??selected?.alignment?.alignment?.find(event=>event?.authority)?.authority??'read-alignment',
+      ruleId:selected?.clozeResult?.targets?.find(target=>target.matched)?.ruleId
+        ??selected?.alignment?.alignment?.find(event=>event?.authority==='explicit-equivalence')?.ruleId??null,
+      ruleKind:selected?.clozeResult?.targets?.find(target=>target.matched)?.ruleKind
+        ??selected?.alignment?.alignment?.find(event=>event?.authority==='explicit-equivalence')?.ruleKind??null,
+      acceptanceDecision:selected?{accepted:selected.accepted===true,pass:selected.evaluation?.pass??selected.correctionGrade?.success??false,
+        score:selected.matchRate??null,correctionSuccess:selected.correctionGrade?.success??null}:null,
+      cloze:selected?.clozeResult?.active?{
+        context:clozeContext,selectedNbestCandidate:selectedForTrace,
+        repair:selected.clozeResult.repair,completeness:selected.clozeResult.completeness,
+        negationPreserved:selected.clozeResult.negationPreserved,
+        hiddenTargetResults:selected.clozeResult.targets,orderedMatchIntegrity:selected.clozeResult.orderedMatchIntegrity,
+        overallScore:selected.clozeResult.overallScore,pass:selected.clozeResult.pass,
+      }:null,
+    });
     const matchInfo=selected?.alignment;
     if(!matchInfo){
       lastMatchEval=null;
       updateMatch(null);
+      if(traceAttemptId){
+        safeGameTraceRecord({type:'srs-update-skipped',attemptId:traceAttemptId,updateAttempted:false,skippedReason:'no-selected-alignment'});
+        safeGameTraceRecord({type:'attempt-closed',attemptId:traceAttemptId,closeReason:'no-selected-alignment'});
+      }
       return;
     }
     const selectedCandidate=selected.candidate;
@@ -3415,7 +3580,13 @@ function createAppRuntime(){
       // Practice after the recorded failure never mutates SRS/history/metrics.
       const correctionGrade=selected.correctionGrade;
       nativeSpeechDiagnostic('grading',{mode:'correction',itemId:it.id,...correctionGrade});
-      handleCorrectionAttempt({success:correctionGrade.success});
+      safeGameTraceRecord({type:'game-grading-completed',attemptId:traceAttemptId,
+        gameMode:'Read',learningStage:'Correction',itemId:it.id,
+        decision:{type:correctionGrade.success?'CORRECTION_SUCCESS':'CORRECTION_FAILURE',
+          pass:correctionGrade.success===true,success:correctionGrade.success===true},
+        score:correctionGrade.score??null,selectedCandidate:selectedForTrace,
+        primaryTranscript:hyp,recognitionAuthority:matchInfo?.recognitionCandidate?.source??'primary'});
+      handleCorrectionAttempt({success:correctionGrade.success,attemptId:traceAttemptId});
       return;
     }
     const hadPriorProgress = Number(prevInfoSnapshot?.best)>0 || Number(prevInfoSnapshot?.last)>0;
@@ -3426,8 +3597,30 @@ function createAppRuntime(){
     const clozeResult=selected.clozeResult;
     const evaluation=selected.evaluation;
     nativeSpeechDiagnostic('grading',{mode:studyMode,learningStage:clozeResult?.active?'cloze':studyMode,itemId:it.id,matchRate,evaluation,cloze:clozeResult,recognitionCandidate:matchInfo.recognitionCandidate});
+    safeGameTraceRecord({type:'game-grading-completed',attemptId:traceAttemptId,
+      gameMode:'Read',learningStage:clozeResult?.active?'Cloze':'Read',itemId:it.id,
+      decision:{type:evaluation?.pass?'PASS':'FAIL',pass:!!evaluation?.pass,
+        clozePass:clozeResult?.active?clozeResult.pass:null},
+      score:matchRate,readScore:gradeReadSpeech(matchInfo).score,
+      finalLearningLevelCandidate:evaluation?.candidate??null,
+      cloze:clozeResult?.active?{
+        sentenceId:clozeContext?.itemId??it.id,
+        hiddenTargetEntryIds:clozeContext?.targets?.map(target=>target.entry_id)??[],
+        selectedNbestCandidate:selectedForTrace,repair:clozeResult.repair,
+        completeness:clozeResult.completeness,negationPreserved:clozeResult.negationPreserved,
+        hiddenTargetResults:clozeResult.targets,orderedMatchIntegrity:clozeResult.orderedMatchIntegrity,
+        overallScore:clozeResult.overallScore,pass:clozeResult.pass,
+      }:null,
+      selectedCandidate:selectedForTrace,primaryTranscript:hyp,
+      rescueApplied:selection.rescued===true,
+      recognitionAuthority:clozeResult?.targets?.find(target=>target.matched)?.authority
+        ??matchInfo?.alignment?.find(event=>event?.authority)?.authority??'read-alignment'});
     const updateTs = Date.now();
-    const levelUpdate = updateLevelInfo(it.id, evaluation, {now:updateTs});
+    recordTraceSrsAttempt(traceAttemptId);
+    traceSrsAttemptId=traceAttemptId;
+    let levelUpdate;
+    try { levelUpdate = updateLevelInfo(it.id, evaluation, {now:updateTs}); }
+    finally { traceSrsAttemptId=null; }
     const levelInfo = levelUpdate?.info;
     const levelCandidate = Number.isFinite(Number(evaluation?.candidate)) ? Number(evaluation.candidate) : 0;
     const lastLevelRaw = Number(levelUpdate?.finalLevel);
@@ -3534,6 +3727,11 @@ function createAppRuntime(){
       correctiveItemId=it.id;
       correctionProgress=createCorrectionProgress();
       correctionFinished=false;
+      correctionAttemptCount=0;
+      correctionOriginalOutcome={type:'FAIL',pass:false,score:matchRate,levelCandidate:evaluation?.candidate??null};
+      safeGameTraceRecord({type:'correction-started',attemptId:traceAttemptId,
+        correctionSource:'Read',correctionAttemptNumber:0,correctionActive:true,
+        underlyingOriginalGradingOutcome:correctionOriginalOutcome});
       showPostResultFeedback(it,matchInfo,clozeResult);
       el.mic.disabled=true;
       setFooterMessages('正解音声を聞いて、表示された英文を話してください。','「聞く」で正解音声を確認できます。');
@@ -3549,6 +3747,39 @@ function createAppRuntime(){
       },MIC_RELEASE_SETTLE_MS+80);
     }
     updateAttemptInfo();
+
+    if(traceAttemptId){
+      const shownMatch=String(el.match?.textContent??'');
+      const displayedMatchRate=Number.parseFloat(shownMatch.replace('%',''));
+      const highlightTokens=Array.from(el.en?.querySelectorAll?.('.tok')||[]).map((node,index)=>({
+        referenceTokenIndex:index,
+        state:node.classList.contains('hit')?'hit':node.classList.contains('miss')?'miss':'none',
+      }));
+      const counts=traceSrsCounts.get(String(traceAttemptId))||{updateInvocationCount:0,persistenceWriteCount:0};
+      safeGameTraceRecord({type:'final-ui-result-committed',attemptId:traceAttemptId,
+        decision:{type:pass?'PASS':'FAIL',pass,correctionStarted:!pass},
+        finalDisplayedMatchRate:Number.isFinite(displayedMatchRate)?displayedMatchRate/100:null,
+        finalDisplayedMatchRatePercent:Number.isFinite(displayedMatchRate)?displayedMatchRate:null,
+        displayedMatchText:shownMatch,
+        finalLearningLevel:{last:resolvedLastLevel,best:resolvedBestLevel,label:String(el.level?.textContent??'')},
+        finalHighlightAuthority:clozeResult?.active?'cloze-repaired-alignment':'read-alignment',
+        highlightOffsetBasis:'expected-reference-token-index',
+        providerPrimaryTranscriptOffsetBasis:'primary-transcript-code-units',
+        selectedCandidateTranscriptOffsetBasis:'selected-candidate-code-units',
+        repairOffsetBasis:clozeResult?.active?clozeResult.repair?.offsetBasis??null:null,
+        repairScoringTokenIndexBasis:clozeResult?.active?'repair-selected-transcript-token-index':null,
+        sourceTokenSpanOffsetBasis:clozeResult?.active?'selected-candidate-transcript-code-units':null,
+        highlightedTokenStates:highlightTokens,
+        repair:clozeResult?.active?clozeResult.repair:null,
+        completeness:clozeResult?.active?clozeResult.completeness:null,
+        hiddenTargetResults:clozeResult?.active?clozeResult.targets:null,
+        srsUpdate:{updateAttempted:true,updateInvocationCount:counts.updateInvocationCount,
+          persistenceWriteCount:counts.persistenceWriteCount,afterLevel:levelInfo?.last??null,
+          finalOutcome:pass?'pass':'fail',duplicateUpdateSuppressed:false},
+      });
+      safeGameTraceRecord({type:'attempt-closed',attemptId:traceAttemptId,
+        closeReason:pass?'game-result-committed':'game-fail-and-correction-started'});
+    }
 
 
   }
@@ -3625,6 +3856,7 @@ async function waitForDomReady() {
 async function bootstrap() {
   try {
     await waitForDomReady();
+    initializeGameTracePanel().catch(()=>{});
     await initApp();
   } catch (err) {
     console.error('App init failed', err);
