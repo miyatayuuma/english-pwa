@@ -7,6 +7,7 @@ const load=path=>JSON.parse(fs.readFileSync(new URL(path,import.meta.url),'utf8'
 const items=load('../data/items.json');
 const db=load('../data/vocabulary-v3.json');
 const audit=load('../data/vocabulary-v3-word-audit.json');
+const nuanceMaterialization=load('../data/audits/vocabulary-single-entry-nuance-materialization/materialization.json');
 const itemById=new Map(items.map(item=>[item.id,item]));
 const wordEntries=db.entries.filter(entry=>entry.kind==='word'&&audit.cohort_word_entry_ids.includes(entry.id));
 const word=(canonical,senseKey)=>wordEntries.find(entry=>entry.canonical===canonical&&entry.sense_key===senseKey);
@@ -103,7 +104,7 @@ test('word expansion report semantics validate against the current source and vo
   const migration=load('../data/vocabulary-v2-v3-migration.json');
   const v2=load('../data/vocabulary-v2.json');
   const characters=load('../data/characters.json').characters||[];
-  const result=validateVocabularyV3(db,items,characters,migration,v2,audit);
+  const result=validateVocabularyV3(db,items,characters,migration,v2,audit,null,nuanceMaterialization);
   assert.deepEqual(result.errors,[]);
   const report=result.report.word_expansion_audit;
   assert.equal(report.word_entries_after,381);

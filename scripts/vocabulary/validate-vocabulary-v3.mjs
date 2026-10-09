@@ -20,7 +20,45 @@ function isNaturalAnswer(value){
   return !!text&&!/[~～]|(?<![A-Za-z])[AB](?![A-Za-z])|[A-Za-z]\s*\/\s*[A-Za-z]|\(\d+\)|^\s*\d+[.)]|\.{2,}/.test(text);
 }
 
-function validateParaphraseAudit(audit,entries,errors){
+function nuanceRowsById(materialization,errors){
+  if(!materialization) return new Map();
+  const rows=Array.isArray(materialization.entries)?materialization.entries:[];
+  const accounting=materialization.accounting||{};
+  const accounted=(accounting.APPLY||0)+(accounting.ALREADY_MATCHED||0)+(accounting.BLOCKED_DRIFT||0);
+  if(materialization.schema_version!==1||materialization.status!=='MATERIALIZED'||materialization.state_after!=='POST') errors.push('single-entry nuance materialization: invalid schema, status, or state');
+  if(materialization.source_audit_commit!=='ab1238bf126196aef01aef636db70e53fac34ad1') errors.push('single-entry nuance materialization: source audit commit mismatch');
+  if(accounting.total!==551||accounted!==551||rows.length!==551||accounting.BLOCKED_DRIFT!==0) errors.push('single-entry nuance materialization: accounting must cover 551 rows with no blocked drift');
+  const byId=new Map();
+  for(const row of rows){
+    const id=String(row?.id||'');
+    if(byId.has(id)) errors.push(`single-entry nuance materialization: duplicate ID ${id}`);
+    byId.set(id,row);
+    if(!['APPLY','ALREADY_MATCHED'].includes(row?.status)) errors.push(`single-entry nuance materialization: invalid or blocked status ${id}`);
+    if(!row?.before||!row?.after||!Array.isArray(row.before.paraphrases)||!Array.isArray(row.after.paraphrases)) errors.push(`single-entry nuance materialization: invalid surface ${id}`);
+    if(row?.before?.grammarRole!==row?.after?.grammarRole||row?.before?.canonical!==row?.after?.canonical||row?.before?.sense_key!==row?.after?.sense_key||JSON.stringify(row?.before?.answers||[])!==JSON.stringify(row?.after?.answers||[])) errors.push(`single-entry nuance materialization: forbidden field change ${id}`);
+    if(row?.audit_before?.meaning_ja!==row?.before?.meaning_ja||row?.audit_after?.meaning_ja!==row?.after?.meaning_ja||row?.audit_before?.canonical!==row?.before?.canonical||row?.audit_after?.canonical!==row?.after?.canonical||JSON.stringify(row?.audit_before?.paraphrases||[])!==JSON.stringify(row?.before?.paraphrases||[])||JSON.stringify(row?.audit_after?.paraphrases||[])!==JSON.stringify(row?.after?.paraphrases||[])) errors.push(`single-entry nuance materialization: audit surfaces differ from effective surfaces ${id}`);
+  }
+  if(byId.size!==551) errors.push('single-entry nuance materialization: expected 551 unique rows');
+  return byId;
+}
+
+function isApprovedNuanceRemoval(nuanceById,id,value){
+  const row=nuanceById.get(String(id));
+  const normalized=normalizeVocabularyAnswer(value);
+  return !!row&&!!normalized
+    &&(row.before?.paraphrases||[]).some(item=>normalizeVocabularyAnswer(item)===normalized)
+    &&!(row.after?.paraphrases||[]).some(item=>normalizeVocabularyAnswer(item)===normalized);
+}
+
+function isApprovedNuanceMeaning(nuanceById,entry,historicalMeaning){
+  const row=nuanceById.get(String(entry?.id||''));
+  return !!row&&row.before?.meaning_ja===historicalMeaning
+    &&row.after?.meaning_ja===entry?.meaning_ja
+    &&row.audit_before?.meaning_ja===row.before?.meaning_ja
+    &&row.audit_after?.meaning_ja===row.after?.meaning_ja;
+}
+
+function validateParaphraseAudit(audit,entries,errors,nuanceById=new Map()){
   if(!audit) return;
   const entryById=new Map(entries.map(entry=>[String(entry?.id||''),entry]));
   const reviewed=Array.isArray(audit.reviewed_entries)?audit.reviewed_entries:[];
@@ -74,7 +112,7 @@ function validateParaphraseAudit(audit,entries,errors){
       const key=id+'\u0000'+String(answer);
       const moved=reclassified.get(key);
       const target=moved?entry.paraphrases:entry.answers;
-      if(!Array.isArray(target)||!target.some(value=>normalizeVocabularyAnswer(value)===normalizeVocabularyAnswer(answer))) errors.push(`answers audit: ${id} lost original variant ${answer}`);
+      if((!Array.isArray(target)||!target.some(value=>normalizeVocabularyAnswer(value)===normalizeVocabularyAnswer(answer)))&&!isApprovedNuanceRemoval(nuanceById,id,answer)) errors.push(`answers audit: ${id} lost original variant ${answer}`);
       if(moved&&moved.to!=='paraphrases') errors.push(`answers audit: ${id} reclassification target must be paraphrases`);
     }
     for(const answer of Array.isArray(entry.answers)?entry.answers:[]){
@@ -85,14 +123,14 @@ function validateParaphraseAudit(audit,entries,errors){
   for(const [key,moved] of reclassified){
     const [id,answer]=key.split('\u0000');
     const entry=entryById.get(id);
-    if(!entry||!entry.paraphrases?.some(value=>normalizeVocabularyAnswer(value)===normalizeVocabularyAnswer(answer))) errors.push(`answers audit: invalid reclassification ${id}/${answer}`);
+    if(!entry||(!entry.paraphrases?.some(value=>normalizeVocabularyAnswer(value)===normalizeVocabularyAnswer(answer))&&!isApprovedNuanceRemoval(nuanceById,id,answer))) errors.push(`answers audit: invalid reclassification ${id}/${answer}`);
     expectedAnswerSourceIds.add(id);
   }
   if(expectedAnswerSourceIds.size!==sourceIds.length||sourceIds.some(id=>!expectedAnswerSourceIds.has(id))) errors.push('answers audit: source entry inventory differs from the complete original answer set');
   const representatives=Array.isArray(audit.representative_accepted)?audit.representative_accepted:[];
   for(const example of representatives){
     const entry=entryById.get(String(example?.entry_id||''));
-    if(!entry?.paraphrases?.includes(example?.paraphrase)||!String(example?.reason||'').trim()) errors.push(`paraphrase audit: invalid accepted example ${example?.entry_id||'<missing>'}`);
+    if((!entry?.paraphrases?.some(value=>normalizeVocabularyAnswer(value)===normalizeVocabularyAnswer(example?.paraphrase))&&!isApprovedNuanceRemoval(nuanceById,example?.entry_id,example?.paraphrase))||!String(example?.reason||'').trim()) errors.push(`paraphrase audit: invalid accepted example ${example?.entry_id||'<missing>'}`);
     const counterpart=entryById.get(String(example?.counterpart_entry_id||''));
     if(example?.counterpart_entry_id&&!counterpart) errors.push(`paraphrase audit: unknown counterpart ${example.counterpart_entry_id}`);
     // counterpart_entry_id is provenance only; current prompt-learning-value policy does not require reciprocal curation.
@@ -175,7 +213,7 @@ function migrationExpressionMatches(old,next){
   return previous.length>0&&previous.join(' ')===current.join(' ');
 }
 
-function validateWordExpansionAudit(audit,entries,items,errors){
+function validateWordExpansionAudit(audit,entries,items,errors,nuanceById=new Map()){
   if(!audit) return;
   const itemIds=(Array.isArray(items)?items:[]).map(item=>String(item?.id||''));
   const itemById=new Map((Array.isArray(items)?items:[]).map(item=>[String(item?.id||''),item]));
@@ -200,7 +238,7 @@ function validateWordExpansionAudit(audit,entries,items,errors){
     const occurrence=entry?.occurrences?.find(value=>String(value.item_id)===String(example?.item_id));
     const actual=occurrence&&item?item.en.slice(occurrence.start,occurrence.end):'';
     if(!entry||entry.kind!=='word'||entry.canonical!==example.canonical||entry.sense_key!==example.sense_key||!addedIds.has(entry.id)) errors.push(`word audit: invalid accepted example entry ${example?.entry_id||'<missing>'}`);
-    if(!occurrence||actual!==example.surface||occurrence.contextual_meaning_ja!==example.contextual_meaning_ja||entry?.meaning_ja!==example.meaning_ja) errors.push(`word audit: accepted example source/meaning mismatch for ${example?.canonical||'<missing>'}`);
+    if(!occurrence||actual!==example.surface||occurrence.contextual_meaning_ja!==example.contextual_meaning_ja||(entry?.meaning_ja!==example.meaning_ja&&!isApprovedNuanceMeaning(nuanceById,entry,example.meaning_ja))) errors.push(`word audit: accepted example source/meaning mismatch for ${example?.canonical||'<missing>'}`);
   }
   for(const example of Array.isArray(audit.retained_examples)?audit.retained_examples:[]){
     const entry=entryById.get(String(example?.entry_id||''));
@@ -208,7 +246,7 @@ function validateWordExpansionAudit(audit,entries,items,errors){
     const occurrence=entry?.occurrences?.find(value=>String(value.item_id)===String(example?.item_id));
     const actual=occurrence&&item?item.en.slice(occurrence.start,occurrence.end):'';
     if(!entry||entry.kind!=='word'||addedIds.has(entry.id)||entry.canonical!==example.canonical||entry.sense_key!==example.sense_key) errors.push(`word audit: invalid retained example entry ${example?.entry_id||'<missing>'}`);
-    if(!occurrence||actual!==example.surface||occurrence.contextual_meaning_ja!==example.contextual_meaning_ja||entry?.meaning_ja!==example.meaning_ja) errors.push(`word audit: retained example source/meaning mismatch for ${example?.canonical||'<missing>'}`);
+    if(!occurrence||actual!==example.surface||occurrence.contextual_meaning_ja!==example.contextual_meaning_ja||(entry?.meaning_ja!==example.meaning_ja&&!isApprovedNuanceMeaning(nuanceById,entry,example.meaning_ja))) errors.push(`word audit: retained example source/meaning mismatch for ${example?.canonical||'<missing>'}`);
   }
   for(const correction of Array.isArray(audit.existing_word_span_corrections)?audit.existing_word_span_corrections:[]){
     const entry=entryById.get(String(correction?.entry_id||''));
@@ -235,8 +273,9 @@ function validateWordExpansionAudit(audit,entries,items,errors){
   }
 }
 
-export function validateVocabularyV3(db,items,characters,migration,v2,wordAudit=null,paraphraseAudit=null){
+export function validateVocabularyV3(db,items,characters,migration,v2,wordAudit=null,paraphraseAudit=null,nuanceMaterialization=null){
   const errors=[];
+  const nuanceById=nuanceRowsById(nuanceMaterialization,errors);
   const entries=Array.isArray(db?.entries)?db.entries:[];
   const byItem=new Map((Array.isArray(items)?items:[]).map(item=>[String(item?.id||''),item]));
   const ids=new Set(),senses=new Set(),occurrences=new Set();
@@ -256,7 +295,7 @@ export function validateVocabularyV3(db,items,characters,migration,v2,wordAudit=
     const senseKey=`${String(entry?.canonical||'').normalize('NFKC').toLocaleLowerCase('en-US')}\u0000${entry?.sense_key||''}`;
     if(senses.has(senseKey)) errors.push(`${id}: duplicate canonical+sense_key`);senses.add(senseKey);
     if(!String(entry?.meaning_ja||'').trim()) errors.push(`${id}: empty representative Japanese meaning`);
-    if(/(?:^|[、,])\s*[^、,]+(?:[、,]\s*[^、,]+){2,}\s*$/.test(String(entry?.meaning_ja||''))) errors.push(`${id}: list-like unrelated dictionary senses`);
+    if(/(?:^|[、,])\s*[^、,]+(?:[、,]\s*[^、,]+){2,}\s*$/.test(String(entry?.meaning_ja||''))&&!isApprovedNuanceMeaning(nuanceById,entry,nuanceById.get(id)?.before?.meaning_ja)) errors.push(`${id}: list-like unrelated dictionary senses`);
     if(!Array.isArray(entry?.occurrences)||!entry.occurrences.length) errors.push(`${id}: needs at least one occurrence`);
     if(entry?.answers!=null&&!Array.isArray(entry.answers)) errors.push(`${id}: answers must be an array`);
     const answers=Array.isArray(entry?.answers)?entry.answers:[];
@@ -293,8 +332,8 @@ export function validateVocabularyV3(db,items,characters,migration,v2,wordAudit=
   }
   if(db?.schema_version!==3) errors.push('schema_version must equal 3');
 
-  validateWordExpansionAudit(wordAudit,entries,items,errors);
-  validateParaphraseAudit(paraphraseAudit,entries,errors);
+  validateWordExpansionAudit(wordAudit,entries,items,errors,nuanceById);
+  validateParaphraseAudit(paraphraseAudit,entries,errors,nuanceById);
   const clozeAudit=items.length===560?auditClozeDataset(entries,items):null;
   if(clozeAudit) errors.push(...clozeAudit.errors);
 
@@ -415,7 +454,10 @@ function main(){
   const migration=read('vocabulary-v2-v3-migration.json'),v2=read('vocabulary-v2.json');
   const wordAudit=read('vocabulary-v3-word-audit.json');
   const paraphraseAudit=read('vocabulary-v3-paraphrase-audit.json');
-  const {errors,report}=validateVocabularyV3(db,items,characters,migration,v2,wordAudit,paraphraseAudit);
+  let nuanceMaterialization=null;
+  const nuancePath=path.join(root,'data/audits/vocabulary-single-entry-nuance-materialization/materialization.json');
+  if(fs.existsSync(nuancePath)) nuanceMaterialization=JSON.parse(fs.readFileSync(nuancePath,'utf8'));
+  const {errors,report}=validateVocabularyV3(db,items,characters,migration,v2,wordAudit,paraphraseAudit,nuanceMaterialization);
   if(errors.length){console.error(errors.join('\n'));process.exitCode=1;return;}
   const reportPath=path.join(root,'data/vocabulary-v3-report.json');
   if(process.argv.includes('--check-report')){

@@ -84,6 +84,39 @@ if(fs.existsSync(materializationFile)){
   }
   check(seenMaterialized.size===confirmedById.size&&[...confirmedById.keys()].every(id=>seenMaterialized.has(id)),'Paraphrase remediation ID set differs from CONFIRMED authority');
 }
+const prior139=productionExpected.get(VOCAB_00139_ASR_REMEDIATION.id);
+if(prior139){
+  const matchesBefore=prior139.after.canonical===VOCAB_00139_ASR_REMEDIATION.before.canonical&&prior139.after.meaning_ja===VOCAB_00139_ASR_REMEDIATION.before.meaning_ja;
+  const matchesAfter=prior139.after.canonical===VOCAB_00139_ASR_REMEDIATION.after.canonical&&prior139.after.meaning_ja===VOCAB_00139_ASR_REMEDIATION.after.meaning_ja;
+  check(matchesBefore||matchesAfter,'VOCAB_00139_ASR_REMEDIATION does not follow historical semantic authority');
+  if(matchesBefore){
+    prior139.after.canonical=VOCAB_00139_ASR_REMEDIATION.after.canonical;
+    prior139.after.meaning_ja=VOCAB_00139_ASR_REMEDIATION.after.meaning_ja;
+  }
+}
+const nuanceMaterializationPath=path.join(root,'data/audits/vocabulary-single-entry-nuance-materialization/materialization.json');
+if(fs.existsSync(nuanceMaterializationPath)){
+  const materialization=read(nuanceMaterializationPath);
+  const materialized=Array.isArray(materialization.entries)?materialization.entries:[];
+  const accounted=(materialization.accounting?.APPLY||0)+(materialization.accounting?.ALREADY_MATCHED||0)+(materialization.accounting?.BLOCKED_DRIFT||0);
+  check(materialization.schema_version===1&&materialization.status==='MATERIALIZED'&&materialization.state_after==='POST','Single-entry nuance materialization schema/status mismatch');
+  check(materialization.source_audit_commit==='ab1238bf126196aef01aef636db70e53fac34ad1','Single-entry nuance materialization source commit mismatch');
+  check(materialization.accounting?.total===551&&accounted===551&&materialized.length===551&&materialization.accounting?.BLOCKED_DRIFT===0,'Single-entry nuance materialization accounting must cover 551 rows with no blocked drift');
+  const nuanceById=new Map();
+  for(const row of materialized){
+    const id=row.id,prior=productionExpected.get(id);
+    if(nuanceById.has(id)) check(false,`Duplicate single-entry nuance materialization ${id}`);
+    nuanceById.set(id,row);
+    check(['APPLY','ALREADY_MATCHED'].includes(row.status),`Single-entry nuance row is not approved for production ${id}`);
+    check(!!prior,`Single-entry nuance row is outside the frozen meaning/canonical population ${id}`);
+    if(!prior) continue;
+    check(row.before?.meaning_ja===prior.after.meaning_ja&&row.before?.canonical===prior.after.canonical&&row.before?.sense_key===prior.after.sense_key,`Single-entry nuance before-state does not follow existing authority layers ${id}`);
+    check(row.after?.canonical===row.before?.canonical&&row.after?.sense_key===row.before?.sense_key&&row.after?.grammarRole===row.before?.grammarRole&&JSON.stringify(row.after?.answers||[])===JSON.stringify(row.before?.answers||[]),`Single-entry nuance changed a forbidden semantic field ${id}`);
+    check(row.audit_after?.meaning_ja===row.after?.meaning_ja&&row.audit_after?.canonical===row.after?.canonical,`Single-entry nuance after-state differs from audit authority ${id}`);
+    prior.after.meaning_ja=row.after.meaning_ja;
+  }
+  check(nuanceById.size===551,'Single-entry nuance materialization does not contain 551 unique rows');
+}
 const report={assigned:assigned.size,reviewed:rows.length,KEEP:0,MODIFY:0,UNRESOLVED:0,kind_counts:{word:0,expression:0,construction:0},canonical_modifications:0,meaning_ja_modifications:0,sense_key_modifications:0,known_placeholders_reviewed:0,placeholder_meaning_remaining:0};
 const seen=new Set();
 for(const row of effective){
@@ -104,12 +137,7 @@ if(process.argv.includes('--check-production')){
   check(JSON.stringify(production.entries.map(e=>[e.id,e.kind]))===JSON.stringify(baseline.entries.map(e=>[e.id,e.kind])),'Population/ID/kind/order changed');
   for(const entry of production.entries){
     const frozen=byId.get(entry.id)?.after||{};
-    const override=VOCAB_00139_ASR_REMEDIATION;
-    const exactOverride=entry.id===override.id
-      && frozen.canonical===override.before.canonical
-      && frozen.meaning_ja===override.before.meaning_ja;
-    const expected=exactOverride?{...frozen,canonical:override.after.canonical,meaning_ja:override.after.meaning_ja}:frozen;
-    check(JSON.stringify(pick(entry))===JSON.stringify(pick(expected)),`Production proposal mismatch ${entry.id}`);
+    check(JSON.stringify(pick(entry))===JSON.stringify(pick(frozen)),`Production proposal mismatch ${entry.id}`);
     const strip=e=>Object.fromEntries(Object.entries(e).filter(([k])=>!fields.includes(k)));
     if(process.argv.includes('--check-integration-scope')){
       const digest=crypto.createHash('sha256').update(JSON.stringify(strip(entry))).digest('hex');

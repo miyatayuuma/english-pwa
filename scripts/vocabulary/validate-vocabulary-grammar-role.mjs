@@ -23,7 +23,7 @@ const approvedVocab139=(audit,production)=>production?.id===VOCAB_00139_ASR_REME
   && sameSurface(audit,VOCAB_00139_ASR_REMEDIATION.before)
   && sameSurface(production,VOCAB_00139_ASR_REMEDIATION.after);
 
-export function validateVocabularyGrammarRoleAudit({vocabulary,manifest,batches,pendingRegistry,semanticQa,finalResolutions,pendingHistory,paraphraseManifest=null,confirmedAuthority=null,materialization=null}){
+export function validateVocabularyGrammarRoleAudit({vocabulary,manifest,batches,pendingRegistry,semanticQa,finalResolutions,pendingHistory,paraphraseManifest=null,confirmedAuthority=null,materialization=null,nuanceMaterialization=null}){
   const errors=[];
   const source=Array.isArray(vocabulary?.entries)?vocabulary.entries:[];
   const sourceById=new Map();
@@ -52,6 +52,8 @@ export function validateVocabularyGrammarRoleAudit({vocabulary,manifest,batches,
   const confirmedById=new Map(confirmedRows.map(row=>[String(row?.id||''),row]));
   const materializationRows=Array.isArray(materialization?.entries)?materialization.entries:[];
   const materializationById=new Map();
+  const nuanceRows=Array.isArray(nuanceMaterialization?.entries)?nuanceMaterialization.entries:[];
+  const nuanceById=new Map();
   if(materialization){
     if(materialization.schema_version!==1||!['MATERIALIZED','MATERIALIZED_WITH_BLOCKED'].includes(materialization.status)) errors.push('paraphrase materialization: invalid schema or status');
     const accounted=(materialization.accounting?.APPLY||0)+(materialization.accounting?.ALREADY_RESOLVED||0)+(materialization.accounting?.BLOCKED||0);
@@ -72,6 +74,25 @@ export function validateVocabularyGrammarRoleAudit({vocabulary,manifest,batches,
     }
     if(materializationById.size!==confirmedById.size||[...confirmedById.keys()].some(id=>!materializationById.has(id))) errors.push('paraphrase materialization: ID set differs from CONFIRMED authority');
   }
+  if(nuanceMaterialization){
+    const accounted=(nuanceMaterialization.accounting?.APPLY||0)+(nuanceMaterialization.accounting?.ALREADY_MATCHED||0)+(nuanceMaterialization.accounting?.BLOCKED_DRIFT||0);
+    if(nuanceMaterialization.schema_version!==1||nuanceMaterialization.status!=='MATERIALIZED'||nuanceMaterialization.state_after!=='POST') errors.push('single-entry nuance materialization: invalid schema, status, or state');
+    if(nuanceMaterialization.source_audit_commit!=='ab1238bf126196aef01aef636db70e53fac34ad1') errors.push('single-entry nuance materialization: source audit commit mismatch');
+    if(nuanceMaterialization.accounting?.total!==551||accounted!==551||nuanceRows.length!==551||nuanceMaterialization.accounting?.BLOCKED_DRIFT!==0) errors.push('single-entry nuance materialization: accounting must cover 551 rows without BLOCKED_DRIFT');
+    for(const row of nuanceRows){
+      const id=String(row?.id||'');
+      if(nuanceById.has(id)) errors.push(`single-entry nuance materialization: duplicate ID ${id}`);
+      nuanceById.set(id,row);
+      if(!['APPLY','ALREADY_MATCHED'].includes(row.status)) errors.push(`single-entry nuance materialization: invalid or blocked status ${id}`);
+      if(!row.before||!row.after||!Array.isArray(row.before.paraphrases)||!Array.isArray(row.after.paraphrases)) errors.push(`single-entry nuance materialization: invalid before/after surface ${id}`);
+      if(row.before?.grammarRole!==row.after?.grammarRole) errors.push(`single-entry nuance materialization: grammarRole changed ${id}`);
+      if(row.before?.canonical!==row.after?.canonical) errors.push(`single-entry nuance materialization: canonical changed ${id}`);
+      if(row.before?.sense_key!==row.after?.sense_key) errors.push(`single-entry nuance materialization: sense_key changed ${id}`);
+      if(JSON.stringify(row.before?.answers||[])!==JSON.stringify(row.after?.answers||[])) errors.push(`single-entry nuance materialization: answers changed ${id}`);
+      if(!sameSurface(row.audit_before,row.before)||!sameSurface(row.audit_after,row.after)) errors.push(`single-entry nuance materialization: audit snapshots differ from effective before/after ${id}`);
+    }
+    if(nuanceById.size!==551) errors.push('single-entry nuance materialization: expected 551 unique IDs');
+  }
   const seen=new Set(),classified=new Map(),pending=new Map(),auditById=new Map();
   for(const row of auditRows){
     const id=String(row?.id||'');
@@ -81,7 +102,17 @@ export function validateVocabularyGrammarRoleAudit({vocabulary,manifest,batches,
     const entry=sourceById.get(id);
     if(!entry){errors.push(`coverage: orphan audit ID ${id}`);continue;}
     const remediation=materializationById.get(id);
-    if(remediation){
+    const nuance=nuanceById.get(id);
+    if(nuance){
+      let effectiveBefore=remediation?remediation.after:surfaceOf(row);
+      if(id===VOCAB_00139_ASR_REMEDIATION.id){
+        if(sameSurface(effectiveBefore,VOCAB_00139_ASR_REMEDIATION.before)) effectiveBefore=VOCAB_00139_ASR_REMEDIATION.after;
+        else if(!sameSurface(effectiveBefore,VOCAB_00139_ASR_REMEDIATION.after)) errors.push(`single-entry nuance materialization: vocab:00139 does not follow its approved prior remediation`);
+      }
+      if(!sameSurface(nuance.before,effectiveBefore)) errors.push(`single-entry nuance materialization: before differs from effective prior authority layers for ${id}`);
+      if(!sameSurface(entry,nuance.after)) errors.push(`single-entry nuance materialization: production differs from approved after-state for ${id}`);
+      if(row.grammarRole!==nuance.before?.grammarRole||entry.grammarRole!==nuance.after?.grammarRole||nuance.before?.grammarRole!==nuance.after?.grammarRole) errors.push(`single-entry nuance materialization: grammarRole differs from frozen authority for ${id}`);
+    }else if(remediation){
       if(!sameSurface(row,remediation.before)) errors.push(`paraphrase materialization: before differs from grammar-role snapshot for ${id}`);
       if(!sameSurface(entry,remediation.after)) errors.push(`paraphrase materialization: production differs from approved after-state for ${id}`);
       if(entry.grammarRole!==remediation.grammarRole||row.grammarRole!==remediation.grammarRole) errors.push(`paraphrase materialization: grammarRole changed for ${id}`);
@@ -129,7 +160,11 @@ export function validateVocabularyGrammarRoleAudit({vocabulary,manifest,batches,
     if(!sourceEntry||!auditEntry){errors.push(`final resolutions: ID absent from source/audit ${row?.id}`);continue;}
     if(sourceEntry.grammarRole!==row.grammarRole||auditEntry.grammarRole!==row.grammarRole||auditEntry.status!=='classified') errors.push(`final resolutions: decision mismatch for ${row.id}`);
     const remediation=materializationById.get(row.id);
-    if(remediation){
+    const nuance=nuanceById.get(row.id);
+    if(nuance){
+      if(nuance.before?.grammarRole!==row.grammarRole||nuance.after?.grammarRole!==row.grammarRole) errors.push(`final resolutions: single-entry nuance grammarRole mismatch for ${row.id}`);
+      if(!sameSurface(sourceEntry,nuance.after)) errors.push(`final resolutions: single-entry nuance production mismatch for ${row.id}`);
+    }else if(remediation){
       if(!sameSurface(row,remediation.before)||!sameSurface(auditEntry,remediation.before)||!sameSurface(sourceEntry,remediation.after)) errors.push(`final resolutions: paraphrase materialization mismatch for ${row.id}`);
       if(remediation.grammarRole!==row.grammarRole) errors.push(`final resolutions: grammarRole changed by paraphrase materialization for ${row.id}`);
     }else if(!approvedVocab139(row,sourceEntry)||!sameSurface(auditEntry,VOCAB_00139_ASR_REMEDIATION.before)){
@@ -194,7 +229,10 @@ export function loadVocabularyGrammarRoleAudit(){
   const paraphraseManifest=readJson(path.join(paraphraseDir,'manifest.json'));
   const confirmedAuthority=readJson(path.join(paraphraseDir,'confirmed.json'));
   const materialization=readJson(path.join(paraphraseDir,'materialization.json'));
-  return validateVocabularyGrammarRoleAudit({vocabulary,manifest,batches,pendingRegistry,semanticQa,finalResolutions,pendingHistory,paraphraseManifest,confirmedAuthority,materialization});
+  const nuanceDir=path.join(ROOT,'data/audits/vocabulary-single-entry-nuance-materialization');
+  const nuanceMaterializationFile=path.join(nuanceDir,'materialization.json');
+  const nuanceMaterialization=fs.existsSync(nuanceMaterializationFile)?readJson(nuanceMaterializationFile):null;
+  return validateVocabularyGrammarRoleAudit({vocabulary,manifest,batches,pendingRegistry,semanticQa,finalResolutions,pendingHistory,paraphraseManifest,confirmedAuthority,materialization,nuanceMaterialization});
 }
 
 if(import.meta.url===`file://${process.argv[1]}`){
