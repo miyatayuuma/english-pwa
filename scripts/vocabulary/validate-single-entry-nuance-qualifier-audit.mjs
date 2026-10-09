@@ -72,7 +72,7 @@ assert(boundaryIds.every(id=>coverage.base_pending_ids.includes(id)),"boundary r
 const parallelIds=new Set([...workerSet,...boundaryIds]);
 assert(parallelIds.size===1984&&coverage.parallel_distinct_ids.length===1984&&coverage.parallel_distinct_ids.every(id=>parallelIds.has(id)),"parallel distinct coverage");
 assert([...coverage.base_resolved_ids].every(id=>!parallelIds.has(id))&&coverage.base_overlap_ids.length===0,"base/parallel overlap");
-assert(coverage.missing_ids.length===0&&coverage.unknown_ids.length===0&&coverage.unexpected_duplicate_ids.length===0&&coverage.order_drift===0,"coverage validation errors");
+assert(coverage.missing_ids.length===0&&coverage.unknown_ids.length===0&&agg.coverage.unexpected_duplicate_ids.length===0&&coverage.order_drift===0,"coverage validation errors");
 assert(coverage.union_total===2478&&coverage.union_ids.length===2478&&coverage.union_ids.every((id,i)=>id===ids[i]),"full source-order union");
 const special=reviewById.get("vocab:02481");
 assert(special&&special.index===2478&&coverage.base_pending_ids.includes(special.id)&&workerSet.has(special.id),"W10 index 2478 valid coverage");
@@ -174,7 +174,7 @@ assert(manifest.production_remediation_candidate_count===551&&manifest.productio
 if(errors.length){console.error("FAIL [strict] ("+errors.length+"): "+errors.slice(0,60).join("; "));process.exitCode=1;}
 else{
  const builder=path.join(repo,"scripts/vocabulary/build-single-entry-nuance-qualifier-audit.mjs");
- execFileSync(process.execPath,[builder,"--check"],{cwd:repo,stdio:"pipe"});
- execFileSync(process.execPath,[builder,"--check"],{cwd:repo,stdio:"pipe"});
+ execFileSync(process.execPath,[builder,"--check"],{cwd:repo,stdio:"inherit"});
+ execFileSync(process.execPath,[builder,"--check"],{cwd:repo,stdio:"inherit"});
  console.log("PASS [strict] population=2478 reviewed=2478 pending=0 stale=0 parallel=1984 duplicates=0 conflicts=8 upstream=94; deterministic regeneration=2x; production materialization=false");
 }
