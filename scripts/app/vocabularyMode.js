@@ -45,6 +45,7 @@ const state={
   liveTranscript:'',
   carrierCueMissCount:0,
   lastAttemptTranscript:'',
+  lastRecognitionEvidence:null,
   correction:false,
   lastRecognitionDecision:null,
   correctionProgress:createCorrectionProgress(),
@@ -363,19 +364,22 @@ function hasRecognitionEvidence(){
   return state.recognition?.getRecognitionSegments?.().some(segment=>segment.alternatives.some(candidate=>candidate.transcript.trim()));
 }
 
-function scheduleTranscriptGrade(text){
+function scheduleTranscriptGrade(text,evidence){
   if(state.processing||!state.current) return;
   state.liveTranscript=String(text??'');
+  state.lastRecognitionEvidence=evidence||state.recognition?.getEvidence?.()||null;
   setTranscript(state.liveTranscript);
   clearGradeTimer();
-  // Native previews are display-only; wait for the terminal result/error.
+  // Recognition previews are display-only for every provider. A result can be
+  // accepted only after this attempt has delivered its terminal evidence.
+  if(!evidence?.recognitionComplete&&evidence?.completionState!=='terminal') return;
   if(isNativeAndroid()) return;
   if(!state.liveTranscript.trim()&&!hasRecognitionEvidence()) return;
   const delay=state.current.kind==='word'?650:1200;
   state.gradeTimer=setTimeout(()=>{
     state.gradeTimer=0;
     const latest=latestNonEmptyTranscript(state.liveTranscript,state.recognition?.getPreviewTranscript?.());
-    if(!state.processing&&state.current) gradeTranscript(latest);
+    if(!state.processing&&state.current) gradeTranscript(latest,state.recognition?.getEvidence?.()||state.lastRecognitionEvidence||{});
   },delay);
 }
 
@@ -407,16 +411,17 @@ function setupRecognition(){
   state.recognition=createRecognitionController({
     // Shared provider evidence never rewrites raw primary text.
     getRecognitionContext:()=>buildRecognitionContext({mode:'vocabulary'}),
-    onTranscriptReset:()=>{clearGradeTimer();state.liveTranscript='';state.lastAttemptTranscript='';setTranscript('');},
-    onTranscriptPreview:text=>{
+    onTranscriptReset:()=>{clearGradeTimer();state.liveTranscript='';state.lastAttemptTranscript='';state.lastRecognitionEvidence=null;setTranscript('');},
+    onTranscriptPreview:(text,evidence)=>{
       if(state.processing||!state.current) return;
-      scheduleTranscriptGrade(text);
+      scheduleTranscriptGrade(text,evidence);
     },
     onAutoStop:result=>{
       if(state.processing||!state.current) return;
       clearGradeTimer();
       const text=latestNonEmptyTranscript(result?.previewTranscript,state.liveTranscript,result?.transcript);
-      if(text||hasRecognitionEvidence()){state.liveTranscript=text;setTranscript(text);gradeTranscript(text);}
+      state.lastRecognitionEvidence=result||null;
+      if(text||hasRecognitionEvidence()){state.liveTranscript=text;setTranscript(text);gradeTranscript(text,result||{});}
       else showRecognitionFailure();
     },
     onUnsupported:()=>{
@@ -452,7 +457,7 @@ async function startListening(){
     if(generation!==state.micGeneration||current!==state.current||!result?.ok) return;
     clearGradeTimer();
     const text=latestNonEmptyTranscript(result?.previewTranscript,state.liveTranscript,result?.transcript);
-    if((text||hasRecognitionEvidence())&&!state.processing) gradeTranscript(text);
+    if((text||hasRecognitionEvidence())&&!state.processing) gradeTranscript(text,result||{});
     else if(!state.processing) showRecognitionFailure();
     return;
   }
@@ -802,16 +807,31 @@ function renderAnswerContext({result=null,heardTranscript=state.lastAttemptTrans
   if(result!==null) speakAnswer(answer);
 }
 
-function gradeTranscript(text){
+function gradeTranscript(text,recognitionEvidence={}){
   if(state.processing||!state.current) return;
   const transcript=String(text??'');
   if(!transcript.trim()&&!hasRecognitionEvidence()) return;
+  state.liveTranscript=transcript;
+  const evidence=recognitionEvidence||{};
+  const complete=evidence.recognitionComplete===true||evidence.completionState==='terminal';
+  const result=classifyVocabularySpeechAnswer({
+    entry:state.current,
+    activeOccurrence:activeSource(),
+    transcript,
+    recognitionSegments:complete?(evidence.recognitionSegments||[]):[],
+    recognitionComplete:complete,
+    completionState:evidence.completionState,
+    attemptId:evidence.attemptId,
+    correction:state.correction,
+  });
+  // Never consume or advance an attempt from a preview, even when rank zero
+  // already looks exact. Wait for the terminal event for every decision.
+  if(!complete) return;
   state.processing=true;
   clearGradeTimer();
-  state.liveTranscript=transcript;
   state.lastAttemptTranscript=transcript;
+  state.lastRecognitionEvidence=evidence;
   setTranscript(transcript);
-  const result=classifyVocabularySpeechAnswer({entry:state.current,activeOccurrence:activeSource(),transcript,recognitionSegments:state.recognition?.getRecognitionSegments?.()||[],correction:state.correction});
   state.lastRecognitionDecision=result;
   if(result.type==='target'&&result.displayTranscript) setTranscript(result.displayTranscript);
   nativeSpeechDiagnostic('grading',{mode:'vocabulary',entryId:state.current.id,decision:result});

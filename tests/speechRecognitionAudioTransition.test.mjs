@@ -7,7 +7,7 @@ test('silent recognition produces no evaluable match or start achievement',async
   class FakeSpeechRecognition{
     constructor(){recognition=this;}
     start(){events.push('recognition-start-requested');}
-    stop(){}
+    stop(){this.onend?.();}
   }
   const previousWindow=globalThis.window;
   globalThis.window={SpeechRecognition:FakeSpeechRecognition};
@@ -23,7 +23,7 @@ test('silent recognition produces no evaluable match or start achievement',async
     assert.deepEqual(events,['recognition-start-requested']);
     recognition.onstart();
     assert.deepEqual(events,['recognition-start-requested']);
-    const outcome=controller.stop();
+    const outcome=await controller.stop();
     assert.equal(outcome.transcript,'');
     assert.equal('matchInfo' in outcome,false);
   }finally{
@@ -73,7 +73,7 @@ test('recognition controller returns provider evidence without owning grading',a
   class FakeSpeechRecognition{
     constructor(){recognition=this;}
     start(){}
-    stop(){}
+    stop(){this.onend?.();}
   }
   const previousWindow=globalThis.window;
   globalThis.window={SpeechRecognition:FakeSpeechRecognition};
@@ -86,7 +86,7 @@ test('recognition controller returns provider evidence without owning grading',a
     recognition.onstart();
     const result=Object.assign([{transcript:'wrong primary'}, {transcript:'canonical source audio'}],{isFinal:true});
     recognition.onresult({resultIndex:0,results:[result]});
-    const outcome=controller.stop();
+    const outcome=await controller.stop();
     assert.equal(finalText,'wrong primary');
     assert.equal(outcome.hypotheses,undefined);
     assert.equal(recognition.maxAlternatives,20);
@@ -115,7 +115,7 @@ test('app uses stop confirm settle then manual from-start shadowing without auto
   assert.match(source,/getAudioLockState\(\)===AUDIO_LOCK_STATES\.ACTIVE&&!userInitiated/);
   assert.match(source,/if\(userInitiated&&!authorizeUserPlayback\(\)\) return false/);
   assert.match(source,/getAudioLockState\(\)===AUDIO_LOCK_STATES\.ACTIVE \|\| audio\.ended/);
-  assert.match(source,/if\(!hasRecognizedSpeech\(hyp\)/);
+  assert.match(source,/if\(!hypotheses\.some\(candidate=>hasRecognizedSpeech\(candidate\.transcript\)\)\)/);
   assert.doesNotMatch(source,/録音開始後に「聞く」/);
   assert.doesNotMatch(source,/resumeAfterMic/);
 });

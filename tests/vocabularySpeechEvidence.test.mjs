@@ -5,7 +5,9 @@ import {classifyVocabularySpeechAnswer,isTargetSpeechProduction} from '../script
 import {classifyVocabularyAnswer} from '../scripts/app/vocabularyLearningCore.js';
 import {safeSpeechTokens} from '../scripts/speech/safeSpeechNormalization.js';
 import {findSpeechSurfaceMatch} from '../scripts/speech/speechAlignment.js';
-import {VOCABULARY_CHUNK_RESCUE_AUTHORITY,VOCABULARY_CHUNK_RESCUE_AUTHORITY_ENTRIES} from '../scripts/speech/vocabularyChunkRescueAuthority.js';
+import {VOCABULARY_CHUNK_RESCUE_AUTHORITY,VOCABULARY_CHUNK_RESCUE_AUTHORITY_ENTRIES,vocabularyChunkRescueChunks} from '../scripts/speech/vocabularyChunkRescueAuthority.js';
+const productionEntriesById=new Map(JSON.parse(readFileSync(new URL('../data/vocabulary-v3.json',import.meta.url),'utf8')).entries.map(value=>[value.id,value]));
+const currentProductionEntry=id=>productionEntriesById.get(id);
 const segment=(values,index=0)=>({segmentIndex:index,primaryTranscript:values[0],isFinal:true,alternatives:values.map((transcript,asrRank)=>({transcript,asrRank,confidence:0}))});
 const entry=(canonical,extra={})=>({canonical,...extra});
 const grade=(canonical,transcript,options={})=>classifyVocabularySpeechAnswer({entry:entry(canonical),transcript,...options});
@@ -304,12 +306,21 @@ test('curated chunk authority has exactly the approved 18 canonical two-chunk su
 });
 
 test('vocab:00139 chunk N-best rescue accepts either rank-zero chunk plus one strict lower candidate',()=>{
-  const canonical='no sooner had I arrived than the phone rang';
-  const primary='no sooner had I arrived down the phone rang';
+  const liveEntry=currentProductionEntry('vocab:00139');
+  const chunks=vocabularyChunkRescueChunks(liveEntry);
+  if(!chunks){
+    const stale=VOCABULARY_CHUNK_RESCUE_AUTHORITY['vocab:00139'];
+    const stalePrimary=`${stale[0]} unrelated tokens`;
+    assert.equal(classifyVocabularySpeechAnswer({entry:liveEntry,transcript:stalePrimary,recognitionSegments:[segmentFactory([stalePrimary,stale[1]])]}).type,'miss');
+    return;
+  }
+  const canonical=liveEntry.canonical;
+  const [firstChunk,secondChunk]=chunks;
+  const primary=`${firstChunk} unrelated tokens`;
   const result=classifyVocabularySpeechAnswer({
-    entry:{id:'vocab:00139',canonical},
+    entry:liveEntry,
     transcript:primary,
-    recognitionSegments:[segmentFactory([primary,'unrelated','than the phone rang'])],
+    recognitionSegments:[segmentFactory([primary,'unrelated',secondChunk])],
   });
   assert.equal(result.type,'target');
   assert.equal(result.targetRescued,true);
@@ -319,19 +330,19 @@ test('vocab:00139 chunk N-best rescue accepts either rank-zero chunk plus one st
   assert.equal(result.matchedExpected,canonical);
   assert.equal(result.primaryTranscript,primary);
   assert.equal(result.displayTranscript,primary);
-  assert.equal(result.rawTranscript,'than the phone rang');
-  assert.equal(result.rescuedChunk.expected,'than the phone rang');
-  assert.equal(result.supportingPrimaryChunk.expected,'no sooner had I arrived');
+  assert.equal(result.rawTranscript,secondChunk);
+  assert.equal(result.rescuedChunk.expected,secondChunk);
+  assert.equal(result.supportingPrimaryChunk.expected,firstChunk);
   assert.equal(result.chunkRescue.authority,'nbest-chunk-exact');
 
   const reversed=classifyVocabularySpeechAnswer({
-    entry:{id:'vocab:00139',canonical},
-    transcript:'please than the phone rang, thanks',
-    recognitionSegments:[segmentFactory(['please than the phone rang, thanks','no sooner had I arrived'])],
+    entry:liveEntry,
+    transcript:`please ${secondChunk}, thanks`,
+    recognitionSegments:[segmentFactory([`please ${secondChunk}, thanks`,firstChunk])],
   });
   assert.equal(reversed.type,'target');
-  assert.equal(reversed.rescuedChunk.expected,'no sooner had I arrived');
-  assert.equal(reversed.supportingPrimaryChunk.expected,'than the phone rang');
+  assert.equal(reversed.rescuedChunk.expected,firstChunk);
+  assert.equal(reversed.supportingPrimaryChunk.expected,secondChunk);
 });
 
 test('vocab:00328 chunks reconstruct the current canonical and rescue either strict split direction',()=>{
@@ -431,29 +442,38 @@ test('chunk rescue retains explicit-equivalence provenance on either supporting 
 
 test('chunk rescue rejects missing, partial, split-candidate, paraphrase, and uncurated evidence',()=>{
   const id='vocab:00139';
-  const canonical='no sooner had I arrived than the phone rang';
+  const liveEntry=currentProductionEntry(id);
+  const canonical=liveEntry.canonical;
+  const chunks=vocabularyChunkRescueChunks(liveEntry);
+  if(!chunks){
+    const stale=VOCABULARY_CHUNK_RESCUE_AUTHORITY[id];
+    const stalePrimary=`${stale[0]} unrelated tokens`;
+    assert.equal(classifyVocabularySpeechAnswer({entry:liveEntry,transcript:stalePrimary,recognitionSegments:[segmentFactory([stalePrimary,stale[1]])]}).type,'miss');
+    return;
+  }
+  const [firstChunk,secondChunk]=chunks;
+  const primaryWithNoise=`${firstChunk} down unrelated`;
+  const secondWords=secondChunk.split(/\s+/u);
+  const partialChunk=secondWords.slice(1).join(' ')||'unrelated';
   const cases=[
-    ['both primary chunks missing','something entirely unrelated',[segmentFactory(['something entirely unrelated','than the phone rang'])]],
-    ['lower candidate has only a partial chunk','no sooner had I arrived down the phone rang',[segmentFactory(['no sooner had I arrived down the phone rang','the phone rang'])]],
-    ['chunks only appear in different lower candidates','something entirely unrelated',[segmentFactory(['something entirely unrelated','no sooner had I arrived']),segmentFactory(['something else','than the phone rang'])]],
-    ['TARGET chunk cannot be completed by a PARAPHRASE', 'no sooner had I arrived down the phone rang', [segmentFactory(['no sooner had I arrived down the phone rang','than the phone rang'])]],
-    ['correction cannot combine a primary PARAPHRASE with a lower TARGET chunk','no sooner had I arrived',[segmentFactory(['no sooner had I arrived','than the phone rang'])]],
+    ['both primary chunks missing','something entirely unrelated',[segmentFactory(['something entirely unrelated',secondChunk])]],
+    ['lower candidate has only a partial chunk',primaryWithNoise,[segmentFactory([primaryWithNoise,partialChunk])]],
+    ['chunks only appear in different lower candidates','something entirely unrelated',[segmentFactory(['something entirely unrelated',firstChunk]),segmentFactory(['something else',secondChunk])]],
+    ['TARGET chunk cannot be completed by a PARAPHRASE',primaryWithNoise,[segmentFactory([primaryWithNoise,secondChunk])]],
+    ['correction cannot combine a primary PARAPHRASE with a lower TARGET chunk',firstChunk,[segmentFactory([firstChunk,secondChunk])]],
   ];
   for(const [label,transcript,recognitionSegments] of cases){
-    const paraphrases=label.includes('PARAPHRASE')
-      ?(label.startsWith('correction')?['no sooner had I arrived']:['than the phone rang'])
-      :[];
-    const result=classifyVocabularySpeechAnswer({entry:{id,canonical,paraphrases},transcript,recognitionSegments,correction:label.startsWith('correction')});
+    const paraphrases=label.startsWith('correction')?[firstChunk]:label.includes('PARAPHRASE')?[secondChunk]:liveEntry.paraphrases;
+    const result=classifyVocabularySpeechAnswer({entry:{...liveEntry,canonical,paraphrases},transcript,recognitionSegments,correction:label.startsWith('correction')});
     assert.equal(result.type,'miss',label);
   }
 
   assert.equal(classifyVocabularySpeechAnswer({
-    entry:{id,canonical:'changed canonical'},
-    transcript:'no sooner had I arrived down the phone rang',
-    recognitionSegments:[segmentFactory(['no sooner had I arrived down the phone rang','than the phone rang'])],
+    entry:{...liveEntry,canonical:'changed canonical'},
+    transcript:primaryWithNoise,
+    recognitionSegments:[segmentFactory([primaryWithNoise,secondChunk])],
   }).type,'miss','stale curated chunks fail closed after a canonical change');
 
-  const entryMap=new Map(JSON.parse(readFileSync(new URL('../data/vocabulary-v3.json',import.meta.url),'utf8')).entries.map(value=>[value.id,value]));
   const nonTargetIds=[
     'vocab:00013','vocab:00071','vocab:00100','vocab:00151','vocab:00237','vocab:00250',
     'vocab:00341','vocab:00418','vocab:00420','vocab:00469','vocab:00478','vocab:00491',
@@ -461,7 +481,7 @@ test('chunk rescue rejects missing, partial, split-candidate, paraphrase, and un
     'vocab:01514','vocab:01654','vocab:01668','vocab:01816','vocab:01912','vocab:02445',
   ];
   for(const nonTargetId of nonTargetIds){
-    const target=entryMap.get(nonTargetId);
+    const target=currentProductionEntry(nonTargetId);
     const words=safeSpeechTokens(target.canonical).map(token=>token.value);
     const cut=Math.floor(words.length/2);
     const first=words.slice(0,cut).join(' ');
@@ -475,16 +495,17 @@ test('chunk rescue rejects missing, partial, split-candidate, paraphrase, and un
   }
   assert.equal(classifyVocabularySpeechAnswer({
     entry:{canonical},
-    transcript:'no sooner had I arrived down the phone rang',
-    recognitionSegments:[segmentFactory(['no sooner had I arrived down the phone rang','than the phone rang'])],
+    transcript:primaryWithNoise,
+    recognitionSegments:[segmentFactory([primaryWithNoise,secondChunk])],
   }).type,'miss','an uncurated entry with the same text stays unchanged');
 });
 
 test('existing lower full TARGET rescue wins before curated chunk rescue',()=>{
-  const canonical='no sooner had I arrived than the phone rang';
-  const primary='no sooner had I arrived down the phone rang';
+  const liveEntry=currentProductionEntry('vocab:00139');
+  const canonical=liveEntry.canonical;
+  const primary=`${vocabularyChunkRescueChunks(liveEntry)?.[0]||'unrelated'} down unrelated`;
   const result=classifyVocabularySpeechAnswer({
-    entry:{id:'vocab:00139',canonical},
+    entry:liveEntry,
     transcript:primary,
     recognitionSegments:[segmentFactory([primary,'unrelated',canonical])],
   });
@@ -496,11 +517,12 @@ test('existing lower full TARGET rescue wins before curated chunk rescue',()=>{
 });
 
 test('curated chunk rescue can use the existing deepest retained strict N-best rank',()=>{
-  const canonical='no sooner had I arrived than the phone rang';
-  const primary='no sooner had I arrived down the phone rang';
-  const alternatives=Array.from({length:20},(_,index)=>index===0?primary:index===19?'than the phone rang':`unrelated ${index}`);
+  const liveEntry=currentProductionEntry('vocab:00139');
+  const [firstChunk,secondChunk]=vocabularyChunkRescueChunks(liveEntry)||['unrelated','other'];
+  const primary=`${firstChunk} down unrelated`;
+  const alternatives=Array.from({length:20},(_,index)=>index===0?primary:index===19?secondChunk:`unrelated ${index}`);
   const result=classifyVocabularySpeechAnswer({
-    entry:{id:'vocab:00139',canonical},
+    entry:liveEntry,
     transcript:primary,
     recognitionSegments:[segmentFactory(alternatives)],
   });

@@ -1,5 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { vocabularyChunkRescueChunks } from '../scripts/speech/vocabularyChunkRescueAuthority.js';
+const production139=JSON.parse(readFileSync(new URL('../data/vocabulary-v3.json',import.meta.url),'utf8')).entries.find(entry=>entry.id==='vocab:00139');
 const result=(text,isFinal=true)=>Object.assign((Array.isArray(text)?text:[text]).map(transcript=>({transcript,confidence:0})),{isFinal});
 async function fixture(run,{phrases=true,constructor=true}={}){
   const previousWindow=globalThis.window,previousPhrase=globalThis.SpeechRecognitionPhrase;
@@ -7,7 +10,7 @@ async function fixture(run,{phrases=true,constructor=true}={}){
   class Native{
     constructor(){if(phrases)this.phrases=[];instances.push(this);}
     start(){this.atStart=this.phrases?.map(p=>p.phrase);this.onstart?.();}
-    stop(){this.onend?.();}abort(){this.onend?.();}
+    stop(){this.beforeEnd?.();this.onend?.();}abort(){this.onend?.();}
     inject(results,resultIndex=0){this.onresult?.({results,resultIndex});}
     error(error){this.onerror?.({error});this.onend?.();}
   }
@@ -20,7 +23,9 @@ test('Web fallback ignores phrase bias, keeps raw primary and requests N-best',(
   const controller=createRecognitionController({getRecognitionContext:()=>({mode:'vocabulary'})});
   controller.start();const native=instances[0];assert.deepEqual(native.atStart,[]);assert.equal(native.maxAlternatives,20);assert.equal(native.processLocally,undefined);
   native.inject([result(['you too','yield to'])]);
-  assert.equal(controller.getPreviewTranscript(),'you too');assert.equal(controller.stop().transcript,'you too');
+  assert.equal(controller.getPreviewTranscript(),'you too');
+  const stopped=await controller.stop();assert.equal(stopped.transcript,'you too');assert.equal(stopped.primaryTranscript,'you too');
+  assert.equal(stopped.completionState,'terminal');assert.equal(stopped.recognitionComplete,true);
 }));
 test('Web error after partial never retries or grades a partial attempt',()=>fixture(async({createRecognitionController},instances)=>{
   let errors=0,autostops=0;
@@ -38,7 +43,7 @@ test('PR240 raw final overlap, interim replacement/resultIndex, manual/auto stop
   assert.equal(controller.getPreviewTranscript(),'Turn the faucet off now');
   native.inject([result('Turn the faucet'),result('the faucet off now')],1);
   assert.equal(controller.getStableTranscript(),'Turn the faucet off now');
-  assert.equal(controller.stop().transcript,'Turn the faucet off now');assert.equal(auto,undefined);
+  const stopped=await controller.stop();assert.equal(stopped.transcript,'Turn the faucet off now');assert.equal(stopped.recognitionComplete,true);assert.equal(auto,undefined);
   controller.start();native.inject([result('stale')]);native.onend?.();assert.equal(controller.getPreviewTranscript(),'');assert.equal(auto,undefined);
   native=instances[1];native.inject([result("I'm ready."),result('to pay two dollars.',false)]);native.onend?.();
   assert.equal(auto.transcript,"I'm ready. to pay two dollars.");assert.equal(controller.isActive(),false);
@@ -59,7 +64,7 @@ test('learning context requests twenty without confidence filtering, copies inte
   assert.equal(controller.getRecognitionSegments()[1].alternatives.length,1,'actual one candidate is normal');
   native.onend?.();assert.equal(auto.transcript,'YouTube something');assert.equal(auto.recognitionSegments.length,2);assert.equal('matchInfo' in auto,false);
   controller.start();native.inject([result(['stale','yield to something'])]);native.onend?.();
-  assert.deepEqual(controller.getRecognitionSegments(),[]);controller.stop();
+  assert.deepEqual(controller.getRecognitionSegments(),[]);await controller.stop();
 }));
 
 test('Web preserves duplicate provider candidates and ranks',()=>fixture(async({createRecognitionController},instances)=>{
@@ -72,13 +77,17 @@ test('Web preserves duplicate provider candidates and ranks',()=>fixture(async({
 
 test('Web provider evidence reaches shared curated Vocabulary chunk rescue without changing rank-one transcript',()=>fixture(async({createRecognitionController},instances)=>{
   const {classifyVocabularySpeechAnswer}=await import('../scripts/speech/vocabularySpeechEvidence.js');
-  const primary='no sooner had I arrived down the phone rang';
+  const chunks=vocabularyChunkRescueChunks(production139);
+  if(!chunks){assert.equal(vocabularyChunkRescueChunks(production139),null);return;}
+  const [firstChunk,secondChunk]=chunks;
+  const primary=`${firstChunk} down ${secondChunk.split(/\s+/u).at(-1)}`;
+  const fullCanonical=production139.canonical;
   const controller=createRecognitionController({getRecognitionContext:()=>({mode:'vocabulary'})});
   controller.start();
-  instances[0].inject([result([primary,'unrelated','than the phone rang'])]);
-  const evidence=controller.stop();
+  instances[0].inject([result([primary,'unrelated',secondChunk])]);
+  const evidence=await controller.stop();
   const grade=classifyVocabularySpeechAnswer({
-    entry:{id:'vocab:00139',canonical:'no sooner had I arrived than the phone rang'},
+    entry:production139,
     ...evidence,
   });
   assert.equal(grade.type,'target');
@@ -87,14 +96,15 @@ test('Web provider evidence reaches shared curated Vocabulary chunk rescue witho
   assert.equal(grade.primaryTranscript,primary);
   assert.equal(grade.displayTranscript,primary);
   assert.equal(evidence.transcript,primary);
-  assert.equal(evidence.recognitionSegments[0].alternatives[2].transcript,'than the phone rang');
+  assert.equal(evidence.recognitionSegments[0].alternatives[2].transcript,secondChunk);
+  assert.equal(grade.matchedExpected,fullCanonical);
 }));
 
 for(const rank of [1,6,8,12,20]) test(`Web provider rank ${rank} uses shared strict TARGET authority`,()=>fixture(async({createRecognitionController},instances)=>{
   const {classifyVocabularySpeechAnswer}=await import('../scripts/speech/vocabularySpeechEvidence.js');
   const controller=createRecognitionController();controller.start();
   instances[0].inject([result(Array.from({length:20},(_,i)=>i===rank-1?'yell':'yeah'))]);
-  const evidence=controller.stop();const grade=classifyVocabularySpeechAnswer({entry:{canonical:'yell'},...evidence});
+  const evidence=await controller.stop();const grade=classifyVocabularySpeechAnswer({entry:{canonical:'yell'},...evidence});
   assert.equal(grade.type,'target');assert.equal(grade.targetRescued,rank!==1);
   assert.equal(evidence.recognitionSegments[0].alternatives.length,20);
   assert.equal(evidence.recognitionSegments[0].providerReturnedCount,20);
@@ -103,7 +113,19 @@ for(const rank of [1,6,8,12,20]) test(`Web provider rank ${rank} uses shared str
 for(const candidate of ['shout','yeah','yel','eared']) test(`Web deep non-TARGET ${candidate} stays MISS`,()=>fixture(async({createRecognitionController},instances)=>{
   const {classifyVocabularySpeechAnswer}=await import('../scripts/speech/vocabularySpeechEvidence.js');
   const controller=createRecognitionController();controller.start();
-  instances[0].inject([result(['wrong',candidate])]);const evidence=controller.stop();
+  instances[0].inject([result(['wrong',candidate])]);const evidence=await controller.stop();
   assert.equal(evidence.recognitionSegments[0].providerReturnedCount,2);
   assert.equal(classifyVocabularySpeechAnswer({entry:{canonical:'yell',paraphrases:['shout']},...evidence}).type,'miss');
+}));
+
+test('manual Web stop retains a final result delivered during stop before terminal completion',()=>fixture(async({createRecognitionController},instances)=>{
+  const controller=createRecognitionController();controller.start();const native=instances[0];
+  native.inject([result('draft',false)]);
+  native.beforeEnd=()=>native.inject([result(['final primary','final alternative'])]);
+  const stopped=await controller.stop();
+  assert.equal(stopped.transcript,'final primary');
+  assert.equal(stopped.recognitionSegments[0].isFinal,true);
+  assert.equal(stopped.recognitionSegments[0].alternatives[1].transcript,'final alternative');
+  assert.equal(stopped.stopReason,'manual-stop');
+  assert.equal(stopped.completionState,'terminal');
 }));

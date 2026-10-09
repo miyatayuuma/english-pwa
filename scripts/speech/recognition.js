@@ -1,9 +1,10 @@
-import { recognitionSegment } from './recognitionEvidence.js';
+import { appendRawTranscriptFinal, recognitionSegment } from './recognitionEvidence.js';
 import { REQUESTED_MAX_ALTERNATIVES } from './recognitionPolicy.js';
 import { selectRecognitionBackend } from '../native/androidSpeechBackend.js';
 import { hasSafeSpeechToken } from './safeSpeechNormalization.js';
 
 const SR = selectRecognitionBackend();
+let nextRecognitionAttemptId = 1;
 
 export function isRecognitionSupported() {
   return !!SR;
@@ -12,33 +13,7 @@ export function hasRecognizedSpeech(transcript) {
   return hasSafeSpeechToken(transcript);
 }
 
-export function appendRawTranscriptFinal(stable, fragment) {
-  const left = String(stable ?? '').trimEnd();
-  const right = String(fragment ?? '').trim();
-  if (!left) return right;
-  if (!right) return left;
-  const lowerLeft = left.toLocaleLowerCase('en-US');
-  const lowerRight = right.toLocaleLowerCase('en-US');
-  if (lowerRight === lowerLeft || lowerRight.startsWith(`${lowerLeft} `)) return right;
-  if (lowerLeft.startsWith(`${lowerRight} `)) return left;
-  const leftWords = left.split(/\s+/u);
-  const rightWords = right.split(/\s+/u);
-  const comparable = word => String(word || '').normalize('NFKC').toLocaleLowerCase('en-US')
-    .replace(/^[\p{P}]+|[\p{P}]+$/gu, '');
-  let overlap = 0;
-  const max = Math.min(leftWords.length, rightWords.length);
-  for (let count = max; count > 0; count -= 1) {
-    let same = true;
-    for (let index = 0; index < count; index += 1) {
-      const a = comparable(leftWords[leftWords.length - count + index]);
-      const b = comparable(rightWords[index]);
-      if (a !== b) { same = false; break; }
-    }
-    if (same) { overlap = count; break; }
-  }
-  const remaining = rightWords.slice(overlap).join(' ');
-  return remaining ? `${left} ${remaining}` : left;
-}
+export { appendRawTranscriptFinal } from './recognitionEvidence.js';
 
 export function composeRawTranscriptPreview(stable, interim) {
   return appendRawTranscriptFinal(stable, interim);
@@ -69,6 +44,8 @@ export function createRecognitionController(options = {}) {
   let stopRequested = false;
   let segments = [];
   let pendingStop = null;
+  let completionState = 'idle';
+  let attemptId = null;
 
   function settleStop(result) {
     const pending = pendingStop;
@@ -86,8 +63,13 @@ export function createRecognitionController(options = {}) {
   function evidence(transcript = latestPreview) {
     return {
       transcript,
+      primaryTranscript: transcript,
       previewTranscript: latestPreview,
       recognitionSegments: getRecognitionSegments(),
+      attemptId,
+      completionState,
+      recognitionComplete: completionState === 'terminal',
+      stopReason: stopRequested ? 'manual-stop' : (completionState === 'terminal' ? 'auto-stop' : null),
     };
   }
 
@@ -97,6 +79,7 @@ export function createRecognitionController(options = {}) {
     }
     active = false;
     finalized = true;
+    completionState = 'terminal';
     setMicState?.(false);
     onStop?.();
     const transcript = (latestPreview || stableText || '').trim();
@@ -142,6 +125,8 @@ export function createRecognitionController(options = {}) {
     active = true;
     finalized = false;
     stopRequested = false;
+    completionState = 'pending';
+    attemptId = nextRecognitionAttemptId++;
     onTranscriptReset?.();
 
     currentRecognition.onstart = () => {
@@ -182,6 +167,7 @@ export function createRecognitionController(options = {}) {
       if (recognition !== currentRecognition || !active || finalized) return;
       active = false;
       finalized = true;
+      completionState = 'error';
       recognition = null;
       try { currentRecognition.abort?.(); } catch (_) {}
       setMicState?.(false);
@@ -193,7 +179,7 @@ export function createRecognitionController(options = {}) {
     currentRecognition.onend = () => {
       if (recognition !== currentRecognition || finalized) return;
       if (stopRequested) {
-        if (currentRecognition.waitsForFinalResult) settleStop(finalize({ triggeredByOnEnd: true }));
+        settleStop(finalize({ triggeredByOnEnd: true }));
         return;
       }
       handleAutoStop();
@@ -204,6 +190,7 @@ export function createRecognitionController(options = {}) {
     } catch (error) {
       active = false;
       finalized = true;
+      completionState = 'error';
       recognition = null;
       setMicState?.(false);
       onError?.({ error: 'start-failed', cause: error });
@@ -217,25 +204,28 @@ export function createRecognitionController(options = {}) {
     if (!active) return { ok: false, reason: 'inactive', ...evidence(stableText.trim()) };
     stopRequested = true;
     const currentRecognition = recognition;
-    if (currentRecognition?.waitsForFinalResult) {
-      let resolve;
-      const promise = new Promise(done => { resolve = done; });
-      pendingStop = { promise, resolve };
-      try { currentRecognition.stop(); }
-      catch (error) {
-        cancel();
-        onError?.({ error: 'stop-failed', cause: error });
-      }
-      return promise;
+    let resolve;
+    const promise = new Promise(done => { resolve = done; });
+    pendingStop = { promise, resolve };
+    try { currentRecognition?.stop?.(); }
+    catch (error) {
+      active = false;
+      finalized = true;
+      completionState = 'error';
+      recognition = null;
+      settleStop({ ok: false, reason: 'stop-failed', ...evidence() });
+      setMicState?.(false);
+      onStop?.();
+      onError?.({ error: 'stop-failed', cause: error });
     }
-    try { currentRecognition?.stop?.(); } catch (_) {}
-    return finalize({ triggeredByOnEnd: false });
+    return promise;
   }
 
   function cancel() {
     const currentRecognition = recognition;
     active = false;
     finalized = true;
+    completionState = 'cancelled';
     stopRequested = false;
     recognition = null;
     settleStop({ ok: false, reason: 'cancelled', ...evidence() });
@@ -252,5 +242,6 @@ export function createRecognitionController(options = {}) {
     getStableTranscript: () => (stableText || '').trim(),
     getPreviewTranscript: () => latestPreview,
     getRecognitionSegments,
+    getEvidence: () => evidence(latestPreview),
   };
 }

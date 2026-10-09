@@ -1,6 +1,7 @@
 import { answerVariants, classifyVocabularyAnswer } from '../app/vocabularyLearningCore.js';
 import { findSpeechSurfaceMatch } from './speechAlignment.js';
 import { safeSpeechTokens } from './safeSpeechNormalization.js';
+import { finalizedRecognitionAlternatives, isRecognitionEvidenceComplete } from './recognitionCandidates.js';
 import { vocabularyChunkRescueChunks } from './vocabularyChunkRescueAuthority.js';
 
 export const VOCABULARY_SPEECH_CARRIER = 'my answer is';
@@ -23,13 +24,17 @@ function vocabularyCarrierSurface(value) {
   };
 }
 
-function evidenceMetadata(transcript) {
+function evidenceMetadata(transcript, { attemptId = null, recognitionComplete = false, recognitionSegments = [] } = {}) {
   return {
     primaryTranscript: transcript,
     rawTranscript: transcript,
     displayTranscript: transcript,
     targetRescued: false,
     recognitionSegmentIndex: null,
+    recognitionSegmentIndexes: (Array.isArray(recognitionSegments) ? recognitionSegments : [])
+      .map((segment, index) => Number.isInteger(segment?.segmentIndex) ? segment.segmentIndex : index),
+    attemptId,
+    recognitionComplete: !!recognitionComplete,
     asrRank: null,
     matched: false,
     matchedExpected: '',
@@ -39,10 +44,12 @@ function evidenceMetadata(transcript) {
   };
 }
 
-function speechMatch(expected, observed, entry, segmentIndex, rank, displayPrimary) {
+function speechMatch(expected, observed, entry, segmentIndex, rank, displayPrimary, segmentIndexes = [], attemptId = null) {
   return findSpeechSurfaceMatch(expected, observed, {
     context: { mode: 'vocabulary', entryId: String(entry?.id || '') },
     recognitionSegmentIndex: segmentIndex,
+    recognitionSegmentIndexes: segmentIndexes,
+    attemptId,
     asrRank: rank,
     displayPrimary,
   });
@@ -60,9 +67,9 @@ function primarySegmentIndexFor(expected, entry, recognitionSegments) {
   return null;
 }
 
-function targetProduction({ entry, activeOccurrence, transcript, segmentIndex, rank, displayPrimary }) {
+function targetProduction({ entry, activeOccurrence, transcript, segmentIndex, segmentIndexes, attemptId, rank, displayPrimary }) {
   for (const expected of answerVariants(entry, activeOccurrence)) {
-    const match = speechMatch(expected, transcript, entry, segmentIndex, rank, displayPrimary);
+    const match = speechMatch(expected, transcript, entry, segmentIndex, rank, displayPrimary, segmentIndexes, attemptId);
     if (!match) continue;
     const classified = classifyVocabularyAnswer({ entry, activeOccurrence, transcript: expected });
     if (classified.type !== 'target') continue;
@@ -256,6 +263,8 @@ function resultForTarget(target, metadata, {
   transcript,
   authority,
   segmentIndex,
+  segmentIndexes = [],
+  attemptId = null,
   rank,
   targetRescued = false,
   primaryDisplay = false,
@@ -276,6 +285,8 @@ function resultForTarget(target, metadata, {
     displayTranscript,
     targetRescued,
     recognitionSegmentIndex: segmentIndex ?? null,
+    recognitionSegmentIndexes: segmentIndexes,
+    attemptId,
     asrRank: rank ?? 0,
     recognitionAuthority,
     speechMatch: match ? {
@@ -286,6 +297,8 @@ function resultForTarget(target, metadata, {
       ruleId: match.ruleId,
       ruleKind: match.ruleKind,
       recognitionSegmentIndex: segmentIndex ?? null,
+      recognitionSegmentIndexes: segmentIndexes,
+      attemptId,
       asrRank: rank ?? 0,
       rawTranscript: String(transcript ?? ''),
       displayTranscript,
@@ -321,9 +334,21 @@ export function isTargetSpeechProduction(transcript, expected) {
 
 // Vocabulary owns TARGET/PARAPHRASE/MISS and N-best authority. Each candidate
 // remains an independent provider result; this function never joins candidates.
-export function classifyVocabularySpeechAnswer({ entry, activeOccurrence = null, transcript = '', recognitionSegments = [], correction = false } = {}) {
+export function classifyVocabularySpeechAnswer({ entry, activeOccurrence = null, transcript = '', recognitionSegments = [], recognitionComplete, completionState, attemptId = null, correction = false } = {}) {
   const primaryTranscript = String(transcript ?? '');
-  const metadata = evidenceMetadata(primaryTranscript);
+  const recognitionEvidence = {
+    transcript: primaryTranscript,
+    primaryTranscript,
+    recognitionSegments,
+    recognitionComplete,
+    completionState,
+  };
+  const completeEvidence=isRecognitionEvidenceComplete(recognitionEvidence)
+    && Array.isArray(recognitionSegments)
+    && recognitionSegments.length>0
+    && recognitionSegments.every(segment=>segment?.isFinal===true);
+  const metadata=evidenceMetadata(primaryTranscript,{attemptId,recognitionComplete:completeEvidence,recognitionSegments});
+  const hypotheses = finalizedRecognitionAlternatives(recognitionEvidence);
   const primary = classifyVocabularyAnswer({ entry, activeOccurrence, transcript: primaryTranscript });
   const primarySegmentIndex = primarySegmentIndexFor(primary.matchedText, entry, recognitionSegments);
 
@@ -338,6 +363,7 @@ export function classifyVocabularySpeechAnswer({ entry, activeOccurrence = null,
       rawTranscript: primaryTranscript,
       displayTranscript: match.displayTranscript,
       recognitionSegmentIndex: primarySegmentIndex,
+      recognitionSegmentIndexes: metadata.recognitionSegmentIndexes,
       asrRank: 0,
       recognitionAuthority: 'exact',
       speechMatch: match,
@@ -355,6 +381,7 @@ export function classifyVocabularySpeechAnswer({ entry, activeOccurrence = null,
       matchedExpected: primary.matchedText,
       observed: match?.observed || primaryTranscript,
       recognitionSegmentIndex: primarySegmentIndex,
+      recognitionSegmentIndexes: metadata.recognitionSegmentIndexes,
       asrRank: 0,
       recognitionAuthority: match?.authority === 'explicit-equivalence' ? 'explicit-equivalence' : 'exact',
       speechMatch: match,
@@ -405,38 +432,47 @@ export function classifyVocabularySpeechAnswer({ entry, activeOccurrence = null,
     }
   }
 
-  for (const [index, segment] of recognitionSegments.entries()) {
-    for (const candidate of segment.alternatives || []) {
-      if (!Number.isInteger(candidate.asrRank) || candidate.asrRank <= 0) continue;
-      const candidateTranscript = String(candidate.transcript ?? '');
-      const accepted = targetProductionWithCarrier({
-        entry,
-        activeOccurrence,
-        transcript: candidateTranscript,
-        segmentIndex: segment.segmentIndex ?? index,
-        rank: candidate.asrRank,
-        displayPrimary: true,
-      });
-      if (!accepted) continue;
-      const explicit = accepted.match.authority === 'explicit-equivalence';
-      return resultForTarget(accepted, metadata, {
-        transcript: candidateTranscript,
-        authority: explicit ? 'explicit-equivalence' : 'nbest-exact',
-        segmentIndex: segment.segmentIndex ?? index,
-        rank: candidate.asrRank,
-        targetRescued: true,
-      });
-    }
+  for (const candidate of hypotheses) {
+    const candidateTranscript = String(candidate.transcript ?? '');
+    const accepted = targetProductionWithCarrier({
+      entry,
+      activeOccurrence,
+      transcript: candidateTranscript,
+      segmentIndex: candidate.segmentIndex,
+      segmentIndexes: candidate.segmentIndexes,
+      attemptId,
+      rank: candidate.asrRank,
+      displayPrimary: true,
+    });
+    if (!accepted) continue;
+    const explicit = accepted.match.authority === 'explicit-equivalence';
+    return resultForTarget(accepted, metadata, {
+      transcript: candidateTranscript,
+      authority: explicit ? 'explicit-equivalence' : 'nbest-exact',
+      segmentIndex: candidate.segmentIndex,
+      segmentIndexes: candidate.segmentIndexes,
+      attemptId,
+      rank: candidate.asrRank,
+      targetRescued: true,
+    });
   }
 
-  const chunkRescued = chunkRescueProduction({
+  const chunkRescued = completeEvidence ? chunkRescueProduction({
     entry,
     activeOccurrence,
     primaryTranscript,
     metadata,
     recognitionSegments,
-  });
-  if (chunkRescued) return chunkRescued;
+  }) : null;
+  if (chunkRescued) return {
+    ...chunkRescued,
+    attemptId,
+    recognitionComplete: true,
+    recognitionSegmentIndexes: [...new Set([
+      chunkRescued.supportingPrimaryChunk?.recognitionSegmentIndex,
+      chunkRescued.rescuedChunk?.recognitionSegmentIndex,
+    ].filter(Number.isInteger))],
+  };
 
   return { type: 'miss', matchedText: '', matchedAuthority: null, ...metadata };
 }

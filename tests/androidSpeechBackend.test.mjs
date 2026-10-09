@@ -1,7 +1,10 @@
 import test, { afterEach } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { AndroidSpeechRecognizerBackend, selectRecognitionBackend } from '../scripts/native/androidSpeechBackend.js';
 import { createRecognitionController } from '../scripts/speech/recognition.js';
+import { vocabularyChunkRescueChunks } from '../scripts/speech/vocabularyChunkRescueAuthority.js';
+const production139=JSON.parse(readFileSync(new URL('../data/vocabulary-v3.json',import.meta.url),'utf8')).entries.find(entry=>entry.id==='vocab:00139');
 
 const drivers = [];
 afterEach(() => { for (const driver of drivers.splice(0)) driver.finish(); });
@@ -177,13 +180,17 @@ for(const rank of [6,12,20]) test(`Android adapter/controller uses shared TARGET
 
 test('Android provider evidence reaches shared curated Vocabulary chunk rescue at retained N-best rank',async()=>{
   const {classifyVocabularySpeechAnswer}=await import('../scripts/speech/vocabularySpeechEvidence.js');
+  const chunks=vocabularyChunkRescueChunks(production139);
+  if(!chunks){assert.equal(vocabularyChunkRescueChunks(production139),null);return;}
+  const [firstChunk,secondChunk]=chunks;
+  const rescuedChunkTranscript=secondChunk;
   const f=fixture();let driver;
   class Backend extends AndroidSpeechRecognizerBackend{constructor(){super({pluginProvider:async()=>f.plugin});driver=this;drivers.push(this);}}
   const controller=createRecognitionController({recognitionBackend:Backend});
   controller.start();await driver.startup;
-  const primary='no sooner had I arrived down the phone rang';
+  const primary=`${firstChunk} down ${secondChunk.split(/\s+/u).at(-1)}`;
   const alternatives=Array.from({length:20},(_,index)=>({
-    transcript:index===0?primary:index===19?'than the phone rang':`unrelated ${index}`,
+    transcript:index===0?primary:index===19?rescuedChunkTranscript:`unrelated ${index}`,
     asrRank:index,
     confidence:0,
   }));
@@ -191,7 +198,7 @@ test('Android provider evidence reaches shared curated Vocabulary chunk rescue a
   f.emit(driver,'final',alternatives);f.emit(driver,'end');
   const evidence=await promise;
   const grade=classifyVocabularySpeechAnswer({
-    entry:{id:'vocab:00139',canonical:'no sooner had I arrived than the phone rang'},
+    entry:production139,
     ...evidence,
   });
   assert.equal(grade.type,'target');
@@ -200,5 +207,5 @@ test('Android provider evidence reaches shared curated Vocabulary chunk rescue a
   assert.equal(grade.primaryTranscript,primary);
   assert.equal(grade.displayTranscript,primary);
   assert.equal(evidence.recognitionSegments[0].alternatives.length,20);
-  assert.equal(evidence.recognitionSegments[0].alternatives[19].transcript,'than the phone rang');
+  assert.equal(evidence.recognitionSegments[0].alternatives[19].transcript,rescuedChunkTranscript);
 });

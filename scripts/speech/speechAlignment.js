@@ -80,6 +80,8 @@ function alignWindow(referenceTokens, observedTokens, start, end, context, prove
         expected: referenceText.slice(expectedFirst.start, expectedLast.end),
         observed: rawTranscript.slice(observedFirst.start, observedLast.end),
         recognitionSegmentIndex: provenance.recognitionSegmentIndex ?? null,
+        recognitionSegmentIndexes: provenance.recognitionSegmentIndexes || [],
+        attemptId: provenance.attemptId ?? null,
         asrRank: Number.isInteger(provenance.asrRank) ? provenance.asrRank : 0,
       });
     }
@@ -118,6 +120,49 @@ function alignWindow(referenceTokens, observedTokens, start, end, context, prove
   };
 }
 
+function orderedMatchIntegrity(referenceTokens, observedTokens, context) {
+  const mappingsByObservedSpan = new Map();
+  for (let observedIndex = 0; observedIndex < observedTokens.length; observedIndex += 1) {
+    for (let expectedIndex = 0; expectedIndex < referenceTokens.length; expectedIndex += 1) {
+      const resolution = resolveSpeechTokenSpan(referenceTokens, expectedIndex, observedTokens, observedIndex, context);
+      if (!resolution) continue;
+      const key = `${observedIndex}:${resolution.observedLength}`;
+      if (!mappingsByObservedSpan.has(key)) mappingsByObservedSpan.set(key, {
+        observedStart: observedIndex,
+        observedEnd: observedIndex + resolution.observedLength - 1,
+        expectedSpans: [],
+      });
+      mappingsByObservedSpan.get(key).expectedSpans.push({
+        start: expectedIndex,
+        end: expectedIndex + resolution.expectedLength - 1,
+      });
+    }
+  }
+  const mappings = [...mappingsByObservedSpan.values()];
+  const violations = [];
+  for (let first = 0; first < mappings.length; first += 1) {
+    for (let second = first + 1; second < mappings.length; second += 1) {
+      const left = mappings[first];
+      const right = mappings[second];
+      const earlier = left.observedStart < right.observedStart ? left : right;
+      const later = earlier === left ? right : left;
+      if (earlier.observedEnd >= later.observedStart) continue;
+      const earlierExpectedStart = Math.min(...earlier.expectedSpans.map(span => span.start));
+      const laterExpectedEnd = Math.max(...later.expectedSpans.map(span => span.end));
+      // Call a reversal only when every possible expected placement of the
+      // earlier spoken span follows every placement of the later spoken span.
+      if (earlierExpectedStart <= laterExpectedEnd) continue;
+      violations.push({
+        firstObservedTokenIndexes: Array.from({ length: earlier.observedEnd - earlier.observedStart + 1 }, (_, offset) => earlier.observedStart + offset),
+        secondObservedTokenIndexes: Array.from({ length: later.observedEnd - later.observedStart + 1 }, (_, offset) => later.observedStart + offset),
+        firstExpectedSpans: earlier.expectedSpans,
+        secondExpectedSpans: later.expectedSpans,
+      });
+    }
+  }
+  return { valid: violations.length === 0, algorithm: 'definite-token-inversion-v1', violations };
+}
+
 function displayTranscript(rawTranscript, alignment, referenceText, referenceTokens) {
   const replacements = [];
   for (const match of alignment) {
@@ -141,6 +186,8 @@ function displayTranscript(rawTranscript, alignment, referenceText, referenceTok
 export function alignSpeech(referenceText, observedText, {
   context = {},
   recognitionSegmentIndex = null,
+  recognitionSegmentIndexes = [],
+  attemptId = null,
   asrRank = 0,
 } = {}) {
   const reference = String(referenceText ?? '');
@@ -148,7 +195,8 @@ export function alignSpeech(referenceText, observedText, {
   const referenceTokens = safeSpeechTokens(reference);
   const observedTokens = safeSpeechTokens(rawTranscript);
   const refCount = referenceTokens.length;
-  const provenance = { recognitionSegmentIndex, asrRank };
+  const provenance = { recognitionSegmentIndex, recognitionSegmentIndexes, attemptId, asrRank };
+  const orderIntegrity = orderedMatchIntegrity(referenceTokens, observedTokens, context);
 
   if (!refCount) {
     return {
@@ -168,6 +216,7 @@ export function alignSpeech(referenceText, observedText, {
       referenceTokens,
       alignment: [],
       matchRate: 1,
+      orderedMatchIntegrity: orderIntegrity,
     };
   }
 
@@ -216,12 +265,15 @@ export function alignSpeech(referenceText, observedText, {
     referenceTokens,
     alignment: best.alignment,
     matchRate,
+    orderedMatchIntegrity: orderIntegrity,
   };
 }
 
 export function findSpeechSurfaceMatch(expectedText, observedText, {
   context = {},
   recognitionSegmentIndex = null,
+  recognitionSegmentIndexes = [],
+  attemptId = null,
   asrRank = 0,
   displayPrimary = false,
 } = {}) {
@@ -242,6 +294,10 @@ export function findSpeechSurfaceMatch(expectedText, observedText, {
         ...resolution,
         expectedStartIndex: expectedIndex,
         observedStartIndex: observedIndex,
+        recognitionSegmentIndex,
+        recognitionSegmentIndexes,
+        attemptId,
+        asrRank,
       });
       expectedIndex += resolution.expectedLength;
       observedIndex += resolution.observedLength;
@@ -264,6 +320,8 @@ export function findSpeechSurfaceMatch(expectedText, observedText, {
       ruleId: firstEquivalence?.ruleId ?? null,
       ruleKind: firstEquivalence?.ruleKind ?? null,
       recognitionSegmentIndex,
+      recognitionSegmentIndexes,
+      attemptId,
       asrRank,
       rawTranscript: observed,
       displayTranscript: display,

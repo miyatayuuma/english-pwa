@@ -50,7 +50,7 @@ test('cloze sync prioritizes post-result reveal and pass uses guarded answer-che
   assert.ok(cloze.indexOf('if(isPostResultReveal(en,itemId))')<cloze.indexOf('const stage=inferReadHintStage'));
   assert.match(cloze,/data-post-result-reveal/);
   assert.match(main,/showPostResultFeedback\(it,matchInfo\)/);
-  const silentGuard=main.indexOf('if(!hasRecognizedSpeech(hyp)');
+  const silentGuard=main.indexOf('if(!hypotheses.some(candidate=>hasRecognizedSpeech(candidate.transcript)))');
   const passBranch=main.indexOf('if(pass){',silentGuard);
   const revealCall=main.indexOf('showPostResultFeedback(it,matchInfo)',passBranch);
   const failBranch=main.indexOf('}else{',revealCall);

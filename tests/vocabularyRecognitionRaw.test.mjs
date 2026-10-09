@@ -41,7 +41,7 @@ test('raw preview composes stable and interim text without duplicated overlap or
   assert.equal(composeRawTranscriptPreview('I’m—ready','to pay two dollars.'),'I’m—ready to pay two dollars.');
 });
 
-test('preview callback reports cumulative stable plus changing interim text and finalizes without duplication',()=>{
+test('preview callback reports cumulative stable plus changing interim text and finalizes without duplication',async()=>{
   const previews=[];
   const controller=createRecognitionController({
     onTranscriptPreview:text=>previews.push(text),
@@ -53,7 +53,7 @@ test('preview callback reports cumulative stable plus changing interim text and 
   recognition.resultEvent([['came',true],['across Nick',false]],1);
   recognition.resultEvent([['came',true],['across Nick',true]],1);
   assert.deepEqual(previews,['came','came across','came across Nick','came across Nick']);
-  const stopped=controller.stop();
+  const stopped=await controller.stop();
   assert.equal(stopped.transcript,'came across Nick');
   assert.equal(stopped.previewTranscript,'came across Nick');
 });
