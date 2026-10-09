@@ -3,13 +3,23 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>NativeSpeech device validation (debug only)</title>
-<style>body{font:16px system-ui;margin:16px}label,button{display:inline-block;margin:8px}pre{white-space:pre-wrap;overflow-wrap:anywhere}td,th{border:1px solid #aaa;padding:4px}table{border-collapse:collapse}</style>
+<style>body{font:16px system-ui;margin:16px;overflow-wrap:anywhere}label,button{display:inline-block;margin:8px}pre{white-space:pre-wrap;overflow-wrap:anywhere}td,th{border:1px solid #aaa;padding:4px}table{border-collapse:collapse}select,input,button{max-width:100%;font:inherit}#caseGuide{background:#f1f5f9;border-left:4px solid #315e94;padding:10px;margin:12px 0;line-height:1.5}#caseGuide p{margin:7px 0}#caseGuide strong{font-size:1.1em}#openGameTrace{background:#17395d;color:white;border:0;border-radius:6px;padding:12px}#recognitionHarness{overflow-x:auto}#caseNotice{color:#713d00;font-weight:600}#recognitionHarness[hidden]{display:none}</style>
 <h1>ASR実機テスト</h1>
 <p>これを発音してください</p><p id="prompt" style="font-size:2rem;font-weight:bold"></p>
 <p>debug APKのみ。system default recognizerのN-best候補を検証します。biasは使用しません。音声は保存しません。記録はこの画面のメモリ内のみです。</p>
 <a href="/index.html">既存UIへ戻る</a>
 <button id="capabilities">Bridge / capability</button><button id="permission">マイク権限</button>
-<label>case <select id="fixture"><option value="word:yield">yield</option><option value="word:yell">yell</option><option value="vocab:00437" selected>yield to something</option><option value="vocab:00353">see to something</option><option value="vocab:01282">be in</option><option value="vocab:01306">yelled (Vocabulary source)</option><option value="vocab:00139">vocab:00139 (current production text)</option><option value="E0102">yelled (actual whole source)</option></select></label>
+<label>case <select id="acceptanceCase" aria-label="ASR-08D D01〜D14"></select></label>
+<section id="caseGuide" aria-live="polite">
+  <strong id="caseTitle"></strong>
+  <p id="caseInstruction"></p>
+  <p><b>期待結果：</b><span id="caseExpected"></span></p>
+  <p id="caseNotice">この画面での認識テストは事前確認のみ。D01〜D14の合否は通常ゲームのGAME TRACEで検証します。</p>
+  <button type="button" id="openGameTrace">通常ゲームで検証（Trace）</button>
+</section>
+<section id="recognitionHarness">
+<h2>認識候補の事前確認（ゲームのSRSは更新しません）</h2>
+<label>ASR対象 <select id="fixture"><option value="word:yield">yield</option><option value="word:yell">yell</option><option value="vocab:00437" selected>yield to something</option><option value="vocab:00353">see to something</option><option value="vocab:01282">be in</option><option value="vocab:01306">yelled (Vocabulary source)</option><option value="vocab:00139">vocab:00139 (current production text)</option><option value="E0102">yelled (actual whole source)</option></select></label>
 <label>control <select id="control"><option value="positive">正解発話</option><option>数語抜け</option><option>chunk丸ごと抜け</option><option>content word違い</option><option>時制違い</option><option>chunk順序入れ替え</option><option>言いかけ停止</option></select></label>
 <label>発話内容（negativeでは実際に言う内容を入力）<input id="intended"></label>
 <p>現在の正解 authority: <span id="expected"></span></p>
@@ -21,9 +31,11 @@
 <p id="vocab139Summary"></p>
 <table><thead><tr><th>Attempt</th><th>Segment</th><th>Rank</th><th>Transcript</th><th>than</th><th>then</th><th>down</th><th>chunk 1</th><th>chunk 2</th><th>chunk 1末尾から</th></tr></thead><tbody id="vocab139Rows"></tbody></table>
 </section>
+</section>
 <pre id="output"></pre>
 <script type="module">
-import { getNativeSpeech } from '/scripts/native/nativeSpeech.js';
+import { getNativeSpeech, getNativeGameTrace } from '/scripts/native/nativeSpeech.js';
+import { ASR_08D_CASES, acceptanceCase } from '/native-gate-cases.js';
 import { createRecognitionController } from '/scripts/speech/recognition.js';
 import { alignSpeech } from '/scripts/speech/speechAlignment.js';
 import { gradeReadSpeech } from '/scripts/speech/readSpeechGrader.js';
@@ -39,7 +51,7 @@ const [vocabulary,items]=await Promise.all(['/data/vocabulary-v3.json','/data/it
 const itemById=new Map(items.map(item=>[item.id,item]));
 const rows=[];
 let controller,attempt,finished=true;
-function log(value){$('output').textContent=JSON.stringify(value,null,2);console.info('NativeSpeech validation',value);}
+function log(value){$('output').textContent=JSON.stringify(value,null,2);}
 function fixture(){
  const key=$('fixture').value;
  const entry=vocabulary.entries.find(entry=>key.startsWith('word:')?entry.canonical===key.slice(5):entry.entry_id===key||entry.id===key);
@@ -53,10 +65,23 @@ function selected(){
  const targets=f.entry?answerVariants(f.entry,f.activeOccurrence):[f.item.en];
  $('expected').textContent=targets.join(' / ');
  if($('control').value==='positive') $('intended').value=f.key==='vocab:01306'?'yelled':positiveIntendedText(f.key,f.entry?.canonical,targets);
- $('prompt').textContent=$('intended').value;
+ $('prompt').textContent=$('intended').value || '発話内容を入力してください';
  renderVocabulary139Diagnostics();
 }
-function locks(active){for(const id of ['fixture','control','intended','start','clear']) $(id).disabled=active; $('stop').disabled=!active;$('cancel').disabled=!active;}
+function locks(active){for(const id of ['acceptanceCase','fixture','control','intended','start','clear']) $(id).disabled=active; $('stop').disabled=!active;$('cancel').disabled=!active;}
+function selectAcceptanceCase(){
+ const chosen=acceptanceCase($('acceptanceCase').value);
+ $('caseTitle').textContent=chosen.id+' — '+chosen.title;
+ $('caseInstruction').textContent=chosen.instruction;
+ $('caseExpected').textContent=chosen.expected;
+ $('recognitionHarness').hidden=!chosen.preflight;
+ if(chosen.fixture)$('fixture').value=chosen.fixture;
+ $('control').value=chosen.control||'positive';
+ if($('control').value!=='positive')$('intended').value='';
+ selected();
+ $('status').textContent=chosen.preflight?'事前ASR確認は可能。最終合否は通常ゲームで確認してください。':'通常ゲームでこのケースを試してください。';
+}
+
 function renderVocabulary139Diagnostics(){
  const section=$('vocab139Diagnostics');
  const selectedCase=$('fixture').value==='vocab:00139';
@@ -97,7 +122,7 @@ function record(result){
  const currentChunks=attempt.fixture.entry?VOCABULARY_CHUNK_RESCUE_AUTHORITY[attempt.fixture.entry.id]||[]:[];
  const diagnostics=attempt.fixture.key==='vocab:00139'?buildVocabulary139Diagnostics({canonical:currentCanonical,chunks:currentChunks,chunkAuthorityValid:!!vocabularyChunkRescueChunks(attempt.fixture.entry),primaryTranscript:primary,recognitionSegments:segments,grade}):null;
  const attemptNumber=rows.filter(row=>row.case===attempt.fixture.key).length+1;
- const baseRow={timestamp:new Date().toISOString(),attemptNumber,case:attempt.fixture.key,control:attempt.control,intended:attempt.intended,targets,mode:attempt.fixture.entry?'vocabulary':'read',learningStage:'read',correctionState:{active:false},activeOccurrence:attempt.fixture.activeOccurrence?{itemId:attempt.fixture.activeOccurrence.item?.id??attempt.fixture.activeOccurrence.occurrence?.item_id??null,occurrence:attempt.fixture.activeOccurrence.occurrence}:null,backend:'Android SpeechRecognizer',attemptId:result?.attemptId??null,stopReason:result?.stopReason??null,completionState:result?.completionState??null,recognitionComplete:result?.recognitionComplete===true,terminalRecognitionResult:{ok:result?.ok!==false,reason:result?.reason??null,completionState:result?.completionState??null,recognitionSegments:segments},graderInput:{itemId:attempt.fixture.item?.id??attempt.fixture.activeOccurrence?.item?.id??null,entryId:attempt.fixture.entry?.id??null,canonical:attempt.fixture.entry?.canonical??attempt.fixture.item?.en??'',activeOccurrence:attempt.fixture.activeOccurrence?.occurrence??null,primaryTranscript:primary,recognitionComplete:result?.recognitionComplete===true,completionState:result?.completionState??null,recognitionSegments:segments},requestedMaxResults:segments[0]?.requestedMaxResults??20,providerReturnedCount:segments[0]?.providerReturnedCount??null,retainedCandidateCount:segments[0]?.retainedCandidateCount??0,providerSegments:segments.map((segment,index)=>({recognitionSegmentIndex:segment.segmentIndex??index,primaryTranscript:segment.primaryTranscript,requestedMaxResults:segment.requestedMaxResults??null,providerReturnedCount:segment.providerReturnedCount??null,retainedCandidateCount:segment.retainedCandidateCount??segment.alternatives?.length??0,alternatives:segment.alternatives})),asrRank:grade.asrRank??null,rescue:grade.targetRescued??false,targetRescued:grade.targetRescued??false,recognitionAuthority:grade.recognitionAuthority??null,finalGrade:technical?null:grade.type,finalDecisionReason:technical?`technical:${technical}`:(grade.recognitionAuthority||grade.type),capabilities,primary,alternatives,targetRank:targetIndex<0?null:alternatives[targetIndex].rank,grade:technical?null:grade,rank1Target:exact(primary),nbestTarget:alternatives.some(c=>exact(c.transcript)),accepted:!technical&&grade.type!=='miss',technical};
+ const baseRow={timestamp:new Date().toISOString(),attemptNumber,acceptanceCaseId:attempt.acceptanceCaseId,acceptanceStatus:'NOT_RUN',harnessOnly:true,case:attempt.fixture.key,control:attempt.control,intended:attempt.intended,targets,mode:attempt.fixture.entry?'vocabulary':'read',learningStage:'read',correctionState:{active:false},activeOccurrence:attempt.fixture.activeOccurrence?{itemId:attempt.fixture.activeOccurrence.item?.id??attempt.fixture.activeOccurrence.occurrence?.item_id??null,occurrence:attempt.fixture.activeOccurrence.occurrence}:null,backend:'Android SpeechRecognizer',attemptId:result?.attemptId??null,stopReason:result?.stopReason??null,completionState:result?.completionState??null,recognitionComplete:result?.recognitionComplete===true,terminalRecognitionResult:{ok:result?.ok!==false,reason:result?.reason??null,completionState:result?.completionState??null,recognitionSegments:segments},graderInput:{itemId:attempt.fixture.item?.id??attempt.fixture.activeOccurrence?.item?.id??null,entryId:attempt.fixture.entry?.id??null,canonical:attempt.fixture.entry?.canonical??attempt.fixture.item?.en??'',activeOccurrence:attempt.fixture.activeOccurrence?.occurrence??null,primaryTranscript:primary,recognitionComplete:result?.recognitionComplete===true,completionState:result?.completionState??null,recognitionSegments:segments},requestedMaxResults:segments[0]?.requestedMaxResults??20,providerReturnedCount:segments[0]?.providerReturnedCount??null,retainedCandidateCount:segments[0]?.retainedCandidateCount??0,providerSegments:segments.map((segment,index)=>({recognitionSegmentIndex:segment.segmentIndex??index,primaryTranscript:segment.primaryTranscript,requestedMaxResults:segment.requestedMaxResults??null,providerReturnedCount:segment.providerReturnedCount??null,retainedCandidateCount:segment.retainedCandidateCount??segment.alternatives?.length??0,alternatives:segment.alternatives})),asrRank:grade.asrRank??null,rescue:grade.targetRescued??false,targetRescued:grade.targetRescued??false,recognitionAuthority:grade.recognitionAuthority??null,finalGrade:technical?null:grade.type,finalDecisionReason:technical?`technical:${technical}`:(grade.recognitionAuthority||grade.type),capabilities,primary,alternatives,targetRank:targetIndex<0?null:alternatives[targetIndex].rank,grade:technical?null:grade,rank1Target:exact(primary),nbestTarget:alternatives.some(c=>exact(c.transcript)),accepted:!technical&&grade.type!=='miss',technical};
  const row=diagnostics?withVocabulary139Diagnostics(baseRow,diagnostics,technical?null:grade):baseRow;
  rows.push(row);locks(false);$('status').textContent=technical||grade.type;log(rows);
  $('summary').replaceChildren();
@@ -109,7 +134,8 @@ $('start').onclick=async()=>{
  attempt=null;
  try{
   const f=fixture();const context=buildRecognitionContext(f.entry?{mode:'vocabulary',vocabularyEntry:f.entry,activeOccurrence:f.activeOccurrence}:{mode:'read',itemId:f.key});
-  attempt={fixture:f,targets:f.entry?answerVariants(f.entry,f.activeOccurrence):[f.item.en],control:$('control').value,intended:$('intended').value};
+  if(!acceptanceCase($('acceptanceCase').value).preflight)throw Error('このケースは通常ゲームで検証してください');
+ attempt={fixture:f,targets:f.entry?answerVariants(f.entry,f.activeOccurrence):[f.item.en],control:$('control').value,intended:$('intended').value,acceptanceCaseId:$('acceptanceCase').value};
   finished=false;locks(true);$('preview').textContent='';$('configuration').textContent=JSON.stringify({capabilities,requestedMaxResults:20},null,2);
   controller=createRecognitionController({getRecognitionContext:()=>context,onTranscriptPreview:text=>$('preview').textContent=text,onAutoStop:record,onError:event=>record({ok:false,reason:event.error}),onUnsupported:()=>record({ok:false,reason:'unsupported'})});
   const started=controller.start();if(!started.ok) record(started);else $('status').textContent='録音中';
@@ -123,7 +149,16 @@ $('permission').onclick=async()=>log(await plugin.requestPermission());
 $('intended').oninput=()=>$('prompt').textContent=$('intended').value;
 $('copy').onclick=async()=>{try{await navigator.clipboard.writeText(JSON.stringify(rows,null,2));$('status').textContent='コピーしました';}catch(_){$('export').click();}};
 $('export').onclick=()=>{const box=$('exportText');box.hidden=false;box.value=JSON.stringify(rows,null,2);box.focus();box.select();};
-for(const id of ['fixture','control']) $(id).onchange=()=>{if($('control').value!=='positive') $('intended').value='hello';selected();};
-selected();log(capabilities);
+$('openGameTrace').onclick=async()=>{
+ try{
+  $('status').textContent='通常ゲームを開きます。ゲーム画面でTrace ONにしてください。';
+  const traceBridge=await getNativeGameTrace();
+  await traceBridge.openGameTrace();
+ }catch(error){$('status').textContent='移動できませんでした: '+String(error?.message||error);}
+};
+$('acceptanceCase').append(...ASR_08D_CASES.map(item=>new Option(item.id+' '+item.title,item.id)));
+$('acceptanceCase').onchange=selectAcceptanceCase;
+for(const id of ['fixture','control']) $(id).onchange=()=>{if($('control').value!=='positive') $('intended').value='';selected();};
+selectAcceptanceCase();log(capabilities);
 </script>
 </html>
