@@ -26,7 +26,7 @@ export async function getNativeSpeech(scope = globalThis) {
 
 function nativeGameTraceFacade(proxy) {
   return Object.freeze(Object.fromEntries(
-    ['getCapability', 'addListener'].map(method => [method, (...args) => proxy[method](...args)])
+    ['getCapability', 'addListener', 'openGameTrace', 'openAcceptanceCases'].map(method => [method, (...args) => proxy[method](...args)])
   ));
 }
 
