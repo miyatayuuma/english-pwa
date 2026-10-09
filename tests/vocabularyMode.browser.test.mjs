@@ -5,6 +5,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
+import { installMockSpeechRecognition } from './helpers/mockSpeechRecognition.mjs';
 
 const ROOT=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const vocabulary=JSON.parse(await fs.readFile(path.join(ROOT,'data/vocabulary-v3.json'),'utf8'));
@@ -28,6 +29,7 @@ const sourceSurface=(entry,itemId)=>{const occurrence=entry.occurrences.find(val
 
 async function newPage(source,{reducedMotion='reduce',entryState:entryStateOverride=null,speechSupported=true,startSession=true,fullDataset=false,native=false,nativePermission=true,viewport={width:390,height:844},additionalEntries=[]}={}){
   const context=await browser.newContext({viewport,serviceWorkers:'block',reducedMotion});
+  await context.addInitScript(installMockSpeechRecognition,{stateKey:'__mockSpeech',enabled:speechSupported});
   const entry=JSON.parse(JSON.stringify(fixtureFor(source)));
   const fixtures=[entry,...additionalEntries.map(value=>JSON.parse(JSON.stringify(value)))];
   assert.ok(entry,`fixture ${source.kind}/${source.canonical} exists`);
@@ -54,41 +56,13 @@ async function newPage(source,{reducedMotion='reduce',entryState:entryStateOverr
       }
       return nativeFetch(input,init);
     };
-    window.__mockSpeech={latest:null,spoken:[],audioPlayed:[],latestAudio:null,startCount:0,srsWrites:0};
+    window.__mockSpeech=Object.assign(window.__mockSpeech||{},{latest:null,spoken:[],audioPlayed:[],latestAudio:null,startCount:0,srsWrites:0});
     const storageSetItem=Storage.prototype.setItem;
     Storage.prototype.setItem=function(key,value){
       if(key==='itemLevelV1') window.__mockSpeech.srsWrites+=1;
       return storageSetItem.call(this,key,value);
     };
     window.SpeechRecognitionPhrase=class {constructor(phrase,boost){this.phrase=phrase;this.boost=boost;}};
-    class MockRecognition{
-      constructor(){this.results=[];this.phrases=[];}
-      start(){this.phrasesAtStart=this.phrases.map(p=>({text:p.phrase,boost:p.boost}));window.__mockSpeech.latest=this;window.__mockSpeech.startCount+=1;this.onstart?.();}
-      stop(){this.onend?.();}
-      makeResult(text,isFinal){return Object.assign((Array.isArray(text)?text:[text]).map(transcript=>({transcript:String(transcript),confidence:0})),{isFinal});}
-      emitFinal(text){
-        const last=this.results.length-1;
-        const index=last>=0&&!this.results[last].isFinal?last:this.results.length;
-        this.results[index]=this.makeResult(text,true);
-        this.onresult?.({resultIndex:index,results:this.results});
-      }
-      emitInterim(text){
-        const last=this.results.length-1;
-        const index=last>=0&&!this.results[last].isFinal?last:this.results.length;
-        this.results[index]=this.makeResult(text,false);
-        this.onresult?.({resultIndex:index,results:this.results});
-      }
-      inject(text){
-        this.results=[this.makeResult(text,true)];
-        this.onresult?.({resultIndex:0,results:this.results});
-      }
-      injectError(error='network'){this.onerror?.({error});}
-    }
-    if(speechSupported) Object.defineProperty(window,'SpeechRecognition',{value:MockRecognition,configurable:true});
-    else{
-      Object.defineProperty(window,'SpeechRecognition',{value:undefined,configurable:true});
-      Object.defineProperty(window,'webkitSpeechRecognition',{value:undefined,configurable:true});
-    }
     class MockUtterance{constructor(text){this.text=text;}}
     Object.defineProperty(window,'SpeechSynthesisUtterance',{value:MockUtterance,configurable:true});
     Object.defineProperty(window,'speechSynthesis',{value:{
@@ -144,9 +118,9 @@ async function newPage(source,{reducedMotion='reduce',entryState:entryStateOverr
 }
 
 async function closePage({context}){await context.close();}
-async function inject(page,text){
+async function injectCompletedFinal(page,text){
   await page.waitForFunction(()=>window.__mockSpeech?.latest);
-  await page.evaluate(value=>window.__mockSpeech.latest.inject(value),text);
+  await page.evaluate(value=>{const recognition=window.__mockSpeech.latest;recognition.inject(value);recognition.emitEnd();},text);
 }
 async function injectFinal(page,text){
   await page.waitForFunction(()=>window.__mockSpeech?.latest);
@@ -158,7 +132,7 @@ async function injectInterim(page,text){
 }
 async function recognitionError(page,error='network'){
   await page.waitForFunction(()=>window.__mockSpeech?.latest);
-  await page.evaluate(value=>window.__mockSpeech.latest.injectError(value),error);
+  await page.evaluate(value=>{const recognition=window.__mockSpeech.latest;recognition.injectError(value);recognition.emitEnd();},error);
 }
 async function tapResult(page){
   await page.waitForTimeout(400);
@@ -324,7 +298,7 @@ browserTest('390×844 expression card preserves active source, strict paraphrase
     assert.equal(await page.locator('.vocab-paraphrases').count(),0,'paraphrases stay hidden before response');
     const width=await page.evaluate(()=>({viewport:innerWidth,document:document.documentElement.scrollWidth}));
     assert.ok(width.document<=width.viewport,`horizontal overflow: ${JSON.stringify(width)}`);
-    await inject(page,sourceSurface(entry,sources[0].itemId));
+    await injectCompletedFinal(page,sourceSurface(entry,sources[0].itemId));
     await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='正解');
     assert.equal(await page.locator('.vocab-heard .vocab-heard__text').innerText(),'came across Nick');
     assert.equal(await page.locator('.vocab-feedback').getAttribute('role'),'status');
@@ -378,7 +352,7 @@ browserTest('canonical grammar role wins over paraphrase POS and legacy kind lab
       assert.equal(await roleTags.count(),1,label);
       assert.equal((await roleTags.first().innerText()).trim(),label);
       assert.equal(await opened.page.locator('.vocab-speech-carrier').innerText(),'my answer is …');
-      await inject(opened.page,sourceSurface(opened.entry,source.itemId));
+      await injectCompletedFinal(opened.page,sourceSurface(opened.entry,source.itemId));
       await opened.page.waitForFunction(()=>document.querySelector('.vocab-answer'));
       assert.equal(await opened.page.locator('.vocab-result-grammar-role').innerText(),label,label);
       assert.equal(await opened.page.locator('.vocab-answer-block').evaluate(node=>node.scrollWidth<=node.clientWidth+1),true,label+' answer block fits its viewport');
@@ -397,7 +371,7 @@ browserTest('Vocabulary carrier cue stays subtle, emphasizes lexical misses, pul
   try{
     const cue=page.locator('.vocab-speech-carrier');
     assert.equal(await cue.innerText(),'my answer is …');
-    await inject(page,'banana');
+    await injectCompletedFinal(page,'banana');
     await page.waitForFunction(()=>document.querySelector('.vocab-speech-carrier.is-emphasized'));
     assert.equal(await cue.getAttribute('data-miss-count'),'1');
     await page.waitForFunction(()=>getComputedStyle(document.querySelector('.vocab-speech-carrier')).opacity==='0.72');
@@ -407,7 +381,7 @@ browserTest('Vocabulary carrier cue stays subtle, emphasizes lexical misses, pul
 
     await page.locator('.vocab-mic').click();
     await page.waitForFunction(()=>window.__mockSpeech.startCount>=2);
-    await inject(page,'banana');
+    await injectCompletedFinal(page,'banana');
     await page.waitForFunction(()=>document.querySelector('.vocab-speech-carrier.is-pulsing'));
     assert.equal(await cue.getAttribute('data-miss-count'),'2');
     assert.equal(await cue.evaluate(node=>getComputedStyle(node).animationName),'vocab-carrier-pulse');
@@ -418,7 +392,7 @@ browserTest('Vocabulary carrier cue stays subtle, emphasizes lexical misses, pul
 
     await page.locator('.vocab-mic').click();
     await page.waitForFunction(()=>window.__mockSpeech.startCount>=3);
-    await inject(page,sourceSurface(entry,sources[0].itemId));
+    await injectCompletedFinal(page,sourceSurface(entry,sources[0].itemId));
     await page.waitForSelector('.vocab-answer');
     await tapResult(page);
     await page.waitForFunction(()=>document.querySelector('.vocab-speech-carrier')&&!document.querySelector('.vocab-speech-carrier').classList.contains('is-emphasized'));
@@ -433,7 +407,7 @@ browserTest('carrier-bearing homophone answer keeps provider transcript visible 
   const {page,entry}=opened;
   try{
     assert.equal(await page.locator('.vocab-speech-carrier').innerText(),'my answer is …');
-    await inject(page,'my answer is die');
+    await injectCompletedFinal(page,'my answer is die');
     await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='正解');
     assert.equal(await page.locator('.vocab-heard__text').innerText(),'my answer is die');
     assert.equal(await page.locator('.vocab-result-grammar-role').innerText(),'動詞');
@@ -450,7 +424,7 @@ for(const viewport of [{width:390,height:844},{width:360,height:640},{width:1280
   const opened=await newPage(sources[8],{viewport});
   const {page,entry}=opened;
   try{
-    await inject(page,sourceSurface(entry,sources[8].itemId));
+    await injectCompletedFinal(page,sourceSurface(entry,sources[8].itemId));
     await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='正解');
     const layout=await page.evaluate(()=>{
       const selectors=['.vocab-result-prompt','.vocab-result-grammar-role','.vocab-answer','.vocab-paraphrases','.vocab-source-block','.vocab-heard'];
@@ -523,7 +497,7 @@ browserTest('vocab:01387 shows the sufficiency prompt and will do target without
     assert.equal(entry.meaning_ja,'用が足りる');
     assert.deepEqual(entry.paraphrases||[],[]);
     assert.equal(await page.locator('.vocab-meaning').innerText(),'用が足りる');
-    await inject(page,sourceSurface(entry,source.itemId));
+    await injectCompletedFinal(page,sourceSurface(entry,source.itemId));
     await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='正解');
     assert.equal(await page.locator('.vocab-result-prompt').innerText(),'用が足りる');
     assert.equal(await page.locator('.vocab-answer').innerText(),'will do');
@@ -548,7 +522,7 @@ browserTest('result tap ignores audio/context controls and selected text, then a
     assert.ok(entry,`current prompt fixture: ${firstPrompt}`);
     const nextEntry=entries.find(value=>value.id!==entry.id);
     assert.ok(nextEntry,'two expression fixtures are available for a manual advance');
-    await inject(page,sourceSurface(entry,entry.occurrences[0].item_id));
+    await injectCompletedFinal(page,sourceSurface(entry,entry.occurrences[0].item_id));
     await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='正解');
     await swipeFromControl(page,'.vocab-expression-audio');
     assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical,'expression audio control swipe does not advance');
@@ -601,7 +575,7 @@ browserTest('only a dominant left swipe advances; short, vertical, and right mov
     assert.ok(entry,`current prompt fixture: ${firstPrompt}`);
     const nextEntry=entries.find(value=>value.id!==entry.id);
     assert.ok(nextEntry,'two expression fixtures are available for a manual advance');
-    await inject(page,sourceSurface(entry,entry.occurrences[0].item_id));
+    await injectCompletedFinal(page,sourceSurface(entry,entry.occurrences[0].item_id));
     await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='正解');
     await swipeResult(page,-42);
     assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical,'short horizontal movement is ignored');
@@ -626,7 +600,7 @@ browserTest('PARAPHRASE result uses the shared target-first answer block without
   const {page,entry}=opened;
   try{
     const before=await page.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id],entry.id);
-    await inject(page,'run into someone');
+    await injectCompletedFinal(page,'run into someone');
     await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='意味はOK');
     assert.equal(await page.locator('.vocab-answer-detail').count(),0);
     assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical);
@@ -643,7 +617,7 @@ browserTest('removed force paraphrase is not accepted after audit revalidation',
   try{
     const before=await page.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id],entry.id);
     assert.deepEqual(entry.paraphrases,['be compelled to do something']);
-    await inject(page,'be force to do something');
+    await injectCompletedFinal(page,'be force to do something');
     await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent.includes('聞き取りを確認'));
     assert.equal(await page.locator('.vocab-heard__text').innerText(),'be force to do something','raw ASR surface remains visible');
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0,'rejected paraphrase does not update TARGET SRS state');
@@ -667,7 +641,7 @@ browserTest('word reveal is MISS while construction source realization remains a
         assert.equal(await page.locator('.vocab-heard').count(),0);
       }else{
         assert.ok(occurrence);
-        await inject(page,text);
+        await injectCompletedFinal(page,text);
         await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='正解');
         const state=await page.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id],entry.id);
         assert.equal(state.lastMatch,1,'strict TARGET classification must pass perfect lexical credit');
@@ -686,7 +660,7 @@ browserTest('word reveal is MISS while construction source realization remains a
 });
 
 
-browserTest('chunked ASR preview stays cumulative and interims reset the 1,200 ms silence debounce',async()=>{
+browserTest('chunked ASR preview stays cumulative and final evidence remains ungraded until terminal',async()=>{
   const opened=await newPage(sources[0]);
   const {context,page,entry}=opened;
   try{
@@ -701,7 +675,10 @@ browserTest('chunked ASR preview stays cumulative and interims reset the 1,200 m
     await injectInterim(page,'across Nick');
     assert.equal(await page.locator('.vocab-transcript').innerText(),'came across Nick');
     await injectFinal(page,'across Nick');
-    await page.waitForTimeout(1250);
+    await page.waitForTimeout(900);
+    assert.equal(await page.locator('.vocab-feedback').textContent(),'','final evidence alone is not gradeable before terminal completion');
+    assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0);
+    await page.evaluate(()=>window.__mockSpeech.latest.emitEnd());
     await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='正解');
     assert.equal(await page.locator('.vocab-heard .vocab-heard__text').innerText(),'came across Nick');
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);
@@ -746,7 +723,7 @@ browserTest('technical ASR error leaves the same card unresolved and allows anot
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0);
     await page.locator('.vocab-mic').click();
     await page.waitForFunction(()=>window.__mockSpeech.startCount>=2);
-    await inject(page,'despite');
+    await injectCompletedFinal(page,'despite');
     await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='正解');
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);
   }finally{await closePage(opened);}
@@ -767,7 +744,7 @@ browserTest('answer reveal snapshots partial raw ASR and records one final MISS'
   }finally{await closePage(opened);}
 });
 
-browserTest('manual stop wins the debounce race and grades the attempt exactly once',async()=>{
+browserTest('manual stop and delayed final terminal paths grade each attempt exactly once',async()=>{
   const opened=await newPage(sources[1]);
   const {context,page}=opened;
   try{
@@ -775,10 +752,26 @@ browserTest('manual stop wins the debounce race and grades the attempt exactly o
     await page.waitForTimeout(500);
     await page.locator('.vocab-mic').click();
     await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='正解');
-    await page.evaluate(()=>window.__mockSpeech.latest.onend?.());
+    await page.evaluate(()=>window.__mockSpeech.latest.emitEnd());
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);
     assert.equal(await page.locator('.vocab-heard .vocab-heard__text').innerText(),'faint');
+    assert.deepEqual(await page.evaluate(()=>window.__mockSpeech.events.map(event=>event.type)),['start','result','stop-request','end','duplicate-end']);
   }finally{await closePage(opened);}
+
+  const delayed=await newPage(sources[1]);
+  try{
+    await delayed.page.waitForFunction(()=>window.__mockSpeech.startCount>0);
+    await delayed.page.evaluate(()=>{window.__mockSpeech.latest.stopPlan={final:'faint',finalDelayMs:50,terminalDelayMs:250};});
+    await delayed.page.locator('.vocab-mic').click();
+    await delayed.page.waitForFunction(()=>window.__mockSpeech.events.some(event=>event.type==='stop-request'));
+    assert.equal(await delayed.page.evaluate(()=>window.__mockSpeech.srsWrites),0,'stop request alone is not gradeable evidence');
+    await delayed.page.waitForFunction(()=>window.__mockSpeech.events.some(event=>event.type==='result'));
+    assert.equal(await delayed.page.evaluate(()=>window.__mockSpeech.srsWrites),0,'a final delivered during stop still waits for terminal completion');
+    await delayed.page.waitForFunction(()=>window.__mockSpeech.events.some(event=>event.type==='end'));
+    await delayed.page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='正解');
+    assert.deepEqual(await delayed.page.evaluate(()=>window.__mockSpeech.events.map(event=>event.type)),['start','stop-request','result','end']);
+    assert.equal(await delayed.page.evaluate(()=>window.__mockSpeech.srsWrites),1);
+  }finally{await closePage(delayed);}
 });
 
 browserTest('unsupported speech disables Vocabulary start and never offers manual grading',async()=>{
@@ -801,7 +794,7 @@ browserTest('Web Vocabulary retains strict TARGET context and N-best without phr
       assert.deepEqual(phrases,[]);
       assert.equal(await page.evaluate(()=>window.__mockSpeech.latest.context.biasStrings),undefined);
       assert.equal(await page.evaluate(()=>window.__mockSpeech.latest.maxAlternatives),20);
-      await inject(page,target);
+      await injectCompletedFinal(page,target);
       await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='正解');
       assert.equal(await page.locator('.vocab-heard__text').innerText(),target);
       assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);
@@ -816,7 +809,7 @@ browserTest('native TARGET rescue preserves raw primary, answer authority and ex
   for(const [source,primary] of [[sources[4],'YouTube something'],[sources[5],'scarcity'],[sources[6],'confused']]){
     const opened=await newPage(source);const {page}=opened;
     try{
-      await inject(page,[primary,source.canonical]);
+      await injectCompletedFinal(page,[primary,source.canonical]);
       await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='正解');
       assert.equal(await page.locator('.vocab-heard__text').innerText(),primary);
       assert.equal(await page.locator('.vocab-answer').innerText(),source.canonical);
@@ -825,17 +818,21 @@ browserTest('native TARGET rescue preserves raw primary, answer authority and ex
   }
 });
 
-browserTest('a lower contained TARGET is rescued despite extra words in another segment',async()=>{
+browserTest('a TARGET in an interim segment cannot rescue a terminalized Vocabulary attempt',async()=>{
   const opened=await newPage(sources[0]);const {page}=opened;
   try{
-    await inject(page,['banana','run into someone']);
+    await injectCompletedFinal(page,['banana','run into someone']);
     await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent.includes('聞き取りを確認'));
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0);
     await page.locator('.vocab-mic').click();await page.waitForFunction(()=>window.__mockSpeech.startCount===2);
     await injectFinal(page,'not');await injectInterim(page,['wrong','come across someone']);
-    await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='正解');
+    assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0,'final plus interim evidence remains pending until terminal');
+    await page.evaluate(()=>window.__mockSpeech.latest.emitEnd());
+    await page.waitForFunction(()=>document.querySelector('.vocab-heard__text')?.textContent==='not wrong');
+    assert.match(await page.locator('.vocab-feedback').innerText(),/聞き取りを確認/);
     assert.equal(await page.locator('.vocab-heard__text').innerText(),'not wrong');
-    assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);
+    assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0,'a candidate from a non-final segment cannot be promoted or written as SRS evidence');
+    assert.deepEqual(await page.evaluate(()=>window.__mockSpeech.events.map(event=>event.type)),['start','result','end','start','result','result','end']);
   }finally{await closePage(opened);}
 });
 
@@ -843,7 +840,7 @@ browserTest('primary Vocabulary containment accepts extra words, preserves raw t
   const opened=await newPage(sources[4]);const {page}=opened;
   try{
     const spoken='I mean yield to something please';
-    await inject(page,spoken);
+    await injectCompletedFinal(page,spoken);
     await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='正解');
     assert.equal(await page.locator('.vocab-heard__text').innerText(),spoken);
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);
@@ -853,7 +850,7 @@ browserTest('primary Vocabulary containment accepts extra words, preserves raw t
 browserTest('TARGET-internal interruption remains a MISS under primary containment',async()=>{
   const opened=await newPage(sources[4]);const {page}=opened;
   try{
-    await inject(page,'yield um to something');
+    await injectCompletedFinal(page,'yield um to something');
     await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent.includes('聞き取りを確認'));
     assert.equal(await page.locator('.vocab-heard__text').innerText(),'yield um to something');
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0);
@@ -866,7 +863,7 @@ browserTest('correction completes on a contained strict TARGET without an extra 
     await page.locator('.vocab-reveal').click();await page.waitForSelector('.vocab-answer');
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);
     await page.locator('.vocab-mic').click();await page.waitForFunction(()=>window.__mockSpeech.startCount>0);
-    await inject(page,'okay come across someone again');
+    await injectCompletedFinal(page,'okay come across someone again');
     await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='修正練習完了');
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);
     assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical,'correction completion holds the same result');
@@ -879,7 +876,7 @@ browserTest('all-MISS review supports unlimited fresh retries, focus, stale-even
   try{
     const before=await page.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id],entry.id);
     for(let attempt=0;attempt<3;attempt++){
-      await inject(page,['banana','unrelated']);
+      await injectCompletedFinal(page,['banana','unrelated']);
       await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent.includes('聞き取りを確認'));
       assert.equal(await page.locator('.vocab-heard__text').innerText(),'banana');
       assert.equal(await page.locator('.vocab-answer,.vocab-paraphrases').count(),0);
@@ -890,10 +887,10 @@ browserTest('all-MISS review supports unlimited fresh retries, focus, stale-even
       const starts=await page.evaluate(()=>{window.__oldRecognition=window.__mockSpeech.latest;return window.__mockSpeech.startCount;});
       await page.locator('.vocab-mic').click();
       await page.waitForFunction(count=>window.__mockSpeech.startCount>count,starts);
-      await page.evaluate(()=>{window.__oldRecognition.inject('despite');window.__oldRecognition.onend?.();});
+      await page.evaluate(()=>{window.__oldRecognition.inject('despite');window.__oldRecognition.emitEnd();});
       assert.equal(await page.locator('.vocab-answer').count(),0);
     }
-    await inject(page,'despite');
+    await injectCompletedFinal(page,'despite');
     await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='正解');
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);
   }finally{await closePage(opened);}
@@ -902,11 +899,11 @@ browserTest('all-MISS review supports unlimited fresh retries, focus, stale-even
 browserTest('retry primary PARAPHRASE leaves SRS unchanged',async()=>{
   const opened=await newPage(sources[0]);const {page}=opened;
   try{
-    await inject(page,'banana');
+    await injectCompletedFinal(page,'banana');
     await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent.includes('聞き取りを確認'));
     await page.locator('.vocab-mic').click();
     await page.waitForFunction(()=>window.__mockSpeech.startCount===2);
-    await inject(page,'run into someone');
+    await injectCompletedFinal(page,'run into someone');
     await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='意味はOK');
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0);
   }finally{await closePage(opened);}
@@ -938,7 +935,7 @@ browserTest('answer correction rejects paraphrase, handles technical error, requ
     await page.locator('.vocab-mic').click();
     await page.waitForFunction(()=>window.__mockSpeech.startCount>0);
     assert.equal(await page.locator('.vocab-listening-indicator').evaluate(node=>node.parentElement.matches('[data-vocab-listening-host]')),true,'correction indicator uses the explicit footer host');
-    await inject(page,'run into someone');
+    await injectCompletedFinal(page,'run into someone');
     await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent.includes('もう一度話して'));
     assert.equal(await page.locator('.vocab-answer').count(),1);
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);
@@ -949,7 +946,7 @@ browserTest('answer correction rejects paraphrase, handles technical error, requ
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);
     await page.locator('.vocab-mic').click();
     await page.waitForFunction(()=>window.__mockSpeech.startCount>=3);
-    await inject(page,'come across someone');
+    await injectCompletedFinal(page,'come across someone');
     await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='修正練習完了');
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);
     assert.deepEqual(await page.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id],entry.id),miss);
@@ -975,7 +972,7 @@ browserTest('correction completion and source audio end keep the result until ex
     await page.locator('.vocab-source-audio').waitFor({state:'visible'});
     await page.locator('.vocab-mic').click();
     await page.waitForFunction(()=>window.__mockSpeech.startCount>0);
-    await inject(page,entry.canonical);
+    await injectCompletedFinal(page,entry.canonical);
     await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='修正練習完了');
     assert.equal(await page.locator('.vocab-next').count(),0);
     await page.locator('.vocab-source-audio').click();
@@ -999,7 +996,7 @@ browserTest('correction result can be manually advanced during source audio play
     await page.locator('.vocab-source-audio').waitFor({state:'visible'});
     await page.locator('.vocab-mic').click();
     await page.waitForFunction(()=>window.__mockSpeech.startCount>0);
-    await inject(page,'come across someone');
+    await injectCompletedFinal(page,'come across someone');
     await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='修正練習完了');
     await page.locator('.vocab-source-audio').click();
     await page.waitForFunction(()=>window.__mockSpeech.audioPlayed.length>0);
@@ -1038,11 +1035,16 @@ browserTest('correct-answer playback holds capture until release and replay safe
   }finally{await closePage(opened);}
 });
 
-browserTest('interim full-utterance rank-one active source is graded without rewriting raw text',async()=>{
+browserTest('interim transcript stays display-only until final terminal evidence arrives',async()=>{
   const opened=await newPage(sources[0]);const {page}=opened;
   try{
-    await injectFinal(page,'came');await injectInterim(page,'across Nick');
+    await injectInterim(page,'came across Nick');
     assert.equal(await page.locator('.vocab-transcript').innerText(),'came across Nick');
+    await page.waitForTimeout(1300);
+    assert.equal(await page.locator('.vocab-feedback').textContent(),'');
+    assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0,'interim-only speech does not write SRS');
+    await injectFinal(page,'came across Nick');
+    await page.evaluate(()=>window.__mockSpeech.latest.emitEnd());
     await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='正解');
     assert.equal(await page.locator('.vocab-heard__text').innerText(),'came across Nick');
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);
@@ -1059,7 +1061,7 @@ for(const technical of [false,true]) browserTest(`Vocabulary correction ${techni
       assert.deepEqual(await page.evaluate(()=>window.__mockSpeech.latest.phrasesAtStart),[]);
       assert.equal(await page.evaluate(()=>window.__mockSpeech.latest.maxAlternatives),20);
       if(technical) await recognitionError(page,attempt===1?'no-speech':'network');
-      else {await inject(page,'banana');await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent.length>0);}
+      else {await injectCompletedFinal(page,'banana');await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent.length>0);}
       assert.equal(await page.locator('.vocab-answer').count(),1);
       assert.equal(await page.locator('.vocab-next').count(),0);
       assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);
@@ -1076,7 +1078,7 @@ browserTest('Web technical error does not automatically retry or grade stale spe
   const opened=await newPage(sources[3]);const {page}=opened;
   try{
     await page.waitForFunction(()=>window.__mockSpeech.startCount===1);
-    await page.evaluate(()=>{window.__failedRecognition=window.__mockSpeech.latest;window.__failedRecognition.injectError('network');window.__failedRecognition.onend?.();});
+    await page.evaluate(()=>{window.__failedRecognition=window.__mockSpeech.latest;window.__failedRecognition.injectError('network');window.__failedRecognition.emitEnd();});
     await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent.includes('認識できません'));
     assert.equal(await page.evaluate(()=>window.__mockSpeech.startCount),1);
     assert.deepEqual(await page.evaluate(()=>window.__mockSpeech.latest.phrasesAtStart),[]);
@@ -1085,11 +1087,11 @@ browserTest('Web technical error does not automatically retry or grade stale spe
     assert.equal(await page.locator('.vocab-answer').count(),0);
     await page.locator('.vocab-mic').click();
     await page.waitForFunction(()=>window.__mockSpeech.startCount===2);
-    await inject(page,'banana');await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent.includes('聞き取りを確認'));
+    await injectCompletedFinal(page,'banana');await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent.includes('聞き取りを確認'));
     await page.locator('.vocab-reveal').click();await page.waitForSelector('.vocab-answer');
     await page.locator('.vocab-mic').click();await page.waitForFunction(()=>window.__mockSpeech.startCount===3);
     assert.deepEqual(await page.evaluate(()=>window.__mockSpeech.latest.phrasesAtStart),[]);
-    await inject(page,'despite');await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='修正練習完了');
+    await injectCompletedFinal(page,'despite');await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='修正練習完了');
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);
   }finally{await closePage(opened);}
 });
@@ -1101,7 +1103,7 @@ browserTest('two consecutive technical failures then corrective TARGET exits ear
     for(let index=0;index<3;index++){
       await page.locator('.vocab-mic').click();await page.waitForFunction(count=>window.__mockSpeech.startCount>=count,index+1);
       if(index<2) await recognitionError(page,'network');
-      else await inject(page,'despite');
+      else await injectCompletedFinal(page,'despite');
     }
     await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='修正練習完了');
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);
@@ -1167,7 +1169,7 @@ for(const rank of [1,6,12,20]) browserTest(`Web production Vocabulary strict TAR
     await page.waitForFunction(()=>window.__mockSpeech.startCount>0);
     assert.equal(await page.evaluate(()=>window.__mockSpeech.latest.maxAlternatives),20);
     const alternatives=Array.from({length:20},(_,i)=>i===rank-1?'please yield to something again':'years to something');
-    await inject(page,alternatives);
+    await injectCompletedFinal(page,alternatives);
     await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='正解');
     assert.equal(await page.locator('.vocab-heard__text').innerText(),alternatives[0]);
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);

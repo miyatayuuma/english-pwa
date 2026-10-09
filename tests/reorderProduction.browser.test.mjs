@@ -6,6 +6,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
+import { installMockSpeechRecognition } from './helpers/mockSpeechRecognition.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const item = {
@@ -104,24 +105,15 @@ async function newProductionPage({ studyMode = 'compose', hold = false, metadata
     reducedMotion:'reduce',
     serviceWorkers: 'block',
   });
+  await context.addInitScript(installMockSpeechRecognition, { stateKey: '__testSpeech' });
   await context.addInitScript(({ studyMode, level, itemId, playbackMode, audioBase }) => {
     localStorage.setItem('itemLevelV1',JSON.stringify({[itemId]:{last:level,best:level}}));
     localStorage.setItem('appConfigV3', JSON.stringify({ studyMode }));
     if(playbackMode==='audio') navigator.storage.getDirectory=async()=>({getFileHandle:async()=>({getFile:async()=>new File([await (await fetch(audioBase+'/fixture.wav')).arrayBuffer()],'fixture.wav',{type:'audio/wav'})})});
-    window.__testSpeech = { latest: null, starts:0, srsWrites:0, spoken:[] };
+    window.__testSpeech = Object.assign(window.__testSpeech || {}, { latest: null, starts:0, srsWrites:0, spoken:[] });
     const storageSet=Storage.prototype.setItem;
     Storage.prototype.setItem=function(key,value){if(key==='itemLevelV1') window.__testSpeech.srsWrites++;return storageSet.call(this,key,value);};
     window.SpeechRecognitionPhrase=class {constructor(phrase,boost){this.phrase=phrase;this.boost=boost;}};
-    class MockRecognition {
-      constructor() { window.__testSpeech.latest = this;this.phrases=[]; }
-      start() { this.phrasesAtStart=this.phrases.map(p=>({text:p.phrase,boost:p.boost}));window.__testSpeech.starts=(window.__testSpeech.starts||0)+1;this.onstart?.(); }
-      stop() {}
-      inject(text) {
-        const result = Object.assign((Array.isArray(text)?text:[text]).map(transcript=>({transcript:String(transcript),confidence:0})), { isFinal: true });
-        this.onresult?.({ resultIndex: 0, results: [result] });
-      }
-    }
-    Object.defineProperty(window, 'SpeechRecognition', { value: MockRecognition, configurable: true });
     class MockUtterance { constructor(text) { this.text = text; } }
     Object.defineProperty(window, 'SpeechSynthesisUtterance', { value: MockUtterance, configurable: true });
     Object.defineProperty(window, 'speechSynthesis', {
@@ -415,18 +407,26 @@ for (const wrong of [0,1,2,3]) for(const level of [0,5]) browserTest(`390×844 R
 
 async function speechAttempt(page,words){
   const starts=await page.evaluate(()=>window.__testSpeech.starts||0);
-  await page.waitForFunction(()=>!document.querySelector('#btnMic').disabled);
+  await page.waitForFunction(()=>!document.querySelector('#btnMic').disabled&&document.querySelector('#micStatus')?.dataset.state==='off');
   {const box=await page.locator('#btnMic').boundingBox();await page.mouse.click(box.x+box.width/2,box.y+box.height/2);}
   await page.waitForFunction(count=>(window.__testSpeech.starts||0)>count,starts);
   await page.evaluate(words=>window.__testSpeech.latest.inject(words),words);
   {const box=await page.locator('#btnMic').boundingBox();await page.mouse.click(box.x+box.width/2,box.y+box.height/2);}
 }
 
+async function autoStopSpeechAttempt(page,words){
+  const starts=await page.evaluate(()=>window.__testSpeech.starts||0);
+  await page.waitForFunction(()=>!document.querySelector('#btnMic').disabled&&document.querySelector('#micStatus')?.dataset.state==='off');
+  {const box=await page.locator('#btnMic').boundingBox();await page.mouse.click(box.x+box.width/2,box.y+box.height/2);}
+  await page.waitForFunction(count=>(window.__testSpeech.starts||0)>count,starts);
+  await page.evaluate(words=>{const recognition=window.__testSpeech.latest;recognition.inject(words);recognition.emitEnd();},words);
+}
+
 browserTest('390×844 normal read baseline uses primary score/highlight without whole-sentence bias',async()=>{
   const {context,page}=await newProductionPage({studyMode:'read'});
   try{
     await page.waitForFunction(()=>document.querySelector('#enText')?.dataset.itemId==='RPROD1');
-    await speechAttempt(page,item.en);
+    await autoStopSpeechAttempt(page,item.en);
     await page.waitForFunction(()=>JSON.parse(localStorage.getItem('itemLevelV1')||'{}').RPROD1?.lastMatch===1);
     assert.equal(await page.locator('#transcript').innerText(),item.en);
     assert.deepEqual(await page.evaluate(()=>window.__testSpeech.latest.phrasesAtStart),[]);
@@ -434,6 +434,10 @@ browserTest('390×844 normal read baseline uses primary score/highlight without 
     assert.ok(await page.locator('#enText .tok.hit').count()>0);
     assert.equal(await page.evaluate(()=>window.__testSpeech.srsWrites),1);
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+    const terminalTrace=await page.evaluate(()=>window.__testSpeech.events.map(event=>event.type));
+    assert.deepEqual(terminalTrace,['start','result','end'],'autoStop sends final evidence and terminal completion without a manual stop');
+    await page.evaluate(()=>window.__testSpeech.latest.emitEnd());
+    assert.equal(await page.evaluate(()=>window.__testSpeech.srsWrites),1,'a duplicate terminal callback cannot write SRS twice');
   }finally{await context.close();}
 });
 
@@ -461,7 +465,7 @@ browserTest('normal read FAIL correction is practice-only through repeated failu
   }finally{await context.close();}
 });
 
-for(const count of [1,3]) browserTest(`390×844 read Cloze ${count} targets preserve internal concealment and full-sentence grading without recognizer bias`,async()=>{
+for(const count of [1,3]) browserTest(`390×844 read Cloze ${count} targets preserve concealment and score a complete N-best sentence while showing raw primary`,async()=>{
   const sentence=count===1?'He refused to yield to any threats from them.':'Today I came across him near the old bridge when I was looking for the station and decided to yield to his request before continuing my long journey home again.';
   const surfaces=count===1?['yield to']:['came across','looking for','yield to'];
   const sourceItem={...item,en:sentence};
@@ -498,14 +502,12 @@ for(const count of [1,3]) browserTest(`390×844 read Cloze ${count} targets pres
     assert.equal(await page.evaluate(()=>window.__testSpeech.latest.maxAlternatives),20);
     assert.equal(await page.evaluate(()=>window.__testSpeech.latest.context.itemId),undefined);
     assert.equal(await page.evaluate(()=>window.__testSpeech.latest.context.sentenceIndex),undefined);
-    await page.waitForFunction(()=>JSON.parse(localStorage.getItem('itemLevelV1')).RPROD1.lastMatch<0.7);
-    assert.equal(await page.locator('#enText').innerText(),sentence,'grading still covers the full sentence');
+    await page.waitForFunction(()=>JSON.parse(localStorage.getItem('itemLevelV1')).RPROD1.lastMatch===1);
+    assert.deepEqual(await page.evaluate(()=>window.__testSpeech.events.find(event=>event.type==='result')?.alternatives),[registry.targets[0].surface,sentence]);
+    assert.equal(await page.locator('#transcript').innerText(),registry.targets[0].surface,'the raw rank-zero transcript remains visible after lower-ranked scoring');
+    assert.equal(await page.locator('#enText').innerText(),sentence,'the selected complete hypothesis grades the full sentence');
     assert.equal(await page.evaluate(async()=> (await import('./scripts/app/clozeRecognitionContext.js')).getActiveClozeRecognitionContext()),null,'canonical reveal clears hidden context');
-    await speechAttempt(page,sentence);
-    const correctionPhrases=await page.evaluate(()=>window.__testSpeech.latest.phrasesAtStart);
-    assert.deepEqual(correctionPhrases,[]);
-    assert.equal(await page.evaluate(()=>window.__testSpeech.latest.context.itemId),undefined);
-    assert.equal(await page.evaluate(()=>window.__testSpeech.srsWrites),1);
+    assert.equal(await page.evaluate(()=>window.__testSpeech.srsWrites),1,'one terminal accepted candidate records one SRS write');
   }finally{await context.close();}
 });
 
@@ -520,7 +522,7 @@ for(const technical of [false,true]) browserTest(`normal correction ${technical?
         await page.waitForFunction(()=>!document.querySelector('#btnMic').disabled);
         const box=await page.locator('#btnMic').boundingBox();await page.mouse.click(box.x+box.width/2,box.y+box.height/2);
         await page.waitForFunction(count=>window.__testSpeech.starts>count,starts);
-        await page.evaluate(()=>{const r=window.__testSpeech.latest;r.onerror?.({error:'network'});r.onend?.();});
+        await page.evaluate(()=>{const r=window.__testSpeech.latest;r.emitError('network');r.emitEnd();});
       }else await speechAttempt(page,'banana');
       assert.equal(await page.evaluate(()=>window.__testSpeech.srsWrites),1);
     }
