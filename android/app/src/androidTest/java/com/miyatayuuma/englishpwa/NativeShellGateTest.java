@@ -90,6 +90,9 @@ public class NativeShellGateTest {
         Intent intent = new Intent(InstrumentationRegistry.getInstrumentation().getTargetContext(), MainActivity.class);
         intent.putExtra("nativeSpeechGate", true);
         try (ActivityScenario<MainActivity> scenario = ActivityScenario.launch(intent)) {
+            awaitTrue(scenario, "document.querySelector('#acceptanceCase')?.options.length === 14");
+            assertEquals("true", eval(scenario, "document.querySelector('#acceptanceCase').value === 'D01'"));
+            eval(scenario, "document.querySelector('#acceptanceCase').value='D02'; document.querySelector('#acceptanceCase').dispatchEvent(new Event('change')); true");
             awaitTrue(scenario, "document.querySelector('#expected')?.textContent.includes('yield to something') === true");
             assertEquals("true", eval(scenario, "document.querySelector('#expected').textContent.includes('yield to any threats')"));
             assertEquals("true", eval(scenario, "Capacitor.DEBUG === true && !document.querySelector('#condition')"));
@@ -100,9 +103,16 @@ public class NativeShellGateTest {
             eval(scenario, "document.querySelector('#fixture').value='word:yell'; document.querySelector('#fixture').dispatchEvent(new Event('change')); true");
             assertEquals("true", eval(scenario, "document.querySelector('#prompt').textContent === 'yell' && !!document.querySelector('#copy')"));
             eval(scenario, "document.querySelector('#control').value='content word違い'; document.querySelector('#control').dispatchEvent(new Event('change')); true");
-            assertEquals("true", eval(scenario, "document.querySelector('#prompt').textContent === 'hello'"));
+            assertEquals("true", eval(scenario, "document.querySelector('#prompt').textContent === '発話内容を入力してください'"));
             eval(scenario, "document.querySelector('#fixture').value='E0102'; document.querySelector('#fixture').dispatchEvent(new Event('change')); true");
             assertEquals("true", eval(scenario, "document.querySelector('#expected').textContent.includes('Mom yelled in a rage.')"));
+            eval(scenario, "document.querySelector('#acceptanceCase').value='D07'; document.querySelector('#acceptanceCase').dispatchEvent(new Event('change')); true");
+            assertEquals("true", eval(scenario, "document.querySelector('#recognitionHarness').hidden"));
+            eval(scenario, "document.querySelector('#openGameTrace').click(); true");
+            awaitTrue(scenario, "!!document.querySelector('#app') && !!document.querySelector('#nativeGameTracePanel')");
+            assertEquals("true", eval(scenario, "document.querySelector('#nativeGameTracePanel')?.textContent.includes('GAME TRACE') === true"));
+            eval(scenario, "window.Capacitor.Plugins.NativeGameTrace.openAcceptanceCases(); true");
+            awaitTrue(scenario, "document.querySelector('#acceptanceCase')?.options.length === 14");
         }
     }
 
