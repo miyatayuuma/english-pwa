@@ -1,5 +1,10 @@
 let activeContext=null;
-const copy=context=>context?{itemId:context.itemId,sentence:context.sentence,targets:context.targets.map(target=>({...target}))}:null;
+const copy=context=>context?{
+  itemId:context.itemId,
+  sentence:context.sentence,
+  mode:'cloze',
+  targets:context.targets.map(target=>({...target})),
+}:null;
 export function setActiveClozeRecognitionContext(context) {
   activeContext=context&&typeof context.sentence==='string'&&Array.isArray(context.targets)
     ? copy(context):null;

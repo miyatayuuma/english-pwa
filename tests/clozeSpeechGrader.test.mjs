@@ -2,6 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { alignSpeech } from '../scripts/speech/speechAlignment.js';
 import { applyClozeTargetRequirement, gradeClozeSpeech } from '../scripts/speech/clozeSpeechGrader.js';
+import { evaluateRecognitionCandidates } from '../scripts/speech/recognitionCandidates.js';
+import { gradeReadSpeech } from '../scripts/speech/readSpeechGrader.js';
 
 function targetFor(alignment, surface, entryId, occurrence = 0) {
   const sentence = alignment.referenceText;
@@ -61,6 +63,25 @@ test('Cloze hidden postwar target recognizes explicit segmentation and keeps raw
   assert.equal(result.targets[0].displayTranscript, 'The prose survived the post war years.');
 });
 
+test('Cloze shares Vocabulary ASR spelling and phonetic repairs for hidden targets', () => {
+  const cases = [
+    { sentence: 'I used to live there.', spoken: 'I use to live there.', surface: 'used to', ruleId: 'shared-read-td-cluster-before-to-vocab-00648-used-to-use' },
+    { sentence: 'No sooner had I arrived than the phone rang.', spoken: 'No sooner had I arrived then the phone rang.', surface: 'than', ruleId: 'than-then' },
+    { sentence: 'The postwar policy changed.', spoken: 'The post war policy changed.', surface: 'postwar', ruleId: 'postwar-post-war' },
+  ];
+
+  for (const [index, item] of cases.entries()) {
+    const alignment = alignSpeech(item.sentence, item.spoken, { context: { mode: 'cloze' } });
+    const result = gradeClozeSpeech(alignment, {
+      itemId: `C-shared-${index}`, sentence: item.sentence,
+      targets: [targetFor(alignment, item.surface, `vocab:shared-${index}`)],
+    });
+    assert.equal(result.overallScore, 1, item.spoken);
+    assert.equal(result.targets[0].matched, true, item.spoken);
+    assert.equal(result.targets[0].ruleId, item.ruleId, item.spoken);
+  }
+});
+
 test('Cloze exposes a hidden-target miss independently of a high overall sentence score', () => {
   const sentence = 'The prose survived the postwar years.';
   const alignment = alignSpeech(sentence, 'The progress survived the postwar years.', { context: { mode: 'cloze' } });
@@ -95,6 +116,17 @@ test('Cloze multi-token target requires every token in its own hidden span', () 
   assert.equal(result.allTargetsMatched, false);
 });
 
+test('Cloze multi-token target must be a contiguous phrase at its hidden position', () => {
+  const sentence = 'We crossed New York before dawn.';
+  const alignment = alignSpeech(sentence, 'We crossed New bright York before dawn.', { context: { mode: 'cloze' } });
+  const target = targetFor(alignment, 'New York', 'vocab:new-york');
+  const result = gradeClozeSpeech(alignment, { itemId: 'C2', sentence, targets: [target] });
+
+  assert.deepEqual(alignment.matchedReferenceTokenIndexes, [0, 1, 2, 3, 4, 5]);
+  assert.equal(result.targets[0].matched, false, 'the target words were individually recognized but not as one contiguous phrase');
+  assert.equal(result.allTargetsMatched, false);
+});
+
 test('Cloze duplicate word elsewhere cannot satisfy the hidden target occurrence', () => {
   const sentence = 'The cat saw another cat.';
   const alignment = alignSpeech(sentence, 'The cat saw another cut.', { context: { mode: 'cloze' } });
@@ -117,4 +149,176 @@ test('Cloze target requirement is inactive when target context does not match th
   const evaluation = { candidate: 4, noHintSuccess: true, perfectNoHint: false, pass: true };
   assert.equal(result.active, false);
   assert.equal(applyClozeTargetRequirement(evaluation, result), evaluation);
+});
+
+test('Cloze prefers the final corrected sentence after a false start and preserves the raw transcript', () => {
+  const sentence = 'I had never seen anything like it before.';
+  const spoken = 'I had never ... I have ... I had never seen anything like it before.';
+  const alignment = alignSpeech(sentence, spoken, { context: { mode: 'cloze' } });
+  const result = gradeClozeSpeech(alignment, {
+    itemId: 'C5', sentence,
+    targets: [targetFor(alignment, 'never seen', 'vocab:never-seen')],
+  });
+
+  assert.equal(result.overallScore, 1);
+  assert.equal(result.targets[0].matched, true);
+  assert.equal(result.negationPreserved, true);
+  assert.equal(result.repair.latestRestartSelected, true);
+  assert.equal(result.repair.selectedTranscript, 'I had never seen anything like it before');
+  assert.equal(result.targets[0].rawTranscript, spoken, 'the recognizer evidence remains unchanged');
+});
+
+test('Cloze ignores repeated words, a mid-sentence restart, and a complete reread', () => {
+  const sentence = 'I had never seen anything like it before.';
+  const target = targetFor(alignSpeech(sentence, ''), 'anything like it', 'vocab:anything-like-it');
+  const cases = [
+    'I I had never seen anything like it before.',
+    'I had never seen ... seen anything like it before.',
+    'I had never seen anything like it before. I had never seen anything like it before.',
+  ];
+
+  for (const spoken of cases) {
+    const alignment = alignSpeech(sentence, spoken, { context: { mode: 'cloze' } });
+    const result = gradeClozeSpeech(alignment, { itemId: 'C6', sentence, targets: [target] });
+    assert.equal(result.overallScore, 1, spoken);
+    assert.equal(result.targets[0].matched, true, spoken);
+  }
+});
+
+test('Cloze accepts a conservative natural adverb/auxiliary order change only in Cloze', () => {
+  const sentence = 'I had never seen anything like it before.';
+  const spoken = 'I never had seen anything like it before.';
+  const alignment = alignSpeech(sentence, spoken, { context: { mode: 'cloze' } });
+  const result = gradeClozeSpeech(alignment, {
+    itemId: 'C7', sentence,
+    targets: [targetFor(alignment, 'anything like it', 'vocab:anything-like-it')],
+  });
+
+  assert.equal(alignment.orderedMatchIntegrity.valid, false);
+  assert.equal(gradeReadSpeech(alignment).score, 0, 'ordinary Read keeps its strict ordering policy');
+  assert.equal(result.overallScore, 0.875);
+  assert.equal(result.targets[0].matched, true);
+  assert.equal(result.negationPreserved, true);
+});
+
+test('Cloze does not excuse a missing hidden phrase or a missing final negation', () => {
+  const sentence = 'I had never seen anything like it before.';
+  const hidden = targetFor(alignSpeech(sentence, ''), 'never seen', 'vocab:never-seen');
+  const targetOmitted = alignSpeech(sentence, 'I had never anything like it before.', { context: { mode: 'cloze' } });
+  const targetResult = gradeClozeSpeech(targetOmitted, { itemId: 'C8', sentence, targets: [hidden] });
+  assert.equal(targetResult.targets[0].matched, false);
+  assert.equal(targetResult.allTargetsMatched, false);
+
+  const correctedWithoutNegation = 'I had never seen anything like it before. I have seen anything like it before.';
+  const correction = alignSpeech(sentence, correctedWithoutNegation, { context: { mode: 'cloze' } });
+  const correctionResult = gradeClozeSpeech(correction, { itemId: 'C8', sentence, targets: [hidden] });
+  assert.equal(correctionResult.repair.latestRestartSelected, true);
+  assert.equal(correctionResult.negationPreserved, false);
+  assert.equal(correctionResult.overallScore, 0);
+  assert.equal(correctionResult.targets[0].matched, false);
+
+  const incompleteRestart = 'I had never seen anything like it before. I have';
+  const incomplete = alignSpeech(sentence, incompleteRestart, { context: { mode: 'cloze' } });
+  const incompleteResult = gradeClozeSpeech(incomplete, { itemId: 'C8', sentence, targets: [hidden] });
+  assert.equal(incompleteResult.repair.latestRestartSelected, true);
+  assert.ok(incompleteResult.overallScore < 0.7, 'an incomplete final restart cannot borrow the earlier full sentence');
+  assert.equal(incompleteResult.targets[0].matched, false);
+
+  const contractedNegation = "I didn't see anything.";
+  const contractedTarget = targetFor(alignSpeech(contractedNegation, ''), 'anything', 'vocab:anything');
+  const droppedContractedNegation = alignSpeech(contractedNegation, 'I did see anything.', { context: { mode: 'cloze' } });
+  const contractedResult = gradeClozeSpeech(droppedContractedNegation, {
+    itemId: 'C8', sentence: contractedNegation, targets: [contractedTarget],
+  });
+  assert.equal(contractedResult.negationPreserved, false);
+  assert.equal(contractedResult.overallScore, 0);
+});
+
+test('Cloze does not normalize unnatural word order into a correct sentence', () => {
+  const sentence = 'The red car arrived early.';
+  const spoken = 'The car red arrived early.';
+  const alignment = alignSpeech(sentence, spoken, { context: { mode: 'cloze' } });
+  const result = gradeClozeSpeech(alignment, {
+    itemId: 'C9', sentence,
+    targets: [targetFor(alignment, 'red car', 'vocab:red-car')],
+  });
+  assert.equal(result.overallScore, 0);
+  assert.equal(result.targets[0].matched, false);
+});
+
+test('Cloze N-best does not combine two partial alternatives into an invented full sentence', () => {
+  const sentence = 'I had never seen anything like it before.';
+  const target = targetFor(alignSpeech(sentence, ''), 'never seen', 'vocab:never-seen');
+  const evidence = {
+    primaryTranscript: 'I had never seen',
+    recognitionComplete: true,
+    completionState: 'terminal',
+    recognitionSegments: [{
+      segmentIndex: 7,
+      isFinal: true,
+      alternatives: [
+        { transcript: 'I had never seen', asrRank: 0 },
+        { transcript: 'I had never seen', asrRank: 1 },
+        { transcript: 'anything like it before', asrRank: 2 },
+      ],
+    }],
+  };
+  const selection = evaluateRecognitionCandidates(evidence, candidate => {
+    const alignment = alignSpeech(sentence, candidate.transcript, { context: { mode: 'cloze' }, asrRank: candidate.asrRank });
+    const cloze = gradeClozeSpeech(alignment, { itemId: 'C10', sentence, targets: [target] });
+    return { cloze, score: cloze.overallScore, accepted: cloze.overallScore >= 0.7 && cloze.allTargetsMatched };
+  });
+
+  assert.equal(selection.rescued, false);
+  assert.equal(selection.selected.candidate.source, 'primary');
+  assert.equal(selection.checked.some(candidate => candidate.accepted), false);
+});
+
+test('Read/Cloze selects a finalized lower full-sentence rank only when every hidden target is restored in position',()=>{
+  const sentence='We reviewed the postwar proposal and the birthrate estimate.';
+  const context={itemId:'C4',sentence,targets:[
+    targetFor(alignSpeech(sentence,''),'postwar','vocab:postwar'),
+    targetFor(alignSpeech(sentence,''),'birthrate','vocab:birthrate'),
+  ]};
+  const primary='We reviewed the proposal and the birthrate estimate.';
+  const evidence={
+    primaryTranscript:primary,
+    recognitionComplete:true,
+    completionState:'terminal',
+    recognitionSegments:[{
+      segmentIndex:3,isFinal:true,
+      alternatives:[
+        {transcript:primary,asrRank:0},
+        {transcript:'We reviewed the proposal and the birth rate estimate.',asrRank:1},
+        {transcript:'We reviewed the post war proposal and the birth rate estimate.',asrRank:2},
+      ],
+    }],
+  };
+  const selection=evaluateRecognitionCandidates(evidence,candidate=>{
+    const alignment=alignSpeech(sentence,candidate.transcript,{context:{mode:'cloze'},asrRank:candidate.asrRank});
+    const read=gradeReadSpeech(alignment);
+    const cloze=gradeClozeSpeech(alignment,context);
+    return {alignment,cloze,score:read.score,accepted:read.score>=0.7&&(!cloze.active||cloze.allTargetsMatched)};
+  });
+  assert.equal(selection.rescued,true);
+  assert.equal(selection.selected.candidate.asrRank,2);
+  assert.equal(selection.selected.cloze.active,true);
+  assert.equal(selection.selected.cloze.allTargetsMatched,true);
+  assert.deepEqual(selection.selected.cloze.targets.map(target=>target.matched),[true,true]);
+
+  const reversed={...evidence,recognitionSegments:[{
+    segmentIndex:3,isFinal:true,
+    alternatives:[
+      {transcript:primary,asrRank:0},
+      {transcript:'We reviewed the birth rate estimate and the post war proposal.',asrRank:1},
+    ],
+  }]};
+  const rejected=evaluateRecognitionCandidates(reversed,candidate=>{
+    const alignment=alignSpeech(sentence,candidate.transcript,{context:{mode:'cloze'}});
+    const read=gradeReadSpeech(alignment);
+    const cloze=gradeClozeSpeech(alignment,context);
+    return {alignment,cloze,accepted:read.score>=0.7&&cloze.allTargetsMatched};
+  });
+  assert.equal(rejected.rescued,false);
+  assert.equal(rejected.selected.candidate.source,'primary');
 });
