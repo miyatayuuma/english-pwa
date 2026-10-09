@@ -1,8 +1,3 @@
-export const VOCAB_00139_CHUNKS = Object.freeze([
-  'no sooner had I arrived',
-  'than the phone rang',
-]);
-
 function tokens(value) {
   const normalized = String(value ?? '')
     .normalize('NFKC')
@@ -20,14 +15,17 @@ function containsSequence(candidateTokens, expectedTokens) {
   return false;
 }
 
-function contextSequences(candidateTokens) {
+function contextSequences(candidateTokens, chunks) {
   const contexts = [];
+  const startToken = tokens(chunks?.[0]).at(-1);
+  const endToken = tokens(chunks?.[1]).at(-1);
+  if (!startToken || !endToken) return contexts;
   for (let index = 0; index < candidateTokens.length - 1; index += 1) {
-    if (candidateTokens[index] !== 'arrived') continue;
+    if (candidateTokens[index] !== startToken) continue;
     const limit = Math.min(candidateTokens.length, index + 13);
     let end = limit;
     for (let cursor = index + 1; cursor < limit; cursor += 1) {
-      if (candidateTokens[cursor] === 'rang') {
+      if (candidateTokens[cursor] === endToken) {
         end = cursor + 1;
         break;
       }
@@ -71,7 +69,15 @@ export function positiveIntendedText(caseKey, canonical, targets = []) {
   return String(targets[0] ?? '');
 }
 
-export function buildVocabulary139Diagnostics({ primaryTranscript = '', recognitionSegments = [], grade = null } = {}) {
+export function buildVocabulary139Diagnostics({
+  canonical = '',
+  chunks = [],
+  chunkAuthorityValid = false,
+  primaryTranscript = '',
+  recognitionSegments = [],
+  grade = null,
+} = {}) {
+  const currentChunks = Array.isArray(chunks) && chunks.length === 2 ? chunks.map(String) : [];
   const candidates = recognitionSegments.flatMap((segment, segmentArrayIndex) =>
     (segment?.alternatives || []).slice(0, 20).map((candidate, candidateIndex) => {
       const asrRank = Number.isInteger(candidate?.asrRank) ? candidate.asrRank : candidateIndex;
@@ -86,16 +92,16 @@ export function buildVocabulary139Diagnostics({ primaryTranscript = '', recognit
         containsThan: candidateTokens.includes('than'),
         containsThen: candidateTokens.includes('then'),
         containsDown: candidateTokens.includes('down'),
-        chunk1StrictMatch: containsSequence(candidateTokens, tokens(VOCAB_00139_CHUNKS[0])),
-        chunk2StrictMatch: containsSequence(candidateTokens, tokens(VOCAB_00139_CHUNKS[1])),
-        contextSequences: contextSequences(candidateTokens),
+        chunk1StrictMatch: currentChunks.length === 2 && containsSequence(candidateTokens, tokens(currentChunks[0])),
+        chunk2StrictMatch: currentChunks.length === 2 && containsSequence(candidateTokens, tokens(currentChunks[1])),
+        contextSequences: contextSequences(candidateTokens, currentChunks),
       };
     }));
 
   const ranksFor = field => [...new Set(candidates.filter(candidate => candidate[field]).map(candidate => candidate.rank))]
     .sort((left, right) => left - right);
   const primaryTokens = tokens(primaryTranscript);
-  const chunkTokens = VOCAB_00139_CHUNKS.map(tokens);
+  const chunkTokens = currentChunks.map(tokens);
   const primaryStrictMatches = chunkTokens.flatMap((expectedTokens, index) =>
     containsSequence(primaryTokens, expectedTokens) ? [index] : []);
   const lowerStrictRanks = chunkTokens.map(expectedTokens => candidates
@@ -108,13 +114,15 @@ export function buildVocabulary139Diagnostics({ primaryTranscript = '', recognit
   const supportingPrimaryChunk = grade?.supportingPrimaryChunk ?? grade?.chunkRescue?.supportingPrimaryChunk ?? null;
 
   return {
+    canonical: String(canonical ?? ''),
+    chunkAuthorityValid: !!chunkAuthorityValid,
     thanRanks: ranksFor('containsThan'),
     thenRanks: ranksFor('containsThen'),
     downRanks: ranksFor('containsDown'),
     alternatives: candidates,
     chunkMatch: {
       method: 'contiguous normalized token sequence',
-      chunks: VOCAB_00139_CHUNKS.map((expected, index) => ({
+      chunks: currentChunks.map((expected, index) => ({
         index,
         expected,
         rank0StrictMatch: primaryStrictMatches.includes(index),
@@ -127,7 +135,9 @@ export function buildVocabulary139Diagnostics({ primaryTranscript = '', recognit
       supportingPrimaryChunk,
       reason: chunkRescueFired
         ? 'The current grader fired nbest-chunk-exact.'
-        : noChunkRescueReason({ grade, chunks: VOCAB_00139_CHUNKS, primaryStrictMatches, lowerStrictRanks }),
+        : !chunkAuthorityValid
+          ? 'Curated chunk authority does not match the current production canonical; chunk rescue is disabled.'
+          : noChunkRescueReason({ grade, chunks: currentChunks, primaryStrictMatches, lowerStrictRanks }),
     },
   };
 }

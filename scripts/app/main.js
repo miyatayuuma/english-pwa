@@ -290,9 +290,13 @@ function createAppRuntime(){
       asrRank:candidate.asrRank,
       attemptId:candidate.attemptId,
     });
-    const matchRate=gradeReadSpeech(alignment).score;
-    const baseEvaluation=evaluateLevel(matchRate,stageUsed);
     const clozeResult=!corrective&&clozeContext?gradeClozeSpeech(alignment,clozeContext):null;
+    // Cloze grades its final repaired reproduction span in its own layer. Normal
+    // Read and Correction continue to use the strict sentence alignment score.
+    const matchRate=clozeResult?.active
+      ?clozeResult.overallScore
+      :gradeReadSpeech(alignment).score;
+    const baseEvaluation=evaluateLevel(matchRate,stageUsed);
     const evaluation=clozeResult?.active
       ?applyClozeTargetRequirement(baseEvaluation,clozeResult,priorLevel)
       :baseEvaluation;
