@@ -45,6 +45,7 @@ import {
   isRecognitionSupported
 } from '../speech/recognition.js';
 import { alignSpeech } from '../speech/speechAlignment.js';
+import { evaluateRecognitionCandidates, recognitionHypotheses } from '../speech/recognitionCandidates.js';
 import { gradeReadSpeech } from '../speech/readSpeechGrader.js';
 import { gradeCorrectionSpeech } from '../speech/correctionSpeechGrader.js';
 import { gradeClozeSpeech, applyClozeTargetRequirement } from '../speech/clozeSpeechGrader.js';
@@ -275,10 +276,38 @@ function createAppRuntime(){
   let correctionProgress=createCorrectionProgress();
   let correctionFinished=false;
   let recognitionController=null;
+  const processedRecognitionAttempts=new Set();
   function alignAndHighlight(referenceText, transcript, { mode = getStudyMode() } = {}){
     const alignment=alignSpeech(referenceText,transcript,{context:{mode}});
     applySpeechHighlight(alignment,el.en,()=>composeGuide.getNodes());
     return alignment;
+  }
+  function assessSpeechCandidate(referenceText,candidate,{mode,clozeContext,studyMode,stageUsed,priorLevel,corrective}={}){
+    const alignment=alignSpeech(referenceText,candidate.transcript,{
+      context:{mode},
+      recognitionSegmentIndex:candidate.segmentIndex,
+      recognitionSegmentIndexes:candidate.segmentIndexes,
+      asrRank:candidate.asrRank,
+      attemptId:candidate.attemptId,
+    });
+    const matchRate=gradeReadSpeech(alignment).score;
+    const baseEvaluation=evaluateLevel(matchRate,stageUsed);
+    const clozeResult=!corrective&&clozeContext?gradeClozeSpeech(alignment,clozeContext):null;
+    const evaluation=clozeResult?.active
+      ?applyClozeTargetRequirement(baseEvaluation,clozeResult,priorLevel)
+      :baseEvaluation;
+    const correctionGrade=corrective
+      ?gradeCorrectionSpeech(alignment,{evaluateLevel,hintStage:stageUsed})
+      :null;
+    return {
+      candidate,
+      alignment,
+      matchRate,
+      clozeResult,
+      evaluation,
+      correctionGrade,
+      accepted:corrective?!!correctionGrade?.success:!!evaluation?.pass,
+    };
   }
   function clearCurrentSpeechHighlight(){
     clearSpeechHighlight(el.en,()=>composeGuide.getNodes());
@@ -3065,7 +3094,8 @@ function createAppRuntime(){
         showTranscriptFinal(text);
         const item=QUEUE[idx];
         if(!item?.en||!hasRecognizedSpeech(text)) return;
-        lastMatchEval=alignAndHighlight(item.en,text);
+        const mode=correctiveItemId===item.id?'correction':(getActiveClozeRecognitionContext(item.id)?.mode||getStudyMode());
+        lastMatchEval=alignAndHighlight(item.en,text,{mode});
         updateMatch(gradeReadSpeech(lastMatchEval).score);
       },
       onUnsupported: ()=>toast('この端末では音声認識が使えません'),
@@ -3303,46 +3333,83 @@ function createAppRuntime(){
       updateMatch(null);
       return;
     }
-    const hyp = (outcome.transcript || '').trim();
-    if(!hasRecognizedSpeech(hyp)){
+    const attemptKey=outcome.attemptId===undefined||outcome.attemptId===null?null:`${it.id}:${outcome.attemptId}`;
+    if(attemptKey&&processedRecognitionAttempts.has(attemptKey)) return;
+    if(attemptKey){
+      processedRecognitionAttempts.add(attemptKey);
+      if(processedRecognitionAttempts.size>100) processedRecognitionAttempts.delete(processedRecognitionAttempts.values().next().value);
+    }
+    const hyp = String(outcome.primaryTranscript??outcome.transcript??'');
+    const hypotheses=recognitionHypotheses(outcome).map(candidate=>({...candidate,attemptId:outcome.attemptId??null}));
+    if(!hypotheses.some(candidate=>hasRecognizedSpeech(candidate.transcript))){
       if(correctiveItemId===it.id){handleCorrectionAttempt({technical:true});return;}
       lastMatchEval=null;updateMatch(null);resetTranscript();setFooterMessages('発話が検出されませんでした。もう一度話してください。','');el.mic.disabled=false;updatePlayButtonAvailability();return;
     }
     const refItem = QUEUE[idx];
     const refText = refItem ? refItem.en : el.en.textContent;
     const studyMode = getStudyMode();
-    const matchInfo=alignAndHighlight(refText,hyp,{mode:correctiveItemId===it.id?'correction':studyMode});
+    const corrective=correctiveItemId===it.id;
+    const activeClozeContext=getActiveClozeRecognitionContext(it.id);
+    const clozeContext=corrective?null:activeClozeContext;
+    const alignmentMode=corrective?'correction':(activeClozeContext?.mode||studyMode);
+    const stageUsed=maxHintStageUsed;
+    const prevInfoSnapshot=corrective?null:getLevelInfo(it.id);
+    const priorLevel=prevInfoSnapshot?.last??prevInfoSnapshot?.best??0;
+    const selection=evaluateRecognitionCandidates(outcome,candidate=>assessSpeechCandidate(refText,{
+      ...candidate,
+      attemptId:outcome.attemptId??null,
+    },{
+      mode:alignmentMode,
+      clozeContext,
+      stageUsed,
+      priorLevel,
+      corrective,
+    }));
+    const selected=selection.selected;
+    const matchInfo=selected?.alignment;
     if(!matchInfo){
       lastMatchEval=null;
       updateMatch(null);
       return;
     }
+    const selectedCandidate=selected.candidate;
+    matchInfo.primaryTranscript=hyp;
+    matchInfo.recognitionCandidate={
+      source:selectedCandidate.source,
+      asrRank:selectedCandidate.asrRank,
+      segmentIndex:selectedCandidate.segmentIndex,
+      segmentIndexes:selectedCandidate.segmentIndexes,
+      selectedTranscript:selectedCandidate.transcript,
+      primaryTranscript:hyp,
+      attemptId:outcome.attemptId??null,
+      completionState:outcome.completionState??null,
+    };
+    if(selectedCandidate.source==='nbest'){
+      // Keep the user-facing transcript tied to rank zero; the selected lower
+      // hypothesis remains separately traceable for scoring and diagnostics.
+      matchInfo.rawTranscript=hyp;
+      matchInfo.displayTranscript=hyp;
+    }
+    applySpeechHighlight(matchInfo,el.en,()=>composeGuide.getNodes());
     showTranscriptFinal(matchInfo.displayTranscript);
     lastMatchEval = matchInfo;
-    const { missing } = matchInfo;
-    const matchRate = gradeReadSpeech(matchInfo).score;
+    const matchRate = selected.matchRate;
     updateMatch(matchRate);
-    if(correctiveItemId===it.id){
+    if(corrective){
       // Practice after the recorded failure never mutates SRS/history/metrics.
-      const correctionGrade=gradeCorrectionSpeech(matchInfo,{evaluateLevel,hintStage:maxHintStageUsed});
+      const correctionGrade=selected.correctionGrade;
       nativeSpeechDiagnostic('grading',{mode:'correction',itemId:it.id,...correctionGrade});
       handleCorrectionAttempt({success:correctionGrade.success});
       return;
     }
-    const prevInfoSnapshot = getLevelInfo(it.id);
     const hadPriorProgress = Number(prevInfoSnapshot?.best)>0 || Number(prevInfoSnapshot?.last)>0;
     let prevBest = Number(prevInfoSnapshot?.best||0);
     if(!Number.isFinite(prevBest) || prevBest<=0){
       prevBest = Number(prevInfoSnapshot?.last||0) || 0;
     }
-    const stageUsed = maxHintStageUsed;
-    const baseEvaluation = evaluateLevel(matchRate, stageUsed);
-    const clozeContext=getActiveClozeRecognitionContext(it.id);
-    const clozeResult=clozeContext?gradeClozeSpeech(matchInfo,clozeContext):null;
-    const evaluation=clozeResult?.active
-      ?applyClozeTargetRequirement(baseEvaluation,clozeResult,prevInfoSnapshot?.last??prevInfoSnapshot?.best??0)
-      :baseEvaluation;
-    nativeSpeechDiagnostic('grading',{mode:studyMode,itemId:it.id,matchRate,evaluation,cloze:clozeResult});
+    const clozeResult=selected.clozeResult;
+    const evaluation=selected.evaluation;
+    nativeSpeechDiagnostic('grading',{mode:studyMode,learningStage:clozeResult?.active?'cloze':studyMode,itemId:it.id,matchRate,evaluation,cloze:clozeResult,recognitionCandidate:matchInfo.recognitionCandidate});
     const updateTs = Date.now();
     const levelUpdate = updateLevelInfo(it.id, evaluation, {now:updateTs});
     const levelInfo = levelUpdate?.info;

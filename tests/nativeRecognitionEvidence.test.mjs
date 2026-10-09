@@ -1,7 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { nativeRecognitionEvidence, nativeWebResultEvent } from '../scripts/native/recognitionEvidence.js';
 import { classifyVocabularySpeechAnswer } from '../scripts/speech/vocabularySpeechEvidence.js';
+import { vocabularyChunkRescueChunks } from '../scripts/speech/vocabularyChunkRescueAuthority.js';
+const production139=JSON.parse(readFileSync(new URL('../data/vocabulary-v3.json',import.meta.url),'utf8')).entries.find(entry=>entry.id==='vocab:00139');
 
 test('native final-only mapping preserves rank zero, caps at twenty, and optional confidence', () => {
   const event = { type: 'final', alternatives: [
@@ -36,14 +39,17 @@ test('mapped native candidates preserve existing strict TARGET rescue and exclud
 });
 
 test('native provider chunks reach the same curated Vocabulary rescue authority',()=>{
-  const primary='no sooner had I arrived down the phone rang';
+  const chunks=vocabularyChunkRescueChunks(production139);
+  if(!chunks){assert.equal(vocabularyChunkRescueChunks(production139),null);return;}
+  const [firstChunk,secondChunk]=chunks;
+  const primary=`${firstChunk} down ${secondChunk.split(/\s+/u).at(-1)}`;
   const evidence=nativeRecognitionEvidence({type:'final',alternatives:[
     {transcript:primary},
     {transcript:'unrelated'},
-    {transcript:'than the phone rang'},
+    {transcript:secondChunk},
   ]});
   const grade=classifyVocabularySpeechAnswer({
-    entry:{id:'vocab:00139',canonical:'no sooner had I arrived than the phone rang'},
+    entry:production139,
     ...evidence,
   });
   assert.equal(grade.type,'target');

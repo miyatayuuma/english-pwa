@@ -5,13 +5,15 @@ import { readFile } from 'node:fs/promises';
 const root = new URL('../', import.meta.url);
 const read = (path) => readFile(new URL(path, root), 'utf8');
 
-test('the app aligns full sentence evidence outside the provider controller', async () => {
+test('the app scores finalized shared recognition candidates outside the provider controller', async () => {
   const [main, recognition, reorderGuide] = await Promise.all([
     read('scripts/app/main.js'),
     read('scripts/speech/recognition.js'),
     read('scripts/app/reorderGuide.js'),
   ]);
-  assert.match(main, /alignAndHighlight\(refText,hyp/);
+  assert.match(main, /recognitionHypotheses\(outcome\)/);
+  assert.match(main, /evaluateRecognitionCandidates\(outcome,candidate=>assessSpeechCandidate/);
+  assert.match(main, /alignSpeech\(referenceText,candidate\.transcript/);
   assert.doesNotMatch(recognition, /matchAndHighlight|applySpeechHighlight|calcMatchScore/);
   assert.match(reorderGuide, /getNodes:\s*\(\)\s*=>\s*\[\]/);
   assert.doesNotMatch(recognition, /answerIsCorrect|acceptedOrders|reorder-v1/);
