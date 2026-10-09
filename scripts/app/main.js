@@ -305,7 +305,9 @@ function createAppRuntime(){
       :null;
     return {
       candidate,
-      alignment,
+      // Cloze's repaired final reproduction alignment is the single authority
+      // for score, result rendering, highlights, target checks, and diagnostics.
+      alignment:clozeResult?.active?clozeResult.alignment:alignment,
       matchRate,
       clozeResult,
       evaluation,
@@ -1619,18 +1621,25 @@ function createAppRuntime(){
     clearPostResultReveal(el.en);
   }
 
-  function showPostResultFeedback(item,matchInfo){
+  function showPostResultFeedback(item,matchInfo,clozeResult=null){
     clearActiveClozeRecognitionContext();
     if(!item?.id||!item?.en) return;
-    const source=String(matchInfo?.source||'').trim();
+    const source=String(clozeResult?.active
+      ?(matchInfo?.primaryTranscript||matchInfo?.rawTranscript||matchInfo?.source||'')
+      :(matchInfo?.source||'')).trim();
+    const clozeAuthority=clozeResult?.active&&clozeResult.alignment?clozeResult.alignment:null;
     const highlighted=revealCanonicalPostResult(el.en,item,{
-      rehighlight:(canonical)=>source&&recognitionController
-        ? alignAndHighlight(canonical,source)
-        : null,
+      rehighlight:(canonical)=>{
+        if(clozeAuthority){
+          applySpeechHighlight(clozeAuthority,el.en,()=>composeGuide.getNodes());
+          return clozeAuthority;
+        }
+        return source&&recognitionController?alignAndHighlight(canonical,source):null;
+      },
     });
     if(highlighted){
-      lastMatchEval=Object.assign({},highlighted,{source});
-      updateMatch(gradeReadSpeech(highlighted).score);
+      lastMatchEval=Object.assign({},highlighted,{source,...(clozeResult?.active?{clozeResult}: {})});
+      updateMatch(clozeResult?.active?clozeResult.overallScore:gradeReadSpeech(highlighted).score);
     }
   }
 
@@ -3378,6 +3387,7 @@ function createAppRuntime(){
     }
     const selectedCandidate=selected.candidate;
     matchInfo.primaryTranscript=hyp;
+    matchInfo.candidateTranscript=selectedCandidate.transcript;
     matchInfo.recognitionCandidate={
       source:selectedCandidate.source,
       asrRank:selectedCandidate.asrRank,
@@ -3391,7 +3401,9 @@ function createAppRuntime(){
     if(selectedCandidate.source==='nbest'){
       // Keep the user-facing transcript tied to rank zero; the selected lower
       // hypothesis remains separately traceable for scoring and diagnostics.
-      matchInfo.rawTranscript=hyp;
+      // Cloze match offsets belong to that candidate transcript; ordinary Read
+      // retains its existing rawTranscript behavior.
+      if(!selected.clozeResult?.active) matchInfo.rawTranscript=hyp;
       matchInfo.displayTranscript=hyp;
     }
     applySpeechHighlight(matchInfo,el.en,()=>composeGuide.getNodes());
@@ -3484,7 +3496,7 @@ function createAppRuntime(){
       sameErrorStreak=0;
       setFooterMessages('', '');
       el.mic.disabled=true;
-      showPostResultFeedback(it,matchInfo);
+      showPostResultFeedback(it,matchInfo,clozeResult);
       resultFeedbackQueue.enqueue('success',{itemId:it.id,perfect:!!evaluation?.perfectNoHint});
       if(levelCandidate>=4 && evaluation?.noHintSuccess){
         const baseToast = evaluation?.perfectNoHint ? 'ノーヒントで満点クリア！' : '素晴らしい！ノーヒント合格';
@@ -3522,7 +3534,7 @@ function createAppRuntime(){
       correctiveItemId=it.id;
       correctionProgress=createCorrectionProgress();
       correctionFinished=false;
-      showPostResultFeedback(it,matchInfo);
+      showPostResultFeedback(it,matchInfo,clozeResult);
       el.mic.disabled=true;
       setFooterMessages('正解音声を聞いて、表示された英文を話してください。','「聞く」で正解音声を確認できます。');
       // Existing source/TTS playback and mic lock remain the audio authority.

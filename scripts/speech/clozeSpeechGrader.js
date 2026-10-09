@@ -10,6 +10,18 @@ const NEGATION_TOKENS = new Set([
   'wont', "won't", 'isnt', "isn't", 'arent', "aren't", 'wasnt', "wasn't", 'werent', "weren't",
   'havent', "haven't", 'hasnt', "hasn't", 'hadnt', "hadn't", 'shant', "shan't", 'aint', "ain't",
 ]);
+const LOW_INFORMATION_TOKENS = new Set([
+  'a', 'an', 'the', 'and', 'or', 'but', 'if', 'as', 'than', 'too', 'very',
+  'am', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'do', 'does', 'did',
+  'have', 'has', 'had', 'will', 'would', 'shall', 'should', 'can', 'could', 'may', 'might', 'must',
+]);
+const CLOZE_MEANING_CONNECTORS = new Set([
+  'because', 'although', 'though', 'whereas', 'unless', 'if', 'when', 'whenever', 'while', 'since',
+  'until', 'once', 'before', 'after', 'during', 'without', 'despite', 'as', 'who', 'whom', 'whose',
+  'which', 'that', 'where', 'why', 'how', 'at', 'by', 'for', 'from', 'in', 'into', 'of', 'off', 'on',
+  'onto', 'out', 'over', 'under', 'between', 'around', 'within', 'with', 'to', 'through', 'across',
+  'against', 'among', 'along', 'beneath', 'beside', 'beyond', 'near', 'past', 'toward', 'towards', 'via',
+]);
 const MOVABLE_ADVERBS = new Set([
   'never', 'always', 'often', 'usually', 'sometimes', 'already', 'just', 'still', 'also', 'really', 'even',
   'probably', 'possibly', 'certainly', 'perhaps', 'maybe',
@@ -115,7 +127,7 @@ function expectedIncludesRepeatedChunk(referenceTokens, transcriptTokens, start,
 }
 
 function collapseImmediateRepetitions(referenceText, transcript) {
-  const tokens = safeSpeechTokens(transcript);
+  const tokens = safeSpeechTokens(transcript).map((token, sourceTokenIndex) => ({ ...token, sourceTokenIndex }));
   const referenceTokens = safeSpeechTokens(referenceText);
   const kept = [];
   let index = 0;
@@ -151,23 +163,136 @@ function collapseImmediateRepetitions(referenceText, transcript) {
   };
 }
 
-function alignLocalReproduction(referenceText, sourceTranscript, rawStartOffset, provenance) {
+function observedEvidenceBetween(events, runStart, runEnd, observedTokenCount) {
+  const previous = events
+    .filter(event => Math.max(...event.expectedTokenIndexes) < runStart)
+    .at(-1);
+  const next = events.find(event => Math.min(...event.expectedTokenIndexes) > runEnd);
+  const previousObservedEnd = previous ? Math.max(...previous.observedTokenIndexes) : -1;
+  const nextObservedStart = next ? Math.min(...next.observedTokenIndexes) : observedTokenCount;
+  return Math.max(0, nextObservedStart - previousObservedEnd - 1);
+}
+
+function clozeReproductionCompleteness(alignment) {
+  const referenceTokens = alignment?.referenceTokens || [];
+  const matched = new Set(alignment?.matchedReferenceTokenIndexes || []);
+  const observedTokens = safeSpeechTokens(alignment?.rawTranscript || '');
+  const events = (alignment?.alignment || []).slice().sort((left, right) =>
+    left.expectedTokenIndexes[0] - right.expectedTokenIndexes[0]);
+  const runs = [];
+  let runStart = null;
+  for (let index = 0; index <= referenceTokens.length; index += 1) {
+    if (index < referenceTokens.length && !matched.has(index)) {
+      if (runStart === null) runStart = index;
+      continue;
+    }
+    if (runStart === null) continue;
+    runs.push({ start: runStart, end: index - 1 });
+    runStart = null;
+  }
+
+  const missingSpans = runs.map(({ start, end }) => {
+    const tokens = referenceTokens.slice(start, end + 1);
+    const connectorCount = tokens.filter(token => CLOZE_MEANING_CONNECTORS.has(token.value)).length;
+    const contentWordCount = tokens.filter(token =>
+      !LOW_INFORMATION_TOKENS.has(token.value) && !CLOZE_MEANING_CONNECTORS.has(token.value)).length;
+    const containsNegation = tokens.some(token => NEGATION_TOKENS.has(token.value));
+    const observedSupportCount = observedEvidenceBetween(events, start, end, observedTokens.length);
+    const supportNeeded = Math.max(1, Math.ceil(tokens.length * 0.75));
+    const supportedByUnmatchedSpeech = observedSupportCount >= supportNeeded;
+    const semanticBlock = tokens.length >= 3
+      || contentWordCount >= 2
+      || (tokens.length >= 2 && connectorCount > 0 && contentWordCount > 0);
+    const blocking = !supportedByUnmatchedSpeech && (containsNegation || semanticBlock);
+    return {
+      tokenStart: start,
+      tokenEnd: end,
+      start: tokens[0]?.start ?? null,
+      end: tokens.at(-1)?.end ?? null,
+      text: alignment.referenceText.slice(tokens[0]?.start ?? 0, tokens.at(-1)?.end ?? 0),
+      missingTokenCount: tokens.length,
+      contentWordCount,
+      observedSupportCount,
+      supportedByUnmatchedSpeech,
+      containsNegation,
+      blocking,
+    };
+  });
+  const blockingSpans = missingSpans.filter(span => span.blocking);
+  return {
+    algorithm: 'cloze-material-span-v1',
+    complete: blockingSpans.length === 0,
+    missingSpans,
+    blockingSpans,
+  };
+}
+
+function alignLocalReproduction(referenceText, sourceTranscript, rawStartOffset, provenance, fullSourceTranscript = sourceTranscript, isRestart = false) {
   const context = { mode: 'cloze' };
   const collapsed = collapseImmediateRepetitions(referenceText, sourceTranscript);
   const scoringTranscript = collapsed.transcript || String(sourceTranscript || '');
-  const window = alignSpeech(referenceText, scoringTranscript, { context, ...provenance });
-  const selectedTranscript = String(window.transcript || scoringTranscript || '');
-  const selectedIndexes = (window.alignment || []).flatMap(event => event.observedTokenIndexes || []);
-  const firstIndex = selectedIndexes.length ? Math.min(...selectedIndexes) : 0;
-  const lastIndex = selectedIndexes.length ? Math.max(...selectedIndexes) : collapsed.tokens.length - 1;
-  const firstObservedStart = collapsed.tokens[firstIndex]?.start ?? 0;
-  const lastObservedEnd = collapsed.tokens[lastIndex]?.end ?? String(sourceTranscript || '').length;
-  const local = alignSpeech(referenceText, selectedTranscript, { context, ...provenance });
+  const scoringTokens = safeSpeechTokens(scoringTranscript);
+  const fullSourceTokens = safeSpeechTokens(fullSourceTranscript);
+  const local = alignSpeech(referenceText, scoringTranscript, { context, ...provenance, fullSpan: true });
+  const sourceTokenSpans = scoringTokens.flatMap((token, index) => {
+    const sourceToken = collapsed.tokens[index];
+    if (!sourceToken) return [];
+    const start = rawStartOffset + sourceToken.start;
+    const end = rawStartOffset + sourceToken.end;
+    const sourceTokenIndex = fullSourceTokens.findIndex(candidate => candidate.start === start && candidate.end === end);
+    return [{
+      selectedTokenIndex: index,
+      sourceTokenIndex: sourceTokenIndex < 0 ? sourceToken.sourceTokenIndex : sourceTokenIndex,
+      start,
+      end,
+    }];
+  });
+  const mappedEvents = (local.alignment || []).map(event => {
+    const sourceSpans = (event.observedTokenIndexes || [])
+      .map(index => sourceTokenSpans[index])
+      .filter(Boolean);
+    if (!sourceSpans.length) return event;
+    const observedStart = Math.min(...sourceSpans.map(span => span.start));
+    const observedEnd = Math.max(...sourceSpans.map(span => span.end));
+    return {
+      ...event,
+      generatedObservedTokenIndexes: event.observedTokenIndexes,
+      sourceObservedTokenIndexes: sourceSpans.map(span => span.sourceTokenIndex),
+      observedStart,
+      observedEnd,
+      observed: fullSourceTranscript.slice(observedStart, observedEnd),
+    };
+  });
+  const displayReplacements = mappedEvents.flatMap(event => {
+    if (event.authority !== 'explicit-equivalence' || event.displayPolicy !== 'expected') return [];
+    const expectedStart = local.referenceTokens[event.expectedTokenIndexes[0]]?.start;
+    const expectedEnd = local.referenceTokens[event.expectedTokenIndexes.at(-1)]?.end;
+    if (!Number.isInteger(expectedStart) || !Number.isInteger(expectedEnd)) return [];
+    return [{ start: event.observedStart, end: event.observedEnd, value: referenceText.slice(expectedStart, expectedEnd) }];
+  });
+  let mappedDisplayTranscript = fullSourceTranscript;
+  for (const replacement of displayReplacements.sort((left, right) => right.start - left.start)) {
+    mappedDisplayTranscript = `${mappedDisplayTranscript.slice(0, replacement.start)}${replacement.value}${mappedDisplayTranscript.slice(replacement.end)}`;
+  }
+  const firstSourceStart = sourceTokenSpans[0]?.start ?? rawStartOffset;
+  const lastSourceEnd = sourceTokenSpans.at(-1)?.end ?? rawStartOffset;
+  const mappedAlignment = {
+    ...local,
+    transcript: collapsed.transcript || String(sourceTranscript || ''),
+    source: fullSourceTranscript.trim(),
+    rawTranscript: fullSourceTranscript,
+    displayTranscript: mappedDisplayTranscript,
+    alignment: mappedEvents,
+  };
   return {
-    alignment: local,
-    transcript: selectedTranscript,
-    start: rawStartOffset + firstObservedStart,
-    end: rawStartOffset + lastObservedEnd,
+    alignment: mappedAlignment,
+    localAlignment: local,
+    transcript: collapsed.transcript || String(sourceTranscript || ''),
+    sourceTranscript: fullSourceTranscript,
+    sourceTokenSpans,
+    start: firstSourceStart,
+    end: lastSourceEnd,
+    isRestart,
     score: clozeScore(local),
   };
 }
@@ -176,8 +301,7 @@ function selectClozeReproduction(alignment) {
   const referenceText = String(alignment?.referenceText || '');
   const rawTranscript = String(alignment?.rawTranscript || alignment?.source || '');
   const provenance = alignmentProvenance(alignment);
-  const firstEventStart = Math.min(...(alignment?.alignment || []).map(event => event?.observedStart).filter(Number.isFinite));
-  const base = alignLocalReproduction(referenceText, String(alignment?.transcript || rawTranscript), Number.isFinite(firstEventStart) ? firstEventStart : 0, provenance);
+  const base = alignLocalReproduction(referenceText, rawTranscript, 0, provenance, rawTranscript, false);
   const candidates = [base];
   const referenceTokens = safeSpeechTokens(referenceText);
   const observedTokens = safeSpeechTokens(rawTranscript);
@@ -190,7 +314,7 @@ function selectClozeReproduction(alignment) {
     const isSentenceRestart = matchedPrefixLength >= 1 && isRestartBoundary(rawTranscript, previousToken, token);
     if (!hasReferencePrefix && !isSentenceRestart) continue;
     const suffix = rawTranscript.slice(token.start);
-    const candidate = alignLocalReproduction(referenceText, suffix, token.start, provenance);
+    const candidate = alignLocalReproduction(referenceText, suffix, token.start, provenance, rawTranscript, true);
     if (isSentenceRestart || candidate.score >= CLOZE_PASS_THRESHOLD) candidates.push(candidate);
   }
 
@@ -236,12 +360,19 @@ export function gradeClozeSpeech(alignment, context) {
     && String(context?.sentence || '') === String(alignment?.referenceText || '');
   const reproduction = active ? selectClozeReproduction(alignment) : {
     alignment,
+    localAlignment: alignment,
     transcript: String(alignment?.transcript || ''),
+    sourceTranscript: String(alignment?.rawTranscript || ''),
+    sourceTokenSpans: [],
     start: 0,
     end: String(alignment?.transcript || '').length,
     score: clozeScore(alignment),
+    isRestart: false,
   };
-  const gradedAlignment = reproduction.alignment || alignment;
+  const rawPrimaryTranscript = String(alignment?.rawTranscript || alignment?.source || '');
+  const gradedAlignment = reproduction.alignment && active
+    ? { ...reproduction.alignment, primaryTranscript: rawPrimaryTranscript }
+    : reproduction.alignment || alignment;
   const matchedReference = new Set(gradedAlignment?.matchedReferenceTokenIndexes || []);
   const targetResults = targets.map(target => {
     const tokenIndexes = targetTokenIndexes(gradedAlignment, target);
@@ -267,27 +398,41 @@ export function gradeClozeSpeech(alignment, context) {
   const allTargetsMatched = hasTargets && targetResults.every(target => target.matched);
   const orderedMatchIntegrity = gradedAlignment?.orderedMatchIntegrity || { valid: true, violations: [] };
   const negationPreserved = preservesExpectedNegation(gradedAlignment);
+  const completeness = active ? clozeReproductionCompleteness(reproduction.localAlignment) : {
+    algorithm: 'cloze-material-span-v1', complete: true, missingSpans: [], blockingSpans: [],
+  };
+  const overallScore = negationPreserved ? reproduction.score : 0;
+  const pass = active
+    && overallScore >= CLOZE_PASS_THRESHOLD
+    && completeness.complete
+    && allTargetsMatched;
   return {
     active: hasTargets && active,
-    overallScore: negationPreserved ? reproduction.score : 0,
+    overallScore,
+    pass,
     orderedMatchIntegrity,
     rawOrderedMatchIntegrity: alignment?.orderedMatchIntegrity || { valid: true, violations: [] },
     negationPreserved,
+    completeness,
+    alignment: gradedAlignment,
     repair: {
       selectedTranscript: reproduction.transcript,
       start: reproduction.start,
       end: reproduction.end,
-      latestRestartSelected: reproduction.start > 0,
+      offsetBasis: 'candidate-transcript-code-units',
+      sourceTranscript: reproduction.sourceTranscript,
+      sourceTokenSpans: reproduction.sourceTokenSpans,
+      latestRestartSelected: reproduction.isRestart,
     },
     targets: targetResults,
     allTargetsMatched,
   };
 }
 
-// The Read thresholds remain unchanged; Cloze adds only its hidden-target
-// completion requirement to the result owned by the Read-facing flow.
+// Read thresholds remain unchanged; Cloze additionally requires its selected
+// final reproduction to be complete and every hidden target to be restored.
 export function applyClozeTargetRequirement(evaluation, clozeResult, currentLevel = 0) {
-  if (!evaluation || !clozeResult?.active || clozeResult.allTargetsMatched) return evaluation;
+  if (!evaluation || !clozeResult?.active || clozeResult.pass) return evaluation;
   const priorLevel = Number.isFinite(Number(currentLevel)) ? Math.max(0, Math.floor(Number(currentLevel))) : 0;
   const candidate = Number.isFinite(Number(evaluation.candidate)) ? Math.max(0, Math.floor(Number(evaluation.candidate))) : priorLevel;
   return {
