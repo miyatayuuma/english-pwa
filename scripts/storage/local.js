@@ -61,9 +61,10 @@ function loadJson(key, fallback) {
 function saveJson(key, value) {
   const payload = value === undefined ? null : value;
   try {
-    safeSetItem(key, JSON.stringify(payload));
+    return safeSetItem(key, JSON.stringify(payload));
   } catch (_) {
     // ignore
+    return false;
   }
 }
 

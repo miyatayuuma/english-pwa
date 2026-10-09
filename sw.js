@@ -1,6 +1,6 @@
-// sw.js: cache name follows the app version. v5.98
+// sw.js: cache name follows the app version. v5.99
 // Version the import itself so the browser cannot reuse an older worker import.
-importScripts('./scripts/version.js?v=5.98');
+importScripts('./scripts/version.js?v=5.99');
 const CACHE = self.APP_VERSION;
 
 self.addEventListener('install', e => {
@@ -25,8 +25,8 @@ self.addEventListener('install', e => {
     './icons/maskable-512.png',
     './scripts/version.js',
     './scripts/app/main.js',
-    './scripts/app/swBootstrap.js?v=5.98',
-    './scripts/app/swUpdatePrompt.js?v=5.98',
+    './scripts/app/swBootstrap.js?v=5.99',
+    './scripts/app/swUpdatePrompt.js?v=5.99',
     './scripts/native/runtimePlatform.js',
     './scripts/native/media.js',
     './scripts/reorder/sharedAuthority.js',
@@ -76,6 +76,8 @@ self.addEventListener('install', e => {
     './scripts/speech/speechPresentation.js',
     './scripts/native/androidSpeechBackend.js',
     './scripts/native/nativeSpeech.js',
+    './scripts/native/gameTrace.js',
+    './scripts/ui/gameTracePanel.js',
     './scripts/native/recognitionEvidence.js',
     './scripts/speech/vocabularySpeechEvidence.js',
     './scripts/speech/correctionProgress.js',

@@ -5,6 +5,7 @@ import { createLevelStateManager } from './levelState.js';
 import { createRecognitionController, isRecognitionSupported } from '../speech/recognition.js';
 import { nativeSpeechDiagnostic } from '../native/androidSpeechBackend.js';
 import { isNativeAndroid } from '../native/runtimePlatform.js';
+import { gameTraceCollector, safeGameTraceRecord } from '../native/gameTrace.js';
 import { createSpeechSynthesisController } from '../speech/synthesis.js';
 import {
   buildVocabularySession,
@@ -47,6 +48,11 @@ const state={
   lastAttemptTranscript:'',
   lastRecognitionEvidence:null,
   correction:false,
+  correctionAttemptCount:0,
+  traceCurrentAttemptId:null,
+  traceAttemptContext:null,
+  correctionOriginalOutcome:null,
+  lastTraceAttemptId:null,
   lastRecognitionDecision:null,
   correctionProgress:createCorrectionProgress(),
   audioGeneration:0,
@@ -86,10 +92,47 @@ function rememberVocabularySession(entries){
   try{ localStorage.setItem(RECENT_VOCAB_KEY,JSON.stringify(ids)); }catch(_){}
 }
 
+const traceSrsCounts=new Map();
+let traceSrsAttemptId=null;
+let traceSrsTrigger='speech-grading';
+function retainTraceSrsCount(key,count){
+  traceSrsCounts.set(String(key),count);
+  while(traceSrsCounts.size>50) traceSrsCounts.delete(traceSrsCounts.keys().next().value);
+}
+function recordTraceSrsWrite(result){
+  const attemptId=traceSrsAttemptId;
+  if(!attemptId||!gameTraceCollector.isEnabled()) return;
+  const count=traceSrsCounts.get(String(attemptId))||{updateInvocationCount:0,persistenceWriteCount:0};
+  count.persistenceWriteCount+=Number(result?.persistenceWriteCount)||0;
+  retainTraceSrsCount(attemptId,count);
+  safeGameTraceRecord({type:'srs-update-completed',attemptId,
+    updateAttempted:true,updateInvocationCount:count.updateInvocationCount,
+    persistenceWriteCount:count.persistenceWriteCount,persisted:result?.persisted===true,
+    beforeLevel:result?.before?.last??0,candidateLevel:result?.candidateLevel??null,
+    afterLevel:result?.after?.last??null,before:result?.before??null,after:result?.after??null,
+    reviewState:result?.after?.review??null,
+    streak:{before:result?.before?.noHintStreak??0,after:result?.after?.noHintStreak??0},
+    trigger:traceSrsTrigger,followupOfClosedAttempt:traceSrsTrigger==='answer-reveal',
+    finalOutcome:result?.evaluation?.pass===true?'pass':'fail',duplicateUpdateSuppressed:false});
+}
+function recordTraceSrsAttempt(attemptId,trigger='speech-grading'){
+  if(!attemptId||!gameTraceCollector.isEnabled()) return;
+  const key=String(attemptId);
+  const count=traceSrsCounts.get(key)||{updateInvocationCount:0,persistenceWriteCount:0};
+  count.updateInvocationCount+=1;
+  retainTraceSrsCount(key,count);
+  safeGameTraceRecord({type:'srs-update-attempted',attemptId,updateAttempted:true,
+    updateInvocationCount:count.updateInvocationCount,persistenceWriteCount:count.persistenceWriteCount,
+    trigger,followupOfClosedAttempt:trigger==='answer-reveal',
+    duplicateUpdateSuppressed:false});
+}
+
 const levels=createLevelStateManager({
   baseHintStage:0,
   getFirstHintStage:()=>1,
   getEnglishRevealStage:()=>1,
+  onSrsWrite:recordTraceSrsWrite,
+  shouldObserveSrsWrite:()=>gameTraceCollector.isEnabled()&&!!traceSrsAttemptId,
 });
 
 const speech=createSpeechSynthesisController({
@@ -388,16 +431,37 @@ function showRecognitionStatus(message){
   if(prompt) prompt.textContent=message;
 }
 
-function showRecognitionFailure(error){
+function showRecognitionFailure(error,event=null){
   const retryMessage=error==='PERMISSION_DENIED'?'マイクの権限が拒否されました。端末の設定で許可して再試行してください。':error==='UNAVAILABLE'?'端末の音声認識サービスが利用できません。':'マイクを押してもう一度話してください。';
   const explicitError=error==='PERMISSION_DENIED'||error==='UNAVAILABLE';
   if(state.correction&&!state.processing){
     const result=recordCorrectionAttempt(state.correctionProgress,{technical:true});
+    state.correctionAttemptCount+=1;
+    const attemptId=event?.attemptId??null;
+    if(attemptId){
+      safeGameTraceRecord({type:'correction-attempt-recorded',attemptId,
+        correctionSource:'Vocabulary',correctionAttemptNumber:state.correctionAttemptCount,
+        success:false,technical:true,complete:result.complete,
+        underlyingOriginalGradingOutcome:state.correctionOriginalOutcome??'MISS'});
+      safeGameTraceRecord({type:'srs-update-skipped',attemptId,updateAttempted:false,
+        skippedReason:'vocabulary-correction-practice-only',duplicateUpdateSuppressed:false});
+    }
     const feedback=state.screen?.querySelector('.vocab-feedback');
     if(feedback) feedback.textContent=explicitError?`${result.message} ${retryMessage}`:result.message;
     clearGradeTimer();setListening(false);
-    if(result.complete) completeCorrectionPractice();
-    else showRecognitionStatus(retryMessage);
+    if(result.complete){
+      if(attemptId) safeGameTraceRecord({type:'correction-completed',attemptId,
+        correctionSource:'Vocabulary',correctionAttemptNumber:state.correctionAttemptCount,
+        success:false,advancementRequested:false});
+      completeCorrectionPractice();
+    }else showRecognitionStatus(retryMessage);
+    if(attemptId){
+      safeGameTraceRecord({type:'final-ui-result-committed',attemptId,
+        decision:{type:result.complete?'CORRECTION_COMPLETE':'CORRECTION_RETRY',pass:false},
+        correctionSource:'Vocabulary',correctionAttemptNumber:state.correctionAttemptCount,
+        displayedFeedback:explicitError?'technical-error':'recognition-failure'});
+      safeGameTraceRecord({type:'attempt-closed',attemptId,closeReason:'correction-technical-failure'});
+    }
     return;
   }
   clearGradeTimer();
@@ -405,12 +469,37 @@ function showRecognitionFailure(error){
   const feedback=state.screen?.querySelector('.vocab-feedback');
   if(feedback){feedback.className='vocab-feedback';feedback.textContent=explicitError?retryMessage:'認識できませんでした。もう一度。';}
   showRecognitionStatus(retryMessage);
+  if(event?.attemptId){
+    safeGameTraceRecord({type:'srs-update-skipped',attemptId:event.attemptId,updateAttempted:false,
+      skippedReason:error||'no-recognized-speech'});
+    safeGameTraceRecord({type:'final-ui-result-committed',attemptId:event.attemptId,
+      decision:{type:'NO_SPEECH_OR_TECHNICAL_ERROR',pass:false},
+      displayedFeedback:error||'no-speech',correctionActive:false});
+    safeGameTraceRecord({type:'attempt-closed',attemptId:event.attemptId,
+      closeReason:error||'no-recognized-speech'});
+  }
 }
 
 function setupRecognition(){
   state.recognition=createRecognitionController({
     // Shared provider evidence never rewrites raw primary text.
     getRecognitionContext:()=>buildRecognitionContext({mode:'vocabulary'}),
+    isTracing:()=>gameTraceCollector.isEnabled(),
+    getTraceSessionId:()=>gameTraceCollector.getTraceSessionId(),
+    getAttemptContext:()=>{
+      const source=activeSource();
+      const occurrence=source?.occurrence??state.current?.activeOccurrence?.occurrence??null;
+      const item=source?.item??state.current?.activeOccurrence?.item??null;
+      return {
+        itemId:item?.id??occurrence?.item_id??null,
+        entryId:state.current?.id??null,
+        activeOccurrence:occurrence?{...occurrence}:null,
+        gameMode:'Vocabulary',
+        learningStage:state.correction?'Correction':'Vocabulary',
+        correctionActive:state.correction===true,
+      };
+    },
+    onTraceEvent:safeGameTraceRecord,
     onTranscriptReset:()=>{clearGradeTimer();state.liveTranscript='';state.lastAttemptTranscript='';state.lastRecognitionEvidence=null;setTranscript('');},
     onTranscriptPreview:(text,evidence)=>{
       if(state.processing||!state.current) return;
@@ -422,13 +511,13 @@ function setupRecognition(){
       const text=latestNonEmptyTranscript(result?.previewTranscript,state.liveTranscript,result?.transcript);
       state.lastRecognitionEvidence=result||null;
       if(text||hasRecognitionEvidence()){state.liveTranscript=text;setTranscript(text);gradeTranscript(text,result||{});}
-      else showRecognitionFailure();
+      else showRecognitionFailure(null,result||null);
     },
     onUnsupported:()=>{
       setListening(false);
       showRecognitionStatus('音声認識に対応していないため、このモードは利用できません。');
     },
-    onError:event=>showRecognitionFailure(event.error),
+    onError:event=>showRecognitionFailure(event.error,event),
     setMicState:setListening,
   });
 }
@@ -477,12 +566,22 @@ async function startListening(){
   if(!result?.ok) setListening(false);
 }
 
-function updateVocabularyLevel(answerType,hintUsed){
-  const application=applyVocabularyAnswerSrs(answerType,rate=>{
-    const evaluation=levels.evaluateLevel(rate,hintUsed?1:0);
-    return levels.updateLevelInfo(state.current.id,evaluation);
-  });
-  return application.value??null;
+function updateVocabularyLevel(answerType,hintUsed,attemptId=null,trigger='speech-grading'){
+  if(answerType!=='target'&&answerType!=='miss'){
+    if(attemptId) safeGameTraceRecord({type:'srs-update-skipped',attemptId,updateAttempted:false,
+      skippedReason:'vocabulary-paraphrase-does-not-update-level'});
+    return null;
+  }
+  recordTraceSrsAttempt(attemptId,trigger);
+  traceSrsAttemptId=attemptId;
+  traceSrsTrigger=trigger;
+  try{
+    const application=applyVocabularyAnswerSrs(answerType,rate=>{
+      const evaluation=levels.evaluateLevel(rate,hintUsed?1:0);
+      return levels.updateLevelInfo(state.current.id,evaluation);
+    });
+    return application.value??null;
+  }finally{traceSrsAttemptId=null;traceSrsTrigger='speech-grading';}
 }
 
 function densityClass(base,text,{long=24,xlong=42}={}){
@@ -827,6 +926,10 @@ function gradeTranscript(text,recognitionEvidence={}){
   // Never consume or advance an attempt from a preview, even when rank zero
   // already looks exact. Wait for the terminal event for every decision.
   if(!complete) return;
+  const attemptId=evidence.attemptId??null;
+  state.traceCurrentAttemptId=attemptId;
+  state.traceAttemptContext=evidence.gameContext??null;
+  state.lastTraceAttemptId=attemptId??state.lastTraceAttemptId;
   state.processing=true;
   clearGradeTimer();
   state.lastAttemptTranscript=transcript;
@@ -835,18 +938,95 @@ function gradeTranscript(text,recognitionEvidence={}){
   state.lastRecognitionDecision=result;
   if(result.type==='target'&&result.displayTranscript) setTranscript(result.displayTranscript);
   nativeSpeechDiagnostic('grading',{mode:'vocabulary',entryId:state.current.id,decision:result});
+  const chunkRescue=result.recognitionAuthority==='nbest-chunk-exact';
+  const selectedCandidateSource=chunkRescue?'chunk-rescue':result.targetRescued?'nbest':'primary';
+  const selectedCandidateTranscript=chunkRescue
+    ?String(result.rescuedChunk?.rawTranscript??result.rawTranscript??'')
+    :String(result.rawTranscript??transcript);
+  const selectedCandidateRank=chunkRescue
+    ?result.rescuedChunk?.asrRank??result.asrRank??0
+    :result.asrRank??0;
+  const selectedCandidateSegment=chunkRescue
+    ?result.rescuedChunk?.recognitionSegmentIndex??result.recognitionSegmentIndex??null
+    :result.recognitionSegmentIndex??null;
+  safeGameTraceRecord({type:'candidate-evaluated',attemptId,
+    candidateSource:selectedCandidateSource,candidateRank:selectedCandidateRank,
+    candidateSegment:selectedCandidateSegment,candidateTranscript:selectedCandidateTranscript,
+    accepted:result.type!=='miss',decision:result.type,
+    recognitionAuthority:result.recognitionAuthority??'unmatched',
+    ruleId:result.speechMatch?.ruleId??result.rescuedChunk?.ruleId??null,
+    ruleKind:result.speechMatch?.ruleKind??result.rescuedChunk?.ruleKind??null});
+  safeGameTraceRecord({type:'candidate-selected',attemptId,
+    selectionMethod:'vocabulary-production-classifier',resultFromActualGrader:true,
+    selectedCandidateSource,selectedCandidateRank,selectedCandidateSegment,
+    selectedCandidateTranscript,primaryTranscript:transcript,
+    rescueApplied:result.targetRescued===true,
+    backendType:evidence.backendType??null,providerInfo:evidence.providerInfo??null,
+    requestedMaxAlternatives:evidence.requestedMaxAlternatives??null,
+    recognitionAuthority:result.recognitionAuthority??'unmatched',
+    ruleId:result.speechMatch?.ruleId??result.rescuedChunk?.ruleId??null,
+    ruleKind:result.speechMatch?.ruleKind??result.rescuedChunk?.ruleKind??null,
+    recognitionSegments:evidence.recognitionSegments??[],
+    providerReturnedCandidateCount:evidence.recognitionSegments?.reduce((sum,segment)=>sum+(Number(segment.providerReturnedCount)||0),0)??0,
+    retainedCandidateCount:evidence.recognitionSegments?.reduce((sum,segment)=>sum+(segment.alternatives?.length||0),0)??0,
+    acceptanceDecision:{type:result.type,accepted:result.type!=='miss',target:result.type==='target',paraphrase:result.type==='paraphrase'},
+    chunkRescue:chunkRescue?{rescuedChunk:result.rescuedChunk,supportingPrimaryChunk:result.supportingPrimaryChunk}:null});
+  safeGameTraceRecord({type:'game-grading-completed',attemptId,
+    gameMode:'Vocabulary',learningStage:state.correction?'Correction':'Vocabulary',
+    entryId:state.current.id,decision:{type:result.type.toUpperCase(),pass:result.type==='target'},
+    selectedCandidateSource,selectedCandidateRank,selectedCandidateSegment,
+    selectedCandidateTranscript,primaryTranscript:transcript,
+    rescueApplied:result.targetRescued===true,recognitionAuthority:result.recognitionAuthority??'unmatched',
+    finalAcceptanceDecision:result.type,correctionActive:state.correction===true});
   if(state.recognition?.isActive()) state.recognition.cancel();
   setListening(false);
   if(state.correction){
     const feedback=state.screen.querySelector('.vocab-feedback');
     const progress=recordCorrectionAttempt(state.correctionProgress,{success:result.type==='target'});
+    state.correctionAttemptCount+=1;
+    if(attemptId){
+      safeGameTraceRecord({type:'correction-attempt-recorded',attemptId,
+        correctionSource:'Vocabulary',correctionAttemptNumber:state.correctionAttemptCount,
+        success:result.type==='target',technical:false,complete:progress.complete,
+        underlyingOriginalGradingOutcome:state.correctionOriginalOutcome??'MISS'});
+      safeGameTraceRecord({type:'srs-update-skipped',attemptId,updateAttempted:false,
+        skippedReason:'vocabulary-correction-practice-only',duplicateUpdateSuppressed:false});
+    }
     if(feedback){feedback.className=result.type==='target'?'vocab-feedback is-ok':'vocab-feedback';feedback.textContent=progress.message;}
-    if(progress.complete) completeCorrectionPractice();
+    if(progress.complete){
+      if(attemptId) safeGameTraceRecord({type:'correction-completed',attemptId,
+        correctionSource:'Vocabulary',correctionAttemptNumber:state.correctionAttemptCount,
+        success:result.type==='target',advancementRequested:false,
+        underlyingOriginalGradingOutcome:state.correctionOriginalOutcome??'MISS'});
+      completeCorrectionPractice();
+    }
     else state.processing=false;
+    if(attemptId){
+      safeGameTraceRecord({type:'final-ui-result-committed',attemptId,
+        decision:{type:progress.complete?'CORRECTION_COMPLETE':'CORRECTION_RETRY',pass:result.type==='target'},
+        correctionSource:'Vocabulary',correctionAttemptNumber:state.correctionAttemptCount,
+        displayedFeedback:progress.message,correctionActive:!progress.complete});
+      safeGameTraceRecord({type:'attempt-closed',attemptId,closeReason:'vocabulary-correction-result'});
+    }
+    state.traceCurrentAttemptId=null;
     return;
   }
-  if(result.type==='miss'){state.carrierCueMissCount+=1;renderTranscriptReview();return;}
-  finalizeVocabularyAnswer(result);
+  if(result.type==='miss'){
+    state.carrierCueMissCount+=1;
+    safeGameTraceRecord({type:'srs-update-skipped',attemptId,updateAttempted:false,
+      skippedReason:'vocabulary-miss-retry-remains-open',duplicateUpdateSuppressed:false});
+    renderTranscriptReview();
+    safeGameTraceRecord({type:'final-ui-result-committed',attemptId,
+      decision:{type:'MISS_RETRY',pass:false},entryId:state.current.id,
+      finalHighlightAuthority:'vocabulary-retry-prompt',correctionActive:false,
+      srsUpdate:{updateAttempted:false,updateInvocationCount:0,persistenceWriteCount:0,
+        skippedReason:'vocabulary-miss-retry-remains-open'}});
+    safeGameTraceRecord({type:'attempt-closed',attemptId,closeReason:'vocabulary-miss-retry-remains-open'});
+    state.traceCurrentAttemptId=null;
+    return;
+  }
+  finalizeVocabularyAnswer(result,attemptId);
+  state.traceCurrentAttemptId=null;
 }
 
 function renderTranscriptReview(){
@@ -868,12 +1048,32 @@ function renderTranscriptReview(){
   state.processing=false;
 }
 
-function finalizeVocabularyAnswer(result){
+function finalizeVocabularyAnswer(result,attemptId=null){
   if(!state.current) return;
+  let followupTraceId=null;
+  if(!attemptId&&gameTraceCollector.isEnabled()){
+    const latest=gameTraceCollector.getLatest();
+    if(latest&&String(latest.attemptId)===String(state.lastTraceAttemptId)
+      &&String(latest.context?.entryId||'')===String(state.current.id)){
+      followupTraceId=latest.attemptId;
+      safeGameTraceRecord({type:'non-speech-answer-revealed',attemptId:followupTraceId,
+        trigger:'answer-reveal',followupOfClosedAttempt:true,entryId:state.current.id,
+        underlyingOriginalGradingOutcome:'MISS'});
+    }
+  }
+  const traceId=attemptId??followupTraceId;
+  const traceTrigger=attemptId?'speech-grading':followupTraceId?'answer-reveal':'speech-grading';
   state.processing=true;
   state.correction=result.type==='miss';
   state.correctionProgress=createCorrectionProgress();
-  updateVocabularyLevel(result.type,state.hintUsed);
+  if(state.correction){
+    state.correctionAttemptCount=0;
+    state.correctionOriginalOutcome={type:'MISS',pass:false};
+    if(traceId) safeGameTraceRecord({type:'correction-started',attemptId:traceId,
+      correctionSource:'Vocabulary',correctionAttemptNumber:0,correctionActive:true,
+      underlyingOriginalGradingOutcome:'MISS',trigger:traceTrigger,followupOfClosedAttempt:!attemptId});
+  }
+  updateVocabularyLevel(result.type,state.hintUsed,traceId,traceTrigger);
   state.outcomes.set(state.current.id,result.type);
   if(result.type==='miss'&&!state.retried.has(state.current.id)){
     state.retried.add(state.current.id);
@@ -881,6 +1081,21 @@ function finalizeVocabularyAnswer(result){
   }
   state.completed+=1;
   renderAnswerContext({result,heardTranscript:state.lastAttemptTranscript});
+  if(traceId){
+    const counts=traceSrsCounts.get(String(traceId))||{updateInvocationCount:0,persistenceWriteCount:0};
+    safeGameTraceRecord({type:'final-ui-result-committed',attemptId:traceId,
+      decision:{type:String(result.type||'MISS').toUpperCase(),pass:result.type==='target'},
+      entryId:state.current?.id??null,
+      finalDisplayedMatchRate:null,finalHighlightAuthority:'vocabulary-answer-classifier',
+      correctionActive:state.correction,
+      trigger:traceTrigger,followupOfClosedAttempt:!attemptId,
+      srsUpdate:{updateAttempted:counts.updateInvocationCount>0,
+        updateInvocationCount:counts.updateInvocationCount,persistenceWriteCount:counts.persistenceWriteCount,
+        finalOutcome:result.type,duplicateUpdateSuppressed:false,trigger:traceTrigger,
+        followupOfClosedAttempt:!attemptId},
+    });
+    if(attemptId) safeGameTraceRecord({type:'attempt-closed',attemptId,closeReason:'vocabulary-result-committed'});
+  }
 }
 
 function revealAnswer(){

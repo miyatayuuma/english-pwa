@@ -159,7 +159,9 @@ public class NativeSpeechPlugin extends Plugin {
         if (!current(session)) return;
         payload.put("sessionId", session.id);
         payload.put("type", type);
-        debug(type + " " + session.id + " " + payload);
+        debug("event " + type + " session=" + session.id
+            + " candidates=" + payload.optInt("retainedCandidateCount", 0)
+            + " errorCode=" + payload.optString("code", ""));
         notifyListeners("recognition", payload);
     }
 
@@ -188,7 +190,7 @@ public class NativeSpeechPlugin extends Plugin {
         try {
             session.recognizer.cancel();
         } catch (RuntimeException error) {
-            debug("cancel failure " + error);
+            debug("cancel failure " + error.getClass().getSimpleName());
         } finally {
             destroy(session);
         }
@@ -205,7 +207,7 @@ public class NativeSpeechPlugin extends Plugin {
 
     private void destroy(Session session) {
         try { session.recognizer.destroy(); }
-        catch (RuntimeException error) { debug("destroy failure " + error); }
+        catch (RuntimeException error) { debug("destroy failure " + error.getClass().getSimpleName()); }
     }
 
     private JSObject results(Bundle bundle) {

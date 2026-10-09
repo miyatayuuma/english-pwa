@@ -15,7 +15,32 @@ export function selectRecognitionBackend(scope = globalThis, mode = null) {
 
 export function nativeSpeechDiagnostic(type, value, scope = globalThis) {
   if (isNativeAndroid(scope) && scope.Capacitor?.DEBUG === true) {
-    scope.console?.debug?.('NativeSpeech', type, value);
+    const summary = type === 'event'
+      ? {
+        eventType: value?.type ?? null,
+        sessionId: value?.sessionId ?? null,
+        requestedMaxResults: value?.requestedMaxResults ?? null,
+        providerReturnedCount: value?.providerReturnedCount ?? null,
+        retainedCandidateCount: value?.retainedCandidateCount ?? value?.alternatives?.length ?? null,
+        errorCode: value?.code ?? null,
+      }
+      : type === 'configuration'
+        ? {
+          backend: value?.backend ?? null,
+          sessionId: value?.sessionId ?? null,
+          provider: value?.provider ?? null,
+          apiLevel: value?.apiLevel ?? null,
+          requestedMaxResults: value?.requestedMaxResults ?? null,
+        }
+        : {
+          mode: value?.mode ?? null,
+          itemId: value?.itemId ?? null,
+          entryId: value?.entryId ?? null,
+          decision: value?.decision?.type ?? value?.evaluation?.pass ?? value?.success ?? null,
+          asrRank: value?.decision?.asrRank ?? value?.recognitionCandidate?.asrRank ?? null,
+          recognitionAuthority: value?.decision?.recognitionAuthority ?? value?.recognitionCandidate?.source ?? null,
+        };
+    scope.console?.debug?.('NativeSpeech', type, summary);
   }
 }
 
@@ -27,13 +52,13 @@ export class AndroidSpeechRecognizerBackend {
     this.waitsForFinalResult = true;
     this.state = 'idle';
     this.maxAlternatives = REQUESTED_MAX_ALTERNATIVES;
+    this.sessionId = `native-${Date.now()}-${++sequence}`;
   }
 
   start() {
     if (this.state !== 'idle' || owner) throw new Error('Native recognition is busy');
     owner = this;
     this.state = 'opening';
-    this.sessionId = `native-${Date.now()}-${++sequence}`;
     this.cancelRequested = false;
     this.stopRequested = false;
     this.sentStop = false;
@@ -47,6 +72,18 @@ export class AndroidSpeechRecognizerBackend {
     this.plugin = await this.pluginProvider();
     if (this.cancelRequested) { this.finish(); return; }
     const capabilities = await this.plugin.isAvailable();
+    this.capabilities = capabilities;
+    this.onconfiguration?.({
+      backendType: 'android-native',
+      nativeSessionId: this.sessionId,
+      providerInfo: {
+        provider: capabilities.provider ?? null,
+        apiLevel: capabilities.apiLevel ?? null,
+        available: capabilities.available === true,
+        microphone: capabilities.microphone ?? null,
+      },
+      requestedMaxAlternatives: REQUESTED_MAX_ALTERNATIVES,
+    });
     if (this.cancelRequested) { this.finish(); return; }
     if (!capabilities.available) throw Object.assign(new Error('No system speech recognizer is available'), { code: 'UNAVAILABLE' });
     const permission = await this.plugin.requestPermission();
