@@ -78,6 +78,67 @@ test('postwar/post war is an explicit segmentation equivalence with raw display 
   assert.equal(match.authority, 'explicit-equivalence');
 });
 
+test('hyphen-space and reviewed compound boundaries preserve ordered speech and source offsets',()=>{
+  const positive=[
+    ['postwar','postwar'],['postwar','post-war'],['postwar','post war'],
+    ['birthrate','birth-rate'],['birthrate','birth rate'],
+    ['makeup','make-up'],['makeup','make up'],['make-up','make up'],
+    ['up-to-date','up to date'],['son-in-law','son in law'],
+    ['white-collar','white collar'],['round-trip','round trip'],
+    ['email','e-mail'],['email','e mail'],['high-tech','hi-tech'],
+  ];
+  for(const [reference,spoken] of positive){
+    const alignment=alignSpeech(reference,spoken);
+    assert.equal(gradeReadSpeech(alignment).score,1,`${reference} / ${spoken}`);
+    assert.equal(alignment.orderedMatchIntegrity.valid,true,`${reference} / ${spoken}`);
+    assert.equal(alignment.rawTranscript,spoken,`${reference} / ${spoken}`);
+  }
+  const mapped=alignSpeech('The postwar era.','The post-war era.');
+  assert.deepEqual(mapped.referenceTokens.map(token=>[token.value,token.start,token.end]),[
+    ['the',0,3],['postwar',4,11],['era',12,15],
+  ]);
+  assert.equal(mapped.alignment.some(event=>event.ruleId==='postwar-post-war'),true);
+});
+
+test('compound equivalence does not collapse lexical boundaries, inserted words, substrings, or order',()=>{
+  for(const [reference,spoken] of [
+    ['insight','in sight'],['resign','re-sign'],['another','an other'],
+  ]){
+    const alignment=alignSpeech(reference,spoken);
+    assert.equal(gradeReadSpeech(alignment).score,0,`${reference} / ${spoken}`);
+    assert.equal(findSpeechSurfaceMatch(reference,spoken),null,`${reference} / ${spoken}`);
+  }
+  for(const spoken of ['post unrelated war','war post','post','post word']){
+    assert.equal(findSpeechSurfaceMatch('post war',spoken),null,spoken);
+  }
+});
+
+test('word order integrity also sees inversions across a registered compound split',()=>{
+  const alignment=alignSpeech('Postwar policy has arrived.','Arrived post war policy has.',{context:{mode:'read'}});
+  assert.ok(alignment.matchRate>=0.8,'token F1 remains high despite the inverted phrase');
+  assert.equal(alignment.orderedMatchIntegrity.valid,false);
+  assert.equal(gradeReadSpeech(alignment).score,0);
+});
+
+test('Vocabulary-audited local speech rescues are shared in Read and Cloze without dropping the phrase context',()=>{
+  const cases=[
+    ['I used to live there.','I use to live there.','read','shared-read-td-cluster-before-to-vocab-00648-used-to-use'],
+    ['They tend to arrive early.','They ten to arrive early.','cloze','shared-read-td-cluster-before-to-vocab-00502-tend-to-ten'],
+    ['No sooner had I arrived than the phone rang.','No sooner had I arrived then the phone rang.','read','than-then'],
+  ];
+  for(const [reference,spoken,mode,ruleId] of cases){
+    const alignment=alignSpeech(reference,spoken,{context:{mode}});
+    assert.equal(gradeReadSpeech(alignment).score,1,`${reference} / ${spoken}`);
+    assert.equal(alignment.alignment.some(event=>event.ruleId===ruleId),true,ruleId);
+  }
+  for(const [reference,spoken,mode] of [['used','use','read'],['tend','ten','cloze']]){
+    assert.equal(findSpeechSurfaceMatch(reference,spoken,{context:{mode}}),null,`${reference} / ${spoken}`);
+  }
+  const full=alignSpeech('They used to listen.','They use to listen.',{context:{mode:'read'}});
+  assert.equal(full.rawTranscript,'They use to listen.');
+  assert.equal(full.displayTranscript,'They use to listen.');
+});
+
 test('equivalences work inside sentence alignment and do not rewrite raw transcript evidence', () => {
   const prose = alignSpeech('His prose is clear.', 'His pros is clear.');
   assert.equal(prose.recall, 1);

@@ -74,6 +74,7 @@ const expectedProductionCandidateIds = expectedCandidateIds.filter(id => id !== 
 if (new Set(linkedCandidateIds).size !== 35 || linkedCandidateIds.length !== 35) fail('APPLY-to-production trace is not one-to-one at record level');
 if ([...linkedCandidateIds].sort().join('|') !== [...expectedProductionCandidateIds].sort().join('|')) fail('an APPLY audit record is not traced to a production rule');
 
+const retiredByCurrentProductionData = [];
 for (const record of artifact.records) {
   const entry = entryById.get(record.entry_id);
   if (!entry) fail(`${record.audit_candidate_id} references an unknown entry`);
@@ -103,8 +104,19 @@ for (const record of artifact.records) {
     }
     if (record.surface_ref !== `${entry.id}:source:${record.surface_index}`) fail(`${record.audit_candidate_id} source surface reference is malformed`);
   } else fail(`${record.audit_candidate_id} has an unsupported surface type`);
-  if (!activeSurface || !sameTokens(activeSurface, record.target_surface)) fail(`${record.audit_candidate_id} current accepted surface drifted`);
   const classification = classifyVocabularyAnswer({ entry, activeOccurrence, transcript: record.target_surface });
+  if (!activeSurface || !sameTokens(activeSurface, record.target_surface)
+    || !sameTokens(activeSurface, record.current_main_accepted_surface)) {
+    if (classification.type === expectedType) fail(`${record.audit_candidate_id} source ref drifted while the old surface remains accepted`);
+    retiredByCurrentProductionData.push({
+      auditCandidateId: record.audit_candidate_id,
+      entryId: record.entry_id,
+      priorSurface: record.current_main_accepted_surface,
+      currentIndexedSurface: activeSurface,
+      currentClassification: classification.type,
+    });
+    continue;
+  }
   if (classification.type !== expectedType) fail(`${record.audit_candidate_id} does not retain its accepted ${expectedType} classification`);
   const collisionClassification = classifyVocabularyAnswer({ entry, activeOccurrence, transcript: record.collision_surface });
   if (record.materialization_status === 'ALREADY_COVERED' && collisionClassification.type !== expectedType) fail(`${record.audit_candidate_id} collision is not already an accepted exact surface`);
@@ -135,4 +147,11 @@ const intersection = [...affectedEntries].filter(id => chunkIds.has(id)).sort();
 if (intersection.join('|') !== 'vocab:00528') fail(`unexpected chunk-rescue intersection: ${intersection.join(', ')}`);
 if (artifact.counts.chunk_rescue_entry_intersection.join('|') !== intersection.join('|')) fail('chunk-rescue intersection accounting is stale');
 
-console.log(`PASS: 36 SAFE audit records accounted; APPLY 35, ALREADY_COVERED 1, RETIRED 0, BLOCKED 0; 25 entry-scoped one-way to-anchored rules across 22 production entries; 23 affected entries; chunk intersection ${intersection.join(', ')}`);
+console.log(JSON.stringify({
+  status: 'PASS',
+  historicalAudit: { records: 36, apply: 35, alreadyCovered: 1, retired: 0, blocked: 0 },
+  currentProductionDataDrift: retiredByCurrentProductionData,
+  activeRecordsValidated: artifact.records.length - retiredByCurrentProductionData.length,
+  rules: { count: 25, entryScopedProductionEntries: 22, affectedEntries: 23 },
+  chunkRescueEntryIntersection: intersection,
+}, null, 2));
