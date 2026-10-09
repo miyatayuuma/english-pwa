@@ -52,3 +52,15 @@ test('phone navigation uses only debug Java bridge and requires actual validatio
   assert.match(panel, /await nativeBridge\.openAcceptanceCases\(\)/);
   assert.match(panel, /window\.confirm\(/);
 });
+
+test('debug APK has a dedicated phone launcher for the case selector, absent from the main manifest', () => {
+  const debugManifest = read('android/app/src/debug/AndroidManifest.xml');
+  const mainManifest = read('android/app/src/main/AndroidManifest.xml');
+  const launcher = read('android/app/src/debug/java/com/miyatayuuma/englishpwa/AsrAcceptanceLauncherActivity.java');
+  assert.match(debugManifest, /android:name="\.AsrAcceptanceLauncherActivity"/);
+  assert.match(debugManifest, /android:label="ASR実機テスト"/);
+  assert.match(debugManifest, /android\.intent\.category\.LAUNCHER/);
+  assert.doesNotMatch(mainManifest, /AsrAcceptanceLauncherActivity/);
+  assert.match(launcher, /intent\.putExtra\("nativeSpeechGate", true\)/);
+  assert.match(launcher, /startActivity\(intent\)/);
+});
