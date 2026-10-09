@@ -234,9 +234,13 @@ test('negative controls remain unmatched and the new authority does not leak by 
   assert.equal(findSpeechSurfaceMatch('tend to do something', 'ten to do something', {
     context: { mode: 'vocabulary', entryId: 'vocab:00503' },
   }), null, 'an unrelated entry cannot use the vocab:00502 rule');
-  assert.equal(findSpeechSurfaceMatch('tend to do something', 'ten to do something', {
+  const sharedRead=findSpeechSurfaceMatch('tend to do something', 'ten to do something', {
     context: { mode: 'read', entryId: 'vocab:00502' },
-  }), null, 'the same entry ID cannot leak this authority into a non-Vocabulary mode');
+  });
+  assert.equal(sharedRead?.ruleId,'shared-read-td-cluster-before-to-vocab-00502-tend-to-ten');
+  assert.equal(findSpeechSurfaceMatch('apt to do something', 'app to do something', {
+    context: { mode: 'read' },
+  }),null,'the separately reviewed apt/app near spelling remains Vocabulary-entry scoped');
 });
 
 test('vocab:00528 chunk rescue remains independent of the new paraphrase equivalence', () => {

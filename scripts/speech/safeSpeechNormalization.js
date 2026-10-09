@@ -2,7 +2,10 @@ import { canonicalizeToken } from '../utils/text.js';
 
 const APOSTROPHE_VARIANTS = /[‘’‛ʼ＇]/gu;
 const DASH_VARIANTS = /[‐‑‒–—−﹘﹣－]/gu;
-const TOKEN_PATTERN = /[\p{L}\p{N}]+(?:['-][\p{L}\p{N}]+)*/gu;
+// Hyphens are orthographic word boundaries for speech matching. Splitting them
+// here makes `up-to-date` and `up to date` share ordered units while retaining
+// original source spans for highlighting. Apostrophes remain inside a token.
+const TOKEN_PATTERN = /[\p{L}\p{N}]+(?:'[\p{L}\p{N}]+)*/gu;
 
 function appendMappedSlice(textParts, spanParts, text, spans, start, end) {
   textParts.push(text.slice(start, end));

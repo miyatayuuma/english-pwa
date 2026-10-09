@@ -531,10 +531,11 @@ test('curated chunk rescue can use the existing deepest retained strict N-best r
   assert.equal(result.recognitionAuthority,'nbest-chunk-exact');
 });
 
-test('Vocabulary then/than ASR equivalence is bidirectional without changing the transcript or other modes',()=>{
-  const canonical='no sooner had I arrived than the phone rang';
-  const primary='no sooner had I arrived then the phone rang';
-  const positive=classifyVocabularySpeechAnswer({entry:{id:'vocab:00139',canonical},transcript:primary});
+test('Vocabulary then/than ASR equivalence is bidirectional and shared with Read/Cloze',()=>{
+  const liveEntry=currentProductionEntry('vocab:00139');
+  const canonical=liveEntry.canonical;
+  const primary=canonical.replace(/\bthan\b/iu,'then');
+  const positive=classifyVocabularySpeechAnswer({entry:liveEntry,transcript:primary});
   assert.equal(positive.type,'target');
   assert.equal(positive.recognitionAuthority,'explicit-equivalence');
   assert.equal(positive.speechMatch.ruleId,'than-then');
@@ -546,6 +547,8 @@ test('Vocabulary then/than ASR equivalence is bidirectional without changing the
   assert.equal(reverse.speechMatch.ruleId,'then-than');
   assert.equal(classifyVocabularySpeechAnswer({entry:{canonical:'than'},transcript:'then'}).type,'target');
   assert.equal(classifyVocabularySpeechAnswer({entry:{canonical:'than'},transcript:'down'}).type,'miss');
+  assert.equal(findSpeechSurfaceMatch('than','then',{context:{mode:'read'}})?.ruleId,'than-then');
+  assert.equal(findSpeechSurfaceMatch('than','then',{context:{mode:'cloze'}})?.ruleId,'than-then');
   assert.equal(findSpeechSurfaceMatch('than','then',{context:{mode:'reading'}}),null);
 });
 
