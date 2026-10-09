@@ -189,6 +189,7 @@ export function alignSpeech(referenceText, observedText, {
   recognitionSegmentIndexes = [],
   attemptId = null,
   asrRank = 0,
+  fullSpan = false,
 } = {}) {
   const reference = String(referenceText ?? '');
   const rawTranscript = String(observedText ?? '');
@@ -226,7 +227,7 @@ export function alignSpeech(referenceText, observedText, {
   const matchMatrix = referenceTokens.map((_, row) => observedTokens.map((__, column) =>
     resolveSpeechTokenSpan(referenceTokens, row, observedTokens, column, context)));
   let best = alignWindow(referenceTokens, observedTokens, 0, observedTokens.length, context, provenance, reference, rawTranscript, matchMatrix);
-  if (observedTokens.length && minLength <= observedTokens.length) {
+  if (!fullSpan && observedTokens.length && minLength <= observedTokens.length) {
     for (let start = 0; start < observedTokens.length; start += 1) {
       for (let length = minLength; length <= maxLength; length += 1) {
         const end = start + length;
