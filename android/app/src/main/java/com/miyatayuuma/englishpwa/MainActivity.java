@@ -53,6 +53,25 @@ public class MainActivity extends BridgeActivity {
         return BuildConfig.DEBUG && nativeSpeechGameTraceLaunch;
     }
 
+    // Explicit in-app navigation for the debug acceptance APK; no ADB needed.
+    // The gate can only be turned on from the debug-only validation page.
+    boolean openGameTraceFromValidationPage() {
+        if (!BuildConfig.DEBUG || getBridge() == null || getBridge().getWebView() == null) return false;
+        String currentUrl = getBridge().getWebView().getUrl();
+        if (!"https://localhost/native-gate.html".equals(currentUrl)) return false;
+        nativeSpeechGameTraceLaunch = true;
+        getBridge().getWebView().loadUrl("https://localhost/index.html");
+        return true;
+    }
+
+    boolean openValidationPageFromGameTrace() {
+        if (!BuildConfig.DEBUG || !nativeSpeechGameTraceLaunch || getBridge() == null
+                || getBridge().getWebView() == null) return false;
+        nativeSpeechGameTraceLaunch = false;
+        getBridge().getWebView().loadUrl("https://localhost/native-gate.html");
+        return true;
+    }
+
     @Override
     protected void onNewIntent(Intent intent) {
         setIntent(intent);

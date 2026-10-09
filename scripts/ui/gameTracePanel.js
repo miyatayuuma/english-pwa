@@ -82,6 +82,7 @@ function ensurePanel() {
           <button type="button" data-action="copy-all">全件JSONをコピー</button>
           <button type="button" data-action="copy-metadata">伏字JSONをコピー</button>
           <button type="button" data-action="clear">記録を消去</button>
+          <button type="button" data-action="open-cases" style="grid-column:1/-1">14ケース一覧に戻る</button>
         </div>
         <div class="ngt-timeline" role="log" aria-label="最新試行のイベント順序"></div>
         <p class="ngt-note">原文を含む記録は、このボタンを押したときだけコピーされます。記録はメモリ内のみです。</p>
@@ -89,7 +90,7 @@ function ensurePanel() {
       </div>
     </div>`;
   document.body.append(panel);
-  panel.addEventListener('click', event => {
+  panel.addEventListener('click', async event => {
     const button = event.target.closest('button[data-action]');
     if (!button) return;
     const action = button.dataset.action;
@@ -110,6 +111,15 @@ function ensurePanel() {
       gameTraceCollector.clear();
       showMessage('記録を消去しました');
       refreshPanel();
+    } else if (action === 'open-cases') {
+      // Navigation destroys in-memory trace: require explicit acknowledgment.
+      if (!window.confirm('この画面の未コピーの記録は失われます。先にJSONをコピーしましたか？')) return;
+      try {
+        if (!nativeBridge?.openAcceptanceCases) throw new Error('Debug navigation unavailable');
+        await nativeBridge.openAcceptanceCases();
+      } catch (_) {
+        showMessage('ケース一覧を開けませんでした');
+      }
     } else if (action === 'copy-latest') {
       copyLatest();
     } else if (action === 'copy-all') {
