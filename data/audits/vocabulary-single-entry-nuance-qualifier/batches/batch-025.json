@@ -9,24 +9,40 @@
     "sense_key": "siblings_daughter",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "兄弟姉妹の娘という親族関係。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02404 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0515\",\"start\":4,\"end\":9,\"contextual_meaning_ja\":\"『めい』(自分や配偶者の兄弟姉妹の娘)\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02405",
@@ -40,24 +56,42 @@
       "outgoing"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "outgoing"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "他人と交わることを好む社交的な性質でoutgoingと重なる。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02405 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0515\",\"start\":13,\"end\":21,\"contextual_meaning_ja\":\"社交的な\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02406",
@@ -89,12 +123,14 @@
       "in one's twenties"
     ],
     "added_paraphrases": [],
+    "paraphrase_review": [],
     "reason": "twenty-somethingはinformal。",
     "confidence": "MEDIUM",
     "evidence": [
       "current production canonical / meaning_ja / sense_key / paraphrases"
     ],
-    "previous_near_synonym_group_ids": []
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": null
   },
   {
     "id": "vocab:02407",
@@ -109,24 +145,59 @@
       "wholeheartedly"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
+    "single_entry_decision": "PARAPHRASE_REVALIDATION_ONLY",
+    "recommended_prompt": "心から・誠実に",
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "recommended_paraphrases": [
+      "genuinely"
+    ],
+    "removed_paraphrases": [
+      "wholeheartedly"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "genuinely",
+        "decision": "KEEP",
+        "reason": "当該promptで主要義・語用・品詞が実用上成立",
+        "source_worker": "W10",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      },
+      {
+        "paraphrase": "wholeheartedly",
+        "decision": "REMOVE",
+        "reason": "sincerelyは誠実に・本心から。wholeheartedlyは熱意・全面的賛同の強い語感を伴う。",
+        "source_worker": "W10",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      }
+    ],
+    "reason": "sincerelyは誠実に・本心から。wholeheartedlyは熱意・全面的賛同の強い語感を伴う。",
+    "confidence": "MEDIUM",
+    "evidence": [
+      "Vocabulary source vocab:02407 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0517\",\"start\":41,\"end\":50,\"contextual_meaning_ja\":\"『真心込めて』\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02408",
@@ -141,26 +212,45 @@
       "talk something over"
     ],
     "previous_near_synonym_authority": "KEEP",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "talk about something",
+      "talk something over"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
+    "paraphrase_review": [],
+    "reason": "ある主題について話し合う行為でtalk about/talk overと重なる。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02408 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=KEEP; groups=NSD-00263-02408",
+      "Representative occurrence {\"item_id\":\"E0518\",\"start\":36,\"end\":43,\"contextual_meaning_ja\":\"...を『論ずる』\"}"
+    ],
     "previous_near_synonym_group_ids": [
       "NSD-00263-02408"
-    ]
+    ],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02409",
@@ -174,24 +264,42 @@
       "significance"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "significance"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "重要であるという性質・重要性でsignificanceに一致。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02409 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0518\",\"start\":57,\"end\":67,\"contextual_meaning_ja\":\"『重要性』\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02410",
@@ -203,24 +311,40 @@
     "sense_key": "relating_to_love",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "恋愛に関係するromanticの形容詞義。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02410 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0522\",\"start\":62,\"end\":70,\"contextual_meaning_ja\":\"『ロマンチックな』\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02411",
@@ -232,24 +356,40 @@
     "sense_key": "desire_to_know",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "あるものを知りたいという興味の名詞義。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02411 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0522\",\"start\":71,\"end\":79,\"contextual_meaning_ja\":\"『興味』\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02412",
@@ -263,24 +403,52 @@
       "sneak"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
-    "qualifier_dimension": [],
-    "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "single_entry_decision": "QUALIFIER_AND_PARAPHRASE",
+    "recommended_prompt": "忍び歩く（ゆっくり静かに動く）",
+    "qualifier_dimension": [
+      "manner"
+    ],
+    "qualifier_text": "ゆっくり静かに動く",
+    "recommended_paraphrases": [],
+    "removed_paraphrases": [
+      "sneak"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "sneak",
+        "decision": "REMOVE",
+        "reason": "creepはゆっくり静かに移動する様子。sneakは人に見つからない意図を強調するため相互代替できない。",
+        "source_worker": "W10",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      }
+    ],
+    "reason": "creepはゆっくり静かに移動する様子。sneakは人に見つからない意図を強調するため相互代替できない。",
+    "confidence": "MEDIUM",
+    "evidence": [
+      "Vocabulary source vocab:02412 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0523\",\"start\":43,\"end\":48,\"contextual_meaning_ja\":\"ゆっくり(こっそり)近づく\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02413",
@@ -295,24 +463,59 @@
       "statement"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
+    "single_entry_decision": "PARAPHRASE_REVALIDATION_ONLY",
+    "recommended_prompt": "発言",
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "recommended_paraphrases": [
+      "comment"
+    ],
+    "removed_paraphrases": [
+      "statement"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "comment",
+        "decision": "KEEP",
+        "reason": "当該promptで主要義・語用・品詞が実用上成立",
+        "source_worker": "W10",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      },
+      {
+        "paraphrase": "statement",
+        "decision": "REMOVE",
+        "reason": "remarkは比較的短いコメント・発言。statementは公式声明や長い陳述も含む。",
+        "source_worker": "W10",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      }
+    ],
+    "reason": "remarkは比較的短いコメント・発言。statementは公式声明や長い陳述も含む。",
+    "confidence": "MEDIUM",
+    "evidence": [
+      "Vocabulary source vocab:02413 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0525\",\"start\":7,\"end\":13,\"contextual_meaning_ja\":\"『簡単な発言』(『感想』)\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02414",
@@ -326,24 +529,50 @@
       "misconception"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
+    "single_entry_decision": "PARAPHRASE_REVALIDATION_ONLY",
+    "recommended_prompt": "誤解",
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "recommended_paraphrases": [],
+    "removed_paraphrases": [
+      "misconception"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "misconception",
+        "decision": "REMOVE",
+        "reason": "misunderstandingは聞き違い・意思疎通の齟齬も含む。misconceptionは誤った信念・思い込みに寄る。",
+        "source_worker": "W10",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      }
+    ],
+    "reason": "misunderstandingは聞き違い・意思疎通の齟齬も含む。misconceptionは誤った信念・思い込みに寄る。",
+    "confidence": "MEDIUM",
+    "evidence": [
+      "Vocabulary source vocab:02414 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0525\",\"start\":25,\"end\":41,\"contextual_meaning_ja\":\"誤解すること\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02415",
@@ -355,24 +584,40 @@
     "sense_key": "according_to_exact_words",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "比喩でなく文字どおりという意味でliteralの副詞義。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02415 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0527\",\"start\":14,\"end\":23,\"contextual_meaning_ja\":\"字句を追って\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02416",
@@ -386,24 +631,50 @@
       "feeling"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
+    "single_entry_decision": "PARAPHRASE_REVALIDATION_ONLY",
+    "recommended_prompt": "気分",
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "recommended_paraphrases": [],
+    "removed_paraphrases": [
+      "feeling"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "feeling",
+        "decision": "REMOVE",
+        "reason": "moodはある程度続く気分や精神状態。feelingは個別の感情・感覚も含む広い概念。",
+        "source_worker": "W10",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      }
+    ],
+    "reason": "moodはある程度続く気分や精神状態。feelingは個別の感情・感覚も含む広い概念。",
+    "confidence": "MEDIUM",
+    "evidence": [
+      "Vocabulary source vocab:02416 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0528\",\"start\":131,\"end\":135,\"contextual_meaning_ja\":\"(ある時の\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02417",
@@ -418,26 +689,45 @@
       "rely on someone"
     ],
     "previous_near_synonym_authority": "KEEP",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "have confidence in someone",
+      "rely on someone"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
+    "paraphrase_review": [],
+    "reason": "相手の信頼性を認める義でhave confidence/rely onと重なる。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02417 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=KEEP; groups=NSD-00442-02417",
+      "Representative occurrence {\"item_id\":\"E0531\",\"start\":62,\"end\":67,\"contextual_meaning_ja\":\"責務\"}"
+    ],
     "previous_near_synonym_group_ids": [
       "NSD-00442-02417"
-    ]
+    ],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02418",
@@ -451,24 +741,40 @@
       "squander"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "UPSTREAM_ISOLATED",
     "learning_eligible": true,
-    "remediation_eligible": true,
+    "remediation_eligible": false,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "UPSTREAM_AUTHORITY_REVIEW",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
     "recommended_paraphrases": null,
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "source occurrence E0532のcontextual_meaning_jaは「荒涼とした広がり」の名詞waste（荒れ地）を示すが、cardは動詞「無駄にする」。source authority不一致。",
+    "confidence": "MEDIUM",
+    "evidence": [
+      "Vocabulary source vocab:02418 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0532\",\"start\":21,\"end\":27,\"contextual_meaning_ja\":\"荒涼とした広がり\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02419",
@@ -482,24 +788,52 @@
       "down"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
-    "qualifier_dimension": [],
-    "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "single_entry_decision": "QUALIFIER_AND_PARAPHRASE",
+    "recommended_prompt": "落ち込んだ（かなり気分が沈んだ）",
+    "qualifier_dimension": [
+      "intensity"
+    ],
+    "qualifier_text": "かなり気分が沈んだ",
+    "recommended_paraphrases": [],
+    "removed_paraphrases": [
+      "down"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "down",
+        "decision": "REMOVE",
+        "reason": "depressedは通常のdownより落ち込みが強い傾向。downを同程度の答えにすると強度差が消える。",
+        "source_worker": "W10",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      }
+    ],
+    "reason": "depressedは通常のdownより落ち込みが強い傾向。downを同程度の答えにすると強度差が消える。",
+    "confidence": "MEDIUM",
+    "evidence": [
+      "Vocabulary source vocab:02419 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0533\",\"start\":53,\"end\":62,\"contextual_meaning_ja\":\"元気のない\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02420",
@@ -513,24 +847,42 @@
       "shaken"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "shaken"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "感情的なショック・動揺の義でshakenが対応。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02420 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0534\",\"start\":53,\"end\":58,\"contextual_meaning_ja\":\"ひっくり返った\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02421",
@@ -542,24 +894,40 @@
     "sense_key": "infliction_of_severe_pain",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "UPSTREAM_ISOLATED",
     "learning_eligible": true,
-    "remediation_eligible": true,
+    "remediation_eligible": false,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "UPSTREAM_AUTHORITY_REVIEW",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
     "recommended_paraphrases": null,
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "source occurrence E0536のcontextual_meaning_jaは「拷問にかける」の動詞tortureだが、cardのgrammarRoleはnoun。上流の品詞対応不整合。",
+    "confidence": "MEDIUM",
+    "evidence": [
+      "Vocabulary source vocab:02421 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0536\",\"start\":30,\"end\":37,\"contextual_meaning_ja\":\"...を『拷問にかける』\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02422",
@@ -571,24 +939,40 @@
     "sense_key": "cry_with_broken_breaths",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "息が途切れながらすすり泣く行為。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02422 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0536\",\"start\":43,\"end\":49,\"contextual_meaning_ja\":\"...をすすり泣きながら話す\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02423",
@@ -602,24 +986,42 @@
       "courageous"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "courageous"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "危険を恐れず向かう勇気でcourageousと一致。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02423 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0537\",\"start\":48,\"end\":53,\"contextual_meaning_ja\":\"に勇敢に立ち向かう\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02424",
@@ -635,24 +1037,44 @@
       "sure of oneself"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "confident",
+      "self-assured",
+      "sure of oneself"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "自分への自信がある性質でself-assured/confidentに一致。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02424 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0537\",\"start\":55,\"end\":69,\"contextual_meaning_ja\":\"自信のある\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02425",
@@ -664,24 +1086,40 @@
     "sense_key": "unable_to_decide",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "判断を決めるのが難しいという性質。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02425 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0538\",\"start\":64,\"end\":74,\"contextual_meaning_ja\":\"優柔不断の\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02426",
@@ -695,24 +1133,42 @@
       "congrats"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "congrats"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "祝意を示す定型句でcongratsはくだけた同じ応答行為。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02426 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0541\",\"start\":85,\"end\":100,\"contextual_meaning_ja\":\"「やあ、ジェーン。最近どう？」「別に。あなたは？」「ジェニファーと結婚したんだ。」「ええっ、おめでとう！」\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02427",
@@ -728,26 +1184,68 @@
       "be thrilled"
     ],
     "previous_near_synonym_authority": "KEEP",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
+    "single_entry_decision": "PARAPHRASE_REVALIDATION_ONLY",
+    "recommended_prompt": "大喜び",
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "recommended_paraphrases": [],
+    "removed_paraphrases": [
+      "be delighted",
+      "be overjoyed",
+      "be thrilled"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
+    "paraphrase_review": [
+      {
+        "paraphrase": "be delighted",
+        "decision": "REMOVE",
+        "reason": "canonical delightは名詞「大喜び」なのにparaphraseはbe＋形容詞述語。品詞・構文が一致しない。既存Near-Synonymの名詞関係は上書きしない。",
+        "source_worker": "W10",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      },
+      {
+        "paraphrase": "be overjoyed",
+        "decision": "REMOVE",
+        "reason": "canonical delightは名詞「大喜び」なのにparaphraseはbe＋形容詞述語。品詞・構文が一致しない。既存Near-Synonymの名詞関係は上書きしない。",
+        "source_worker": "W10",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      },
+      {
+        "paraphrase": "be thrilled",
+        "decision": "REMOVE",
+        "reason": "canonical delightは名詞「大喜び」なのにparaphraseはbe＋形容詞述語。品詞・構文が一致しない。既存Near-Synonymの名詞関係は上書きしない。",
+        "source_worker": "W10",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      }
+    ],
+    "reason": "canonical delightは名詞「大喜び」なのにparaphraseはbe＋形容詞述語。品詞・構文が一致しない。既存Near-Synonymの名詞関係は上書きしない。",
+    "confidence": "MEDIUM",
+    "evidence": [
+      "Vocabulary source vocab:02427 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=KEEP; groups=NSD-02401-02427",
+      "Representative occurrence {\"item_id\":\"E0543\",\"start\":1,\"end\":8,\"contextual_meaning_ja\":\"『大喜び』\"}"
+    ],
     "previous_near_synonym_group_ids": [
       "NSD-02401-02427"
-    ]
+    ],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02428",
@@ -759,24 +1257,40 @@
     "sense_key": "small_bloodsucking_insect",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "血を吸う小昆虫の蚊。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02428 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0548\",\"start\":10,\"end\":20,\"contextual_meaning_ja\":\"『カ』(蚊)\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02429",
@@ -788,24 +1302,40 @@
     "sense_key": "relating_to_buddhism",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "UPSTREAM_ISOLATED",
     "learning_eligible": true,
-    "remediation_eligible": true,
+    "remediation_eligible": false,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "UPSTREAM_AUTHORITY_REVIEW",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
     "recommended_paraphrases": null,
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "source occurrence E0550は「仏教徒」の名詞Buddhistだが、cardは形容詞「仏教の」。代表occurrenceとgrammarRoleの不一致。",
+    "confidence": "MEDIUM",
+    "evidence": [
+      "Vocabulary source vocab:02429 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0550\",\"start\":17,\"end\":25,\"contextual_meaning_ja\":\"仏教徒\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02430",
@@ -819,24 +1349,42 @@
       "cleric"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "cleric"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "宗教的務めを担う聖職者としてclericと実用的に重なる。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02430 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0550\",\"start\":26,\"end\":32,\"contextual_meaning_ja\":\"『聖職者』\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02431",
@@ -851,24 +1399,59 @@
       "have a chat with someone"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
+    "single_entry_decision": "PARAPHRASE_REVALIDATION_ONLY",
+    "recommended_prompt": "someoneとおしゃべりする",
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "recommended_paraphrases": [
+      "have a chat with someone"
+    ],
+    "removed_paraphrases": [
+      "talk with someone"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "talk with someone",
+        "decision": "REMOVE",
+        "reason": "chat withはくだけた雑談を指すがtalk withは事務的・深刻な会話も含む。have a chat withは保持。",
+        "source_worker": "W10",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      },
+      {
+        "paraphrase": "have a chat with someone",
+        "decision": "KEEP",
+        "reason": "当該promptで主要義・語用・品詞が実用上成立",
+        "source_worker": "W10",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      }
+    ],
+    "reason": "chat withはくだけた雑談を指すがtalk withは事務的・深刻な会話も含む。have a chat withは保持。",
+    "confidence": "MEDIUM",
+    "evidence": [
+      "Vocabulary source vocab:02431 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0502\",\"start\":35,\"end\":54,\"contextual_meaning_ja\":\"ボブはとても臆病で女の子とおしゃべりすると赤面してしまう。\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02432",
@@ -882,24 +1465,42 @@
       "be disguised"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "be disguised"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "変装済みの状態でbe disguisedと一致。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02432 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0505\",\"start\":13,\"end\":28,\"contextual_meaning_ja\":\"ボブは変装していたけれども、一目で彼だとわかった。\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02433",
@@ -914,24 +1515,43 @@
       "excel at doing something"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "be skilled at doing something",
+      "excel at doing something"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "ある行為への熟達を示しbe skilled/excel atと重なる。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02433 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0507\",\"start\":3,\"end\":32,\"contextual_meaning_ja\":\"彼は友達作りが苦手で、いつもひとりぼっちでいる。\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02434",
@@ -943,24 +1563,40 @@
     "sense_key": "form_friendships",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "新たな友人関係を作る慣用表現。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02434 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0507\",\"start\":18,\"end\":32,\"contextual_meaning_ja\":\"彼は友達作りが苦手で、いつもひとりぼっちでいる。\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02435",
@@ -976,26 +1612,46 @@
       "why don't you do something"
     ],
     "previous_near_synonym_authority": "KEEP",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "what about doing something",
+      "why not do something",
+      "why don't you do something"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
+    "paraphrase_review": [],
+    "reason": "相手に行動を提案する会話行為でwhat about/why not等と重なる。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02435 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=KEEP; groups=NSD-01192-02435",
+      "Representative occurrence {\"item_id\":\"E0513\",\"start\":1,\"end\":51,\"contextual_meaning_ja\":\"「気分転換にトランプか何かしない？」「わるいけど、そういう気分じゃないよ。」\"}"
+    ],
     "previous_near_synonym_group_ids": [
       "NSD-01192-02435"
-    ]
+    ],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02436",
@@ -1007,24 +1663,40 @@
     "sense_key": "play_card_games",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "カードゲームを行うという行為を限定。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02436 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0513\",\"start\":11,\"end\":24,\"contextual_meaning_ja\":\"「気分転換にトランプか何かしない？」「わるいけど、そういう気分じゃないよ。」\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02437",
@@ -1041,26 +1713,47 @@
       "not at all."
     ],
     "previous_near_synonym_authority": "KEEP",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "no problem.",
+      "my pleasure.",
+      "don't mention it.",
+      "not at all."
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
+    "paraphrase_review": [],
+    "reason": "感謝への返信としてno problem/my pleasure等が状況により対応。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02437 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=KEEP; groups=NSD-00354-02437",
+      "Representative occurrence {\"item_id\":\"E0514\",\"start\":51,\"end\":65,\"contextual_meaning_ja\":\"どういたしまして\"}"
+    ],
     "previous_near_synonym_group_ids": [
       "NSD-00354-02437"
-    ]
+    ],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02438",
@@ -1072,24 +1765,42 @@
     "sense_key": "relative_to_age",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
-    "qualifier_dimension": [],
-    "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "single_entry_decision": "QUALIFIER_ONLY",
+    "recommended_prompt": "彼女は年齢の割に大人びている（女性を指す）",
+    "qualifier_dimension": [
+      "participant_restriction"
+    ],
+    "qualifier_text": "女性を指す",
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "canonicalのherという参加者制約が現在の訳では消え、his/their ageとの学習上の区別がつかない。",
+    "confidence": "MEDIUM",
+    "evidence": [
+      "Vocabulary source vocab:02438 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0515\",\"start\":33,\"end\":44,\"contextual_meaning_ja\":\"彼の姪は年の割には社交的で大人だ。二十代と言っても通用する。\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02439",
@@ -1104,24 +1815,43 @@
       "look after yourself"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "take care",
+      "look after yourself"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "相手の健康を気遣う別れの言葉に一致。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02439 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0516\",\"start\":1,\"end\":22,\"contextual_meaning_ja\":\"「じゃあね。家族のみんなによろしく。」「ああ。またね。」\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02440",
@@ -1135,24 +1865,42 @@
       "see you"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "see you"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "口語的な軽い別れの挨拶でsee youと重なる。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02440 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0516\",\"start\":67,\"end\":80,\"contextual_meaning_ja\":\"「じゃあね。家族のみんなによろしく。」「ああ。またね。」\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02441",
@@ -1166,24 +1914,42 @@
       "be contacted by someone"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "be contacted by someone"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "相手からの消息を受ける義でbe contacted byと重なる。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02441 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0517\",\"start\":23,\"end\":39,\"contextual_meaning_ja\":\"お返事頂けるのを楽しみにしております。敬具\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02442",
@@ -1201,26 +1967,89 @@
       "vital"
     ],
     "previous_near_synonym_authority": "PROMPT_AND_PARAPHRASE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
-    "qualifier_dimension": [],
-    "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "single_entry_decision": "QUALIFIER_AND_PARAPHRASE",
+    "recommended_prompt": "重要な（やや改まったof importanceという表現）",
+    "qualifier_dimension": [
+      "register",
+      "intensity"
+    ],
+    "qualifier_text": "やや改まったof importanceという表現",
+    "recommended_paraphrases": [
+      "important",
+      "significant"
+    ],
+    "removed_paraphrases": [
+      "crucial",
+      "key",
+      "vital"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
+    "paraphrase_review": [
+      {
+        "paraphrase": "important",
+        "decision": "KEEP",
+        "reason": "当該promptで主要義・語用・品詞が実用上成立",
+        "source_worker": "W10",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      },
+      {
+        "paraphrase": "significant",
+        "decision": "KEEP",
+        "reason": "当該promptで主要義・語用・品詞が実用上成立",
+        "source_worker": "W10",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      },
+      {
+        "paraphrase": "crucial",
+        "decision": "REMOVE",
+        "reason": "of importanceは硬めの名詞句表現。crucial/vitalは強度と必要性、keyは中心性に寄る。前Near-Synonym NSD-00303-02442の重要度と必要性の区別も尊重。",
+        "source_worker": "W10",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      },
+      {
+        "paraphrase": "key",
+        "decision": "REMOVE",
+        "reason": "of importanceは硬めの名詞句表現。crucial/vitalは強度と必要性、keyは中心性に寄る。前Near-Synonym NSD-00303-02442の重要度と必要性の区別も尊重。",
+        "source_worker": "W10",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      },
+      {
+        "paraphrase": "vital",
+        "decision": "REMOVE",
+        "reason": "of importanceは硬めの名詞句表現。crucial/vitalは強度と必要性、keyは中心性に寄る。前Near-Synonym NSD-00303-02442の重要度と必要性の区別も尊重。",
+        "source_worker": "W10",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      }
+    ],
+    "reason": "of importanceは硬めの名詞句表現。crucial/vitalは強度と必要性、keyは中心性に寄る。前Near-Synonym NSD-00303-02442の重要度と必要性の区別も尊重。",
+    "confidence": "MEDIUM",
+    "evidence": [
+      "Vocabulary source vocab:02442 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=PROMPT_AND_PARAPHRASE; groups=NSD-00303-02442",
+      "Representative occurrence {\"item_id\":\"E0518\",\"start\":54,\"end\":67,\"contextual_meaning_ja\":\"ちょっと時間を割いてくれませんか？二人にとって大事なことを話し合いたいんです。\"}",
+      "https://dictionary.cambridge.org/dictionary/english/importance"
+    ],
     "previous_near_synonym_group_ids": [
       "NSD-00303-02442"
-    ]
+    ],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02443",
@@ -1235,24 +2064,43 @@
       "feelings for someone"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "romantic feelings",
+      "feelings for someone"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "恋愛の対象へ抱く感情でromantic feelings/feelings for someoneと一致。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02443 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0522\",\"start\":62,\"end\":79,\"contextual_meaning_ja\":\"ビルはただモニカを慰めたかっただけなのに、彼女は彼が自分に気があるのだと解釈した。\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02444",
@@ -1266,24 +2114,42 @@
       "just between us"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "just between us"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "相手と秘密を共有する前置きでjust between usと一致。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02444 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0524\",\"start\":0,\"end\":18,\"contextual_meaning_ja\":\"内緒だが。ここだけの事だが\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02445",
@@ -1297,24 +2163,42 @@
       "say sorry to someone for doing something"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "say sorry to someone for doing something"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "何かをしたことを謝る構文でsay sorryと一致。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02445 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0528\",\"start\":12,\"end\":40,\"contextual_meaning_ja\":\"「リサを馬鹿にしたことを謝るべきだわ。今回はやりすぎよ。」「ああ、そうするよ。その内彼女の機嫌が直ったらね。」\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02446",
@@ -1329,24 +2213,43 @@
       "consider doing something"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "think about doing something",
+      "consider doing something"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "何かを実行する考えを巡らす義でconsider/think aboutと重なる。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02446 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0529\",\"start\":61,\"end\":79,\"contextual_meaning_ja\":\"「リサ、ニックとうまくやってる？」「時々、離婚を考えることがあるわ。」「冗談だろ！」\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02447",
@@ -1360,24 +2263,42 @@
       "break up with someone for someone else"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "break up with someone for someone else"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "恋人と別れて別の相手へ移るという義。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02447 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0534\",\"start\":10,\"end\":33,\"contextual_meaning_ja\":\"「ジェニファーが俺をふって他の男のところにいったよ。」「えっ、それは辛いわね。」「そうでもないよ。慣れてるよ。」\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02448",
@@ -1392,24 +2313,43 @@
       "not particularly"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "not exactly",
+      "not particularly"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "完全には肯定しない控えめな否定でnot exactly/not particularlyと重なる。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02448 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0534\",\"start\":62,\"end\":72,\"contextual_meaning_ja\":\"「ジェニファーが俺をふって他の男のところにいったよ。」「えっ、それは辛いわね。」「そうでもないよ。慣れてるよ。」\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02449",
@@ -1441,12 +2381,14 @@
       "why?"
     ],
     "added_paraphrases": [],
+    "paraphrase_review": [],
     "reason": "how come?はinformal。",
     "confidence": "HIGH",
     "evidence": [
       "https://dictionary.cambridge.org/dictionary/english/how-come"
     ],
-    "previous_near_synonym_group_ids": []
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": null
   },
   {
     "id": "vocab:02450",
@@ -1461,24 +2403,43 @@
       "that's too bad."
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "what a shame!",
+      "that's too bad."
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "残念さ・同情を表す間投詞でwhat a shame/that's too badと重なる。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02450 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0535\",\"start\":81,\"end\":92,\"contextual_meaning_ja\":\"「彼女が見送りに来なかったのも当然だよ。」「どうして？」「二人は別れたんだ。」「えっ、かわいそうに！」\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02451",
@@ -1494,24 +2455,67 @@
       "fear doing something"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
+    "single_entry_decision": "PARAPHRASE_REVALIDATION_ONLY",
+    "recommended_prompt": "somethingすることを恐れている",
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "recommended_paraphrases": [
+      "fear doing something"
+    ],
+    "removed_paraphrases": [
+      "be afraid to do something",
+      "be scared to do something"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "be afraid to do something",
+        "decision": "REMOVE",
+        "reason": "be afraid of doingは行為・事態が起こることへの恐れ。be afraid/scared to doは実行する勇気がない、という主語の意思に寄る。",
+        "source_worker": "W10",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      },
+      {
+        "paraphrase": "be scared to do something",
+        "decision": "REMOVE",
+        "reason": "be afraid of doingは行為・事態が起こることへの恐れ。be afraid/scared to doは実行する勇気がない、という主語の意思に寄る。",
+        "source_worker": "W10",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      },
+      {
+        "paraphrase": "fear doing something",
+        "decision": "KEEP",
+        "reason": "当該promptで主要義・語用・品詞が実用上成立",
+        "source_worker": "W10",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      }
+    ],
+    "reason": "be afraid of doingは行為・事態が起こることへの恐れ。be afraid/scared to doは実行する勇気がない、という主語の意思に寄る。",
+    "confidence": "MEDIUM",
+    "evidence": [
+      "Vocabulary source vocab:02451 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0537\",\"start\":81,\"end\":103,\"contextual_meaning_ja\":\"「正直言うと私、ケンに夢中なの。だって、勇敢で自分に自信を持っていて、それに危険を冒すことを決して恐れないでしょ。」「私ならデートに誘うわ。」\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02452",
@@ -1523,24 +2527,40 @@
     "sense_key": "hypothetical_personal_advice",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "相手の立場を仮定した助言という構文。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02452 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0537\",\"start\":107,\"end\":129,\"contextual_meaning_ja\":\"「正直言うと私、ケンに夢中なの。だって、勇敢で自分に自信を持っていて、それに危険を冒すことを決して恐れないでしょ。」「私ならデートに誘うわ。」\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02453",
@@ -1556,24 +2576,44 @@
       "still"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "as usual",
+      "as always",
+      "still"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "以前と変わらない状態を表しas usual/as alwaysに一致。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02453 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0538\",\"start\":75,\"end\":82,\"contextual_meaning_ja\":\"「ずいぶん長い間、ジェニファーとは付き合ったり別れたりの繰り返しだよ。」「相変わらず優柔不断ね。そろそろ落ち着いたらどう？」\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02454",
@@ -1588,24 +2628,61 @@
       "it's high time someone did something"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
-    "qualifier_dimension": [],
-    "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "single_entry_decision": "QUALIFIER_AND_PARAPHRASE",
+    "recommended_prompt": "もう〜してよい頃だ／いい加減〜すべきだ（遅すぎるという含み）",
+    "qualifier_dimension": [
+      "pragmatic_function"
+    ],
+    "qualifier_text": "遅すぎるという含み",
+    "recommended_paraphrases": [
+      "it's high time someone did something"
+    ],
+    "removed_paraphrases": [
+      "it's time to do something"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "it's time to do something",
+        "decision": "REMOVE",
+        "reason": "it's about timeは既に適時を過ぎている含みを持ちやすい。it's time to doはより中立的な時期の通知。",
+        "source_worker": "W10",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      },
+      {
+        "paraphrase": "it's high time someone did something",
+        "decision": "KEEP",
+        "reason": "当該promptで主要義・語用・品詞が実用上成立",
+        "source_worker": "W10",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      }
+    ],
+    "reason": "it's about timeは既に適時を過ぎている含みを持ちやすい。it's time to doはより中立的な時期の通知。",
+    "confidence": "MEDIUM",
+    "evidence": [
+      "Vocabulary source vocab:02454 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0538\",\"start\":84,\"end\":120,\"contextual_meaning_ja\":\"「ずいぶん長い間、ジェニファーとは付き合ったり別れたりの繰り返しだよ。」「相変わらず優柔不断ね。そろそろ落ち着いたらどう？」\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02455",
@@ -1619,24 +2696,42 @@
       "give up on someone"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "give up on someone"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "人との関係・希望を諦める義でgive up onと重なる。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02455 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0540\",\"start\":48,\"end\":59,\"contextual_meaning_ja\":\"~に降参する\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02456",
@@ -1651,24 +2746,43 @@
       "though"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "although",
+      "though"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "実際の事情に反した事実を認める逆接でalthough/thoughが対応。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02456 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0540\",\"start\":0,\"end\":11,\"contextual_meaning_ja\":\"例え~でも\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02457",
@@ -1683,24 +2797,43 @@
       "a few"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "two or three",
+      "a few"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "少数（二、三）を指す用法でa few/two or threeが自然。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02457 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0546\",\"start\":32,\"end\":43,\"contextual_meaning_ja\":\"慌てなくていいですよ。そのことをじっくり考えるには、2、3日必要でしょうから。\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02458",
@@ -1712,24 +2845,40 @@
     "sense_key": "cough",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "咳をするという動詞動作。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02458 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0551\",\"start\":26,\"end\":31,\"contextual_meaning_ja\":\"『せきをする』\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02459",
@@ -1741,24 +2890,40 @@
     "sense_key": "expel_air_from_nose",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "くしゃみという鼻からの呼気動作。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02459 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0551\",\"start\":33,\"end\":39,\"contextual_meaning_ja\":\"くしゃみをする\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02460",
@@ -1770,24 +2935,40 @@
     "sense_key": "yawn",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "あくびをする動詞動作。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02460 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0551\",\"start\":44,\"end\":48,\"contextual_meaning_ja\":\"『あくびをする』\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02461",
@@ -1799,24 +2980,40 @@
     "sense_key": "family_member",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "血縁・婚姻関係の親戚。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02461 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0552\",\"start\":12,\"end\":21,\"contextual_meaning_ja\":\"親類\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02462",
@@ -1831,24 +3028,43 @@
       "be present at"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "go to",
+      "be present at"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "会合へ出席する行為でgo to/be present atと重なる。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02462 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0553\",\"start\":8,\"end\":17,\"contextual_meaning_ja\":\"...に『出席する』\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02463",
@@ -1860,24 +3076,40 @@
     "sense_key": "preparation_or_plan",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "準備・手配に関する名詞義。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02463 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0553\",\"start\":57,\"end\":69,\"contextual_meaning_ja\":\"協定\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02464",
@@ -1891,26 +3123,44 @@
       "fade away"
     ],
     "previous_near_synonym_authority": "KEEP",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "fade away"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
+    "paraphrase_review": [],
+    "reason": "徐々に消えていく動詞義でfade awayが対応。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02464 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=KEEP; groups=NSD-00692-02464",
+      "Representative occurrence {\"item_id\":\"E0554\",\"start\":37,\"end\":41,\"contextual_meaning_ja\":\"『しだいに消えてゆく』\"}"
+    ],
     "previous_near_synonym_group_ids": [
       "NSD-00692-02464"
-    ]
+    ],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02465",
@@ -1924,24 +3174,42 @@
       "valuable"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "valuable"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "非常に価値があり大切な性質でvaluableと重なる。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02465 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0555\",\"start\":18,\"end\":26,\"contextual_meaning_ja\":\"『かけがえのない』\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02466",
@@ -1953,24 +3221,40 @@
     "sense_key": "period_of_being_a_child",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "子どもだった期間という時間範囲。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02466 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0555\",\"start\":43,\"end\":52,\"contextual_meaning_ja\":\"『幼時』\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02467",
@@ -1984,24 +3268,54 @@
       "businessperson"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
-    "qualifier_dimension": [],
-    "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "single_entry_decision": "QUALIFIER_AND_PARAPHRASE",
+    "recommended_prompt": "実業家（男性を指す）",
+    "qualifier_dimension": [
+      "participant_restriction"
+    ],
+    "qualifier_text": "男性を指す",
+    "recommended_paraphrases": [],
+    "removed_paraphrases": [
+      "businessperson"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "businessperson",
+        "decision": "REMOVE",
+        "reason": "businessmanは男性を意味する。businesspersonは性別非指定であり、canonicalの参加者制約を消す。",
+        "source_worker": "W10",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      }
+    ],
+    "reason": "businessmanは男性を意味する。businesspersonは性別非指定であり、canonicalの参加者制約を消す。",
+    "confidence": "MEDIUM",
+    "evidence": [
+      "Vocabulary source vocab:02467 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0556\",\"start\":44,\"end\":55,\"contextual_meaning_ja\":\"『実業家』\"}",
+      "https://dictionary.cambridge.org/dictionary/english/businessman",
+      "https://dictionary.cambridge.org/dictionary/english/businessperson"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02468",
@@ -2015,24 +3329,42 @@
       "motivation"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "motivation"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "行動の背後にある理由・動機でmotivationと重なる。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02468 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0557\",\"start\":16,\"end\":23,\"contextual_meaning_ja\":\"『動機』\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02469",
@@ -2044,24 +3376,40 @@
     "sense_key": "state_or_act_of_being_married",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "結婚という制度・出来事の名詞義。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02469 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0557\",\"start\":28,\"end\":36,\"contextual_meaning_ja\":\"『結婚』\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02470",
@@ -2078,11 +3426,11 @@
       "without fail"
     ],
     "previous_near_synonym_authority": "KEEP",
-    "review_status": "PENDING",
+    "review_status": "CROSS_AUDIT_CONFLICT",
     "learning_eligible": true,
-    "remediation_eligible": true,
+    "remediation_eligible": false,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
     "single_entry_decision": null,
@@ -2092,12 +3440,26 @@
     "recommended_paraphrases": null,
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
+    "paraphrase_review": [],
+    "reason": "necessarilyは必然の論理関係、alwaysは頻度、certainly/definitelyは話者の確信、without failは履行の確実さ。現prompt「必ず」と現paraphrasesはこれらを混同する。一方previous Near-Synonym authority NSD-00057-02470はKEEPであり、新裁定を確定せず両監査の整合性を調停する。",
+    "confidence": "MEDIUM",
+    "evidence": [
+      "Vocabulary source vocab:02470 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=KEEP; groups=NSD-00057-02470",
+      "Representative occurrence {\"item_id\":\"E0557\",\"start\":45,\"end\":56,\"contextual_meaning_ja\":\"『必ず』\"}",
+      "https://dictionary.cambridge.org/dictionary/english/necessarily"
+    ],
     "previous_near_synonym_group_ids": [
       "NSD-00057-02470"
-    ]
+    ],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER_CONFLICT",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_head": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+    }
   },
   {
     "id": "vocab:02471",
@@ -2111,24 +3473,42 @@
       "unadulterated"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "unadulterated"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "不純物が混ざらない状態でunadulteratedと重なる。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02471 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0557\",\"start\":57,\"end\":61,\"contextual_meaning_ja\":\"『混じりけのない』\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02472",
@@ -2142,24 +3522,42 @@
       "lately"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "lately"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "直近の過去を表すrecentlyでlatelyが対応。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02472 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0558\",\"start\":65,\"end\":73,\"contextual_meaning_ja\":\"『近ごろ』\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02473",
@@ -2174,24 +3572,40 @@
       "approximate"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "UPSTREAM_ISOLATED",
     "learning_eligible": true,
-    "remediation_eligible": true,
+    "remediation_eligible": false,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "UPSTREAM_AUTHORITY_REVIEW",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
     "recommended_paraphrases": null,
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "roughは表面のざらつきと概数の別義を併記し、coarse/approximateも相互置換不可。sense_key uneven_or_approximateの複数sense統合は上流審査対象。",
+    "confidence": "MEDIUM",
+    "evidence": [
+      "Vocabulary source vocab:02473 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0558\",\"start\":52,\"end\":57,\"contextual_meaning_ja\":\"『荒っぽい』\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02474",
@@ -2206,24 +3620,43 @@
       "time span"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "duration",
+      "time span"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "一定の時間の長さ・期間でduration/time spanと一致。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02474 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0558\",\"start\":58,\"end\":64,\"contextual_meaning_ja\":\"『期間』\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02475",
@@ -2237,24 +3670,50 @@
       "with a hand over one's mouth"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
+    "single_entry_decision": "PARAPHRASE_REVALIDATION_ONLY",
+    "recommended_prompt": "口を覆って",
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "recommended_paraphrases": [],
+    "removed_paraphrases": [
+      "with a hand over one's mouth"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "with a hand over one's mouth",
+        "decision": "REMOVE",
+        "reason": "cover your mouthは命令形の動詞句、with a hand over one's mouthは様態を表す前置詞句で、正解の構文・grammarRoleが一致しない。",
+        "source_worker": "W10",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      }
+    ],
+    "reason": "cover your mouthは命令形の動詞句、with a hand over one's mouthは様態を表す前置詞句で、正解の構文・grammarRoleが一致しない。",
+    "confidence": "MEDIUM",
+    "evidence": [
+      "Vocabulary source vocab:02475 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0551\",\"start\":0,\"end\":16,\"contextual_meaning_ja\":\"咳、くしゃみ、あくびをするときは口を手で隠しなさい。\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02476",
@@ -2268,24 +3727,53 @@
       "I'm sorry to hear that"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
-    "qualifier_dimension": [],
-    "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "single_entry_decision": "QUALIFIER_AND_PARAPHRASE",
+    "recommended_prompt": "それはお気の毒に（軽い同情・残念な気持ち）",
+    "qualifier_dimension": [
+      "intensity",
+      "pragmatic_function"
+    ],
+    "qualifier_text": "軽い同情・残念な気持ち",
+    "recommended_paraphrases": [],
+    "removed_paraphrases": [
+      "I'm sorry to hear that"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "I'm sorry to hear that",
+        "decision": "REMOVE",
+        "reason": "that's too badは比較的軽い残念さを表す。I'm sorry to hear thatは深刻な不幸への真摯な同情にも使うため、使用場面の強度が異なる。",
+        "source_worker": "W10",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      }
+    ],
+    "reason": "that's too badは比較的軽い残念さを表す。I'm sorry to hear thatは深刻な不幸への真摯な同情にも使うため、使用場面の強度が異なる。",
+    "confidence": "MEDIUM",
+    "evidence": [
+      "Vocabulary source vocab:02476 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0552\",\"start\":56,\"end\":70,\"contextual_meaning_ja\":\"「彼女の親戚が3日前に亡くなったんだ。」「えっ、それは大変ね。お気の毒だわ。」\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02477",
@@ -2300,24 +3788,59 @@
       "that's a shame"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
+    "single_entry_decision": "PARAPHRASE_REVALIDATION_ONLY",
+    "recommended_prompt": "お気の毒に",
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "recommended_paraphrases": [
+      "I'm sorry to hear that"
+    ],
+    "removed_paraphrases": [
+      "that's a shame"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "I'm sorry to hear that",
+        "decision": "KEEP",
+        "reason": "当該promptで主要義・語用・品詞が実用上成立",
+        "source_worker": "W10",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      },
+      {
+        "paraphrase": "that's a shame",
+        "decision": "REMOVE",
+        "reason": "I'm sorryの同情義は相手の痛みへの共感。that's a shameは残念さの表明で、より軽い場面にも広い。",
+        "source_worker": "W10",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      }
+    ],
+    "reason": "I'm sorryの同情義は相手の痛みへの共感。that's a shameは残念さの表明で、より軽い場面にも広い。",
+    "confidence": "MEDIUM",
+    "evidence": [
+      "Vocabulary source vocab:02477 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0552\",\"start\":72,\"end\":84,\"contextual_meaning_ja\":\"「彼女の親戚が3日前に亡くなったんだ。」「えっ、それは大変ね。お気の毒だわ。」\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02478",
@@ -2332,24 +3855,62 @@
       "lately"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
-    "qualifier_dimension": [],
-    "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "single_entry_decision": "QUALIFIER_AND_PARAPHRASE",
+    "recommended_prompt": "最近・近ごろ（以前と比べた現在の傾向）",
+    "qualifier_dimension": [
+      "temporal_reference",
+      "usage_context"
+    ],
+    "qualifier_text": "以前と比べた現在の傾向",
+    "recommended_paraphrases": [],
+    "removed_paraphrases": [
+      "recently",
+      "lately"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "recently",
+        "decision": "REMOVE",
+        "reason": "these daysは過去と対比した今の習慣・状況。recently/latelyは近い過去の出来事を示すことが多い。",
+        "source_worker": "W10",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      },
+      {
+        "paraphrase": "lately",
+        "decision": "REMOVE",
+        "reason": "these daysは過去と対比した今の習慣・状況。recently/latelyは近い過去の出来事を示すことが多い。",
+        "source_worker": "W10",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      }
+    ],
+    "reason": "these daysは過去と対比した今の習慣・状況。recently/latelyは近い過去の出来事を示すことが多い。",
+    "confidence": "MEDIUM",
+    "evidence": [
+      "Vocabulary source vocab:02478 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0557\",\"start\":0,\"end\":10,\"contextual_meaning_ja\":\"近頃では、結婚の動機は必ずしも純粋とは限らない。例えば、ジェニファーを見てごらんよ。\"}",
+      "https://dictionary.cambridge.org/dictionary/english/these-days"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02479",
@@ -2361,24 +3922,40 @@
     "sense_key": "appeal_to_shared_knowledge",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "共有情報を話し相手に思い出させる語用で「ほら」が合致。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Vocabulary source vocab:02479 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0558\",\"start\":16,\"end\":24,\"contextual_meaning_ja\":\"ボブにはやさしく接してあげてくれよ。ほら、彼は最近ずっと辛いこと続きなんだ。\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02480",
@@ -2394,24 +3971,69 @@
       "let me see"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
-    "qualifier_dimension": [],
-    "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "single_entry_decision": "QUALIFIER_AND_PARAPHRASE",
+    "recommended_prompt": "ええと（考えている間のつなぎ言葉）",
+    "qualifier_dimension": [
+      "pragmatic_function"
+    ],
+    "qualifier_text": "考えている間のつなぎ言葉",
+    "recommended_paraphrases": [
+      "let me see"
+    ],
+    "removed_paraphrases": [
+      "well",
+      "um"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "well",
+        "decision": "REMOVE",
+        "reason": "let's seeは考える・思い出す間に発する句。well/umは思案の意味を必ずしも持たない一般的フィラー。",
+        "source_worker": "W10",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      },
+      {
+        "paraphrase": "um",
+        "decision": "REMOVE",
+        "reason": "let's seeは考える・思い出す間に発する句。well/umは思案の意味を必ずしも持たない一般的フィラー。",
+        "source_worker": "W10",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      },
+      {
+        "paraphrase": "let me see",
+        "decision": "KEEP",
+        "reason": "当該promptで主要義・語用・品詞が実用上成立",
+        "source_worker": "W10",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      }
+    ],
+    "reason": "let's seeは考える・思い出す間に発する句。well/umは思案の意味を必ずしも持たない一般的フィラー。",
+    "confidence": "MEDIUM",
+    "evidence": [
+      "Vocabulary source vocab:02480 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0559\",\"start\":37,\"end\":46,\"contextual_meaning_ja\":\"「ところで、今何時？」「えーっと、8時15分前だよ。」\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:02481",
@@ -2425,23 +4047,43 @@
       "seven forty-five"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
-    "qualifier_dimension": [],
-    "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "single_entry_decision": "QUALIFIER_ONLY",
+    "recommended_prompt": "8時の15分前（7時45分）",
+    "qualifier_dimension": [
+      "temporal_precision"
+    ],
+    "qualifier_text": "7時45分",
+    "recommended_paraphrases": [
+      "seven forty-five"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「8時15分前」は日本語では8:15より前と読めるため、to eightの時刻を明示。seven forty-fiveは時刻が完全に一致。",
+    "confidence": "MEDIUM",
+    "evidence": [
+      "Vocabulary source vocab:02481 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0559\",\"start\":55,\"end\":73,\"contextual_meaning_ja\":\"「ところで、今何時？」「えーっと、8時15分前だよ。」\"}"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   }
 ]

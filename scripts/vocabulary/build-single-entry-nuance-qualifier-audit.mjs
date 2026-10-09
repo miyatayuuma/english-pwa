@@ -34,18 +34,20 @@ const rows=source.map((s,i)=>{
   previous_authority_imported:prev.has(s.id),single_entry_revalidated:state.status!=="PENDING",
   source_status:sourceStatus,revalidated_against_main_sha:d?.revalidation?.revalidated_against_main_sha??null,
   single_entry_decision:state.classification,
-  recommended_prompt:prompt,qualifier_dimension:p?["previous_near_synonym_audit"]:n?[n.qualifier_dimension]:q?[q.qualifier_dimension]:[],
-  qualifier_text:match?match[1]:null,
+  recommended_prompt:prompt,qualifier_dimension:p?["previous_near_synonym_audit"]:n?(Array.isArray(n.qualifier_dimension)?n.qualifier_dimension.filter(Boolean):n.qualifier_dimension?[n.qualifier_dimension]:[]):q?(Array.isArray(q.qualifier_dimension)?q.qualifier_dimension.filter(Boolean):q.qualifier_dimension?[q.qualifier_dimension]:[]):[],
+  qualifier_text:match?match[1]:n?.qualifier_text??q?.qualifier_text??null,
   recommended_paraphrases:p?.recommended_paraphrases??n?.recommended_paraphrases??q?.recommended_paraphrases??null,
   removed_paraphrases:p?.removed_paraphrases??n?.removed_paraphrases??q?.removed_paraphrases??[],
   added_paraphrases:p?.added_paraphrases??n?.added_paraphrases??[],
+  paraphrase_review:n?.paraphrase_review??q?.paraphrase_review??[],
   reason:c?.issue??p?.reason??n?.reason??q?.reason??"未裁定。機械的KEEP禁止。",
-  confidence:c?"LOW":p?.confidence??n?.confidence??q?.confidence??null,
-  evidence:c?c.previous_group_ids:p?["previous audit 25058e095e759fe5de677f8d63267ab9669c4a06","group "+p.group_id]:n?.evidence??q?.evidence??[],
-  previous_near_synonym_group_ids:g.map(x=>x.group_id)
+  confidence:c?(c.confidence??"LOW"):p?.confidence??n?.confidence??q?.confidence??null,
+  evidence:c?(c.evidence??c.previous_group_ids??[]):p?["previous audit 25058e095e759fe5de677f8d63267ab9669c4a06","group "+p.group_id]:n?.evidence??q?.evidence??[],
+  previous_near_synonym_group_ids:g.map(x=>x.group_id),
+  review_provenance:n?.review_provenance??c?.review_provenance??u?.review_provenance??null
  };
 });
-const fields=["id","source_index","canonical","grammarRole","kind","current_meaning_ja","sense_key","current_paraphrases","previous_near_synonym_authority","review_status","learning_eligible","remediation_eligible","previous_authority_imported","single_entry_revalidated","source_status","revalidated_against_main_sha","single_entry_decision","recommended_prompt","qualifier_dimension","qualifier_text","recommended_paraphrases","removed_paraphrases","added_paraphrases","confidence","reason","evidence","previous_near_synonym_group_ids"];
+const fields=["id","source_index","canonical","grammarRole","kind","current_meaning_ja","sense_key","current_paraphrases","previous_near_synonym_authority","review_status","learning_eligible","remediation_eligible","previous_authority_imported","single_entry_revalidated","source_status","revalidated_against_main_sha","single_entry_decision","recommended_prompt","qualifier_dimension","qualifier_text","recommended_paraphrases","removed_paraphrases","added_paraphrases","paraphrase_review","reason","confidence","evidence","previous_near_synonym_group_ids","review_provenance"];
 const norm=(x)=>Object.fromEntries(fields.map(f=>[f,x[f]??null]));
 let checked=0;
 for(let i=0;i<25;i++){

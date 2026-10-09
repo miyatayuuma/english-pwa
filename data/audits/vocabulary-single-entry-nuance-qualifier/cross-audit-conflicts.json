@@ -8,7 +8,17 @@
     "issue": "in all likelihoodはprobablyより強い確信を示し得るが前監査KEEPと衝突。",
     "status": "CROSS_AUDIT_CONFLICT",
     "automatic_remediation_allowed": false,
-    "action": "NO_SILENT_OVERRIDE"
+    "action": "NO_SILENT_OVERRIDE",
+    "reason": "in all likelihoodはprobablyより強い確信を示し得るが前監査KEEPと衝突。",
+    "evidence": [
+      "NSD-00063-00313"
+    ],
+    "source_worker": "BASE_AUTHORITY",
+    "confidence": "LOW",
+    "review_provenance": {
+      "authority_type": "BASE_AUTHORITY",
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e"
+    }
   },
   {
     "id": "vocab:00553",
@@ -19,7 +29,56 @@
     "issue": "once and for allの最終性とfirmly/flatlyの違いが前監査KEEPと衝突。",
     "status": "CROSS_AUDIT_CONFLICT",
     "automatic_remediation_allowed": false,
-    "action": "NO_SILENT_OVERRIDE"
+    "action": "NO_SILENT_OVERRIDE",
+    "reason": "once and for allの最終性とfirmly/flatlyの違いが前監査KEEPと衝突。",
+    "evidence": [
+      "NSD-00553-02039"
+    ],
+    "source_worker": "BASE_AUTHORITY",
+    "confidence": "LOW",
+    "review_provenance": {
+      "authority_type": "BASE_AUTHORITY",
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e"
+    }
+  },
+  {
+    "id": "vocab:00861",
+    "previous_classification": {
+      "type": "NEAR_SYNONYM_MEMBERSHIP",
+      "groups": [
+        {
+          "group_id": "NSD-00303-02442",
+          "classification": "PROMPT_AND_PARAPHRASE"
+        }
+      ]
+    },
+    "previous_group_ids": [
+      "NSD-00303-02442"
+    ],
+    "issue": "単独sense『極めて重要な』はcrucialと一致し、vital/essential/criticalも近い。しかし固定baseの前Near-SynonymグループNSD-00303-02442にはPROMPT_AND_PARAPHRASEがあり、当該entryに必要な変更の有無を識別できない。変更不要と断定して前authorityを実質上書きせず、Aggregatorでグループ内の適用対象を確認する。",
+    "reason": "単独sense『極めて重要な』はcrucialと一致し、vital/essential/criticalも近い。しかし固定baseの前Near-SynonymグループNSD-00303-02442にはPROMPT_AND_PARAPHRASEがあり、当該entryに必要な変更の有無を識別できない。変更不要と断定して前authorityを実質上書きせず、Aggregatorでグループ内の適用対象を確認する。",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00861",
+      "representative occurrence E0142: The negotiations are under way. Before long, they will enter a crucial phase.",
+      "review-index PENDING",
+      "paraphrases [vital | essential | critical]"
+    ],
+    "confidence": "MEDIUM",
+    "status": "CROSS_AUDIT_CONFLICT",
+    "automatic_remediation_allowed": false,
+    "action": "ISOLATE_PENDING_CROSS_AUDIT_AUTHORITY",
+    "source_worker": "W03",
+    "source_workers": [
+      "W03"
+    ],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER_CONFLICT",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_head": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+    }
   },
   {
     "id": "vocab:01304",
@@ -30,7 +89,47 @@
     "issue": "amazedとsurprisedの強度差が前監査KEEPと衝突。",
     "status": "CROSS_AUDIT_CONFLICT",
     "automatic_remediation_allowed": false,
-    "action": "NO_SILENT_OVERRIDE"
+    "action": "NO_SILENT_OVERRIDE",
+    "reason": "amazedとsurprisedの強度差が前監査KEEPと衝突。",
+    "evidence": [
+      "NSD-01304-01845"
+    ],
+    "source_worker": "BASE_AUTHORITY",
+    "confidence": "LOW",
+    "review_provenance": {
+      "authority_type": "BASE_AUTHORITY",
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e"
+    }
+  },
+  {
+    "id": "vocab:01558",
+    "previous_classification": "KEEP",
+    "previous_group_ids": [
+      "NSD-01558-01650"
+    ],
+    "issue": "universeは全空間とその中の万物を含むがouter spaceは地球外の空間を指す。前監査NSD-01558-01650は両者の関係をKEEPとしたため、単体監査でのparaphrase除外判断が衝突。旧authorityを上書きしない。",
+    "reason": "universeは全空間とその中の万物を含むがouter spaceは地球外の空間を指す。前監査NSD-01558-01650は両者の関係をKEEPとしたため、単体監査でのparaphrase除外判断が衝突。旧authorityを上書きしない。",
+    "evidence": [
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json, entry vocab:01558, occurrence E0227",
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/audits/vocabulary-single-entry-nuance-qualifier/batches/batch-016.json, PENDING & previous authority",
+      "https://www.oxfordlearnersdictionaries.com/us/definition/english/universe"
+    ],
+    "confidence": "LOW",
+    "status": "CROSS_AUDIT_CONFLICT",
+    "automatic_remediation_allowed": false,
+    "action": "ISOLATE_PENDING_CROSS_AUDIT_AUTHORITY",
+    "source_worker": "W06",
+    "source_workers": [
+      "W06"
+    ],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER_CONFLICT",
+      "source_workers": [
+        "W06"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_head": "b20c8296d5beeca381ea73007bd9c90476143823"
+    }
   },
   {
     "id": "vocab:01845",
@@ -41,7 +140,17 @@
     "issue": "astonishedとsurprisedの強度差が前監査KEEPと衝突。",
     "status": "CROSS_AUDIT_CONFLICT",
     "automatic_remediation_allowed": false,
-    "action": "NO_SILENT_OVERRIDE"
+    "action": "NO_SILENT_OVERRIDE",
+    "reason": "astonishedとsurprisedの強度差が前監査KEEPと衝突。",
+    "evidence": [
+      "NSD-01304-01845"
+    ],
+    "source_worker": "BASE_AUTHORITY",
+    "confidence": "LOW",
+    "review_provenance": {
+      "authority_type": "BASE_AUTHORITY",
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e"
+    }
   },
   {
     "id": "vocab:02226",
@@ -52,6 +161,45 @@
     "issue": "resort toの最後の手段という含意が前監査KEEPと衝突。",
     "status": "CROSS_AUDIT_CONFLICT",
     "automatic_remediation_allowed": false,
-    "action": "NO_SILENT_OVERRIDE"
+    "action": "NO_SILENT_OVERRIDE",
+    "reason": "resort toの最後の手段という含意が前監査KEEPと衝突。",
+    "evidence": [
+      "NSD-00322-02226"
+    ],
+    "source_worker": "BASE_AUTHORITY",
+    "confidence": "LOW",
+    "review_provenance": {
+      "authority_type": "BASE_AUTHORITY",
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e"
+    }
+  },
+  {
+    "id": "vocab:02470",
+    "previous_classification": "KEEP",
+    "previous_group_ids": [],
+    "issue": "necessarilyは必然の論理関係、alwaysは頻度、certainly/definitelyは話者の確信、without failは履行の確実さ。現prompt「必ず」と現paraphrasesはこれらを混同する。一方previous Near-Synonym authority NSD-00057-02470はKEEPであり、新裁定を確定せず両監査の整合性を調停する。",
+    "reason": "necessarilyは必然の論理関係、alwaysは頻度、certainly/definitelyは話者の確信、without failは履行の確実さ。現prompt「必ず」と現paraphrasesはこれらを混同する。一方previous Near-Synonym authority NSD-00057-02470はKEEPであり、新裁定を確定せず両監査の整合性を調停する。",
+    "evidence": [
+      "Vocabulary source vocab:02470 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=KEEP; groups=NSD-00057-02470",
+      "Representative occurrence {\"item_id\":\"E0557\",\"start\":45,\"end\":56,\"contextual_meaning_ja\":\"『必ず』\"}",
+      "https://dictionary.cambridge.org/dictionary/english/necessarily"
+    ],
+    "confidence": "MEDIUM",
+    "status": "CROSS_AUDIT_CONFLICT",
+    "automatic_remediation_allowed": false,
+    "action": "ISOLATE_PENDING_CROSS_AUDIT_AUTHORITY",
+    "source_worker": "W10",
+    "source_workers": [
+      "W10"
+    ],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER_CONFLICT",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_head": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+    }
   }
 ]

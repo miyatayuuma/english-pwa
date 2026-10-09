@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "audit": "vocabulary-single-entry-nuance-qualifier",
+  "adjudications": [
+    {
+      "schema_version": 1,
+      "audit": "vocabulary-single-entry-nuance-qualifier",
+      "id": "vocab:00762",
+      "status": "AGGREGATOR_ADJUDICATED",
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "current_main_sha": "794e6cf8c88ed6775be9b56a6f1fddc0775a7130",
+      "canonical": "decent",
+      "current_meaning_ja": "まともな",
+      "sense_key": "acceptable_or_reasonable",
+      "grammarRole": "adjective",
+      "representative_occurrence": {
+        "item_id": "E0028",
+        "english": "Competent mechanics are in great demand, so they earn decent wages.",
+        "japanese": "有能な整備士は引っ張りだこだから、なかなかの賃金を稼げる。"
+      },
+      "existing_paraphrases": [
+        "reasonable",
+        "respectable"
+      ],
+      "worker_positions": [
+        {
+          "worker": "W02",
+          "decision": "QUALIFIER_AND_PARAPHRASE",
+          "recommended_prompt": "（質・水準が）まずまずの・十分まともな",
+          "recommended_paraphrases": [
+            "reasonable"
+          ],
+          "removed_paraphrases": [
+            "respectable"
+          ],
+          "confidence": "MEDIUM"
+        },
+        {
+          "worker": "W03",
+          "decision": "KEEP",
+          "recommended_paraphrases": [
+            "reasonable",
+            "respectable"
+          ],
+          "confidence": "HIGH"
+        }
+      ],
+      "decision": "KEEP",
+      "recommended_prompt": null,
+      "recommended_paraphrases": [
+        "reasonable",
+        "respectable"
+      ],
+      "confidence": "HIGH",
+      "ruling": "The current Japanese まともな already communicates an acceptable or satisfactory standard for the fixed wages occurrence; the added adequacy qualifier is redundant. Cambridge and Oxford usage evidence confirms decent wages/pay at an acceptable or good-enough level. Cambridge's respectable salary example supports respectable as a valid alternate answer for this wages context. Respectable is not treated as universally interchangeable with decent; the adjudication is specific to this fixed sense and representative use.",
+      "evidence": [
+        {
+          "url": "https://dictionary.cambridge.org/dictionary/english/decent",
+          "finding": "decent: acceptable, satisfactory or reasonable; good enough without excellence; pay/wages collocation."
+        },
+        {
+          "url": "https://www.oxfordlearnersdictionaries.com/definition/english/decent",
+          "finding": "decent: good enough or of an acceptable standard/quality; decent wages."
+        },
+        {
+          "url": "https://dictionary.cambridge.org/dictionary/english/respectable",
+          "finding": "respectable amount/quality is acceptable; example: she earns a respectable salary."
+        },
+        "Fixed-base source 2d60188baaceaf77c4e3370ebb37029c48201e2e vocab:00762; sense acceptable_or_reasonable; representative occurrence E0028."
+      ],
+      "source_workers": [
+        "W02",
+        "W03"
+      ],
+      "review_provenance": {
+        "authority_type": "AGGREGATOR_ADJUDICATED",
+        "source_workers": [
+          "W02",
+          "W03"
+        ],
+        "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+        "source_branch_heads": {
+          "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738",
+          "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+        },
+        "deduplication": "IDENTICAL_OUTCOME_DEDUPED"
+      }
+    }
+  ]
+}

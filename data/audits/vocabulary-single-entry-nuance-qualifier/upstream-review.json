@@ -1,68 +1,5 @@
 [
   {
-    "id": "vocab:00359",
-    "canonical": "lay someone off",
-    "problem": "lay someone offを一時解雇に限定した意味を上流確認。",
-    "source_meaning_ja": "someoneを一時解雇する",
-    "sense_key": "dismiss_from_employment",
-    "status": "UPSTREAM_AUTHORITY_REVIEW",
-    "production_change_allowed": false
-  },
-  {
-    "id": "vocab:00628",
-    "canonical": "be open to something",
-    "problem": "be open toの複数用法と現行訳・paraphraseの整合は上流問題。",
-    "source_meaning_ja": "somethingを招きやすい",
-    "sense_key": "likely_to_allow_or_result_in",
-    "status": "UPSTREAM_AUTHORITY_REVIEW",
-    "production_change_allowed": false
-  },
-  {
-    "id": "vocab:00716",
-    "canonical": "contradict",
-    "problem": "contradictの反論と矛盾する関係の代表義を再確認。",
-    "source_meaning_ja": "反論する",
-    "sense_key": "state_the_opposite_of",
-    "status": "UPSTREAM_AUTHORITY_REVIEW",
-    "production_change_allowed": false
-  },
-  {
-    "id": "vocab:00844",
-    "canonical": "chore",
-    "problem": "choreは家事以外の雑務にも使う。",
-    "source_meaning_ja": "家事",
-    "sense_key": "routine_household_task",
-    "status": "UPSTREAM_AUTHORITY_REVIEW",
-    "production_change_allowed": false
-  },
-  {
-    "id": "vocab:00937",
-    "canonical": "infection",
-    "problem": "infectionの感染と感染症の代表義要確認。",
-    "source_meaning_ja": "感染症",
-    "sense_key": "disease_caused_by_germs",
-    "status": "UPSTREAM_AUTHORITY_REVIEW",
-    "production_change_allowed": false
-  },
-  {
-    "id": "vocab:00992",
-    "canonical": "regime",
-    "problem": "regimeとgovernment/administrationの上流意味関係確認。",
-    "source_meaning_ja": "政権",
-    "sense_key": "system_of_government",
-    "status": "UPSTREAM_AUTHORITY_REVIEW",
-    "production_change_allowed": false
-  },
-  {
-    "id": "vocab:02126",
-    "canonical": "adopt",
-    "problem": "adoptの意味とhire/employの受理範囲を上流裁定。",
-    "source_meaning_ja": "採用する",
-    "sense_key": "choose_and_begin_to_use",
-    "status": "UPSTREAM_AUTHORITY_REVIEW",
-    "production_change_allowed": false
-  },
-  {
     "id": "vocab:00162",
     "canonical": "so much for something",
     "problem": "現行meaning_ja・sense_key・occurrenceは「So much for small talk」の話題を切り上げる用法として成立する一方、Cambridgeは期待外れへの落胆を表す別の定型的用法も記載する。これは単体promptの短いqualifierで安全に一本化する問題ではなく、複数の語用senseをどう代表・保持するかという上流authorityの確認が必要。paraphrase評価・推奨は保留する。",
@@ -70,10 +7,19 @@
     "sense_key": "end_or_dismiss_topic",
     "status": "UPSTREAM_AUTHORITY_REVIEW",
     "evidence": [
+      "data/vocabulary-v3.json#vocab:00162",
       "https://dictionary.cambridge.org/dictionary/english/so-much-for",
       "data/sentence-pattern-analysis.json#E0129"
     ],
-    "production_change_allowed": false
+    "production_change_allowed": false,
+    "issue": "現行meaning_ja・sense_key・occurrenceは「So much for small talk」の話題を切り上げる用法として成立する一方、Cambridgeは期待外れへの落胆を表す別の定型的用法も記載する。これは単体promptの短いqualifierで安全に一本化する問題ではなく、複数の語用senseをどう代表・保持するかという上流authorityの確認が必要。paraphrase評価・推奨は保留する。",
+    "reason": "現行meaning_ja・sense_key・occurrenceは「So much for small talk」の話題を切り上げる用法として成立する一方、Cambridgeは期待外れへの落胆を表す別の定型的用法も記載する。これは単体promptの短いqualifierで安全に一本化する問題ではなく、複数の語用senseをどう代表・保持するかという上流authorityの確認が必要。paraphrase評価・推奨は保留する。",
+    "source_worker": "BASE_AUTHORITY",
+    "confidence": "MEDIUM",
+    "review_provenance": {
+      "authority_type": "BASE_AUTHORITY",
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e"
+    }
   },
   {
     "id": "vocab:00181",
@@ -86,7 +32,15 @@
       "data/vocabulary-v3.json#vocab:00181",
       "data/items.json#E0151"
     ],
-    "production_change_allowed": false
+    "production_change_allowed": false,
+    "issue": "E0151の実際の英文は“He behaves as if he were somebody.”で、現行canonical “as if nothing had happened”およびparaphraseの「何事もなかったかのように」と一致しない。promptやparaphraseを確定せず、canonical・代表sense・occurrenceのauthority確認へ隔離する。",
+    "reason": "E0151の実際の英文は“He behaves as if he were somebody.”で、現行canonical “as if nothing had happened”およびparaphraseの「何事もなかったかのように」と一致しない。promptやparaphraseを確定せず、canonical・代表sense・occurrenceのauthority確認へ隔離する。",
+    "source_worker": "BASE_AUTHORITY",
+    "confidence": "MEDIUM",
+    "review_provenance": {
+      "authority_type": "BASE_AUTHORITY",
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e"
+    }
   },
   {
     "id": "vocab:00192",
@@ -99,7 +53,15 @@
       "data/vocabulary-v3.json#vocab:00192",
       "data/items.json#E0158"
     ],
-    "production_change_allowed": false
+    "production_change_allowed": false,
+    "issue": "現訳「筋が通る」は論理性を中心に示す一方、sense_keyはlogicalとunderstandableをまとめ、E0158の“its theme is obscure”は分かりやすさの読みも支える。単体qualifierでどちらかに狭めず、meaning_ja・sense_key・代表senseの対応を上流確認する。",
+    "reason": "現訳「筋が通る」は論理性を中心に示す一方、sense_keyはlogicalとunderstandableをまとめ、E0158の“its theme is obscure”は分かりやすさの読みも支える。単体qualifierでどちらかに狭めず、meaning_ja・sense_key・代表senseの対応を上流確認する。",
+    "source_worker": "BASE_AUTHORITY",
+    "confidence": "MEDIUM",
+    "review_provenance": {
+      "authority_type": "BASE_AUTHORITY",
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e"
+    }
   },
   {
     "id": "vocab:00274",
@@ -113,6 +75,2979 @@
       "data/items.json#E0211",
       "https://dictionary.cambridge.org/dictionary/english/cheer-up"
     ],
-    "production_change_allowed": false
+    "production_change_allowed": false,
+    "issue": "E0211の“Cheer up!”は落ち込んだ本人が元気になるよう促す自動詞的用法。一方sense_keyは本人が元気になる用法と誰かを元気づける他動詞的用法を併記し、現行meaning_ja「元気を出す」は前者だけを示す。meaning/sense authorityを上流確認するまでprompt・paraphraseを確定しない。",
+    "reason": "E0211の“Cheer up!”は落ち込んだ本人が元気になるよう促す自動詞的用法。一方sense_keyは本人が元気になる用法と誰かを元気づける他動詞的用法を併記し、現行meaning_ja「元気を出す」は前者だけを示す。meaning/sense authorityを上流確認するまでprompt・paraphraseを確定しない。",
+    "source_worker": "BASE_AUTHORITY",
+    "confidence": "MEDIUM",
+    "review_provenance": {
+      "authority_type": "BASE_AUTHORITY",
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e"
+    }
+  },
+  {
+    "id": "vocab:00359",
+    "canonical": "lay someone off",
+    "problem": "lay someone offを一時解雇に限定した意味を上流確認。",
+    "source_meaning_ja": "someoneを一時解雇する",
+    "sense_key": "dismiss_from_employment",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "issue": "lay someone offを一時解雇に限定した意味を上流確認。",
+    "reason": "lay someone offを一時解雇に限定した意味を上流確認。",
+    "evidence": [
+      "current production canonical / meaning_ja / sense_key / paraphrases"
+    ],
+    "source_worker": "BASE_AUTHORITY",
+    "confidence": "MEDIUM",
+    "review_provenance": {
+      "authority_type": "BASE_AUTHORITY",
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e"
+    }
+  },
+  {
+    "id": "vocab:00394",
+    "canonical": "feel like doing something",
+    "problem": {
+      "blocked": true,
+      "issue_type": "PROMPT_OCCURRENCE_SENSE_MISMATCH"
+    },
+    "issue": {
+      "blocked": true,
+      "issue_type": "PROMPT_OCCURRENCE_SENSE_MISMATCH"
+    },
+    "reason": "feel like doingの欲求訳『〜したい気がする』とE0315の『吐き気がする』は一致しない。身体感覚としてのfeel like vomitingとのsense・occurrenceの上流authority確認が必要。",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "representative E0315: 吐き気がする"
+    ],
+    "source_worker": "W01",
+    "source_workers": [
+      "W01"
+    ],
+    "confidence": "LOW",
+    "source_meaning_ja": "somethingしたい気がする",
+    "sense_key": "want_to_do_or_have_a_sensation",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W01"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W01": "cf31d02d665690cae425dc71af372907335669a6"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:00538",
+    "canonical": "all day long",
+    "problem": {
+      "blocked": true,
+      "issue_type": "OCCURRENCE_TIME_SCOPE_MISMATCH"
+    },
+    "issue": {
+      "blocked": true,
+      "issue_type": "OCCURRENCE_TIME_SCOPE_MISMATCH"
+    },
+    "reason": "all day longの『一日中』に対し代表E0438の局所訳は『ここ一週間ずっと』。dayとweekで時間範囲が食い違うため、原文・source spanを上流で要検証。",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "representative E0438: ここ一週間ずっと"
+    ],
+    "source_worker": "W01",
+    "source_workers": [
+      "W01"
+    ],
+    "confidence": "LOW",
+    "source_meaning_ja": "一日中ずっと",
+    "sense_key": "throughout_a_time_period",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W01"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W01": "cf31d02d665690cae425dc71af372907335669a6"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:00551",
+    "canonical": "what will become of us?",
+    "problem": "代表例は『What will become of Japan-U.S. relations ...?』で、canonicalに固定された『what will become of us?』と指示対象が異なる。meaning_jaも『私たち』に固定されており、template/canonicalの上流整合を先に確定する必要がある。",
+    "issue": "代表例は『What will become of Japan-U.S. relations ...?』で、canonicalに固定された『what will become of us?』と指示対象が異なる。meaning_jaも『私たち』に固定されており、template/canonicalの上流整合を先に確定する必要がある。",
+    "reason": "代表例は『What will become of Japan-U.S. relations ...?』で、canonicalに固定された『what will become of us?』と指示対象が異なる。meaning_jaも『私たち』に固定されており、template/canonicalの上流整合を先に確定する必要がある。",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00551, sense_key ask_about_future_state",
+      "immutable base representative item E0450: What will become of Japan-U.S. relations if the security treaty expires?"
+    ],
+    "source_worker": "W02",
+    "source_workers": [
+      "W02"
+    ],
+    "confidence": "HIGH",
+    "source_meaning_ja": "私たちはどうなるのだろう",
+    "sense_key": "ask_about_future_state",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:00568",
+    "canonical": "in critical condition",
+    "problem": "in critical conditionは生命にかかわる『重体』を広く指すが、現行『危篤』は死が差し迫る意味合いが強い。be at death's doorも過度に切迫。日本語主訳とparaphraseの上流語義を再評価する必要がありqualifierのみでは解決しない。",
+    "issue": "in critical conditionは生命にかかわる『重体』を広く指すが、現行『危篤』は死が差し迫る意味合いが強い。be at death's doorも過度に切迫。日本語主訳とparaphraseの上流語義を再評価する必要がありqualifierのみでは解決しない。",
+    "reason": "in critical conditionは生命にかかわる『重体』を広く指すが、現行『危篤』は死が差し迫る意味合いが強い。be at death's doorも過度に切迫。日本語主訳とparaphraseの上流語義を再評価する必要がありqualifierのみでは解決しない。",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00568, sense_key critically_ill_or_injured",
+      "immutable base representative item E0469: The bullet penetrated his chest, leaving him in critical condition."
+    ],
+    "source_worker": "W02",
+    "source_workers": [
+      "W02"
+    ],
+    "confidence": "MEDIUM",
+    "source_meaning_ja": "危篤状態で",
+    "sense_key": "critically_ill_or_injured",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:00617",
+    "canonical": "say hi to someone",
+    "problem": "canonical『say hi to someone』単独は『その人に挨拶する』。日本語『someoneによろしく伝える』は実例の『say hi to your family for me』のfor meを含む伝言の意味。代表例からfor meがcanonicalで落ちた構造の問題であり上流authorityを要確認。",
+    "issue": "canonical『say hi to someone』単独は『その人に挨拶する』。日本語『someoneによろしく伝える』は実例の『say hi to your family for me』のfor meを含む伝言の意味。代表例からfor meがcanonicalで落ちた構造の問題であり上流authorityを要確認。",
+    "reason": "canonical『say hi to someone』単独は『その人に挨拶する』。日本語『someoneによろしく伝える』は実例の『say hi to your family for me』のfor meを含む伝言の意味。代表例からfor meがcanonicalで落ちた構造の問題であり上流authorityを要確認。",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00617, sense_key send_a_greeting",
+      "immutable base representative item E0516: \"Take care of yourself and say hi to your family for me.\" \"I will. See you later.\""
+    ],
+    "source_worker": "W02",
+    "source_workers": [
+      "W02"
+    ],
+    "confidence": "HIGH",
+    "source_meaning_ja": "someoneによろしく伝える",
+    "sense_key": "send_a_greeting",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:00628",
+    "canonical": "be open to something",
+    "problem": "be open toの複数用法と現行訳・paraphraseの整合は上流問題。",
+    "source_meaning_ja": "somethingを招きやすい",
+    "sense_key": "likely_to_allow_or_result_in",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "issue": "be open toの複数用法と現行訳・paraphraseの整合は上流問題。",
+    "reason": "be open toの複数用法と現行訳・paraphraseの整合は上流問題。",
+    "evidence": [
+      "current production canonical / meaning_ja / sense_key / paraphrases"
+    ],
+    "source_worker": "BASE_AUTHORITY",
+    "confidence": "MEDIUM",
+    "review_provenance": {
+      "authority_type": "BASE_AUTHORITY",
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e"
+    }
+  },
+  {
+    "id": "vocab:00661",
+    "canonical": "it dawned on me that I was wrong",
+    "problem": "representative occurrenceの英文は『It dawned on me that I had been taken in by Jennifer all along.』であり、登録canonical『it dawned on me that I was wrong』はthat以下を別内容に差し替えている。固定例文としてのcanonical/sense representationが一致せず、qualifier判断より上流の再点検が必要。",
+    "issue": "representative occurrenceの英文は『It dawned on me that I had been taken in by Jennifer all along.』であり、登録canonical『it dawned on me that I was wrong』はthat以下を別内容に差し替えている。固定例文としてのcanonical/sense representationが一致せず、qualifier判断より上流の再点検が必要。",
+    "reason": "representative occurrenceの英文は『It dawned on me that I had been taken in by Jennifer all along.』であり、登録canonical『it dawned on me that I was wrong』はthat以下を別内容に差し替えている。固定例文としてのcanonical/sense representationが一致せず、qualifier判断より上流の再点検が必要。",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00661, sense_key gradually_realize",
+      "immutable base representative item E0539: \"It dawned on me that I had been taken in by Jennifer all along.\" \"How naive! Didn't you see through her?\"",
+      {
+        "url": "https://dictionary.cambridge.org/dictionary/english/dawn-on",
+        "finding": "realization after a period of not understanding, sometimes suddenly"
+      }
+    ],
+    "source_worker": "W02",
+    "source_workers": [
+      "W02"
+    ],
+    "confidence": "HIGH",
+    "source_meaning_ja": "自分が間違っていたと気づいた",
+    "sense_key": "gradually_realize",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:00684",
+    "canonical": "take place",
+    "problem": "sense_keyはhappen_or_be_heldと自然発生・開催の両方を認めるが、日本語prompt『行われる』およびbe held/be carried out/be conductedは開催・実施にだけ対応する。代表例は儀式なので自然だが、canonical take place全体のauthorityとsense範囲が食い違う。",
+    "issue": "sense_keyはhappen_or_be_heldと自然発生・開催の両方を認めるが、日本語prompt『行われる』およびbe held/be carried out/be conductedは開催・実施にだけ対応する。代表例は儀式なので自然だが、canonical take place全体のauthorityとsense範囲が食い違う。",
+    "reason": "sense_keyはhappen_or_be_heldと自然発生・開催の両方を認めるが、日本語prompt『行われる』およびbe held/be carried out/be conductedは開催・実施にだけ対応する。代表例は儀式なので自然だが、canonical take place全体のauthorityとsense範囲が食い違う。",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00684, sense_key happen_or_be_held",
+      "immutable base representative item E0549: The sacred ritual took place after being postponed twice."
+    ],
+    "source_worker": "W02",
+    "source_workers": [
+      "W02"
+    ],
+    "confidence": "MEDIUM",
+    "source_meaning_ja": "行われる",
+    "sense_key": "happen_or_be_held",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:00716",
+    "canonical": "contradict",
+    "problem": "contradictの反論と矛盾する関係の代表義を再確認。",
+    "source_meaning_ja": "反論する",
+    "sense_key": "state_the_opposite_of",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "issue": "contradictの反論と矛盾する関係の代表義を再確認。",
+    "reason": "contradictの反論と矛盾する関係の代表義を再確認。",
+    "evidence": [
+      "current production canonical / meaning_ja / sense_key / paraphrases"
+    ],
+    "source_worker": "BASE_AUTHORITY",
+    "confidence": "MEDIUM",
+    "review_provenance": {
+      "authority_type": "BASE_AUTHORITY",
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e"
+    }
+  },
+  {
+    "id": "vocab:00739",
+    "canonical": "regardless",
+    "problem": "代表例『regardless of national origin, gender, or creed』は前置詞句regardless ofで『〜にかかわらず』。canonicalは単独regardlessで、paraphrasesはnevertheless/nonetheless/even so/stillという逆接副詞のみ。sense_keyもwithout_regard_or_despite_thatを併合しており、構文・語義authorityの上流再設計が必要。",
+    "issue": "代表例『regardless of national origin, gender, or creed』は前置詞句regardless ofで『〜にかかわらず』。canonicalは単独regardlessで、paraphrasesはnevertheless/nonetheless/even so/stillという逆接副詞のみ。sense_keyもwithout_regard_or_despite_thatを併合しており、構文・語義authorityの上流再設計が必要。",
+    "reason": "代表例『regardless of national origin, gender, or creed』は前置詞句regardless ofで『〜にかかわらず』。canonicalは単独regardlessで、paraphrasesはnevertheless/nonetheless/even so/stillという逆接副詞のみ。sense_keyもwithout_regard_or_despite_thatを併合しており、構文・語義authorityの上流再設計が必要。",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00739, sense_key without_regard_or_despite_that",
+      "immutable base representative item E0004: You should be fair to everyone regardless of national origin, gender, or creed."
+    ],
+    "source_worker": "W02",
+    "source_workers": [
+      "W02"
+    ],
+    "confidence": "HIGH",
+    "source_meaning_ja": "それでも・かまわず",
+    "sense_key": "without_regard_or_despite_that",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:00747",
+    "canonical": "be familiar with something",
+    "problem": "be familiar withは『よく知っている・なじみがある』程度も含むが、現行『精通している』は専門的熟達を強く含み、代表例『Are you familiar with contemporary literature?』の『詳しいですか』より強い。be well versed inも専門的で強度不一致。主訳自体のauthority再確認が先決。",
+    "issue": "be familiar withは『よく知っている・なじみがある』程度も含むが、現行『精通している』は専門的熟達を強く含み、代表例『Are you familiar with contemporary literature?』の『詳しいですか』より強い。be well versed inも専門的で強度不一致。主訳自体のauthority再確認が先決。",
+    "reason": "be familiar withは『よく知っている・なじみがある』程度も含むが、現行『精通している』は専門的熟達を強く含み、代表例『Are you familiar with contemporary literature?』の『詳しいですか』より強い。be well versed inも専門的で強度不一致。主訳自体のauthority再確認が先決。",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00747, sense_key knowledgeable_about_a_subject",
+      "immutable base representative item E0015: \"Are you familiar with contemporary literature?\" \"I know next to nothing about it.\"",
+      {
+        "url": "https://dictionary.cambridge.org/dictionary/english/be-familiar-with",
+        "finding": "to know something or someone well; not necessarily an expert"
+      }
+    ],
+    "source_worker": "W02",
+    "source_workers": [
+      "W02"
+    ],
+    "confidence": "HIGH",
+    "source_meaning_ja": "somethingに精通している",
+    "sense_key": "knowledgeable_about_a_subject",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:00828",
+    "canonical": "capacity",
+    "problem": "同一カードに『入れられる最大量・収容力』と『物事をする能力』が併記されている。代表文capacity for overcoming any obstacleは能力義のみで、既存ability/capabilityも容量・収容力を表さない。単一qualifierでは二義を安全に統合できず、canonical/senseの上流判断が必要。",
+    "issue": "同一カードに『入れられる最大量・収容力』と『物事をする能力』が併記されている。代表文capacity for overcoming any obstacleは能力義のみで、既存ability/capabilityも容量・収容力を表さない。単一qualifierでは二義を安全に統合できず、canonical/senseの上流判断が必要。",
+    "reason": "同一カードに『入れられる最大量・収容力』と『物事をする能力』が併記されている。代表文capacity for overcoming any obstacleは能力義のみで、既存ability/capabilityも容量・収容力を表さない。単一qualifierでは二義を安全に統合できず、canonical/senseの上流判断が必要。",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00828",
+      "representative occurrence E0090: She possesses a great capacity for overcoming any obstacle.",
+      "review-index PENDING",
+      "paraphrases [ability | capability]"
+    ],
+    "source_worker": "W03",
+    "source_workers": [
+      "W03"
+    ],
+    "confidence": "HIGH",
+    "source_meaning_ja": "容量・収容力／能力",
+    "sense_key": "amount_held_or_ability",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:00844",
+    "canonical": "chore",
+    "problem": "choreは家事以外の雑務にも使う。",
+    "source_meaning_ja": "家事",
+    "sense_key": "routine_household_task",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "issue": "choreは家事以外の雑務にも使う。",
+    "reason": "choreは家事以外の雑務にも使う。",
+    "evidence": [
+      "current production canonical / meaning_ja / sense_key / paraphrases"
+    ],
+    "source_worker": "BASE_AUTHORITY",
+    "confidence": "MEDIUM",
+    "review_provenance": {
+      "authority_type": "BASE_AUTHORITY",
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e"
+    }
+  },
+  {
+    "id": "vocab:00870",
+    "canonical": "obscure",
+    "problem": "sense_key not_clear_or_well_knownは『不明瞭』と『あまり知られていない』の2義を結合する一方、現行meaning_ja・paraphrases・例文は不明瞭の義のみ。今回の単一qualifierではsense範囲のauthorityを決定できないため上流でsense分離またはscope固定が必要。",
+    "issue": "sense_key not_clear_or_well_knownは『不明瞭』と『あまり知られていない』の2義を結合する一方、現行meaning_ja・paraphrases・例文は不明瞭の義のみ。今回の単一qualifierではsense範囲のauthorityを決定できないため上流でsense分離またはscope固定が必要。",
+    "reason": "sense_key not_clear_or_well_knownは『不明瞭』と『あまり知られていない』の2義を結合する一方、現行meaning_ja・paraphrases・例文は不明瞭の義のみ。今回の単一qualifierではsense範囲のauthorityを決定できないため上流でsense分離またはscope固定が必要。",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00870",
+      "representative occurrence E0158: His thesis doesn't make sense. To begin with, its theme is obscure.",
+      "review-index PENDING",
+      "paraphrases [unclear | vague]",
+      "Cambridge Dictionary: https://dictionary.cambridge.org/dictionary/english/obscure"
+    ],
+    "source_worker": "W03",
+    "source_workers": [
+      "W03"
+    ],
+    "confidence": "HIGH",
+    "source_meaning_ja": "不明瞭な",
+    "sense_key": "not_clear_or_well_known",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:00890",
+    "canonical": "endangered",
+    "problem": "endangered planetという代表例は『地球が危険にさらされている』であって、生物種の『絶滅の危機』に直接対応しない。辞書は一般の危険と絶滅危機を区別するため、meaning_ja/sense_key/用例の権威を調整する上流判断が必要。",
+    "issue": "endangered planetという代表例は『地球が危険にさらされている』であって、生物種の『絶滅の危機』に直接対応しない。辞書は一般の危険と絶滅危機を区別するため、meaning_ja/sense_key/用例の権威を調整する上流判断が必要。",
+    "reason": "endangered planetという代表例は『地球が危険にさらされている』であって、生物種の『絶滅の危機』に直接対応しない。辞書は一般の危険と絶滅危機を区別するため、meaning_ja/sense_key/用例の権威を調整する上流判断が必要。",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00890",
+      "representative occurrence E0229: A fund was set up with a view to preserving our endangered planet.",
+      "review-index PENDING",
+      "paraphrases [at risk of extinction]",
+      "Cambridge Dictionary: https://dictionary.cambridge.org/dictionary/english/endangered"
+    ],
+    "source_worker": "W03",
+    "source_workers": [
+      "W03"
+    ],
+    "confidence": "HIGH",
+    "source_meaning_ja": "絶滅の危機にある",
+    "sense_key": "at_risk_of_disappearing",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:00937",
+    "canonical": "infection",
+    "problem": "infectionの感染と感染症の代表義要確認。",
+    "source_meaning_ja": "感染症",
+    "sense_key": "disease_caused_by_germs",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "issue": "infectionの感染と感染症の代表義要確認。",
+    "reason": "infectionの感染と感染症の代表義要確認。",
+    "evidence": [
+      "current production canonical / meaning_ja / sense_key / paraphrases"
+    ],
+    "source_worker": "BASE_AUTHORITY",
+    "confidence": "MEDIUM",
+    "review_provenance": {
+      "authority_type": "BASE_AUTHORITY",
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e"
+    }
+  },
+  {
+    "id": "vocab:00972",
+    "canonical": "reconcile",
+    "problem": "用例はreconcile myself to my fate（reconcile oneself to something）で『嫌でも受け入れる』だが、canonicalのreconcile単体には仲直りさせる／矛盾を調整する別義が中心。reconcile oneself toの構文が固定されていないため、promptだけ変えるのではなく上流canonical・sense境界の修正が必要。加えてembraceは積極的受容で用例の不本意さに合わない。",
+    "issue": "用例はreconcile myself to my fate（reconcile oneself to something）で『嫌でも受け入れる』だが、canonicalのreconcile単体には仲直りさせる／矛盾を調整する別義が中心。reconcile oneself toの構文が固定されていないため、promptだけ変えるのではなく上流canonical・sense境界の修正が必要。加えてembraceは積極的受容で用例の不本意さに合わない。",
+    "reason": "用例はreconcile myself to my fate（reconcile oneself to something）で『嫌でも受け入れる』だが、canonicalのreconcile単体には仲直りさせる／矛盾を調整する別義が中心。reconcile oneself toの構文が固定されていないため、promptだけ変えるのではなく上流canonical・sense境界の修正が必要。加えてembraceは積極的受容で用例の不本意さに合わない。",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00972",
+      "representative occurrence E0402: I might as well kill myself as reconcile myself to my fate.",
+      "review-index PENDING",
+      "paraphrases [accept | embrace]",
+      "Cambridge Dictionary: https://dictionary.cambridge.org/dictionary/english/reconcile-to"
+    ],
+    "source_worker": "W03",
+    "source_workers": [
+      "W03"
+    ],
+    "confidence": "HIGH",
+    "source_meaning_ja": "受け入れる",
+    "sense_key": "accept_an_unpleasant_reality",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:00992",
+    "canonical": "regime",
+    "problem": "regimeとgovernment/administrationの上流意味関係確認。",
+    "source_meaning_ja": "政権",
+    "sense_key": "system_of_government",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "issue": "regimeとgovernment/administrationの上流意味関係確認。",
+    "reason": "regimeとgovernment/administrationの上流意味関係確認。",
+    "evidence": [
+      "current production canonical / meaning_ja / sense_key / paraphrases"
+    ],
+    "source_worker": "BASE_AUTHORITY",
+    "confidence": "MEDIUM",
+    "review_provenance": {
+      "authority_type": "BASE_AUTHORITY",
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e"
+    }
+  },
+  {
+    "id": "vocab:01039",
+    "canonical": "prevail",
+    "problem": "prevailが『勝つ・優勢になる』と『広く行き渡る』の異なるsenseを一枚のカードで保持し、predominateは主に優勢・普及を表す。qualifierで一方の意味に狭めるよりsense authorityの分離が必要。",
+    "issue": "prevailが『勝つ・優勢になる』と『広く行き渡る』の異なるsenseを一枚のカードで保持し、predominateは主に優勢・普及を表す。qualifierで一方の意味に狭めるよりsense authorityの分離が必要。",
+    "reason": "prevailが『勝つ・優勢になる』と『広く行き渡る』の異なるsenseを一枚のカードで保持し、predominateは主に優勢・普及を表す。qualifierで一方の意味に狭めるよりsense authorityの分離が必要。",
+    "evidence": [
+      {
+        "type": "immutable_base",
+        "commit": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+        "source": "data/vocabulary-v3.json",
+        "entry_id": "vocab:01039",
+        "representative_occurrence": {
+          "item_id": "E0487",
+          "start": 42,
+          "end": 49,
+          "contextual_meaning_ja": "広まる"
+        }
+      },
+      {
+        "type": "previous_near_synonym_authority",
+        "value": "NONE"
+      }
+    ],
+    "source_worker": "W04",
+    "source_workers": [
+      "W04"
+    ],
+    "confidence": "MEDIUM",
+    "source_meaning_ja": "優勢になる・勝つ／広く行き渡る",
+    "sense_key": "be_victorious_or_widespread",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W04"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W04": "c70d5a5ca431c0be063a6c487d2a043b7078029a"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01074",
+    "canonical": "will",
+    "problem": "登録はwillの名詞『意志』だが、固定baseのrepresentative occurrenceは『…しなさい』という助動詞または指示表現の語義を示しており品詞・senseの照合が必要。",
+    "issue": "登録はwillの名詞『意志』だが、固定baseのrepresentative occurrenceは『…しなさい』という助動詞または指示表現の語義を示しており品詞・senseの照合が必要。",
+    "reason": "登録はwillの名詞『意志』だが、固定baseのrepresentative occurrenceは『…しなさい』という助動詞または指示表現の語義を示しており品詞・senseの照合が必要。",
+    "evidence": [
+      {
+        "type": "immutable_base",
+        "commit": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+        "source": "data/vocabulary-v3.json",
+        "entry_id": "vocab:01074",
+        "representative_occurrence": {
+          "item_id": "E0001",
+          "start": 20,
+          "end": 24,
+          "contextual_meaning_ja": "...『しなさい』"
+        }
+      },
+      {
+        "type": "previous_near_synonym_authority",
+        "value": "NONE"
+      }
+    ],
+    "source_worker": "W04",
+    "source_workers": [
+      "W04"
+    ],
+    "confidence": "MEDIUM",
+    "source_meaning_ja": "意志",
+    "sense_key": "determination_or_desire",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W04"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W04": "c70d5a5ca431c0be063a6c487d2a043b7078029a"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01075",
+    "canonical": "individual",
+    "problem": "登録はindividualの名詞『個人』だが、representative occurrenceの訳語が『個人的な』で形容詞senseに対応。元sourceを確認して代表箇所のauthorityを再指定すべき。",
+    "issue": "登録はindividualの名詞『個人』だが、representative occurrenceの訳語が『個人的な』で形容詞senseに対応。元sourceを確認して代表箇所のauthorityを再指定すべき。",
+    "reason": "登録はindividualの名詞『個人』だが、representative occurrenceの訳語が『個人的な』で形容詞senseに対応。元sourceを確認して代表箇所のauthorityを再指定すべき。",
+    "evidence": [
+      {
+        "type": "immutable_base",
+        "commit": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+        "source": "data/vocabulary-v3.json",
+        "entry_id": "vocab:01075",
+        "representative_occurrence": {
+          "item_id": "E0001",
+          "start": 32,
+          "end": 42,
+          "contextual_meaning_ja": "『個人的な』"
+        }
+      },
+      {
+        "type": "previous_near_synonym_authority",
+        "value": "NONE"
+      }
+    ],
+    "source_worker": "W04",
+    "source_workers": [
+      "W04"
+    ],
+    "confidence": "MEDIUM",
+    "source_meaning_ja": "個人",
+    "sense_key": "individual_person",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W04"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W04": "c70d5a5ca431c0be063a6c487d2a043b7078029a"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01078",
+    "canonical": "positive",
+    "problem": "positiveの登録senseは楽観的・前向きだが、representative occurrenceの文脈訳は『実際的な』。語義が異なる可能性が高く、source例とsenseの整合性確認が先。",
+    "issue": "positiveの登録senseは楽観的・前向きだが、representative occurrenceの文脈訳は『実際的な』。語義が異なる可能性が高く、source例とsenseの整合性確認が先。",
+    "reason": "positiveの登録senseは楽観的・前向きだが、representative occurrenceの文脈訳は『実際的な』。語義が異なる可能性が高く、source例とsenseの整合性確認が先。",
+    "evidence": [
+      {
+        "type": "immutable_base",
+        "commit": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+        "source": "data/vocabulary-v3.json",
+        "entry_id": "vocab:01078",
+        "representative_occurrence": {
+          "item_id": "E0003",
+          "start": 59,
+          "end": 67,
+          "contextual_meaning_ja": "『実際的な"
+        }
+      },
+      {
+        "type": "previous_near_synonym_authority",
+        "value": "NONE"
+      }
+    ],
+    "source_worker": "W04",
+    "source_workers": [
+      "W04"
+    ],
+    "confidence": "MEDIUM",
+    "source_meaning_ja": "前向きな",
+    "sense_key": "optimistic",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W04"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W04": "c70d5a5ca431c0be063a6c487d2a043b7078029a"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01082",
+    "canonical": "perfume",
+    "problem": "perfumeは『香水（香りをつける液体）』として登録される一方、representative occurrenceの訳は『香り』。香料製品と香気そのものが異なるsenseか確認する必要がある。",
+    "issue": "perfumeは『香水（香りをつける液体）』として登録される一方、representative occurrenceの訳は『香り』。香料製品と香気そのものが異なるsenseか確認する必要がある。",
+    "reason": "perfumeは『香水（香りをつける液体）』として登録される一方、representative occurrenceの訳は『香り』。香料製品と香気そのものが異なるsenseか確認する必要がある。",
+    "evidence": [
+      {
+        "type": "immutable_base",
+        "commit": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+        "source": "data/vocabulary-v3.json",
+        "entry_id": "vocab:01082",
+        "representative_occurrence": {
+          "item_id": "E0007",
+          "start": 50,
+          "end": 57,
+          "contextual_meaning_ja": "『香り』"
+        }
+      },
+      {
+        "type": "previous_near_synonym_authority",
+        "value": "NONE"
+      }
+    ],
+    "source_worker": "W04",
+    "source_workers": [
+      "W04"
+    ],
+    "confidence": "MEDIUM",
+    "source_meaning_ja": "香水",
+    "sense_key": "fragrant_liquid",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W04"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W04": "c70d5a5ca431c0be063a6c487d2a043b7078029a"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01092",
+    "canonical": "work",
+    "problem": "workの登録は作品（artistic creation）だが、representative occurrenceには『仕事』の語義が示される。多義語のどのtokenが代表例かを原資料で特定し直す必要がある。",
+    "issue": "workの登録は作品（artistic creation）だが、representative occurrenceには『仕事』の語義が示される。多義語のどのtokenが代表例かを原資料で特定し直す必要がある。",
+    "reason": "workの登録は作品（artistic creation）だが、representative occurrenceには『仕事』の語義が示される。多義語のどのtokenが代表例かを原資料で特定し直す必要がある。",
+    "evidence": [
+      {
+        "type": "immutable_base",
+        "commit": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+        "source": "data/vocabulary-v3.json",
+        "entry_id": "vocab:01092",
+        "representative_occurrence": {
+          "item_id": "E0019",
+          "start": 11,
+          "end": 16,
+          "contextual_meaning_ja": "『仕事』"
+        }
+      },
+      {
+        "type": "previous_near_synonym_authority",
+        "value": "NONE"
+      }
+    ],
+    "source_worker": "W04",
+    "source_workers": [
+      "W04"
+    ],
+    "confidence": "MEDIUM",
+    "source_meaning_ja": "作品",
+    "sense_key": "artistic_creation",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W04"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W04": "c70d5a5ca431c0be063a6c487d2a043b7078029a"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01098",
+    "canonical": "plain",
+    "problem": "plainのsense_keyは明快・簡単だが、representative occurrence訳は『はっきり見える・聞こえる』で、plain to seeという知覚上の明瞭さのsenseかもしれない。sourceと登録senseの整合を確認する。",
+    "issue": "plainのsense_keyは明快・簡単だが、representative occurrence訳は『はっきり見える・聞こえる』で、plain to seeという知覚上の明瞭さのsenseかもしれない。sourceと登録senseの整合を確認する。",
+    "reason": "plainのsense_keyは明快・簡単だが、representative occurrence訳は『はっきり見える・聞こえる』で、plain to seeという知覚上の明瞭さのsenseかもしれない。sourceと登録senseの整合を確認する。",
+    "evidence": [
+      {
+        "type": "immutable_base",
+        "commit": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+        "source": "data/vocabulary-v3.json",
+        "entry_id": "vocab:01098",
+        "representative_occurrence": {
+          "item_id": "E0013",
+          "start": 54,
+          "end": 59,
+          "contextual_meaning_ja": "『はっきり見える』(『聞こえる』)"
+        }
+      },
+      {
+        "type": "previous_near_synonym_authority",
+        "value": "NONE"
+      }
+    ],
+    "source_worker": "W04",
+    "source_workers": [
+      "W04"
+    ],
+    "confidence": "MEDIUM",
+    "source_meaning_ja": "分かりやすい",
+    "sense_key": "clear_and_simple",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W04"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W04": "c70d5a5ca431c0be063a6c487d2a043b7078029a"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01125",
+    "canonical": "review",
+    "problem": "reviewは名詞『見直し』として登録されているが、representative occurrenceの訳は『調べ直す』という動詞。品詞・spanを固定baseの原例と再照合する必要がある。",
+    "issue": "reviewは名詞『見直し』として登録されているが、representative occurrenceの訳は『調べ直す』という動詞。品詞・spanを固定baseの原例と再照合する必要がある。",
+    "reason": "reviewは名詞『見直し』として登録されているが、representative occurrenceの訳は『調べ直す』という動詞。品詞・spanを固定baseの原例と再照合する必要がある。",
+    "evidence": [
+      {
+        "type": "immutable_base",
+        "commit": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+        "source": "data/vocabulary-v3.json",
+        "entry_id": "vocab:01125",
+        "representative_occurrence": {
+          "item_id": "E0030",
+          "start": 74,
+          "end": 80,
+          "contextual_meaning_ja": "...を『調べ直す』"
+        }
+      },
+      {
+        "type": "previous_near_synonym_authority",
+        "value": "NONE"
+      }
+    ],
+    "source_worker": "W04",
+    "source_workers": [
+      "W04"
+    ],
+    "confidence": "MEDIUM",
+    "source_meaning_ja": "見直し",
+    "sense_key": "reexamination",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W04"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W04": "c70d5a5ca431c0be063a6c487d2a043b7078029a"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01127",
+    "canonical": "chart",
+    "problem": "chartを図表・graphのsenseとして登録したが、representative occurrenceの訳は『海図』。地図・航海図と統計図表は独立した語義であるためsource authorityの確認が必要。",
+    "issue": "chartを図表・graphのsenseとして登録したが、representative occurrenceの訳は『海図』。地図・航海図と統計図表は独立した語義であるためsource authorityの確認が必要。",
+    "reason": "chartを図表・graphのsenseとして登録したが、representative occurrenceの訳は『海図』。地図・航海図と統計図表は独立した語義であるためsource authorityの確認が必要。",
+    "evidence": [
+      {
+        "type": "immutable_base",
+        "commit": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+        "source": "data/vocabulary-v3.json",
+        "entry_id": "vocab:01127",
+        "representative_occurrence": {
+          "item_id": "E0032",
+          "start": 27,
+          "end": 32,
+          "contextual_meaning_ja": "『海図』"
+        }
+      },
+      {
+        "type": "previous_near_synonym_authority",
+        "value": "NONE"
+      }
+    ],
+    "source_worker": "W04",
+    "source_workers": [
+      "W04"
+    ],
+    "confidence": "MEDIUM",
+    "source_meaning_ja": "図表",
+    "sense_key": "visual_display_of_information",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W04"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W04": "c70d5a5ca431c0be063a6c487d2a043b7078029a"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01138",
+    "canonical": "press",
+    "problem": "pressは『報道機関』の集合名詞として登録されるが、representative occurrence訳が『切迫していること』。語義と用法の不整合があり、同じ語形の別senseを混在させている可能性。",
+    "issue": "pressは『報道機関』の集合名詞として登録されるが、representative occurrence訳が『切迫していること』。語義と用法の不整合があり、同じ語形の別senseを混在させている可能性。",
+    "reason": "pressは『報道機関』の集合名詞として登録されるが、representative occurrence訳が『切迫していること』。語義と用法の不整合があり、同じ語形の別senseを混在させている可能性。",
+    "evidence": [
+      {
+        "type": "immutable_base",
+        "commit": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+        "source": "data/vocabulary-v3.json",
+        "entry_id": "vocab:01138",
+        "representative_occurrence": {
+          "item_id": "E0040",
+          "start": 14,
+          "end": 19,
+          "contextual_meaning_ja": "切迫していること"
+        }
+      },
+      {
+        "type": "previous_near_synonym_authority",
+        "value": "NONE"
+      }
+    ],
+    "source_worker": "W04",
+    "source_workers": [
+      "W04"
+    ],
+    "confidence": "MEDIUM",
+    "source_meaning_ja": "報道機関",
+    "sense_key": "news_media",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W04"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W04": "c70d5a5ca431c0be063a6c487d2a043b7078029a"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01140",
+    "canonical": "run",
+    "problem": "runは経営するsenseだが、representative occurrence訳は『ある方向へ延びている』。運営と物理的延伸の別senseでsource/example authorityの差し替えが必要。",
+    "issue": "runは経営するsenseだが、representative occurrence訳は『ある方向へ延びている』。運営と物理的延伸の別senseでsource/example authorityの差し替えが必要。",
+    "reason": "runは経営するsenseだが、representative occurrence訳は『ある方向へ延びている』。運営と物理的延伸の別senseでsource/example authorityの差し替えが必要。",
+    "evidence": [
+      {
+        "type": "immutable_base",
+        "commit": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+        "source": "data/vocabulary-v3.json",
+        "entry_id": "vocab:01140",
+        "representative_occurrence": {
+          "item_id": "E0041",
+          "start": 41,
+          "end": 45,
+          "contextual_meaning_ja": "(ある方向へ)延びている"
+        }
+      },
+      {
+        "type": "previous_near_synonym_authority",
+        "value": "NONE"
+      }
+    ],
+    "source_worker": "W04",
+    "source_workers": [
+      "W04"
+    ],
+    "confidence": "MEDIUM",
+    "source_meaning_ja": "経営する",
+    "sense_key": "manage_a_business",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W04"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W04": "c70d5a5ca431c0be063a6c487d2a043b7078029a"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01144",
+    "canonical": "memory",
+    "problem": "memoryの登録は『記憶力』だが、representative occurrence訳が『記憶している期間』となっている。記憶能力と記憶保持時間の相違を原文で検証する必要。",
+    "issue": "memoryの登録は『記憶力』だが、representative occurrence訳が『記憶している期間』となっている。記憶能力と記憶保持時間の相違を原文で検証する必要。",
+    "reason": "memoryの登録は『記憶力』だが、representative occurrence訳が『記憶している期間』となっている。記憶能力と記憶保持時間の相違を原文で検証する必要。",
+    "evidence": [
+      {
+        "type": "immutable_base",
+        "commit": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+        "source": "data/vocabulary-v3.json",
+        "entry_id": "vocab:01144",
+        "representative_occurrence": {
+          "item_id": "E0044",
+          "start": 54,
+          "end": 60,
+          "contextual_meaning_ja": "記憶している期間"
+        }
+      },
+      {
+        "type": "previous_near_synonym_authority",
+        "value": "NONE"
+      }
+    ],
+    "source_worker": "W04",
+    "source_workers": [
+      "W04"
+    ],
+    "confidence": "LOW",
+    "source_meaning_ja": "記憶力",
+    "sense_key": "ability_to_remember",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W04"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W04": "c70d5a5ca431c0be063a6c487d2a043b7078029a"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01149",
+    "canonical": "pill",
+    "problem": "pillは『錠剤』のsenseとして登録されるが、representative occurrenceの訳は『不快なこと』。比喩的pillと錠剤のsenseが別で、当該用例の妥当性確認が必要。",
+    "issue": "pillは『錠剤』のsenseとして登録されるが、representative occurrenceの訳は『不快なこと』。比喩的pillと錠剤のsenseが別で、当該用例の妥当性確認が必要。",
+    "reason": "pillは『錠剤』のsenseとして登録されるが、representative occurrenceの訳は『不快なこと』。比喩的pillと錠剤のsenseが別で、当該用例の妥当性確認が必要。",
+    "evidence": [
+      {
+        "type": "immutable_base",
+        "commit": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+        "source": "data/vocabulary-v3.json",
+        "entry_id": "vocab:01149",
+        "representative_occurrence": {
+          "item_id": "E0048",
+          "start": 20,
+          "end": 25,
+          "contextual_meaning_ja": "不快なこと"
+        }
+      },
+      {
+        "type": "previous_near_synonym_authority",
+        "value": "NONE"
+      }
+    ],
+    "source_worker": "W04",
+    "source_workers": [
+      "W04"
+    ],
+    "confidence": "MEDIUM",
+    "source_meaning_ja": "錠剤",
+    "sense_key": "small_solid_dose_of_medicine",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W04"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W04": "c70d5a5ca431c0be063a6c487d2a043b7078029a"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01167",
+    "canonical": "as it is",
+    "problem": "as it isは『そのままで』と『現状では』を同一カードに持ち、as isは前者、as things standは後者の別senseをそれぞれ指す。single-entry qualifierでは語義混同を解けずsense分割の上流判断が必要。",
+    "issue": "as it isは『そのままで』と『現状では』を同一カードに持ち、as isは前者、as things standは後者の別senseをそれぞれ指す。single-entry qualifierでは語義混同を解けずsense分割の上流判断が必要。",
+    "reason": "as it isは『そのままで』と『現状では』を同一カードに持ち、as isは前者、as things standは後者の別senseをそれぞれ指す。single-entry qualifierでは語義混同を解けずsense分割の上流判断が必要。",
+    "evidence": [
+      {
+        "type": "immutable_base",
+        "commit": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+        "source": "data/vocabulary-v3.json",
+        "entry_id": "vocab:01167",
+        "representative_occurrence": {
+          "item_id": "E0024",
+          "start": 0,
+          "end": 8,
+          "contextual_meaning_ja": "実際のところ、普通の人々にはそんな贅沢品を購入する余裕はない。"
+        }
+      },
+      {
+        "type": "previous_near_synonym_authority",
+        "value": "NONE"
+      }
+    ],
+    "source_worker": "W04",
+    "source_workers": [
+      "W04"
+    ],
+    "confidence": "MEDIUM",
+    "source_meaning_ja": "そのままで／現状では",
+    "sense_key": "in_current_state_or_circumstances",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W04"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W04": "c70d5a5ca431c0be063a6c487d2a043b7078029a"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01194",
+    "canonical": "herbal",
+    "problem": "herbalは薬草に限らず食用・芳香用のハーブにも使える。現在の主訳がsenseより狭い。",
+    "issue": "herbalは薬草に限らず食用・芳香用のハーブにも使える。現在の主訳がsenseより狭い。",
+    "reason": "herbalは薬草に限らず食用・芳香用のハーブにも使える。現在の主訳がsenseより狭い。",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01194 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1191, status=PENDING"
+    ],
+    "source_worker": "W05",
+    "source_workers": [
+      "W05"
+    ],
+    "confidence": "MEDIUM",
+    "source_meaning_ja": "薬草の",
+    "sense_key": "relating_to_herbs",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01195",
+    "canonical": "medical",
+    "problem": "medicalには医療・診療・医療機器も含まれ、「医学の」のみでは主たるsenseを十分に反映しない。",
+    "issue": "medicalには医療・診療・医療機器も含まれ、「医学の」のみでは主たるsenseを十分に反映しない。",
+    "reason": "medicalには医療・診療・医療機器も含まれ、「医学の」のみでは主たるsenseを十分に反映しない。",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01195 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1192, status=PENDING"
+    ],
+    "source_worker": "W05",
+    "source_workers": [
+      "W05"
+    ],
+    "confidence": "MEDIUM",
+    "source_meaning_ja": "医学の",
+    "sense_key": "relating_to_medicine",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01211",
+    "canonical": "representative",
+    "problem": "representativeは名詞「代表者」だが代表occurrence訳は「代表する」で品詞が食い違う。",
+    "issue": "representativeは名詞「代表者」だが代表occurrence訳は「代表する」で品詞が食い違う。",
+    "reason": "representativeは名詞「代表者」だが代表occurrence訳は「代表する」で品詞が食い違う。",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01211 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1208, status=PENDING"
+    ],
+    "source_worker": "W05",
+    "source_workers": [
+      "W05"
+    ],
+    "confidence": "MEDIUM",
+    "source_meaning_ja": "代表者",
+    "sense_key": "person_acting_for_others",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01216",
+    "canonical": "fake",
+    "problem": "fakeの名詞sense「偽物」に対し代表occurrence「見せかける」は動詞的な別義。",
+    "issue": "fakeの名詞sense「偽物」に対し代表occurrence「見せかける」は動詞的な別義。",
+    "reason": "fakeの名詞sense「偽物」に対し代表occurrence「見せかける」は動詞的な別義。",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01216 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1213, status=PENDING"
+    ],
+    "source_worker": "W05",
+    "source_workers": [
+      "W05"
+    ],
+    "confidence": "MEDIUM",
+    "source_meaning_ja": "偽物",
+    "sense_key": "not_genuine",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01218",
+    "canonical": "rug",
+    "problem": "rugの床敷物senseに対し代表occurrenceは「毛皮」。敷物の用例か別senseか不明。",
+    "issue": "rugの床敷物senseに対し代表occurrenceは「毛皮」。敷物の用例か別senseか不明。",
+    "reason": "rugの床敷物senseに対し代表occurrenceは「毛皮」。敷物の用例か別senseか不明。",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01218 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1215, status=PENDING"
+    ],
+    "source_worker": "W05",
+    "source_workers": [
+      "W05"
+    ],
+    "confidence": "MEDIUM",
+    "source_meaning_ja": "敷物",
+    "sense_key": "small_floor_covering",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01220",
+    "canonical": "cab",
+    "problem": "cabの代表occurrenceはCivil Aeronautics Boardの略称CABで、タクシーと無関係。",
+    "issue": "cabの代表occurrenceはCivil Aeronautics Boardの略称CABで、タクシーと無関係。",
+    "reason": "cabの代表occurrenceはCivil Aeronautics Boardの略称CABで、タクシーと無関係。",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01220 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1217, status=PENDING"
+    ],
+    "source_worker": "W05",
+    "source_workers": [
+      "W05"
+    ],
+    "confidence": "HIGH",
+    "source_meaning_ja": "タクシー",
+    "sense_key": "taxi",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01225",
+    "canonical": "treat",
+    "problem": "おごるtreatのsenseに対する代表occurrence「扱う」は別の語義。",
+    "issue": "おごるtreatのsenseに対する代表occurrence「扱う」は別の語義。",
+    "reason": "おごるtreatのsenseに対する代表occurrence「扱う」は別の語義。",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01225 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1222, status=PENDING"
+    ],
+    "source_worker": "W05",
+    "source_workers": [
+      "W05"
+    ],
+    "confidence": "HIGH",
+    "source_meaning_ja": "おごる",
+    "sense_key": "pay_for_someones_food_or_entertainment",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01323",
+    "canonical": "microwave",
+    "problem": "microwave ovenという調理器senseに対し代表occurrence「極超短波」は電磁波の別sense。",
+    "issue": "microwave ovenという調理器senseに対し代表occurrence「極超短波」は電磁波の別sense。",
+    "reason": "microwave ovenという調理器senseに対し代表occurrence「極超短波」は電磁波の別sense。",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01323 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1320, status=PENDING"
+    ],
+    "source_worker": "W05",
+    "source_workers": [
+      "W05"
+    ],
+    "confidence": "HIGH",
+    "source_meaning_ja": "電子レンジ",
+    "sense_key": "microwave_oven",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01326",
+    "canonical": "china",
+    "problem": "chinaの陶磁器senseに対し代表occurrenceは国名Chinaの説明。",
+    "issue": "chinaの陶磁器senseに対し代表occurrenceは国名Chinaの説明。",
+    "reason": "chinaの陶磁器senseに対し代表occurrenceは国名Chinaの説明。",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01326 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1323, status=PENDING"
+    ],
+    "source_worker": "W05",
+    "source_workers": [
+      "W05"
+    ],
+    "confidence": "HIGH",
+    "source_meaning_ja": "陶磁器",
+    "sense_key": "porcelain_ware",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01377",
+    "canonical": "something of a surprise",
+    "problem": "something of a surpriseの代表occurrenceが「OLD French古フランス語」で、語義・対象表現と不一致。",
+    "issue": "something of a surpriseの代表occurrenceが「OLD French古フランス語」で、語義・対象表現と不一致。",
+    "reason": "something of a surpriseの代表occurrenceが「OLD French古フランス語」で、語義・対象表現と不一致。",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01377 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1374, status=PENDING"
+    ],
+    "source_worker": "W05",
+    "source_workers": [
+      "W05"
+    ],
+    "confidence": "HIGH",
+    "source_meaning_ja": "ちょっとした驚き",
+    "sense_key": "to_some_degree_a",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01440",
+    "canonical": "subject",
+    "problem": "subjectの指定senseは科目だが、代表occurrenceの訳は『主題』。同語の別義がsource occurrenceに混入しているため上流の例・sense対応を確認する。",
+    "issue": "subjectの指定senseは科目だが、代表occurrenceの訳は『主題』。同語の別義がsource occurrenceに混入しているため上流の例・sense対応を確認する。",
+    "reason": "subjectの指定senseは科目だが、代表occurrenceの訳は『主題』。同語の別義がsource occurrenceに混入しているため上流の例・sense対応を確認する。",
+    "evidence": [
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json, entry vocab:01440, occurrence E0170",
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/audits/vocabulary-single-entry-nuance-qualifier/batches/batch-015.json, PENDING & previous authority"
+    ],
+    "source_worker": "W06",
+    "source_workers": [
+      "W06"
+    ],
+    "confidence": "LOW",
+    "source_meaning_ja": "科目",
+    "sense_key": "field_of_study",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W06"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W06": "b20c8296d5beeca381ea73007bd9c90476143823"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01449",
+    "canonical": "minute",
+    "problem": "minuteの指定senseは形容詞『微小な』だが、代表occurrenceは名詞・時間単位の『分』。発音も異なる別義のsource紐付けを上流確認する。",
+    "issue": "minuteの指定senseは形容詞『微小な』だが、代表occurrenceは名詞・時間単位の『分』。発音も異なる別義のsource紐付けを上流確認する。",
+    "reason": "minuteの指定senseは形容詞『微小な』だが、代表occurrenceは名詞・時間単位の『分』。発音も異なる別義のsource紐付けを上流確認する。",
+    "evidence": [
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json, entry vocab:01449, occurrence E0173",
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/audits/vocabulary-single-entry-nuance-qualifier/batches/batch-015.json, PENDING & previous authority",
+      "https://dictionary.cambridge.org/dictionary/english/minute"
+    ],
+    "source_worker": "W06",
+    "source_workers": [
+      "W06"
+    ],
+    "confidence": "LOW",
+    "source_meaning_ja": "微小な",
+    "sense_key": "extremely_small",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W06"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W06": "b20c8296d5beeca381ea73007bd9c90476143823"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01463",
+    "canonical": "figure",
+    "problem": "figureの指定senseは『体形』だが、代表occurrenceは『数字』。多義語の異なる義を結び付けているため上流確認する。",
+    "issue": "figureの指定senseは『体形』だが、代表occurrenceは『数字』。多義語の異なる義を結び付けているため上流確認する。",
+    "reason": "figureの指定senseは『体形』だが、代表occurrenceは『数字』。多義語の異なる義を結び付けているため上流確認する。",
+    "evidence": [
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json, entry vocab:01463, occurrence E0177",
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/audits/vocabulary-single-entry-nuance-qualifier/batches/batch-015.json, PENDING & previous authority"
+    ],
+    "source_worker": "W06",
+    "source_workers": [
+      "W06"
+    ],
+    "confidence": "LOW",
+    "source_meaning_ja": "体形",
+    "sense_key": "shape_of_a_persons_body",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W06"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W06": "b20c8296d5beeca381ea73007bd9c90476143823"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01464",
+    "canonical": "thin",
+    "problem": "thinの指定senseは『痩せた』だが、代表occurrence『まばらな』は密度が低い別義。source exampleとsenseの関係を上流確認する。",
+    "issue": "thinの指定senseは『痩せた』だが、代表occurrence『まばらな』は密度が低い別義。source exampleとsenseの関係を上流確認する。",
+    "reason": "thinの指定senseは『痩せた』だが、代表occurrence『まばらな』は密度が低い別義。source exampleとsenseの関係を上流確認する。",
+    "evidence": [
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json, entry vocab:01464, occurrence E0177",
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/audits/vocabulary-single-entry-nuance-qualifier/batches/batch-015.json, PENDING & previous authority"
+    ],
+    "source_worker": "W06",
+    "source_workers": [
+      "W06"
+    ],
+    "confidence": "LOW",
+    "source_meaning_ja": "痩せた",
+    "sense_key": "having_little_body_fat",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W06"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W06": "b20c8296d5beeca381ea73007bd9c90476143823"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01489",
+    "canonical": "cartoon",
+    "problem": "cartoonのsense_keyは漫画・アニメーション双方を包含するがprompt『漫画』は動画の義を十分表さない。occurrenceも風刺漫画・下絵等複数義を列挙しており、上流の多義構造が未整理。",
+    "issue": "cartoonのsense_keyは漫画・アニメーション双方を包含するがprompt『漫画』は動画の義を十分表さない。occurrenceも風刺漫画・下絵等複数義を列挙しており、上流の多義構造が未整理。",
+    "reason": "cartoonのsense_keyは漫画・アニメーション双方を包含するがprompt『漫画』は動画の義を十分表さない。occurrenceも風刺漫画・下絵等複数義を列挙しており、上流の多義構造が未整理。",
+    "evidence": [
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json, entry vocab:01489, occurrence E0197",
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/audits/vocabulary-single-entry-nuance-qualifier/batches/batch-015.json, PENDING & previous authority"
+    ],
+    "source_worker": "W06",
+    "source_workers": [
+      "W06"
+    ],
+    "confidence": "LOW",
+    "source_meaning_ja": "漫画",
+    "sense_key": "drawn_comic_or_animation",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W06"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W06": "b20c8296d5beeca381ea73007bd9c90476143823"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01491",
+    "canonical": "collar",
+    "problem": "collarは名詞『襟』の指定senseだが、代表occurrence『カラーを付ける』は動詞義。source exampleの品詞・義を上流確認する。",
+    "issue": "collarは名詞『襟』の指定senseだが、代表occurrence『カラーを付ける』は動詞義。source exampleの品詞・義を上流確認する。",
+    "reason": "collarは名詞『襟』の指定senseだが、代表occurrence『カラーを付ける』は動詞義。source exampleの品詞・義を上流確認する。",
+    "evidence": [
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json, entry vocab:01491, occurrence E0199",
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/audits/vocabulary-single-entry-nuance-qualifier/batches/batch-015.json, PENDING & previous authority"
+    ],
+    "source_worker": "W06",
+    "source_workers": [
+      "W06"
+    ],
+    "confidence": "LOW",
+    "source_meaning_ja": "襟",
+    "sense_key": "part_of_clothing_around_neck",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W06"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W06": "b20c8296d5beeca381ea73007bd9c90476143823"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01492",
+    "canonical": "admit",
+    "problem": "admitの指定senseは事実を『認める』だが代表occurrence『入れる』は入場を許す別義。source exampleを上流確認する。",
+    "issue": "admitの指定senseは事実を『認める』だが代表occurrence『入れる』は入場を許す別義。source exampleを上流確認する。",
+    "reason": "admitの指定senseは事実を『認める』だが代表occurrence『入れる』は入場を許す別義。source exampleを上流確認する。",
+    "evidence": [
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json, entry vocab:01492, occurrence E0200",
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/audits/vocabulary-single-entry-nuance-qualifier/batches/batch-015.json, PENDING & previous authority"
+    ],
+    "source_worker": "W06",
+    "source_workers": [
+      "W06"
+    ],
+    "confidence": "LOW",
+    "source_meaning_ja": "認める",
+    "sense_key": "acknowledge_as_true",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W06"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W06": "b20c8296d5beeca381ea73007bd9c90476143823"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01501",
+    "canonical": "whether or not",
+    "problem": "sense_keyのregardless_of_whetherは『〜であろうとなかろうと』だが、現行訳と代表occurrenceは『〜かどうか』という間接疑問。ifも前者には使えず、多義とsenseの上流整理が必要。",
+    "issue": "sense_keyのregardless_of_whetherは『〜であろうとなかろうと』だが、現行訳と代表occurrenceは『〜かどうか』という間接疑問。ifも前者には使えず、多義とsenseの上流整理が必要。",
+    "reason": "sense_keyのregardless_of_whetherは『〜であろうとなかろうと』だが、現行訳と代表occurrenceは『〜かどうか』という間接疑問。ifも前者には使えず、多義とsenseの上流整理が必要。",
+    "evidence": [
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json, entry vocab:01501, occurrence E0164",
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/audits/vocabulary-single-entry-nuance-qualifier/batches/batch-015.json, PENDING & previous authority",
+      "https://dictionary.cambridge.org/dictionary/english/whether-or-not",
+      "https://dictionary.cambridge.org/us/grammar/british-grammar/whether"
+    ],
+    "source_worker": "W06",
+    "source_workers": [
+      "W06"
+    ],
+    "confidence": "LOW",
+    "source_meaning_ja": "〜かどうか",
+    "sense_key": "regardless_of_whether",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W06"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W06": "b20c8296d5beeca381ea73007bd9c90476143823"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01521",
+    "canonical": "pace",
+    "problem": "paceの選択senseは心配等で行ったり来たり歩くことだが、代表occurrenceは単なる『ゆっくり歩く』。既存paraphraseも往復運動を保証せず、例とsenseの対応を上流確認する。",
+    "issue": "paceの選択senseは心配等で行ったり来たり歩くことだが、代表occurrenceは単なる『ゆっくり歩く』。既存paraphraseも往復運動を保証せず、例とsenseの対応を上流確認する。",
+    "reason": "paceの選択senseは心配等で行ったり来たり歩くことだが、代表occurrenceは単なる『ゆっくり歩く』。既存paraphraseも往復運動を保証せず、例とsenseの対応を上流確認する。",
+    "evidence": [
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json, entry vocab:01521, occurrence E0204",
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/audits/vocabulary-single-entry-nuance-qualifier/batches/batch-016.json, PENDING & previous authority",
+      "https://dictionary.cambridge.org/dictionary/english/pace"
+    ],
+    "source_worker": "W06",
+    "source_workers": [
+      "W06"
+    ],
+    "confidence": "LOW",
+    "source_meaning_ja": "歩き回る",
+    "sense_key": "walk_back_and_forth",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W06"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W06": "b20c8296d5beeca381ea73007bd9c90476143823"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01528",
+    "canonical": "punctual",
+    "problem": "punctualは形容詞だがgrammarRoleがnoun。さらにmeaning_jaが動詞形『時間を守る』でparaphraseはbe on time。品詞・prompt authorityを上流確認する。",
+    "issue": "punctualは形容詞だがgrammarRoleがnoun。さらにmeaning_jaが動詞形『時間を守る』でparaphraseはbe on time。品詞・prompt authorityを上流確認する。",
+    "reason": "punctualは形容詞だがgrammarRoleがnoun。さらにmeaning_jaが動詞形『時間を守る』でparaphraseはbe on time。品詞・prompt authorityを上流確認する。",
+    "evidence": [
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json, entry vocab:01528, occurrence E0213",
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/audits/vocabulary-single-entry-nuance-qualifier/batches/batch-016.json, PENDING & previous authority"
+    ],
+    "source_worker": "W06",
+    "source_workers": [
+      "W06"
+    ],
+    "confidence": "LOW",
+    "source_meaning_ja": "時間を守る",
+    "sense_key": "arriving_on_time",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W06"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W06": "b20c8296d5beeca381ea73007bd9c90476143823"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01535",
+    "canonical": "sheer",
+    "problem": "sheerは形容詞『まったくの』だが代表occurrence『離れる』はsheer away等の動詞義。source exampleのsense付与を上流確認する。",
+    "issue": "sheerは形容詞『まったくの』だが代表occurrence『離れる』はsheer away等の動詞義。source exampleのsense付与を上流確認する。",
+    "reason": "sheerは形容詞『まったくの』だが代表occurrence『離れる』はsheer away等の動詞義。source exampleのsense付与を上流確認する。",
+    "evidence": [
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json, entry vocab:01535, occurrence E0216",
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/audits/vocabulary-single-entry-nuance-qualifier/batches/batch-016.json, PENDING & previous authority"
+    ],
+    "source_worker": "W06",
+    "source_workers": [
+      "W06"
+    ],
+    "confidence": "LOW",
+    "source_meaning_ja": "まったくの",
+    "sense_key": "nothing_but",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W06"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W06": "b20c8296d5beeca381ea73007bd9c90476143823"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01538",
+    "canonical": "head somewhere",
+    "problem": "head somewhereは『〜へ向かう』だが代表occurrenceはheadの無関係な別構文を記しており、進行方向の語義根拠にならない。source exampleの上流確認が必要。",
+    "issue": "head somewhereは『〜へ向かう』だが代表occurrenceはheadの無関係な別構文を記しており、進行方向の語義根拠にならない。source exampleの上流確認が必要。",
+    "reason": "head somewhereは『〜へ向かう』だが代表occurrenceはheadの無関係な別構文を記しており、進行方向の語義根拠にならない。source exampleの上流確認が必要。",
+    "evidence": [
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json, entry vocab:01538, occurrence E0218",
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/audits/vocabulary-single-entry-nuance-qualifier/batches/batch-016.json, PENDING & previous authority"
+    ],
+    "source_worker": "W06",
+    "source_workers": [
+      "W06"
+    ],
+    "confidence": "LOW",
+    "source_meaning_ja": "somewhereへ向かう",
+    "sense_key": "move_in_a_direction",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W06"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W06": "b20c8296d5beeca381ea73007bd9c90476143823"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01539",
+    "canonical": "direction",
+    "problem": "directionの指定senseは方向・進路だがoccurrence『傾向』は別の抽象義。source exampleを上流確認する。",
+    "issue": "directionの指定senseは方向・進路だがoccurrence『傾向』は別の抽象義。source exampleを上流確認する。",
+    "reason": "directionの指定senseは方向・進路だがoccurrence『傾向』は別の抽象義。source exampleを上流確認する。",
+    "evidence": [
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json, entry vocab:01539, occurrence E0218",
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/audits/vocabulary-single-entry-nuance-qualifier/batches/batch-016.json, PENDING & previous authority"
+    ],
+    "source_worker": "W06",
+    "source_workers": [
+      "W06"
+    ],
+    "confidence": "LOW",
+    "source_meaning_ja": "方向",
+    "sense_key": "course_or_orientation",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W06"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W06": "b20c8296d5beeca381ea73007bd9c90476143823"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01540",
+    "canonical": "rusty",
+    "problem": "rustyは『さびた』が指定sense、occurrence『だめになった』は技能が鈍る等の比喩的な別義。source exampleの再選定を要する。",
+    "issue": "rustyは『さびた』が指定sense、occurrence『だめになった』は技能が鈍る等の比喩的な別義。source exampleの再選定を要する。",
+    "reason": "rustyは『さびた』が指定sense、occurrence『だめになった』は技能が鈍る等の比喩的な別義。source exampleの再選定を要する。",
+    "evidence": [
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json, entry vocab:01540, occurrence E0219",
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/audits/vocabulary-single-entry-nuance-qualifier/batches/batch-016.json, PENDING & previous authority"
+    ],
+    "source_worker": "W06",
+    "source_workers": [
+      "W06"
+    ],
+    "confidence": "LOW",
+    "source_meaning_ja": "さびた",
+    "sense_key": "covered_in_rust",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W06"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W06": "b20c8296d5beeca381ea73007bd9c90476143823"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01543",
+    "canonical": "scratch",
+    "problem": "scratchは名詞『ひっかき傷』だがoccurrenceは『ひっかいて音を立てる』動詞。source例の品詞不一致を上流確認する。",
+    "issue": "scratchは名詞『ひっかき傷』だがoccurrenceは『ひっかいて音を立てる』動詞。source例の品詞不一致を上流確認する。",
+    "reason": "scratchは名詞『ひっかき傷』だがoccurrenceは『ひっかいて音を立てる』動詞。source例の品詞不一致を上流確認する。",
+    "evidence": [
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json, entry vocab:01543, occurrence E0220",
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/audits/vocabulary-single-entry-nuance-qualifier/batches/batch-016.json, PENDING & previous authority"
+    ],
+    "source_worker": "W06",
+    "source_workers": [
+      "W06"
+    ],
+    "confidence": "LOW",
+    "source_meaning_ja": "ひっかき傷",
+    "sense_key": "surface_mark_from_scratching",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W06"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W06": "b20c8296d5beeca381ea73007bd9c90476143823"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01545",
+    "canonical": "surface",
+    "problem": "surfaceの指定senseは名詞『表面』、occurrenceは動詞『浮上する』。source exampleの品詞・語義が不一致。",
+    "issue": "surfaceの指定senseは名詞『表面』、occurrenceは動詞『浮上する』。source exampleの品詞・語義が不一致。",
+    "reason": "surfaceの指定senseは名詞『表面』、occurrenceは動詞『浮上する』。source exampleの品詞・語義が不一致。",
+    "evidence": [
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json, entry vocab:01545, occurrence E0220",
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/audits/vocabulary-single-entry-nuance-qualifier/batches/batch-016.json, PENDING & previous authority"
+    ],
+    "source_worker": "W06",
+    "source_workers": [
+      "W06"
+    ],
+    "confidence": "LOW",
+    "source_meaning_ja": "表面",
+    "sense_key": "outer_layer_or_top",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W06"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W06": "b20c8296d5beeca381ea73007bd9c90476143823"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01546",
+    "canonical": "polish",
+    "problem": "polishは動詞『磨く』、代表occurrenceは大文字Polish『ポーランドの』。別語・別品詞を紐付けており上流確認が必要。",
+    "issue": "polishは動詞『磨く』、代表occurrenceは大文字Polish『ポーランドの』。別語・別品詞を紐付けており上流確認が必要。",
+    "reason": "polishは動詞『磨く』、代表occurrenceは大文字Polish『ポーランドの』。別語・別品詞を紐付けており上流確認が必要。",
+    "evidence": [
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json, entry vocab:01546, occurrence E0220",
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/audits/vocabulary-single-entry-nuance-qualifier/batches/batch-016.json, PENDING & previous authority"
+    ],
+    "source_worker": "W06",
+    "source_workers": [
+      "W06"
+    ],
+    "confidence": "LOW",
+    "source_meaning_ja": "磨く",
+    "sense_key": "make_smooth_and_shiny",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W06"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W06": "b20c8296d5beeca381ea73007bd9c90476143823"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01554",
+    "canonical": "conduct",
+    "problem": "conductは動詞『実施する』だが代表occurrence『行為』は名詞。source exampleの品詞とsenseが不一致。",
+    "issue": "conductは動詞『実施する』だが代表occurrence『行為』は名詞。source exampleの品詞とsenseが不一致。",
+    "reason": "conductは動詞『実施する』だが代表occurrence『行為』は名詞。source exampleの品詞とsenseが不一致。",
+    "evidence": [
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json, entry vocab:01554, occurrence E0226",
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/audits/vocabulary-single-entry-nuance-qualifier/batches/batch-016.json, PENDING & previous authority"
+    ],
+    "source_worker": "W06",
+    "source_workers": [
+      "W06"
+    ],
+    "confidence": "LOW",
+    "source_meaning_ja": "実施する",
+    "sense_key": "organize_and_carry_out",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W06"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W06": "b20c8296d5beeca381ea73007bd9c90476143823"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01562",
+    "canonical": "greet",
+    "problem": "greetは人に会って挨拶するのが主要義で、単に『迎える』『welcome』とは一致しない場合がある。sense_keyもwelcomeに寄るので上流代表義を確認する。",
+    "issue": "greetは人に会って挨拶するのが主要義で、単に『迎える』『welcome』とは一致しない場合がある。sense_keyもwelcomeに寄るので上流代表義を確認する。",
+    "reason": "greetは人に会って挨拶するのが主要義で、単に『迎える』『welcome』とは一致しない場合がある。sense_keyもwelcomeに寄るので上流代表義を確認する。",
+    "evidence": [
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json, entry vocab:01562, occurrence E0228",
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/audits/vocabulary-single-entry-nuance-qualifier/batches/batch-016.json, PENDING & previous authority"
+    ],
+    "source_worker": "W06",
+    "source_workers": [
+      "W06"
+    ],
+    "confidence": "LOW",
+    "source_meaning_ja": "迎える",
+    "sense_key": "welcome_someone",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W06"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W06": "b20c8296d5beeca381ea73007bd9c90476143823"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01577",
+    "canonical": "fur",
+    "problem": "furは名詞『毛皮』だが代表occurrenceは『毛皮で裏をつける』という動詞用法。source例の品詞が不一致。",
+    "issue": "furは名詞『毛皮』だが代表occurrenceは『毛皮で裏をつける』という動詞用法。source例の品詞が不一致。",
+    "reason": "furは名詞『毛皮』だが代表occurrenceは『毛皮で裏をつける』という動詞用法。source例の品詞が不一致。",
+    "evidence": [
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json, entry vocab:01577, occurrence E0232",
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/audits/vocabulary-single-entry-nuance-qualifier/batches/batch-016.json, PENDING & previous authority"
+    ],
+    "source_worker": "W06",
+    "source_workers": [
+      "W06"
+    ],
+    "confidence": "LOW",
+    "source_meaning_ja": "毛皮",
+    "sense_key": "animal_hair_and_skin",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W06"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W06": "b20c8296d5beeca381ea73007bd9c90476143823"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01594",
+    "canonical": "nation",
+    "problem": "nationは政治共同体としての国家が指定senseだが、代表occurrenceは『国民（people）』で人々を指す別義。source例のsense付与を確認する。",
+    "issue": "nationは政治共同体としての国家が指定senseだが、代表occurrenceは『国民（people）』で人々を指す別義。source例のsense付与を確認する。",
+    "reason": "nationは政治共同体としての国家が指定senseだが、代表occurrenceは『国民（people）』で人々を指す別義。source例のsense付与を確認する。",
+    "evidence": [
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json, entry vocab:01594, occurrence E0239",
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/audits/vocabulary-single-entry-nuance-qualifier/batches/batch-016.json, PENDING & previous authority"
+    ],
+    "source_worker": "W06",
+    "source_workers": [
+      "W06"
+    ],
+    "confidence": "LOW",
+    "source_meaning_ja": "国家",
+    "sense_key": "country_as_political_community",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W06"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W06": "b20c8296d5beeca381ea73007bd9c90476143823"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01605",
+    "canonical": "blessing",
+    "problem": "blessingは恩恵・恵みのsenseだが、代表occurrenceは『神の祝福を求める祈り』という祈祷・唱句の別義。sourceの紐付けを上流確認する。",
+    "issue": "blessingは恩恵・恵みのsenseだが、代表occurrenceは『神の祝福を求める祈り』という祈祷・唱句の別義。sourceの紐付けを上流確認する。",
+    "reason": "blessingは恩恵・恵みのsenseだが、代表occurrenceは『神の祝福を求める祈り』という祈祷・唱句の別義。sourceの紐付けを上流確認する。",
+    "evidence": [
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json, entry vocab:01605, occurrence E0241",
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/audits/vocabulary-single-entry-nuance-qualifier/batches/batch-017.json, PENDING & previous authority"
+    ],
+    "source_worker": "W06",
+    "source_workers": [
+      "W06"
+    ],
+    "confidence": "LOW",
+    "source_meaning_ja": "恵み",
+    "sense_key": "beneficial_gift",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W06"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W06": "b20c8296d5beeca381ea73007bd9c90476143823"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01606",
+    "canonical": "curse",
+    "problem": "curseは超自然的な呪い・その言葉のsenseだが、代表occurrence『災いのもと』は比喩的な厄介事という別義。source exampleを上流確認する。",
+    "issue": "curseは超自然的な呪い・その言葉のsenseだが、代表occurrence『災いのもと』は比喩的な厄介事という別義。source exampleを上流確認する。",
+    "reason": "curseは超自然的な呪い・その言葉のsenseだが、代表occurrence『災いのもと』は比喩的な厄介事という別義。source exampleを上流確認する。",
+    "evidence": [
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json, entry vocab:01606, occurrence E0241",
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/audits/vocabulary-single-entry-nuance-qualifier/batches/batch-017.json, PENDING & previous authority"
+    ],
+    "source_worker": "W06",
+    "source_workers": [
+      "W06"
+    ],
+    "confidence": "LOW",
+    "source_meaning_ja": "呪い",
+    "sense_key": "supernatural_harm_or_words_invoking_it",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W06"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W06": "b20c8296d5beeca381ea73007bd9c90476143823"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01620",
+    "canonical": "characteristic",
+    "problem": "characteristicは形容詞『特徴的な』だが、代表occurrence『特性』は名詞義。品詞・意味の異なるsource例を上流確認する。",
+    "issue": "characteristicは形容詞『特徴的な』だが、代表occurrence『特性』は名詞義。品詞・意味の異なるsource例を上流確認する。",
+    "reason": "characteristicは形容詞『特徴的な』だが、代表occurrence『特性』は名詞義。品詞・意味の異なるsource例を上流確認する。",
+    "evidence": [
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json, entry vocab:01620, occurrence E0246",
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/audits/vocabulary-single-entry-nuance-qualifier/batches/batch-017.json, PENDING & previous authority",
+      "https://dictionary.cambridge.org/dictionary/english/characteristic"
+    ],
+    "source_worker": "W06",
+    "source_workers": [
+      "W06"
+    ],
+    "confidence": "LOW",
+    "source_meaning_ja": "特徴的な",
+    "sense_key": "typical_or_distinctive",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W06"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W06": "b20c8296d5beeca381ea73007bd9c90476143823"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01669",
+    "canonical": "side by side",
+    "problem": "sense_key adjacent_to_each_otherとprompt『並んで』は空間用法だが、代表E0239のwork side by sideは『協力し合って』。共同行動の比喩義と物理的横並びが混在。既存in a row/in lineも共同行動を表さず、上流のsense・例文・paraphrase裁定が必要。",
+    "issue": "sense_key adjacent_to_each_otherとprompt『並んで』は空間用法だが、代表E0239のwork side by sideは『協力し合って』。共同行動の比喩義と物理的横並びが混在。既存in a row/in lineも共同行動を表さず、上流のsense・例文・paraphrase裁定が必要。",
+    "reason": "sense_key adjacent_to_each_otherとprompt『並んで』は空間用法だが、代表E0239のwork side by sideは『協力し合って』。共同行動の比喩義と物理的横並びが混在。既存in a row/in lineも共同行動を表さず、上流のsense・例文・paraphrase裁定が必要。",
+    "evidence": [
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json source_index=1666 id=vocab:01669 sense_key=adjacent_to_each_other grammarRole=adverb",
+      "representative occurrence E0239 \"side by side\" | \"委員会は、大気汚染を抑制するために互いに協力し合うよう各国に要請した。\""
+    ],
+    "source_worker": "W07",
+    "source_workers": [
+      "W07"
+    ],
+    "confidence": "HIGH",
+    "source_meaning_ja": "並んで",
+    "sense_key": "adjacent_to_each_other",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W07"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W07": "7469d5a612cf4a5cf0544222ae06bbf9872ac994"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01764",
+    "canonical": "white-collar",
+    "problem": "white-collarはオフィスでの頭脳労働・管理職・専門職を広く含む。current『事務職の』とparaphrase clericalは書記・事務職に限定しすぎ、E0291 white-collar workersを十分に表せない。意味authorityを上流で改訂する必要。",
+    "issue": "white-collarはオフィスでの頭脳労働・管理職・専門職を広く含む。current『事務職の』とparaphrase clericalは書記・事務職に限定しすぎ、E0291 white-collar workersを十分に表せない。意味authorityを上流で改訂する必要。",
+    "reason": "white-collarはオフィスでの頭脳労働・管理職・専門職を広く含む。current『事務職の』とparaphrase clericalは書記・事務職に限定しすぎ、E0291 white-collar workersを十分に表せない。意味authorityを上流で改訂する必要。",
+    "evidence": [
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json source_index=1761 id=vocab:01764 sense_key=relating_to_office_work grammarRole=adjective",
+      "representative occurrence E0291 \"white-collar\" | \"今日では、サラリーマンでさえ大変な苦難に直面している。\"",
+      "Cambridge: https://dictionary.cambridge.org/dictionary/english/white-collar"
+    ],
+    "source_worker": "W07",
+    "source_workers": [
+      "W07"
+    ],
+    "confidence": "HIGH",
+    "source_meaning_ja": "事務職の",
+    "sense_key": "relating_to_office_work",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W07"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W07": "7469d5a612cf4a5cf0544222ae06bbf9872ac994"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01815",
+    "canonical": "with the door closed",
+    "problem": "canonical『with the door closed』とprompt『ドアを閉めた状態で』に対し、E0277の該当原文は『With restrictions removed』、訳は『制限が解除され』。with＋名詞＋過去分詞という構文だけ一致し具体例は不一致。構文authorityとcanonicalの関係を上流で確定する必要。",
+    "issue": "canonical『with the door closed』とprompt『ドアを閉めた状態で』に対し、E0277の該当原文は『With restrictions removed』、訳は『制限が解除され』。with＋名詞＋過去分詞という構文だけ一致し具体例は不一致。構文authorityとcanonicalの関係を上流で確定する必要。",
+    "reason": "canonical『with the door closed』とprompt『ドアを閉めた状態で』に対し、E0277の該当原文は『With restrictions removed』、訳は『制限が解除され』。with＋名詞＋過去分詞という構文だけ一致し具体例は不一致。構文authorityとcanonicalの関係を上流で確定する必要。",
+    "evidence": [
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json source_index=1812 id=vocab:01815 sense_key=accompanying_passive_state grammarRole=construction",
+      "representative occurrence E0277 \"With restrictions removed\" | \"制限が解除され、数千の新しい企業が誕生した。\""
+    ],
+    "source_worker": "W07",
+    "source_workers": [
+      "W07"
+    ],
+    "confidence": "HIGH",
+    "source_meaning_ja": "ドアを閉めた状態で",
+    "sense_key": "accompanying_passive_state",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W07"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W07": "7469d5a612cf4a5cf0544222ae06bbf9872ac994"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01816",
+    "canonical": "nothing is more important than health",
+    "problem": "canonical『nothing is more important than health』とprompt『健康ほど大切なものはない』に対し、E0293の原文は『nothing is more urgent than reducing Japan's huge deficit』。否定比較構文のみ共通、比較内容は別物。上流で代表例を修正または構文カードへ整理する必要。",
+    "issue": "canonical『nothing is more important than health』とprompt『健康ほど大切なものはない』に対し、E0293の原文は『nothing is more urgent than reducing Japan's huge deficit』。否定比較構文のみ共通、比較内容は別物。上流で代表例を修正または構文カードへ整理する必要。",
+    "reason": "canonical『nothing is more important than health』とprompt『健康ほど大切なものはない』に対し、E0293の原文は『nothing is more urgent than reducing Japan's huge deficit』。否定比較構文のみ共通、比較内容は別物。上流で代表例を修正または構文カードへ整理する必要。",
+    "evidence": [
+      "fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json source_index=1813 id=vocab:01816 sense_key=negative_comparative_superlative grammarRole=construction",
+      "representative occurrence E0293 \"nothing is more urgent than reducing\" | \"日本の膨大な赤字を削減することが何よりも緊急を要することだ、という結論に我々は達した。\""
+    ],
+    "source_worker": "W07",
+    "source_workers": [
+      "W07"
+    ],
+    "confidence": "HIGH",
+    "source_meaning_ja": "健康ほど大切なものはない",
+    "sense_key": "negative_comparative_superlative",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W07"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W07": "7469d5a612cf4a5cf0544222ae06bbf9872ac994"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01838",
+    "canonical": "litter",
+    "problem": "E0307のLitteringはごみの投棄行為だがcontextual_meaning_jaが「散らかったくず」という名詞義。verb sense_keyと代表用例glossに不整合があるため、上流の例文対応を要確認。",
+    "issue": "E0307のLitteringはごみの投棄行為だがcontextual_meaning_jaが「散らかったくず」という名詞義。verb sense_keyと代表用例glossに不整合があるため、上流の例文対応を要確認。",
+    "reason": "E0307のLitteringはごみの投棄行為だがcontextual_meaning_jaが「散らかったくず」という名詞義。verb sense_keyと代表用例glossに不整合があるため、上流の例文対応を要確認。",
+    "evidence": [
+      "data/vocabulary-v3.json at immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e, source index 1834",
+      "review-index.json status=PENDING",
+      "E0307: Littering in this facility is subject to a maximum fine of $500.",
+      "https://dictionary.cambridge.org/dictionary/english/litter"
+    ],
+    "source_worker": "W08",
+    "source_workers": [
+      "W08"
+    ],
+    "confidence": "MEDIUM",
+    "source_meaning_ja": "ごみを散らかす",
+    "sense_key": "leave_rubbish_in_public",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W08"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W08": "1e9733bd2b10296484a7d59eb60837de51a0ff15"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01908",
+    "canonical": "audience",
+    "problem": "meaning_ja「聴衆」は聞き手に限定されるが、sense_key people_watching_or_listening のaudienceは演劇・スポーツの観客も指す。代表例文が講義であることから一般義を狭めた訳語authorityに再検討が必要。",
+    "issue": "meaning_ja「聴衆」は聞き手に限定されるが、sense_key people_watching_or_listening のaudienceは演劇・スポーツの観客も指す。代表例文が講義であることから一般義を狭めた訳語authorityに再検討が必要。",
+    "reason": "meaning_ja「聴衆」は聞き手に限定されるが、sense_key people_watching_or_listening のaudienceは演劇・スポーツの観客も指す。代表例文が講義であることから一般義を狭めた訳語authorityに再検討が必要。",
+    "evidence": [
+      "data/vocabulary-v3.json at immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e, source index 1904",
+      "review-index.json status=PENDING",
+      "E0350: The audience was impressed by his eloquent lecture."
+    ],
+    "source_worker": "W08",
+    "source_workers": [
+      "W08"
+    ],
+    "confidence": "MEDIUM",
+    "source_meaning_ja": "聴衆",
+    "sense_key": "people_watching_or_listening",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W08"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W08": "1e9733bd2b10296484a7d59eb60837de51a0ff15"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01959",
+    "canonical": "position",
+    "problem": "positionのlocation/status/postは正当だが別々のsense。各paraphraseは別の一部義だけを満たすため、単一日本語promptとpartial alternativeの権限を上流で解決する必要がある。",
+    "issue": "positionのlocation/status/postは正当だが別々のsense。各paraphraseは別の一部義だけを満たすため、単一日本語promptとpartial alternativeの権限を上流で解決する必要がある。",
+    "reason": "positionのlocation/status/postは正当だが別々のsense。各paraphraseは別の一部義だけを満たすため、単一日本語promptとpartial alternativeの権限を上流で解決する必要がある。",
+    "evidence": [
+      "data/vocabulary-v3.json at immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e, source index 1955",
+      "review-index.json status=PENDING",
+      "E0360: Proper qualifications are required for the position; computer literacy is a must."
+    ],
+    "source_worker": "W08",
+    "source_workers": [
+      "W08"
+    ],
+    "confidence": "HIGH",
+    "source_meaning_ja": "位置・立場／地位・役職",
+    "sense_key": "location_status_or_job_post",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W08"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W08": "1e9733bd2b10296484a7d59eb60837de51a0ff15"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01961",
+    "canonical": "enclose",
+    "problem": "encloseの囲むと同封するは別の目的語・構文環境を持つ。代表用例は履歴書の同封で、surroundは囲む義のみ。単一カードのmulti-sense authorityが先行課題。",
+    "issue": "encloseの囲むと同封するは別の目的語・構文環境を持つ。代表用例は履歴書の同封で、surroundは囲む義のみ。単一カードのmulti-sense authorityが先行課題。",
+    "reason": "encloseの囲むと同封するは別の目的語・構文環境を持つ。代表用例は履歴書の同封で、surroundは囲む義のみ。単一カードのmulti-sense authorityが先行課題。",
+    "evidence": [
+      "data/vocabulary-v3.json at immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e, source index 1957",
+      "review-index.json status=PENDING",
+      "E0361: Enclose your resume in this envelope and submit it to the personnel department."
+    ],
+    "source_worker": "W08",
+    "source_workers": [
+      "W08"
+    ],
+    "confidence": "MEDIUM",
+    "source_meaning_ja": "囲む／同封する",
+    "sense_key": "surround_or_include_inside",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W08"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W08": "1e9733bd2b10296484a7d59eb60837de51a0ff15"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01962",
+    "canonical": "resume",
+    "problem": "代表例文E0361のyour resumeは名詞「履歴書」。カードのresumeは動詞「再開する」であり品詞・語義が一致しない。意味補足では解決不能。",
+    "issue": "代表例文E0361のyour resumeは名詞「履歴書」。カードのresumeは動詞「再開する」であり品詞・語義が一致しない。意味補足では解決不能。",
+    "reason": "代表例文E0361のyour resumeは名詞「履歴書」。カードのresumeは動詞「再開する」であり品詞・語義が一致しない。意味補足では解決不能。",
+    "evidence": [
+      "data/vocabulary-v3.json at immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e, source index 1958",
+      "review-index.json status=PENDING",
+      "E0361: Enclose your resume in this envelope and submit it to the personnel department."
+    ],
+    "source_worker": "W08",
+    "source_workers": [
+      "W08"
+    ],
+    "confidence": "HIGH",
+    "source_meaning_ja": "再開する",
+    "sense_key": "begin_again",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W08"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W08": "1e9733bd2b10296484a7d59eb60837de51a0ff15"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:01992",
+    "canonical": "shuffle",
+    "problem": "E0377のshuffling papersは書類を動かす事務作業であり、訳「混ぜ合わせる」/sense_key mix_or_reorderとは整合が不明瞭。blend/combineもこの使用義には適合せず、例文に合う上流senseを先に確定する。",
+    "issue": "E0377のshuffling papersは書類を動かす事務作業であり、訳「混ぜ合わせる」/sense_key mix_or_reorderとは整合が不明瞭。blend/combineもこの使用義には適合せず、例文に合う上流senseを先に確定する。",
+    "reason": "E0377のshuffling papersは書類を動かす事務作業であり、訳「混ぜ合わせる」/sense_key mix_or_reorderとは整合が不明瞭。blend/combineもこの使用義には適合せず、例文に合う上流senseを先に確定する。",
+    "evidence": [
+      "data/vocabulary-v3.json at immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e, source index 1988",
+      "review-index.json status=PENDING",
+      "E0377: I'm fed up with just shuffling papers and pouring coffee. I've made up my mind to quit!"
+    ],
+    "source_worker": "W08",
+    "source_workers": [
+      "W08"
+    ],
+    "confidence": "MEDIUM",
+    "source_meaning_ja": "混ぜ合わせる",
+    "sense_key": "mix_or_reorder",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W08"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W08": "1e9733bd2b10296484a7d59eb60837de51a0ff15"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:02035",
+    "canonical": "entertain",
+    "problem": "E0398のexecutives entertained bureaucrats at ryoteiは取引相手への接待・もてなしの意味。カードのsense_key amuse/meaning_ja楽しませるとは意味の中心が異なるため代表義の上流確認が必要。",
+    "issue": "E0398のexecutives entertained bureaucrats at ryoteiは取引相手への接待・もてなしの意味。カードのsense_key amuse/meaning_ja楽しませるとは意味の中心が異なるため代表義の上流確認が必要。",
+    "reason": "E0398のexecutives entertained bureaucrats at ryoteiは取引相手への接待・もてなしの意味。カードのsense_key amuse/meaning_ja楽しませるとは意味の中心が異なるため代表義の上流確認が必要。",
+    "evidence": [
+      "data/vocabulary-v3.json at immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e, source index 2031",
+      "review-index.json status=PENDING",
+      "E0398: The executives entertained the bureaucrats at ryotei, or exclusive Japanese restaurants, hoping for something in return."
+    ],
+    "source_worker": "W08",
+    "source_workers": [
+      "W08"
+    ],
+    "confidence": "HIGH",
+    "source_meaning_ja": "楽しませる",
+    "sense_key": "amuse",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W08"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W08": "1e9733bd2b10296484a7d59eb60837de51a0ff15"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:02126",
+    "canonical": "adopt",
+    "problem": "adoptの意味とhire/employの受理範囲を上流裁定。",
+    "source_meaning_ja": "採用する",
+    "sense_key": "choose_and_begin_to_use",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "issue": "adoptの意味とhire/employの受理範囲を上流裁定。",
+    "reason": "adoptの意味とhire/employの受理範囲を上流裁定。",
+    "evidence": [
+      "current production canonical / meaning_ja / sense_key / paraphrases"
+    ],
+    "source_worker": "BASE_AUTHORITY",
+    "confidence": "MEDIUM",
+    "review_provenance": {
+      "authority_type": "BASE_AUTHORITY",
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e"
+    }
+  },
+  {
+    "id": "vocab:02142",
+    "canonical": "resolution",
+    "problem": "resolutionが個人の決意・議案の決議・問題解決という独立senseを1枚に合算し、resolveは決意、solutionは解決にしか対応しない。qualifierのみでは解決せず上流のsense分割・paraphrase authority判断が必要。",
+    "issue": "resolutionが個人の決意・議案の決議・問題解決という独立senseを1枚に合算し、resolveは決意、solutionは解決にしか対応しない。qualifierのみでは解決せず上流のsense分割・paraphrase authority判断が必要。",
+    "reason": "resolutionが個人の決意・議案の決議・問題解決という独立senseを1枚に合算し、resolveは決意、solutionは解決にしか対応しない。qualifierのみでは解決せず上流のsense分割・paraphrase authority判断が必要。",
+    "evidence": [
+      "immutable vocabulary snapshot 2d60188baaceaf77c4e3370ebb37029c48201e2e : data/vocabulary-v3.json",
+      "immutable review-index and batch 022: PENDING",
+      "occurrence E0430 (source contextual meaning): 『決心』(『決定』)すること"
+    ],
+    "source_worker": "W09",
+    "source_workers": [
+      "W09"
+    ],
+    "confidence": "HIGH",
+    "source_meaning_ja": "決意・決議／解決",
+    "sense_key": "firm_or_formal_decision_or_solution",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W09"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W09": "6fde9b87d523105cc481fc0da39d354aa730caf6"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:02251",
+    "canonical": "settle",
+    "problem": "settleは紛争の解決、居住地への定住、気持ちが落ち着くことを横断して収録し、resolveとsettle downが異なるsenseだけを別々に代替している。1つのqualifierでは不適切な絞り込みとなるため、上流のsense分割が必要。",
+    "issue": "settleは紛争の解決、居住地への定住、気持ちが落ち着くことを横断して収録し、resolveとsettle downが異なるsenseだけを別々に代替している。1つのqualifierでは不適切な絞り込みとなるため、上流のsense分割が必要。",
+    "reason": "settleは紛争の解決、居住地への定住、気持ちが落ち着くことを横断して収録し、resolveとsettle downが異なるsenseだけを別々に代替している。1つのqualifierでは不適切な絞り込みとなるため、上流のsense分割が必要。",
+    "evidence": [
+      "immutable vocabulary snapshot 2d60188baaceaf77c4e3370ebb37029c48201e2e : data/vocabulary-v3.json",
+      "immutable review-index and batch 023: PENDING",
+      "occurrence E0453 (source contextual meaning): ...を『決定する』"
+    ],
+    "source_worker": "W09",
+    "source_workers": [
+      "W09"
+    ],
+    "confidence": "HIGH",
+    "source_meaning_ja": "解決する・決着をつける／定住する・落ち着く",
+    "sense_key": "resolve_or_become_established",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W09"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W09": "6fde9b87d523105cc481fc0da39d354aa730caf6"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:02291",
+    "canonical": "condition",
+    "problem": "source occurrence E0469 は「適当な状態にする」（動詞condition）だが、canonicalは名詞condition「状態」。代表occurrenceとgrammarRoleが不一致。statusとの違いも上流再確認後に審査する。",
+    "issue": "source occurrence E0469 は「適当な状態にする」（動詞condition）だが、canonicalは名詞condition「状態」。代表occurrenceとgrammarRoleが不一致。statusとの違いも上流再確認後に審査する。",
+    "reason": "source occurrence E0469 は「適当な状態にする」（動詞condition）だが、canonicalは名詞condition「状態」。代表occurrenceとgrammarRoleが不一致。statusとの違いも上流再確認後に審査する。",
+    "evidence": [
+      "Vocabulary source vocab:02291 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0469\",\"start\":57,\"end\":66,\"contextual_meaning_ja\":\"(…に備えて)を『適当な状態にする』\"}"
+    ],
+    "source_worker": "W10",
+    "source_workers": [
+      "W10"
+    ],
+    "confidence": "MEDIUM",
+    "source_meaning_ja": "状態",
+    "sense_key": "state_of_something",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:02310",
+    "canonical": "mount",
+    "problem": "mountの登る義と取り付ける義を一つのsense_key climb_or_attachに統合し、climb/attach/installを同時受理している。統合senseの安全性を上流確認する。",
+    "issue": "mountの登る義と取り付ける義を一つのsense_key climb_or_attachに統合し、climb/attach/installを同時受理している。統合senseの安全性を上流確認する。",
+    "reason": "mountの登る義と取り付ける義を一つのsense_key climb_or_attachに統合し、climb/attach/installを同時受理している。統合senseの安全性を上流確認する。",
+    "evidence": [
+      "Vocabulary source vocab:02310 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0479\",\"start\":4,\"end\":11,\"contextual_meaning_ja\":\"...を『登る』(ascend\"}"
+    ],
+    "source_worker": "W10",
+    "source_workers": [
+      "W10"
+    ],
+    "confidence": "MEDIUM",
+    "source_meaning_ja": "登る・上がる／取り付ける",
+    "sense_key": "climb_or_attach",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:02350",
+    "canonical": "loud",
+    "problem": "source occurrence E0494のcontextual_meaning_jaは「騒々しい」という音量義だが、sense_key bright_and_showy とprompt「派手な」は視覚義。代表義の不整合。",
+    "issue": "source occurrence E0494のcontextual_meaning_jaは「騒々しい」という音量義だが、sense_key bright_and_showy とprompt「派手な」は視覚義。代表義の不整合。",
+    "reason": "source occurrence E0494のcontextual_meaning_jaは「騒々しい」という音量義だが、sense_key bright_and_showy とprompt「派手な」は視覚義。代表義の不整合。",
+    "evidence": [
+      "Vocabulary source vocab:02350 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0494\",\"start\":13,\"end\":17,\"contextual_meaning_ja\":\"『騒々しい』\"}"
+    ],
+    "source_worker": "W10",
+    "source_workers": [
+      "W10"
+    ],
+    "confidence": "MEDIUM",
+    "source_meaning_ja": "派手な",
+    "sense_key": "bright_and_showy",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:02356",
+    "canonical": "occasion",
+    "problem": "occasionは機会・場合・出来事の別義があり、opportunity/case/eventを単一senseで一括受理。個々の代替は相互非互換で、上流のsense分割が必要。",
+    "issue": "occasionは機会・場合・出来事の別義があり、opportunity/case/eventを単一senseで一括受理。個々の代替は相互非互換で、上流のsense分割が必要。",
+    "reason": "occasionは機会・場合・出来事の別義があり、opportunity/case/eventを単一senseで一括受理。個々の代替は相互非互換で、上流のsense分割が必要。",
+    "evidence": [
+      "Vocabulary source vocab:02356 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0496\",\"start\":45,\"end\":53,\"contextual_meaning_ja\":\"『時』\"}"
+    ],
+    "source_worker": "W10",
+    "source_workers": [
+      "W10"
+    ],
+    "confidence": "MEDIUM",
+    "source_meaning_ja": "機会・場合／特定の出来事",
+    "sense_key": "particular_time_event_or_opportunity",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:02382",
+    "canonical": "access to something",
+    "problem": "access to somethingは名詞accessに前置詞句が付く形で、baseのgrammarRole prepositionとsense_key opportunity_to_useが対応していない。上流のgrammarRole再検証が必要。",
+    "issue": "access to somethingは名詞accessに前置詞句が付く形で、baseのgrammarRole prepositionとsense_key opportunity_to_useが対応していない。上流のgrammarRole再検証が必要。",
+    "reason": "access to somethingは名詞accessに前置詞句が付く形で、baseのgrammarRole prepositionとsense_key opportunity_to_useが対応していない。上流のgrammarRole再検証が必要。",
+    "evidence": [
+      "Vocabulary source vocab:02382 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0489\",\"start\":56,\"end\":76,\"contextual_meaning_ja\":\"その険しい小道に沿って彼らは前進した。それは国境へたどり着く唯一の方法だった。\"}"
+    ],
+    "source_worker": "W10",
+    "source_workers": [
+      "W10"
+    ],
+    "confidence": "MEDIUM",
+    "source_meaning_ja": "somethingを利用できること",
+    "sense_key": "opportunity_to_use",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:02418",
+    "canonical": "waste",
+    "problem": "source occurrence E0532のcontextual_meaning_jaは「荒涼とした広がり」の名詞waste（荒れ地）を示すが、cardは動詞「無駄にする」。source authority不一致。",
+    "issue": "source occurrence E0532のcontextual_meaning_jaは「荒涼とした広がり」の名詞waste（荒れ地）を示すが、cardは動詞「無駄にする」。source authority不一致。",
+    "reason": "source occurrence E0532のcontextual_meaning_jaは「荒涼とした広がり」の名詞waste（荒れ地）を示すが、cardは動詞「無駄にする」。source authority不一致。",
+    "evidence": [
+      "Vocabulary source vocab:02418 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0532\",\"start\":21,\"end\":27,\"contextual_meaning_ja\":\"荒涼とした広がり\"}"
+    ],
+    "source_worker": "W10",
+    "source_workers": [
+      "W10"
+    ],
+    "confidence": "MEDIUM",
+    "source_meaning_ja": "無駄にする",
+    "sense_key": "use_without_benefit",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:02421",
+    "canonical": "torture",
+    "problem": "source occurrence E0536のcontextual_meaning_jaは「拷問にかける」の動詞tortureだが、cardのgrammarRoleはnoun。上流の品詞対応不整合。",
+    "issue": "source occurrence E0536のcontextual_meaning_jaは「拷問にかける」の動詞tortureだが、cardのgrammarRoleはnoun。上流の品詞対応不整合。",
+    "reason": "source occurrence E0536のcontextual_meaning_jaは「拷問にかける」の動詞tortureだが、cardのgrammarRoleはnoun。上流の品詞対応不整合。",
+    "evidence": [
+      "Vocabulary source vocab:02421 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0536\",\"start\":30,\"end\":37,\"contextual_meaning_ja\":\"...を『拷問にかける』\"}"
+    ],
+    "source_worker": "W10",
+    "source_workers": [
+      "W10"
+    ],
+    "confidence": "MEDIUM",
+    "source_meaning_ja": "拷問",
+    "sense_key": "infliction_of_severe_pain",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:02429",
+    "canonical": "Buddhist",
+    "problem": "source occurrence E0550は「仏教徒」の名詞Buddhistだが、cardは形容詞「仏教の」。代表occurrenceとgrammarRoleの不一致。",
+    "issue": "source occurrence E0550は「仏教徒」の名詞Buddhistだが、cardは形容詞「仏教の」。代表occurrenceとgrammarRoleの不一致。",
+    "reason": "source occurrence E0550は「仏教徒」の名詞Buddhistだが、cardは形容詞「仏教の」。代表occurrenceとgrammarRoleの不一致。",
+    "evidence": [
+      "Vocabulary source vocab:02429 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0550\",\"start\":17,\"end\":25,\"contextual_meaning_ja\":\"仏教徒\"}"
+    ],
+    "source_worker": "W10",
+    "source_workers": [
+      "W10"
+    ],
+    "confidence": "MEDIUM",
+    "source_meaning_ja": "仏教の",
+    "sense_key": "relating_to_buddhism",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
+  },
+  {
+    "id": "vocab:02473",
+    "canonical": "rough",
+    "problem": "roughは表面のざらつきと概数の別義を併記し、coarse/approximateも相互置換不可。sense_key uneven_or_approximateの複数sense統合は上流審査対象。",
+    "issue": "roughは表面のざらつきと概数の別義を併記し、coarse/approximateも相互置換不可。sense_key uneven_or_approximateの複数sense統合は上流審査対象。",
+    "reason": "roughは表面のざらつきと概数の別義を併記し、coarse/approximateも相互置換不可。sense_key uneven_or_approximateの複数sense統合は上流審査対象。",
+    "evidence": [
+      "Vocabulary source vocab:02473 @ 2d60188baaceaf77c4e3370ebb37029c48201e2e; frozen source blob 326021c771aa5b4746b120f5d1086ecce33a334f",
+      "Frozen batch review-index: status=PENDING; previous Near-Synonym=NONE; groups=none",
+      "Representative occurrence {\"item_id\":\"E0558\",\"start\":52,\"end\":57,\"contextual_meaning_ja\":\"『荒っぽい』\"}"
+    ],
+    "source_worker": "W10",
+    "source_workers": [
+      "W10"
+    ],
+    "confidence": "MEDIUM",
+    "source_meaning_ja": "粗い・ざらざらした／おおよその",
+    "sense_key": "uneven_or_approximate",
+    "status": "UPSTREAM_AUTHORITY_REVIEW",
+    "production_change_allowed": false,
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W10"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+      },
+      "deduplication": null
+    }
   }
 ]

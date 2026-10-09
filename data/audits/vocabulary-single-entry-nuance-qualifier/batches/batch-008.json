@@ -11,24 +11,41 @@
       "what time is it?"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "what time is it?"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「今何時ですか」はask_current_timeの用法として例文「今何時」に適合。現行1個の代替表現は文脈内で中心義・語調・強度が許容範囲。安定して学習上重要な追加qualifierは不要。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00704, sense_key ask_current_time",
+      "immutable base representative item E0559: \"By the way, do you have the time?\" \"Let's see... it's a quarter to eight.\""
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00705",
@@ -43,24 +60,62 @@
       "hopeful"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
+    "single_entry_decision": "PARAPHRASE_REVALIDATION_ONLY",
+    "recommended_prompt": "楽観的な",
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "recommended_paraphrases": [
+      "hopeful"
+    ],
+    "removed_paraphrases": [
+      "positive"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "positive",
+        "decision": "REMOVE",
+        "reason": "optimisticは将来良いことが起きると期待する意味。positiveは現在の態度が前向きなことも表し、未来予測・期待を保証しない。hopefulは適合。",
+        "source_worker": "W02",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      },
+      {
+        "paraphrase": "hopeful",
+        "decision": "KEEP",
+        "reason": "「楽観的な」の指定senseで使用可能。明確な語調・強度・文脈不一致は確認されない。",
+        "source_worker": "W02",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      }
+    ],
+    "reason": "optimisticは将来良いことが起きると期待する意味。positiveは現在の態度が前向きなことも表し、未来予測・期待を保証しない。hopefulは適合。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00705, sense_key expecting_good_outcomes",
+      "immutable base representative item E0362: It's optimistic of you to believe that things will work out. At best there's a fifty-fifty chance.",
+      {
+        "url": "https://dictionary.cambridge.org/dictionary/english/optimistic",
+        "finding": "hoping or believing good things will happen in the future"
+      }
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00706",
@@ -75,24 +130,58 @@
       "frustrated"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
+    "single_entry_decision": "PARAPHRASE_REVALIDATION_ONLY",
+    "recommended_prompt": "いら立った",
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "recommended_paraphrases": [
+      "annoyed"
+    ],
+    "removed_paraphrases": [
+      "frustrated"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "annoyed",
+        "decision": "KEEP",
+        "reason": "「いら立った」の指定senseで使用可能。明確な語調・強度・文脈不一致は確認されない。",
+        "source_worker": "W02",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      },
+      {
+        "paraphrase": "frustrated",
+        "decision": "REMOVE",
+        "reason": "irritatedは苛立ち・不快感。frustratedは目標を阻まれた無力感・欲求不満に重心があり、苛立ちとは別の原因・感情を表す場合がある。annoyedは維持。",
+        "source_worker": "W02",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      }
+    ],
+    "reason": "irritatedは苛立ち・不快感。frustratedは目標を阻まれた無力感・欲求不満に重心があり、苛立ちとは別の原因・感情を表す場合がある。annoyedは維持。",
+    "confidence": "MEDIUM",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00706, sense_key annoyed_or_impatient",
+      "immutable base representative item E0501: His ambiguous reply made her all the more irritated."
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00707",
@@ -107,26 +196,60 @@
       "scorn someone"
     ],
     "previous_near_synonym_authority": "KEEP",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
+    "single_entry_decision": "PARAPHRASE_REVALIDATION_ONLY",
+    "recommended_prompt": "someoneを軽蔑する",
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "recommended_paraphrases": [
+      "scorn someone"
+    ],
+    "removed_paraphrases": [
+      "look down on someone"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
+    "paraphrase_review": [
+      {
+        "paraphrase": "look down on someone",
+        "decision": "REMOVE",
+        "reason": "despiseは非常に強い軽蔑・嫌悪を伴う。look down onは他者を下位に見る態度が中核で、必ずしも同程度の強い嫌悪ではない。scornは軽蔑の強度を維持する。",
+        "source_worker": "W02",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      },
+      {
+        "paraphrase": "scorn someone",
+        "decision": "KEEP",
+        "reason": "「someoneを軽蔑する」の指定senseで使用可能。明確な語調・強度・文脈不一致は確認されない。",
+        "source_worker": "W02",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      }
+    ],
+    "reason": "despiseは非常に強い軽蔑・嫌悪を伴う。look down onは他者を下位に見る態度が中核で、必ずしも同程度の強い嫌悪ではない。scornは軽蔑の強度を維持する。",
+    "confidence": "MEDIUM",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00707, sense_key feel_strong_dislike",
+      "immutable base representative item E0375: \"You despise Nick, don't you?\" \"On the contrary! I look up to him.\""
+    ],
     "previous_near_synonym_group_ids": [
       "NSD-00599-01511"
-    ]
+    ],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00708",
@@ -138,24 +261,39 @@
     "sense_key": "rude_words_or_actions",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「侮辱」はrude_words_or_actionsの用法として例文「侮辱」に適合。代替表現は登録されていない。安定して学習上重要な追加qualifierは不要。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00708, sense_key rude_words_or_actions",
+      "immutable base representative item E0376: His constant insults aroused her anger."
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00709",
@@ -170,24 +308,58 @@
       "silly"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
+    "single_entry_decision": "PARAPHRASE_REVALIDATION_ONLY",
+    "recommended_prompt": "ばかげた",
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "recommended_paraphrases": [
+      "ridiculous"
+    ],
+    "removed_paraphrases": [
+      "silly"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "ridiculous",
+        "decision": "KEEP",
+        "reason": "「ばかげた」の指定senseで使用可能。明確な語調・強度・文脈不一致は確認されない。",
+        "source_worker": "W02",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      },
+      {
+        "paraphrase": "silly",
+        "decision": "REMOVE",
+        "reason": "absurdは明らかに不合理でばかげた強い評価。sillyは軽率・くだらない程度でも使え、深刻な非合理性に対する強度を失う。ridiculousは整合。",
+        "source_worker": "W02",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      }
+    ],
+    "reason": "absurdは明らかに不合理でばかげた強い評価。sillyは軽率・くだらない程度でも使え、深刻な非合理性に対する強度を失う。ridiculousは整合。",
+    "confidence": "MEDIUM",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00709, sense_key ridiculous_or_unreasonable",
+      "immutable base representative item E0381: Many people today think of loyalty to a company as an absurd notion."
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00710",
@@ -199,24 +371,39 @@
     "sense_key": "travel_regularly_to_work_or_school",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「通勤・通学する」はtravel_regularly_to_work_or_schoolの用法として例文「通勤する」に適合。代替表現は登録されていない。安定して学習上重要な追加qualifierは不要。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00710, sense_key travel_regularly_to_work_or_school",
+      "immutable base representative item E0382: I have to commute all the way from a distant suburb. I'm sick of it!"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00711",
@@ -231,26 +418,44 @@
       "chase after"
     ],
     "previous_near_synonym_authority": "KEEP",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "seek",
+      "chase after"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
+    "paraphrase_review": [],
+    "reason": "「追い求める」はwork_toward_or_followの用法として例文「理想を追い求める」に適合。現行2個の代替表現は文脈内で中心義・語調・強度が許容範囲。安定して学習上重要な追加qualifierは不要。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00711, sense_key work_toward_or_follow",
+      "immutable base representative item E0383: I want to spend the rest of my life pursuing my ideals."
+    ],
     "previous_near_synonym_group_ids": [
       "NSD-00711-01359"
-    ]
+    ],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00712",
@@ -264,24 +469,41 @@
       "giving"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "giving"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「気前のよい」はwilling_to_give_or_shareの用法として例文「気前がよかった」に適合。現行1個の代替表現は文脈内で中心義・語調・強度が許容範囲。安定して学習上重要な追加qualifierは不要。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00712, sense_key willing_to_give_or_share",
+      "immutable base representative item E0353: He used to be well off and generous, but now he lives from hand to mouth."
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00713",
@@ -293,24 +515,39 @@
     "sense_key": "wanting_more_than_needed",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「欲張りな」はwanting_more_than_neededの用法として例文「欲が深い」に適合。代替表現は登録されていない。安定して学習上重要な追加qualifierは不要。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00713, sense_key wanting_more_than_needed",
+      "immutable base representative item E0354: Nick is by no means satisfied with the reward. He is selfish and greedy."
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00714",
@@ -326,26 +563,68 @@
       "effect"
     ],
     "previous_near_synonym_authority": "KEEP",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
+    "single_entry_decision": "PARAPHRASE_REVALIDATION_ONLY",
+    "recommended_prompt": "結果",
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "recommended_paraphrases": [
+      "result",
+      "consequence"
+    ],
+    "removed_paraphrases": [
+      "effect"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
+    "paraphrase_review": [
+      {
+        "paraphrase": "result",
+        "decision": "KEEP",
+        "reason": "「結果」の指定senseで使用可能。明確な語調・強度・文脈不一致は確認されない。",
+        "source_worker": "W02",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      },
+      {
+        "paraphrase": "consequence",
+        "decision": "KEEP",
+        "reason": "「結果」の指定senseで使用可能。明確な語調・強度・文脈不一致は確認されない。",
+        "source_worker": "W02",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      },
+      {
+        "paraphrase": "effect",
+        "decision": "REMOVE",
+        "reason": "outcomeは出来事・過程が最終的にもたらす帰結。effectは広く作用・影響の意味で、最終結果でない局所的な影響も表す。resultとconsequenceは帰結を表すため維持。",
+        "source_worker": "W02",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      }
+    ],
+    "reason": "outcomeは出来事・過程が最終的にもたらす帰結。effectは広く作用・影響の意味で、最終結果でない局所的な影響も表す。resultとconsequenceは帰結を表すため維持。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00714, sense_key result_of_an_event_or_process",
+      "immutable base representative item E0389: The candidate was disappointed by the outcome of the election."
+    ],
     "previous_near_synonym_group_ids": [
       "NSD-00714-00767"
-    ]
+    ],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00715",
@@ -382,6 +661,7 @@
       "exact"
     ],
     "added_paraphrases": [],
+    "paraphrase_review": [],
     "reason": "accurateは誤りのなさ、preciseは細部の明確さ、exactは一致・厳密な対応を表す。現在の相互paraphraseを絞り、accurateのcorrectだけ残す。",
     "confidence": "MEDIUM",
     "evidence": [
@@ -390,7 +670,8 @@
     ],
     "previous_near_synonym_group_ids": [
       "NSD-00715-01460"
-    ]
+    ],
+    "review_provenance": null
   },
   {
     "id": "vocab:00716",
@@ -421,12 +702,17 @@
     "recommended_paraphrases": null,
     "removed_paraphrases": [],
     "added_paraphrases": [],
+    "paraphrase_review": [],
     "reason": "contradictの反論と矛盾する関係の代表義を再確認。",
     "confidence": "MEDIUM",
     "evidence": [
       "current production canonical / meaning_ja / sense_key / paraphrases"
     ],
-    "previous_near_synonym_group_ids": []
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "BASE_AUTHORITY",
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e"
+    }
   },
   {
     "id": "vocab:00717",
@@ -441,26 +727,64 @@
       "unclear"
     ],
     "previous_near_synonym_authority": "KEEP",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
+    "single_entry_decision": "PARAPHRASE_REVALIDATION_ONLY",
+    "recommended_prompt": "曖昧な",
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "recommended_paraphrases": [
+      "unclear"
+    ],
+    "removed_paraphrases": [
+      "ambiguous"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
+    "paraphrase_review": [
+      {
+        "paraphrase": "ambiguous",
+        "decision": "REMOVE",
+        "reason": "vagueは詳細が不明確・漠然としていること。ambiguousは複数の解釈が可能という別の構造の曖昧さで、必ずしも同義でない。unclearは一般的な不明確性で維持。",
+        "source_worker": "W02",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      },
+      {
+        "paraphrase": "unclear",
+        "decision": "KEEP",
+        "reason": "「曖昧な」の指定senseで使用可能。明確な語調・強度・文脈不一致は確認されない。",
+        "source_worker": "W02",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      }
+    ],
+    "reason": "vagueは詳細が不明確・漠然としていること。ambiguousは複数の解釈が可能という別の構造の曖昧さで、必ずしも同義でない。unclearは一般的な不明確性で維持。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00717, sense_key unclear_or_indefinite",
+      "immutable base representative item E0404: The vague rumor proved to be false. Nevertheless, some skepticism lingers on.",
+      {
+        "url": "https://dictionary.cambridge.org/dictionary/english/ambiguous",
+        "finding": "more than one possible meaning"
+      }
+    ],
     "previous_near_synonym_group_ids": [
       "NSD-00717-00870"
-    ]
+    ],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00718",
@@ -474,24 +798,49 @@
       "gossip"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
+    "single_entry_decision": "PARAPHRASE_REVALIDATION_ONLY",
+    "recommended_prompt": "噂",
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "recommended_paraphrases": [],
+    "removed_paraphrases": [
+      "gossip"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "gossip",
+        "decision": "REMOVE",
+        "reason": "rumorは事実未確認の情報一般（政治・事件・企業などを含む）。gossipは人の私生活や噂話を語る行為・内容に寄り、範囲が狭い。提示英文のvague rumorと常に置換できない。",
+        "source_worker": "W02",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      }
+    ],
+    "reason": "rumorは事実未確認の情報一般（政治・事件・企業などを含む）。gossipは人の私生活や噂話を語る行為・内容に寄り、範囲が狭い。提示英文のvague rumorと常に置換できない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00718, sense_key unverified_information",
+      "immutable base representative item E0404: The vague rumor proved to be false. Nevertheless, some skepticism lingers on."
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00719",
@@ -526,6 +875,7 @@
       "adequate"
     ],
     "added_paraphrases": [],
+    "paraphrase_review": [],
     "reason": "sufficientは目的に必要な量・条件を満たすこと、adequateはその用途で受け入れられる基準を満たすことを表す。相互canonicalとadequate側のgeneric enoughを外し、それぞれのpromptに自然な代替だけを残す。",
     "confidence": "MEDIUM",
     "evidence": [
@@ -534,7 +884,8 @@
     ],
     "previous_near_synonym_group_ids": [
       "NSD-00719-00902"
-    ]
+    ],
+    "review_provenance": null
   },
   {
     "id": "vocab:00720",
@@ -549,24 +900,57 @@
       "be related to"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
+    "single_entry_decision": "PARAPHRASE_REVALIDATION_ONLY",
+    "recommended_prompt": "関連する",
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "recommended_paraphrases": [],
+    "removed_paraphrases": [
+      "relate to",
+      "be related to"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "relate to",
+        "decision": "REMOVE",
+        "reason": "relevantは論点や目的に関係があり適切・重要であること。relate to / be related toは単に何らかの関連を持つだけでも成立し、論点に対する関連性の高さが欠落する。",
+        "source_worker": "W02",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      },
+      {
+        "paraphrase": "be related to",
+        "decision": "REMOVE",
+        "reason": "relevantは論点や目的に関係があり適切・重要であること。relate to / be related toは単に何らかの関連を持つだけでも成立し、論点に対する関連性の高さが欠落する。",
+        "source_worker": "W02",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      }
+    ],
+    "reason": "relevantは論点や目的に関係があり適切・重要であること。relate to / be related toは単に何らかの関連を持つだけでも成立し、論点に対する関連性の高さが欠落する。",
+    "confidence": "MEDIUM",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00720, sense_key closely_connected_to_topic",
+      "immutable base representative item E0408: They found out the truth while examining a pile of relevant documents."
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00721",
@@ -581,24 +965,59 @@
       "sharp"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
-    "qualifier_dimension": [],
-    "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "single_entry_decision": "QUALIFIER_AND_PARAPHRASE",
+    "recommended_prompt": "（色・記憶・描写などが）鮮明で生き生きした",
+    "qualifier_dimension": [
+      "evocative_intensity"
+    ],
+    "qualifier_text": "色・記憶・描写などが生き生き鮮明",
+    "recommended_paraphrases": [],
+    "removed_paraphrases": [
+      "clear",
+      "sharp"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "clear",
+        "decision": "REMOVE",
+        "reason": "vividは視覚・記憶・描写が生き生きと強い印象を与える。clearは判明・明瞭、sharpは輪郭が鮮明なだけの用法が広く、この喚起力・色彩の強さを保証しない。",
+        "source_worker": "W02",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      },
+      {
+        "paraphrase": "sharp",
+        "decision": "REMOVE",
+        "reason": "vividは視覚・記憶・描写が生き生きと強い印象を与える。clearは判明・明瞭、sharpは輪郭が鮮明なだけの用法が広く、この喚起力・色彩の強さを保証しない。",
+        "source_worker": "W02",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      }
+    ],
+    "reason": "vividは視覚・記憶・描写が生き生きと強い印象を与える。clearは判明・明瞭、sharpは輪郭が鮮明なだけの用法が広く、この喚起力・色彩の強さを保証しない。",
+    "confidence": "MEDIUM",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00721, sense_key producing_a_clear_strong_image",
+      "immutable base representative item E0412: I'm still haunted by a vivid nightmare I had last night."
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00722",
@@ -610,24 +1029,39 @@
     "sense_key": "pause_before_acting",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「ためらう」はpause_before_actingの用法として例文「侵害することにためらう」に適合。代替表現は登録されていない。安定して学習上重要な追加qualifierは不要。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00722, sense_key pause_before_acting",
+      "immutable base representative item E0413: By and large, reporters don't hesitate to intrude on one's privacy."
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00723",
@@ -639,24 +1073,39 @@
     "sense_key": "easily_affected_or_offended",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「敏感な」はeasily_affected_or_offendedの用法として例文「批判に敏感」に適合。代替表現は登録されていない。安定して学習上重要な追加qualifierは不要。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00723, sense_key easily_affected_or_offended",
+      "immutable base representative item E0416: On the whole, the elite are not sensitive to criticism."
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00724",
@@ -670,24 +1119,51 @@
       "fantasy"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
-    "qualifier_dimension": [],
-    "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "single_entry_decision": "QUALIFIER_AND_PARAPHRASE",
+    "recommended_prompt": "（現実と思い込むが実際には違う）幻想・錯覚",
+    "qualifier_dimension": [
+      "false_belief"
+    ],
+    "qualifier_text": "現実と思い込むが実際には違う",
+    "recommended_paraphrases": [],
+    "removed_paraphrases": [
+      "fantasy"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "fantasy",
+        "decision": "REMOVE",
+        "reason": "illusionは事実と異なる思い込みや見かけ。fantasyは空想・想像の産物で、本人がそれを現実だと誤認しているとは限らない。代表例『permanent peace is ... an illusion』にも合う。",
+        "source_worker": "W02",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      }
+    ],
+    "reason": "illusionは事実と異なる思い込みや見かけ。fantasyは空想・想像の産物で、本人がそれを現実だと誤認しているとは限らない。代表例『permanent peace is ... an illusion』にも合う。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00724, sense_key false_belief_or_appearance",
+      "immutable base representative item E0443: In my opinion, permanent peace is nothing but an illusion."
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00725",
@@ -701,26 +1177,43 @@
       "obstinate"
     ],
     "previous_near_synonym_authority": "KEEP",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "obstinate"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
+    "paraphrase_review": [],
+    "reason": "「頑固な」はunwilling_to_change_opinionの用法として例文「頑固」に適合。現行1個の代替表現は文脈内で中心義・語調・強度が許容範囲。安定して学習上重要な追加qualifierは不要。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00725, sense_key unwilling_to_change_opinion",
+      "immutable base representative item E0154: The more stubborn you are, the more isolated you become."
+    ],
     "previous_near_synonym_group_ids": [
       "NSD-00725-01890"
-    ]
+    ],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00726",
@@ -735,24 +1228,58 @@
       "embarrassing"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
+    "single_entry_decision": "PARAPHRASE_REVALIDATION_ONLY",
+    "recommended_prompt": "気まずい",
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "recommended_paraphrases": [
+      "uncomfortable"
+    ],
+    "removed_paraphrases": [
+      "embarrassing"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "uncomfortable",
+        "decision": "KEEP",
+        "reason": "「気まずい」の指定senseで使用可能。明確な語調・強度・文脈不一致は確認されない。",
+        "source_worker": "W02",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      },
+      {
+        "paraphrase": "embarrassing",
+        "decision": "REMOVE",
+        "reason": "awkwardは場面に居づらさ・気まずさがある状態。embarrassingは人に恥ずかしさを感じさせる点が中心で、気まずい沈黙などが必ずしも恥の感情を伴うわけではない。uncomfortableは合う。",
+        "source_worker": "W02",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      }
+    ],
+    "reason": "awkwardは場面に居づらさ・気まずさがある状態。embarrassingは人に恥ずかしさを感じさせる点が中心で、気まずい沈黙などが必ずしも恥の感情を伴うわけではない。uncomfortableは合う。",
+    "confidence": "MEDIUM",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00726, sense_key socially_uncomfortable",
+      "immutable base representative item E0521: After an awkward pause, Bill took her by the hand and dragged her upstairs."
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00727",
@@ -766,24 +1293,41 @@
       "self-conscious"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "self-conscious"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「きまりが悪い」はfeeling_self_conscious_or_ashamedの用法として例文「恥ずかしかった」に適合。現行1個の代替表現は文脈内で中心義・語調・強度が許容範囲。安定して学習上重要な追加qualifierは不要。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00727, sense_key feeling_self_conscious_or_ashamed",
+      "immutable base representative item E0500: Bob felt embarrassed when he was teased in front of some girls."
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00728",
@@ -798,26 +1342,66 @@
       "unclear"
     ],
     "previous_near_synonym_authority": "KEEP",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
-    "qualifier_dimension": [],
-    "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "single_entry_decision": "QUALIFIER_AND_PARAPHRASE",
+    "recommended_prompt": "（複数の意味・解釈に取れる）曖昧な",
+    "qualifier_dimension": [
+      "multiple_interpretations"
+    ],
+    "qualifier_text": "複数の意味・解釈に取れる",
+    "recommended_paraphrases": [
+      "unclear"
+    ],
+    "removed_paraphrases": [
+      "vague"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
+    "paraphrase_review": [
+      {
+        "paraphrase": "vague",
+        "decision": "REMOVE",
+        "reason": "ambiguousは1つに確定できない複数解釈がある状態で、単に具体性を欠くvagueとは異なる。unclearは解釈が定まらないという共通部分があり、qualified promptの広めの同義として維持。",
+        "source_worker": "W02",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      },
+      {
+        "paraphrase": "unclear",
+        "decision": "KEEP",
+        "reason": "「曖昧な」の指定senseで使用可能。明確な語調・強度・文脈不一致は確認されない。",
+        "source_worker": "W02",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      }
+    ],
+    "reason": "ambiguousは1つに確定できない複数解釈がある状態で、単に具体性を欠くvagueとは異なる。unclearは解釈が定まらないという共通部分があり、qualified promptの広めの同義として維持。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00728, sense_key open_to_more_than_one_interpretation",
+      "immutable base representative item E0501: His ambiguous reply made her all the more irritated.",
+      {
+        "url": "https://dictionary.cambridge.org/dictionary/english/ambiguous",
+        "finding": "having more than one possible meaning"
+      }
+    ],
     "previous_near_synonym_group_ids": [
       "NSD-00717-00870"
-    ]
+    ],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00729",
@@ -831,24 +1415,53 @@
       "cowardly"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
+    "single_entry_decision": "PARAPHRASE_REVALIDATION_ONLY",
+    "recommended_prompt": "臆病な・気の弱い",
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "recommended_paraphrases": [],
+    "removed_paraphrases": [
+      "cowardly"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "cowardly",
+        "decision": "REMOVE",
+        "reason": "timidは自信がなく内気・おどおどしている性質。cowardlyは勇気の欠如への非難・軽蔑を伴いやすく、内向的な人への中立記述には置換できない。現在prompt『臆病な・気の弱い』は十分。",
+        "source_worker": "W02",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      }
+    ],
+    "reason": "timidは自信がなく内気・おどおどしている性質。cowardlyは勇気の欠如への非難・軽蔑を伴いやすく、内向的な人への中立記述には置換できない。現在prompt『臆病な・気の弱い』は十分。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00729, sense_key lacking_courage_or_confidence",
+      "immutable base representative item E0502: Bob is very timid and blushes when chatting with girls.",
+      {
+        "url": "https://dictionary.cambridge.org/dictionary/english/timid",
+        "finding": "shy and nervous, not confident, easily frightened"
+      }
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00730",
@@ -862,24 +1475,41 @@
       "wretched"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "wretched"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「惨めな」はvery_unhappy_or_uncomfortableの用法として例文「そんなに暗い顔をして」に適合。現行1個の代替表現は文脈内で中心義・語調・強度が許容範囲。安定して学習上重要な追加qualifierは不要。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00730, sense_key very_unhappy_or_uncomfortable",
+      "immutable base representative item E0504: \"What's the matter, Bob? You look so miserable.\" \"Leave me alone. It's none of your business.\""
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00731",
@@ -893,24 +1523,41 @@
       "grown-up"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "grown-up"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「大人びた」はbehaving_like_an_adultの用法として例文「年の割には大人」に適合。現行1個の代替表現は文脈内で中心義・語調・強度が許容範囲。安定して学習上重要な追加qualifierは不要。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00731, sense_key behaving_like_an_adult",
+      "immutable base representative item E0515: His niece is sociable and mature for her age. She could pass for twenty-something."
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00732",
@@ -925,24 +1572,42 @@
       "polished"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "refined",
+      "polished"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「洗練された」はsocially_polished_or_refinedの用法として例文「洗練された人たち」に適合。現行2個の代替表現は文脈内で中心義・語調・強度が許容範囲。安定して学習上重要な追加qualifierは不要。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00732, sense_key socially_polished_or_refined",
+      "immutable base representative item E0510: I felt utterly out of place among those sophisticated people."
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00733",
@@ -957,24 +1622,42 @@
       "prudent"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "careful",
+      "prudent"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「慎重な」はcareful_to_avoid_danger_or_riskの用法として例文「とても慎重」に適合。現行2個の代替表現は文脈内で中心義・語調・強度が許容範囲。安定して学習上重要な追加qualifierは不要。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00733, sense_key careful_to_avoid_danger_or_risk",
+      "immutable base representative item E0520: As far as Bob is concerned, anything goes. By contrast, Jane is very cautious."
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00734",
@@ -989,26 +1672,44 @@
       "heartbreak"
     ],
     "previous_near_synonym_authority": "KEEP",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "sorrow",
+      "heartbreak"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
+    "paraphrase_review": [],
+    "reason": "「深い悲しみ」はdeep_sorrowの用法として例文「悲しみ」に適合。現行2個の代替表現は文脈内で中心義・語調・強度が許容範囲。安定して学習上重要な追加qualifierは不要。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00734, sense_key deep_sorrow",
+      "immutable base representative item E0554: \"I feel for you, Jane. Grief doesn't fade away quickly.\" \"I'm OK. I'll get over it.\""
+    ],
     "previous_near_synonym_group_ids": [
       "NSD-00734-01060"
-    ]
+    ],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00735",
@@ -1024,24 +1725,43 @@
       "perspective"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "way of thinking",
+      "mindset",
+      "perspective"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「考え方」はway_of_thinking_or_feelingの用法として例文「態度・考え方」に適合。現行3個の代替表現は文脈内で中心義・語調・強度が許容範囲。安定して学習上重要な追加qualifierは不要。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00735, sense_key way_of_thinking_or_feeling",
+      "immutable base representative item E0003: Let go of your negative outlook on life. Always maintain a positive attitude."
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00736",
@@ -1078,6 +1798,7 @@
       "preserve"
     ],
     "added_paraphrases": [],
+    "paraphrase_review": [],
     "reason": "maintainは状態や水準を維持すること、preserveは損傷・劣化・消失から保つことに寄る。どちらにも自然なkeep/retainを残し、相互canonicalだけを除く。",
     "confidence": "MEDIUM",
     "evidence": [
@@ -1086,7 +1807,8 @@
     ],
     "previous_near_synonym_group_ids": [
       "NSD-00736-00891"
-    ]
+    ],
+    "review_provenance": null
   },
   {
     "id": "vocab:00737",
@@ -1101,24 +1823,42 @@
       "philosophy of life"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "view of life",
+      "philosophy of life"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「人生観」はgeneral_view_of_lifeの用法として例文「人生観」に適合。現行2個の代替表現は文脈内で中心義・語調・強度が許容範囲。安定して学習上重要な追加qualifierは不要。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00737, sense_key general_view_of_life",
+      "immutable base representative item E0003: Let go of your negative outlook on life. Always maintain a positive attitude."
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00738",
@@ -1132,24 +1872,59 @@
       "sex"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
-    "qualifier_dimension": [],
-    "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "single_entry_decision": "QUALIFIER_AND_PARAPHRASE",
+    "recommended_prompt": "性別（身体的な性だけでなく社会的な性の区分も含む）",
+    "qualifier_dimension": [
+      "semantic_scope"
+    ],
+    "qualifier_text": "身体的な性だけでなく社会的な性の区分も含む",
+    "recommended_paraphrases": [],
+    "removed_paraphrases": [
+      "sex"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "sex",
+        "decision": "REMOVE",
+        "reason": "genderは現代的には社会的役割・性自認を含みうる。sexは主に生物学的性を指すため、両者を無条件に代替解答として同一視すると学習価値を失う。現行文脈の差別禁止でも区別する意義がある。",
+        "source_worker": "W02",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      }
+    ],
+    "reason": "genderは現代的には社会的役割・性自認を含みうる。sexは主に生物学的性を指すため、両者を無条件に代替解答として同一視すると学習価値を失う。現行文脈の差別禁止でも区別する意義がある。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00738, sense_key sex_category",
+      "immutable base representative item E0004: You should be fair to everyone regardless of national origin, gender, or creed.",
+      {
+        "url": "https://dictionary.cambridge.org/dictionary/english/gender",
+        "finding": "social identity and physical sex senses may differ"
+      },
+      {
+        "url": "https://dictionary.cambridge.org/dictionary/english/sex",
+        "finding": "biological sex and gender distinction"
+      }
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00739",
@@ -1166,26 +1941,41 @@
       "still"
     ],
     "previous_near_synonym_authority": "KEEP",
-    "review_status": "PENDING",
+    "review_status": "UPSTREAM_ISOLATED",
     "learning_eligible": true,
-    "remediation_eligible": true,
+    "remediation_eligible": false,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "UPSTREAM_AUTHORITY_REVIEW",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
     "recommended_paraphrases": null,
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
+    "paraphrase_review": [],
+    "reason": "代表例『regardless of national origin, gender, or creed』は前置詞句regardless ofで『〜にかかわらず』。canonicalは単独regardlessで、paraphrasesはnevertheless/nonetheless/even so/stillという逆接副詞のみ。sense_keyもwithout_regard_or_despite_thatを併合しており、構文・語義authorityの上流再設計が必要。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00739, sense_key without_regard_or_despite_that",
+      "immutable base representative item E0004: You should be fair to everyone regardless of national origin, gender, or creed."
+    ],
     "previous_near_synonym_group_ids": [
       "NSD-00739-00974"
-    ]
+    ],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00740",
@@ -1197,24 +1987,39 @@
     "sense_key": "equal_status",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「平等」はequal_statusの用法として例文「平等」に適合。代替表現は登録されていない。安定して学習上重要な追加qualifierは不要。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00740, sense_key equal_status",
+      "immutable base representative item E0005: Equality is guaranteed by the Constitution."
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00741",
@@ -1230,24 +2035,70 @@
       "smell"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
+    "single_entry_decision": "PARAPHRASE_REVALIDATION_ONLY",
+    "recommended_prompt": "香り",
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "recommended_paraphrases": [
+      "fragrance",
+      "aroma"
+    ],
+    "removed_paraphrases": [
+      "smell"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "fragrance",
+        "decision": "KEEP",
+        "reason": "「香り」の指定senseで使用可能。明確な語調・強度・文脈不一致は確認されない。",
+        "source_worker": "W02",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      },
+      {
+        "paraphrase": "aroma",
+        "decision": "KEEP",
+        "reason": "「香り」の指定senseで使用可能。明確な語調・強度・文脈不一致は確認されない。",
+        "source_worker": "W02",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      },
+      {
+        "paraphrase": "smell",
+        "decision": "REMOVE",
+        "reason": "scentの本senseと日本語『香り』は概して心地よい自然のにおい。smellは悪臭を含む中立的な上位語であり、このconnotationを保たない。fragranceとaromaは香りの好意的語感を維持。",
+        "source_worker": "W02",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      }
+    ],
+    "reason": "scentの本senseと日本語『香り』は概して心地よい自然のにおい。smellは悪臭を含む中立的な上位語であり、このconnotationを保たない。fragranceとaromaは香りの好意的語感を維持。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00741, sense_key pleasant_smell",
+      "immutable base representative item E0007: A woman passed by me giving off a subtle scent of perfume. It reminded me of my ex-girlfriend.",
+      {
+        "url": "https://dictionary.cambridge.org/dictionary/english/scent",
+        "finding": "a pleasant natural smell; smell can be broader"
+      }
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00742",
@@ -1262,24 +2113,42 @@
       "slight"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "faint",
+      "slight"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「かすかな」はdifficult_to_noticeの用法として例文「かすかな」に適合。現行2個の代替表現は文脈内で中心義・語調・強度が許容範囲。安定して学習上重要な追加qualifierは不要。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00742, sense_key difficult_to_notice",
+      "immutable base representative item E0007: A woman passed by me giving off a subtle scent of perfume. It reminded me of my ex-girlfriend."
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00743",
@@ -1294,26 +2163,44 @@
       "barely"
     ],
     "previous_near_synonym_authority": "KEEP",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "hardly",
+      "barely"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
+    "paraphrase_review": [],
+    "reason": "「ほとんど〜ない」はalmost_notの用法として例文「ほとんど〜ない」に適合。現行2個の代替表現は文脈内で中心義・語調・強度が許容範囲。安定して学習上重要な追加qualifierは不要。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00743, sense_key almost_not",
+      "immutable base representative item E0010: Bob was so beside himself that he could scarcely tell fact from fiction."
+    ],
     "previous_near_synonym_group_ids": [
       "NSD-00743-02360"
-    ]
+    ],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00744",
@@ -1325,24 +2212,39 @@
     "sense_key": "long_work_of_fiction",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「長編小説」はlong_work_of_fictionの用法として例文「新しい長編小説」に適合。代替表現は登録されていない。安定して学習上重要な追加qualifierは不要。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00744, sense_key long_work_of_fiction",
+      "immutable base representative item E0011: His new novel, which combines prose with his gift for poetry, is going to be published."
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00745",
@@ -1354,24 +2256,39 @@
     "sense_key": "express_in_another_language",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「翻訳する」はexpress_in_another_languageの用法として例文「日本語に翻訳した」に適合。代替表現は登録されていない。安定して学習上重要な追加qualifierは不要。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00745, sense_key express_in_another_language",
+      "immutable base representative item E0013: Ms. Yamada translated the fascinating fairy tale into plain Japanese."
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00746",
@@ -1386,24 +2303,42 @@
       "present-day"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "modern",
+      "present-day"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「現代の」はbelonging_to_the_presentの用法として例文「現代の」に適合。現行2個の代替表現は文脈内で中心義・語調・強度が許容範囲。安定して学習上重要な追加qualifierは不要。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00746, sense_key belonging_to_the_present",
+      "immutable base representative item E0015: \"Are you familiar with contemporary literature?\" \"I know next to nothing about it.\""
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00747",
@@ -1419,24 +2354,43 @@
       "be knowledgeable about something"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "UPSTREAM_ISOLATED",
     "learning_eligible": true,
-    "remediation_eligible": true,
+    "remediation_eligible": false,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "UPSTREAM_AUTHORITY_REVIEW",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
     "recommended_paraphrases": null,
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "be familiar withは『よく知っている・なじみがある』程度も含むが、現行『精通している』は専門的熟達を強く含み、代表例『Are you familiar with contemporary literature?』の『詳しいですか』より強い。be well versed inも専門的で強度不一致。主訳自体のauthority再確認が先決。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00747, sense_key knowledgeable_about_a_subject",
+      "immutable base representative item E0015: \"Are you familiar with contemporary literature?\" \"I know next to nothing about it.\"",
+      {
+        "url": "https://dictionary.cambridge.org/dictionary/english/be-familiar-with",
+        "finding": "to know something or someone well; not necessarily an expert"
+      }
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00748",
@@ -1448,24 +2402,39 @@
     "sense_key": "written_art",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「文学」はwritten_artの用法として例文「文学」に適合。代替表現は登録されていない。安定して学習上重要な追加qualifierは不要。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00748, sense_key written_art",
+      "immutable base representative item E0015: \"Are you familiar with contemporary literature?\" \"I know next to nothing about it.\""
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00749",
@@ -1480,26 +2449,44 @@
       "conflate"
     ],
     "previous_near_synonym_authority": "KEEP",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "mix up",
+      "conflate"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
+    "paraphrase_review": [],
+    "reason": "「混同する」はmistake_one_thing_for_anotherの用法として例文「混同する」に適合。現行2個の代替表現は文脈内で中心義・語調・強度が許容範囲。安定して学習上重要な追加qualifierは不要。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00749, sense_key mistake_one_thing_for_another",
+      "immutable base representative item E0016: At times I confuse \"curve\" with \"carve.\""
+    ],
     "previous_near_synonym_group_ids": [
       "NSD-00749-01163"
-    ]
+    ],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00750",
@@ -1511,24 +2498,39 @@
     "sense_key": "way_a_word_is_spoken",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「発音」はway_a_word_is_spokenの用法として例文「発音」に適合。代替表現は登録されていない。安定して学習上重要な追加qualifierは不要。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00750, sense_key way_a_word_is_spoken",
+      "immutable base representative item E0017: Don't be shy. Your pronunciation is more or less correct."
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00751",
@@ -1544,24 +2546,43 @@
       "yearn to"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "be keen to",
+      "long to",
+      "yearn to"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「熱望している」はstrongly_wantingの用法として例文「熱望している」に適合。現行3個の代替表現は文脈内で中心義・語調・強度が許容範囲。安定して学習上重要な追加qualifierは不要。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00751, sense_key strongly_wanting",
+      "immutable base representative item E0018: This article contains tips for those who are eager to increase their vocabulary."
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00752",
@@ -1573,24 +2594,39 @@
     "sense_key": "not_concrete",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「抽象的な」はnot_concreteの用法として例文「抽象的な」に適合。代替表現は登録されていない。安定して学習上重要な追加qualifierは不要。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00752, sense_key not_concrete",
+      "immutable base representative item E0021: \"What's this ugly object?\" \"This is a piece of abstract art!\""
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00753",
@@ -1604,24 +2640,41 @@
       "urge"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "urge"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「衝動」はsudden_desireの用法として例文「衝動」に適合。現行1個の代替表現は文脈内で中心義・語調・強度が許容範囲。安定して学習上重要な追加qualifierは不要。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00753, sense_key sudden_desire",
+      "immutable base representative item E0023: \"I'm apt to buy things on impulse whenever something is on sale.\" \"So am I.\""
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00754",
@@ -1633,24 +2686,41 @@
     "sense_key": "have_enough_money_or_time_for",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
-    "qualifier_dimension": [],
-    "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "single_entry_decision": "QUALIFIER_ONLY",
+    "recommended_prompt": "（費用・時間などを負担できるだけの）余裕がある",
+    "qualifier_dimension": [
+      "resource_capability"
+    ],
+    "qualifier_text": "費用・時間などを負担できるだけの",
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "affordは単なる余裕ではなく、ある費用・時間等を支払う/割くことが可能という能力。現在『余裕がある』だけでは金銭・時間的な制約が伝わりにくいため明示する。paraphraseなし。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00754, sense_key have_enough_money_or_time_for",
+      "immutable base representative item E0024: As it is, ordinary people cannot afford to purchase such luxuries."
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00755",
@@ -1662,24 +2732,39 @@
     "sense_key": "expensive_or_unnecessary_thing",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「贅沢品」はexpensive_or_unnecessary_thingの用法として例文「贅沢品」に適合。代替表現は登録されていない。安定して学習上重要な追加qualifierは不要。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00755, sense_key expensive_or_unnecessary_thing",
+      "immutable base representative item E0024: As it is, ordinary people cannot afford to purchase such luxuries."
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00756",
@@ -1711,12 +2796,14 @@
       "buy"
     ],
     "added_paraphrases": [],
+    "paraphrase_review": [],
     "reason": "purchaseはbuyよりformal。",
     "confidence": "HIGH",
     "evidence": [
       "https://dictionary.cambridge.org/dictionary/english/purchase"
     ],
-    "previous_near_synonym_group_ids": []
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": null
   },
   {
     "id": "vocab:00757",
@@ -1731,24 +2818,42 @@
       "foresee"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "expect",
+      "foresee"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「予期する」はexpect_in_advanceの用法として例文「予期する」に適合。現行2個の代替表現は文脈内で中心義・語調・強度が許容範囲。安定して学習上重要な追加qualifierは不要。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00757, sense_key expect_in_advance",
+      "immutable base representative item E0025: As we anticipated, the unemployment rate has risen three quarters in a row."
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00758",
@@ -1764,24 +2869,43 @@
       "proportion"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "percentage",
+      "ratio",
+      "proportion"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「率」はproportion_or_frequencyの用法として例文「失業率」に適合。現行3個の代替表現は文脈内で中心義・語調・強度が許容範囲。安定して学習上重要な追加qualifierは不要。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00758, sense_key proportion_or_frequency",
+      "immutable base representative item E0025: As we anticipated, the unemployment rate has risen three quarters in a row."
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00759",
@@ -1793,24 +2917,39 @@
     "sense_key": "lack_of_jobs",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「失業」はlack_of_jobsの用法として例文「失業」に適合。代替表現は登録されていない。安定して学習上重要な追加qualifierは不要。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00759, sense_key lack_of_jobs",
+      "immutable base representative item E0025: As we anticipated, the unemployment rate has risen three quarters in a row."
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00760",
@@ -1824,26 +2963,43 @@
       "meet someone halfway"
     ],
     "previous_near_synonym_authority": "KEEP",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "meet someone halfway"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
+    "paraphrase_review": [],
+    "reason": "「someoneと妥協する」はreach_a_mutual_agreementの用法として例文「妥協する」に適合。現行1個の代替表現は文脈内で中心義・語調・強度が許容範囲。安定して学習上重要な追加qualifierは不要。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00760, sense_key reach_a_mutual_agreement",
+      "immutable base representative item E0027: In any case, the union has to compromise to a certain extent."
+    ],
     "previous_near_synonym_group_ids": [
       "NSD-00554-00760"
-    ]
+    ],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00761",
@@ -1858,24 +3014,42 @@
       "able"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "capable",
+      "able"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「有能な」はable_and_skilledの用法として例文「有能な」に適合。現行2個の代替表現は文脈内で中心義・語調・強度が許容範囲。安定して学習上重要な追加qualifierは不要。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json vocab:00761, sense_key able_and_skilled",
+      "immutable base representative item E0028: Competent mechanics are in great demand, so they earn decent wages."
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W02"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00762",
@@ -1890,24 +3064,55 @@
       "respectable"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "reasonable",
+      "respectable"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "Aggregator adjudication: the fixed sense acceptable_or_reasonable and representative wages example are already adequately expressed by current Japanese まともな. Adding 「質・水準がまずまずの・十分まともな」 is redundant for this occurrence. Keep both reasonable and respectable: Cambridge describes decent as acceptable/satisfactory/reasonable and good enough without excellence, including decent pay/wages; Oxford confirms a good enough standard/quality and decent wages; Cambridge also attests respectable salary, so respectable is sufficiently aligned as an alternate answer in this wages context even though it is not interchangeable with decent in every sense.",
+    "confidence": "HIGH",
+    "evidence": [
+      {
+        "url": "https://dictionary.cambridge.org/dictionary/english/decent",
+        "finding": "decent: acceptable, satisfactory or reasonable; good enough without excellence; pay/wages collocation."
+      },
+      {
+        "url": "https://www.oxfordlearnersdictionaries.com/definition/english/decent",
+        "finding": "decent: good enough or of an acceptable standard/quality; decent wages."
+      },
+      {
+        "url": "https://dictionary.cambridge.org/dictionary/english/respectable",
+        "finding": "respectable amount/quality is acceptable; example: she earns a respectable salary."
+      },
+      "Fixed-base source 2d60188baaceaf77c4e3370ebb37029c48201e2e vocab:00762; sense acceptable_or_reasonable; representative occurrence E0028."
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "AGGREGATOR_ADJUDICATED",
+      "source_workers": [
+        "W02",
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738",
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": "IDENTICAL_OUTCOME_DEDUPED"
+    }
   },
   {
     "id": "vocab:00763",
@@ -1919,24 +3124,41 @@
     "sense_key": "need_for_goods_or_services",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "代表例「Competent mechanics are in great demand, so they earn decent wages.」は「需要」と指定sense（need_for_goods_or_services）に整合する。品詞・強度・語調の重大な欠落はなく、既存paraphraseもこの意味範囲で自然に成立する。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00763",
+      "representative occurrence E0028: Competent mechanics are in great demand, so they earn decent wages.",
+      "review-index PENDING",
+      "paraphrases []"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00764",
@@ -1950,24 +3172,43 @@
       "pay"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "pay"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "代表例「Competent mechanics are in great demand, so they earn decent wages.」は「賃金」と指定sense（payment_for_work）に整合する。品詞・強度・語調の重大な欠落はなく、既存paraphraseもこの意味範囲で自然に成立する。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00764",
+      "representative occurrence E0028: Competent mechanics are in great demand, so they earn decent wages.",
+      "review-index PENDING",
+      "paraphrases [pay]"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00765",
@@ -1979,24 +3220,41 @@
     "sense_key": "change_to_improve",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "代表例「The president announced a concrete plan to carry out welfare reform.」は「改革」と指定sense（change_to_improve）に整合する。品詞・強度・語調の重大な欠落はなく、既存paraphraseもこの意味範囲で自然に成立する。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00765",
+      "representative occurrence E0029: The president announced a concrete plan to carry out welfare reform.",
+      "review-index PENDING",
+      "paraphrases []"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00766",
@@ -2008,24 +3266,41 @@
     "sense_key": "social_support",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "代表例「The president announced a concrete plan to carry out welfare reform.」は「社会福祉」と指定sense（social_support）に整合する。品詞・強度・語調の重大な欠落はなく、既存paraphraseもこの意味範囲で自然に成立する。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00766",
+      "representative occurrence E0029: The president announced a concrete plan to carry out welfare reform.",
+      "review-index PENDING",
+      "paraphrases []"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00767",
@@ -2040,26 +3315,49 @@
       "outcome"
     ],
     "previous_near_synonym_authority": "KEEP",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
-    "qualifier_dimension": [],
-    "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "single_entry_decision": "QUALIFIER_ONLY",
+    "recommended_prompt": "（行為・状況がもたらす）結果",
+    "qualifier_dimension": [
+      "causal_result"
+    ],
+    "qualifier_text": "行為・状況がもたらす",
+    "recommended_paraphrases": [
+      "result",
+      "outcome"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
+    "paraphrase_review": [],
+    "reason": "単なる事実上の結果ではなく行為や状況に伴う帰結を表す。好ましくない帰結に多いが、常に否定的と断定しない。",
+    "confidence": "MEDIUM",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00767",
+      "representative occurrence E0030: His policy will no doubt lead to dismal consequences. It needs a thorough review.",
+      "review-index PENDING",
+      "paraphrases [result | outcome]",
+      "Cambridge Dictionary: https://dictionary.cambridge.org/dictionary/english/consequence"
+    ],
     "previous_near_synonym_group_ids": [
       "NSD-00714-00767"
-    ]
+    ],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00768",
@@ -2076,26 +3374,81 @@
       "dim"
     ],
     "previous_near_synonym_authority": "KEEP",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
-    "qualifier_dimension": [],
-    "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "single_entry_decision": "QUALIFIER_AND_PARAPHRASE",
+    "recommended_prompt": "（状況・結果などが）陰鬱な・ひどく悪い",
+    "qualifier_dimension": [
+      "intensity_connotation"
+    ],
+    "qualifier_text": "陰鬱／非常に悪い",
+    "recommended_paraphrases": [
+      "gloomy",
+      "bleak"
+    ],
+    "removed_paraphrases": [
+      "dark",
+      "dim"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
+    "paraphrase_review": [
+      {
+        "paraphrase": "dark",
+        "decision": "REMOVE",
+        "reason": "代替答案から除外。個別判定：dismal consequencesは暗い色でなく悲惨・絶望的な帰結。darkは一般的な暗さ、dimは弱い光や見通しを指し、強い悲観・悪さを保たない。",
+        "source_worker": "W03",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      },
+      {
+        "paraphrase": "gloomy",
+        "decision": "KEEP",
+        "reason": "指定sense very_gloomy と補足付きpromptの下で主要意味・語調・強度を保つ。",
+        "source_worker": "W03",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      },
+      {
+        "paraphrase": "bleak",
+        "decision": "KEEP",
+        "reason": "指定sense very_gloomy と補足付きpromptの下で主要意味・語調・強度を保つ。",
+        "source_worker": "W03",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      },
+      {
+        "paraphrase": "dim",
+        "decision": "REMOVE",
+        "reason": "代替答案から除外。個別判定：dismal consequencesは暗い色でなく悲惨・絶望的な帰結。darkは一般的な暗さ、dimは弱い光や見通しを指し、強い悲観・悪さを保たない。",
+        "source_worker": "W03",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      }
+    ],
+    "reason": "dismal consequencesは暗い色でなく悲惨・絶望的な帰結。darkは一般的な暗さ、dimは弱い光や見通しを指し、強い悲観・悪さを保たない。",
+    "confidence": "MEDIUM",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00768",
+      "representative occurrence E0030: His policy will no doubt lead to dismal consequences. It needs a thorough review.",
+      "review-index PENDING",
+      "paraphrases [dark | gloomy | bleak | dim]",
+      "Cambridge Dictionary: https://dictionary.cambridge.org/dictionary/english/dismal"
+    ],
     "previous_near_synonym_group_ids": [
       "NSD-00768-01830"
-    ]
+    ],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00769",
@@ -2110,24 +3463,44 @@
       "inescapable"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "unavoidable",
+      "inescapable"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "代表例「It goes without saying that the aging of society is inevitable.」は「避けられない」と指定sense（impossible_to_avoid）に整合する。品詞・強度・語調の重大な欠落はなく、既存paraphraseもこの意味範囲で自然に成立する。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00769",
+      "representative occurrence E0031: It goes without saying that the aging of society is inevitable.",
+      "review-index PENDING",
+      "paraphrases [unavoidable | inescapable]"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00770",
@@ -2142,24 +3515,61 @@
       "make someone anxious"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
-    "qualifier_dimension": [],
-    "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "single_entry_decision": "QUALIFIER_AND_PARAPHRASE",
+    "recommended_prompt": "（状況・変化などが）不安を抱かせるほど深刻な",
+    "qualifier_dimension": [
+      "grammar_and_intensity"
+    ],
+    "qualifier_text": "形容詞として不安・警戒を引き起こす",
+    "recommended_paraphrases": [],
+    "removed_paraphrases": [
+      "worry someone",
+      "make someone anxious"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "worry someone",
+        "decision": "REMOVE",
+        "reason": "代替答案から除外。個別判定：alarming rateは不安を抱かせるほどの速度という形容詞用法。既存2案は動詞句で、単独形容詞カードに対する代替として品詞と構文が一致しない。",
+        "source_worker": "W03",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      },
+      {
+        "paraphrase": "make someone anxious",
+        "decision": "REMOVE",
+        "reason": "代替答案から除外。個別判定：alarming rateは不安を抱かせるほどの速度という形容詞用法。既存2案は動詞句で、単独形容詞カードに対する代替として品詞と構文が一致しない。",
+        "source_worker": "W03",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      }
+    ],
+    "reason": "alarming rateは不安を抱かせるほどの速度という形容詞用法。既存2案は動詞句で、単独形容詞カードに対する代替として品詞と構文が一致しない。",
+    "confidence": "MEDIUM",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00770",
+      "representative occurrence E0032: Please take a look at this chart. It indicates that juvenile delinquency is on the increase at an alarming rate.",
+      "review-index PENDING",
+      "paraphrases [worry someone | make someone anxious]"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00771",
@@ -2174,24 +3584,44 @@
       "speed of change"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "pace of change",
+      "speed of change"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "代表例「Please take a look at this chart. It indicates that juvenile delinquency is on the increase at an alarming rate.」は「変化の速度」と指定sense（speed_or_degree_of_change）に整合する。品詞・強度・語調の重大な欠落はなく、既存paraphraseもこの意味範囲で自然に成立する。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00771",
+      "representative occurrence E0032: Please take a look at this chart. It indicates that juvenile delinquency is on the increase at an alarming rate.",
+      "review-index PENDING",
+      "paraphrases [pace of change | speed of change]"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00772",
@@ -2207,24 +3637,45 @@
       "free"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "available",
+      "empty",
+      "free"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "代表例「In many business districts, there are a lot of vacant lots which have been for sale for years.」は「空いている」と指定sense（not_occupied_or_in_use）に整合する。品詞・強度・語調の重大な欠落はなく、既存paraphraseもこの意味範囲で自然に成立する。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00772",
+      "representative occurrence E0033: In many business districts, there are a lot of vacant lots which have been for sale for years.",
+      "review-index PENDING",
+      "paraphrases [available | empty | free]"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00773",
@@ -2263,6 +3714,7 @@
       "diminish"
     ],
     "added_paraphrases": [],
+    "paraphrase_review": [],
     "reason": "decreaseは量・数の中立的な減少、declineは数値・水準の下落や衰え、diminishは強さ・重要性などが弱まる用法と相性がよい。共有のdecrease/decline/fall/dropを整理し、固有の用法差をpromptに残す。",
     "confidence": "MEDIUM",
     "evidence": [
@@ -2271,7 +3723,8 @@
     ],
     "previous_near_synonym_group_ids": [
       "NSD-00773-02029"
-    ]
+    ],
+    "review_provenance": null
   },
   {
     "id": "vocab:00774",
@@ -2287,26 +3740,47 @@
       "probability"
     ],
     "previous_near_synonym_authority": "KEEP",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "possibility",
+      "chance",
+      "probability"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
+    "paraphrase_review": [],
+    "reason": "代表例「In all likelihood, the birthrate will continue to decline steadily for years to come.」は「起こる可能性」と指定sense（chance_of_happening）に整合する。品詞・強度・語調の重大な欠落はなく、既存paraphraseもこの意味範囲で自然に成立する。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00774",
+      "representative occurrence E0035: In all likelihood, the birthrate will continue to decline steadily for years to come.",
+      "review-index PENDING",
+      "paraphrases [possibility | chance | probability]"
+    ],
     "previous_near_synonym_group_ids": [
       "NSD-00774-02143"
-    ]
+    ],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00775",
@@ -2321,26 +3795,46 @@
       "faraway"
     ],
     "previous_near_synonym_authority": "KEEP",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "distant",
+      "faraway"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
+    "paraphrase_review": [],
+    "reason": "代表例「The power plant supplies the remote county with electricity.」は「遠く離れた」と指定sense（far_away）に整合する。品詞・強度・語調の重大な欠落はなく、既存paraphraseもこの意味範囲で自然に成立する。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00775",
+      "representative occurrence E0036: The power plant supplies the remote county with electricity.",
+      "review-index PENDING",
+      "paraphrases [distant | faraway]"
+    ],
     "previous_near_synonym_group_ids": [
       "NSD-00775-02004"
-    ]
+    ],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00776",
@@ -2355,24 +3849,60 @@
       "control"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
+    "single_entry_decision": "PARAPHRASE_REVALIDATION_ONLY",
+    "recommended_prompt": "操作する",
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "recommended_paraphrases": [
+      "control"
+    ],
+    "removed_paraphrases": [
+      "manipulate"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "manipulate",
+        "decision": "REMOVE",
+        "reason": "代替答案から除外。個別判定：operate a deviceは機器を稼働・操作すること。manipulateは手で巧みに扱う／調整する意味が中心で、稼働の代替とは限らない。",
+        "source_worker": "W03",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      },
+      {
+        "paraphrase": "control",
+        "decision": "KEEP",
+        "reason": "指定sense control_or_run_a_device と現行promptの下で主要意味・語調・強度を保つ。",
+        "source_worker": "W03",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      }
+    ],
+    "reason": "operate a deviceは機器を稼働・操作すること。manipulateは手で巧みに扱う／調整する意味が中心で、稼働の代替とは限らない。",
+    "confidence": "MEDIUM",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00776",
+      "representative occurrence E0037: You are not allowed to operate this device without permission.",
+      "review-index PENDING",
+      "paraphrases [manipulate | control]"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00777",
@@ -2387,24 +3917,44 @@
       "approval"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "authorization",
+      "approval"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "代表例「You are not allowed to operate this device without permission.」は「許可」と指定sense（official_consent）に整合する。品詞・強度・語調の重大な欠落はなく、既存paraphraseもこの意味範囲で自然に成立する。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00777",
+      "representative occurrence E0037: You are not allowed to operate this device without permission.",
+      "review-index PENDING",
+      "paraphrases [authorization | approval]"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00778",
@@ -2418,24 +3968,43 @@
       "subject someone to something"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "subject someone to something"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "代表例「In fact, the inhabitants have been exposed to radiation.」は「someoneをsomethingにさらす」と指定sense（put_in_harm_or_view）に整合する。品詞・強度・語調の重大な欠落はなく、既存paraphraseもこの意味範囲で自然に成立する。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00778",
+      "representative occurrence E0038: In fact, the inhabitants have been exposed to radiation.",
+      "review-index PENDING",
+      "paraphrases [subject someone to something]"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00779",
@@ -2447,24 +4016,41 @@
     "sense_key": "energy_emitted_as_rays",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "代表例「In fact, the inhabitants have been exposed to radiation.」は「放射線」と指定sense（energy_emitted_as_rays）に整合する。品詞・強度・語調の重大な欠落はなく、既存paraphraseもこの意味範囲で自然に成立する。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00779",
+      "representative occurrence E0038: In fact, the inhabitants have been exposed to radiation.",
+      "review-index PENDING",
+      "paraphrases []"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00780",
@@ -2480,24 +4066,45 @@
       "underscore"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "stress",
+      "highlight",
+      "underscore"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "代表例「One cannot emphasize too much the potential danger of nuclear energy.」は「強調する」と指定sense（give_special_importance_to）に整合する。品詞・強度・語調の重大な欠落はなく、既存paraphraseもこの意味範囲で自然に成立する。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00780",
+      "representative occurrence E0039: One cannot emphasize too much the potential danger of nuclear energy.",
+      "review-index PENDING",
+      "paraphrases [stress | highlight | underscore]"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00781",
@@ -2511,24 +4118,51 @@
       "latent"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
+    "single_entry_decision": "PARAPHRASE_REVALIDATION_ONLY",
+    "recommended_prompt": "潜在的な",
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "recommended_paraphrases": [],
+    "removed_paraphrases": [
+      "latent"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "latent",
+        "decision": "REMOVE",
+        "reason": "代替答案から除外。個別判定：potentialは将来実現し得る可能性を表すが、latentは既に潜在して表に現れていない性質を強調し、同じ条件では置換できない。",
+        "source_worker": "W03",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      }
+    ],
+    "reason": "potentialは将来実現し得る可能性を表すが、latentは既に潜在して表に現れていない性質を強調し、同じ条件では置換できない。",
+    "confidence": "MEDIUM",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00781",
+      "representative occurrence E0039: One cannot emphasize too much the potential danger of nuclear energy.",
+      "review-index PENDING",
+      "paraphrases [latent]"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00782",
@@ -2543,24 +4177,44 @@
       "fail to notice"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "miss",
+      "fail to notice"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "代表例「For years the press overlooked the problem. But now, if anything, they are making too much of it.」は「見落とす」と指定sense（fail_to_notice）に整合する。品詞・強度・語調の重大な欠落はなく、既存paraphraseもこの意味範囲で自然に成立する。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00782",
+      "representative occurrence E0040: For years the press overlooked the problem. But now, if anything, they are making too much of it.",
+      "review-index PENDING",
+      "paraphrases [miss | fail to notice]"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00783",
@@ -2574,24 +4228,43 @@
       "grow"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "grow"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "代表例「As well as cultivating grain, the farmer runs a grocery store.」は「栽培する」と指定sense（grow_crops）に整合する。品詞・強度・語調の重大な欠落はなく、既存paraphraseもこの意味範囲で自然に成立する。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00783",
+      "representative occurrence E0041: As well as cultivating grain, the farmer runs a grocery store.",
+      "review-index PENDING",
+      "paraphrases [grow]"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00784",
@@ -2608,26 +4281,48 @@
       "distinguished"
     ],
     "previous_near_synonym_authority": "KEEP",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "famous",
+      "renowned",
+      "notable",
+      "distinguished"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
+    "paraphrase_review": [],
+    "reason": "代表例「Why don't you consult Starr in person? He's by far the most prominent attorney around here.」は「著名な」と指定sense（important_and_well_known）に整合する。品詞・強度・語調の重大な欠落はなく、既存paraphraseもこの意味範囲で自然に成立する。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00784",
+      "representative occurrence E0043: Why don't you consult Starr in person? He's by far the most prominent attorney around here.",
+      "review-index PENDING",
+      "paraphrases [famous | renowned | notable | distinguished]"
+    ],
     "previous_near_synonym_group_ids": [
       "NSD-00784-02270"
-    ]
+    ],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00785",
@@ -2639,24 +4334,41 @@
     "sense_key": "person_receiving_professional_service",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "代表例「The lawyer recommended that his client take legal action against the insurance company.」は「依頼人」と指定sense（person_receiving_professional_service）に整合する。品詞・強度・語調の重大な欠落はなく、既存paraphraseもこの意味範囲で自然に成立する。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00785",
+      "representative occurrence E0045: The lawyer recommended that his client take legal action against the insurance company.",
+      "review-index PENDING",
+      "paraphrases []"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00786",
@@ -2668,24 +4380,41 @@
     "sense_key": "connected_with_law",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "代表例「The lawyer recommended that his client take legal action against the insurance company.」は「法律上の」と指定sense（connected_with_law）に整合する。品詞・強度・語調の重大な欠落はなく、既存paraphraseもこの意味範囲で自然に成立する。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00786",
+      "representative occurrence E0045: The lawyer recommended that his client take legal action against the insurance company.",
+      "review-index PENDING",
+      "paraphrases []"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00787",
@@ -2701,24 +4430,68 @@
       "urge"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
+    "single_entry_decision": "PARAPHRASE_REVALIDATION_ONLY",
+    "recommended_prompt": "勧める",
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "recommended_paraphrases": [
+      "advise",
+      "suggest"
+    ],
+    "removed_paraphrases": [
+      "urge"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "advise",
+        "decision": "KEEP",
+        "reason": "指定sense advise_that_something_is_good_or_suitable と現行promptの下で主要意味・語調・強度を保つ。",
+        "source_worker": "W03",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      },
+      {
+        "paraphrase": "suggest",
+        "decision": "KEEP",
+        "reason": "指定sense advise_that_something_is_good_or_suitable と現行promptの下で主要意味・語調・強度を保つ。",
+        "source_worker": "W03",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      },
+      {
+        "paraphrase": "urge",
+        "decision": "REMOVE",
+        "reason": "代替答案から除外。個別判定：recommendは適切だと判断して推奨する語。urgeは強く迫る・熱心に促す含意があり、力点が過剰。",
+        "source_worker": "W03",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      }
+    ],
+    "reason": "recommendは適切だと判断して推奨する語。urgeは強く迫る・熱心に促す含意があり、力点が過剰。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00787",
+      "representative occurrence E0045: The lawyer recommended that his client take legal action against the insurance company.",
+      "review-index PENDING",
+      "paraphrases [advise | suggest | urge]"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00788",
@@ -2733,24 +4506,61 @@
       "reimburse"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
-    "qualifier_dimension": [],
-    "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "single_entry_decision": "QUALIFIER_AND_PARAPHRASE",
+    "recommended_prompt": "（損害・けがについて）補償金を支払う",
+    "qualifier_dimension": [
+      "participant_and_remedy"
+    ],
+    "qualifier_text": "損害・負傷への補償金",
+    "recommended_paraphrases": [],
+    "removed_paraphrases": [
+      "make up for",
+      "reimburse"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "make up for",
+        "decision": "REMOVE",
+        "reason": "代替答案から除外。個別判定：代表文は負傷者への金銭補償。make up forは非金銭的な埋め合わせも含み、reimburseは費用立替分などの払い戻しで、損害賠償一般とは異なる。",
+        "source_worker": "W03",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      },
+      {
+        "paraphrase": "reimburse",
+        "decision": "REMOVE",
+        "reason": "代替答案から除外。個別判定：代表文は負傷者への金銭補償。make up forは非金銭的な埋め合わせも含み、reimburseは費用立替分などの払い戻しで、損害賠償一般とは異なる。",
+        "source_worker": "W03",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      }
+    ],
+    "reason": "代表文は負傷者への金銭補償。make up forは非金銭的な埋め合わせも含み、reimburseは費用立替分などの払い戻しで、損害賠償一般とは異なる。",
+    "confidence": "MEDIUM",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00788",
+      "representative occurrence E0046: They are entitled to be compensated for their injuries.",
+      "review-index PENDING",
+      "paraphrases [make up for | reimburse]"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00789",
@@ -2762,24 +4572,41 @@
     "sense_key": "widespread_disease",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "代表例「So far, no less than 200 people have died of the flu epidemic.」は「流行病」と指定sense（widespread_disease）に整合する。品詞・強度・語調の重大な欠落はなく、既存paraphraseもこの意味範囲で自然に成立する。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00789",
+      "representative occurrence E0047: So far, no less than 200 people have died of the flu epidemic.",
+      "review-index PENDING",
+      "paraphrases []"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00790",
@@ -2794,24 +4621,44 @@
       "powerful"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "strong",
+      "powerful"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "代表例「The effect of those pills is intense but brief.」は「強烈な」と指定sense（very_strong）に整合する。品詞・強度・語調の重大な欠落はなく、既存paraphraseもこの意味範囲で自然に成立する。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00790",
+      "representative occurrence E0048: The effect of those pills is intense but brief.",
+      "review-index PENDING",
+      "paraphrases [strong | powerful]"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00791",
@@ -2826,24 +4673,62 @@
       "injure"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
-    "qualifier_dimension": [],
-    "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "single_entry_decision": "QUALIFIER_AND_PARAPHRASE",
+    "recommended_prompt": "（筋肉・関節などを無理に使って）痛める",
+    "qualifier_dimension": [
+      "mechanism_restriction"
+    ],
+    "qualifier_text": "無理な使用・伸長による損傷",
+    "recommended_paraphrases": [],
+    "removed_paraphrases": [
+      "hurt",
+      "injure"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "hurt",
+        "decision": "REMOVE",
+        "reason": "代替答案から除外。個別判定：strain one's backは筋肉などへの過度な負荷による損傷。hurt/injureは怪我一般で機序を指定せず、同じ学習価値を保てない。",
+        "source_worker": "W03",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      },
+      {
+        "paraphrase": "injure",
+        "decision": "REMOVE",
+        "reason": "代替答案から除外。個別判定：strain one's backは筋肉などへの過度な負荷による損傷。hurt/injureは怪我一般で機序を指定せず、同じ学習価値を保てない。",
+        "source_worker": "W03",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      }
+    ],
+    "reason": "strain one's backは筋肉などへの過度な負荷による損傷。hurt/injureは怪我一般で機序を指定せず、同じ学習価値を保てない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00791",
+      "representative occurrence E0050: My grandma strained her back when she bent down to hug my son.",
+      "review-index PENDING",
+      "paraphrases [hurt | injure]",
+      "Cambridge Dictionary: https://dictionary.cambridge.org/dictionary/english/strain"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00792",
@@ -2858,24 +4743,44 @@
       "therapy"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "treatment",
+      "therapy"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "代表例「If you have a stiff neck, try an herbal remedy.」は「治療法」と指定sense（treatment_for_illness）に整合する。品詞・強度・語調の重大な欠落はなく、既存paraphraseもこの意味範囲で自然に成立する。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00792",
+      "representative occurrence E0051: If you have a stiff neck, try an herbal remedy.",
+      "review-index PENDING",
+      "paraphrases [treatment | therapy]"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00793",
@@ -2890,24 +4795,44 @@
       "boon"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "blessing",
+      "boon"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "代表例「Medical breakthroughs have brought about great benefits for humanity as a whole.」は「恩恵」と指定sense（good_effect_or_advantage）に整合する。品詞・強度・語調の重大な欠落はなく、既存paraphraseもこの意味範囲で自然に成立する。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00793",
+      "representative occurrence E0052: Medical breakthroughs have brought about great benefits for humanity as a whole.",
+      "review-index PENDING",
+      "paraphrases [blessing | boon]"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00794",
@@ -2923,24 +4848,45 @@
       "quantum leap"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "major advance",
+      "leap forward",
+      "quantum leap"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "代表例「Medical breakthroughs have brought about great benefits for humanity as a whole.」は「飛躍的な進歩」と指定sense（important_advance_or_discovery）に整合する。品詞・強度・語調の重大な欠落はなく、既存paraphraseもこの意味範囲で自然に成立する。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00794",
+      "representative occurrence E0052: Medical breakthroughs have brought about great benefits for humanity as a whole.",
+      "review-index PENDING",
+      "paraphrases [major advance | leap forward | quantum leap]"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00795",
@@ -2955,24 +4901,44 @@
       "the human race"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "humankind",
+      "the human race"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "代表例「Medical breakthroughs have brought about great benefits for humanity as a whole.」は「人類」と指定sense（human_race）に整合する。品詞・強度・語調の重大な欠落はなく、既存paraphraseもこの意味範囲で自然に成立する。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00795",
+      "representative occurrence E0052: Medical breakthroughs have brought about great benefits for humanity as a whole.",
+      "review-index PENDING",
+      "paraphrases [humankind | the human race]"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00796",
@@ -2987,24 +4953,44 @@
       "ban"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "prohibit",
+      "ban"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "代表例「We can't apply cloning techniques to cattle, let alone human beings. It's forbidden.」は「禁じる」と指定sense（order_not_to_do）に整合する。品詞・強度・語調の重大な欠落はなく、既存paraphraseもこの意味範囲で自然に成立する。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00796",
+      "representative occurrence E0053: We can't apply cloning techniques to cattle, let alone human beings. It's forbidden.",
+      "review-index PENDING",
+      "paraphrases [prohibit | ban]"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00797",
@@ -3018,24 +5004,43 @@
       "method"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "method"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "代表例「We can't apply cloning techniques to cattle, let alone human beings. It's forbidden.」は「技法」と指定sense（method_of_doing_something）に整合する。品詞・強度・語調の重大な欠落はなく、既存paraphraseもこの意味範囲で自然に成立する。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00797",
+      "representative occurrence E0053: We can't apply cloning techniques to cattle, let alone human beings. It's forbidden.",
+      "review-index PENDING",
+      "paraphrases [method]"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00798",
@@ -3047,24 +5052,41 @@
     "sense_key": "gradual_development",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "代表例「The theory of evolution is beyond the reach of my imagination.」は「進化」と指定sense（gradual_development）に整合する。品詞・強度・語調の重大な欠落はなく、既存paraphraseもこの意味範囲で自然に成立する。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00798",
+      "representative occurrence E0055: The theory of evolution is beyond the reach of my imagination.",
+      "review-index PENDING",
+      "paraphrases []"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00799",
@@ -3076,24 +5098,41 @@
     "sense_key": "ability_to_form_mental_images",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "代表例「The theory of evolution is beyond the reach of my imagination.」は「想像力」と指定sense（ability_to_form_mental_images）に整合する。品詞・強度・語調の重大な欠落はなく、既存paraphraseもこの意味範囲で自然に成立する。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00799",
+      "representative occurrence E0055: The theory of evolution is beyond the reach of my imagination.",
+      "review-index PENDING",
+      "paraphrases []"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00800",
@@ -3108,24 +5147,44 @@
       "show off"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "brag",
+      "show off"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "代表例「The biologist is proud of his historic discovery and doesn't mind boasting about it.」は「自慢する」と指定sense（speak_proudly_about）に整合する。品詞・強度・語調の重大な欠落はなく、既存paraphraseもこの意味範囲で自然に成立する。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00800",
+      "representative occurrence E0056: The biologist is proud of his historic discovery and doesn't mind boasting about it.",
+      "review-index PENDING",
+      "paraphrases [brag | show off]"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00801",
@@ -3139,24 +5198,43 @@
       "moral"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "moral"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "代表例「On ethical grounds, they are opposed to so-called gene therapy.」は「倫理的な」と指定sense（relating_to_moral_principles）に整合する。品詞・強度・語調の重大な欠落はなく、既存paraphraseもこの意味範囲で自然に成立する。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00801",
+      "representative occurrence E0057: On ethical grounds, they are opposed to so-called gene therapy.",
+      "review-index PENDING",
+      "paraphrases [moral]"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00802",
@@ -3172,24 +5250,68 @@
       "disagree with"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
+    "single_entry_decision": "PARAPHRASE_REVALIDATION_ONLY",
+    "recommended_prompt": "反対する",
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "recommended_paraphrases": [
+      "object to",
+      "be against"
+    ],
+    "removed_paraphrases": [
+      "disagree with"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "object to",
+        "decision": "KEEP",
+        "reason": "指定sense disagree_and_act_against と現行promptの下で主要意味・語調・強度を保つ。",
+        "source_worker": "W03",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      },
+      {
+        "paraphrase": "be against",
+        "decision": "KEEP",
+        "reason": "指定sense disagree_and_act_against と現行promptの下で主要意味・語調・強度を保つ。",
+        "source_worker": "W03",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      },
+      {
+        "paraphrase": "disagree with",
+        "decision": "REMOVE",
+        "reason": "代替答案から除外。個別判定：opposeは単に意見が違うだけでなく反対の立場を取ること。disagree withは反対行動・対立を必ず含まない。",
+        "source_worker": "W03",
+        "reconstructed_from_exact_worker_disposition_sets": false
+      }
+    ],
+    "reason": "opposeは単に意見が違うだけでなく反対の立場を取ること。disagree withは反対行動・対立を必ず含まない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00802",
+      "representative occurrence E0057: On ethical grounds, they are opposed to so-called gene therapy.",
+      "review-index PENDING",
+      "paraphrases [object to | be against | disagree with]"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:00803",
@@ -3203,23 +5325,42 @@
       "first"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "first"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "代表例「The initial symptoms of the disease are fever and a sore throat.」は「最初の」と指定sense（first_at_the_start）に整合する。品詞・強度・語調の重大な欠落はなく、既存paraphraseもこの意味範囲で自然に成立する。",
+    "confidence": "HIGH",
+    "evidence": [
+      "immutable-base production snapshot data/vocabulary-v3.json#vocab:00803",
+      "representative occurrence E0058: The initial symptoms of the disease are fever and a sore throat.",
+      "review-index PENDING",
+      "paraphrases [first]"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W03"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672"
+      },
+      "deduplication": null
+    }
   }
 ]

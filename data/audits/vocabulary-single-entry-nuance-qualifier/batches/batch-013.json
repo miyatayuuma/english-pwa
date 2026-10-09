@@ -11,24 +11,49 @@
       "finding"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
+    "single_entry_decision": "PARAPHRASE_REVALIDATION_ONLY",
+    "recommended_prompt": "発見",
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "recommended_paraphrases": [],
+    "removed_paraphrases": [
+      "finding"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "finding",
+        "decision": "REMOVE",
+        "reason": "findingは一般的な調査結果にもなり、新規の発見というdiscoveryより広い。",
+        "source_worker": "W05",
+        "reconstructed_from_exact_worker_disposition_sets": true
+      }
+    ],
+    "reason": "findingは一般的な調査結果にもなり、新規の発見というdiscoveryより広い。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01204 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1201, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01205",
@@ -43,24 +68,59 @@
       "be reluctant to"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
-    "qualifier_dimension": [],
-    "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "single_entry_decision": "QUALIFIER_AND_PARAPHRASE",
+    "recommended_prompt": "（〜するのを）気にする・嫌がる",
+    "qualifier_dimension": [
+      "objection"
+    ],
+    "qualifier_text": "〜するのを",
+    "recommended_paraphrases": [],
+    "removed_paraphrases": [
+      "dislike",
+      "be reluctant to"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "dislike",
+        "decision": "REMOVE",
+        "reason": "mindは支障・迷惑に思う意。dislikeは単純な嫌悪、be reluctant toは自分が実行をためらう意。",
+        "source_worker": "W05",
+        "reconstructed_from_exact_worker_disposition_sets": true
+      },
+      {
+        "paraphrase": "be reluctant to",
+        "decision": "REMOVE",
+        "reason": "mindは支障・迷惑に思う意。dislikeは単純な嫌悪、be reluctant toは自分が実行をためらう意。",
+        "source_worker": "W05",
+        "reconstructed_from_exact_worker_disposition_sets": true
+      }
+    ],
+    "reason": "mindは支障・迷惑に思う意。dislikeは単純な嫌悪、be reluctant toは自分が実行をためらう意。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01205 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1202, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01206",
@@ -75,24 +135,58 @@
       "evidence"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
+    "single_entry_decision": "PARAPHRASE_REVALIDATION_ONLY",
+    "recommended_prompt": "根拠",
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "recommended_paraphrases": [
+      "basis"
+    ],
+    "removed_paraphrases": [
+      "evidence"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "basis",
+        "decision": "KEEP",
+        "reason": "evidenceは証拠資料に偏り、理由・基盤を含むgroundより狭い。",
+        "source_worker": "W05",
+        "reconstructed_from_exact_worker_disposition_sets": true
+      },
+      {
+        "paraphrase": "evidence",
+        "decision": "REMOVE",
+        "reason": "evidenceは証拠資料に偏り、理由・基盤を含むgroundより狭い。",
+        "source_worker": "W05",
+        "reconstructed_from_exact_worker_disposition_sets": true
+      }
+    ],
+    "reason": "evidenceは証拠資料に偏り、理由・基盤を含むgroundより狭い。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01206 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1203, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01207",
@@ -107,24 +201,45 @@
       "what we call"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
-    "qualifier_dimension": [],
-    "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "single_entry_decision": "QUALIFIER_ONLY",
+    "recommended_prompt": "いわゆる（時に疑念・皮肉を込めて）",
+    "qualifier_dimension": [
+      "connotation-optional"
+    ],
+    "qualifier_text": "時に疑念・皮肉を込めて",
+    "recommended_paraphrases": [
+      "what is called",
+      "what we call"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "so-calledは単なる呼称紹介にも懐疑的な語りにも使う。否定的な含意は常にあるとは限らない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01207 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1204, status=PENDING",
+      "https://dictionary.cambridge.org/dictionary/english/so-called"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01208",
@@ -159,6 +274,7 @@
       "illness"
     ],
     "added_paraphrases": [],
+    "paraphrase_review": [],
     "reason": "diseaseは特定の疾患・医学的な状態、illnessは病気である状態や体調不良に寄る。相互canonicalを外し、双方で自然なsicknessだけ残す。",
     "confidence": "MEDIUM",
     "evidence": [
@@ -167,7 +283,8 @@
     ],
     "previous_near_synonym_group_ids": [
       "NSD-01208-01210"
-    ]
+    ],
+    "review_provenance": null
   },
   {
     "id": "vocab:01209",
@@ -179,24 +296,39 @@
     "sense_key": "high_body_temperature",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「発熱」はfeverの指定sense（high_body_temperature）を表し、この1カードだけで主要用法を十分に学べる。現行paraphraseは空。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01209 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1206, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01210",
@@ -231,6 +363,7 @@
       "disease"
     ],
     "added_paraphrases": [],
+    "paraphrase_review": [],
     "reason": "diseaseは特定の疾患・医学的な状態、illnessは病気である状態や体調不良に寄る。相互canonicalを外し、双方で自然なsicknessだけ残す。",
     "confidence": "MEDIUM",
     "evidence": [
@@ -239,7 +372,8 @@
     ],
     "previous_near_synonym_group_ids": [
       "NSD-01208-01210"
-    ]
+    ],
+    "review_provenance": null
   },
   {
     "id": "vocab:01211",
@@ -253,24 +387,39 @@
       "delegate"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "UPSTREAM_ISOLATED",
     "learning_eligible": true,
-    "remediation_eligible": true,
+    "remediation_eligible": false,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "UPSTREAM_AUTHORITY_REVIEW",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
     "recommended_paraphrases": null,
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "representativeは名詞「代表者」だが代表occurrence訳は「代表する」で品詞が食い違う。",
+    "confidence": "MEDIUM",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01211 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1208, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01212",
@@ -284,24 +433,41 @@
       "yearly"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "yearly"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「毎年の」はannualの指定sense（occurring_every_year）を表し、この1カードだけで主要用法を十分に学べる。既存言い換えyearlyもこの主要senseと整合する。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01212 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1209, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01213",
@@ -315,24 +481,41 @@
       "meeting"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "meeting"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「会議」はconferenceの指定sense（formal_meeting）を表し、この1カードだけで主要用法を十分に学べる。既存言い換えmeetingもこの主要senseと整合する。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01213 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1210, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01214",
@@ -344,24 +527,39 @@
     "sense_key": "daughters_husband",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「娘の夫」はson-in-lawの指定sense（daughters_husband）を表し、この1カードだけで主要用法を十分に学べる。現行paraphraseは空。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01214 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1211, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01215",
@@ -373,24 +571,39 @@
     "sense_key": "malignant_disease",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「がん」はcancerの指定sense（malignant_disease）を表し、この1カードだけで主要用法を十分に学べる。現行paraphraseは空。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01215 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1212, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01216",
@@ -405,24 +618,39 @@
       "imitation"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "UPSTREAM_ISOLATED",
     "learning_eligible": true,
-    "remediation_eligible": true,
+    "remediation_eligible": false,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "UPSTREAM_AUTHORITY_REVIEW",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
     "recommended_paraphrases": null,
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "fakeの名詞sense「偽物」に対し代表occurrence「見せかける」は動詞的な別義。",
+    "confidence": "MEDIUM",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01216 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1213, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01217",
@@ -434,24 +662,39 @@
     "sense_key": "valuable_old_object",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「骨董品」はantiqueの指定sense（valuable_old_object）を表し、この1カードだけで主要用法を十分に学べる。現行paraphraseは空。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01217 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1214, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01218",
@@ -466,24 +709,39 @@
       "carpet"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "UPSTREAM_ISOLATED",
     "learning_eligible": true,
-    "remediation_eligible": true,
+    "remediation_eligible": false,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "UPSTREAM_AUTHORITY_REVIEW",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
     "recommended_paraphrases": null,
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "rugの床敷物senseに対し代表occurrenceは「毛皮」。敷物の用例か別senseか不明。",
+    "confidence": "MEDIUM",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01218 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1215, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01219",
@@ -495,24 +753,39 @@
     "sense_key": "compulsory_payment_to_government",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「税金」はtaxの指定sense（compulsory_payment_to_government）を表し、この1カードだけで主要用法を十分に学べる。現行paraphraseは空。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01219 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1216, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01220",
@@ -526,24 +799,39 @@
       "taxi"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "UPSTREAM_ISOLATED",
     "learning_eligible": true,
-    "remediation_eligible": true,
+    "remediation_eligible": false,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "UPSTREAM_AUTHORITY_REVIEW",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
     "recommended_paraphrases": null,
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "cabの代表occurrenceはCivil Aeronautics Boardの略称CABで、タクシーと無関係。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01220 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1217, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01221",
@@ -555,24 +843,39 @@
     "sense_key": "delivery_of_goods",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「配達」はdeliveryの指定sense（delivery_of_goods）を表し、この1カードだけで主要用法を十分に学べる。現行paraphraseは空。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01221 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1218, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01222",
@@ -587,24 +890,58 @@
       "accessible"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
+    "single_entry_decision": "PARAPHRASE_REVALIDATION_ONLY",
+    "recommended_prompt": "利用できる",
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "recommended_paraphrases": [
+      "usable"
+    ],
+    "removed_paraphrases": [
+      "accessible"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "usable",
+        "decision": "KEEP",
+        "reason": "accessibleは到達可能・アクセス可能でも成立し、使用可能availableとは一致しないことがある。",
+        "source_worker": "W05",
+        "reconstructed_from_exact_worker_disposition_sets": true
+      },
+      {
+        "paraphrase": "accessible",
+        "decision": "REMOVE",
+        "reason": "accessibleは到達可能・アクセス可能でも成立し、使用可能availableとは一致しないことがある。",
+        "source_worker": "W05",
+        "reconstructed_from_exact_worker_disposition_sets": true
+      }
+    ],
+    "reason": "accessibleは到達可能・アクセス可能でも成立し、使用可能availableとは一致しないことがある。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01222 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1219, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01223",
@@ -639,6 +976,7 @@
       "guest"
     ],
     "added_paraphrases": [],
+    "paraphrase_review": [],
     "reason": "customerは商品・サービスを買う顧客、guestは招待された人や宿泊客。current paraphraseのguest/customer/client重複を外し、顧客側に自然なclientだけ残す。",
     "confidence": "MEDIUM",
     "evidence": [
@@ -647,7 +985,8 @@
     ],
     "previous_near_synonym_group_ids": [
       "NSD-01223-01835"
-    ]
+    ],
+    "review_provenance": null
   },
   {
     "id": "vocab:01224",
@@ -662,24 +1001,42 @@
       "little"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "minor",
+      "little"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「わずかな」はslightの指定sense（small_in_degree）を表し、この1カードだけで主要用法を十分に学べる。既存言い換えminor / littleもこの主要senseと整合する。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01224 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1221, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01225",
@@ -691,24 +1048,39 @@
     "sense_key": "pay_for_someones_food_or_entertainment",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "UPSTREAM_ISOLATED",
     "learning_eligible": true,
-    "remediation_eligible": true,
+    "remediation_eligible": false,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "UPSTREAM_AUTHORITY_REVIEW",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
     "recommended_paraphrases": null,
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "おごるtreatのsenseに対する代表occurrence「扱う」は別の語義。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01225 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1222, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01226",
@@ -722,24 +1094,41 @@
       "shopping center"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "shopping center"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「ショッピングモール」はmallの指定sense（shopping_center）を表し、この1カードだけで主要用法を十分に学べる。既存言い換えshopping centerもこの主要senseと整合する。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01226 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1223, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01227",
@@ -751,24 +1140,39 @@
     "sense_key": "money_in_notes_or_coins",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「現金」はcashの指定sense（money_in_notes_or_coins）を表し、この1カードだけで主要用法を十分に学べる。現行paraphraseは空。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01227 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1224, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01228",
@@ -803,6 +1207,7 @@
       "weird"
     ],
     "added_paraphrases": [],
+    "paraphrase_review": [],
     "reason": "weirdは強い違和感・不気味さ、oddは普通と違う・意外、peculiarは独特で珍しいという傾向がある。strangeは広い上位語として維持できるが、相互canonical paraphraseは狭める。",
     "confidence": "MEDIUM",
     "evidence": [
@@ -811,7 +1216,8 @@
     ],
     "previous_near_synonym_group_ids": [
       "NSD-01013-02351"
-    ]
+    ],
+    "review_provenance": null
   },
   {
     "id": "vocab:01229",
@@ -823,24 +1229,39 @@
     "sense_key": "time_to_return_home",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「門限」はcurfewの指定sense（time_to_return_home）を表し、この1カードだけで主要用法を十分に学べる。現行paraphraseは空。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01229 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1226, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01230",
@@ -854,24 +1275,41 @@
       "penalty"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "penalty"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「罰」はpunishmentの指定sense（penalty_for_wrongdoing）を表し、この1カードだけで主要用法を十分に学べる。既存言い換えpenaltyもこの主要senseと整合する。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01230 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1227, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01231",
@@ -885,24 +1323,49 @@
       "saying"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
+    "single_entry_decision": "PARAPHRASE_REVALIDATION_ONLY",
+    "recommended_prompt": "ことわざ",
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "recommended_paraphrases": [],
+    "removed_paraphrases": [
+      "saying"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "saying",
+        "decision": "REMOVE",
+        "reason": "proverbは伝統的なことわざ、sayingは一般的な言い回しも含み広すぎる。",
+        "source_worker": "W05",
+        "reconstructed_from_exact_worker_disposition_sets": true
+      }
+    ],
+    "reason": "proverbは伝統的なことわざ、sayingは一般的な言い回しも含み広すぎる。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01231 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1228, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01232",
@@ -914,24 +1377,39 @@
     "sense_key": "show_to_be_right_or_reasonable",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「正当化する」はjustifyの指定sense（show_to_be_right_or_reasonable）を表し、この1カードだけで主要用法を十分に学べる。現行paraphraseは空。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01232 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1229, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01233",
@@ -946,24 +1424,42 @@
       "method"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "way",
+      "method"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「手段」はmeansの指定sense（method_or_instrument）を表し、この1カードだけで主要用法を十分に学べる。既存言い換えway / methodもこの主要senseと整合する。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01233 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1230, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01234",
@@ -978,24 +1474,42 @@
       "chairperson"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "chair",
+      "chairperson"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「議長」はchairmanの指定sense（person_chairing_a_meeting）を表し、この1カードだけで主要用法を十分に学べる。既存言い換えchair / chairpersonもこの主要senseと整合する。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01234 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1231, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01235",
@@ -1011,26 +1525,45 @@
       "with regard to"
     ],
     "previous_near_synonym_authority": "KEEP",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "about",
+      "concerning",
+      "with regard to"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
+    "paraphrase_review": [],
+    "reason": "「〜に関して」はregardingの指定sense（concerning）を表し、この1カードだけで主要用法を十分に学べる。既存言い換えabout / concerning / with regard toもこの主要senseと整合する。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01235 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1232, status=PENDING"
+    ],
     "previous_near_synonym_group_ids": [
       "NSD-01235-01406"
-    ]
+    ],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01236",
@@ -1046,26 +1579,45 @@
       "viewpoint"
     ],
     "previous_near_synonym_authority": "KEEP",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "perspective",
+      "point of view",
+      "viewpoint"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
+    "paraphrase_review": [],
+    "reason": "「見方」はviewの指定sense（opinion_or_perspective）を表し、この1カードだけで主要用法を十分に学べる。既存言い換えperspective / point of view / viewpointもこの主要senseと整合する。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01236 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1233, status=PENDING"
+    ],
     "previous_near_synonym_group_ids": [
       "NSD-00944-01243"
-    ]
+    ],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01237",
@@ -1081,26 +1633,68 @@
       "to some extent"
     ],
     "previous_near_synonym_authority": "KEEP",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
+    "single_entry_decision": "PARAPHRASE_REVALIDATION_ONLY",
+    "recommended_prompt": "いくらか",
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "recommended_paraphrases": [
+      "a little",
+      "to some extent"
+    ],
+    "removed_paraphrases": [
+      "some"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
+    "paraphrase_review": [
+      {
+        "paraphrase": "some",
+        "decision": "REMOVE",
+        "reason": "someは通常数量限定語で、程度副詞somewhatの標準的な代答として不自然。",
+        "source_worker": "W05",
+        "reconstructed_from_exact_worker_disposition_sets": true
+      },
+      {
+        "paraphrase": "a little",
+        "decision": "KEEP",
+        "reason": "someは通常数量限定語で、程度副詞somewhatの標準的な代答として不自然。",
+        "source_worker": "W05",
+        "reconstructed_from_exact_worker_disposition_sets": true
+      },
+      {
+        "paraphrase": "to some extent",
+        "decision": "KEEP",
+        "reason": "someは通常数量限定語で、程度副詞somewhatの標準的な代答として不自然。",
+        "source_worker": "W05",
+        "reconstructed_from_exact_worker_disposition_sets": true
+      }
+    ],
+    "reason": "someは通常数量限定語で、程度副詞somewhatの標準的な代答として不自然。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01237 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1234, status=PENDING"
+    ],
     "previous_near_synonym_group_ids": [
       "NSD-00055-01237"
-    ]
+    ],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01238",
@@ -1114,24 +1708,41 @@
       "bravery"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "bravery"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「勇気」はcourageの指定sense（ability_to_face_fear）を表し、この1カードだけで主要用法を十分に学べる。既存言い換えbraveryもこの主要senseと整合する。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01238 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1235, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01239",
@@ -1143,24 +1754,39 @@
     "sense_key": "good_judgment_from_experience",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「知恵」はwisdomの指定sense（good_judgment_from_experience）を表し、この1カードだけで主要用法を十分に学べる。現行paraphraseは空。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01239 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1236, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01240",
@@ -1174,24 +1800,49 @@
       "butter someone up"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
+    "single_entry_decision": "PARAPHRASE_REVALIDATION_ONLY",
+    "recommended_prompt": "someoneにお世辞を言う",
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "recommended_paraphrases": [],
+    "removed_paraphrases": [
+      "butter someone up"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "butter someone up",
+        "decision": "REMOVE",
+        "reason": "butter someone upは利益を得るために機嫌を取る口語表現でflatterより目的・文体が狭い。",
+        "source_worker": "W05",
+        "reconstructed_from_exact_worker_disposition_sets": true
+      }
+    ],
+    "reason": "butter someone upは利益を得るために機嫌を取る口語表現でflatterより目的・文体が狭い。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01240 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1237, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01241",
@@ -1205,24 +1856,41 @@
       "reasoning"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "reasoning"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「論理」はlogicの指定sense（system_of_valid_reasoning）を表し、この1カードだけで主要用法を十分に学べる。既存言い換えreasoningもこの主要senseと整合する。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01241 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1238, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01242",
@@ -1237,26 +1905,44 @@
       "at once"
     ],
     "previous_near_synonym_authority": "KEEP",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "right away",
+      "at once"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
+    "paraphrase_review": [],
+    "reason": "「すぐに」はimmediatelyの指定sense（without_delay）を表し、この1カードだけで主要用法を十分に学べる。既存言い換えright away / at onceもこの主要senseと整合する。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01242 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1239, status=PENDING"
+    ],
     "previous_near_synonym_group_ids": [
       "NSD-00286-01506"
-    ]
+    ],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01243",
@@ -1272,26 +1958,45 @@
       "standpoint"
     ],
     "previous_near_synonym_authority": "KEEP",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "perspective",
+      "point of view",
+      "standpoint"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
+    "paraphrase_review": [],
+    "reason": "「観点」はviewpointの指定sense（point_of_view）を表し、この1カードだけで主要用法を十分に学べる。既存言い換えperspective / point of view / standpointもこの主要senseと整合する。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01243 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1240, status=PENDING"
+    ],
     "previous_near_synonym_group_ids": [
       "NSD-00944-01243"
-    ]
+    ],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01244",
@@ -1303,24 +2008,39 @@
     "sense_key": "first_of_two",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「前者」はformerの指定sense（first_of_two）を表し、この1カードだけで主要用法を十分に学べる。現行paraphraseは空。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01244 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1241, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01245",
@@ -1332,24 +2052,39 @@
     "sense_key": "second_of_two",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「後者の」はlatterの指定sense（second_of_two）を表し、この1カードだけで主要用法を十分に学べる。現行paraphraseは空。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01245 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1242, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01246",
@@ -1393,6 +2128,7 @@
     "added_paraphrases": [
       "splendid"
     ],
+    "paraphrase_review": [],
     "reason": "terrificは口語的で勢いのある強い称賛、marvelousは「extremely good」で感嘆を伴う評価、fabulousは非常に優れ魅力的、splendidは見事・印象的な称賛に寄せる。genericなgreat/excellentなどを整理する。ただしmarvelousを古風・上品と固定する根拠は確認できず、その断定は採用しない。",
     "confidence": "MEDIUM",
     "evidence": [
@@ -1401,7 +2137,8 @@
     ],
     "previous_near_synonym_group_ids": [
       "NSD-01030-01246"
-    ]
+    ],
+    "review_provenance": null
   },
   {
     "id": "vocab:01247",
@@ -1416,26 +2153,44 @@
       "operate"
     ],
     "previous_near_synonym_authority": "KEEP",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "function",
+      "operate"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
+    "paraphrase_review": [],
+    "reason": "「機能する」はworkの指定sense（function_successfully）を表し、この1カードだけで主要用法を十分に学べる。既存言い換えfunction / operateもこの主要senseと整合する。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01247 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1244, status=PENDING"
+    ],
     "previous_near_synonym_group_ids": [
       "NSD-01247-01723"
-    ]
+    ],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01248",
@@ -1450,24 +2205,60 @@
       "anticipation"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
-    "qualifier_dimension": [],
-    "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "single_entry_decision": "QUALIFIER_AND_PARAPHRASE",
+    "recommended_prompt": "予期・期待（何かが起こると思うこと）",
+    "qualifier_dimension": [
+      "expectation-vs-hope"
+    ],
+    "qualifier_text": "何かが起こると思うこと",
+    "recommended_paraphrases": [
+      "anticipation"
+    ],
+    "removed_paraphrases": [
+      "hope"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "hope",
+        "decision": "REMOVE",
+        "reason": "expectationは起こると予想すること。hopeは単なる願望でもよく予測を必要としない。",
+        "source_worker": "W05",
+        "reconstructed_from_exact_worker_disposition_sets": true
+      },
+      {
+        "paraphrase": "anticipation",
+        "decision": "KEEP",
+        "reason": "expectationは起こると予想すること。hopeは単なる願望でもよく予測を必要としない。",
+        "source_worker": "W05",
+        "reconstructed_from_exact_worker_disposition_sets": true
+      }
+    ],
+    "reason": "expectationは起こると予想すること。hopeは単なる願望でもよく予測を必要としない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01248 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1245, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01249",
@@ -1481,24 +2272,49 @@
       "mistake"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
+    "single_entry_decision": "PARAPHRASE_REVALIDATION_ONLY",
+    "recommended_prompt": "失敗",
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "recommended_paraphrases": [],
+    "removed_paraphrases": [
+      "mistake"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "mistake",
+        "decision": "REMOVE",
+        "reason": "failureは不成功・未達、mistakeは行為や判断の誤り。",
+        "source_worker": "W05",
+        "reconstructed_from_exact_worker_disposition_sets": true
+      }
+    ],
+    "reason": "failureは不成功・未達、mistakeは行為や判断の誤り。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01249 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1246, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01250",
@@ -1514,26 +2330,45 @@
       "assignment"
     ],
     "previous_near_synonym_authority": "KEEP",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "task",
+      "duty",
+      "assignment"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
+    "paraphrase_review": [],
+    "reason": "「任務」はmissionの指定sense（assigned_task）を表し、この1カードだけで主要用法を十分に学べる。既存言い換えtask / duty / assignmentもこの主要senseと整合する。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01250 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1247, status=PENDING"
+    ],
     "previous_near_synonym_group_ids": [
       "NSD-01250-01415"
-    ]
+    ],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01251",
@@ -1548,24 +2383,42 @@
       "deficiency"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "shortage",
+      "deficiency"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「不足」はlackの指定sense（absence_or_shortage）を表し、この1カードだけで主要用法を十分に学べる。既存言い換えshortage / deficiencyもこの主要senseと整合する。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01251 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1248, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01252",
@@ -1579,24 +2432,52 @@
       "direct"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
-    "qualifier_dimension": [],
-    "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "single_entry_decision": "QUALIFIER_AND_PARAPHRASE",
+    "recommended_prompt": "直接の（自ら体験・見聞きした、または当事者から直接得た）",
+    "qualifier_dimension": [
+      "firsthand-source"
+    ],
+    "qualifier_text": "自ら体験・見聞きした、または当事者から直接得た",
+    "recommended_paraphrases": [],
+    "removed_paraphrases": [
+      "direct"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "direct",
+        "decision": "REMOVE",
+        "reason": "firsthandは自分自身の経験だけでなく直接の当事者から得た情報も含む。directだけでは伝聞と一次情報の差が示せない。",
+        "source_worker": "W05",
+        "reconstructed_from_exact_worker_disposition_sets": true
+      }
+    ],
+    "reason": "firsthandは自分自身の経験だけでなく直接の当事者から得た情報も含む。directだけでは伝聞と一次情報の差が示せない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01252 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1249, status=PENDING",
+      "https://dictionary.cambridge.org/dictionary/english/firsthand"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01253",
@@ -1608,24 +2489,39 @@
     "sense_key": "knowledge_gained_by_doing",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「経験」はexperienceの指定sense（knowledge_gained_by_doing）を表し、この1カードだけで主要用法を十分に学べる。現行paraphraseは空。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01253 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1250, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01254",
@@ -1640,24 +2536,42 @@
       "have"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "own",
+      "have"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「所有する」はpossessの指定sense（have_or_own）を表し、この1カードだけで主要用法を十分に学べる。既存言い換えown / haveもこの主要senseと整合する。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01254 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1251, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01255",
@@ -1692,6 +2606,7 @@
       "transaction"
     ],
     "added_paraphrases": [],
+    "paraphrase_review": [],
     "reason": "dealは合意・契約・商談、transactionは商品や金銭の売買・処理に寄る。相互canonicalを除き、両方に自然なtradeを残す。",
     "confidence": "MEDIUM",
     "evidence": [
@@ -1700,7 +2615,8 @@
     ],
     "previous_near_synonym_group_ids": [
       "NSD-01255-02094"
-    ]
+    ],
+    "review_provenance": null
   },
   {
     "id": "vocab:01256",
@@ -1715,24 +2631,42 @@
       "inflammable"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "combustible",
+      "inflammable"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「燃えやすい」はflammableの指定sense（easily_set_on_fire）を表し、この1カードだけで主要用法を十分に学べる。既存言い換えcombustible / inflammableもこの主要senseと整合する。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01256 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1253, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01257",
@@ -1748,24 +2682,43 @@
       "bar"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "ban",
+      "forbid",
+      "bar"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「禁止する」はprohibitの指定sense（forbid）を表し、この1カードだけで主要用法を十分に学べる。既存言い換えban / forbid / barもこの主要senseと整合する。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01257 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1254, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01258",
@@ -1793,12 +2746,14 @@
     "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
+    "paraphrase_review": [],
     "reason": "小屋と乗り物の客室を分けて示し、短い訳として成立。",
     "confidence": "HIGH",
     "evidence": [
       "current source sense_key: small_shelter_or_private_room"
     ],
-    "previous_near_synonym_group_ids": []
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": null
   },
   {
     "id": "vocab:01259",
@@ -1830,12 +2785,14 @@
     ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
+    "paraphrase_review": [],
     "reason": "独立に扱う品物・項目という意味が示され、articleは物品の語義で対応。",
     "confidence": "HIGH",
     "evidence": [
       "current source sense_key: individual_thing_or_list_entry"
     ],
-    "previous_near_synonym_group_ids": []
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": null
   },
   {
     "id": "vocab:01260",
@@ -1863,12 +2820,14 @@
     "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
+    "paraphrase_review": [],
     "reason": "飛行行為と航空便を併記し、representative multi-senseを保持。",
     "confidence": "HIGH",
     "evidence": [
       "current source sense_key: journey_or_travel_by_air"
     ],
-    "previous_near_synonym_group_ids": []
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": null
   },
   {
     "id": "vocab:01261",
@@ -1882,24 +2841,41 @@
       "slight"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "slight"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「軽微な」はminorの指定sense（not_serious_or_important）を表し、この1カードだけで主要用法を十分に学べる。既存言い換えslightもこの主要senseと整合する。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01261 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1258, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01262",
@@ -1911,24 +2887,39 @@
     "sense_key": "large_body_of_salt_water",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「大洋」はoceanの指定sense（large_body_of_salt_water）を表し、この1カードだけで主要用法を十分に学べる。現行paraphraseは空。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01262 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1259, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01263",
@@ -1942,24 +2933,41 @@
       "reason"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "reason"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「原因」はcauseの指定sense（reason_something_happens）を表し、この1カードだけで主要用法を十分に学べる。既存言い換えreasonもこの主要senseと整合する。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01263 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1260, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01264",
@@ -1971,24 +2979,39 @@
     "sense_key": "violent_collision_or_fall",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「墜落」はcrashの指定sense（violent_collision_or_fall）を表し、この1カードだけで主要用法を十分に学べる。現行paraphraseは空。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01264 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1261, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01265",
@@ -2000,24 +3023,39 @@
     "sense_key": "person_travelling_in_vehicle",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「乗客」はpassengerの指定sense（person_travelling_in_vehicle）を表し、この1カードだけで主要用法を十分に学べる。現行paraphraseは空。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01265 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1262, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01266",
@@ -2032,24 +3070,42 @@
       "regrettably"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "sadly",
+      "regrettably"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「残念ながら」はunfortunatelyの指定sense（regrettably）を表し、この1カードだけで主要用法を十分に学べる。既存言い換えsadly / regrettablyもこの主要senseと整合する。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01266 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1263, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01267",
@@ -2061,24 +3117,39 @@
     "sense_key": "operation_of_aircraft",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「航空」はaviationの指定sense（operation_of_aircraft）を表し、この1カードだけで主要用法を十分に学べる。現行paraphraseは空。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01267 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1264, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01268",
@@ -2110,6 +3181,7 @@
       "specialist"
     ],
     "added_paraphrases": [],
+    "paraphrase_review": [],
     "reason": "expertは知識・技能に詳しい人全般、specialistは特定分野に専門化した人。相互canonical paraphraseを外し、promptで専門性の幅を区別する。",
     "confidence": "MEDIUM",
     "evidence": [
@@ -2118,7 +3190,8 @@
     ],
     "previous_near_synonym_group_ids": [
       "NSD-01268-02177"
-    ]
+    ],
+    "review_provenance": null
   },
   {
     "id": "vocab:01269",
@@ -2133,26 +3206,61 @@
       "employee"
     ],
     "previous_near_synonym_authority": "KEEP",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
-    "qualifier_dimension": [],
-    "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "single_entry_decision": "QUALIFIER_AND_PARAPHRASE",
+    "recommended_prompt": "職員・従業員（集合的に）",
+    "qualifier_dimension": [
+      "collective-noun"
+    ],
+    "qualifier_text": "集合的に",
+    "recommended_paraphrases": [],
+    "removed_paraphrases": [
+      "staff member",
+      "employee"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
+    "paraphrase_review": [
+      {
+        "paraphrase": "staff member",
+        "decision": "REMOVE",
+        "reason": "staffは職員の集合。staff memberとemployeeは個人の従業員で数量が異なる。",
+        "source_worker": "W05",
+        "reconstructed_from_exact_worker_disposition_sets": true
+      },
+      {
+        "paraphrase": "employee",
+        "decision": "REMOVE",
+        "reason": "staffは職員の集合。staff memberとemployeeは個人の従業員で数量が異なる。",
+        "source_worker": "W05",
+        "reconstructed_from_exact_worker_disposition_sets": true
+      }
+    ],
+    "reason": "staffは職員の集合。staff memberとemployeeは個人の従業員で数量が異なる。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01269 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1266, status=PENDING"
+    ],
     "previous_near_synonym_group_ids": [
       "NSD-01269-01965"
-    ]
+    ],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01270",
@@ -2166,24 +3274,49 @@
       "catastrophe"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
+    "single_entry_decision": "PARAPHRASE_REVALIDATION_ONLY",
+    "recommended_prompt": "災害",
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "recommended_paraphrases": [],
+    "removed_paraphrases": [
+      "catastrophe"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "catastrophe",
+        "decision": "REMOVE",
+        "reason": "catastropheは大災害・惨事という強い程度でdisasterより狭い。",
+        "source_worker": "W05",
+        "reconstructed_from_exact_worker_disposition_sets": true
+      }
+    ],
+    "reason": "catastropheは大災害・惨事という強い程度でdisasterより狭い。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01270 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1267, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01271",
@@ -2197,24 +3330,41 @@
       "means of transportation"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "means of transportation"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「乗り物」はvehicleの指定sense（means_of_transport）を表し、この1カードだけで主要用法を十分に学べる。既存言い換えmeans of transportationもこの主要senseと整合する。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01271 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1268, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01272",
@@ -2230,24 +3380,68 @@
       "test"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
-    "qualifier_dimension": [],
-    "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "single_entry_decision": "QUALIFIER_AND_PARAPHRASE",
+    "recommended_prompt": "（異常などがないか詳しく）検査・点検する",
+    "qualifier_dimension": [
+      "detailed-inspection"
+    ],
+    "qualifier_text": "異常などがないか詳しく",
+    "recommended_paraphrases": [
+      "examine"
+    ],
+    "removed_paraphrases": [
+      "check",
+      "test"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "check",
+        "decision": "REMOVE",
+        "reason": "inspectは念入りな検査・点検。checkは簡易確認も含みtestは試験など別種の行為。",
+        "source_worker": "W05",
+        "reconstructed_from_exact_worker_disposition_sets": true
+      },
+      {
+        "paraphrase": "examine",
+        "decision": "KEEP",
+        "reason": "inspectは念入りな検査・点検。checkは簡易確認も含みtestは試験など別種の行為。",
+        "source_worker": "W05",
+        "reconstructed_from_exact_worker_disposition_sets": true
+      },
+      {
+        "paraphrase": "test",
+        "decision": "REMOVE",
+        "reason": "inspectは念入りな検査・点検。checkは簡易確認も含みtestは試験など別種の行為。",
+        "source_worker": "W05",
+        "reconstructed_from_exact_worker_disposition_sets": true
+      }
+    ],
+    "reason": "inspectは念入りな検査・点検。checkは簡易確認も含みtestは試験など別種の行為。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01272 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1269, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01273",
@@ -2261,24 +3455,41 @@
       "neck stiffness"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "neck stiffness"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「首のこり」はstiff neckの指定sense（neck_stiffness）を表し、この1カードだけで主要用法を十分に学べる。既存言い換えneck stiffnessもこの主要senseと整合する。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01273 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1270, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01274",
@@ -2290,24 +3501,39 @@
     "sense_key": "use_for_a_purpose",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「somethingをsomething elseに適用する」はapply something to something elseの指定sense（use_for_a_purpose）を表し、この1カードだけで主要用法を十分に学べる。現行paraphraseは空。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01274 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1271, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01275",
@@ -2322,24 +3548,42 @@
       "person"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "human",
+      "person"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「人間」はhuman beingの指定sense（person）を表し、この1カードだけで主要用法を十分に学べる。既存言い換えhuman / personもこの主要senseと整合する。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01275 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1272, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01276",
@@ -2371,12 +3615,14 @@
     ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
+    "paraphrase_review": [],
     "reason": "on X groundsの理由説明構文を括弧で示し、for safety reasonsに整合。",
     "confidence": "HIGH",
     "evidence": [
       "current source sense_key: because_of_safety_considerations"
     ],
-    "previous_near_synonym_group_ids": []
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": null
   },
   {
     "id": "vocab:01277",
@@ -2388,24 +3634,39 @@
     "sense_key": "throat_pain",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「喉の痛み」はsore throatの指定sense（throat_pain）を表し、この1カードだけで主要用法を十分に学べる。現行paraphraseは空。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01277 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1274, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01278",
@@ -2419,24 +3680,41 @@
       "in a good mood"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "in a good mood"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「上機嫌で」はin good spiritsの指定sense（cheerful_mood）を表し、この1カードだけで主要用法を十分に学べる。既存言い換えin a good moodもこの主要senseと整合する。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01278 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1275, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01279",
@@ -2448,24 +3726,39 @@
     "sense_key": "ask_for_additional_items",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「ほかに何かありますか」はanything else?の指定sense（ask_for_additional_items）を表し、この1カードだけで主要用法を十分に学べる。現行paraphraseは空。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01279 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1276, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01280",
@@ -2479,24 +3772,41 @@
       "eat in or take away"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "eat in or take away"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「店内で召し上がりますか、持ち帰りますか」はfor here or to go?の指定sense（ask_eat_in_or_take_away）を表し、この1カードだけで主要用法を十分に学べる。既存言い換えeat in or take awayもこの主要senseと整合する。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01280 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1277, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01281",
@@ -2511,24 +3821,42 @@
       "takeout"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "takeaway",
+      "takeout"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「持ち帰りの」はto goの指定sense（takeaway_food）を表し、この1カードだけで主要用法を十分に学べる。既存言い換えtakeaway / takeoutもこの主要senseと整合する。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01281 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1278, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01282",
@@ -2544,24 +3872,66 @@
       "fashionable"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
+    "single_entry_decision": "PARAPHRASE_REVALIDATION_ONLY",
+    "recommended_prompt": "流行している",
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "recommended_paraphrases": [
+      "in fashion"
+    ],
+    "removed_paraphrases": [
+      "trendy",
+      "fashionable"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "in fashion",
+        "decision": "KEEP",
+        "reason": "be inは流行している状態を表す句で、trendy/fashionable単体では構文と代替可能性が一致しない。",
+        "source_worker": "W05",
+        "reconstructed_from_exact_worker_disposition_sets": true
+      },
+      {
+        "paraphrase": "trendy",
+        "decision": "REMOVE",
+        "reason": "be inは流行している状態を表す句で、trendy/fashionable単体では構文と代替可能性が一致しない。",
+        "source_worker": "W05",
+        "reconstructed_from_exact_worker_disposition_sets": true
+      },
+      {
+        "paraphrase": "fashionable",
+        "decision": "REMOVE",
+        "reason": "be inは流行している状態を表す句で、trendy/fashionable単体では構文と代替可能性が一致しない。",
+        "source_worker": "W05",
+        "reconstructed_from_exact_worker_disposition_sets": true
+      }
+    ],
+    "reason": "be inは流行している状態を表す句で、trendy/fashionable単体では構文と代替可能性が一致しない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01282 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1279, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01283",
@@ -2573,24 +3943,39 @@
     "sense_key": "while_returning_home",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「帰宅途中で」はon my way homeの指定sense（while_returning_home）を表し、この1カードだけで主要用法を十分に学べる。現行paraphraseは空。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01283 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1280, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01284",
@@ -2604,24 +3989,49 @@
       "go back on one's word"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
+    "single_entry_decision": "PARAPHRASE_REVALIDATION_ONLY",
+    "recommended_prompt": "約束を破る",
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "recommended_paraphrases": [],
+    "removed_paraphrases": [
+      "go back on one's word"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "go back on one's word",
+        "decision": "REMOVE",
+        "reason": "go back on one's wordは意図的に言質を翻す傾向があるがbreak a promiseは意図しない不履行も含む。",
+        "source_worker": "W05",
+        "reconstructed_from_exact_worker_disposition_sets": true
+      }
+    ],
+    "reason": "go back on one's wordは意図的に言質を翻す傾向があるがbreak a promiseは意図しない不履行も含む。",
+    "confidence": "MEDIUM",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01284 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1281, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01285",
@@ -2655,12 +4065,14 @@
       "whatever it takes"
     ],
     "added_paraphrases": [],
+    "paraphrase_review": [],
     "reason": "手段の正当化と強い決意は同じ命題でない。",
     "confidence": "MEDIUM",
     "evidence": [
       "current production canonical / meaning_ja / sense_key / paraphrases"
     ],
-    "previous_near_synonym_group_ids": []
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": null
   },
   {
     "id": "vocab:01286",
@@ -2672,24 +4084,39 @@
     "sense_key": "because_now",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「今や〜なので」はnow thatの指定sense（because_now）を表し、この1カードだけで主要用法を十分に学べる。現行paraphraseは空。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01286 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1283, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01287",
@@ -2703,24 +4130,41 @@
       "exchange views"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "exchange views"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「意見を交換する」はexchange opinionsの指定sense（share_views）を表し、この1カードだけで主要用法を十分に学べる。既存言い換えexchange viewsもこの主要senseと整合する。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01287 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1284, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01288",
@@ -2736,24 +4180,67 @@
       "agree"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
-    "qualifier_dimension": [],
-    "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "single_entry_decision": "QUALIFIER_AND_PARAPHRASE",
+    "recommended_prompt": "（関係者の間で広く）意見の一致に達する",
+    "qualifier_dimension": [
+      "collective-agreement"
+    ],
+    "qualifier_text": "関係者の間で広く",
+    "recommended_paraphrases": [],
+    "removed_paraphrases": [
+      "reach an agreement",
+      "come to an agreement",
+      "agree"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "reach an agreement",
+        "decision": "REMOVE",
+        "reason": "consensusは関係者の間の広い意見一致で、一般的な2者合意・agreeより具体的。",
+        "source_worker": "W05",
+        "reconstructed_from_exact_worker_disposition_sets": true
+      },
+      {
+        "paraphrase": "come to an agreement",
+        "decision": "REMOVE",
+        "reason": "consensusは関係者の間の広い意見一致で、一般的な2者合意・agreeより具体的。",
+        "source_worker": "W05",
+        "reconstructed_from_exact_worker_disposition_sets": true
+      },
+      {
+        "paraphrase": "agree",
+        "decision": "REMOVE",
+        "reason": "consensusは関係者の間の広い意見一致で、一般的な2者合意・agreeより具体的。",
+        "source_worker": "W05",
+        "reconstructed_from_exact_worker_disposition_sets": true
+      }
+    ],
+    "reason": "consensusは関係者の間の広い意見一致で、一般的な2者合意・agreeより具体的。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01288 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1285, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01289",
@@ -2768,24 +4255,42 @@
       "haven't done something yet"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "have yet to do something",
+      "haven't done something yet"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「まだsomethingしていない」はbe yet to do somethingの指定sense（have_not_done_yet）を表し、この1カードだけで主要用法を十分に学べる。既存言い換えhave yet to do something / haven't done something yetもこの主要senseと整合する。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01289 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1286, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01290",
@@ -2800,24 +4305,42 @@
       "in the beginning"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "initially",
+      "in the beginning"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「最初は」はat firstの指定sense（initially）を表し、この1カードだけで主要用法を十分に学べる。既存言い換えinitially / in the beginningもこの主要senseと整合する。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01290 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1287, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01291",
@@ -2832,26 +4355,44 @@
       "count on something"
     ],
     "previous_near_synonym_authority": "KEEP",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "depend on something",
+      "count on something"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
+    "paraphrase_review": [],
+    "reason": "「somethingを頼りにする」はrely on somethingの指定sense（depend_on）を表し、この1カードだけで主要用法を十分に学べる。既存言い換えdepend on something / count on somethingもこの主要senseと整合する。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01291 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1288, status=PENDING"
+    ],
     "previous_near_synonym_group_ids": [
       "NSD-00322-02226"
-    ]
+    ],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01292",
@@ -2866,24 +4407,42 @@
       "determine"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "decide",
+      "determine"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「決定する」はmake a decisionの指定sense（decide）を表し、この1カードだけで主要用法を十分に学べる。既存言い換えdecide / determineもこの主要senseと整合する。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01292 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1289, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01293",
@@ -2898,24 +4457,42 @@
       "something else instead of something"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "something else rather than something",
+      "something else instead of something"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「somethingではなくsomething else」はnot something but something elseの指定sense（contrast_second_not_first）を表し、この1カードだけで主要用法を十分に学べる。既存言い換えsomething else rather than something / something else instead of somethingもこの主要senseと整合する。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01293 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1290, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01294",
@@ -2931,24 +4508,43 @@
       "objectively speaking"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "from an objective point of view",
+      "from an objective perspective",
+      "objectively speaking"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「客観的な観点から」はfrom an objective viewpointの指定sense（from_a_perspective）を表し、この1カードだけで主要用法を十分に学べる。既存言い換えfrom an objective point of view / from an objective perspective / objectively speakingもこの主要senseと整合する。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01294 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1291, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01295",
@@ -2960,24 +4556,39 @@
     "sense_key": "fail_to_perform",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「somethingし損なう」はfail to do somethingの指定sense（fail_to_perform）を表し、この1カードだけで主要用法を十分に学べる。現行paraphraseは空。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01295 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1292, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01296",
@@ -2992,24 +4603,42 @@
       "deficiency of something"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "shortage of something",
+      "deficiency of something"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「somethingの不足」はlack of somethingの指定sense（absence_or_insufficiency）を表し、この1カードだけで主要用法を十分に学べる。既存言い換えshortage of something / deficiency of somethingもこの主要senseと整合する。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01296 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1293, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01297",
@@ -3024,24 +4653,42 @@
       "capability to do something"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "ability to do something",
+      "capability to do something"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「somethingする能力」はcapacity for doing somethingの指定sense（ability_to_do）を表し、この1カードだけで主要用法を十分に学べる。既存言い換えability to do something / capability to do somethingもこの主要senseと整合する。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01297 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1294, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01298",
@@ -3055,26 +4702,43 @@
       "explode"
     ],
     "previous_near_synonym_authority": "KEEP",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "explode"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
+    "paraphrase_review": [],
+    "reason": "「爆発する」はblow upの指定sense（explode）を表し、この1カードだけで主要用法を十分に学べる。既存言い換えexplodeもこの主要senseと整合する。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01298 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1295, status=PENDING"
+    ],
     "previous_near_synonym_group_ids": [
       "NSD-01019-01298"
-    ]
+    ],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01299",
@@ -3089,24 +4753,59 @@
       "jump into something"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
-    "qualifier_dimension": [],
-    "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "single_entry_decision": "QUALIFIER_AND_PARAPHRASE",
+    "recommended_prompt": "（急に・勢いよく）飛び込む／突っ込む",
+    "qualifier_dimension": [
+      "forceful-motion"
+    ],
+    "qualifier_text": "急に・勢いよく",
+    "recommended_paraphrases": [],
+    "removed_paraphrases": [
+      "dive into something",
+      "jump into something"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "dive into something",
+        "decision": "REMOVE",
+        "reason": "plunge intoは突然または勢いよく突入する。jump/diveは意図的な飛び込みなどにも用いられる。",
+        "source_worker": "W05",
+        "reconstructed_from_exact_worker_disposition_sets": true
+      },
+      {
+        "paraphrase": "jump into something",
+        "decision": "REMOVE",
+        "reason": "plunge intoは突然または勢いよく突入する。jump/diveは意図的な飛び込みなどにも用いられる。",
+        "source_worker": "W05",
+        "reconstructed_from_exact_worker_disposition_sets": true
+      }
+    ],
+    "reason": "plunge intoは突然または勢いよく突入する。jump/diveは意図的な飛び込みなどにも用いられる。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01299 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1296, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01300",
@@ -3120,24 +4819,41 @@
       "aboard"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "aboard"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「乗って」はon boardの指定sense（aboard_vehicle）を表し、この1カードだけで主要用法を十分に学べる。既存言い換えaboardもこの主要senseと整合する。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01300 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1297, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01301",
@@ -3149,24 +4865,39 @@
     "sense_key": "with_full_details",
     "current_paraphrases": [],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「詳しく」はin detailの指定sense（with_full_details）を表し、この1カードだけで主要用法を十分に学べる。現行paraphraseは空。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01301 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1298, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01302",
@@ -3181,24 +4912,58 @@
       "sympathize"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
-    "recommended_prompt": null,
+    "single_entry_decision": "PARAPHRASE_REVALIDATION_ONLY",
+    "recommended_prompt": "同情を示す",
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
-    "removed_paraphrases": [],
+    "recommended_paraphrases": [
+      "show sympathy"
+    ],
+    "removed_paraphrases": [
+      "sympathize"
+    ],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [
+      {
+        "paraphrase": "show sympathy",
+        "decision": "KEEP",
+        "reason": "sympathizeは同情している内面的状態で、express sympathyの伝達・表明という行為を必ずしも含まない。",
+        "source_worker": "W05",
+        "reconstructed_from_exact_worker_disposition_sets": true
+      },
+      {
+        "paraphrase": "sympathize",
+        "decision": "REMOVE",
+        "reason": "sympathizeは同情している内面的状態で、express sympathyの伝達・表明という行為を必ずしも含まない。",
+        "source_worker": "W05",
+        "reconstructed_from_exact_worker_disposition_sets": true
+      }
+    ],
+    "reason": "sympathizeは同情している内面的状態で、express sympathyの伝達・表明という行為を必ずしも含まない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01302 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1299, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   },
   {
     "id": "vocab:01303",
@@ -3213,23 +4978,41 @@
       "in some respects"
     ],
     "previous_near_synonym_authority": "NONE",
-    "review_status": "PENDING",
+    "review_status": "REVIEWED",
     "learning_eligible": true,
     "remediation_eligible": true,
     "previous_authority_imported": false,
-    "single_entry_revalidated": false,
+    "single_entry_revalidated": true,
     "source_status": "CURRENT",
     "revalidated_against_main_sha": null,
-    "single_entry_decision": null,
+    "single_entry_decision": "KEEP",
     "recommended_prompt": null,
     "qualifier_dimension": [],
     "qualifier_text": null,
-    "recommended_paraphrases": null,
+    "recommended_paraphrases": [
+      "in a way",
+      "in some respects"
+    ],
     "removed_paraphrases": [],
     "added_paraphrases": [],
-    "reason": "未裁定。機械的KEEP禁止。",
-    "confidence": null,
-    "evidence": [],
-    "previous_near_synonym_group_ids": []
+    "paraphrase_review": [],
+    "reason": "「ある意味では」はin a senseの指定sense（from_one_perspective）を表し、この1カードだけで主要用法を十分に学べる。既存言い換えin a way / in some respectsもこの主要senseと整合する。stableかつmaterialな補足不足は認めない。",
+    "confidence": "HIGH",
+    "evidence": [
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: data/vocabulary-v3.json entry vocab:01303 (meaning_ja, sense_key, grammarRole, occurrences, paraphrases)",
+      "Fixed base 2d60188baaceaf77c4e3370ebb37029c48201e2e: review-index.json source index 1300, status=PENDING"
+    ],
+    "previous_near_synonym_group_ids": [],
+    "review_provenance": {
+      "authority_type": "PARALLEL_WORKER",
+      "source_workers": [
+        "W05"
+      ],
+      "immutable_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+      "source_branch_heads": {
+        "W05": "90964d527b4f678ea06b05e0ad20c810c993329e"
+      },
+      "deduplication": null
+    }
   }
 ]

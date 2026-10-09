@@ -1,0 +1,129 @@
+{
+  "status": "CLOSED",
+  "immutable_parallel_base_sha": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+  "current_main_sha": "794e6cf8c88ed6775be9b56a6f1fddc0775a7130",
+  "canonical_starting_head": "2d60188baaceaf77c4e3370ebb37029c48201e2e",
+  "semantic_field_reconciliation": {
+    "fields_checked": [
+      "canonical",
+      "meaning_ja",
+      "sense_key",
+      "paraphrases",
+      "grammarRole",
+      "occurrences",
+      "kind",
+      "subtype",
+      "pos",
+      "semantic_metadata",
+      "learning_eligible"
+    ],
+    "changed_entry_count": 1,
+    "changed_entries": [
+      {
+        "id": "vocab:00139",
+        "changed_fields": [
+          "canonical",
+          "meaning_ja",
+          "paraphrases"
+        ]
+      }
+    ],
+    "stale_ids": [],
+    "revalidated_ids": [
+      "vocab:00139"
+    ],
+    "global_authority_drift": false
+  },
+  "coverage": {
+    "source_population": 2478,
+    "base_resolved_ids": 494,
+    "base_pending_ids": 1984,
+    "worker_raw_records": 1983,
+    "worker_distinct_ids": 1981,
+    "boundary_repair_records": 3,
+    "parallel_distinct_resolved_ids": 1984,
+    "base_parallel_overlap": 0,
+    "union_resolved_ids": 2478,
+    "missing_ids": [],
+    "unknown_ids": [],
+    "unexpected_duplicate_ids": [],
+    "order_drift": 0,
+    "pending": 0,
+    "stale": 0
+  },
+  "duplicate_adjudications": [
+    {
+      "id": "vocab:00762",
+      "classification": "CONFLICT",
+      "action": "AGGREGATOR_ADJUDICATED",
+      "decision": "KEEP",
+      "source_workers": [
+        "W02",
+        "W03"
+      ],
+      "reason": "Independent semantic adjudication; no worker mechanically preferred.",
+      "confidence": "HIGH"
+    },
+    {
+      "id": "vocab:02052",
+      "classification": "IDENTICAL",
+      "action": "DEDUPED",
+      "decision": "KEEP",
+      "source_workers": [
+        "W08",
+        "W09"
+      ],
+      "recommended_paraphrases": [
+        "human resources",
+        "HR department"
+      ]
+    }
+  ],
+  "out_of_assigned_range_accepted": [
+    {
+      "id": "vocab:02481",
+      "worker": "W10",
+      "review_index": 2478,
+      "source_array_position": 2477,
+      "decision": "QUALIFIER_ONLY",
+      "boundary_classification": "VALID_BUT_OUT_OF_ASSIGNED_RANGE"
+    }
+  ],
+  "decision_counts": {
+    "KEEP": 1824,
+    "QUALIFIER_AND_PARAPHRASE": 297,
+    "QUALIFIER_ONLY": 56,
+    "CROSS_AUDIT_CONFLICT": 8,
+    "PARAPHRASE_REVALIDATION_ONLY": 199,
+    "UPSTREAM_AUTHORITY_REVIEW": 94
+  },
+  "review_status_counts": {
+    "REVIEWED": 2272,
+    "PREVIOUS_AUTHORITY_CONFIRMED": 104,
+    "CROSS_AUDIT_CONFLICT": 8,
+    "UPSTREAM_ISOLATED": 94
+  },
+  "confidence_counts": {
+    "HIGH": 2080,
+    "MEDIUM": 365,
+    "LOW": 33
+  },
+  "upstream_review_count": 94,
+  "active_cross_audit_conflict_count": 8,
+  "production_remediation_candidate_count": 551,
+  "production_excluded_candidate_count": 1,
+  "worker_branch_heads": {
+    "audit/single-entry-nuance-worker-01": "cf31d02d665690cae425dc71af372907335669a6",
+    "audit/single-entry-nuance-worker-02": "4e7490a02cc9ed6ddc6d0bc94e0398a23a45b738",
+    "audit/single-entry-nuance-worker-03": "70a3cd925bb0a80b3d630ea26267cdf52e81a672",
+    "audit/single-entry-nuance-worker-04": "c70d5a5ca431c0be063a6c487d2a043b7078029a",
+    "audit/single-entry-nuance-worker-05": "90964d527b4f678ea06b05e0ad20c810c993329e",
+    "audit/single-entry-nuance-worker-06": "b20c8296d5beeca381ea73007bd9c90476143823",
+    "audit/single-entry-nuance-worker-07": "7469d5a612cf4a5cf0544222ae06bbf9872ac994",
+    "audit/single-entry-nuance-worker-08": "1e9733bd2b10296484a7d59eb60837de51a0ff15",
+    "audit/single-entry-nuance-worker-09": "6fde9b87d523105cc481fc0da39d354aa730caf6",
+    "audit/single-entry-nuance-worker-10": "fd72d3c018d5c8ed71bf7e609cdaddca8e4c845f"
+  },
+  "boundary_repair_head": "8af4778d3a338fd03afaa8a00c4769088b74692e",
+  "production_changed": false
+}
