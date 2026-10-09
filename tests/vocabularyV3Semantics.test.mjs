@@ -4,6 +4,8 @@ import fs from 'node:fs';
 
 const items=JSON.parse(fs.readFileSync(new URL('../data/items.json',import.meta.url),'utf8'));
 const db=JSON.parse(fs.readFileSync(new URL('../data/vocabulary-v3.json',import.meta.url),'utf8'));
+const nuanceMaterialization=JSON.parse(fs.readFileSync(new URL('../data/audits/vocabulary-single-entry-nuance-materialization/materialization.json',import.meta.url),'utf8'));
+const nuanceById=new Map(nuanceMaterialization.entries.map(row=>[row.id,row]));
 const itemById=new Map(items.map(item=>[item.id,item]));
 const entry=(canonical,senseKey)=>db.entries.find(value=>value.canonical===canonical&&value.sense_key===senseKey);
 function surface(value){const occurrence=value.occurrences[0],item=itemById.get(occurrence.item_id);return item.en.slice(occurrence.start,occurrence.end);}
@@ -13,7 +15,7 @@ test('known wrong-sense regressions stay pinned to their source expressions and 
     ['take up','occupy_space_or_time','E0020','taking up',/占める/,/再開する/],
     ['turn something off','stop_a_device_or_flow','E0102','Turn the faucet off',/止める|切る/,/解雇する/],
     ['come across someone','meet_by_chance','E0524','came across Nick',/偶然|見かける/,/印象を与える/],
-    ['make someone do something','causative_make','E0130','make her sign',/someoneにsomethingさせる/,/成功/],
+    ['make someone do something','causative_make','E0130','make her sign',/someoneにsomethingをさせる/,/成功/],
     ["I'm beside myself",'extremely_upset','E0010','beside himself',/取り乱/,/比較/],
     ['sound asleep','sleeping_deeply','E0523','sound asleep',/ぐっすり|熟睡/,/音/],
     ['twist your ankle','sprain_an_ankle','E0190','twisted his ankle',/捻挫/,/ツイスト/],
@@ -76,13 +78,13 @@ test('spoken placeholder targets are mirrored literally in the Japanese prompt',
     if(value.kind==='word'||lexicalSomething.has(value.id)) continue;
     const canonical=String(value.canonical||'');
     const prompt=String(value.meaning_ja||'');
-    if(/\bsomeone\b/i.test(canonical)) assert.match(prompt,/someone/i,`${value.id} exposes someone in meaning_ja`);
-    if(/\bsomething\b/i.test(canonical)) assert.match(prompt,/something/i,`${value.id} exposes something in meaning_ja`);
-    if(/\bsomething else\b/i.test(canonical)) assert.match(prompt,/something else/i,`${value.id} exposes something else in meaning_ja`);
+    if(/\bsomeone\b/i.test(canonical)&&!/someone/i.test(prompt)) assert.equal(prompt,nuanceById.get(value.id)?.after.meaning_ja,`${value.id} placeholder omission is explicitly approved`);
+    if(/\bsomething\b/i.test(canonical)&&!/something/i.test(prompt)) assert.equal(prompt,nuanceById.get(value.id)?.after.meaning_ja,`${value.id} placeholder omission is explicitly approved`);
+    if(/\bsomething else\b/i.test(canonical)&&!/something else/i.test(prompt)) assert.equal(prompt,nuanceById.get(value.id)?.after.meaning_ja,`${value.id} placeholder omission is explicitly approved`);
   }
   const fixtures=[
     ['vocab:00040','remind someone of something','someoneにsomethingを思い出させる'],
-    ['vocab:00503','associate something with something else','somethingをsomething elseと結び付ける'],
+    ['vocab:00503','associate something with something else','somethingをsomething elseと（頭の中で）結び付ける'],
     ['vocab:00323','keep up with something','somethingについていく'],
   ];
   for(const [id,canonical,meaning] of fixtures){
@@ -90,6 +92,7 @@ test('spoken placeholder targets are mirrored literally in the Japanese prompt',
     assert.equal(value?.canonical,canonical);
     assert.equal(value?.meaning_ja,meaning);
   }
+  assert.equal(db.entries.find(value=>value.id==='vocab:00364')?.meaning_ja,'心配している（不安を感じている）');
 });
 
 test('learning-surface human review batch 01 pins corrected reusable targets',()=>{
@@ -118,7 +121,7 @@ test('learning-surface human review batch 03 keeps prompts aligned with reusable
 
 test('learning-surface human review batch 04 removes source-specific emotional overstatement',()=>{
   const byId=new Map(db.entries.map(value=>[value.id,value]));
-  assert.equal(byId.get('vocab:00474')?.meaning_ja,'somethingし続ける');
+  assert.equal(byId.get('vocab:00474')?.meaning_ja,'somethingし続ける（困難や反対があっても）');
   assert.equal(byId.get('vocab:00531')?.meaning_ja,'somethingするのに気が進まない');
 });
 

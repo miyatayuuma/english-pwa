@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 import { classifyVocabularySpeechAnswer } from '../scripts/speech/vocabularySpeechEvidence.js';
 import { findSpeechSurfaceMatch } from '../scripts/speech/speechAlignment.js';
 import { safeSpeechTokens } from '../scripts/speech/safeSpeechNormalization.js';
+import { normalizeVocabularyAnswer } from '../scripts/app/vocabularyLearningCore.js';
 import {
   VOCABULARY_TD_CLUSTER_BEFORE_TO_AUDIT_RECORD_COUNT,
   VOCABULARY_TD_CLUSTER_BEFORE_TO_AUTHORITY,
@@ -14,7 +15,9 @@ import { VOCABULARY_CHUNK_RESCUE_AUTHORITY } from '../scripts/speech/vocabularyC
 const accounting = JSON.parse(readFileSync(new URL('../data/audits/vocabulary-td-cluster-before-to-production/materialization.json', import.meta.url), 'utf8'));
 const vocabulary = JSON.parse(readFileSync(new URL('../data/vocabulary-v3.json', import.meta.url), 'utf8')).entries;
 const items = JSON.parse(readFileSync(new URL('../data/items.json', import.meta.url), 'utf8'));
+const nuanceMaterialization = JSON.parse(readFileSync(new URL('../data/audits/vocabulary-single-entry-nuance-materialization/materialization.json', import.meta.url), 'utf8'));
 const entryById = new Map(vocabulary.map(entry => [entry.id, entry]));
+const nuanceById = new Map(nuanceMaterialization.entries.map(row => [row.id, row]));
 const itemById = new Map(items.map(item => [item.id, item]));
 const safeIds = [
   'wfc-00069', 'wfc-01883', 'wfc-01954', 'wfc-01957', 'wfc-01977', 'wfc-01978',
@@ -42,7 +45,7 @@ function segment(transcripts) {
   };
 }
 
-test('36 SAFE records are current accepted surfaces and each is rescued in its existing class', () => {
+test('36 SAFE records preserve historical classification while current nuance removals are no longer accepted', () => {
   assert.equal(VOCABULARY_TD_CLUSTER_BEFORE_TO_SOURCE_AUDIT_SHA, '76085365bd3f5759bf3048df427574f350d01191');
   assert.equal(VOCABULARY_TD_CLUSTER_BEFORE_TO_AUDIT_RECORD_COUNT, 36);
   assert.equal(accounting.source_audit_sha, VOCABULARY_TD_CLUSTER_BEFORE_TO_SOURCE_AUDIT_SHA);
@@ -58,14 +61,23 @@ test('36 SAFE records are current accepted surfaces and each is rescued in its e
   for (const record of accounting.records) {
     const entry = entryById.get(record.entry_id);
     assert.ok(entry, record.entry_id);
+    const nuance=nuanceById.get(record.entry_id);
+    const normalizedAccepted=normalizeVocabularyAnswer(record.current_main_accepted_surface);
+    const removedByNuance=record.surface_type==='accepted paraphrase'&&!!nuance
+      &&!(nuance.after.paraphrases||[]).some(value=>normalizeVocabularyAnswer(value)===normalizedAccepted);
     const expectedType = record.surface_type === 'accepted paraphrase' ? 'paraphrase' : 'target';
     const result = classifyVocabularySpeechAnswer({
       entry,
       activeOccurrence: activeOccurrence(record),
       transcript: record.collision_surface,
     });
-    assert.equal(result.type, expectedType, record.audit_candidate_id);
-    assert.equal(result.matched, true, record.audit_candidate_id);
+    assert.equal(result.type, removedByNuance?'miss':expectedType, record.audit_candidate_id);
+    assert.equal(result.matched, !removedByNuance, record.audit_candidate_id);
+    if(removedByNuance){
+      assert.equal(nuance.source_audit_commit,'ab1238bf126196aef01aef636db70e53fac34ad1',record.audit_candidate_id);
+      assert.equal((nuance.after.paraphrases||[]).some(value=>normalizeVocabularyAnswer(value)===normalizedAccepted),false,record.audit_candidate_id);
+      continue;
+    }
     if (record.materialization_status === 'ALREADY_COVERED') {
       assert.equal(record.audit_candidate_id, 'wfc-04264');
       assert.equal(result.recognitionAuthority, 'exact', record.audit_candidate_id);
@@ -182,14 +194,14 @@ test('explicit rescue stays within TARGET N-best policy and preserves correction
   assert.equal(targetCorrection.recognitionAuthority, 'explicit-equivalence');
 
   const paraphraseEntry = entryById.get('vocab:00528');
+  assert.deepEqual(paraphraseEntry.paraphrases,['be compelled to do something']);
+  const retainedParaphrase=classifyVocabularySpeechAnswer({entry:paraphraseEntry,transcript:'be compelled to do something'});
+  assert.equal(retainedParaphrase.type,'paraphrase');
+  assert.equal(retainedParaphrase.matched,true);
   const reducedParaphrase = 'be force to do something';
   const paraphrase = classifyVocabularySpeechAnswer({ entry: paraphraseEntry, transcript: reducedParaphrase });
-  assert.equal(paraphrase.type, 'paraphrase');
-  assert.equal(paraphrase.matched, true);
-  assert.equal(paraphrase.recognitionAuthority, 'explicit-equivalence');
-  assert.equal(paraphrase.targetRescued, false);
-  assert.equal(paraphrase.rawTranscript, reducedParaphrase);
-  assert.equal(paraphrase.speechMatch.ruleId, 'td-cluster-before-to-vocab-00528-forced-to-force');
+  assert.equal(paraphrase.type, 'miss', 'a removed source paraphrase is not revived by its older speech equivalence');
+  assert.equal(paraphrase.matched, false);
 
   assert.equal(classifyVocabularySpeechAnswer({
     entry: paraphraseEntry,
@@ -241,9 +253,8 @@ test('vocab:00528 chunk rescue remains independent of the new paraphrase equival
   assert.equal(rescued.speechMatch.ruleKind, null);
 
   const paraphrase = classifyVocabularySpeechAnswer({ entry, transcript: 'be force to do something' });
-  assert.equal(paraphrase.type, 'paraphrase');
+  assert.equal(paraphrase.type, 'miss', 'the prior paraphrase was removed by the final single-entry authority');
   assert.equal(paraphrase.chunkRescue, undefined);
-  assert.equal(paraphrase.recognitionAuthority, 'explicit-equivalence');
 
   const uncuratedParaphrase = classifyVocabularySpeechAnswer({
     entry,

@@ -637,17 +637,16 @@ browserTest('PARAPHRASE result uses the shared target-first answer block without
   }finally{await closePage(opened);}
 });
 
-browserTest('audited t-d reduction stays an accepted PARAPHRASE in the Vocabulary UI without TARGET SRS credit',async()=>{
+browserTest('removed force paraphrase is not accepted after audit revalidation',async()=>{
   const source={kind:'construction',canonical:'have no choice but to do something',itemId:'E0425',entryId:'vocab:00528'};
   const opened=await newPage(source);const {page,entry}=opened;
   try{
     const before=await page.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id],entry.id);
+    assert.deepEqual(entry.paraphrases,['be compelled to do something']);
     await inject(page,'be force to do something');
-    await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='意味はOK');
-    assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical);
-    assert.equal(await page.locator('.vocab-paraphrase.is-spoken').innerText(),'✓ be forced to do something');
+    await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent.includes('聞き取りを確認'));
     assert.equal(await page.locator('.vocab-heard__text').innerText(),'be force to do something','raw ASR surface remains visible');
-    assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0,'automatic paraphrase does not receive TARGET SRS credit');
+    assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0,'rejected paraphrase does not update TARGET SRS state');
     assert.deepEqual(await page.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id],entry.id),before);
   }finally{await closePage(opened);}
 });
