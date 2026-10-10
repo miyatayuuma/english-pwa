@@ -38,7 +38,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "さあ・ほら（促し）／おい・もう（抗議・不信）",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01638",
@@ -111,7 +126,24 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "どうしようもない",
+        "recommended_paraphrases": [
+          "can't be helped"
+        ],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01640",
@@ -160,7 +192,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "できればそうしたいのだが（実際にはできないことを残念に思う）",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01643",
@@ -244,7 +291,25 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "〜の前に",
+        "recommended_paraphrases": [
+          "before",
+          "in front of"
+        ],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01650",
@@ -317,7 +382,24 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "宇宙",
+        "recommended_paraphrases": [
+          "space"
+        ],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01654",
@@ -401,7 +483,49 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {
+          "ACTION_OR_EVENT": 1
+        },
+        "prompt_slot_profile": {
+          "ACTION_OR_EVENT": 1
+        },
+        "canonical_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "ACTION_OR_EVENT",
+            "semantic_role": "ACTION_OR_EVENT",
+            "context": "with a view to doing something",
+            "start": 21,
+            "end": 30
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "ACTION_OR_EVENT",
+            "semantic_role": "ACTION_OR_EVENT",
+            "context": "somethingする目的で",
+            "start": 0,
+            "end": 9
+          }
+        ],
+        "recommended_prompt": "somethingする目的で",
+        "recommended_paraphrases": [
+          "in order to do something",
+          "so as to do something"
+        ],
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01668",
@@ -476,7 +600,68 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {
+          "ACTION_OR_EVENT": 1,
+          "PERSON": 1
+        },
+        "prompt_slot_profile": {
+          "ACTION_OR_EVENT": 1,
+          "PERSON": 1
+        },
+        "canonical_slot_tokens": [
+          {
+            "token": "someone",
+            "classification": "VARIABLE_SLOT",
+            "type": "PERSON",
+            "semantic_role": "PERSON",
+            "context": "call on someone to do something",
+            "start": 8,
+            "end": 15
+          },
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "ACTION_OR_EVENT",
+            "semantic_role": "ACTION_OR_EVENT",
+            "context": "call on someone to do something",
+            "start": 22,
+            "end": 31
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [
+          {
+            "token": "someone",
+            "classification": "VARIABLE_SLOT",
+            "type": "PERSON",
+            "semantic_role": "PERSON",
+            "context": "someoneにsomethingするよう要請する（改まった呼びかけ・要請）",
+            "start": 0,
+            "end": 7
+          },
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "ACTION_OR_EVENT",
+            "semantic_role": "ACTION_OR_EVENT",
+            "context": "someoneにsomethingするよう要請する（改まった呼びかけ・要請）",
+            "start": 8,
+            "end": 17
+          }
+        ],
+        "recommended_prompt": "someoneにsomethingするよう要請する（改まった呼びかけ・要請）",
+        "recommended_paraphrases": [
+          "request that someone do something"
+        ],
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01674",
@@ -549,7 +734,48 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {
+          "THING": 1
+        },
+        "prompt_slot_profile": {
+          "THING": 1
+        },
+        "canonical_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "be characteristic of something",
+            "start": 21,
+            "end": 30
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "somethingに特有である",
+            "start": 0,
+            "end": 9
+          }
+        ],
+        "recommended_prompt": "somethingに特有である",
+        "recommended_paraphrases": [
+          "be peculiar to something"
+        ],
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01686",
@@ -609,7 +835,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "霧のかかった",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01697",
@@ -673,7 +914,24 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "収入（個人・組織が受け取る所得全般）",
+        "recommended_paraphrases": [
+          "earnings"
+        ],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01700",
@@ -733,7 +991,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "科学技術",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01704",
@@ -806,7 +1079,24 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "双方向の",
+        "recommended_paraphrases": [
+          "two-way"
+        ],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01708",
@@ -878,7 +1168,46 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {
+          "THING": 1
+        },
+        "prompt_slot_profile": {
+          "THING": 1
+        },
+        "canonical_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "notice something",
+            "start": 7,
+            "end": 16
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "somethingに気づく（変化・細部を見つける）",
+            "start": 0,
+            "end": 9
+          }
+        ],
+        "recommended_prompt": "somethingに気づく（変化・細部を見つける）",
+        "recommended_paraphrases": [],
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01709",
@@ -938,7 +1267,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "珍しい",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01715",
@@ -998,7 +1342,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "先端技術の",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01717",
@@ -1070,7 +1429,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "優れた（平均や同種のものと比べて質が高い）",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01718",
@@ -1130,7 +1504,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "設備",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01732",
@@ -1165,7 +1554,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "単位・一つのまとまり（1個として扱うもの）",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01733",
@@ -1225,7 +1629,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "機械類",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01735",
@@ -1297,7 +1716,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "巨大な（桁外れの大きさ）",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01736",
@@ -1372,7 +1806,24 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "企業（法律上の会社組織）",
+        "recommended_paraphrases": [
+          "company"
+        ],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01737",
@@ -1432,7 +1883,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "事実上の",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01745",
@@ -1505,7 +1971,24 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "売上高",
+        "recommended_paraphrases": [
+          "turnover"
+        ],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01746",
@@ -1567,7 +2050,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "移す・移る（別の場所・所属などへ）",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01747",
@@ -1627,7 +2125,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "海外の",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01751",
@@ -1702,7 +2215,24 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "仕事（個別に課された作業・任務）",
+        "recommended_paraphrases": [
+          "job"
+        ],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01754",
@@ -1766,7 +2296,48 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {
+          "ACTION_OR_EVENT": 1
+        },
+        "prompt_slot_profile": {
+          "ACTION_OR_EVENT": 1
+        },
+        "canonical_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "ACTION_OR_EVENT",
+            "semantic_role": "ACTION_OR_EVENT",
+            "context": "manage to do something",
+            "start": 13,
+            "end": 22
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "ACTION_OR_EVENT",
+            "semantic_role": "ACTION_OR_EVENT",
+            "context": "somethingをなんとか成し遂げる（困難や工夫を伴う）",
+            "start": 0,
+            "end": 9
+          }
+        ],
+        "recommended_prompt": "somethingをなんとか成し遂げる（困難や工夫を伴う）",
+        "recommended_paraphrases": [
+          "pull something off"
+        ],
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01756",
@@ -1838,7 +2409,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "熱心な（強い熱意・高揚を示す）",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01757",
@@ -1911,7 +2497,24 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "促進する",
+        "recommended_paraphrases": [
+          "foster"
+        ],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01771",
@@ -1983,7 +2586,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "巨大な（一般的な口語表現）",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01775",
@@ -2043,7 +2661,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "下に",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01781",
@@ -2103,7 +2736,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "往復の",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01786",
@@ -2163,7 +2811,64 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {
+          "THING": 2
+        },
+        "prompt_slot_profile": {
+          "THING": 2
+        },
+        "canonical_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "attach something to something else",
+            "start": 7,
+            "end": 16
+          },
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "attach something to something else",
+            "start": 20,
+            "end": 29
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "somethingをsomething elseに取り付ける",
+            "start": 0,
+            "end": 9
+          },
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "somethingをsomething elseに取り付ける",
+            "start": 10,
+            "end": 19
+          }
+        ],
+        "recommended_prompt": "somethingをsomething elseに取り付ける",
+        "recommended_paraphrases": [],
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01798",
@@ -2238,7 +2943,24 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "たくさんの〜（くだけた言い方）",
+        "recommended_paraphrases": [
+          "a lot of"
+        ],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01799",
@@ -2324,7 +3046,67 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {
+          "THING": 2
+        },
+        "prompt_slot_profile": {
+          "THING": 2
+        },
+        "canonical_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "transform something into something else",
+            "start": 10,
+            "end": 19
+          },
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "transform something into something else",
+            "start": 25,
+            "end": 34
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "somethingをsomething elseに変える（姿・性質を根本的に変化させる）",
+            "start": 0,
+            "end": 9
+          },
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "somethingをsomething elseに変える（姿・性質を根本的に変化させる）",
+            "start": 10,
+            "end": 19
+          }
+        ],
+        "recommended_prompt": "somethingをsomething elseに変える（姿・性質を根本的に変化させる）",
+        "recommended_paraphrases": [
+          "turn something into something else",
+          "convert something into something else"
+        ],
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01807",
@@ -2384,7 +3166,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "破産する",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01810",
@@ -2448,7 +3245,48 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {
+          "ACTION_OR_EVENT": 1
+        },
+        "prompt_slot_profile": {
+          "ACTION_OR_EVENT": 1
+        },
+        "canonical_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "ACTION_OR_EVENT",
+            "semantic_role": "ACTION_OR_EVENT",
+            "context": "be willing to do something",
+            "start": 17,
+            "end": 26
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "ACTION_OR_EVENT",
+            "semantic_role": "ACTION_OR_EVENT",
+            "context": "進んでsomethingする気がある（依頼・提案を引き受ける意思）",
+            "start": 3,
+            "end": 12
+          }
+        ],
+        "recommended_prompt": "進んでsomethingする気がある（依頼・提案を引き受ける意思）",
+        "recommended_paraphrases": [
+          "be prepared to do something"
+        ],
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01814",
@@ -2523,7 +3361,48 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {
+          "ACTION_OR_EVENT": 1
+        },
+        "prompt_slot_profile": {
+          "ACTION_OR_EVENT": 1
+        },
+        "canonical_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "ACTION_OR_EVENT",
+            "semantic_role": "ACTION_OR_EVENT",
+            "context": "strive to do something",
+            "start": 13,
+            "end": 22
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "ACTION_OR_EVENT",
+            "semantic_role": "ACTION_OR_EVENT",
+            "context": "somethingしようと努力する（強い意志で懸命に）",
+            "start": 0,
+            "end": 9
+          }
+        ],
+        "recommended_prompt": "somethingしようと努力する（強い意志で懸命に）",
+        "recommended_paraphrases": [
+          "make an effort to do something"
+        ],
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01822",
@@ -2583,7 +3462,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "名札",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01835",
@@ -2655,7 +3549,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "客（招かれた人・宿泊客）",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01842",
@@ -2715,7 +3624,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "満員の",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01844",
@@ -2785,7 +3709,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "さえぎる",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01853",
@@ -2845,7 +3784,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "下痢",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01856",
@@ -2905,7 +3859,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "治す",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01858",
@@ -2965,7 +3934,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "材料",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01859",
@@ -3027,7 +4011,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "飲み物（改まった言い方）",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01863",
@@ -3087,7 +4086,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "乳児",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01867",
@@ -3147,7 +4161,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "刺激する",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01870",
@@ -3209,7 +4238,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "不快な（強い嫌悪感を込めて）",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01890",
@@ -3273,7 +4317,24 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "頑固な（周囲の意見を聞かず、非難的にいうことが多い）",
+        "recommended_paraphrases": [
+          "stubborn"
+        ],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01897",
@@ -3345,7 +4406,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "示す（証拠・実演で明らかにする）",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01899",
@@ -3417,7 +4493,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "強い信頼（相手を固く信じる気持ち）",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01900",
@@ -3477,7 +4568,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "観客",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01903",
@@ -3537,7 +4643,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "建築",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01904",
@@ -3609,7 +4730,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "名声・権威のある（高く尊敬・評価されている）",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01913",
@@ -3681,7 +4817,46 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {
+          "PERSON": 1
+        },
+        "prompt_slot_profile": {
+          "PERSON": 1
+        },
+        "canonical_slot_tokens": [
+          {
+            "token": "someone",
+            "classification": "VARIABLE_SLOT",
+            "type": "PERSON",
+            "semantic_role": "PERSON",
+            "context": "have a word with someone",
+            "start": 17,
+            "end": 24
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [
+          {
+            "token": "someone",
+            "classification": "VARIABLE_SLOT",
+            "type": "PERSON",
+            "semantic_role": "PERSON",
+            "context": "someoneと少し話す（特定の用件で、しばしば個別に）",
+            "start": 0,
+            "end": 7
+          }
+        ],
+        "recommended_prompt": "someoneと少し話す（特定の用件で、しばしば個別に）",
+        "recommended_paraphrases": [],
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01916",
@@ -3743,7 +4918,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "残念ながら〜だと思う（言いにくいことを丁寧に伝える）",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01927",
@@ -3815,7 +5005,46 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {
+          "THING": 1
+        },
+        "prompt_slot_profile": {
+          "THING": 1
+        },
+        "canonical_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "apply for something",
+            "start": 10,
+            "end": 19
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "somethingに正式に応募・申請する（選考や承認を求めて）",
+            "start": 0,
+            "end": 9
+          }
+        ],
+        "recommended_prompt": "somethingに正式に応募・申請する（選考や承認を求めて）",
+        "recommended_paraphrases": [],
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01934",
@@ -3887,7 +5116,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "つまり（言い直しや補足の前置き）",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01942",
@@ -3957,7 +5201,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "ものすごい",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01953",
@@ -4041,7 +5300,25 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "厳しい",
+        "recommended_paraphrases": [
+          "severe",
+          "tough"
+        ],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01956",
@@ -4101,7 +5378,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "永遠に",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01965",
@@ -4174,7 +5466,24 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "職員",
+        "recommended_paraphrases": [
+          "staff"
+        ],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01977",
@@ -4258,7 +5567,49 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {
+          "THING": 1
+        },
+        "prompt_slot_profile": {
+          "THING": 1
+        },
+        "canonical_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "disturb something",
+            "start": 8,
+            "end": 17
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "somethingを邪魔する",
+            "start": 0,
+            "end": 9
+          }
+        ],
+        "recommended_prompt": "somethingを邪魔する",
+        "recommended_paraphrases": [
+          "interrupt something",
+          "interfere with something"
+        ],
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01979",
@@ -4343,7 +5694,48 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {
+          "ACTION_OR_EVENT": 1
+        },
+        "prompt_slot_profile": {
+          "ACTION_OR_EVENT": 1
+        },
+        "canonical_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "ACTION_OR_EVENT",
+            "semantic_role": "ACTION_OR_EVENT",
+            "context": "persist in doing something",
+            "start": 17,
+            "end": 26
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "ACTION_OR_EVENT",
+            "semantic_role": "ACTION_OR_EVENT",
+            "context": "somethingをやめずに続ける（反対されてもしつこく続ける場合も）",
+            "start": 0,
+            "end": 9
+          }
+        ],
+        "recommended_prompt": "somethingをやめずに続ける（反対されてもしつこく続ける場合も）",
+        "recommended_paraphrases": [
+          "keep at something"
+        ],
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01981",
@@ -4407,7 +5799,24 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "子供っぽい（大人として幼稚・未熟で、否定的）",
+        "recommended_paraphrases": [
+          "immature"
+        ],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01982",
@@ -4467,7 +5876,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "抵抗する",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01984",
@@ -4549,7 +5973,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "叫ぶ（大声で言う）",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01987",
@@ -4621,7 +6060,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "実際には（予想や思い込みに反して）",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01991",
@@ -4691,7 +6145,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "怒り",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01996",
@@ -4761,7 +6230,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "不平を言う",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:01998",
@@ -4833,7 +6317,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "難しいがやりがいのある（能力や意欲が試される）",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:02005",
@@ -4893,7 +6392,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "郊外",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:02018",
@@ -4965,7 +6479,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "議会（地方自治体などの）",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:02020",
@@ -5027,7 +6556,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "問題・論点（議論や検討の対象となる事柄）",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:02025",
@@ -5087,7 +6631,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "支配的な",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:02029",
@@ -5169,7 +6728,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "減少する（影響・重要性・強さが次第に弱まる）",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:02030",
@@ -5229,7 +6803,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "広報担当者",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:02034",
@@ -5289,7 +6878,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "幹部",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:02039",
@@ -5349,7 +6953,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "きっぱりと",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:02040",
@@ -5409,7 +7028,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "漏らす",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:02058",
@@ -5481,7 +7115,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "実際には（見かけ・理想とは異なる現実では）",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:02070",
@@ -5563,7 +7212,46 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {
+          "THING": 1
+        },
+        "prompt_slot_profile": {
+          "THING": 1
+        },
+        "canonical_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "exert influence on something",
+            "start": 19,
+            "end": 28
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "（影響力を働かせて）somethingに影響を及ぼす",
+            "start": 10,
+            "end": 19
+          }
+        ],
+        "recommended_prompt": "（影響力を働かせて）somethingに影響を及ぼす",
+        "recommended_paraphrases": [],
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:02074",
@@ -5612,7 +7300,46 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {
+          "ACTION_OR_EVENT": 1
+        },
+        "prompt_slot_profile": {
+          "ACTION_OR_EVENT": 1
+        },
+        "canonical_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "ACTION_OR_EVENT",
+            "semantic_role": "ACTION_OR_EVENT",
+            "context": "dare to do something",
+            "start": 11,
+            "end": 20
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "ACTION_OR_EVENT",
+            "semantic_role": "ACTION_OR_EVENT",
+            "context": "（危険・反対を承知で）あえてsomethingする",
+            "start": 14,
+            "end": 23
+          }
+        ],
+        "recommended_prompt": "（危険・反対を承知で）あえてsomethingする",
+        "recommended_paraphrases": [],
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:02076",
@@ -5672,7 +7399,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "職業上の経歴",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:02081",
@@ -5732,7 +7474,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "上級の",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:02082",
@@ -5792,7 +7549,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "役人",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:02083",
@@ -5852,7 +7624,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "証拠",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:02086",
@@ -5912,7 +7699,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "腐敗",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:02089",
@@ -5998,7 +7800,25 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "（詳しく・注意深く）調べる",
+        "recommended_paraphrases": [
+          "investigate",
+          "look into"
+        ],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:02094",
@@ -6073,7 +7893,24 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "取引（商品・金銭の売買・処理）",
+        "recommended_paraphrases": [
+          "trade"
+        ],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:02095",
@@ -6133,7 +7970,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "10年間",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:02097",
@@ -6195,7 +8047,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "（突然感じる）鋭い痛み",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:02098",
@@ -6257,7 +8124,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "（つらい記憶・不安などが）心に付きまとう",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:02101",
@@ -6319,7 +8201,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "（招かれず・無断で）立ち入る",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:02102",
@@ -6379,7 +8276,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "著者",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:02104",
@@ -6439,7 +8351,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "原稿",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:02105",
@@ -6501,7 +8428,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "（地位・能力などで上位とされる）選ばれた人々",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:02106",
@@ -6561,7 +8503,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "批判",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     },
     {
       "id": "vocab:02114",
@@ -6621,7 +8578,22 @@
       "recommended_paraphrases": null,
       "entry_decision": "PENDING",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "PENDING",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "テロ行為",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      }
     }
   ],
   "review_status": "PENDING"

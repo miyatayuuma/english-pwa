@@ -186,7 +186,7 @@
   "strict_validator": "NOT_RUN",
   "deterministic_regeneration": "NOT_RUN",
   "final_current_main_reconciliation_sha": null,
-  "branch_head_at_generation": "b634517228346a8e9197fa814d3c530aeb71b367",
+  "branch_head_at_generation": "8e6de9cb8cec9419d733231beae178fea001b11a",
   "historical_materialization_divergence": {
     "comparison": {
       "from": "previous_materialization_after",
@@ -215,5 +215,41 @@
     "count": 0,
     "entry_ids": [],
     "changed_fields": {}
+  },
+  "slot_integrity": {
+    "production_inventory_population": 2478,
+    "entries_with_candidate_tokens": 526,
+    "variable_slot_entries": 504,
+    "lexical_placeholder_entries": 17,
+    "ambiguous_entries": 1,
+    "ambiguous_resolved": 1,
+    "mechanical_candidates": 19,
+    "reviewed": 19,
+    "upstream": 0,
+    "pending": 0,
+    "confirmed_defect_entries": 17,
+    "unresolved_defect_entries": 0,
+    "mechanical_candidate_counts": {
+      "AMBIGUOUS_SLOT_AUTHORITY": 1,
+      "SLOT_COUNT_MISMATCH": 12,
+      "SLOT_MISSING": 12,
+      "SLOT_OVERCONSTRAINED": 5,
+      "SLOT_REPLACED_BY_EXAMPLE": 8,
+      "SLOT_ROLE_MISMATCH": 1
+    },
+    "confirmed_violation_counts": {
+      "SLOT_MISSING": 12,
+      "SLOT_REPLACED_BY_EXAMPLE": 8,
+      "SLOT_REPLACED_BY_META_SCOPE": 0,
+      "SLOT_TYPE_MISMATCH": 0,
+      "SLOT_COUNT_MISMATCH": 12,
+      "SLOT_ROLE_MISMATCH": 0,
+      "SLOT_OVERCONSTRAINED": 5,
+      "AMBIGUOUS_SLOT_AUTHORITY": 0
+    },
+    "union_entries_slot_checked": 589,
+    "union_entries_slot_pending": 0,
+    "reviewed_40_slot_bearing_checked": 8,
+    "reviewed_40_reconciliation_count": 0
   }
 }

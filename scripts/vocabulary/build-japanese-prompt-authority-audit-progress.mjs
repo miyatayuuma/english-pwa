@@ -29,6 +29,10 @@ const CHECKPOINT_PATH = resolve(AUDIT_DIR, "checkpoint.json");
 const SUMMARY_PATH = resolve(AUDIT_DIR, "summary.md");
 const INDEX_PATH = resolve(AUDIT_DIR, "review-index.json");
 const BATCH_DIR = resolve(AUDIT_DIR, "batches");
+const SLOT_INVENTORY_PATH = resolve(AUDIT_DIR, "slot-inventory.json");
+const SLOT_CANDIDATES_PATH = resolve(AUDIT_DIR, "slot-candidates.json");
+const SLOT_REVIEW_PATH = resolve(AUDIT_DIR, "slot-review.json");
+const SLOT_SUMMARY_PATH = resolve(AUDIT_DIR, "slot-summary.json");
 const VOCAB_REL = "data/vocabulary-v3.json";
 const VOCAB_PATH = resolve(ROOT, VOCAB_REL);
 const MATERIALIZATION_REL = "data/audits/vocabulary-single-entry-nuance-materialization/materialization.json";
@@ -191,11 +195,33 @@ function build() {
   const manifest = readJson(MANIFEST_PATH);
   const oldCheckpoint = readJson(CHECKPOINT_PATH);
   const index = readJson(INDEX_PATH);
+  const slotInventory = readJson(SLOT_INVENTORY_PATH);
+  const slotCandidates = readJson(SLOT_CANDIDATES_PATH);
+  const slotReview = readJson(SLOT_REVIEW_PATH);
+  const slotSummary = readJson(SLOT_SUMMARY_PATH);
   const branchHead = resolveBranchHead(args.mode, args.branchHead, oldCheckpoint);
   const currentMainSha = resolveMainSha(args.mainSha);
 
   assert(Array.isArray(index.entries), "review-index.json must contain an entries array.");
+  assert(Array.isArray(slotInventory) && slotInventory.length === 2478, "slot-inventory.json must cover all 2,478 production entries.");
+  assert(Array.isArray(slotCandidates), "slot-candidates.json must contain an array.");
+  assert(Array.isArray(slotReview), "slot-review.json must contain an array.");
+  assert(slotSummary.production_source?.population === 2478, "slot-summary.json must report the 2,478-entry production population.");
+  assert(slotSummary.production_source?.git_blob_sha === manifest.production_source?.git_blob_sha, "Slot inventory and audit base production SHA differ.");
+  const unionPopulation = index.entries.length;
   const indexById = idsMap(index.entries, "review-index.json");
+  const slotInventoryById = idsMap(slotInventory, "slot-inventory.json");
+  const slotCandidateById = idsMap(slotCandidates, "slot-candidates.json");
+  const slotReviewById = idsMap(slotReview, "slot-review.json");
+  assert(slotInventoryById.size === 2478, "slot inventory contains duplicate or missing production IDs.");
+  assert(slotCandidateById.size === slotReviewById.size, "Every slot candidate must have exactly one slot-review row.");
+  for (const id of slotCandidateById.keys()) assert(slotReviewById.has(id), `Slot candidate ${id} has no human review row.`);
+  for (const row of slotReview) {
+    assert(["REVIEWED", "UPSTREAM", "PENDING"].includes(row.review_status), `Unknown slot review status for ${row.id}.`);
+    if (row.review_status === "PENDING") continue;
+    if (row.review_status === "UPSTREAM") assert(row.reason, `Upstream slot review ${row.id} requires a reason.`);
+    else if (row.decision !== "UPSTREAM_SLOT_AUTHORITY_REVIEW") assert(row.recommended_prompt, `Reviewed slot row ${row.id} requires recommended_prompt.`);
+  }
   const batchCount = manifest.populations?.batch_count;
   assert(Number.isInteger(batchCount) && batchCount > 0, "manifest.populations.batch_count must be a positive integer.");
 
@@ -235,9 +261,41 @@ function build() {
         ?? (detail.parenthetical_review?.parenthetical_decision === "PENDING" ? "PENDING" : null);
       assert(parentheticalStatus === indexed.review_status, `Parenthetical review status differs from review-index for ${id}.`);
     }
+    assert(indexed.slot_integrity_checked === true, `Union entry ${id} has not passed the slot gate.`);
+    assert(indexed.slot_reconciliation_status, `Union entry ${id} has no slot reconciliation status.`);
+    const inventoryRow = slotInventoryById.get(id);
+    assert(inventoryRow, `Slot inventory is missing union entry ${id}.`);
+    if (inventoryRow.mechanical_status === "CANDIDATE") {
+      const slotRow = slotReviewById.get(id);
+      assert(slotRow && ["REVIEWED", "UPSTREAM"].includes(slotRow.review_status), `Union candidate ${id} is not dispositioned for slot integrity.`);
+    }
   }
 
-  const unionPopulation = index.entries.length;
+  const slotCandidateStatuses = countStatuses(slotReview);
+  const slotCoverage = {
+    production_inventory_population: slotInventory.length,
+    entries_with_candidate_tokens: slotSummary.slot_notation_inventory.entries_with_candidate_tokens,
+    variable_slot_entries: slotSummary.slot_notation_inventory.variable_slot_entries,
+    lexical_placeholder_entries: slotSummary.slot_notation_inventory.lexical_placeholder_entries,
+    ambiguous_entries: slotSummary.slot_notation_inventory.ambiguous_entries,
+    ambiguous_resolved: slotSummary.slot_notation_inventory.ambiguous_resolved,
+    mechanical_candidates: slotCandidates.length,
+    reviewed: slotCandidateStatuses.reviewed,
+    upstream: slotCandidateStatuses.upstream,
+    pending: slotCandidateStatuses.pending,
+    confirmed_defect_entries: slotSummary.candidates.confirmed_defect_entries,
+    unresolved_defect_entries: slotSummary.candidates.unresolved_defect_entries,
+    mechanical_candidate_counts: slotSummary.candidates.by_violation_class,
+    confirmed_violation_counts: slotSummary.candidates.confirmed_by_violation_class,
+    union_entries_slot_checked: index.entries.filter((entry) => entry.slot_integrity_checked === true).length,
+    union_entries_slot_pending: index.entries.filter((entry) => entry.slot_integrity_checked !== true).length,
+    reviewed_40_slot_bearing_checked: slotSummary.union_coverage.reviewed_40_slot_bearing_checked,
+    reviewed_40_reconciliation_count: slotSummary.union_coverage.reviewed_40_reconciliation_count,
+  };
+  assert(slotCoverage.union_entries_slot_checked === unionPopulation, "Not all union entries are slot checked.");
+  assert(slotCoverage.union_entries_slot_pending === 0, "Some union entries remain pending the slot gate.");
+  assert(slotCoverage.pending === 0 && slotCoverage.unresolved_defect_entries === 0, "Slot candidate review is incomplete.");
+
   assert(manifest.populations.union_entries === unionPopulation, `Manifest union population ${manifest.populations.union_entries} does not match review-index ${unionPopulation}.`);
   const entryCoverage = countStatuses(index.entries);
   assert(entryCoverage.reviewed + entryCoverage.upstream + entryCoverage.pending === unionPopulation, "Union review accounting does not sum to the review-index population.");
@@ -442,7 +500,7 @@ function build() {
     },
   };
 
-  const nextStep = `Continue parallel semantic review of the ${entryCoverage.pending} PENDING union entries. Keep vocab:00083 isolated for upstream authority review; do not mark the audit closed.`;
+  const nextStep = `Continue semantic review of the ${entryCoverage.pending} PENDING union entries with the slot integrity gate applied. Keep vocab:00083 isolated for upstream authority review; do not mark the audit closed.`;
   const progress = {
     schema_version: 2,
     status: "PARTIAL_SEMANTIC_REVIEW",
@@ -458,6 +516,7 @@ function build() {
     phrases: phraseCoverage,
     target_leakage: targetLeakage,
     meta_hint: metaHint,
+    slot_integrity: slotCoverage,
     historical_materialization_divergence: historicalDivergence,
     stale,
     production_changes: productionChanges,
@@ -480,6 +539,7 @@ function build() {
     },
     coverage,
     historical_materialization_divergence: historicalDivergence,
+    slot_integrity: slotCoverage,
     stale,
     production_changes: productionChanges,
   };
@@ -511,6 +571,7 @@ function build() {
     target_leakage: targetLeakage,
     meta_hint: metaHint,
     historical_materialization_divergence: historicalDivergence,
+    slot_integrity: slotCoverage,
     stale,
     production_changes: productionChanges,
     semantic_decision_changes: 0,
@@ -532,6 +593,10 @@ function build() {
     `- Current paraphrase review (kept separate): ${phraseCoverage.CURRENT.population}; resolved ${phraseCoverage.CURRENT.resolved}; pending ${phraseCoverage.CURRENT.pending}`,
     `- Target leakage: found ${targetLeakage.found}; resolved ${targetLeakage.resolved}; pending ${targetLeakage.pending}`,
     `- Meta-hint: found ${metaHint.found}; resolved ${metaHint.resolved}; upstream ${metaHint.upstream}; pending ${metaHint.pending}`,
+    `- Full production slot inventory: ${slotCoverage.production_inventory_population}; token-bearing entries ${slotCoverage.entries_with_candidate_tokens}; VARIABLE_SLOT entries ${slotCoverage.variable_slot_entries}; LEXICAL_TOKEN entries ${slotCoverage.lexical_placeholder_entries}; AMBIGUOUS entries ${slotCoverage.ambiguous_entries} (resolved ${slotCoverage.ambiguous_resolved})`,
+    `- Slot candidates: ${slotCoverage.mechanical_candidates}; reviewed ${slotCoverage.reviewed}; upstream ${slotCoverage.upstream}; pending ${slotCoverage.pending}; confirmed defect entries ${slotCoverage.confirmed_defect_entries}; unresolved ${slotCoverage.unresolved_defect_entries}`,
+    `- Confirmed slot violations: ${JSON.stringify(slotCoverage.confirmed_violation_counts)}`,
+    `- Union slot gate: ${slotCoverage.union_entries_slot_checked}/${unionPopulation}; pending ${slotCoverage.union_entries_slot_pending}; reviewed-40 slot-bearing checked ${slotCoverage.reviewed_40_slot_bearing_checked}; reviewed-40 reconciliations ${slotCoverage.reviewed_40_reconciliation_count}`,
     `- Historical materialization divergence: ${historicalDivergence.mismatched_entries} entries; field mismatches ${JSON.stringify(fieldMismatchCounts)}. Informational only; these are not stale entries.`,
     `- Stale since audit base on current main (${currentMainSha}): ${stale.count}`,
     `- Production changes: ${productionChanges}; semantic decision changes in this accounting repair: 0`,
