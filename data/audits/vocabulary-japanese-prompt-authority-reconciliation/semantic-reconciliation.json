@@ -317,6 +317,1278 @@
       },
       "evidence": [],
       "target_leakage_exceptions": []
+    },
+    {
+      "id": "vocab:00001",
+      "source_index": 1,
+      "cohort_flags": {
+        "current_parenthetical": true,
+        "previous_nuance_materialized": false,
+        "historical_removed_count": 0,
+        "historical_added_count": 0
+      },
+      "parenthetical": {
+        "decision": "REWRITE_MINIMAL_SEMANTIC",
+        "recommended_prompt": "場所や時間などを占める",
+        "reason": "「占める」だけでは別の占有senseもあり得るため対象範囲は有用だが、括弧にする必要はない。",
+        "confidence": "HIGH",
+        "prompt_minimality": "PASS"
+      },
+      "paraphrases": [
+        {
+          "phrase": "occupy",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "場所や時間を占有する意味を自然に保つ。",
+          "confidence": "HIGH",
+          "sources": []
+        }
+      ],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "final_review": {
+        "prompt_understood_from_japanese": true,
+        "natural_paraphrases_accepted": true
+      },
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "「占める」だけでは別の占有senseもあり得るため対象範囲は有用だが、括弧にする必要はない。"
+        }
+      ],
+      "target_leakage_exceptions": []
+    },
+    {
+      "id": "vocab:00004",
+      "source_index": 4,
+      "cohort_flags": {
+        "current_parenthetical": true,
+        "previous_nuance_materialized": true,
+        "historical_removed_count": 2,
+        "historical_added_count": 0
+      },
+      "parenthetical": {
+        "decision": "REMOVE_META_HINT",
+        "recommended_prompt": "someoneにsomethingをさせる",
+        "reason": "日本語本文は使役を示すが、強制や直接性を必須にはしていない。英語構文ごとの差だけでget/haveを排除できない。",
+        "confidence": "HIGH",
+        "prompt_minimality": "PASS"
+      },
+      "paraphrases": [
+        {
+          "phrase": "get someone to do something",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "日本語の使役表現に自然に対応する。説得・誘導という構文差はpromptで限定されていない。",
+          "confidence": "MEDIUM",
+          "sources": []
+        },
+        {
+          "phrase": "have someone do something",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "日本語の使役表現に自然に対応する。手配・依頼という意味の差は日本語promptが排除していない。",
+          "confidence": "MEDIUM",
+          "sources": []
+        }
+      ],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "final_review": {
+        "prompt_understood_from_japanese": true,
+        "natural_paraphrases_accepted": true
+      },
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "日本語本文は使役を示すが、強制や直接性を必須にはしていない。英語構文ごとの差だけでget/haveを排除できない。"
+        }
+      ],
+      "target_leakage_exceptions": []
+    },
+    {
+      "id": "vocab:00012",
+      "source_index": 12,
+      "cohort_flags": {
+        "current_parenthetical": true,
+        "previous_nuance_materialized": true,
+        "historical_removed_count": 1,
+        "historical_added_count": 0
+      },
+      "parenthetical": {
+        "decision": "REMOVE_META_HINT",
+        "recommended_prompt": "お腹がぺこぺこだ",
+        "reason": "dialect/registerは英語側の表現情報で、空腹の意味を狭める条件ではない。",
+        "confidence": "HIGH",
+        "prompt_minimality": "PASS"
+      },
+      "paraphrases": [
+        {
+          "phrase": "be starving",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "「お腹がぺこぺこだ」を自然に表す。registerや形の差ではなく強い空腹が一致する。",
+          "confidence": "HIGH",
+          "sources": []
+        }
+      ],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "final_review": {
+        "prompt_understood_from_japanese": true,
+        "natural_paraphrases_accepted": true
+      },
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "dialect/registerは英語側の表現情報で、空腹の意味を狭める条件ではない。"
+        }
+      ],
+      "target_leakage_exceptions": []
+    },
+    {
+      "id": "vocab:00014",
+      "source_index": 14,
+      "cohort_flags": {
+        "current_parenthetical": true,
+        "previous_nuance_materialized": false,
+        "historical_removed_count": 0,
+        "historical_added_count": 0
+      },
+      "parenthetical": {
+        "decision": "REMOVE_META_HINT",
+        "recommended_prompt": "刊行される",
+        "reason": "「刊行される」自体が出版の意味を特定するため、対象例は重複情報。",
+        "confidence": "HIGH",
+        "prompt_minimality": "PASS"
+      },
+      "paraphrases": [
+        {
+          "phrase": "be published",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "出版されるという意味に自然に対応する。",
+          "confidence": "HIGH",
+          "sources": []
+        }
+      ],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "final_review": {
+        "prompt_understood_from_japanese": true,
+        "natural_paraphrases_accepted": true
+      },
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "「刊行される」自体が出版の意味を特定するため、対象例は重複情報。"
+        }
+      ],
+      "target_leakage_exceptions": []
+    },
+    {
+      "id": "vocab:00016",
+      "source_index": 16,
+      "cohort_flags": {
+        "current_parenthetical": true,
+        "previous_nuance_materialized": true,
+        "historical_removed_count": 1,
+        "historical_added_count": 0
+      },
+      "parenthetical": {
+        "decision": "REMOVE_META_HINT",
+        "recommended_prompt": "一目見たとき",
+        "reason": "括弧は第一印象の読みをcanonical側から追加し、brief lookを表す自然な回答を排除し得る。日本語本文で回答可能。",
+        "confidence": "MEDIUM",
+        "prompt_minimality": "PASS"
+      },
+      "paraphrases": [
+        {
+          "phrase": "at a glance",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "「一目見たとき」に対する自然な表現。初見・第一印象のみに狭める根拠は日本語本文にない。",
+          "confidence": "MEDIUM",
+          "sources": []
+        }
+      ],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "final_review": {
+        "prompt_understood_from_japanese": true,
+        "natural_paraphrases_accepted": true
+      },
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "括弧は第一印象の読みをcanonical側から追加し、brief lookを表す自然な回答を排除し得る。日本語本文で回答可能。"
+        }
+      ],
+      "target_leakage_exceptions": []
+    },
+    {
+      "id": "vocab:00017",
+      "source_index": 17,
+      "cohort_flags": {
+        "current_parenthetical": true,
+        "previous_nuance_materialized": true,
+        "historical_removed_count": 0,
+        "historical_added_count": 0
+      },
+      "parenthetical": {
+        "decision": "REMOVE_META_HINT",
+        "recommended_prompt": "思い切ってやってみる",
+        "reason": "思い切って試す意味は本文で伝わる。特定のrisk framingを追加しなくても学習者は要求内容を理解できる。",
+        "confidence": "MEDIUM",
+        "prompt_minimality": "PASS"
+      },
+      "paraphrases": [
+        {
+          "phrase": "take the plunge",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "思い切って行動に移す意味を自然に表す。",
+          "confidence": "HIGH",
+          "sources": []
+        }
+      ],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "final_review": {
+        "prompt_understood_from_japanese": true,
+        "natural_paraphrases_accepted": true
+      },
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "思い切って試す意味は本文で伝わる。特定のrisk framingを追加しなくても学習者は要求内容を理解できる。"
+        }
+      ],
+      "target_leakage_exceptions": []
+    },
+    {
+      "id": "vocab:00026",
+      "source_index": 26,
+      "cohort_flags": {
+        "current_parenthetical": true,
+        "previous_nuance_materialized": false,
+        "historical_removed_count": 0,
+        "historical_added_count": 0
+      },
+      "parenthetical": {
+        "decision": "REWRITE_MINIMAL_SEMANTIC",
+        "recommended_prompt": "預金などを引き出す",
+        "reason": "「引き出す」だけでは別対象のsenseもあるため金融対象を残し、prompt本文に統合する。",
+        "confidence": "HIGH",
+        "prompt_minimality": "PASS"
+      },
+      "paraphrases": [],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "final_review": {
+        "prompt_understood_from_japanese": true,
+        "natural_paraphrases_accepted": true
+      },
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "「引き出す」だけでは別対象のsenseもあるため金融対象を残し、prompt本文に統合する。"
+        }
+      ],
+      "target_leakage_exceptions": []
+    },
+    {
+      "id": "vocab:00027",
+      "source_index": 27,
+      "cohort_flags": {
+        "current_parenthetical": true,
+        "previous_nuance_materialized": false,
+        "historical_removed_count": 0,
+        "historical_added_count": 0
+      },
+      "parenthetical": {
+        "decision": "REMOVE_META_HINT",
+        "recommended_prompt": "預け入れる",
+        "reason": "「預け入れる」は金融機関へ金銭を入れる意味が十分に特定され、括弧の対象指定は不要。",
+        "confidence": "HIGH",
+        "prompt_minimality": "PASS"
+      },
+      "paraphrases": [],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "final_review": {
+        "prompt_understood_from_japanese": true,
+        "natural_paraphrases_accepted": true
+      },
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "「預け入れる」は金融機関へ金銭を入れる意味が十分に特定され、括弧の対象指定は不要。"
+        }
+      ],
+      "target_leakage_exceptions": []
+    },
+    {
+      "id": "vocab:00029",
+      "source_index": 29,
+      "cohort_flags": {
+        "current_parenthetical": true,
+        "previous_nuance_materialized": true,
+        "historical_removed_count": 1,
+        "historical_added_count": 0
+      },
+      "parenthetical": {
+        "decision": "REMOVE_META_HINT",
+        "recommended_prompt": "急いで",
+        "reason": "表現の一般性や会話registerはpromptに必要な意味ではない。",
+        "confidence": "HIGH",
+        "prompt_minimality": "PASS"
+      },
+      "paraphrases": [
+        {
+          "phrase": "in haste",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "「急いで」と自然に対応する。改まり度の差だけでは削除できない。",
+          "confidence": "HIGH",
+          "sources": []
+        }
+      ],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "final_review": {
+        "prompt_understood_from_japanese": true,
+        "natural_paraphrases_accepted": true
+      },
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "表現の一般性や会話registerはpromptに必要な意味ではない。"
+        }
+      ],
+      "target_leakage_exceptions": []
+    },
+    {
+      "id": "vocab:00048",
+      "source_index": 48,
+      "cohort_flags": {
+        "current_parenthetical": true,
+        "previous_nuance_materialized": true,
+        "historical_removed_count": 1,
+        "historical_added_count": 0
+      },
+      "parenthetical": {
+        "decision": "REMOVE_META_HINT",
+        "recommended_prompt": "一文なしだ",
+        "reason": "一文なしという日本語で意味は明確。registerは英語の選択条件にしない。",
+        "confidence": "HIGH",
+        "prompt_minimality": "PASS"
+      },
+      "paraphrases": [
+        {
+          "phrase": "be penniless",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "「一文なしだ」を自然に表す。formal/informalの差は意味差ではない。",
+          "confidence": "HIGH",
+          "sources": []
+        }
+      ],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "final_review": {
+        "prompt_understood_from_japanese": true,
+        "natural_paraphrases_accepted": true
+      },
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "一文なしという日本語で意味は明確。registerは英語の選択条件にしない。"
+        }
+      ],
+      "target_leakage_exceptions": []
+    },
+    {
+      "id": "vocab:00068",
+      "source_index": 68,
+      "cohort_flags": {
+        "current_parenthetical": true,
+        "previous_nuance_materialized": true,
+        "historical_removed_count": 1,
+        "historical_added_count": 0
+      },
+      "parenthetical": {
+        "decision": "REWRITE_MINIMAL_SEMANTIC",
+        "recommended_prompt": "これまでのところ",
+        "reason": "「今のところ」は暫定的な現在とも読めるので、これまでの範囲という時間意味だけを明確にする。",
+        "confidence": "HIGH",
+        "prompt_minimality": "PASS"
+      },
+      "paraphrases": [
+        {
+          "phrase": "for now",
+          "decision": "KEEP_REMOVED_SEMANTIC_MISMATCH",
+          "semantic_fit_reason": "for nowは暫定的に現時点でという意味で、これまでの進捗・結果を表すso farとは時間範囲が異なる。",
+          "confidence": "HIGH",
+          "sources": []
+        }
+      ],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "final_review": {
+        "prompt_understood_from_japanese": true,
+        "natural_paraphrases_accepted": true
+      },
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "「今のところ」は暫定的な現在とも読めるので、これまでの範囲という時間意味だけを明確にする。"
+        }
+      ],
+      "target_leakage_exceptions": []
+    },
+    {
+      "id": "vocab:00069",
+      "source_index": 69,
+      "cohort_flags": {
+        "current_parenthetical": true,
+        "previous_nuance_materialized": false,
+        "historical_removed_count": 0,
+        "historical_added_count": 0
+      },
+      "parenthetical": {
+        "decision": "REMOVE_META_HINT",
+        "recommended_prompt": "〜も",
+        "reason": "「〜も」が数量・程度を表しており、括弧はprompt情報を増やさない。",
+        "confidence": "HIGH",
+        "prompt_minimality": "PASS"
+      },
+      "paraphrases": [
+        {
+          "phrase": "as many as",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "複数の数量が予想以上に多い意味を表す。",
+          "confidence": "HIGH",
+          "sources": []
+        },
+        {
+          "phrase": "as much as",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "量が予想以上に多い意味を表す。",
+          "confidence": "HIGH",
+          "sources": []
+        }
+      ],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "final_review": {
+        "prompt_understood_from_japanese": true,
+        "natural_paraphrases_accepted": true
+      },
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "「〜も」が数量・程度を表しており、括弧はprompt情報を増やさない。"
+        }
+      ],
+      "target_leakage_exceptions": []
+    },
+    {
+      "id": "vocab:00074",
+      "source_index": 74,
+      "cohort_flags": {
+        "current_parenthetical": true,
+        "previous_nuance_materialized": true,
+        "historical_removed_count": 0,
+        "historical_added_count": 0
+      },
+      "parenthetical": {
+        "decision": "REMOVE_META_HINT",
+        "recommended_prompt": "まして〜はなおさら",
+        "reason": "日本語idiom自体がscalarな追加関係を伝える。否定文の配置は英語使用条件であり不要。",
+        "confidence": "HIGH",
+        "prompt_minimality": "PASS"
+      },
+      "paraphrases": [
+        {
+          "phrase": "much less",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "まして〜はなおさらというscalarな関係を自然に表す。",
+          "confidence": "HIGH",
+          "sources": []
+        }
+      ],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "final_review": {
+        "prompt_understood_from_japanese": true,
+        "natural_paraphrases_accepted": true
+      },
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "日本語idiom自体がscalarな追加関係を伝える。否定文の配置は英語使用条件であり不要。"
+        }
+      ],
+      "target_leakage_exceptions": []
+    },
+    {
+      "id": "vocab:00083",
+      "source_index": 83,
+      "cohort_flags": {
+        "current_parenthetical": true,
+        "previous_nuance_materialized": true,
+        "historical_removed_count": 0,
+        "historical_added_count": 0
+      },
+      "parenthetical": {
+        "decision": "UPSTREAM_MEANING_REVIEW",
+        "recommended_prompt": null,
+        "reason": "sense_keyはdisbelief/refusal両方を含む一方、まさかは主にdisbeliefを表す。promptとcanonicalの対応をsense別に確定する必要がある。",
+        "confidence": "HIGH",
+        "prompt_minimality": "UPSTREAM"
+      },
+      "paraphrases": [],
+      "entry_decision": "UPSTREAM_AUTHORITY_REVIEW",
+      "final_review": {
+        "prompt_understood_from_japanese": false,
+        "natural_paraphrases_accepted": false
+      },
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "sense_keyはdisbelief/refusal両方を含む一方、まさかは主にdisbeliefを表す。promptとcanonicalの対応をsense別に確定する必要がある。"
+        }
+      ],
+      "target_leakage_exceptions": []
+    },
+    {
+      "id": "vocab:00088",
+      "source_index": 88,
+      "cohort_flags": {
+        "current_parenthetical": false,
+        "previous_nuance_materialized": true,
+        "historical_removed_count": 1,
+        "historical_added_count": 0
+      },
+      "parenthetical": null,
+      "paraphrases": [
+        {
+          "phrase": "get off something",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "「何かから降りる」というpromptが明示する用法に自然に合う。object-typeのcollocation差だけでは削除できない。",
+          "confidence": "HIGH",
+          "sources": []
+        }
+      ],
+      "entry_decision": "PARAPHRASE_RESTORE",
+      "final_review": {
+        "prompt_understood_from_japanese": true,
+        "natural_paraphrases_accepted": true
+      },
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": null
+        }
+      ],
+      "target_leakage_exceptions": []
+    },
+    {
+      "id": "vocab:00089",
+      "source_index": 89,
+      "cohort_flags": {
+        "current_parenthetical": true,
+        "previous_nuance_materialized": true,
+        "historical_removed_count": 1,
+        "historical_added_count": 0
+      },
+      "parenthetical": {
+        "decision": "REMOVE_META_HINT",
+        "recommended_prompt": "急いで",
+        "reason": "formalityは日本語の意味を区別せず、表現方法を指定するだけ。",
+        "confidence": "HIGH",
+        "prompt_minimality": "PASS"
+      },
+      "paraphrases": [
+        {
+          "phrase": "in a hurry",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "「急いで」と自然に対応する。register差だけでは削除できない。",
+          "confidence": "HIGH",
+          "sources": []
+        }
+      ],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "final_review": {
+        "prompt_understood_from_japanese": true,
+        "natural_paraphrases_accepted": true
+      },
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "formalityは日本語の意味を区別せず、表現方法を指定するだけ。"
+        }
+      ],
+      "target_leakage_exceptions": []
+    },
+    {
+      "id": "vocab:00109",
+      "source_index": 109,
+      "cohort_flags": {
+        "current_parenthetical": true,
+        "previous_nuance_materialized": true,
+        "historical_removed_count": 1,
+        "historical_added_count": 0
+      },
+      "parenthetical": {
+        "decision": "REWRITE_MINIMAL_SEMANTIC",
+        "recommended_prompt": "somethingを言おうとする（意図を遠回しに伝える）",
+        "reason": "get atの対象senseは単に発話を試みることと異なり、意図・含意を伝える。semantic distinctionだけを残しregister説明を削除。",
+        "confidence": "MEDIUM",
+        "prompt_minimality": "PASS"
+      },
+      "paraphrases": [
+        {
+          "phrase": "try to say something",
+          "decision": "KEEP_REMOVED_SEMANTIC_MISMATCH",
+          "semantic_fit_reason": "単に何かを発話しようとする意味で、意図を遠回しに伝えるというpragmatic contentを要求しない。",
+          "confidence": "MEDIUM",
+          "sources": []
+        }
+      ],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "final_review": {
+        "prompt_understood_from_japanese": true,
+        "natural_paraphrases_accepted": true
+      },
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "get atの対象senseは単に発話を試みることと異なり、意図・含意を伝える。semantic distinctionだけを残しregister説明を削除。"
+        }
+      ],
+      "target_leakage_exceptions": []
+    },
+    {
+      "id": "vocab:00118",
+      "source_index": 118,
+      "cohort_flags": {
+        "current_parenthetical": true,
+        "previous_nuance_materialized": true,
+        "historical_removed_count": 3,
+        "historical_added_count": 0
+      },
+      "parenthetical": {
+        "decision": "REWRITE_MINIMAL_SEMANTIC",
+        "recommended_prompt": "実際の運用では",
+        "reason": "対比対象と運用というsemantic scopeは残す必要があるが、短い日本語句で表せる。",
+        "confidence": "HIGH",
+        "prompt_minimality": "PASS"
+      },
+      "paraphrases": [
+        {
+          "phrase": "actually",
+          "decision": "KEEP_REMOVED_SEMANTIC_MISMATCH",
+          "semantic_fit_reason": "事実・予想との差を示す語で、理論に対する実運用上の結果というpromptの範囲を特定しない。",
+          "confidence": "MEDIUM",
+          "sources": []
+        },
+        {
+          "phrase": "in fact",
+          "decision": "KEEP_REMOVED_SEMANTIC_MISMATCH",
+          "semantic_fit_reason": "事実の補足・訂正を示せるが、実運用と理論の対比を必ずしも表さない。",
+          "confidence": "MEDIUM",
+          "sources": []
+        },
+        {
+          "phrase": "in reality",
+          "decision": "KEEP_REMOVED_SEMANTIC_MISMATCH",
+          "semantic_fit_reason": "現実の事実・状態を示す広い語で、運用時にどう機能するかという限定がない。",
+          "confidence": "MEDIUM",
+          "sources": []
+        }
+      ],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "final_review": {
+        "prompt_understood_from_japanese": true,
+        "natural_paraphrases_accepted": true
+      },
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "対比対象と運用というsemantic scopeは残す必要があるが、短い日本語句で表せる。"
+        }
+      ],
+      "target_leakage_exceptions": []
+    },
+    {
+      "id": "vocab:00130",
+      "source_index": 130,
+      "cohort_flags": {
+        "current_parenthetical": true,
+        "previous_nuance_materialized": true,
+        "historical_removed_count": 0,
+        "historical_added_count": 0
+      },
+      "parenthetical": {
+        "decision": "REWRITE_MINIMAL_SEMANTIC",
+        "recommended_prompt": "somethingの悪い結果について責任を負う",
+        "reason": "責任という語だけでは duty/accountability senseが混ざるため、非難される悪い結果という意味範囲を短く保つ。",
+        "confidence": "MEDIUM",
+        "prompt_minimality": "PASS"
+      },
+      "paraphrases": [
+        {
+          "phrase": "be responsible for something",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "悪い結果の原因責任という意味で自然に対応する。",
+          "confidence": "MEDIUM",
+          "sources": []
+        },
+        {
+          "phrase": "be accountable for something",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "失敗・悪い結果について説明責任を負う用法ではpromptに自然に対応する。",
+          "confidence": "MEDIUM",
+          "sources": []
+        }
+      ],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "final_review": {
+        "prompt_understood_from_japanese": true,
+        "natural_paraphrases_accepted": true
+      },
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "責任という語だけでは duty/accountability senseが混ざるため、非難される悪い結果という意味範囲を短く保つ。"
+        }
+      ],
+      "target_leakage_exceptions": []
+    },
+    {
+      "id": "vocab:00131",
+      "source_index": 131,
+      "cohort_flags": {
+        "current_parenthetical": true,
+        "previous_nuance_materialized": false,
+        "historical_removed_count": 0,
+        "historical_added_count": 0
+      },
+      "parenthetical": {
+        "decision": "REWRITE_MINIMAL_SEMANTIC",
+        "recommended_prompt": "食べ物などが傷む",
+        "reason": "対象scopeは別の「傷む」senseを避けるため有用だが、括弧ではなくprompt本文に最小化する。",
+        "confidence": "HIGH",
+        "prompt_minimality": "PASS"
+      },
+      "paraphrases": [
+        {
+          "phrase": "spoil",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "食べ物が傷む意味に自然に合う。",
+          "confidence": "HIGH",
+          "sources": []
+        },
+        {
+          "phrase": "go off",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "食べ物が傷む意味に自然に合う。地域差は拒否理由ではない。",
+          "confidence": "HIGH",
+          "sources": []
+        }
+      ],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "final_review": {
+        "prompt_understood_from_japanese": true,
+        "natural_paraphrases_accepted": true
+      },
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "対象scopeは別の「傷む」senseを避けるため有用だが、括弧ではなくprompt本文に最小化する。"
+        }
+      ],
+      "target_leakage_exceptions": []
+    },
+    {
+      "id": "vocab:00135",
+      "source_index": 135,
+      "cohort_flags": {
+        "current_parenthetical": true,
+        "previous_nuance_materialized": true,
+        "historical_removed_count": 0,
+        "historical_added_count": 0
+      },
+      "parenthetical": {
+        "decision": "REMOVE_META_HINT",
+        "recommended_prompt": "考え直してみると",
+        "reason": "日本語本文が再考の意味を表す。決定変更の場面を追加してpromptを狭める必要はない。",
+        "confidence": "HIGH",
+        "prompt_minimality": "PASS"
+      },
+      "paraphrases": [],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "final_review": {
+        "prompt_understood_from_japanese": true,
+        "natural_paraphrases_accepted": true
+      },
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "日本語本文が再考の意味を表す。決定変更の場面を追加してpromptを狭める必要はない。"
+        }
+      ],
+      "target_leakage_exceptions": []
+    },
+    {
+      "id": "vocab:00150",
+      "source_index": 149,
+      "cohort_flags": {
+        "current_parenthetical": true,
+        "previous_nuance_materialized": true,
+        "historical_removed_count": 0,
+        "historical_added_count": 0
+      },
+      "parenthetical": {
+        "decision": "REMOVE_META_HINT",
+        "recommended_prompt": "someoneをきつく叱る",
+        "reason": "語調のregisterはpromptの意味区別ではない。",
+        "confidence": "HIGH",
+        "prompt_minimality": "PASS"
+      },
+      "paraphrases": [
+        {
+          "phrase": "chew someone out",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "きつく叱る意味を表す。強さもpromptに適合する。",
+          "confidence": "HIGH",
+          "sources": []
+        }
+      ],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "final_review": {
+        "prompt_understood_from_japanese": true,
+        "natural_paraphrases_accepted": true
+      },
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "語調のregisterはpromptの意味区別ではない。"
+        }
+      ],
+      "target_leakage_exceptions": []
+    },
+    {
+      "id": "vocab:00178",
+      "source_index": 177,
+      "cohort_flags": {
+        "current_parenthetical": true,
+        "previous_nuance_materialized": true,
+        "historical_removed_count": 0,
+        "historical_added_count": 0
+      },
+      "parenthetical": {
+        "decision": "REMOVE_META_HINT",
+        "recommended_prompt": "somethingをして罰を免れる",
+        "reason": "罰を免れるというprompt本文で必要な意味は伝わり、canonicalの典型用例を追加する必要はない。",
+        "confidence": "HIGH",
+        "prompt_minimality": "PASS"
+      },
+      "paraphrases": [],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "final_review": {
+        "prompt_understood_from_japanese": true,
+        "natural_paraphrases_accepted": true
+      },
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "罰を免れるというprompt本文で必要な意味は伝わり、canonicalの典型用例を追加する必要はない。"
+        }
+      ],
+      "target_leakage_exceptions": []
+    },
+    {
+      "id": "vocab:00184",
+      "source_index": 183,
+      "cohort_flags": {
+        "current_parenthetical": true,
+        "previous_nuance_materialized": true,
+        "historical_removed_count": 1,
+        "historical_added_count": 0
+      },
+      "parenthetical": {
+        "decision": "REMOVE_META_HINT",
+        "recommended_prompt": "someoneが自由に使える状態で",
+        "reason": "registerは日本語の意味を限定しない。",
+        "confidence": "HIGH",
+        "prompt_minimality": "PASS"
+      },
+      "paraphrases": [
+        {
+          "phrase": "available to someone",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "someoneが自由に利用できる状態を自然に表す。register差だけでは削除できない。",
+          "confidence": "MEDIUM",
+          "sources": []
+        }
+      ],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "final_review": {
+        "prompt_understood_from_japanese": true,
+        "natural_paraphrases_accepted": true
+      },
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "registerは日本語の意味を限定しない。"
+        }
+      ],
+      "target_leakage_exceptions": []
+    },
+    {
+      "id": "vocab:00185",
+      "source_index": 184,
+      "cohort_flags": {
+        "current_parenthetical": false,
+        "previous_nuance_materialized": true,
+        "historical_removed_count": 1,
+        "historical_added_count": 0
+      },
+      "parenthetical": null,
+      "paraphrases": [
+        {
+          "phrase": "practice makes perfect",
+          "decision": "KEEP_REMOVED_SEMANTIC_MISMATCH",
+          "semantic_fit_reason": "perfectまで到達するというより強い結果を加える。promptが述べるのは練習量と上達の関係。",
+          "confidence": "HIGH",
+          "sources": []
+        }
+      ],
+      "entry_decision": "KEEP",
+      "final_review": {
+        "prompt_understood_from_japanese": true,
+        "natural_paraphrases_accepted": true
+      },
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": null
+        }
+      ],
+      "target_leakage_exceptions": []
+    },
+    {
+      "id": "vocab:00194",
+      "source_index": 193,
+      "cohort_flags": {
+        "current_parenthetical": true,
+        "previous_nuance_materialized": true,
+        "historical_removed_count": 1,
+        "historical_added_count": 0
+      },
+      "parenthetical": {
+        "decision": "REMOVE_META_HINT",
+        "recommended_prompt": "要点を押さえた",
+        "reason": "「要点を押さえた」は日本語として回答可能。簡潔さだけに寄せるqualifierは自然なnear-synonymを狭める。",
+        "confidence": "MEDIUM",
+        "prompt_minimality": "PASS"
+      },
+      "paraphrases": [
+        {
+          "phrase": "on point",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "要点を押さえ、的を射ているという意味に自然に対応する。簡潔さが常に含まれなくても日本語promptに適合する。",
+          "confidence": "MEDIUM",
+          "sources": []
+        }
+      ],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "final_review": {
+        "prompt_understood_from_japanese": true,
+        "natural_paraphrases_accepted": true
+      },
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "「要点を押さえた」は日本語として回答可能。簡潔さだけに寄せるqualifierは自然なnear-synonymを狭める。"
+        }
+      ],
+      "target_leakage_exceptions": []
+    },
+    {
+      "id": "vocab:00196",
+      "source_index": 195,
+      "cohort_flags": {
+        "current_parenthetical": true,
+        "previous_nuance_materialized": true,
+        "historical_removed_count": 0,
+        "historical_added_count": 0
+      },
+      "parenthetical": {
+        "decision": "REMOVE_META_HINT",
+        "recommended_prompt": "とても簡単なこと",
+        "reason": "registerは英語の表現選択であり、日本語の意味区別には不要。",
+        "confidence": "HIGH",
+        "prompt_minimality": "PASS"
+      },
+      "paraphrases": [
+        {
+          "phrase": "child's play",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "非常に簡単という意味を保つ。idiom/register差では拒否できない。",
+          "confidence": "HIGH",
+          "sources": []
+        }
+      ],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "final_review": {
+        "prompt_understood_from_japanese": true,
+        "natural_paraphrases_accepted": true
+      },
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "registerは英語の表現選択であり、日本語の意味区別には不要。"
+        }
+      ],
+      "target_leakage_exceptions": []
+    },
+    {
+      "id": "vocab:00213",
+      "source_index": 212,
+      "cohort_flags": {
+        "current_parenthetical": true,
+        "previous_nuance_materialized": true,
+        "historical_removed_count": 0,
+        "historical_added_count": 0
+      },
+      "parenthetical": {
+        "decision": "REMOVE_META_HINT",
+        "recommended_prompt": "かろうじて",
+        "reason": "かろうじてが最小限の達成をすでに表す。括弧は説明の重複。",
+        "confidence": "HIGH",
+        "prompt_minimality": "PASS"
+      },
+      "paraphrases": [
+        {
+          "phrase": "only just",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "かろうじてという意味に自然に対応する。",
+          "confidence": "HIGH",
+          "sources": []
+        }
+      ],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "final_review": {
+        "prompt_understood_from_japanese": true,
+        "natural_paraphrases_accepted": true
+      },
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "かろうじてが最小限の達成をすでに表す。括弧は説明の重複。"
+        }
+      ],
+      "target_leakage_exceptions": []
+    },
+    {
+      "id": "vocab:00218",
+      "source_index": 217,
+      "cohort_flags": {
+        "current_parenthetical": true,
+        "previous_nuance_materialized": true,
+        "historical_removed_count": 2,
+        "historical_added_count": 1
+      },
+      "parenthetical": {
+        "decision": "REMOVE_META_HINT",
+        "recommended_prompt": "ダイエットを始める",
+        "reason": "「始める」が開始aspectをすでに明示する。",
+        "confidence": "HIGH",
+        "prompt_minimality": "PASS"
+      },
+      "paraphrases": [
+        {
+          "phrase": "be on a diet",
+          "decision": "KEEP_REMOVED_SEMANTIC_MISMATCH",
+          "semantic_fit_reason": "継続中の状態を表し、開始する出来事というpromptのaspectを表さない。",
+          "confidence": "HIGH",
+          "sources": []
+        },
+        {
+          "phrase": "diet",
+          "decision": "KEEP_REMOVED_SEMANTIC_MISMATCH",
+          "semantic_fit_reason": "diet単独は食事制限の実践を表すが、開始aspectを明示しない。",
+          "confidence": "MEDIUM",
+          "sources": []
+        },
+        {
+          "phrase": "start dieting",
+          "decision": "KEEP_ADDED",
+          "semantic_fit_reason": "開始aspectとdietingの意味がpromptに一致する。",
+          "confidence": "HIGH",
+          "sources": []
+        }
+      ],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "final_review": {
+        "prompt_understood_from_japanese": true,
+        "natural_paraphrases_accepted": true
+      },
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "「始める」が開始aspectをすでに明示する。"
+        }
+      ],
+      "target_leakage_exceptions": []
+    },
+    {
+      "id": "vocab:00220",
+      "source_index": 219,
+      "cohort_flags": {
+        "current_parenthetical": true,
+        "previous_nuance_materialized": true,
+        "historical_removed_count": 1,
+        "historical_added_count": 0
+      },
+      "parenthetical": {
+        "decision": "REMOVE_META_HINT",
+        "recommended_prompt": "そのうえ",
+        "reason": "What's moreは追加を表すが、意外性・重要度を常に要求するわけではない。日本語本文もその追加だけを示す。",
+        "confidence": "HIGH",
+        "prompt_minimality": "PASS"
+      },
+      "paraphrases": [
+        {
+          "phrase": "moreover",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "そのうえと同じ追加関係を表す。",
+          "confidence": "HIGH",
+          "sources": []
+        },
+        {
+          "phrase": "in addition",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "追加関係を自然に表す。強調registerの差はsemantic mismatchではない。",
+          "confidence": "HIGH",
+          "sources": []
+        }
+      ],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "final_review": {
+        "prompt_understood_from_japanese": true,
+        "natural_paraphrases_accepted": true
+      },
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "What's moreは追加を表すが、意外性・重要度を常に要求するわけではない。日本語本文もその追加だけを示す。"
+        }
+      ],
+      "target_leakage_exceptions": []
+    },
+    {
+      "id": "vocab:00229",
+      "source_index": 228,
+      "cohort_flags": {
+        "current_parenthetical": true,
+        "previous_nuance_materialized": false,
+        "historical_removed_count": 0,
+        "historical_added_count": 0
+      },
+      "parenthetical": {
+        "decision": "REMOVE_META_HINT",
+        "recommended_prompt": "いったい",
+        "reason": "「いったい」自体が疑問の強調を表すため括弧は不要。",
+        "confidence": "HIGH",
+        "prompt_minimality": "PASS"
+      },
+      "paraphrases": [
+        {
+          "phrase": "in the world",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "WH疑問を強める用法で「いったい」と対応する。",
+          "confidence": "MEDIUM",
+          "sources": []
+        }
+      ],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "final_review": {
+        "prompt_understood_from_japanese": true,
+        "natural_paraphrases_accepted": true
+      },
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "「いったい」自体が疑問の強調を表すため括弧は不要。"
+        }
+      ],
+      "target_leakage_exceptions": []
+    },
+    {
+      "id": "vocab:00243",
+      "source_index": 242,
+      "cohort_flags": {
+        "current_parenthetical": true,
+        "previous_nuance_materialized": true,
+        "historical_removed_count": 1,
+        "historical_added_count": 0
+      },
+      "parenthetical": {
+        "decision": "REMOVE_META_HINT",
+        "recommended_prompt": "実際のところ",
+        "reason": "補足・訂正は一つの用法にすぎず、日本語promptから必須とは読めない。",
+        "confidence": "HIGH",
+        "prompt_minimality": "PASS"
+      },
+      "paraphrases": [
+        {
+          "phrase": "in fact",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "実際のところという意味を自然に表す。",
+          "confidence": "HIGH",
+          "sources": []
+        },
+        {
+          "phrase": "actually",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "実際のところを表す自然なparaphrase。用法・位置の差だけで削除しない。",
+          "confidence": "HIGH",
+          "sources": []
+        }
+      ],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "final_review": {
+        "prompt_understood_from_japanese": true,
+        "natural_paraphrases_accepted": true
+      },
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "補足・訂正は一つの用法にすぎず、日本語promptから必須とは読めない。"
+        }
+      ],
+      "target_leakage_exceptions": []
+    },
+    {
+      "id": "vocab:00247",
+      "source_index": 246,
+      "cohort_flags": {
+        "current_parenthetical": true,
+        "previous_nuance_materialized": false,
+        "historical_removed_count": 0,
+        "historical_added_count": 0
+      },
+      "parenthetical": {
+        "decision": "REMOVE_META_HINT",
+        "recommended_prompt": "尽きる",
+        "reason": "「尽きる」が枯渇の意味を示す。特定の主語例は要求語義に必要ない。",
+        "confidence": "HIGH",
+        "prompt_minimality": "PASS"
+      },
+      "paraphrases": [
+        {
+          "phrase": "run out",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "尽きる・なくなるという意味を自然に表す。",
+          "confidence": "HIGH",
+          "sources": []
+        }
+      ],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "final_review": {
+        "prompt_understood_from_japanese": true,
+        "natural_paraphrases_accepted": true
+      },
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "「尽きる」が枯渇の意味を示す。特定の主語例は要求語義に必要ない。"
+        }
+      ],
+      "target_leakage_exceptions": []
     }
   ],
   "notes": "No previous nuance decision has been imported as current semantic authority; reviews are pending."

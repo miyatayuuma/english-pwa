@@ -4,212 +4,334 @@
     {
       "id": "vocab:00001",
       "source_index": 1,
-      "entry_decision": "PENDING",
-      "recommended_prompt": null,
-      "recommended_paraphrases": null,
-      "evidence": [],
-      "confidence": null,
-      "review_status": "PENDING"
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "recommended_prompt": "場所や時間などを占める",
+      "recommended_paraphrases": [
+        "occupy"
+      ],
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "「占める」だけでは別の占有senseもあり得るため対象範囲は有用だが、括弧にする必要はない。"
+        }
+      ],
+      "confidence": "HIGH",
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00004",
       "source_index": 4,
-      "entry_decision": "PENDING",
-      "recommended_prompt": null,
-      "recommended_paraphrases": null,
-      "evidence": [],
-      "confidence": null,
-      "review_status": "PENDING"
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "recommended_prompt": "someoneにsomethingをさせる",
+      "recommended_paraphrases": [],
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "日本語本文は使役を示すが、強制や直接性を必須にはしていない。英語構文ごとの差だけでget/haveを排除できない。"
+        }
+      ],
+      "confidence": "HIGH",
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00012",
       "source_index": 12,
-      "entry_decision": "PENDING",
-      "recommended_prompt": null,
-      "recommended_paraphrases": null,
-      "evidence": [],
-      "confidence": null,
-      "review_status": "PENDING"
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "recommended_prompt": "お腹がぺこぺこだ",
+      "recommended_paraphrases": [],
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "dialect/registerは英語側の表現情報で、空腹の意味を狭める条件ではない。"
+        }
+      ],
+      "confidence": "HIGH",
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00014",
       "source_index": 14,
-      "entry_decision": "PENDING",
-      "recommended_prompt": null,
-      "recommended_paraphrases": null,
-      "evidence": [],
-      "confidence": null,
-      "review_status": "PENDING"
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "recommended_prompt": "刊行される",
+      "recommended_paraphrases": [
+        "be published"
+      ],
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "「刊行される」自体が出版の意味を特定するため、対象例は重複情報。"
+        }
+      ],
+      "confidence": "HIGH",
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00016",
       "source_index": 16,
-      "entry_decision": "PENDING",
-      "recommended_prompt": null,
-      "recommended_paraphrases": null,
-      "evidence": [],
-      "confidence": null,
-      "review_status": "PENDING"
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "recommended_prompt": "一目見たとき",
+      "recommended_paraphrases": [],
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "括弧は第一印象の読みをcanonical側から追加し、brief lookを表す自然な回答を排除し得る。日本語本文で回答可能。"
+        }
+      ],
+      "confidence": "MEDIUM",
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00017",
       "source_index": 17,
-      "entry_decision": "PENDING",
-      "recommended_prompt": null,
-      "recommended_paraphrases": null,
-      "evidence": [],
-      "confidence": null,
-      "review_status": "PENDING"
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "recommended_prompt": "思い切ってやってみる",
+      "recommended_paraphrases": [
+        "take the plunge"
+      ],
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "思い切って試す意味は本文で伝わる。特定のrisk framingを追加しなくても学習者は要求内容を理解できる。"
+        }
+      ],
+      "confidence": "MEDIUM",
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00026",
       "source_index": 26,
-      "entry_decision": "PENDING",
-      "recommended_prompt": null,
-      "recommended_paraphrases": null,
-      "evidence": [],
-      "confidence": null,
-      "review_status": "PENDING"
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "recommended_prompt": "預金などを引き出す",
+      "recommended_paraphrases": [],
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "「引き出す」だけでは別対象のsenseもあるため金融対象を残し、prompt本文に統合する。"
+        }
+      ],
+      "confidence": "HIGH",
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00027",
       "source_index": 27,
-      "entry_decision": "PENDING",
-      "recommended_prompt": null,
-      "recommended_paraphrases": null,
-      "evidence": [],
-      "confidence": null,
-      "review_status": "PENDING"
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "recommended_prompt": "預け入れる",
+      "recommended_paraphrases": [],
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "「預け入れる」は金融機関へ金銭を入れる意味が十分に特定され、括弧の対象指定は不要。"
+        }
+      ],
+      "confidence": "HIGH",
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00029",
       "source_index": 29,
-      "entry_decision": "PENDING",
-      "recommended_prompt": null,
-      "recommended_paraphrases": null,
-      "evidence": [],
-      "confidence": null,
-      "review_status": "PENDING"
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "recommended_prompt": "急いで",
+      "recommended_paraphrases": [],
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "表現の一般性や会話registerはpromptに必要な意味ではない。"
+        }
+      ],
+      "confidence": "HIGH",
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00048",
       "source_index": 48,
-      "entry_decision": "PENDING",
-      "recommended_prompt": null,
-      "recommended_paraphrases": null,
-      "evidence": [],
-      "confidence": null,
-      "review_status": "PENDING"
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "recommended_prompt": "一文なしだ",
+      "recommended_paraphrases": [],
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "一文なしという日本語で意味は明確。registerは英語の選択条件にしない。"
+        }
+      ],
+      "confidence": "HIGH",
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00068",
       "source_index": 68,
-      "entry_decision": "PENDING",
-      "recommended_prompt": null,
-      "recommended_paraphrases": null,
-      "evidence": [],
-      "confidence": null,
-      "review_status": "PENDING"
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "recommended_prompt": "これまでのところ",
+      "recommended_paraphrases": [],
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "「今のところ」は暫定的な現在とも読めるので、これまでの範囲という時間意味だけを明確にする。"
+        }
+      ],
+      "confidence": "HIGH",
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00069",
       "source_index": 69,
-      "entry_decision": "PENDING",
-      "recommended_prompt": null,
-      "recommended_paraphrases": null,
-      "evidence": [],
-      "confidence": null,
-      "review_status": "PENDING"
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "recommended_prompt": "〜も",
+      "recommended_paraphrases": [
+        "as many as",
+        "as much as"
+      ],
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "「〜も」が数量・程度を表しており、括弧はprompt情報を増やさない。"
+        }
+      ],
+      "confidence": "HIGH",
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00074",
       "source_index": 74,
-      "entry_decision": "PENDING",
-      "recommended_prompt": null,
-      "recommended_paraphrases": null,
-      "evidence": [],
-      "confidence": null,
-      "review_status": "PENDING"
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "recommended_prompt": "まして〜はなおさら",
+      "recommended_paraphrases": [
+        "much less"
+      ],
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "日本語idiom自体がscalarな追加関係を伝える。否定文の配置は英語使用条件であり不要。"
+        }
+      ],
+      "confidence": "HIGH",
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00083",
       "source_index": 83,
-      "entry_decision": "PENDING",
+      "entry_decision": "UPSTREAM_AUTHORITY_REVIEW",
       "recommended_prompt": null,
       "recommended_paraphrases": null,
-      "evidence": [],
-      "confidence": null,
-      "review_status": "PENDING"
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "sense_keyはdisbelief/refusal両方を含む一方、まさかは主にdisbeliefを表す。promptとcanonicalの対応をsense別に確定する必要がある。"
+        }
+      ],
+      "confidence": "HIGH",
+      "review_status": "UPSTREAM"
     },
     {
       "id": "vocab:00088",
       "source_index": 88,
-      "entry_decision": "PENDING",
+      "entry_decision": "PARAPHRASE_RESTORE",
       "recommended_prompt": null,
-      "recommended_paraphrases": null,
-      "evidence": [],
-      "confidence": null,
-      "review_status": "PENDING"
+      "recommended_paraphrases": [],
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": null
+        }
+      ],
+      "confidence": "HIGH",
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00089",
       "source_index": 89,
-      "entry_decision": "PENDING",
-      "recommended_prompt": null,
-      "recommended_paraphrases": null,
-      "evidence": [],
-      "confidence": null,
-      "review_status": "PENDING"
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "recommended_prompt": "急いで",
+      "recommended_paraphrases": [],
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "formalityは日本語の意味を区別せず、表現方法を指定するだけ。"
+        }
+      ],
+      "confidence": "HIGH",
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00109",
       "source_index": 109,
-      "entry_decision": "PENDING",
-      "recommended_prompt": null,
-      "recommended_paraphrases": null,
-      "evidence": [],
-      "confidence": null,
-      "review_status": "PENDING"
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "recommended_prompt": "somethingを言おうとする（意図を遠回しに伝える）",
+      "recommended_paraphrases": [],
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "get atの対象senseは単に発話を試みることと異なり、意図・含意を伝える。semantic distinctionだけを残しregister説明を削除。"
+        }
+      ],
+      "confidence": "MEDIUM",
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00118",
       "source_index": 118,
-      "entry_decision": "PENDING",
-      "recommended_prompt": null,
-      "recommended_paraphrases": null,
-      "evidence": [],
-      "confidence": null,
-      "review_status": "PENDING"
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "recommended_prompt": "実際の運用では",
+      "recommended_paraphrases": [],
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "対比対象と運用というsemantic scopeは残す必要があるが、短い日本語句で表せる。"
+        }
+      ],
+      "confidence": "HIGH",
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00130",
       "source_index": 130,
-      "entry_decision": "PENDING",
-      "recommended_prompt": null,
-      "recommended_paraphrases": null,
-      "evidence": [],
-      "confidence": null,
-      "review_status": "PENDING"
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "recommended_prompt": "somethingの悪い結果について責任を負う",
+      "recommended_paraphrases": [
+        "be responsible for something",
+        "be accountable for something"
+      ],
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "責任という語だけでは duty/accountability senseが混ざるため、非難される悪い結果という意味範囲を短く保つ。"
+        }
+      ],
+      "confidence": "MEDIUM",
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00131",
       "source_index": 131,
-      "entry_decision": "PENDING",
-      "recommended_prompt": null,
-      "recommended_paraphrases": null,
-      "evidence": [],
-      "confidence": null,
-      "review_status": "PENDING"
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "recommended_prompt": "食べ物などが傷む",
+      "recommended_paraphrases": [
+        "spoil",
+        "go off"
+      ],
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "対象scopeは別の「傷む」senseを避けるため有用だが、括弧ではなくprompt本文に最小化する。"
+        }
+      ],
+      "confidence": "HIGH",
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00135",
       "source_index": 135,
-      "entry_decision": "PENDING",
-      "recommended_prompt": null,
-      "recommended_paraphrases": null,
-      "evidence": [],
-      "confidence": null,
-      "review_status": "PENDING"
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "recommended_prompt": "考え直してみると",
+      "recommended_paraphrases": [],
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "日本語本文が再考の意味を表す。決定変更の場面を追加してpromptを狭める必要はない。"
+        }
+      ],
+      "confidence": "HIGH",
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00139",
@@ -232,62 +354,96 @@
     {
       "id": "vocab:00150",
       "source_index": 149,
-      "entry_decision": "PENDING",
-      "recommended_prompt": null,
-      "recommended_paraphrases": null,
-      "evidence": [],
-      "confidence": null,
-      "review_status": "PENDING"
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "recommended_prompt": "someoneをきつく叱る",
+      "recommended_paraphrases": [
+        "chew someone out"
+      ],
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "語調のregisterはpromptの意味区別ではない。"
+        }
+      ],
+      "confidence": "HIGH",
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00178",
       "source_index": 177,
-      "entry_decision": "PENDING",
-      "recommended_prompt": null,
-      "recommended_paraphrases": null,
-      "evidence": [],
-      "confidence": null,
-      "review_status": "PENDING"
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "recommended_prompt": "somethingをして罰を免れる",
+      "recommended_paraphrases": [],
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "罰を免れるというprompt本文で必要な意味は伝わり、canonicalの典型用例を追加する必要はない。"
+        }
+      ],
+      "confidence": "HIGH",
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00184",
       "source_index": 183,
-      "entry_decision": "PENDING",
-      "recommended_prompt": null,
-      "recommended_paraphrases": null,
-      "evidence": [],
-      "confidence": null,
-      "review_status": "PENDING"
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "recommended_prompt": "someoneが自由に使える状態で",
+      "recommended_paraphrases": [],
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "registerは日本語の意味を限定しない。"
+        }
+      ],
+      "confidence": "HIGH",
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00185",
       "source_index": 184,
-      "entry_decision": "PENDING",
+      "entry_decision": "KEEP",
       "recommended_prompt": null,
-      "recommended_paraphrases": null,
-      "evidence": [],
-      "confidence": null,
-      "review_status": "PENDING"
+      "recommended_paraphrases": [],
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": null
+        }
+      ],
+      "confidence": "HIGH",
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00194",
       "source_index": 193,
-      "entry_decision": "PENDING",
-      "recommended_prompt": null,
-      "recommended_paraphrases": null,
-      "evidence": [],
-      "confidence": null,
-      "review_status": "PENDING"
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "recommended_prompt": "要点を押さえた",
+      "recommended_paraphrases": [],
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "「要点を押さえた」は日本語として回答可能。簡潔さだけに寄せるqualifierは自然なnear-synonymを狭める。"
+        }
+      ],
+      "confidence": "MEDIUM",
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00196",
       "source_index": 195,
-      "entry_decision": "PENDING",
-      "recommended_prompt": null,
-      "recommended_paraphrases": null,
-      "evidence": [],
-      "confidence": null,
-      "review_status": "PENDING"
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "recommended_prompt": "とても簡単なこと",
+      "recommended_paraphrases": [
+        "child's play"
+      ],
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "registerは英語の表現選択であり、日本語の意味区別には不要。"
+        }
+      ],
+      "confidence": "HIGH",
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00201",
@@ -309,62 +465,104 @@
     {
       "id": "vocab:00213",
       "source_index": 212,
-      "entry_decision": "PENDING",
-      "recommended_prompt": null,
-      "recommended_paraphrases": null,
-      "evidence": [],
-      "confidence": null,
-      "review_status": "PENDING"
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "recommended_prompt": "かろうじて",
+      "recommended_paraphrases": [
+        "only just"
+      ],
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "かろうじてが最小限の達成をすでに表す。括弧は説明の重複。"
+        }
+      ],
+      "confidence": "HIGH",
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00218",
       "source_index": 217,
-      "entry_decision": "PENDING",
-      "recommended_prompt": null,
-      "recommended_paraphrases": null,
-      "evidence": [],
-      "confidence": null,
-      "review_status": "PENDING"
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "recommended_prompt": "ダイエットを始める",
+      "recommended_paraphrases": [
+        "start dieting"
+      ],
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "「始める」が開始aspectをすでに明示する。"
+        }
+      ],
+      "confidence": "HIGH",
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00220",
       "source_index": 219,
-      "entry_decision": "PENDING",
-      "recommended_prompt": null,
-      "recommended_paraphrases": null,
-      "evidence": [],
-      "confidence": null,
-      "review_status": "PENDING"
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "recommended_prompt": "そのうえ",
+      "recommended_paraphrases": [
+        "moreover"
+      ],
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "What's moreは追加を表すが、意外性・重要度を常に要求するわけではない。日本語本文もその追加だけを示す。"
+        }
+      ],
+      "confidence": "HIGH",
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00229",
       "source_index": 228,
-      "entry_decision": "PENDING",
-      "recommended_prompt": null,
-      "recommended_paraphrases": null,
-      "evidence": [],
-      "confidence": null,
-      "review_status": "PENDING"
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "recommended_prompt": "いったい",
+      "recommended_paraphrases": [
+        "in the world"
+      ],
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "「いったい」自体が疑問の強調を表すため括弧は不要。"
+        }
+      ],
+      "confidence": "HIGH",
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00243",
       "source_index": 242,
-      "entry_decision": "PENDING",
-      "recommended_prompt": null,
-      "recommended_paraphrases": null,
-      "evidence": [],
-      "confidence": null,
-      "review_status": "PENDING"
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "recommended_prompt": "実際のところ",
+      "recommended_paraphrases": [
+        "in fact"
+      ],
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "補足・訂正は一つの用法にすぎず、日本語promptから必須とは読めない。"
+        }
+      ],
+      "confidence": "HIGH",
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00247",
       "source_index": 246,
-      "entry_decision": "PENDING",
-      "recommended_prompt": null,
-      "recommended_paraphrases": null,
-      "evidence": [],
-      "confidence": null,
-      "review_status": "PENDING"
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "recommended_prompt": "尽きる",
+      "recommended_paraphrases": [
+        "run out"
+      ],
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "「尽きる」が枯渇の意味を示す。特定の主語例は要求語義に必要ない。"
+        }
+      ],
+      "confidence": "HIGH",
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00248",

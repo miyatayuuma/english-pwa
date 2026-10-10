@@ -31,15 +31,18 @@
     "source_order": "data/vocabulary-v3.json entries array, 1-based source_index; join authority only by id"
   },
   "coverage": {
-    "reviewed_entries": 8,
-    "missing_entries": 581,
+    "reviewed_entries": 40,
+    "missing_entries": 548,
     "stale_entries": 0,
     "duplicate_review": 0,
     "unknown_ids": 0,
-    "parenthetical_reviewed": 8,
-    "previous_materialized_ids_reviewed": 7,
-    "historical_removed_phrase_entries_dispositioned": 6,
-    "historical_added_phrase_entries_checked": 0
+    "parenthetical_reviewed": 38,
+    "previous_materialized_ids_reviewed": 31,
+    "historical_removed_phrase_entries_dispositioned": 26,
+    "historical_added_phrase_entries_checked": 1,
+    "upstream_isolated_entries": 1,
+    "parenthetical_upstream_isolated": 1,
+    "previous_materialized_ids_upstream_isolated": 1
   },
   "drift_at_base": {
     "fields_checked": [
@@ -1418,12 +1421,24 @@
   "deterministic_regeneration": "NOT_RUN",
   "final_current_main_reconciliation_sha": null,
   "review_confidence_counts": {
-    "HIGH": 8,
-    "MEDIUM": 0,
+    "HIGH": 36,
+    "MEDIUM": 5,
     "LOW": 0
   },
   "target_leakage_cases_found": 5,
   "target_leakage_cases_resolved": 5,
-  "meta_hint_cases_found": 8,
-  "meta_hint_cases_resolved": 8
+  "meta_hint_cases_found": 26,
+  "meta_hint_cases_resolved": 25,
+  "upstream_authority_review_count": 1,
+  "paraphrase_disposition_counts": {
+    "RESTORE": 15,
+    "KEEP_REMOVED_SEMANTIC_MISMATCH": 11,
+    "UPSTREAM_REVIEW": 0
+  },
+  "parenthetical_decision_counts": {
+    "REMOVE_META_HINT": 30,
+    "REWRITE_MINIMAL_SEMANTIC": 8,
+    "KEEP_SEMANTIC_SCOPE": 0,
+    "UPSTREAM_MEANING_REVIEW": 1
+  }
 }

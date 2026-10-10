@@ -28,27 +28,40 @@
       "historically_removed_paraphrases": [],
       "historically_added_paraphrases": [],
       "parenthetical_review": {
-        "parenthetical_decision": "PENDING",
-        "recommended_prompt": null,
-        "retained_semantic_information": null,
-        "removed_meta_information": null,
-        "prompt_reason": null,
-        "prompt_confidence": null
+        "parenthetical_decision": "REWRITE_MINIMAL_SEMANTIC",
+        "recommended_prompt": "場所や時間などを占める",
+        "retained_semantic_information": "占有する対象が場所・時間などであること。",
+        "removed_meta_information": "括弧そのもの。",
+        "prompt_reason": "「占める」だけでは別の占有senseもあり得るため対象範囲は有用だが、括弧にする必要はない。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS"
       },
       "paraphrase_review": [
         {
           "phrase": "occupy",
           "source": "CURRENT",
           "current_status": "CURRENT",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "場所や時間を占有する意味を自然に保つ。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
         }
       ],
-      "recommended_paraphrases": null,
-      "entry_decision": "PENDING",
-      "evidence": [],
-      "review_status": "PENDING"
+      "recommended_paraphrases": [
+        "occupy"
+      ],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "「占める」だけでは別の占有senseもあり得るため対象範囲は有用だが、括弧にする必要はない。"
+        }
+      ],
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00004",
@@ -92,35 +105,48 @@
       ],
       "historically_added_paraphrases": [],
       "parenthetical_review": {
-        "parenthetical_decision": "PENDING",
-        "recommended_prompt": null,
-        "retained_semantic_information": null,
-        "removed_meta_information": null,
-        "prompt_reason": null,
-        "prompt_confidence": null
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "someoneにsomethingをさせる",
+        "retained_semantic_information": "使役関係。",
+        "removed_meta_information": "canonicalに寄せた直接性・強制の説明。",
+        "prompt_reason": "日本語本文は使役を示すが、強制や直接性を必須にはしていない。英語構文ごとの差だけでget/haveを排除できない。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS"
       },
       "paraphrase_review": [
         {
           "phrase": "get someone to do something",
           "source": "HISTORICAL_REMOVAL",
           "current_status": "REMOVED",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "RESTORE",
+          "semantic_fit_reason": "日本語の使役表現に自然に対応する。説得・誘導という構文差はpromptで限定されていない。",
+          "confidence": "MEDIUM",
+          "review_status": "REVIEWED",
+          "sources": []
         },
         {
           "phrase": "have someone do something",
           "source": "HISTORICAL_REMOVAL",
           "current_status": "REMOVED",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "RESTORE",
+          "semantic_fit_reason": "日本語の使役表現に自然に対応する。手配・依頼という意味の差は日本語promptが排除していない。",
+          "confidence": "MEDIUM",
+          "review_status": "REVIEWED",
+          "sources": []
         }
       ],
-      "recommended_paraphrases": null,
-      "entry_decision": "PENDING",
-      "evidence": [],
-      "review_status": "PENDING"
+      "recommended_paraphrases": [],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "日本語本文は使役を示すが、強制や直接性を必須にはしていない。英語構文ごとの差だけでget/haveを排除できない。"
+        }
+      ],
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00012",
@@ -162,27 +188,38 @@
       ],
       "historically_added_paraphrases": [],
       "parenthetical_review": {
-        "parenthetical_decision": "PENDING",
-        "recommended_prompt": null,
-        "retained_semantic_information": null,
-        "removed_meta_information": null,
-        "prompt_reason": null,
-        "prompt_confidence": null
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "お腹がぺこぺこだ",
+        "retained_semantic_information": "強い空腹。",
+        "removed_meta_information": "米語・くだけたregisterの説明。",
+        "prompt_reason": "dialect/registerは英語側の表現情報で、空腹の意味を狭める条件ではない。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS"
       },
       "paraphrase_review": [
         {
           "phrase": "be starving",
           "source": "HISTORICAL_REMOVAL",
           "current_status": "REMOVED",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "RESTORE",
+          "semantic_fit_reason": "「お腹がぺこぺこだ」を自然に表す。registerや形の差ではなく強い空腹が一致する。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
         }
       ],
-      "recommended_paraphrases": null,
-      "entry_decision": "PENDING",
-      "evidence": [],
-      "review_status": "PENDING"
+      "recommended_paraphrases": [],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "dialect/registerは英語側の表現情報で、空腹の意味を狭める条件ではない。"
+        }
+      ],
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00014",
@@ -208,27 +245,40 @@
       "historically_removed_paraphrases": [],
       "historically_added_paraphrases": [],
       "parenthetical_review": {
-        "parenthetical_decision": "PENDING",
-        "recommended_prompt": null,
-        "retained_semantic_information": null,
-        "removed_meta_information": null,
-        "prompt_reason": null,
-        "prompt_confidence": null
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "刊行される",
+        "retained_semantic_information": "出版物が刊行されること。",
+        "removed_meta_information": "本・作品などという例示。",
+        "prompt_reason": "「刊行される」自体が出版の意味を特定するため、対象例は重複情報。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS"
       },
       "paraphrase_review": [
         {
           "phrase": "be published",
           "source": "CURRENT",
           "current_status": "CURRENT",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "出版されるという意味に自然に対応する。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
         }
       ],
-      "recommended_paraphrases": null,
-      "entry_decision": "PENDING",
-      "evidence": [],
-      "review_status": "PENDING"
+      "recommended_paraphrases": [
+        "be published"
+      ],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "「刊行される」自体が出版の意味を特定するため、対象例は重複情報。"
+        }
+      ],
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00016",
@@ -270,27 +320,38 @@
       ],
       "historically_added_paraphrases": [],
       "parenthetical_review": {
-        "parenthetical_decision": "PENDING",
-        "recommended_prompt": null,
-        "retained_semantic_information": null,
-        "removed_meta_information": null,
-        "prompt_reason": null,
-        "prompt_confidence": null
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "一目見たとき",
+        "retained_semantic_information": "最初に見る／一目見ること。",
+        "removed_meta_information": "第一印象に限定する説明。",
+        "prompt_reason": "括弧は第一印象の読みをcanonical側から追加し、brief lookを表す自然な回答を排除し得る。日本語本文で回答可能。",
+        "prompt_confidence": "MEDIUM",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS"
       },
       "paraphrase_review": [
         {
           "phrase": "at a glance",
           "source": "HISTORICAL_REMOVAL",
           "current_status": "REMOVED",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "RESTORE",
+          "semantic_fit_reason": "「一目見たとき」に対する自然な表現。初見・第一印象のみに狭める根拠は日本語本文にない。",
+          "confidence": "MEDIUM",
+          "review_status": "REVIEWED",
+          "sources": []
         }
       ],
-      "recommended_paraphrases": null,
-      "entry_decision": "PENDING",
-      "evidence": [],
-      "review_status": "PENDING"
+      "recommended_paraphrases": [],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "括弧は第一印象の読みをcanonical側から追加し、brief lookを表す自然な回答を排除し得る。日本語本文で回答可能。"
+        }
+      ],
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00017",
@@ -334,27 +395,40 @@
       "historically_removed_paraphrases": [],
       "historically_added_paraphrases": [],
       "parenthetical_review": {
-        "parenthetical_decision": "PENDING",
-        "recommended_prompt": null,
-        "retained_semantic_information": null,
-        "removed_meta_information": null,
-        "prompt_reason": null,
-        "prompt_confidence": null
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "思い切ってやってみる",
+        "retained_semantic_information": "ためらいや不確実性を越えて試すこと。",
+        "removed_meta_information": "リスクを承知で行うというtarget-specificな説明。",
+        "prompt_reason": "思い切って試す意味は本文で伝わる。特定のrisk framingを追加しなくても学習者は要求内容を理解できる。",
+        "prompt_confidence": "MEDIUM",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS"
       },
       "paraphrase_review": [
         {
           "phrase": "take the plunge",
           "source": "CURRENT",
           "current_status": "CURRENT",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "思い切って行動に移す意味を自然に表す。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
         }
       ],
-      "recommended_paraphrases": null,
-      "entry_decision": "PENDING",
-      "evidence": [],
-      "review_status": "PENDING"
+      "recommended_paraphrases": [
+        "take the plunge"
+      ],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "思い切って試す意味は本文で伝わる。特定のrisk framingを追加しなくても学習者は要求内容を理解できる。"
+        }
+      ],
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00026",
@@ -378,18 +452,27 @@
       "historically_removed_paraphrases": [],
       "historically_added_paraphrases": [],
       "parenthetical_review": {
-        "parenthetical_decision": "PENDING",
-        "recommended_prompt": null,
-        "retained_semantic_information": null,
-        "removed_meta_information": null,
-        "prompt_reason": null,
-        "prompt_confidence": null
+        "parenthetical_decision": "REWRITE_MINIMAL_SEMANTIC",
+        "recommended_prompt": "預金などを引き出す",
+        "retained_semantic_information": "預金等を引き出す金融sense。",
+        "removed_meta_information": "括弧の分離表記。",
+        "prompt_reason": "「引き出す」だけでは別対象のsenseもあるため金融対象を残し、prompt本文に統合する。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS"
       },
       "paraphrase_review": [],
-      "recommended_paraphrases": null,
-      "entry_decision": "PENDING",
-      "evidence": [],
-      "review_status": "PENDING"
+      "recommended_paraphrases": [],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "「引き出す」だけでは別対象のsenseもあるため金融対象を残し、prompt本文に統合する。"
+        }
+      ],
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00027",
@@ -413,18 +496,27 @@
       "historically_removed_paraphrases": [],
       "historically_added_paraphrases": [],
       "parenthetical_review": {
-        "parenthetical_decision": "PENDING",
-        "recommended_prompt": null,
-        "retained_semantic_information": null,
-        "removed_meta_information": null,
-        "prompt_reason": null,
-        "prompt_confidence": null
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "預け入れる",
+        "retained_semantic_information": "預け入れの意味。",
+        "removed_meta_information": "預金としてという重複指定。",
+        "prompt_reason": "「預け入れる」は金融機関へ金銭を入れる意味が十分に特定され、括弧の対象指定は不要。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS"
       },
       "paraphrase_review": [],
-      "recommended_paraphrases": null,
-      "entry_decision": "PENDING",
-      "evidence": [],
-      "review_status": "PENDING"
+      "recommended_paraphrases": [],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "「預け入れる」は金融機関へ金銭を入れる意味が十分に特定され、括弧の対象指定は不要。"
+        }
+      ],
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00029",
@@ -466,27 +558,38 @@
       ],
       "historically_added_paraphrases": [],
       "parenthetical_review": {
-        "parenthetical_decision": "PENDING",
-        "recommended_prompt": null,
-        "retained_semantic_information": null,
-        "removed_meta_information": null,
-        "prompt_reason": null,
-        "prompt_confidence": null
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "急いで",
+        "retained_semantic_information": "急いで行うこと。",
+        "removed_meta_information": "一般的・会話的というregister説明。",
+        "prompt_reason": "表現の一般性や会話registerはpromptに必要な意味ではない。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS"
       },
       "paraphrase_review": [
         {
           "phrase": "in haste",
           "source": "HISTORICAL_REMOVAL",
           "current_status": "REMOVED",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "RESTORE",
+          "semantic_fit_reason": "「急いで」と自然に対応する。改まり度の差だけでは削除できない。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
         }
       ],
-      "recommended_paraphrases": null,
-      "entry_decision": "PENDING",
-      "evidence": [],
-      "review_status": "PENDING"
+      "recommended_paraphrases": [],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "表現の一般性や会話registerはpromptに必要な意味ではない。"
+        }
+      ],
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00048",
@@ -528,27 +631,38 @@
       ],
       "historically_added_paraphrases": [],
       "parenthetical_review": {
-        "parenthetical_decision": "PENDING",
-        "recommended_prompt": null,
-        "retained_semantic_information": null,
-        "removed_meta_information": null,
-        "prompt_reason": null,
-        "prompt_confidence": null
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "一文なしだ",
+        "retained_semantic_information": "所持金がない状態。",
+        "removed_meta_information": "くだけたregisterの説明。",
+        "prompt_reason": "一文なしという日本語で意味は明確。registerは英語の選択条件にしない。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS"
       },
       "paraphrase_review": [
         {
           "phrase": "be penniless",
           "source": "HISTORICAL_REMOVAL",
           "current_status": "REMOVED",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "RESTORE",
+          "semantic_fit_reason": "「一文なしだ」を自然に表す。formal/informalの差は意味差ではない。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
         }
       ],
-      "recommended_paraphrases": null,
-      "entry_decision": "PENDING",
-      "evidence": [],
-      "review_status": "PENDING"
+      "recommended_paraphrases": [],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "一文なしという日本語で意味は明確。registerは英語の選択条件にしない。"
+        }
+      ],
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00068",
@@ -590,27 +704,38 @@
       ],
       "historically_added_paraphrases": [],
       "parenthetical_review": {
-        "parenthetical_decision": "PENDING",
-        "recommended_prompt": null,
-        "retained_semantic_information": null,
-        "removed_meta_information": null,
-        "prompt_reason": null,
-        "prompt_confidence": null
+        "parenthetical_decision": "REWRITE_MINIMAL_SEMANTIC",
+        "recommended_prompt": "これまでのところ",
+        "retained_semantic_information": "過去から現在までの進捗・結果。",
+        "removed_meta_information": "今だけの仮状態と誤読させる可能性のある「今のところ」。",
+        "prompt_reason": "「今のところ」は暫定的な現在とも読めるので、これまでの範囲という時間意味だけを明確にする。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS"
       },
       "paraphrase_review": [
         {
           "phrase": "for now",
           "source": "HISTORICAL_REMOVAL",
           "current_status": "REMOVED",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "KEEP_REMOVED_SEMANTIC_MISMATCH",
+          "semantic_fit_reason": "for nowは暫定的に現時点でという意味で、これまでの進捗・結果を表すso farとは時間範囲が異なる。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
         }
       ],
-      "recommended_paraphrases": null,
-      "entry_decision": "PENDING",
-      "evidence": [],
-      "review_status": "PENDING"
+      "recommended_paraphrases": [],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "「今のところ」は暫定的な現在とも読めるので、これまでの範囲という時間意味だけを明確にする。"
+        }
+      ],
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00069",
@@ -637,35 +762,51 @@
       "historically_removed_paraphrases": [],
       "historically_added_paraphrases": [],
       "parenthetical_review": {
-        "parenthetical_decision": "PENDING",
-        "recommended_prompt": null,
-        "retained_semantic_information": null,
-        "removed_meta_information": null,
-        "prompt_reason": null,
-        "prompt_confidence": null
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "〜も",
+        "retained_semantic_information": "予想より多い数量・程度。",
+        "removed_meta_information": "数量についてという重複補足。",
+        "prompt_reason": "「〜も」が数量・程度を表しており、括弧はprompt情報を増やさない。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS"
       },
       "paraphrase_review": [
         {
           "phrase": "as many as",
           "source": "CURRENT",
           "current_status": "CURRENT",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "複数の数量が予想以上に多い意味を表す。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
         },
         {
           "phrase": "as much as",
           "source": "CURRENT",
           "current_status": "CURRENT",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "量が予想以上に多い意味を表す。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
         }
       ],
-      "recommended_paraphrases": null,
-      "entry_decision": "PENDING",
-      "evidence": [],
-      "review_status": "PENDING"
+      "recommended_paraphrases": [
+        "as many as",
+        "as much as"
+      ],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "「〜も」が数量・程度を表しており、括弧はprompt情報を増やさない。"
+        }
+      ],
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00074",
@@ -709,27 +850,40 @@
       "historically_removed_paraphrases": [],
       "historically_added_paraphrases": [],
       "parenthetical_review": {
-        "parenthetical_decision": "PENDING",
-        "recommended_prompt": null,
-        "retained_semantic_information": null,
-        "removed_meta_information": null,
-        "prompt_reason": null,
-        "prompt_confidence": null
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "まして〜はなおさら",
+        "retained_semantic_information": "比較・程度を強めて付加する意味。",
+        "removed_meta_information": "否定文の後に置くことが多いという英語用法説明。",
+        "prompt_reason": "日本語idiom自体がscalarな追加関係を伝える。否定文の配置は英語使用条件であり不要。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS"
       },
       "paraphrase_review": [
         {
           "phrase": "much less",
           "source": "CURRENT",
           "current_status": "CURRENT",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "まして〜はなおさらというscalarな関係を自然に表す。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
         }
       ],
-      "recommended_paraphrases": null,
-      "entry_decision": "PENDING",
-      "evidence": [],
-      "review_status": "PENDING"
+      "recommended_paraphrases": [
+        "much less"
+      ],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "日本語idiom自体がscalarな追加関係を伝える。否定文の配置は英語使用条件であり不要。"
+        }
+      ],
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00083",
@@ -767,18 +921,27 @@
       "historically_removed_paraphrases": [],
       "historically_added_paraphrases": [],
       "parenthetical_review": {
-        "parenthetical_decision": "PENDING",
+        "parenthetical_decision": "UPSTREAM_MEANING_REVIEW",
         "recommended_prompt": null,
-        "retained_semantic_information": null,
-        "removed_meta_information": null,
-        "prompt_reason": null,
-        "prompt_confidence": null
+        "retained_semantic_information": "意味authority自体の分離が必要。",
+        "removed_meta_information": "「驚き」と「拒否」の混在を括弧削除だけで解決しない。",
+        "prompt_reason": "sense_keyはdisbelief/refusal両方を含む一方、まさかは主にdisbeliefを表す。promptとcanonicalの対応をsense別に確定する必要がある。",
+        "prompt_confidence": "HIGH",
+        "review_status": "UPSTREAM",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "UPSTREAM"
       },
       "paraphrase_review": [],
       "recommended_paraphrases": null,
-      "entry_decision": "PENDING",
-      "evidence": [],
-      "review_status": "PENDING"
+      "entry_decision": "UPSTREAM_AUTHORITY_REVIEW",
+      "evidence": [
+        {
+          "type": "sense ambiguity",
+          "reason": "sense_keyはdisbelief/refusal両方を含む一方、まさかは主にdisbeliefを表す。promptとcanonicalの対応をsense別に確定する必要がある。"
+        }
+      ],
+      "review_status": "UPSTREAM"
     },
     {
       "id": "vocab:00088",
@@ -830,15 +993,22 @@
           "phrase": "get off something",
           "source": "HISTORICAL_REMOVAL",
           "current_status": "REMOVED",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "RESTORE",
+          "semantic_fit_reason": "「何かから降りる」というpromptが明示する用法に自然に合う。object-typeのcollocation差だけでは削除できない。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
         }
       ],
-      "recommended_paraphrases": null,
-      "entry_decision": "PENDING",
-      "evidence": [],
-      "review_status": "PENDING"
+      "recommended_paraphrases": [],
+      "entry_decision": "PARAPHRASE_RESTORE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": null
+        }
+      ],
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00089",
@@ -880,27 +1050,38 @@
       ],
       "historically_added_paraphrases": [],
       "parenthetical_review": {
-        "parenthetical_decision": "PENDING",
-        "recommended_prompt": null,
-        "retained_semantic_information": null,
-        "removed_meta_information": null,
-        "prompt_reason": null,
-        "prompt_confidence": null
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "急いで",
+        "retained_semantic_information": "急いで行うこと。",
+        "removed_meta_information": "やや改まったregisterの説明。",
+        "prompt_reason": "formalityは日本語の意味を区別せず、表現方法を指定するだけ。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS"
       },
       "paraphrase_review": [
         {
           "phrase": "in a hurry",
           "source": "HISTORICAL_REMOVAL",
           "current_status": "REMOVED",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "RESTORE",
+          "semantic_fit_reason": "「急いで」と自然に対応する。register差だけでは削除できない。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
         }
       ],
-      "recommended_paraphrases": null,
-      "entry_decision": "PENDING",
-      "evidence": [],
-      "review_status": "PENDING"
+      "recommended_paraphrases": [],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "formalityは日本語の意味を区別せず、表現方法を指定するだけ。"
+        }
+      ],
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00109",
@@ -942,27 +1123,38 @@
       ],
       "historically_added_paraphrases": [],
       "parenthetical_review": {
-        "parenthetical_decision": "PENDING",
-        "recommended_prompt": null,
-        "retained_semantic_information": null,
-        "removed_meta_information": null,
-        "prompt_reason": null,
-        "prompt_confidence": null
+        "parenthetical_decision": "REWRITE_MINIMAL_SEMANTIC",
+        "recommended_prompt": "somethingを言おうとする（意図を遠回しに伝える）",
+        "retained_semantic_information": "発話内容を意図的に間接提示する意味。",
+        "removed_meta_information": "くだけたregister。",
+        "prompt_reason": "get atの対象senseは単に発話を試みることと異なり、意図・含意を伝える。semantic distinctionだけを残しregister説明を削除。",
+        "prompt_confidence": "MEDIUM",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS"
       },
       "paraphrase_review": [
         {
           "phrase": "try to say something",
           "source": "HISTORICAL_REMOVAL",
           "current_status": "REMOVED",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "KEEP_REMOVED_SEMANTIC_MISMATCH",
+          "semantic_fit_reason": "単に何かを発話しようとする意味で、意図を遠回しに伝えるというpragmatic contentを要求しない。",
+          "confidence": "MEDIUM",
+          "review_status": "REVIEWED",
+          "sources": []
         }
       ],
-      "recommended_paraphrases": null,
-      "entry_decision": "PENDING",
-      "evidence": [],
-      "review_status": "PENDING"
+      "recommended_paraphrases": [],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "get atの対象senseは単に発話を試みることと異なり、意図・含意を伝える。semantic distinctionだけを残しregister説明を削除。"
+        }
+      ],
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00118",
@@ -1008,43 +1200,58 @@
       ],
       "historically_added_paraphrases": [],
       "parenthetical_review": {
-        "parenthetical_decision": "PENDING",
-        "recommended_prompt": null,
-        "retained_semantic_information": null,
-        "removed_meta_information": null,
-        "prompt_reason": null,
-        "prompt_confidence": null
+        "parenthetical_decision": "REWRITE_MINIMAL_SEMANTIC",
+        "recommended_prompt": "実際の運用では",
+        "retained_semantic_information": "理論・計画と対比される実運用上の結果。",
+        "removed_meta_information": "「理論・計画ではなく」の説明文。",
+        "prompt_reason": "対比対象と運用というsemantic scopeは残す必要があるが、短い日本語句で表せる。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS"
       },
       "paraphrase_review": [
         {
           "phrase": "actually",
           "source": "HISTORICAL_REMOVAL",
           "current_status": "REMOVED",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "KEEP_REMOVED_SEMANTIC_MISMATCH",
+          "semantic_fit_reason": "事実・予想との差を示す語で、理論に対する実運用上の結果というpromptの範囲を特定しない。",
+          "confidence": "MEDIUM",
+          "review_status": "REVIEWED",
+          "sources": []
         },
         {
           "phrase": "in fact",
           "source": "HISTORICAL_REMOVAL",
           "current_status": "REMOVED",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "KEEP_REMOVED_SEMANTIC_MISMATCH",
+          "semantic_fit_reason": "事実の補足・訂正を示せるが、実運用と理論の対比を必ずしも表さない。",
+          "confidence": "MEDIUM",
+          "review_status": "REVIEWED",
+          "sources": []
         },
         {
           "phrase": "in reality",
           "source": "HISTORICAL_REMOVAL",
           "current_status": "REMOVED",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "KEEP_REMOVED_SEMANTIC_MISMATCH",
+          "semantic_fit_reason": "現実の事実・状態を示す広い語で、運用時にどう機能するかという限定がない。",
+          "confidence": "MEDIUM",
+          "review_status": "REVIEWED",
+          "sources": []
         }
       ],
-      "recommended_paraphrases": null,
-      "entry_decision": "PENDING",
-      "evidence": [],
-      "review_status": "PENDING"
+      "recommended_paraphrases": [],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "対比対象と運用というsemantic scopeは残す必要があるが、短い日本語句で表せる。"
+        }
+      ],
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00130",
@@ -1091,35 +1298,51 @@
       "historically_removed_paraphrases": [],
       "historically_added_paraphrases": [],
       "parenthetical_review": {
-        "parenthetical_decision": "PENDING",
-        "recommended_prompt": null,
-        "retained_semantic_information": null,
-        "removed_meta_information": null,
-        "prompt_reason": null,
-        "prompt_confidence": null
+        "parenthetical_decision": "REWRITE_MINIMAL_SEMANTIC",
+        "recommended_prompt": "somethingの悪い結果について責任を負う",
+        "retained_semantic_information": "悪い結果に対して責められる側・原因となる責任。",
+        "removed_meta_information": "直接性・強制などcanonical由来の詳細を加えない。",
+        "prompt_reason": "責任という語だけでは duty/accountability senseが混ざるため、非難される悪い結果という意味範囲を短く保つ。",
+        "prompt_confidence": "MEDIUM",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS"
       },
       "paraphrase_review": [
         {
           "phrase": "be responsible for something",
           "source": "CURRENT",
           "current_status": "CURRENT",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "悪い結果の原因責任という意味で自然に対応する。",
+          "confidence": "MEDIUM",
+          "review_status": "REVIEWED",
+          "sources": []
         },
         {
           "phrase": "be accountable for something",
           "source": "CURRENT",
           "current_status": "CURRENT",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "失敗・悪い結果について説明責任を負う用法ではpromptに自然に対応する。",
+          "confidence": "MEDIUM",
+          "review_status": "REVIEWED",
+          "sources": []
         }
       ],
-      "recommended_paraphrases": null,
-      "entry_decision": "PENDING",
-      "evidence": [],
-      "review_status": "PENDING"
+      "recommended_paraphrases": [
+        "be responsible for something",
+        "be accountable for something"
+      ],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "責任という語だけでは duty/accountability senseが混ざるため、非難される悪い結果という意味範囲を短く保つ。"
+        }
+      ],
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00131",
@@ -1146,35 +1369,51 @@
       "historically_removed_paraphrases": [],
       "historically_added_paraphrases": [],
       "parenthetical_review": {
-        "parenthetical_decision": "PENDING",
-        "recommended_prompt": null,
-        "retained_semantic_information": null,
-        "removed_meta_information": null,
-        "prompt_reason": null,
-        "prompt_confidence": null
+        "parenthetical_decision": "REWRITE_MINIMAL_SEMANTIC",
+        "recommended_prompt": "食べ物などが傷む",
+        "retained_semantic_information": "食べ物等が悪くなること。",
+        "removed_meta_information": "括弧による分離。",
+        "prompt_reason": "対象scopeは別の「傷む」senseを避けるため有用だが、括弧ではなくprompt本文に最小化する。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS"
       },
       "paraphrase_review": [
         {
           "phrase": "spoil",
           "source": "CURRENT",
           "current_status": "CURRENT",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "食べ物が傷む意味に自然に合う。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
         },
         {
           "phrase": "go off",
           "source": "CURRENT",
           "current_status": "CURRENT",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "食べ物が傷む意味に自然に合う。地域差は拒否理由ではない。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
         }
       ],
-      "recommended_paraphrases": null,
-      "entry_decision": "PENDING",
-      "evidence": [],
-      "review_status": "PENDING"
+      "recommended_paraphrases": [
+        "spoil",
+        "go off"
+      ],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "対象scopeは別の「傷む」senseを避けるため有用だが、括弧ではなくprompt本文に最小化する。"
+        }
+      ],
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00135",
@@ -1212,18 +1451,27 @@
       "historically_removed_paraphrases": [],
       "historically_added_paraphrases": [],
       "parenthetical_review": {
-        "parenthetical_decision": "PENDING",
-        "recommended_prompt": null,
-        "retained_semantic_information": null,
-        "removed_meta_information": null,
-        "prompt_reason": null,
-        "prompt_confidence": null
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "考え直してみると",
+        "retained_semantic_information": "以前考えた内容を再検討すること。",
+        "removed_meta_information": "先の判断を変えるときに使うという用法説明。",
+        "prompt_reason": "日本語本文が再考の意味を表す。決定変更の場面を追加してpromptを狭める必要はない。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS"
       },
       "paraphrase_review": [],
-      "recommended_paraphrases": null,
-      "entry_decision": "PENDING",
-      "evidence": [],
-      "review_status": "PENDING"
+      "recommended_paraphrases": [],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "日本語本文が再考の意味を表す。決定変更の場面を追加してpromptを狭める必要はない。"
+        }
+      ],
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00139",
@@ -1353,27 +1601,40 @@
       "historically_removed_paraphrases": [],
       "historically_added_paraphrases": [],
       "parenthetical_review": {
-        "parenthetical_decision": "PENDING",
-        "recommended_prompt": null,
-        "retained_semantic_information": null,
-        "removed_meta_information": null,
-        "prompt_reason": null,
-        "prompt_confidence": null
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "someoneをきつく叱る",
+        "retained_semantic_information": "相手を強く叱ること。",
+        "removed_meta_information": "くだけたregisterの説明。",
+        "prompt_reason": "語調のregisterはpromptの意味区別ではない。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS"
       },
       "paraphrase_review": [
         {
           "phrase": "chew someone out",
           "source": "CURRENT",
           "current_status": "CURRENT",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "きつく叱る意味を表す。強さもpromptに適合する。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
         }
       ],
-      "recommended_paraphrases": null,
-      "entry_decision": "PENDING",
-      "evidence": [],
-      "review_status": "PENDING"
+      "recommended_paraphrases": [
+        "chew someone out"
+      ],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "語調のregisterはpromptの意味区別ではない。"
+        }
+      ],
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00178",
@@ -1411,18 +1672,27 @@
       "historically_removed_paraphrases": [],
       "historically_added_paraphrases": [],
       "parenthetical_review": {
-        "parenthetical_decision": "PENDING",
-        "recommended_prompt": null,
-        "retained_semantic_information": null,
-        "removed_meta_information": null,
-        "prompt_reason": null,
-        "prompt_confidence": null
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "somethingをして罰を免れる",
+        "retained_semantic_information": "行為の結果として処罰を避けること。",
+        "removed_meta_information": "悪い行為・批判を受けないという英語側の典型的含意。",
+        "prompt_reason": "罰を免れるというprompt本文で必要な意味は伝わり、canonicalの典型用例を追加する必要はない。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS"
       },
       "paraphrase_review": [],
-      "recommended_paraphrases": null,
-      "entry_decision": "PENDING",
-      "evidence": [],
-      "review_status": "PENDING"
+      "recommended_paraphrases": [],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "罰を免れるというprompt本文で必要な意味は伝わり、canonicalの典型用例を追加する必要はない。"
+        }
+      ],
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00184",
@@ -1464,27 +1734,38 @@
       ],
       "historically_added_paraphrases": [],
       "parenthetical_review": {
-        "parenthetical_decision": "PENDING",
-        "recommended_prompt": null,
-        "retained_semantic_information": null,
-        "removed_meta_information": null,
-        "prompt_reason": null,
-        "prompt_confidence": null
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "someoneが自由に使える状態で",
+        "retained_semantic_information": "someoneが自由に使用できること。",
+        "removed_meta_information": "改まったregisterの説明。",
+        "prompt_reason": "registerは日本語の意味を限定しない。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS"
       },
       "paraphrase_review": [
         {
           "phrase": "available to someone",
           "source": "HISTORICAL_REMOVAL",
           "current_status": "REMOVED",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "RESTORE",
+          "semantic_fit_reason": "someoneが自由に利用できる状態を自然に表す。register差だけでは削除できない。",
+          "confidence": "MEDIUM",
+          "review_status": "REVIEWED",
+          "sources": []
         }
       ],
-      "recommended_paraphrases": null,
-      "entry_decision": "PENDING",
-      "evidence": [],
-      "review_status": "PENDING"
+      "recommended_paraphrases": [],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "registerは日本語の意味を限定しない。"
+        }
+      ],
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00185",
@@ -1536,15 +1817,22 @@
           "phrase": "practice makes perfect",
           "source": "HISTORICAL_REMOVAL",
           "current_status": "REMOVED",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "KEEP_REMOVED_SEMANTIC_MISMATCH",
+          "semantic_fit_reason": "perfectまで到達するというより強い結果を加える。promptが述べるのは練習量と上達の関係。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
         }
       ],
-      "recommended_paraphrases": null,
-      "entry_decision": "PENDING",
-      "evidence": [],
-      "review_status": "PENDING"
+      "recommended_paraphrases": [],
+      "entry_decision": "KEEP",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": null
+        }
+      ],
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00194",
@@ -1586,27 +1874,38 @@
       ],
       "historically_added_paraphrases": [],
       "parenthetical_review": {
-        "parenthetical_decision": "PENDING",
-        "recommended_prompt": null,
-        "retained_semantic_information": null,
-        "removed_meta_information": null,
-        "prompt_reason": null,
-        "prompt_confidence": null
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "要点を押さえた",
+        "retained_semantic_information": "要点に沿った、的を射た内容。",
+        "removed_meta_information": "canonicalの簡潔さを唯一の意味として追加する説明。",
+        "prompt_reason": "「要点を押さえた」は日本語として回答可能。簡潔さだけに寄せるqualifierは自然なnear-synonymを狭める。",
+        "prompt_confidence": "MEDIUM",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS"
       },
       "paraphrase_review": [
         {
           "phrase": "on point",
           "source": "HISTORICAL_REMOVAL",
           "current_status": "REMOVED",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "RESTORE",
+          "semantic_fit_reason": "要点を押さえ、的を射ているという意味に自然に対応する。簡潔さが常に含まれなくても日本語promptに適合する。",
+          "confidence": "MEDIUM",
+          "review_status": "REVIEWED",
+          "sources": []
         }
       ],
-      "recommended_paraphrases": null,
-      "entry_decision": "PENDING",
-      "evidence": [],
-      "review_status": "PENDING"
+      "recommended_paraphrases": [],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "「要点を押さえた」は日本語として回答可能。簡潔さだけに寄せるqualifierは自然なnear-synonymを狭める。"
+        }
+      ],
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00196",
@@ -1650,27 +1949,40 @@
       "historically_removed_paraphrases": [],
       "historically_added_paraphrases": [],
       "parenthetical_review": {
-        "parenthetical_decision": "PENDING",
-        "recommended_prompt": null,
-        "retained_semantic_information": null,
-        "removed_meta_information": null,
-        "prompt_reason": null,
-        "prompt_confidence": null
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "とても簡単なこと",
+        "retained_semantic_information": "非常に容易であること。",
+        "removed_meta_information": "くだけたregisterの説明。",
+        "prompt_reason": "registerは英語の表現選択であり、日本語の意味区別には不要。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS"
       },
       "paraphrase_review": [
         {
           "phrase": "child's play",
           "source": "CURRENT",
           "current_status": "CURRENT",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "非常に簡単という意味を保つ。idiom/register差では拒否できない。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
         }
       ],
-      "recommended_paraphrases": null,
-      "entry_decision": "PENDING",
-      "evidence": [],
-      "review_status": "PENDING"
+      "recommended_paraphrases": [
+        "child's play"
+      ],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "registerは英語の表現選択であり、日本語の意味区別には不要。"
+        }
+      ],
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00201",
@@ -1784,27 +2096,40 @@
       "historically_removed_paraphrases": [],
       "historically_added_paraphrases": [],
       "parenthetical_review": {
-        "parenthetical_decision": "PENDING",
-        "recommended_prompt": null,
-        "retained_semantic_information": null,
-        "removed_meta_information": null,
-        "prompt_reason": null,
-        "prompt_confidence": null
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "かろうじて",
+        "retained_semantic_information": "ぎりぎり達成・成立したこと。",
+        "removed_meta_information": "必要最低限の水準という重複説明。",
+        "prompt_reason": "かろうじてが最小限の達成をすでに表す。括弧は説明の重複。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS"
       },
       "paraphrase_review": [
         {
           "phrase": "only just",
           "source": "CURRENT",
           "current_status": "CURRENT",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "かろうじてという意味に自然に対応する。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
         }
       ],
-      "recommended_paraphrases": null,
-      "entry_decision": "PENDING",
-      "evidence": [],
-      "review_status": "PENDING"
+      "recommended_paraphrases": [
+        "only just"
+      ],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "かろうじてが最小限の達成をすでに表す。括弧は説明の重複。"
+        }
+      ],
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00218",
@@ -1854,51 +2179,69 @@
         "start dieting"
       ],
       "parenthetical_review": {
-        "parenthetical_decision": "PENDING",
-        "recommended_prompt": null,
-        "retained_semantic_information": null,
-        "removed_meta_information": null,
-        "prompt_reason": null,
-        "prompt_confidence": null
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "ダイエットを始める",
+        "retained_semantic_information": "ダイエットを始めるという開始aspect。",
+        "removed_meta_information": "継続中ではなく開始という重複の文法説明。",
+        "prompt_reason": "「始める」が開始aspectをすでに明示する。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS"
       },
       "paraphrase_review": [
         {
           "phrase": "start dieting",
           "source": "CURRENT",
           "current_status": "CURRENT",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "現行の有効な語句で、開始aspectを明示する。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
         },
         {
           "phrase": "be on a diet",
           "source": "HISTORICAL_REMOVAL",
           "current_status": "REMOVED",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "KEEP_REMOVED_SEMANTIC_MISMATCH",
+          "semantic_fit_reason": "継続中の状態を表し、開始する出来事というpromptのaspectを表さない。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
         },
         {
           "phrase": "diet",
           "source": "HISTORICAL_REMOVAL",
           "current_status": "REMOVED",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "KEEP_REMOVED_SEMANTIC_MISMATCH",
+          "semantic_fit_reason": "diet単独は食事制限の実践を表すが、開始aspectを明示しない。",
+          "confidence": "MEDIUM",
+          "review_status": "REVIEWED",
+          "sources": []
         },
         {
           "phrase": "start dieting",
           "source": "HISTORICAL_ADDITION",
           "current_status": "CURRENT",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "KEEP_ADDED",
+          "semantic_fit_reason": "過去に追加された語句。開始aspectとdietingの意味がpromptに一致する。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED"
         }
       ],
-      "recommended_paraphrases": null,
-      "entry_decision": "PENDING",
-      "evidence": [],
-      "review_status": "PENDING"
+      "recommended_paraphrases": [
+        "start dieting"
+      ],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "「始める」が開始aspectをすでに明示する。"
+        }
+      ],
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00220",
@@ -1945,35 +2288,50 @@
       ],
       "historically_added_paraphrases": [],
       "parenthetical_review": {
-        "parenthetical_decision": "PENDING",
-        "recommended_prompt": null,
-        "retained_semantic_information": null,
-        "removed_meta_information": null,
-        "prompt_reason": null,
-        "prompt_confidence": null
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "そのうえ",
+        "retained_semantic_information": "追加情報を述べること。",
+        "removed_meta_information": "意外さや重要度の強調を必須とする説明。",
+        "prompt_reason": "What's moreは追加を表すが、意外性・重要度を常に要求するわけではない。日本語本文もその追加だけを示す。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS"
       },
       "paraphrase_review": [
         {
           "phrase": "moreover",
           "source": "CURRENT",
           "current_status": "CURRENT",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "そのうえと同じ追加関係を表す。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
         },
         {
           "phrase": "in addition",
           "source": "HISTORICAL_REMOVAL",
           "current_status": "REMOVED",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "RESTORE",
+          "semantic_fit_reason": "追加関係を自然に表す。強調registerの差はsemantic mismatchではない。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
         }
       ],
-      "recommended_paraphrases": null,
-      "entry_decision": "PENDING",
-      "evidence": [],
-      "review_status": "PENDING"
+      "recommended_paraphrases": [
+        "moreover"
+      ],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "What's moreは追加を表すが、意外性・重要度を常に要求するわけではない。日本語本文もその追加だけを示す。"
+        }
+      ],
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00229",
@@ -1999,27 +2357,40 @@
       "historically_removed_paraphrases": [],
       "historically_added_paraphrases": [],
       "parenthetical_review": {
-        "parenthetical_decision": "PENDING",
-        "recommended_prompt": null,
-        "retained_semantic_information": null,
-        "removed_meta_information": null,
-        "prompt_reason": null,
-        "prompt_confidence": null
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "いったい",
+        "retained_semantic_information": "疑問を強める意味。",
+        "removed_meta_information": "疑問文を強めるという説明の重複。",
+        "prompt_reason": "「いったい」自体が疑問の強調を表すため括弧は不要。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS"
       },
       "paraphrase_review": [
         {
           "phrase": "in the world",
           "source": "CURRENT",
           "current_status": "CURRENT",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "WH疑問を強める用法で「いったい」と対応する。",
+          "confidence": "MEDIUM",
+          "review_status": "REVIEWED",
+          "sources": []
         }
       ],
-      "recommended_paraphrases": null,
-      "entry_decision": "PENDING",
-      "evidence": [],
-      "review_status": "PENDING"
+      "recommended_paraphrases": [
+        "in the world"
+      ],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "「いったい」自体が疑問の強調を表すため括弧は不要。"
+        }
+      ],
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00243",
@@ -2066,35 +2437,50 @@
       ],
       "historically_added_paraphrases": [],
       "parenthetical_review": {
-        "parenthetical_decision": "PENDING",
-        "recommended_prompt": null,
-        "retained_semantic_information": null,
-        "removed_meta_information": null,
-        "prompt_reason": null,
-        "prompt_confidence": null
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "実際のところ",
+        "retained_semantic_information": "実際の事実を述べる／確認すること。",
+        "removed_meta_information": "事実を補足・訂正する場面だけに限定する説明。",
+        "prompt_reason": "補足・訂正は一つの用法にすぎず、日本語promptから必須とは読めない。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS"
       },
       "paraphrase_review": [
         {
           "phrase": "in fact",
           "source": "CURRENT",
           "current_status": "CURRENT",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "実際のところという意味を自然に表す。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
         },
         {
           "phrase": "actually",
           "source": "HISTORICAL_REMOVAL",
           "current_status": "REMOVED",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "RESTORE",
+          "semantic_fit_reason": "実際のところを表す自然なparaphrase。用法・位置の差だけで削除しない。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
         }
       ],
-      "recommended_paraphrases": null,
-      "entry_decision": "PENDING",
-      "evidence": [],
-      "review_status": "PENDING"
+      "recommended_paraphrases": [
+        "in fact"
+      ],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "補足・訂正は一つの用法にすぎず、日本語promptから必須とは読めない。"
+        }
+      ],
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00247",
@@ -2120,27 +2506,40 @@
       "historically_removed_paraphrases": [],
       "historically_added_paraphrases": [],
       "parenthetical_review": {
-        "parenthetical_decision": "PENDING",
-        "recommended_prompt": null,
-        "retained_semantic_information": null,
-        "removed_meta_information": null,
-        "prompt_reason": null,
-        "prompt_confidence": null
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "尽きる",
+        "retained_semantic_information": "資源・力などが使い切られ、なくなること。",
+        "removed_meta_information": "忍耐や力などcanonicalで典型的な主語の例示。",
+        "prompt_reason": "「尽きる」が枯渇の意味を示す。特定の主語例は要求語義に必要ない。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS"
       },
       "paraphrase_review": [
         {
           "phrase": "run out",
           "source": "CURRENT",
           "current_status": "CURRENT",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "尽きる・なくなるという意味を自然に表す。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
         }
       ],
-      "recommended_paraphrases": null,
-      "entry_decision": "PENDING",
-      "evidence": [],
-      "review_status": "PENDING"
+      "recommended_paraphrases": [
+        "run out"
+      ],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "「尽きる」が枯渇の意味を示す。特定の主語例は要求語義に必要ない。"
+        }
+      ],
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00248",
