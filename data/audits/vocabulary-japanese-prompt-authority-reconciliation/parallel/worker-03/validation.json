@@ -1,0 +1,67 @@
+{
+  "worker_id": "W03",
+  "completion_status": "COMPLETE",
+  "parallel_review_base_sha": "8ea0e6a4521059144d818e8cbca5e23e9e69dce0",
+  "claim_sha256": "5f278e83bba0073c4d9c2c15ec4e4e1f0482ea2e4632e84b0c2327b446d7f620",
+  "status": "PASS",
+  "checks": {
+    "claim_count_exact": true,
+    "reviewed_rows_exact": true,
+    "missing_ids": [],
+    "duplicate_ids": [],
+    "out_of_claim_ids": [],
+    "every_review_status_complete": true,
+    "all_parenthetical_rows_dispositioned": true,
+    "all_phrase_rows_dispositioned": true,
+    "all_current_paraphrases_dispositioned": true,
+    "all_historical_removals_dispositioned": true,
+    "all_historical_additions_dispositioned": true,
+    "slot_integrity_checked_all": true,
+    "confirmed_slot_authority_respected": true,
+    "remove_decisions_have_semantic_reason": true,
+    "canonical_bias_only_removals": 0,
+    "target_leakage_unresolved": 0,
+    "source_blob_shas_match_claim": true,
+    "production_changes": 0,
+    "slot_inventory_coverage_exact": true,
+    "slot_summary_confirms_no_pending_slot_review": true,
+    "w03_has_no_confirmed_slot_defects": true,
+    "production_changes_from_slot_gate": true
+  },
+  "source_counts": {
+    "current": 41,
+    "historical_removal": 63,
+    "historical_addition": 1,
+    "new_addition": 0
+  },
+  "entry_decision_counts": {
+    "KEEP": 6,
+    "PROMPT_SIMPLIFY": 17,
+    "PARAPHRASE_RESTORE": 11,
+    "PROMPT_AND_PARAPHRASE_RECONCILE": 21,
+    "PARAPHRASE_REMOVE_SEMANTIC": 0,
+    "UPSTREAM_AUTHORITY_REVIEW": 0
+  },
+  "confidence_counts": {
+    "HIGH": 46,
+    "MEDIUM": 9,
+    "LOW": 0
+  },
+  "notes": [
+    "All 55 reviews are based on the immutable W03 claim and source snapshots.",
+    "All W03 slot reconciliation statuses are CLEAR; no confirmed slot defects occur in this claim.",
+    "Historical before/after values were treated as evidence only, not semantic authority.",
+    "No production or canonical accounting files were modified."
+  ],
+  "slot_summary_authority": {
+    "audit_status": "IN_PROGRESS",
+    "union_population": 589,
+    "slot_checked": 589,
+    "candidates_reviewed": 19,
+    "confirmed_defect_entries": 17,
+    "unresolved_defect_entries": 0,
+    "pending": 0,
+    "production_changes": 0
+  }
+}
+
