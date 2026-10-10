@@ -1,15 +1,17 @@
-# Japanese Prompt Authority Reconciliation — Intake Checkpoint
+# Japanese Prompt Authority Reconciliation — Partial Review
 
-Status: **IN PROGRESS**. This commit freezes the audit base and complete review population; it does not claim semantic review or closure.
+Status: **IN PROGRESS**. The full union is frozen; 8 entries have been semantically reviewed. Remaining items are pending.
 
 - Audit base main: `9007e2f59cc6bfc48e7021caa3b469dae89adb60`
-- Production vocabulary blob: `c23643d26e71be22aaec5ec04ce63a7582ad9c25`
-- Current parenthetical entries: 376
-- Previous materialized IDs: 551
-- Union entries: 589 across 6 batches
-- Historical removed phrase/entry pairs: 670 (600 distinct strings)
-- Historical added phrase/entry pairs: 8
-- Reviewed entries / removed phrases / additions checked: 0 / 0 / 0
+- Current parenthetical entries: 376; reviewed 8; remaining 368
+- Previous materialized IDs: 551; reviewed 7; remaining 544
+- Union entries: 589; reviewed 8; missing 581
+- Historical removed pairs: 670; dispositioned 6; pending 664
+- Historical added pairs: 8; checked 0
+- Representative target leaks found / resolved: 5 / 5
+- Representative meta-hints found / resolved: 8 / 8
 - Production changes: 0
 
-All review fields remain `PENDING`. Current main matches the previous materialization's after-snapshot across the five targeted fields for 249 checked union entries; mismatches: 340. Previous judgments have not been adopted as semantic authority.
+Representative decisions: 00139 removes the exposed construction hint; 00201 removes register/dialect and restores `get angry with someone`; 01276 removes the `on X grounds` formula; 01198 removes countability grammar and restores `cow` at medium confidence; 01337 removes countability; 02229 keeps only temporal scope and restores `any further`; 02299 removes the regional spelling hint; 02442 removes the leaked canonical phrase and keeps the stronger `crucial`, `key`, and `vital` out for semantic mismatch.
+
+This is not a closure claim. The remaining 581 entries have not been reviewed.

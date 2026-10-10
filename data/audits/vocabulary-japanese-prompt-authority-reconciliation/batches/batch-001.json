@@ -1270,35 +1270,46 @@
       "historically_removed_paraphrases": [],
       "historically_added_paraphrases": [],
       "parenthetical_review": {
-        "parenthetical_decision": "PENDING",
-        "recommended_prompt": null,
-        "retained_semantic_information": null,
-        "removed_meta_information": null,
-        "prompt_reason": null,
-        "prompt_confidence": null
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "私が到着するとすぐに、電話が鳴った",
+        "retained_semantic_information": "到着直後に電話が鳴る時間関係は本文に含まれる。",
+        "removed_meta_information": "target構文no sooner ... than、倒置、register・強調説明。",
+        "prompt_reason": "括弧は答えの構文patternと英語側の文法・registerを漏らす。即時性は日本語本文にある。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS"
       },
       "paraphrase_review": [
         {
           "phrase": "the phone rang as soon as I arrived",
           "source": "CURRENT",
           "current_status": "CURRENT",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "「到着するとすぐに電話が鳴った」を自然に表す。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
         },
         {
           "phrase": "hardly had I arrived when the phone rang",
           "source": "CURRENT",
           "current_status": "CURRENT",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "倒置の有無は表現方法の差で、到着直後に電話が鳴る時間関係を保つ。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
         }
       ],
-      "recommended_paraphrases": null,
-      "entry_decision": "PENDING",
+      "recommended_paraphrases": [
+        "the phone rang as soon as I arrived",
+        "hardly had I arrived when the phone rang"
+      ],
+      "entry_decision": "PROMPT_SIMPLIFY",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00150",
@@ -1701,27 +1712,35 @@
       ],
       "historically_added_paraphrases": [],
       "parenthetical_review": {
-        "parenthetical_decision": "PENDING",
-        "recommended_prompt": null,
-        "retained_semantic_information": null,
-        "removed_meta_information": null,
-        "prompt_reason": null,
-        "prompt_confidence": null
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "someoneに腹を立てる",
+        "retained_semantic_information": "相手に怒ること。",
+        "removed_meta_information": "くだけたregister、mad atのtarget fragment、米語というdialect情報。",
+        "prompt_reason": "括弧はtarget fragment・register・dialectを露出する。日本語の意味はそれらに依存しない。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS"
       },
       "paraphrase_review": [
         {
           "phrase": "get angry with someone",
           "source": "HISTORICAL_REMOVAL",
           "current_status": "REMOVED",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "RESTORE",
+          "semantic_fit_reason": "「someoneに腹を立てる」を自然に表す。前置詞の選択やregisterの差だけでは削除理由にならない。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
         }
       ],
-      "recommended_paraphrases": null,
-      "entry_decision": "PENDING",
+      "recommended_paraphrases": [
+        "get angry with someone"
+      ],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:00213",
@@ -6355,5 +6374,6 @@
       "evidence": [],
       "review_status": "PENDING"
     }
-  ]
+  ],
+  "review_status": "PARTIAL_REVIEW"
 }

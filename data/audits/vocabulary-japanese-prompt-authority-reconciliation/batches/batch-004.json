@@ -1099,27 +1099,35 @@
       "historically_removed_paraphrases": [],
       "historically_added_paraphrases": [],
       "parenthetical_review": {
-        "parenthetical_decision": "PENDING",
-        "recommended_prompt": null,
-        "retained_semantic_information": null,
-        "removed_meta_information": null,
-        "prompt_reason": null,
-        "prompt_confidence": null
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "安全上の理由で",
+        "retained_semantic_information": "安全を理由とすること。",
+        "removed_meta_information": "on X groundsという答え生成formula。",
+        "prompt_reason": "括弧がcanonicalの前置詞構文をformulaとして露出する。理由関係は日本語本文ですでに明確。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS"
       },
       "paraphrase_review": [
         {
           "phrase": "for safety reasons",
           "source": "CURRENT",
           "current_status": "CURRENT",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "安全を理由とする意味を自然に保つ。構文差は意味差ではない。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
         }
       ],
-      "recommended_paraphrases": null,
-      "entry_decision": "PENDING",
+      "recommended_paraphrases": [
+        "for safety reasons"
+      ],
+      "entry_decision": "PROMPT_SIMPLIFY",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:01282",
@@ -2027,18 +2035,22 @@
       "historically_removed_paraphrases": [],
       "historically_added_paraphrases": [],
       "parenthetical_review": {
-        "parenthetical_decision": "PENDING",
-        "recommended_prompt": null,
-        "retained_semantic_information": null,
-        "removed_meta_information": null,
-        "prompt_reason": null,
-        "prompt_confidence": null
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "家具",
+        "retained_semantic_information": "家具という品目。",
+        "removed_meta_information": "通常不可算という英語側の文法情報。",
+        "prompt_reason": "日本語「家具」の意味は不可算説明なしで理解できる。英語の語法をpromptに追加している。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS"
       },
       "paraphrase_review": [],
-      "recommended_paraphrases": null,
-      "entry_decision": "PENDING",
+      "recommended_paraphrases": [],
+      "entry_decision": "PROMPT_SIMPLIFY",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:01340",
@@ -6766,5 +6778,6 @@
       "evidence": [],
       "review_status": "PENDING"
     }
-  ]
+  ],
+  "review_status": "PARTIAL_REVIEW"
 }

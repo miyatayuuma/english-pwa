@@ -216,18 +216,22 @@
       "phrase": "the phone rang as soon as I arrived",
       "source": "CURRENT",
       "current_status": "CURRENT",
-      "decision": "PENDING",
-      "semantic_fit_reason": null,
-      "confidence": null
+      "decision": "KEEP_CURRENT",
+      "semantic_fit_reason": "「到着するとすぐに電話が鳴った」を自然に表す。",
+      "confidence": "HIGH",
+      "review_status": "REVIEWED",
+      "sources": []
     },
     {
       "id": "vocab:00139",
       "phrase": "hardly had I arrived when the phone rang",
       "source": "CURRENT",
       "current_status": "CURRENT",
-      "decision": "PENDING",
-      "semantic_fit_reason": null,
-      "confidence": null
+      "decision": "KEEP_CURRENT",
+      "semantic_fit_reason": "倒置の有無は表現方法の差で、到着直後に電話が鳴る時間関係を保つ。",
+      "confidence": "HIGH",
+      "review_status": "REVIEWED",
+      "sources": []
     },
     {
       "id": "vocab:00150",
@@ -279,9 +283,11 @@
       "phrase": "get angry with someone",
       "source": "HISTORICAL_REMOVAL",
       "current_status": "REMOVED",
-      "decision": "PENDING",
-      "semantic_fit_reason": null,
-      "confidence": null
+      "decision": "RESTORE",
+      "semantic_fit_reason": "「someoneに腹を立てる」を自然に表す。前置詞の選択やregisterの差だけでは削除理由にならない。",
+      "confidence": "HIGH",
+      "review_status": "REVIEWED",
+      "sources": []
     },
     {
       "id": "vocab:00213",
@@ -4500,9 +4506,11 @@
       "phrase": "cow",
       "source": "HISTORICAL_REMOVAL",
       "current_status": "REMOVED",
-      "decision": "PENDING",
-      "semantic_fit_reason": null,
-      "confidence": null
+      "decision": "RESTORE",
+      "semantic_fit_reason": "「牛」に対する自然な語彙回答。集合・複数扱いの差は除外理由にならない。adult femaleを指す用法もあるため、文脈を持たない語義対応としてconfidenceはMEDIUM。",
+      "confidence": "MEDIUM",
+      "review_status": "REVIEWED",
+      "sources": []
     },
     {
       "id": "vocab:01204",
@@ -4896,9 +4904,11 @@
       "phrase": "for safety reasons",
       "source": "CURRENT",
       "current_status": "CURRENT",
-      "decision": "PENDING",
-      "semantic_fit_reason": null,
-      "confidence": null
+      "decision": "KEEP_CURRENT",
+      "semantic_fit_reason": "安全を理由とする意味を自然に保つ。構文差は意味差ではない。",
+      "confidence": "HIGH",
+      "review_status": "REVIEWED",
+      "sources": []
     },
     {
       "id": "vocab:01282",
@@ -7839,18 +7849,22 @@
       "phrase": "any more",
       "source": "CURRENT",
       "current_status": "CURRENT",
-      "decision": "PENDING",
-      "semantic_fit_reason": null,
-      "confidence": null
+      "decision": "KEEP_CURRENT",
+      "semantic_fit_reason": "時間的な継続を表す用法で「これ以上」と自然に対応する。",
+      "confidence": "HIGH",
+      "review_status": "REVIEWED",
+      "sources": []
     },
     {
       "id": "vocab:02229",
       "phrase": "any further",
       "source": "HISTORICAL_REMOVAL",
       "current_status": "REMOVED",
-      "decision": "PENDING",
-      "semantic_fit_reason": null,
-      "confidence": null
+      "decision": "RESTORE",
+      "semantic_fit_reason": "遅延や継続をこれ以上続けない意味で自然に使える。構文・registerの差だけでは除外しない。",
+      "confidence": "MEDIUM",
+      "review_status": "REVIEWED",
+      "sources": []
     },
     {
       "id": "vocab:02244",
@@ -8163,18 +8177,22 @@
       "phrase": "floor",
       "source": "CURRENT",
       "current_status": "CURRENT",
-      "decision": "PENDING",
-      "semantic_fit_reason": null,
-      "confidence": null
+      "decision": "KEEP_CURRENT",
+      "semantic_fit_reason": "建物の階を自然に表す。",
+      "confidence": "HIGH",
+      "review_status": "REVIEWED",
+      "sources": []
     },
     {
       "id": "vocab:02299",
       "phrase": "level",
       "source": "CURRENT",
       "current_status": "CURRENT",
-      "decision": "PENDING",
-      "semantic_fit_reason": null,
-      "confidence": null
+      "decision": "KEEP_CURRENT",
+      "semantic_fit_reason": "建物の階層を自然に表す。",
+      "confidence": "HIGH",
+      "review_status": "REVIEWED",
+      "sources": []
     },
     {
       "id": "vocab:02301",
@@ -8613,45 +8631,61 @@
       "phrase": "important",
       "source": "CURRENT",
       "current_status": "CURRENT",
-      "decision": "PENDING",
-      "semantic_fit_reason": null,
-      "confidence": null
+      "decision": "KEEP_CURRENT",
+      "semantic_fit_reason": "日本語promptに直接対応する。",
+      "confidence": "HIGH",
+      "review_status": "REVIEWED",
+      "sources": []
     },
     {
       "id": "vocab:02442",
       "phrase": "significant",
       "source": "CURRENT",
       "current_status": "CURRENT",
-      "decision": "PENDING",
-      "semantic_fit_reason": null,
-      "confidence": null
+      "decision": "KEEP_CURRENT",
+      "semantic_fit_reason": "重要性を表す自然な回答。canonicalとの語形差は削除理由ではない。",
+      "confidence": "MEDIUM",
+      "review_status": "REVIEWED",
+      "sources": []
     },
     {
       "id": "vocab:02442",
       "phrase": "crucial",
       "source": "HISTORICAL_REMOVAL",
       "current_status": "REMOVED",
-      "decision": "PENDING",
-      "semantic_fit_reason": null,
-      "confidence": null
+      "decision": "KEEP_REMOVED_SEMANTIC_MISMATCH",
+      "semantic_fit_reason": "通常「極めて重要」または「必要不可欠」という強度・必須性を加え、単なる「重要な」より強い。",
+      "confidence": "HIGH",
+      "review_status": "REVIEWED",
+      "sources": [
+        "https://dictionary.cambridge.org/dictionary/english/crucial"
+      ]
     },
     {
       "id": "vocab:02442",
       "phrase": "key",
       "source": "HISTORICAL_REMOVAL",
       "current_status": "REMOVED",
-      "decision": "PENDING",
-      "semantic_fit_reason": null,
-      "confidence": null
+      "decision": "KEEP_REMOVED_SEMANTIC_MISMATCH",
+      "semantic_fit_reason": "「中心的な／最も重要な／不可欠な」という中心性・必須性を加える。",
+      "confidence": "HIGH",
+      "review_status": "REVIEWED",
+      "sources": [
+        "https://www.oxfordlearnersdictionaries.com/definition/english/key_2"
+      ]
     },
     {
       "id": "vocab:02442",
       "phrase": "vital",
       "source": "HISTORICAL_REMOVAL",
       "current_status": "REMOVED",
-      "decision": "PENDING",
-      "semantic_fit_reason": null,
-      "confidence": null
+      "decision": "KEEP_REMOVED_SEMANTIC_MISMATCH",
+      "semantic_fit_reason": "「不可欠な・極めて重要な」という必要性または強度を加える。",
+      "confidence": "HIGH",
+      "review_status": "REVIEWED",
+      "sources": [
+        "https://dictionary.cambridge.org/dictionary/english/vital"
+      ]
     },
     {
       "id": "vocab:02449",

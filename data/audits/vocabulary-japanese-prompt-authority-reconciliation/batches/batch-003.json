@@ -6533,27 +6533,35 @@
       ],
       "historically_added_paraphrases": [],
       "parenthetical_review": {
-        "parenthetical_decision": "PENDING",
-        "recommended_prompt": null,
-        "retained_semantic_information": null,
-        "removed_meta_information": null,
-        "prompt_reason": null,
-        "prompt_confidence": null
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "牛",
+        "retained_semantic_information": "牛という動物。",
+        "removed_meta_information": "集合・複数扱いという英語側の文法情報。",
+        "prompt_reason": "括弧はcattleの文法を説明しており、日本語の意味範囲を区別しない。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS"
       },
       "paraphrase_review": [
         {
           "phrase": "cow",
           "source": "HISTORICAL_REMOVAL",
           "current_status": "REMOVED",
-          "decision": "PENDING",
-          "semantic_fit_reason": null,
-          "confidence": null
+          "decision": "RESTORE",
+          "semantic_fit_reason": "「牛」に対する自然な語彙回答。集合・複数扱いの差は除外理由にならない。adult femaleを指す用法もあるため、文脈を持たない語義対応としてconfidenceはMEDIUM。",
+          "confidence": "MEDIUM",
+          "review_status": "REVIEWED",
+          "sources": []
         }
       ],
-      "recommended_paraphrases": null,
-      "entry_decision": "PENDING",
+      "recommended_paraphrases": [
+        "cow"
+      ],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
       "evidence": [],
-      "review_status": "PENDING"
+      "review_status": "REVIEWED"
     },
     {
       "id": "vocab:01204",
@@ -7133,5 +7141,6 @@
       "evidence": [],
       "review_status": "PENDING"
     }
-  ]
+  ],
+  "review_status": "PARTIAL_REVIEW"
 }

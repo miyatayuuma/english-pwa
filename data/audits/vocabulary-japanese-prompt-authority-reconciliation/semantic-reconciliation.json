@@ -1,6 +1,323 @@
 {
   "schema_version": 1,
-  "status": "PENDING",
-  "entries": [],
+  "status": "PARTIAL",
+  "entries": [
+    {
+      "id": "vocab:00139",
+      "source_index": 139,
+      "cohort_flags": {
+        "current_parenthetical": true,
+        "previous_nuance_materialized": true,
+        "historical_removed_count": 0,
+        "historical_added_count": 0
+      },
+      "parenthetical": {
+        "decision": "REMOVE_META_HINT",
+        "recommended_prompt": "私が到着するとすぐに、電話が鳴った",
+        "reason": "括弧は答えの構文patternと英語側の文法・registerを漏らす。即時性は日本語本文にある。",
+        "confidence": "HIGH",
+        "prompt_minimality": "PASS"
+      },
+      "paraphrases": [
+        {
+          "phrase": "the phone rang as soon as I arrived",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "「到着するとすぐに電話が鳴った」を自然に表す。",
+          "confidence": "HIGH",
+          "sources": []
+        },
+        {
+          "phrase": "hardly had I arrived when the phone rang",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "倒置の有無は表現方法の差で、到着直後に電話が鳴る時間関係を保つ。",
+          "confidence": "HIGH",
+          "sources": []
+        }
+      ],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "final_review": {
+        "prompt_understood_from_japanese": true,
+        "natural_paraphrases_accepted": true
+      },
+      "evidence": [],
+      "target_leakage_exceptions": []
+    },
+    {
+      "id": "vocab:00201",
+      "source_index": 200,
+      "cohort_flags": {
+        "current_parenthetical": true,
+        "previous_nuance_materialized": true,
+        "historical_removed_count": 1,
+        "historical_added_count": 0
+      },
+      "parenthetical": {
+        "decision": "REMOVE_META_HINT",
+        "recommended_prompt": "someoneに腹を立てる",
+        "reason": "括弧はtarget fragment・register・dialectを露出する。日本語の意味はそれらに依存しない。",
+        "confidence": "HIGH",
+        "prompt_minimality": "PASS"
+      },
+      "paraphrases": [
+        {
+          "phrase": "get angry with someone",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "「someoneに腹を立てる」を自然に表す。前置詞の選択やregisterの差だけでは削除理由にならない。",
+          "confidence": "HIGH",
+          "sources": []
+        }
+      ],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "final_review": {
+        "prompt_understood_from_japanese": true,
+        "natural_paraphrases_accepted": true
+      },
+      "evidence": [],
+      "target_leakage_exceptions": [
+        {
+          "token": "someone",
+          "reason": "日本語promptの意味上の引数placeholderであり、target lexical answerではない。"
+        }
+      ]
+    },
+    {
+      "id": "vocab:01276",
+      "source_index": 1273,
+      "cohort_flags": {
+        "current_parenthetical": true,
+        "previous_nuance_materialized": false,
+        "historical_removed_count": 0,
+        "historical_added_count": 0
+      },
+      "parenthetical": {
+        "decision": "REMOVE_META_HINT",
+        "recommended_prompt": "安全上の理由で",
+        "reason": "括弧がcanonicalの前置詞構文をformulaとして露出する。理由関係は日本語本文ですでに明確。",
+        "confidence": "HIGH",
+        "prompt_minimality": "PASS"
+      },
+      "paraphrases": [
+        {
+          "phrase": "for safety reasons",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "安全を理由とする意味を自然に保つ。構文差は意味差ではない。",
+          "confidence": "HIGH",
+          "sources": []
+        }
+      ],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "final_review": {
+        "prompt_understood_from_japanese": true,
+        "natural_paraphrases_accepted": true
+      },
+      "evidence": [],
+      "target_leakage_exceptions": []
+    },
+    {
+      "id": "vocab:01198",
+      "source_index": 1195,
+      "cohort_flags": {
+        "current_parenthetical": true,
+        "previous_nuance_materialized": true,
+        "historical_removed_count": 1,
+        "historical_added_count": 0
+      },
+      "parenthetical": {
+        "decision": "REMOVE_META_HINT",
+        "recommended_prompt": "牛",
+        "reason": "括弧はcattleの文法を説明しており、日本語の意味範囲を区別しない。",
+        "confidence": "HIGH",
+        "prompt_minimality": "PASS"
+      },
+      "paraphrases": [
+        {
+          "phrase": "cow",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "「牛」に対する自然な語彙回答。集合・複数扱いの差は除外理由にならない。adult femaleを指す用法もあるため、文脈を持たない語義対応としてconfidenceはMEDIUM。",
+          "confidence": "MEDIUM",
+          "sources": []
+        }
+      ],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "final_review": {
+        "prompt_understood_from_japanese": true,
+        "natural_paraphrases_accepted": true
+      },
+      "evidence": [],
+      "target_leakage_exceptions": []
+    },
+    {
+      "id": "vocab:01337",
+      "source_index": 1334,
+      "cohort_flags": {
+        "current_parenthetical": true,
+        "previous_nuance_materialized": true,
+        "historical_removed_count": 0,
+        "historical_added_count": 0
+      },
+      "parenthetical": {
+        "decision": "REMOVE_META_HINT",
+        "recommended_prompt": "家具",
+        "reason": "日本語「家具」の意味は不可算説明なしで理解できる。英語の語法をpromptに追加している。",
+        "confidence": "HIGH",
+        "prompt_minimality": "PASS"
+      },
+      "paraphrases": [],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "final_review": {
+        "prompt_understood_from_japanese": true,
+        "natural_paraphrases_accepted": true
+      },
+      "evidence": [],
+      "target_leakage_exceptions": []
+    },
+    {
+      "id": "vocab:02229",
+      "source_index": 2226,
+      "cohort_flags": {
+        "current_parenthetical": true,
+        "previous_nuance_materialized": true,
+        "historical_removed_count": 1,
+        "historical_added_count": 0
+      },
+      "parenthetical": {
+        "decision": "REWRITE_MINIMAL_SEMANTIC",
+        "recommended_prompt": "時間的にこれ以上",
+        "reason": "「これ以上」は量・程度にも読めるので時間という意味区別だけ残す。否定・疑問の条件は文法ヒントとして削除する。",
+        "confidence": "HIGH",
+        "prompt_minimality": "PASS"
+      },
+      "paraphrases": [
+        {
+          "phrase": "any more",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "時間的な継続を表す用法で「これ以上」と自然に対応する。",
+          "confidence": "HIGH",
+          "sources": []
+        },
+        {
+          "phrase": "any further",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "遅延や継続をこれ以上続けない意味で自然に使える。構文・registerの差だけでは除外しない。",
+          "confidence": "MEDIUM",
+          "sources": []
+        }
+      ],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "final_review": {
+        "prompt_understood_from_japanese": true,
+        "natural_paraphrases_accepted": true
+      },
+      "evidence": [],
+      "target_leakage_exceptions": []
+    },
+    {
+      "id": "vocab:02299",
+      "source_index": 2296,
+      "cohort_flags": {
+        "current_parenthetical": true,
+        "previous_nuance_materialized": true,
+        "historical_removed_count": 0,
+        "historical_added_count": 0
+      },
+      "parenthetical": {
+        "decision": "REMOVE_META_HINT",
+        "recommended_prompt": "階",
+        "reason": "日本語「階」はこのsenseを示す。dialect説明とcanonical語の露出は不要。",
+        "confidence": "HIGH",
+        "prompt_minimality": "PASS"
+      },
+      "paraphrases": [
+        {
+          "phrase": "floor",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "建物の階を自然に表す。",
+          "confidence": "HIGH",
+          "sources": []
+        },
+        {
+          "phrase": "level",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "建物の階層を自然に表す。",
+          "confidence": "HIGH",
+          "sources": []
+        }
+      ],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "final_review": {
+        "prompt_understood_from_japanese": true,
+        "natural_paraphrases_accepted": true
+      },
+      "evidence": [],
+      "target_leakage_exceptions": []
+    },
+    {
+      "id": "vocab:02442",
+      "source_index": 2439,
+      "cohort_flags": {
+        "current_parenthetical": true,
+        "previous_nuance_materialized": true,
+        "historical_removed_count": 3,
+        "historical_added_count": 0
+      },
+      "parenthetical": {
+        "decision": "REMOVE_META_HINT",
+        "recommended_prompt": "重要な",
+        "reason": "括弧はcanonical語句とformalityを露出する。日本語「重要な」だけで要求意味が分かる。",
+        "confidence": "HIGH",
+        "prompt_minimality": "PASS"
+      },
+      "paraphrases": [
+        {
+          "phrase": "important",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "日本語promptに直接対応する。",
+          "confidence": "HIGH",
+          "sources": []
+        },
+        {
+          "phrase": "significant",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "重要性を表す自然な回答。canonicalとの語形差は削除理由ではない。",
+          "confidence": "MEDIUM",
+          "sources": []
+        },
+        {
+          "phrase": "crucial",
+          "decision": "KEEP_REMOVED_SEMANTIC_MISMATCH",
+          "semantic_fit_reason": "通常「極めて重要」または「必要不可欠」という強度・必須性を加え、単なる「重要な」より強い。",
+          "confidence": "HIGH",
+          "sources": [
+            "https://dictionary.cambridge.org/dictionary/english/crucial"
+          ]
+        },
+        {
+          "phrase": "key",
+          "decision": "KEEP_REMOVED_SEMANTIC_MISMATCH",
+          "semantic_fit_reason": "「中心的な／最も重要な／不可欠な」という中心性・必須性を加える。",
+          "confidence": "HIGH",
+          "sources": [
+            "https://www.oxfordlearnersdictionaries.com/definition/english/key_2"
+          ]
+        },
+        {
+          "phrase": "vital",
+          "decision": "KEEP_REMOVED_SEMANTIC_MISMATCH",
+          "semantic_fit_reason": "「不可欠な・極めて重要な」という必要性または強度を加える。",
+          "confidence": "HIGH",
+          "sources": [
+            "https://dictionary.cambridge.org/dictionary/english/vital"
+          ]
+        }
+      ],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "final_review": {
+        "prompt_understood_from_japanese": true,
+        "natural_paraphrases_accepted": true
+      },
+      "evidence": [],
+      "target_leakage_exceptions": []
+    }
+  ],
   "notes": "No previous nuance decision has been imported as current semantic authority; reviews are pending."
 }

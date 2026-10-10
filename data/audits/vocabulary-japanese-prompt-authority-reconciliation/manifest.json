@@ -31,14 +31,14 @@
     "source_order": "data/vocabulary-v3.json entries array, 1-based source_index; join authority only by id"
   },
   "coverage": {
-    "reviewed_entries": 0,
-    "missing_entries": 589,
+    "reviewed_entries": 8,
+    "missing_entries": 581,
     "stale_entries": 0,
     "duplicate_review": 0,
     "unknown_ids": 0,
-    "parenthetical_reviewed": 0,
-    "previous_materialized_ids_reviewed": 0,
-    "historical_removed_phrase_entries_dispositioned": 0,
+    "parenthetical_reviewed": 8,
+    "previous_materialized_ids_reviewed": 7,
+    "historical_removed_phrase_entries_dispositioned": 6,
     "historical_added_phrase_entries_checked": 0
   },
   "drift_at_base": {
@@ -1416,5 +1416,14 @@
   "production_changes": 0,
   "strict_validator": "NOT_RUN",
   "deterministic_regeneration": "NOT_RUN",
-  "final_current_main_reconciliation_sha": null
+  "final_current_main_reconciliation_sha": null,
+  "review_confidence_counts": {
+    "HIGH": 8,
+    "MEDIUM": 0,
+    "LOW": 0
+  },
+  "target_leakage_cases_found": 5,
+  "target_leakage_cases_resolved": 5,
+  "meta_hint_cases_found": 8,
+  "meta_hint_cases_resolved": 8
 }

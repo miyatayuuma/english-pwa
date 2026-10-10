@@ -308,13 +308,16 @@
       "current_parenthetical_segments": [
         "（no sooner ... than の、やや改まった倒置による強調表現）"
       ],
-      "decision": "PENDING",
-      "recommended_prompt": null,
-      "retained_semantic_information": null,
-      "removed_meta_information": null,
-      "prompt_reason": null,
-      "prompt_confidence": null,
-      "review_status": "PENDING"
+      "recommended_prompt": "私が到着するとすぐに、電話が鳴った",
+      "retained_semantic_information": "到着直後に電話が鳴る時間関係は本文に含まれる。",
+      "removed_meta_information": "target構文no sooner ... than、倒置、register・強調説明。",
+      "prompt_reason": "括弧は答えの構文patternと英語側の文法・registerを漏らす。即時性は日本語本文にある。",
+      "prompt_confidence": "HIGH",
+      "review_status": "REVIEWED",
+      "parenthetical_decision": "REMOVE_META_HINT",
+      "target_leakage_checked": true,
+      "meta_hint_checked": true,
+      "prompt_minimality": "PASS"
     },
     {
       "id": "vocab:00150",
@@ -398,13 +401,16 @@
       "current_parenthetical_segments": [
         "（くだけた表現で、mad atは主に米語）"
       ],
-      "decision": "PENDING",
-      "recommended_prompt": null,
-      "retained_semantic_information": null,
-      "removed_meta_information": null,
-      "prompt_reason": null,
-      "prompt_confidence": null,
-      "review_status": "PENDING"
+      "recommended_prompt": "someoneに腹を立てる",
+      "retained_semantic_information": "相手に怒ること。",
+      "removed_meta_information": "くだけたregister、mad atのtarget fragment、米語というdialect情報。",
+      "prompt_reason": "括弧はtarget fragment・register・dialectを露出する。日本語の意味はそれらに依存しない。",
+      "prompt_confidence": "HIGH",
+      "review_status": "REVIEWED",
+      "parenthetical_decision": "REMOVE_META_HINT",
+      "target_leakage_checked": true,
+      "meta_hint_checked": true,
+      "prompt_minimality": "PASS"
     },
     {
       "id": "vocab:00213",
@@ -3101,13 +3107,16 @@
       "current_parenthetical_segments": [
         "（集合的・複数扱い）"
       ],
-      "decision": "PENDING",
-      "recommended_prompt": null,
-      "retained_semantic_information": null,
-      "removed_meta_information": null,
-      "prompt_reason": null,
-      "prompt_confidence": null,
-      "review_status": "PENDING"
+      "recommended_prompt": "牛",
+      "retained_semantic_information": "牛という動物。",
+      "removed_meta_information": "集合・複数扱いという英語側の文法情報。",
+      "prompt_reason": "括弧はcattleの文法を説明しており、日本語の意味範囲を区別しない。",
+      "prompt_confidence": "HIGH",
+      "review_status": "REVIEWED",
+      "parenthetical_decision": "REMOVE_META_HINT",
+      "target_leakage_checked": true,
+      "meta_hint_checked": true,
+      "prompt_minimality": "PASS"
     },
     {
       "id": "vocab:01205",
@@ -3356,13 +3365,16 @@
       "current_parenthetical_segments": [
         "（on X grounds＝Xを理由に）"
       ],
-      "decision": "PENDING",
-      "recommended_prompt": null,
-      "retained_semantic_information": null,
-      "removed_meta_information": null,
-      "prompt_reason": null,
-      "prompt_confidence": null,
-      "review_status": "PENDING"
+      "recommended_prompt": "安全上の理由で",
+      "retained_semantic_information": "安全を理由とすること。",
+      "removed_meta_information": "on X groundsという答え生成formula。",
+      "prompt_reason": "括弧がcanonicalの前置詞構文をformulaとして露出する。理由関係は日本語本文ですでに明確。",
+      "prompt_confidence": "HIGH",
+      "review_status": "REVIEWED",
+      "parenthetical_decision": "REMOVE_META_HINT",
+      "target_leakage_checked": true,
+      "meta_hint_checked": true,
+      "prompt_minimality": "PASS"
     },
     {
       "id": "vocab:01288",
@@ -3476,13 +3488,16 @@
       "current_parenthetical_segments": [
         "（通常不可算）"
       ],
-      "decision": "PENDING",
-      "recommended_prompt": null,
-      "retained_semantic_information": null,
-      "removed_meta_information": null,
-      "prompt_reason": null,
-      "prompt_confidence": null,
-      "review_status": "PENDING"
+      "recommended_prompt": "家具",
+      "retained_semantic_information": "家具という品目。",
+      "removed_meta_information": "通常不可算という英語側の文法情報。",
+      "prompt_reason": "日本語「家具」の意味は不可算説明なしで理解できる。英語の語法をpromptに追加している。",
+      "prompt_confidence": "HIGH",
+      "review_status": "REVIEWED",
+      "parenthetical_decision": "REMOVE_META_HINT",
+      "target_leakage_checked": true,
+      "meta_hint_checked": true,
+      "prompt_minimality": "PASS"
     },
     {
       "id": "vocab:01340",
@@ -4978,13 +4993,16 @@
       "current_parenthetical_segments": [
         "（主に否定・疑問文などで、時間について）"
       ],
-      "decision": "PENDING",
-      "recommended_prompt": null,
-      "retained_semantic_information": null,
-      "removed_meta_information": null,
-      "prompt_reason": null,
-      "prompt_confidence": null,
-      "review_status": "PENDING"
+      "recommended_prompt": "時間的にこれ以上",
+      "retained_semantic_information": "時間の長さ・継続に関する範囲。",
+      "removed_meta_information": "主に否定文・疑問文で使うという用法条件。",
+      "prompt_reason": "「これ以上」は量・程度にも読めるので時間という意味区別だけ残す。否定・疑問の条件は文法ヒントとして削除する。",
+      "prompt_confidence": "HIGH",
+      "review_status": "REVIEWED",
+      "parenthetical_decision": "REWRITE_MINIMAL_SEMANTIC",
+      "target_leakage_checked": true,
+      "meta_hint_checked": true,
+      "prompt_minimality": "PASS"
     },
     {
       "id": "vocab:02246",
@@ -5188,13 +5206,16 @@
       "current_parenthetical_segments": [
         "（建物の階数を表す米国式story）"
       ],
-      "decision": "PENDING",
-      "recommended_prompt": null,
-      "retained_semantic_information": null,
-      "removed_meta_information": null,
-      "prompt_reason": null,
-      "prompt_confidence": null,
-      "review_status": "PENDING"
+      "recommended_prompt": "階",
+      "retained_semantic_information": "建物の階層。",
+      "removed_meta_information": "米国式表記というdialect情報とcanonical語story。",
+      "prompt_reason": "日本語「階」はこのsenseを示す。dialect説明とcanonical語の露出は不要。",
+      "prompt_confidence": "HIGH",
+      "review_status": "REVIEWED",
+      "parenthetical_decision": "REMOVE_META_HINT",
+      "target_leakage_checked": true,
+      "meta_hint_checked": true,
+      "prompt_minimality": "PASS"
     },
     {
       "id": "vocab:02301",
@@ -5533,13 +5554,16 @@
       "current_parenthetical_segments": [
         "（やや改まったof importanceという表現）"
       ],
-      "decision": "PENDING",
-      "recommended_prompt": null,
-      "retained_semantic_information": null,
-      "removed_meta_information": null,
-      "prompt_reason": null,
-      "prompt_confidence": null,
-      "review_status": "PENDING"
+      "recommended_prompt": "重要な",
+      "retained_semantic_information": "重要であること。",
+      "removed_meta_information": "of importanceというtarget phraseとformal registerの説明。",
+      "prompt_reason": "括弧はcanonical語句とformalityを露出する。日本語「重要な」だけで要求意味が分かる。",
+      "prompt_confidence": "HIGH",
+      "review_status": "REVIEWED",
+      "parenthetical_decision": "REMOVE_META_HINT",
+      "target_leakage_checked": true,
+      "meta_hint_checked": true,
+      "prompt_minimality": "PASS"
     },
     {
       "id": "vocab:02449",
