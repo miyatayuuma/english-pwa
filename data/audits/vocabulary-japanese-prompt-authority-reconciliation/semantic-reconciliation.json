@@ -132,10 +132,13 @@
       "paraphrases": [
         {
           "phrase": "cow",
-          "decision": "RESTORE",
-          "semantic_fit_reason": "「牛」に対する自然な語彙回答。集合・複数扱いの差は除外理由にならない。adult femaleを指す用法もあるため、文脈を持たない語義対応としてconfidenceはMEDIUM。",
-          "confidence": "MEDIUM",
-          "sources": []
+          "decision": "KEEP_REMOVED_SEMANTIC_MISMATCH",
+          "semantic_fit_reason": "cowは成牛の雌を指すため、性別を限定しない「牛」より狭い。集合・複数文法の違いではなく、候補がpromptにない性別属性を加える意味差として削除維持。",
+          "confidence": "HIGH",
+          "sources": [
+            "https://dictionary.cambridge.org/dictionary/english/cow",
+            "https://dictionary.cambridge.org/dictionary/english/cattle"
+          ]
         }
       ],
       "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
