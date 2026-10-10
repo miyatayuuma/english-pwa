@@ -1,0 +1,5508 @@
+{
+  "schema_version": 1,
+  "worker_id": "W01",
+  "parallel_review_base_sha": "8ea0e6a4521059144d818e8cbca5e23e9e69dce0",
+  "claim_sha256": "de6fcc0ed4fcfe2518bbc414211b17272de1d0b29ba502cb597ce67dfaacec9a",
+  "review_count": 55,
+  "reviews": [
+    {
+      "id": "vocab:00248",
+      "source_index": 247,
+      "canonical": "swear at someone",
+      "sense_key": "use_abusive_language",
+      "grammarRole": "verb",
+      "kind": "expression",
+      "current_meaning_ja": "someoneをののしる（乱暴・失礼な言葉を使う）",
+      "current_parenthetical_segments": [
+        "（乱暴・失礼な言葉を使う）"
+      ],
+      "recommended_meaning_ja": "someoneをののしる",
+      "current_paraphrases": [
+        "curse at someone"
+      ],
+      "historically_removed_paraphrases": [],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "someoneをののしる",
+        "retained_semantic_information": null,
+        "removed_meta_information": "「乱暴・失礼な言葉を使う」は「ののしる」の説明として重複し、回答に必要な意味を追加しない。",
+        "prompt_reason": "someone slotを保ったまま、本文だけでpromptの意味が伝わる。括弧は説明的な言い換えなので削除する。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": [
+          {
+            "segment": "（乱暴・失礼な言葉を使う）",
+            "decision": "REMOVE_META_HINT",
+            "reason": "someone slotを保ったまま、本文だけでpromptの意味が伝わる。括弧は説明的な言い換えなので削除する。"
+          }
+        ]
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "curse at someone",
+          "source": "CURRENT",
+          "current_status": "CURRENT",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "日本語prompt「someoneをののしる」への自然な英語回答であり、必要な意味要素を保つ。構文・語順・registerの違いは削除理由にならない。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [
+        "curse at someone"
+      ],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "someone slotを保ったまま、本文だけでpromptの意味が伝わる。括弧は説明的な言い換えなので削除する。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {
+          "PERSON": 1
+        },
+        "prompt_slot_profile": {
+          "PERSON": 1
+        },
+        "canonical_slot_tokens": [
+          {
+            "token": "someone",
+            "classification": "VARIABLE_SLOT",
+            "type": "PERSON",
+            "semantic_role": "PERSON",
+            "context": "swear at someone",
+            "start": 9,
+            "end": 16
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [
+          {
+            "token": "someone",
+            "classification": "VARIABLE_SLOT",
+            "type": "PERSON",
+            "semantic_role": "PERSON",
+            "context": "someoneをののしる（乱暴・失礼な言葉を使う）",
+            "start": 0,
+            "end": 7
+          }
+        ],
+        "recommended_prompt": "someoneをののしる（乱暴・失礼な言葉を使う）",
+        "recommended_paraphrases": [
+          "curse at someone"
+        ],
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "someoneをののしる（乱暴・失礼な言葉を使う）",
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00252",
+      "source_index": 251,
+      "canonical": "be my guest",
+      "sense_key": "permission_to_proceed",
+      "grammarRole": "interjection",
+      "kind": "expression",
+      "current_meaning_ja": "どうぞ（相手が望む行為をしてよいと快く許可する）",
+      "current_parenthetical_segments": [
+        "（相手が望む行為をしてよいと快く許可する）"
+      ],
+      "recommended_meaning_ja": "相手が望む行為を快く許可する",
+      "current_paraphrases": [
+        "go ahead"
+      ],
+      "historically_removed_paraphrases": [
+        "please"
+      ],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": "REWRITE_MINIMAL_SEMANTIC",
+        "recommended_prompt": "相手が望む行為を快く許可する",
+        "retained_semantic_information": "相手の望む行為への許可・快い応諾",
+        "removed_meta_information": "括弧表記。",
+        "prompt_reason": "「どうぞ」だけでは許可・促し・依頼のどれかが特定しにくい。許可という発話機能を自然な本文に統合し、括弧をなくす。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": [
+          {
+            "segment": "（相手が望む行為をしてよいと快く許可する）",
+            "decision": "REWRITE_MINIMAL_SEMANTIC",
+            "reason": "「どうぞ」だけでは許可・促し・依頼のどれかが特定しにくい。許可という発話機能を自然な本文に統合し、括弧をなくす。"
+          }
+        ]
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "go ahead",
+          "source": "CURRENT",
+          "current_status": "CURRENT",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "日本語prompt「相手が望む行為を快く許可する」への自然な英語回答であり、必要な意味要素を保つ。構文・語順・registerの違いは削除理由にならない。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        },
+        {
+          "phrase": "please",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "日本語prompt「相手が望む行為を快く許可する」への自然な英語回答である。canonicalと表現形式が異なっても、promptとの間にmaterialな意味差はないため復元する。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [
+        "go ahead",
+        "please"
+      ],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "「どうぞ」だけでは許可・促し・依頼のどれかが特定しにくい。許可という発話機能を自然な本文に統合し、括弧をなくす。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "どうぞ（相手が望む行為をしてよいと快く許可する）",
+        "recommended_paraphrases": [
+          "go ahead"
+        ],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "どうぞ（相手が望む行為をしてよいと快く許可する）",
+        "reason": "No canonical variable slot notation was found.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00272",
+      "source_index": 271,
+      "canonical": "pay off",
+      "sense_key": "settle_debt_or_yield_reward",
+      "grammarRole": "verb",
+      "kind": "expression",
+      "current_meaning_ja": "（借金などを）完済する／（努力などが）報われる",
+      "current_parenthetical_segments": [
+        "（借金などを）",
+        "（努力などが）"
+      ],
+      "recommended_meaning_ja": "借金などを完済する／努力などが報われる",
+      "current_paraphrases": [],
+      "historically_removed_paraphrases": [],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": "REWRITE_MINIMAL_SEMANTIC",
+        "recommended_prompt": "借金などを完済する／努力などが報われる",
+        "retained_semantic_information": "借金の完済と努力の結果が報われる二つのsense",
+        "removed_meta_information": "括弧表記。",
+        "prompt_reason": "二つのsenseを区別する内容は必要だが、対象例を括弧にする必要はない。本文の自然な並列に統合する。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": [
+          {
+            "segment": "（借金などを）",
+            "decision": "REWRITE_MINIMAL_SEMANTIC",
+            "reason": "二つのsenseを区別する内容は必要だが、対象例を括弧にする必要はない。本文の自然な並列に統合する。"
+          },
+          {
+            "segment": "（努力などが）",
+            "decision": "REWRITE_MINIMAL_SEMANTIC",
+            "reason": "二つのsenseを区別する内容は必要だが、対象例を括弧にする必要はない。本文の自然な並列に統合する。"
+          }
+        ]
+      },
+      "paraphrase_review": [],
+      "recommended_paraphrases": [],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "二つのsenseを区別する内容は必要だが、対象例を括弧にする必要はない。本文の自然な並列に統合する。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "（借金などを）完済する／（努力などが）報われる",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "（借金などを）完済する／（努力などが）報われる",
+        "reason": "No canonical variable slot notation was found.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00275",
+      "source_index": 274,
+      "canonical": "dwell on something",
+      "sense_key": "think_about_repeatedly",
+      "grammarRole": "verb",
+      "kind": "expression",
+      "current_meaning_ja": "somethingについていつまでも考える（特に嫌なことをくよくよと）",
+      "current_parenthetical_segments": [
+        "（特に嫌なことをくよくよと）"
+      ],
+      "recommended_meaning_ja": "somethingについていつまでも考える",
+      "current_paraphrases": [],
+      "historically_removed_paraphrases": [
+        "keep thinking about something"
+      ],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "somethingについていつまでも考える",
+        "retained_semantic_information": null,
+        "removed_meta_information": "嫌な内容に限る説明と「くよくよ」という典型的な評価。",
+        "prompt_reason": "「特に嫌なことをくよくよと」は考える対象を不必要に狭め、典型的な用例を正解条件にする。something slotを保ち、継続して考える意味だけを残す。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": [
+          {
+            "segment": "（特に嫌なことをくよくよと）",
+            "decision": "REMOVE_META_HINT",
+            "reason": "「特に嫌なことをくよくよと」は考える対象を不必要に狭め、典型的な用例を正解条件にする。something slotを保ち、継続して考える意味だけを残す。"
+          }
+        ]
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "keep thinking about something",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "日本語prompt「somethingについていつまでも考える」への自然な英語回答である。canonicalと表現形式が異なっても、promptとの間にmaterialな意味差はないため復元する。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [
+        "keep thinking about something"
+      ],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "「特に嫌なことをくよくよと」は考える対象を不必要に狭め、典型的な用例を正解条件にする。something slotを保ち、継続して考える意味だけを残す。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {
+          "THING": 1
+        },
+        "prompt_slot_profile": {
+          "THING": 1
+        },
+        "canonical_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "dwell on something",
+            "start": 9,
+            "end": 18
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "somethingについていつまでも考える（特に嫌なことをくよくよと）",
+            "start": 0,
+            "end": 9
+          }
+        ],
+        "recommended_prompt": "somethingについていつまでも考える（特に嫌なことをくよくよと）",
+        "recommended_paraphrases": [],
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "somethingについていつまでも考える（特に嫌なことをくよくよと）",
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00280",
+      "source_index": 279,
+      "canonical": "turn up",
+      "sense_key": "arrive_or_appear",
+      "grammarRole": "verb",
+      "kind": "expression",
+      "current_meaning_ja": "現れる（くだけた言い方で、たいてい予想外に）",
+      "current_parenthetical_segments": [
+        "（くだけた言い方で、たいてい予想外に）"
+      ],
+      "recommended_meaning_ja": "現れる",
+      "current_paraphrases": [
+        "show up"
+      ],
+      "historically_removed_paraphrases": [
+        "appear"
+      ],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "現れる",
+        "retained_semantic_information": null,
+        "removed_meta_information": "くだけたregisterと通常予想外という用法説明。",
+        "prompt_reason": "くだけた言い方は回答形式情報で、予想外であることも全用例に必要な意味ではない。promptは「現れる」で十分。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": [
+          {
+            "segment": "（くだけた言い方で、たいてい予想外に）",
+            "decision": "REMOVE_META_HINT",
+            "reason": "くだけた言い方は回答形式情報で、予想外であることも全用例に必要な意味ではない。promptは「現れる」で十分。"
+          }
+        ]
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "show up",
+          "source": "CURRENT",
+          "current_status": "CURRENT",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "日本語prompt「現れる」への自然な英語回答であり、必要な意味要素を保つ。構文・語順・registerの違いは削除理由にならない。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        },
+        {
+          "phrase": "appear",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "日本語prompt「現れる」への自然な英語回答である。canonicalと表現形式が異なっても、promptとの間にmaterialな意味差はないため復元する。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [
+        "show up",
+        "appear"
+      ],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "くだけた言い方は回答形式情報で、予想外であることも全用例に必要な意味ではない。promptは「現れる」で十分。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "現れる（くだけた言い方で、たいてい予想外に）",
+        "recommended_paraphrases": [
+          "show up"
+        ],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "現れる（くだけた言い方で、たいてい予想外に）",
+        "reason": "No canonical variable slot notation was found.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00289",
+      "source_index": 288,
+      "canonical": "break down",
+      "sense_key": "machine_or_vehicle_stop_working",
+      "grammarRole": "verb",
+      "kind": "expression",
+      "current_meaning_ja": "（車や機械が）故障する",
+      "current_parenthetical_segments": [
+        "（車や機械が）"
+      ],
+      "recommended_meaning_ja": "車や機械が故障する",
+      "current_paraphrases": [
+        "malfunction",
+        "stop working"
+      ],
+      "historically_removed_paraphrases": [],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": "REWRITE_MINIMAL_SEMANTIC",
+        "recommended_prompt": "車や機械が故障する",
+        "retained_semantic_information": "故障する対象が車や機械であること",
+        "removed_meta_information": "括弧表記。",
+        "prompt_reason": "機械・車の故障という対象senseは必要だが、括弧ではなく自然な文の主語に統合する。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": [
+          {
+            "segment": "（車や機械が）",
+            "decision": "REWRITE_MINIMAL_SEMANTIC",
+            "reason": "機械・車の故障という対象senseは必要だが、括弧ではなく自然な文の主語に統合する。"
+          }
+        ]
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "malfunction",
+          "source": "CURRENT",
+          "current_status": "CURRENT",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "日本語prompt「車や機械が故障する」への自然な英語回答であり、必要な意味要素を保つ。構文・語順・registerの違いは削除理由にならない。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        },
+        {
+          "phrase": "stop working",
+          "source": "CURRENT",
+          "current_status": "CURRENT",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "日本語prompt「車や機械が故障する」への自然な英語回答であり、必要な意味要素を保つ。構文・語順・registerの違いは削除理由にならない。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [
+        "malfunction",
+        "stop working"
+      ],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "機械・車の故障という対象senseは必要だが、括弧ではなく自然な文の主語に統合する。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "（車や機械が）故障する",
+        "recommended_paraphrases": [
+          "malfunction",
+          "stop working"
+        ],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "（車や機械が）故障する",
+        "reason": "No canonical variable slot notation was found.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00292",
+      "source_index": 291,
+      "canonical": "chill out",
+      "sense_key": "relax_or_calm_down",
+      "grammarRole": "verb",
+      "kind": "expression",
+      "current_meaning_ja": "落ち着く（くつろいで力を抜く・口語的）",
+      "current_parenthetical_segments": [
+        "（くつろいで力を抜く・口語的）"
+      ],
+      "recommended_meaning_ja": "力を抜いてくつろぐ／気持ちを落ち着ける",
+      "current_paraphrases": [
+        "relax"
+      ],
+      "historically_removed_paraphrases": [
+        "calm down",
+        "settle down"
+      ],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": "REWRITE_MINIMAL_SEMANTIC",
+        "recommended_prompt": "力を抜いてくつろぐ／気持ちを落ち着ける",
+        "retained_semantic_information": "くつろぐ意味と気持ちを静める意味",
+        "removed_meta_information": "「口語的」というregister情報。",
+        "prompt_reason": "「口語的」は回答形式情報なので削除し、二つの意味枝だけを自然な本文にまとめる。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": [
+          {
+            "segment": "（くつろいで力を抜く・口語的）",
+            "decision": "REWRITE_MINIMAL_SEMANTIC",
+            "reason": "「口語的」は回答形式情報なので削除し、二つの意味枝だけを自然な本文にまとめる。"
+          }
+        ]
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "relax",
+          "source": "CURRENT",
+          "current_status": "CURRENT",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "日本語prompt「力を抜いてくつろぐ／気持ちを落ち着ける」への自然な英語回答であり、必要な意味要素を保つ。構文・語順・registerの違いは削除理由にならない。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        },
+        {
+          "phrase": "calm down",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "日本語prompt「力を抜いてくつろぐ／気持ちを落ち着ける」への自然な英語回答である。canonicalと表現形式が異なっても、promptとの間にmaterialな意味差はないため復元する。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        },
+        {
+          "phrase": "settle down",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "日本語prompt「力を抜いてくつろぐ／気持ちを落ち着ける」への自然な英語回答である。canonicalと表現形式が異なっても、promptとの間にmaterialな意味差はないため復元する。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [
+        "relax",
+        "calm down",
+        "settle down"
+      ],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "「口語的」は回答形式情報なので削除し、二つの意味枝だけを自然な本文にまとめる。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "落ち着く（くつろいで力を抜く・口語的）",
+        "recommended_paraphrases": [
+          "relax"
+        ],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "落ち着く（くつろいで力を抜く・口語的）",
+        "reason": "No canonical variable slot notation was found.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00302",
+      "source_index": 301,
+      "canonical": "account for something",
+      "sense_key": "make_up_a_share",
+      "grammarRole": "verb",
+      "kind": "expression",
+      "current_meaning_ja": "somethingを占める（割合・数量として）",
+      "current_parenthetical_segments": [
+        "（割合・数量として）"
+      ],
+      "recommended_meaning_ja": "割合・数量としてsomethingを占める",
+      "current_paraphrases": [],
+      "historically_removed_paraphrases": [
+        "take up something",
+        "occupy something"
+      ],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": "REWRITE_MINIMAL_SEMANTIC",
+        "recommended_prompt": "割合・数量としてsomethingを占める",
+        "retained_semantic_information": "somethingが割合・数量を指すsense",
+        "removed_meta_information": "括弧表記。",
+        "prompt_reason": "割合・数量の意味は他の「占める」と区別するため必要。something slotを保持して自然な本文に統合する。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": [
+          {
+            "segment": "（割合・数量として）",
+            "decision": "REWRITE_MINIMAL_SEMANTIC",
+            "reason": "割合・数量の意味は他の「占める」と区別するため必要。something slotを保持して自然な本文に統合する。"
+          }
+        ]
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "take up something",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "日本語prompt「割合・数量としてsomethingを占める」への自然な英語回答である。canonicalと表現形式が異なっても、promptとの間にmaterialな意味差はないため復元する。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        },
+        {
+          "phrase": "occupy something",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "日本語prompt「割合・数量としてsomethingを占める」への自然な英語回答である。canonicalと表現形式が異なっても、promptとの間にmaterialな意味差はないため復元する。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [
+        "take up something",
+        "occupy something"
+      ],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "割合・数量の意味は他の「占める」と区別するため必要。something slotを保持して自然な本文に統合する。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {
+          "THING": 1
+        },
+        "prompt_slot_profile": {
+          "THING": 1
+        },
+        "canonical_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "account for something",
+            "start": 12,
+            "end": 21
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "somethingを占める（割合・数量として）",
+            "start": 0,
+            "end": 9
+          }
+        ],
+        "recommended_prompt": "somethingを占める（割合・数量として）",
+        "recommended_paraphrases": [],
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "somethingを占める（割合・数量として）",
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00306",
+      "source_index": 305,
+      "canonical": "be accompanied by something",
+      "sense_key": "occur_together_with",
+      "grammarRole": "verb",
+      "kind": "expression",
+      "current_meaning_ja": "somethingを伴う",
+      "current_parenthetical_segments": [],
+      "recommended_meaning_ja": "somethingを伴う",
+      "current_paraphrases": [],
+      "historically_removed_paraphrases": [
+        "involve something"
+      ],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": null,
+        "recommended_prompt": "somethingを伴う",
+        "retained_semantic_information": null,
+        "removed_meta_information": null,
+        "prompt_reason": "括弧はない。日本語promptの意味とslotを確認した。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": []
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "involve something",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "日本語prompt「somethingを伴う」への自然な英語回答である。canonicalと表現形式が異なっても、promptとの間にmaterialな意味差はないため復元する。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [
+        "involve something"
+      ],
+      "entry_decision": "PARAPHRASE_RESTORE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "括弧はない。日本語promptの意味とslotを確認した。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {
+          "THING": 1
+        },
+        "prompt_slot_profile": {
+          "THING": 1
+        },
+        "canonical_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "be accompanied by something",
+            "start": 18,
+            "end": 27
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "somethingを伴う",
+            "start": 0,
+            "end": 9
+          }
+        ],
+        "recommended_prompt": "somethingを伴う",
+        "recommended_paraphrases": [],
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "somethingを伴う",
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00314",
+      "source_index": 313,
+      "canonical": "clear up",
+      "sense_key": "weather_becomes_clear",
+      "grammarRole": "verb",
+      "kind": "expression",
+      "current_meaning_ja": "（天気が）晴れる",
+      "current_parenthetical_segments": [
+        "（天気が）"
+      ],
+      "recommended_meaning_ja": "天候が回復して晴れる",
+      "current_paraphrases": [],
+      "historically_removed_paraphrases": [],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": "REWRITE_MINIMAL_SEMANTIC",
+        "recommended_prompt": "天候が回復して晴れる",
+        "retained_semantic_information": "天気が晴れるsense",
+        "removed_meta_information": "括弧表記。",
+        "prompt_reason": "clear upの天候senseを特定する主語情報は必要だが、括弧ではなく本文に統合できる。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": [
+          {
+            "segment": "（天気が）",
+            "decision": "REWRITE_MINIMAL_SEMANTIC",
+            "reason": "clear upの天候senseを特定する主語情報は必要だが、括弧ではなく本文に統合できる。"
+          }
+        ]
+      },
+      "paraphrase_review": [],
+      "recommended_paraphrases": [],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "clear upの天候senseを特定する主語情報は必要だが、括弧ではなく本文に統合できる。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "（天気が）晴れる",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "（天気が）晴れる",
+        "reason": "No canonical variable slot notation was found.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00318",
+      "source_index": 317,
+      "canonical": "stand for something",
+      "sense_key": "abbreviation_represents",
+      "grammarRole": "verb",
+      "kind": "expression",
+      "current_meaning_ja": "（略語などが）somethingを表す",
+      "current_parenthetical_segments": [
+        "（略語などが）"
+      ],
+      "recommended_meaning_ja": "somethingを表す",
+      "current_paraphrases": [
+        "represent something",
+        "mean something"
+      ],
+      "historically_removed_paraphrases": [],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "somethingを表す",
+        "retained_semantic_information": null,
+        "removed_meta_information": "典型的な主語を略語などに限る説明。",
+        "prompt_reason": "confirmed slot authorityどおりsomething slotを残し、canonicalに指定されない典型的な主語例への限定を外す。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": [
+          {
+            "segment": "（略語などが）",
+            "decision": "REMOVE_META_HINT",
+            "reason": "confirmed slot authorityどおりsomething slotを残し、canonicalに指定されない典型的な主語例への限定を外す。"
+          }
+        ]
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "represent something",
+          "source": "CURRENT",
+          "current_status": "CURRENT",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "somethingが表す内容をrepresent / mean somethingで表すことができ、略語に限定しないpromptとも合う。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        },
+        {
+          "phrase": "mean something",
+          "source": "CURRENT",
+          "current_status": "CURRENT",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "somethingが表す内容をrepresent / mean somethingで表すことができ、略語に限定しないpromptとも合う。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [
+        "represent something",
+        "mean something"
+      ],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "confirmed slot authorityどおりsomething slotを残し、canonicalに指定されない典型的な主語例への限定を外す。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "REVIEWED",
+        "decision": "REMOVE_OVERCONSTRAINT",
+        "violation_classes": [
+          "SLOT_OVERCONSTRAINED"
+        ],
+        "canonical_slot_profile": {
+          "THING": 1
+        },
+        "prompt_slot_profile": {
+          "THING": 1
+        },
+        "canonical_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "stand for something",
+            "start": 10,
+            "end": 19
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "（略語などが）somethingを表す",
+            "start": 7,
+            "end": 16
+          }
+        ],
+        "recommended_prompt": "somethingを表す",
+        "recommended_paraphrases": [
+          "represent something",
+          "mean something"
+        ],
+        "reason": "somethingのslot自体は保持されている。括弧内の「略語などが」はcanonicalに指定されない主語の典型例へ意味を狭めるため削除する。",
+        "confidence": "HIGH",
+        "slot_review_id": "vocab:00318"
+      },
+      "slot_authority_review": {
+        "slot_review_id": "vocab:00318",
+        "decision": "REMOVE_OVERCONSTRAINT",
+        "recommended_prompt": "somethingを表す",
+        "reason": "somethingのslot自体は保持されている。括弧内の「略語などが」はcanonicalに指定されない主語の典型例へ意味を狭めるため削除する。",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00321",
+      "source_index": 320,
+      "canonical": "make the best of it",
+      "sense_key": "cope_as_well_as_possible",
+      "grammarRole": "verb",
+      "kind": "expression",
+      "current_meaning_ja": "その状況でできるだけうまくやる（望ましくない状況でも）",
+      "current_parenthetical_segments": [
+        "（望ましくない状況でも）"
+      ],
+      "recommended_meaning_ja": "望ましくない状況でも、その中でできるだけうまくやる",
+      "current_paraphrases": [],
+      "historically_removed_paraphrases": [],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": "REWRITE_MINIMAL_SEMANTIC",
+        "recommended_prompt": "望ましくない状況でも、その中でできるだけうまくやる",
+        "retained_semantic_information": "望ましくない状況をできる限りうまく処理する意味",
+        "removed_meta_information": "括弧表記。",
+        "prompt_reason": "望ましくない状況への対処はmake the best of itの区別に必要なので本文へ統合する。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": [
+          {
+            "segment": "（望ましくない状況でも）",
+            "decision": "REWRITE_MINIMAL_SEMANTIC",
+            "reason": "望ましくない状況への対処はmake the best of itの区別に必要なので本文へ統合する。"
+          }
+        ]
+      },
+      "paraphrase_review": [],
+      "recommended_paraphrases": [],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "望ましくない状況への対処はmake the best of itの区別に必要なので本文へ統合する。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "その状況でできるだけうまくやる（望ましくない状況でも）",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "その状況でできるだけうまくやる（望ましくない状況でも）",
+        "reason": "No canonical variable slot notation was found.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00331",
+      "source_index": 330,
+      "canonical": "be attributed to something",
+      "sense_key": "be_caused_by_or_due_to",
+      "grammarRole": "verb",
+      "kind": "expression",
+      "current_meaning_ja": "somethingに起因するとされる",
+      "current_parenthetical_segments": [],
+      "recommended_meaning_ja": "somethingに起因するとされる",
+      "current_paraphrases": [],
+      "historically_removed_paraphrases": [
+        "be due to something"
+      ],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": null,
+        "recommended_prompt": "somethingに起因するとされる",
+        "retained_semantic_information": null,
+        "removed_meta_information": null,
+        "prompt_reason": "括弧はない。日本語promptの意味とslotを確認した。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": []
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "be due to something",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "日本語prompt「somethingに起因するとされる」への自然な英語回答である。canonicalと表現形式が異なっても、promptとの間にmaterialな意味差はないため復元する。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [
+        "be due to something"
+      ],
+      "entry_decision": "PARAPHRASE_RESTORE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "括弧はない。日本語promptの意味とslotを確認した。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {
+          "THING": 1
+        },
+        "prompt_slot_profile": {
+          "THING": 1
+        },
+        "canonical_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "be attributed to something",
+            "start": 17,
+            "end": 26
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "somethingに起因するとされる",
+            "start": 0,
+            "end": 9
+          }
+        ],
+        "recommended_prompt": "somethingに起因するとされる",
+        "recommended_paraphrases": [],
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "somethingに起因するとされる",
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00334",
+      "source_index": 333,
+      "canonical": "come in handy",
+      "sense_key": "prove_useful",
+      "grammarRole": "verb",
+      "kind": "expression",
+      "current_meaning_ja": "（必要な場面で）役に立つ",
+      "current_parenthetical_segments": [
+        "（必要な場面で）"
+      ],
+      "recommended_meaning_ja": "必要な場面で役に立つ",
+      "current_paraphrases": [],
+      "historically_removed_paraphrases": [
+        "be useful"
+      ],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": "REWRITE_MINIMAL_SEMANTIC",
+        "recommended_prompt": "必要な場面で役に立つ",
+        "retained_semantic_information": "必要な時に有用になること",
+        "removed_meta_information": "括弧表記。",
+        "prompt_reason": "「必要な場面で」はcome in handyの有用さを区別する意味として残し、自然な本文に統合する。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": [
+          {
+            "segment": "（必要な場面で）",
+            "decision": "REWRITE_MINIMAL_SEMANTIC",
+            "reason": "「必要な場面で」はcome in handyの有用さを区別する意味として残し、自然な本文に統合する。"
+          }
+        ]
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "be useful",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "日本語prompt「必要な場面で役に立つ」への自然な英語回答である。canonicalと表現形式が異なっても、promptとの間にmaterialな意味差はないため復元する。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [
+        "be useful"
+      ],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "「必要な場面で」はcome in handyの有用さを区別する意味として残し、自然な本文に統合する。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "（必要な場面で）役に立つ",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "（必要な場面で）役に立つ",
+        "reason": "No canonical variable slot notation was found.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00340",
+      "source_index": 339,
+      "canonical": "come into being",
+      "sense_key": "begin_to_exist",
+      "grammarRole": "verb",
+      "kind": "expression",
+      "current_meaning_ja": "生まれる（物事や組織などが成立する）",
+      "current_parenthetical_segments": [
+        "（物事や組織などが成立する）"
+      ],
+      "recommended_meaning_ja": "物事や組織などが生まれる",
+      "current_paraphrases": [
+        "come into existence"
+      ],
+      "historically_removed_paraphrases": [
+        "be born"
+      ],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": "REWRITE_MINIMAL_SEMANTIC",
+        "recommended_prompt": "物事や組織などが生まれる",
+        "retained_semantic_information": "物事・組織などが存在し始めるsense",
+        "removed_meta_information": "括弧表記。",
+        "prompt_reason": "人の出生ではなく物事や組織の成立を指すscopeは必要だが、本文に統合して簡潔にする。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": [
+          {
+            "segment": "（物事や組織などが成立する）",
+            "decision": "REWRITE_MINIMAL_SEMANTIC",
+            "reason": "人の出生ではなく物事や組織の成立を指すscopeは必要だが、本文に統合して簡潔にする。"
+          }
+        ]
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "come into existence",
+          "source": "CURRENT",
+          "current_status": "CURRENT",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "日本語prompt「物事や組織などが生まれる」への自然な英語回答であり、必要な意味要素を保つ。構文・語順・registerの違いは削除理由にならない。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        },
+        {
+          "phrase": "be born",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "日本語prompt「物事や組織などが生まれる」への自然な英語回答である。canonicalと表現形式が異なっても、promptとの間にmaterialな意味差はないため復元する。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [
+        "come into existence",
+        "be born"
+      ],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "人の出生ではなく物事や組織の成立を指すscopeは必要だが、本文に統合して簡潔にする。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "生まれる（物事や組織などが成立する）",
+        "recommended_paraphrases": [
+          "come into existence"
+        ],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "生まれる（物事や組織などが成立する）",
+        "reason": "No canonical variable slot notation was found.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00358",
+      "source_index": 357,
+      "canonical": "set in",
+      "sense_key": "unpleasant_condition_begins",
+      "grammarRole": "verb",
+      "kind": "expression",
+      "current_meaning_ja": "（好ましくない状況が）始まる",
+      "current_parenthetical_segments": [
+        "（好ましくない状況が）"
+      ],
+      "recommended_meaning_ja": "好ましくない状況が始まる",
+      "current_paraphrases": [],
+      "historically_removed_paraphrases": [],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": "REWRITE_MINIMAL_SEMANTIC",
+        "recommended_prompt": "好ましくない状況が始まる",
+        "retained_semantic_information": "好ましくない状況が始まるsense",
+        "removed_meta_information": "括弧表記。",
+        "prompt_reason": "set inのこのsenseに必要な不都合な状況というscopeを本文に統合する。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": [
+          {
+            "segment": "（好ましくない状況が）",
+            "decision": "REWRITE_MINIMAL_SEMANTIC",
+            "reason": "set inのこのsenseに必要な不都合な状況というscopeを本文に統合する。"
+          }
+        ]
+      },
+      "paraphrase_review": [],
+      "recommended_paraphrases": [],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "set inのこのsenseに必要な不都合な状況というscopeを本文に統合する。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "（好ましくない状況が）始まる",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "（好ましくない状況が）始まる",
+        "reason": "No canonical variable slot notation was found.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00364",
+      "source_index": 363,
+      "canonical": "be worried about something",
+      "sense_key": "feel_anxious_about",
+      "grammarRole": "adjective",
+      "kind": "expression",
+      "current_meaning_ja": "心配している（不安を感じている）",
+      "current_parenthetical_segments": [
+        "（不安を感じている）"
+      ],
+      "recommended_meaning_ja": "somethingを心配している",
+      "current_paraphrases": [],
+      "historically_removed_paraphrases": [
+        "be concerned about something"
+      ],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "somethingを心配している",
+        "retained_semantic_information": null,
+        "removed_meta_information": "「不安を感じている」という重複した説明。",
+        "prompt_reason": "somethingの欠落slotはconfirmed authorityどおり復元する。「不安を感じている」は「心配している」の重複説明なので削除する。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": [
+          {
+            "segment": "（不安を感じている）",
+            "decision": "REMOVE_META_HINT",
+            "reason": "somethingの欠落slotはconfirmed authorityどおり復元する。「不安を感じている」は「心配している」の重複説明なので削除する。"
+          }
+        ]
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "be concerned about something",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "日本語prompt「somethingを心配している」への自然な英語回答である。canonicalと表現形式が異なっても、promptとの間にmaterialな意味差はないため復元する。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [
+        "be concerned about something"
+      ],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "somethingの欠落slotはconfirmed authorityどおり復元する。「不安を感じている」は「心配している」の重複説明なので削除する。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "REVIEWED",
+        "decision": "RESTORE_SLOT_AND_PARAPHRASE",
+        "violation_classes": [
+          "SLOT_MISSING",
+          "SLOT_COUNT_MISMATCH"
+        ],
+        "canonical_slot_profile": {
+          "THING": 1
+        },
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "be worried about something",
+            "start": 17,
+            "end": 26
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "somethingを心配している",
+        "recommended_paraphrases": [
+          "be concerned about something"
+        ],
+        "reason": "canonicalのabout補語slotがpromptから消えている。somethingを戻す。拡張後の日本語promptには、歴史的に削除されたbe concerned about somethingも自然に対応するため再評価候補として戻す。",
+        "confidence": "MEDIUM",
+        "slot_review_id": "vocab:00364"
+      },
+      "slot_authority_review": {
+        "slot_review_id": "vocab:00364",
+        "decision": "RESTORE_SLOT_AND_PARAPHRASE",
+        "recommended_prompt": "somethingを心配している",
+        "reason": "canonicalのabout補語slotがpromptから消えている。somethingを戻す。拡張後の日本語promptには、歴史的に削除されたbe concerned about somethingも自然に対応するため再評価候補として戻す。",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00365",
+      "source_index": 364,
+      "canonical": "be concerned about something",
+      "sense_key": "feel_anxious_or_interested",
+      "grammarRole": "adjective",
+      "kind": "expression",
+      "current_meaning_ja": "心配している（気にかける・懸念している）",
+      "current_parenthetical_segments": [
+        "（気にかける・懸念している）"
+      ],
+      "recommended_meaning_ja": "somethingを気にかけている／心配している",
+      "current_paraphrases": [],
+      "historically_removed_paraphrases": [
+        "be worried about something"
+      ],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "somethingを気にかけている／心配している",
+        "retained_semantic_information": null,
+        "removed_meta_information": "括弧内の懸念・気がかりの説明。",
+        "prompt_reason": "something slotをconfirmed authorityどおり復元し、懸念の意味は本文へ平叙して括弧をなくす。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": [
+          {
+            "segment": "（気にかける・懸念している）",
+            "decision": "REMOVE_META_HINT",
+            "reason": "something slotをconfirmed authorityどおり復元し、懸念の意味は本文へ平叙して括弧をなくす。"
+          }
+        ]
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "be worried about something",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "日本語prompt「somethingを気にかけている／心配している」への自然な英語回答である。canonicalと表現形式が異なっても、promptとの間にmaterialな意味差はないため復元する。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [
+        "be worried about something"
+      ],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "something slotをconfirmed authorityどおり復元し、懸念の意味は本文へ平叙して括弧をなくす。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "REVIEWED",
+        "decision": "RESTORE_SLOT_AND_PARAPHRASE",
+        "violation_classes": [
+          "SLOT_MISSING",
+          "SLOT_COUNT_MISMATCH"
+        ],
+        "canonical_slot_profile": {
+          "THING": 1
+        },
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "be concerned about something",
+            "start": 19,
+            "end": 28
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "somethingを気にかけている／心配している",
+        "recommended_paraphrases": [
+          "be worried about something"
+        ],
+        "reason": "canonicalのabout補語slotがpromptから消えている。somethingを戻す。気にかける・心配するというpromptはbe worried about somethingにも自然に対応するため再評価候補として戻す。",
+        "confidence": "MEDIUM",
+        "slot_review_id": "vocab:00365"
+      },
+      "slot_authority_review": {
+        "slot_review_id": "vocab:00365",
+        "decision": "RESTORE_SLOT_AND_PARAPHRASE",
+        "recommended_prompt": "somethingを気にかけている／心配している",
+        "reason": "canonicalのabout補語slotがpromptから消えている。somethingを戻す。気にかける・心配するというpromptはbe worried about somethingにも自然に対応するため再評価候補として戻す。",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00376",
+      "source_index": 375,
+      "canonical": "prior to something",
+      "sense_key": "before_a_time_or_event",
+      "grammarRole": "preposition",
+      "kind": "expression",
+      "current_meaning_ja": "somethingより前に（やや改まった表現）",
+      "current_parenthetical_segments": [
+        "（やや改まった表現）"
+      ],
+      "recommended_meaning_ja": "somethingより前に",
+      "current_paraphrases": [],
+      "historically_removed_paraphrases": [
+        "before something"
+      ],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "somethingより前に",
+        "retained_semantic_information": null,
+        "removed_meta_information": "「やや改まった表現」というregister情報。",
+        "prompt_reason": "formalな言い方という情報は回答形式を狭めるため削除し、時間・事象より前という意味を保つ。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": [
+          {
+            "segment": "（やや改まった表現）",
+            "decision": "REMOVE_META_HINT",
+            "reason": "formalな言い方という情報は回答形式を狭めるため削除し、時間・事象より前という意味を保つ。"
+          }
+        ]
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "before something",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "日本語prompt「somethingより前に」への自然な英語回答である。canonicalと表現形式が異なっても、promptとの間にmaterialな意味差はないため復元する。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [
+        "before something"
+      ],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "formalな言い方という情報は回答形式を狭めるため削除し、時間・事象より前という意味を保つ。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {
+          "THING": 1
+        },
+        "prompt_slot_profile": {
+          "THING": 1
+        },
+        "canonical_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "prior to something",
+            "start": 9,
+            "end": 18
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "somethingより前に（やや改まった表現）",
+            "start": 0,
+            "end": 9
+          }
+        ],
+        "recommended_prompt": "somethingより前に（やや改まった表現）",
+        "recommended_paraphrases": [],
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "somethingより前に（やや改まった表現）",
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00379",
+      "source_index": 378,
+      "canonical": "be free of something",
+      "sense_key": "not_contain_something_undesirable",
+      "grammarRole": "adjective",
+      "kind": "expression",
+      "current_meaning_ja": "something（好ましくないもの）を含まない",
+      "current_parenthetical_segments": [
+        "（好ましくないもの）"
+      ],
+      "recommended_meaning_ja": "something（好ましくないもの）を含まない",
+      "current_paraphrases": [],
+      "historically_removed_paraphrases": [
+        "not contain something"
+      ],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": "KEEP_SEMANTIC_SCOPE",
+        "recommended_prompt": "something（好ましくないもの）を含まない",
+        "retained_semantic_information": "somethingが好ましくない内容物を指すscope",
+        "removed_meta_information": null,
+        "prompt_reason": "このsenseでは好ましくない内容物を含まないことが意味識別に必要。something variable slotを残したままscopeを保持する。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": [
+          {
+            "segment": "（好ましくないもの）",
+            "decision": "KEEP_SEMANTIC_SCOPE",
+            "reason": "このsenseでは好ましくない内容物を含まないことが意味識別に必要。something variable slotを残したままscopeを保持する。"
+          }
+        ]
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "not contain something",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "日本語prompt「something（好ましくないもの）を含まない」への自然な英語回答である。canonicalと表現形式が異なっても、promptとの間にmaterialな意味差はないため復元する。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [
+        "not contain something"
+      ],
+      "entry_decision": "PARAPHRASE_RESTORE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "このsenseでは好ましくない内容物を含まないことが意味識別に必要。something variable slotを残したままscopeを保持する。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {
+          "THING": 1
+        },
+        "prompt_slot_profile": {
+          "THING": 1
+        },
+        "canonical_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "be free of something",
+            "start": 11,
+            "end": 20
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "something（好ましくないもの）を含まない",
+            "start": 0,
+            "end": 9
+          }
+        ],
+        "recommended_prompt": "something（好ましくないもの）を含まない",
+        "recommended_paraphrases": [],
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "something（好ましくないもの）を含まない",
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00381",
+      "source_index": 380,
+      "canonical": "as many as",
+      "sense_key": "surprisingly_large_number",
+      "grammarRole": "determiner",
+      "kind": "expression",
+      "current_meaning_ja": "（数が）〜もの、〜も",
+      "current_parenthetical_segments": [
+        "（数が）"
+      ],
+      "recommended_meaning_ja": "〜もの、〜も",
+      "current_paraphrases": [
+        "no fewer than"
+      ],
+      "historically_removed_paraphrases": [],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "〜もの、〜も",
+        "retained_semantic_information": null,
+        "removed_meta_information": "「数が」という文法・対象種別の説明。",
+        "prompt_reason": "「〜もの／〜も」自体が数の量を表すため、括弧内は重複した文法説明。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": [
+          {
+            "segment": "（数が）",
+            "decision": "REMOVE_META_HINT",
+            "reason": "「〜もの／〜も」自体が数の量を表すため、括弧内は重複した文法説明。"
+          }
+        ]
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "no fewer than",
+          "source": "CURRENT",
+          "current_status": "CURRENT",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "「〜もの、〜も」の数量の多さをno fewer thanが最低数を強調する形で自然に表す。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [
+        "no fewer than"
+      ],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "「〜もの／〜も」自体が数の量を表すため、括弧内は重複した文法説明。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "（数が）〜もの、〜も",
+        "recommended_paraphrases": [
+          "no fewer than"
+        ],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "（数が）〜もの、〜も",
+        "reason": "No canonical variable slot notation was found.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00382",
+      "source_index": 381,
+      "canonical": "be subject to something",
+      "sense_key": "liable_to_rule_or_penalty",
+      "grammarRole": "adjective",
+      "kind": "expression",
+      "current_meaning_ja": "something（規則・罰則など）の適用対象となる",
+      "current_parenthetical_segments": [
+        "（規則・罰則など）"
+      ],
+      "recommended_meaning_ja": "somethingの対象となる",
+      "current_paraphrases": [],
+      "historically_removed_paraphrases": [],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "somethingの対象となる",
+        "retained_semantic_information": null,
+        "removed_meta_information": "somethingの値を規則・罰則に限定する例。",
+        "prompt_reason": "confirmed slot authorityのREMOVE_OVERCONSTRAINTを適用し、somethingを規則・罰則の例に置き換えずslotとして維持する。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": [
+          {
+            "segment": "（規則・罰則など）",
+            "decision": "REMOVE_META_HINT",
+            "reason": "confirmed slot authorityのREMOVE_OVERCONSTRAINTを適用し、somethingを規則・罰則の例に置き換えずslotとして維持する。"
+          }
+        ]
+      },
+      "paraphrase_review": [],
+      "recommended_paraphrases": [],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "confirmed slot authorityのREMOVE_OVERCONSTRAINTを適用し、somethingを規則・罰則の例に置き換えずslotとして維持する。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "REVIEWED",
+        "decision": "REMOVE_OVERCONSTRAINT",
+        "violation_classes": [
+          "SLOT_OVERCONSTRAINED"
+        ],
+        "canonical_slot_profile": {
+          "THING": 1
+        },
+        "prompt_slot_profile": {
+          "THING": 1
+        },
+        "canonical_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "be subject to something",
+            "start": 14,
+            "end": 23
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "something（規則・罰則など）の適用対象となる",
+            "start": 0,
+            "end": 9
+          }
+        ],
+        "recommended_prompt": "somethingの対象となる",
+        "recommended_paraphrases": [],
+        "reason": "somethingは維持されているが、括弧が規則・罰則に限定している。slotの型をcanonicalが要求する範囲より狭くするので括弧を削除する。",
+        "confidence": "HIGH",
+        "slot_review_id": "vocab:00382"
+      },
+      "slot_authority_review": {
+        "slot_review_id": "vocab:00382",
+        "decision": "REMOVE_OVERCONSTRAINT",
+        "recommended_prompt": "somethingの対象となる",
+        "reason": "somethingは維持されているが、括弧が規則・罰則に限定している。slotの型をcanonicalが要求する範囲より狭くするので括弧を削除する。",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00383",
+      "source_index": 382,
+      "canonical": "had better do something",
+      "sense_key": "strong_advice",
+      "grammarRole": "verb",
+      "kind": "expression",
+      "current_meaning_ja": "somethingしたほうがよい（強い忠告・警告）",
+      "current_parenthetical_segments": [
+        "（強い忠告・警告）"
+      ],
+      "recommended_meaning_ja": "somethingしたほうがよい（強い忠告・警告）",
+      "current_paraphrases": [],
+      "historically_removed_paraphrases": [
+        "should do something",
+        "ought to do something"
+      ],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": "KEEP_SEMANTIC_SCOPE",
+        "recommended_prompt": "somethingしたほうがよい（強い忠告・警告）",
+        "retained_semantic_information": "通常の助言より強い忠告・警告というmodal force",
+        "removed_meta_information": null,
+        "prompt_reason": "強い忠告・警告はhad betterの意味を他の助言表現と区別するため必要。registerや文法説明ではない。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": [
+          {
+            "segment": "（強い忠告・警告）",
+            "decision": "KEEP_SEMANTIC_SCOPE",
+            "reason": "強い忠告・警告はhad betterの意味を他の助言表現と区別するため必要。registerや文法説明ではない。"
+          }
+        ]
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "should do something",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "KEEP_REMOVED_SEMANTIC_MISMATCH",
+          "semantic_fit_reason": "日本語promptは強い忠告・警告を明示するが、shouldは通常の助言・義務まで含む弱いmodalで、警告の強さを表さない。",
+          "confidence": "MEDIUM",
+          "review_status": "REVIEWED",
+          "sources": []
+        },
+        {
+          "phrase": "ought to do something",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "KEEP_REMOVED_SEMANTIC_MISMATCH",
+          "semantic_fit_reason": "日本語promptは強い忠告・警告を明示するが、ought toは一般的な推奨・規範的助言にも使え、同じ強い警告を必ずしも含まない。",
+          "confidence": "MEDIUM",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [],
+      "entry_decision": "KEEP",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "強い忠告・警告はhad betterの意味を他の助言表現と区別するため必要。registerや文法説明ではない。"
+        },
+        {
+          "type": "historical paraphrase semantic mismatch",
+          "reason": "should do something: 日本語promptは強い忠告・警告を明示するが、shouldは通常の助言・義務まで含む弱いmodalで、警告の強さを表さない。"
+        },
+        {
+          "type": "historical paraphrase semantic mismatch",
+          "reason": "ought to do something: 日本語promptは強い忠告・警告を明示するが、ought toは一般的な推奨・規範的助言にも使え、同じ強い警告を必ずしも含まない。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "MEDIUM",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {
+          "ACTION_OR_EVENT": 1
+        },
+        "prompt_slot_profile": {
+          "ACTION_OR_EVENT": 1
+        },
+        "canonical_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "ACTION_OR_EVENT",
+            "semantic_role": "ACTION_OR_EVENT",
+            "context": "had better do something",
+            "start": 14,
+            "end": 23
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "ACTION_OR_EVENT",
+            "semantic_role": "ACTION_OR_EVENT",
+            "context": "somethingしたほうがよい（強い忠告・警告）",
+            "start": 0,
+            "end": 9
+          }
+        ],
+        "recommended_prompt": "somethingしたほうがよい（強い忠告・警告）",
+        "recommended_paraphrases": [],
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "somethingしたほうがよい（強い忠告・警告）",
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00389",
+      "source_index": 388,
+      "canonical": "hang around",
+      "sense_key": "stay_in_a_place_without_purpose",
+      "grammarRole": "verb",
+      "kind": "expression",
+      "current_meaning_ja": "（特に用事もなくその場に）ぶらぶらと居続ける",
+      "current_parenthetical_segments": [
+        "（特に用事もなくその場に）"
+      ],
+      "recommended_meaning_ja": "特に用事もなくその場に居続ける",
+      "current_paraphrases": [],
+      "historically_removed_paraphrases": [
+        "wander around"
+      ],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": "REWRITE_MINIMAL_SEMANTIC",
+        "recommended_prompt": "特に用事もなくその場に居続ける",
+        "retained_semantic_information": "目的なく特定の場所にとどまること",
+        "removed_meta_information": "括弧表記。",
+        "prompt_reason": "目的なくその場にいるという意味は必要なので本文に統合し、「ぶらぶら」が歩き回る意味に読まれる余地も避ける。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": [
+          {
+            "segment": "（特に用事もなくその場に）",
+            "decision": "REWRITE_MINIMAL_SEMANTIC",
+            "reason": "目的なくその場にいるという意味は必要なので本文に統合し、「ぶらぶら」が歩き回る意味に読まれる余地も避ける。"
+          }
+        ]
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "wander around",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "KEEP_REMOVED_SEMANTIC_MISMATCH",
+          "semantic_fit_reason": "wander aroundは目的なく歩き回る動きを表し、promptが求める特定の場所に居続けることを含意しない。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "目的なくその場にいるという意味は必要なので本文に統合し、「ぶらぶら」が歩き回る意味に読まれる余地も避ける。"
+        },
+        {
+          "type": "historical paraphrase semantic mismatch",
+          "reason": "wander around: wander aroundは目的なく歩き回る動きを表し、promptが求める特定の場所に居続けることを含意しない。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "（特に用事もなくその場に）ぶらぶらと居続ける",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "（特に用事もなくその場に）ぶらぶらと居続ける",
+        "reason": "No canonical variable slot notation was found.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00390",
+      "source_index": 389,
+      "canonical": "catch a glimpse of something",
+      "sense_key": "see_briefly",
+      "grammarRole": "verb",
+      "kind": "expression",
+      "current_meaning_ja": "somethingをちらっと見る",
+      "current_parenthetical_segments": [],
+      "recommended_meaning_ja": "somethingをちらっと見る",
+      "current_paraphrases": [],
+      "historically_removed_paraphrases": [
+        "glance at something",
+        "take a quick look at something"
+      ],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": null,
+        "recommended_prompt": "somethingをちらっと見る",
+        "retained_semantic_information": null,
+        "removed_meta_information": null,
+        "prompt_reason": "括弧はない。日本語promptの意味とslotを確認した。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": []
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "glance at something",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "日本語prompt「somethingをちらっと見る」への自然な英語回答である。canonicalと表現形式が異なっても、promptとの間にmaterialな意味差はないため復元する。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        },
+        {
+          "phrase": "take a quick look at something",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "日本語prompt「somethingをちらっと見る」への自然な英語回答である。canonicalと表現形式が異なっても、promptとの間にmaterialな意味差はないため復元する。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [
+        "glance at something",
+        "take a quick look at something"
+      ],
+      "entry_decision": "PARAPHRASE_RESTORE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "括弧はない。日本語promptの意味とslotを確認した。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {
+          "THING": 1
+        },
+        "prompt_slot_profile": {
+          "THING": 1
+        },
+        "canonical_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "catch a glimpse of something",
+            "start": 19,
+            "end": 28
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "somethingをちらっと見る",
+            "start": 0,
+            "end": 9
+          }
+        ],
+        "recommended_prompt": "somethingをちらっと見る",
+        "recommended_paraphrases": [],
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "somethingをちらっと見る",
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00391",
+      "source_index": 390,
+      "canonical": "ask for something",
+      "sense_key": "request_something",
+      "grammarRole": "verb",
+      "kind": "expression",
+      "current_meaning_ja": "somethingを求める",
+      "current_parenthetical_segments": [],
+      "recommended_meaning_ja": "somethingを求める",
+      "current_paraphrases": [
+        "request something"
+      ],
+      "historically_removed_paraphrases": [
+        "seek something"
+      ],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": null,
+        "recommended_prompt": "somethingを求める",
+        "retained_semantic_information": null,
+        "removed_meta_information": null,
+        "prompt_reason": "括弧はない。日本語promptの意味とslotを確認した。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": []
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "request something",
+          "source": "CURRENT",
+          "current_status": "CURRENT",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "日本語prompt「somethingを求める」への自然な英語回答であり、必要な意味要素を保つ。構文・語順・registerの違いは削除理由にならない。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        },
+        {
+          "phrase": "seek something",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "日本語prompt「somethingを求める」への自然な英語回答である。canonicalと表現形式が異なっても、promptとの間にmaterialな意味差はないため復元する。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [
+        "request something",
+        "seek something"
+      ],
+      "entry_decision": "PARAPHRASE_RESTORE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "括弧はない。日本語promptの意味とslotを確認した。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {
+          "THING": 1
+        },
+        "prompt_slot_profile": {
+          "THING": 1
+        },
+        "canonical_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "ask for something",
+            "start": 8,
+            "end": 17
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "somethingを求める",
+            "start": 0,
+            "end": 9
+          }
+        ],
+        "recommended_prompt": "somethingを求める",
+        "recommended_paraphrases": [
+          "request something"
+        ],
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "somethingを求める",
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00393",
+      "source_index": 392,
+      "canonical": "sort of",
+      "sense_key": "somewhat_or_in_a_way",
+      "grammarRole": "adverb",
+      "kind": "expression",
+      "current_meaning_ja": "多少（くだけた言い方で、断言を弱めて）",
+      "current_parenthetical_segments": [
+        "（くだけた言い方で、断言を弱めて）"
+      ],
+      "recommended_meaning_ja": "多少",
+      "current_paraphrases": [
+        "kind of"
+      ],
+      "historically_removed_paraphrases": [
+        "somewhat"
+      ],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "多少",
+        "retained_semantic_information": null,
+        "removed_meta_information": "くだけたregisterと断言を弱めるという説明。",
+        "prompt_reason": "くだけたregisterは回答形式情報で、「多少」だけで程度を弱める意味が伝わるため説明も重複する。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": [
+          {
+            "segment": "（くだけた言い方で、断言を弱めて）",
+            "decision": "REMOVE_META_HINT",
+            "reason": "くだけたregisterは回答形式情報で、「多少」だけで程度を弱める意味が伝わるため説明も重複する。"
+          }
+        ]
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "kind of",
+          "source": "CURRENT",
+          "current_status": "CURRENT",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "日本語prompt「多少」への自然な英語回答であり、必要な意味要素を保つ。構文・語順・registerの違いは削除理由にならない。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        },
+        {
+          "phrase": "somewhat",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "日本語prompt「多少」への自然な英語回答である。canonicalと表現形式が異なっても、promptとの間にmaterialな意味差はないため復元する。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [
+        "kind of",
+        "somewhat"
+      ],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "くだけたregisterは回答形式情報で、「多少」だけで程度を弱める意味が伝わるため説明も重複する。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "多少（くだけた言い方で、断言を弱めて）",
+        "recommended_paraphrases": [
+          "kind of"
+        ],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "多少（くだけた言い方で、断言を弱めて）",
+        "reason": "No canonical variable slot notation was found.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00395",
+      "source_index": 394,
+      "canonical": "throw up",
+      "sense_key": "vomit",
+      "grammarRole": "verb",
+      "kind": "expression",
+      "current_meaning_ja": "吐く（くだけた言い方）",
+      "current_parenthetical_segments": [
+        "（くだけた言い方）"
+      ],
+      "recommended_meaning_ja": "吐く",
+      "current_paraphrases": [],
+      "historically_removed_paraphrases": [
+        "vomit"
+      ],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "吐く",
+        "retained_semantic_information": null,
+        "removed_meta_information": "くだけた言い方というregister情報。",
+        "prompt_reason": "register差は回答形式authorityではない。「吐く」で嘔吐の意味が伝わる。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": [
+          {
+            "segment": "（くだけた言い方）",
+            "decision": "REMOVE_META_HINT",
+            "reason": "register差は回答形式authorityではない。「吐く」で嘔吐の意味が伝わる。"
+          }
+        ]
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "vomit",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "日本語prompt「吐く」への自然な英語回答である。canonicalと表現形式が異なっても、promptとの間にmaterialな意味差はないため復元する。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [
+        "vomit"
+      ],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "register差は回答形式authorityではない。「吐く」で嘔吐の意味が伝わる。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "吐く（くだけた言い方）",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "吐く（くだけた言い方）",
+        "reason": "No canonical variable slot notation was found.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00401",
+      "source_index": 400,
+      "canonical": "for the time being",
+      "sense_key": "for_now",
+      "grammarRole": "adverb",
+      "kind": "expression",
+      "current_meaning_ja": "当分の間（暫定的にしばらく）",
+      "current_parenthetical_segments": [
+        "（暫定的にしばらく）"
+      ],
+      "recommended_meaning_ja": "当分の間",
+      "current_paraphrases": [
+        "for now"
+      ],
+      "historically_removed_paraphrases": [],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "当分の間",
+        "retained_semantic_information": null,
+        "removed_meta_information": "暫定的にしばらくという重複説明。",
+        "prompt_reason": "「当分の間」自体が現在からしばらく続く暫定期間を示すため、括弧は重複する。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": [
+          {
+            "segment": "（暫定的にしばらく）",
+            "decision": "REMOVE_META_HINT",
+            "reason": "「当分の間」自体が現在からしばらく続く暫定期間を示すため、括弧は重複する。"
+          }
+        ]
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "for now",
+          "source": "CURRENT",
+          "current_status": "CURRENT",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "日本語prompt「当分の間」への自然な英語回答であり、必要な意味要素を保つ。構文・語順・registerの違いは削除理由にならない。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [
+        "for now"
+      ],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "「当分の間」自体が現在からしばらく続く暫定期間を示すため、括弧は重複する。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "当分の間（暫定的にしばらく）",
+        "recommended_paraphrases": [
+          "for now"
+        ],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "当分の間（暫定的にしばらく）",
+        "reason": "No canonical variable slot notation was found.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00402",
+      "source_index": 401,
+      "canonical": "refrain from something",
+      "sense_key": "deliberately_not_do",
+      "grammarRole": "verb",
+      "kind": "expression",
+      "current_meaning_ja": "somethingを控える",
+      "current_parenthetical_segments": [],
+      "recommended_meaning_ja": "somethingを控える",
+      "current_paraphrases": [],
+      "historically_removed_paraphrases": [
+        "cut down on something",
+        "cut back on something"
+      ],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": null,
+        "recommended_prompt": "somethingを控える",
+        "retained_semantic_information": null,
+        "removed_meta_information": null,
+        "prompt_reason": "括弧はない。日本語promptの意味とslotを確認した。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": []
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "cut down on something",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "日本語prompt「somethingを控える」への自然な英語回答である。canonicalと表現形式が異なっても、promptとの間にmaterialな意味差はないため復元する。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        },
+        {
+          "phrase": "cut back on something",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "日本語prompt「somethingを控える」への自然な英語回答である。canonicalと表現形式が異なっても、promptとの間にmaterialな意味差はないため復元する。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [
+        "cut down on something",
+        "cut back on something"
+      ],
+      "entry_decision": "PARAPHRASE_RESTORE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "括弧はない。日本語promptの意味とslotを確認した。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {
+          "THING": 1
+        },
+        "prompt_slot_profile": {
+          "THING": 1
+        },
+        "canonical_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "refrain from something",
+            "start": 13,
+            "end": 22
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "somethingを控える",
+            "start": 0,
+            "end": 9
+          }
+        ],
+        "recommended_prompt": "somethingを控える",
+        "recommended_paraphrases": [],
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "somethingを控える",
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00403",
+      "source_index": 402,
+      "canonical": "get into shape",
+      "sense_key": "become_physically_fit",
+      "grammarRole": "verb",
+      "kind": "expression",
+      "current_meaning_ja": "体を良い状態にする（運動などで体を鍛える）",
+      "current_parenthetical_segments": [
+        "（運動などで体を鍛える）"
+      ],
+      "recommended_meaning_ja": "体を鍛えて健康で引き締まった状態にする",
+      "current_paraphrases": [
+        "get fit"
+      ],
+      "historically_removed_paraphrases": [],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": "REWRITE_MINIMAL_SEMANTIC",
+        "recommended_prompt": "体を鍛えて健康で引き締まった状態にする",
+        "retained_semantic_information": "身体的に健康・体力のある状態にするsense",
+        "removed_meta_information": "括弧表記と運動を唯一の方法として示す例。",
+        "prompt_reason": "身体的なfitnessというscopeは必要だが、運動は典型的な方法例なので括弧を外し、意味を自然な本文に統合する。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": [
+          {
+            "segment": "（運動などで体を鍛える）",
+            "decision": "REWRITE_MINIMAL_SEMANTIC",
+            "reason": "身体的なfitnessというscopeは必要だが、運動は典型的な方法例なので括弧を外し、意味を自然な本文に統合する。"
+          }
+        ]
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "get fit",
+          "source": "CURRENT",
+          "current_status": "CURRENT",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "日本語prompt「体を鍛えて健康で引き締まった状態にする」への自然な英語回答であり、必要な意味要素を保つ。構文・語順・registerの違いは削除理由にならない。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [
+        "get fit"
+      ],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "身体的なfitnessというscopeは必要だが、運動は典型的な方法例なので括弧を外し、意味を自然な本文に統合する。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "体を良い状態にする（運動などで体を鍛える）",
+        "recommended_paraphrases": [
+          "get fit"
+        ],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "体を良い状態にする（運動などで体を鍛える）",
+        "reason": "No canonical variable slot notation was found.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00412",
+      "source_index": 411,
+      "canonical": "be obliged to do something",
+      "sense_key": "be_forced_or_required",
+      "grammarRole": "auxiliary",
+      "kind": "expression",
+      "current_meaning_ja": "義務・必要があってsomethingせざるを得ない",
+      "current_parenthetical_segments": [],
+      "recommended_meaning_ja": "義務・必要があってsomethingせざるを得ない",
+      "current_paraphrases": [],
+      "historically_removed_paraphrases": [
+        "have no choice but to do something",
+        "be forced to do something"
+      ],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": null,
+        "recommended_prompt": "義務・必要があってsomethingせざるを得ない",
+        "retained_semantic_information": null,
+        "removed_meta_information": null,
+        "prompt_reason": "括弧はない。日本語promptの意味とslotを確認した。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": []
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "have no choice but to do something",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "日本語prompt「義務・必要があってsomethingせざるを得ない」への自然な英語回答である。canonicalと表現形式が異なっても、promptとの間にmaterialな意味差はないため復元する。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        },
+        {
+          "phrase": "be forced to do something",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "日本語prompt「義務・必要があってsomethingせざるを得ない」への自然な英語回答である。canonicalと表現形式が異なっても、promptとの間にmaterialな意味差はないため復元する。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [
+        "have no choice but to do something",
+        "be forced to do something"
+      ],
+      "entry_decision": "PARAPHRASE_RESTORE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "括弧はない。日本語promptの意味とslotを確認した。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {
+          "ACTION_OR_EVENT": 1
+        },
+        "prompt_slot_profile": {
+          "ACTION_OR_EVENT": 1
+        },
+        "canonical_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "ACTION_OR_EVENT",
+            "semantic_role": "ACTION_OR_EVENT",
+            "context": "be obliged to do something",
+            "start": 17,
+            "end": 26
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "ACTION_OR_EVENT",
+            "semantic_role": "ACTION_OR_EVENT",
+            "context": "義務・必要があってsomethingせざるを得ない",
+            "start": 9,
+            "end": 18
+          }
+        ],
+        "recommended_prompt": "義務・必要があってsomethingせざるを得ない",
+        "recommended_paraphrases": [],
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "義務・必要があってsomethingせざるを得ない",
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00414",
+      "source_index": 413,
+      "canonical": "obsolete",
+      "sense_key": "no_longer_in_use",
+      "grammarRole": "adjective",
+      "kind": "word",
+      "current_meaning_ja": "廃れた",
+      "current_parenthetical_segments": [],
+      "recommended_meaning_ja": "廃れた",
+      "current_paraphrases": [],
+      "historically_removed_paraphrases": [
+        "outdated"
+      ],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": null,
+        "recommended_prompt": "廃れた",
+        "retained_semantic_information": null,
+        "removed_meta_information": null,
+        "prompt_reason": "括弧はない。日本語promptの意味とslotを確認した。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": []
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "outdated",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "KEEP_REMOVED_SEMANTIC_MISMATCH",
+          "semantic_fit_reason": "このsenseの廃れたはもはや使われなくなったことを表すが、outdatedは古く現代的でない／役に立たないだけでも使われ、現在も使われている場合がある。",
+          "confidence": "MEDIUM",
+          "review_status": "REVIEWED",
+          "sources": [
+            {
+              "title": "Cambridge Dictionary: obsolete",
+              "url": "https://dictionary.cambridge.org/dictionary/english/obsolete",
+              "reason": "Cambridge defines obsolete as no longer in use; this supports distinguishing loss of use from merely being old-fashioned/currently less useful."
+            },
+            {
+              "title": "Cambridge Dictionary: outdated",
+              "url": "https://dictionary.cambridge.org/dictionary/english/outdated",
+              "reason": "Cambridge defines outdated as old-fashioned or no longer useful/modern; that description does not necessarily entail that an item is no longer in use."
+            }
+          ]
+        }
+      ],
+      "recommended_paraphrases": [],
+      "entry_decision": "KEEP",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "括弧はない。日本語promptの意味とslotを確認した。"
+        },
+        {
+          "type": "historical paraphrase semantic mismatch",
+          "reason": "outdated: このsenseの廃れたはもはや使われなくなったことを表すが、outdatedは古く現代的でない／役に立たないだけでも使われ、現在も使われている場合がある。"
+        },
+        {
+          "type": "dictionary",
+          "title": "Cambridge Dictionary: obsolete",
+          "url": "https://dictionary.cambridge.org/dictionary/english/obsolete",
+          "reason": "Cambridge defines obsolete as no longer in use; this supports distinguishing loss of use from merely being old-fashioned/currently less useful."
+        },
+        {
+          "type": "dictionary",
+          "title": "Cambridge Dictionary: outdated",
+          "url": "https://dictionary.cambridge.org/dictionary/english/outdated",
+          "reason": "Cambridge defines outdated as old-fashioned or no longer useful/modern; that description does not necessarily entail that an item is no longer in use."
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "MEDIUM",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "廃れた",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "廃れた",
+        "reason": "No canonical variable slot notation was found.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00426",
+      "source_index": 425,
+      "canonical": "put something in perspective",
+      "sense_key": "see_in_proper_context",
+      "grammarRole": "verb",
+      "kind": "expression",
+      "current_meaning_ja": "somethingを全体との関係で適切に位置付ける",
+      "current_parenthetical_segments": [],
+      "recommended_meaning_ja": "somethingを全体との関係で適切に位置付ける",
+      "current_paraphrases": [],
+      "historically_removed_paraphrases": [
+        "take a broad view of something"
+      ],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": null,
+        "recommended_prompt": "somethingを全体との関係で適切に位置付ける",
+        "retained_semantic_information": null,
+        "removed_meta_information": null,
+        "prompt_reason": "括弧はない。日本語promptの意味とslotを確認した。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": []
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "take a broad view of something",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "KEEP_REMOVED_SEMANTIC_MISMATCH",
+          "semantic_fit_reason": "take a broad viewは広い視野で考慮することを表すが、promptはsomethingを全体との関係で適切に位置付けることを要求し、視点の広さだけでは足りない。",
+          "confidence": "MEDIUM",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [],
+      "entry_decision": "KEEP",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "括弧はない。日本語promptの意味とslotを確認した。"
+        },
+        {
+          "type": "historical paraphrase semantic mismatch",
+          "reason": "take a broad view of something: take a broad viewは広い視野で考慮することを表すが、promptはsomethingを全体との関係で適切に位置付けることを要求し、視点の広さだけでは足りない。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "MEDIUM",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {
+          "THING": 1
+        },
+        "prompt_slot_profile": {
+          "THING": 1
+        },
+        "canonical_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "put something in perspective",
+            "start": 4,
+            "end": 13
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "somethingを全体との関係で適切に位置付ける",
+            "start": 0,
+            "end": 9
+          }
+        ],
+        "recommended_prompt": "somethingを全体との関係で適切に位置付ける",
+        "recommended_paraphrases": [],
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "somethingを全体との関係で適切に位置付ける",
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00430",
+      "source_index": 429,
+      "canonical": "take after someone",
+      "sense_key": "resemble_a_family_member",
+      "grammarRole": "verb",
+      "kind": "expression",
+      "current_meaning_ja": "someoneに似ている（家族の特徴を受け継いで）",
+      "current_parenthetical_segments": [
+        "（家族の特徴を受け継いで）"
+      ],
+      "recommended_meaning_ja": "someoneに似ている（家族の特徴を受け継いで）",
+      "current_paraphrases": [],
+      "historically_removed_paraphrases": [
+        "resemble someone",
+        "look like someone"
+      ],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": "KEEP_SEMANTIC_SCOPE",
+        "recommended_prompt": "someoneに似ている（家族の特徴を受け継いで）",
+        "retained_semantic_information": "someoneが家族の人物であり特徴を受け継ぐ関係",
+        "removed_meta_information": null,
+        "prompt_reason": "家族の特徴を受け継ぐ関係がtake afterのsenseを単なる一般的な類似から区別するため、someone slotとともに保持する。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": [
+          {
+            "segment": "（家族の特徴を受け継いで）",
+            "decision": "KEEP_SEMANTIC_SCOPE",
+            "reason": "家族の特徴を受け継ぐ関係がtake afterのsenseを単なる一般的な類似から区別するため、someone slotとともに保持する。"
+          }
+        ]
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "resemble someone",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "KEEP_REMOVED_SEMANTIC_MISMATCH",
+          "semantic_fit_reason": "resemble someoneは相手との一般的な類似だけを述べ、promptの家族から受け継いだ特徴という意味関係を含まない。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        },
+        {
+          "phrase": "look like someone",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "KEEP_REMOVED_SEMANTIC_MISMATCH",
+          "semantic_fit_reason": "look like someoneは外見上似ているという意味に限定され得て、promptの家族関係・特徴の継承を含まない。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [],
+      "entry_decision": "KEEP",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "家族の特徴を受け継ぐ関係がtake afterのsenseを単なる一般的な類似から区別するため、someone slotとともに保持する。"
+        },
+        {
+          "type": "historical paraphrase semantic mismatch",
+          "reason": "resemble someone: resemble someoneは相手との一般的な類似だけを述べ、promptの家族から受け継いだ特徴という意味関係を含まない。"
+        },
+        {
+          "type": "historical paraphrase semantic mismatch",
+          "reason": "look like someone: look like someoneは外見上似ているという意味に限定され得て、promptの家族関係・特徴の継承を含まない。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {
+          "PERSON": 1
+        },
+        "prompt_slot_profile": {
+          "PERSON": 1
+        },
+        "canonical_slot_tokens": [
+          {
+            "token": "someone",
+            "classification": "VARIABLE_SLOT",
+            "type": "PERSON",
+            "semantic_role": "PERSON",
+            "context": "take after someone",
+            "start": 11,
+            "end": 18
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [
+          {
+            "token": "someone",
+            "classification": "VARIABLE_SLOT",
+            "type": "PERSON",
+            "semantic_role": "PERSON",
+            "context": "someoneに似ている（家族の特徴を受け継いで）",
+            "start": 0,
+            "end": 7
+          }
+        ],
+        "recommended_prompt": "someoneに似ている（家族の特徴を受け継いで）",
+        "recommended_paraphrases": [],
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "someoneに似ている（家族の特徴を受け継いで）",
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00434",
+      "source_index": 433,
+      "canonical": "go for it",
+      "sense_key": "make_a_confident_attempt",
+      "grammarRole": "verb",
+      "kind": "expression",
+      "current_meaning_ja": "思い切ってやってみる（自信をもって挑戦・実行する）",
+      "current_parenthetical_segments": [
+        "（自信をもって挑戦・実行する）"
+      ],
+      "recommended_meaning_ja": "思い切ってやってみる",
+      "current_paraphrases": [],
+      "historically_removed_paraphrases": [
+        "take the plunge"
+      ],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "思い切ってやってみる",
+        "retained_semantic_information": null,
+        "removed_meta_information": "自信を持った挑戦・実行というcanonical寄りの言い換え。",
+        "prompt_reason": "思い切って実行することがpromptの意味を表し、「自信をもって」は意図・心理を余分に限定する。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": [
+          {
+            "segment": "（自信をもって挑戦・実行する）",
+            "decision": "REMOVE_META_HINT",
+            "reason": "思い切って実行することがpromptの意味を表し、「自信をもって」は意図・心理を余分に限定する。"
+          }
+        ]
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "take the plunge",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "日本語prompt「思い切ってやってみる」への自然な英語回答である。canonicalと表現形式が異なっても、promptとの間にmaterialな意味差はないため復元する。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [
+        "take the plunge"
+      ],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "思い切って実行することがpromptの意味を表し、「自信をもって」は意図・心理を余分に限定する。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "思い切ってやってみる（自信をもって挑戦・実行する）",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "思い切ってやってみる（自信をもって挑戦・実行する）",
+        "reason": "No canonical variable slot notation was found.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00439",
+      "source_index": 438,
+      "canonical": "be up to someone",
+      "sense_key": "someone_is_responsible_for_deciding",
+      "grammarRole": "preposition",
+      "kind": "expression",
+      "current_meaning_ja": "someoneの判断・決定次第である",
+      "current_parenthetical_segments": [],
+      "recommended_meaning_ja": "someoneの判断・決定次第である",
+      "current_paraphrases": [],
+      "historically_removed_paraphrases": [
+        "depend on someone"
+      ],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": null,
+        "recommended_prompt": "someoneの判断・決定次第である",
+        "retained_semantic_information": null,
+        "removed_meta_information": null,
+        "prompt_reason": "括弧はない。日本語promptの意味とslotを確認した。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": []
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "depend on someone",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "「someoneの判断・決定次第」は、その結果がsomeoneに左右されることを表し、depend on someoneはこの関係を自然に表す。判断権を明示する構文差だけで除外しない。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [
+        "depend on someone"
+      ],
+      "entry_decision": "PARAPHRASE_RESTORE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "括弧はない。日本語promptの意味とslotを確認した。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {
+          "PERSON": 1
+        },
+        "prompt_slot_profile": {
+          "PERSON": 1
+        },
+        "canonical_slot_tokens": [
+          {
+            "token": "someone",
+            "classification": "VARIABLE_SLOT",
+            "type": "PERSON",
+            "semantic_role": "PERSON",
+            "context": "be up to someone",
+            "start": 9,
+            "end": 16
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [
+          {
+            "token": "someone",
+            "classification": "VARIABLE_SLOT",
+            "type": "PERSON",
+            "semantic_role": "PERSON",
+            "context": "someoneの判断・決定次第である",
+            "start": 0,
+            "end": 7
+          }
+        ],
+        "recommended_prompt": "someoneの判断・決定次第である",
+        "recommended_paraphrases": [],
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "someoneの判断・決定次第である",
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00443",
+      "source_index": 442,
+      "canonical": "make it",
+      "sense_key": "succeed_or_manage",
+      "grammarRole": "verb",
+      "kind": "expression",
+      "current_meaning_ja": "うまくやる（目標を達成・成功する）",
+      "current_parenthetical_segments": [
+        "（目標を達成・成功する）"
+      ],
+      "recommended_meaning_ja": "目標を達成して成功する",
+      "current_paraphrases": [],
+      "historically_removed_paraphrases": [
+        "do well"
+      ],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": "REWRITE_MINIMAL_SEMANTIC",
+        "recommended_prompt": "目標を達成して成功する",
+        "retained_semantic_information": "make itの成功・達成sense",
+        "removed_meta_information": "括弧表記。",
+        "prompt_reason": "「うまくやる」だけではやり方が上手という意味もあり得る。目標達成のsenseを本文に統合する。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": [
+          {
+            "segment": "（目標を達成・成功する）",
+            "decision": "REWRITE_MINIMAL_SEMANTIC",
+            "reason": "「うまくやる」だけではやり方が上手という意味もあり得る。目標達成のsenseを本文に統合する。"
+          }
+        ]
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "do well",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "日本語prompt「目標を達成して成功する」への自然な英語回答である。canonicalと表現形式が異なっても、promptとの間にmaterialな意味差はないため復元する。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [
+        "do well"
+      ],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "「うまくやる」だけではやり方が上手という意味もあり得る。目標達成のsenseを本文に統合する。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "うまくやる（目標を達成・成功する）",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "うまくやる（目標を達成・成功する）",
+        "reason": "No canonical variable slot notation was found.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00449",
+      "source_index": 448,
+      "canonical": "by no means",
+      "sense_key": "definitely_not",
+      "grammarRole": "adverb",
+      "kind": "expression",
+      "current_meaning_ja": "決して〜ない",
+      "current_parenthetical_segments": [],
+      "recommended_meaning_ja": "決して〜ない",
+      "current_paraphrases": [
+        "not at all"
+      ],
+      "historically_removed_paraphrases": [
+        "never"
+      ],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": null,
+        "recommended_prompt": "決して〜ない",
+        "retained_semantic_information": null,
+        "removed_meta_information": null,
+        "prompt_reason": "括弧はない。日本語promptの意味とslotを確認した。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": []
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "not at all",
+          "source": "CURRENT",
+          "current_status": "CURRENT",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "日本語prompt「決して〜ない」への自然な英語回答であり、必要な意味要素を保つ。構文・語順・registerの違いは削除理由にならない。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        },
+        {
+          "phrase": "never",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "KEEP_REMOVED_SEMANTIC_MISMATCH",
+          "semantic_fit_reason": "neverは通常「一度も／決してある時点でない」という時間的な否定で、by no meansの「少しも／決して～というわけではない」という程度・方法の強調否定とは異なる。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": [
+            {
+              "title": "Cambridge Dictionary: by no means",
+              "url": "https://dictionary.cambridge.org/dictionary/english/by-no-means",
+              "reason": "Cambridge defines by no means as not at all / not in any way, an emphatic negative."
+            },
+            {
+              "title": "Cambridge Dictionary: never",
+              "url": "https://dictionary.cambridge.org/dictionary/english/never",
+              "reason": "Cambridge defines never as not at any time or on any occasion, a temporal sense."
+            }
+          ]
+        }
+      ],
+      "recommended_paraphrases": [
+        "not at all"
+      ],
+      "entry_decision": "KEEP",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "括弧はない。日本語promptの意味とslotを確認した。"
+        },
+        {
+          "type": "historical paraphrase semantic mismatch",
+          "reason": "never: neverは通常「一度も／決してある時点でない」という時間的な否定で、by no meansの「少しも／決して～というわけではない」という程度・方法の強調否定とは異なる。"
+        },
+        {
+          "type": "dictionary",
+          "title": "Cambridge Dictionary: by no means",
+          "url": "https://dictionary.cambridge.org/dictionary/english/by-no-means",
+          "reason": "Cambridge defines by no means as not at all / not in any way, an emphatic negative."
+        },
+        {
+          "type": "dictionary",
+          "title": "Cambridge Dictionary: never",
+          "url": "https://dictionary.cambridge.org/dictionary/english/never",
+          "reason": "Cambridge defines never as not at any time or on any occasion, a temporal sense."
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "決して〜ない",
+        "recommended_paraphrases": [
+          "not at all"
+        ],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "決して〜ない",
+        "reason": "No canonical variable slot notation was found.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00453",
+      "source_index": 452,
+      "canonical": "there you go again",
+      "sense_key": "complain_about_repeated_behavior",
+      "grammarRole": "interjection",
+      "kind": "expression",
+      "current_meaning_ja": "またそれだ",
+      "current_parenthetical_segments": [],
+      "recommended_meaning_ja": "またそれだ",
+      "current_paraphrases": [],
+      "historically_removed_paraphrases": [
+        "here we go again"
+      ],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": null,
+        "recommended_prompt": "またそれだ",
+        "retained_semantic_information": null,
+        "removed_meta_information": null,
+        "prompt_reason": "括弧はない。日本語promptの意味とslotを確認した。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": []
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "here we go again",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "KEEP_REMOVED_SEMANTIC_MISMATCH",
+          "semantic_fit_reason": "here we go againは同じ状況が再び始まることへの話者の反応を表し、there you go againのように相手の反復行動を指摘・非難する発話ではない。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [],
+      "entry_decision": "KEEP",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "括弧はない。日本語promptの意味とslotを確認した。"
+        },
+        {
+          "type": "historical paraphrase semantic mismatch",
+          "reason": "here we go again: here we go againは同じ状況が再び始まることへの話者の反応を表し、there you go againのように相手の反復行動を指摘・非難する発話ではない。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "またそれだ",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "またそれだ",
+        "reason": "No canonical variable slot notation was found.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00473",
+      "source_index": 472,
+      "canonical": "mind your own business",
+      "sense_key": "do_not_interfere",
+      "grammarRole": "verb",
+      "kind": "expression",
+      "current_meaning_ja": "余計な口出しをするな（突き放す言い方）",
+      "current_parenthetical_segments": [
+        "（突き放す言い方）"
+      ],
+      "recommended_meaning_ja": "余計な口出しをするな",
+      "current_paraphrases": [
+        "stay out of it"
+      ],
+      "historically_removed_paraphrases": [],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "余計な口出しをするな",
+        "retained_semantic_information": null,
+        "removed_meta_information": "突き放すという言い方・register情報。",
+        "prompt_reason": "命令文の「余計な口出しをするな」だけで干渉をやめる発話機能が分かる。突き放すregisterは回答形式情報。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": [
+          {
+            "segment": "（突き放す言い方）",
+            "decision": "REMOVE_META_HINT",
+            "reason": "命令文の「余計な口出しをするな」だけで干渉をやめる発話機能が分かる。突き放すregisterは回答形式情報。"
+          }
+        ]
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "stay out of it",
+          "source": "CURRENT",
+          "current_status": "CURRENT",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "日本語prompt「余計な口出しをするな」への自然な英語回答であり、必要な意味要素を保つ。構文・語順・registerの違いは削除理由にならない。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [
+        "stay out of it"
+      ],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "命令文の「余計な口出しをするな」だけで干渉をやめる発話機能が分かる。突き放すregisterは回答形式情報。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "余計な口出しをするな（突き放す言い方）",
+        "recommended_paraphrases": [
+          "stay out of it"
+        ],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "余計な口出しをするな（突き放す言い方）",
+        "reason": "No canonical variable slot notation was found.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00474",
+      "source_index": 473,
+      "canonical": "persist in doing something",
+      "sense_key": "continue_despite_resistance",
+      "grammarRole": "verb",
+      "kind": "expression",
+      "current_meaning_ja": "somethingし続ける（困難や反対があっても）",
+      "current_parenthetical_segments": [
+        "（困難や反対があっても）"
+      ],
+      "recommended_meaning_ja": "困難や反対があってもsomethingし続ける",
+      "current_paraphrases": [],
+      "historically_removed_paraphrases": [
+        "keep doing something",
+        "continue doing something"
+      ],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": "REWRITE_MINIMAL_SEMANTIC",
+        "recommended_prompt": "困難や反対があってもsomethingし続ける",
+        "retained_semantic_information": "抵抗や困難にもかかわらず続けること",
+        "removed_meta_information": "括弧表記。",
+        "prompt_reason": "抵抗の中で持続することがpersistの意味識別に必要なので本文に統合する。something slotを維持する。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": [
+          {
+            "segment": "（困難や反対があっても）",
+            "decision": "REWRITE_MINIMAL_SEMANTIC",
+            "reason": "抵抗の中で持続することがpersistの意味識別に必要なので本文に統合する。something slotを維持する。"
+          }
+        ]
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "keep doing something",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "KEEP_REMOVED_SEMANTIC_MISMATCH",
+          "semantic_fit_reason": "keep doing somethingは単に継続を表し、promptにある困難・反対に逆らって続ける粘り強さを含意しない。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        },
+        {
+          "phrase": "continue doing something",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "KEEP_REMOVED_SEMANTIC_MISMATCH",
+          "semantic_fit_reason": "continue doing somethingは中立的な継続で、promptの抵抗や困難に負けない継続を表さない。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "抵抗の中で持続することがpersistの意味識別に必要なので本文に統合する。something slotを維持する。"
+        },
+        {
+          "type": "historical paraphrase semantic mismatch",
+          "reason": "keep doing something: keep doing somethingは単に継続を表し、promptにある困難・反対に逆らって続ける粘り強さを含意しない。"
+        },
+        {
+          "type": "historical paraphrase semantic mismatch",
+          "reason": "continue doing something: continue doing somethingは中立的な継続で、promptの抵抗や困難に負けない継続を表さない。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {
+          "ACTION_OR_EVENT": 1
+        },
+        "prompt_slot_profile": {
+          "ACTION_OR_EVENT": 1
+        },
+        "canonical_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "ACTION_OR_EVENT",
+            "semantic_role": "ACTION_OR_EVENT",
+            "context": "persist in doing something",
+            "start": 17,
+            "end": 26
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "ACTION_OR_EVENT",
+            "semantic_role": "ACTION_OR_EVENT",
+            "context": "somethingし続ける（困難や反対があっても）",
+            "start": 0,
+            "end": 9
+          }
+        ],
+        "recommended_prompt": "somethingし続ける（困難や反対があっても）",
+        "recommended_paraphrases": [],
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "somethingし続ける（困難や反対があっても）",
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00475",
+      "source_index": 474,
+      "canonical": "lose your temper",
+      "sense_key": "become_angry",
+      "grammarRole": "verb",
+      "kind": "expression",
+      "current_meaning_ja": "かっと腹を立てる",
+      "current_parenthetical_segments": [],
+      "recommended_meaning_ja": "かっと腹を立てる",
+      "current_paraphrases": [
+        "get angry",
+        "get mad"
+      ],
+      "historically_removed_paraphrases": [],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": null,
+        "recommended_prompt": "かっと腹を立てる",
+        "retained_semantic_information": null,
+        "removed_meta_information": null,
+        "prompt_reason": "括弧はない。日本語promptの意味とslotを確認した。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": []
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "get angry",
+          "source": "CURRENT",
+          "current_status": "CURRENT",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "「かっと腹を立てる」は怒りが生じることを自然に表し、get angry / get madはいずれもその状態への移行を表す。canonical固有の形式差は要求しない。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        },
+        {
+          "phrase": "get mad",
+          "source": "CURRENT",
+          "current_status": "CURRENT",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "「かっと腹を立てる」は怒りが生じることを自然に表し、get angry / get madはいずれもその状態への移行を表す。canonical固有の形式差は要求しない。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [
+        "get angry",
+        "get mad"
+      ],
+      "entry_decision": "KEEP",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "括弧はない。日本語promptの意味とslotを確認した。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "かっと腹を立てる",
+        "recommended_paraphrases": [
+          "get angry",
+          "get mad"
+        ],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "かっと腹を立てる",
+        "reason": "No canonical variable slot notation was found.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00480",
+      "source_index": 479,
+      "canonical": "in someone's presence",
+      "sense_key": "when_someone_is_present",
+      "grammarRole": "preposition",
+      "kind": "expression",
+      "current_meaning_ja": "someoneの前で（その人が同席している場で）",
+      "current_parenthetical_segments": [
+        "（その人が同席している場で）"
+      ],
+      "recommended_meaning_ja": "someoneが同席している場で",
+      "current_paraphrases": [],
+      "historically_removed_paraphrases": [
+        "in front of someone"
+      ],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": "REWRITE_MINIMAL_SEMANTIC",
+        "recommended_prompt": "someoneが同席している場で",
+        "retained_semantic_information": "someoneがその場に居合わせていること",
+        "removed_meta_information": "括弧表記。",
+        "prompt_reason": "物理的な前方ではなく同席・居合わせを意味するため、そのscopeを自然な本文に統合しsomeone slotを保つ。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": [
+          {
+            "segment": "（その人が同席している場で）",
+            "decision": "REWRITE_MINIMAL_SEMANTIC",
+            "reason": "物理的な前方ではなく同席・居合わせを意味するため、そのscopeを自然な本文に統合しsomeone slotを保つ。"
+          }
+        ]
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "in front of someone",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "日本語prompt「someoneが同席している場で」への自然な英語回答である。canonicalと表現形式が異なっても、promptとの間にmaterialな意味差はないため復元する。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [
+        "in front of someone"
+      ],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "物理的な前方ではなく同席・居合わせを意味するため、そのscopeを自然な本文に統合しsomeone slotを保つ。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {
+          "PERSON": 1
+        },
+        "prompt_slot_profile": {
+          "PERSON": 1
+        },
+        "canonical_slot_tokens": [
+          {
+            "token": "someone",
+            "classification": "VARIABLE_SLOT",
+            "type": "PERSON",
+            "semantic_role": "PERSON",
+            "context": "in someone's presence",
+            "start": 3,
+            "end": 10
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [
+          {
+            "token": "someone",
+            "classification": "VARIABLE_SLOT",
+            "type": "PERSON",
+            "semantic_role": "PERSON",
+            "context": "someoneの前で（その人が同席している場で）",
+            "start": 0,
+            "end": 7
+          }
+        ],
+        "recommended_prompt": "someoneの前で（その人が同席している場で）",
+        "recommended_paraphrases": [],
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "someoneの前で（その人が同席している場で）",
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00481",
+      "source_index": 480,
+      "canonical": "behind someone's back",
+      "sense_key": "without_someone_knowing",
+      "grammarRole": "preposition",
+      "kind": "expression",
+      "current_meaning_ja": "someoneに内緒で（本人の陰で不公平に）",
+      "current_parenthetical_segments": [
+        "（本人の陰で不公平に）"
+      ],
+      "recommended_meaning_ja": "someoneに内緒で",
+      "current_paraphrases": [],
+      "historically_removed_paraphrases": [
+        "without someone knowing",
+        "without someone's knowledge"
+      ],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "someoneに内緒で",
+        "retained_semantic_information": null,
+        "removed_meta_information": "本人の陰で不公平に行うという評価的な限定。",
+        "prompt_reason": "不公平さは一部の場面の評価であり、秘密にする意味に必須ではない。someone slotを残したpromptだけで対象senseを示す。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": [
+          {
+            "segment": "（本人の陰で不公平に）",
+            "decision": "REMOVE_META_HINT",
+            "reason": "不公平さは一部の場面の評価であり、秘密にする意味に必須ではない。someone slotを残したpromptだけで対象senseを示す。"
+          }
+        ]
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "without someone knowing",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "日本語prompt「someoneに内緒で」への自然な英語回答である。canonicalと表現形式が異なっても、promptとの間にmaterialな意味差はないため復元する。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        },
+        {
+          "phrase": "without someone's knowledge",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "日本語prompt「someoneに内緒で」への自然な英語回答である。canonicalと表現形式が異なっても、promptとの間にmaterialな意味差はないため復元する。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [
+        "without someone knowing",
+        "without someone's knowledge"
+      ],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "不公平さは一部の場面の評価であり、秘密にする意味に必須ではない。someone slotを残したpromptだけで対象senseを示す。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {
+          "PERSON": 1
+        },
+        "prompt_slot_profile": {
+          "PERSON": 1
+        },
+        "canonical_slot_tokens": [
+          {
+            "token": "someone",
+            "classification": "VARIABLE_SLOT",
+            "type": "PERSON",
+            "semantic_role": "PERSON",
+            "context": "behind someone's back",
+            "start": 7,
+            "end": 14
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [
+          {
+            "token": "someone",
+            "classification": "VARIABLE_SLOT",
+            "type": "PERSON",
+            "semantic_role": "PERSON",
+            "context": "someoneに内緒で（本人の陰で不公平に）",
+            "start": 0,
+            "end": 7
+          }
+        ],
+        "recommended_prompt": "someoneに内緒で（本人の陰で不公平に）",
+        "recommended_paraphrases": [],
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "someoneに内緒で（本人の陰で不公平に）",
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00484",
+      "source_index": 483,
+      "canonical": "be fed up with something",
+      "sense_key": "be_tired_of_and_annoyed",
+      "grammarRole": "adjective",
+      "kind": "expression",
+      "current_meaning_ja": "somethingにすっかりうんざりしている（いら立って）",
+      "current_parenthetical_segments": [
+        "（いら立って）"
+      ],
+      "recommended_meaning_ja": "somethingにすっかりうんざりしている",
+      "current_paraphrases": [
+        "be sick of something"
+      ],
+      "historically_removed_paraphrases": [
+        "be tired of something"
+      ],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "somethingにすっかりうんざりしている",
+        "retained_semantic_information": null,
+        "removed_meta_information": "「いら立って」という、うんざりの意味と重なる説明。",
+        "prompt_reason": "「すっかりうんざりしている」が強い不満を既に表すため、いら立ちは別途要求しなくてもpromptの意味が変わらない。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": [
+          {
+            "segment": "（いら立って）",
+            "decision": "REMOVE_META_HINT",
+            "reason": "「すっかりうんざりしている」が強い不満を既に表すため、いら立ちは別途要求しなくてもpromptの意味が変わらない。"
+          }
+        ]
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "be sick of something",
+          "source": "CURRENT",
+          "current_status": "CURRENT",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "「somethingにすっかりうんざりしている」の強いうんざり・不満はbe sick of somethingが自然に表す。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        },
+        {
+          "phrase": "be tired of something",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "「somethingにすっかりうんざりしている」への自然な英語表現であり、be tired of somethingも強いうんざり・飽きを表せる。日本語の強さに対応できる文脈で使えるため、canonicalより弱いと決めつけて除外しない。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [
+        "be sick of something",
+        "be tired of something"
+      ],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "「すっかりうんざりしている」が強い不満を既に表すため、いら立ちは別途要求しなくてもpromptの意味が変わらない。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {
+          "THING": 1
+        },
+        "prompt_slot_profile": {
+          "THING": 1
+        },
+        "canonical_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "be fed up with something",
+            "start": 15,
+            "end": 24
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "somethingにすっかりうんざりしている（いら立って）",
+            "start": 0,
+            "end": 9
+          }
+        ],
+        "recommended_prompt": "somethingにすっかりうんざりしている（いら立って）",
+        "recommended_paraphrases": [
+          "be sick of something"
+        ],
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "somethingにすっかりうんざりしている（いら立って）",
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00486",
+      "source_index": 485,
+      "canonical": "make ends meet",
+      "sense_key": "have_enough_money_for_expenses",
+      "grammarRole": "verb",
+      "kind": "expression",
+      "current_meaning_ja": "やりくりして暮らす",
+      "current_parenthetical_segments": [],
+      "recommended_meaning_ja": "やりくりして暮らす",
+      "current_paraphrases": [],
+      "historically_removed_paraphrases": [
+        "get by"
+      ],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": null,
+        "recommended_prompt": "やりくりして暮らす",
+        "retained_semantic_information": null,
+        "removed_meta_information": null,
+        "prompt_reason": "括弧はない。日本語promptの意味とslotを確認した。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": []
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "get by",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "日本語prompt「やりくりして暮らす」への自然な英語回答である。canonicalと表現形式が異なっても、promptとの間にmaterialな意味差はないため復元する。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [
+        "get by"
+      ],
+      "entry_decision": "PARAPHRASE_RESTORE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "括弧はない。日本語promptの意味とslotを確認した。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "やりくりして暮らす",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "やりくりして暮らす",
+        "reason": "No canonical variable slot notation was found.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00493",
+      "source_index": 492,
+      "canonical": "for the sake of someone",
+      "sense_key": "for_someones_benefit",
+      "grammarRole": "preposition",
+      "kind": "expression",
+      "current_meaning_ja": "someoneのために",
+      "current_parenthetical_segments": [],
+      "recommended_meaning_ja": "someoneのために",
+      "current_paraphrases": [],
+      "historically_removed_paraphrases": [
+        "for someone"
+      ],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": null,
+        "recommended_prompt": "someoneのために",
+        "retained_semantic_information": null,
+        "removed_meta_information": null,
+        "prompt_reason": "括弧はない。日本語promptの意味とslotを確認した。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": []
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "for someone",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "日本語prompt「someoneのために」への自然な英語回答である。canonicalと表現形式が異なっても、promptとの間にmaterialな意味差はないため復元する。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [
+        "for someone"
+      ],
+      "entry_decision": "PARAPHRASE_RESTORE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "括弧はない。日本語promptの意味とslotを確認した。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {
+          "PERSON": 1
+        },
+        "prompt_slot_profile": {
+          "PERSON": 1
+        },
+        "canonical_slot_tokens": [
+          {
+            "token": "someone",
+            "classification": "VARIABLE_SLOT",
+            "type": "PERSON",
+            "semantic_role": "PERSON",
+            "context": "for the sake of someone",
+            "start": 16,
+            "end": 23
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [
+          {
+            "token": "someone",
+            "classification": "VARIABLE_SLOT",
+            "type": "PERSON",
+            "semantic_role": "PERSON",
+            "context": "someoneのために",
+            "start": 0,
+            "end": 7
+          }
+        ],
+        "recommended_prompt": "someoneのために",
+        "recommended_paraphrases": [],
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "someoneのために",
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00494",
+      "source_index": 493,
+      "canonical": "in need",
+      "sense_key": "needing_help",
+      "grammarRole": "adjective",
+      "kind": "expression",
+      "current_meaning_ja": "（助け・支援が必要で）困っている",
+      "current_parenthetical_segments": [
+        "（助け・支援が必要で）"
+      ],
+      "recommended_meaning_ja": "助け・支援が必要な状態で困っている",
+      "current_paraphrases": [],
+      "historically_removed_paraphrases": [
+        "be in trouble"
+      ],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": "REWRITE_MINIMAL_SEMANTIC",
+        "recommended_prompt": "助け・支援が必要な状態で困っている",
+        "retained_semantic_information": "支援を必要としている状態",
+        "removed_meta_information": "括弧表記。",
+        "prompt_reason": "単なる問題・困難ではなく支援を必要とするsenseのscopeを本文に統合する。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": [
+          {
+            "segment": "（助け・支援が必要で）",
+            "decision": "REWRITE_MINIMAL_SEMANTIC",
+            "reason": "単なる問題・困難ではなく支援を必要とするsenseのscopeを本文に統合する。"
+          }
+        ]
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "be in trouble",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "KEEP_REMOVED_SEMANTIC_MISMATCH",
+          "semantic_fit_reason": "be in troubleは問題・困難な状況にあることを表すが、助けや支援を必要としていることを必ずしも含意しない。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "単なる問題・困難ではなく支援を必要とするsenseのscopeを本文に統合する。"
+        },
+        {
+          "type": "historical paraphrase semantic mismatch",
+          "reason": "be in trouble: be in troubleは問題・困難な状況にあることを表すが、助けや支援を必要としていることを必ずしも含意しない。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "（助け・支援が必要で）困っている",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "（助け・支援が必要で）困っている",
+        "reason": "No canonical variable slot notation was found.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00499",
+      "source_index": 498,
+      "canonical": "be forced to do something",
+      "sense_key": "be_made_to_act",
+      "grammarRole": "auxiliary",
+      "kind": "expression",
+      "current_meaning_ja": "外から強制されてsomethingせざるを得ない",
+      "current_parenthetical_segments": [],
+      "recommended_meaning_ja": "外から強制されてsomethingせざるを得ない",
+      "current_paraphrases": [],
+      "historically_removed_paraphrases": [
+        "have no choice but to do something",
+        "be obliged to do something"
+      ],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": null,
+        "recommended_prompt": "外から強制されてsomethingせざるを得ない",
+        "retained_semantic_information": null,
+        "removed_meta_information": null,
+        "prompt_reason": "括弧はない。日本語promptの意味とslotを確認した。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": []
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "have no choice but to do something",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "日本語prompt「外から強制されてsomethingせざるを得ない」への自然な英語回答である。canonicalと表現形式が異なっても、promptとの間にmaterialな意味差はないため復元する。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        },
+        {
+          "phrase": "be obliged to do something",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "日本語prompt「外から強制されてsomethingせざるを得ない」への自然な英語回答である。canonicalと表現形式が異なっても、promptとの間にmaterialな意味差はないため復元する。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [
+        "have no choice but to do something",
+        "be obliged to do something"
+      ],
+      "entry_decision": "PARAPHRASE_RESTORE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "括弧はない。日本語promptの意味とslotを確認した。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {
+          "ACTION_OR_EVENT": 1
+        },
+        "prompt_slot_profile": {
+          "ACTION_OR_EVENT": 1
+        },
+        "canonical_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "ACTION_OR_EVENT",
+            "semantic_role": "ACTION_OR_EVENT",
+            "context": "be forced to do something",
+            "start": 16,
+            "end": 25
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "ACTION_OR_EVENT",
+            "semantic_role": "ACTION_OR_EVENT",
+            "context": "外から強制されてsomethingせざるを得ない",
+            "start": 8,
+            "end": 17
+          }
+        ],
+        "recommended_prompt": "外から強制されてsomethingせざるを得ない",
+        "recommended_paraphrases": [],
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "外から強制されてsomethingせざるを得ない",
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00502",
+      "source_index": 501,
+      "canonical": "tend to do something",
+      "sense_key": "usually_or_often_do",
+      "grammarRole": "verb",
+      "kind": "expression",
+      "current_meaning_ja": "somethingする傾向がある（一般にそうなる・繰り返す）",
+      "current_parenthetical_segments": [
+        "（一般にそうなる・繰り返す）"
+      ],
+      "recommended_meaning_ja": "somethingする傾向がある",
+      "current_paraphrases": [
+        "have a tendency to do something"
+      ],
+      "historically_removed_paraphrases": [
+        "be inclined to do something"
+      ],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "somethingする傾向がある",
+        "retained_semantic_information": null,
+        "removed_meta_information": "一般性・反復性を言い直す説明。",
+        "prompt_reason": "somethingする傾向自体が通常の傾向・反復を表すため括弧は説明の重複。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": [
+          {
+            "segment": "（一般にそうなる・繰り返す）",
+            "decision": "REMOVE_META_HINT",
+            "reason": "somethingする傾向自体が通常の傾向・反復を表すため括弧は説明の重複。"
+          }
+        ]
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "have a tendency to do something",
+          "source": "CURRENT",
+          "current_status": "CURRENT",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "「somethingする傾向がある」の傾向・反復をhave a tendency to do somethingが直接表す。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        },
+        {
+          "phrase": "be inclined to do something",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "「somethingする傾向がある」はlikely/disposed to do somethingを表し、be inclined to do somethingのlikely/disposition senseに自然に対応する。反復頻度を毎回明示する必要はない。",
+          "confidence": "MEDIUM",
+          "review_status": "REVIEWED",
+          "sources": [
+            {
+              "title": "Cambridge Dictionary: tend",
+              "url": "https://dictionary.cambridge.org/dictionary/english/tend",
+              "reason": "Cambridge describes tend to as being likely to behave in a particular way, matching the prompt's general tendency."
+            },
+            {
+              "title": "Cambridge Dictionary: inclined to do something",
+              "url": "https://dictionary.cambridge.org/dictionary/english/inclined-to",
+              "reason": "Cambridge describes inclined to do something as likely or wanting to do it; the likely/disposition sense overlaps with the Japanese prompt 傾向がある."
+            }
+          ]
+        }
+      ],
+      "recommended_paraphrases": [
+        "have a tendency to do something",
+        "be inclined to do something"
+      ],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "somethingする傾向自体が通常の傾向・反復を表すため括弧は説明の重複。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "MEDIUM",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {
+          "ACTION_OR_EVENT": 1
+        },
+        "prompt_slot_profile": {
+          "ACTION_OR_EVENT": 1
+        },
+        "canonical_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "ACTION_OR_EVENT",
+            "semantic_role": "ACTION_OR_EVENT",
+            "context": "tend to do something",
+            "start": 11,
+            "end": 20
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "ACTION_OR_EVENT",
+            "semantic_role": "ACTION_OR_EVENT",
+            "context": "somethingする傾向がある（一般にそうなる・繰り返す）",
+            "start": 0,
+            "end": 9
+          }
+        ],
+        "recommended_prompt": "somethingする傾向がある（一般にそうなる・繰り返す）",
+        "recommended_paraphrases": [
+          "have a tendency to do something"
+        ],
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "somethingする傾向がある（一般にそうなる・繰り返す）",
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00503",
+      "source_index": 502,
+      "canonical": "associate something with something else",
+      "sense_key": "connect_in_mind",
+      "grammarRole": "verb",
+      "kind": "expression",
+      "current_meaning_ja": "somethingをsomething elseと（頭の中で）結び付ける",
+      "current_parenthetical_segments": [
+        "（頭の中で）"
+      ],
+      "recommended_meaning_ja": "頭の中でsomethingをsomething elseと結び付ける",
+      "current_paraphrases": [
+        "link something to something else",
+        "connect something with something else"
+      ],
+      "historically_removed_paraphrases": [],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": "REWRITE_MINIMAL_SEMANTIC",
+        "recommended_prompt": "頭の中でsomethingをsomething elseと結び付ける",
+        "retained_semantic_information": "二つの概念を心の中で関連付けること",
+        "removed_meta_information": "括弧表記。",
+        "prompt_reason": "物理的接続ではなく概念上の関連付けというsenseを本文に統合し、二つのvariable slotを維持する。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": [
+          {
+            "segment": "（頭の中で）",
+            "decision": "REWRITE_MINIMAL_SEMANTIC",
+            "reason": "物理的接続ではなく概念上の関連付けというsenseを本文に統合し、二つのvariable slotを維持する。"
+          }
+        ]
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "link something to something else",
+          "source": "CURRENT",
+          "current_status": "CURRENT",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "日本語prompt「頭の中でsomethingをsomething elseと結び付ける」への自然な英語回答であり、必要な意味要素を保つ。構文・語順・registerの違いは削除理由にならない。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        },
+        {
+          "phrase": "connect something with something else",
+          "source": "CURRENT",
+          "current_status": "CURRENT",
+          "decision": "KEEP_CURRENT",
+          "semantic_fit_reason": "日本語prompt「頭の中でsomethingをsomething elseと結び付ける」への自然な英語回答であり、必要な意味要素を保つ。構文・語順・registerの違いは削除理由にならない。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [
+        "link something to something else",
+        "connect something with something else"
+      ],
+      "entry_decision": "PROMPT_SIMPLIFY",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "物理的接続ではなく概念上の関連付けというsenseを本文に統合し、二つのvariable slotを維持する。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {
+          "THING": 2
+        },
+        "prompt_slot_profile": {
+          "THING": 2
+        },
+        "canonical_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "associate something with something else",
+            "start": 10,
+            "end": 19
+          },
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "associate something with something else",
+            "start": 25,
+            "end": 34
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "somethingをsomething elseと（頭の中で）結び付ける",
+            "start": 0,
+            "end": 9
+          },
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "somethingをsomething elseと（頭の中で）結び付ける",
+            "start": 10,
+            "end": 19
+          }
+        ],
+        "recommended_prompt": "somethingをsomething elseと（頭の中で）結び付ける",
+        "recommended_paraphrases": [
+          "link something to something else",
+          "connect something with something else"
+        ],
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "somethingをsomething elseと（頭の中で）結び付ける",
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00510",
+      "source_index": 509,
+      "canonical": "be involved in something",
+      "sense_key": "participate_or_be_connected",
+      "grammarRole": "adjective",
+      "kind": "expression",
+      "current_meaning_ja": "somethingに関与している",
+      "current_parenthetical_segments": [],
+      "recommended_meaning_ja": "somethingに関与している",
+      "current_paraphrases": [],
+      "historically_removed_paraphrases": [
+        "take part in something",
+        "participate in something"
+      ],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": null,
+        "recommended_prompt": "somethingに関与している",
+        "retained_semantic_information": null,
+        "removed_meta_information": null,
+        "prompt_reason": "括弧はない。日本語promptの意味とslotを確認した。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": []
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "take part in something",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "日本語prompt「somethingに関与している」への自然な英語回答である。canonicalと表現形式が異なっても、promptとの間にmaterialな意味差はないため復元する。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        },
+        {
+          "phrase": "participate in something",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "日本語prompt「somethingに関与している」への自然な英語回答である。canonicalと表現形式が異なっても、promptとの間にmaterialな意味差はないため復元する。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [
+        "take part in something",
+        "participate in something"
+      ],
+      "entry_decision": "PARAPHRASE_RESTORE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "括弧はない。日本語promptの意味とslotを確認した。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {
+          "THING": 1
+        },
+        "prompt_slot_profile": {
+          "THING": 1
+        },
+        "canonical_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "be involved in something",
+            "start": 15,
+            "end": 24
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "somethingに関与している",
+            "start": 0,
+            "end": 9
+          }
+        ],
+        "recommended_prompt": "somethingに関与している",
+        "recommended_paraphrases": [],
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "somethingに関与している",
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00511",
+      "source_index": 510,
+      "canonical": "find something out",
+      "sense_key": "discover_a_fact",
+      "grammarRole": "verb",
+      "kind": "expression",
+      "current_meaning_ja": "somethingを突き止める",
+      "current_parenthetical_segments": [],
+      "recommended_meaning_ja": "somethingを突き止める",
+      "current_paraphrases": [],
+      "historically_removed_paraphrases": [
+        "get to the bottom of something"
+      ],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": null,
+        "recommended_prompt": "somethingを突き止める",
+        "retained_semantic_information": null,
+        "removed_meta_information": null,
+        "prompt_reason": "括弧はない。日本語promptの意味とslotを確認した。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": []
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "get to the bottom of something",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "日本語prompt「somethingを突き止める」への自然な英語回答である。canonicalと表現形式が異なっても、promptとの間にmaterialな意味差はないため復元する。",
+          "confidence": "HIGH",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [
+        "get to the bottom of something"
+      ],
+      "entry_decision": "PARAPHRASE_RESTORE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "括弧はない。日本語promptの意味とslotを確認した。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "HIGH",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {
+          "THING": 1
+        },
+        "prompt_slot_profile": {
+          "THING": 1
+        },
+        "canonical_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "find something out",
+            "start": 5,
+            "end": 14
+          }
+        ],
+        "Japanese_prompt_slot_tokens": [
+          {
+            "token": "something",
+            "classification": "VARIABLE_SLOT",
+            "type": "THING",
+            "semantic_role": "THING",
+            "context": "somethingを突き止める",
+            "start": 0,
+            "end": 9
+          }
+        ],
+        "recommended_prompt": "somethingを突き止める",
+        "recommended_paraphrases": [],
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "somethingを突き止める",
+        "reason": "Canonical and Japanese prompt slot profiles align.",
+        "respected": true
+      }
+    },
+    {
+      "id": "vocab:00512",
+      "source_index": 511,
+      "canonical": "come to light",
+      "sense_key": "become_known",
+      "grammarRole": "verb",
+      "kind": "expression",
+      "current_meaning_ja": "（隠れていた事実が）明るみに出る",
+      "current_parenthetical_segments": [
+        "（隠れていた事実が）"
+      ],
+      "recommended_meaning_ja": "隠れていた事実が明るみに出る",
+      "current_paraphrases": [],
+      "historically_removed_paraphrases": [
+        "become clear",
+        "become apparent"
+      ],
+      "historically_added_paraphrases": [],
+      "parenthetical_review": {
+        "parenthetical_decision": "REWRITE_MINIMAL_SEMANTIC",
+        "recommended_prompt": "隠れていた事実が明るみに出る",
+        "retained_semantic_information": "隠れていた事実が公に知られるようになること",
+        "removed_meta_information": "括弧表記。",
+        "prompt_reason": "come to lightの開示・発覚senseに隠れていた事実というscopeが必要なので、括弧を本文に統合する。",
+        "prompt_confidence": "HIGH",
+        "review_status": "REVIEWED",
+        "target_leakage_checked": true,
+        "meta_hint_checked": true,
+        "prompt_minimality": "PASS",
+        "segments": [
+          {
+            "segment": "（隠れていた事実が）",
+            "decision": "REWRITE_MINIMAL_SEMANTIC",
+            "reason": "come to lightの開示・発覚senseに隠れていた事実というscopeが必要なので、括弧を本文に統合する。"
+          }
+        ]
+      },
+      "paraphrase_review": [
+        {
+          "phrase": "become clear",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "隠れていた事実が知られる・明らかになることをbecome clearで自然に表せる。解釈の明瞭化という別用法はあるが、このpromptに対する回答として発覚・明確化を表す用法も合う。",
+          "confidence": "MEDIUM",
+          "review_status": "REVIEWED",
+          "sources": []
+        },
+        {
+          "phrase": "become apparent",
+          "source": "HISTORICAL_REMOVAL",
+          "current_status": "REMOVED",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "隠れていた事実が明らかになることをbecome apparentで自然に表せる。認知・明瞭化の構文差はあるが、promptの事実が明るみに出る意味に適合する。",
+          "confidence": "MEDIUM",
+          "review_status": "REVIEWED",
+          "sources": []
+        }
+      ],
+      "recommended_paraphrases": [
+        "become clear",
+        "become apparent"
+      ],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "come to lightの開示・発覚senseに隠れていた事実というscopeが必要なので、括弧を本文に統合する。"
+        }
+      ],
+      "review_status": "REVIEWED",
+      "confidence": "MEDIUM",
+      "slot_integrity_checked": true,
+      "slot_reconciliation": {
+        "review_status": "CLEAR",
+        "decision": "KEEP_SLOT_PROFILE",
+        "violation_classes": [],
+        "canonical_slot_profile": {},
+        "prompt_slot_profile": {},
+        "canonical_slot_tokens": [],
+        "Japanese_prompt_slot_tokens": [],
+        "recommended_prompt": "（隠れていた事実が）明るみに出る",
+        "recommended_paraphrases": [],
+        "reason": "No canonical variable slot notation was found.",
+        "confidence": "HIGH",
+        "slot_review_id": null
+      },
+      "slot_authority_review": {
+        "slot_review_id": null,
+        "decision": "KEEP_SLOT_PROFILE",
+        "recommended_prompt": "（隠れていた事実が）明るみに出る",
+        "reason": "No canonical variable slot notation was found.",
+        "respected": true
+      }
+    }
+  ]
+}
+
