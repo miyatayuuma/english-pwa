@@ -648,15 +648,22 @@
           "phrase": "after all",
           "source": "HISTORICAL_REMOVAL",
           "current_status": "REMOVED",
-          "decision": "KEEP_REMOVED_SEMANTIC_MISMATCH",
-          "semantic_fit_reason": "「過程や時間の末に最終的に」というpromptは時間的な帰結を求める。一方、この句の主な意味は予想に反して・結局のところという評価／譲歩で、最終的な時間経過を表す「in the end」と同じ時間関係を必ずしも含まない。",
+          "decision": "RESTORE",
+          "semantic_fit_reason": "「結局（過程や時間の末に）」「最終的に」の自然な回答になり得る。Cambridge English Thesaurus は finally / in the end を同句の類義表現に挙げており、歴史的削除を維持するだけの意味差は確認できない。",
           "confidence": "HIGH",
           "review_status": "REVIEWED",
-          "sources": []
+          "sources": [
+            {
+              "name": "Cambridge English Thesaurus",
+              "url": "https://dictionary.cambridge.org/thesaurus/after-all",
+              "supports": "Lists “finally” and “in the end” among the phrase’s synonyms."
+            }
+          ]
         }
       ],
       "recommended_paraphrases": [
-        "ultimately"
+        "ultimately",
+        "after all"
       ],
       "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
       "evidence": [
@@ -681,7 +688,8 @@
         "Japanese_prompt_slot_tokens": [],
         "recommended_prompt": "最終的に",
         "recommended_paraphrases": [
-          "ultimately"
+          "ultimately",
+          "after all"
         ],
         "reason": "No canonical variable slot notation was found.",
         "confidence": "HIGH",
@@ -4785,11 +4793,11 @@
       ],
       "historically_added_paraphrases": [],
       "parenthetical_review": {
-        "parenthetical_decision": null,
-        "recommended_prompt": "somethingに気づく（変化・細部を見つける）",
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "somethingに気づく",
         "retained_semantic_information": null,
-        "removed_meta_information": null,
-        "prompt_reason": "括弧なし。prompt単独で意味と回答範囲を確認し、canonical固有の形・registerを要求せず、意味を変える追加説明も不要。",
+        "removed_meta_information": "変化・細部を見つけるという典型例・範囲限定。",
+        "prompt_reason": "「変化・細部を見つける」は典型的な対象例で意味回答には不要であり、somethingに気づくというpromptで対象senseを保てる。",
         "prompt_confidence": "HIGH",
         "review_status": "REVIEWED",
         "target_leakage_checked": true,
@@ -4822,8 +4830,13 @@
         "realize something",
         "become aware of something"
       ],
-      "entry_decision": "PARAPHRASE_RESTORE",
-      "evidence": [],
+      "entry_decision": "PROMPT_AND_PARAPHRASE_RECONCILE",
+      "evidence": [
+        {
+          "type": "semantic review",
+          "reason": "「変化・細部を見つける」は典型的な対象例で意味回答には不要であり、somethingに気づくというpromptで対象senseを保てる。"
+        }
+      ],
       "review_status": "REVIEWED",
       "slot_integrity_checked": true,
       "slot_reconciliation": {
@@ -4853,12 +4866,12 @@
             "classification": "VARIABLE_SLOT",
             "type": "THING",
             "semantic_role": "THING",
-            "context": "somethingに気づく（変化・細部を見つける）",
+            "context": "somethingに気づく",
             "start": 0,
             "end": 9
           }
         ],
-        "recommended_prompt": "somethingに気づく（変化・細部を見つける）",
+        "recommended_prompt": "somethingに気づく",
         "recommended_paraphrases": [
           "realize something",
           "become aware of something"
