@@ -1,72 +1,185 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "status": "PARTIAL_SEMANTIC_REVIEW",
   "audit_base_main_sha": "9007e2f59cc6bfc48e7021caa3b469dae89adb60",
+  "branch_head_at_generation": "b634517228346a8e9197fa814d3c530aeb71b367",
+  "current_main_sha": "9007e2f59cc6bfc48e7021caa3b469dae89adb60",
   "source_vocabulary_git_blob_sha": "c23643d26e71be22aaec5ec04ce63a7582ad9c25",
   "union_population": 589,
+  "review": {
+    "reviewed": 40,
+    "upstream": 1,
+    "pending": 548,
+    "resolved": 41
+  },
   "batches": [
     {
       "batch_id": "batch-001",
       "entry_count": 100,
-      "reviewed": 0
+      "reviewed": 34,
+      "upstream": 1,
+      "pending": 65,
+      "resolved": 35
     },
     {
       "batch_id": "batch-002",
       "entry_count": 100,
-      "reviewed": 0
+      "reviewed": 0,
+      "upstream": 0,
+      "pending": 100,
+      "resolved": 0
     },
     {
       "batch_id": "batch-003",
       "entry_count": 100,
-      "reviewed": 0
+      "reviewed": 1,
+      "upstream": 0,
+      "pending": 99,
+      "resolved": 1
     },
     {
       "batch_id": "batch-004",
       "entry_count": 100,
-      "reviewed": 0
+      "reviewed": 2,
+      "upstream": 0,
+      "pending": 98,
+      "resolved": 2
     },
     {
       "batch_id": "batch-005",
       "entry_count": 100,
-      "reviewed": 0
+      "reviewed": 0,
+      "upstream": 0,
+      "pending": 100,
+      "resolved": 0
     },
     {
       "batch_id": "batch-006",
       "entry_count": 89,
-      "reviewed": 0
+      "reviewed": 3,
+      "upstream": 0,
+      "pending": 86,
+      "resolved": 3
     }
   ],
-  "known_historical_removed_pairs": 670,
-  "known_historical_added_pairs": 8,
-  "semantic_decisions_completed": 0,
+  "parenthetical": {
+    "population": 376,
+    "reviewed": 38,
+    "upstream": 1,
+    "pending": 337,
+    "resolved": 39
+  },
+  "previous_materialized": {
+    "population": 551,
+    "reviewed": 31,
+    "upstream": 1,
+    "pending": 519,
+    "resolved": 32
+  },
+  "historical_removals": {
+    "population": 670,
+    "RESTORE": 14,
+    "KEEP_REMOVED_SEMANTIC_MISMATCH": 12,
+    "UPSTREAM_REVIEW": 0,
+    "PENDING": 644,
+    "dispositioned": 26
+  },
+  "historical_additions": {
+    "population": 8,
+    "KEEP": 1,
+    "REMOVE": 0,
+    "UPSTREAM_REVIEW": 0,
+    "PENDING": 7,
+    "checked": 1
+  },
+  "current_paraphrases": {
+    "population": 300,
+    "decisions": {
+      "KEEP": 26,
+      "REMOVE": 0,
+      "UPSTREAM_REVIEW": 0,
+      "PENDING": 274
+    },
+    "resolved": 26,
+    "pending": 274
+  },
+  "target_leakage": {
+    "found": 5,
+    "resolved": 5,
+    "pending": 0,
+    "upstream": 0,
+    "entry_ids": [
+      "vocab:00139",
+      "vocab:00201",
+      "vocab:01276",
+      "vocab:02299",
+      "vocab:02442"
+    ]
+  },
+  "meta_hint": {
+    "found": 26,
+    "resolved": 25,
+    "upstream": 1,
+    "pending": 0,
+    "entry_ids": [
+      "vocab:00004",
+      "vocab:00012",
+      "vocab:00014",
+      "vocab:00016",
+      "vocab:00017",
+      "vocab:00027",
+      "vocab:00029",
+      "vocab:00048",
+      "vocab:00069",
+      "vocab:00074",
+      "vocab:00083",
+      "vocab:00089",
+      "vocab:00135",
+      "vocab:00150",
+      "vocab:00178",
+      "vocab:00184",
+      "vocab:00194",
+      "vocab:00196",
+      "vocab:00213",
+      "vocab:00218",
+      "vocab:00220",
+      "vocab:00229",
+      "vocab:00243",
+      "vocab:00247",
+      "vocab:01198",
+      "vocab:01337"
+    ]
+  },
+  "historical_materialization_divergence": {
+    "comparison": {
+      "from": "previous_materialization_after",
+      "to": "audit_base_production",
+      "fields": [
+        "meaning_ja",
+        "canonical",
+        "sense_key",
+        "grammarRole",
+        "paraphrases"
+      ]
+    },
+    "mismatched_entries": 340,
+    "field_mismatch_counts": {
+      "meaning_ja": 0,
+      "canonical": 0,
+      "sense_key": 0,
+      "grammarRole": 0,
+      "paraphrases": 340
+    },
+    "semantic_authority_effect": "informational_only"
+  },
+  "stale": {
+    "definition": "Entries whose audited semantic fields changed on current main after the audit base was frozen.",
+    "checked_main_sha": "9007e2f59cc6bfc48e7021caa3b469dae89adb60",
+    "count": 0,
+    "entry_ids": [],
+    "changed_fields": {}
+  },
   "production_changes": 0,
-  "next_step": "589件全体とphrase候補の意味レビューを継続。partial checkpointであり、監査closureではない。",
-  "reviewed_entries": 40,
-  "remaining_entries": 548,
-  "reviewed_parenthetical_entries": 8,
-  "parenthetical_remaining": 368,
-  "historical_removed_phrase_entries_dispositioned": 26,
-  "historical_removed_phrase_entries_remaining": 644,
-  "previous_materialized_entries_reviewed": 31,
-  "historical_added_phrase_entries_checked": 1,
-  "representative_cases": [
-    "vocab:00139",
-    "vocab:00201",
-    "vocab:01276",
-    "vocab:01198",
-    "vocab:01337",
-    "vocab:02229",
-    "vocab:02299",
-    "vocab:02442"
-  ],
-  "parenthetical_reviewed": 38,
-  "upstream_authority_review_ids": [
-    "vocab:00083"
-  ],
-  "reviewed_batch_001": 35,
-  "upstream_isolated_entries": 1,
-  "parenthetical_upstream_isolated": 1,
-  "previous_materialized_entries_upstream_isolated": 1,
-  "historical_removed_restore": 15,
-  "historical_removed_keep_semantic_mismatch": 11
+  "semantic_decision_changes": 0,
+  "next_step": "Continue parallel semantic review of the 548 PENDING union entries. Keep vocab:00083 isolated for upstream authority review; do not mark the audit closed."
 }

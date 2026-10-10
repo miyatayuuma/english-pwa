@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "audit": "vocabulary-japanese-prompt-authority-reconciliation",
   "status": "IN_PROGRESS",
   "repository": "miyatayuuma/english-pwa",
@@ -21,1424 +21,199 @@
     "materialization_git_blob_sha": "aef800e063798cc7c3e3fb29711556e1dc8633ec"
   },
   "populations": {
+    "union_entries": 589,
     "current_parenthetical_entries": 376,
     "previous_nuance_materialized_ids": 551,
-    "previous_historical_removed_phrase_entries": 670,
-    "previous_historical_added_phrase_entries": 8,
-    "union_entries": 589,
     "batch_size": 100,
     "batch_count": 6,
     "source_order": "data/vocabulary-v3.json entries array, 1-based source_index; join authority only by id"
   },
   "coverage": {
-    "reviewed_entries": 40,
-    "missing_entries": 548,
-    "stale_entries": 0,
-    "duplicate_review": 0,
-    "unknown_ids": 0,
-    "parenthetical_reviewed": 38,
-    "previous_materialized_ids_reviewed": 31,
-    "historical_removed_phrase_entries_dispositioned": 26,
-    "historical_added_phrase_entries_checked": 1,
-    "upstream_isolated_entries": 1,
-    "parenthetical_upstream_isolated": 1,
-    "previous_materialized_ids_upstream_isolated": 1
-  },
-  "drift_at_base": {
-    "fields_checked": [
-      "meaning_ja",
-      "canonical",
-      "sense_key",
-      "grammarRole",
-      "paraphrases"
-    ],
-    "materialization_after_mismatches": 340,
-    "mismatches": [
-      {
-        "id": "vocab:00004",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00012",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00016",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00029",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00048",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00068",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00083",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00088",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00089",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00109",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00118",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00135",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00178",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00184",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00185",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00194",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00201",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00275",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00302",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00306",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00321",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00331",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00334",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00364",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00365",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00376",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00379",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00382",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00383",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00389",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00390",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00395",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00402",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00412",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00414",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00426",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00430",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00434",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00439",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00443",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00453",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00474",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00480",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00481",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00486",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00493",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00494",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00499",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00510",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00511",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00512",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00516",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00533",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00543",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00575",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00597",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00599",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00602",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00603",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00613",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00618",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00630",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00660",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00675",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00678",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00688",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00718",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00720",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00721",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00724",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00729",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00738",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00754",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00756",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00770",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00781",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00788",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00791",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00805",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00818",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00852",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00857",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00858",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00864",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00869",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00871",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00875",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00878",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00881",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00882",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00884",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00888",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00893",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00901",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00928",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00943",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00946",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00964",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00968",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00971",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00975",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00977",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00979",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00980",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00987",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00989",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00994",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00996",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:00997",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01000",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01003",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01007",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01012",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01016",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01022",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01028",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01038",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01047",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01050",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01057",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01058",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01061",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01064",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01080",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01090",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01097",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01101",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01102",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01105",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01106",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01110",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01113",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01120",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01121",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01124",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01128",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01129",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01134",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01148",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01151",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01156",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01179",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01180",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01181",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01182",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01185",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01187",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01196",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01198",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01204",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01205",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01231",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01240",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01249",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01252",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01268",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01269",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01270",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01284",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01285",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01288",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01299",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01305",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01306",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01309",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01319",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01322",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01330",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01332",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01337",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01340",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01342",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01358",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01359",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01368",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01374",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01376",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01388",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01402",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01406",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01409",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01410",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01418",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01421",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01422",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01435",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01460",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01468",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01481",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01486",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01497",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01510",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01522",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01524",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01525",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01530",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01552",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01563",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01567",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01575",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01582",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01584",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01592",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01598",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01599",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01600",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01604",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01618",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01630",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01640",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01686",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01700",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01708",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01709",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01715",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01717",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01718",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01733",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01735",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01737",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01746",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01747",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01756",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01771",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01775",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01781",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01786",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01807",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01822",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01835",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01842",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01844",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01853",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01856",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01858",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01859",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01863",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01867",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01870",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01897",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01899",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01900",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01903",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01904",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01913",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01916",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01927",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01934",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01942",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01956",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01982",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01984",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01987",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01991",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01996",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:01998",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02005",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02018",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02020",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02025",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02029",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02030",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02034",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02039",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02040",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02058",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02070",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02074",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02076",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02081",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02082",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02083",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02086",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02095",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02097",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02098",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02101",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02102",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02104",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02105",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02106",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02114",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02115",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02125",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02132",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02147",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02154",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02155",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02157",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02177",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02181",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02198",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02200",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02202",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02205",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02206",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02215",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02217",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02244",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02249",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02257",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02262",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02264",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02265",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02266",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02269",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02280",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02285",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02288",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02301",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02306",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02308",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02315",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02320",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02328",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02329",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02359",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02361",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02373",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02374",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02375",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02386",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02390",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02391",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02394",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02397",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02400",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02402",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02406",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02412",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02414",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02416",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02419",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02427",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02438",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02449",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02467",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02475",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02476",
-        "field": "paraphrases"
-      },
-      {
-        "id": "vocab:02478",
-        "field": "paraphrases"
+    "entries": {
+      "reviewed": 40,
+      "upstream": 1,
+      "pending": 548,
+      "resolved": 41
+    },
+    "cohorts": {
+      "current_parenthetical_entries": {
+        "reviewed": 38,
+        "upstream": 1,
+        "pending": 337,
+        "resolved": 39
+      },
+      "previous_nuance_materialized_ids": {
+        "reviewed": 31,
+        "upstream": 1,
+        "pending": 519,
+        "resolved": 32
       }
-    ]
+    },
+    "batches": [
+      {
+        "batch_id": "batch-001",
+        "entry_count": 100,
+        "reviewed": 34,
+        "upstream": 1,
+        "pending": 65,
+        "resolved": 35
+      },
+      {
+        "batch_id": "batch-002",
+        "entry_count": 100,
+        "reviewed": 0,
+        "upstream": 0,
+        "pending": 100,
+        "resolved": 0
+      },
+      {
+        "batch_id": "batch-003",
+        "entry_count": 100,
+        "reviewed": 1,
+        "upstream": 0,
+        "pending": 99,
+        "resolved": 1
+      },
+      {
+        "batch_id": "batch-004",
+        "entry_count": 100,
+        "reviewed": 2,
+        "upstream": 0,
+        "pending": 98,
+        "resolved": 2
+      },
+      {
+        "batch_id": "batch-005",
+        "entry_count": 100,
+        "reviewed": 0,
+        "upstream": 0,
+        "pending": 100,
+        "resolved": 0
+      },
+      {
+        "batch_id": "batch-006",
+        "entry_count": 89,
+        "reviewed": 3,
+        "upstream": 0,
+        "pending": 86,
+        "resolved": 3
+      }
+    ],
+    "phrases": {
+      "CURRENT": {
+        "population": 300,
+        "decisions": {
+          "KEEP": 26,
+          "REMOVE": 0,
+          "UPSTREAM_REVIEW": 0,
+          "PENDING": 274
+        },
+        "resolved": 26,
+        "pending": 274
+      },
+      "HISTORICAL_REMOVAL": {
+        "population": 670,
+        "RESTORE": 14,
+        "KEEP_REMOVED_SEMANTIC_MISMATCH": 12,
+        "UPSTREAM_REVIEW": 0,
+        "PENDING": 644,
+        "dispositioned": 26
+      },
+      "HISTORICAL_ADDITION": {
+        "population": 8,
+        "KEEP": 1,
+        "REMOVE": 0,
+        "UPSTREAM_REVIEW": 0,
+        "PENDING": 7,
+        "checked": 1
+      }
+    },
+    "target_leakage": {
+      "found": 5,
+      "resolved": 5,
+      "pending": 0,
+      "upstream": 0,
+      "entry_ids": [
+        "vocab:00139",
+        "vocab:00201",
+        "vocab:01276",
+        "vocab:02299",
+        "vocab:02442"
+      ]
+    },
+    "meta_hint": {
+      "found": 26,
+      "resolved": 25,
+      "upstream": 1,
+      "pending": 0,
+      "entry_ids": [
+        "vocab:00004",
+        "vocab:00012",
+        "vocab:00014",
+        "vocab:00016",
+        "vocab:00017",
+        "vocab:00027",
+        "vocab:00029",
+        "vocab:00048",
+        "vocab:00069",
+        "vocab:00074",
+        "vocab:00083",
+        "vocab:00089",
+        "vocab:00135",
+        "vocab:00150",
+        "vocab:00178",
+        "vocab:00184",
+        "vocab:00194",
+        "vocab:00196",
+        "vocab:00213",
+        "vocab:00218",
+        "vocab:00220",
+        "vocab:00229",
+        "vocab:00243",
+        "vocab:00247",
+        "vocab:01198",
+        "vocab:01337"
+      ]
+    },
+    "integrity": {
+      "duplicate_entry_ids": 0,
+      "duplicate_phrase_keys": 0,
+      "unknown_ids": 0,
+      "missing_batch_ids": 0
+    }
   },
   "production_changes": 0,
   "strict_validator": "NOT_RUN",
   "deterministic_regeneration": "NOT_RUN",
   "final_current_main_reconciliation_sha": null,
-  "review_confidence_counts": {
-    "HIGH": 36,
-    "MEDIUM": 5,
-    "LOW": 0
+  "branch_head_at_generation": "b634517228346a8e9197fa814d3c530aeb71b367",
+  "historical_materialization_divergence": {
+    "comparison": {
+      "from": "previous_materialization_after",
+      "to": "audit_base_production",
+      "fields": [
+        "meaning_ja",
+        "canonical",
+        "sense_key",
+        "grammarRole",
+        "paraphrases"
+      ]
+    },
+    "mismatched_entries": 340,
+    "field_mismatch_counts": {
+      "meaning_ja": 0,
+      "canonical": 0,
+      "sense_key": 0,
+      "grammarRole": 0,
+      "paraphrases": 340
+    },
+    "semantic_authority_effect": "informational_only"
   },
-  "target_leakage_cases_found": 5,
-  "target_leakage_cases_resolved": 5,
-  "meta_hint_cases_found": 26,
-  "meta_hint_cases_resolved": 25,
-  "upstream_authority_review_count": 1,
-  "paraphrase_disposition_counts": {
-    "RESTORE": 14,
-    "KEEP_REMOVED_SEMANTIC_MISMATCH": 12,
-    "UPSTREAM_REVIEW": 0
-  },
-  "parenthetical_decision_counts": {
-    "REMOVE_META_HINT": 30,
-    "REWRITE_MINIMAL_SEMANTIC": 8,
-    "KEEP_SEMANTIC_SCOPE": 0,
-    "UPSTREAM_MEANING_REVIEW": 1
+  "stale": {
+    "definition": "Entries whose audited semantic fields changed on current main after the audit base was frozen.",
+    "checked_main_sha": "9007e2f59cc6bfc48e7021caa3b469dae89adb60",
+    "count": 0,
+    "entry_ids": [],
+    "changed_fields": {}
   }
 }
