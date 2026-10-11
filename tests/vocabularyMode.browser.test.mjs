@@ -34,7 +34,7 @@ async function newPage(source,{reducedMotion='reduce',entryState:entryStateOverr
   const fixtures=[entry,...additionalEntries.map(value=>JSON.parse(JSON.stringify(value)))];
   assert.ok(entry,`fixture ${source.kind}/${source.canonical} exists`);
   const entryState=entryStateOverride||{last:0,best:0,noHintHistory:[],noHintStreak:0,level5Count:0,review:{nextDueAt:0,intervalMs:0},stability:0,difficulty:0};
-  await context.addInitScript(({entry,fixtures,source,entryState,speechSupported,fullDataset,items,native,nativePermission})=>{
+  await context.addInitScript(({entry,fixtures,source,entryState,speechSupported,fullDataset,items,native,nativePermission,additionalEntryState})=>{
     const freshState={last:0,best:0,noHintHistory:[],noHintStreak:0,level5Count:0,review:{nextDueAt:0,intervalMs:0},stability:0,difficulty:0};
     const encounteredIds=[...new Set([source.itemId,...fixtures.flatMap(value=>(value.occurrences||[]).map(occurrence=>String(occurrence.item_id||''))).filter(Boolean)])];
     const initial={
@@ -90,7 +90,7 @@ async function newPage(source,{reducedMotion='reduce',entryState:entryStateOverr
       play(){window.__mockSpeech.audioPlayed.push(this.url);return Promise.resolve();}
       pause(){}
     };
-  },{entry,fixtures,source,entryState,speechSupported,fullDataset,items,native,nativePermission});
+  },{entry,fixtures,source,entryState,speechSupported,fullDataset,items,native,nativePermission,additionalEntryState});
   const page=await context.newPage();
   if(native) await page.route('**/scripts/native/capacitor-core.js',route=>route.fulfill({contentType:'text/javascript',body:'export const registerPlugin=()=>window.__nativePlugin;'}));
   await page.route('**/*.m4a',route=>route.fulfill({status:200,body:'mock-audio'}));
