@@ -65,6 +65,8 @@ function sourceCounts(rows, source, predicate) { return rows.filter((row) => row
 export function validateAggregation({ offlineWorkerSnapshot = false } = {}) {
   const plan = buildAggregationPlan({ offlineWorkerSnapshot });
   assert(plan.postState && plan.changed.length === 0, "Canonical aggregation is not complete or has drift.");
+  assert(plan.metrics.canonical_bias_only_removals === 0, "Canonical-bias-only removals must be zero.");
+  assert(plan.metrics.slot_conflicts === 0, "Unresolved slot conflicts must be zero.");
 
   const manifest = readJson(resolve(AUDIT, "manifest.json"));
   const checkpoint = readJson(resolve(AUDIT, "checkpoint.json"));
@@ -178,8 +180,8 @@ export function validateAggregation({ offlineWorkerSnapshot = false } = {}) {
       new_addition: 0,
       unique_keys: paraphrases.entries.length,
     },
-    slots: { union_checked: 589, confirmed_defects: defects.length, unresolved_conflicts: 0 },
-    integrity: { target_leakage_unresolved: targetLeakage, meta_hint_unresolved: metaHints, low_confidence: 0 },
+    slots: { union_checked: 589, confirmed_defects: defects.length, unresolved_conflicts: plan.metrics.slot_conflicts },
+    integrity: { target_leakage_unresolved: targetLeakage, meta_hint_unresolved: metaHints, canonical_bias_only_removals: plan.metrics.canonical_bias_only_removals, low_confidence: 0 },
     historical_divergence: divergence.mismatched_entries,
     production_changes: 0,
     status: FINAL_STATUS,

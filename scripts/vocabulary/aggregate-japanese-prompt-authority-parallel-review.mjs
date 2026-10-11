@@ -193,6 +193,20 @@ function flattenValidationValues(value, predicate, out = []) {
   return out;
 }
 
+function validationSignals(validation, pattern) {
+  const signals = flattenValidationValues(validation, (key) => pattern.test(key));
+  if (Array.isArray(validation.checks)) {
+    for (const check of validation.checks) {
+      if (pattern.test(check.check || check.name || "")) {
+        if (check.count !== undefined) signals.push([check.check || check.name, check.count]);
+        if (check.result !== undefined) signals.push([check.check || check.name, check.result]);
+        if (check.status !== undefined) signals.push([check.check || check.name, check.status]);
+      }
+    }
+  }
+  return signals;
+}
+
 function validateWorkerArtifacts({ worker, claim, reviewsDoc, summary, validation, canonicalClaim, batchById, productionById, indexById }) {
   assert(claim.worker_id === worker.worker_id, `${worker.worker_id} claim has the wrong worker_id.`);
   assert(equal(claim, canonicalClaim), `${worker.worker_id} worker claim differs from the canonical claim.`);
@@ -237,6 +251,10 @@ function validateWorkerArtifacts({ worker, claim, reviewsDoc, summary, validatio
   assert(summaryProductionChanges.length > 0 && summaryProductionChanges.every(([, value]) => value === 0), `${worker.worker_id} summary does not validate production_changes=0.`);
   const summaryStatusValues = [summary.worker_status, summary.completion_status, summary.status].filter((value) => typeof value === "string");
   assert(summaryStatusValues.every((value) => ["COMPLETE", "PASS"].includes(value)), `${worker.worker_id} summary has a non-complete status.`);
+  const biasSignals = validationSignals(validation, /canonical_bias_only_removals/i);
+  assert(biasSignals.length > 0 && biasSignals.every(([, value]) => value === 0 || value === true), `${worker.worker_id} validator does not prove canonical-bias-only removals=0.`);
+  const leakageSignals = validationSignals(validation, /(?:target_leakage_unresolved|unresolved_target_leakage)/i);
+  assert(leakageSignals.length > 0 && leakageSignals.every(([, value]) => value === 0 || value === true), `${worker.worker_id} validator does not prove target leakage unresolved=0.`);
 
   const claimIndexById = new Map(claim.ordered_ids.map((id, i) => [id, claim.source_indices[i]]));
   assert(new Set(claim.ordered_ids).size === claim.ordered_ids.length, `${worker.worker_id} claim has duplicate IDs.`);
@@ -259,7 +277,7 @@ function validateWorkerArtifacts({ worker, claim, reviewsDoc, summary, validatio
     for (const field of IMMUTABLE_FIELDS) if (Object.hasOwn(row, field)) assert(equal(row[field], canonical[field]), `${worker.worker_id} changed immutable ${field} for ${id}.`);
     if (Object.hasOwn(row, "kind")) assert(row.kind === production.kind, `${worker.worker_id} changed immutable kind for ${id}.`);
     assert(row.slot_integrity_checked === true, `${worker.worker_id} did not check slot integrity for ${id}.`);
-    assert(row.slot_reconciliation && !["PENDING", "UPSTREAM"].includes(row.slot_reconciliation.review_status), `${worker.worker_id} has unresolved slot status for ${id}.`);
+    assert(row.slot_reconciliation && ["CLEAR", "REVIEWED"].includes(row.slot_reconciliation.review_status), `${worker.worker_id} has unresolved slot status for ${id}.`);
     if (row.slot_authority_review?.respected === false) fail(`${worker.worker_id} conflicts with slot authority for ${id}.`);
     if (canonical.cohort_flags?.current_parenthetical === true) {
       const p = row.parenthetical_review || {};
@@ -528,6 +546,11 @@ export function buildAggregationPlan({ offlineWorkerSnapshot = false }) {
   assert(allEntries.filter((entry) => entry.cohort_flags?.current_parenthetical === true).length === 376, "Current parenthetical population differs from 376.");
   assert(allEntries.reduce((sum, entry) => sum + (entry.current_parenthetical_segments || []).length, 0) === 381, "Current parenthetical segment count differs from 381.");
   assert(workerByEntry.size === 548, "Worker review coverage differs from 548.");
+  const slotConflictRows = [...workerByEntry.values()].filter(({ row }) => !["CLEAR", "REVIEWED"].includes(row.slot_reconciliation?.review_status) || row.slot_authority_review?.respected === false);
+  assert(slotConflictRows.length === 0, `Worker slot conflicts remain: ${slotConflictRows.map(({ row }) => row.id).join(", ")}.`);
+  const canonicalBiasOnlyRemovals = workerArtifacts.reduce((sum, { validation }) => sum + validationSignals(validation, /canonical_bias_only_removals/i).reduce((count, [, value]) => count + (typeof value === "number" ? value : 0), 0), 0);
+  const workerTargetLeakageUnresolved = workerArtifacts.reduce((sum, { validation }) => sum + validationSignals(validation, /(?:target_leakage_unresolved|unresolved_target_leakage)/i).reduce((count, [, value]) => count + (typeof value === "number" ? value : 0), 0), 0);
+  assert(canonicalBiasOnlyRemovals === 0 && workerTargetLeakageUnresolved === 0, "Worker validation has nonzero semantic integrity findings.");
   assert(indexDoc.entries.every((row) => row.slot_integrity_checked === true), "Not all 589 union entries are slot checked.");
   assert(indexDoc.entries.length === 589, "Slot union coverage differs from 589.");
 
@@ -737,7 +760,8 @@ export function buildAggregationPlan({ offlineWorkerSnapshot = false }) {
       reviewed_confidence: overallReviewedConfidence,
       slots_checked: indexDoc.entries.filter((row) => row.slot_integrity_checked === true).length,
       confirmed_slot_defects: slotDefects.length,
-      slot_conflicts: 0,
+      slot_conflicts: slotConflictRows.length,
+      canonical_bias_only_removals: canonicalBiasOnlyRemovals,
       target_leakage_unresolved: 0,
       meta_hint_unresolved: 0,
       existing_recommendation_projection_repairs: existingRecommendationRepairs.length,

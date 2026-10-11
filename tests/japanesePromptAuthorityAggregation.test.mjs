@@ -91,6 +91,7 @@ test("integrates slot authority across the union and preserves all 17 defects", 
   assert.equal(result.metrics.slots_checked, 589);
   assert.equal(result.metrics.confirmed_slot_defects, 17);
   assert.equal(result.metrics.slot_conflicts, 0);
+  assert.equal(result.metrics.canonical_bias_only_removals, 0);
   const slot = readJson(resolve(AUDIT, "slot-review.json")).find((row) => row.id === "vocab:01179");
   assert.equal(slot.recommended_prompt, "somethingにさらされる");
 });
