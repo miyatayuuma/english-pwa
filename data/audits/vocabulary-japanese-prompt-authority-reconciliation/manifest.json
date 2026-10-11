@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "audit": "vocabulary-japanese-prompt-authority-reconciliation",
-  "status": "IN_PROGRESS",
+  "status": "SEMANTIC_REVIEW_COMPLETE_PENDING_FINAL_RECONCILIATION",
   "repository": "miyatayuuma/english-pwa",
   "branch": "audit/vocabulary-japanese-prompt-authority-reconciliation",
   "audit_base_main_sha": "9007e2f59cc6bfc48e7021caa3b469dae89adb60",
@@ -30,102 +30,200 @@
   },
   "coverage": {
     "entries": {
-      "reviewed": 40,
+      "reviewed": 588,
       "upstream": 1,
-      "pending": 548,
-      "resolved": 41
+      "pending": 0,
+      "resolved": 589
     },
     "cohorts": {
       "current_parenthetical_entries": {
-        "reviewed": 38,
+        "reviewed": 375,
         "upstream": 1,
-        "pending": 337,
-        "resolved": 39
+        "pending": 0,
+        "resolved": 376
       },
       "previous_nuance_materialized_ids": {
-        "reviewed": 31,
+        "reviewed": 550,
         "upstream": 1,
-        "pending": 519,
-        "resolved": 32
+        "pending": 0,
+        "resolved": 551
       }
     },
     "batches": [
       {
         "batch_id": "batch-001",
         "entry_count": 100,
-        "reviewed": 34,
+        "reviewed": 99,
         "upstream": 1,
-        "pending": 65,
-        "resolved": 35
+        "pending": 0,
+        "resolved": 100
       },
       {
         "batch_id": "batch-002",
         "entry_count": 100,
-        "reviewed": 0,
+        "reviewed": 100,
         "upstream": 0,
-        "pending": 100,
-        "resolved": 0
+        "pending": 0,
+        "resolved": 100
       },
       {
         "batch_id": "batch-003",
         "entry_count": 100,
-        "reviewed": 1,
+        "reviewed": 100,
         "upstream": 0,
-        "pending": 99,
-        "resolved": 1
+        "pending": 0,
+        "resolved": 100
       },
       {
         "batch_id": "batch-004",
         "entry_count": 100,
-        "reviewed": 2,
+        "reviewed": 100,
         "upstream": 0,
-        "pending": 98,
-        "resolved": 2
+        "pending": 0,
+        "resolved": 100
       },
       {
         "batch_id": "batch-005",
         "entry_count": 100,
-        "reviewed": 0,
+        "reviewed": 100,
         "upstream": 0,
-        "pending": 100,
-        "resolved": 0
+        "pending": 0,
+        "resolved": 100
       },
       {
         "batch_id": "batch-006",
         "entry_count": 89,
-        "reviewed": 3,
+        "reviewed": 89,
         "upstream": 0,
-        "pending": 86,
-        "resolved": 3
+        "pending": 0,
+        "resolved": 89
       }
     ],
+    "entry_decisions": {
+      "KEEP": 40,
+      "PROMPT_SIMPLIFY": 141,
+      "PARAPHRASE_RESTORE": 173,
+      "PROMPT_AND_PARAPHRASE_RECONCILE": 231,
+      "PARAPHRASE_REMOVE_SEMANTIC": 3,
+      "UPSTREAM_AUTHORITY_REVIEW": 1
+    },
+    "parenthetical_decisions": {
+      "REMOVE_META_HINT": 247,
+      "REWRITE_MINIMAL_SEMANTIC": 120,
+      "KEEP_SEMANTIC_SCOPE": 8,
+      "UPSTREAM_MEANING_REVIEW": 1
+    },
+    "confidence": {
+      "HIGH": 437,
+      "MEDIUM": 151,
+      "LOW": 0,
+      "MISSING": 0
+    },
+    "worker_wave": {
+      "status": "COMPLETE",
+      "workers": 10,
+      "imported_judgments": 548,
+      "production_changes": 0,
+      "branch_heads": [
+        {
+          "worker_id": "W01",
+          "branch": "audit/japanese-prompt-authority-worker-01",
+          "branch_head": "c64dfa56ebeec9b14514ed7927db529303d56d94",
+          "claim_sha256": "de6fcc0ed4fcfe2518bbc414211b17272de1d0b29ba502cb597ce67dfaacec9a",
+          "parallel_review_base_sha": "8ea0e6a4521059144d818e8cbca5e23e9e69dce0"
+        },
+        {
+          "worker_id": "W02",
+          "branch": "audit/japanese-prompt-authority-worker-02",
+          "branch_head": "6c506e07ff22721fb33df58d86d36ddd891a4454",
+          "claim_sha256": "9da93a6a6329e4321427faa4530b650ba276bcdbdb11db574975cc4632716707",
+          "parallel_review_base_sha": "8ea0e6a4521059144d818e8cbca5e23e9e69dce0"
+        },
+        {
+          "worker_id": "W03",
+          "branch": "audit/japanese-prompt-authority-worker-03",
+          "branch_head": "56745c9ffcbfce91b1da74b0a42e71e0d7a9917e",
+          "claim_sha256": "5f278e83bba0073c4d9c2c15ec4e4e1f0482ea2e4632e84b0c2327b446d7f620",
+          "parallel_review_base_sha": "8ea0e6a4521059144d818e8cbca5e23e9e69dce0"
+        },
+        {
+          "worker_id": "W04",
+          "branch": "audit/japanese-prompt-authority-worker-04",
+          "branch_head": "c14d4e24b343fb0bb79a8c753fb23329b63fb7c1",
+          "claim_sha256": "4f14982c4d802ddb0ea327ae86d2065d6c8a5cfa3e9fb9c0d67ac95e58ba12f2",
+          "parallel_review_base_sha": "8ea0e6a4521059144d818e8cbca5e23e9e69dce0"
+        },
+        {
+          "worker_id": "W05",
+          "branch": "audit/japanese-prompt-authority-worker-05",
+          "branch_head": "b1ac88fed80b09007d263a05d0aa218d64c55ae8",
+          "claim_sha256": "7e98003926ec6a57ddb43aa625ed272bb1b1a92c9bff694d258f27027d317024",
+          "parallel_review_base_sha": "8ea0e6a4521059144d818e8cbca5e23e9e69dce0"
+        },
+        {
+          "worker_id": "W06",
+          "branch": "audit/japanese-prompt-authority-worker-06",
+          "branch_head": "d112ecf455edb91fb2823bb02a5aefc28427f42f",
+          "claim_sha256": "4456b86eb51b3a9b5e843fcb83607f6a6ae941b24292ece541d8369c53953680",
+          "parallel_review_base_sha": "8ea0e6a4521059144d818e8cbca5e23e9e69dce0"
+        },
+        {
+          "worker_id": "W07",
+          "branch": "audit/japanese-prompt-authority-worker-07",
+          "branch_head": "dad0b6c97a79475d39a953f442464a460b61ec38",
+          "claim_sha256": "4405294f9301460b57d4491551de26b4db82762c3e73637f35a71f1b3f9c4760",
+          "parallel_review_base_sha": "8ea0e6a4521059144d818e8cbca5e23e9e69dce0"
+        },
+        {
+          "worker_id": "W08",
+          "branch": "audit/japanese-prompt-authority-worker-08",
+          "branch_head": "fdc9e713f4e16f2b8618f1fb1e9a776cae0f824e",
+          "claim_sha256": "dd1468e6b8e88b1ede964203729265155412f3b282c1a9c29892ba81082f870e",
+          "parallel_review_base_sha": "8ea0e6a4521059144d818e8cbca5e23e9e69dce0"
+        },
+        {
+          "worker_id": "W09",
+          "branch": "audit/japanese-prompt-authority-worker-09",
+          "branch_head": "49fa8bdc3da464e574cecf350477d1a64fb16864",
+          "claim_sha256": "f6a04795116d445b61db972b45d9d2871668966b6a916d23aac27efd7997a0c4",
+          "parallel_review_base_sha": "8ea0e6a4521059144d818e8cbca5e23e9e69dce0"
+        },
+        {
+          "worker_id": "W10",
+          "branch": "audit/japanese-prompt-authority-worker-10",
+          "branch_head": "71b4971e5b7a10a206b3c3981bf6c10b3a4b6f55",
+          "claim_sha256": "e39e612ecc54fa03ccda054256e3015d11b15ada195a46b9d59a2c793a4372bb",
+          "parallel_review_base_sha": "8ea0e6a4521059144d818e8cbca5e23e9e69dce0"
+        }
+      ]
+    },
     "phrases": {
       "CURRENT": {
         "population": 300,
         "decisions": {
-          "KEEP": 26,
-          "REMOVE": 0,
+          "KEEP": 295,
+          "REMOVE": 5,
           "UPSTREAM_REVIEW": 0,
-          "PENDING": 274
+          "PENDING": 0
         },
-        "resolved": 26,
-        "pending": 274
+        "resolved": 300,
+        "pending": 0
       },
       "HISTORICAL_REMOVAL": {
         "population": 670,
-        "RESTORE": 14,
-        "KEEP_REMOVED_SEMANTIC_MISMATCH": 12,
+        "RESTORE": 531,
+        "KEEP_REMOVED_SEMANTIC_MISMATCH": 139,
         "UPSTREAM_REVIEW": 0,
-        "PENDING": 644,
-        "dispositioned": 26
+        "PENDING": 0,
+        "dispositioned": 670
       },
       "HISTORICAL_ADDITION": {
         "population": 8,
-        "KEEP": 1,
+        "KEEP": 8,
         "REMOVE": 0,
         "UPSTREAM_REVIEW": 0,
-        "PENDING": 7,
-        "checked": 1
+        "PENDING": 0,
+        "checked": 8
       }
     },
     "target_leakage": {
@@ -142,8 +240,8 @@
       ]
     },
     "meta_hint": {
-      "found": 26,
-      "resolved": 25,
+      "found": 243,
+      "resolved": 242,
       "upstream": 1,
       "pending": 0,
       "entry_ids": [
@@ -171,22 +269,241 @@
         "vocab:00229",
         "vocab:00243",
         "vocab:00247",
+        "vocab:00248",
+        "vocab:00275",
+        "vocab:00280",
+        "vocab:00318",
+        "vocab:00364",
+        "vocab:00365",
+        "vocab:00376",
+        "vocab:00381",
+        "vocab:00382",
+        "vocab:00393",
+        "vocab:00395",
+        "vocab:00401",
+        "vocab:00434",
+        "vocab:00473",
+        "vocab:00481",
+        "vocab:00484",
+        "vocab:00502",
+        "vocab:00520",
+        "vocab:00521",
+        "vocab:00525",
+        "vocab:00526",
+        "vocab:00533",
+        "vocab:00534",
+        "vocab:00540",
+        "vocab:00547",
+        "vocab:00569",
+        "vocab:00574",
+        "vocab:00575",
+        "vocab:00602",
+        "vocab:00603",
+        "vocab:00613",
+        "vocab:00634",
+        "vocab:00678",
+        "vocab:00688",
+        "vocab:00698",
+        "vocab:00715",
+        "vocab:00719",
+        "vocab:00721",
+        "vocab:00736",
+        "vocab:00756",
+        "vocab:00768",
+        "vocab:00770",
+        "vocab:00805",
+        "vocab:00813",
+        "vocab:00818",
+        "vocab:00850",
+        "vocab:00857",
+        "vocab:00862",
+        "vocab:00864",
+        "vocab:00869",
+        "vocab:00875",
+        "vocab:00878",
+        "vocab:00901",
+        "vocab:00902",
+        "vocab:00912",
+        "vocab:00922",
+        "vocab:00928",
+        "vocab:00932",
+        "vocab:00946",
+        "vocab:00964",
+        "vocab:00968",
+        "vocab:00971",
+        "vocab:00975",
+        "vocab:00980",
+        "vocab:00988",
+        "vocab:00999",
+        "vocab:01001",
+        "vocab:01003",
+        "vocab:01007",
+        "vocab:01012",
+        "vocab:01013",
+        "vocab:01014",
+        "vocab:01016",
+        "vocab:01022",
+        "vocab:01030",
+        "vocab:01043",
+        "vocab:01045",
+        "vocab:01057",
+        "vocab:01064",
+        "vocab:01065",
+        "vocab:01067",
+        "vocab:01068",
+        "vocab:01073",
+        "vocab:01076",
+        "vocab:01080",
+        "vocab:01084",
+        "vocab:01086",
+        "vocab:01105",
+        "vocab:01109",
+        "vocab:01110",
+        "vocab:01113",
+        "vocab:01120",
+        "vocab:01128",
+        "vocab:01129",
+        "vocab:01131",
+        "vocab:01134",
+        "vocab:01142",
+        "vocab:01143",
+        "vocab:01148",
+        "vocab:01151",
+        "vocab:01156",
+        "vocab:01160",
+        "vocab:01164",
+        "vocab:01169",
+        "vocab:01178",
+        "vocab:01179",
+        "vocab:01181",
+        "vocab:01196",
         "vocab:01198",
-        "vocab:01337"
+        "vocab:01205",
+        "vocab:01207",
+        "vocab:01208",
+        "vocab:01210",
+        "vocab:01228",
+        "vocab:01246",
+        "vocab:01255",
+        "vocab:01259",
+        "vocab:01260",
+        "vocab:01268",
+        "vocab:01269",
+        "vocab:01288",
+        "vocab:01299",
+        "vocab:01305",
+        "vocab:01306",
+        "vocab:01319",
+        "vocab:01322",
+        "vocab:01330",
+        "vocab:01337",
+        "vocab:01353",
+        "vocab:01354",
+        "vocab:01358",
+        "vocab:01359",
+        "vocab:01368",
+        "vocab:01376",
+        "vocab:01402",
+        "vocab:01406",
+        "vocab:01408",
+        "vocab:01412",
+        "vocab:01413",
+        "vocab:01418",
+        "vocab:01421",
+        "vocab:01443",
+        "vocab:01444",
+        "vocab:01454",
+        "vocab:01460",
+        "vocab:01468",
+        "vocab:01495",
+        "vocab:01522",
+        "vocab:01549",
+        "vocab:01567",
+        "vocab:01588",
+        "vocab:01592",
+        "vocab:01630",
+        "vocab:01631",
+        "vocab:01668",
+        "vocab:01697",
+        "vocab:01708",
+        "vocab:01717",
+        "vocab:01732",
+        "vocab:01735",
+        "vocab:01736",
+        "vocab:01754",
+        "vocab:01756",
+        "vocab:01771",
+        "vocab:01798",
+        "vocab:01810",
+        "vocab:01859",
+        "vocab:01870",
+        "vocab:01890",
+        "vocab:01913",
+        "vocab:01927",
+        "vocab:01934",
+        "vocab:01979",
+        "vocab:01984",
+        "vocab:02058",
+        "vocab:02070",
+        "vocab:02074",
+        "vocab:02094",
+        "vocab:02098",
+        "vocab:02116",
+        "vocab:02118",
+        "vocab:02125",
+        "vocab:02134",
+        "vocab:02147",
+        "vocab:02154",
+        "vocab:02165",
+        "vocab:02177",
+        "vocab:02193",
+        "vocab:02205",
+        "vocab:02217",
+        "vocab:02249",
+        "vocab:02254",
+        "vocab:02257",
+        "vocab:02262",
+        "vocab:02266",
+        "vocab:02270",
+        "vocab:02279",
+        "vocab:02280",
+        "vocab:02288",
+        "vocab:02301",
+        "vocab:02306",
+        "vocab:02322",
+        "vocab:02330",
+        "vocab:02340",
+        "vocab:02351",
+        "vocab:02373",
+        "vocab:02377",
+        "vocab:02391",
+        "vocab:02394",
+        "vocab:02397",
+        "vocab:02406",
+        "vocab:02412",
+        "vocab:02438",
+        "vocab:02449",
+        "vocab:02454",
+        "vocab:02467",
+        "vocab:02476",
+        "vocab:02480",
+        "vocab:02481"
       ]
     },
     "integrity": {
       "duplicate_entry_ids": 0,
       "duplicate_phrase_keys": 0,
       "unknown_ids": 0,
-      "missing_batch_ids": 0
+      "missing_batch_ids": 0,
+      "reviewed_confidence_low": 0,
+      "reviewed_confidence_missing": 0
     }
   },
   "production_changes": 0,
   "strict_validator": "NOT_RUN",
   "deterministic_regeneration": "NOT_RUN",
   "final_current_main_reconciliation_sha": null,
-  "branch_head_at_generation": "8e6de9cb8cec9419d733231beae178fea001b11a",
+  "branch_head_at_generation": "d5e2ea76cb9138308af2ec30ac059168da75919b",
   "historical_materialization_divergence": {
     "comparison": {
       "from": "previous_materialization_after",
@@ -251,5 +568,105 @@
     "union_entries_slot_pending": 0,
     "reviewed_40_slot_bearing_checked": 8,
     "reviewed_40_reconciliation_count": 0
+  },
+  "aggregation": {
+    "worker_wave": {
+      "status": "COMPLETE",
+      "workers": 10,
+      "imported_judgments": 548,
+      "production_changes": 0,
+      "branch_heads": [
+        {
+          "worker_id": "W01",
+          "branch": "audit/japanese-prompt-authority-worker-01",
+          "branch_head": "c64dfa56ebeec9b14514ed7927db529303d56d94",
+          "claim_sha256": "de6fcc0ed4fcfe2518bbc414211b17272de1d0b29ba502cb597ce67dfaacec9a",
+          "parallel_review_base_sha": "8ea0e6a4521059144d818e8cbca5e23e9e69dce0"
+        },
+        {
+          "worker_id": "W02",
+          "branch": "audit/japanese-prompt-authority-worker-02",
+          "branch_head": "6c506e07ff22721fb33df58d86d36ddd891a4454",
+          "claim_sha256": "9da93a6a6329e4321427faa4530b650ba276bcdbdb11db574975cc4632716707",
+          "parallel_review_base_sha": "8ea0e6a4521059144d818e8cbca5e23e9e69dce0"
+        },
+        {
+          "worker_id": "W03",
+          "branch": "audit/japanese-prompt-authority-worker-03",
+          "branch_head": "56745c9ffcbfce91b1da74b0a42e71e0d7a9917e",
+          "claim_sha256": "5f278e83bba0073c4d9c2c15ec4e4e1f0482ea2e4632e84b0c2327b446d7f620",
+          "parallel_review_base_sha": "8ea0e6a4521059144d818e8cbca5e23e9e69dce0"
+        },
+        {
+          "worker_id": "W04",
+          "branch": "audit/japanese-prompt-authority-worker-04",
+          "branch_head": "c14d4e24b343fb0bb79a8c753fb23329b63fb7c1",
+          "claim_sha256": "4f14982c4d802ddb0ea327ae86d2065d6c8a5cfa3e9fb9c0d67ac95e58ba12f2",
+          "parallel_review_base_sha": "8ea0e6a4521059144d818e8cbca5e23e9e69dce0"
+        },
+        {
+          "worker_id": "W05",
+          "branch": "audit/japanese-prompt-authority-worker-05",
+          "branch_head": "b1ac88fed80b09007d263a05d0aa218d64c55ae8",
+          "claim_sha256": "7e98003926ec6a57ddb43aa625ed272bb1b1a92c9bff694d258f27027d317024",
+          "parallel_review_base_sha": "8ea0e6a4521059144d818e8cbca5e23e9e69dce0"
+        },
+        {
+          "worker_id": "W06",
+          "branch": "audit/japanese-prompt-authority-worker-06",
+          "branch_head": "d112ecf455edb91fb2823bb02a5aefc28427f42f",
+          "claim_sha256": "4456b86eb51b3a9b5e843fcb83607f6a6ae941b24292ece541d8369c53953680",
+          "parallel_review_base_sha": "8ea0e6a4521059144d818e8cbca5e23e9e69dce0"
+        },
+        {
+          "worker_id": "W07",
+          "branch": "audit/japanese-prompt-authority-worker-07",
+          "branch_head": "dad0b6c97a79475d39a953f442464a460b61ec38",
+          "claim_sha256": "4405294f9301460b57d4491551de26b4db82762c3e73637f35a71f1b3f9c4760",
+          "parallel_review_base_sha": "8ea0e6a4521059144d818e8cbca5e23e9e69dce0"
+        },
+        {
+          "worker_id": "W08",
+          "branch": "audit/japanese-prompt-authority-worker-08",
+          "branch_head": "fdc9e713f4e16f2b8618f1fb1e9a776cae0f824e",
+          "claim_sha256": "dd1468e6b8e88b1ede964203729265155412f3b282c1a9c29892ba81082f870e",
+          "parallel_review_base_sha": "8ea0e6a4521059144d818e8cbca5e23e9e69dce0"
+        },
+        {
+          "worker_id": "W09",
+          "branch": "audit/japanese-prompt-authority-worker-09",
+          "branch_head": "49fa8bdc3da464e574cecf350477d1a64fb16864",
+          "claim_sha256": "f6a04795116d445b61db972b45d9d2871668966b6a916d23aac27efd7997a0c4",
+          "parallel_review_base_sha": "8ea0e6a4521059144d818e8cbca5e23e9e69dce0"
+        },
+        {
+          "worker_id": "W10",
+          "branch": "audit/japanese-prompt-authority-worker-10",
+          "branch_head": "71b4971e5b7a10a206b3c3981bf6c10b3a4b6f55",
+          "claim_sha256": "e39e612ecc54fa03ccda054256e3015d11b15ada195a46b9d59a2c793a4372bb",
+          "parallel_review_base_sha": "8ea0e6a4521059144d818e8cbca5e23e9e69dce0"
+        }
+      ]
+    },
+    "entry_decisions": {
+      "KEEP": 40,
+      "PROMPT_SIMPLIFY": 141,
+      "PARAPHRASE_RESTORE": 173,
+      "PROMPT_AND_PARAPHRASE_RECONCILE": 231,
+      "PARAPHRASE_REMOVE_SEMANTIC": 3,
+      "UPSTREAM_AUTHORITY_REVIEW": 1
+    },
+    "parenthetical_decisions": {
+      "REMOVE_META_HINT": 247,
+      "REWRITE_MINIMAL_SEMANTIC": 120,
+      "KEEP_SEMANTIC_SCOPE": 8,
+      "UPSTREAM_MEANING_REVIEW": 1
+    },
+    "confidence": {
+      "HIGH": 437,
+      "MEDIUM": 151,
+      "LOW": 0,
+      "MISSING": 0
+    }
   }
 }

@@ -194,7 +194,8 @@ try {
   assert(summary.candidates.confirmed_defect_entries === 17 && summary.candidates.unresolved_defect_entries === 0, "Confirmed/unresolved defect accounting is inconsistent.");
   assert(summary.union_coverage.population === 589 && summary.union_coverage.slot_checked === 589 && summary.union_coverage.slot_pending === 0, "Union slot coverage is incomplete.");
   assert(summary.production_changes === 0 && manifest.production_changes === 0, "Production changes must remain zero.");
-  assert(manifest.status === "IN_PROGRESS", "The 589-entry Japanese Prompt Authority audit must remain IN_PROGRESS.");
+  assert(manifest.status === "SEMANTIC_REVIEW_COMPLETE_PENDING_FINAL_RECONCILIATION", "The audit must remain open pending latest-main reconciliation and strict final validation.");
+  assert(index.entries.filter((row) => row.review_status === "PENDING").length === 0, "Semantic review must be complete before final reconciliation.");
   assert(manifest.historical_materialization_divergence?.mismatched_entries === 340, "Historical materialization divergence must remain distinct and equal 340.");
 
   console.log(JSON.stringify({

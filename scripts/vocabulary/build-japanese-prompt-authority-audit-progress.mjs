@@ -28,6 +28,7 @@ const MANIFEST_PATH = resolve(AUDIT_DIR, "manifest.json");
 const CHECKPOINT_PATH = resolve(AUDIT_DIR, "checkpoint.json");
 const SUMMARY_PATH = resolve(AUDIT_DIR, "summary.md");
 const INDEX_PATH = resolve(AUDIT_DIR, "review-index.json");
+const DECISIONS_PATH = resolve(AUDIT_DIR, "decisions.json");
 const BATCH_DIR = resolve(AUDIT_DIR, "batches");
 const SLOT_INVENTORY_PATH = resolve(AUDIT_DIR, "slot-inventory.json");
 const SLOT_CANDIDATES_PATH = resolve(AUDIT_DIR, "slot-candidates.json");
@@ -139,7 +140,7 @@ function normalizePhraseDecision(source, decision) {
   if (decision === "UPSTREAM_REVIEW") return "UPSTREAM_REVIEW";
   if (source === "CURRENT") {
     if (decision === "KEEP_CURRENT" || decision === "KEEP") return "KEEP";
-    if (decision === "REMOVE_CURRENT" || decision === "REMOVE") return "REMOVE";
+    if (["REMOVE_CURRENT", "REMOVE_CURRENT_SEMANTIC_MISMATCH", "REMOVE"].includes(decision)) return "REMOVE";
   }
   if (source === "HISTORICAL_REMOVAL") {
     if (decision === "RESTORE") return "RESTORE";
@@ -147,7 +148,7 @@ function normalizePhraseDecision(source, decision) {
   }
   if (source === "HISTORICAL_ADDITION") {
     if (decision === "KEEP_ADDED" || decision === "KEEP") return "KEEP";
-    if (decision === "REMOVE_ADDED" || decision === "REMOVE") return "REMOVE";
+    if (["REMOVE_ADDED", "REMOVE_ADDED_SEMANTIC_MISMATCH", "REMOVE"].includes(decision)) return "REMOVE";
   }
   fail(`Unexpected ${source} phrase decision ${JSON.stringify(decision)}.`);
 }
@@ -195,6 +196,7 @@ function build() {
   const manifest = readJson(MANIFEST_PATH);
   const oldCheckpoint = readJson(CHECKPOINT_PATH);
   const index = readJson(INDEX_PATH);
+  const decisionsDocument = readJson(DECISIONS_PATH);
   const slotInventory = readJson(SLOT_INVENTORY_PATH);
   const slotCandidates = readJson(SLOT_CANDIDATES_PATH);
   const slotReview = readJson(SLOT_REVIEW_PATH);
@@ -203,6 +205,7 @@ function build() {
   const currentMainSha = resolveMainSha(args.mainSha);
 
   assert(Array.isArray(index.entries), "review-index.json must contain an entries array.");
+  assert(Array.isArray(decisionsDocument.entries), "decisions.json must contain an entries array.");
   assert(Array.isArray(slotInventory) && slotInventory.length === 2478, "slot-inventory.json must cover all 2,478 production entries.");
   assert(Array.isArray(slotCandidates), "slot-candidates.json must contain an array.");
   assert(Array.isArray(slotReview), "slot-review.json must contain an array.");
@@ -240,6 +243,7 @@ function build() {
   }
   const batchEntries = batchDocuments.flatMap((batch) => batch.entries);
   const batchById = idsMap(batchEntries, "batch files");
+  const decisionsById = idsMap(decisionsDocument.entries, "decisions.json");
 
   const indexIds = new Set(indexById.keys());
   const batchIds = new Set(batchById.keys());
@@ -322,6 +326,60 @@ function build() {
     assert(state.reviewed + state.upstream + state.pending === entries.length, `${batch.batch_id} accounting does not sum to entry_count.`);
     return { batch_id: batch.batch_id, entry_count: entries.length, ...state };
   });
+
+  const decisionKeys = [
+    "KEEP",
+    "PROMPT_SIMPLIFY",
+    "PARAPHRASE_RESTORE",
+    "PROMPT_AND_PARAPHRASE_RECONCILE",
+    "PARAPHRASE_REMOVE_SEMANTIC",
+    "UPSTREAM_AUTHORITY_REVIEW",
+  ];
+  const entryDecisionCounts = countBy(index.entries.map((entry) => entry.entry_decision), decisionKeys);
+  const parentheticalDecisionKeys = [
+    "REMOVE_META_HINT",
+    "REWRITE_MINIMAL_SEMANTIC",
+    "KEEP_SEMANTIC_SCOPE",
+    "UPSTREAM_MEANING_REVIEW",
+  ];
+  const parentheticalDecisionCounts = countBy(
+    batchEntries
+      .filter((entry) => entry.cohort_flags?.current_parenthetical === true)
+      .map((entry) => entry.parenthetical_review?.parenthetical_decision),
+    parentheticalDecisionKeys,
+  );
+  const confidenceCounts = { HIGH: 0, MEDIUM: 0, LOW: 0, MISSING: 0 };
+  for (const entry of index.entries.filter((row) => row.review_status === "REVIEWED")) {
+    const decision = decisionsById.get(entry.id);
+    assert(decision, `No decision projection exists for ${entry.id}.`);
+    assert(decision.review_status === entry.review_status, `Decision review status differs for ${entry.id}.`);
+    const confidence = decision.confidence;
+    confidenceCounts[confidence === "HIGH" || confidence === "MEDIUM" || confidence === "LOW" ? confidence : "MISSING"] += 1;
+  }
+  const workerDecisionRows = decisionsDocument.entries.filter((entry) => entry.provenance?.authority_type === "PARALLEL_WORKER");
+  const workerRefs = new Map();
+  for (const entry of workerDecisionRows) {
+    const provenance = entry.provenance;
+    assert(provenance.worker_id && provenance.branch && provenance.branch_head && provenance.claim_sha256 && provenance.parallel_review_base_sha,
+      `Worker provenance is incomplete for ${entry.id}.`);
+    const prior = workerRefs.get(provenance.worker_id);
+    const current = {
+      worker_id: provenance.worker_id,
+      branch: provenance.branch,
+      branch_head: provenance.branch_head,
+      claim_sha256: provenance.claim_sha256,
+      parallel_review_base_sha: provenance.parallel_review_base_sha,
+    };
+    if (prior) assert(JSON.stringify(prior) === JSON.stringify(current), `Worker provenance drifts within ${provenance.worker_id}.`);
+    else workerRefs.set(provenance.worker_id, current);
+  }
+  const workerWave = {
+    status: workerDecisionRows.length === 548 && workerRefs.size === 10 ? "COMPLETE" : "IN_PROGRESS",
+    workers: workerRefs.size,
+    imported_judgments: workerDecisionRows.length,
+    production_changes: 0,
+    branch_heads: [...workerRefs.values()].sort((a, b) => a.worker_id.localeCompare(b.worker_id)),
+  };
 
   const phraseRows = [];
   const expectedPhraseKeys = new Set();
@@ -485,10 +543,18 @@ function build() {
 
   const currentParenthetical = cohortPopulations.current_parenthetical_entries;
   const previousMaterialized = cohortPopulations.previous_nuance_materialized_ids;
+  const parentheticalSegmentPopulation = batchEntries.reduce((sum, entry) => sum + (entry.current_parenthetical_segments ?? []).length, 0);
+  const workerNewAdditionPopulation = batchEntries
+    .filter((entry) => decisionsById.get(entry.id)?.provenance?.authority_type === "PARALLEL_WORKER")
+    .reduce((sum, entry) => sum + (entry.new_addition_candidates ?? []).length, 0);
   const coverage = {
     entries: entryCoverage,
     cohorts: cohortCoverage,
     batches: perBatch,
+    entry_decisions: entryDecisionCounts,
+    parenthetical_decisions: parentheticalDecisionCounts,
+    confidence: confidenceCounts,
+    worker_wave: workerWave,
     phrases: phraseCoverage,
     target_leakage: targetLeakage,
     meta_hint: metaHint,
@@ -497,13 +563,21 @@ function build() {
       duplicate_phrase_keys: 0,
       unknown_ids: unknownIds.length,
       missing_batch_ids: missingBatchIds.length,
+      reviewed_confidence_low: confidenceCounts.LOW,
+      reviewed_confidence_missing: confidenceCounts.MISSING,
     },
   };
 
-  const nextStep = `Continue semantic review of the ${entryCoverage.pending} PENDING union entries with the slot integrity gate applied. Keep vocab:00083 isolated for upstream authority review; do not mark the audit closed.`;
+  const reviewComplete = entryCoverage.pending === 0;
+  const auditStatus = reviewComplete
+    ? "SEMANTIC_REVIEW_COMPLETE_PENDING_FINAL_RECONCILIATION"
+    : "PARTIAL_SEMANTIC_REVIEW";
+  const nextStep = reviewComplete
+    ? "Run latest-main drift reconciliation, revalidate only affected IDs, resolve vocab:00083 upstream authority, and run strict final validation. Keep production unchanged and do not mark the audit closed."
+    : `Continue semantic review of the ${entryCoverage.pending} PENDING union entries with the slot integrity gate applied. Keep vocab:00083 isolated for upstream authority review; do not mark the audit closed.`;
   const progress = {
     schema_version: 2,
-    status: "PARTIAL_SEMANTIC_REVIEW",
+    status: auditStatus,
     audit_base_main_sha: manifest.audit_base_main_sha,
     branch_head_at_generation: branchHead,
     current_main_sha: currentMainSha,
@@ -511,6 +585,10 @@ function build() {
     union_population: unionPopulation,
     review: entryCoverage,
     batches: perBatch,
+    entry_decisions: entryDecisionCounts,
+    parenthetical_decisions: parentheticalDecisionCounts,
+    confidence: confidenceCounts,
+    worker_wave: workerWave,
     parenthetical: { population: currentParenthetical, ...cohortCoverage.current_parenthetical_entries },
     previous_materialized: { population: previousMaterialized, ...cohortCoverage.previous_nuance_materialized_ids },
     phrases: phraseCoverage,
@@ -527,7 +605,7 @@ function build() {
   const nextManifest = {
     ...manifest,
     schema_version: 2,
-    status: "IN_PROGRESS",
+    status: auditStatus,
     branch_head_at_generation: branchHead,
     populations: {
       union_entries: unionPopulation,
@@ -538,6 +616,12 @@ function build() {
       source_order: manifest.populations.source_order,
     },
     coverage,
+    aggregation: {
+      worker_wave: workerWave,
+      entry_decisions: entryDecisionCounts,
+      parenthetical_decisions: parentheticalDecisionCounts,
+      confidence: confidenceCounts,
+    },
     historical_materialization_divergence: historicalDivergence,
     slot_integrity: slotCoverage,
     stale,
@@ -555,7 +639,7 @@ function build() {
 
   const nextCheckpoint = {
     schema_version: 2,
-    status: "PARTIAL_SEMANTIC_REVIEW",
+    status: auditStatus,
     audit_base_main_sha: manifest.audit_base_main_sha,
     branch_head_at_generation: branchHead,
     current_main_sha: currentMainSha,
@@ -563,6 +647,10 @@ function build() {
     union_population: unionPopulation,
     review: entryCoverage,
     batches: perBatch,
+    entry_decisions: entryDecisionCounts,
+    parenthetical_decisions: parentheticalDecisionCounts,
+    confidence: confidenceCounts,
+    worker_wave: workerWave,
     parenthetical: { population: currentParenthetical, ...cohortCoverage.current_parenthetical_entries },
     previous_materialized: { population: previousMaterialized, ...cohortCoverage.previous_nuance_materialized_ids },
     historical_removals: phraseCoverage.HISTORICAL_REMOVAL,
@@ -581,16 +669,25 @@ function build() {
   const summary = [
     "# Japanese Prompt Authority Reconciliation — Progress Accounting",
     "",
-    "Status: **IN PROGRESS**. This file is a deterministic human-readable projection of `checkpoint.json`.",
+    `Status: **${auditStatus}**. ${reviewComplete ? "Semantic review is complete; latest-main reconciliation and strict final validation are pending." : "Semantic review remains in progress."} This file is a deterministic human-readable projection of checkpoint.json.`,
     "",
     `- Audit base: \`${manifest.audit_base_main_sha}\``,
     `- Progress generated from branch head: \`${branchHead}\``,
     `- Union: ${unionPopulation}; REVIEWED ${entryCoverage.reviewed}; UPSTREAM ${entryCoverage.upstream}; PENDING ${entryCoverage.pending}; resolved ${entryCoverage.resolved}`,
+    `- Dispositioned: ${entryCoverage.resolved}/${unionPopulation}; PENDING ${entryCoverage.pending}`,
+    `- Entry decisions: ${Object.entries(entryDecisionCounts).map(([key, value]) => `${key} ${value}`).join("; ")}`,
+    `- Parenthetical decisions: ${Object.entries(parentheticalDecisionCounts).map(([key, value]) => `${key} ${value}`).join("; ")}`,
+    `- Parallel worker wave: ${workerWave.status}; ${workerWave.imported_judgments} judgments from ${workerWave.workers} workers; production changes ${workerWave.production_changes}`,
+    `- Reviewed-entry confidence: HIGH ${confidenceCounts.HIGH}; MEDIUM ${confidenceCounts.MEDIUM}; LOW ${confidenceCounts.LOW}; missing ${confidenceCounts.MISSING}`,
     `- Current parenthetical: ${currentParenthetical}; reviewed ${cohortCoverage.current_parenthetical_entries.reviewed}; upstream ${cohortCoverage.current_parenthetical_entries.upstream}; pending ${cohortCoverage.current_parenthetical_entries.pending}; resolved ${cohortCoverage.current_parenthetical_entries.resolved}`,
+    `- Parenthetical decisions fully dispositioned: ${cohortCoverage.current_parenthetical_entries.resolved}/${currentParenthetical} entries; ${parentheticalSegmentPopulation} current segments`,
     `- Previous materialized IDs: ${previousMaterialized}; reviewed ${cohortCoverage.previous_nuance_materialized_ids.reviewed}; upstream ${cohortCoverage.previous_nuance_materialized_ids.upstream}; pending ${cohortCoverage.previous_nuance_materialized_ids.pending}; resolved ${cohortCoverage.previous_nuance_materialized_ids.resolved}`,
     `- Historical removed phrases: ${phraseCoverage.HISTORICAL_REMOVAL.population}; RESTORE ${phraseCoverage.HISTORICAL_REMOVAL.RESTORE}; KEEP_REMOVED_SEMANTIC_MISMATCH ${phraseCoverage.HISTORICAL_REMOVAL.KEEP_REMOVED_SEMANTIC_MISMATCH}; UPSTREAM_REVIEW ${phraseCoverage.HISTORICAL_REMOVAL.UPSTREAM_REVIEW}; PENDING ${phraseCoverage.HISTORICAL_REMOVAL.PENDING}`,
     `- Historical added phrases: ${phraseCoverage.HISTORICAL_ADDITION.population}; checked ${phraseCoverage.HISTORICAL_ADDITION.checked}; KEEP ${phraseCoverage.HISTORICAL_ADDITION.KEEP}; REMOVE ${phraseCoverage.HISTORICAL_ADDITION.REMOVE}; UPSTREAM_REVIEW ${phraseCoverage.HISTORICAL_ADDITION.UPSTREAM_REVIEW}; PENDING ${phraseCoverage.HISTORICAL_ADDITION.PENDING}`,
     `- Current paraphrase review (kept separate): ${phraseCoverage.CURRENT.population}; resolved ${phraseCoverage.CURRENT.resolved}; pending ${phraseCoverage.CURRENT.pending}`,
+    `- Historical removals fully dispositioned: ${phraseCoverage.HISTORICAL_REMOVAL.dispositioned}/${phraseCoverage.HISTORICAL_REMOVAL.population}`,
+    `- Historical additions fully dispositioned: ${phraseCoverage.HISTORICAL_ADDITION.checked}/${phraseCoverage.HISTORICAL_ADDITION.population}`,
+    `- Current paraphrases fully dispositioned: ${phraseCoverage.CURRENT.resolved}/${phraseCoverage.CURRENT.population}; worker new additions ${workerNewAdditionPopulation}`,
     `- Target leakage: found ${targetLeakage.found}; resolved ${targetLeakage.resolved}; pending ${targetLeakage.pending}`,
     `- Meta-hint: found ${metaHint.found}; resolved ${metaHint.resolved}; upstream ${metaHint.upstream}; pending ${metaHint.pending}`,
     `- Full production slot inventory: ${slotCoverage.production_inventory_population}; token-bearing entries ${slotCoverage.entries_with_candidate_tokens}; VARIABLE_SLOT entries ${slotCoverage.variable_slot_entries}; LEXICAL_TOKEN entries ${slotCoverage.lexical_placeholder_entries}; AMBIGUOUS entries ${slotCoverage.ambiguous_entries} (resolved ${slotCoverage.ambiguous_resolved})`,
@@ -599,7 +696,9 @@ function build() {
     `- Union slot gate: ${slotCoverage.union_entries_slot_checked}/${unionPopulation}; pending ${slotCoverage.union_entries_slot_pending}; reviewed-40 slot-bearing checked ${slotCoverage.reviewed_40_slot_bearing_checked}; reviewed-40 reconciliations ${slotCoverage.reviewed_40_reconciliation_count}`,
     `- Historical materialization divergence: ${historicalDivergence.mismatched_entries} entries; field mismatches ${JSON.stringify(fieldMismatchCounts)}. Informational only; these are not stale entries.`,
     `- Stale since audit base on current main (${currentMainSha}): ${stale.count}`,
-    `- Production changes: ${productionChanges}; semantic decision changes in this accounting repair: 0`,
+    `- Slot integrity: ${slotCoverage.union_entries_slot_checked}/${unionPopulation} checked; confirmed defects integrated ${slotCoverage.confirmed_defect_entries}; unresolved conflicts ${slotCoverage.unresolved_defect_entries}`,
+    `- Production changes: ${productionChanges}; production unchanged; worker judgments imported: ${workerWave.imported_judgments}`,
+    `- Audit closure: pending; latest-main reconciliation and strict final validation are not yet complete.`,
     `- Per-batch review: ${perBatch.map((batch) => `${batch.batch_id} ${batch.reviewed}/${batch.upstream}/${batch.pending}`).join("; ")} (reviewed/upstream/pending)`,
     `- Next step: ${nextStep}`,
     "",
