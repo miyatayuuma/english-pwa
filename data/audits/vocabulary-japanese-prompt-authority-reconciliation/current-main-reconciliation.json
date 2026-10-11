@@ -1,0 +1,44 @@
+{
+  "status": "PASS",
+  "audit_base_main_sha": "9007e2f59cc6bfc48e7021caa3b469dae89adb60",
+  "final_current_main_reconciliation_sha": "9007e2f59cc6bfc48e7021caa3b469dae89adb60",
+  "comparison_method": "ID_JOIN_ONLY; source_index is diagnostic metadata only",
+  "population": 589,
+  "comparison_fields": [
+    "canonical",
+    "sense_key",
+    "grammarRole",
+    "meaning_ja",
+    "paraphrases",
+    "answers",
+    "kind",
+    "subtype"
+  ],
+  "changed_ids": [],
+  "changed_id_count": 0,
+  "semantic_affected_ids": [],
+  "semantically_affected_id_count": 0,
+  "revalidated_ids": [],
+  "removed_ids": [],
+  "rekeyed_ids": [],
+  "classifications": {
+    "NON_SEMANTIC_DRIFT": 0,
+    "SEMANTIC_DRIFT_REVALIDATED_SAME": 0,
+    "SEMANTIC_DRIFT_REQUIRES_UPDATE": 0,
+    "SOURCE_REMOVED_OR_REKEYED": 0
+  },
+  "unresolved_semantic_drift": 0,
+  "changed_fields_by_id": {},
+  "source_snapshot_mismatches": [],
+  "historical_materialization_divergence": {
+    "mismatched_entries": 340,
+    "field_mismatch_counts": {
+      "meaning_ja": 0,
+      "canonical": 0,
+      "sense_key": 0,
+      "grammarRole": 0,
+      "paraphrases": 340
+    },
+    "classification": "HISTORICAL_MATERIALIZATION_DIVERGENCE; not current-main staleness"
+  }
+}

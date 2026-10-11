@@ -1182,27 +1182,27 @@
       "historically_removed_paraphrases": [],
       "historically_added_paraphrases": [],
       "parenthetical_review": {
-        "parenthetical_decision": "UPSTREAM_MEANING_REVIEW",
-        "recommended_prompt": null,
-        "retained_semantic_information": "意味authority自体の分離が必要。",
-        "removed_meta_information": "「驚き」と「拒否」の混在を括弧削除だけで解決しない。",
-        "prompt_reason": "sense_keyはdisbelief/refusal両方を含む一方、まさかは主にdisbeliefを表す。promptとcanonicalの対応をsense別に確定する必要がある。",
+        "parenthetical_decision": "REMOVE_META_HINT",
+        "recommended_prompt": "まさか",
+        "retained_semantic_information": "強い不信・驚き（disbelief / incredulity）。",
+        "removed_meta_information": "「口語」というregister提示、およびこのカードの学習範囲に含めない拒否sense。",
+        "prompt_reason": "出現文脈と以前のpromptはいずれも「まさか」であり、disbelief senseに限定する。canonicalの拒否用法をこのカードのpromptへ混ぜない。",
         "prompt_confidence": "HIGH",
-        "review_status": "UPSTREAM",
+        "review_status": "REVIEWED",
         "target_leakage_checked": true,
         "meta_hint_checked": true,
-        "prompt_minimality": "UPSTREAM"
+        "prompt_minimality": "PASS"
       },
       "paraphrase_review": [],
-      "recommended_paraphrases": null,
-      "entry_decision": "UPSTREAM_AUTHORITY_REVIEW",
+      "recommended_paraphrases": [],
+      "entry_decision": "PROMPT_SIMPLIFY",
       "evidence": [
         {
           "type": "sense ambiguity",
           "reason": "sense_keyはdisbelief/refusal両方を含む一方、まさかは主にdisbeliefを表す。promptとcanonicalの対応をsense別に確定する必要がある。"
         }
       ],
-      "review_status": "UPSTREAM",
+      "review_status": "REVIEWED",
       "slot_integrity_checked": true,
       "slot_reconciliation": {
         "review_status": "CLEAR",
@@ -1217,6 +1217,17 @@
         "reason": "No canonical variable slot notation was found.",
         "confidence": "HIGH",
         "slot_review_id": null
+      },
+      "recommended_prompt": "まさか",
+      "recommended_meaning_ja": "まさか",
+      "recommended_sense_key": "strong_disbelief",
+      "resolution_provenance": {
+        "authority_type": "EXPLICIT_SINGLE_SENSE_AUTHORITY",
+        "branch": "audit/vocabulary-japanese-prompt-authority-reconciliation",
+        "branch_head": "8af36e0da1bdbaa07d1e77b76221d640044a161d",
+        "resolved_from": "strong_disbelief_or_refusal",
+        "resolved_to": "strong_disbelief",
+        "excluded_sense": "strong_refusal"
       }
     },
     {

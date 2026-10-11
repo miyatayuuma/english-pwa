@@ -1,14 +1,20 @@
 {
   "schema_version": 2,
-  "status": "SEMANTIC_REVIEW_COMPLETE_PENDING_FINAL_RECONCILIATION",
+  "status": "CLOSED",
+  "semantic_review": "COMPLETE",
+  "upstream": 0,
+  "pending": 0,
+  "final_main_reconciliation": "COMPLETE",
+  "strict_validation": "PASS",
+  "production_materialization": "NOT_STARTED",
   "audit_base_main_sha": "9007e2f59cc6bfc48e7021caa3b469dae89adb60",
-  "branch_head_at_generation": "d5e2ea76cb9138308af2ec30ac059168da75919b",
+  "branch_head_at_generation": "8af36e0da1bdbaa07d1e77b76221d640044a161d",
   "current_main_sha": "9007e2f59cc6bfc48e7021caa3b469dae89adb60",
   "source_vocabulary_git_blob_sha": "c23643d26e71be22aaec5ec04ce63a7582ad9c25",
   "union_population": 589,
   "review": {
-    "reviewed": 588,
-    "upstream": 1,
+    "reviewed": 589,
+    "upstream": 0,
     "pending": 0,
     "resolved": 589
   },
@@ -16,8 +22,8 @@
     {
       "batch_id": "batch-001",
       "entry_count": 100,
-      "reviewed": 99,
-      "upstream": 1,
+      "reviewed": 100,
+      "upstream": 0,
       "pending": 0,
       "resolved": 100
     },
@@ -64,20 +70,20 @@
   ],
   "entry_decisions": {
     "KEEP": 40,
-    "PROMPT_SIMPLIFY": 141,
+    "PROMPT_SIMPLIFY": 142,
     "PARAPHRASE_RESTORE": 173,
     "PROMPT_AND_PARAPHRASE_RECONCILE": 231,
     "PARAPHRASE_REMOVE_SEMANTIC": 3,
-    "UPSTREAM_AUTHORITY_REVIEW": 1
+    "UPSTREAM_AUTHORITY_REVIEW": 0
   },
   "parenthetical_decisions": {
-    "REMOVE_META_HINT": 247,
+    "REMOVE_META_HINT": 248,
     "REWRITE_MINIMAL_SEMANTIC": 120,
     "KEEP_SEMANTIC_SCOPE": 8,
-    "UPSTREAM_MEANING_REVIEW": 1
+    "UPSTREAM_MEANING_REVIEW": 0
   },
   "confidence": {
-    "HIGH": 437,
+    "HIGH": 438,
     "MEDIUM": 151,
     "LOW": 0,
     "MISSING": 0
@@ -162,15 +168,15 @@
   },
   "parenthetical": {
     "population": 376,
-    "reviewed": 375,
-    "upstream": 1,
+    "reviewed": 376,
+    "upstream": 0,
     "pending": 0,
     "resolved": 376
   },
   "previous_materialized": {
     "population": 551,
-    "reviewed": 550,
-    "upstream": 1,
+    "reviewed": 551,
+    "upstream": 0,
     "pending": 0,
     "resolved": 551
   },
@@ -216,8 +222,8 @@
   },
   "meta_hint": {
     "found": 243,
-    "resolved": 242,
-    "upstream": 1,
+    "resolved": 243,
+    "upstream": 0,
     "pending": 0,
     "entry_ids": [
       "vocab:00004",
@@ -532,5 +538,5 @@
   },
   "production_changes": 0,
   "semantic_decision_changes": 0,
-  "next_step": "Run latest-main drift reconciliation, revalidate only affected IDs, resolve vocab:00083 upstream authority, and run strict final validation. Keep production unchanged and do not mark the audit closed."
+  "next_step": "Next task: Japanese Prompt Authority Production Materialization."
 }

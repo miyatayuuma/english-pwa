@@ -569,12 +569,23 @@ function build() {
   };
 
   const reviewComplete = entryCoverage.pending === 0;
-  const auditStatus = reviewComplete
-    ? "SEMANTIC_REVIEW_COMPLETE_PENDING_FINAL_RECONCILIATION"
-    : "PARTIAL_SEMANTIC_REVIEW";
-  const nextStep = reviewComplete
-    ? "Run latest-main drift reconciliation, revalidate only affected IDs, resolve vocab:00083 upstream authority, and run strict final validation. Keep production unchanged and do not mark the audit closed."
-    : `Continue semantic review of the ${entryCoverage.pending} PENDING union entries with the slot integrity gate applied. Keep vocab:00083 isolated for upstream authority review; do not mark the audit closed.`;
+  const finalClosure = manifest.status === "CLOSED"
+    && manifest.final_current_main_reconciliation_sha === currentMainSha
+    && manifest.current_main_reconciliation?.status === "PASS"
+    && manifest.strict_validator === "PASS"
+    && manifest.deterministic_regeneration === "PASS"
+    && manifest.production_materialization === "NOT_STARTED"
+    && productionChanges === 0;
+  const auditStatus = finalClosure
+    ? "CLOSED"
+    : reviewComplete
+      ? "SEMANTIC_REVIEW_COMPLETE_PENDING_FINAL_RECONCILIATION"
+      : "PARTIAL_SEMANTIC_REVIEW";
+  const nextStep = finalClosure
+    ? "Next task: Japanese Prompt Authority Production Materialization."
+    : reviewComplete
+      ? "Run latest-main drift reconciliation, revalidate only affected IDs, resolve vocab:00083 upstream authority, and run strict final validation. Keep production unchanged and do not mark the audit closed."
+      : `Continue semantic review of the ${entryCoverage.pending} PENDING union entries with the slot integrity gate applied. Keep vocab:00083 isolated for upstream authority review; do not mark the audit closed.`;
   const progress = {
     schema_version: 2,
     status: auditStatus,
@@ -599,6 +610,10 @@ function build() {
     stale,
     production_changes: productionChanges,
     semantic_decision_changes: 0,
+    semantic_review: finalClosure ? "COMPLETE" : reviewComplete ? "COMPLETE_PENDING_FINAL_RECONCILIATION" : "IN_PROGRESS",
+    final_main_reconciliation: finalClosure ? "COMPLETE" : "PENDING",
+    strict_validation: finalClosure ? "PASS" : (manifest.strict_validator || "NOT_RUN"),
+    production_materialization: manifest.production_materialization || "NOT_STARTED",
     next_step: nextStep,
   };
 
@@ -626,6 +641,10 @@ function build() {
     slot_integrity: slotCoverage,
     stale,
     production_changes: productionChanges,
+    semantic_review: finalClosure ? "COMPLETE" : reviewComplete ? "COMPLETE_PENDING_FINAL_RECONCILIATION" : "IN_PROGRESS",
+    final_main_reconciliation: finalClosure ? "COMPLETE" : "PENDING",
+    strict_validation: finalClosure ? "PASS" : (manifest.strict_validator || "NOT_RUN"),
+    production_materialization: manifest.production_materialization || "NOT_STARTED",
   };
   delete nextManifest.drift_at_base;
   for (const key of [
@@ -640,6 +659,12 @@ function build() {
   const nextCheckpoint = {
     schema_version: 2,
     status: auditStatus,
+    semantic_review: finalClosure ? "COMPLETE" : reviewComplete ? "COMPLETE_PENDING_FINAL_RECONCILIATION" : "IN_PROGRESS",
+    upstream: entryCoverage.upstream,
+    pending: entryCoverage.pending,
+    final_main_reconciliation: finalClosure ? "COMPLETE" : "PENDING",
+    strict_validation: finalClosure ? "PASS" : (manifest.strict_validator || "NOT_RUN"),
+    production_materialization: manifest.production_materialization || "NOT_STARTED",
     audit_base_main_sha: manifest.audit_base_main_sha,
     branch_head_at_generation: branchHead,
     current_main_sha: currentMainSha,
@@ -669,7 +694,7 @@ function build() {
   const summary = [
     "# Japanese Prompt Authority Reconciliation — Progress Accounting",
     "",
-    `Status: **${auditStatus}**. ${reviewComplete ? "Semantic review is complete; latest-main reconciliation and strict final validation are pending." : "Semantic review remains in progress."} This file is a deterministic human-readable projection of checkpoint.json.`,
+    `Status: **${auditStatus}**. ${finalClosure ? "Semantic review, latest-main reconciliation, and strict final validation are complete." : reviewComplete ? "Semantic review is complete; latest-main reconciliation and strict final validation are pending." : "Semantic review remains in progress."} This file is a deterministic human-readable projection of checkpoint.json.`,
     "",
     `- Audit base: \`${manifest.audit_base_main_sha}\``,
     `- Progress generated from branch head: \`${branchHead}\``,
@@ -698,7 +723,10 @@ function build() {
     `- Stale since audit base on current main (${currentMainSha}): ${stale.count}`,
     `- Slot integrity: ${slotCoverage.union_entries_slot_checked}/${unionPopulation} checked; confirmed defects integrated ${slotCoverage.confirmed_defect_entries}; unresolved conflicts ${slotCoverage.unresolved_defect_entries}`,
     `- Production changes: ${productionChanges}; production unchanged; worker judgments imported: ${workerWave.imported_judgments}`,
-    `- Audit closure: pending; latest-main reconciliation and strict final validation are not yet complete.`,
+    `- Audit closure: ${finalClosure ? "CLOSED" : "pending; latest-main reconciliation and strict final validation are not yet complete."}`,
+    `- Latest-main reconciliation: ${finalClosure ? "COMPLETE" : "PENDING"}; final SHA ${manifest.final_current_main_reconciliation_sha || currentMainSha}`,
+    `- Strict final validation: ${finalClosure ? "PASS" : (manifest.strict_validator || "NOT_RUN")}`,
+    `- Production materialization: ${manifest.production_materialization || "NOT_STARTED"}; production changes ${productionChanges}`,
     `- Per-batch review: ${perBatch.map((batch) => `${batch.batch_id} ${batch.reviewed}/${batch.upstream}/${batch.pending}`).join("; ")} (reviewed/upstream/pending)`,
     `- Next step: ${nextStep}`,
     "",
@@ -718,8 +746,14 @@ function build() {
 try {
   const result = build();
   if (result.mode === "write") {
-    for (const [path, content] of result.files) writeFileSync(path, content);
+    const changed = [...result.files].filter(([path, content]) => {
+      let actual = "";
+      try { actual = readFileSync(path, "utf8"); } catch { /* write missing outputs below */ }
+      return actual !== content;
+    });
+    for (const [path, content] of changed) writeFileSync(path, content);
     console.log(`WROTE ${result.files.size} derived progress artifacts.`);
+    if (changed.length === 0) console.log("PASS: progress --write is a no-op; artifacts already match.");
   } else {
     const mismatches = [];
     for (const [path, expected] of result.files) {

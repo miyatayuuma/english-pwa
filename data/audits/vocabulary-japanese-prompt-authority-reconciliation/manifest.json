@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "audit": "vocabulary-japanese-prompt-authority-reconciliation",
-  "status": "SEMANTIC_REVIEW_COMPLETE_PENDING_FINAL_RECONCILIATION",
+  "status": "CLOSED",
   "repository": "miyatayuuma/english-pwa",
   "branch": "audit/vocabulary-japanese-prompt-authority-reconciliation",
   "audit_base_main_sha": "9007e2f59cc6bfc48e7021caa3b469dae89adb60",
@@ -30,21 +30,21 @@
   },
   "coverage": {
     "entries": {
-      "reviewed": 588,
-      "upstream": 1,
+      "reviewed": 589,
+      "upstream": 0,
       "pending": 0,
       "resolved": 589
     },
     "cohorts": {
       "current_parenthetical_entries": {
-        "reviewed": 375,
-        "upstream": 1,
+        "reviewed": 376,
+        "upstream": 0,
         "pending": 0,
         "resolved": 376
       },
       "previous_nuance_materialized_ids": {
-        "reviewed": 550,
-        "upstream": 1,
+        "reviewed": 551,
+        "upstream": 0,
         "pending": 0,
         "resolved": 551
       }
@@ -53,8 +53,8 @@
       {
         "batch_id": "batch-001",
         "entry_count": 100,
-        "reviewed": 99,
-        "upstream": 1,
+        "reviewed": 100,
+        "upstream": 0,
         "pending": 0,
         "resolved": 100
       },
@@ -101,20 +101,20 @@
     ],
     "entry_decisions": {
       "KEEP": 40,
-      "PROMPT_SIMPLIFY": 141,
+      "PROMPT_SIMPLIFY": 142,
       "PARAPHRASE_RESTORE": 173,
       "PROMPT_AND_PARAPHRASE_RECONCILE": 231,
       "PARAPHRASE_REMOVE_SEMANTIC": 3,
-      "UPSTREAM_AUTHORITY_REVIEW": 1
+      "UPSTREAM_AUTHORITY_REVIEW": 0
     },
     "parenthetical_decisions": {
-      "REMOVE_META_HINT": 247,
+      "REMOVE_META_HINT": 248,
       "REWRITE_MINIMAL_SEMANTIC": 120,
       "KEEP_SEMANTIC_SCOPE": 8,
-      "UPSTREAM_MEANING_REVIEW": 1
+      "UPSTREAM_MEANING_REVIEW": 0
     },
     "confidence": {
-      "HIGH": 437,
+      "HIGH": 438,
       "MEDIUM": 151,
       "LOW": 0,
       "MISSING": 0
@@ -241,8 +241,8 @@
     },
     "meta_hint": {
       "found": 243,
-      "resolved": 242,
-      "upstream": 1,
+      "resolved": 243,
+      "upstream": 0,
       "pending": 0,
       "entry_ids": [
         "vocab:00004",
@@ -500,10 +500,10 @@
     }
   },
   "production_changes": 0,
-  "strict_validator": "NOT_RUN",
-  "deterministic_regeneration": "NOT_RUN",
-  "final_current_main_reconciliation_sha": null,
-  "branch_head_at_generation": "d5e2ea76cb9138308af2ec30ac059168da75919b",
+  "strict_validator": "PASS",
+  "deterministic_regeneration": "PASS",
+  "final_current_main_reconciliation_sha": "9007e2f59cc6bfc48e7021caa3b469dae89adb60",
+  "branch_head_at_generation": "8af36e0da1bdbaa07d1e77b76221d640044a161d",
   "historical_materialization_divergence": {
     "comparison": {
       "from": "previous_materialization_after",
@@ -650,23 +650,82 @@
     },
     "entry_decisions": {
       "KEEP": 40,
-      "PROMPT_SIMPLIFY": 141,
+      "PROMPT_SIMPLIFY": 142,
       "PARAPHRASE_RESTORE": 173,
       "PROMPT_AND_PARAPHRASE_RECONCILE": 231,
       "PARAPHRASE_REMOVE_SEMANTIC": 3,
-      "UPSTREAM_AUTHORITY_REVIEW": 1
+      "UPSTREAM_AUTHORITY_REVIEW": 0
     },
     "parenthetical_decisions": {
-      "REMOVE_META_HINT": 247,
+      "REMOVE_META_HINT": 248,
       "REWRITE_MINIMAL_SEMANTIC": 120,
       "KEEP_SEMANTIC_SCOPE": 8,
-      "UPSTREAM_MEANING_REVIEW": 1
+      "UPSTREAM_MEANING_REVIEW": 0
     },
     "confidence": {
-      "HIGH": 437,
+      "HIGH": 438,
       "MEDIUM": 151,
       "LOW": 0,
       "MISSING": 0
     }
-  }
+  },
+  "current_main_reconciliation": {
+    "status": "PASS",
+    "audit_base_main_sha": "9007e2f59cc6bfc48e7021caa3b469dae89adb60",
+    "final_current_main_reconciliation_sha": "9007e2f59cc6bfc48e7021caa3b469dae89adb60",
+    "comparison_method": "ID_JOIN_ONLY; source_index is diagnostic metadata only",
+    "population": 589,
+    "comparison_fields": [
+      "canonical",
+      "sense_key",
+      "grammarRole",
+      "meaning_ja",
+      "paraphrases",
+      "answers",
+      "kind",
+      "subtype"
+    ],
+    "changed_ids": [],
+    "changed_id_count": 0,
+    "semantic_affected_ids": [],
+    "semantically_affected_id_count": 0,
+    "revalidated_ids": [],
+    "removed_ids": [],
+    "rekeyed_ids": [],
+    "classifications": {
+      "NON_SEMANTIC_DRIFT": 0,
+      "SEMANTIC_DRIFT_REVALIDATED_SAME": 0,
+      "SEMANTIC_DRIFT_REQUIRES_UPDATE": 0,
+      "SOURCE_REMOVED_OR_REKEYED": 0
+    },
+    "unresolved_semantic_drift": 0,
+    "changed_fields_by_id": {},
+    "source_snapshot_mismatches": [],
+    "historical_materialization_divergence": {
+      "mismatched_entries": 340,
+      "field_mismatch_counts": {
+        "meaning_ja": 0,
+        "canonical": 0,
+        "sense_key": 0,
+        "grammarRole": 0,
+        "paraphrases": 340
+      },
+      "classification": "HISTORICAL_MATERIALIZATION_DIVERGENCE; not current-main staleness"
+    }
+  },
+  "upstream_resolution": "upstream-resolution.json",
+  "semantic_reconciliation": "COMPLETE",
+  "production_materialization": "NOT_STARTED",
+  "remediation_authority": {
+    "path": "production-remediation-authority.json",
+    "status": "READY_FOR_PRODUCTION_MATERIALIZATION",
+    "candidate_count": 545,
+    "meaning_ja_changes": 372,
+    "paraphrase_changes": 400,
+    "meaning_and_paraphrase_changes": 227,
+    "sense_key_changes": 1
+  },
+  "semantic_review": "COMPLETE",
+  "final_main_reconciliation": "COMPLETE",
+  "strict_validation": "PASS"
 }
