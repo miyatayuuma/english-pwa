@@ -6,6 +6,9 @@ const items=JSON.parse(fs.readFileSync(new URL('../data/items.json',import.meta.
 const db=JSON.parse(fs.readFileSync(new URL('../data/vocabulary-v3.json',import.meta.url),'utf8'));
 const nuanceMaterialization=JSON.parse(fs.readFileSync(new URL('../data/audits/vocabulary-single-entry-nuance-materialization/materialization.json',import.meta.url),'utf8'));
 const nuanceById=new Map(nuanceMaterialization.entries.map(row=>[row.id,row]));
+const japanesePromptAuthority=JSON.parse(fs.readFileSync(new URL('../data/audits/vocabulary-japanese-prompt-authority-reconciliation/production-remediation-authority.json',import.meta.url),'utf8'));
+const japanesePromptById=new Map(japanesePromptAuthority.entries.map(row=>[row.id,row]));
+const finalPrompt=id=>japanesePromptById.get(id)?.recommended_after?.meaning_ja??nuanceById.get(id)?.after?.meaning_ja;
 const itemById=new Map(items.map(item=>[item.id,item]));
 const entry=(canonical,senseKey)=>db.entries.find(value=>value.canonical===canonical&&value.sense_key===senseKey);
 function surface(value){const occurrence=value.occurrences[0],item=itemById.get(occurrence.item_id);return item.en.slice(occurrence.start,occurrence.end);}
@@ -78,13 +81,13 @@ test('spoken placeholder targets are mirrored literally in the Japanese prompt',
     if(value.kind==='word'||lexicalSomething.has(value.id)) continue;
     const canonical=String(value.canonical||'');
     const prompt=String(value.meaning_ja||'');
-    if(/\bsomeone\b/i.test(canonical)&&!/someone/i.test(prompt)) assert.equal(prompt,nuanceById.get(value.id)?.after.meaning_ja,`${value.id} placeholder omission is explicitly approved`);
-    if(/\bsomething\b/i.test(canonical)&&!/something/i.test(prompt)) assert.equal(prompt,nuanceById.get(value.id)?.after.meaning_ja,`${value.id} placeholder omission is explicitly approved`);
-    if(/\bsomething else\b/i.test(canonical)&&!/something else/i.test(prompt)) assert.equal(prompt,nuanceById.get(value.id)?.after.meaning_ja,`${value.id} placeholder omission is explicitly approved`);
+    if(/\bsomeone\b/i.test(canonical)&&!/someone/i.test(prompt)) assert.equal(prompt,finalPrompt(value.id),`${value.id} placeholder omission is explicitly approved`);
+    if(/\bsomething\b/i.test(canonical)&&!/something/i.test(prompt)) assert.equal(prompt,finalPrompt(value.id),`${value.id} placeholder omission is explicitly approved`);
+    if(/\bsomething else\b/i.test(canonical)&&!/something else/i.test(prompt)) assert.equal(prompt,finalPrompt(value.id),`${value.id} placeholder omission is explicitly approved`);
   }
   const fixtures=[
     ['vocab:00040','remind someone of something','someoneにsomethingを思い出させる'],
-    ['vocab:00503','associate something with something else','somethingをsomething elseと（頭の中で）結び付ける'],
+    ['vocab:00503','associate something with something else','頭の中でsomethingをsomething elseと結び付ける'],
     ['vocab:00323','keep up with something','somethingについていく'],
   ];
   for(const [id,canonical,meaning] of fixtures){
@@ -92,7 +95,7 @@ test('spoken placeholder targets are mirrored literally in the Japanese prompt',
     assert.equal(value?.canonical,canonical);
     assert.equal(value?.meaning_ja,meaning);
   }
-  assert.equal(db.entries.find(value=>value.id==='vocab:00364')?.meaning_ja,'心配している（不安を感じている）');
+  assert.equal(db.entries.find(value=>value.id==='vocab:00364')?.meaning_ja,'somethingを心配している');
 });
 
 test('learning-surface human review batch 01 pins corrected reusable targets',()=>{
@@ -121,7 +124,7 @@ test('learning-surface human review batch 03 keeps prompts aligned with reusable
 
 test('learning-surface human review batch 04 removes source-specific emotional overstatement',()=>{
   const byId=new Map(db.entries.map(value=>[value.id,value]));
-  assert.equal(byId.get('vocab:00474')?.meaning_ja,'somethingし続ける（困難や反対があっても）');
+  assert.equal(byId.get('vocab:00474')?.meaning_ja,'困難や反対があってもsomethingし続ける');
   assert.equal(byId.get('vocab:00531')?.meaning_ja,'somethingするのに気が進まない');
 });
 

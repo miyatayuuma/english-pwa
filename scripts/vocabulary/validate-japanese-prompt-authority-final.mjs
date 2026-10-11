@@ -86,9 +86,29 @@ export function validateFinalAudit() {
   const slotReview = readJson(resolve(AUDIT, "slot-review.json"));
   const slotSummary = readJson(resolve(AUDIT, "slot-summary.json"));
   const productionText = readText(resolve(ROOT, "data/vocabulary-v3.json"));
-  const production = JSON.parse(productionText);
-  assert(gitBlobSha(productionText) === PRODUCTION_BLOB_SHA, "Production vocabulary changed during audit finalization.");
-  assert(production.entries.length === 2478, "Production inventory must remain 2,478.");
+  const currentProduction = JSON.parse(productionText);
+  assert(currentProduction.entries.length === 2478, "Production inventory must remain 2,478.");
+  const sourceProduction = structuredClone(currentProduction);
+  const sourceById = mapById(sourceProduction.entries, "source production reconstruction");
+  for (const row of remediation.entries || []) {
+    const entry = sourceById.get(row.id);
+    assert(!!entry, `Materialization candidate ${row.id} is missing from production.`);
+    const before = state(row.expected_before);
+    const after = { ...before };
+    after.meaning_ja = row.recommended_after.meaning_ja;
+    after.sense_key = row.recommended_after.sense_key ?? before.sense_key;
+    after.paraphrases = row.recommended_after.paraphrases ?? [];
+    const current = state(entry);
+    assert(equal(current, before) || equal(current, after), `Production candidate ${row.id} is neither exact PRE nor exact POST.`);
+    entry.meaning_ja = before.meaning_ja;
+    entry.sense_key = before.sense_key;
+    if (before.paraphrases.length) entry.paraphrases = [...before.paraphrases];
+    else delete entry.paraphrases;
+  }
+  const reconstructedProductionText = `${JSON.stringify(sourceProduction, null, 2)}\n`;
+  assert(gitBlobSha(reconstructedProductionText) === PRODUCTION_BLOB_SHA, "Production cannot be reconciled to the pinned audit source blob.");
+  const production = sourceProduction;
+  assert(production.entries.length === 2478, "Pinned production inventory must remain 2,478.");
 
   assert(manifest.status === "CLOSED", "Manifest is not CLOSED.");
   assert(manifest.audit_base_main_sha === BASE_MAIN_SHA, "Audit base SHA differs from the fixed source.");

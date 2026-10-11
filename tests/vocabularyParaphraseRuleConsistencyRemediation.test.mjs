@@ -16,6 +16,8 @@ const falsePositive=readRuleAudit('false-positive.json');
 const materialization=readRuleAudit('materialization.json');
 const nuanceMaterialization=JSON.parse(fs.readFileSync(new URL('../data/audits/vocabulary-single-entry-nuance-materialization/materialization.json',import.meta.url),'utf8'));
 const nuanceById=new Map(nuanceMaterialization.entries.map(row=>[row.id,row]));
+const japanesePromptAuthority=JSON.parse(fs.readFileSync(new URL('../data/audits/vocabulary-japanese-prompt-authority-reconciliation/production-remediation-authority.json',import.meta.url),'utf8'));
+const japanesePromptById=new Map(japanesePromptAuthority.entries.map(row=>[row.id,row]));
 const expected=[
   {
     "id": "vocab:00121",
@@ -590,7 +592,7 @@ test('all 56 confirmed paraphrase remediations are materialized exactly and gram
     const authority=confirmedById.get(row.id);
     const ledger=materializationById.get(row.id);
     const later=nuanceById.get(row.id);
-    const final=later?.after||row;
+    const final=japanesePromptById.get(row.id)?.recommended_after||later?.after||row;
     assert.ok(entry,`${row.id} exists`);
     assert.equal(authority?.status,'CONFIRMED',`${row.id} confirmed authority`);
     assert.equal(ledger?.status,'APPLY',`${row.id} accounting`);
@@ -611,7 +613,7 @@ test('all 81 FALSE_POSITIVE entries and the zero-REVIEW classification remain un
     const candidate=candidatesById.get(row.id);
     const entry=byId.get(row.id);
     const later=nuanceById.get(row.id);
-    const final=later?.after;
+    const final=japanesePromptById.get(row.id)?.recommended_after||later?.after;
     assert.ok(candidate&&entry,`${row.id} exists in audit and production`);
     assert.equal(entry.meaning_ja,final?.meaning_ja??candidate.prompt_ja,`${row.id} prompt follows any later approved layer`);
     assert.equal(entry.canonical,final?.canonical??candidate.target,`${row.id} canonical`);
@@ -661,7 +663,7 @@ test('vocab:02393 is a FALSE_POSITIVE under its upstream multi-sense authority a
   assert.match(source.en,/no place he felt he belonged/);
   assert.match(source.ja,/受け入れられる場所/);
   assert.equal(candidate.source_example.contextual_meaning_ja,'その場所に属する／なじめる');
-  assert.equal(entry.meaning_ja,'属する／（人など）のものである');
+  assert.equal(entry.meaning_ja,japanesePromptById.get(id)?.recommended_after?.meaning_ja??'属する／（人など）のものである');
   assert.equal(entry.canonical,'belong');
   assert.deepEqual(entry.paraphrases,["be someone's"]);
   assert.deepEqual(curatedById.get(id),["be someone's"]);
@@ -687,9 +689,9 @@ test('vocab:02454 remains FALSE_POSITIVE in the older audit and follows the late
   const later=nuanceById.get(id);
   assert.ok(later,`${id} is covered by the later single-entry authority`);
   assert.equal(candidate.prompt_ja,'もう〜してよい頃だ／いい加減〜すべきだ');
-  assert.equal(entry.meaning_ja,later.after.meaning_ja);
+  assert.equal(entry.meaning_ja,japanesePromptById.get(id)?.recommended_after?.meaning_ja??later.after.meaning_ja);
   assert.equal(entry.canonical,"it's about time");
-  assert.deepEqual(entry.paraphrases??[],later.after.paraphrases);
+  assert.deepEqual(entry.paraphrases??[],japanesePromptById.get(id)?.recommended_after?.paraphrases??later.after.paraphrases);
   assert.deepEqual(curatedById.get(id),entry.paraphrases);
 });
 

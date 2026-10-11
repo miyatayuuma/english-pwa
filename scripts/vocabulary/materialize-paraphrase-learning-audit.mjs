@@ -127,18 +127,23 @@ function detectState(entries,resultById){
   return 'MIXED';
 }
 
-function buildAudit(audit,entries,resultById){
+export function buildCurrentProductionAuditProjection(audit,entries){
   const next=jsonClone(audit);
   const kindCounts=Object.fromEntries(['word','expression','construction'].map(kind=>[kind,entries.filter(entry=>entry.kind===kind).length]));
   next.review_scope={entry_count:entries.length,kind_counts:kindCounts};
-  next.reviewed_entries=entries.map(entry=>({entry_id:entry.id,decision:array(resultById.get(entry.id).after_paraphrases).length?'curated':'reviewed_no_major_paraphrase'}));
+  next.reviewed_entries=entries.map(entry=>({entry_id:entry.id,decision:array(entry.paraphrases).length?'curated':'reviewed_no_major_paraphrase'}));
   next.curated_paraphrases=entries.flatMap(entry=>{
-    const phrases=array(resultById.get(entry.id).after_paraphrases);
+    const phrases=array(entry.paraphrases);
     return phrases.length?[{entry_id:entry.id,paraphrases:[...phrases]}]:[];
   });
   next.pending_entries=[];
   if(!eq(preservedAuditProjection(audit),preservedAuditProjection(next))) throw new Error('preserved global audit fields changed');
   return next;
+}
+
+function buildAudit(audit,entries,resultById){
+  const projectedEntries=entries.map(entry=>({...entry,paraphrases:array(resultById.get(entry.id).after_paraphrases)}));
+  return buildCurrentProductionAuditProjection(audit,projectedEntries);
 }
 
 function buildSummary(entries,resultById,semanticDriftCount,nonParaphraseMutationCount,batchCount){

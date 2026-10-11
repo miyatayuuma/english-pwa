@@ -104,7 +104,8 @@ test('word expansion report semantics validate against the current source and vo
   const migration=load('../data/vocabulary-v2-v3-migration.json');
   const v2=load('../data/vocabulary-v2.json');
   const characters=load('../data/characters.json').characters||[];
-  const result=validateVocabularyV3(db,items,characters,migration,v2,audit,null,nuanceMaterialization);
+  const japanesePromptAuthority=load('../data/audits/vocabulary-japanese-prompt-authority-reconciliation/production-remediation-authority.json');
+  const result=validateVocabularyV3(db,items,characters,migration,v2,audit,null,nuanceMaterialization,japanesePromptAuthority);
   assert.deepEqual(result.errors,[]);
   const report=result.report.word_expansion_audit;
   assert.equal(report.word_entries_after,381);

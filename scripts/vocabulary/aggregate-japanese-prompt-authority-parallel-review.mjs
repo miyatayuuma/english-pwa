@@ -14,6 +14,7 @@ const PARALLEL_DIR = resolve(AUDIT_DIR, "parallel");
 const BASE_MAIN_SHA = "9007e2f59cc6bfc48e7021caa3b469dae89adb60";
 const PARALLEL_BASE_SHA = "8ea0e6a4521059144d818e8cbca5e23e9e69dce0";
 const PRODUCTION_BLOB_SHA = "c23643d26e71be22aaec5ec04ce63a7582ad9c25";
+const PRODUCTION_AUTHORITY_BLOB_SHA = "cf5fa6a183b5ec96dc40cc1d9acff4ef70507c10";
 const SLOT_INVENTORY_BLOB_SHA = "b140b2b8d0c558570d133d21b01c7b4db63c7f2e";
 const SLOT_REVIEW_BLOB_SHA = "14b4672692088e16a9e000b4d143bc1377defe13";
 export const EXPECTED_WORKERS = [
@@ -71,6 +72,29 @@ function tally(items, keyOf) {
 function sha1GitBlob(text) {
   const bytes = Buffer.from(text, "utf8");
   return createHash("sha1").update(`blob ${bytes.length}\0`).update(bytes).digest("hex");
+}
+export function loadPinnedAuditSourceProduction() {
+  const productionText = readText(resolve(ROOT, "data/vocabulary-v3.json"));
+  const production = JSON.parse(productionText);
+  if (sha1GitBlob(productionText) === PRODUCTION_BLOB_SHA) return production;
+
+  const authorityText = readText(resolve(ROOT, `${AUDIT_REL}/production-remediation-authority.json`));
+  assert(sha1GitBlob(authorityText) === PRODUCTION_AUTHORITY_BLOB_SHA, "Production remediation authority blob differs from the CLOSED audit source.");
+  const authority = JSON.parse(authorityText);
+  assert(authority.status === "READY_FOR_PRODUCTION_MATERIALIZATION" && authority.candidate_count === 545 && authority.entries.length === 545, "Pinned production remediation authority is not the expected 545-entry source.");
+  const byId = uniqueMap(production.entries, (row) => row.id, "production vocabulary");
+  for (const row of authority.entries) {
+    const entry = byId.get(row.id);
+    assert(entry, `Production is missing audit source ID ${row.id}.`);
+    const before = row.expected_before;
+    entry.meaning_ja = before.meaning_ja;
+    entry.sense_key = before.sense_key;
+    if (Array.isArray(before.paraphrases) && before.paraphrases.length > 0) entry.paraphrases = [...before.paraphrases];
+    else delete entry.paraphrases;
+  }
+  const reconstructed = `${JSON.stringify(production, null, 2)}\n`;
+  assert(sha1GitBlob(reconstructed) === PRODUCTION_BLOB_SHA, "Production cannot be reconstructed to the immutable Japanese Prompt audit source.");
+  return production;
 }
 function sha256(text) { return createHash("sha256").update(text, "utf8").digest("hex"); }
 function phraseKey(id, source, phrase) { return JSON.stringify([id, source, phrase]); }
@@ -363,9 +387,7 @@ export function buildAggregationPlan({ offlineWorkerSnapshot = false }) {
   const manifest = readJson(resolve(AUDIT_DIR, "manifest.json"));
   assert(manifest.audit_base_main_sha === BASE_MAIN_SHA, "Audit base main SHA differs from the pinned source.");
   assert(manifest.production_source?.git_blob_sha === PRODUCTION_BLOB_SHA, "Production blob SHA differs from the immutable source.");
-  const productionText = readText(resolve(ROOT, "data/vocabulary-v3.json"));
-  assert(sha1GitBlob(productionText) === PRODUCTION_BLOB_SHA, "Production vocabulary has changed from the immutable audit base.");
-  const production = readJson(resolve(ROOT, "data/vocabulary-v3.json"));
+  const production = loadPinnedAuditSourceProduction();
   const productionById = uniqueMap(production.entries, (row) => row.id, "production vocabulary");
   const refsPath = resolve(PARALLEL_DIR, "worker-heads.json");
   const refs = (() => { try { return readJson(refsPath); } catch { return null; } })();
@@ -735,7 +757,7 @@ export function buildAggregationPlan({ offlineWorkerSnapshot = false }) {
     return actual !== value;
   }).map(([path]) => path.replace(`${ROOT}/`, ""));
   if (initialState) {
-    const baselineProductionHash = sha1GitBlob(readText(resolve(ROOT, "data/vocabulary-v3.json")));
+    const baselineProductionHash = sha1GitBlob(`${JSON.stringify(loadPinnedAuditSourceProduction(), null, 2)}\n`);
     assert(baselineProductionHash === PRODUCTION_BLOB_SHA, "Production file changed during aggregation planning.");
   }
   return {
@@ -775,7 +797,7 @@ export function runAggregation(argv = process.argv.slice(2)) {
   const plan = buildAggregationPlan(options);
   if (options.mode === "write" && (plan.initialState || plan.changed.length > 0)) {
     for (const [path, content] of plan.output) writeFileSync(path, content);
-    const after = sha1GitBlob(readText(resolve(ROOT, "data/vocabulary-v3.json")));
+    const after = sha1GitBlob(`${JSON.stringify(loadPinnedAuditSourceProduction(), null, 2)}\n`);
     assert(after === PRODUCTION_BLOB_SHA, "Production file changed during aggregation write.");
     console.log(`WROTE ${plan.output.size} deterministic canonical artifacts.`);
   } else if (options.mode === "write") {

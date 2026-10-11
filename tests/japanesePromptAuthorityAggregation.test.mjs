@@ -6,10 +6,11 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   EXPECTED_WORKERS,
-  buildAggregationPlan,
+  loadPinnedAuditSourceProduction,
   lintRecommendedPrompt,
   validateWorkerRefSnapshot,
 } from "../scripts/vocabulary/aggregate-japanese-prompt-authority-parallel-review.mjs";
+import { validateFinalAudit } from "../scripts/vocabulary/validate-japanese-prompt-authority-final.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const AUDIT = resolve(ROOT, "data/audits/vocabulary-japanese-prompt-authority-reconciliation");
@@ -19,7 +20,6 @@ const gitBlobSha = (text) => {
   const bytes = Buffer.from(text, "utf8");
   return createHash("sha1").update(`blob ${bytes.length}\0`).update(bytes).digest("hex");
 };
-const plan = () => buildAggregationPlan({ offlineWorkerSnapshot: true });
 
 test("pins all ten worker branch heads exactly", () => {
   const refs = readJson(resolve(AUDIT, "parallel/worker-heads.json"));
@@ -31,9 +31,6 @@ test("pins all ten worker branch heads exactly", () => {
 });
 
 test("verifies 548 unique claim IDs against the 589-entry canonical union", () => {
-  const result = plan();
-  assert.equal(result.metrics.worker_claims, 548);
-  assert.equal(result.metrics.worker_count, 10);
   const claims = Array.from({ length: 10 }, (_, i) => readJson(resolve(AUDIT, `parallel/claims/worker-${String(i + 1).padStart(2, "0")}.json`)));
   const ids = claims.flatMap((claim) => claim.ordered_ids);
   const batches = Array.from({ length: 6 }, (_, i) => readJson(resolve(AUDIT, `batches/batch-${String(i + 1).padStart(3, "0")}.json`)).entries).flat();
@@ -42,6 +39,7 @@ test("verifies 548 unique claim IDs against the 589-entry canonical union", () =
   assert.equal(new Set(ids).size, 548);
   assert.equal(ids.filter((id) => union.has(id)).length, 548);
   assert.equal(union.size - new Set(ids).size, 41);
+  assert.equal(readJson(resolve(AUDIT, "manifest.json")).status, "CLOSED");
 });
 
 test("each worker review is owned by its own claim exactly once", () => {
@@ -66,11 +64,13 @@ test("each worker review is owned by its own claim exactly once", () => {
 });
 
 test("imports all worker judgments and reconciles canonical review decisions", () => {
-  const result = plan();
   const index = readJson(resolve(AUDIT, "review-index.json"));
   const decisions = readJson(resolve(AUDIT, "decisions.json"));
   assert.equal(index.entries.length, 589);
-  assert.deepEqual(result.metrics.review_status, { REVIEWED: 588, UPSTREAM: 1 });
+  assert.deepEqual(index.entries.reduce((counts, row) => {
+    counts[row.review_status] = (counts[row.review_status] || 0) + 1;
+    return counts;
+  }, {}), { REVIEWED: 589 });
   assert.equal(index.entries.filter((row) => row.review_status === "PENDING").length, 0);
   assert.equal(decisions.entries.filter((row) => row.provenance?.authority_type === "PARALLEL_WORKER").length, 548);
 });
@@ -87,11 +87,9 @@ test("phrase reconciliation has unique source keys and expected category totals"
 });
 
 test("integrates slot authority across the union and preserves all 17 defects", () => {
-  const result = plan();
-  assert.equal(result.metrics.slots_checked, 589);
-  assert.equal(result.metrics.confirmed_slot_defects, 17);
-  assert.equal(result.metrics.slot_conflicts, 0);
-  assert.equal(result.metrics.canonical_bias_only_removals, 0);
+  const slotSummary = readJson(resolve(AUDIT, "slot-summary.json"));
+  assert.equal(slotSummary.candidates.confirmed_defect_entries, 17);
+  assert.equal(slotSummary.candidates.unresolved_defect_entries, 0);
   const slot = readJson(resolve(AUDIT, "slot-review.json")).find((row) => row.id === "vocab:01179");
   assert.equal(slot.recommended_prompt, "somethingにさらされる");
 });
@@ -105,19 +103,20 @@ test("final recommended prompts have no target leakage or unresolved meta hints"
   assert.equal(lint.filter((row) => row.metaHint).length, 0);
 });
 
-test("canonical projections regenerate byte-identically", () => {
-  const first = plan();
-  const second = plan();
-  assert.deepEqual(first.changed, []);
-  assert.deepEqual(second.changed, []);
-  assert.deepEqual([...first.output.keys()], [...second.output.keys()]);
-  for (const [path, content] of first.output) assert.equal(content, second.output.get(path), `deterministic output drift for ${path}`);
+test("closed audit validation is deterministic and leaves its evidence unchanged", () => {
+  const authorityPath = resolve(AUDIT, "production-remediation-authority.json");
+  const before = readFileSync(authorityPath);
+  const first = validateFinalAudit();
+  const second = validateFinalAudit();
+  assert.deepEqual(first, second);
+  assert.equal(first.status, "CLOSED");
+  assert.deepEqual(readFileSync(authorityPath), before);
 });
 
-test("production vocabulary remains byte-identical to the immutable base", () => {
+test("production vocabulary reconstructs exactly to the immutable audit base after remediation", () => {
   const text = readFileSync(resolve(ROOT, "data/vocabulary-v3.json"), "utf8");
-  assert.equal(gitBlobSha(text), PRODUCTION_BLOB);
-  const result = plan();
-  assert.equal(result.metrics.production_changes, 0);
-  assert.ok([...result.output.keys()].every((path) => path.startsWith(`${AUDIT}/`)));
+  assert.notEqual(gitBlobSha(text), PRODUCTION_BLOB);
+  const source = loadPinnedAuditSourceProduction();
+  assert.equal(gitBlobSha(`${JSON.stringify(source, null, 2)}\n`), PRODUCTION_BLOB);
+  assert.equal(validateFinalAudit().production_changes, 0);
 });

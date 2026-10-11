@@ -23,7 +23,7 @@ const approvedVocab139=(audit,production)=>production?.id===VOCAB_00139_ASR_REME
   && sameSurface(audit,VOCAB_00139_ASR_REMEDIATION.before)
   && sameSurface(production,VOCAB_00139_ASR_REMEDIATION.after);
 
-export function validateVocabularyGrammarRoleAudit({vocabulary,manifest,batches,pendingRegistry,semanticQa,finalResolutions,pendingHistory,paraphraseManifest=null,confirmedAuthority=null,materialization=null,nuanceMaterialization=null}){
+export function validateVocabularyGrammarRoleAudit({vocabulary,manifest,batches,pendingRegistry,semanticQa,finalResolutions,pendingHistory,paraphraseManifest=null,confirmedAuthority=null,materialization=null,nuanceMaterialization=null,japanesePromptAuthority=null}){
   const errors=[];
   const source=Array.isArray(vocabulary?.entries)?vocabulary.entries:[];
   const sourceById=new Map();
@@ -54,6 +54,20 @@ export function validateVocabularyGrammarRoleAudit({vocabulary,manifest,batches,
   const materializationById=new Map();
   const nuanceRows=Array.isArray(nuanceMaterialization?.entries)?nuanceMaterialization.entries:[];
   const nuanceById=new Map();
+  const promptRows=Array.isArray(japanesePromptAuthority?.entries)?japanesePromptAuthority.entries:[];
+  const promptById=new Map(promptRows.map(row=>[String(row?.id||''),row]));
+  const samePromptBefore=(prompt,previous)=>prompt?.expected_before?.canonical===previous?.canonical
+    &&(!Object.hasOwn(previous||{},'sense_key')||prompt?.expected_before?.sense_key===previous?.sense_key)
+    &&prompt?.expected_before?.meaning_ja===previous?.meaning_ja
+    &&JSON.stringify(prompt?.expected_before?.paraphrases||[])===JSON.stringify(previous?.paraphrases||[]);
+  const currentProductionMatches=(entry,id,previous)=>{
+    const prompt=promptById.get(id);
+    if(!prompt) return sameSurface(entry,previous);
+    if(!samePromptBefore(prompt,previous)) errors.push(`Japanese Prompt Authority before-state does not follow prior layers for ${id}`);
+    const after=prompt.recommended_after;
+    if(!sameSurface(entry,after)||entry?.sense_key!==after?.sense_key||JSON.stringify(entry?.answers||[])!==JSON.stringify(after?.answers||[])) errors.push(`Japanese Prompt Authority final production mismatch for ${id}`);
+    return true;
+  };
   if(materialization){
     if(materialization.schema_version!==1||!['MATERIALIZED','MATERIALIZED_WITH_BLOCKED'].includes(materialization.status)) errors.push('paraphrase materialization: invalid schema or status');
     const accounted=(materialization.accounting?.APPLY||0)+(materialization.accounting?.ALREADY_RESOLVED||0)+(materialization.accounting?.BLOCKED||0);
@@ -110,12 +124,15 @@ export function validateVocabularyGrammarRoleAudit({vocabulary,manifest,batches,
         else if(!sameSurface(effectiveBefore,VOCAB_00139_ASR_REMEDIATION.after)) errors.push(`single-entry nuance materialization: vocab:00139 does not follow its approved prior remediation`);
       }
       if(!sameSurface(nuance.before,effectiveBefore)) errors.push(`single-entry nuance materialization: before differs from effective prior authority layers for ${id}`);
-      if(!sameSurface(entry,nuance.after)) errors.push(`single-entry nuance materialization: production differs from approved after-state for ${id}`);
+      currentProductionMatches(entry,id,nuance.after);
       if(row.grammarRole!==nuance.before?.grammarRole||entry.grammarRole!==nuance.after?.grammarRole||nuance.before?.grammarRole!==nuance.after?.grammarRole) errors.push(`single-entry nuance materialization: grammarRole differs from frozen authority for ${id}`);
     }else if(remediation){
       if(!sameSurface(row,remediation.before)) errors.push(`paraphrase materialization: before differs from grammar-role snapshot for ${id}`);
-      if(!sameSurface(entry,remediation.after)) errors.push(`paraphrase materialization: production differs from approved after-state for ${id}`);
+      currentProductionMatches(entry,id,remediation.after);
       if(entry.grammarRole!==remediation.grammarRole||row.grammarRole!==remediation.grammarRole) errors.push(`paraphrase materialization: grammarRole changed for ${id}`);
+    }else if(promptById.has(id)){
+      const previous=id===VOCAB_00139_ASR_REMEDIATION.id?VOCAB_00139_ASR_REMEDIATION.after:row;
+      currentProductionMatches(entry,id,previous);
     }else if(!sameSurface(row,entry)&&!approvedVocab139(row,entry)) errors.push(`snapshot: meaning/answer/paraphrases differ for ${id}`);
     if(row.status==='classified'){
       if(!GRAMMAR_ROLES.includes(row.grammarRole)) errors.push(`classification: invalid grammarRole for ${id}`);
@@ -163,14 +180,16 @@ export function validateVocabularyGrammarRoleAudit({vocabulary,manifest,batches,
     const nuance=nuanceById.get(row.id);
     if(nuance){
       if(nuance.before?.grammarRole!==row.grammarRole||nuance.after?.grammarRole!==row.grammarRole) errors.push(`final resolutions: single-entry nuance grammarRole mismatch for ${row.id}`);
-      if(!sameSurface(sourceEntry,nuance.after)) errors.push(`final resolutions: single-entry nuance production mismatch for ${row.id}`);
+      currentProductionMatches(sourceEntry,String(row.id),nuance.after);
     }else if(remediation){
-      if(!sameSurface(row,remediation.before)||!sameSurface(auditEntry,remediation.before)||!sameSurface(sourceEntry,remediation.after)) errors.push(`final resolutions: paraphrase materialization mismatch for ${row.id}`);
+      if(!sameSurface(row,remediation.before)||!sameSurface(auditEntry,remediation.before)) errors.push(`final resolutions: paraphrase materialization mismatch for ${row.id}`);
+      currentProductionMatches(sourceEntry,String(row.id),remediation.after);
       if(remediation.grammarRole!==row.grammarRole) errors.push(`final resolutions: grammarRole changed by paraphrase materialization for ${row.id}`);
     }else if(!approvedVocab139(row,sourceEntry)||!sameSurface(auditEntry,VOCAB_00139_ASR_REMEDIATION.before)){
-      if(sourceEntry.meaning_ja!==row.meaning_ja||auditEntry.meaning_ja!==row.meaning_ja) errors.push(`final resolutions: prompt mismatch for ${row.id}`);
+      if(promptById.has(String(row.id))) currentProductionMatches(sourceEntry,String(row.id),row);
+      else if(sourceEntry.meaning_ja!==row.meaning_ja||auditEntry.meaning_ja!==row.meaning_ja) errors.push(`final resolutions: prompt mismatch for ${row.id}`);
       if(sourceEntry.canonical!==row.canonical||auditEntry.canonical!==row.canonical) errors.push(`final resolutions: canonical mismatch for ${row.id}`);
-      if(JSON.stringify(sourceEntry.paraphrases||[])!==JSON.stringify(row.paraphrases||[])||JSON.stringify(auditEntry.paraphrases||[])!==JSON.stringify(row.paraphrases||[])) errors.push(`final resolutions: paraphrases changed for ${row.id}`);
+      if(!promptById.has(String(row.id))&&(JSON.stringify(sourceEntry.paraphrases||[])!==JSON.stringify(row.paraphrases||[])||JSON.stringify(auditEntry.paraphrases||[])!==JSON.stringify(row.paraphrases||[]))) errors.push(`final resolutions: paraphrases changed for ${row.id}`);
     }
     if(auditEntry.final_resolution_ref!=='final-resolutions.json'||auditEntry.resolution_reason!==row.decision_rationale) errors.push(`final resolutions: audit decision reference missing for ${row.id}`);
     if(!row.previous?.reason||!Array.isArray(row.previous?.candidates)||row.previous.candidates.length===0) errors.push(`final resolutions: prior pending evidence missing for ${row.id}`);
@@ -206,7 +225,7 @@ export function validateVocabularyGrammarRoleAudit({vocabulary,manifest,batches,
     if(classified.get(id)!==role||sourceById.get(id)?.canonical?.toLocaleLowerCase('en-US')!==canonical.toLocaleLowerCase('en-US')) errors.push(`final boundary: expected ${role} for ${id}`);
   }
   if(sourceById.get('vocab:01606')?.meaning_ja!=='呪い') errors.push('final prompt: vocab:01606 must be noun-only 呪い');
-  if(sourceById.get('vocab:02134')?.meaning_ja!=='（君主の）治世') errors.push('final prompt: vocab:02134 must be noun-only （君主の）治世');
+  if(sourceById.get('vocab:02134')?.meaning_ja!==(promptById.get('vocab:02134')?.recommended_after?.meaning_ja||'（君主の）治世')) errors.push('final prompt: vocab:02134 differs from the approved final authority');
   if(JSON.stringify(sourceById.get('vocab:02134')?.paraphrases)!==JSON.stringify(['rule'])) errors.push('final prompt: vocab:02134 paraphrase rule must be retained');
   for(const example of semanticQa?.representative_decisions||[]){
     if(classified.get(example.id)!==example.grammarRole) errors.push(`semantic QA: representative mismatch for ${example.id}`);
@@ -232,7 +251,8 @@ export function loadVocabularyGrammarRoleAudit(){
   const nuanceDir=path.join(ROOT,'data/audits/vocabulary-single-entry-nuance-materialization');
   const nuanceMaterializationFile=path.join(nuanceDir,'materialization.json');
   const nuanceMaterialization=fs.existsSync(nuanceMaterializationFile)?readJson(nuanceMaterializationFile):null;
-  return validateVocabularyGrammarRoleAudit({vocabulary,manifest,batches,pendingRegistry,semanticQa,finalResolutions,pendingHistory,paraphraseManifest,confirmedAuthority,materialization,nuanceMaterialization});
+  const japanesePromptAuthority=readJson(path.join(ROOT,'data/audits/vocabulary-japanese-prompt-authority-reconciliation/production-remediation-authority.json'));
+  return validateVocabularyGrammarRoleAudit({vocabulary,manifest,batches,pendingRegistry,semanticQa,finalResolutions,pendingHistory,paraphraseManifest,confirmedAuthority,materialization,nuanceMaterialization,japanesePromptAuthority});
 }
 
 if(import.meta.url===`file://${process.argv[1]}`){

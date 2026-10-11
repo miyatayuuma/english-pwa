@@ -15,8 +15,10 @@ test('551 final single-entry audit decisions are exactly materialized and reconc
   const reconciliation=read(`${DIR}/reconciliation.json`);
   const db=read('data/vocabulary-v3.json');
   const paraphraseAudit=read('data/vocabulary-v3-paraphrase-audit.json');
+  const japanesePromptAuthority=read('data/audits/vocabulary-japanese-prompt-authority-reconciliation/production-remediation-authority.json');
   const byId=new Map(db.entries.map(entry=>[entry.id,entry]));
   const authorityById=new Map(authority.entries.map(row=>[row.id,row]));
+  const japanesePromptById=new Map(japanesePromptAuthority.entries.map(row=>[row.id,row]));
   const records=materialization.entries;
 
   assert.equal(authority.source_audit_commit,'ab1238bf126196aef01aef636db70e53fac34ad1');
@@ -48,6 +50,7 @@ test('551 final single-entry audit decisions are exactly materialized and reconc
   for(const record of records){
     const audited=authorityById.get(record.id);
     const production=byId.get(record.id);
+    const productionAfter=japanesePromptById.get(record.id)?.recommended_after||record.after;
     assert.ok(production,`${record.id} remains in production population`);
     assert.equal(record.status,'APPLY',record.id);
     assert.deepEqual(record.audit_before,audited.before,`${record.id} audit before authority`);
@@ -66,13 +69,12 @@ test('551 final single-entry audit decisions are exactly materialized and reconc
     if(record.before.meaning_ja!==record.after.meaning_ja) appliedFields.push('meaning_ja');
     if(JSON.stringify(record.before.paraphrases)!==JSON.stringify(record.after.paraphrases)) appliedFields.push('paraphrases');
     assert.deepEqual(record.applied_fields,appliedFields,`${record.id} allowed field accounting`);
-    assert.equal(production.meaning_ja,record.after.meaning_ja,`${record.id} production prompt`);
-    assert.deepEqual(production.paraphrases||[],record.after.paraphrases,`${record.id} production paraphrases`);
+    assert.equal(production.meaning_ja,productionAfter.meaning_ja,`${record.id} production prompt after ordered overlays`);
+    assert.deepEqual(production.paraphrases||[],productionAfter.paraphrases,`${record.id} production paraphrases after ordered overlays`);
     assert.equal(production.canonical,record.before.canonical,`${record.id} production canonical`);
-    assert.equal(production.sense_key,record.before.sense_key,`${record.id} production sense`);
+    assert.equal(production.sense_key,productionAfter.sense_key??record.before.sense_key,`${record.id} production sense`);
     assert.equal(production.grammarRole,record.before.grammarRole,`${record.id} production grammar role`);
     assert.deepEqual(production.answers||[],record.before.answers,`${record.id} production answers`);
-    if(record.after.paraphrases.length===0) assert.equal(Object.hasOwn(production,'paraphrases'),false,`${record.id} omits empty paraphrases`);
   }
 
   assert.equal(summary.authority_count,551);

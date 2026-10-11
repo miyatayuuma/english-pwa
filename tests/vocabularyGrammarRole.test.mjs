@@ -63,7 +63,7 @@ test('representative semantic classifications include multiword roles and use-le
   assert.equal(byId.get('vocab:00666')?.grammarRole,'interjection');
   assert.equal(byId.get('vocab:01606')?.meaning_ja,'呪い');
   assert.equal(byId.get('vocab:01606')?.grammarRole,'noun');
-  assert.equal(byId.get('vocab:02134')?.meaning_ja,'（君主の）治世');
+  assert.equal(byId.get('vocab:02134')?.meaning_ja,'治世');
   assert.equal(byId.get('vocab:02134')?.grammarRole,'noun');
   assert.deepEqual(byId.get('vocab:02134')?.paraphrases,['rule']);
 });

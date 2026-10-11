@@ -4,6 +4,16 @@ import {fileURLToPath} from 'node:url';
 import crypto from 'node:crypto';
 import { VOCAB_00139_ASR_REMEDIATION } from './vocabularyEntryRemediationAuthority.js';
 
+const JAPANESE_PROMPT_AUTHORITY={
+  branch:'audit/vocabulary-japanese-prompt-authority-reconciliation',
+  commit:'e5b2e42deebdcb750006a7871f805668f55de4bf',
+  main:'9007e2f59cc6bfc48e7021caa3b469dae89adb60',
+  authorityPath:'data/audits/vocabulary-japanese-prompt-authority-reconciliation/production-remediation-authority.json',
+  authorityBlob:'cf5fa6a183b5ec96dc40cc1d9acff4ef70507c10',
+  productionPath:'data/vocabulary-v3.json',
+  productionBlob:'c23643d26e71be22aaec5ec04ce63a7582ad9c25',
+};
+
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const dir=path.join(root,'data/audits/vocabulary-v3-meaning-canonical');
 const read=file=>JSON.parse(fs.readFileSync(file,'utf8'));
@@ -117,6 +127,34 @@ if(fs.existsSync(nuanceMaterializationPath)){
   }
   check(nuanceById.size===551,'Single-entry nuance materialization does not contain 551 unique rows');
 }
+const japanesePromptAuthorityPath=path.join(root,JAPANESE_PROMPT_AUTHORITY.authorityPath);
+const japanesePromptAuthorityBytes=fs.readFileSync(japanesePromptAuthorityPath);
+const japanesePromptAuthority=JSON.parse(japanesePromptAuthorityBytes.toString('utf8'));
+const japanesePromptManifest=read(path.join(root,'data/audits/vocabulary-japanese-prompt-authority-reconciliation/manifest.json'));
+const japanesePromptCheckpoint=read(path.join(root,'data/audits/vocabulary-japanese-prompt-authority-reconciliation/checkpoint.json'));
+const japanesePromptBlob=crypto.createHash('sha1').update(`blob ${japanesePromptAuthorityBytes.length}\0`).update(japanesePromptAuthorityBytes).digest('hex');
+const japanesePromptRows=Array.isArray(japanesePromptAuthority.entries)?japanesePromptAuthority.entries:[];
+const japanesePromptById=new Map(japanesePromptRows.map(row=>[row.id,row]));
+check(japanesePromptBlob===JAPANESE_PROMPT_AUTHORITY.authorityBlob,'Japanese Prompt Authority final overlay blob mismatch');
+check(japanesePromptAuthority.schema_version===1&&japanesePromptAuthority.status==='READY_FOR_PRODUCTION_MATERIALIZATION','Japanese Prompt Authority final overlay is not ready');
+check(japanesePromptAuthority.audit_base_main_sha===JAPANESE_PROMPT_AUTHORITY.main&&japanesePromptAuthority.final_current_main_reconciliation_sha===JAPANESE_PROMPT_AUTHORITY.main,'Japanese Prompt Authority source main mismatch');
+check(japanesePromptAuthority.production_path===JAPANESE_PROMPT_AUTHORITY.productionPath&&japanesePromptAuthority.production_git_blob_sha===JAPANESE_PROMPT_AUTHORITY.productionBlob,'Japanese Prompt Authority source production mismatch');
+check(japanesePromptAuthority.candidate_count===545&&japanesePromptRows.length===545&&japanesePromptById.size===545,'Japanese Prompt Authority must cover 545 unique IDs');
+check(japanesePromptManifest.status==='CLOSED'&&japanesePromptManifest.final_main_reconciliation==='COMPLETE'&&japanesePromptManifest.strict_validation==='PASS','Japanese Prompt Authority audit is not CLOSED');
+check(japanesePromptCheckpoint.status==='CLOSED'&&japanesePromptCheckpoint.production_materialization==='NOT_STARTED','Japanese Prompt Authority checkpoint identity mismatch');
+for(const row of japanesePromptRows){
+  const expected=productionExpected.get(row.id);
+  const before=row.expected_before||{},after=row.recommended_after||{};
+  check(!!expected,`Japanese Prompt Authority candidate outside historical semantic population ${row.id}`);
+  if(!expected) continue;
+  check(expected.after.canonical===before.canonical&&expected.after.sense_key===before.sense_key&&expected.after.meaning_ja===before.meaning_ja,`Japanese Prompt Authority expected-before does not follow previous authority layers ${row.id}`);
+  check(after.canonical===before.canonical&&JSON.stringify(after.answers??null)===JSON.stringify(before.answers??null),`Japanese Prompt Authority attempts a forbidden canonical/answers change ${row.id}`);
+  check(typeof after.meaning_ja==='string'&&after.meaning_ja.trim().length>0&&Array.isArray(after.paraphrases),`Japanese Prompt Authority final surface is incomplete ${row.id}`);
+  expected.after.meaning_ja=after.meaning_ja;
+  expected.after.sense_key=after.sense_key??before.sense_key;
+  expected.after.paraphrases=[...after.paraphrases];
+}
+check(japanesePromptRows.filter(row=>row.expected_before?.sense_key!==row.recommended_after?.sense_key).map(row=>row.id).join(',')==='vocab:00083','Japanese Prompt Authority must be the only final sense-key overlay change');
 const report={assigned:assigned.size,reviewed:rows.length,KEEP:0,MODIFY:0,UNRESOLVED:0,kind_counts:{word:0,expression:0,construction:0},canonical_modifications:0,meaning_ja_modifications:0,sense_key_modifications:0,known_placeholders_reviewed:0,placeholder_meaning_remaining:0};
 const seen=new Set();
 for(const row of effective){
@@ -138,9 +176,18 @@ if(process.argv.includes('--check-production')){
   for(const entry of production.entries){
     const frozen=byId.get(entry.id)?.after||{};
     check(JSON.stringify(pick(entry))===JSON.stringify(pick(frozen)),`Production proposal mismatch ${entry.id}`);
-    const strip=e=>Object.fromEntries(Object.entries(e).filter(([k])=>!fields.includes(k)));
+    const remediation=japanesePromptById.get(entry.id);
+    if(remediation) check(JSON.stringify(entry.paraphrases||[])===JSON.stringify(remediation.recommended_after.paraphrases),`Production paraphrase remediation mismatch ${entry.id}`);
     if(process.argv.includes('--check-integration-scope')){
-      const digest=crypto.createHash('sha256').update(JSON.stringify(strip(entry))).digest('hex');
+      const sourceEntry={...entry};
+      if(remediation){
+        sourceEntry.meaning_ja=remediation.expected_before.meaning_ja;
+        sourceEntry.sense_key=remediation.expected_before.sense_key;
+        if(Array.isArray(remediation.expected_before.paraphrases)&&remediation.expected_before.paraphrases.length) sourceEntry.paraphrases=[...remediation.expected_before.paraphrases];
+        else delete sourceEntry.paraphrases;
+      }
+      const strip=e=>Object.fromEntries(Object.entries(e).filter(([k])=>!fields.includes(k)));
+      const digest=crypto.createHash('sha256').update(JSON.stringify(strip(sourceEntry))).digest('hex');
       check(digest===original.get(entry.id)?.nonsemantic_sha256,'Non-semantic mutation '+entry.id);
     }
   }
