@@ -27,14 +27,14 @@ const sources=[
 const fixtureFor=source=>source.entryId?vocabulary.entries.find(entry=>entry.id===source.entryId):vocabulary.entries.find(entry=>entry.kind===source.kind&&entry.canonical===source.canonical&&entry.occurrences.some(occurrence=>occurrence.item_id===source.itemId));
 const sourceSurface=(entry,itemId)=>{const occurrence=entry.occurrences.find(value=>String(value.item_id)===String(itemId));const item=itemById.get(String(itemId));return occurrence&&item?item.en.slice(occurrence.start,occurrence.end):''};
 
-async function newPage(source,{reducedMotion='reduce',entryState:entryStateOverride=null,speechSupported=true,startSession=true,fullDataset=false,native=false,nativePermission=true,viewport={width:390,height:844},additionalEntries=[]}={}){
+async function newPage(source,{reducedMotion='reduce',entryState:entryStateOverride=null,speechSupported=true,startSession=true,fullDataset=false,native=false,nativePermission=true,viewport={width:390,height:844},additionalEntries=[],additionalEntryState=null}={}){
   const context=await browser.newContext({viewport,serviceWorkers:'block',reducedMotion});
   await context.addInitScript(installMockSpeechRecognition,{stateKey:'__mockSpeech',enabled:speechSupported});
   const entry=JSON.parse(JSON.stringify(fixtureFor(source)));
   const fixtures=[entry,...additionalEntries.map(value=>JSON.parse(JSON.stringify(value)))];
   assert.ok(entry,`fixture ${source.kind}/${source.canonical} exists`);
   const entryState=entryStateOverride||{last:0,best:0,noHintHistory:[],noHintStreak:0,level5Count:0,review:{nextDueAt:0,intervalMs:0},stability:0,difficulty:0};
-  await context.addInitScript(({entry,fixtures,source,entryState,speechSupported,fullDataset,items,native,nativePermission})=>{
+  await context.addInitScript(({entry,fixtures,source,entryState,speechSupported,fullDataset,items,native,nativePermission,additionalEntryState})=>{
     const freshState={last:0,best:0,noHintHistory:[],noHintStreak:0,level5Count:0,review:{nextDueAt:0,intervalMs:0},stability:0,difficulty:0};
     const encounteredIds=[...new Set([source.itemId,...fixtures.flatMap(value=>(value.occurrences||[]).map(occurrence=>String(occurrence.item_id||''))).filter(Boolean)])];
     const initial={
@@ -42,7 +42,7 @@ async function newPage(source,{reducedMotion='reduce',entryState:entryStateOverr
       ...(fullDataset?Object.fromEntries(items.map(item=>[item.id,{last:1,best:1,updatedAt:1700000000000}])):{}),
       ...Object.fromEntries(encounteredIds.map(id=>[id,{last:2,best:2,updatedAt:1700000000000}])),
       [entry.id]:entryState,
-      ...Object.fromEntries(fixtures.slice(1).map(value=>[value.id,freshState])),
+      ...Object.fromEntries(fixtures.slice(1).map(value=>[value.id,additionalEntryState||freshState])),
     };
     localStorage.setItem('itemLevelV1',JSON.stringify(initial));
     navigator.storage.getDirectory=async()=>({getFileHandle:async name=>({getFile:async()=>new File(['mock-audio'],name,{type:'audio/mp4'})})});
@@ -90,7 +90,7 @@ async function newPage(source,{reducedMotion='reduce',entryState:entryStateOverr
       play(){window.__mockSpeech.audioPlayed.push(this.url);return Promise.resolve();}
       pause(){}
     };
-  },{entry,fixtures,source,entryState,speechSupported,fullDataset,items,native,nativePermission});
+  },{entry,fixtures,source,entryState,speechSupported,fullDataset,items,native,nativePermission,additionalEntryState});
   const page=await context.newPage();
   if(native) await page.route('**/scripts/native/capacitor-core.js',route=>route.fulfill({contentType:'text/javascript',body:'export const registerPlugin=()=>window.__nativePlugin;'}));
   await page.route('**/*.m4a',route=>route.fulfill({status:200,body:'mock-audio'}));
@@ -366,11 +366,13 @@ browserTest('Vocabulary carrier cue stays subtle, emphasizes lexical misses, pul
     viewport:{width:390,height:844},
     reducedMotion:'no-preference',
     additionalEntries:[extra],
+    additionalEntryState:{last:2,best:2,updatedAt:1700000000000},
   });
   const {page,entry}=opened;
   try{
     const cue=page.locator('.vocab-speech-carrier');
     assert.equal(await cue.innerText(),'my answer is …');
+    assert.equal(await page.locator('.vocab-meaning').innerText(),entry.meaning_ja,'the reviewed expression is the first card');
     await injectCompletedFinal(page,'banana');
     await page.waitForFunction(()=>document.querySelector('.vocab-speech-carrier.is-emphasized'));
     assert.equal(await cue.getAttribute('data-miss-count'),'1');
@@ -379,8 +381,9 @@ browserTest('Vocabulary carrier cue stays subtle, emphasizes lexical misses, pul
     assert.equal(await cue.innerText(),'my answer is …');
     const beforePulse=await cue.boundingBox();
 
+    let startsBefore=await page.evaluate(()=>window.__mockSpeech.startCount);
     await page.locator('.vocab-mic').click();
-    await page.waitForFunction(()=>window.__mockSpeech.startCount>=2);
+    await page.waitForFunction(count=>window.__mockSpeech.startCount>count,startsBefore);
     await injectCompletedFinal(page,'banana');
     await page.waitForFunction(()=>document.querySelector('.vocab-speech-carrier.is-pulsing'));
     assert.equal(await cue.getAttribute('data-miss-count'),'2');
@@ -390,8 +393,9 @@ browserTest('Vocabulary carrier cue stays subtle, emphasizes lexical misses, pul
     await page.emulateMedia({reducedMotion:'reduce'});
     assert.equal(await cue.evaluate(node=>getComputedStyle(node).animationName),'none');
 
+    startsBefore=await page.evaluate(()=>window.__mockSpeech.startCount);
     await page.locator('.vocab-mic').click();
-    await page.waitForFunction(()=>window.__mockSpeech.startCount>=3);
+    await page.waitForFunction(count=>window.__mockSpeech.startCount>count,startsBefore);
     await injectCompletedFinal(page,sourceSurface(entry,sources[0].itemId));
     await page.waitForSelector('.vocab-answer');
     await tapResult(page);
@@ -611,17 +615,16 @@ browserTest('PARAPHRASE result uses the shared target-first answer block without
   }finally{await closePage(opened);}
 });
 
-browserTest('removed force paraphrase is not accepted after audit revalidation',async()=>{
+browserTest('restored force paraphrase accepts its audited spoken equivalent after authority revalidation',async()=>{
   const source={kind:'construction',canonical:'have no choice but to do something',itemId:'E0425',entryId:'vocab:00528'};
   const opened=await newPage(source);const {page,entry}=opened;
   try{
-    const before=await page.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id],entry.id);
-    assert.deepEqual(entry.paraphrases,['be compelled to do something']);
+    assert.deepEqual(entry.paraphrases,['be compelled to do something','be forced to do something']);
     await injectCompletedFinal(page,'be force to do something');
-    await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent.includes('聞き取りを確認'));
+    await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='意味はOK');
     assert.equal(await page.locator('.vocab-heard__text').innerText(),'be force to do something','raw ASR surface remains visible');
-    assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0,'rejected paraphrase does not update TARGET SRS state');
-    assert.deepEqual(await page.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id],entry.id),before);
+    assert.equal(await page.locator('.vocab-paraphrase.is-spoken').innerText(),'✓ be forced to do something','the audited paraphrase remains the displayed authority');
+    assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0,'an accepted paraphrase does not update TARGET SRS state');
   }finally{await closePage(opened);}
 });
 

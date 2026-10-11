@@ -58,6 +58,17 @@ function isApprovedNuanceMeaning(nuanceById,entry,historicalMeaning){
     &&row.audit_after?.meaning_ja===row.after?.meaning_ja;
 }
 
+function isApprovedPromptAuthorityMeaning(promptAuthorityById,nuanceById,entry,historicalMeaning){
+  const row=promptAuthorityById.get(String(entry?.id||''));
+  const prior=nuanceById.get(String(entry?.id||''));
+  const previousLayerSource=prior?.before?.meaning_ja??row?.expected_before?.meaning_ja;
+  const previousLayerOutput=prior?.after?.meaning_ja??row?.expected_before?.meaning_ja;
+  return !!row&&previousLayerSource===historicalMeaning
+    &&row.expected_before?.meaning_ja===previousLayerOutput
+    &&row.expected_before?.canonical===entry?.canonical
+    &&row.recommended_after?.meaning_ja===entry?.meaning_ja;
+}
+
 function validateParaphraseAudit(audit,entries,errors,nuanceById=new Map()){
   if(!audit) return;
   const entryById=new Map(entries.map(entry=>[String(entry?.id||''),entry]));
@@ -213,7 +224,7 @@ function migrationExpressionMatches(old,next){
   return previous.length>0&&previous.join(' ')===current.join(' ');
 }
 
-function validateWordExpansionAudit(audit,entries,items,errors,nuanceById=new Map()){
+function validateWordExpansionAudit(audit,entries,items,errors,nuanceById=new Map(),promptAuthorityById=new Map()){
   if(!audit) return;
   const itemIds=(Array.isArray(items)?items:[]).map(item=>String(item?.id||''));
   const itemById=new Map((Array.isArray(items)?items:[]).map(item=>[String(item?.id||''),item]));
@@ -238,7 +249,7 @@ function validateWordExpansionAudit(audit,entries,items,errors,nuanceById=new Ma
     const occurrence=entry?.occurrences?.find(value=>String(value.item_id)===String(example?.item_id));
     const actual=occurrence&&item?item.en.slice(occurrence.start,occurrence.end):'';
     if(!entry||entry.kind!=='word'||entry.canonical!==example.canonical||entry.sense_key!==example.sense_key||!addedIds.has(entry.id)) errors.push(`word audit: invalid accepted example entry ${example?.entry_id||'<missing>'}`);
-    if(!occurrence||actual!==example.surface||occurrence.contextual_meaning_ja!==example.contextual_meaning_ja||(entry?.meaning_ja!==example.meaning_ja&&!isApprovedNuanceMeaning(nuanceById,entry,example.meaning_ja))) errors.push(`word audit: accepted example source/meaning mismatch for ${example?.canonical||'<missing>'}`);
+    if(!occurrence||actual!==example.surface||occurrence.contextual_meaning_ja!==example.contextual_meaning_ja||(entry?.meaning_ja!==example.meaning_ja&&!isApprovedNuanceMeaning(nuanceById,entry,example.meaning_ja)&&!isApprovedPromptAuthorityMeaning(promptAuthorityById,nuanceById,entry,example.meaning_ja))) errors.push(`word audit: accepted example source/meaning mismatch for ${example?.canonical||'<missing>'}`);
   }
   for(const example of Array.isArray(audit.retained_examples)?audit.retained_examples:[]){
     const entry=entryById.get(String(example?.entry_id||''));
@@ -246,7 +257,7 @@ function validateWordExpansionAudit(audit,entries,items,errors,nuanceById=new Ma
     const occurrence=entry?.occurrences?.find(value=>String(value.item_id)===String(example?.item_id));
     const actual=occurrence&&item?item.en.slice(occurrence.start,occurrence.end):'';
     if(!entry||entry.kind!=='word'||addedIds.has(entry.id)||entry.canonical!==example.canonical||entry.sense_key!==example.sense_key) errors.push(`word audit: invalid retained example entry ${example?.entry_id||'<missing>'}`);
-    if(!occurrence||actual!==example.surface||occurrence.contextual_meaning_ja!==example.contextual_meaning_ja||(entry?.meaning_ja!==example.meaning_ja&&!isApprovedNuanceMeaning(nuanceById,entry,example.meaning_ja))) errors.push(`word audit: retained example source/meaning mismatch for ${example?.canonical||'<missing>'}`);
+    if(!occurrence||actual!==example.surface||occurrence.contextual_meaning_ja!==example.contextual_meaning_ja||(entry?.meaning_ja!==example.meaning_ja&&!isApprovedNuanceMeaning(nuanceById,entry,example.meaning_ja)&&!isApprovedPromptAuthorityMeaning(promptAuthorityById,nuanceById,entry,example.meaning_ja))) errors.push(`word audit: retained example source/meaning mismatch for ${example?.canonical||'<missing>'}`);
   }
   for(const correction of Array.isArray(audit.existing_word_span_corrections)?audit.existing_word_span_corrections:[]){
     const entry=entryById.get(String(correction?.entry_id||''));
@@ -273,9 +284,10 @@ function validateWordExpansionAudit(audit,entries,items,errors,nuanceById=new Ma
   }
 }
 
-export function validateVocabularyV3(db,items,characters,migration,v2,wordAudit=null,paraphraseAudit=null,nuanceMaterialization=null){
+export function validateVocabularyV3(db,items,characters,migration,v2,wordAudit=null,paraphraseAudit=null,nuanceMaterialization=null,japanesePromptAuthority=null){
   const errors=[];
   const nuanceById=nuanceRowsById(nuanceMaterialization,errors);
+  const promptAuthorityById=new Map((Array.isArray(japanesePromptAuthority?.entries)?japanesePromptAuthority.entries:[]).map(row=>[row.id,row]));
   const entries=Array.isArray(db?.entries)?db.entries:[];
   const byItem=new Map((Array.isArray(items)?items:[]).map(item=>[String(item?.id||''),item]));
   const ids=new Set(),senses=new Set(),occurrences=new Set();
@@ -332,7 +344,7 @@ export function validateVocabularyV3(db,items,characters,migration,v2,wordAudit=
   }
   if(db?.schema_version!==3) errors.push('schema_version must equal 3');
 
-  validateWordExpansionAudit(wordAudit,entries,items,errors,nuanceById);
+  validateWordExpansionAudit(wordAudit,entries,items,errors,nuanceById,promptAuthorityById);
   validateParaphraseAudit(paraphraseAudit,entries,errors,nuanceById);
   const clozeAudit=items.length===560?auditClozeDataset(entries,items):null;
   if(clozeAudit) errors.push(...clozeAudit.errors);
@@ -454,10 +466,11 @@ function main(){
   const migration=read('vocabulary-v2-v3-migration.json'),v2=read('vocabulary-v2.json');
   const wordAudit=read('vocabulary-v3-word-audit.json');
   const paraphraseAudit=read('vocabulary-v3-paraphrase-audit.json');
+  const japanesePromptAuthority=read('audits/vocabulary-japanese-prompt-authority-reconciliation/production-remediation-authority.json');
   let nuanceMaterialization=null;
   const nuancePath=path.join(root,'data/audits/vocabulary-single-entry-nuance-materialization/materialization.json');
   if(fs.existsSync(nuancePath)) nuanceMaterialization=JSON.parse(fs.readFileSync(nuancePath,'utf8'));
-  const {errors,report}=validateVocabularyV3(db,items,characters,migration,v2,wordAudit,paraphraseAudit,nuanceMaterialization);
+  const {errors,report}=validateVocabularyV3(db,items,characters,migration,v2,wordAudit,paraphraseAudit,nuanceMaterialization,japanesePromptAuthority);
   if(errors.length){console.error(errors.join('\n'));process.exitCode=1;return;}
   const reportPath=path.join(root,'data/vocabulary-v3-report.json');
   if(process.argv.includes('--check-report')){

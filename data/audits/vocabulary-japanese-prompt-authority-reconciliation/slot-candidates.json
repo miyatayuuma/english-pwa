@@ -1,0 +1,867 @@
+[
+  {
+    "id": "vocab:00097",
+    "canonical": "explain something to someone",
+    "sense_key": "make_something_clear",
+    "kind": "construction",
+    "grammarRole": "verb",
+    "current_meaning_ja": "someoneにsomethingを説明する",
+    "current_paraphrases": [],
+    "canonical_slot_profile": {
+      "PERSON": 1,
+      "THING": 1
+    },
+    "prompt_slot_profile": {
+      "PERSON": 1,
+      "THING": 1
+    },
+    "canonical_slot_tokens": [
+      {
+        "token": "something",
+        "classification": "VARIABLE_SLOT",
+        "type": "THING",
+        "semantic_role": "THING",
+        "context": "explain something to someone",
+        "start": 8,
+        "end": 17
+      },
+      {
+        "token": "someone",
+        "classification": "VARIABLE_SLOT",
+        "type": "PERSON",
+        "semantic_role": "PERSON",
+        "context": "explain something to someone",
+        "start": 21,
+        "end": 28
+      }
+    ],
+    "Japanese_prompt_slot_tokens": [
+      {
+        "token": "someone",
+        "classification": "VARIABLE_SLOT",
+        "type": "PERSON",
+        "semantic_role": "PERSON",
+        "context": "someoneにsomethingを説明する",
+        "start": 0,
+        "end": 7
+      },
+      {
+        "token": "something",
+        "classification": "VARIABLE_SLOT",
+        "type": "THING",
+        "semantic_role": "THING",
+        "context": "someoneにsomethingを説明する",
+        "start": 8,
+        "end": 17
+      }
+    ],
+    "violation_classes": [
+      "SLOT_ROLE_MISMATCH"
+    ],
+    "mechanical_evidence": {
+      "expected_minus_prompt": {},
+      "prompt_minus_expected": {},
+      "parenthetical_hints": []
+    },
+    "current_audit_union_member": false,
+    "current_audit_review_status": null
+  },
+  {
+    "id": "vocab:00318",
+    "canonical": "stand for something",
+    "sense_key": "abbreviation_represents",
+    "kind": "expression",
+    "grammarRole": "verb",
+    "current_meaning_ja": "（略語などが）somethingを表す",
+    "current_paraphrases": [
+      "represent something",
+      "mean something"
+    ],
+    "canonical_slot_profile": {
+      "THING": 1
+    },
+    "prompt_slot_profile": {
+      "THING": 1
+    },
+    "canonical_slot_tokens": [
+      {
+        "token": "something",
+        "classification": "VARIABLE_SLOT",
+        "type": "THING",
+        "semantic_role": "THING",
+        "context": "stand for something",
+        "start": 10,
+        "end": 19
+      }
+    ],
+    "Japanese_prompt_slot_tokens": [
+      {
+        "token": "something",
+        "classification": "VARIABLE_SLOT",
+        "type": "THING",
+        "semantic_role": "THING",
+        "context": "（略語などが）somethingを表す",
+        "start": 7,
+        "end": 16
+      }
+    ],
+    "violation_classes": [
+      "SLOT_OVERCONSTRAINED"
+    ],
+    "mechanical_evidence": {
+      "expected_minus_prompt": {},
+      "prompt_minus_expected": {},
+      "parenthetical_hints": [
+        "略語などが"
+      ]
+    },
+    "current_audit_union_member": true,
+    "current_audit_review_status": "PENDING"
+  },
+  {
+    "id": "vocab:00364",
+    "canonical": "be worried about something",
+    "sense_key": "feel_anxious_about",
+    "kind": "expression",
+    "grammarRole": "adjective",
+    "current_meaning_ja": "心配している（不安を感じている）",
+    "current_paraphrases": [],
+    "canonical_slot_profile": {
+      "THING": 1
+    },
+    "prompt_slot_profile": {},
+    "canonical_slot_tokens": [
+      {
+        "token": "something",
+        "classification": "VARIABLE_SLOT",
+        "type": "THING",
+        "semantic_role": "THING",
+        "context": "be worried about something",
+        "start": 17,
+        "end": 26
+      }
+    ],
+    "Japanese_prompt_slot_tokens": [],
+    "violation_classes": [
+      "SLOT_MISSING",
+      "SLOT_COUNT_MISMATCH"
+    ],
+    "mechanical_evidence": {
+      "expected_minus_prompt": {
+        "THING": 1
+      },
+      "prompt_minus_expected": {},
+      "parenthetical_hints": [
+        "不安を感じている"
+      ]
+    },
+    "current_audit_union_member": true,
+    "current_audit_review_status": "PENDING"
+  },
+  {
+    "id": "vocab:00365",
+    "canonical": "be concerned about something",
+    "sense_key": "feel_anxious_or_interested",
+    "kind": "expression",
+    "grammarRole": "adjective",
+    "current_meaning_ja": "心配している（気にかける・懸念している）",
+    "current_paraphrases": [],
+    "canonical_slot_profile": {
+      "THING": 1
+    },
+    "prompt_slot_profile": {},
+    "canonical_slot_tokens": [
+      {
+        "token": "something",
+        "classification": "VARIABLE_SLOT",
+        "type": "THING",
+        "semantic_role": "THING",
+        "context": "be concerned about something",
+        "start": 19,
+        "end": 28
+      }
+    ],
+    "Japanese_prompt_slot_tokens": [],
+    "violation_classes": [
+      "SLOT_MISSING",
+      "SLOT_COUNT_MISMATCH"
+    ],
+    "mechanical_evidence": {
+      "expected_minus_prompt": {
+        "THING": 1
+      },
+      "prompt_minus_expected": {},
+      "parenthetical_hints": [
+        "気にかける・懸念している"
+      ]
+    },
+    "current_audit_union_member": true,
+    "current_audit_review_status": "PENDING"
+  },
+  {
+    "id": "vocab:00382",
+    "canonical": "be subject to something",
+    "sense_key": "liable_to_rule_or_penalty",
+    "kind": "expression",
+    "grammarRole": "adjective",
+    "current_meaning_ja": "something（規則・罰則など）の適用対象となる",
+    "current_paraphrases": [],
+    "canonical_slot_profile": {
+      "THING": 1
+    },
+    "prompt_slot_profile": {
+      "THING": 1
+    },
+    "canonical_slot_tokens": [
+      {
+        "token": "something",
+        "classification": "VARIABLE_SLOT",
+        "type": "THING",
+        "semantic_role": "THING",
+        "context": "be subject to something",
+        "start": 14,
+        "end": 23
+      }
+    ],
+    "Japanese_prompt_slot_tokens": [
+      {
+        "token": "something",
+        "classification": "VARIABLE_SLOT",
+        "type": "THING",
+        "semantic_role": "THING",
+        "context": "something（規則・罰則など）の適用対象となる",
+        "start": 0,
+        "end": 9
+      }
+    ],
+    "violation_classes": [
+      "SLOT_OVERCONSTRAINED"
+    ],
+    "mechanical_evidence": {
+      "expected_minus_prompt": {},
+      "prompt_minus_expected": {},
+      "parenthetical_hints": [
+        "規則・罰則など"
+      ]
+    },
+    "current_audit_union_member": true,
+    "current_audit_review_status": "PENDING"
+  },
+  {
+    "id": "vocab:00533",
+    "canonical": "rule something out",
+    "sense_key": "exclude_as_impossible",
+    "kind": "expression",
+    "grammarRole": "verb",
+    "current_meaning_ja": "somethingを（可能性・候補として）除外する",
+    "current_paraphrases": [],
+    "canonical_slot_profile": {
+      "THING": 1
+    },
+    "prompt_slot_profile": {
+      "THING": 1
+    },
+    "canonical_slot_tokens": [
+      {
+        "token": "something",
+        "classification": "VARIABLE_SLOT",
+        "type": "THING",
+        "semantic_role": "THING",
+        "context": "rule something out",
+        "start": 5,
+        "end": 14
+      }
+    ],
+    "Japanese_prompt_slot_tokens": [
+      {
+        "token": "something",
+        "classification": "VARIABLE_SLOT",
+        "type": "THING",
+        "semantic_role": "THING",
+        "context": "somethingを（可能性・候補として）除外する",
+        "start": 0,
+        "end": 9
+      }
+    ],
+    "violation_classes": [
+      "SLOT_OVERCONSTRAINED"
+    ],
+    "mechanical_evidence": {
+      "expected_minus_prompt": {},
+      "prompt_minus_expected": {},
+      "parenthetical_hints": [
+        "可能性・候補として"
+      ]
+    },
+    "current_audit_union_member": true,
+    "current_audit_review_status": "PENDING"
+  },
+  {
+    "id": "vocab:00540",
+    "canonical": "cope with something",
+    "sense_key": "deal_with_difficulty",
+    "kind": "expression",
+    "grammarRole": "verb",
+    "current_meaning_ja": "something（困難・問題）に何とか対処する",
+    "current_paraphrases": [
+      "deal with something",
+      "handle something"
+    ],
+    "canonical_slot_profile": {
+      "THING": 1
+    },
+    "prompt_slot_profile": {
+      "THING": 1
+    },
+    "canonical_slot_tokens": [
+      {
+        "token": "something",
+        "classification": "VARIABLE_SLOT",
+        "type": "THING",
+        "semantic_role": "THING",
+        "context": "cope with something",
+        "start": 10,
+        "end": 19
+      }
+    ],
+    "Japanese_prompt_slot_tokens": [
+      {
+        "token": "something",
+        "classification": "VARIABLE_SLOT",
+        "type": "THING",
+        "semantic_role": "THING",
+        "context": "something（困難・問題）に何とか対処する",
+        "start": 0,
+        "end": 9
+      }
+    ],
+    "violation_classes": [
+      "SLOT_OVERCONSTRAINED"
+    ],
+    "mechanical_evidence": {
+      "expected_minus_prompt": {},
+      "prompt_minus_expected": {},
+      "parenthetical_hints": [
+        "困難・問題"
+      ]
+    },
+    "current_audit_union_member": true,
+    "current_audit_review_status": "PENDING"
+  },
+  {
+    "id": "vocab:00547",
+    "canonical": "do away with something",
+    "sense_key": "abolish_or_remove",
+    "kind": "expression",
+    "grammarRole": "verb",
+    "current_meaning_ja": "somethingを（制度・慣習などについて）廃止・撤廃する",
+    "current_paraphrases": [
+      "eliminate something"
+    ],
+    "canonical_slot_profile": {
+      "THING": 1
+    },
+    "prompt_slot_profile": {
+      "THING": 1
+    },
+    "canonical_slot_tokens": [
+      {
+        "token": "something",
+        "classification": "VARIABLE_SLOT",
+        "type": "THING",
+        "semantic_role": "THING",
+        "context": "do away with something",
+        "start": 13,
+        "end": 22
+      }
+    ],
+    "Japanese_prompt_slot_tokens": [
+      {
+        "token": "something",
+        "classification": "VARIABLE_SLOT",
+        "type": "THING",
+        "semantic_role": "THING",
+        "context": "somethingを（制度・慣習などについて）廃止・撤廃する",
+        "start": 0,
+        "end": 9
+      }
+    ],
+    "violation_classes": [
+      "SLOT_OVERCONSTRAINED"
+    ],
+    "mechanical_evidence": {
+      "expected_minus_prompt": {},
+      "prompt_minus_expected": {},
+      "parenthetical_hints": [
+        "制度・慣習などについて"
+      ]
+    },
+    "current_audit_union_member": true,
+    "current_audit_review_status": "PENDING"
+  },
+  {
+    "id": "vocab:00575",
+    "canonical": "put something out",
+    "sense_key": "extinguish_fire",
+    "kind": "expression",
+    "grammarRole": "verb",
+    "current_meaning_ja": "（火・炎などを）消す",
+    "current_paraphrases": [],
+    "canonical_slot_profile": {
+      "THING": 1
+    },
+    "prompt_slot_profile": {},
+    "canonical_slot_tokens": [
+      {
+        "token": "something",
+        "classification": "VARIABLE_SLOT",
+        "type": "THING",
+        "semantic_role": "THING",
+        "context": "put something out",
+        "start": 4,
+        "end": 13
+      }
+    ],
+    "Japanese_prompt_slot_tokens": [],
+    "violation_classes": [
+      "SLOT_MISSING",
+      "SLOT_COUNT_MISMATCH",
+      "SLOT_REPLACED_BY_EXAMPLE"
+    ],
+    "mechanical_evidence": {
+      "expected_minus_prompt": {
+        "THING": 1
+      },
+      "prompt_minus_expected": {},
+      "parenthetical_hints": [
+        "火・炎などを"
+      ]
+    },
+    "current_audit_union_member": true,
+    "current_audit_review_status": "PENDING"
+  },
+  {
+    "id": "vocab:00698",
+    "canonical": "break something off",
+    "sense_key": "end_a_relationship_or_agreement",
+    "kind": "expression",
+    "grammarRole": "verb",
+    "current_meaning_ja": "（婚約・交際・交渉などを）打ち切る",
+    "current_paraphrases": [
+      "discontinue something"
+    ],
+    "canonical_slot_profile": {
+      "THING": 1
+    },
+    "prompt_slot_profile": {},
+    "canonical_slot_tokens": [
+      {
+        "token": "something",
+        "classification": "VARIABLE_SLOT",
+        "type": "THING",
+        "semantic_role": "THING",
+        "context": "break something off",
+        "start": 6,
+        "end": 15
+      }
+    ],
+    "Japanese_prompt_slot_tokens": [],
+    "violation_classes": [
+      "SLOT_MISSING",
+      "SLOT_COUNT_MISMATCH",
+      "SLOT_REPLACED_BY_EXAMPLE"
+    ],
+    "mechanical_evidence": {
+      "expected_minus_prompt": {
+        "THING": 1
+      },
+      "prompt_minus_expected": {},
+      "parenthetical_hints": [
+        "婚約・交際・交渉などを"
+      ]
+    },
+    "current_audit_union_member": true,
+    "current_audit_review_status": "PENDING"
+  },
+  {
+    "id": "vocab:00988",
+    "canonical": "deprive someone of something",
+    "sense_key": "prevent_someone_from_having",
+    "kind": "word",
+    "grammarRole": "verb",
+    "current_meaning_ja": "（権利・機会などを）人から奪う",
+    "current_paraphrases": [
+      "take something away from someone",
+      "rob someone of something"
+    ],
+    "canonical_slot_profile": {
+      "PERSON": 1,
+      "THING_OR_ABSTRACT": 1
+    },
+    "prompt_slot_profile": {},
+    "canonical_slot_tokens": [
+      {
+        "token": "someone",
+        "classification": "VARIABLE_SLOT",
+        "type": "PERSON",
+        "semantic_role": "PERSON",
+        "context": "deprive someone of something",
+        "start": 8,
+        "end": 15
+      },
+      {
+        "token": "something",
+        "classification": "VARIABLE_SLOT",
+        "type": "THING_OR_ABSTRACT",
+        "semantic_role": "THING_OR_ABSTRACT",
+        "context": "deprive someone of something",
+        "start": 19,
+        "end": 28
+      }
+    ],
+    "Japanese_prompt_slot_tokens": [],
+    "violation_classes": [
+      "SLOT_MISSING",
+      "SLOT_COUNT_MISMATCH",
+      "SLOT_REPLACED_BY_EXAMPLE"
+    ],
+    "mechanical_evidence": {
+      "expected_minus_prompt": {
+        "PERSON": 1,
+        "THING_OR_ABSTRACT": 1
+      },
+      "prompt_minus_expected": {},
+      "parenthetical_hints": [
+        "権利・機会などを"
+      ]
+    },
+    "current_audit_union_member": true,
+    "current_audit_review_status": "PENDING"
+  },
+  {
+    "id": "vocab:01007",
+    "canonical": "accuse someone of something",
+    "sense_key": "claim_someone_did_something_wrong",
+    "kind": "word",
+    "grammarRole": "verb",
+    "current_meaning_ja": "（悪事・過失をしたと）人を非難・告発する",
+    "current_paraphrases": [],
+    "canonical_slot_profile": {
+      "PERSON": 1,
+      "THING_OR_EVENT": 1
+    },
+    "prompt_slot_profile": {},
+    "canonical_slot_tokens": [
+      {
+        "token": "someone",
+        "classification": "VARIABLE_SLOT",
+        "type": "PERSON",
+        "semantic_role": "PERSON",
+        "context": "accuse someone of something",
+        "start": 7,
+        "end": 14
+      },
+      {
+        "token": "something",
+        "classification": "VARIABLE_SLOT",
+        "type": "THING_OR_EVENT",
+        "semantic_role": "THING_OR_EVENT",
+        "context": "accuse someone of something",
+        "start": 18,
+        "end": 27
+      }
+    ],
+    "Japanese_prompt_slot_tokens": [],
+    "violation_classes": [
+      "SLOT_MISSING",
+      "SLOT_COUNT_MISMATCH",
+      "SLOT_REPLACED_BY_EXAMPLE"
+    ],
+    "mechanical_evidence": {
+      "expected_minus_prompt": {
+        "PERSON": 1,
+        "THING_OR_EVENT": 1
+      },
+      "prompt_minus_expected": {},
+      "parenthetical_hints": [
+        "悪事・過失をしたと"
+      ]
+    },
+    "current_audit_union_member": true,
+    "current_audit_review_status": "PENDING"
+  },
+  {
+    "id": "vocab:01057",
+    "canonical": "regret something",
+    "sense_key": "feel_sad_about_a_past_action",
+    "kind": "word",
+    "grammarRole": "verb",
+    "current_meaning_ja": "（自分の過去の行為を）後悔する",
+    "current_paraphrases": [],
+    "canonical_slot_profile": {
+      "THING": 1
+    },
+    "prompt_slot_profile": {},
+    "canonical_slot_tokens": [
+      {
+        "token": "something",
+        "classification": "VARIABLE_SLOT",
+        "type": "THING",
+        "semantic_role": "THING",
+        "context": "regret something",
+        "start": 7,
+        "end": 16
+      }
+    ],
+    "Japanese_prompt_slot_tokens": [],
+    "violation_classes": [
+      "SLOT_MISSING",
+      "SLOT_COUNT_MISMATCH",
+      "SLOT_REPLACED_BY_EXAMPLE"
+    ],
+    "mechanical_evidence": {
+      "expected_minus_prompt": {
+        "THING": 1
+      },
+      "prompt_minus_expected": {},
+      "parenthetical_hints": [
+        "自分の過去の行為を"
+      ]
+    },
+    "current_audit_union_member": true,
+    "current_audit_review_status": "PENDING"
+  },
+  {
+    "id": "vocab:01067",
+    "canonical": "postpone something",
+    "sense_key": "arrange_for_something_to_happen_later",
+    "kind": "word",
+    "grammarRole": "verb",
+    "current_meaning_ja": "（予定を意図的に）延期する",
+    "current_paraphrases": [
+      "put something off",
+      "defer something"
+    ],
+    "canonical_slot_profile": {
+      "THING": 1
+    },
+    "prompt_slot_profile": {},
+    "canonical_slot_tokens": [
+      {
+        "token": "something",
+        "classification": "VARIABLE_SLOT",
+        "type": "THING",
+        "semantic_role": "THING",
+        "context": "postpone something",
+        "start": 9,
+        "end": 18
+      }
+    ],
+    "Japanese_prompt_slot_tokens": [],
+    "violation_classes": [
+      "SLOT_MISSING",
+      "SLOT_COUNT_MISMATCH",
+      "SLOT_REPLACED_BY_EXAMPLE"
+    ],
+    "mechanical_evidence": {
+      "expected_minus_prompt": {
+        "THING": 1
+      },
+      "prompt_minus_expected": {},
+      "parenthetical_hints": [
+        "予定を意図的に"
+      ]
+    },
+    "current_audit_union_member": true,
+    "current_audit_review_status": "PENDING"
+  },
+  {
+    "id": "vocab:01156",
+    "canonical": "gaze at something",
+    "sense_key": "look_intently_at",
+    "kind": "expression",
+    "grammarRole": "verb",
+    "current_meaning_ja": "（注意深く・見入るように）じっと見つめる",
+    "current_paraphrases": [],
+    "canonical_slot_profile": {
+      "THING": 1
+    },
+    "prompt_slot_profile": {},
+    "canonical_slot_tokens": [
+      {
+        "token": "something",
+        "classification": "VARIABLE_SLOT",
+        "type": "THING",
+        "semantic_role": "THING",
+        "context": "gaze at something",
+        "start": 8,
+        "end": 17
+      }
+    ],
+    "Japanese_prompt_slot_tokens": [],
+    "violation_classes": [
+      "SLOT_MISSING",
+      "SLOT_COUNT_MISMATCH"
+    ],
+    "mechanical_evidence": {
+      "expected_minus_prompt": {
+        "THING": 1
+      },
+      "prompt_minus_expected": {},
+      "parenthetical_hints": [
+        "注意深く・見入るように"
+      ]
+    },
+    "current_audit_union_member": true,
+    "current_audit_review_status": "PENDING"
+  },
+  {
+    "id": "vocab:01169",
+    "canonical": "cut down on something",
+    "sense_key": "reduce_consumption_or_amount",
+    "kind": "expression",
+    "grammarRole": "verb",
+    "current_meaning_ja": "（消費量・出費などを）減らす",
+    "current_paraphrases": [
+      "cut back on something"
+    ],
+    "canonical_slot_profile": {
+      "THING": 1
+    },
+    "prompt_slot_profile": {},
+    "canonical_slot_tokens": [
+      {
+        "token": "something",
+        "classification": "VARIABLE_SLOT",
+        "type": "THING",
+        "semantic_role": "THING",
+        "context": "cut down on something",
+        "start": 12,
+        "end": 21
+      }
+    ],
+    "Japanese_prompt_slot_tokens": [],
+    "violation_classes": [
+      "SLOT_MISSING",
+      "SLOT_COUNT_MISMATCH",
+      "SLOT_REPLACED_BY_EXAMPLE"
+    ],
+    "mechanical_evidence": {
+      "expected_minus_prompt": {
+        "THING": 1
+      },
+      "prompt_minus_expected": {},
+      "parenthetical_hints": [
+        "消費量・出費などを"
+      ]
+    },
+    "current_audit_union_member": true,
+    "current_audit_review_status": "PENDING"
+  },
+  {
+    "id": "vocab:01179",
+    "canonical": "be exposed to something",
+    "sense_key": "be_unprotected_from_exposure",
+    "kind": "expression",
+    "grammarRole": "adjective",
+    "current_meaning_ja": "（危険・有害なものに）さらされる",
+    "current_paraphrases": [],
+    "canonical_slot_profile": {
+      "THING": 1
+    },
+    "prompt_slot_profile": {},
+    "canonical_slot_tokens": [
+      {
+        "token": "something",
+        "classification": "VARIABLE_SLOT",
+        "type": "THING",
+        "semantic_role": "THING",
+        "context": "be exposed to something",
+        "start": 14,
+        "end": 23
+      }
+    ],
+    "Japanese_prompt_slot_tokens": [],
+    "violation_classes": [
+      "SLOT_MISSING",
+      "SLOT_COUNT_MISMATCH",
+      "SLOT_REPLACED_BY_EXAMPLE"
+    ],
+    "mechanical_evidence": {
+      "expected_minus_prompt": {
+        "THING": 1
+      },
+      "prompt_minus_expected": {},
+      "parenthetical_hints": [
+        "危険・有害なものに"
+      ]
+    },
+    "current_audit_union_member": true,
+    "current_audit_review_status": "PENDING"
+  },
+  {
+    "id": "vocab:01299",
+    "canonical": "plunge into something",
+    "sense_key": "enter_suddenly",
+    "kind": "expression",
+    "grammarRole": "verb",
+    "current_meaning_ja": "（急に・勢いよく）飛び込む／突っ込む",
+    "current_paraphrases": [],
+    "canonical_slot_profile": {
+      "THING": 1
+    },
+    "prompt_slot_profile": {},
+    "canonical_slot_tokens": [
+      {
+        "token": "something",
+        "classification": "VARIABLE_SLOT",
+        "type": "THING",
+        "semantic_role": "THING",
+        "context": "plunge into something",
+        "start": 12,
+        "end": 21
+      }
+    ],
+    "Japanese_prompt_slot_tokens": [],
+    "violation_classes": [
+      "SLOT_MISSING",
+      "SLOT_COUNT_MISMATCH"
+    ],
+    "mechanical_evidence": {
+      "expected_minus_prompt": {
+        "THING": 1
+      },
+      "prompt_minus_expected": {},
+      "parenthetical_hints": [
+        "急に・勢いよく"
+      ]
+    },
+    "current_audit_union_member": true,
+    "current_audit_review_status": "PENDING"
+  },
+  {
+    "id": "vocab:01377",
+    "canonical": "something of a surprise",
+    "sense_key": "to_some_degree_a",
+    "kind": "construction",
+    "grammarRole": "noun",
+    "current_meaning_ja": "ちょっとした驚き",
+    "current_paraphrases": [
+      "a bit of a surprise"
+    ],
+    "canonical_slot_profile": {},
+    "prompt_slot_profile": {},
+    "canonical_slot_tokens": [],
+    "Japanese_prompt_slot_tokens": [],
+    "violation_classes": [
+      "AMBIGUOUS_SLOT_AUTHORITY"
+    ],
+    "mechanical_evidence": {
+      "expected_minus_prompt": {},
+      "prompt_minus_expected": {},
+      "parenthetical_hints": []
+    },
+    "current_audit_union_member": false,
+    "current_audit_review_status": null
+  }
+]

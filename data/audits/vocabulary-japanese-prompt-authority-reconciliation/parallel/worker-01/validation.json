@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "worker_id": "W01",
+  "parallel_review_base_sha": "8ea0e6a4521059144d818e8cbca5e23e9e69dce0",
+  "claim_sha256": "de6fcc0ed4fcfe2518bbc414211b17272de1d0b29ba502cb597ce67dfaacec9a",
+  "result": "PASS",
+  "checks": [
+    {
+      "check": "claim_count_exact",
+      "result": true,
+      "count": 55
+    },
+    {
+      "check": "review_count_exact",
+      "result": true,
+      "count": 55
+    },
+    {
+      "check": "ordered_ids_match_claim",
+      "result": true
+    },
+    {
+      "check": "source_indices_match_claim",
+      "result": true
+    },
+    {
+      "check": "missing_ids",
+      "result": true,
+      "count": 0
+    },
+    {
+      "check": "duplicate_reviewed_ids",
+      "result": true,
+      "count": 0
+    },
+    {
+      "check": "out_of_claim_ids",
+      "result": true,
+      "count": 0
+    },
+    {
+      "check": "all_reviewed",
+      "result": true,
+      "count": 55
+    },
+    {
+      "check": "all_parenthetical_rows_dispositioned",
+      "result": true,
+      "count": 38
+    },
+    {
+      "check": "current_paraphrases_dispositioned",
+      "result": true,
+      "count": 22
+    },
+    {
+      "check": "historical_removals_dispositioned",
+      "result": true,
+      "count": 53
+    },
+    {
+      "check": "historical_additions_dispositioned",
+      "result": true,
+      "count": 0
+    },
+    {
+      "check": "all_slot_integrity_checked",
+      "result": true,
+      "count": 55
+    },
+    {
+      "check": "confirmed_slot_authority_respected",
+      "result": true,
+      "count": 4
+    },
+    {
+      "check": "every_removal_has_semantic_reason",
+      "result": true,
+      "count": 12
+    },
+    {
+      "check": "canonical_bias_only_removals",
+      "result": true,
+      "count": 0
+    },
+    {
+      "check": "unresolved_target_leakage",
+      "result": true,
+      "count": 0
+    },
+    {
+      "check": "production_changes",
+      "result": true,
+      "count": 0
+    }
+  ],
+  "failed_checks": []
+}
+

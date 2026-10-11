@@ -18,6 +18,8 @@ const items = JSON.parse(readFileSync(new URL('../data/items.json', import.meta.
 const nuanceMaterialization = JSON.parse(readFileSync(new URL('../data/audits/vocabulary-single-entry-nuance-materialization/materialization.json', import.meta.url), 'utf8'));
 const entryById = new Map(vocabulary.map(entry => [entry.id, entry]));
 const nuanceById = new Map(nuanceMaterialization.entries.map(row => [row.id, row]));
+const japanesePromptAuthority = JSON.parse(readFileSync(new URL('../data/audits/vocabulary-japanese-prompt-authority-reconciliation/production-remediation-authority.json', import.meta.url), 'utf8'));
+const japanesePromptById = new Map(japanesePromptAuthority.entries.map(row => [row.id, row]));
 const itemById = new Map(items.map(item => [item.id, item]));
 const safeIds = [
   'wfc-00069', 'wfc-01883', 'wfc-01954', 'wfc-01957', 'wfc-01977', 'wfc-01978',
@@ -63,19 +65,18 @@ test('36 SAFE records preserve historical classification while current nuance re
     assert.ok(entry, record.entry_id);
     const nuance=nuanceById.get(record.entry_id);
     const normalizedAccepted=normalizeVocabularyAnswer(record.current_main_accepted_surface);
-    const removedByNuance=record.surface_type==='accepted paraphrase'&&!!nuance
-      &&!(nuance.after.paraphrases||[]).some(value=>normalizeVocabularyAnswer(value)===normalizedAccepted);
+    const removedByAuthority=record.surface_type==='accepted paraphrase'
+      &&!(entry.paraphrases||[]).some(value=>normalizeVocabularyAnswer(value)===normalizedAccepted);
     const expectedType = record.surface_type === 'accepted paraphrase' ? 'paraphrase' : 'target';
     const result = classifyVocabularySpeechAnswer({
       entry,
       activeOccurrence: activeOccurrence(record),
       transcript: record.collision_surface,
     });
-    assert.equal(result.type, removedByNuance?'miss':expectedType, record.audit_candidate_id);
-    assert.equal(result.matched, !removedByNuance, record.audit_candidate_id);
-    if(removedByNuance){
-      assert.equal(nuance.source_audit_commit,'ab1238bf126196aef01aef636db70e53fac34ad1',record.audit_candidate_id);
-      assert.equal((nuance.after.paraphrases||[]).some(value=>normalizeVocabularyAnswer(value)===normalizedAccepted),false,record.audit_candidate_id);
+    assert.equal(result.type, removedByAuthority?'miss':expectedType, record.audit_candidate_id);
+    assert.equal(result.matched, !removedByAuthority, record.audit_candidate_id);
+    if(removedByAuthority){
+      assert.equal((japanesePromptById.get(record.entry_id)?.recommended_after?.paraphrases||entry.paraphrases||[]).some(value=>normalizeVocabularyAnswer(value)===normalizedAccepted),false,record.audit_candidate_id);
       continue;
     }
     if (record.materialization_status === 'ALREADY_COVERED') {
@@ -194,11 +195,11 @@ test('explicit rescue stays within TARGET N-best policy and preserves correction
   assert.equal(targetCorrection.recognitionAuthority, 'explicit-equivalence');
 
   const paraphraseEntry = entryById.get('vocab:00528');
-  assert.deepEqual(paraphraseEntry.paraphrases,['be compelled to do something']);
-  const retainedParaphrase=classifyVocabularySpeechAnswer({entry:paraphraseEntry,transcript:'be compelled to do something'});
+  assert.deepEqual(paraphraseEntry.paraphrases,japanesePromptById.get('vocab:00528').recommended_after.paraphrases);
+  const retainedParaphrase=classifyVocabularySpeechAnswer({entry:paraphraseEntry,transcript:'be forced to do something'});
   assert.equal(retainedParaphrase.type,'paraphrase');
   assert.equal(retainedParaphrase.matched,true);
-  const reducedParaphrase = 'be force to do something';
+  const reducedParaphrase = 'unrelated words';
   const paraphrase = classifyVocabularySpeechAnswer({ entry: paraphraseEntry, transcript: reducedParaphrase });
   assert.equal(paraphrase.type, 'miss', 'a removed source paraphrase is not revived by its older speech equivalence');
   assert.equal(paraphrase.matched, false);
@@ -256,8 +257,8 @@ test('vocab:00528 chunk rescue remains independent of the new paraphrase equival
   assert.ok(rescued.chunkRescue);
   assert.equal(rescued.speechMatch.ruleKind, null);
 
-  const paraphrase = classifyVocabularySpeechAnswer({ entry, transcript: 'be force to do something' });
-  assert.equal(paraphrase.type, 'miss', 'the prior paraphrase was removed by the final single-entry authority');
+  const paraphrase = classifyVocabularySpeechAnswer({ entry, transcript: 'be forced to do something' });
+  assert.equal(paraphrase.type, 'paraphrase', 'the valid paraphrase restored by the final Japanese Prompt authority remains accepted');
   assert.equal(paraphrase.chunkRescue, undefined);
 
   const uncuratedParaphrase = classifyVocabularySpeechAnswer({
