@@ -4,17 +4,26 @@ import { readFileSync } from 'node:fs';
 import { classifyVocabularySpeechAnswer } from '../scripts/speech/vocabularySpeechEvidence.js';
 import { findSpeechSurfaceMatch } from '../scripts/speech/speechAlignment.js';
 import { safeSpeechTokens } from '../scripts/speech/safeSpeechNormalization.js';
-import { normalizeVocabularyAnswer } from '../scripts/app/vocabularyLearningCore.js';
+import { classifyVocabularyAnswer, normalizeVocabularyAnswer } from '../scripts/app/vocabularyLearningCore.js';
 import {
   VOCABULARY_TD_CLUSTER_BEFORE_TO_AUDIT_RECORD_COUNT,
   VOCABULARY_TD_CLUSTER_BEFORE_TO_AUTHORITY,
   VOCABULARY_TD_CLUSTER_BEFORE_TO_SOURCE_AUDIT_SHA,
 } from '../scripts/speech/vocabularyTdClusterBeforeToAuthority.js';
 import { VOCABULARY_CHUNK_RESCUE_AUTHORITY } from '../scripts/speech/vocabularyChunkRescueAuthority.js';
+import {
+  assertTdCurrentMainReconciliation,
+  buildTdCurrentMainReconciliation,
+  gitBlobSha,
+  TD_CURRENT_MAIN_BASELINE,
+} from '../scripts/speech/vocabularyTdClusterCurrentMainReconciliation.js';
 
 const accounting = JSON.parse(readFileSync(new URL('../data/audits/vocabulary-td-cluster-before-to-production/materialization.json', import.meta.url), 'utf8'));
-const vocabulary = JSON.parse(readFileSync(new URL('../data/vocabulary-v3.json', import.meta.url), 'utf8')).entries;
-const items = JSON.parse(readFileSync(new URL('../data/items.json', import.meta.url), 'utf8'));
+const currentMainReconciliation = JSON.parse(readFileSync(new URL('../data/audits/vocabulary-td-cluster-before-to-production/current-main-reconciliation.json', import.meta.url), 'utf8'));
+const vocabularyBytes = readFileSync(new URL('../data/vocabulary-v3.json', import.meta.url));
+const itemsBytes = readFileSync(new URL('../data/items.json', import.meta.url));
+const vocabulary = JSON.parse(vocabularyBytes.toString('utf8')).entries;
+const items = JSON.parse(itemsBytes.toString('utf8'));
 const nuanceMaterialization = JSON.parse(readFileSync(new URL('../data/audits/vocabulary-single-entry-nuance-materialization/materialization.json', import.meta.url), 'utf8'));
 const entryById = new Map(vocabulary.map(entry => [entry.id, entry]));
 const nuanceById = new Map(nuanceMaterialization.entries.map(row => [row.id, row]));
@@ -29,6 +38,19 @@ const safeIds = [
   'wfc-04264', 'tdc-00001', 'tdc-00002', 'tdc-00003', 'tdc-00005', 'tdc-00006',
   'tdc-00007', 'tdc-00008', 'tdc-00009', 'tdc-00010', 'tdc-00012', 'tdc-00013',
 ];
+
+function buildCurrentMainReconciliation(sourceEntries = vocabulary) {
+  return buildTdCurrentMainReconciliation({
+    artifact: accounting,
+    entries: sourceEntries,
+    items,
+    rules: VOCABULARY_TD_CLUSTER_BEFORE_TO_AUTHORITY,
+    sourceBlobShas: {
+      'data/vocabulary-v3.json': gitBlobSha(vocabularyBytes),
+      'data/items.json': gitBlobSha(itemsBytes),
+    },
+  });
+}
 
 function activeOccurrence(record) {
   if (record.surface_type !== 'source occurrence') return null;
@@ -135,6 +157,81 @@ test('all production rules are entry-scoped, one-way, and anchored to two tokens
   }
   assert.deepEqual([...linkedCandidateIds].sort(), safeIds.filter(id => id !== 'wfc-04264').sort());
   assert.equal(new Set(linkedCandidateIds).size, 35);
+});
+
+test('current-main reconciliation covers all 36 historical records without changing their authority', () => {
+  const regenerated = buildCurrentMainReconciliation();
+  assert.equal(assertTdCurrentMainReconciliation(currentMainReconciliation, regenerated), true);
+  assert.deepEqual(buildCurrentMainReconciliation(), regenerated, 'reconciliation generation is deterministic');
+  assert.equal(currentMainReconciliation.reconciled_main_sha, TD_CURRENT_MAIN_BASELINE.mainSha);
+  assert.equal(currentMainReconciliation.counts.total, 36);
+  assert.deepEqual(currentMainReconciliation.counts.statuses, {
+    UNCHANGED: 34,
+    INDEX_RELOCATED: 2,
+    SURFACE_REMOVED: 0,
+    SURFACE_MODIFIED: 0,
+    AMBIGUOUS_DUPLICATE: 0,
+    AUTHORITY_DRIFT: 0,
+  });
+  assert.deepEqual(currentMainReconciliation.counts.classification, { TARGET: 25, PARAPHRASE: 11 });
+  assert.equal(currentMainReconciliation.counts.collision_accepted, 36);
+
+  for (const [id, entryId] of [['tdc-00002', 'vocab:00528'], ['tdc-00007', 'vocab:00634']]) {
+    const historical = accounting.records.find(record => record.audit_candidate_id === id);
+    const current = currentMainReconciliation.records.find(record => record.audit_candidate_id === id);
+    const entry = entryById.get(entryId);
+    assert.equal(current.current.state, 'INDEX_RELOCATED', id);
+    assert.equal(current.historical.surface_ref, `${entryId}:paraphrase:0`, id);
+    assert.equal(current.current.current_ref, `${entryId}:paraphrase:1`, id);
+    assert.equal(current.historical.surface_index, 0, id);
+    assert.equal(current.current.current_index, 1, id);
+    assert.equal(current.current.current_surface, historical.target_surface, id);
+    assert.equal(current.current.exact_surface_match_count, 1, id);
+    assert.equal(current.current.exact_surface_identity, true, id);
+    assert.equal(current.current.normalized_token_identity, true, id);
+    assert.equal(current.current.classification, 'PARAPHRASE', id);
+    assert.equal(current.collision.accepted, true, id);
+    assert.equal(current.collision.classification, 'PARAPHRASE', id);
+    assert.equal(current.collision.applied_rule_id, historical.production_rule_id, id);
+    assert.deepEqual(current.production_rule.scope, { type: 'entry', entryIds: [entryId], mode: 'vocabulary' }, id);
+    assert.equal(classifyVocabularyAnswer({ entry, transcript: historical.target_surface }).type, 'paraphrase', id);
+    const collision = classifyVocabularySpeechAnswer({ entry, transcript: historical.collision_surface });
+    assert.equal(collision.type, 'paraphrase', id);
+    assert.equal(collision.recognitionAuthority, 'explicit-equivalence', id);
+    assert.equal(collision.speechMatch.ruleId, historical.production_rule_id, id);
+
+    const lowerNbest = classifyVocabularySpeechAnswer({
+      entry,
+      transcript: 'unrelated words',
+      recognitionSegments: [segment(['unrelated words', historical.collision_surface])],
+    });
+    assert.equal(lowerNbest.type, 'miss', `${id} lower N-best paraphrase remains a miss`);
+    assert.equal(lowerNbest.matched, false, `${id} lower N-best paraphrase is not promoted`);
+  }
+
+  const unrelatedEntry = entryById.get('vocab:00503');
+  assert.equal(classifyVocabularySpeechAnswer({ entry: unrelatedEntry, transcript: 'be force to do something' }).type, 'miss');
+  assert.equal(classifyVocabularySpeechAnswer({ entry: unrelatedEntry, transcript: 'ten to do something' }).type, 'miss');
+});
+
+test('current-main reconciliation fails closed on missing, duplicate, modified, semantic, or TARGET-promotion drift', () => {
+  const original = entryById.get('vocab:00528');
+  const rest = vocabulary.filter(entry => entry.id !== original.id);
+  const replace = paraphrases => [...rest, { ...original, paraphrases }];
+
+  assert.throws(() => buildCurrentMainReconciliation(replace(['be compelled to do something'])), /reconciliation failed/);
+  assert.throws(() => buildCurrentMainReconciliation(replace(['be forced to do something', 'be forced to do something'])), /reconciliation failed/);
+  assert.throws(() => buildCurrentMainReconciliation(replace(['be compelled to do something', 'be forced to do something!'])), /reconciliation failed/);
+
+  const changedMeaning = vocabulary.map(entry => entry.id === original.id
+    ? { ...entry, meaning_ja: `${entry.meaning_ja}（意味変更）` }
+    : entry);
+  const changedExpected = buildCurrentMainReconciliation(changedMeaning);
+  assert.throws(() => assertTdCurrentMainReconciliation(currentMainReconciliation, changedExpected), /differs from deterministic/);
+
+  const promoted = structuredClone(currentMainReconciliation);
+  promoted.records.find(record => record.audit_candidate_id === 'tdc-00002').current.classification = 'TARGET';
+  assert.throws(() => assertTdCurrentMainReconciliation(promoted, buildCurrentMainReconciliation()), /differs from deterministic/);
 });
 
 test('vocab:00502 rescues canonical and active source targets, including the existing ten/10 normalization', () => {
