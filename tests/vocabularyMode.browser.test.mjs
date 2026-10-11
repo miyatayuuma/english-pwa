@@ -611,18 +611,25 @@ browserTest('PARAPHRASE result uses the shared target-first answer block without
   }finally{await closePage(opened);}
 });
 
-browserTest('removed force paraphrase is not accepted after audit revalidation',async()=>{
+browserTest('restored force paraphrase is accepted while malformed form remains rejected after audit revalidation',async()=>{
   const source={kind:'construction',canonical:'have no choice but to do something',itemId:'E0425',entryId:'vocab:00528'};
-  const opened=await newPage(source);const {page,entry}=opened;
+  const accepted=await newPage(source);const {page:acceptedPage,entry}=accepted;
   try{
-    const before=await page.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id],entry.id);
-    assert.deepEqual(entry.paraphrases,['be compelled to do something']);
-    await injectCompletedFinal(page,'be force to do something');
-    await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent.includes('聞き取りを確認'));
-    assert.equal(await page.locator('.vocab-heard__text').innerText(),'be force to do something','raw ASR surface remains visible');
-    assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0,'rejected paraphrase does not update TARGET SRS state');
-    assert.deepEqual(await page.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id],entry.id),before);
-  }finally{await closePage(opened);}
+    assert.deepEqual(entry.paraphrases,['be compelled to do something','be forced to do something']);
+    await injectCompletedFinal(acceptedPage,'be forced to do something');
+    await acceptedPage.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='意味はOK');
+    assert.equal(await acceptedPage.locator('.vocab-paraphrase.is-spoken').innerText(),'✓ be forced to do something');
+  }finally{await closePage(accepted);}
+
+  const rejected=await newPage(source);const {page:rejectedPage,entry:rejectedEntry}=rejected;
+  try{
+    const before=await rejectedPage.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id],rejectedEntry.id);
+    await injectCompletedFinal(rejectedPage,'be force to do something');
+    await rejectedPage.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent.includes('聞き取りを確認'));
+    assert.equal(await rejectedPage.locator('.vocab-heard__text').innerText(),'be force to do something','raw ASR surface remains visible');
+    assert.equal(await rejectedPage.evaluate(()=>window.__mockSpeech.srsWrites),0,'rejected paraphrase does not update TARGET SRS state');
+    assert.deepEqual(await rejectedPage.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id],rejectedEntry.id),before);
+  }finally{await closePage(rejected);}
 });
 
 
