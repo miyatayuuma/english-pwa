@@ -1,0 +1,342 @@
+{
+  "schemaVersion": 1,
+  "decisions": [
+    {
+      "id": "apostrophe-unicode",
+      "taxonomy": "ORTHOGRAPHIC_ASR_EQUIVALENCE",
+      "disposition": "SAFE_EQUIVALENCE",
+      "conditions": [
+        "Only Unicode apostrophe glyphs are normalized to ASCII apostrophe.",
+        "The apostrophe is retained as an internal token character."
+      ],
+      "failureAction": "REJECT a dropped apostrophe unless a separate contextual rule proves the same lexeme.",
+      "allowedModes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "reason": "Curly and typographic apostrophes are encoding variants of the same written contraction or possessive. This does not authorize contraction expansion.",
+      "minimalCounterexample": [
+        "Expected: I'm ready.",
+        "Observed: I’m ready."
+      ],
+      "corpusCandidateCount": 0
+    },
+    {
+      "id": "fixed-be-have-will",
+      "taxonomy": "GRAMMATICAL_VARIANT",
+      "disposition": "SAFE_EQUIVALENCE",
+      "conditions": [
+        "Match only a listed contraction with its exact auxiliary expansion.",
+        "Use a contiguous 1↔2 token span and preserve all surrounding tokens, order, and polarity.",
+        "The expansion must be unique for that contraction."
+      ],
+      "failureAction": "REJECT if the contraction has another grammatical reading or if any neighboring token is missing or reordered.",
+      "allowedModes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "authorityTier": "grammatical-variant",
+      "modeConditions": {
+        "vocabulary": "Align only to the existing canonical/answers/source authority; paraphrases remain PARAPHRASE.",
+        "read": "Match only the complete contiguous pair in order; preserve every other reference token and highlight reference indexes from the alignment.",
+        "cloze": "The entire hidden target must be reproduced in place by the selected final utterance; all completeness and negation gates remain mandatory.",
+        "correction": "Use the complete pair only; correction practice adds no scheduled SRS write."
+      },
+      "reason": "The enumerated fixed pairs preserve auxiliary, tense/aspect, and proposition. They are approved as grammatical variants, with separate provenance from Unicode/ASR spelling normalization.",
+      "minimalCounterexample": [
+        "Expected: we are ready",
+        "Observed: were ready"
+      ],
+      "corpusCandidateCount": 120
+    },
+    {
+      "id": "ambiguous-s",
+      "taxonomy": "CONTEXT_CONDITIONAL",
+      "disposition": "CONTEXT_CONDITIONAL",
+      "conditions": [
+        "Resolve ’s as is or has only when the complete local syntax admits exactly one standard parse.",
+        "Treat be + -ing and ’s been/’s got as candidate clues, not universal morphology rules.",
+        "Past-participle/adjective, ’s not, nominal, and possession collisions remain unresolved absent a complete parse."
+      ],
+      "failureAction": "UNRESOLVED or REJECT; never choose is/has from ’s alone.",
+      "allowedModes": [
+        "vocabulary",
+        "correction"
+      ],
+      "excludedModes": {
+        "read": "UNRESOLVED: context-dependent auxiliary parsing is outside the bounded exact-span policy.",
+        "cloze": "UNRESOLVED: context-dependent auxiliary parsing is outside the hidden-target policy."
+      },
+      "reason": "He’s can be he is or he has; it’s can be it is, it has, or a possessive-shaped ASR collision. Examples such as He’s finished and He’s not finished admit materially different parses.",
+      "minimalCounterexample": [
+        "Expected: he is finished",
+        "Observed: he’s finished (also parses as he has finished)"
+      ],
+      "corpusCandidateCount": 107
+    },
+    {
+      "id": "ambiguous-d",
+      "taxonomy": "CONTEXT_CONDITIONAL",
+      "disposition": "CONTEXT_CONDITIONAL",
+      "conditions": [
+        "Resolve ’d as had before an unambiguously past participle, or would before an unambiguously bare infinitive / fixed better-rather idiom.",
+        "Keep syncretic forms such as put, read, and cut unresolved without wider syntax.",
+        "Do not infer elided have in would have constructions."
+      ],
+      "failureAction": "UNRESOLVED if the following construction does not force had or would.",
+      "allowedModes": [
+        "vocabulary",
+        "correction"
+      ],
+      "excludedModes": {
+        "read": "UNRESOLVED: had/would parse is context-dependent.",
+        "cloze": "UNRESOLVED: had/would parse is context-dependent."
+      },
+      "reason": "I’d may stand for I had or I would, and the auxiliary changes tense/aspect or modality.",
+      "minimalCounterexample": [
+        "Expected: I would put it there",
+        "Observed: I’d put it there (had/would form collision without wider syntax)"
+      ],
+      "corpusCandidateCount": 18
+    },
+    {
+      "id": "negative-fixed-pair",
+      "taxonomy": "GRAMMATICAL_VARIANT",
+      "disposition": "SAFE_EQUIVALENCE",
+      "conditions": [
+        "Match only the exact listed auxiliary + not pair and its listed contraction.",
+        "The aligned span must contain the auxiliary and the negative marker together.",
+        "Preserve auxiliary identity, tense, order, and negation scope in both directions."
+      ],
+      "failureAction": "REJECT if not/ n’t is absent, another auxiliary replaces it, or the negation is outside the matched span.",
+      "allowedModes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "authorityTier": "grammatical-variant",
+      "modeConditions": {
+        "vocabulary": "Align only to existing canonical/answers/source authority; a paraphrase is never promoted.",
+        "read": "Match the complete auxiliary + negator pair contiguously and preserve the remainder of the reference.",
+        "cloze": "The complete hidden target span must map in place; preservesExpectedNegation and completeness remain hard gates.",
+        "correction": "Match the complete pair; do not add a scheduled SRS write."
+      },
+      "reason": "Listed pairs such as do not/don’t and will not/won’t differ in contraction but preserve the same auxiliary and negative polarity when matched as a whole pair.",
+      "minimalCounterexample": [
+        "Expected: do not agree",
+        "Observed: do agree"
+      ],
+      "corpusCandidateCount": 101
+    },
+    {
+      "id": "can-not-spacing",
+      "taxonomy": "CONTEXT_CONDITIONAL",
+      "disposition": "CONTEXT_CONDITIONAL",
+      "conditions": [
+        "Treat cannot/can’t as a listed fixed negative pair.",
+        "Do not automatically equate can not with cannot/can’t: split can not may scope over the following verb or express a choice not to act."
+      ],
+      "failureAction": "UNRESOLVED for can not unless the intended narrow negative auxiliary construction is independently established.",
+      "allowedModes": [
+        "vocabulary",
+        "correction"
+      ],
+      "excludedModes": {
+        "read": "UNRESOLVED pending exact-text policy.",
+        "cloze": "UNRESOLVED pending scope and target policy."
+      },
+      "reason": "Spacing can affect scope: “I can not go” may mean I can choose not to go, while “I cannot go” denies ability or permission.",
+      "minimalCounterexample": [
+        "Expected: I cannot go",
+        "Observed: I can not go (scope reading may differ)"
+      ],
+      "corpusCandidateCount": 0
+    },
+    {
+      "id": "lets-hortative",
+      "taxonomy": "CONTEXT_CONDITIONAL",
+      "disposition": "CONTEXT_CONDITIONAL",
+      "conditions": [
+        "Resolve let’s to let us only as a first-person plural hortative with a following base verb.",
+        "Do not equate with permission/request “let us …” without discourse evidence."
+      ],
+      "failureAction": "UNRESOLVED when discourse force or construction is unclear.",
+      "allowedModes": [
+        "vocabulary",
+        "correction"
+      ],
+      "excludedModes": {
+        "read": "UNRESOLVED pending exact-text policy.",
+        "cloze": "UNRESOLVED pending target policy."
+      },
+      "reason": "Let’s go is ordinarily hortative; let us go can instead request permission.",
+      "minimalCounterexample": [
+        "Expected: Let’s go",
+        "Observed: Let us go (may request permission rather than propose action)"
+      ],
+      "corpusCandidateCount": 10
+    },
+    {
+      "id": "aint-dialect",
+      "taxonomy": "AMBIGUOUS",
+      "disposition": "UNRESOLVED",
+      "conditions": [
+        "No automatic expansion. A dialect-specific speaker model and sentence parse would be required."
+      ],
+      "failureAction": "REJECT for ASR-09B automatic equivalence; preserve as unresolved audit evidence.",
+      "allowedModes": [],
+      "reason": "Ain’t can stand for several be/have forms, is dialect-marked, and does not have one stable auxiliary or register interpretation.",
+      "minimalCounterexample": [
+        "Expected: she is ready",
+        "Observed: she ain’t ready (negative polarity differs)"
+      ],
+      "corpusCandidateCount": 10
+    },
+    {
+      "id": "possessive-s",
+      "taxonomy": "AMBIGUOUS",
+      "disposition": "UNRESOLVED",
+      "conditions": [
+        "Do not expand lexical ’s as an auxiliary when followed by a possessed noun.",
+        "Any possessive/auxiliary collision requires complete syntax and reference context."
+      ],
+      "failureAction": "REJECT the minimal auxiliary substitution; otherwise leave unresolved.",
+      "allowedModes": [],
+      "reason": "John’s book contains a possessive marker. Treating ’s as is or has changes the structure and can invent an auxiliary.",
+      "minimalCounterexample": [
+        "Expected: John’s book",
+        "Observed: John is book"
+      ],
+      "corpusCandidateCount": 3
+    },
+    {
+      "id": "lexical-possessive-s",
+      "taxonomy": "NOT_EQUIVALENT",
+      "disposition": "REJECT",
+      "conditions": [
+        "The complete phrase uses ’s as a possessive determiner before a lexical noun.",
+        "Do not expand it to be/have or strip the possessive relation."
+      ],
+      "failureAction": "REJECT auxiliary expansion for this observed span.",
+      "allowedModes": [],
+      "reason": "The noun context determines possessive ’s, so an auxiliary expansion changes the syntactic relation.",
+      "minimalCounterexample": [
+        "Expected: someone’s turn",
+        "Observed: someone is turn"
+      ],
+      "corpusCandidateCount": 33
+    },
+    {
+      "id": "homophone-spelling-collision",
+      "taxonomy": "AMBIGUOUS",
+      "disposition": "UNRESOLVED",
+      "conditions": [
+        "Require context-specific lexical/grammatical evidence for were/we’re, your/you’re, their/they’re/there, and its/it’s.",
+        "Do not infer an apostrophe or auxiliary from sound alone."
+      ],
+      "failureAction": "REJECT generic contraction/possessive or contraction/past-tense substitution.",
+      "allowedModes": [],
+      "reason": "Several pairs are homophonous or close in common speech but have different grammatical roles and meanings.",
+      "minimalCounterexample": [
+        "Expected: we are ready",
+        "Observed: were ready"
+      ],
+      "corpusCandidateCount": 120
+    },
+    {
+      "id": "am-not-tag",
+      "taxonomy": "CONTEXT_CONDITIONAL",
+      "disposition": "CONTEXT_CONDITIONAL",
+      "conditions": [
+        "Aren’t I is eligible only as the conventional negative tag after a first-person positive clause.",
+        "It is not a general spelling/contraction of am not."
+      ],
+      "failureAction": "REJECT outside an interrogative tag with the matching antecedent polarity.",
+      "allowedModes": [
+        "vocabulary",
+        "correction"
+      ],
+      "excludedModes": {
+        "read": "UNRESOLVED pending exact-text policy.",
+        "cloze": "UNRESOLVED pending target policy."
+      },
+      "reason": "“I am …, aren’t I?” is an idiomatic tag construction, not a local expansion pair with “am not”.",
+      "minimalCounterexample": [
+        "Expected: I am not ready",
+        "Observed: I aren’t I ready"
+      ],
+      "corpusCandidateCount": 0
+    },
+    {
+      "id": "negation-drop-or-add",
+      "taxonomy": "NOT_EQUIVALENT",
+      "disposition": "REJECT",
+      "conditions": [
+        "Negation marker and scope must be preserved in both directions."
+      ],
+      "failureAction": "Reject; do not score or align the missing polarity marker as equivalent.",
+      "allowedModes": [],
+      "reason": "Dropping or adding not changes polarity.",
+      "minimalCounterexample": [
+        "Expected: can’t swim",
+        "Observed: can swim"
+      ],
+      "corpusCandidateCount": 0
+    },
+    {
+      "id": "auxiliary-or-tense-swap",
+      "taxonomy": "NOT_EQUIVALENT",
+      "disposition": "REJECT",
+      "conditions": [
+        "Auxiliary, tense/aspect, and modal force must remain the same."
+      ],
+      "failureAction": "Reject; never use a contraction family to substitute a different auxiliary.",
+      "allowedModes": [],
+      "reason": "The surface contraction must not conceal a swap such as is/has or would/had.",
+      "minimalCounterexample": [
+        "Expected: I would go",
+        "Observed: I had gone"
+      ],
+      "corpusCandidateCount": 0
+    },
+    {
+      "id": "sentence-final-auxiliary",
+      "taxonomy": "CONTEXT_CONDITIONAL",
+      "disposition": "CONTEXT_CONDITIONAL",
+      "conditions": [
+        "A contracted auxiliary must be licensed by its syntactic construction; do not assume an elided predicate at sentence end.",
+        "Accept a short answer only if that exact elliptical form is independently licensed."
+      ],
+      "failureAction": "Reject unsupported terminal forms such as “Yes, he’s” for “Yes, he is”.",
+      "allowedModes": [],
+      "reason": "Many contractions require a following predicate; expanding a terminal form may silently add omitted words.",
+      "minimalCounterexample": [
+        "Expected: Yes, he is.",
+        "Observed: Yes, he’s."
+      ],
+      "corpusCandidateCount": 7
+    },
+    {
+      "id": "nbest-no-synthesis",
+      "taxonomy": "NOT_EQUIVALENT",
+      "disposition": "REJECT",
+      "conditions": [
+        "Evaluate each finalized hypothesis independently.",
+        "Do not join words from rank 0, lower ranks, segments, or prior attempts."
+      ],
+      "failureAction": "Reject a synthesized phrase that no provider hypothesis contained.",
+      "allowedModes": [],
+      "reason": "A grammar resolver may only align a complete observed phrase; it cannot manufacture missing evidence from separate candidates.",
+      "minimalCounterexample": [
+        "Expected: do not agree",
+        "Rank 0: do / rank 2: not agree; neither is the complete expected phrase"
+      ],
+      "corpusCandidateCount": 0
+    }
+  ]
+}

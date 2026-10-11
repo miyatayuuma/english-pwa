@@ -1,0 +1,1173 @@
+{
+  "schemaVersion": 1,
+  "positiveControls": [
+    {
+      "id": "p-be-i-am",
+      "expected": "I am ready.",
+      "observed": "I’m ready.",
+      "decisionId": "fixed-be-have-will",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "SAFE_EQUIVALENCE",
+      "authorityTier": "grammatical-variant",
+      "requiredProperty": "complete ordered 1↔2 alignment; both expected tokens map to one observed token where needed"
+    },
+    {
+      "id": "p-have-he-has",
+      "expected": "He’s been working.",
+      "observed": "He has been working.",
+      "decisionId": "ambiguous-s",
+      "contextCondition": "been uniquely licenses has",
+      "modes": [
+        "vocabulary",
+        "correction"
+      ],
+      "expectedResult": "CONTEXT_CONDITIONAL"
+    },
+    {
+      "id": "p-negative-do",
+      "expected": "I do not agree.",
+      "observed": "I don’t agree.",
+      "decisionId": "negative-fixed-pair",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "SAFE_EQUIVALENCE",
+      "polarity": "negative",
+      "authorityTier": "grammatical-variant"
+    },
+    {
+      "id": "p-negative-can",
+      "expected": "She cannot swim.",
+      "observed": "She can’t swim.",
+      "decisionId": "negative-fixed-pair",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "SAFE_EQUIVALENCE",
+      "polarity": "negative",
+      "authorityTier": "grammatical-variant"
+    },
+    {
+      "id": "p-negative-will",
+      "expected": "She will not leave.",
+      "observed": "She won’t leave.",
+      "decisionId": "negative-fixed-pair",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "SAFE_EQUIVALENCE",
+      "polarity": "negative",
+      "authorityTier": "grammatical-variant"
+    },
+    {
+      "id": "p-cloze-negative-complete-target",
+      "expected": "I do not agree.",
+      "observed": "I don’t agree.",
+      "hiddenTarget": "do not",
+      "decisionId": "negative-fixed-pair",
+      "modes": [
+        "cloze"
+      ],
+      "expectedResult": "SAFE_EQUIVALENCE",
+      "requiredProperty": "entire hidden target reproduced in place by final utterance; preservesExpectedNegation=true"
+    },
+    {
+      "id": "p-d-would",
+      "expected": "I would go.",
+      "observed": "I’d go.",
+      "decisionId": "ambiguous-d",
+      "contextCondition": "go is an unambiguous bare-form cue",
+      "modes": [
+        "vocabulary",
+        "correction"
+      ],
+      "expectedResult": "CONTEXT_CONDITIONAL"
+    },
+    {
+      "id": "p-d-had",
+      "expected": "I had gone.",
+      "observed": "I’d gone.",
+      "decisionId": "ambiguous-d",
+      "contextCondition": "gone is a past participle, not the bare form",
+      "modes": [
+        "vocabulary",
+        "correction"
+      ],
+      "expectedResult": "CONTEXT_CONDITIONAL"
+    },
+    {
+      "id": "p-lets-hortative",
+      "expected": "Let’s go.",
+      "observed": "Let us go.",
+      "decisionId": "lets-hortative",
+      "contextCondition": "following base verb plus hortative discourse force",
+      "modes": [
+        "vocabulary",
+        "correction"
+      ],
+      "expectedResult": "CONTEXT_CONDITIONAL"
+    },
+    {
+      "id": "p-arent-i-tag",
+      "expected": "I’m late, aren’t I?",
+      "observed": "I am late, am I not?",
+      "decisionId": "am-not-tag",
+      "contextCondition": "first-person positive antecedent licenses conventional negative tag",
+      "modes": [
+        "vocabulary",
+        "correction"
+      ],
+      "expectedResult": "CONTEXT_CONDITIONAL"
+    },
+    {
+      "id": "p-unicode-apostrophe",
+      "expected": "I’m ready.",
+      "observed": "I'm ready.",
+      "decisionId": "apostrophe-unicode",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "SAFE_EQUIVALENCE"
+    },
+    {
+      "id": "p-be-you",
+      "expected": "You are ready.",
+      "observed": "You're ready.",
+      "decisionId": "fixed-be-have-will",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "SAFE_EQUIVALENCE",
+      "authorityTier": "grammatical-variant"
+    },
+    {
+      "id": "p-be-we",
+      "expected": "We are ready.",
+      "observed": "We're ready.",
+      "decisionId": "fixed-be-have-will",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "SAFE_EQUIVALENCE",
+      "authorityTier": "grammatical-variant"
+    },
+    {
+      "id": "p-be-they",
+      "expected": "They are ready.",
+      "observed": "They're ready.",
+      "decisionId": "fixed-be-have-will",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "SAFE_EQUIVALENCE",
+      "authorityTier": "grammatical-variant"
+    },
+    {
+      "id": "p-have-i",
+      "expected": "I have arrived.",
+      "observed": "I've arrived.",
+      "decisionId": "fixed-be-have-will",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "SAFE_EQUIVALENCE",
+      "authorityTier": "grammatical-variant"
+    },
+    {
+      "id": "p-have-you",
+      "expected": "You have arrived.",
+      "observed": "You've arrived.",
+      "decisionId": "fixed-be-have-will",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "SAFE_EQUIVALENCE",
+      "authorityTier": "grammatical-variant"
+    },
+    {
+      "id": "p-have-we",
+      "expected": "We have arrived.",
+      "observed": "We've arrived.",
+      "decisionId": "fixed-be-have-will",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "SAFE_EQUIVALENCE",
+      "authorityTier": "grammatical-variant"
+    },
+    {
+      "id": "p-have-they",
+      "expected": "They have arrived.",
+      "observed": "They've arrived.",
+      "decisionId": "fixed-be-have-will",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "SAFE_EQUIVALENCE",
+      "authorityTier": "grammatical-variant"
+    },
+    {
+      "id": "p-will-i",
+      "expected": "I will go.",
+      "observed": "I'll go.",
+      "decisionId": "fixed-be-have-will",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "SAFE_EQUIVALENCE",
+      "authorityTier": "grammatical-variant"
+    },
+    {
+      "id": "p-will-you",
+      "expected": "You will go.",
+      "observed": "You'll go.",
+      "decisionId": "fixed-be-have-will",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "SAFE_EQUIVALENCE",
+      "authorityTier": "grammatical-variant"
+    },
+    {
+      "id": "p-will-he",
+      "expected": "He will go.",
+      "observed": "He'll go.",
+      "decisionId": "fixed-be-have-will",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "SAFE_EQUIVALENCE",
+      "authorityTier": "grammatical-variant"
+    },
+    {
+      "id": "p-will-she",
+      "expected": "She will go.",
+      "observed": "She'll go.",
+      "decisionId": "fixed-be-have-will",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "SAFE_EQUIVALENCE",
+      "authorityTier": "grammatical-variant"
+    },
+    {
+      "id": "p-will-it",
+      "expected": "It will happen.",
+      "observed": "It'll happen.",
+      "decisionId": "fixed-be-have-will",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "SAFE_EQUIVALENCE",
+      "authorityTier": "grammatical-variant"
+    },
+    {
+      "id": "p-will-we",
+      "expected": "We will go.",
+      "observed": "We'll go.",
+      "decisionId": "fixed-be-have-will",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "SAFE_EQUIVALENCE",
+      "authorityTier": "grammatical-variant"
+    },
+    {
+      "id": "p-will-they",
+      "expected": "They will go.",
+      "observed": "They'll go.",
+      "decisionId": "fixed-be-have-will",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "SAFE_EQUIVALENCE",
+      "authorityTier": "grammatical-variant"
+    },
+    {
+      "id": "p-negative-do-not",
+      "expected": "I do not agree.",
+      "observed": "I don't agree.",
+      "decisionId": "negative-fixed-pair",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "SAFE_EQUIVALENCE",
+      "polarity": "negative",
+      "authorityTier": "grammatical-variant"
+    },
+    {
+      "id": "p-negative-does-not",
+      "expected": "She does not agree.",
+      "observed": "She doesn't agree.",
+      "decisionId": "negative-fixed-pair",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "SAFE_EQUIVALENCE",
+      "polarity": "negative",
+      "authorityTier": "grammatical-variant"
+    },
+    {
+      "id": "p-negative-did-not",
+      "expected": "I did not agree.",
+      "observed": "I didn't agree.",
+      "decisionId": "negative-fixed-pair",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "SAFE_EQUIVALENCE",
+      "polarity": "negative",
+      "authorityTier": "grammatical-variant"
+    },
+    {
+      "id": "p-negative-is-not",
+      "expected": "He is not ready.",
+      "observed": "He isn't ready.",
+      "decisionId": "negative-fixed-pair",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "SAFE_EQUIVALENCE",
+      "polarity": "negative",
+      "authorityTier": "grammatical-variant"
+    },
+    {
+      "id": "p-negative-are-not",
+      "expected": "They are not ready.",
+      "observed": "They aren't ready.",
+      "decisionId": "negative-fixed-pair",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "SAFE_EQUIVALENCE",
+      "polarity": "negative",
+      "authorityTier": "grammatical-variant"
+    },
+    {
+      "id": "p-negative-was-not",
+      "expected": "He was not ready.",
+      "observed": "He wasn't ready.",
+      "decisionId": "negative-fixed-pair",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "SAFE_EQUIVALENCE",
+      "polarity": "negative",
+      "authorityTier": "grammatical-variant"
+    },
+    {
+      "id": "p-negative-were-not",
+      "expected": "They were not ready.",
+      "observed": "They weren't ready.",
+      "decisionId": "negative-fixed-pair",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "SAFE_EQUIVALENCE",
+      "polarity": "negative",
+      "authorityTier": "grammatical-variant"
+    },
+    {
+      "id": "p-negative-have-not",
+      "expected": "I have not arrived.",
+      "observed": "I haven't arrived.",
+      "decisionId": "negative-fixed-pair",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "SAFE_EQUIVALENCE",
+      "polarity": "negative",
+      "authorityTier": "grammatical-variant"
+    },
+    {
+      "id": "p-negative-has-not",
+      "expected": "She has not arrived.",
+      "observed": "She hasn't arrived.",
+      "decisionId": "negative-fixed-pair",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "SAFE_EQUIVALENCE",
+      "polarity": "negative",
+      "authorityTier": "grammatical-variant"
+    },
+    {
+      "id": "p-negative-had-not",
+      "expected": "I had not gone.",
+      "observed": "I hadn't gone.",
+      "decisionId": "negative-fixed-pair",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "SAFE_EQUIVALENCE",
+      "polarity": "negative",
+      "authorityTier": "grammatical-variant"
+    },
+    {
+      "id": "p-negative-cannot",
+      "expected": "She cannot go.",
+      "observed": "She can't go.",
+      "decisionId": "negative-fixed-pair",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "SAFE_EQUIVALENCE",
+      "polarity": "negative",
+      "authorityTier": "grammatical-variant"
+    },
+    {
+      "id": "p-negative-could-not",
+      "expected": "She could not go.",
+      "observed": "She couldn't go.",
+      "decisionId": "negative-fixed-pair",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "SAFE_EQUIVALENCE",
+      "polarity": "negative",
+      "authorityTier": "grammatical-variant"
+    },
+    {
+      "id": "p-negative-will-not",
+      "expected": "She will not go.",
+      "observed": "She won't go.",
+      "decisionId": "negative-fixed-pair",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "SAFE_EQUIVALENCE",
+      "polarity": "negative",
+      "authorityTier": "grammatical-variant"
+    },
+    {
+      "id": "p-negative-would-not",
+      "expected": "She would not go.",
+      "observed": "She wouldn't go.",
+      "decisionId": "negative-fixed-pair",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "SAFE_EQUIVALENCE",
+      "polarity": "negative",
+      "authorityTier": "grammatical-variant"
+    },
+    {
+      "id": "p-negative-should-not",
+      "expected": "She should not go.",
+      "observed": "She shouldn't go.",
+      "decisionId": "negative-fixed-pair",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "SAFE_EQUIVALENCE",
+      "polarity": "negative",
+      "authorityTier": "grammatical-variant"
+    },
+    {
+      "id": "p-negative-must-not",
+      "expected": "She must not go.",
+      "observed": "She mustn't go.",
+      "decisionId": "negative-fixed-pair",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "SAFE_EQUIVALENCE",
+      "polarity": "negative",
+      "authorityTier": "grammatical-variant"
+    },
+    {
+      "id": "p-negative-need-not",
+      "expected": "You need not go.",
+      "observed": "You needn't go.",
+      "decisionId": "negative-fixed-pair",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "SAFE_EQUIVALENCE",
+      "polarity": "negative",
+      "authorityTier": "grammatical-variant"
+    },
+    {
+      "id": "p-negative-shall-not",
+      "expected": "I shall not go.",
+      "observed": "I shan't go.",
+      "decisionId": "negative-fixed-pair",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "SAFE_EQUIVALENCE",
+      "polarity": "negative",
+      "authorityTier": "grammatical-variant"
+    }
+  ],
+  "negativeControls": [
+    {
+      "id": "n-drop-negation",
+      "expected": "She can’t swim.",
+      "observed": "She can swim.",
+      "decisionId": "negation-drop-or-add",
+      "expectedResult": "REJECT",
+      "minimumCounterexample": true
+    },
+    {
+      "id": "n-drop-not",
+      "expected": "I did not agree.",
+      "observed": "I did agree.",
+      "decisionId": "negation-drop-or-add",
+      "expectedResult": "REJECT",
+      "minimumCounterexample": true
+    },
+    {
+      "id": "n-change-aux-is-has",
+      "expected": "He is ready.",
+      "observed": "He has ready.",
+      "decisionId": "auxiliary-or-tense-swap",
+      "expectedResult": "REJECT",
+      "minimumCounterexample": true
+    },
+    {
+      "id": "n-possessive-s",
+      "expected": "John’s book.",
+      "observed": "John is book.",
+      "decisionId": "lexical-possessive-s",
+      "expectedResult": "REJECT",
+      "minimumCounterexample": true
+    },
+    {
+      "id": "n-would-had",
+      "expected": "I would go.",
+      "observed": "I had gone.",
+      "decisionId": "auxiliary-or-tense-swap",
+      "expectedResult": "REJECT",
+      "minimumCounterexample": true
+    },
+    {
+      "id": "n-have-be",
+      "expected": "He has been working.",
+      "observed": "He is been working.",
+      "decisionId": "auxiliary-or-tense-swap",
+      "expectedResult": "REJECT",
+      "minimumCounterexample": true
+    },
+    {
+      "id": "n-neg-aux-swap",
+      "expected": "I do not agree.",
+      "observed": "I does not agree.",
+      "decisionId": "auxiliary-or-tense-swap",
+      "expectedResult": "REJECT",
+      "minimumCounterexample": true
+    },
+    {
+      "id": "n-final-contraction",
+      "expected": "Yes, he is.",
+      "observed": "Yes, he’s.",
+      "decisionId": "sentence-final-auxiliary",
+      "expectedResult": "REJECT"
+    },
+    {
+      "id": "n-drop-apostrophe",
+      "expected": "It’s name.",
+      "observed": "Its name.",
+      "decisionId": "homophone-spelling-collision",
+      "expectedResult": "UNRESOLVED",
+      "note": "Possessive its and contraction it’s must not be collapsed by apostrophe deletion."
+    },
+    {
+      "id": "n-tag-out-of-context",
+      "expected": "I am not ready.",
+      "observed": "I aren’t I ready.",
+      "decisionId": "am-not-tag",
+      "expectedResult": "REJECT"
+    },
+    {
+      "id": "n-can-not-scope",
+      "expected": "I cannot go.",
+      "observed": "I can not go.",
+      "decisionId": "can-not-spacing",
+      "expectedResult": "UNRESOLVED"
+    },
+    {
+      "id": "n-aint-polarity",
+      "expected": "She is ready.",
+      "observed": "She ain’t ready.",
+      "decisionId": "negation-drop-or-add",
+      "expectedResult": "REJECT"
+    },
+    {
+      "id": "n-aint-auxiliary",
+      "expected": "She hasn’t seen it.",
+      "observed": "She ain’t seen it.",
+      "decisionId": "aint-dialect",
+      "expectedResult": "UNRESOLVED"
+    },
+    {
+      "id": "n-s-ambiguity",
+      "expected": "He is finished.",
+      "observed": "He’s finished.",
+      "decisionId": "ambiguous-s",
+      "expectedResult": "UNRESOLVED",
+      "note": "also parses as he has finished"
+    },
+    {
+      "id": "n-d-ambiguity",
+      "expected": "I would put it there.",
+      "observed": "I’d put it there.",
+      "decisionId": "ambiguous-d",
+      "expectedResult": "UNRESOLVED",
+      "note": "put is base and past participle"
+    },
+    {
+      "id": "n-cross-rank-synthesis",
+      "expected": "do not agree",
+      "hypotheses": [
+        {
+          "rank": 0,
+          "transcript": "do"
+        },
+        {
+          "rank": 2,
+          "transcript": "not agree"
+        }
+      ],
+      "decisionId": "nbest-no-synthesis",
+      "expectedResult": "REJECT",
+      "minimumCounterexample": true
+    },
+    {
+      "id": "n-cloze-negation",
+      "expected": "I will not leave.",
+      "observed": "I will leave.",
+      "decisionId": "negation-drop-or-add",
+      "mode": "cloze",
+      "expectedResult": "REJECT",
+      "requiredProperty": "preservesExpectedNegation=false; pass=false"
+    },
+    {
+      "id": "n-cloze-partial-hidden-target",
+      "expected": "She will not leave tonight.",
+      "observed": "She won’t tonight.",
+      "hiddenTarget": "will not leave",
+      "decisionId": "negative-fixed-pair",
+      "mode": "cloze",
+      "expectedResult": "REJECT",
+      "requiredProperty": "negation remains, but hidden target is incomplete and pass=false"
+    },
+    {
+      "id": "n-read-missing-reference-word",
+      "expected": "I am ready now.",
+      "observed": "I’m ready.",
+      "decisionId": "fixed-be-have-will",
+      "mode": "read",
+      "expectedResult": "REJECT",
+      "requiredProperty": "I am↔I’m span may align; missing now remains missing and is not synthesized"
+    },
+    {
+      "id": "n-paraphrase-not-target",
+      "expected": "entry.paraphrases[i]",
+      "observed": "contracted paraphrase counterpart",
+      "decisionId": "fixed-be-have-will",
+      "expectedResult": "PARAPHRASE_OR_MISS",
+      "requiredProperty": "never promote to TARGET"
+    },
+    {
+      "id": "n-polarity-do-not",
+      "expected": "I don't agree.",
+      "observed": "I do agree.",
+      "decisionId": "negation-drop-or-add",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "REJECT",
+      "minimumCounterexample": true
+    },
+    {
+      "id": "n-polarity-does-not",
+      "expected": "She doesn't agree.",
+      "observed": "She does agree.",
+      "decisionId": "negation-drop-or-add",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "REJECT",
+      "minimumCounterexample": true
+    },
+    {
+      "id": "n-polarity-did-not",
+      "expected": "I didn't agree.",
+      "observed": "I did agree.",
+      "decisionId": "negation-drop-or-add",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "REJECT",
+      "minimumCounterexample": true
+    },
+    {
+      "id": "n-polarity-is-not",
+      "expected": "He isn't ready.",
+      "observed": "He is ready.",
+      "decisionId": "negation-drop-or-add",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "REJECT",
+      "minimumCounterexample": true
+    },
+    {
+      "id": "n-polarity-are-not",
+      "expected": "They aren't ready.",
+      "observed": "They are ready.",
+      "decisionId": "negation-drop-or-add",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "REJECT",
+      "minimumCounterexample": true
+    },
+    {
+      "id": "n-polarity-was-not",
+      "expected": "He wasn't ready.",
+      "observed": "He was ready.",
+      "decisionId": "negation-drop-or-add",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "REJECT",
+      "minimumCounterexample": true
+    },
+    {
+      "id": "n-polarity-were-not",
+      "expected": "They weren't ready.",
+      "observed": "They were ready.",
+      "decisionId": "negation-drop-or-add",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "REJECT",
+      "minimumCounterexample": true
+    },
+    {
+      "id": "n-polarity-have-not",
+      "expected": "I haven't arrived.",
+      "observed": "I have arrived.",
+      "decisionId": "negation-drop-or-add",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "REJECT",
+      "minimumCounterexample": true
+    },
+    {
+      "id": "n-polarity-has-not",
+      "expected": "She hasn't arrived.",
+      "observed": "She has arrived.",
+      "decisionId": "negation-drop-or-add",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "REJECT",
+      "minimumCounterexample": true
+    },
+    {
+      "id": "n-polarity-had-not",
+      "expected": "I hadn't gone.",
+      "observed": "I had gone.",
+      "decisionId": "negation-drop-or-add",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "REJECT",
+      "minimumCounterexample": true
+    },
+    {
+      "id": "n-polarity-cannot",
+      "expected": "She can't go.",
+      "observed": "She can go.",
+      "decisionId": "negation-drop-or-add",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "REJECT",
+      "minimumCounterexample": true
+    },
+    {
+      "id": "n-polarity-could-not",
+      "expected": "She couldn't go.",
+      "observed": "She could go.",
+      "decisionId": "negation-drop-or-add",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "REJECT",
+      "minimumCounterexample": true
+    },
+    {
+      "id": "n-polarity-will-not",
+      "expected": "She won't go.",
+      "observed": "She will go.",
+      "decisionId": "negation-drop-or-add",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "REJECT",
+      "minimumCounterexample": true
+    },
+    {
+      "id": "n-polarity-would-not",
+      "expected": "She wouldn't go.",
+      "observed": "She would go.",
+      "decisionId": "negation-drop-or-add",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "REJECT",
+      "minimumCounterexample": true
+    },
+    {
+      "id": "n-polarity-should-not",
+      "expected": "She shouldn't go.",
+      "observed": "She should go.",
+      "decisionId": "negation-drop-or-add",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "REJECT",
+      "minimumCounterexample": true
+    },
+    {
+      "id": "n-polarity-must-not",
+      "expected": "She mustn't go.",
+      "observed": "She must go.",
+      "decisionId": "negation-drop-or-add",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "REJECT",
+      "minimumCounterexample": true
+    },
+    {
+      "id": "n-polarity-need-not",
+      "expected": "You needn't go.",
+      "observed": "You need go.",
+      "decisionId": "negation-drop-or-add",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "REJECT",
+      "minimumCounterexample": true
+    },
+    {
+      "id": "n-polarity-shall-not",
+      "expected": "I shan't go.",
+      "observed": "I shall go.",
+      "decisionId": "negation-drop-or-add",
+      "modes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "expectedResult": "REJECT",
+      "minimumCounterexample": true
+    }
+  ],
+  "safetyCoverage": {
+    "negativeContractionPairs": [
+      {
+        "expansion": "do not",
+        "contraction": "don't",
+        "positiveFixtureId": "p-negative-do-not",
+        "negativeFixtureId": "n-polarity-do-not"
+      },
+      {
+        "expansion": "does not",
+        "contraction": "doesn't",
+        "positiveFixtureId": "p-negative-does-not",
+        "negativeFixtureId": "n-polarity-does-not"
+      },
+      {
+        "expansion": "did not",
+        "contraction": "didn't",
+        "positiveFixtureId": "p-negative-did-not",
+        "negativeFixtureId": "n-polarity-did-not"
+      },
+      {
+        "expansion": "is not",
+        "contraction": "isn't",
+        "positiveFixtureId": "p-negative-is-not",
+        "negativeFixtureId": "n-polarity-is-not"
+      },
+      {
+        "expansion": "are not",
+        "contraction": "aren't",
+        "positiveFixtureId": "p-negative-are-not",
+        "negativeFixtureId": "n-polarity-are-not"
+      },
+      {
+        "expansion": "was not",
+        "contraction": "wasn't",
+        "positiveFixtureId": "p-negative-was-not",
+        "negativeFixtureId": "n-polarity-was-not"
+      },
+      {
+        "expansion": "were not",
+        "contraction": "weren't",
+        "positiveFixtureId": "p-negative-were-not",
+        "negativeFixtureId": "n-polarity-were-not"
+      },
+      {
+        "expansion": "have not",
+        "contraction": "haven't",
+        "positiveFixtureId": "p-negative-have-not",
+        "negativeFixtureId": "n-polarity-have-not"
+      },
+      {
+        "expansion": "has not",
+        "contraction": "hasn't",
+        "positiveFixtureId": "p-negative-has-not",
+        "negativeFixtureId": "n-polarity-has-not"
+      },
+      {
+        "expansion": "had not",
+        "contraction": "hadn't",
+        "positiveFixtureId": "p-negative-had-not",
+        "negativeFixtureId": "n-polarity-had-not"
+      },
+      {
+        "expansion": "cannot",
+        "contraction": "can't",
+        "positiveFixtureId": "p-negative-cannot",
+        "negativeFixtureId": "n-polarity-cannot"
+      },
+      {
+        "expansion": "could not",
+        "contraction": "couldn't",
+        "positiveFixtureId": "p-negative-could-not",
+        "negativeFixtureId": "n-polarity-could-not"
+      },
+      {
+        "expansion": "will not",
+        "contraction": "won't",
+        "positiveFixtureId": "p-negative-will-not",
+        "negativeFixtureId": "n-polarity-will-not"
+      },
+      {
+        "expansion": "would not",
+        "contraction": "wouldn't",
+        "positiveFixtureId": "p-negative-would-not",
+        "negativeFixtureId": "n-polarity-would-not"
+      },
+      {
+        "expansion": "should not",
+        "contraction": "shouldn't",
+        "positiveFixtureId": "p-negative-should-not",
+        "negativeFixtureId": "n-polarity-should-not"
+      },
+      {
+        "expansion": "must not",
+        "contraction": "mustn't",
+        "positiveFixtureId": "p-negative-must-not",
+        "negativeFixtureId": "n-polarity-must-not"
+      },
+      {
+        "expansion": "need not",
+        "contraction": "needn't",
+        "positiveFixtureId": "p-negative-need-not",
+        "negativeFixtureId": "n-polarity-need-not"
+      },
+      {
+        "expansion": "shall not",
+        "contraction": "shan't",
+        "positiveFixtureId": "p-negative-shall-not",
+        "negativeFixtureId": "n-polarity-shall-not"
+      }
+    ]
+  },
+  "nbestControls": [
+    {
+      "id": "nbest-complete-rank-only",
+      "expected": "do not agree",
+      "hypotheses": [
+        {
+          "rank": 0,
+          "transcript": "do agree"
+        },
+        {
+          "rank": 2,
+          "transcript": "don't agree"
+        }
+      ],
+      "expectedResult": "evaluate rank 0 then evaluate rank 2 independently; never synthesize"
+    }
+  ],
+  "modeExpectations": {
+    "vocabulary": "Only a bounded pair anchored to existing canonical/answers/source authority may return TARGET; a paraphrase remains PARAPHRASE.",
+    "correction": "Use the same strict pair and alignment provenance; correction practice does not add a scheduled SRS write.",
+    "read": "SAFE only for listed complete grammatical-variant spans; preserve ordered reference-token alignment/highlights and leave every unmatched word unmatched. Never synthesize content words.",
+    "cloze": "SAFE only when the complete hidden target is reproduced in place by the selected final utterance; target completeness and preservesExpectedNegation must both pass."
+  }
+}

@@ -1,0 +1,3296 @@
+{
+  "schemaVersion": 1,
+  "ruleFamilies": [
+    {
+      "id": "apostrophe-unicode",
+      "taxonomy": "ORTHOGRAPHIC_ASR_EQUIVALENCE",
+      "disposition": "SAFE_EQUIVALENCE",
+      "allowedModes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "conditions": [
+        "Only Unicode apostrophe glyphs are normalized to ASCII apostrophe.",
+        "The apostrophe is retained as an internal token character."
+      ],
+      "authorityTier": "orthographic-asr-equivalence",
+      "modeConditions": {},
+      "excludedModes": {}
+    },
+    {
+      "id": "fixed-be-have-will",
+      "taxonomy": "GRAMMATICAL_VARIANT",
+      "disposition": "SAFE_EQUIVALENCE",
+      "allowedModes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "conditions": [
+        "Match only a listed contraction with its exact auxiliary expansion.",
+        "Use a contiguous 1↔2 token span and preserve all surrounding tokens, order, and polarity.",
+        "The expansion must be unique for that contraction."
+      ],
+      "authorityTier": "grammatical-variant",
+      "modeConditions": {
+        "vocabulary": "Align only to the existing canonical/answers/source authority; paraphrases remain PARAPHRASE.",
+        "read": "Match only the complete contiguous pair in order; preserve every other reference token and highlight reference indexes from the alignment.",
+        "cloze": "The entire hidden target must be reproduced in place by the selected final utterance; all completeness and negation gates remain mandatory.",
+        "correction": "Use the complete pair only; correction practice adds no scheduled SRS write."
+      },
+      "excludedModes": {}
+    },
+    {
+      "id": "ambiguous-s",
+      "taxonomy": "CONTEXT_CONDITIONAL",
+      "disposition": "CONTEXT_CONDITIONAL",
+      "allowedModes": [
+        "vocabulary",
+        "correction"
+      ],
+      "conditions": [
+        "Resolve ’s as is or has only when the complete local syntax admits exactly one standard parse.",
+        "Treat be + -ing and ’s been/’s got as candidate clues, not universal morphology rules.",
+        "Past-participle/adjective, ’s not, nominal, and possession collisions remain unresolved absent a complete parse."
+      ],
+      "authorityTier": null,
+      "modeConditions": {},
+      "excludedModes": {
+        "read": "UNRESOLVED: context-dependent auxiliary parsing is outside the bounded exact-span policy.",
+        "cloze": "UNRESOLVED: context-dependent auxiliary parsing is outside the hidden-target policy."
+      }
+    },
+    {
+      "id": "ambiguous-d",
+      "taxonomy": "CONTEXT_CONDITIONAL",
+      "disposition": "CONTEXT_CONDITIONAL",
+      "allowedModes": [
+        "vocabulary",
+        "correction"
+      ],
+      "conditions": [
+        "Resolve ’d as had before an unambiguously past participle, or would before an unambiguously bare infinitive / fixed better-rather idiom.",
+        "Keep syncretic forms such as put, read, and cut unresolved without wider syntax.",
+        "Do not infer elided have in would have constructions."
+      ],
+      "authorityTier": null,
+      "modeConditions": {},
+      "excludedModes": {
+        "read": "UNRESOLVED: had/would parse is context-dependent.",
+        "cloze": "UNRESOLVED: had/would parse is context-dependent."
+      }
+    },
+    {
+      "id": "negative-fixed-pair",
+      "taxonomy": "GRAMMATICAL_VARIANT",
+      "disposition": "SAFE_EQUIVALENCE",
+      "allowedModes": [
+        "vocabulary",
+        "read",
+        "cloze",
+        "correction"
+      ],
+      "conditions": [
+        "Match only the exact listed auxiliary + not pair and its listed contraction.",
+        "The aligned span must contain the auxiliary and the negative marker together.",
+        "Preserve auxiliary identity, tense, order, and negation scope in both directions."
+      ],
+      "authorityTier": "grammatical-variant",
+      "modeConditions": {
+        "vocabulary": "Align only to existing canonical/answers/source authority; a paraphrase is never promoted.",
+        "read": "Match the complete auxiliary + negator pair contiguously and preserve the remainder of the reference.",
+        "cloze": "The complete hidden target span must map in place; preservesExpectedNegation and completeness remain hard gates.",
+        "correction": "Match the complete pair; do not add a scheduled SRS write."
+      },
+      "excludedModes": {}
+    },
+    {
+      "id": "can-not-spacing",
+      "taxonomy": "CONTEXT_CONDITIONAL",
+      "disposition": "CONTEXT_CONDITIONAL",
+      "allowedModes": [
+        "vocabulary",
+        "correction"
+      ],
+      "conditions": [
+        "Treat cannot/can’t as a listed fixed negative pair.",
+        "Do not automatically equate can not with cannot/can’t: split can not may scope over the following verb or express a choice not to act."
+      ],
+      "authorityTier": null,
+      "modeConditions": {},
+      "excludedModes": {
+        "read": "UNRESOLVED pending exact-text policy.",
+        "cloze": "UNRESOLVED pending scope and target policy."
+      }
+    },
+    {
+      "id": "lets-hortative",
+      "taxonomy": "CONTEXT_CONDITIONAL",
+      "disposition": "CONTEXT_CONDITIONAL",
+      "allowedModes": [
+        "vocabulary",
+        "correction"
+      ],
+      "conditions": [
+        "Resolve let’s to let us only as a first-person plural hortative with a following base verb.",
+        "Do not equate with permission/request “let us …” without discourse evidence."
+      ],
+      "authorityTier": null,
+      "modeConditions": {},
+      "excludedModes": {
+        "read": "UNRESOLVED pending exact-text policy.",
+        "cloze": "UNRESOLVED pending target policy."
+      }
+    },
+    {
+      "id": "aint-dialect",
+      "taxonomy": "AMBIGUOUS",
+      "disposition": "UNRESOLVED",
+      "allowedModes": [],
+      "conditions": [
+        "No automatic expansion. A dialect-specific speaker model and sentence parse would be required."
+      ],
+      "authorityTier": null,
+      "modeConditions": {},
+      "excludedModes": {}
+    },
+    {
+      "id": "possessive-s",
+      "taxonomy": "AMBIGUOUS",
+      "disposition": "UNRESOLVED",
+      "allowedModes": [],
+      "conditions": [
+        "Do not expand lexical ’s as an auxiliary when followed by a possessed noun.",
+        "Any possessive/auxiliary collision requires complete syntax and reference context."
+      ],
+      "authorityTier": null,
+      "modeConditions": {},
+      "excludedModes": {}
+    },
+    {
+      "id": "lexical-possessive-s",
+      "taxonomy": "NOT_EQUIVALENT",
+      "disposition": "REJECT",
+      "allowedModes": [],
+      "conditions": [
+        "The complete phrase uses ’s as a possessive determiner before a lexical noun.",
+        "Do not expand it to be/have or strip the possessive relation."
+      ],
+      "authorityTier": null,
+      "modeConditions": {},
+      "excludedModes": {}
+    },
+    {
+      "id": "homophone-spelling-collision",
+      "taxonomy": "AMBIGUOUS",
+      "disposition": "UNRESOLVED",
+      "allowedModes": [],
+      "conditions": [
+        "Require context-specific lexical/grammatical evidence for were/we’re, your/you’re, their/they’re/there, and its/it’s.",
+        "Do not infer an apostrophe or auxiliary from sound alone."
+      ],
+      "authorityTier": null,
+      "modeConditions": {},
+      "excludedModes": {}
+    },
+    {
+      "id": "am-not-tag",
+      "taxonomy": "CONTEXT_CONDITIONAL",
+      "disposition": "CONTEXT_CONDITIONAL",
+      "allowedModes": [
+        "vocabulary",
+        "correction"
+      ],
+      "conditions": [
+        "Aren’t I is eligible only as the conventional negative tag after a first-person positive clause.",
+        "It is not a general spelling/contraction of am not."
+      ],
+      "authorityTier": null,
+      "modeConditions": {},
+      "excludedModes": {
+        "read": "UNRESOLVED pending exact-text policy.",
+        "cloze": "UNRESOLVED pending target policy."
+      }
+    },
+    {
+      "id": "negation-drop-or-add",
+      "taxonomy": "NOT_EQUIVALENT",
+      "disposition": "REJECT",
+      "allowedModes": [],
+      "conditions": [
+        "Negation marker and scope must be preserved in both directions."
+      ],
+      "authorityTier": null,
+      "modeConditions": {},
+      "excludedModes": {}
+    },
+    {
+      "id": "auxiliary-or-tense-swap",
+      "taxonomy": "NOT_EQUIVALENT",
+      "disposition": "REJECT",
+      "allowedModes": [],
+      "conditions": [
+        "Auxiliary, tense/aspect, and modal force must remain the same."
+      ],
+      "authorityTier": null,
+      "modeConditions": {},
+      "excludedModes": {}
+    },
+    {
+      "id": "sentence-final-auxiliary",
+      "taxonomy": "CONTEXT_CONDITIONAL",
+      "disposition": "CONTEXT_CONDITIONAL",
+      "allowedModes": [],
+      "conditions": [
+        "A contracted auxiliary must be licensed by its syntactic construction; do not assume an elided predicate at sentence end.",
+        "Accept a short answer only if that exact elliptical form is independently licensed."
+      ],
+      "authorityTier": null,
+      "modeConditions": {},
+      "excludedModes": {}
+    },
+    {
+      "id": "nbest-no-synthesis",
+      "taxonomy": "NOT_EQUIVALENT",
+      "disposition": "REJECT",
+      "allowedModes": [],
+      "conditions": [
+        "Evaluate each finalized hypothesis independently.",
+        "Do not join words from rank 0, lower ranks, segments, or prior attempts."
+      ],
+      "authorityTier": null,
+      "modeConditions": {},
+      "excludedModes": {}
+    }
+  ],
+  "requestedClasses": [
+    {
+      "id": "requested-001",
+      "class": "be",
+      "expansion": "I am",
+      "form": "I'm",
+      "ambiguity": "unique",
+      "decisionId": "fixed-be-have-will",
+      "corpusCount": 42,
+      "examples": [
+        {
+          "candidateId": "ge-745bc498f8992955",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00005",
+          "context": "I'm beside myself"
+        },
+        {
+          "candidateId": "ge-e113eb3a13b5cbe9",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:01498",
+          "context": "I'm sure"
+        },
+        {
+          "candidateId": "ge-2d6d45144b4106a7",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:01636",
+          "context": "I'm serious"
+        },
+        {
+          "candidateId": "ge-2b918e4e8ea5822c",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:01916",
+          "context": "I'm afraid"
+        }
+      ]
+    },
+    {
+      "id": "requested-002",
+      "class": "be",
+      "expansion": "you are",
+      "form": "you're",
+      "ambiguity": "unique",
+      "decisionId": "fixed-be-have-will",
+      "corpusCount": 7,
+      "examples": [
+        {
+          "candidateId": "ge-cdaeedc2ec45394b",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00113",
+          "context": "you're flattering me"
+        },
+        {
+          "candidateId": "ge-36fdbe963100d8fa",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00354",
+          "context": "you're welcome"
+        },
+        {
+          "candidateId": "ge-91429592dab5347b",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:02437",
+          "context": "you're welcome."
+        },
+        {
+          "candidateId": "ge-27ef5d225444433e",
+          "sourceType": "item",
+          "sourceId": "E0191",
+          "context": "\"I'm scared of heights.\" \"You're a coward!\""
+        }
+      ]
+    },
+    {
+      "id": "requested-003",
+      "class": "be",
+      "expansion": "he is",
+      "form": "he's",
+      "ambiguity": "is-or-has",
+      "decisionId": "ambiguous-s",
+      "corpusCount": 6,
+      "examples": [
+        {
+          "candidateId": "ge-85e36285e2b15bcb",
+          "sourceType": "item",
+          "sourceId": "E0043",
+          "context": "Why don't you consult Starr in person? He's by far the most prominent attorney around here."
+        },
+        {
+          "candidateId": "ge-a489857055e5f74a",
+          "sourceType": "item",
+          "sourceId": "E0179",
+          "context": "I met the man by chance. He's gentle and smart. What's more, he's single!"
+        },
+        {
+          "candidateId": "ge-b95393e09bf8662c",
+          "sourceType": "item",
+          "sourceId": "E0179",
+          "context": "I met the man by chance. He's gentle and smart. What's more, he's single!"
+        },
+        {
+          "candidateId": "ge-1059d879a279927f",
+          "sourceType": "item",
+          "sourceId": "E0213",
+          "context": "As usual, Mike turned up on time. He's very punctual."
+        }
+      ]
+    },
+    {
+      "id": "requested-004",
+      "class": "be",
+      "expansion": "she is",
+      "form": "she's",
+      "ambiguity": "is-or-has",
+      "decisionId": "ambiguous-s",
+      "corpusCount": 2,
+      "examples": [
+        {
+          "candidateId": "ge-314848b3c7035c8c",
+          "sourceType": "item",
+          "sourceId": "E0528",
+          "context": "\"You should apologize to Lisa for making fun of her. You went too far this time.\" \"Yeah... I will, sometime when she's in a better mood.\""
+        },
+        {
+          "candidateId": "ge-d2c15994e95f835b",
+          "sourceType": "item",
+          "sourceId": "E0545",
+          "context": "\"Why do you put up with her arrogance? She's just taking advantage of you.\" \"Shut up!\""
+        }
+      ]
+    },
+    {
+      "id": "requested-005",
+      "class": "be",
+      "expansion": "it is",
+      "form": "it's",
+      "ambiguity": "is-has-or-possessive",
+      "decisionId": "ambiguous-s",
+      "corpusCount": 32,
+      "examples": [
+        {
+          "candidateId": "ge-dd8e6622006eec90",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00091",
+          "context": "it's on me"
+        },
+        {
+          "candidateId": "ge-0e421300f826aecc",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00290",
+          "context": "it's pointless to do something"
+        },
+        {
+          "candidateId": "ge-04f3b04273de870f",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:01379",
+          "context": "it's okay"
+        },
+        {
+          "candidateId": "ge-c71238a666b8956a",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:02454",
+          "context": "it's about time"
+        }
+      ]
+    },
+    {
+      "id": "requested-006",
+      "class": "be",
+      "expansion": "we are",
+      "form": "we're",
+      "ambiguity": "collides-with-were",
+      "decisionId": "fixed-be-have-will",
+      "corpusCount": 4,
+      "examples": [
+        {
+          "candidateId": "ge-ce5953f77dded806",
+          "sourceType": "item",
+          "sourceId": "E0200",
+          "context": "I must admit we quarrel every now and then, but generally we're on good terms with each other."
+        },
+        {
+          "candidateId": "ge-de7b044658566a28",
+          "sourceType": "item",
+          "sourceId": "E0205",
+          "context": "\"Let's make up, Lisa.\" \"Stop taking me for granted! We're through for good this time. I mean it!\""
+        },
+        {
+          "candidateId": "ge-0b2027051bb19fb1",
+          "sourceType": "item",
+          "sourceId": "E0218",
+          "context": "\"Jane, where are we heading?\" \"I think we're lost. We went in the wrong direction.\" \"Damn! Pull over!\""
+        },
+        {
+          "candidateId": "ge-3cc9068508f5a8d7",
+          "sourceType": "item",
+          "sourceId": "E0221",
+          "context": "\"Hey, we're stuck in a traffic jam!\" \"Chill out, Joe. Let's take a shortcut! We'll get there in time.\""
+        }
+      ]
+    },
+    {
+      "id": "requested-007",
+      "class": "be",
+      "expansion": "they are",
+      "form": "they're",
+      "ambiguity": "collides-with-there-their",
+      "decisionId": "fixed-be-have-will",
+      "corpusCount": 2,
+      "examples": [
+        {
+          "candidateId": "ge-1ff2da1c07bd9ff6",
+          "sourceType": "item",
+          "sourceId": "E0065",
+          "context": "I don't think those pants look good on you. Try these on. They're really in now!"
+        },
+        {
+          "candidateId": "ge-c53bf49b893c1bb1",
+          "sourceType": "item",
+          "sourceId": "E0197",
+          "context": "Bob likes cartoons, but I don't think much of them. As a matter of fact, they're boring."
+        }
+      ]
+    },
+    {
+      "id": "requested-008",
+      "class": "be",
+      "expansion": "that is",
+      "form": "that's",
+      "ambiguity": "is-or-has",
+      "decisionId": "ambiguous-s",
+      "corpusCount": 11,
+      "examples": [
+        {
+          "candidateId": "ge-c443055886f94efb",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00084",
+          "context": "that's it"
+        },
+        {
+          "candidateId": "ge-cec57770cb0d5525",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00084",
+          "context": "that's all"
+        },
+        {
+          "candidateId": "ge-5acf20246f5c77a3",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:01379",
+          "context": "that's fine"
+        },
+        {
+          "candidateId": "ge-b757896cc329132c",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:02450",
+          "context": "that's too bad."
+        }
+      ]
+    },
+    {
+      "id": "requested-009",
+      "class": "be",
+      "expansion": "there is",
+      "form": "there's",
+      "ambiguity": "is-or-has",
+      "decisionId": "ambiguous-s",
+      "corpusCount": 12,
+      "examples": [
+        {
+          "candidateId": "ge-0f7c9e1dfb4d80e3",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00290",
+          "context": "there's no use doing something"
+        },
+        {
+          "candidateId": "ge-c0611020a0947147",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00290",
+          "context": "there's no point in doing something"
+        },
+        {
+          "candidateId": "ge-8dcb08ecb283543c",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00478",
+          "context": "there's no point in doing something"
+        },
+        {
+          "candidateId": "ge-adf202719f0693f7",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00478",
+          "context": "there's no use doing something"
+        }
+      ]
+    },
+    {
+      "id": "requested-010",
+      "class": "be",
+      "expansion": "who is",
+      "form": "who's",
+      "ambiguity": "is-or-has",
+      "decisionId": "ambiguous-s",
+      "corpusCount": 0,
+      "examples": []
+    },
+    {
+      "id": "requested-011",
+      "class": "have",
+      "expansion": "I have",
+      "form": "I've",
+      "ambiguity": "unique",
+      "decisionId": "fixed-be-have-will",
+      "corpusCount": 5,
+      "examples": [
+        {
+          "candidateId": "ge-840e154e140c8cdc",
+          "sourceType": "item",
+          "sourceId": "E0075",
+          "context": "Now that I've found that there's no one to turn to, I'll have to stand on my own two feet."
+        },
+        {
+          "candidateId": "ge-33c6ed1a12e6d4fc",
+          "sourceType": "item",
+          "sourceId": "E0222",
+          "context": "\"I've got a flat tire. Can you give me a hand?\" \"I'd be glad to.\""
+        },
+        {
+          "candidateId": "ge-2df334d2a5e585fe",
+          "sourceType": "item",
+          "sourceId": "E0290",
+          "context": "I've gotten pessimistic, and I'm worried about something I would never have been concerned about before."
+        },
+        {
+          "candidateId": "ge-133e5cc90f9b74b9",
+          "sourceType": "item",
+          "sourceId": "E0377",
+          "context": "I'm fed up with just shuffling papers and pouring coffee. I've made up my mind to quit!"
+        }
+      ]
+    },
+    {
+      "id": "requested-012",
+      "class": "have",
+      "expansion": "you have",
+      "form": "you've",
+      "ambiguity": "unique",
+      "decisionId": "fixed-be-have-will",
+      "corpusCount": 1,
+      "examples": [
+        {
+          "candidateId": "ge-88288a1145ed6cc2",
+          "sourceType": "item",
+          "sourceId": "E0262",
+          "context": "You've got to keep up with it. Once you fall behind, it's hard to catch up."
+        }
+      ]
+    },
+    {
+      "id": "requested-013",
+      "class": "have",
+      "expansion": "we have",
+      "form": "we've",
+      "ambiguity": "unique",
+      "decisionId": "fixed-be-have-will",
+      "corpusCount": 1,
+      "examples": [
+        {
+          "candidateId": "ge-656f978ab8390e02",
+          "sourceType": "item",
+          "sourceId": "E0293",
+          "context": "We've come to the conclusion that nothing is more urgent than reducing Japan's huge deficit"
+        }
+      ]
+    },
+    {
+      "id": "requested-014",
+      "class": "have",
+      "expansion": "they have",
+      "form": "they've",
+      "ambiguity": "unique",
+      "decisionId": "fixed-be-have-will",
+      "corpusCount": 0,
+      "examples": []
+    },
+    {
+      "id": "requested-015",
+      "class": "have",
+      "expansion": "he has",
+      "form": "he's",
+      "ambiguity": "is-or-has",
+      "decisionId": "ambiguous-s",
+      "corpusCount": 6,
+      "examples": [
+        {
+          "candidateId": "ge-85e36285e2b15bcb",
+          "sourceType": "item",
+          "sourceId": "E0043",
+          "context": "Why don't you consult Starr in person? He's by far the most prominent attorney around here."
+        },
+        {
+          "candidateId": "ge-a489857055e5f74a",
+          "sourceType": "item",
+          "sourceId": "E0179",
+          "context": "I met the man by chance. He's gentle and smart. What's more, he's single!"
+        },
+        {
+          "candidateId": "ge-b95393e09bf8662c",
+          "sourceType": "item",
+          "sourceId": "E0179",
+          "context": "I met the man by chance. He's gentle and smart. What's more, he's single!"
+        },
+        {
+          "candidateId": "ge-1059d879a279927f",
+          "sourceType": "item",
+          "sourceId": "E0213",
+          "context": "As usual, Mike turned up on time. He's very punctual."
+        }
+      ]
+    },
+    {
+      "id": "requested-016",
+      "class": "have",
+      "expansion": "she has",
+      "form": "she's",
+      "ambiguity": "is-or-has",
+      "decisionId": "ambiguous-s",
+      "corpusCount": 2,
+      "examples": [
+        {
+          "candidateId": "ge-314848b3c7035c8c",
+          "sourceType": "item",
+          "sourceId": "E0528",
+          "context": "\"You should apologize to Lisa for making fun of her. You went too far this time.\" \"Yeah... I will, sometime when she's in a better mood.\""
+        },
+        {
+          "candidateId": "ge-d2c15994e95f835b",
+          "sourceType": "item",
+          "sourceId": "E0545",
+          "context": "\"Why do you put up with her arrogance? She's just taking advantage of you.\" \"Shut up!\""
+        }
+      ]
+    },
+    {
+      "id": "requested-017",
+      "class": "have",
+      "expansion": "it has",
+      "form": "it's",
+      "ambiguity": "is-has-or-possessive",
+      "decisionId": "ambiguous-s",
+      "corpusCount": 32,
+      "examples": [
+        {
+          "candidateId": "ge-dd8e6622006eec90",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00091",
+          "context": "it's on me"
+        },
+        {
+          "candidateId": "ge-0e421300f826aecc",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00290",
+          "context": "it's pointless to do something"
+        },
+        {
+          "candidateId": "ge-04f3b04273de870f",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:01379",
+          "context": "it's okay"
+        },
+        {
+          "candidateId": "ge-c71238a666b8956a",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:02454",
+          "context": "it's about time"
+        }
+      ]
+    },
+    {
+      "id": "requested-018",
+      "class": "will-would-had",
+      "expansion": "I will",
+      "form": "I'll",
+      "ambiguity": "unique",
+      "decisionId": "fixed-be-have-will",
+      "corpusCount": 18,
+      "examples": [
+        {
+          "candidateId": "ge-312990e8ab14f2ca",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00085",
+          "context": "I'll take it"
+        },
+        {
+          "candidateId": "ge-e5bc2308d675af5f",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00085",
+          "context": "I'll go with that"
+        },
+        {
+          "candidateId": "ge-2e466ef9979e26a5",
+          "sourceType": "item",
+          "sourceId": "E0044",
+          "context": "I'll write it down just in case, because I have a bad memory."
+        },
+        {
+          "candidateId": "ge-899f230e9a2ed1b0",
+          "sourceType": "item",
+          "sourceId": "E0064",
+          "context": "\"How much is this rug?\" \"$100 including tax.\" \"OK, I'll take it.\""
+        }
+      ]
+    },
+    {
+      "id": "requested-019",
+      "class": "will-would-had",
+      "expansion": "you will",
+      "form": "you'll",
+      "ambiguity": "unique",
+      "decisionId": "fixed-be-have-will",
+      "corpusCount": 2,
+      "examples": [
+        {
+          "candidateId": "ge-19d158c48921a104",
+          "sourceType": "item",
+          "sourceId": "E0209",
+          "context": "Keep your word; otherwise you'll end up losing face."
+        },
+        {
+          "candidateId": "ge-d972c4473956111d",
+          "sourceType": "item",
+          "sourceId": "E0357",
+          "context": "Stop clinging to your glory days, or you'll be left behind."
+        }
+      ]
+    },
+    {
+      "id": "requested-020",
+      "class": "will-would-had",
+      "expansion": "he will",
+      "form": "he'll",
+      "ambiguity": "unique",
+      "decisionId": "fixed-be-have-will",
+      "corpusCount": 1,
+      "examples": [
+        {
+          "candidateId": "ge-cbdd06197041467d",
+          "sourceType": "item",
+          "sourceId": "E0162",
+          "context": "\"What if I don't meet the deadline?\" \"I bet he'll get mad at you!\""
+        }
+      ]
+    },
+    {
+      "id": "requested-021",
+      "class": "will-would-had",
+      "expansion": "we will",
+      "form": "we'll",
+      "ambiguity": "unique",
+      "decisionId": "fixed-be-have-will",
+      "corpusCount": 1,
+      "examples": [
+        {
+          "candidateId": "ge-57e9deb29da61ab0",
+          "sourceType": "item",
+          "sourceId": "E0221",
+          "context": "\"Hey, we're stuck in a traffic jam!\" \"Chill out, Joe. Let's take a shortcut! We'll get there in time.\""
+        }
+      ]
+    },
+    {
+      "id": "requested-022",
+      "class": "will-would-had",
+      "expansion": "I would",
+      "form": "I'd",
+      "ambiguity": "would-or-had",
+      "decisionId": "ambiguous-d",
+      "corpusCount": 9,
+      "examples": [
+        {
+          "candidateId": "ge-dfc3ae4ac12e59eb",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:01648",
+          "context": "I'd be glad to"
+        },
+        {
+          "candidateId": "ge-8a04d873946749d4",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:01648",
+          "context": "I'd be happy to"
+        },
+        {
+          "candidateId": "ge-c5c164cff00544b5",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:02452",
+          "context": "if I were you, I'd do something"
+        },
+        {
+          "candidateId": "ge-e99e9c1998cc7ced",
+          "sourceType": "item",
+          "sourceId": "E0098",
+          "context": "On behalf of all the staff, I'd like to express our sympathy for the victims."
+        }
+      ]
+    },
+    {
+      "id": "requested-023",
+      "class": "will-would-had",
+      "expansion": "I had",
+      "form": "I'd",
+      "ambiguity": "would-or-had",
+      "decisionId": "ambiguous-d",
+      "corpusCount": 9,
+      "examples": [
+        {
+          "candidateId": "ge-dfc3ae4ac12e59eb",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:01648",
+          "context": "I'd be glad to"
+        },
+        {
+          "candidateId": "ge-8a04d873946749d4",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:01648",
+          "context": "I'd be happy to"
+        },
+        {
+          "candidateId": "ge-c5c164cff00544b5",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:02452",
+          "context": "if I were you, I'd do something"
+        },
+        {
+          "candidateId": "ge-e99e9c1998cc7ced",
+          "sourceType": "item",
+          "sourceId": "E0098",
+          "context": "On behalf of all the staff, I'd like to express our sympathy for the victims."
+        }
+      ]
+    },
+    {
+      "id": "requested-024",
+      "class": "will-would-had",
+      "expansion": "she would",
+      "form": "she'd",
+      "ambiguity": "would-or-had",
+      "decisionId": "ambiguous-d",
+      "corpusCount": 0,
+      "examples": []
+    },
+    {
+      "id": "requested-025",
+      "class": "will-would-had",
+      "expansion": "she had",
+      "form": "she'd",
+      "ambiguity": "would-or-had",
+      "decisionId": "ambiguous-d",
+      "corpusCount": 0,
+      "examples": []
+    },
+    {
+      "id": "requested-026",
+      "class": "negative",
+      "expansion": "do not",
+      "form": "don't",
+      "ambiguity": "fixed-auxiliary-plus-negation",
+      "decisionId": "negative-fixed-pair",
+      "corpusCount": 24,
+      "examples": [
+        {
+          "candidateId": "ge-be68e18473f59a7c",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00036",
+          "context": "don't overdo it"
+        },
+        {
+          "candidateId": "ge-58f755f9ec7cb5fb",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00354",
+          "context": "don't mention it"
+        },
+        {
+          "candidateId": "ge-49caf44b2d166aba",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00468",
+          "context": "don't hesitate to do something"
+        },
+        {
+          "candidateId": "ge-eceaa13309e794e5",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00469",
+          "context": "I don't understand this at all"
+        }
+      ]
+    },
+    {
+      "id": "requested-027",
+      "class": "negative",
+      "expansion": "does not",
+      "form": "doesn't",
+      "ambiguity": "fixed-auxiliary-plus-negation",
+      "decisionId": "negative-fixed-pair",
+      "corpusCount": 4,
+      "examples": [
+        {
+          "candidateId": "ge-e12891a519f29ef4",
+          "sourceType": "item",
+          "sourceId": "E0056",
+          "context": "The biologist is proud of his historic discovery and doesn't mind boasting about it."
+        },
+        {
+          "candidateId": "ge-e3a16ed4b1a187cc",
+          "sourceType": "item",
+          "sourceId": "E0103",
+          "context": "Tighten the lid so the food doesn't go bad."
+        },
+        {
+          "candidateId": "ge-1787b24b2b0eb893",
+          "sourceType": "item",
+          "sourceId": "E0158",
+          "context": "His thesis doesn't make sense. To begin with, its theme is obscure."
+        },
+        {
+          "candidateId": "ge-f452b3ffeea20a1b",
+          "sourceType": "item",
+          "sourceId": "E0554",
+          "context": "\"I feel for you, Jane. Grief doesn't fade away quickly.\" \"I'm OK. I'll get over it.\""
+        }
+      ]
+    },
+    {
+      "id": "requested-028",
+      "class": "negative",
+      "expansion": "did not",
+      "form": "didn't",
+      "ambiguity": "fixed-auxiliary-plus-negation",
+      "decisionId": "negative-fixed-pair",
+      "corpusCount": 6,
+      "examples": [
+        {
+          "candidateId": "ge-b8dde37cd6111ad1",
+          "sourceType": "item",
+          "sourceId": "E0020",
+          "context": "\"Could you move over a little?\" \"Oh, sorry. I didn't realize I was taking up so much space.\""
+        },
+        {
+          "candidateId": "ge-da5078a899a9ee7d",
+          "sourceType": "item",
+          "sourceId": "E0206",
+          "context": "Come on! Don't get so emotional, Lisa. I didn't mean to hurt you. Let's talk it over."
+        },
+        {
+          "candidateId": "ge-ddc9dac9943c3455",
+          "sourceType": "item",
+          "sourceId": "E0447",
+          "context": "The amendment was rejected because it didn't take racial diversity into account."
+        },
+        {
+          "candidateId": "ge-da59d04e250493e9",
+          "sourceType": "item",
+          "sourceId": "E0535",
+          "context": "\"No wonder she didn't show up to see him off.\" \"How come?\" \"They broke up.\" \"Oh, what a pity!\""
+        }
+      ]
+    },
+    {
+      "id": "requested-029",
+      "class": "negative",
+      "expansion": "is not",
+      "form": "isn't",
+      "ambiguity": "fixed-auxiliary-plus-negation",
+      "decisionId": "negative-fixed-pair",
+      "corpusCount": 5,
+      "examples": [
+        {
+          "candidateId": "ge-7b2b3b191e57f7df",
+          "sourceType": "item",
+          "sourceId": "E0062",
+          "context": "\"This is fake, isn't it?\" \"Hey, it's a genuine antique.\" \"No way!\""
+        },
+        {
+          "candidateId": "ge-8187c45033cb436a",
+          "sourceType": "item",
+          "sourceId": "E0188",
+          "context": "To make matters worse, he isn't even conscious of annoying us."
+        },
+        {
+          "candidateId": "ge-823612c3e7fea5d6",
+          "sourceType": "item",
+          "sourceId": "E0255",
+          "context": "\"It's foggy, isn't it?\" \"It sure is. But chances are it'll clear up later on.\""
+        },
+        {
+          "candidateId": "ge-e6a51a9dfd989d1d",
+          "sourceType": "item",
+          "sourceId": "E0405",
+          "context": "A senior official is suspected of accepting bribes from a company, but there isn't sufficient evidence to arrest him."
+        }
+      ]
+    },
+    {
+      "id": "requested-030",
+      "class": "negative",
+      "expansion": "are not",
+      "form": "aren't",
+      "ambiguity": "fixed-auxiliary-plus-negation",
+      "decisionId": "negative-fixed-pair",
+      "corpusCount": 1,
+      "examples": [
+        {
+          "candidateId": "ge-4a70effbf029457a",
+          "sourceType": "item",
+          "sourceId": "E0336",
+          "context": "You aren't cut out for the military because of its rigid discipline."
+        }
+      ]
+    },
+    {
+      "id": "requested-031",
+      "class": "negative",
+      "expansion": "was not",
+      "form": "wasn't",
+      "ambiguity": "fixed-auxiliary-plus-negation",
+      "decisionId": "negative-fixed-pair",
+      "corpusCount": 1,
+      "examples": [
+        {
+          "candidateId": "ge-338d816205473fac",
+          "sourceType": "item",
+          "sourceId": "E0282",
+          "context": "Apparently, Nick wasn't willing to take on the task because it would just add to his burdens."
+        }
+      ]
+    },
+    {
+      "id": "requested-032",
+      "class": "negative",
+      "expansion": "were not",
+      "form": "weren't",
+      "ambiguity": "fixed-auxiliary-plus-negation",
+      "decisionId": "negative-fixed-pair",
+      "corpusCount": 0,
+      "examples": []
+    },
+    {
+      "id": "requested-033",
+      "class": "negative",
+      "expansion": "have not",
+      "form": "haven't",
+      "ambiguity": "fixed-auxiliary-plus-negation",
+      "decisionId": "negative-fixed-pair",
+      "corpusCount": 2,
+      "examples": [
+        {
+          "candidateId": "ge-0d99160cffa4f034",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:01289",
+          "context": "haven't done something yet"
+        },
+        {
+          "candidateId": "ge-8ee6a443bd55aef7",
+          "sourceType": "item",
+          "sourceId": "E0279",
+          "context": "Compared to the previous year, business is looking up in terms of sales. However, we haven't made any profit yet."
+        }
+      ]
+    },
+    {
+      "id": "requested-034",
+      "class": "negative",
+      "expansion": "has not",
+      "form": "hasn't",
+      "ambiguity": "fixed-auxiliary-plus-negation",
+      "decisionId": "negative-fixed-pair",
+      "corpusCount": 0,
+      "examples": []
+    },
+    {
+      "id": "requested-035",
+      "class": "negative",
+      "expansion": "had not",
+      "form": "hadn't",
+      "ambiguity": "fixed-auxiliary-plus-negation",
+      "decisionId": "negative-fixed-pair",
+      "corpusCount": 0,
+      "examples": []
+    },
+    {
+      "id": "requested-036",
+      "class": "negative",
+      "expansion": "cannot",
+      "form": "can't",
+      "ambiguity": "fixed-auxiliary-plus-negation",
+      "decisionId": "negative-fixed-pair",
+      "corpusCount": 21,
+      "examples": [
+        {
+          "candidateId": "ge-ac9d5cf3f7c12c45",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00138",
+          "context": "can't do without something"
+        },
+        {
+          "candidateId": "ge-26a7c15aa2d030f5",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00138",
+          "context": "can't live without something"
+        },
+        {
+          "candidateId": "ge-5caed1779f61f342",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00230",
+          "context": "can't help doing something"
+        },
+        {
+          "candidateId": "ge-2e13746269aa9968",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00230",
+          "context": "can't resist doing something"
+        }
+      ]
+    },
+    {
+      "id": "requested-037",
+      "class": "negative",
+      "expansion": "could not",
+      "form": "couldn't",
+      "ambiguity": "fixed-auxiliary-plus-negation",
+      "decisionId": "negative-fixed-pair",
+      "corpusCount": 6,
+      "examples": [
+        {
+          "candidateId": "ge-c5a83e756e3fa928",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00019",
+          "context": "couldn't be better"
+        },
+        {
+          "candidateId": "ge-4ff2e1fd5e7badcb",
+          "sourceType": "item",
+          "sourceId": "E0080",
+          "context": "Could you go over it again? I couldn't make out what you were getting at."
+        },
+        {
+          "candidateId": "ge-54fb38d14fc96910",
+          "sourceType": "item",
+          "sourceId": "E0211",
+          "context": "\"Cheer up! You couldn't help it.\" \"I did my best.\" \"I know. Don't dwell on the past. You can start over!\""
+        },
+        {
+          "candidateId": "ge-8fa5844066f6971e",
+          "sourceType": "item",
+          "sourceId": "E0366",
+          "context": "\"How's it going, Bob?\" \"Couldn't be better! I did well in my job interview!\" \"Good for you!\""
+        }
+      ]
+    },
+    {
+      "id": "requested-038",
+      "class": "negative",
+      "expansion": "will not",
+      "form": "won't",
+      "ambiguity": "fixed-auxiliary-plus-negation",
+      "decisionId": "negative-fixed-pair",
+      "corpusCount": 7,
+      "examples": [
+        {
+          "candidateId": "ge-1d24d37ff27eea91",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:02384",
+          "context": "it won't be long before everything is ready"
+        },
+        {
+          "candidateId": "ge-2c32cbc688bccbca",
+          "sourceType": "item",
+          "sourceId": "E0298",
+          "context": "\"Don't forget to confirm your reservation in advance.\" \"I won't.\""
+        },
+        {
+          "candidateId": "ge-47475b61710ef49e",
+          "sourceType": "item",
+          "sourceId": "E0343",
+          "context": "I'll stand up for what I believe in and won't yield to any threats."
+        },
+        {
+          "candidateId": "ge-3ed15274eeca1e8a",
+          "sourceType": "item",
+          "sourceId": "E0346",
+          "context": "You won't let me down. I have great faith in you. You can make it!"
+        }
+      ]
+    },
+    {
+      "id": "requested-039",
+      "class": "negative",
+      "expansion": "would not",
+      "form": "wouldn't",
+      "ambiguity": "fixed-auxiliary-plus-negation",
+      "decisionId": "negative-fixed-pair",
+      "corpusCount": 2,
+      "examples": [
+        {
+          "candidateId": "ge-312e5d18446a493b",
+          "sourceType": "item",
+          "sourceId": "E0198",
+          "context": "It occurred to me that he was holding something back, because he wouldn't look me in the eye."
+        },
+        {
+          "candidateId": "ge-31c18638fd98642f",
+          "sourceType": "item",
+          "sourceId": "E0544",
+          "context": "\"Jennifer went so far as to call me an idiot and she wouldn't take it back.\" \"Serves you right! You provoked her, didn't you?\""
+        }
+      ]
+    },
+    {
+      "id": "requested-040",
+      "class": "negative",
+      "expansion": "should not",
+      "form": "shouldn't",
+      "ambiguity": "fixed-auxiliary-plus-negation",
+      "decisionId": "negative-fixed-pair",
+      "corpusCount": 0,
+      "examples": []
+    },
+    {
+      "id": "requested-041",
+      "class": "negative",
+      "expansion": "must not",
+      "form": "mustn't",
+      "ambiguity": "fixed-auxiliary-plus-negation",
+      "decisionId": "negative-fixed-pair",
+      "corpusCount": 0,
+      "examples": []
+    },
+    {
+      "id": "requested-042",
+      "class": "negative",
+      "expansion": "need not",
+      "form": "needn't",
+      "ambiguity": "fixed-auxiliary-plus-negation",
+      "decisionId": "negative-fixed-pair",
+      "corpusCount": 0,
+      "examples": []
+    },
+    {
+      "id": "requested-043",
+      "class": "negative",
+      "expansion": "shall not",
+      "form": "shan't",
+      "ambiguity": "fixed-auxiliary-plus-negation",
+      "decisionId": "negative-fixed-pair",
+      "corpusCount": 0,
+      "examples": []
+    },
+    {
+      "id": "requested-044",
+      "class": "irregular",
+      "expansion": "let us",
+      "form": "let's",
+      "ambiguity": "hortative-or-permission",
+      "decisionId": "lets-hortative",
+      "corpusCount": 10,
+      "examples": [
+        {
+          "candidateId": "ge-00bf97277a648c03",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:02480",
+          "context": "let's see"
+        },
+        {
+          "candidateId": "ge-7c2d2f45953dbc4b",
+          "sourceType": "item",
+          "sourceId": "E0068",
+          "context": "\"It's on me.\" \"No. You treat me every time we eat out.\" \"Well, okay. Let's split the check then.\""
+        },
+        {
+          "candidateId": "ge-ae395e6046c2a9b9",
+          "sourceType": "item",
+          "sourceId": "E0076",
+          "context": "The chairman cut me off, saying, \"Time to wind things up. Let's take a vote.\""
+        },
+        {
+          "candidateId": "ge-02887b6be582b8e0",
+          "sourceType": "item",
+          "sourceId": "E0123",
+          "context": "\"I'm exhausted! Let's take a break in the shade.\" \"Why not?\""
+        }
+      ]
+    },
+    {
+      "id": "requested-045",
+      "class": "irregular",
+      "expansion": "cannot",
+      "form": "can't",
+      "ambiguity": "spaced-can-not-scope",
+      "decisionId": "negative-fixed-pair",
+      "corpusCount": 21,
+      "examples": [
+        {
+          "candidateId": "ge-ac9d5cf3f7c12c45",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00138",
+          "context": "can't do without something"
+        },
+        {
+          "candidateId": "ge-26a7c15aa2d030f5",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00138",
+          "context": "can't live without something"
+        },
+        {
+          "candidateId": "ge-5caed1779f61f342",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00230",
+          "context": "can't help doing something"
+        },
+        {
+          "candidateId": "ge-2e13746269aa9968",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00230",
+          "context": "can't resist doing something"
+        }
+      ]
+    },
+    {
+      "id": "requested-046",
+      "class": "irregular",
+      "expansion": "am not (first-person tag)",
+      "form": "aren't I",
+      "ambiguity": "tag-only",
+      "decisionId": "am-not-tag",
+      "corpusCount": 0,
+      "examples": []
+    },
+    {
+      "id": "requested-047",
+      "class": "irregular",
+      "expansion": "am/is/are/have/has not (dialect-dependent)",
+      "form": "ain't",
+      "ambiguity": "multiple-auxiliary-and-dialect",
+      "decisionId": "aint-dialect",
+      "corpusCount": 0,
+      "examples": []
+    },
+    {
+      "id": "requested-048",
+      "class": "collision",
+      "expansion": "were",
+      "form": "we're",
+      "ambiguity": "tense-and-pronoun-collision",
+      "decisionId": "homophone-spelling-collision",
+      "corpusCount": 4,
+      "examples": [
+        {
+          "candidateId": "ge-ce5953f77dded806",
+          "sourceType": "item",
+          "sourceId": "E0200",
+          "context": "I must admit we quarrel every now and then, but generally we're on good terms with each other."
+        },
+        {
+          "candidateId": "ge-de7b044658566a28",
+          "sourceType": "item",
+          "sourceId": "E0205",
+          "context": "\"Let's make up, Lisa.\" \"Stop taking me for granted! We're through for good this time. I mean it!\""
+        },
+        {
+          "candidateId": "ge-0b2027051bb19fb1",
+          "sourceType": "item",
+          "sourceId": "E0218",
+          "context": "\"Jane, where are we heading?\" \"I think we're lost. We went in the wrong direction.\" \"Damn! Pull over!\""
+        },
+        {
+          "candidateId": "ge-3cc9068508f5a8d7",
+          "sourceType": "item",
+          "sourceId": "E0221",
+          "context": "\"Hey, we're stuck in a traffic jam!\" \"Chill out, Joe. Let's take a shortcut! We'll get there in time.\""
+        }
+      ]
+    },
+    {
+      "id": "requested-049",
+      "class": "collision",
+      "expansion": "your",
+      "form": "you're",
+      "ambiguity": "possessive-pronoun-collision",
+      "decisionId": "homophone-spelling-collision",
+      "corpusCount": 7,
+      "examples": [
+        {
+          "candidateId": "ge-cdaeedc2ec45394b",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00113",
+          "context": "you're flattering me"
+        },
+        {
+          "candidateId": "ge-36fdbe963100d8fa",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00354",
+          "context": "you're welcome"
+        },
+        {
+          "candidateId": "ge-91429592dab5347b",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:02437",
+          "context": "you're welcome."
+        },
+        {
+          "candidateId": "ge-27ef5d225444433e",
+          "sourceType": "item",
+          "sourceId": "E0191",
+          "context": "\"I'm scared of heights.\" \"You're a coward!\""
+        }
+      ]
+    },
+    {
+      "id": "requested-050",
+      "class": "collision",
+      "expansion": "there/their",
+      "form": "they're",
+      "ambiguity": "homophone-and-role-collision",
+      "decisionId": "homophone-spelling-collision",
+      "corpusCount": 2,
+      "examples": [
+        {
+          "candidateId": "ge-1ff2da1c07bd9ff6",
+          "sourceType": "item",
+          "sourceId": "E0065",
+          "context": "I don't think those pants look good on you. Try these on. They're really in now!"
+        },
+        {
+          "candidateId": "ge-c53bf49b893c1bb1",
+          "sourceType": "item",
+          "sourceId": "E0197",
+          "context": "Bob likes cartoons, but I don't think much of them. As a matter of fact, they're boring."
+        }
+      ]
+    },
+    {
+      "id": "requested-051",
+      "class": "collision",
+      "expansion": "its",
+      "form": "it's",
+      "ambiguity": "possessive-collision",
+      "decisionId": "homophone-spelling-collision",
+      "corpusCount": 32,
+      "examples": [
+        {
+          "candidateId": "ge-dd8e6622006eec90",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00091",
+          "context": "it's on me"
+        },
+        {
+          "candidateId": "ge-0e421300f826aecc",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00290",
+          "context": "it's pointless to do something"
+        },
+        {
+          "candidateId": "ge-04f3b04273de870f",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:01379",
+          "context": "it's okay"
+        },
+        {
+          "candidateId": "ge-c71238a666b8956a",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:02454",
+          "context": "it's about time"
+        }
+      ]
+    }
+  ],
+  "corpusDiscoveredForms": [
+    {
+      "form": "architecture's",
+      "count": 1,
+      "likelyType": "possessive-or-auxiliary-s",
+      "examples": [
+        {
+          "candidateId": "ge-1bdc639f83e0f070",
+          "sourceType": "item",
+          "sourceId": "E0348",
+          "context": "In 1995, Ando received architecture's most prestigious award."
+        }
+      ]
+    },
+    {
+      "form": "aren't",
+      "count": 1,
+      "likelyType": "negative-contraction",
+      "examples": [
+        {
+          "candidateId": "ge-4a70effbf029457a",
+          "sourceType": "item",
+          "sourceId": "E0336",
+          "context": "You aren't cut out for the military because of its rigid discipline."
+        }
+      ]
+    },
+    {
+      "form": "brian's",
+      "count": 1,
+      "likelyType": "possessive-or-auxiliary-s",
+      "examples": [
+        {
+          "candidateId": "ge-170c771ac8eecf36",
+          "sourceType": "item",
+          "sourceId": "E0356",
+          "context": "To Brian's surprise, his debt amounted to a considerable sum."
+        }
+      ]
+    },
+    {
+      "form": "can't",
+      "count": 21,
+      "likelyType": "negative-contraction",
+      "examples": [
+        {
+          "candidateId": "ge-ac9d5cf3f7c12c45",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00138",
+          "context": "can't do without something"
+        },
+        {
+          "candidateId": "ge-26a7c15aa2d030f5",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00138",
+          "context": "can't live without something"
+        },
+        {
+          "candidateId": "ge-5caed1779f61f342",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00230",
+          "context": "can't help doing something"
+        },
+        {
+          "candidateId": "ge-2e13746269aa9968",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00230",
+          "context": "can't resist doing something"
+        },
+        {
+          "candidateId": "ge-ecbe6fe04ea387ad",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00469",
+          "context": "can't make heads or tails of this"
+        },
+        {
+          "candidateId": "ge-d492ee9967b7b124",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00469",
+          "context": "I can't make sense of this"
+        },
+        {
+          "candidateId": "ge-8e882dd874544af2",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00629",
+          "context": "can't stand something"
+        },
+        {
+          "candidateId": "ge-abd23edcc8f42c03",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00629",
+          "context": "can't bear something"
+        },
+        {
+          "candidateId": "ge-aff26e6fca89c365",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:01400",
+          "context": "can't wait to do something"
+        },
+        {
+          "candidateId": "ge-9ff3f8d0047ef36e",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:01638",
+          "context": "can't help it"
+        },
+        {
+          "candidateId": "ge-407bbda134767327",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:01638",
+          "context": "can't be helped"
+        },
+        {
+          "candidateId": "ge-928f53d6eb3e40b6",
+          "sourceType": "item",
+          "sourceId": "E0053",
+          "context": "We can't apply cloning techniques to cattle, let alone human beings. It's forbidden."
+        }
+      ]
+    },
+    {
+      "form": "child's",
+      "count": 1,
+      "likelyType": "possessive-or-auxiliary-s",
+      "examples": [
+        {
+          "candidateId": "ge-a73b293ad762fdc9",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00196",
+          "context": "child's play"
+        }
+      ]
+    },
+    {
+      "form": "couldn't",
+      "count": 6,
+      "likelyType": "negative-contraction",
+      "examples": [
+        {
+          "candidateId": "ge-c5a83e756e3fa928",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00019",
+          "context": "couldn't be better"
+        },
+        {
+          "candidateId": "ge-4ff2e1fd5e7badcb",
+          "sourceType": "item",
+          "sourceId": "E0080",
+          "context": "Could you go over it again? I couldn't make out what you were getting at."
+        },
+        {
+          "candidateId": "ge-54fb38d14fc96910",
+          "sourceType": "item",
+          "sourceId": "E0211",
+          "context": "\"Cheer up! You couldn't help it.\" \"I did my best.\" \"I know. Don't dwell on the past. You can start over!\""
+        },
+        {
+          "candidateId": "ge-8fa5844066f6971e",
+          "sourceType": "item",
+          "sourceId": "E0366",
+          "context": "\"How's it going, Bob?\" \"Couldn't be better! I did well in my job interview!\" \"Good for you!\""
+        },
+        {
+          "candidateId": "ge-59610a9b7dc12333",
+          "sourceType": "item",
+          "sourceId": "E0367",
+          "context": "He gave instructions to the trainees, but they couldn't make heads or tails of them."
+        },
+        {
+          "candidateId": "ge-bf43ef0ab8a8df23",
+          "sourceType": "item",
+          "sourceId": "E0371",
+          "context": "He was so childish that he couldn't resist temptation."
+        }
+      ]
+    },
+    {
+      "form": "couple's",
+      "count": 1,
+      "likelyType": "possessive-or-auxiliary-s",
+      "examples": [
+        {
+          "candidateId": "ge-009d13bd8114b412",
+          "sourceType": "item",
+          "sourceId": "E0492",
+          "context": "Quite a few people have been invited to celebrate the couple's anniversary."
+        }
+      ]
+    },
+    {
+      "form": "death's",
+      "count": 1,
+      "likelyType": "possessive-or-auxiliary-s",
+      "examples": [
+        {
+          "candidateId": "ge-0b39eb19151d53ce",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00568",
+          "context": "be at death's door"
+        }
+      ]
+    },
+    {
+      "form": "didn't",
+      "count": 6,
+      "likelyType": "negative-contraction",
+      "examples": [
+        {
+          "candidateId": "ge-b8dde37cd6111ad1",
+          "sourceType": "item",
+          "sourceId": "E0020",
+          "context": "\"Could you move over a little?\" \"Oh, sorry. I didn't realize I was taking up so much space.\""
+        },
+        {
+          "candidateId": "ge-da5078a899a9ee7d",
+          "sourceType": "item",
+          "sourceId": "E0206",
+          "context": "Come on! Don't get so emotional, Lisa. I didn't mean to hurt you. Let's talk it over."
+        },
+        {
+          "candidateId": "ge-ddc9dac9943c3455",
+          "sourceType": "item",
+          "sourceId": "E0447",
+          "context": "The amendment was rejected because it didn't take racial diversity into account."
+        },
+        {
+          "candidateId": "ge-da59d04e250493e9",
+          "sourceType": "item",
+          "sourceId": "E0535",
+          "context": "\"No wonder she didn't show up to see him off.\" \"How come?\" \"They broke up.\" \"Oh, what a pity!\""
+        },
+        {
+          "candidateId": "ge-d4a668fbb0c1b60c",
+          "sourceType": "item",
+          "sourceId": "E0539",
+          "context": "\"It dawned on me that I had been taken in by Jennifer all along.\" \"How naive! Didn't you see through her?\""
+        },
+        {
+          "candidateId": "ge-a89504790f8abca7",
+          "sourceType": "item",
+          "sourceId": "E0544",
+          "context": "\"Jennifer went so far as to call me an idiot and she wouldn't take it back.\" \"Serves you right! You provoked her, didn't you?\""
+        }
+      ]
+    },
+    {
+      "form": "doesn't",
+      "count": 4,
+      "likelyType": "negative-contraction",
+      "examples": [
+        {
+          "candidateId": "ge-e12891a519f29ef4",
+          "sourceType": "item",
+          "sourceId": "E0056",
+          "context": "The biologist is proud of his historic discovery and doesn't mind boasting about it."
+        },
+        {
+          "candidateId": "ge-e3a16ed4b1a187cc",
+          "sourceType": "item",
+          "sourceId": "E0103",
+          "context": "Tighten the lid so the food doesn't go bad."
+        },
+        {
+          "candidateId": "ge-1787b24b2b0eb893",
+          "sourceType": "item",
+          "sourceId": "E0158",
+          "context": "His thesis doesn't make sense. To begin with, its theme is obscure."
+        },
+        {
+          "candidateId": "ge-f452b3ffeea20a1b",
+          "sourceType": "item",
+          "sourceId": "E0554",
+          "context": "\"I feel for you, Jane. Grief doesn't fade away quickly.\" \"I'm OK. I'll get over it.\""
+        }
+      ]
+    },
+    {
+      "form": "don't",
+      "count": 24,
+      "likelyType": "negative-contraction",
+      "examples": [
+        {
+          "candidateId": "ge-be68e18473f59a7c",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00036",
+          "context": "don't overdo it"
+        },
+        {
+          "candidateId": "ge-58f755f9ec7cb5fb",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00354",
+          "context": "don't mention it"
+        },
+        {
+          "candidateId": "ge-49caf44b2d166aba",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00468",
+          "context": "don't hesitate to do something"
+        },
+        {
+          "candidateId": "ge-eceaa13309e794e5",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00469",
+          "context": "I don't understand this at all"
+        },
+        {
+          "candidateId": "ge-d7825712d133af12",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:01192",
+          "context": "why don't you do something"
+        },
+        {
+          "candidateId": "ge-1925b0ec2ee6cef3",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:02435",
+          "context": "why don't you do something"
+        },
+        {
+          "candidateId": "ge-d217c020793168a9",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:02437",
+          "context": "don't mention it."
+        },
+        {
+          "candidateId": "ge-cfd3aaf81679f16b",
+          "sourceType": "item",
+          "sourceId": "E0017",
+          "context": "Don't be shy. Your pronunciation is more or less correct."
+        },
+        {
+          "candidateId": "ge-cc467e693157005e",
+          "sourceType": "item",
+          "sourceId": "E0043",
+          "context": "Why don't you consult Starr in person? He's by far the most prominent attorney around here."
+        },
+        {
+          "candidateId": "ge-929ee27881a2d5ac",
+          "sourceType": "item",
+          "sourceId": "E0065",
+          "context": "I don't think those pants look good on you. Try these on. They're really in now!"
+        },
+        {
+          "candidateId": "ge-6ac15f1efdf6e83a",
+          "sourceType": "item",
+          "sourceId": "E0086",
+          "context": "Your idea sounds marvelous in theory, yet I don't think it will work in practice."
+        },
+        {
+          "candidateId": "ge-79385eb6e69e9577",
+          "sourceType": "item",
+          "sourceId": "E0155",
+          "context": "\"Don't beat around the bush! What am I supposed to do?\" \"Just wait and see. Time will tell.\""
+        }
+      ]
+    },
+    {
+      "form": "family's",
+      "count": 1,
+      "likelyType": "possessive-or-auxiliary-s",
+      "examples": [
+        {
+          "candidateId": "ge-15f9bb568c597063",
+          "sourceType": "item",
+          "sourceId": "E0335",
+          "context": "As soon as he graduated from Keio University, he took over his family's business."
+        }
+      ]
+    },
+    {
+      "form": "haven't",
+      "count": 2,
+      "likelyType": "negative-contraction",
+      "examples": [
+        {
+          "candidateId": "ge-0d99160cffa4f034",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:01289",
+          "context": "haven't done something yet"
+        },
+        {
+          "candidateId": "ge-8ee6a443bd55aef7",
+          "sourceType": "item",
+          "sourceId": "E0279",
+          "context": "Compared to the previous year, business is looking up in terms of sales. However, we haven't made any profit yet."
+        }
+      ]
+    },
+    {
+      "form": "he'd",
+      "count": 1,
+      "likelyType": "auxiliary-contraction-candidate",
+      "examples": [
+        {
+          "candidateId": "ge-1e969ace86ccc7c9",
+          "sourceType": "item",
+          "sourceId": "E0187",
+          "context": "I can't help laughing at him because he keeps on making stupid mistakes. He'd be the last person to learn his lesson."
+        }
+      ]
+    },
+    {
+      "form": "he'll",
+      "count": 1,
+      "likelyType": "auxiliary-contraction-candidate",
+      "examples": [
+        {
+          "candidateId": "ge-cbdd06197041467d",
+          "sourceType": "item",
+          "sourceId": "E0162",
+          "context": "\"What if I don't meet the deadline?\" \"I bet he'll get mad at you!\""
+        }
+      ]
+    },
+    {
+      "form": "he's",
+      "count": 6,
+      "likelyType": "auxiliary-contraction-candidate",
+      "examples": [
+        {
+          "candidateId": "ge-85e36285e2b15bcb",
+          "sourceType": "item",
+          "sourceId": "E0043",
+          "context": "Why don't you consult Starr in person? He's by far the most prominent attorney around here."
+        },
+        {
+          "candidateId": "ge-a489857055e5f74a",
+          "sourceType": "item",
+          "sourceId": "E0179",
+          "context": "I met the man by chance. He's gentle and smart. What's more, he's single!"
+        },
+        {
+          "candidateId": "ge-b95393e09bf8662c",
+          "sourceType": "item",
+          "sourceId": "E0179",
+          "context": "I met the man by chance. He's gentle and smart. What's more, he's single!"
+        },
+        {
+          "candidateId": "ge-1059d879a279927f",
+          "sourceType": "item",
+          "sourceId": "E0213",
+          "context": "As usual, Mike turned up on time. He's very punctual."
+        },
+        {
+          "candidateId": "ge-602b00930515fc03",
+          "sourceType": "item",
+          "sourceId": "E0537",
+          "context": "\"To be honest, I'm crazy about Ken because he's brave, self-confident, and never afraid of taking risks.\" \"If I were you, I'd ask him out!\""
+        },
+        {
+          "candidateId": "ge-46cdf4db9913702c",
+          "sourceType": "item",
+          "sourceId": "E0558",
+          "context": "Go easy on Bob. You know, he's been going through a rough period recently."
+        }
+      ]
+    },
+    {
+      "form": "heart's",
+      "count": 1,
+      "likelyType": "possessive-or-auxiliary-s",
+      "examples": [
+        {
+          "candidateId": "ge-a6717e8f2ab5647f",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00172",
+          "context": "to your heart's content"
+        }
+      ]
+    },
+    {
+      "form": "how's",
+      "count": 3,
+      "likelyType": "auxiliary-contraction-candidate",
+      "examples": [
+        {
+          "candidateId": "ge-fe410a4efe4da33a",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00021",
+          "context": "how's it going?"
+        },
+        {
+          "candidateId": "ge-87e0cf5d61430a2c",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00666",
+          "context": "How's it going?"
+        },
+        {
+          "candidateId": "ge-1c859ad7e38f3748",
+          "sourceType": "item",
+          "sourceId": "E0366",
+          "context": "\"How's it going, Bob?\" \"Couldn't be better! I did well in my job interview!\" \"Good for you!\""
+        }
+      ]
+    },
+    {
+      "form": "i'd",
+      "count": 9,
+      "likelyType": "auxiliary-contraction-candidate",
+      "examples": [
+        {
+          "candidateId": "ge-dfc3ae4ac12e59eb",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:01648",
+          "context": "I'd be glad to"
+        },
+        {
+          "candidateId": "ge-8a04d873946749d4",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:01648",
+          "context": "I'd be happy to"
+        },
+        {
+          "candidateId": "ge-c5c164cff00544b5",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:02452",
+          "context": "if I were you, I'd do something"
+        },
+        {
+          "candidateId": "ge-e99e9c1998cc7ced",
+          "sourceType": "item",
+          "sourceId": "E0098",
+          "context": "On behalf of all the staff, I'd like to express our sympathy for the victims."
+        },
+        {
+          "candidateId": "ge-d69c4df2b9eb824a",
+          "sourceType": "item",
+          "sourceId": "E0222",
+          "context": "\"I've got a flat tire. Can you give me a hand?\" \"I'd be glad to.\""
+        },
+        {
+          "candidateId": "ge-251ffe7b35996cd8",
+          "sourceType": "item",
+          "sourceId": "E0309",
+          "context": "\"Sorry to interrupt your meal but I'd like a word with you in private.\" \"Can I get back to you later?\""
+        },
+        {
+          "candidateId": "ge-9d6de5f05015202d",
+          "sourceType": "item",
+          "sourceId": "E0340",
+          "context": "I'd rather go my own way than toil away for a company. Trying to fit into a mold gets me nowhere!"
+        },
+        {
+          "candidateId": "ge-29af4a14798bf694",
+          "sourceType": "item",
+          "sourceId": "E0518",
+          "context": "Can you spare a minute? I'd like to discuss something of importance to both of us."
+        },
+        {
+          "candidateId": "ge-4539fce29ab05e21",
+          "sourceType": "item",
+          "sourceId": "E0537",
+          "context": "\"To be honest, I'm crazy about Ken because he's brave, self-confident, and never afraid of taking risks.\" \"If I were you, I'd ask him out!\""
+        }
+      ]
+    },
+    {
+      "form": "i'll",
+      "count": 18,
+      "likelyType": "auxiliary-contraction-candidate",
+      "examples": [
+        {
+          "candidateId": "ge-312990e8ab14f2ca",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00085",
+          "context": "I'll take it"
+        },
+        {
+          "candidateId": "ge-e5bc2308d675af5f",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00085",
+          "context": "I'll go with that"
+        },
+        {
+          "candidateId": "ge-2e466ef9979e26a5",
+          "sourceType": "item",
+          "sourceId": "E0044",
+          "context": "I'll write it down just in case, because I have a bad memory."
+        },
+        {
+          "candidateId": "ge-899f230e9a2ed1b0",
+          "sourceType": "item",
+          "sourceId": "E0064",
+          "context": "\"How much is this rug?\" \"$100 including tax.\" \"OK, I'll take it.\""
+        },
+        {
+          "candidateId": "ge-ef145abb37231d0e",
+          "sourceType": "item",
+          "sourceId": "E0072",
+          "context": "\"That's odd! Tell me how it happened.\" \"I'll explain it to you later.\""
+        },
+        {
+          "candidateId": "ge-de10f6bb8984818c",
+          "sourceType": "item",
+          "sourceId": "E0075",
+          "context": "Now that I've found that there's no one to turn to, I'll have to stand on my own two feet."
+        },
+        {
+          "candidateId": "ge-cea50f9c6ccdf5f0",
+          "sourceType": "item",
+          "sourceId": "E0109",
+          "context": "\"What should we do with the leftovers?\" \"Keep them in the fridge for now. I'll heat them in the microwave later.\""
+        },
+        {
+          "candidateId": "ge-094c79792ed2341b",
+          "sourceType": "item",
+          "sourceId": "E0202",
+          "context": "Hold on. I'll be right back. Don't hang up!"
+        },
+        {
+          "candidateId": "ge-21be27ee570d9285",
+          "sourceType": "item",
+          "sourceId": "E0207",
+          "context": "\"You betrayed me!\" \"Please forgive me. How can I make it up to you?\" \"I'll get even!\""
+        },
+        {
+          "candidateId": "ge-5d06fee5824520cb",
+          "sourceType": "item",
+          "sourceId": "E0280",
+          "context": "\"I'm going to be transferred to an overseas branch.\" \"Oh, I'll miss you. Please drop me a line.\""
+        },
+        {
+          "candidateId": "ge-b775221f550e6e11",
+          "sourceType": "item",
+          "sourceId": "E0284",
+          "context": "\"Please estimate the losses by Friday at the latest.\" \"I'll manage it somehow.\""
+        },
+        {
+          "candidateId": "ge-72895136579dc01d",
+          "sourceType": "item",
+          "sourceId": "E0285",
+          "context": "\"Nick, I'm counting on you.\" \"OK, I'll see to it.\" \"Thanks, I appreciate it.\" \"Don't mention it.\""
+        }
+      ]
+    },
+    {
+      "form": "i'm",
+      "count": 42,
+      "likelyType": "auxiliary-contraction-candidate",
+      "examples": [
+        {
+          "candidateId": "ge-745bc498f8992955",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00005",
+          "context": "I'm beside myself"
+        },
+        {
+          "candidateId": "ge-e113eb3a13b5cbe9",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:01498",
+          "context": "I'm sure"
+        },
+        {
+          "candidateId": "ge-2d6d45144b4106a7",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:01636",
+          "context": "I'm serious"
+        },
+        {
+          "candidateId": "ge-2b918e4e8ea5822c",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:01916",
+          "context": "I'm afraid"
+        },
+        {
+          "candidateId": "ge-ee8bb214d166ca39",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:02476",
+          "context": "I'm sorry to hear that"
+        },
+        {
+          "candidateId": "ge-3048a61966b4d914",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:02477",
+          "context": "I'm sorry"
+        },
+        {
+          "candidateId": "ge-a0680e4fa025cfb5",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:02477",
+          "context": "I'm sorry to hear that"
+        },
+        {
+          "candidateId": "ge-93a87d6580579d55",
+          "sourceType": "item",
+          "sourceId": "E0009",
+          "context": "\"I'm soaked with sweat.\" \"Stand back! You stink. Take a shower.\""
+        },
+        {
+          "candidateId": "ge-37820ab7a00f4d2e",
+          "sourceType": "item",
+          "sourceId": "E0022",
+          "context": "I begged Richie to lend me a hundred bucks, but he shook his head, saying, \"I'm broke, too.\""
+        },
+        {
+          "candidateId": "ge-ac2c6731b4efa16e",
+          "sourceType": "item",
+          "sourceId": "E0023",
+          "context": "\"I'm apt to buy things on impulse whenever something is on sale.\" \"So am I.\""
+        },
+        {
+          "candidateId": "ge-82b722a879db4b96",
+          "sourceType": "item",
+          "sourceId": "E0026",
+          "context": "I have to cut down on my expenses, so from now on, I'm going to keep track of them on a daily basis."
+        },
+        {
+          "candidateId": "ge-4773d4e919d685cb",
+          "sourceType": "item",
+          "sourceId": "E0078",
+          "context": "\"Do you agree or disagree with him?\" \"I'm on his side.\""
+        }
+      ]
+    },
+    {
+      "form": "i've",
+      "count": 5,
+      "likelyType": "auxiliary-contraction-candidate",
+      "examples": [
+        {
+          "candidateId": "ge-840e154e140c8cdc",
+          "sourceType": "item",
+          "sourceId": "E0075",
+          "context": "Now that I've found that there's no one to turn to, I'll have to stand on my own two feet."
+        },
+        {
+          "candidateId": "ge-33c6ed1a12e6d4fc",
+          "sourceType": "item",
+          "sourceId": "E0222",
+          "context": "\"I've got a flat tire. Can you give me a hand?\" \"I'd be glad to.\""
+        },
+        {
+          "candidateId": "ge-2df334d2a5e585fe",
+          "sourceType": "item",
+          "sourceId": "E0290",
+          "context": "I've gotten pessimistic, and I'm worried about something I would never have been concerned about before."
+        },
+        {
+          "candidateId": "ge-133e5cc90f9b74b9",
+          "sourceType": "item",
+          "sourceId": "E0377",
+          "context": "I'm fed up with just shuffling papers and pouring coffee. I've made up my mind to quit!"
+        },
+        {
+          "candidateId": "ge-669189a6a02f26e8",
+          "sourceType": "item",
+          "sourceId": "E0538",
+          "context": "\"I've been going with Jennifer on and off for ages.\" \"You're as indecisive as ever. Isn't it about time you settled down?\""
+        }
+      ]
+    },
+    {
+      "form": "infant's",
+      "count": 1,
+      "likelyType": "possessive-or-auxiliary-s",
+      "examples": [
+        {
+          "candidateId": "ge-c9e71ce5c38b414e",
+          "sourceType": "item",
+          "sourceId": "E0319",
+          "context": "Good nutrition is vital for an infant's growth."
+        }
+      ]
+    },
+    {
+      "form": "isn't",
+      "count": 5,
+      "likelyType": "negative-contraction",
+      "examples": [
+        {
+          "candidateId": "ge-7b2b3b191e57f7df",
+          "sourceType": "item",
+          "sourceId": "E0062",
+          "context": "\"This is fake, isn't it?\" \"Hey, it's a genuine antique.\" \"No way!\""
+        },
+        {
+          "candidateId": "ge-8187c45033cb436a",
+          "sourceType": "item",
+          "sourceId": "E0188",
+          "context": "To make matters worse, he isn't even conscious of annoying us."
+        },
+        {
+          "candidateId": "ge-823612c3e7fea5d6",
+          "sourceType": "item",
+          "sourceId": "E0255",
+          "context": "\"It's foggy, isn't it?\" \"It sure is. But chances are it'll clear up later on.\""
+        },
+        {
+          "candidateId": "ge-e6a51a9dfd989d1d",
+          "sourceType": "item",
+          "sourceId": "E0405",
+          "context": "A senior official is suspected of accepting bribes from a company, but there isn't sufficient evidence to arrest him."
+        },
+        {
+          "candidateId": "ge-12a62f7de039cc0f",
+          "sourceType": "item",
+          "sourceId": "E0538",
+          "context": "\"I've been going with Jennifer on and off for ages.\" \"You're as indecisive as ever. Isn't it about time you settled down?\""
+        }
+      ]
+    },
+    {
+      "form": "it'll",
+      "count": 1,
+      "likelyType": "auxiliary-contraction-candidate",
+      "examples": [
+        {
+          "candidateId": "ge-7a2c7b87b079de60",
+          "sourceType": "item",
+          "sourceId": "E0255",
+          "context": "\"It's foggy, isn't it?\" \"It sure is. But chances are it'll clear up later on.\""
+        }
+      ]
+    },
+    {
+      "form": "it's",
+      "count": 32,
+      "likelyType": "auxiliary-contraction-candidate",
+      "examples": [
+        {
+          "candidateId": "ge-dd8e6622006eec90",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00091",
+          "context": "it's on me"
+        },
+        {
+          "candidateId": "ge-0e421300f826aecc",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00290",
+          "context": "it's pointless to do something"
+        },
+        {
+          "candidateId": "ge-04f3b04273de870f",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:01379",
+          "context": "it's okay"
+        },
+        {
+          "candidateId": "ge-c71238a666b8956a",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:02454",
+          "context": "it's about time"
+        },
+        {
+          "candidateId": "ge-0ee96f5b77a580f3",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:02454",
+          "context": "it's high time someone did something"
+        },
+        {
+          "candidateId": "ge-3bd8642697c1db6b",
+          "sourceType": "item",
+          "sourceId": "E0049",
+          "context": "He has a habit of biting his nails. It's absolutely disgusting."
+        },
+        {
+          "candidateId": "ge-a56af3c5d3c0d55d",
+          "sourceType": "item",
+          "sourceId": "E0053",
+          "context": "We can't apply cloning techniques to cattle, let alone human beings. It's forbidden."
+        },
+        {
+          "candidateId": "ge-823c00a93b0ce9c3",
+          "sourceType": "item",
+          "sourceId": "E0062",
+          "context": "\"This is fake, isn't it?\" \"Hey, it's a genuine antique.\" \"No way!\""
+        },
+        {
+          "candidateId": "ge-711a16369adbddaf",
+          "sourceType": "item",
+          "sourceId": "E0068",
+          "context": "\"It's on me.\" \"No. You treat me every time we eat out.\" \"Well, okay. Let's split the check then.\""
+        },
+        {
+          "candidateId": "ge-bc77697cac1690b4",
+          "sourceType": "item",
+          "sourceId": "E0107",
+          "context": "I'm getting rid of this leather jacket because it's worn out at the elbows."
+        },
+        {
+          "candidateId": "ge-4d5f523ccaf81114",
+          "sourceType": "item",
+          "sourceId": "E0114",
+          "context": "Put this stuff away! It's in the way."
+        },
+        {
+          "candidateId": "ge-b7e503b427a02425",
+          "sourceType": "item",
+          "sourceId": "E0122",
+          "context": "My favorite pastime is strolling along the shore. It's pleasant."
+        }
+      ]
+    },
+    {
+      "form": "japan's",
+      "count": 1,
+      "likelyType": "possessive-or-auxiliary-s",
+      "examples": [
+        {
+          "candidateId": "ge-e98862897e93be1d",
+          "sourceType": "item",
+          "sourceId": "E0293",
+          "context": "We've come to the conclusion that nothing is more urgent than reducing Japan's huge deficit"
+        }
+      ]
+    },
+    {
+      "form": "jury's",
+      "count": 1,
+      "likelyType": "possessive-or-auxiliary-s",
+      "examples": [
+        {
+          "candidateId": "ge-6f819840ce08ee18",
+          "sourceType": "item",
+          "sourceId": "E0461",
+          "context": "The jury's guilty verdict gave rise to widespread debate."
+        }
+      ]
+    },
+    {
+      "form": "let's",
+      "count": 10,
+      "likelyType": "possessive-or-auxiliary-s",
+      "examples": [
+        {
+          "candidateId": "ge-00bf97277a648c03",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:02480",
+          "context": "let's see"
+        },
+        {
+          "candidateId": "ge-7c2d2f45953dbc4b",
+          "sourceType": "item",
+          "sourceId": "E0068",
+          "context": "\"It's on me.\" \"No. You treat me every time we eat out.\" \"Well, okay. Let's split the check then.\""
+        },
+        {
+          "candidateId": "ge-ae395e6046c2a9b9",
+          "sourceType": "item",
+          "sourceId": "E0076",
+          "context": "The chairman cut me off, saying, \"Time to wind things up. Let's take a vote.\""
+        },
+        {
+          "candidateId": "ge-02887b6be582b8e0",
+          "sourceType": "item",
+          "sourceId": "E0123",
+          "context": "\"I'm exhausted! Let's take a break in the shade.\" \"Why not?\""
+        },
+        {
+          "candidateId": "ge-1a9a6ea6ec9296dc",
+          "sourceType": "item",
+          "sourceId": "E0129",
+          "context": "So much for small talk. Let's get down to business."
+        },
+        {
+          "candidateId": "ge-6775cc9142158604",
+          "sourceType": "item",
+          "sourceId": "E0205",
+          "context": "\"Let's make up, Lisa.\" \"Stop taking me for granted! We're through for good this time. I mean it!\""
+        },
+        {
+          "candidateId": "ge-d6f7c30909eac323",
+          "sourceType": "item",
+          "sourceId": "E0206",
+          "context": "Come on! Don't get so emotional, Lisa. I didn't mean to hurt you. Let's talk it over."
+        },
+        {
+          "candidateId": "ge-4b2b4989b3707148",
+          "sourceType": "item",
+          "sourceId": "E0221",
+          "context": "\"Hey, we're stuck in a traffic jam!\" \"Chill out, Joe. Let's take a shortcut! We'll get there in time.\""
+        },
+        {
+          "candidateId": "ge-7f5f1542b82875d8",
+          "sourceType": "item",
+          "sourceId": "E0559",
+          "context": "\"By the way, do you have the time?\" \"Let's see... it's a quarter to eight.\""
+        },
+        {
+          "candidateId": "ge-5eeb2da47a7e23f3",
+          "sourceType": "item",
+          "sourceId": "E0560",
+          "context": "\"Let's call it a day, Bob. I'm starved.\" \"Yep. I'll buy you dinner.\""
+        }
+      ]
+    },
+    {
+      "form": "one's",
+      "count": 9,
+      "likelyType": "possessive-or-auxiliary-s",
+      "examples": [
+        {
+          "candidateId": "ge-7ab3d1e627ed14bc",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00653",
+          "context": "on one's own"
+        },
+        {
+          "candidateId": "ge-26b93c3ea6ca5be8",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:01284",
+          "context": "go back on one's word"
+        },
+        {
+          "candidateId": "ge-c0c15bea86722001",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:01930",
+          "context": "have made up one's mind to do something"
+        },
+        {
+          "candidateId": "ge-f2a3f3bb6b8fb533",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:01932",
+          "context": "follow one's own path"
+        },
+        {
+          "candidateId": "ge-e4a354fe6a17d82d",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:02205",
+          "context": "take one's own life"
+        },
+        {
+          "candidateId": "ge-3b00a70887af4471",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:02266",
+          "context": "out of one's mind"
+        },
+        {
+          "candidateId": "ge-4741b6807081736f",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:02376",
+          "context": "be on one's way to somewhere"
+        },
+        {
+          "candidateId": "ge-fdf44e537e38ff2e",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:02406",
+          "context": "in one's twenties"
+        },
+        {
+          "candidateId": "ge-ebac7533a4531d77",
+          "sourceType": "item",
+          "sourceId": "E0413",
+          "context": "By and large, reporters don't hesitate to intrude on one's privacy."
+        }
+      ]
+    },
+    {
+      "form": "she'll",
+      "count": 1,
+      "likelyType": "auxiliary-contraction-candidate",
+      "examples": [
+        {
+          "candidateId": "ge-329b998ba950f679",
+          "sourceType": "item",
+          "sourceId": "E0370",
+          "context": "If you persist in bothering her like that, she'll lose her temper."
+        }
+      ]
+    },
+    {
+      "form": "she's",
+      "count": 2,
+      "likelyType": "auxiliary-contraction-candidate",
+      "examples": [
+        {
+          "candidateId": "ge-314848b3c7035c8c",
+          "sourceType": "item",
+          "sourceId": "E0528",
+          "context": "\"You should apologize to Lisa for making fun of her. You went too far this time.\" \"Yeah... I will, sometime when she's in a better mood.\""
+        },
+        {
+          "candidateId": "ge-d2c15994e95f835b",
+          "sourceType": "item",
+          "sourceId": "E0545",
+          "context": "\"Why do you put up with her arrogance? She's just taking advantage of you.\" \"Shut up!\""
+        }
+      ]
+    },
+    {
+      "form": "someone's",
+      "count": 17,
+      "likelyType": "possessive-or-auxiliary-s",
+      "examples": [
+        {
+          "candidateId": "ge-608c58fb40743690",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00104",
+          "context": "be on someone's side"
+        },
+        {
+          "candidateId": "ge-17a4134e3d00ac35",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00175",
+          "context": "skip someone's turn"
+        },
+        {
+          "candidateId": "ge-37c6a9558f21c3e9",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00184",
+          "context": "at someone's disposal"
+        },
+        {
+          "candidateId": "ge-50b12daa93413d55",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00258",
+          "context": "drop by someone's place"
+        },
+        {
+          "candidateId": "ge-4d3c7dc50e2fe6d3",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00362",
+          "context": "against someone's will"
+        },
+        {
+          "candidateId": "ge-ecebc986527a788b",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00416",
+          "context": "make someone's dream come true"
+        },
+        {
+          "candidateId": "ge-54c700d7adf00628",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00416",
+          "context": "fulfill someone's dream"
+        },
+        {
+          "candidateId": "ge-ad726757f590cab0",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00454",
+          "context": "to someone's surprise"
+        },
+        {
+          "candidateId": "ge-0844f794e7af4e52",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00480",
+          "context": "in someone's presence"
+        },
+        {
+          "candidateId": "ge-671eecf7c04204f5",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00481",
+          "context": "behind someone's back"
+        },
+        {
+          "candidateId": "ge-4b38e9876742877a",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00481",
+          "context": "without someone's knowledge"
+        },
+        {
+          "candidateId": "ge-bd7e20e4014cf1b7",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00597",
+          "context": "in someone's presence"
+        }
+      ]
+    },
+    {
+      "form": "something's",
+      "count": 1,
+      "likelyType": "possessive-or-auxiliary-s",
+      "examples": [
+        {
+          "candidateId": "ge-b6b4ba9697e42197",
+          "sourceType": "item",
+          "sourceId": "E0171",
+          "context": "\"Something's gone wrong with this microscope. I need to have it repaired.\" \"Let me see it. Maybe I can fix it.\""
+        }
+      ]
+    },
+    {
+      "form": "suspect's",
+      "count": 1,
+      "likelyType": "possessive-or-auxiliary-s",
+      "examples": [
+        {
+          "candidateId": "ge-9879d5ffbd222454",
+          "sourceType": "item",
+          "sourceId": "E0459",
+          "context": "The fingerprints left on the weapon correspond with the suspect's."
+        }
+      ]
+    },
+    {
+      "form": "that's",
+      "count": 11,
+      "likelyType": "possessive-or-auxiliary-s",
+      "examples": [
+        {
+          "candidateId": "ge-c443055886f94efb",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00084",
+          "context": "that's it"
+        },
+        {
+          "candidateId": "ge-cec57770cb0d5525",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00084",
+          "context": "that's all"
+        },
+        {
+          "candidateId": "ge-5acf20246f5c77a3",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:01379",
+          "context": "that's fine"
+        },
+        {
+          "candidateId": "ge-b757896cc329132c",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:02450",
+          "context": "that's too bad."
+        },
+        {
+          "candidateId": "ge-e1abca6b4db13e7c",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:02476",
+          "context": "that's too bad"
+        },
+        {
+          "candidateId": "ge-22525ceca8177a4f",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:02477",
+          "context": "that's a shame"
+        },
+        {
+          "candidateId": "ge-2abb9a23b1242a71",
+          "sourceType": "item",
+          "sourceId": "E0063",
+          "context": "\"Anything else?\" \"That's it.\" \"For here or to go?\" \"To go.\""
+        },
+        {
+          "candidateId": "ge-4932c19abc413718",
+          "sourceType": "item",
+          "sourceId": "E0072",
+          "context": "\"That's odd! Tell me how it happened.\" \"I'll explain it to you later.\""
+        },
+        {
+          "candidateId": "ge-b3603d4733fff72b",
+          "sourceType": "item",
+          "sourceId": "E0157",
+          "context": "Joe is anything but diligent. That's why he flunked math again."
+        },
+        {
+          "candidateId": "ge-1eb566bf3ea79120",
+          "sourceType": "item",
+          "sourceId": "E0183",
+          "context": "\"It's not your title that counts. That's for sure!\" exclaimed Bob."
+        },
+        {
+          "candidateId": "ge-fc8ddf4a2c57d067",
+          "sourceType": "item",
+          "sourceId": "E0552",
+          "context": "\"One of her relatives passed away three days ago.\" \"Oh, that's too bad. I'm so sorry.\""
+        }
+      ]
+    },
+    {
+      "form": "there's",
+      "count": 12,
+      "likelyType": "auxiliary-contraction-candidate",
+      "examples": [
+        {
+          "candidateId": "ge-0f7c9e1dfb4d80e3",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00290",
+          "context": "there's no use doing something"
+        },
+        {
+          "candidateId": "ge-c0611020a0947147",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00290",
+          "context": "there's no point in doing something"
+        },
+        {
+          "candidateId": "ge-8dcb08ecb283543c",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00478",
+          "context": "there's no point in doing something"
+        },
+        {
+          "candidateId": "ge-adf202719f0693f7",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00478",
+          "context": "there's no use doing something"
+        },
+        {
+          "candidateId": "ge-424b7cee8752e866",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00679",
+          "context": "there's no hurry"
+        },
+        {
+          "candidateId": "ge-b31d4a0a4f6da48b",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:01638",
+          "context": "there's nothing you can do"
+        },
+        {
+          "candidateId": "ge-323528bb3d269862",
+          "sourceType": "item",
+          "sourceId": "E0075",
+          "context": "Now that I've found that there's no one to turn to, I'll have to stand on my own two feet."
+        },
+        {
+          "candidateId": "ge-7f1d13b160995857",
+          "sourceType": "item",
+          "sourceId": "E0141",
+          "context": "There's little prospect that the two countries will make significant progress in disarmament."
+        },
+        {
+          "candidateId": "ge-46e6b89b434a0e30",
+          "sourceType": "item",
+          "sourceId": "E0268",
+          "context": "Although there's still plenty of room for improvement, his invention is superior to conventional equipment in every respect."
+        },
+        {
+          "candidateId": "ge-a763dc6e7133e1d4",
+          "sourceType": "item",
+          "sourceId": "E0362",
+          "context": "It's optimistic of you to believe that things will work out. At best there's a fifty-fifty chance."
+        },
+        {
+          "candidateId": "ge-ac49aaba260cdff6",
+          "sourceType": "item",
+          "sourceId": "E0373",
+          "context": "There's no point in talking back to Nick. He is a \"dictator,\" so to speak."
+        },
+        {
+          "candidateId": "ge-f946354a14dc9942",
+          "sourceType": "item",
+          "sourceId": "E0397",
+          "context": "The police say there's someone pulling strings behind the scenes."
+        }
+      ]
+    },
+    {
+      "form": "they're",
+      "count": 2,
+      "likelyType": "auxiliary-contraction-candidate",
+      "examples": [
+        {
+          "candidateId": "ge-1ff2da1c07bd9ff6",
+          "sourceType": "item",
+          "sourceId": "E0065",
+          "context": "I don't think those pants look good on you. Try these on. They're really in now!"
+        },
+        {
+          "candidateId": "ge-c53bf49b893c1bb1",
+          "sourceType": "item",
+          "sourceId": "E0197",
+          "context": "Bob likes cartoons, but I don't think much of them. As a matter of fact, they're boring."
+        }
+      ]
+    },
+    {
+      "form": "today's",
+      "count": 1,
+      "likelyType": "possessive-or-auxiliary-s",
+      "examples": [
+        {
+          "candidateId": "ge-766b356de95ec805",
+          "sourceType": "item",
+          "sourceId": "E0358",
+          "context": "You cannot escape from today's harsh realities, so you must adapt to them."
+        }
+      ]
+    },
+    {
+      "form": "wasn't",
+      "count": 1,
+      "likelyType": "negative-contraction",
+      "examples": [
+        {
+          "candidateId": "ge-338d816205473fac",
+          "sourceType": "item",
+          "sourceId": "E0282",
+          "context": "Apparently, Nick wasn't willing to take on the task because it would just add to his burdens."
+        }
+      ]
+    },
+    {
+      "form": "we'd",
+      "count": 1,
+      "likelyType": "auxiliary-contraction-candidate",
+      "examples": [
+        {
+          "candidateId": "ge-39f1669e19c1590e",
+          "sourceType": "item",
+          "sourceId": "E0308",
+          "context": "That restaurant is always packed. We'd better make a reservation beforehand."
+        }
+      ]
+    },
+    {
+      "form": "we'll",
+      "count": 1,
+      "likelyType": "auxiliary-contraction-candidate",
+      "examples": [
+        {
+          "candidateId": "ge-57e9deb29da61ab0",
+          "sourceType": "item",
+          "sourceId": "E0221",
+          "context": "\"Hey, we're stuck in a traffic jam!\" \"Chill out, Joe. Let's take a shortcut! We'll get there in time.\""
+        }
+      ]
+    },
+    {
+      "form": "we're",
+      "count": 4,
+      "likelyType": "auxiliary-contraction-candidate",
+      "examples": [
+        {
+          "candidateId": "ge-ce5953f77dded806",
+          "sourceType": "item",
+          "sourceId": "E0200",
+          "context": "I must admit we quarrel every now and then, but generally we're on good terms with each other."
+        },
+        {
+          "candidateId": "ge-de7b044658566a28",
+          "sourceType": "item",
+          "sourceId": "E0205",
+          "context": "\"Let's make up, Lisa.\" \"Stop taking me for granted! We're through for good this time. I mean it!\""
+        },
+        {
+          "candidateId": "ge-0b2027051bb19fb1",
+          "sourceType": "item",
+          "sourceId": "E0218",
+          "context": "\"Jane, where are we heading?\" \"I think we're lost. We went in the wrong direction.\" \"Damn! Pull over!\""
+        },
+        {
+          "candidateId": "ge-3cc9068508f5a8d7",
+          "sourceType": "item",
+          "sourceId": "E0221",
+          "context": "\"Hey, we're stuck in a traffic jam!\" \"Chill out, Joe. Let's take a shortcut! We'll get there in time.\""
+        }
+      ]
+    },
+    {
+      "form": "we've",
+      "count": 1,
+      "likelyType": "auxiliary-contraction-candidate",
+      "examples": [
+        {
+          "candidateId": "ge-656f978ab8390e02",
+          "sourceType": "item",
+          "sourceId": "E0293",
+          "context": "We've come to the conclusion that nothing is more urgent than reducing Japan's huge deficit"
+        }
+      ]
+    },
+    {
+      "form": "what's",
+      "count": 16,
+      "likelyType": "auxiliary-contraction-candidate",
+      "examples": [
+        {
+          "candidateId": "ge-335abf167828214e",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00220",
+          "context": "what's more"
+        },
+        {
+          "candidateId": "ge-60f2cf944342561e",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00233",
+          "context": "what's worse"
+        },
+        {
+          "candidateId": "ge-cbd0ddf47536f331",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00387",
+          "context": "what's going on"
+        },
+        {
+          "candidateId": "ge-3f307ea4026cea18",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00387",
+          "context": "what's happening?"
+        },
+        {
+          "candidateId": "ge-dd2695685d8e7a02",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00600",
+          "context": "what's the matter"
+        },
+        {
+          "candidateId": "ge-23acb62fb48bb384",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00600",
+          "context": "what's wrong?"
+        },
+        {
+          "candidateId": "ge-c4e4edb657b9ab29",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00666",
+          "context": "what's up"
+        },
+        {
+          "candidateId": "ge-31b4f699b80ac342",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00666",
+          "context": "What's new?"
+        },
+        {
+          "candidateId": "ge-df0632c27b9b8b91",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:01925",
+          "context": "what's your job?"
+        },
+        {
+          "candidateId": "ge-5f6ad26b722bc117",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:01926",
+          "context": "what's your major?"
+        },
+        {
+          "candidateId": "ge-b939bff6c8726ee6",
+          "sourceType": "item",
+          "sourceId": "E0021",
+          "context": "\"What's this ugly object?\" \"This is a piece of abstract art!\""
+        },
+        {
+          "candidateId": "ge-3e1d2252e4e475e1",
+          "sourceType": "item",
+          "sourceId": "E0179",
+          "context": "I met the man by chance. He's gentle and smart. What's more, he's single!"
+        }
+      ]
+    },
+    {
+      "form": "won't",
+      "count": 7,
+      "likelyType": "negative-contraction",
+      "examples": [
+        {
+          "candidateId": "ge-1d24d37ff27eea91",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:02384",
+          "context": "it won't be long before everything is ready"
+        },
+        {
+          "candidateId": "ge-2c32cbc688bccbca",
+          "sourceType": "item",
+          "sourceId": "E0298",
+          "context": "\"Don't forget to confirm your reservation in advance.\" \"I won't.\""
+        },
+        {
+          "candidateId": "ge-47475b61710ef49e",
+          "sourceType": "item",
+          "sourceId": "E0343",
+          "context": "I'll stand up for what I believe in and won't yield to any threats."
+        },
+        {
+          "candidateId": "ge-3ed15274eeca1e8a",
+          "sourceType": "item",
+          "sourceId": "E0346",
+          "context": "You won't let me down. I have great faith in you. You can make it!"
+        },
+        {
+          "candidateId": "ge-af53494569985a58",
+          "sourceType": "item",
+          "sourceId": "E0493",
+          "context": "It won't be long before everything is ready. In the meantime, help yourself to some snacks."
+        },
+        {
+          "candidateId": "ge-091ec78fd54cb90e",
+          "sourceType": "item",
+          "sourceId": "E0540",
+          "context": "Even though she is seeing someone else, I won't give her up."
+        },
+        {
+          "candidateId": "ge-1a01d158e40dc190",
+          "sourceType": "item",
+          "sourceId": "E0556",
+          "context": "\"Speaking of Jennifer, she got engaged to a businessman.\" \"I'm at a loss for words! I hope she won't break it off.\""
+        }
+      ]
+    },
+    {
+      "form": "wouldn't",
+      "count": 2,
+      "likelyType": "negative-contraction",
+      "examples": [
+        {
+          "candidateId": "ge-312e5d18446a493b",
+          "sourceType": "item",
+          "sourceId": "E0198",
+          "context": "It occurred to me that he was holding something back, because he wouldn't look me in the eye."
+        },
+        {
+          "candidateId": "ge-31c18638fd98642f",
+          "sourceType": "item",
+          "sourceId": "E0544",
+          "context": "\"Jennifer went so far as to call me an idiot and she wouldn't take it back.\" \"Serves you right! You provoked her, didn't you?\""
+        }
+      ]
+    },
+    {
+      "form": "you'll",
+      "count": 2,
+      "likelyType": "auxiliary-contraction-candidate",
+      "examples": [
+        {
+          "candidateId": "ge-19d158c48921a104",
+          "sourceType": "item",
+          "sourceId": "E0209",
+          "context": "Keep your word; otherwise you'll end up losing face."
+        },
+        {
+          "candidateId": "ge-d972c4473956111d",
+          "sourceType": "item",
+          "sourceId": "E0357",
+          "context": "Stop clinging to your glory days, or you'll be left behind."
+        }
+      ]
+    },
+    {
+      "form": "you're",
+      "count": 7,
+      "likelyType": "auxiliary-contraction-candidate",
+      "examples": [
+        {
+          "candidateId": "ge-cdaeedc2ec45394b",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00113",
+          "context": "you're flattering me"
+        },
+        {
+          "candidateId": "ge-36fdbe963100d8fa",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:00354",
+          "context": "you're welcome"
+        },
+        {
+          "candidateId": "ge-91429592dab5347b",
+          "sourceType": "vocabulary",
+          "sourceId": "vocab:02437",
+          "context": "you're welcome."
+        },
+        {
+          "candidateId": "ge-27ef5d225444433e",
+          "sourceType": "item",
+          "sourceId": "E0191",
+          "context": "\"I'm scared of heights.\" \"You're a coward!\""
+        },
+        {
+          "candidateId": "ge-00fabbda82e44c32",
+          "sourceType": "item",
+          "sourceId": "E0514",
+          "context": "\"After you.\" \"No please, you go ahead.\" \"Thanks.\" \"You're welcome.\""
+        },
+        {
+          "candidateId": "ge-73bc3d919f0ad1c7",
+          "sourceType": "item",
+          "sourceId": "E0538",
+          "context": "\"I've been going with Jennifer on and off for ages.\" \"You're as indecisive as ever. Isn't it about time you settled down?\""
+        },
+        {
+          "candidateId": "ge-9464898dcd19bbef",
+          "sourceType": "item",
+          "sourceId": "E0542",
+          "context": "Whenever you're in trouble or feeling down, I'll be there for you."
+        }
+      ]
+    },
+    {
+      "form": "you've",
+      "count": 1,
+      "likelyType": "auxiliary-contraction-candidate",
+      "examples": [
+        {
+          "candidateId": "ge-88288a1145ed6cc2",
+          "sourceType": "item",
+          "sourceId": "E0262",
+          "context": "You've got to keep up with it. Once you fall behind, it's hard to catch up."
+        }
+      ]
+    }
+  ],
+  "ambiguities": [
+    {
+      "form": "'s",
+      "readings": [
+        "is",
+        "has",
+        "possessive"
+      ],
+      "minimumSafeCondition": "complete syntax proves exactly one parse",
+      "unresolvedExamples": [
+        "He’s finished.",
+        "He’s not finished.",
+        "John’s book."
+      ]
+    },
+    {
+      "form": "'d",
+      "readings": [
+        "had",
+        "would"
+      ],
+      "minimumSafeCondition": "following verb form and full construction force one reading",
+      "unresolvedExamples": [
+        "I’d put it there.",
+        "I’d read it."
+      ]
+    },
+    {
+      "form": "'re",
+      "readings": [
+        "are",
+        "ASR spelling collision with were/there/their/your in nearby homophone classes"
+      ],
+      "minimumSafeCondition": "match contracted subject + are as one exact pair; never rewrite a bare collision token",
+      "unresolvedExamples": [
+        "We’re ready / were ready",
+        "They’re here / there / their"
+      ]
+    },
+    {
+      "form": "ain't",
+      "readings": [
+        "am not",
+        "is not",
+        "are not",
+        "have not",
+        "has not"
+      ],
+      "minimumSafeCondition": "none for general automatic acceptance",
+      "unresolvedExamples": [
+        "She ain’t ready.",
+        "They ain’t done."
+      ]
+    },
+    {
+      "form": "let's",
+      "readings": [
+        "hortative let us",
+        "permission/request let us"
+      ],
+      "minimumSafeCondition": "discourse and following base verb establish hortative force",
+      "unresolvedExamples": [
+        "Let’s go.",
+        "Let us go."
+      ]
+    },
+    {
+      "form": "cannot / can not",
+      "readings": [
+        "negative modal",
+        "wide/split scope"
+      ],
+      "minimumSafeCondition": "do not conflate spaced form without contextual scope evidence",
+      "unresolvedExamples": [
+        "I cannot go.",
+        "I can not go."
+      ]
+    }
+  ]
+}
