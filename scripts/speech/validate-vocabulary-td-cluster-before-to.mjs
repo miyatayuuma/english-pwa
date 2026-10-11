@@ -1,6 +1,12 @@
 import fs from 'node:fs';
 import { classifyVocabularyAnswer } from '../app/vocabularyLearningCore.js';
 import { safeSpeechTokens } from './safeSpeechNormalization.js';
+import {
+  assertTdCurrentMainReconciliation,
+  buildTdCurrentMainReconciliation,
+  gitBlobSha,
+  TD_CURRENT_MAIN_BASELINE,
+} from './vocabularyTdClusterCurrentMainReconciliation.js';
 import { VOCABULARY_CHUNK_RESCUE_AUTHORITY_ENTRIES } from './vocabularyChunkRescueAuthority.js';
 import {
   VOCABULARY_TD_CLUSTER_BEFORE_TO_AUDIT_RECORD_COUNT,
@@ -19,11 +25,16 @@ const expectedCandidateIds = [
   'tdc-00007', 'tdc-00008', 'tdc-00009', 'tdc-00010', 'tdc-00012', 'tdc-00013',
 ];
 const artifactPath = new URL('../../data/audits/vocabulary-td-cluster-before-to-production/materialization.json', import.meta.url);
+const reconciliationPath = new URL('../../data/audits/vocabulary-td-cluster-before-to-production/current-main-reconciliation.json', import.meta.url);
 const vocabularyPath = new URL('../../data/vocabulary-v3.json', import.meta.url);
 const itemsPath = new URL('../../data/items.json', import.meta.url);
-const artifact = JSON.parse(fs.readFileSync(artifactPath, 'utf8'));
-const entries = JSON.parse(fs.readFileSync(vocabularyPath, 'utf8')).entries;
-const items = JSON.parse(fs.readFileSync(itemsPath, 'utf8'));
+const artifactBytes = fs.readFileSync(artifactPath);
+const vocabularyBytes = fs.readFileSync(vocabularyPath);
+const itemsBytes = fs.readFileSync(itemsPath);
+const artifact = JSON.parse(artifactBytes.toString('utf8'));
+const currentMainReconciliation = JSON.parse(fs.readFileSync(reconciliationPath, 'utf8'));
+const entries = JSON.parse(vocabularyBytes.toString('utf8')).entries;
+const items = JSON.parse(itemsBytes.toString('utf8'));
 const entryById = new Map(entries.map(entry => [entry.id, entry]));
 const itemById = new Map(items.map(item => [item.id, item]));
 const fail = message => { throw new Error(message); };
@@ -37,12 +48,26 @@ if (VOCABULARY_TD_CLUSTER_BEFORE_TO_SOURCE_AUDIT_SHA !== sourceAuditSha) fail('p
 if (VOCABULARY_TD_CLUSTER_BEFORE_TO_AUDIT_RECORD_COUNT !== 36) fail('production authority record count is not 36');
 if (artifact.source_audit_sha !== sourceAuditSha) fail('accounting artifact source audit SHA drifted');
 if (artifact.current_main_sha !== currentMainSha) fail('accounting artifact current-main base drifted');
+if (gitBlobSha(artifactBytes) !== TD_CURRENT_MAIN_BASELINE.historicalMaterializationBlob) fail('historical T/D materialization changed');
 if (artifact.records.length !== 36) fail(`accounting has ${artifact.records.length} records, expected 36`);
 if (new Set(artifact.records.map(record => record.audit_candidate_id)).size !== 36) fail('audit candidate IDs are not unique');
 if (JSON.stringify(artifact.records.map(record => record.audit_candidate_id)) !== JSON.stringify(expectedCandidateIds)) fail('SAFE candidate accounting differs from the immutable 36-record audit set');
 if (artifact.records.some(record => !['APPLY', 'ALREADY_COVERED'].includes(record.materialization_status))) fail('a SAFE record is neither applied nor already covered');
 if (artifact.records.some(record => record.current_main_status !== 'ACTIVE_ACCEPTED')) fail('a SAFE surface is not active and accepted on current main');
 if (artifact.counts.BLOCKED !== 0 || artifact.counts.APPLY !== 35 || artifact.counts.ALREADY_COVERED !== 1 || artifact.counts.RETIRED !== 0) fail('materialization counts do not reconcile to APPLY 35 / ALREADY_COVERED 1 / 0 blocked');
+
+const expectedCurrentMainReconciliation = buildTdCurrentMainReconciliation({
+  artifact,
+  entries,
+  items,
+  rules: VOCABULARY_TD_CLUSTER_BEFORE_TO_AUTHORITY,
+  sourceBlobShas: {
+    'data/vocabulary-v3.json': gitBlobSha(vocabularyBytes),
+    'data/items.json': gitBlobSha(itemsBytes),
+  },
+});
+assertTdCurrentMainReconciliation(currentMainReconciliation, expectedCurrentMainReconciliation);
+const reconciledRecordById = new Map(currentMainReconciliation.records.map(record => [record.audit_candidate_id, record]));
 
 const rules = VOCABULARY_TD_CLUSTER_BEFORE_TO_AUTHORITY;
 if (rules.length !== 25 || artifact.counts.unique_production_rules !== 25) fail('unique production-rule count is not 25');
@@ -78,6 +103,8 @@ const retiredByCurrentProductionData = [];
 for (const record of artifact.records) {
   const entry = entryById.get(record.entry_id);
   if (!entry) fail(`${record.audit_candidate_id} references an unknown entry`);
+  const currentRecord = reconciledRecordById.get(record.audit_candidate_id);
+  if (!currentRecord || currentRecord.historical.surface_ref !== record.surface_ref) fail(`${record.audit_candidate_id} is absent from the historical/current reconciliation`);
   if (record.source_audit_sha !== sourceAuditSha) fail(`${record.audit_candidate_id} has a stale source SHA`);
   const rule = record.production_rule_id ? ruleById.get(record.production_rule_id) : null;
   if (record.materialization_status === 'APPLY' && (!rule || rule.scope.entryIds[0] !== record.entry_id)) fail(`${record.audit_candidate_id} has no entry-scoped production rule`);
@@ -85,24 +112,29 @@ for (const record of artifact.records) {
   let activeSurface = '';
   let activeOccurrence = null;
   let expectedType = 'target';
+  const currentIndex = currentRecord.current.current_index;
+  const currentSurfaceRetired = currentRecord.current.state === 'SURFACE_REMOVED';
   if (record.surface_type === 'canonical') {
     activeSurface = String(entry.canonical || '');
-    if (record.surface_ref !== `${entry.id}:canonical`) fail(`${record.audit_candidate_id} canonical surface reference is malformed`);
+    if (record.surface_ref !== `${entry.id}:canonical` || currentRecord.current.current_ref !== `${entry.id}:canonical`) fail(`${record.audit_candidate_id} canonical surface reference is malformed`);
   } else if (record.surface_type === 'answers[]') {
-    activeSurface = String(entry.answers?.[record.surface_index] || '');
-    if (record.surface_ref !== `${entry.id}:answer:${record.surface_index}`) fail(`${record.audit_candidate_id} answers[] surface reference is malformed`);
+    activeSurface = String(entry.answers?.[currentIndex] || '');
+    if (record.surface_ref !== `${entry.id}:answer:${record.surface_index}`
+      || (!currentSurfaceRetired && currentRecord.current.current_ref !== `${entry.id}:answer:${currentIndex}`)) fail(`${record.audit_candidate_id} answers[] surface reference is malformed`);
   } else if (record.surface_type === 'accepted paraphrase') {
-    activeSurface = String(entry.paraphrases?.[record.surface_index] || '');
+    activeSurface = String(entry.paraphrases?.[currentIndex] || '');
     expectedType = 'paraphrase';
-    if (record.surface_ref !== `${entry.id}:paraphrase:${record.surface_index}`) fail(`${record.audit_candidate_id} paraphrase surface reference is malformed`);
+    if (record.surface_ref !== `${entry.id}:paraphrase:${record.surface_index}`
+      || (!currentSurfaceRetired && currentRecord.current.current_ref !== `${entry.id}:paraphrase:${currentIndex}`)) fail(`${record.audit_candidate_id} paraphrase surface reference is malformed`);
   } else if (record.surface_type === 'source occurrence') {
-    const occurrence = entry.occurrences?.[record.surface_index];
+    const occurrence = entry.occurrences?.[currentIndex];
     const item = occurrence && itemById.get(occurrence.item_id);
     if (occurrence && item) {
       activeOccurrence = { occurrence, item };
       activeSurface = item.en.slice(occurrence.start, occurrence.end);
     }
-    if (record.surface_ref !== `${entry.id}:source:${record.surface_index}`) fail(`${record.audit_candidate_id} source surface reference is malformed`);
+    if (record.surface_ref !== `${entry.id}:source:${record.surface_index}`
+      || (!currentSurfaceRetired && currentRecord.current.current_ref !== `${entry.id}:source:${currentIndex}`)) fail(`${record.audit_candidate_id} source surface reference is malformed`);
   } else fail(`${record.audit_candidate_id} has an unsupported surface type`);
   const classification = classifyVocabularyAnswer({ entry, activeOccurrence, transcript: record.target_surface });
   if (!activeSurface || !sameTokens(activeSurface, record.target_surface)
@@ -117,6 +149,7 @@ for (const record of artifact.records) {
     });
     continue;
   }
+  if (activeSurface !== record.target_surface || currentRecord.current.exact_surface_match_count !== 1) fail(`${record.audit_candidate_id} current surface is not the unique exact historical target`);
   if (classification.type !== expectedType) fail(`${record.audit_candidate_id} does not retain its accepted ${expectedType} classification`);
   const collisionClassification = classifyVocabularyAnswer({ entry, activeOccurrence, transcript: record.collision_surface });
   if (record.materialization_status === 'ALREADY_COVERED' && collisionClassification.type !== expectedType) fail(`${record.audit_candidate_id} collision is not already an accepted exact surface`);
@@ -152,6 +185,7 @@ console.log(JSON.stringify({
   historicalAudit: { records: 36, apply: 35, alreadyCovered: 1, retired: 0, blocked: 0 },
   currentProductionDataDrift: retiredByCurrentProductionData,
   activeRecordsValidated: artifact.records.length - retiredByCurrentProductionData.length,
+  currentMainReconciliation: currentMainReconciliation.counts,
   rules: { count: 25, entryScopedProductionEntries: 22, affectedEntries: 23 },
   chunkRescueEntryIntersection: intersection,
 }, null, 2));

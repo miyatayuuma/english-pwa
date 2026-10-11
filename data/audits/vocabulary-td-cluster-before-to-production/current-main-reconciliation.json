@@ -1,0 +1,3041 @@
+{
+  "schema_version": 1,
+  "reconciled_main_sha": "e1b56da18e0df1d583473a6f208a75333bd22969",
+  "source_blobs": {
+    "data/vocabulary-v3.json": "91324d35b2db1911ece2cf3ff746409d321fe963",
+    "data/items.json": "ae2aca768b784199b77ac1cf8c0c5a80fd5725bb"
+  },
+  "historical_materialization_blob_sha": "d3dedaafd2b42807bbf41a3036bbf6992fa3d603",
+  "historical_source_audit_sha": "76085365bd3f5759bf3048df427574f350d01191",
+  "historical_materialization_main_sha": "22d4f37b48177b9a42a4b215330f0d7231400779",
+  "counts": {
+    "total": 36,
+    "statuses": {
+      "UNCHANGED": 34,
+      "INDEX_RELOCATED": 2,
+      "SURFACE_REMOVED": 0,
+      "SURFACE_MODIFIED": 0,
+      "AMBIGUOUS_DUPLICATE": 0,
+      "AUTHORITY_DRIFT": 0
+    },
+    "classification": {
+      "TARGET": 25,
+      "PARAPHRASE": 11
+    },
+    "collision_accepted": 36
+  },
+  "records": [
+    {
+      "audit_candidate_id": "wfc-00069",
+      "entry_id": "vocab:00018",
+      "historical": {
+        "surface_type": "source occurrence",
+        "surface_index": 0,
+        "surface_ref": "vocab:00018:source:0",
+        "target_surface": "proposed to her",
+        "current_main_accepted_surface": "proposed to her",
+        "current_main_accepted_via": "occurrences[0] (E0178)",
+        "materialization_status": "APPLY",
+        "production_rule_id": "td-cluster-before-to-vocab-00018-proposed-to-propose"
+      },
+      "current": {
+        "state": "UNCHANGED",
+        "surface_at_historical_position": "proposed to her",
+        "exact_surface_match_count": 1,
+        "exact_surface_matches": [
+          {
+            "surface": "proposed to her",
+            "index": 0,
+            "ref": "vocab:00018:source:0",
+            "item_id": "E0178"
+          }
+        ],
+        "normalized_token_match_count": 1,
+        "normalized_token_matches": [
+          {
+            "surface": "proposed to her",
+            "index": 0,
+            "ref": "vocab:00018:source:0",
+            "item_id": "E0178"
+          }
+        ],
+        "current_surface": "proposed to her",
+        "current_index": 0,
+        "current_ref": "vocab:00018:source:0",
+        "exact_surface_identity": true,
+        "normalized_token_identity": true,
+        "classification": "TARGET",
+        "matched_authority": "source",
+        "expected_classification": "TARGET",
+        "authority_snapshot": {
+          "canonical": "propose to someone",
+          "answers": null,
+          "paraphrases": [
+            "ask someone to marry you"
+          ],
+          "meaning_ja": "someoneに結婚を申し込む",
+          "sense_key": "ask_to_marry",
+          "grammarRole": "verb",
+          "occurrences": [
+            {
+              "item_id": "E0178",
+              "start": 82,
+              "end": 97,
+              "contextual_meaning_ja": "彼女にプロポーズした"
+            }
+          ]
+        }
+      },
+      "collision": {
+        "surface": "propose to her",
+        "accepted": true,
+        "classification": "TARGET",
+        "recognition_authority": "explicit-equivalence",
+        "applied_rule_id": "td-cluster-before-to-vocab-00018-proposed-to-propose",
+        "aligned_rule_id": "td-cluster-before-to-vocab-00018-proposed-to-propose"
+      },
+      "production_rule": {
+        "id": "td-cluster-before-to-vocab-00018-proposed-to-propose",
+        "expected": "proposed to",
+        "recognized": "propose to",
+        "kind": "connected-speech-td-cluster-before-to",
+        "credit": "exact-equivalent",
+        "scope": {
+          "type": "entry",
+          "entryIds": [
+            "vocab:00018"
+          ],
+          "mode": "vocabulary"
+        }
+      },
+      "historical_relationship": "SAME_EXACT_SURFACE_AT_HISTORICAL_REFERENCE"
+    },
+    {
+      "audit_candidate_id": "wfc-01883",
+      "entry_id": "vocab:00485",
+      "historical": {
+        "surface_type": "source occurrence",
+        "surface_index": 0,
+        "surface_ref": "vocab:00485:source:0",
+        "target_surface": "made up my mind to quit",
+        "current_main_accepted_surface": "made up my mind to quit",
+        "current_main_accepted_via": "occurrences[0] (E0377)",
+        "materialization_status": "APPLY",
+        "production_rule_id": "td-cluster-before-to-vocab-00485-mind-to-mine"
+      },
+      "current": {
+        "state": "UNCHANGED",
+        "surface_at_historical_position": "made up my mind to quit",
+        "exact_surface_match_count": 1,
+        "exact_surface_matches": [
+          {
+            "surface": "made up my mind to quit",
+            "index": 0,
+            "ref": "vocab:00485:source:0",
+            "item_id": "E0377"
+          }
+        ],
+        "normalized_token_match_count": 1,
+        "normalized_token_matches": [
+          {
+            "surface": "made up my mind to quit",
+            "index": 0,
+            "ref": "vocab:00485:source:0",
+            "item_id": "E0377"
+          }
+        ],
+        "current_surface": "made up my mind to quit",
+        "current_index": 0,
+        "current_ref": "vocab:00485:source:0",
+        "exact_surface_identity": true,
+        "normalized_token_identity": true,
+        "classification": "TARGET",
+        "matched_authority": "source",
+        "expected_classification": "TARGET",
+        "authority_snapshot": {
+          "canonical": "make up your mind",
+          "answers": null,
+          "paraphrases": [
+            "decide"
+          ],
+          "meaning_ja": "決心する",
+          "sense_key": "decide_firmly",
+          "grammarRole": "verb",
+          "occurrences": [
+            {
+              "item_id": "E0377",
+              "start": 63,
+              "end": 86,
+              "contextual_meaning_ja": "会社を辞めることにした"
+            }
+          ]
+        }
+      },
+      "collision": {
+        "surface": "made up my mine to quit",
+        "accepted": true,
+        "classification": "TARGET",
+        "recognition_authority": "explicit-equivalence",
+        "applied_rule_id": "td-cluster-before-to-vocab-00485-mind-to-mine",
+        "aligned_rule_id": "td-cluster-before-to-vocab-00485-mind-to-mine"
+      },
+      "production_rule": {
+        "id": "td-cluster-before-to-vocab-00485-mind-to-mine",
+        "expected": "mind to",
+        "recognized": "mine to",
+        "kind": "connected-speech-td-cluster-before-to",
+        "credit": "exact-equivalent",
+        "scope": {
+          "type": "entry",
+          "entryIds": [
+            "vocab:00485"
+          ],
+          "mode": "vocabulary"
+        }
+      },
+      "historical_relationship": "SAME_EXACT_SURFACE_AT_HISTORICAL_REFERENCE"
+    },
+    {
+      "audit_candidate_id": "wfc-01954",
+      "entry_id": "vocab:00499",
+      "historical": {
+        "surface_type": "canonical",
+        "surface_index": null,
+        "surface_ref": "vocab:00499:canonical",
+        "target_surface": "be forced to do something",
+        "current_main_accepted_surface": "be forced to do something",
+        "current_main_accepted_via": "canonical",
+        "materialization_status": "APPLY",
+        "production_rule_id": "td-cluster-before-to-vocab-00499-forced-to-force"
+      },
+      "current": {
+        "state": "UNCHANGED",
+        "surface_at_historical_position": "be forced to do something",
+        "exact_surface_match_count": 1,
+        "exact_surface_matches": [
+          {
+            "surface": "be forced to do something",
+            "index": null,
+            "ref": "vocab:00499:canonical"
+          }
+        ],
+        "normalized_token_match_count": 1,
+        "normalized_token_matches": [
+          {
+            "surface": "be forced to do something",
+            "index": null,
+            "ref": "vocab:00499:canonical"
+          }
+        ],
+        "current_surface": "be forced to do something",
+        "current_index": null,
+        "current_ref": "vocab:00499:canonical",
+        "exact_surface_identity": true,
+        "normalized_token_identity": true,
+        "classification": "TARGET",
+        "matched_authority": "canonical",
+        "expected_classification": "TARGET",
+        "authority_snapshot": {
+          "canonical": "be forced to do something",
+          "answers": null,
+          "paraphrases": [
+            "have no choice but to do something",
+            "be obliged to do something"
+          ],
+          "meaning_ja": "外から強制されてsomethingせざるを得ない",
+          "sense_key": "be_made_to_act",
+          "grammarRole": "auxiliary",
+          "occurrences": [
+            {
+              "item_id": "E0391",
+              "start": 48,
+              "end": 78,
+              "contextual_meaning_ja": "厳しい生活を強いられている"
+            }
+          ]
+        }
+      },
+      "collision": {
+        "surface": "be force to do something",
+        "accepted": true,
+        "classification": "TARGET",
+        "recognition_authority": "explicit-equivalence",
+        "applied_rule_id": "td-cluster-before-to-vocab-00499-forced-to-force",
+        "aligned_rule_id": "td-cluster-before-to-vocab-00499-forced-to-force"
+      },
+      "production_rule": {
+        "id": "td-cluster-before-to-vocab-00499-forced-to-force",
+        "expected": "forced to",
+        "recognized": "force to",
+        "kind": "connected-speech-td-cluster-before-to",
+        "credit": "exact-equivalent",
+        "scope": {
+          "type": "entry",
+          "entryIds": [
+            "vocab:00499"
+          ],
+          "mode": "vocabulary"
+        }
+      },
+      "historical_relationship": "SAME_EXACT_SURFACE_AT_HISTORICAL_REFERENCE"
+    },
+    {
+      "audit_candidate_id": "wfc-01957",
+      "entry_id": "vocab:00499",
+      "historical": {
+        "surface_type": "source occurrence",
+        "surface_index": 0,
+        "surface_ref": "vocab:00499:source:0",
+        "target_surface": "are forced to lead a hard life",
+        "current_main_accepted_surface": "are forced to lead a hard life",
+        "current_main_accepted_via": "occurrences[0] (E0391)",
+        "materialization_status": "APPLY",
+        "production_rule_id": "td-cluster-before-to-vocab-00499-forced-to-force"
+      },
+      "current": {
+        "state": "UNCHANGED",
+        "surface_at_historical_position": "are forced to lead a hard life",
+        "exact_surface_match_count": 1,
+        "exact_surface_matches": [
+          {
+            "surface": "are forced to lead a hard life",
+            "index": 0,
+            "ref": "vocab:00499:source:0",
+            "item_id": "E0391"
+          }
+        ],
+        "normalized_token_match_count": 1,
+        "normalized_token_matches": [
+          {
+            "surface": "are forced to lead a hard life",
+            "index": 0,
+            "ref": "vocab:00499:source:0",
+            "item_id": "E0391"
+          }
+        ],
+        "current_surface": "are forced to lead a hard life",
+        "current_index": 0,
+        "current_ref": "vocab:00499:source:0",
+        "exact_surface_identity": true,
+        "normalized_token_identity": true,
+        "classification": "TARGET",
+        "matched_authority": "source",
+        "expected_classification": "TARGET",
+        "authority_snapshot": {
+          "canonical": "be forced to do something",
+          "answers": null,
+          "paraphrases": [
+            "have no choice but to do something",
+            "be obliged to do something"
+          ],
+          "meaning_ja": "外から強制されてsomethingせざるを得ない",
+          "sense_key": "be_made_to_act",
+          "grammarRole": "auxiliary",
+          "occurrences": [
+            {
+              "item_id": "E0391",
+              "start": 48,
+              "end": 78,
+              "contextual_meaning_ja": "厳しい生活を強いられている"
+            }
+          ]
+        }
+      },
+      "collision": {
+        "surface": "are force to lead a hard life",
+        "accepted": true,
+        "classification": "TARGET",
+        "recognition_authority": "explicit-equivalence",
+        "applied_rule_id": "td-cluster-before-to-vocab-00499-forced-to-force",
+        "aligned_rule_id": "td-cluster-before-to-vocab-00499-forced-to-force"
+      },
+      "production_rule": {
+        "id": "td-cluster-before-to-vocab-00499-forced-to-force",
+        "expected": "forced to",
+        "recognized": "force to",
+        "kind": "connected-speech-td-cluster-before-to",
+        "credit": "exact-equivalent",
+        "scope": {
+          "type": "entry",
+          "entryIds": [
+            "vocab:00499"
+          ],
+          "mode": "vocabulary"
+        }
+      },
+      "historical_relationship": "SAME_EXACT_SURFACE_AT_HISTORICAL_REFERENCE"
+    },
+    {
+      "audit_candidate_id": "wfc-01977",
+      "entry_id": "vocab:00502",
+      "historical": {
+        "surface_type": "canonical",
+        "surface_index": null,
+        "surface_ref": "vocab:00502:canonical",
+        "target_surface": "tend to do something",
+        "current_main_accepted_surface": "tend to do something",
+        "current_main_accepted_via": "canonical",
+        "materialization_status": "APPLY",
+        "production_rule_id": "td-cluster-before-to-vocab-00502-tend-to-ten"
+      },
+      "current": {
+        "state": "UNCHANGED",
+        "surface_at_historical_position": "tend to do something",
+        "exact_surface_match_count": 1,
+        "exact_surface_matches": [
+          {
+            "surface": "tend to do something",
+            "index": null,
+            "ref": "vocab:00502:canonical"
+          }
+        ],
+        "normalized_token_match_count": 1,
+        "normalized_token_matches": [
+          {
+            "surface": "tend to do something",
+            "index": null,
+            "ref": "vocab:00502:canonical"
+          }
+        ],
+        "current_surface": "tend to do something",
+        "current_index": null,
+        "current_ref": "vocab:00502:canonical",
+        "exact_surface_identity": true,
+        "normalized_token_identity": true,
+        "classification": "TARGET",
+        "matched_authority": "canonical",
+        "expected_classification": "TARGET",
+        "authority_snapshot": {
+          "canonical": "tend to do something",
+          "answers": null,
+          "paraphrases": [
+            "have a tendency to do something",
+            "be inclined to do something"
+          ],
+          "meaning_ja": "somethingする傾向がある",
+          "sense_key": "usually_or_often_do",
+          "grammarRole": "verb",
+          "occurrences": [
+            {
+              "item_id": "E0393",
+              "start": 3,
+              "end": 47,
+              "contextual_meaning_ja": "政治家というと偽善を連想しがち"
+            }
+          ]
+        }
+      },
+      "collision": {
+        "surface": "ten to do something",
+        "accepted": true,
+        "classification": "TARGET",
+        "recognition_authority": "explicit-equivalence",
+        "applied_rule_id": "td-cluster-before-to-vocab-00502-tend-to-ten",
+        "aligned_rule_id": "td-cluster-before-to-vocab-00502-tend-to-ten"
+      },
+      "production_rule": {
+        "id": "td-cluster-before-to-vocab-00502-tend-to-ten",
+        "expected": "tend to",
+        "recognized": "ten to",
+        "kind": "connected-speech-td-cluster-before-to",
+        "credit": "exact-equivalent",
+        "scope": {
+          "type": "entry",
+          "entryIds": [
+            "vocab:00502"
+          ],
+          "mode": "vocabulary"
+        }
+      },
+      "historical_relationship": "SAME_EXACT_SURFACE_AT_HISTORICAL_REFERENCE"
+    },
+    {
+      "audit_candidate_id": "wfc-01978",
+      "entry_id": "vocab:00502",
+      "historical": {
+        "surface_type": "source occurrence",
+        "surface_index": 0,
+        "surface_ref": "vocab:00502:source:0",
+        "target_surface": "tend to associate politicians with hypocrisy",
+        "current_main_accepted_surface": "tend to associate politicians with hypocrisy",
+        "current_main_accepted_via": "occurrences[0] (E0393)",
+        "materialization_status": "APPLY",
+        "production_rule_id": "td-cluster-before-to-vocab-00502-tend-to-ten"
+      },
+      "current": {
+        "state": "UNCHANGED",
+        "surface_at_historical_position": "tend to associate politicians with hypocrisy",
+        "exact_surface_match_count": 1,
+        "exact_surface_matches": [
+          {
+            "surface": "tend to associate politicians with hypocrisy",
+            "index": 0,
+            "ref": "vocab:00502:source:0",
+            "item_id": "E0393"
+          }
+        ],
+        "normalized_token_match_count": 1,
+        "normalized_token_matches": [
+          {
+            "surface": "tend to associate politicians with hypocrisy",
+            "index": 0,
+            "ref": "vocab:00502:source:0",
+            "item_id": "E0393"
+          }
+        ],
+        "current_surface": "tend to associate politicians with hypocrisy",
+        "current_index": 0,
+        "current_ref": "vocab:00502:source:0",
+        "exact_surface_identity": true,
+        "normalized_token_identity": true,
+        "classification": "TARGET",
+        "matched_authority": "source",
+        "expected_classification": "TARGET",
+        "authority_snapshot": {
+          "canonical": "tend to do something",
+          "answers": null,
+          "paraphrases": [
+            "have a tendency to do something",
+            "be inclined to do something"
+          ],
+          "meaning_ja": "somethingする傾向がある",
+          "sense_key": "usually_or_often_do",
+          "grammarRole": "verb",
+          "occurrences": [
+            {
+              "item_id": "E0393",
+              "start": 3,
+              "end": 47,
+              "contextual_meaning_ja": "政治家というと偽善を連想しがち"
+            }
+          ]
+        }
+      },
+      "collision": {
+        "surface": "ten to associate politicians with hypocrisy",
+        "accepted": true,
+        "classification": "TARGET",
+        "recognition_authority": "explicit-equivalence",
+        "applied_rule_id": "td-cluster-before-to-vocab-00502-tend-to-ten",
+        "aligned_rule_id": "td-cluster-before-to-vocab-00502-tend-to-ten"
+      },
+      "production_rule": {
+        "id": "td-cluster-before-to-vocab-00502-tend-to-ten",
+        "expected": "tend to",
+        "recognized": "ten to",
+        "kind": "connected-speech-td-cluster-before-to",
+        "credit": "exact-equivalent",
+        "scope": {
+          "type": "entry",
+          "entryIds": [
+            "vocab:00502"
+          ],
+          "mode": "vocabulary"
+        }
+      },
+      "historical_relationship": "SAME_EXACT_SURFACE_AT_HISTORICAL_REFERENCE"
+    },
+    {
+      "audit_candidate_id": "wfc-02183",
+      "entry_id": "vocab:00561",
+      "historical": {
+        "surface_type": "canonical",
+        "surface_index": null,
+        "surface_ref": "vocab:00561:canonical",
+        "target_surface": "be sentenced to something",
+        "current_main_accepted_surface": "be sentenced to something",
+        "current_main_accepted_via": "canonical",
+        "materialization_status": "APPLY",
+        "production_rule_id": "td-cluster-before-to-vocab-00561-sentenced-to-sentence"
+      },
+      "current": {
+        "state": "UNCHANGED",
+        "surface_at_historical_position": "be sentenced to something",
+        "exact_surface_match_count": 1,
+        "exact_surface_matches": [
+          {
+            "surface": "be sentenced to something",
+            "index": null,
+            "ref": "vocab:00561:canonical"
+          }
+        ],
+        "normalized_token_match_count": 1,
+        "normalized_token_matches": [
+          {
+            "surface": "be sentenced to something",
+            "index": null,
+            "ref": "vocab:00561:canonical"
+          }
+        ],
+        "current_surface": "be sentenced to something",
+        "current_index": null,
+        "current_ref": "vocab:00561:canonical",
+        "exact_surface_identity": true,
+        "normalized_token_identity": true,
+        "classification": "TARGET",
+        "matched_authority": "canonical",
+        "expected_classification": "TARGET",
+        "authority_snapshot": {
+          "canonical": "be sentenced to something",
+          "answers": null,
+          "paraphrases": [
+            "receive a sentence of something"
+          ],
+          "meaning_ja": "somethingの刑を言い渡される",
+          "sense_key": "receive_a_legal_penalty",
+          "grammarRole": "verb",
+          "occurrences": [
+            {
+              "item_id": "E0462",
+              "start": 34,
+              "end": 73,
+              "contextual_meaning_ja": "20年の懲役刑を言い渡された"
+            }
+          ]
+        }
+      },
+      "collision": {
+        "surface": "be sentence to something",
+        "accepted": true,
+        "classification": "TARGET",
+        "recognition_authority": "explicit-equivalence",
+        "applied_rule_id": "td-cluster-before-to-vocab-00561-sentenced-to-sentence",
+        "aligned_rule_id": "td-cluster-before-to-vocab-00561-sentenced-to-sentence"
+      },
+      "production_rule": {
+        "id": "td-cluster-before-to-vocab-00561-sentenced-to-sentence",
+        "expected": "sentenced to",
+        "recognized": "sentence to",
+        "kind": "connected-speech-td-cluster-before-to",
+        "credit": "exact-equivalent",
+        "scope": {
+          "type": "entry",
+          "entryIds": [
+            "vocab:00561"
+          ],
+          "mode": "vocabulary"
+        }
+      },
+      "historical_relationship": "SAME_EXACT_SURFACE_AT_HISTORICAL_REFERENCE"
+    },
+    {
+      "audit_candidate_id": "wfc-02185",
+      "entry_id": "vocab:00561",
+      "historical": {
+        "surface_type": "source occurrence",
+        "surface_index": 0,
+        "surface_ref": "vocab:00561:source:0",
+        "target_surface": "was sentenced to twenty years in prison",
+        "current_main_accepted_surface": "was sentenced to twenty years in prison",
+        "current_main_accepted_via": "occurrences[0] (E0462)",
+        "materialization_status": "APPLY",
+        "production_rule_id": "td-cluster-before-to-vocab-00561-sentenced-to-sentence"
+      },
+      "current": {
+        "state": "UNCHANGED",
+        "surface_at_historical_position": "was sentenced to twenty years in prison",
+        "exact_surface_match_count": 1,
+        "exact_surface_matches": [
+          {
+            "surface": "was sentenced to twenty years in prison",
+            "index": 0,
+            "ref": "vocab:00561:source:0",
+            "item_id": "E0462"
+          }
+        ],
+        "normalized_token_match_count": 1,
+        "normalized_token_matches": [
+          {
+            "surface": "was sentenced to twenty years in prison",
+            "index": 0,
+            "ref": "vocab:00561:source:0",
+            "item_id": "E0462"
+          }
+        ],
+        "current_surface": "was sentenced to twenty years in prison",
+        "current_index": 0,
+        "current_ref": "vocab:00561:source:0",
+        "exact_surface_identity": true,
+        "normalized_token_identity": true,
+        "classification": "TARGET",
+        "matched_authority": "source",
+        "expected_classification": "TARGET",
+        "authority_snapshot": {
+          "canonical": "be sentenced to something",
+          "answers": null,
+          "paraphrases": [
+            "receive a sentence of something"
+          ],
+          "meaning_ja": "somethingの刑を言い渡される",
+          "sense_key": "receive_a_legal_penalty",
+          "grammarRole": "verb",
+          "occurrences": [
+            {
+              "item_id": "E0462",
+              "start": 34,
+              "end": 73,
+              "contextual_meaning_ja": "20年の懲役刑を言い渡された"
+            }
+          ]
+        }
+      },
+      "collision": {
+        "surface": "was sentence to twenty years in prison",
+        "accepted": true,
+        "classification": "TARGET",
+        "recognition_authority": "explicit-equivalence",
+        "applied_rule_id": "td-cluster-before-to-vocab-00561-sentenced-to-sentence",
+        "aligned_rule_id": "td-cluster-before-to-vocab-00561-sentenced-to-sentence"
+      },
+      "production_rule": {
+        "id": "td-cluster-before-to-vocab-00561-sentenced-to-sentence",
+        "expected": "sentenced to",
+        "recognized": "sentence to",
+        "kind": "connected-speech-td-cluster-before-to",
+        "credit": "exact-equivalent",
+        "scope": {
+          "type": "entry",
+          "entryIds": [
+            "vocab:00561"
+          ],
+          "mode": "vocabulary"
+        }
+      },
+      "historical_relationship": "SAME_EXACT_SURFACE_AT_HISTORICAL_REFERENCE"
+    },
+    {
+      "audit_candidate_id": "wfc-02515",
+      "entry_id": "vocab:00648",
+      "historical": {
+        "surface_type": "canonical",
+        "surface_index": null,
+        "surface_ref": "vocab:00648:canonical",
+        "target_surface": "be used to something",
+        "current_main_accepted_surface": "be used to something",
+        "current_main_accepted_via": "canonical",
+        "materialization_status": "APPLY",
+        "production_rule_id": "td-cluster-before-to-vocab-00648-used-to-use"
+      },
+      "current": {
+        "state": "UNCHANGED",
+        "surface_at_historical_position": "be used to something",
+        "exact_surface_match_count": 1,
+        "exact_surface_matches": [
+          {
+            "surface": "be used to something",
+            "index": null,
+            "ref": "vocab:00648:canonical"
+          }
+        ],
+        "normalized_token_match_count": 1,
+        "normalized_token_matches": [
+          {
+            "surface": "be used to something",
+            "index": null,
+            "ref": "vocab:00648:canonical"
+          }
+        ],
+        "current_surface": "be used to something",
+        "current_index": null,
+        "current_ref": "vocab:00648:canonical",
+        "exact_surface_identity": true,
+        "normalized_token_identity": true,
+        "classification": "TARGET",
+        "matched_authority": "canonical",
+        "expected_classification": "TARGET",
+        "authority_snapshot": {
+          "canonical": "be used to something",
+          "answers": null,
+          "paraphrases": [
+            "be accustomed to something"
+          ],
+          "meaning_ja": "somethingに慣れている",
+          "sense_key": "be_accustomed_to",
+          "grammarRole": "verb",
+          "occurrences": [
+            {
+              "item_id": "E0534",
+              "start": 74,
+              "end": 88,
+              "contextual_meaning_ja": "慣れている"
+            }
+          ]
+        }
+      },
+      "collision": {
+        "surface": "be use to something",
+        "accepted": true,
+        "classification": "TARGET",
+        "recognition_authority": "explicit-equivalence",
+        "applied_rule_id": "td-cluster-before-to-vocab-00648-used-to-use",
+        "aligned_rule_id": "td-cluster-before-to-vocab-00648-used-to-use"
+      },
+      "production_rule": {
+        "id": "td-cluster-before-to-vocab-00648-used-to-use",
+        "expected": "used to",
+        "recognized": "use to",
+        "kind": "connected-speech-td-cluster-before-to",
+        "credit": "exact-equivalent",
+        "scope": {
+          "type": "entry",
+          "entryIds": [
+            "vocab:00648"
+          ],
+          "mode": "vocabulary"
+        }
+      },
+      "historical_relationship": "SAME_EXACT_SURFACE_AT_HISTORICAL_REFERENCE"
+    },
+    {
+      "audit_candidate_id": "wfc-02523",
+      "entry_id": "vocab:00648",
+      "historical": {
+        "surface_type": "source occurrence",
+        "surface_index": 0,
+        "surface_ref": "vocab:00648:source:0",
+        "target_surface": "I'm used to it",
+        "current_main_accepted_surface": "I'm used to it",
+        "current_main_accepted_via": "occurrences[0] (E0534)",
+        "materialization_status": "APPLY",
+        "production_rule_id": "td-cluster-before-to-vocab-00648-used-to-use"
+      },
+      "current": {
+        "state": "UNCHANGED",
+        "surface_at_historical_position": "I'm used to it",
+        "exact_surface_match_count": 1,
+        "exact_surface_matches": [
+          {
+            "surface": "I'm used to it",
+            "index": 0,
+            "ref": "vocab:00648:source:0",
+            "item_id": "E0534"
+          }
+        ],
+        "normalized_token_match_count": 1,
+        "normalized_token_matches": [
+          {
+            "surface": "I'm used to it",
+            "index": 0,
+            "ref": "vocab:00648:source:0",
+            "item_id": "E0534"
+          }
+        ],
+        "current_surface": "I'm used to it",
+        "current_index": 0,
+        "current_ref": "vocab:00648:source:0",
+        "exact_surface_identity": true,
+        "normalized_token_identity": true,
+        "classification": "TARGET",
+        "matched_authority": "source",
+        "expected_classification": "TARGET",
+        "authority_snapshot": {
+          "canonical": "be used to something",
+          "answers": null,
+          "paraphrases": [
+            "be accustomed to something"
+          ],
+          "meaning_ja": "somethingに慣れている",
+          "sense_key": "be_accustomed_to",
+          "grammarRole": "verb",
+          "occurrences": [
+            {
+              "item_id": "E0534",
+              "start": 74,
+              "end": 88,
+              "contextual_meaning_ja": "慣れている"
+            }
+          ]
+        }
+      },
+      "collision": {
+        "surface": "I'm use to it",
+        "accepted": true,
+        "classification": "TARGET",
+        "recognition_authority": "explicit-equivalence",
+        "applied_rule_id": "td-cluster-before-to-vocab-00648-used-to-use",
+        "aligned_rule_id": "td-cluster-before-to-vocab-00648-used-to-use"
+      },
+      "production_rule": {
+        "id": "td-cluster-before-to-vocab-00648-used-to-use",
+        "expected": "used to",
+        "recognized": "use to",
+        "kind": "connected-speech-td-cluster-before-to",
+        "credit": "exact-equivalent",
+        "scope": {
+          "type": "entry",
+          "entryIds": [
+            "vocab:00648"
+          ],
+          "mode": "vocabulary"
+        }
+      },
+      "historical_relationship": "SAME_EXACT_SURFACE_AT_HISTORICAL_REFERENCE"
+    },
+    {
+      "audit_candidate_id": "wfc-02718",
+      "entry_id": "vocab:00697",
+      "historical": {
+        "surface_type": "canonical",
+        "surface_index": null,
+        "surface_ref": "vocab:00697:canonical",
+        "target_surface": "get engaged to someone",
+        "current_main_accepted_surface": "get engaged to someone",
+        "current_main_accepted_via": "canonical",
+        "materialization_status": "APPLY",
+        "production_rule_id": "td-cluster-before-to-vocab-00697-engaged-to-engage"
+      },
+      "current": {
+        "state": "UNCHANGED",
+        "surface_at_historical_position": "get engaged to someone",
+        "exact_surface_match_count": 1,
+        "exact_surface_matches": [
+          {
+            "surface": "get engaged to someone",
+            "index": null,
+            "ref": "vocab:00697:canonical"
+          }
+        ],
+        "normalized_token_match_count": 1,
+        "normalized_token_matches": [
+          {
+            "surface": "get engaged to someone",
+            "index": null,
+            "ref": "vocab:00697:canonical"
+          }
+        ],
+        "current_surface": "get engaged to someone",
+        "current_index": null,
+        "current_ref": "vocab:00697:canonical",
+        "exact_surface_identity": true,
+        "normalized_token_identity": true,
+        "classification": "TARGET",
+        "matched_authority": "canonical",
+        "expected_classification": "TARGET",
+        "authority_snapshot": {
+          "canonical": "get engaged to someone",
+          "answers": null,
+          "paraphrases": null,
+          "meaning_ja": "someoneと婚約する",
+          "sense_key": "become_engaged_to_marry",
+          "grammarRole": "verb",
+          "occurrences": [
+            {
+              "item_id": "E0556",
+              "start": 27,
+              "end": 55,
+              "contextual_meaning_ja": "実業家と婚約した"
+            }
+          ]
+        }
+      },
+      "collision": {
+        "surface": "get engage to someone",
+        "accepted": true,
+        "classification": "TARGET",
+        "recognition_authority": "explicit-equivalence",
+        "applied_rule_id": "td-cluster-before-to-vocab-00697-engaged-to-engage",
+        "aligned_rule_id": "td-cluster-before-to-vocab-00697-engaged-to-engage"
+      },
+      "production_rule": {
+        "id": "td-cluster-before-to-vocab-00697-engaged-to-engage",
+        "expected": "engaged to",
+        "recognized": "engage to",
+        "kind": "connected-speech-td-cluster-before-to",
+        "credit": "exact-equivalent",
+        "scope": {
+          "type": "entry",
+          "entryIds": [
+            "vocab:00697"
+          ],
+          "mode": "vocabulary"
+        }
+      },
+      "historical_relationship": "SAME_EXACT_SURFACE_AT_HISTORICAL_REFERENCE"
+    },
+    {
+      "audit_candidate_id": "wfc-02720",
+      "entry_id": "vocab:00697",
+      "historical": {
+        "surface_type": "source occurrence",
+        "surface_index": 0,
+        "surface_ref": "vocab:00697:source:0",
+        "target_surface": "got engaged to a businessman",
+        "current_main_accepted_surface": "got engaged to a businessman",
+        "current_main_accepted_via": "occurrences[0] (E0556)",
+        "materialization_status": "APPLY",
+        "production_rule_id": "td-cluster-before-to-vocab-00697-engaged-to-engage"
+      },
+      "current": {
+        "state": "UNCHANGED",
+        "surface_at_historical_position": "got engaged to a businessman",
+        "exact_surface_match_count": 1,
+        "exact_surface_matches": [
+          {
+            "surface": "got engaged to a businessman",
+            "index": 0,
+            "ref": "vocab:00697:source:0",
+            "item_id": "E0556"
+          }
+        ],
+        "normalized_token_match_count": 1,
+        "normalized_token_matches": [
+          {
+            "surface": "got engaged to a businessman",
+            "index": 0,
+            "ref": "vocab:00697:source:0",
+            "item_id": "E0556"
+          }
+        ],
+        "current_surface": "got engaged to a businessman",
+        "current_index": 0,
+        "current_ref": "vocab:00697:source:0",
+        "exact_surface_identity": true,
+        "normalized_token_identity": true,
+        "classification": "TARGET",
+        "matched_authority": "source",
+        "expected_classification": "TARGET",
+        "authority_snapshot": {
+          "canonical": "get engaged to someone",
+          "answers": null,
+          "paraphrases": null,
+          "meaning_ja": "someoneと婚約する",
+          "sense_key": "become_engaged_to_marry",
+          "grammarRole": "verb",
+          "occurrences": [
+            {
+              "item_id": "E0556",
+              "start": 27,
+              "end": 55,
+              "contextual_meaning_ja": "実業家と婚約した"
+            }
+          ]
+        }
+      },
+      "collision": {
+        "surface": "got engage to a businessman",
+        "accepted": true,
+        "classification": "TARGET",
+        "recognition_authority": "explicit-equivalence",
+        "applied_rule_id": "td-cluster-before-to-vocab-00697-engaged-to-engage",
+        "aligned_rule_id": "td-cluster-before-to-vocab-00697-engaged-to-engage"
+      },
+      "production_rule": {
+        "id": "td-cluster-before-to-vocab-00697-engaged-to-engage",
+        "expected": "engaged to",
+        "recognized": "engage to",
+        "kind": "connected-speech-td-cluster-before-to",
+        "credit": "exact-equivalent",
+        "scope": {
+          "type": "entry",
+          "entryIds": [
+            "vocab:00697"
+          ],
+          "mode": "vocabulary"
+        }
+      },
+      "historical_relationship": "SAME_EXACT_SURFACE_AT_HISTORICAL_REFERENCE"
+    },
+    {
+      "audit_candidate_id": "wfc-02939",
+      "entry_id": "vocab:01166",
+      "historical": {
+        "surface_type": "canonical",
+        "surface_index": null,
+        "surface_ref": "vocab:01166:canonical",
+        "target_surface": "be apt to do something",
+        "current_main_accepted_surface": "be apt to do something",
+        "current_main_accepted_via": "canonical",
+        "materialization_status": "APPLY",
+        "production_rule_id": "td-cluster-before-to-vocab-01166-apt-to-app"
+      },
+      "current": {
+        "state": "UNCHANGED",
+        "surface_at_historical_position": "be apt to do something",
+        "exact_surface_match_count": 1,
+        "exact_surface_matches": [
+          {
+            "surface": "be apt to do something",
+            "index": null,
+            "ref": "vocab:01166:canonical"
+          }
+        ],
+        "normalized_token_match_count": 1,
+        "normalized_token_matches": [
+          {
+            "surface": "be apt to do something",
+            "index": null,
+            "ref": "vocab:01166:canonical"
+          }
+        ],
+        "current_surface": "be apt to do something",
+        "current_index": null,
+        "current_ref": "vocab:01166:canonical",
+        "exact_surface_identity": true,
+        "normalized_token_identity": true,
+        "classification": "TARGET",
+        "matched_authority": "canonical",
+        "expected_classification": "TARGET",
+        "authority_snapshot": {
+          "canonical": "be apt to do something",
+          "answers": null,
+          "paraphrases": [
+            "tend to do something",
+            "be prone to doing something"
+          ],
+          "meaning_ja": "somethingしがちである",
+          "sense_key": "likely_to_do",
+          "grammarRole": "adjective",
+          "occurrences": [
+            {
+              "item_id": "E0023",
+              "start": 1,
+              "end": 15,
+              "contextual_meaning_ja": "「安売りをしているといつも衝動買いしてしまうたちです。」 「私も。」"
+            }
+          ]
+        }
+      },
+      "collision": {
+        "surface": "be app to do something",
+        "accepted": true,
+        "classification": "TARGET",
+        "recognition_authority": "explicit-equivalence",
+        "applied_rule_id": "td-cluster-before-to-vocab-01166-apt-to-app",
+        "aligned_rule_id": "td-cluster-before-to-vocab-01166-apt-to-app"
+      },
+      "production_rule": {
+        "id": "td-cluster-before-to-vocab-01166-apt-to-app",
+        "expected": "apt to",
+        "recognized": "app to",
+        "kind": "connected-speech-td-cluster-before-to",
+        "credit": "exact-equivalent",
+        "scope": {
+          "type": "entry",
+          "entryIds": [
+            "vocab:01166"
+          ],
+          "mode": "vocabulary"
+        }
+      },
+      "historical_relationship": "SAME_EXACT_SURFACE_AT_HISTORICAL_REFERENCE"
+    },
+    {
+      "audit_candidate_id": "wfc-02946",
+      "entry_id": "vocab:01166",
+      "historical": {
+        "surface_type": "source occurrence",
+        "surface_index": 0,
+        "surface_ref": "vocab:01166:source:0",
+        "target_surface": "I'm apt to buy",
+        "current_main_accepted_surface": "I'm apt to buy",
+        "current_main_accepted_via": "occurrences[0] (E0023)",
+        "materialization_status": "APPLY",
+        "production_rule_id": "td-cluster-before-to-vocab-01166-apt-to-app"
+      },
+      "current": {
+        "state": "UNCHANGED",
+        "surface_at_historical_position": "I'm apt to buy",
+        "exact_surface_match_count": 1,
+        "exact_surface_matches": [
+          {
+            "surface": "I'm apt to buy",
+            "index": 0,
+            "ref": "vocab:01166:source:0",
+            "item_id": "E0023"
+          }
+        ],
+        "normalized_token_match_count": 1,
+        "normalized_token_matches": [
+          {
+            "surface": "I'm apt to buy",
+            "index": 0,
+            "ref": "vocab:01166:source:0",
+            "item_id": "E0023"
+          }
+        ],
+        "current_surface": "I'm apt to buy",
+        "current_index": 0,
+        "current_ref": "vocab:01166:source:0",
+        "exact_surface_identity": true,
+        "normalized_token_identity": true,
+        "classification": "TARGET",
+        "matched_authority": "source",
+        "expected_classification": "TARGET",
+        "authority_snapshot": {
+          "canonical": "be apt to do something",
+          "answers": null,
+          "paraphrases": [
+            "tend to do something",
+            "be prone to doing something"
+          ],
+          "meaning_ja": "somethingしがちである",
+          "sense_key": "likely_to_do",
+          "grammarRole": "adjective",
+          "occurrences": [
+            {
+              "item_id": "E0023",
+              "start": 1,
+              "end": 15,
+              "contextual_meaning_ja": "「安売りをしているといつも衝動買いしてしまうたちです。」 「私も。」"
+            }
+          ]
+        }
+      },
+      "collision": {
+        "surface": "I'm app to buy",
+        "accepted": true,
+        "classification": "TARGET",
+        "recognition_authority": "explicit-equivalence",
+        "applied_rule_id": "td-cluster-before-to-vocab-01166-apt-to-app",
+        "aligned_rule_id": "td-cluster-before-to-vocab-01166-apt-to-app"
+      },
+      "production_rule": {
+        "id": "td-cluster-before-to-vocab-01166-apt-to-app",
+        "expected": "apt to",
+        "recognized": "app to",
+        "kind": "connected-speech-td-cluster-before-to",
+        "credit": "exact-equivalent",
+        "scope": {
+          "type": "entry",
+          "entryIds": [
+            "vocab:01166"
+          ],
+          "mode": "vocabulary"
+        }
+      },
+      "historical_relationship": "SAME_EXACT_SURFACE_AT_HISTORICAL_REFERENCE"
+    },
+    {
+      "audit_candidate_id": "wfc-03163",
+      "entry_id": "vocab:01295",
+      "historical": {
+        "surface_type": "source occurrence",
+        "surface_index": 0,
+        "surface_ref": "vocab:01295:source:0",
+        "target_surface": "failed to live up to our expectations",
+        "current_main_accepted_surface": "failed to live up to our expectations",
+        "current_main_accepted_via": "occurrences[0] (E0087)",
+        "materialization_status": "APPLY",
+        "production_rule_id": "td-cluster-before-to-vocab-01295-failed-to-fail"
+      },
+      "current": {
+        "state": "UNCHANGED",
+        "surface_at_historical_position": "failed to live up to our expectations",
+        "exact_surface_match_count": 1,
+        "exact_surface_matches": [
+          {
+            "surface": "failed to live up to our expectations",
+            "index": 0,
+            "ref": "vocab:01295:source:0",
+            "item_id": "E0087"
+          }
+        ],
+        "normalized_token_match_count": 1,
+        "normalized_token_matches": [
+          {
+            "surface": "failed to live up to our expectations",
+            "index": 0,
+            "ref": "vocab:01295:source:0",
+            "item_id": "E0087"
+          }
+        ],
+        "current_surface": "failed to live up to our expectations",
+        "current_index": 0,
+        "current_ref": "vocab:01295:source:0",
+        "exact_surface_identity": true,
+        "normalized_token_identity": true,
+        "classification": "TARGET",
+        "matched_authority": "source",
+        "expected_classification": "TARGET",
+        "authority_snapshot": {
+          "canonical": "fail to do something",
+          "answers": null,
+          "paraphrases": null,
+          "meaning_ja": "somethingし損なう",
+          "sense_key": "fail_to_perform",
+          "grammarRole": "verb",
+          "occurrences": [
+            {
+              "item_id": "E0087",
+              "start": 47,
+              "end": 84,
+              "contextual_meaning_ja": "私たちは彼が相手に勝つことを期待したが、彼はその期待に応えられなかった。"
+            }
+          ]
+        }
+      },
+      "collision": {
+        "surface": "fail to live up to our expectations",
+        "accepted": true,
+        "classification": "TARGET",
+        "recognition_authority": "explicit-equivalence",
+        "applied_rule_id": "td-cluster-before-to-vocab-01295-failed-to-fail",
+        "aligned_rule_id": "td-cluster-before-to-vocab-01295-failed-to-fail"
+      },
+      "production_rule": {
+        "id": "td-cluster-before-to-vocab-01295-failed-to-fail",
+        "expected": "failed to",
+        "recognized": "fail to",
+        "kind": "connected-speech-td-cluster-before-to",
+        "credit": "exact-equivalent",
+        "scope": {
+          "type": "entry",
+          "entryIds": [
+            "vocab:01295"
+          ],
+          "mode": "vocabulary"
+        }
+      },
+      "historical_relationship": "SAME_EXACT_SURFACE_AT_HISTORICAL_REFERENCE"
+    },
+    {
+      "audit_candidate_id": "wfc-03391",
+      "entry_id": "vocab:01495",
+      "historical": {
+        "surface_type": "canonical",
+        "surface_index": null,
+        "surface_ref": "vocab:01495:canonical",
+        "target_surface": "be supposed to do something",
+        "current_main_accepted_surface": "be supposed to do something",
+        "current_main_accepted_via": "canonical",
+        "materialization_status": "APPLY",
+        "production_rule_id": "td-cluster-before-to-vocab-01495-supposed-to-suppose"
+      },
+      "current": {
+        "state": "UNCHANGED",
+        "surface_at_historical_position": "be supposed to do something",
+        "exact_surface_match_count": 1,
+        "exact_surface_matches": [
+          {
+            "surface": "be supposed to do something",
+            "index": null,
+            "ref": "vocab:01495:canonical"
+          }
+        ],
+        "normalized_token_match_count": 1,
+        "normalized_token_matches": [
+          {
+            "surface": "be supposed to do something",
+            "index": null,
+            "ref": "vocab:01495:canonical"
+          }
+        ],
+        "current_surface": "be supposed to do something",
+        "current_index": null,
+        "current_ref": "vocab:01495:canonical",
+        "exact_surface_identity": true,
+        "normalized_token_identity": true,
+        "classification": "TARGET",
+        "matched_authority": "canonical",
+        "expected_classification": "TARGET",
+        "authority_snapshot": {
+          "canonical": "be supposed to do something",
+          "answers": null,
+          "paraphrases": [
+            "be expected to do something",
+            "be meant to do something"
+          ],
+          "meaning_ja": "somethingすることになっている",
+          "sense_key": "expected_to_do",
+          "grammarRole": "auxiliary",
+          "occurrences": [
+            {
+              "item_id": "E0155",
+              "start": 34,
+              "end": 53,
+              "contextual_meaning_ja": "「遠回しな言い方はやめてくれ！僕にどうしろって言うんだ？」 「慌てずに待つしかありません。時が経てばわかります。」"
+            }
+          ]
+        }
+      },
+      "collision": {
+        "surface": "be suppose to do something",
+        "accepted": true,
+        "classification": "TARGET",
+        "recognition_authority": "explicit-equivalence",
+        "applied_rule_id": "td-cluster-before-to-vocab-01495-supposed-to-suppose",
+        "aligned_rule_id": "td-cluster-before-to-vocab-01495-supposed-to-suppose"
+      },
+      "production_rule": {
+        "id": "td-cluster-before-to-vocab-01495-supposed-to-suppose",
+        "expected": "supposed to",
+        "recognized": "suppose to",
+        "kind": "connected-speech-td-cluster-before-to",
+        "credit": "exact-equivalent",
+        "scope": {
+          "type": "entry",
+          "entryIds": [
+            "vocab:01495"
+          ],
+          "mode": "vocabulary"
+        }
+      },
+      "historical_relationship": "SAME_EXACT_SURFACE_AT_HISTORICAL_REFERENCE"
+    },
+    {
+      "audit_candidate_id": "wfc-03392",
+      "entry_id": "vocab:01495",
+      "historical": {
+        "surface_type": "source occurrence",
+        "surface_index": 0,
+        "surface_ref": "vocab:01495:source:0",
+        "target_surface": "am I supposed to do",
+        "current_main_accepted_surface": "am I supposed to do",
+        "current_main_accepted_via": "occurrences[0] (E0155)",
+        "materialization_status": "APPLY",
+        "production_rule_id": "td-cluster-before-to-vocab-01495-supposed-to-suppose"
+      },
+      "current": {
+        "state": "UNCHANGED",
+        "surface_at_historical_position": "am I supposed to do",
+        "exact_surface_match_count": 1,
+        "exact_surface_matches": [
+          {
+            "surface": "am I supposed to do",
+            "index": 0,
+            "ref": "vocab:01495:source:0",
+            "item_id": "E0155"
+          }
+        ],
+        "normalized_token_match_count": 1,
+        "normalized_token_matches": [
+          {
+            "surface": "am I supposed to do",
+            "index": 0,
+            "ref": "vocab:01495:source:0",
+            "item_id": "E0155"
+          }
+        ],
+        "current_surface": "am I supposed to do",
+        "current_index": 0,
+        "current_ref": "vocab:01495:source:0",
+        "exact_surface_identity": true,
+        "normalized_token_identity": true,
+        "classification": "TARGET",
+        "matched_authority": "source",
+        "expected_classification": "TARGET",
+        "authority_snapshot": {
+          "canonical": "be supposed to do something",
+          "answers": null,
+          "paraphrases": [
+            "be expected to do something",
+            "be meant to do something"
+          ],
+          "meaning_ja": "somethingすることになっている",
+          "sense_key": "expected_to_do",
+          "grammarRole": "auxiliary",
+          "occurrences": [
+            {
+              "item_id": "E0155",
+              "start": 34,
+              "end": 53,
+              "contextual_meaning_ja": "「遠回しな言い方はやめてくれ！僕にどうしろって言うんだ？」 「慌てずに待つしかありません。時が経てばわかります。」"
+            }
+          ]
+        }
+      },
+      "collision": {
+        "surface": "am I suppose to do",
+        "accepted": true,
+        "classification": "TARGET",
+        "recognition_authority": "explicit-equivalence",
+        "applied_rule_id": "td-cluster-before-to-vocab-01495-supposed-to-suppose",
+        "aligned_rule_id": "td-cluster-before-to-vocab-01495-supposed-to-suppose"
+      },
+      "production_rule": {
+        "id": "td-cluster-before-to-vocab-01495-supposed-to-suppose",
+        "expected": "supposed to",
+        "recognized": "suppose to",
+        "kind": "connected-speech-td-cluster-before-to",
+        "credit": "exact-equivalent",
+        "scope": {
+          "type": "entry",
+          "entryIds": [
+            "vocab:01495"
+          ],
+          "mode": "vocabulary"
+        }
+      },
+      "historical_relationship": "SAME_EXACT_SURFACE_AT_HISTORICAL_REFERENCE"
+    },
+    {
+      "audit_candidate_id": "wfc-03849",
+      "entry_id": "vocab:01808",
+      "historical": {
+        "surface_type": "canonical",
+        "surface_index": null,
+        "surface_ref": "vocab:01808:canonical",
+        "target_surface": "compared to",
+        "current_main_accepted_surface": "compared to",
+        "current_main_accepted_via": "canonical",
+        "materialization_status": "APPLY",
+        "production_rule_id": "td-cluster-before-to-vocab-01808-compared-to-compare"
+      },
+      "current": {
+        "state": "UNCHANGED",
+        "surface_at_historical_position": "compared to",
+        "exact_surface_match_count": 1,
+        "exact_surface_matches": [
+          {
+            "surface": "compared to",
+            "index": null,
+            "ref": "vocab:01808:canonical"
+          }
+        ],
+        "normalized_token_match_count": 1,
+        "normalized_token_matches": [
+          {
+            "surface": "compared to",
+            "index": null,
+            "ref": "vocab:01808:canonical"
+          }
+        ],
+        "current_surface": "compared to",
+        "current_index": null,
+        "current_ref": "vocab:01808:canonical",
+        "exact_surface_identity": true,
+        "normalized_token_identity": true,
+        "classification": "TARGET",
+        "matched_authority": "canonical",
+        "expected_classification": "TARGET",
+        "authority_snapshot": {
+          "canonical": "compared to",
+          "answers": null,
+          "paraphrases": [
+            "compared with"
+          ],
+          "meaning_ja": "〜と比べて",
+          "sense_key": "in_comparison_with",
+          "grammarRole": "preposition",
+          "occurrences": [
+            {
+              "item_id": "E0279",
+              "start": 0,
+              "end": 11,
+              "contextual_meaning_ja": "昨年と比べて、売上の数字だけを見れば事業は上向いている。しかしながら、利益はまだ全く出ていない。"
+            }
+          ]
+        }
+      },
+      "collision": {
+        "surface": "compare to",
+        "accepted": true,
+        "classification": "TARGET",
+        "recognition_authority": "explicit-equivalence",
+        "applied_rule_id": "td-cluster-before-to-vocab-01808-compared-to-compare",
+        "aligned_rule_id": "td-cluster-before-to-vocab-01808-compared-to-compare"
+      },
+      "production_rule": {
+        "id": "td-cluster-before-to-vocab-01808-compared-to-compare",
+        "expected": "compared to",
+        "recognized": "compare to",
+        "kind": "connected-speech-td-cluster-before-to",
+        "credit": "exact-equivalent",
+        "scope": {
+          "type": "entry",
+          "entryIds": [
+            "vocab:01808"
+          ],
+          "mode": "vocabulary"
+        }
+      },
+      "historical_relationship": "SAME_EXACT_SURFACE_AT_HISTORICAL_REFERENCE"
+    },
+    {
+      "audit_candidate_id": "wfc-03850",
+      "entry_id": "vocab:01808",
+      "historical": {
+        "surface_type": "source occurrence",
+        "surface_index": 0,
+        "surface_ref": "vocab:01808:source:0",
+        "target_surface": "Compared to",
+        "current_main_accepted_surface": "Compared to",
+        "current_main_accepted_via": "occurrences[0] (E0279)",
+        "materialization_status": "APPLY",
+        "production_rule_id": "td-cluster-before-to-vocab-01808-compared-to-compare"
+      },
+      "current": {
+        "state": "UNCHANGED",
+        "surface_at_historical_position": "Compared to",
+        "exact_surface_match_count": 1,
+        "exact_surface_matches": [
+          {
+            "surface": "Compared to",
+            "index": 0,
+            "ref": "vocab:01808:source:0",
+            "item_id": "E0279"
+          }
+        ],
+        "normalized_token_match_count": 1,
+        "normalized_token_matches": [
+          {
+            "surface": "Compared to",
+            "index": 0,
+            "ref": "vocab:01808:source:0",
+            "item_id": "E0279"
+          }
+        ],
+        "current_surface": "Compared to",
+        "current_index": 0,
+        "current_ref": "vocab:01808:source:0",
+        "exact_surface_identity": true,
+        "normalized_token_identity": true,
+        "classification": "TARGET",
+        "matched_authority": "canonical",
+        "expected_classification": "TARGET",
+        "authority_snapshot": {
+          "canonical": "compared to",
+          "answers": null,
+          "paraphrases": [
+            "compared with"
+          ],
+          "meaning_ja": "〜と比べて",
+          "sense_key": "in_comparison_with",
+          "grammarRole": "preposition",
+          "occurrences": [
+            {
+              "item_id": "E0279",
+              "start": 0,
+              "end": 11,
+              "contextual_meaning_ja": "昨年と比べて、売上の数字だけを見れば事業は上向いている。しかしながら、利益はまだ全く出ていない。"
+            }
+          ]
+        }
+      },
+      "collision": {
+        "surface": "Compare to",
+        "accepted": true,
+        "classification": "TARGET",
+        "recognition_authority": "explicit-equivalence",
+        "applied_rule_id": "td-cluster-before-to-vocab-01808-compared-to-compare",
+        "aligned_rule_id": "td-cluster-before-to-vocab-01808-compared-to-compare"
+      },
+      "production_rule": {
+        "id": "td-cluster-before-to-vocab-01808-compared-to-compare",
+        "expected": "compared to",
+        "recognized": "compare to",
+        "kind": "connected-speech-td-cluster-before-to",
+        "credit": "exact-equivalent",
+        "scope": {
+          "type": "entry",
+          "entryIds": [
+            "vocab:01808"
+          ],
+          "mode": "vocabulary"
+        }
+      },
+      "historical_relationship": "SAME_EXACT_SURFACE_AT_HISTORICAL_REFERENCE"
+    },
+    {
+      "audit_candidate_id": "wfc-03991",
+      "entry_id": "vocab:01930",
+      "historical": {
+        "surface_type": "canonical",
+        "surface_index": null,
+        "surface_ref": "vocab:01930:canonical",
+        "target_surface": "be determined to do something",
+        "current_main_accepted_surface": "be determined to do something",
+        "current_main_accepted_via": "canonical",
+        "materialization_status": "APPLY",
+        "production_rule_id": "td-cluster-before-to-vocab-01930-determined-to-determine"
+      },
+      "current": {
+        "state": "UNCHANGED",
+        "surface_at_historical_position": "be determined to do something",
+        "exact_surface_match_count": 1,
+        "exact_surface_matches": [
+          {
+            "surface": "be determined to do something",
+            "index": null,
+            "ref": "vocab:01930:canonical"
+          }
+        ],
+        "normalized_token_match_count": 1,
+        "normalized_token_matches": [
+          {
+            "surface": "be determined to do something",
+            "index": null,
+            "ref": "vocab:01930:canonical"
+          }
+        ],
+        "current_surface": "be determined to do something",
+        "current_index": null,
+        "current_ref": "vocab:01930:canonical",
+        "exact_surface_identity": true,
+        "normalized_token_identity": true,
+        "classification": "TARGET",
+        "matched_authority": "canonical",
+        "expected_classification": "TARGET",
+        "authority_snapshot": {
+          "canonical": "be determined to do something",
+          "answers": null,
+          "paraphrases": [
+            "have made up one's mind to do something"
+          ],
+          "meaning_ja": "somethingすると決心している",
+          "sense_key": "resolved_to_do",
+          "grammarRole": "verb",
+          "occurrences": [
+            {
+              "item_id": "E0337",
+              "start": 2,
+              "end": 23,
+              "contextual_meaning_ja": "私はどんな犠牲を払ってでも、脚本家で食べていくと心に決めている。"
+            }
+          ]
+        }
+      },
+      "collision": {
+        "surface": "be determine to do something",
+        "accepted": true,
+        "classification": "TARGET",
+        "recognition_authority": "explicit-equivalence",
+        "applied_rule_id": "td-cluster-before-to-vocab-01930-determined-to-determine",
+        "aligned_rule_id": "td-cluster-before-to-vocab-01930-determined-to-determine"
+      },
+      "production_rule": {
+        "id": "td-cluster-before-to-vocab-01930-determined-to-determine",
+        "expected": "determined to",
+        "recognized": "determine to",
+        "kind": "connected-speech-td-cluster-before-to",
+        "credit": "exact-equivalent",
+        "scope": {
+          "type": "entry",
+          "entryIds": [
+            "vocab:01930"
+          ],
+          "mode": "vocabulary"
+        }
+      },
+      "historical_relationship": "SAME_EXACT_SURFACE_AT_HISTORICAL_REFERENCE"
+    },
+    {
+      "audit_candidate_id": "wfc-03992",
+      "entry_id": "vocab:01930",
+      "historical": {
+        "surface_type": "source occurrence",
+        "surface_index": 0,
+        "surface_ref": "vocab:01930:source:0",
+        "target_surface": "am determined to make",
+        "current_main_accepted_surface": "am determined to make",
+        "current_main_accepted_via": "occurrences[0] (E0337)",
+        "materialization_status": "APPLY",
+        "production_rule_id": "td-cluster-before-to-vocab-01930-determined-to-determine"
+      },
+      "current": {
+        "state": "UNCHANGED",
+        "surface_at_historical_position": "am determined to make",
+        "exact_surface_match_count": 1,
+        "exact_surface_matches": [
+          {
+            "surface": "am determined to make",
+            "index": 0,
+            "ref": "vocab:01930:source:0",
+            "item_id": "E0337"
+          }
+        ],
+        "normalized_token_match_count": 1,
+        "normalized_token_matches": [
+          {
+            "surface": "am determined to make",
+            "index": 0,
+            "ref": "vocab:01930:source:0",
+            "item_id": "E0337"
+          }
+        ],
+        "current_surface": "am determined to make",
+        "current_index": 0,
+        "current_ref": "vocab:01930:source:0",
+        "exact_surface_identity": true,
+        "normalized_token_identity": true,
+        "classification": "TARGET",
+        "matched_authority": "source",
+        "expected_classification": "TARGET",
+        "authority_snapshot": {
+          "canonical": "be determined to do something",
+          "answers": null,
+          "paraphrases": [
+            "have made up one's mind to do something"
+          ],
+          "meaning_ja": "somethingすると決心している",
+          "sense_key": "resolved_to_do",
+          "grammarRole": "verb",
+          "occurrences": [
+            {
+              "item_id": "E0337",
+              "start": 2,
+              "end": 23,
+              "contextual_meaning_ja": "私はどんな犠牲を払ってでも、脚本家で食べていくと心に決めている。"
+            }
+          ]
+        }
+      },
+      "collision": {
+        "surface": "am determine to make",
+        "accepted": true,
+        "classification": "TARGET",
+        "recognition_authority": "explicit-equivalence",
+        "applied_rule_id": "td-cluster-before-to-vocab-01930-determined-to-determine",
+        "aligned_rule_id": "td-cluster-before-to-vocab-01930-determined-to-determine"
+      },
+      "production_rule": {
+        "id": "td-cluster-before-to-vocab-01930-determined-to-determine",
+        "expected": "determined to",
+        "recognized": "determine to",
+        "kind": "connected-speech-td-cluster-before-to",
+        "credit": "exact-equivalent",
+        "scope": {
+          "type": "entry",
+          "entryIds": [
+            "vocab:01930"
+          ],
+          "mode": "vocabulary"
+        }
+      },
+      "historical_relationship": "SAME_EXACT_SURFACE_AT_HISTORICAL_REFERENCE"
+    },
+    {
+      "audit_candidate_id": "wfc-04076",
+      "entry_id": "vocab:02046",
+      "historical": {
+        "surface_type": "canonical",
+        "surface_index": null,
+        "surface_ref": "vocab:02046:canonical",
+        "target_surface": "used to do something",
+        "current_main_accepted_surface": "used to do something",
+        "current_main_accepted_via": "canonical",
+        "materialization_status": "APPLY",
+        "production_rule_id": "td-cluster-before-to-vocab-02046-used-to-use"
+      },
+      "current": {
+        "state": "UNCHANGED",
+        "surface_at_historical_position": "used to do something",
+        "exact_surface_match_count": 1,
+        "exact_surface_matches": [
+          {
+            "surface": "used to do something",
+            "index": null,
+            "ref": "vocab:02046:canonical"
+          }
+        ],
+        "normalized_token_match_count": 1,
+        "normalized_token_matches": [
+          {
+            "surface": "used to do something",
+            "index": null,
+            "ref": "vocab:02046:canonical"
+          }
+        ],
+        "current_surface": "used to do something",
+        "current_index": null,
+        "current_ref": "vocab:02046:canonical",
+        "exact_surface_identity": true,
+        "normalized_token_identity": true,
+        "classification": "TARGET",
+        "matched_authority": "canonical",
+        "expected_classification": "TARGET",
+        "authority_snapshot": {
+          "canonical": "used to do something",
+          "answers": null,
+          "paraphrases": null,
+          "meaning_ja": "以前はsomethingしていた",
+          "sense_key": "former_habit_or_state",
+          "grammarRole": "auxiliary",
+          "occurrences": [
+            {
+              "item_id": "E0353",
+              "start": 3,
+              "end": 13,
+              "contextual_meaning_ja": "彼は以前は裕福で気前もよかったけれど、今ではその日暮らしだ。"
+            }
+          ]
+        }
+      },
+      "collision": {
+        "surface": "use to do something",
+        "accepted": true,
+        "classification": "TARGET",
+        "recognition_authority": "explicit-equivalence",
+        "applied_rule_id": "td-cluster-before-to-vocab-02046-used-to-use",
+        "aligned_rule_id": "td-cluster-before-to-vocab-02046-used-to-use"
+      },
+      "production_rule": {
+        "id": "td-cluster-before-to-vocab-02046-used-to-use",
+        "expected": "used to",
+        "recognized": "use to",
+        "kind": "connected-speech-td-cluster-before-to",
+        "credit": "exact-equivalent",
+        "scope": {
+          "type": "entry",
+          "entryIds": [
+            "vocab:02046"
+          ],
+          "mode": "vocabulary"
+        }
+      },
+      "historical_relationship": "SAME_EXACT_SURFACE_AT_HISTORICAL_REFERENCE"
+    },
+    {
+      "audit_candidate_id": "wfc-04078",
+      "entry_id": "vocab:02046",
+      "historical": {
+        "surface_type": "source occurrence",
+        "surface_index": 0,
+        "surface_ref": "vocab:02046:source:0",
+        "target_surface": "used to be",
+        "current_main_accepted_surface": "used to be",
+        "current_main_accepted_via": "occurrences[0] (E0353)",
+        "materialization_status": "APPLY",
+        "production_rule_id": "td-cluster-before-to-vocab-02046-used-to-use"
+      },
+      "current": {
+        "state": "UNCHANGED",
+        "surface_at_historical_position": "used to be",
+        "exact_surface_match_count": 1,
+        "exact_surface_matches": [
+          {
+            "surface": "used to be",
+            "index": 0,
+            "ref": "vocab:02046:source:0",
+            "item_id": "E0353"
+          }
+        ],
+        "normalized_token_match_count": 1,
+        "normalized_token_matches": [
+          {
+            "surface": "used to be",
+            "index": 0,
+            "ref": "vocab:02046:source:0",
+            "item_id": "E0353"
+          }
+        ],
+        "current_surface": "used to be",
+        "current_index": 0,
+        "current_ref": "vocab:02046:source:0",
+        "exact_surface_identity": true,
+        "normalized_token_identity": true,
+        "classification": "TARGET",
+        "matched_authority": "source",
+        "expected_classification": "TARGET",
+        "authority_snapshot": {
+          "canonical": "used to do something",
+          "answers": null,
+          "paraphrases": null,
+          "meaning_ja": "以前はsomethingしていた",
+          "sense_key": "former_habit_or_state",
+          "grammarRole": "auxiliary",
+          "occurrences": [
+            {
+              "item_id": "E0353",
+              "start": 3,
+              "end": 13,
+              "contextual_meaning_ja": "彼は以前は裕福で気前もよかったけれど、今ではその日暮らしだ。"
+            }
+          ]
+        }
+      },
+      "collision": {
+        "surface": "use to be",
+        "accepted": true,
+        "classification": "TARGET",
+        "recognition_authority": "explicit-equivalence",
+        "applied_rule_id": "td-cluster-before-to-vocab-02046-used-to-use",
+        "aligned_rule_id": "td-cluster-before-to-vocab-02046-used-to-use"
+      },
+      "production_rule": {
+        "id": "td-cluster-before-to-vocab-02046-used-to-use",
+        "expected": "used to",
+        "recognized": "use to",
+        "kind": "connected-speech-td-cluster-before-to",
+        "credit": "exact-equivalent",
+        "scope": {
+          "type": "entry",
+          "entryIds": [
+            "vocab:02046"
+          ],
+          "mode": "vocabulary"
+        }
+      },
+      "historical_relationship": "SAME_EXACT_SURFACE_AT_HISTORICAL_REFERENCE"
+    },
+    {
+      "audit_candidate_id": "wfc-04163",
+      "entry_id": "vocab:02071",
+      "historical": {
+        "surface_type": "source occurrence",
+        "surface_index": 0,
+        "surface_ref": "vocab:02071:source:0",
+        "target_surface": "refused to make",
+        "current_main_accepted_surface": "refused to make",
+        "current_main_accepted_via": "occurrences[0] (E0396)",
+        "materialization_status": "APPLY",
+        "production_rule_id": "td-cluster-before-to-vocab-02071-refused-to-refuse"
+      },
+      "current": {
+        "state": "UNCHANGED",
+        "surface_at_historical_position": "refused to make",
+        "exact_surface_match_count": 1,
+        "exact_surface_matches": [
+          {
+            "surface": "refused to make",
+            "index": 0,
+            "ref": "vocab:02071:source:0",
+            "item_id": "E0396"
+          }
+        ],
+        "normalized_token_match_count": 1,
+        "normalized_token_matches": [
+          {
+            "surface": "refused to make",
+            "index": 0,
+            "ref": "vocab:02071:source:0",
+            "item_id": "E0396"
+          }
+        ],
+        "current_surface": "refused to make",
+        "current_index": 0,
+        "current_ref": "vocab:02071:source:0",
+        "exact_surface_identity": true,
+        "normalized_token_identity": true,
+        "classification": "TARGET",
+        "matched_authority": "source",
+        "expected_classification": "TARGET",
+        "authority_snapshot": {
+          "canonical": "refuse to do something",
+          "answers": null,
+          "paraphrases": [
+            "decline to do something"
+          ],
+          "meaning_ja": "somethingすることを拒む",
+          "sense_key": "decline_to_do",
+          "grammarRole": "verb",
+          "occurrences": [
+            {
+              "item_id": "E0396",
+              "start": 17,
+              "end": 32,
+              "contextual_meaning_ja": "報道担当者は「調査中です」と言って一切のコメントを拒否した。"
+            }
+          ]
+        }
+      },
+      "collision": {
+        "surface": "refuse to make",
+        "accepted": true,
+        "classification": "TARGET",
+        "recognition_authority": "explicit-equivalence",
+        "applied_rule_id": "td-cluster-before-to-vocab-02071-refused-to-refuse",
+        "aligned_rule_id": "td-cluster-before-to-vocab-02071-refused-to-refuse"
+      },
+      "production_rule": {
+        "id": "td-cluster-before-to-vocab-02071-refused-to-refuse",
+        "expected": "refused to",
+        "recognized": "refuse to",
+        "kind": "connected-speech-td-cluster-before-to",
+        "credit": "exact-equivalent",
+        "scope": {
+          "type": "entry",
+          "entryIds": [
+            "vocab:02071"
+          ],
+          "mode": "vocabulary"
+        }
+      },
+      "historical_relationship": "SAME_EXACT_SURFACE_AT_HISTORICAL_REFERENCE"
+    },
+    {
+      "audit_candidate_id": "wfc-04264",
+      "entry_id": "vocab:02207",
+      "historical": {
+        "surface_type": "source occurrence",
+        "surface_index": 0,
+        "surface_ref": "vocab:02207:source:0",
+        "target_surface": "proved to be",
+        "current_main_accepted_surface": "proved to be",
+        "current_main_accepted_via": "occurrences[0] (E0404)",
+        "materialization_status": "ALREADY_COVERED",
+        "production_rule_id": null
+      },
+      "current": {
+        "state": "UNCHANGED",
+        "surface_at_historical_position": "proved to be",
+        "exact_surface_match_count": 1,
+        "exact_surface_matches": [
+          {
+            "surface": "proved to be",
+            "index": 0,
+            "ref": "vocab:02207:source:0",
+            "item_id": "E0404"
+          }
+        ],
+        "normalized_token_match_count": 1,
+        "normalized_token_matches": [
+          {
+            "surface": "proved to be",
+            "index": 0,
+            "ref": "vocab:02207:source:0",
+            "item_id": "E0404"
+          }
+        ],
+        "current_surface": "proved to be",
+        "current_index": 0,
+        "current_ref": "vocab:02207:source:0",
+        "exact_surface_identity": true,
+        "normalized_token_identity": true,
+        "classification": "TARGET",
+        "matched_authority": "source",
+        "expected_classification": "TARGET",
+        "authority_snapshot": {
+          "canonical": "prove to be",
+          "answers": null,
+          "paraphrases": [
+            "turn out to be",
+            "be found to be"
+          ],
+          "meaning_ja": "〜であることが分かる・〜だと判明する",
+          "sense_key": "turn_out_to_be",
+          "grammarRole": "verb",
+          "occurrences": [
+            {
+              "item_id": "E0404",
+              "start": 16,
+              "end": 28,
+              "contextual_meaning_ja": "その曖昧な噂は嘘だとわかった。だがそれでも、多少の疑いはまだ残る。"
+            }
+          ]
+        }
+      },
+      "collision": {
+        "surface": "prove to be",
+        "accepted": true,
+        "classification": "TARGET",
+        "recognition_authority": "exact",
+        "applied_rule_id": null,
+        "aligned_rule_id": null
+      },
+      "production_rule": null,
+      "historical_relationship": "SAME_EXACT_SURFACE_AT_HISTORICAL_REFERENCE"
+    },
+    {
+      "audit_candidate_id": "tdc-00001",
+      "entry_id": "vocab:00412",
+      "historical": {
+        "surface_type": "accepted paraphrase",
+        "surface_index": 1,
+        "surface_ref": "vocab:00412:paraphrase:1",
+        "target_surface": "be forced to do something",
+        "current_main_accepted_surface": "be forced to do something",
+        "current_main_accepted_via": "paraphrases[1]",
+        "materialization_status": "APPLY",
+        "production_rule_id": "td-cluster-before-to-vocab-00412-forced-to-force"
+      },
+      "current": {
+        "state": "UNCHANGED",
+        "surface_at_historical_position": "be forced to do something",
+        "exact_surface_match_count": 1,
+        "exact_surface_matches": [
+          {
+            "surface": "be forced to do something",
+            "index": 1,
+            "ref": "vocab:00412:paraphrase:1"
+          }
+        ],
+        "normalized_token_match_count": 1,
+        "normalized_token_matches": [
+          {
+            "surface": "be forced to do something",
+            "index": 1,
+            "ref": "vocab:00412:paraphrase:1"
+          }
+        ],
+        "current_surface": "be forced to do something",
+        "current_index": 1,
+        "current_ref": "vocab:00412:paraphrase:1",
+        "exact_surface_identity": true,
+        "normalized_token_identity": true,
+        "classification": "PARAPHRASE",
+        "matched_authority": "paraphrase",
+        "expected_classification": "PARAPHRASE",
+        "authority_snapshot": {
+          "canonical": "be obliged to do something",
+          "answers": null,
+          "paraphrases": [
+            "have no choice but to do something",
+            "be forced to do something"
+          ],
+          "meaning_ja": "義務・必要があってsomethingせざるを得ない",
+          "sense_key": "be_forced_or_required",
+          "grammarRole": "auxiliary",
+          "occurrences": [
+            {
+              "item_id": "E0328",
+              "start": 13,
+              "end": 34,
+              "contextual_meaning_ja": "辞任を余儀なくされた"
+            }
+          ]
+        }
+      },
+      "collision": {
+        "surface": "be force to do something",
+        "accepted": true,
+        "classification": "PARAPHRASE",
+        "recognition_authority": "explicit-equivalence",
+        "applied_rule_id": "td-cluster-before-to-vocab-00412-forced-to-force",
+        "aligned_rule_id": "td-cluster-before-to-vocab-00412-forced-to-force"
+      },
+      "production_rule": {
+        "id": "td-cluster-before-to-vocab-00412-forced-to-force",
+        "expected": "forced to",
+        "recognized": "force to",
+        "kind": "connected-speech-td-cluster-before-to",
+        "credit": "exact-equivalent",
+        "scope": {
+          "type": "entry",
+          "entryIds": [
+            "vocab:00412"
+          ],
+          "mode": "vocabulary"
+        }
+      },
+      "historical_relationship": "SAME_EXACT_SURFACE_AT_HISTORICAL_REFERENCE"
+    },
+    {
+      "audit_candidate_id": "tdc-00002",
+      "entry_id": "vocab:00528",
+      "historical": {
+        "surface_type": "accepted paraphrase",
+        "surface_index": 0,
+        "surface_ref": "vocab:00528:paraphrase:0",
+        "target_surface": "be forced to do something",
+        "current_main_accepted_surface": "be forced to do something",
+        "current_main_accepted_via": "paraphrases[0]",
+        "materialization_status": "APPLY",
+        "production_rule_id": "td-cluster-before-to-vocab-00528-forced-to-force"
+      },
+      "current": {
+        "state": "INDEX_RELOCATED",
+        "surface_at_historical_position": "be compelled to do something",
+        "exact_surface_match_count": 1,
+        "exact_surface_matches": [
+          {
+            "surface": "be forced to do something",
+            "index": 1,
+            "ref": "vocab:00528:paraphrase:1"
+          }
+        ],
+        "normalized_token_match_count": 1,
+        "normalized_token_matches": [
+          {
+            "surface": "be forced to do something",
+            "index": 1,
+            "ref": "vocab:00528:paraphrase:1"
+          }
+        ],
+        "current_surface": "be forced to do something",
+        "current_index": 1,
+        "current_ref": "vocab:00528:paraphrase:1",
+        "exact_surface_identity": true,
+        "normalized_token_identity": true,
+        "classification": "PARAPHRASE",
+        "matched_authority": "paraphrase",
+        "expected_classification": "PARAPHRASE",
+        "authority_snapshot": {
+          "canonical": "have no choice but to do something",
+          "answers": null,
+          "paraphrases": [
+            "be compelled to do something",
+            "be forced to do something"
+          ],
+          "meaning_ja": "他に選択肢がなくsomethingせざるを得ない",
+          "sense_key": "only_possible_action",
+          "grammarRole": "auxiliary",
+          "occurrences": [
+            {
+              "item_id": "E0425",
+              "start": 35,
+              "end": 65,
+              "contextual_meaning_ja": "降伏せざるを得ない"
+            }
+          ]
+        }
+      },
+      "collision": {
+        "surface": "be force to do something",
+        "accepted": true,
+        "classification": "PARAPHRASE",
+        "recognition_authority": "explicit-equivalence",
+        "applied_rule_id": "td-cluster-before-to-vocab-00528-forced-to-force",
+        "aligned_rule_id": "td-cluster-before-to-vocab-00528-forced-to-force"
+      },
+      "production_rule": {
+        "id": "td-cluster-before-to-vocab-00528-forced-to-force",
+        "expected": "forced to",
+        "recognized": "force to",
+        "kind": "connected-speech-td-cluster-before-to",
+        "credit": "exact-equivalent",
+        "scope": {
+          "type": "entry",
+          "entryIds": [
+            "vocab:00528"
+          ],
+          "mode": "vocabulary"
+        }
+      },
+      "historical_relationship": "SAME_EXACT_SURFACE_UNIQUE_AT_NEW_INDEX"
+    },
+    {
+      "audit_candidate_id": "tdc-00003",
+      "entry_id": "vocab:00541",
+      "historical": {
+        "surface_type": "accepted paraphrase",
+        "surface_index": 0,
+        "surface_ref": "vocab:00541:paraphrase:0",
+        "target_surface": "be supposed to do something",
+        "current_main_accepted_surface": "be supposed to do something",
+        "current_main_accepted_via": "paraphrases[0]",
+        "materialization_status": "APPLY",
+        "production_rule_id": "td-cluster-before-to-vocab-00541-supposed-to-suppose"
+      },
+      "current": {
+        "state": "UNCHANGED",
+        "surface_at_historical_position": "be supposed to do something",
+        "exact_surface_match_count": 1,
+        "exact_surface_matches": [
+          {
+            "surface": "be supposed to do something",
+            "index": 0,
+            "ref": "vocab:00541:paraphrase:0"
+          }
+        ],
+        "normalized_token_match_count": 1,
+        "normalized_token_matches": [
+          {
+            "surface": "be supposed to do something",
+            "index": 0,
+            "ref": "vocab:00541:paraphrase:0"
+          }
+        ],
+        "current_surface": "be supposed to do something",
+        "current_index": 0,
+        "current_ref": "vocab:00541:paraphrase:0",
+        "exact_surface_identity": true,
+        "normalized_token_identity": true,
+        "classification": "PARAPHRASE",
+        "matched_authority": "paraphrase",
+        "expected_classification": "PARAPHRASE",
+        "authority_snapshot": {
+          "canonical": "be to do something",
+          "answers": null,
+          "paraphrases": [
+            "be supposed to do something",
+            "be expected to do something"
+          ],
+          "meaning_ja": "somethingすることになっている",
+          "sense_key": "scheduled_or_expected_action",
+          "grammarRole": "auxiliary",
+          "occurrences": [
+            {
+              "item_id": "E0439",
+              "start": 17,
+              "end": 36,
+              "contextual_meaning_ja": "放送される予定だ"
+            }
+          ]
+        }
+      },
+      "collision": {
+        "surface": "be suppose to do something",
+        "accepted": true,
+        "classification": "PARAPHRASE",
+        "recognition_authority": "explicit-equivalence",
+        "applied_rule_id": "td-cluster-before-to-vocab-00541-supposed-to-suppose",
+        "aligned_rule_id": "td-cluster-before-to-vocab-00541-supposed-to-suppose"
+      },
+      "production_rule": {
+        "id": "td-cluster-before-to-vocab-00541-supposed-to-suppose",
+        "expected": "supposed to",
+        "recognized": "suppose to",
+        "kind": "connected-speech-td-cluster-before-to",
+        "credit": "exact-equivalent",
+        "scope": {
+          "type": "entry",
+          "entryIds": [
+            "vocab:00541"
+          ],
+          "mode": "vocabulary"
+        }
+      },
+      "historical_relationship": "SAME_EXACT_SURFACE_AT_HISTORICAL_REFERENCE"
+    },
+    {
+      "audit_candidate_id": "tdc-00005",
+      "entry_id": "vocab:00606",
+      "historical": {
+        "surface_type": "accepted paraphrase",
+        "surface_index": 1,
+        "surface_ref": "vocab:00606:paraphrase:1",
+        "target_surface": "get used to something",
+        "current_main_accepted_surface": "get used to something",
+        "current_main_accepted_via": "paraphrases[1]",
+        "materialization_status": "APPLY",
+        "production_rule_id": "td-cluster-before-to-vocab-00606-used-to-use"
+      },
+      "current": {
+        "state": "UNCHANGED",
+        "surface_at_historical_position": "get used to something",
+        "exact_surface_match_count": 1,
+        "exact_surface_matches": [
+          {
+            "surface": "get used to something",
+            "index": 1,
+            "ref": "vocab:00606:paraphrase:1"
+          }
+        ],
+        "normalized_token_match_count": 1,
+        "normalized_token_matches": [
+          {
+            "surface": "get used to something",
+            "index": 1,
+            "ref": "vocab:00606:paraphrase:1"
+          }
+        ],
+        "current_surface": "get used to something",
+        "current_index": 1,
+        "current_ref": "vocab:00606:paraphrase:1",
+        "exact_surface_identity": true,
+        "normalized_token_identity": true,
+        "classification": "PARAPHRASE",
+        "matched_authority": "paraphrase",
+        "expected_classification": "PARAPHRASE",
+        "authority_snapshot": {
+          "canonical": "adjust to something",
+          "answers": null,
+          "paraphrases": [
+            "adapt to something",
+            "get used to something"
+          ],
+          "meaning_ja": "somethingに順応する",
+          "sense_key": "become_used_to_new_conditions",
+          "grammarRole": "verb",
+          "occurrences": [
+            {
+              "item_id": "E0509",
+              "start": 26,
+              "end": 55,
+              "contextual_meaning_ja": "新しい環境に順応する"
+            }
+          ]
+        }
+      },
+      "collision": {
+        "surface": "get use to something",
+        "accepted": true,
+        "classification": "PARAPHRASE",
+        "recognition_authority": "explicit-equivalence",
+        "applied_rule_id": "td-cluster-before-to-vocab-00606-used-to-use",
+        "aligned_rule_id": "td-cluster-before-to-vocab-00606-used-to-use"
+      },
+      "production_rule": {
+        "id": "td-cluster-before-to-vocab-00606-used-to-use",
+        "expected": "used to",
+        "recognized": "use to",
+        "kind": "connected-speech-td-cluster-before-to",
+        "credit": "exact-equivalent",
+        "scope": {
+          "type": "entry",
+          "entryIds": [
+            "vocab:00606"
+          ],
+          "mode": "vocabulary"
+        }
+      },
+      "historical_relationship": "SAME_EXACT_SURFACE_AT_HISTORICAL_REFERENCE"
+    },
+    {
+      "audit_candidate_id": "tdc-00006",
+      "entry_id": "vocab:00628",
+      "historical": {
+        "surface_type": "accepted paraphrase",
+        "surface_index": 1,
+        "surface_ref": "vocab:00628:paraphrase:1",
+        "target_surface": "tend to cause something",
+        "current_main_accepted_surface": "tend to cause something",
+        "current_main_accepted_via": "paraphrases[1]",
+        "materialization_status": "APPLY",
+        "production_rule_id": "td-cluster-before-to-vocab-00628-tend-to-ten"
+      },
+      "current": {
+        "state": "UNCHANGED",
+        "surface_at_historical_position": "tend to cause something",
+        "exact_surface_match_count": 1,
+        "exact_surface_matches": [
+          {
+            "surface": "tend to cause something",
+            "index": 1,
+            "ref": "vocab:00628:paraphrase:1"
+          }
+        ],
+        "normalized_token_match_count": 1,
+        "normalized_token_matches": [
+          {
+            "surface": "tend to cause something",
+            "index": 1,
+            "ref": "vocab:00628:paraphrase:1"
+          }
+        ],
+        "current_surface": "tend to cause something",
+        "current_index": 1,
+        "current_ref": "vocab:00628:paraphrase:1",
+        "exact_surface_identity": true,
+        "normalized_token_identity": true,
+        "classification": "PARAPHRASE",
+        "matched_authority": "paraphrase",
+        "expected_classification": "PARAPHRASE",
+        "authority_snapshot": {
+          "canonical": "be open to something",
+          "answers": null,
+          "paraphrases": [
+            "be likely to cause something",
+            "tend to cause something"
+          ],
+          "meaning_ja": "somethingを招きやすい",
+          "sense_key": "likely_to_allow_or_result_in",
+          "grammarRole": "adjective",
+          "occurrences": [
+            {
+              "item_id": "E0525",
+              "start": 14,
+              "end": 41,
+              "contextual_meaning_ja": "誤解を招きやすい"
+            }
+          ]
+        }
+      },
+      "collision": {
+        "surface": "ten to cause something",
+        "accepted": true,
+        "classification": "PARAPHRASE",
+        "recognition_authority": "explicit-equivalence",
+        "applied_rule_id": "td-cluster-before-to-vocab-00628-tend-to-ten",
+        "aligned_rule_id": "td-cluster-before-to-vocab-00628-tend-to-ten"
+      },
+      "production_rule": {
+        "id": "td-cluster-before-to-vocab-00628-tend-to-ten",
+        "expected": "tend to",
+        "recognized": "ten to",
+        "kind": "connected-speech-td-cluster-before-to",
+        "credit": "exact-equivalent",
+        "scope": {
+          "type": "entry",
+          "entryIds": [
+            "vocab:00628"
+          ],
+          "mode": "vocabulary"
+        }
+      },
+      "historical_relationship": "SAME_EXACT_SURFACE_AT_HISTORICAL_REFERENCE"
+    },
+    {
+      "audit_candidate_id": "tdc-00007",
+      "entry_id": "vocab:00634",
+      "historical": {
+        "surface_type": "accepted paraphrase",
+        "surface_index": 0,
+        "surface_ref": "vocab:00634:paraphrase:0",
+        "target_surface": "tend to do something",
+        "current_main_accepted_surface": "tend to do something",
+        "current_main_accepted_via": "paraphrases[0]",
+        "materialization_status": "APPLY",
+        "production_rule_id": "td-cluster-before-to-vocab-00634-tend-to-ten"
+      },
+      "current": {
+        "state": "INDEX_RELOCATED",
+        "surface_at_historical_position": "have a tendency to do something",
+        "exact_surface_match_count": 1,
+        "exact_surface_matches": [
+          {
+            "surface": "tend to do something",
+            "index": 1,
+            "ref": "vocab:00634:paraphrase:1"
+          }
+        ],
+        "normalized_token_match_count": 1,
+        "normalized_token_matches": [
+          {
+            "surface": "tend to do something",
+            "index": 1,
+            "ref": "vocab:00634:paraphrase:1"
+          }
+        ],
+        "current_surface": "tend to do something",
+        "current_index": 1,
+        "current_ref": "vocab:00634:paraphrase:1",
+        "exact_surface_identity": true,
+        "normalized_token_identity": true,
+        "classification": "PARAPHRASE",
+        "matched_authority": "paraphrase",
+        "expected_classification": "PARAPHRASE",
+        "authority_snapshot": {
+          "canonical": "be inclined to do something",
+          "answers": null,
+          "paraphrases": [
+            "have a tendency to do something",
+            "tend to do something"
+          ],
+          "meaning_ja": "somethingする傾向がある",
+          "sense_key": "tend_or_be_likely_to",
+          "grammarRole": "adjective",
+          "occurrences": [
+            {
+              "item_id": "E0527",
+              "start": 28,
+              "end": 53,
+              "contextual_meaning_ja": "大げさに言う傾向がある"
+            }
+          ]
+        }
+      },
+      "collision": {
+        "surface": "ten to do something",
+        "accepted": true,
+        "classification": "PARAPHRASE",
+        "recognition_authority": "explicit-equivalence",
+        "applied_rule_id": "td-cluster-before-to-vocab-00634-tend-to-ten",
+        "aligned_rule_id": "td-cluster-before-to-vocab-00634-tend-to-ten"
+      },
+      "production_rule": {
+        "id": "td-cluster-before-to-vocab-00634-tend-to-ten",
+        "expected": "tend to",
+        "recognized": "ten to",
+        "kind": "connected-speech-td-cluster-before-to",
+        "credit": "exact-equivalent",
+        "scope": {
+          "type": "entry",
+          "entryIds": [
+            "vocab:00634"
+          ],
+          "mode": "vocabulary"
+        }
+      },
+      "historical_relationship": "SAME_EXACT_SURFACE_UNIQUE_AT_NEW_INDEX"
+    },
+    {
+      "audit_candidate_id": "tdc-00008",
+      "entry_id": "vocab:01166",
+      "historical": {
+        "surface_type": "accepted paraphrase",
+        "surface_index": 0,
+        "surface_ref": "vocab:01166:paraphrase:0",
+        "target_surface": "tend to do something",
+        "current_main_accepted_surface": "tend to do something",
+        "current_main_accepted_via": "paraphrases[0]",
+        "materialization_status": "APPLY",
+        "production_rule_id": "td-cluster-before-to-vocab-01166-tend-to-ten"
+      },
+      "current": {
+        "state": "UNCHANGED",
+        "surface_at_historical_position": "tend to do something",
+        "exact_surface_match_count": 1,
+        "exact_surface_matches": [
+          {
+            "surface": "tend to do something",
+            "index": 0,
+            "ref": "vocab:01166:paraphrase:0"
+          }
+        ],
+        "normalized_token_match_count": 1,
+        "normalized_token_matches": [
+          {
+            "surface": "tend to do something",
+            "index": 0,
+            "ref": "vocab:01166:paraphrase:0"
+          }
+        ],
+        "current_surface": "tend to do something",
+        "current_index": 0,
+        "current_ref": "vocab:01166:paraphrase:0",
+        "exact_surface_identity": true,
+        "normalized_token_identity": true,
+        "classification": "PARAPHRASE",
+        "matched_authority": "paraphrase",
+        "expected_classification": "PARAPHRASE",
+        "authority_snapshot": {
+          "canonical": "be apt to do something",
+          "answers": null,
+          "paraphrases": [
+            "tend to do something",
+            "be prone to doing something"
+          ],
+          "meaning_ja": "somethingしがちである",
+          "sense_key": "likely_to_do",
+          "grammarRole": "adjective",
+          "occurrences": [
+            {
+              "item_id": "E0023",
+              "start": 1,
+              "end": 15,
+              "contextual_meaning_ja": "「安売りをしているといつも衝動買いしてしまうたちです。」 「私も。」"
+            }
+          ]
+        }
+      },
+      "collision": {
+        "surface": "ten to do something",
+        "accepted": true,
+        "classification": "PARAPHRASE",
+        "recognition_authority": "explicit-equivalence",
+        "applied_rule_id": "td-cluster-before-to-vocab-01166-tend-to-ten",
+        "aligned_rule_id": "td-cluster-before-to-vocab-01166-tend-to-ten"
+      },
+      "production_rule": {
+        "id": "td-cluster-before-to-vocab-01166-tend-to-ten",
+        "expected": "tend to",
+        "recognized": "ten to",
+        "kind": "connected-speech-td-cluster-before-to",
+        "credit": "exact-equivalent",
+        "scope": {
+          "type": "entry",
+          "entryIds": [
+            "vocab:01166"
+          ],
+          "mode": "vocabulary"
+        }
+      },
+      "historical_relationship": "SAME_EXACT_SURFACE_AT_HISTORICAL_REFERENCE"
+    },
+    {
+      "audit_candidate_id": "tdc-00009",
+      "entry_id": "vocab:01495",
+      "historical": {
+        "surface_type": "accepted paraphrase",
+        "surface_index": 1,
+        "surface_ref": "vocab:01495:paraphrase:1",
+        "target_surface": "be meant to do something",
+        "current_main_accepted_surface": "be meant to do something",
+        "current_main_accepted_via": "paraphrases[1]",
+        "materialization_status": "APPLY",
+        "production_rule_id": "td-cluster-before-to-vocab-01495-meant-to-men"
+      },
+      "current": {
+        "state": "UNCHANGED",
+        "surface_at_historical_position": "be meant to do something",
+        "exact_surface_match_count": 1,
+        "exact_surface_matches": [
+          {
+            "surface": "be meant to do something",
+            "index": 1,
+            "ref": "vocab:01495:paraphrase:1"
+          }
+        ],
+        "normalized_token_match_count": 1,
+        "normalized_token_matches": [
+          {
+            "surface": "be meant to do something",
+            "index": 1,
+            "ref": "vocab:01495:paraphrase:1"
+          }
+        ],
+        "current_surface": "be meant to do something",
+        "current_index": 1,
+        "current_ref": "vocab:01495:paraphrase:1",
+        "exact_surface_identity": true,
+        "normalized_token_identity": true,
+        "classification": "PARAPHRASE",
+        "matched_authority": "paraphrase",
+        "expected_classification": "PARAPHRASE",
+        "authority_snapshot": {
+          "canonical": "be supposed to do something",
+          "answers": null,
+          "paraphrases": [
+            "be expected to do something",
+            "be meant to do something"
+          ],
+          "meaning_ja": "somethingすることになっている",
+          "sense_key": "expected_to_do",
+          "grammarRole": "auxiliary",
+          "occurrences": [
+            {
+              "item_id": "E0155",
+              "start": 34,
+              "end": 53,
+              "contextual_meaning_ja": "「遠回しな言い方はやめてくれ！僕にどうしろって言うんだ？」 「慌てずに待つしかありません。時が経てばわかります。」"
+            }
+          ]
+        }
+      },
+      "collision": {
+        "surface": "be men to do something",
+        "accepted": true,
+        "classification": "PARAPHRASE",
+        "recognition_authority": "explicit-equivalence",
+        "applied_rule_id": "td-cluster-before-to-vocab-01495-meant-to-men",
+        "aligned_rule_id": "td-cluster-before-to-vocab-01495-meant-to-men"
+      },
+      "production_rule": {
+        "id": "td-cluster-before-to-vocab-01495-meant-to-men",
+        "expected": "meant to",
+        "recognized": "men to",
+        "kind": "connected-speech-td-cluster-before-to",
+        "credit": "exact-equivalent",
+        "scope": {
+          "type": "entry",
+          "entryIds": [
+            "vocab:01495"
+          ],
+          "mode": "vocabulary"
+        }
+      },
+      "historical_relationship": "SAME_EXACT_SURFACE_AT_HISTORICAL_REFERENCE"
+    },
+    {
+      "audit_candidate_id": "tdc-00010",
+      "entry_id": "vocab:01810",
+      "historical": {
+        "surface_type": "accepted paraphrase",
+        "surface_index": 0,
+        "surface_ref": "vocab:01810:paraphrase:0",
+        "target_surface": "be prepared to do something",
+        "current_main_accepted_surface": "be prepared to do something",
+        "current_main_accepted_via": "paraphrases[0]",
+        "materialization_status": "APPLY",
+        "production_rule_id": "td-cluster-before-to-vocab-01810-prepared-to-prepare"
+      },
+      "current": {
+        "state": "UNCHANGED",
+        "surface_at_historical_position": "be prepared to do something",
+        "exact_surface_match_count": 1,
+        "exact_surface_matches": [
+          {
+            "surface": "be prepared to do something",
+            "index": 0,
+            "ref": "vocab:01810:paraphrase:0"
+          }
+        ],
+        "normalized_token_match_count": 1,
+        "normalized_token_matches": [
+          {
+            "surface": "be prepared to do something",
+            "index": 0,
+            "ref": "vocab:01810:paraphrase:0"
+          }
+        ],
+        "current_surface": "be prepared to do something",
+        "current_index": 0,
+        "current_ref": "vocab:01810:paraphrase:0",
+        "exact_surface_identity": true,
+        "normalized_token_identity": true,
+        "classification": "PARAPHRASE",
+        "matched_authority": "paraphrase",
+        "expected_classification": "PARAPHRASE",
+        "authority_snapshot": {
+          "canonical": "be willing to do something",
+          "answers": null,
+          "paraphrases": [
+            "be prepared to do something"
+          ],
+          "meaning_ja": "進んでsomethingする気がある",
+          "sense_key": "ready_and_willing_to_do",
+          "grammarRole": "adjective",
+          "occurrences": [
+            {
+              "item_id": "E0282",
+              "start": 17,
+              "end": 39,
+              "contextual_meaning_ja": "どうやらニックは、自分の負担が増えるからその仕事を引き受けたがらなかったようだ。"
+            }
+          ]
+        }
+      },
+      "collision": {
+        "surface": "be prepare to do something",
+        "accepted": true,
+        "classification": "PARAPHRASE",
+        "recognition_authority": "explicit-equivalence",
+        "applied_rule_id": "td-cluster-before-to-vocab-01810-prepared-to-prepare",
+        "aligned_rule_id": "td-cluster-before-to-vocab-01810-prepared-to-prepare"
+      },
+      "production_rule": {
+        "id": "td-cluster-before-to-vocab-01810-prepared-to-prepare",
+        "expected": "prepared to",
+        "recognized": "prepare to",
+        "kind": "connected-speech-td-cluster-before-to",
+        "credit": "exact-equivalent",
+        "scope": {
+          "type": "entry",
+          "entryIds": [
+            "vocab:01810"
+          ],
+          "mode": "vocabulary"
+        }
+      },
+      "historical_relationship": "SAME_EXACT_SURFACE_AT_HISTORICAL_REFERENCE"
+    },
+    {
+      "audit_candidate_id": "tdc-00012",
+      "entry_id": "vocab:01930",
+      "historical": {
+        "surface_type": "accepted paraphrase",
+        "surface_index": 0,
+        "surface_ref": "vocab:01930:paraphrase:0",
+        "target_surface": "have made up one's mind to do something",
+        "current_main_accepted_surface": "have made up one's mind to do something",
+        "current_main_accepted_via": "paraphrases[0]",
+        "materialization_status": "APPLY",
+        "production_rule_id": "td-cluster-before-to-vocab-01930-mind-to-mine"
+      },
+      "current": {
+        "state": "UNCHANGED",
+        "surface_at_historical_position": "have made up one's mind to do something",
+        "exact_surface_match_count": 1,
+        "exact_surface_matches": [
+          {
+            "surface": "have made up one's mind to do something",
+            "index": 0,
+            "ref": "vocab:01930:paraphrase:0"
+          }
+        ],
+        "normalized_token_match_count": 1,
+        "normalized_token_matches": [
+          {
+            "surface": "have made up one's mind to do something",
+            "index": 0,
+            "ref": "vocab:01930:paraphrase:0"
+          }
+        ],
+        "current_surface": "have made up one's mind to do something",
+        "current_index": 0,
+        "current_ref": "vocab:01930:paraphrase:0",
+        "exact_surface_identity": true,
+        "normalized_token_identity": true,
+        "classification": "PARAPHRASE",
+        "matched_authority": "paraphrase",
+        "expected_classification": "PARAPHRASE",
+        "authority_snapshot": {
+          "canonical": "be determined to do something",
+          "answers": null,
+          "paraphrases": [
+            "have made up one's mind to do something"
+          ],
+          "meaning_ja": "somethingすると決心している",
+          "sense_key": "resolved_to_do",
+          "grammarRole": "verb",
+          "occurrences": [
+            {
+              "item_id": "E0337",
+              "start": 2,
+              "end": 23,
+              "contextual_meaning_ja": "私はどんな犠牲を払ってでも、脚本家で食べていくと心に決めている。"
+            }
+          ]
+        }
+      },
+      "collision": {
+        "surface": "have made up one's mine to do something",
+        "accepted": true,
+        "classification": "PARAPHRASE",
+        "recognition_authority": "explicit-equivalence",
+        "applied_rule_id": "td-cluster-before-to-vocab-01930-mind-to-mine",
+        "aligned_rule_id": "td-cluster-before-to-vocab-01930-mind-to-mine"
+      },
+      "production_rule": {
+        "id": "td-cluster-before-to-vocab-01930-mind-to-mine",
+        "expected": "mind to",
+        "recognized": "mine to",
+        "kind": "connected-speech-td-cluster-before-to",
+        "credit": "exact-equivalent",
+        "scope": {
+          "type": "entry",
+          "entryIds": [
+            "vocab:01930"
+          ],
+          "mode": "vocabulary"
+        }
+      },
+      "historical_relationship": "SAME_EXACT_SURFACE_AT_HISTORICAL_REFERENCE"
+    },
+    {
+      "audit_candidate_id": "tdc-00013",
+      "entry_id": "vocab:02366",
+      "historical": {
+        "surface_type": "accepted paraphrase",
+        "surface_index": 0,
+        "surface_ref": "vocab:02366:paraphrase:0",
+        "target_surface": "be prepared to do something",
+        "current_main_accepted_surface": "be prepared to do something",
+        "current_main_accepted_via": "paraphrases[0]",
+        "materialization_status": "APPLY",
+        "production_rule_id": "td-cluster-before-to-vocab-02366-prepared-to-prepare"
+      },
+      "current": {
+        "state": "UNCHANGED",
+        "surface_at_historical_position": "be prepared to do something",
+        "exact_surface_match_count": 1,
+        "exact_surface_matches": [
+          {
+            "surface": "be prepared to do something",
+            "index": 0,
+            "ref": "vocab:02366:paraphrase:0"
+          }
+        ],
+        "normalized_token_match_count": 1,
+        "normalized_token_matches": [
+          {
+            "surface": "be prepared to do something",
+            "index": 0,
+            "ref": "vocab:02366:paraphrase:0"
+          }
+        ],
+        "current_surface": "be prepared to do something",
+        "current_index": 0,
+        "current_ref": "vocab:02366:paraphrase:0",
+        "exact_surface_identity": true,
+        "normalized_token_identity": true,
+        "classification": "PARAPHRASE",
+        "matched_authority": "paraphrase",
+        "expected_classification": "PARAPHRASE",
+        "authority_snapshot": {
+          "canonical": "be ready to do something",
+          "answers": null,
+          "paraphrases": [
+            "be prepared to do something"
+          ],
+          "meaning_ja": "somethingする用意がある",
+          "sense_key": "prepared_to_do",
+          "grammarRole": "adjective",
+          "occurrences": [
+            {
+              "item_id": "E0453",
+              "start": 67,
+              "end": 84,
+              "contextual_meaning_ja": "我々の最優先事項はこの論争にきっぱりと決着を付けることだ。そのためには相手側との妥協も覚悟している。"
+            }
+          ]
+        }
+      },
+      "collision": {
+        "surface": "be prepare to do something",
+        "accepted": true,
+        "classification": "PARAPHRASE",
+        "recognition_authority": "explicit-equivalence",
+        "applied_rule_id": "td-cluster-before-to-vocab-02366-prepared-to-prepare",
+        "aligned_rule_id": "td-cluster-before-to-vocab-02366-prepared-to-prepare"
+      },
+      "production_rule": {
+        "id": "td-cluster-before-to-vocab-02366-prepared-to-prepare",
+        "expected": "prepared to",
+        "recognized": "prepare to",
+        "kind": "connected-speech-td-cluster-before-to",
+        "credit": "exact-equivalent",
+        "scope": {
+          "type": "entry",
+          "entryIds": [
+            "vocab:02366"
+          ],
+          "mode": "vocabulary"
+        }
+      },
+      "historical_relationship": "SAME_EXACT_SURFACE_AT_HISTORICAL_REFERENCE"
+    }
+  ]
+}
