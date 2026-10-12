@@ -1,11 +1,12 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
+import { spawnSync } from 'node:child_process';
 import { canonicalTokens } from '../scripts/utils/text.js';
 import { safeSpeechTokens } from '../scripts/speech/safeSpeechNormalization.js';
 import { findSpeechSurfaceMatch } from '../scripts/speech/speechAlignment.js';
 import { speechEquivalenceRules } from '../scripts/speech/speechEquivalenceRules.js';
-import { validateAudit } from '../scripts/speech/validate-asr-09a-grammatical-equivalence-audit.mjs';
+import { validateAudit, validateClosureEvidence } from '../scripts/speech/validate-asr-09a-grammatical-equivalence-audit.mjs';
 
 const auditDir = new URL('../data/audits/asr-09a-grammatical-equivalence/', import.meta.url);
 async function readJson(name) { return JSON.parse(await readFile(new URL(name, auditDir), 'utf8')); }
@@ -47,8 +48,9 @@ test('grammar controls keep safe pairs apart from polarity, auxiliary, scope, an
   assert.equal(fixtures.modeExpectations.read.includes('listed complete grammatical-variant spans'), true);
   assert.equal(fixtures.modeExpectations.cloze.includes('preservesExpectedNegation'), true);
   const manifest = await readJson('manifest.json');
-  assert.equal(manifest.repositoryClosure.status, 'BLOCKED_REQUIRED_VALIDATION');
-  assert.equal(manifest.repositoryClosure.blocker.auditCandidateId, 'tdc-00002');
+  assert.equal(manifest.repositoryClosure.status, 'CLOSED');
+  assert.equal(manifest.repositoryClosure.blocker, null);
+  assert.equal(manifest.repositoryClosure.resolution.tdUnresolvedDrift, 0);
   assert.equal(manifest.repositoryClosure.implementationAuthority, 'ASR-09B_READY');
   assert.ok(manifest.candidateAccounting.byModeTreatment.vocabulary.SAFE_EQUIVALENCE > 0);
   assert.ok(manifest.candidateAccounting.byModeTreatment.correction.SAFE_EQUIVALENCE > 0);
@@ -73,4 +75,43 @@ test('ASR-09A records expansion as future audit authority without changing the p
   assert.ok(speechEquivalenceRules.some(rule => rule.id === 'birthrate-birth-rate'));
   assert.equal(fixtures.modeExpectations.read.includes('Never synthesize content words'), true);
   assert.equal(fixtures.modeExpectations.cloze.includes('complete hidden target is reproduced in place'), true);
+});
+
+test('ASR-09A repository closure evidence is pinned to the 36-record T/D repair and merged PRs', async () => {
+  const manifest = await readJson('manifest.json');
+  const td = JSON.parse(await readFile(new URL('../data/audits/vocabulary-td-cluster-before-to-production/current-main-reconciliation.json', import.meta.url), 'utf8'));
+  validateClosureEvidence(manifest.repositoryClosure, td);
+  assert.equal(manifest.source.baselineMainSha, 'e1b56da18e0df1d583473a6f208a75333bd22969');
+  assert.equal(manifest.source.appVersion, 'v5.101');
+  assert.equal(manifest.candidateAccounting.total, 529);
+  const fixtures = await readJson('regression-fixtures.json');
+  assert.equal(fixtures.positiveControls.length, 43);
+  assert.equal(fixtures.negativeControls.length, 38);
+  const bad = structuredClone(manifest.repositoryClosure);
+  bad.status = 'BLOCKED_REQUIRED_VALIDATION';
+  bad.blocker = { auditCandidateId: 'tdc-00002' };
+  assert.throws(() => validateClosureEvidence(bad, td));
+  for (const mutation of [
+    value => { value.resolution.tdValidatorRepairMergeSha = '0'.repeat(40); },
+    value => { value.resolution.tdUnresolvedDrift = 1; },
+    value => { value.resolution.tdReconciliationBlobSha = '0'.repeat(40); },
+    value => { value.resolution.asr09aAuditMergeSha = '0'.repeat(40); },
+  ]) {
+    const value = structuredClone(manifest.repositoryClosure);
+    mutation(value);
+    assert.throws(() => validateClosureEvidence(value, td));
+  }
+  const corruptedTd = structuredClone(td);
+  corruptedTd.records.find(row => row.audit_candidate_id === 'tdc-00002').current.current_index = 0;
+  assert.throws(() => validateClosureEvidence(manifest.repositoryClosure, corruptedTd));
+  const missingCollision = structuredClone(td);
+  missingCollision.records.find(row => row.audit_candidate_id === 'tdc-00007').collision.accepted = false;
+  assert.throws(() => validateClosureEvidence(manifest.repositoryClosure, missingCollision));
+});
+
+test('ASR-09A deterministic generator detects stored artifact drift', () => {
+  const script = new URL('../scripts/speech/build-asr-09a-grammatical-equivalence-audit.mjs', import.meta.url);
+  const check = spawnSync(process.execPath, [script.pathname, '--check'], { encoding: 'utf8' });
+  assert.equal(check.status, 0, check.stderr || check.stdout);
+  assert.match(check.stdout, /PASS \(7 files; 529 corpus candidates\)/);
 });

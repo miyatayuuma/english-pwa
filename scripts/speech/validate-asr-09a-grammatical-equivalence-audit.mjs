@@ -12,6 +12,65 @@ const EXPECTED = {
   vocabularyBlob: '91324d35b2db1911ece2cf3ff746409d321fe963',
   itemsBlob: 'ae2aca768b784199b77ac1cf8c0c5a80fd5725bb',
 };
+const TD_RECONCILIATION_PATH = 'data/audits/vocabulary-td-cluster-before-to-production/current-main-reconciliation.json';
+const TD_RECONCILIATION_BLOB = '8f55f0ac88aa02e6bfc7af535625fe7a350f97f2';
+const EXPECTED_RESOLUTION = Object.freeze({
+  "tdValidatorRepairPr": 327,
+  "tdValidatorRepairMergeSha": "9aed421af7427c115f722ffad5809ff3466fa39b",
+  "asr09aAuditPr": 326,
+  "asr09aAuditMergeSha": "1a8c6b9e4267f390498dab9bc4b0ba9374d6d16c",
+  "tdReconciliationPath": "data/audits/vocabulary-td-cluster-before-to-production/current-main-reconciliation.json",
+  "tdReconciliationBlobSha": "8f55f0ac88aa02e6bfc7af535625fe7a350f97f2",
+  "tdTotalRecords": 36,
+  "tdUnchanged": 34,
+  "tdIndexRelocated": 2,
+  "tdUnresolvedDrift": 0
+} );
+
+export function validateClosureEvidence(closure, reconciliation) {
+  assert.equal(closure.status, 'CLOSED');
+  assert.equal(closure.auditAuthorityStatus, 'CLOSED');
+  assert.equal(closure.implementationAuthority, 'ASR-09B_READY');
+  assert.equal(closure.blocker, null, 'resolved blocker must not remain active');
+  assert.deepEqual(closure.resolution, EXPECTED_RESOLUTION, 'closure merge identities and T/D resolution drift');
+  assert.equal(reconciliation.reconciled_main_sha, EXPECTED.baselineMainSha);
+  assert.deepEqual(reconciliation.source_blobs, {
+    'data/vocabulary-v3.json': EXPECTED.vocabularyBlob,
+    'data/items.json': EXPECTED.itemsBlob,
+  });
+  assert.equal(reconciliation.historical_materialization_blob_sha, 'd3dedaafd2b42807bbf41a3036bbf6992fa3d603');
+  assert.equal(reconciliation.counts.total, 36);
+  assert.equal(reconciliation.records.length, 36);
+  assert.equal(reconciliation.counts.statuses.UNCHANGED, 34);
+  assert.equal(reconciliation.counts.statuses.INDEX_RELOCATED, 2);
+  assert.equal(reconciliation.counts.collision_accepted, 36);
+  for (const drift of ['SURFACE_REMOVED', 'SURFACE_MODIFIED', 'AMBIGUOUS_DUPLICATE', 'AUTHORITY_DRIFT']) {
+    assert.equal(reconciliation.counts.statuses[drift], 0, `Unresolved T/D status: ${drift}`);
+  }
+  const moved = new Map([
+    ['tdc-00002', { entry: 'vocab:00528', surface: 'be forced to do something' }],
+    ['tdc-00007', { entry: 'vocab:00634', surface: 'tend to do something' }],
+  ]);
+  assert.equal(new Set(reconciliation.records.map(row => row.audit_candidate_id)).size, 36, 'duplicate T/D IDs');
+  for (const record of reconciliation.records) {
+    const expected = moved.get(record.audit_candidate_id);
+    assert.equal(record.current.state, expected ? 'INDEX_RELOCATED' : 'UNCHANGED', record.audit_candidate_id);
+    if (expected) {
+      assert.equal(record.entry_id, expected.entry);
+      assert.equal(record.current.current_surface, expected.surface);
+      assert.equal(record.historical.surface_index, 0);
+      assert.equal(record.current.current_index, 1);
+      assert.equal(record.current.classification, 'PARAPHRASE');
+      assert.equal(record.historical_relationship, 'SAME_EXACT_SURFACE_UNIQUE_AT_NEW_INDEX');
+    }
+    assert.equal(record.current.exact_surface_match_count, 1);
+    assert.equal(record.current.current_surface, record.historical.target_surface);
+    assert.equal(record.current.classification, record.current.expected_classification);
+    assert.equal(record.collision.accepted, true);
+    assert.equal(record.collision.classification, record.current.classification);
+    assert.equal(record.collision.applied_rule_id, record.collision.aligned_rule_id);
+  }
+}
 const TAXONOMIES = new Set(['ORTHOGRAPHIC_ASR_EQUIVALENCE', 'GRAMMATICAL_VARIANT', 'CONTEXT_CONDITIONAL', 'AMBIGUOUS', 'NOT_EQUIVALENT']);
 const DISPOSITIONS = new Set(['SAFE_EQUIVALENCE', 'CONTEXT_CONDITIONAL', 'REJECT', 'UNRESOLVED']);
 
@@ -45,13 +104,16 @@ export function validateAudit() {
   assert.equal(manifest.audit, 'ASR-09A Grammatical Speech Equivalence Audit');
   assert.equal(manifest.status, 'CLOSED');
   assert.equal(manifest.implementationReady, true);
-  assert.equal(manifest.repositoryClosure.status, 'BLOCKED_REQUIRED_VALIDATION');
-  assert.equal(manifest.repositoryClosure.auditAuthorityStatus, 'CLOSED');
-  assert.equal(manifest.repositoryClosure.implementationAuthority, 'ASR-09B_READY');
-  assert.equal(manifest.repositoryClosure.blocker.command, 'npm run speech:validate-td-cluster-before-to');
-  assert.equal(manifest.repositoryClosure.blocker.result, 'FAIL_BASELINE_SOURCE_REF_DRIFT');
-  assert.equal(manifest.repositoryClosure.blocker.auditCandidateId, 'tdc-00002');
-  assert.equal(manifest.repositoryClosure.blocker.auditedProductionMainSha, EXPECTED.baselineMainSha);
+  assert.equal(sha1GitBlob(TD_RECONCILIATION_PATH), TD_RECONCILIATION_BLOB, 'T/D evidence blob changed');
+  validateClosureEvidence(manifest.repositoryClosure, JSON.parse(fs.readFileSync(path.join(ROOT, TD_RECONCILIATION_PATH), 'utf8')));
+  for (const report of ['summary.md', 'architecture-report.md']) {
+    const content = fs.readFileSync(path.join(AUDIT_DIR, report), 'utf8');
+    assert.match(content, /Repository closure is \*\*CLOSED\*\*/);
+    assert.ok(content.includes(EXPECTED_RESOLUTION.tdValidatorRepairMergeSha));
+    assert.ok(content.includes(EXPECTED_RESOLUTION.asr09aAuditMergeSha));
+    assert.ok(content.includes(EXPECTED_RESOLUTION.tdReconciliationBlobSha));
+    assert.doesNotMatch(content, /repository merge closure is blocked|BLOCKED_REQUIRED_VALIDATION|FAIL_BASELINE_SOURCE_REF_DRIFT/i);
+  }
   assert.equal(manifest.source.baselineMainSha, EXPECTED.baselineMainSha);
   assert.equal(manifest.source.appVersion, EXPECTED.appVersion);
   assert.equal(manifest.source.vocabularyBlob, EXPECTED.vocabularyBlob);

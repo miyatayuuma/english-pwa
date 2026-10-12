@@ -10,6 +10,10 @@ const EXPECTED_BLOBS = {
   'data/vocabulary-v3.json': '91324d35b2db1911ece2cf3ff746409d321fe963',
   'data/items.json': 'ae2aca768b784199b77ac1cf8c0c5a80fd5725bb',
 };
+const TD_RECONCILIATION_PATH = 'data/audits/vocabulary-td-cluster-before-to-production/current-main-reconciliation.json';
+const TD_RECONCILIATION_BLOB = '8f55f0ac88aa02e6bfc7af535625fe7a350f97f2';
+const REPOSITORY_CLOSURE_TEXT = "Repository closure is **CLOSED**. ASR-09A audit authority remains CLOSED and is ready for ASR-09B implementation; this is not an ASR-09B production change.\n- T/D validator repair: PR #327, merge `9aed421af7427c115f722ffad5809ff3466fa39b`.\n- T/D evidence: `data/audits/vocabulary-td-cluster-before-to-production/current-main-reconciliation.json` (Git blob `8f55f0ac88aa02e6bfc7af535625fe7a350f97f2`). Reconciliation accepted **36/36** records: **34 UNCHANGED**, **2 INDEX_RELOCATED**, **0 unresolved drift**. `tdc-00002` (`vocab:00528`, `be forced to do something`) and `tdc-00007` (`vocab:00634`, `tend to do something`) moved from paraphrase index 0 to 1 while retaining unique exact surfaces, PARAPHRASE classification, and entry-scoped rescue.\n- ASR-09A audit closure: PR #326, merge `1a8c6b9e4267f390498dab9bc4b0ba9374d6d16c` (required PR checks succeeded before merge).\n- Historical audit baseline `e1b56da18e0df1d583473a6f208a75333bd22969` and its production blobs are unchanged. Former `tdc-00002` validation failure is resolved, not an active blocker.";
+const MERGE_EVIDENCE = Object.freeze({ tdRepairPr: 327, tdRepairMergeSha: '9aed421af7427c115f722ffad5809ff3466fa39b', auditPr: 326, auditMergeSha: '1a8c6b9e4267f390498dab9bc4b0ba9374d6d16c' });
 const MODES = Object.freeze(['vocabulary', 'read', 'cloze', 'correction']);
 
 const DECISIONS = [
@@ -791,27 +795,68 @@ const regressionFixtures = {
   },
 };
 
+function reconciledClosureEvidence() {
+  if (blobSha(TD_RECONCILIATION_PATH) !== TD_RECONCILIATION_BLOB) throw new Error('T/D reconciliation artifact blob drift');
+  const reconciliation = json(TD_RECONCILIATION_PATH);
+  const counts = reconciliation.counts;
+  if (reconciliation.reconciled_main_sha !== BASELINE_SHA
+    || reconciliation.source_blobs['data/vocabulary-v3.json'] !== EXPECTED_BLOBS['data/vocabulary-v3.json']
+    || reconciliation.source_blobs['data/items.json'] !== EXPECTED_BLOBS['data/items.json']
+    || reconciliation.historical_materialization_blob_sha !== 'd3dedaafd2b42807bbf41a3036bbf6992fa3d603'
+    || counts.total !== 36 || reconciliation.records.length !== 36
+    || counts.statuses.UNCHANGED !== 34 || counts.statuses.INDEX_RELOCATED !== 2
+    || counts.collision_accepted !== 36
+    || ['SURFACE_REMOVED', 'SURFACE_MODIFIED', 'AMBIGUOUS_DUPLICATE', 'AUTHORITY_DRIFT'].some(status => counts.statuses[status] !== 0)) {
+    throw new Error('T/D reconciliation authority is not the closed 36-record snapshot');
+  }
+  const moved = new Map([
+    ['tdc-00002', { entry: 'vocab:00528', surface: 'be forced to do something' }],
+    ['tdc-00007', { entry: 'vocab:00634', surface: 'tend to do something' }],
+  ]);
+  if (new Set(reconciliation.records.map(row => row.audit_candidate_id)).size !== 36) throw new Error('Duplicate T/D audit IDs');
+  for (const row of reconciliation.records) {
+    const expected = moved.get(row.audit_candidate_id);
+    const movedCorrectly = expected && row.entry_id === expected.entry && row.current.current_surface === expected.surface
+      && row.historical.surface_index === 0 && row.current.current_index === 1
+      && row.current.classification === 'PARAPHRASE' && row.historical_relationship === 'SAME_EXACT_SURFACE_UNIQUE_AT_NEW_INDEX';
+    if (row.current.state !== (expected ? 'INDEX_RELOCATED' : 'UNCHANGED')
+      || (expected && !movedCorrectly)
+      || row.current.exact_surface_match_count !== 1
+      || row.current.current_surface !== row.historical.target_surface
+      || row.current.classification !== row.current.expected_classification
+      || row.collision.accepted !== true || row.collision.classification !== row.current.classification
+      || row.collision.applied_rule_id !== row.collision.aligned_rule_id) {
+      throw new Error(`Unresolved T/D reconciliation drift: ${row.audit_candidate_id}`);
+    }
+  }
+  return {
+    tdValidatorRepairPr: MERGE_EVIDENCE.tdRepairPr,
+    tdValidatorRepairMergeSha: MERGE_EVIDENCE.tdRepairMergeSha,
+    asr09aAuditPr: MERGE_EVIDENCE.auditPr,
+    asr09aAuditMergeSha: MERGE_EVIDENCE.auditMergeSha,
+    tdReconciliationPath: TD_RECONCILIATION_PATH,
+    tdReconciliationBlobSha: TD_RECONCILIATION_BLOB,
+    tdTotalRecords: counts.total, tdUnchanged: counts.statuses.UNCHANGED,
+    tdIndexRelocated: counts.statuses.INDEX_RELOCATED, tdUnresolvedDrift: 0,
+  };
+}
 const vocabFile = fs.readFileSync(path.join(ROOT, 'data/vocabulary-v3.json'));
 const itemsFile = fs.readFileSync(path.join(ROOT, 'data/items.json'));
 const appVersion = (fs.readFileSync(path.join(ROOT, 'scripts/version.js'), 'utf8').match(/APP_VERSION\s*=\s*'([^']+)'/) || [])[1];
 const auditStatus = joinErrors.length ? 'BLOCKED' : 'CLOSED';
+if (auditStatus !== 'CLOSED') throw new Error('ASR-09A audit authority is not CLOSED');
+const closureResolution = reconciledClosureEvidence();
 const manifest = {
   schemaVersion: 1,
   audit: 'ASR-09A Grammatical Speech Equivalence Audit',
   status: auditStatus,
   implementationReady: auditStatus === 'CLOSED',
   repositoryClosure: {
-    status: 'BLOCKED_REQUIRED_VALIDATION',
+    status: 'CLOSED',
     auditAuthorityStatus: auditStatus,
     implementationAuthority: 'ASR-09B_READY',
-    blocker: {
-      command: 'npm run speech:validate-td-cluster-before-to',
-      result: 'FAIL_BASELINE_SOURCE_REF_DRIFT',
-      auditCandidateId: 'tdc-00002',
-      detail: 'The pre-existing t/d materialization points at vocab:00528 paraphrases[0] (“be forced to do something”), while the immutable current main source has that surface at paraphrases[1]. The production T/D rule table and app regression tests are unchanged and pass; repairing the legacy T/D audit reference is outside ASR-09A scope.',
-      expectedValidatorMainSha: '22d4f37b48177b9a42a4b215330f0d7231400779',
-      auditedProductionMainSha: BASELINE_SHA,
-    },
+    blocker: null,
+    resolution: closureResolution,
   },
   source: {
     repository: 'miyatayuuma/english-pwa',
@@ -885,7 +930,7 @@ The current alignment supports explicit ordered 1↔N spans, mode/entry/provider
 const architectureReportDetailed = architectureReport
   .replace(/## Mode policy\n\n[\s\S]*?\n\nN-best hypotheses remain/, `## Mode policy\n\nThe enumerated fixed contraction and negative pairs are authorized for Vocabulary, Read, Cloze, and Correction with a separate grammatical-variant provenance tier. Vocabulary still requires canonical/answers/source TARGET authority; Read retains unmatched tokens and highlights only mapped reference indexes; Cloze requires a complete hidden target in place in the selected final utterance plus its existing completeness and negation guards; Correction adds no scheduled SRS update. Context-dependent ’s, ’d, split can not, let’s, and tag forms remain conditional and are not authorized for Read/Cloze in this audit.\n\nN-best hypotheses remain`)
   .replace(/## Architecture comparison\n\n[\s\S]*?\n\n## Regression obligations/, `## Architecture comparison\n\n${architectureComparison}\n\n## Regression obligations`)
-  .replace('## Regression obligations', '## Repository closure gate\n\nThe ASR-09A authority is closed, but repository merge closure is blocked until the separate t/d-cluster validation is reconciled against this baseline. The checked record tdc-00002 refers to paraphrases[0] for vocab:00528; current main has the same accepted paraphrase at index 1. The T/D production rules are unchanged and their behavior tests pass. This audit does not edit the separate T/D materialization or validator.\n\n## Regression obligations');
+  .replace('## Regression obligations', '## Repository closure gate\n\n' + REPOSITORY_CLOSURE_TEXT + '\n\n## Regression obligations');
 
 const summary = `# ASR-09A Grammatical Speech Equivalence Audit\n\n**Status: ${auditStatus} — ASR-09B implementation authority prepared**\n\n## Fixed baseline\n\n- Main SHA: \`${BASELINE_SHA}\`\n- APP_VERSION: \`${appVersion}\`\n- Vocabulary: ${manifest.population.vocabularyEntries} entries; blob \`${manifest.source.vocabularyBlob}\`\n- Source items: ${manifest.population.itemSentences}; blob \`${manifest.source.itemsBlob}\`\n- Vocabulary occurrences: ${manifest.population.joinedVocabularyOccurrences}/${manifest.population.vocabularyOccurrences} joined\n- PR #325 Japanese Prompt materialization: CLOSED; current POST state verified.\n\n## Corpus accounting\n\nScanned ${manifest.population.vocabularyStringFieldsScanned} canonical/answer/paraphrase strings, all ${manifest.population.itemEnglishFieldsScanned} Read/Cloze source sentences, and source occurrence links. Emitted **${candidates.length}** unique candidate spans.\n\n| Taxonomy | Corpus candidates |\n|---|---:|\n${Object.entries(taxonomyCounts).map(([key, count]) => `| ${key} | ${count} |`).join('\n')}\n\n| Treatment | Corpus candidates |\n|---|---:|\n${Object.entries(dispositionCounts).map(([key, count]) => `| ${key} | ${count} |`).join('\n')}\n\nCounts classify detected spans; they are not production approvals. Each ambiguous or unresolved source remains explicitly joined to a decision. The full candidate rows and rule-level reasons are in \`corpus-candidates.json\` and \`decisions.json\`.\n\n## Decision\n\n- Safe pair-based equivalents: only exact, listed contraction↔expansion spans whose auxiliary and polarity are unchanged; recommended for Vocabulary/Correction, with existing answer authority retained.\n- Conditional: \`’s\`, \`’d\`, \`let’s\`, split \`can not\`, and the conventional \`aren’t I\` tag. Only a unique, complete parse can pass; all other cases remain unresolved.\n- Reject: negation loss/addition, auxiliary/tense substitution, unsupported sentence-final contractions, and cross-rank/segment phrase synthesis.\n- Unresolved: \`ain’t\`, lexical possessive \`’s\`, unresolved homophone/role collisions, and any context not parsed uniquely.\n- Read and Cloze rollout policy remains unresolved. Keep their existing alignment, hidden-target completeness, final repair, and negation requirements until a mode-specific acceptance policy is chosen.\n\nSee \`architecture-report.md\` for implementation comparison, risks, exact constraints, and next-task guidance.\n`;
 
@@ -895,7 +940,7 @@ const summaryWithModes = summary
   .replace('recommended for Vocabulary/Correction, with existing answer authority retained.', 'approved for all four modes under the separate grammatical-variant authority tier, with existing answer authority retained.')
   .replace('Read and Cloze rollout policy remains unresolved. Keep their existing alignment, hidden-target completeness, final repair, and negation requirements until a mode-specific acceptance policy is chosen.', 'Read accepts only listed complete spans and preserves missing words/highlights. Cloze accepts only a complete hidden target in place in the selected final utterance; completeness and preservesExpectedNegation remain mandatory.')
   .replace('\n\nCounts classify detected spans;', `\n\n${modeTable}\n\nCounts classify detected spans;`)
-  .replace('\n\nSee `architecture-report.md`', '\n\n## Repository closure gate\n\nThe grammatical-equivalence authority is closed and ASR-09B-ready. Repository merge closure is blocked by the existing `npm run speech:validate-td-cluster-before-to` check: record `tdc-00002` references `vocab:00528` paraphrases[0], but the current immutable baseline has the same accepted surface at paraphrases[1]. The production T/D rule and its regression tests remain unchanged. Refreshing that separate materialization/validator is outside this audit-only change scope.\n\nSee `architecture-report.md`');
+  .replace('\n\nSee `architecture-report.md`', '\n\n## Repository closure gate\n\n' + REPOSITORY_CLOSURE_TEXT + '\n\nSee `architecture-report.md`');
 
 const outputs = new Map([
   ['manifest.json', `${JSON.stringify(manifest, null, 2)}\n`],

@@ -4,16 +4,21 @@
   "status": "CLOSED",
   "implementationReady": true,
   "repositoryClosure": {
-    "status": "BLOCKED_REQUIRED_VALIDATION",
+    "status": "CLOSED",
     "auditAuthorityStatus": "CLOSED",
     "implementationAuthority": "ASR-09B_READY",
-    "blocker": {
-      "command": "npm run speech:validate-td-cluster-before-to",
-      "result": "FAIL_BASELINE_SOURCE_REF_DRIFT",
-      "auditCandidateId": "tdc-00002",
-      "detail": "The pre-existing t/d materialization points at vocab:00528 paraphrases[0] (“be forced to do something”), while the immutable current main source has that surface at paraphrases[1]. The production T/D rule table and app regression tests are unchanged and pass; repairing the legacy T/D audit reference is outside ASR-09A scope.",
-      "expectedValidatorMainSha": "22d4f37b48177b9a42a4b215330f0d7231400779",
-      "auditedProductionMainSha": "e1b56da18e0df1d583473a6f208a75333bd22969"
+    "blocker": null,
+    "resolution": {
+      "tdValidatorRepairPr": 327,
+      "tdValidatorRepairMergeSha": "9aed421af7427c115f722ffad5809ff3466fa39b",
+      "asr09aAuditPr": 326,
+      "asr09aAuditMergeSha": "1a8c6b9e4267f390498dab9bc4b0ba9374d6d16c",
+      "tdReconciliationPath": "data/audits/vocabulary-td-cluster-before-to-production/current-main-reconciliation.json",
+      "tdReconciliationBlobSha": "8f55f0ac88aa02e6bfc7af535625fe7a350f97f2",
+      "tdTotalRecords": 36,
+      "tdUnchanged": 34,
+      "tdIndexRelocated": 2,
+      "tdUnresolvedDrift": 0
     }
   },
   "source": {
