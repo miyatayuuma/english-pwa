@@ -1,5 +1,6 @@
 import { safeSpeechTokens } from './safeSpeechNormalization.js';
 import { resolveSpeechTokenSpan } from './speechEquivalence.js';
+import { isContextualSHeadAt } from './contextualGrammaticalEquivalence.js';
 
 export function calcAlignmentF1(referenceCount, recall, precision) {
   if (!referenceCount) return 1;
@@ -14,6 +15,18 @@ function updateCell(scores, backs, row, column, value, step) {
     scores[row][column] = value;
     backs[row][column] = step;
   }
+}
+
+function contextualResolutionContext(expectedTokens, expectedStart, observedTokens, observedStart, context, referenceText, rawTranscript, provenance) {
+  if ((context?.mode !== 'vocabulary' && context?.mode !== 'correction')
+    || expectedTokens[expectedStart]?.value === observedTokens[observedStart]?.value
+    || (!isContextualSHeadAt(expectedTokens, expectedStart)
+      && !isContextualSHeadAt(observedTokens, observedStart))) return context;
+  return {
+    ...context,
+    referenceContext: context.referenceContext ?? { referenceText, observedText: rawTranscript },
+    recognitionProvenance: context.recognitionProvenance ?? provenance,
+  };
 }
 
 function alignWindow(referenceTokens, observedTokens, start, end, context, provenance, referenceText, rawTranscript, matchMatrix) {
@@ -72,6 +85,10 @@ function alignWindow(referenceTokens, observedTokens, start, end, context, prove
         decisionId: resolution.decisionId ?? null,
         ruleId: resolution.ruleId,
         ruleKind: resolution.ruleKind,
+        selectedAuxiliary: resolution.selectedAuxiliary ?? null,
+        contextualGrammarEvidence: resolution.contextualGrammarEvidence ?? null,
+        expectedTokenSpan: resolution.expectedTokenSpan ?? null,
+        observedTokenSpan: resolution.observedTokenSpan ?? null,
         displayPolicy: resolution.displayPolicy,
         expectedTokenIndexes,
         observedTokenIndexes: Array.from({ length: resolution.observedLength }, (_, offset) => start + observedStart + offset),
@@ -122,11 +139,14 @@ function alignWindow(referenceTokens, observedTokens, start, end, context, prove
   };
 }
 
-function orderedMatchIntegrity(referenceTokens, observedTokens, context) {
+function orderedMatchIntegrity(referenceTokens, observedTokens, context, referenceText, rawTranscript, provenance) {
   const mappingsByObservedSpan = new Map();
   for (let observedIndex = 0; observedIndex < observedTokens.length; observedIndex += 1) {
     for (let expectedIndex = 0; expectedIndex < referenceTokens.length; expectedIndex += 1) {
-      const resolution = resolveSpeechTokenSpan(referenceTokens, expectedIndex, observedTokens, observedIndex, context);
+      const resolutionContext = contextualResolutionContext(
+        referenceTokens, expectedIndex, observedTokens, observedIndex, context, referenceText, rawTranscript, provenance,
+      );
+      const resolution = resolveSpeechTokenSpan(referenceTokens, expectedIndex, observedTokens, observedIndex, resolutionContext);
       if (!resolution) continue;
       const key = `${observedIndex}:${resolution.observedLength}`;
       if (!mappingsByObservedSpan.has(key)) mappingsByObservedSpan.set(key, {
@@ -199,7 +219,7 @@ export function alignSpeech(referenceText, observedText, {
   const observedTokens = safeSpeechTokens(rawTranscript);
   const refCount = referenceTokens.length;
   const provenance = { recognitionSegmentIndex, recognitionSegmentIndexes, attemptId, asrRank };
-  const orderIntegrity = orderedMatchIntegrity(referenceTokens, observedTokens, context);
+  const orderIntegrity = orderedMatchIntegrity(referenceTokens, observedTokens, context, reference, rawTranscript, provenance);
 
   if (!refCount) {
     return {
@@ -226,8 +246,11 @@ export function alignSpeech(referenceText, observedText, {
   const slack = Math.max(4, Math.ceil(refCount * 0.5));
   const minLength = Math.max(1, Math.max(1, refCount - slack));
   const maxLength = Math.max(minLength, Math.min(observedTokens.length, Math.max(refCount + slack, refCount * 2 || 1)));
-  const matchMatrix = referenceTokens.map((_, row) => observedTokens.map((__, column) =>
-    resolveSpeechTokenSpan(referenceTokens, row, observedTokens, column, context)));
+  const matchMatrix = referenceTokens.map((_, row) => observedTokens.map((__, column) => {
+    const resolutionContext = contextualResolutionContext(referenceTokens, row, observedTokens, column,
+      context, reference, rawTranscript, provenance);
+    return resolveSpeechTokenSpan(referenceTokens, row, observedTokens, column, resolutionContext);
+  }));
   let best = alignWindow(referenceTokens, observedTokens, 0, observedTokens.length, context, provenance, reference, rawTranscript, matchMatrix);
   if (!fullSpan && observedTokens.length && minLength <= observedTokens.length) {
     for (let start = 0; start < observedTokens.length; start += 1) {
@@ -285,13 +308,17 @@ export function findSpeechSurfaceMatch(expectedText, observedText, {
   const expectedTokens = safeSpeechTokens(expected);
   const observedTokens = safeSpeechTokens(observed);
   if (!expectedTokens.length || !observedTokens.length) return null;
+  const provenance = { recognitionSegmentIndex, recognitionSegmentIndexes, attemptId, asrRank };
 
   for (let start = 0; start < observedTokens.length; start += 1) {
     const events = [];
     let expectedIndex = 0;
     let observedIndex = start;
     while (expectedIndex < expectedTokens.length && observedIndex < observedTokens.length) {
-      const resolution = resolveSpeechTokenSpan(expectedTokens, expectedIndex, observedTokens, observedIndex, context);
+      const resolutionContext = contextualResolutionContext(
+        expectedTokens, expectedIndex, observedTokens, observedIndex, context, expected, observed, provenance,
+      );
+      const resolution = resolveSpeechTokenSpan(expectedTokens, expectedIndex, observedTokens, observedIndex, resolutionContext);
       if (!resolution) break;
       const expectedFirst = expectedTokens[expectedIndex];
       const expectedLast = expectedTokens[expectedIndex + resolution.expectedLength - 1];
@@ -336,6 +363,8 @@ export function findSpeechSurfaceMatch(expectedText, observedText, {
       decisionId: firstEquivalence?.decisionId ?? null,
       ruleId: firstEquivalence?.ruleId ?? null,
       ruleKind: firstEquivalence?.ruleKind ?? null,
+      selectedAuxiliary: firstEquivalence?.selectedAuxiliary ?? null,
+      contextualGrammarEvidence: firstEquivalence?.contextualGrammarEvidence ?? null,
       matchedSpan: firstEquivalence ? {
         expectedStart: firstEquivalence.expectedStart,
         expectedEnd: firstEquivalence.expectedEnd,

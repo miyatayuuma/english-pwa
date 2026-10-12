@@ -1,0 +1,3687 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "baselineMainSha": "09039633afd511bf7f76b47e74504fc491860991",
+    "auditCandidateFile": "data/audits/asr-09a-grammatical-equivalence/corpus-candidates.json",
+    "auditCandidateSha256": "2eed8ba1bb9ba6046864f2464edf978a22e38576e36e4b81582aec6e7df2f5b9",
+    "currentVocabularyBlob": "91324d35b2db1911ece2cf3ff746409d321fe963",
+    "currentItemsBlob": "ae2aca768b784199b77ac1cf8c0c5a80fd5725bb"
+  },
+  "decisionId": "ambiguous-s",
+  "total": 107,
+  "statusCounts": {
+    "SAFE_CONTEXT_RESOLVED": 3,
+    "AMBIGUOUS_UNRESOLVED": 53,
+    "REJECT": 3,
+    "OUT_OF_SCOPE": 48
+  },
+  "candidates": [
+    {
+      "candidateId": "ge-fe410a4efe4da33a",
+      "sourceType": "vocabulary",
+      "sourceId": "vocab:00021",
+      "field": "canonical",
+      "fieldIndex": null,
+      "expectedSurface": "how's",
+      "sourceContext": "how's it going?",
+      "counterpartCandidates": [
+        "how is",
+        "how has"
+      ],
+      "allowedModes": [
+        "vocabulary"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "how's",
+        "tokenAfterCandidate": "it",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject how's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-c443055886f94efb",
+      "sourceType": "vocabulary",
+      "sourceId": "vocab:00084",
+      "field": "canonical",
+      "fieldIndex": null,
+      "expectedSurface": "that's",
+      "sourceContext": "that's it",
+      "counterpartCandidates": [
+        "that is",
+        "that has"
+      ],
+      "allowedModes": [
+        "vocabulary"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "that's",
+        "tokenAfterCandidate": "it",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject that's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-cec57770cb0d5525",
+      "sourceType": "vocabulary",
+      "sourceId": "vocab:00084",
+      "field": "paraphrases",
+      "fieldIndex": 0,
+      "expectedSurface": "that's",
+      "sourceContext": "that's all",
+      "counterpartCandidates": [
+        "that is",
+        "that has"
+      ],
+      "allowedModes": [
+        "vocabulary"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "that's",
+        "tokenAfterCandidate": "all",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject that's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-dd8e6622006eec90",
+      "sourceType": "vocabulary",
+      "sourceId": "vocab:00091",
+      "field": "canonical",
+      "fieldIndex": null,
+      "expectedSurface": "it's",
+      "sourceContext": "it's on me",
+      "counterpartCandidates": [
+        "it is",
+        "it has"
+      ],
+      "allowedModes": [
+        "vocabulary"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "it",
+        "tokenAfterCandidate": "on",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-335abf167828214e",
+      "sourceType": "vocabulary",
+      "sourceId": "vocab:00220",
+      "field": "canonical",
+      "fieldIndex": null,
+      "expectedSurface": "what's",
+      "sourceContext": "what's more",
+      "counterpartCandidates": [
+        "what is",
+        "what has"
+      ],
+      "allowedModes": [
+        "vocabulary"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "what's",
+        "tokenAfterCandidate": "more",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject what's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-60f2cf944342561e",
+      "sourceType": "vocabulary",
+      "sourceId": "vocab:00233",
+      "field": "paraphrases",
+      "fieldIndex": 0,
+      "expectedSurface": "what's",
+      "sourceContext": "what's worse",
+      "counterpartCandidates": [
+        "what is",
+        "what has"
+      ],
+      "allowedModes": [
+        "vocabulary"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "what's",
+        "tokenAfterCandidate": "worse",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject what's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-0f7c9e1dfb4d80e3",
+      "sourceType": "vocabulary",
+      "sourceId": "vocab:00290",
+      "field": "canonical",
+      "fieldIndex": null,
+      "expectedSurface": "there's",
+      "sourceContext": "there's no use doing something",
+      "counterpartCandidates": [
+        "there is",
+        "there has"
+      ],
+      "allowedModes": [
+        "vocabulary"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "there's",
+        "tokenAfterCandidate": "no",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject there's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-c0611020a0947147",
+      "sourceType": "vocabulary",
+      "sourceId": "vocab:00290",
+      "field": "paraphrases",
+      "fieldIndex": 0,
+      "expectedSurface": "there's",
+      "sourceContext": "there's no point in doing something",
+      "counterpartCandidates": [
+        "there is",
+        "there has"
+      ],
+      "allowedModes": [
+        "vocabulary"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "there's",
+        "tokenAfterCandidate": "no",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject there's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-0e421300f826aecc",
+      "sourceType": "vocabulary",
+      "sourceId": "vocab:00290",
+      "field": "paraphrases",
+      "fieldIndex": 1,
+      "expectedSurface": "it's",
+      "sourceContext": "it's pointless to do something",
+      "counterpartCandidates": [
+        "it is",
+        "it has"
+      ],
+      "allowedModes": [
+        "vocabulary"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "it",
+        "tokenAfterCandidate": "pointless",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-cbd0ddf47536f331",
+      "sourceType": "vocabulary",
+      "sourceId": "vocab:00387",
+      "field": "canonical",
+      "fieldIndex": null,
+      "expectedSurface": "what's",
+      "sourceContext": "what's going on",
+      "counterpartCandidates": [
+        "what is",
+        "what has"
+      ],
+      "allowedModes": [
+        "vocabulary"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "what's",
+        "tokenAfterCandidate": "going",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject what's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-3f307ea4026cea18",
+      "sourceType": "vocabulary",
+      "sourceId": "vocab:00387",
+      "field": "paraphrases",
+      "fieldIndex": 0,
+      "expectedSurface": "what's",
+      "sourceContext": "what's happening?",
+      "counterpartCandidates": [
+        "what is",
+        "what has"
+      ],
+      "allowedModes": [
+        "vocabulary"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "what's",
+        "tokenAfterCandidate": "happening",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject what's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-8dcb08ecb283543c",
+      "sourceType": "vocabulary",
+      "sourceId": "vocab:00478",
+      "field": "canonical",
+      "fieldIndex": null,
+      "expectedSurface": "there's",
+      "sourceContext": "there's no point in doing something",
+      "counterpartCandidates": [
+        "there is",
+        "there has"
+      ],
+      "allowedModes": [
+        "vocabulary"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "there's",
+        "tokenAfterCandidate": "no",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject there's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-adf202719f0693f7",
+      "sourceType": "vocabulary",
+      "sourceId": "vocab:00478",
+      "field": "paraphrases",
+      "fieldIndex": 0,
+      "expectedSurface": "there's",
+      "sourceContext": "there's no use doing something",
+      "counterpartCandidates": [
+        "there is",
+        "there has"
+      ],
+      "allowedModes": [
+        "vocabulary"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "there's",
+        "tokenAfterCandidate": "no",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject there's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-dd2695685d8e7a02",
+      "sourceType": "vocabulary",
+      "sourceId": "vocab:00600",
+      "field": "canonical",
+      "fieldIndex": null,
+      "expectedSurface": "what's",
+      "sourceContext": "what's the matter",
+      "counterpartCandidates": [
+        "what is",
+        "what has"
+      ],
+      "allowedModes": [
+        "vocabulary"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "what's",
+        "tokenAfterCandidate": "the",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject what's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-23acb62fb48bb384",
+      "sourceType": "vocabulary",
+      "sourceId": "vocab:00600",
+      "field": "paraphrases",
+      "fieldIndex": 0,
+      "expectedSurface": "what's",
+      "sourceContext": "what's wrong?",
+      "counterpartCandidates": [
+        "what is",
+        "what has"
+      ],
+      "allowedModes": [
+        "vocabulary"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "what's",
+        "tokenAfterCandidate": "wrong",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject what's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-fb4a6bcac6170c90",
+      "sourceType": "vocabulary",
+      "sourceId": "vocab:00620",
+      "field": "paraphrases",
+      "fieldIndex": 0,
+      "expectedSurface": "it is",
+      "sourceContext": "it is worthwhile to do something",
+      "counterpartCandidates": [
+        "it's"
+      ],
+      "allowedModes": [
+        "vocabulary"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "it",
+        "tokenAfterCandidate": "worthwhile",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-c4e4edb657b9ab29",
+      "sourceType": "vocabulary",
+      "sourceId": "vocab:00666",
+      "field": "canonical",
+      "fieldIndex": null,
+      "expectedSurface": "what's",
+      "sourceContext": "what's up",
+      "counterpartCandidates": [
+        "what is",
+        "what has"
+      ],
+      "allowedModes": [
+        "vocabulary"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "what's",
+        "tokenAfterCandidate": "up",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject what's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-87e0cf5d61430a2c",
+      "sourceType": "vocabulary",
+      "sourceId": "vocab:00666",
+      "field": "paraphrases",
+      "fieldIndex": 1,
+      "expectedSurface": "How's",
+      "sourceContext": "How's it going?",
+      "counterpartCandidates": [
+        "how is",
+        "how has"
+      ],
+      "allowedModes": [
+        "vocabulary"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "how's",
+        "tokenAfterCandidate": "it",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject how's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-31b4f699b80ac342",
+      "sourceType": "vocabulary",
+      "sourceId": "vocab:00666",
+      "field": "paraphrases",
+      "fieldIndex": 2,
+      "expectedSurface": "What's",
+      "sourceContext": "What's new?",
+      "counterpartCandidates": [
+        "what is",
+        "what has"
+      ],
+      "allowedModes": [
+        "vocabulary"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "what's",
+        "tokenAfterCandidate": "new",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject what's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-424b7cee8752e866",
+      "sourceType": "vocabulary",
+      "sourceId": "vocab:00679",
+      "field": "paraphrases",
+      "fieldIndex": 1,
+      "expectedSurface": "there's",
+      "sourceContext": "there's no hurry",
+      "counterpartCandidates": [
+        "there is",
+        "there has"
+      ],
+      "allowedModes": [
+        "vocabulary"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "there's",
+        "tokenAfterCandidate": "no",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject there's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-a760cc6260fbc1dd",
+      "sourceType": "vocabulary",
+      "sourceId": "vocab:01207",
+      "field": "paraphrases",
+      "fieldIndex": 0,
+      "expectedSurface": "what is",
+      "sourceContext": "what is called",
+      "counterpartCandidates": [
+        "what's"
+      ],
+      "allowedModes": [
+        "vocabulary"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "what",
+        "tokenAfterCandidate": "called",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject what is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-5acf20246f5c77a3",
+      "sourceType": "vocabulary",
+      "sourceId": "vocab:01379",
+      "field": "paraphrases",
+      "fieldIndex": 0,
+      "expectedSurface": "that's",
+      "sourceContext": "that's fine",
+      "counterpartCandidates": [
+        "that is",
+        "that has"
+      ],
+      "allowedModes": [
+        "vocabulary"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "that's",
+        "tokenAfterCandidate": "fine",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject that's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-04f3b04273de870f",
+      "sourceType": "vocabulary",
+      "sourceId": "vocab:01379",
+      "field": "paraphrases",
+      "fieldIndex": 1,
+      "expectedSurface": "it's",
+      "sourceContext": "it's okay",
+      "counterpartCandidates": [
+        "it is",
+        "it has"
+      ],
+      "allowedModes": [
+        "vocabulary"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "it",
+        "tokenAfterCandidate": "okay",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-ef9f3a03029fedd4",
+      "sourceType": "vocabulary",
+      "sourceId": "vocab:01399",
+      "field": "canonical",
+      "fieldIndex": null,
+      "expectedSurface": "there is",
+      "sourceContext": "there is little prospect that",
+      "counterpartCandidates": [
+        "there's"
+      ],
+      "allowedModes": [
+        "vocabulary"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "there",
+        "tokenAfterCandidate": "little",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject there is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-b31d4a0a4f6da48b",
+      "sourceType": "vocabulary",
+      "sourceId": "vocab:01638",
+      "field": "paraphrases",
+      "fieldIndex": 1,
+      "expectedSurface": "there's",
+      "sourceContext": "there's nothing you can do",
+      "counterpartCandidates": [
+        "there is",
+        "there has"
+      ],
+      "allowedModes": [
+        "vocabulary"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "there's",
+        "tokenAfterCandidate": "nothing",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject there's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-df0632c27b9b8b91",
+      "sourceType": "vocabulary",
+      "sourceId": "vocab:01925",
+      "field": "paraphrases",
+      "fieldIndex": 1,
+      "expectedSurface": "what's",
+      "sourceContext": "what's your job?",
+      "counterpartCandidates": [
+        "what is",
+        "what has"
+      ],
+      "allowedModes": [
+        "vocabulary"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "what's",
+        "tokenAfterCandidate": "your",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject what's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-5f6ad26b722bc117",
+      "sourceType": "vocabulary",
+      "sourceId": "vocab:01926",
+      "field": "canonical",
+      "fieldIndex": null,
+      "expectedSurface": "what's",
+      "sourceContext": "what's your major?",
+      "counterpartCandidates": [
+        "what is",
+        "what has"
+      ],
+      "allowedModes": [
+        "vocabulary"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "what's",
+        "tokenAfterCandidate": "your",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject what's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-4f9d5d1b8cf0cdfb",
+      "sourceType": "vocabulary",
+      "sourceId": "vocab:02066",
+      "field": "canonical",
+      "fieldIndex": null,
+      "expectedSurface": "it is",
+      "sourceContext": "it is the case that",
+      "counterpartCandidates": [
+        "it's"
+      ],
+      "allowedModes": [
+        "vocabulary"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "it",
+        "tokenAfterCandidate": "the",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-f600090d5f24487b",
+      "sourceType": "vocabulary",
+      "sourceId": "vocab:02066",
+      "field": "paraphrases",
+      "fieldIndex": 0,
+      "expectedSurface": "it is",
+      "sourceContext": "it is true that",
+      "counterpartCandidates": [
+        "it's"
+      ],
+      "allowedModes": [
+        "vocabulary"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "it",
+        "tokenAfterCandidate": "true",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-b757896cc329132c",
+      "sourceType": "vocabulary",
+      "sourceId": "vocab:02450",
+      "field": "paraphrases",
+      "fieldIndex": 1,
+      "expectedSurface": "that's",
+      "sourceContext": "that's too bad.",
+      "counterpartCandidates": [
+        "that is",
+        "that has"
+      ],
+      "allowedModes": [
+        "vocabulary"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "that's",
+        "tokenAfterCandidate": "too",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject that's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-c71238a666b8956a",
+      "sourceType": "vocabulary",
+      "sourceId": "vocab:02454",
+      "field": "canonical",
+      "fieldIndex": null,
+      "expectedSurface": "it's",
+      "sourceContext": "it's about time",
+      "counterpartCandidates": [
+        "it is",
+        "it has"
+      ],
+      "allowedModes": [
+        "vocabulary"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "it",
+        "tokenAfterCandidate": "about",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-0ee96f5b77a580f3",
+      "sourceType": "vocabulary",
+      "sourceId": "vocab:02454",
+      "field": "paraphrases",
+      "fieldIndex": 0,
+      "expectedSurface": "it's",
+      "sourceContext": "it's high time someone did something",
+      "counterpartCandidates": [
+        "it is",
+        "it has"
+      ],
+      "allowedModes": [
+        "vocabulary"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "it",
+        "tokenAfterCandidate": "high",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-e1abca6b4db13e7c",
+      "sourceType": "vocabulary",
+      "sourceId": "vocab:02476",
+      "field": "canonical",
+      "fieldIndex": null,
+      "expectedSurface": "that's",
+      "sourceContext": "that's too bad",
+      "counterpartCandidates": [
+        "that is",
+        "that has"
+      ],
+      "allowedModes": [
+        "vocabulary"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "that's",
+        "tokenAfterCandidate": "too",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject that's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-22525ceca8177a4f",
+      "sourceType": "vocabulary",
+      "sourceId": "vocab:02477",
+      "field": "paraphrases",
+      "fieldIndex": 1,
+      "expectedSurface": "that's",
+      "sourceContext": "that's a shame",
+      "counterpartCandidates": [
+        "that is",
+        "that has"
+      ],
+      "allowedModes": [
+        "vocabulary"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "that's",
+        "tokenAfterCandidate": "a",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject that's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-b939bff6c8726ee6",
+      "sourceType": "item",
+      "sourceId": "E0021",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "What's",
+      "sourceContext": "\"What's this ugly object?\" \"This is a piece of abstract art!\"",
+      "counterpartCandidates": [
+        "what is",
+        "what has"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "what's",
+        "tokenAfterCandidate": "this",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject what's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-7fedde65579f5a7c",
+      "sourceType": "item",
+      "sourceId": "E0024",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "it is",
+      "sourceContext": "As it is, ordinary people cannot afford to purchase such luxuries.",
+      "counterpartCandidates": [
+        "it's"
+      ],
+      "allowedModes": [
+        "vocabulary",
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "it",
+        "tokenAfterCandidate": "ordinary",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-85e36285e2b15bcb",
+      "sourceType": "item",
+      "sourceId": "E0043",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "He's",
+      "sourceContext": "Why don't you consult Starr in person? He's by far the most prominent attorney around here.",
+      "counterpartCandidates": [
+        "he is",
+        "he has"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "he",
+        "tokenAfterCandidate": "by",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-b417c1412a6bfa28",
+      "sourceType": "item",
+      "sourceId": "E0049",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "He has",
+      "sourceContext": "He has a habit of biting his nails. It's absolutely disgusting.",
+      "counterpartCandidates": [
+        "he's"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "he",
+        "tokenAfterCandidate": "a",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-3bd8642697c1db6b",
+      "sourceType": "item",
+      "sourceId": "E0049",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "It's",
+      "sourceContext": "He has a habit of biting his nails. It's absolutely disgusting.",
+      "counterpartCandidates": [
+        "it is",
+        "it has"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "it",
+        "tokenAfterCandidate": "absolutely",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-a56af3c5d3c0d55d",
+      "sourceType": "item",
+      "sourceId": "E0053",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "It's",
+      "sourceContext": "We can't apply cloning techniques to cattle, let alone human beings. It's forbidden.",
+      "counterpartCandidates": [
+        "it is",
+        "it has"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "it",
+        "tokenAfterCandidate": "forbidden",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-897c818aa333207e",
+      "sourceType": "item",
+      "sourceId": "E0061",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "he is",
+      "sourceContext": "Little by little, my son-in-law is recovering from stomach cancer, and now he is in good spirits.",
+      "counterpartCandidates": [
+        "he's"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "he",
+        "tokenAfterCandidate": "in",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-823c00a93b0ce9c3",
+      "sourceType": "item",
+      "sourceId": "E0062",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "it's",
+      "sourceContext": "\"This is fake, isn't it?\" \"Hey, it's a genuine antique.\" \"No way!\"",
+      "counterpartCandidates": [
+        "it is",
+        "it has"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "it",
+        "tokenAfterCandidate": "a",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-2abb9a23b1242a71",
+      "sourceType": "item",
+      "sourceId": "E0063",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "That's",
+      "sourceContext": "\"Anything else?\" \"That's it.\" \"For here or to go?\" \"To go.\"",
+      "counterpartCandidates": [
+        "that is",
+        "that has"
+      ],
+      "allowedModes": [
+        "vocabulary",
+        "correction"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "that's",
+        "tokenAfterCandidate": "it",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject that's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-711a16369adbddaf",
+      "sourceType": "item",
+      "sourceId": "E0068",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "It's",
+      "sourceContext": "\"It's on me.\" \"No. You treat me every time we eat out.\" \"Well, okay. Let's split the check then.\"",
+      "counterpartCandidates": [
+        "it is",
+        "it has"
+      ],
+      "allowedModes": [
+        "vocabulary",
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "it",
+        "tokenAfterCandidate": "on",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-4932c19abc413718",
+      "sourceType": "item",
+      "sourceId": "E0072",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "That's",
+      "sourceContext": "\"That's odd! Tell me how it happened.\" \"I'll explain it to you later.\"",
+      "counterpartCandidates": [
+        "that is",
+        "that has"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "that's",
+        "tokenAfterCandidate": "odd",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject that's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-323528bb3d269862",
+      "sourceType": "item",
+      "sourceId": "E0075",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "there's",
+      "sourceContext": "Now that I've found that there's no one to turn to, I'll have to stand on my own two feet.",
+      "counterpartCandidates": [
+        "there is",
+        "there has"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "there's",
+        "tokenAfterCandidate": "no",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject there's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-52a521d2e737132c",
+      "sourceType": "item",
+      "sourceId": "E0099",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "he is",
+      "sourceContext": "In a sense, he is to blame for the disaster.",
+      "counterpartCandidates": [
+        "he's"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "he",
+        "tokenAfterCandidate": "to",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-bc77697cac1690b4",
+      "sourceType": "item",
+      "sourceId": "E0107",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "it's",
+      "sourceContext": "I'm getting rid of this leather jacket because it's worn out at the elbows.",
+      "counterpartCandidates": [
+        "it is",
+        "it has"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "it",
+        "tokenAfterCandidate": "worn",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-4d5f523ccaf81114",
+      "sourceType": "item",
+      "sourceId": "E0114",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "It's",
+      "sourceContext": "Put this stuff away! It's in the way.",
+      "counterpartCandidates": [
+        "it is",
+        "it has"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "it",
+        "tokenAfterCandidate": "in",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-b7e503b427a02425",
+      "sourceType": "item",
+      "sourceId": "E0122",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "It's",
+      "sourceContext": "My favorite pastime is strolling along the shore. It's pleasant.",
+      "counterpartCandidates": [
+        "it is",
+        "it has"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "it",
+        "tokenAfterCandidate": "pleasant",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-7f1d13b160995857",
+      "sourceType": "item",
+      "sourceId": "E0141",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "There's",
+      "sourceContext": "There's little prospect that the two countries will make significant progress in disarmament.",
+      "counterpartCandidates": [
+        "there is",
+        "there has"
+      ],
+      "allowedModes": [
+        "vocabulary",
+        "correction"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "there's",
+        "tokenAfterCandidate": "little",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject there's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-b3603d4733fff72b",
+      "sourceType": "item",
+      "sourceId": "E0157",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "That's",
+      "sourceContext": "Joe is anything but diligent. That's why he flunked math again.",
+      "counterpartCandidates": [
+        "that is",
+        "that has"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "that's",
+        "tokenAfterCandidate": "why",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject that's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-0af404ce99d1f1fa",
+      "sourceType": "item",
+      "sourceId": "E0160",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "It's",
+      "sourceContext": "\"How are you going to deal with this complicated problem?\" \"Leave it to me! It's a piece of cake.\"",
+      "counterpartCandidates": [
+        "it is",
+        "it has"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "it",
+        "tokenAfterCandidate": "a",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-b6b4ba9697e42197",
+      "sourceType": "item",
+      "sourceId": "E0171",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "Something's",
+      "sourceContext": "\"Something's gone wrong with this microscope. I need to have it repaired.\" \"Let me see it. Maybe I can fix it.\"",
+      "counterpartCandidates": [
+        "something is",
+        "something has",
+        "something’s (possessive)"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "something's",
+        "tokenAfterCandidate": "gone",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject something's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-6b7b5a0c412cd7ee",
+      "sourceType": "item",
+      "sourceId": "E0172",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "What is",
+      "sourceContext": "\"What is 'an instrument'?\" \"For instance, a gauge, such as a thermometer or a barometer.\"",
+      "counterpartCandidates": [
+        "what's"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "what",
+        "tokenAfterCandidate": "an",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject what is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-a489857055e5f74a",
+      "sourceType": "item",
+      "sourceId": "E0179",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "He's",
+      "sourceContext": "I met the man by chance. He's gentle and smart. What's more, he's single!",
+      "counterpartCandidates": [
+        "he is",
+        "he has"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "he",
+        "tokenAfterCandidate": "gentle",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-3e1d2252e4e475e1",
+      "sourceType": "item",
+      "sourceId": "E0179",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "What's",
+      "sourceContext": "I met the man by chance. He's gentle and smart. What's more, he's single!",
+      "counterpartCandidates": [
+        "what is",
+        "what has"
+      ],
+      "allowedModes": [
+        "vocabulary",
+        "correction"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "what's",
+        "tokenAfterCandidate": "more",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject what's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-b95393e09bf8662c",
+      "sourceType": "item",
+      "sourceId": "E0179",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "he's",
+      "sourceContext": "I met the man by chance. He's gentle and smart. What's more, he's single!",
+      "counterpartCandidates": [
+        "he is",
+        "he has"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "he",
+        "tokenAfterCandidate": "single",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-8fb098915f34813c",
+      "sourceType": "item",
+      "sourceId": "E0183",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "It's",
+      "sourceContext": "\"It's not your title that counts. That's for sure!\" exclaimed Bob.",
+      "counterpartCandidates": [
+        "it is",
+        "it has"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "REJECT",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "it",
+        "tokenAfterCandidate": "not",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "negative-is-not",
+        "expected": "He is not finished.",
+        "observed": "He's not finished.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The candidate is inside an excluded negative-s construction."
+    },
+    {
+      "candidateId": "ge-1eb566bf3ea79120",
+      "sourceType": "item",
+      "sourceId": "E0183",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "That's",
+      "sourceContext": "\"It's not your title that counts. That's for sure!\" exclaimed Bob.",
+      "counterpartCandidates": [
+        "that is",
+        "that has"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "that's",
+        "tokenAfterCandidate": "for",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject that's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-1059d879a279927f",
+      "sourceType": "item",
+      "sourceId": "E0213",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "He's",
+      "sourceContext": "As usual, Mike turned up on time. He's very punctual.",
+      "counterpartCandidates": [
+        "he is",
+        "he has"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "he",
+        "tokenAfterCandidate": "very",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-eb283accd466a524",
+      "sourceType": "item",
+      "sourceId": "E0220",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "it's",
+      "sourceContext": "There are so many fine scratches and dents on its surface, it's no use polishing it.",
+      "counterpartCandidates": [
+        "it is",
+        "it has"
+      ],
+      "allowedModes": [
+        "vocabulary",
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "it",
+        "tokenAfterCandidate": "no",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-52178b09be0e3bf6",
+      "sourceType": "item",
+      "sourceId": "E0232",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "it's",
+      "sourceContext": "I think it's cruel to trap animals for fur coats.",
+      "counterpartCandidates": [
+        "it is",
+        "it has"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "it",
+        "tokenAfterCandidate": "cruel",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-526aefaea8511bf6",
+      "sourceType": "item",
+      "sourceId": "E0236",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "it's",
+      "sourceContext": "Tropical rain forests are quickly disappearing on a global scale. In part, it's due to acid rain.",
+      "counterpartCandidates": [
+        "it is",
+        "it has"
+      ],
+      "allowedModes": [
+        "vocabulary",
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "it",
+        "tokenAfterCandidate": "due",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-fa0343de4af73e81",
+      "sourceType": "item",
+      "sourceId": "E0237",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "It is",
+      "sourceContext": "It is said that global warming is directly related to carbon dioxide emissions.",
+      "counterpartCandidates": [
+        "it's"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "it",
+        "tokenAfterCandidate": "said",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-cb00195f4bdd289d",
+      "sourceType": "item",
+      "sourceId": "E0254",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "It's",
+      "sourceContext": "\"It's still up in the air whether the game will be called off or not.\" \"So what? It makes no difference to me.\"",
+      "counterpartCandidates": [
+        "it is",
+        "it has"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "it",
+        "tokenAfterCandidate": "still",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-455951ecd9a99630",
+      "sourceType": "item",
+      "sourceId": "E0255",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "It's",
+      "sourceContext": "\"It's foggy, isn't it?\" \"It sure is. But chances are it'll clear up later on.\"",
+      "counterpartCandidates": [
+        "it is",
+        "it has"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "it",
+        "tokenAfterCandidate": "foggy",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-920e8a78ceaf4b4e",
+      "sourceType": "item",
+      "sourceId": "E0262",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "it's",
+      "sourceContext": "You've got to keep up with it. Once you fall behind, it's hard to catch up.",
+      "counterpartCandidates": [
+        "it is",
+        "it has"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "it",
+        "tokenAfterCandidate": "hard",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-6f68bedc0f369af6",
+      "sourceType": "item",
+      "sourceId": "E0263",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "it's",
+      "sourceContext": "As technology rapidly advances, it's tough to keep pace with it.",
+      "counterpartCandidates": [
+        "it is",
+        "it has"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "it",
+        "tokenAfterCandidate": "tough",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-46e6b89b434a0e30",
+      "sourceType": "item",
+      "sourceId": "E0268",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "there's",
+      "sourceContext": "Although there's still plenty of room for improvement, his invention is superior to conventional equipment in every respect.",
+      "counterpartCandidates": [
+        "there is",
+        "there has"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "there's",
+        "tokenAfterCandidate": "still",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject there's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-18e0696d35c10ec7",
+      "sourceType": "item",
+      "sourceId": "E0270",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "It's",
+      "sourceContext": "SONY has integrated a wide range of functions into this cool gadget. It's catching on from coast to coast.",
+      "counterpartCandidates": [
+        "it is",
+        "it has"
+      ],
+      "allowedModes": [
+        "vocabulary",
+        "correction"
+      ],
+      "status": "SAFE_CONTEXT_RESOLVED",
+      "selectedAuxiliary": "is",
+      "contextEvidence": {
+        "patternId": "asr09c-is-progressive",
+        "subject": "it",
+        "contractedSurface": "it's",
+        "selectedAuxiliary": "is",
+        "participle": "catching",
+        "expectedParse": [
+          "it's",
+          "catching"
+        ],
+        "observedParse": [
+          "it",
+          "is",
+          "catching"
+        ],
+        "independentParseAgreement": true,
+        "permittedMode": "vocabulary",
+        "referenceContextProvided": true,
+        "recognitionProvenanceProvided": true
+      },
+      "requiredRule": "asr09c-is-progressive",
+      "counterexample": {
+        "expected": "He is finished.",
+        "observed": "He's finished."
+      },
+      "decisionReason": "A proposed counterpart passes the bounded rule in an ASR-09A-authorized mode using the complete current production surface."
+    },
+    {
+      "candidateId": "ge-cbd3cba1847aa43d",
+      "sourceType": "item",
+      "sourceId": "E0272",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "It's",
+      "sourceContext": "\"In general, consumers prefer quantity to quality.\" \"It's the other way around today.\"",
+      "counterpartCandidates": [
+        "it is",
+        "it has"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "it",
+        "tokenAfterCandidate": "the",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-648152d7f8fc5256",
+      "sourceType": "item",
+      "sourceId": "E0278",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "he is",
+      "sourceContext": "As a result of his ridiculous venture, he is in danger of going bankrupt.",
+      "counterpartCandidates": [
+        "he's"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "he",
+        "tokenAfterCandidate": "in",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-a375861f1b20ad97",
+      "sourceType": "item",
+      "sourceId": "E0289",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "Who is",
+      "sourceContext": "Nowadays, many people are out of work against their will. Who is responsible for that?",
+      "counterpartCandidates": [
+        "who's"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "who",
+        "tokenAfterCandidate": "responsible",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject who is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-df40778fceece9d0",
+      "sourceType": "item",
+      "sourceId": "E0311",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "What's",
+      "sourceContext": "\"What's going on down there? I'm curious.\" \"I have no idea.\"",
+      "counterpartCandidates": [
+        "what is",
+        "what has"
+      ],
+      "allowedModes": [
+        "vocabulary",
+        "correction"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "what's",
+        "tokenAfterCandidate": "going",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject what's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-667fb589362cdfd3",
+      "sourceType": "item",
+      "sourceId": "E0332",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "What's",
+      "sourceContext": "\"What do you do?\" \"I'm a college student, a freshman at Harvard.\" \"What's your major?\" \"Philosophy.\"",
+      "counterpartCandidates": [
+        "what is",
+        "what has"
+      ],
+      "allowedModes": [
+        "vocabulary",
+        "correction"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "what's",
+        "tokenAfterCandidate": "your",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject what's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-19f7d36e2e2a04d9",
+      "sourceType": "item",
+      "sourceId": "E0341",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "he is",
+      "sourceContext": "Tom takes after his uncle in personality. I mean, he is obstinate by nature. He never gives in.",
+      "counterpartCandidates": [
+        "he's"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "he",
+        "tokenAfterCandidate": "obstinate",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-d7c2d86804a065d5",
+      "sourceType": "item",
+      "sourceId": "E0344",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "It's",
+      "sourceContext": "\"If only I could conquer my weaknesses!\" \"It's up to you.\"",
+      "counterpartCandidates": [
+        "it is",
+        "it has"
+      ],
+      "allowedModes": [
+        "vocabulary",
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "it",
+        "tokenAfterCandidate": "up",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-275702a2f4dc22d9",
+      "sourceType": "item",
+      "sourceId": "E0354",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "He is",
+      "sourceContext": "Nick is by no means satisfied with the reward. He is selfish and greedy.",
+      "counterpartCandidates": [
+        "he's"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "he",
+        "tokenAfterCandidate": "selfish",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-0f351ef0b77c5b34",
+      "sourceType": "item",
+      "sourceId": "E0362",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "It's",
+      "sourceContext": "It's optimistic of you to believe that things will work out. At best there's a fifty-fifty chance.",
+      "counterpartCandidates": [
+        "it is",
+        "it has"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "it",
+        "tokenAfterCandidate": "optimistic",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-a763dc6e7133e1d4",
+      "sourceType": "item",
+      "sourceId": "E0362",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "there's",
+      "sourceContext": "It's optimistic of you to believe that things will work out. At best there's a fifty-fifty chance.",
+      "counterpartCandidates": [
+        "there is",
+        "there has"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "there's",
+        "tokenAfterCandidate": "a",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject there's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-1c859ad7e38f3748",
+      "sourceType": "item",
+      "sourceId": "E0366",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "How's",
+      "sourceContext": "\"How's it going, Bob?\" \"Couldn't be better! I did well in my job interview!\" \"Good for you!\"",
+      "counterpartCandidates": [
+        "how is",
+        "how has"
+      ],
+      "allowedModes": [
+        "vocabulary",
+        "correction"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "how's",
+        "tokenAfterCandidate": "it",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject how's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-b57d0a63e5c3c869",
+      "sourceType": "item",
+      "sourceId": "E0368",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "It's",
+      "sourceContext": "You can't do two things at one time! It's out of the question. Do them one by one.",
+      "counterpartCandidates": [
+        "it is",
+        "it has"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "it",
+        "tokenAfterCandidate": "out",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-ac49aaba260cdff6",
+      "sourceType": "item",
+      "sourceId": "E0373",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "There's",
+      "sourceContext": "There's no point in talking back to Nick. He is a \"dictator,\" so to speak.",
+      "counterpartCandidates": [
+        "there is",
+        "there has"
+      ],
+      "allowedModes": [
+        "vocabulary",
+        "correction"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "there's",
+        "tokenAfterCandidate": "no",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject there's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-5e39abfa9d6c8df4",
+      "sourceType": "item",
+      "sourceId": "E0373",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "He is",
+      "sourceContext": "There's no point in talking back to Nick. He is a \"dictator,\" so to speak.",
+      "counterpartCandidates": [
+        "he's"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "he",
+        "tokenAfterCandidate": "a",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-56a949a932a7d2f4",
+      "sourceType": "item",
+      "sourceId": "E0388",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "who is",
+      "sourceContext": "Ted, who is often referred to as a man of integrity, is going to run for mayor.",
+      "counterpartCandidates": [
+        "who's"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "who",
+        "tokenAfterCandidate": "often",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject who is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-edb24d144e7657f1",
+      "sourceType": "item",
+      "sourceId": "E0391",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "It is",
+      "sourceContext": "It is the case that those who live on a pension are forced to lead a hard life.",
+      "counterpartCandidates": [
+        "it's"
+      ],
+      "allowedModes": [
+        "vocabulary",
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "it",
+        "tokenAfterCandidate": "the",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-9a7c45c6f8c21fcc",
+      "sourceType": "item",
+      "sourceId": "E0392",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "It's",
+      "sourceContext": "We should leave out this data. It's far from accurate.",
+      "counterpartCandidates": [
+        "it is",
+        "it has"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "it",
+        "tokenAfterCandidate": "far",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-b490c80d9e3020b4",
+      "sourceType": "item",
+      "sourceId": "E0396",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "It's",
+      "sourceContext": "The spokesperson refused to make any comment, saying, \"It's under investigation.\"",
+      "counterpartCandidates": [
+        "it is",
+        "it has"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "it",
+        "tokenAfterCandidate": "under",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-f946354a14dc9942",
+      "sourceType": "item",
+      "sourceId": "E0397",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "there's",
+      "sourceContext": "The police say there's someone pulling strings behind the scenes.",
+      "counterpartCandidates": [
+        "there is",
+        "there has"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "there's",
+        "tokenAfterCandidate": "someone",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject there's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-94d5ee0598bb34f2",
+      "sourceType": "item",
+      "sourceId": "E0407",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "he has",
+      "sourceContext": "To my knowledge, he has not been involved in the fraud scheme.",
+      "counterpartCandidates": [
+        "he's"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "REJECT",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "he",
+        "tokenAfterCandidate": "not",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "negative-is-not",
+        "expected": "He is not finished.",
+        "observed": "He's not finished.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The candidate is inside an excluded negative-s construction."
+    },
+    {
+      "candidateId": "ge-9f6da0f71c669454",
+      "sourceType": "item",
+      "sourceId": "E0415",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "He is",
+      "sourceContext": "He is second to none when it comes to finding fault with others.",
+      "counterpartCandidates": [
+        "he's"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "he",
+        "tokenAfterCandidate": "second",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-586dd84303827e5d",
+      "sourceType": "item",
+      "sourceId": "E0438",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "He is",
+      "sourceContext": "Ford has been in a difficult situation all week long. He is no longer capable of coping with it.",
+      "counterpartCandidates": [
+        "he's"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "he",
+        "tokenAfterCandidate": "no",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-d6df0ae9247cbcd2",
+      "sourceType": "item",
+      "sourceId": "E0470",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "it's",
+      "sourceContext": "At present, it's still uncertain whether it was done deliberately or by accident.",
+      "counterpartCandidates": [
+        "it is",
+        "it has"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "it",
+        "tokenAfterCandidate": "still",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-903d588914f39db7",
+      "sourceType": "item",
+      "sourceId": "E0504",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "What's",
+      "sourceContext": "\"What's the matter, Bob? You look so miserable.\" \"Leave me alone. It's none of your business.\"",
+      "counterpartCandidates": [
+        "what is",
+        "what has"
+      ],
+      "allowedModes": [
+        "vocabulary",
+        "correction"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "what's",
+        "tokenAfterCandidate": "the",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject what's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-8e27063a11deaec0",
+      "sourceType": "item",
+      "sourceId": "E0504",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "It's",
+      "sourceContext": "\"What's the matter, Bob? You look so miserable.\" \"Leave me alone. It's none of your business.\"",
+      "counterpartCandidates": [
+        "it is",
+        "it has"
+      ],
+      "allowedModes": [
+        "vocabulary",
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "it",
+        "tokenAfterCandidate": "none",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-2ece05d493e7875a",
+      "sourceType": "item",
+      "sourceId": "E0507",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "He is",
+      "sourceContext": "He is not good at making friends and always keeps to himself.",
+      "counterpartCandidates": [
+        "he's"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "REJECT",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "he",
+        "tokenAfterCandidate": "not",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "negative-is-not",
+        "expected": "He is not finished.",
+        "observed": "He's not finished.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The candidate is inside an excluded negative-s construction."
+    },
+    {
+      "candidateId": "ge-866783a1a72ce51f",
+      "sourceType": "item",
+      "sourceId": "E0519",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "it's",
+      "sourceContext": "It may seem trivial to you but for me it's worth paying attention to.",
+      "counterpartCandidates": [
+        "it is",
+        "it has"
+      ],
+      "allowedModes": [
+        "vocabulary",
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "it",
+        "tokenAfterCandidate": "worth",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-339862448ae6691e",
+      "sourceType": "item",
+      "sourceId": "E0527",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "He is",
+      "sourceContext": "Don't take it literally. He is inclined to exaggerate.",
+      "counterpartCandidates": [
+        "he's"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "he",
+        "tokenAfterCandidate": "inclined",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-314848b3c7035c8c",
+      "sourceType": "item",
+      "sourceId": "E0528",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "she's",
+      "sourceContext": "\"You should apologize to Lisa for making fun of her. You went too far this time.\" \"Yeah... I will, sometime when she's in a better mood.\"",
+      "counterpartCandidates": [
+        "she is",
+        "she has"
+      ],
+      "allowedModes": [
+        "vocabulary",
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "she",
+        "tokenAfterCandidate": "in",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-602b00930515fc03",
+      "sourceType": "item",
+      "sourceId": "E0537",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "he's",
+      "sourceContext": "\"To be honest, I'm crazy about Ken because he's brave, self-confident, and never afraid of taking risks.\" \"If I were you, I'd ask him out!\"",
+      "counterpartCandidates": [
+        "he is",
+        "he has"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "he",
+        "tokenAfterCandidate": "brave",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-48759bb81ca2d7d6",
+      "sourceType": "item",
+      "sourceId": "E0540",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "she is",
+      "sourceContext": "Even though she is seeing someone else, I won't give her up.",
+      "counterpartCandidates": [
+        "she's"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "SAFE_CONTEXT_RESOLVED",
+      "selectedAuxiliary": "is",
+      "contextEvidence": {
+        "patternId": "asr09c-is-progressive",
+        "subject": "she",
+        "contractedSurface": "she's",
+        "selectedAuxiliary": "is",
+        "participle": "seeing",
+        "expectedParse": [
+          "she",
+          "is",
+          "seeing"
+        ],
+        "observedParse": [
+          "she's",
+          "seeing"
+        ],
+        "independentParseAgreement": true,
+        "permittedMode": "correction",
+        "referenceContextProvided": true,
+        "recognitionProvenanceProvided": true
+      },
+      "requiredRule": "asr09c-is-progressive",
+      "counterexample": {
+        "expected": "He is finished.",
+        "observed": "He's finished."
+      },
+      "decisionReason": "A proposed counterpart passes the bounded rule in an ASR-09A-authorized mode using the complete current production surface."
+    },
+    {
+      "candidateId": "ge-ac5dd6e81927e85a",
+      "sourceType": "item",
+      "sourceId": "E0541",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "What's",
+      "sourceContext": "\"Hi, Jane. What's up?\" \"Not much. How about you?\" \"I got married to Jennifer.\" \"Wow! Congratulations!\"",
+      "counterpartCandidates": [
+        "what is",
+        "what has"
+      ],
+      "allowedModes": [
+        "vocabulary",
+        "correction"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "what's",
+        "tokenAfterCandidate": "up",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject what's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-d2c15994e95f835b",
+      "sourceType": "item",
+      "sourceId": "E0545",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "She's",
+      "sourceContext": "\"Why do you put up with her arrogance? She's just taking advantage of you.\" \"Shut up!\"",
+      "counterpartCandidates": [
+        "she is",
+        "she has"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "she",
+        "tokenAfterCandidate": "just",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    },
+    {
+      "candidateId": "ge-fc8ddf4a2c57d067",
+      "sourceType": "item",
+      "sourceId": "E0552",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "that's",
+      "sourceContext": "\"One of her relatives passed away three days ago.\" \"Oh, that's too bad. I'm so sorry.\"",
+      "counterpartCandidates": [
+        "that is",
+        "that has"
+      ],
+      "allowedModes": [
+        "vocabulary",
+        "correction"
+      ],
+      "status": "OUT_OF_SCOPE",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "that's",
+        "tokenAfterCandidate": "too",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "there-subject-out-of-scope",
+        "expected": "There is working.",
+        "observed": "There's working.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "Subject that's is outside the initial he/she/it production subset."
+    },
+    {
+      "candidateId": "ge-46cdf4db9913702c",
+      "sourceType": "item",
+      "sourceId": "E0558",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "he's",
+      "sourceContext": "Go easy on Bob. You know, he's been going through a rough period recently.",
+      "counterpartCandidates": [
+        "he is",
+        "he has"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "SAFE_CONTEXT_RESOLVED",
+      "selectedAuxiliary": "has",
+      "contextEvidence": {
+        "patternId": "asr09c-has-been-progressive",
+        "subject": "he",
+        "contractedSurface": "he's",
+        "selectedAuxiliary": "has",
+        "participle": "going",
+        "expectedParse": [
+          "he's",
+          "been",
+          "going"
+        ],
+        "observedParse": [
+          "he",
+          "has",
+          "been",
+          "going"
+        ],
+        "independentParseAgreement": true,
+        "permittedMode": "correction",
+        "referenceContextProvided": true,
+        "recognitionProvenanceProvided": true
+      },
+      "requiredRule": "asr09c-has-been-progressive",
+      "counterexample": {
+        "expected": "He has finished.",
+        "observed": "He's finished."
+      },
+      "decisionReason": "A proposed counterpart passes the bounded rule in an ASR-09A-authorized mode using the complete current production surface."
+    },
+    {
+      "candidateId": "ge-7665d3401ea32271",
+      "sourceType": "item",
+      "sourceId": "E0559",
+      "field": "en",
+      "fieldIndex": null,
+      "expectedSurface": "it's",
+      "sourceContext": "\"By the way, do you have the time?\" \"Let's see... it's a quarter to eight.\"",
+      "counterpartCandidates": [
+        "it is",
+        "it has"
+      ],
+      "allowedModes": [
+        "correction"
+      ],
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "selectedAuxiliary": null,
+      "contextEvidence": {
+        "subject": "it",
+        "tokenAfterCandidate": "a",
+        "uniqueParseEstablished": false
+      },
+      "requiredRule": null,
+      "counterexample": {
+        "id": "unapproved-ing-form",
+        "expected": "He's sleeping.",
+        "observed": "He is sleeping.",
+        "modes": [
+          "vocabulary",
+          "correction"
+        ]
+      },
+      "decisionReason": "The complete current context does not satisfy either allowlisted progressive parse, so no contextual equivalence is emitted."
+    }
+  ]
+}

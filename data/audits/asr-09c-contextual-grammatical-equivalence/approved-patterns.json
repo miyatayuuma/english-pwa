@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "decisionId": "ambiguous-s",
+  "authorityTier": "grammatical-variant",
+  "allowedModes": [
+    "vocabulary",
+    "correction"
+  ],
+  "subjects": [
+    "he",
+    "she",
+    "it"
+  ],
+  "progressiveParticipleAllowlist": [
+    "catching",
+    "going",
+    "raining",
+    "running",
+    "seeing",
+    "studying",
+    "working"
+  ],
+  "patterns": [
+    {
+      "ruleId": "asr09c-is-progressive",
+      "selectedAuxiliary": "is",
+      "expectedForm": "subject + is + allowlisted present participle",
+      "recognizedForm": "subject's + same allowlisted present participle",
+      "expectedTokenLength": 2,
+      "recognizedTokenLength": 1,
+      "minimalCounterexample": {
+        "expected": "He is finished.",
+        "observed": "He's finished."
+      }
+    },
+    {
+      "ruleId": "asr09c-has-been-progressive",
+      "selectedAuxiliary": "has",
+      "expectedForm": "subject + has + been + allowlisted present participle",
+      "recognizedForm": "subject's + been + same allowlisted present participle",
+      "expectedTokenLength": 2,
+      "recognizedTokenLength": 1,
+      "minimalCounterexample": {
+        "expected": "He has finished.",
+        "observed": "He's finished."
+      }
+    }
+  ],
+  "exclusions": [
+    "negative-s",
+    "got constructions",
+    "past participle and adjective readings",
+    "possessive apostrophe-s",
+    "subjects outside he/she/it",
+    "read and cloze modes",
+    "unlisted -ing forms"
+  ]
+}
