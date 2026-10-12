@@ -1,0 +1,282 @@
+{
+  "schemaVersion": 1,
+  "negativeControls": [
+    {
+      "id": "finished-is-ambiguous",
+      "expected": "He is finished.",
+      "observed": "He's finished.",
+      "modes": [
+        "vocabulary",
+        "correction"
+      ]
+    },
+    {
+      "id": "finished-has-ambiguous",
+      "expected": "He has finished.",
+      "observed": "He's finished.",
+      "modes": [
+        "vocabulary",
+        "correction"
+      ]
+    },
+    {
+      "id": "finished-reverse-is-ambiguous",
+      "expected": "He's finished.",
+      "observed": "He is finished.",
+      "modes": [
+        "vocabulary",
+        "correction"
+      ]
+    },
+    {
+      "id": "finished-reverse-has-ambiguous",
+      "expected": "He's finished.",
+      "observed": "He has finished.",
+      "modes": [
+        "vocabulary",
+        "correction"
+      ]
+    },
+    {
+      "id": "broken-adjective-collision",
+      "expected": "She's broken.",
+      "observed": "She has broken.",
+      "modes": [
+        "vocabulary",
+        "correction"
+      ]
+    },
+    {
+      "id": "done-adjective-collision",
+      "expected": "He's done.",
+      "observed": "He has done.",
+      "modes": [
+        "vocabulary",
+        "correction"
+      ]
+    },
+    {
+      "id": "invited-past-participle-collision",
+      "expected": "He's invited.",
+      "observed": "He is invited.",
+      "modes": [
+        "vocabulary",
+        "correction"
+      ]
+    },
+    {
+      "id": "is-been-invalid",
+      "expected": "He is been working.",
+      "observed": "He's been working.",
+      "modes": [
+        "vocabulary",
+        "correction"
+      ]
+    },
+    {
+      "id": "has-working-invalid",
+      "expected": "He has working.",
+      "observed": "He's working.",
+      "modes": [
+        "vocabulary",
+        "correction"
+      ]
+    },
+    {
+      "id": "is-progressive-evidence-missing",
+      "expected": "He is working.",
+      "observed": "He's",
+      "modes": [
+        "vocabulary",
+        "correction"
+      ]
+    },
+    {
+      "id": "has-progressive-evidence-missing",
+      "expected": "He has been working.",
+      "observed": "He's been",
+      "modes": [
+        "vocabulary",
+        "correction"
+      ]
+    },
+    {
+      "id": "is-progressive-head-only",
+      "expected": "She is studying.",
+      "observed": "She's",
+      "modes": [
+        "vocabulary",
+        "correction"
+      ]
+    },
+    {
+      "id": "unapproved-ing-form",
+      "expected": "He's sleeping.",
+      "observed": "He is sleeping.",
+      "modes": [
+        "vocabulary",
+        "correction"
+      ]
+    },
+    {
+      "id": "participle-disagreement",
+      "expected": "He is working.",
+      "observed": "He's running.",
+      "modes": [
+        "vocabulary",
+        "correction"
+      ]
+    },
+    {
+      "id": "is-has-parse-disagreement",
+      "expected": "He is working.",
+      "observed": "He's been working.",
+      "modes": [
+        "vocabulary",
+        "correction"
+      ]
+    },
+    {
+      "id": "has-is-parse-disagreement",
+      "expected": "He has been working.",
+      "observed": "He's working.",
+      "modes": [
+        "vocabulary",
+        "correction"
+      ]
+    },
+    {
+      "id": "negative-is-not",
+      "expected": "He is not finished.",
+      "observed": "He's not finished.",
+      "modes": [
+        "vocabulary",
+        "correction"
+      ]
+    },
+    {
+      "id": "negative-has-not",
+      "expected": "He has not finished.",
+      "observed": "He's not finished.",
+      "modes": [
+        "vocabulary",
+        "correction"
+      ]
+    },
+    {
+      "id": "negative-omitted",
+      "expected": "He is not working.",
+      "observed": "He's working.",
+      "modes": [
+        "vocabulary",
+        "correction"
+      ]
+    },
+    {
+      "id": "negative-added",
+      "expected": "He is working.",
+      "observed": "He's not working.",
+      "modes": [
+        "vocabulary",
+        "correction"
+      ]
+    },
+    {
+      "id": "negative-scope-reverse",
+      "expected": "He's not working.",
+      "observed": "He is not working.",
+      "modes": [
+        "vocabulary",
+        "correction"
+      ]
+    },
+    {
+      "id": "got-possession",
+      "expected": "He has got a car.",
+      "observed": "He's got a car.",
+      "modes": [
+        "vocabulary",
+        "correction"
+      ]
+    },
+    {
+      "id": "got-to",
+      "expected": "She has got to leave.",
+      "observed": "She's got to leave.",
+      "modes": [
+        "vocabulary",
+        "correction"
+      ]
+    },
+    {
+      "id": "john-possessive",
+      "expected": "John's book.",
+      "observed": "John is book.",
+      "modes": [
+        "vocabulary",
+        "correction"
+      ]
+    },
+    {
+      "id": "mary-possessive",
+      "expected": "Mary's idea.",
+      "observed": "Mary has idea.",
+      "modes": [
+        "vocabulary",
+        "correction"
+      ]
+    },
+    {
+      "id": "company-possessive",
+      "expected": "The company's policy.",
+      "observed": "The company is policy.",
+      "modes": [
+        "vocabulary",
+        "correction"
+      ]
+    },
+    {
+      "id": "its-homophone",
+      "expected": "It's raining.",
+      "observed": "Its raining.",
+      "modes": [
+        "vocabulary",
+        "correction"
+      ]
+    },
+    {
+      "id": "whose-homophone",
+      "expected": "Who's working?",
+      "observed": "Whose working?",
+      "modes": [
+        "vocabulary",
+        "correction"
+      ]
+    },
+    {
+      "id": "there-subject-out-of-scope",
+      "expected": "There is working.",
+      "observed": "There's working.",
+      "modes": [
+        "vocabulary",
+        "correction"
+      ]
+    },
+    {
+      "id": "read-isolation",
+      "expected": "He is working.",
+      "observed": "He's working.",
+      "modes": [
+        "read"
+      ]
+    },
+    {
+      "id": "cloze-isolation",
+      "expected": "She has been studying.",
+      "observed": "She's been studying.",
+      "modes": [
+        "cloze"
+      ]
+    }
+  ]
+}

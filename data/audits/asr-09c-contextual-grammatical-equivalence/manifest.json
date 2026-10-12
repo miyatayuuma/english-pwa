@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "audit": "ASR-09C Bounded Contextual 's Equivalence Production Acceptance",
+  "status": "IMPLEMENTATION_ACCEPTANCE",
+  "source": {
+    "repository": "miyatayuuma/english-pwa",
+    "productionBaselineMainSha": "09039633afd511bf7f76b47e74504fc491860991",
+    "asr09aAuditBaselineMainSha": "e1b56da18e0df1d583473a6f208a75333bd22969",
+    "asr09aDecisionId": "ambiguous-s",
+    "asr09aDisposition": "CONTEXT_CONDITIONAL",
+    "asr09aCorpusCandidateCount": 107,
+    "asr09aArtifactSha256": {
+      "decisions": "bddaea10381c9475270206f025a3629bac2f9ff2b716c9839608ca587e4a6d63",
+      "corpusCandidates": "2eed8ba1bb9ba6046864f2464edf978a22e38576e36e4b81582aec6e7df2f5b9",
+      "manifest": "169c8b347db1404f18f331611a1861d19d22e8f1734548ad6bceb4cdbd2c420e"
+    },
+    "vocabularyBlob": "91324d35b2db1911ece2cf3ff746409d321fe963",
+    "itemsBlob": "ae2aca768b784199b77ac1cf8c0c5a80fd5725bb",
+    "vocabularySha256": "12d8a01161f02a969fd34be190ced0c681c73252be37175a66561a734c9e0071",
+    "itemsSha256": "ea2ce9aa40a3b09971aed27371ca41411a3e9da72f3e76005778a7d701d26c45",
+    "appVersionBefore": "v5.102",
+    "appVersionAfter": "v5.103"
+  },
+  "productionScope": {
+    "ruleIds": [
+      "asr09c-is-progressive",
+      "asr09c-has-been-progressive"
+    ],
+    "allowedModes": [
+      "vocabulary",
+      "correction"
+    ],
+    "readClozeContextualRules": 0,
+    "vocabularyDataChanges": 0,
+    "itemDataChanges": 0
+  },
+  "performance": {
+    "runtime": "Node v24.19.0",
+    "methodology": "One-process, seven paired alternating samples per workload after 1,800 warmup calls per implementation; per-call medians; baseline worktree vs current branch.",
+    "measurements": [
+      {
+        "workload": "exact phrase",
+        "api": "findSpeechSurfaceMatch",
+        "baselineMsPerCall": 0.021498,
+        "currentMsPerCall": 0.022124,
+        "deltaPct": 2.9,
+        "deltaMicroseconds": 0.63
+      },
+      {
+        "workload": "ASR-09B fixed pair",
+        "api": "findSpeechSurfaceMatch",
+        "baselineMsPerCall": 0.011428,
+        "currentMsPerCall": 0.011598,
+        "deltaPct": 1.5,
+        "deltaMicroseconds": 0.17
+      },
+      {
+        "workload": "contextual ambiguous reject",
+        "api": "findSpeechSurfaceMatch",
+        "baselineMsPerCall": 0.015302,
+        "currentMsPerCall": 0.015594,
+        "deltaPct": 1.9,
+        "deltaMicroseconds": 0.29
+      },
+      {
+        "workload": "exact phrase",
+        "api": "alignSpeech",
+        "baselineMsPerCall": 0.730023,
+        "currentMsPerCall": 0.757591,
+        "deltaPct": 3.8,
+        "deltaMicroseconds": 27.57
+      },
+      {
+        "workload": "ASR-09B fixed pair",
+        "api": "alignSpeech",
+        "baselineMsPerCall": 0.102277,
+        "currentMsPerCall": 0.107034,
+        "deltaPct": 4.7,
+        "deltaMicroseconds": 4.76
+      }
+    ]
+  },
+  "corpusReconciliation": {
+    "total": 107,
+    "statusCounts": {
+      "SAFE_CONTEXT_RESOLVED": 3,
+      "AMBIGUOUS_UNRESOLVED": 53,
+      "REJECT": 3,
+      "OUT_OF_SCOPE": 48
+    },
+    "acceptedCandidateIds": [
+      "ge-18e0696d35c10ec7",
+      "ge-48759bb81ca2d7d6",
+      "ge-46cdf4db9913702c"
+    ]
+  }
+}

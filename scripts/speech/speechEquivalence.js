@@ -1,6 +1,10 @@
 import { safeSpeechTokens } from './safeSpeechNormalization.js';
 import { speechEquivalenceRules } from './speechEquivalenceRules.js';
 import { grammaticalEquivalenceRules } from './grammaticalEquivalenceRules.js';
+import {
+  isContextualSHeadAt,
+  resolveContextualGrammaticalEquivalence,
+} from './contextualGrammaticalEquivalence.js';
 
 function scopeAllows(rule, context = {}) {
   const scope = rule?.scope || { type: 'global' };
@@ -78,5 +82,18 @@ export function resolveSpeechTokenSpan(expectedTokens, expectedStart, observedTo
       displayPolicy: rule.display,
     };
   }
+  if ((context.mode !== 'vocabulary' && context.mode !== 'correction')
+    || (!isContextualSHeadAt(expectedTokens, expectedStart)
+      && !isContextualSHeadAt(observedTokens, observedStart))) return null;
+  const contextual = resolveContextualGrammaticalEquivalence({
+    expectedTokens,
+    observedTokens,
+    expectedStart,
+    observedStart,
+    mode: context.mode,
+    referenceContext: context.referenceContext ?? context,
+    recognitionProvenance: context.recognitionProvenance ?? null,
+  });
+  if (contextual.status === 'MATCH') return contextual;
   return null;
 }
