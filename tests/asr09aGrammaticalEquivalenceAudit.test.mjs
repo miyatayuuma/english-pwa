@@ -6,6 +6,7 @@ import { canonicalTokens } from '../scripts/utils/text.js';
 import { safeSpeechTokens } from '../scripts/speech/safeSpeechNormalization.js';
 import { findSpeechSurfaceMatch } from '../scripts/speech/speechAlignment.js';
 import { speechEquivalenceRules } from '../scripts/speech/speechEquivalenceRules.js';
+import { grammaticalEquivalenceRules } from '../scripts/speech/grammaticalEquivalenceRules.js';
 import { validateAudit, validateClosureEvidence } from '../scripts/speech/validate-asr-09a-grammatical-equivalence-audit.mjs';
 
 const auditDir = new URL('../data/audits/asr-09a-grammatical-equivalence/', import.meta.url);
@@ -67,9 +68,15 @@ test('ASR tokenization preserves apostrophe and word boundaries while legacy gen
   assert.notDeepEqual(canonicalTokens('we are'), canonicalTokens('were'));
 });
 
-test('ASR-09A records expansion as future audit authority without changing the production equivalence table', async () => {
+test('ASR-09A grammatical authority stays separate from the frozen explicit ASR table', async () => {
   const fixtures = await readJson('regression-fixtures.json');
-  assert.equal(findSpeechSurfaceMatch('I am ready.', 'I’m ready.', { context: { mode: 'read' } }), null);
+  const grammaticalMatch = findSpeechSurfaceMatch('I am ready.', 'I’m ready.', { context: { mode: 'read' } });
+  assert.equal(grammaticalMatch?.authority, 'grammatical-variant');
+  assert.equal(grammaticalMatch?.decisionId, 'fixed-be-have-will');
+  assert.equal(grammaticalMatch?.authorityTier, 'grammatical-variant');
+  assert.equal(speechEquivalenceRules.some(rule => rule.decisionId), false);
+  assert.ok(grammaticalEquivalenceRules.some(rule => rule.decisionId === 'fixed-be-have-will'));
+  assert.ok(grammaticalEquivalenceRules.some(rule => rule.decisionId === 'negative-fixed-pair'));
   assert.ok(speechEquivalenceRules.some(rule => rule.id === 'than-then'));
   assert.ok(speechEquivalenceRules.some(rule => rule.id === 'their-there'));
   assert.ok(speechEquivalenceRules.some(rule => rule.id === 'birthrate-birth-rate'));

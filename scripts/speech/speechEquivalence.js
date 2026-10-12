@@ -1,5 +1,6 @@
 import { safeSpeechTokens } from './safeSpeechNormalization.js';
 import { speechEquivalenceRules } from './speechEquivalenceRules.js';
+import { grammaticalEquivalenceRules } from './grammaticalEquivalenceRules.js';
 
 function scopeAllows(rule, context = {}) {
   const scope = rule?.scope || { type: 'global' };
@@ -14,6 +15,12 @@ function scopeAllows(rule, context = {}) {
 }
 
 const compiledRules = speechEquivalenceRules.map(rule => ({
+  ...rule,
+  expectedTokens: safeSpeechTokens(rule.expected).map(token => token.value),
+  recognizedTokens: safeSpeechTokens(rule.recognized).map(token => token.value),
+}));
+
+const compiledGrammaticalRules = grammaticalEquivalenceRules.map(rule => ({
   ...rule,
   expectedTokens: safeSpeechTokens(rule.expected).map(token => token.value),
   recognizedTokens: safeSpeechTokens(rule.recognized).map(token => token.value),
@@ -49,6 +56,23 @@ export function resolveSpeechTokenSpan(expectedTokens, expectedStart, observedTo
       expectedLength: ruleExpected.length,
       observedLength: ruleRecognized.length,
       authority: 'explicit-equivalence',
+      ruleId: rule.id,
+      ruleKind: rule.kind,
+      displayPolicy: rule.display,
+      authorityTier: rule.authorityTier ?? null,
+      decisionId: rule.decisionId ?? null,
+    };
+  }
+  for (const rule of compiledGrammaticalRules) {
+    if (rule.credit !== 'exact-equivalent' || !scopeAllows(rule, context)) continue;
+    if (!spanEquals(expectedTokens, expectedStart, rule.expectedTokens)
+      || !spanEquals(observedTokens, observedStart, rule.recognizedTokens)) continue;
+    return {
+      expectedLength: rule.expectedTokens.length,
+      observedLength: rule.recognizedTokens.length,
+      authority: 'grammatical-variant',
+      authorityTier: rule.authorityTier,
+      decisionId: rule.decisionId,
       ruleId: rule.id,
       ruleKind: rule.kind,
       displayPolicy: rule.display,

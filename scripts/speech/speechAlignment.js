@@ -68,6 +68,8 @@ function alignWindow(referenceTokens, observedTokens, start, end, context, prove
       const expectedTokenIndexes = Array.from({ length: resolution.expectedLength }, (_, offset) => referenceStart + offset);
       events.unshift({
         authority: resolution.authority,
+        authorityTier: resolution.authorityTier ?? null,
+        decisionId: resolution.decisionId ?? null,
         ruleId: resolution.ruleId,
         ruleKind: resolution.ruleKind,
         displayPolicy: resolution.displayPolicy,
@@ -291,10 +293,22 @@ export function findSpeechSurfaceMatch(expectedText, observedText, {
     while (expectedIndex < expectedTokens.length && observedIndex < observedTokens.length) {
       const resolution = resolveSpeechTokenSpan(expectedTokens, expectedIndex, observedTokens, observedIndex, context);
       if (!resolution) break;
+      const expectedFirst = expectedTokens[expectedIndex];
+      const expectedLast = expectedTokens[expectedIndex + resolution.expectedLength - 1];
+      const observedFirst = observedTokens[observedIndex];
+      const observedLast = observedTokens[observedIndex + resolution.observedLength - 1];
       events.push({
         ...resolution,
         expectedStartIndex: expectedIndex,
         observedStartIndex: observedIndex,
+        expectedTokenIndexes: Array.from({ length: resolution.expectedLength }, (_, offset) => expectedIndex + offset),
+        observedTokenIndexes: Array.from({ length: resolution.observedLength }, (_, offset) => observedIndex + offset),
+        expectedStart: expectedFirst.start,
+        expectedEnd: expectedLast.end,
+        observedStart: observedFirst.start,
+        observedEnd: observedLast.end,
+        expectedSurface: expected.slice(expectedFirst.start, expectedLast.end),
+        observedSurface: observed.slice(observedFirst.start, observedLast.end),
         recognitionSegmentIndex,
         recognitionSegmentIndexes,
         attemptId,
@@ -308,18 +322,28 @@ export function findSpeechSurfaceMatch(expectedText, observedText, {
     const startToken = observedTokens[start];
     const endToken = observedTokens[observedIndex - 1];
     const observedSurface = observed.slice(startToken.start, endToken.end);
-    const firstEquivalence = events.find(event => event.authority === 'explicit-equivalence');
+    const firstEquivalence = events.find(event => event.authority === 'explicit-equivalence' || event.authority === 'grammatical-variant');
     const display = displayPrimary && firstEquivalence?.displayPolicy === 'expected'
       ? `${observed.slice(0, startToken.start)}${expected}${observed.slice(endToken.end)}`
       : observed;
-    const authority = firstEquivalence ? 'explicit-equivalence' : 'exact';
+    const authority = firstEquivalence?.authority || 'exact';
     return {
       matched: true,
       expected,
       observed: observedSurface,
       authority,
+      authorityTier: firstEquivalence?.authorityTier ?? null,
+      decisionId: firstEquivalence?.decisionId ?? null,
       ruleId: firstEquivalence?.ruleId ?? null,
       ruleKind: firstEquivalence?.ruleKind ?? null,
+      matchedSpan: firstEquivalence ? {
+        expectedStart: firstEquivalence.expectedStart,
+        expectedEnd: firstEquivalence.expectedEnd,
+        observedStart: firstEquivalence.observedStart,
+        observedEnd: firstEquivalence.observedEnd,
+        expected: firstEquivalence.expectedSurface,
+        observed: firstEquivalence.observedSurface,
+      } : null,
       recognitionSegmentIndex,
       recognitionSegmentIndexes,
       attemptId,

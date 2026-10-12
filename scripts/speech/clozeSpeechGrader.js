@@ -92,6 +92,17 @@ function preservesExpectedNegation(alignment) {
   return requiredIndexes.every(index => matched.has(index));
 }
 
+function preservesGrammaticalNegationCardinality(alignment, selectedTranscript) {
+  const usesNegativeFixedPair = (alignment?.alignment || []).some(event =>
+    event?.authority === 'grammatical-variant' && event?.decisionId === 'negative-fixed-pair');
+  if (!usesNegativeFixedPair) return true;
+  const expectedCount = (alignment?.referenceTokens || [])
+    .filter(token => NEGATION_TOKENS.has(token.value)).length;
+  const observedCount = safeSpeechTokens(selectedTranscript)
+    .filter(token => NEGATION_TOKENS.has(token.value)).length;
+  return expectedCount === observedCount;
+}
+
 function prefixLength(referenceTokens, observedTokens, observedStart) {
   let expectedIndex = 0;
   let observedIndex = observedStart;
@@ -380,16 +391,18 @@ export function gradeClozeSpeech(alignment, context) {
     const matched = tokenIndexes.length > 0
       && tokenIndexes.every(index => matchedReference.has(index))
       && targetIsReproducedInPlace(gradedAlignment, tokenIndexes);
-    const explicit = events.find(event => event.authority === 'explicit-equivalence');
+    const approvedVariant = events.find(event => event.authority === 'explicit-equivalence' || event.authority === 'grammatical-variant');
     return {
       entryId: String(target?.entry_id || ''),
       expected: String(target?.surface || ''),
       matched,
-      authority: matched ? (explicit ? 'explicit-equivalence' : 'exact') : 'unmatched',
-      ruleId: matched ? (explicit?.ruleId || null) : null,
-      ruleKind: matched ? (explicit?.ruleKind || null) : null,
-      recognitionSegmentIndex: matched ? (explicit?.recognitionSegmentIndex ?? events[0]?.recognitionSegmentIndex ?? null) : null,
-      asrRank: matched ? (explicit?.asrRank ?? events[0]?.asrRank ?? 0) : null,
+      authority: matched ? (approvedVariant?.authority || 'exact') : 'unmatched',
+      authorityTier: matched ? (approvedVariant?.authorityTier || null) : null,
+      decisionId: matched ? (approvedVariant?.decisionId || null) : null,
+      ruleId: matched ? (approvedVariant?.ruleId || null) : null,
+      ruleKind: matched ? (approvedVariant?.ruleKind || null) : null,
+      recognitionSegmentIndex: matched ? (approvedVariant?.recognitionSegmentIndex ?? events[0]?.recognitionSegmentIndex ?? null) : null,
+      asrRank: matched ? (approvedVariant?.asrRank ?? events[0]?.asrRank ?? 0) : null,
       rawTranscript: String(alignment?.rawTranscript || ''),
       displayTranscript: String(alignment?.displayTranscript || alignment?.rawTranscript || ''),
     };
@@ -398,10 +411,11 @@ export function gradeClozeSpeech(alignment, context) {
   const allTargetsMatched = hasTargets && targetResults.every(target => target.matched);
   const orderedMatchIntegrity = gradedAlignment?.orderedMatchIntegrity || { valid: true, violations: [] };
   const negationPreserved = preservesExpectedNegation(gradedAlignment);
+  const grammaticalNegationIntegrity = preservesGrammaticalNegationCardinality(gradedAlignment, reproduction.transcript);
   const completeness = active ? clozeReproductionCompleteness(reproduction.localAlignment) : {
     algorithm: 'cloze-material-span-v1', complete: true, missingSpans: [], blockingSpans: [],
   };
-  const overallScore = negationPreserved ? reproduction.score : 0;
+  const overallScore = negationPreserved && grammaticalNegationIntegrity ? reproduction.score : 0;
   const pass = active
     && overallScore >= CLOZE_PASS_THRESHOLD
     && completeness.complete
@@ -413,6 +427,7 @@ export function gradeClozeSpeech(alignment, context) {
     orderedMatchIntegrity,
     rawOrderedMatchIntegrity: alignment?.orderedMatchIntegrity || { valid: true, violations: [] },
     negationPreserved,
+    grammaticalNegationIntegrity,
     completeness,
     alignment: gradedAlignment,
     repair: {

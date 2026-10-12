@@ -178,6 +178,29 @@ for(const rank of [6,12,20]) test(`Android adapter/controller uses shared TARGET
   assert.equal(grade.asrRank,rank-1);assert.equal(result.recognitionSegments[0].alternatives.length,20);
 });
 
+test('Android final transcript uses the shared grammatical-variant grading authority',async()=>{
+  const {classifyVocabularySpeechAnswer}=await import('../scripts/speech/vocabularySpeechEvidence.js');
+  const f=fixture();let driver;
+  class Backend extends AndroidSpeechRecognizerBackend{constructor(){super({pluginProvider:async()=>f.plugin});driver=this;drivers.push(this);}}
+  const controller=createRecognitionController({recognitionBackend:Backend});
+  controller.start();await driver.startup;
+  const pending=controller.stop();
+  f.emit(driver,'final',[{transcript:"I'm ready",confidence:0.9}]);
+  f.emit(driver,'end');const evidence=await pending;
+  const grade=classifyVocabularySpeechAnswer({
+    entry:{id:'android-asr09b',canonical:'I am ready'},
+    ...evidence,
+    attemptId:'android-attempt-09b',
+  });
+  assert.equal(grade.type,'target');
+  assert.equal(grade.recognitionAuthority,'grammatical-variant');
+  assert.equal(grade.decisionId,'fixed-be-have-will');
+  assert.equal(grade.rawTranscript,"I'm ready");
+  assert.equal(grade.speechMatch.recognitionSegmentIndex,0);
+  assert.equal(grade.speechMatch.asrRank,0);
+  assert.equal(grade.speechMatch.attemptId,'android-attempt-09b');
+});
+
 test('Android provider evidence reaches shared curated Vocabulary chunk rescue at retained N-best rank',async()=>{
   const {classifyVocabularySpeechAnswer}=await import('../scripts/speech/vocabularySpeechEvidence.js');
   const chunks=vocabularyChunkRescueChunks(production139);

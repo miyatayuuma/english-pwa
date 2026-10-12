@@ -264,10 +264,11 @@ before(async()=>{
     });
   }catch(error){
     browserError=`local test server unavailable: ${error?.code||error?.message||error}`;
+    if(process.env.REORDER_REQUIRE_BROWSER) throw error;
     return;
   }
   baseUrl=`http://127.0.0.1:${server.address().port}`;
-  try{browser=await chromium.launch({headless:true});}catch(error){browserError=String(error?.message??error).split('\n')[0];}
+  try{browser=await chromium.launch({headless:true});}catch(error){browserError=String(error?.message??error).split('\n')[0];if(process.env.REORDER_REQUIRE_BROWSER)throw error;}
 });
 
 after(async()=>{await browser?.close();if(server?.listening) await new Promise(resolve=>server.close(resolve));});

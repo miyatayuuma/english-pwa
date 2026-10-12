@@ -23,7 +23,7 @@ before(async()=>{
       server.once('error',reject);
       server.listen(0,'127.0.0.1',resolve);
     });
-  }catch(_){server=null;return;}
+  }catch(error){if(process.env.REORDER_REQUIRE_BROWSER)throw error;server=null;return;}
   url=`http://127.0.0.1:${server.address().port}`;
   try{browser=await chromium.launch({headless:true,timeout:5000});}catch(error){if(process.env.REORDER_REQUIRE_BROWSER)throw error;}
 });
