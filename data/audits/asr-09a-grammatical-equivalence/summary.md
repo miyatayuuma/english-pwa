@@ -49,6 +49,10 @@ Counts classify detected spans; they are not production approvals. Each ambiguou
 
 ## Repository closure gate
 
-The grammatical-equivalence authority is closed and ASR-09B-ready. Repository merge closure is blocked by the existing `npm run speech:validate-td-cluster-before-to` check: record `tdc-00002` references `vocab:00528` paraphrases[0], but the current immutable baseline has the same accepted surface at paraphrases[1]. The production T/D rule and its regression tests remain unchanged. Refreshing that separate materialization/validator is outside this audit-only change scope.
+Repository closure is **CLOSED**. ASR-09A audit authority remains CLOSED and is ready for ASR-09B implementation; this is not an ASR-09B production change.
+- T/D validator repair: PR #327, merge `9aed421af7427c115f722ffad5809ff3466fa39b`.
+- T/D evidence: `data/audits/vocabulary-td-cluster-before-to-production/current-main-reconciliation.json` (Git blob `8f55f0ac88aa02e6bfc7af535625fe7a350f97f2`). Reconciliation accepted **36/36** records: **34 UNCHANGED**, **2 INDEX_RELOCATED**, **0 unresolved drift**. `tdc-00002` (`vocab:00528`, `be forced to do something`) and `tdc-00007` (`vocab:00634`, `tend to do something`) moved from paraphrase index 0 to 1 while retaining unique exact surfaces, PARAPHRASE classification, and entry-scoped rescue.
+- ASR-09A audit closure: PR #326, merge `1a8c6b9e4267f390498dab9bc4b0ba9374d6d16c` (required PR checks succeeded before merge).
+- Historical audit baseline `e1b56da18e0df1d583473a6f208a75333bd22969` and its production blobs are unchanged. Former `tdc-00002` validation failure is resolved, not an active blocker.
 
 See `architecture-report.md` for implementation comparison, risks, exact constraints, and next-task guidance.

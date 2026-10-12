@@ -59,7 +59,11 @@ The current alignment supports explicit ordered 1↔N spans, mode/entry/provider
 
 ## Repository closure gate
 
-The ASR-09A authority is closed, but repository merge closure is blocked until the separate t/d-cluster validation is reconciled against this baseline. The checked record tdc-00002 refers to paraphrases[0] for vocab:00528; current main has the same accepted paraphrase at index 1. The T/D production rules are unchanged and their behavior tests pass. This audit does not edit the separate T/D materialization or validator.
+Repository closure is **CLOSED**. ASR-09A audit authority remains CLOSED and is ready for ASR-09B implementation; this is not an ASR-09B production change.
+- T/D validator repair: PR #327, merge `9aed421af7427c115f722ffad5809ff3466fa39b`.
+- T/D evidence: `data/audits/vocabulary-td-cluster-before-to-production/current-main-reconciliation.json` (Git blob `8f55f0ac88aa02e6bfc7af535625fe7a350f97f2`). Reconciliation accepted **36/36** records: **34 UNCHANGED**, **2 INDEX_RELOCATED**, **0 unresolved drift**. `tdc-00002` (`vocab:00528`, `be forced to do something`) and `tdc-00007` (`vocab:00634`, `tend to do something`) moved from paraphrase index 0 to 1 while retaining unique exact surfaces, PARAPHRASE classification, and entry-scoped rescue.
+- ASR-09A audit closure: PR #326, merge `1a8c6b9e4267f390498dab9bc4b0ba9374d6d16c` (required PR checks succeeded before merge).
+- Historical audit baseline `e1b56da18e0df1d583473a6f208a75333bd22969` and its production blobs are unchanged. Former `tdc-00002` validation failure is resolved, not an active blocker.
 
 ## Regression obligations and remaining risks
 
