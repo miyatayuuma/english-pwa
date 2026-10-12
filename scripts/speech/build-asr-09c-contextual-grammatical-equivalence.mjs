@@ -3,6 +3,7 @@ import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { isAppVersionAtLeast } from './appVersionBoundary.js';
 import {
   ASR09C_CONTEXTUAL_PATTERNS,
   ASR09C_PROGRESSIVE_PARTICIPLES,
@@ -15,6 +16,7 @@ const OUTPUT_DIR = path.join(ROOT, 'data/audits/asr-09c-contextual-grammatical-e
 const AUDIT_09A_DIR = path.join(ROOT, 'data/audits/asr-09a-grammatical-equivalence');
 const AUDIT_09A_BASELINE = 'e1b56da18e0df1d583473a6f208a75333bd22969';
 const PRODUCTION_BASELINE = '09039633afd511bf7f76b47e74504fc491860991';
+const ASR09C_IMPLEMENTATION_VERSION = 'v5.103';
 const SOURCE_SHA256 = Object.freeze({
   vocabulary: '12d8a01161f02a969fd34be190ced0c681c73252be37175a66561a734c9e0071',
   items: 'ea2ce9aa40a3b09971aed27371ca41411a3e9da72f3e76005778a7d701d26c45',
@@ -67,7 +69,8 @@ const oldCandidates = JSON.parse(auditFiles.corpusCandidates.toString('utf8')).c
 const newNegativeControls = readJson('tests/fixtures/asr09c-negative-controls.json');
 const appVersion = readBytes('scripts/version.js').toString('utf8').match(/APP_VERSION\s*=\s*'(v\d+\.\d+)'/)?.[1];
 
-assert.equal(appVersion, 'v5.103', 'ASR-09C production grading requires the v5.103 cache boundary');
+assert.ok(isAppVersionAtLeast(appVersion, ASR09C_IMPLEMENTATION_VERSION),
+  `Current APP_VERSION must be at least ${ASR09C_IMPLEMENTATION_VERSION} for ASR-09C grading.`);
 assert.equal(oldManifest.source.baselineMainSha, AUDIT_09A_BASELINE, 'ASR-09A audit source baseline is immutable');
 assert.equal(oldManifest.source.vocabularyBlob, SOURCE_GIT_BLOBS.vocabulary);
 assert.equal(oldManifest.source.itemsBlob, SOURCE_GIT_BLOBS.items);
@@ -245,7 +248,7 @@ const manifest = {
     vocabularySha256: SOURCE_SHA256.vocabulary,
     itemsSha256: SOURCE_SHA256.items,
     appVersionBefore: 'v5.102',
-    appVersionAfter: appVersion,
+    appVersionAfter: ASR09C_IMPLEMENTATION_VERSION,
   },
   productionScope: {
     ruleIds: ASR09C_CONTEXTUAL_PATTERNS.map(row => row.ruleId),
