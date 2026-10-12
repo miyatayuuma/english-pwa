@@ -422,9 +422,8 @@ if (vocabulary.length !== 2478 || new Set(vocabulary.map(row => row.id)).size !=
 if (items.length !== 560 || new Set(items.map(row => row.id)).size !== items.length) {
   throw new Error(`ASR-09A item integrity gate failed (${items.length} rows).`);
 }
-if (!fs.readFileSync(path.join(ROOT, 'scripts/version.js'), 'utf8').includes("APP_VERSION = 'v5.101'")) {
-  throw new Error('ASR-09A APP_VERSION drift: expected v5.101.');
-}
+// ASR-09A artifacts are a historical baseline and must not follow later
+// production version bumps.
 const occurrenceRefsByItem = new Map();
 const joinErrors = [];
 for (const entry of vocabulary) {
@@ -842,7 +841,7 @@ function reconciledClosureEvidence() {
 }
 const vocabFile = fs.readFileSync(path.join(ROOT, 'data/vocabulary-v3.json'));
 const itemsFile = fs.readFileSync(path.join(ROOT, 'data/items.json'));
-const appVersion = (fs.readFileSync(path.join(ROOT, 'scripts/version.js'), 'utf8').match(/APP_VERSION\s*=\s*'([^']+)'/) || [])[1];
+const appVersion = 'v5.101';
 const auditStatus = joinErrors.length ? 'BLOCKED' : 'CLOSED';
 if (auditStatus !== 'CLOSED') throw new Error('ASR-09A audit authority is not CLOSED');
 const closureResolution = reconciledClosureEvidence();

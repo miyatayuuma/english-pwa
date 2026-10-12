@@ -3501,13 +3501,26 @@ function createAppRuntime(){
         accepted:checked.accepted===true,score:checked.matchRate??null,pass:checked.evaluation?.pass??checked.correctionGrade?.success??false,
         recognitionAuthority:checked.clozeResult?.targets?.find(target=>target.matched)?.authority
           ??checked.alignment?.alignment?.find(event=>event?.authority)?.authority??'read-alignment',
+        authorityTier:checked.clozeResult?.targets?.find(target=>target.matched)?.authorityTier
+          ??checked.alignment?.alignment?.find(event=>event?.authority)?.authorityTier??null,
+        decisionId:checked.clozeResult?.targets?.find(target=>target.matched)?.decisionId
+          ??checked.alignment?.alignment?.find(event=>event?.authority)?.decisionId??null,
         ruleId:checked.clozeResult?.targets?.find(target=>target.matched)?.ruleId
-          ??checked.alignment?.alignment?.find(event=>event?.authority==='explicit-equivalence')?.ruleId??null,
+          ??checked.alignment?.alignment?.find(event=>event?.authority==='explicit-equivalence'||event?.authority==='grammatical-variant')?.ruleId??null,
         ruleKind:checked.clozeResult?.targets?.find(target=>target.matched)?.ruleKind
-          ??checked.alignment?.alignment?.find(event=>event?.authority==='explicit-equivalence')?.ruleKind??null,
+          ??checked.alignment?.alignment?.find(event=>event?.authority==='explicit-equivalence'||event?.authority==='grammatical-variant')?.ruleKind??null,
+        grammaticalVariantMatches:(checked.alignment?.alignment||[]).filter(event=>event?.authority==='grammatical-variant').map(event=>({
+          authority:event.authority,authorityTier:event.authorityTier,decisionId:event.decisionId,ruleId:event.ruleId,
+          expectedSpan:{start:event.expectedStart,end:event.expectedEnd,text:event.expected},
+          observedSpan:{start:event.observedStart,end:event.observedEnd,text:event.observed},
+          referenceTokenIndexes:event.expectedTokenIndexes,observedTokenIndexes:event.observedTokenIndexes,
+          recognitionSegmentIndex:event.recognitionSegmentIndex,asrRank:event.asrRank,attemptId:event.attemptId,
+          rawTranscript:String(checked.candidate?.transcript??checked.alignment?.rawTranscript??''),
+        })),
         cloze:checked.clozeResult?.active?{
           repair:checked.clozeResult.repair,completeness:checked.clozeResult.completeness,
           negationPreserved:checked.clozeResult.negationPreserved,
+          grammaticalNegationIntegrity:checked.clozeResult.grammaticalNegationIntegrity,
           hiddenTargetResults:checked.clozeResult.targets,orderedMatchIntegrity:checked.clozeResult.orderedMatchIntegrity,
           overallScore:checked.clozeResult.overallScore,pass:checked.clozeResult.pass,
         }:null,
@@ -3526,16 +3539,29 @@ function createAppRuntime(){
       recognitionSegments:outcome.recognitionSegments??[],
       recognitionAuthority:selected?.clozeResult?.targets?.find(target=>target.matched)?.authority
         ??selected?.alignment?.alignment?.find(event=>event?.authority)?.authority??'read-alignment',
+      authorityTier:selected?.clozeResult?.targets?.find(target=>target.matched)?.authorityTier
+        ??selected?.alignment?.alignment?.find(event=>event?.authority)?.authorityTier??null,
+      decisionId:selected?.clozeResult?.targets?.find(target=>target.matched)?.decisionId
+        ??selected?.alignment?.alignment?.find(event=>event?.authority)?.decisionId??null,
       ruleId:selected?.clozeResult?.targets?.find(target=>target.matched)?.ruleId
-        ??selected?.alignment?.alignment?.find(event=>event?.authority==='explicit-equivalence')?.ruleId??null,
+        ??selected?.alignment?.alignment?.find(event=>event?.authority==='explicit-equivalence'||event?.authority==='grammatical-variant')?.ruleId??null,
       ruleKind:selected?.clozeResult?.targets?.find(target=>target.matched)?.ruleKind
-        ??selected?.alignment?.alignment?.find(event=>event?.authority==='explicit-equivalence')?.ruleKind??null,
+        ??selected?.alignment?.alignment?.find(event=>event?.authority==='explicit-equivalence'||event?.authority==='grammatical-variant')?.ruleKind??null,
+      grammaticalVariantMatches:(selected?.alignment?.alignment||[]).filter(event=>event?.authority==='grammatical-variant').map(event=>({
+        authority:event.authority,authorityTier:event.authorityTier,decisionId:event.decisionId,ruleId:event.ruleId,
+        expectedSpan:{start:event.expectedStart,end:event.expectedEnd,text:event.expected},
+        observedSpan:{start:event.observedStart,end:event.observedEnd,text:event.observed},
+        referenceTokenIndexes:event.expectedTokenIndexes,observedTokenIndexes:event.observedTokenIndexes,
+        recognitionSegmentIndex:event.recognitionSegmentIndex,asrRank:event.asrRank,attemptId:event.attemptId,
+        rawTranscript:String(selectedForTrace?.transcript??selected?.alignment?.rawTranscript??''),
+      })),
       acceptanceDecision:selected?{accepted:selected.accepted===true,pass:selected.evaluation?.pass??selected.correctionGrade?.success??false,
         score:selected.matchRate??null,correctionSuccess:selected.correctionGrade?.success??null}:null,
       cloze:selected?.clozeResult?.active?{
         context:clozeContext,selectedNbestCandidate:selectedForTrace,
         repair:selected.clozeResult.repair,completeness:selected.clozeResult.completeness,
         negationPreserved:selected.clozeResult.negationPreserved,
+        grammaticalNegationIntegrity:selected.clozeResult.grammaticalNegationIntegrity,
         hiddenTargetResults:selected.clozeResult.targets,orderedMatchIntegrity:selected.clozeResult.orderedMatchIntegrity,
         overallScore:selected.clozeResult.overallScore,pass:selected.clozeResult.pass,
       }:null,

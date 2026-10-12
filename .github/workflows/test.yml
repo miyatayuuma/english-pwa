@@ -53,6 +53,14 @@ jobs:
         run: npm ci
       - name: Install headless Chromium
         run: npx playwright install --with-deps chromium
+      - name: Validate speech and vocabulary production authority
+        run: |
+          npm run speech:validate-td-cluster-before-to
+          npm run speech:validate-asr-09b
+          node scripts/speech/validate-asr-09a-grammatical-equivalence-audit.mjs
+          node scripts/speech/build-asr-09a-grammatical-equivalence-audit.mjs --check
+          npm run vocab:check-derived
+          npm run vocab:validate
       - name: Run unit and pointer-browser tests
         run: node --experimental-default-type=module --test tests/*.test.mjs
         env:

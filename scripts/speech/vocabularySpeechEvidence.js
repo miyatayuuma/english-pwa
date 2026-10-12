@@ -24,6 +24,30 @@ function vocabularyCarrierSurface(value) {
   };
 }
 
+function restoreCarrierSourceOffsets(match, rawTranscript, gradingTranscript) {
+  if (!match) return match;
+  const observedOffset = rawTranscript.indexOf(gradingTranscript);
+  if (observedOffset < 0) return { ...match, rawTranscript, displayTranscript: rawTranscript };
+  const observedTokenOffset = safeSpeechTokens(rawTranscript.slice(0, observedOffset)).length;
+  const shiftSpan = span => span ? {
+    ...span,
+    observedStart: span.observedStart + observedOffset,
+    observedEnd: span.observedEnd + observedOffset,
+  } : span;
+  return {
+    ...match,
+    rawTranscript,
+    displayTranscript: rawTranscript,
+    matchedSpan: shiftSpan(match.matchedSpan),
+    alignment: (match.alignment || []).map(event => ({
+      ...event,
+      observedStart: event.observedStart + observedOffset,
+      observedEnd: event.observedEnd + observedOffset,
+      observedTokenIndexes: (event.observedTokenIndexes || []).map(index => index + observedTokenOffset),
+    })),
+  };
+}
+
 function evidenceMetadata(transcript, { attemptId = null, recognitionComplete = false, recognitionSegments = [] } = {}) {
   return {
     primaryTranscript: transcript,
@@ -92,11 +116,7 @@ function targetProductionWithCarrier(options) {
   if (!carriedMatch) return null;
   return {
     ...carriedMatch,
-    match: {
-      ...carriedMatch.match,
-      rawTranscript,
-      displayTranscript: rawTranscript,
-    },
+    match: restoreCarrierSourceOffsets(carriedMatch.match, rawTranscript, candidate.surface),
     speechCarrier: {
       prefix: VOCABULARY_SPEECH_CARRIER,
       gradingTranscript: candidate.surface,
@@ -104,7 +124,7 @@ function targetProductionWithCarrier(options) {
   };
 }
 
-function explicitParaphraseProduction({ entry, activeOccurrence, transcript, recognitionSegments }) {
+function explicitParaphraseProduction({ entry, activeOccurrence, transcript, recognitionSegments, attemptId = null }) {
   const rawTranscript = String(transcript ?? '');
   const candidate = vocabularyCarrierSurface(rawTranscript);
   const gradingTranscript = candidate.removed ? candidate.surface : rawTranscript;
@@ -112,8 +132,10 @@ function explicitParaphraseProduction({ entry, activeOccurrence, transcript, rec
   if (!observedTokens.length) return null;
   for (const expected of Array.isArray(entry?.paraphrases) ? entry.paraphrases : []) {
     const segmentIndex = primarySegmentIndexFor(expected, entry, recognitionSegments);
-    const match = speechMatch(expected, gradingTranscript, entry, segmentIndex, 0, false);
-    if (!match || (!candidate.removed && match.authority !== 'explicit-equivalence')) continue;
+    const match = speechMatch(expected, gradingTranscript, entry, segmentIndex, 0, false, [], attemptId);
+    if (!match || (!candidate.removed
+      && match.authority !== 'explicit-equivalence'
+      && match.authority !== 'grammatical-variant')) continue;
     const matchedTokens = safeSpeechTokens(match.observed).map(token => token.value);
     // Preserve the complete-surface rule: a carrier may precede one accepted
     // paraphrase, but any additional answer tokens still reject it.
@@ -124,11 +146,7 @@ function explicitParaphraseProduction({ entry, activeOccurrence, transcript, rec
     return {
       ...classified,
       matchedText: expected,
-      match: candidate.removed ? {
-        ...match,
-        rawTranscript,
-        displayTranscript: rawTranscript,
-      } : match,
+      match: candidate.removed ? restoreCarrierSourceOffsets(match, rawTranscript, gradingTranscript) : match,
       ...(candidate.removed ? {
         speechCarrier: {
           prefix: VOCABULARY_SPEECH_CARRIER,
@@ -141,7 +159,9 @@ function explicitParaphraseProduction({ entry, activeOccurrence, transcript, rec
 }
 
 function isStrictMatch(match) {
-  return match?.authority === 'exact' || match?.authority === 'explicit-equivalence';
+  return match?.authority === 'exact'
+    || match?.authority === 'explicit-equivalence'
+    || match?.authority === 'grammatical-variant';
 }
 
 function chunkMatch(expected, transcript, entry, segmentIndex, rank) {
@@ -270,11 +290,15 @@ function resultForTarget(target, metadata, {
   primaryDisplay = false,
 } = {}) {
   const match = target.match;
-  const explicit = match?.authority === 'explicit-equivalence';
-  const recognitionAuthority = explicit ? 'explicit-equivalence' : authority;
+  const approvedAuthority = match?.authority;
+  const recognitionAuthority = approvedAuthority === 'explicit-equivalence' || approvedAuthority === 'grammatical-variant'
+    ? approvedAuthority
+    : authority;
   const displayTranscript = primaryDisplay
     ? (match?.displayTranscript || transcript)
-    : (explicit && match?.displayTranscript !== match?.rawTranscript ? match.displayTranscript : metadata.primaryTranscript);
+    : (approvedAuthority === 'explicit-equivalence' && match?.displayTranscript !== match?.rawTranscript
+      ? match.displayTranscript
+      : metadata.primaryTranscript);
   return {
     ...target,
     ...metadata,
@@ -289,13 +313,19 @@ function resultForTarget(target, metadata, {
     attemptId,
     asrRank: rank ?? 0,
     recognitionAuthority,
+    authorityTier: match?.authorityTier ?? null,
+    decisionId: match?.decisionId ?? null,
     speechMatch: match ? {
       matched: true,
       expected: target.matchedText,
       observed: match.observed,
       authority: match.authority,
+      authorityTier: match.authorityTier ?? null,
+      decisionId: match.decisionId ?? null,
       ruleId: match.ruleId,
       ruleKind: match.ruleKind,
+      matchedSpan: match.matchedSpan ?? null,
+      alignment: match.alignment ?? [],
       recognitionSegmentIndex: segmentIndex ?? null,
       recognitionSegmentIndexes: segmentIndexes,
       attemptId,
@@ -306,8 +336,8 @@ function resultForTarget(target, metadata, {
   };
 }
 
-function exactVocabularyMatch(classification, transcript, entry, activeOccurrence, segmentIndex) {
-  const match = speechMatch(classification.matchedText, transcript, entry, segmentIndex, 0, true);
+function exactVocabularyMatch(classification, transcript, entry, activeOccurrence, segmentIndex, attemptId = null) {
+  const match = speechMatch(classification.matchedText, transcript, entry, segmentIndex, 0, true, [], attemptId);
   if (match) return { match, authority: 'exact' };
   // Keep the existing Vocabulary surface normalizer authoritative for exact
   // primary answers; no new semantic answer variants are inferred here.
@@ -353,7 +383,7 @@ export function classifyVocabularySpeechAnswer({ entry, activeOccurrence = null,
   const primarySegmentIndex = primarySegmentIndexFor(primary.matchedText, entry, recognitionSegments);
 
   if (primary.type === 'target') {
-    const { match } = exactVocabularyMatch(primary, primaryTranscript, entry, activeOccurrence, primarySegmentIndex);
+    const { match } = exactVocabularyMatch(primary, primaryTranscript, entry, activeOccurrence, primarySegmentIndex, attemptId);
     const result = {
       ...primary,
       ...metadata,
@@ -365,7 +395,9 @@ export function classifyVocabularySpeechAnswer({ entry, activeOccurrence = null,
       recognitionSegmentIndex: primarySegmentIndex,
       recognitionSegmentIndexes: metadata.recognitionSegmentIndexes,
       asrRank: 0,
-      recognitionAuthority: 'exact',
+      recognitionAuthority: match.authority,
+      authorityTier: match.authorityTier ?? null,
+      decisionId: match.decisionId ?? null,
       speechMatch: match,
       targetMatchKind: 'full-surface',
     };
@@ -373,7 +405,7 @@ export function classifyVocabularySpeechAnswer({ entry, activeOccurrence = null,
   }
 
   if (primary.type === 'paraphrase' && !correction) {
-    const match = speechMatch(primary.matchedText, primaryTranscript, entry, primarySegmentIndex, 0, true);
+    const match = speechMatch(primary.matchedText, primaryTranscript, entry, primarySegmentIndex, 0, true, [], attemptId);
     return {
       ...primary,
       ...metadata,
@@ -383,7 +415,9 @@ export function classifyVocabularySpeechAnswer({ entry, activeOccurrence = null,
       recognitionSegmentIndex: primarySegmentIndex,
       recognitionSegmentIndexes: metadata.recognitionSegmentIndexes,
       asrRank: 0,
-      recognitionAuthority: match?.authority === 'explicit-equivalence' ? 'explicit-equivalence' : 'exact',
+      recognitionAuthority: match?.authority || 'exact',
+      authorityTier: match?.authorityTier ?? null,
+      decisionId: match?.decisionId ?? null,
       speechMatch: match,
     };
   }
@@ -394,6 +428,7 @@ export function classifyVocabularySpeechAnswer({ entry, activeOccurrence = null,
     transcript: primaryTranscript,
     segmentIndex: primarySegmentIndex,
     rank: 0,
+    attemptId,
     displayPrimary: true,
   });
   if (contained) {
@@ -402,6 +437,7 @@ export function classifyVocabularySpeechAnswer({ entry, activeOccurrence = null,
       transcript: primaryTranscript,
       authority: 'exact',
       segmentIndex: containedSegmentIndex,
+      attemptId,
       rank: 0,
       primaryDisplay: true,
     });
@@ -413,6 +449,7 @@ export function classifyVocabularySpeechAnswer({ entry, activeOccurrence = null,
       activeOccurrence,
       transcript: primaryTranscript,
       recognitionSegments,
+      attemptId,
     });
     if (paraphrase) {
       return {
@@ -425,7 +462,9 @@ export function classifyVocabularySpeechAnswer({ entry, activeOccurrence = null,
         displayTranscript: primaryTranscript,
         recognitionSegmentIndex: paraphrase.match.recognitionSegmentIndex,
         asrRank: 0,
-        recognitionAuthority: paraphrase.match.authority === 'explicit-equivalence' ? 'explicit-equivalence' : 'exact',
+        recognitionAuthority: paraphrase.match.authority || 'exact',
+        authorityTier: paraphrase.match.authorityTier ?? null,
+        decisionId: paraphrase.match.decisionId ?? null,
         targetRescued: false,
         speechMatch: paraphrase.match,
       };
@@ -445,10 +484,10 @@ export function classifyVocabularySpeechAnswer({ entry, activeOccurrence = null,
       displayPrimary: true,
     });
     if (!accepted) continue;
-    const explicit = accepted.match.authority === 'explicit-equivalence';
+    const approvedAuthority = accepted.match.authority === 'explicit-equivalence' || accepted.match.authority === 'grammatical-variant';
     return resultForTarget(accepted, metadata, {
       transcript: candidateTranscript,
-      authority: explicit ? 'explicit-equivalence' : 'nbest-exact',
+      authority: approvedAuthority ? accepted.match.authority : 'nbest-exact',
       segmentIndex: candidate.segmentIndex,
       segmentIndexes: candidate.segmentIndexes,
       attemptId,
