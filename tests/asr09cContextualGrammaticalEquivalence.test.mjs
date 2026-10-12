@@ -8,6 +8,7 @@ import { classifyVocabularySpeechAnswer } from '../scripts/speech/vocabularySpee
 import { gradeCorrectionSpeech } from '../scripts/speech/correctionSpeechGrader.js';
 import { createCorrectionProgress, recordCorrectionAttempt } from '../scripts/speech/correctionProgress.js';
 import { grammaticalEquivalenceRules } from '../scripts/speech/grammaticalEquivalenceRules.js';
+import { isAppVersionAtLeast } from '../scripts/speech/appVersionBoundary.js';
 
 const positives = JSON.parse(readFileSync(new URL('./fixtures/asr09c-positive-controls.json', import.meta.url), 'utf8')).positiveControls;
 const negatives = JSON.parse(readFileSync(new URL('../data/audits/asr-09c-contextual-grammatical-equivalence/negative-controls.json', import.meta.url), 'utf8')).negativeControls;
@@ -51,6 +52,14 @@ test('the resolver independently parses both complete sequences and returns only
   });
   assert.equal(readMode.status, 'UNRESOLVED');
   assert.equal(readMode.reason, 'mode-not-authorized');
+});
+
+test('the acceptance validator keeps its v5.103 implementation boundary while allowing later app versions', () => {
+  assert.equal(isAppVersionAtLeast('v5.103', 'v5.103'), true);
+  assert.equal(isAppVersionAtLeast('v5.104', 'v5.103'), true);
+  assert.equal(isAppVersionAtLeast('v6.0', 'v5.103'), true);
+  assert.equal(isAppVersionAtLeast('v5.102', 'v5.103'), false);
+  assert.equal(isAppVersionAtLeast('development', 'v5.103'), false);
 });
 
 test('all approved IS and HAS patterns match both directions with Unicode apostrophes preserved', () => {
