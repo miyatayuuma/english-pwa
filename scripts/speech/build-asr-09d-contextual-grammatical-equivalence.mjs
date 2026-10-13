@@ -275,7 +275,6 @@ const manifest = {
     asr09aArtifactSha256: AUTHORITY_SHA256,
     appVersionBefore: 'v5.103',
     implementationVersionBoundary: IMPLEMENTATION_VERSION,
-    currentAppVersion: appVersion,
   },
   productionScope: {
     ruleIds: ASR09D_CONTEXTUAL_PATTERNS.map(row => row.ruleId),
@@ -300,7 +299,7 @@ const report = [
   `- Positive fixtures: ${positiveFixtures.length} unique contexts; tested bidirectionally.`,
   `- Negative controls: ${fixtures.length}.`,
   `- Modes: ${ALLOWED_MODES.join(', ')}; Read/Cloze additions: 0.`,
-  `- Version boundary: ${IMPLEMENTATION_VERSION}; current APP_VERSION: ${appVersion}.`,
+  `- Version boundary: ${IMPLEMENTATION_VERSION}; current APP_VERSION is validated as greater than or equal to this boundary.`,
   `- Production data blobs: Vocabulary ${SOURCE_GIT_BLOBS.vocabulary}; Items ${SOURCE_GIT_BLOBS.items}.`,
   `- Benchmark baseline: ${manifest.performance.baselineRevision}; implementation: ${manifest.performance.candidateRevision}.`,
   '',
