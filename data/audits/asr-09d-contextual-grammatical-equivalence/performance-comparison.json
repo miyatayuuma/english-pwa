@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "baselineRevision": "1e613b1020d77031e1d7f59ed342c416867da383",
+  "candidateRevision": "ff4fedd737ab32046b832e3a29f7c362d20179fe",
+  "measuredAt": "2026-10-13T06:14:55.168Z",
+  "method": {
+    "trials": 31,
+    "warmupCallsPerApi": 2000,
+    "percentileMethod": "nearest-rank",
+    "unit": "milliseconds per call",
+    "order": "alternating baseline/candidate within each trial",
+    "runtime": "Node v24.19.0",
+    "platform": "linux/x64",
+    "cpuModel": "AMD EPYC 9V74 80-Core Processor"
+  },
+  "metricNames": [
+    "p50MsPerCall",
+    "p95MsPerCall"
+  ],
+  "workloads": [
+    {
+      "workload": "exact phrase surface lookup",
+      "api": "findSpeechSurfaceMatch",
+      "iterationsPerTrial": 3000,
+      "baseline": {
+        "p50MsPerCall": 0.01165,
+        "p95MsPerCall": 0.013404
+      },
+      "candidate": {
+        "p50MsPerCall": 0.011487,
+        "p95MsPerCall": 0.012656
+      },
+      "p50DeltaPct": -1.4,
+      "p95DeltaPct": -5.6
+    },
+    {
+      "workload": "ASR-09B fixed equivalence",
+      "api": "findSpeechSurfaceMatch",
+      "iterationsPerTrial": 3000,
+      "baseline": {
+        "p50MsPerCall": 0.008766,
+        "p95MsPerCall": 0.009541
+      },
+      "candidate": {
+        "p50MsPerCall": 0.008883,
+        "p95MsPerCall": 0.009401
+      },
+      "p50DeltaPct": 1.3,
+      "p95DeltaPct": -1.5
+    },
+    {
+      "workload": "ASR-09C contextual 's",
+      "api": "findSpeechSurfaceMatch",
+      "iterationsPerTrial": 3000,
+      "baseline": {
+        "p50MsPerCall": 0.011836,
+        "p95MsPerCall": 0.012772
+      },
+      "candidate": {
+        "p50MsPerCall": 0.011993,
+        "p95MsPerCall": 0.013221
+      },
+      "p50DeltaPct": 1.3,
+      "p95DeltaPct": 3.5
+    },
+    {
+      "workload": "ASR-09D unique HAD positive",
+      "api": "findSpeechSurfaceMatch",
+      "iterationsPerTrial": 3000,
+      "baseline": {
+        "p50MsPerCall": 0.012995,
+        "p95MsPerCall": 0.015318
+      },
+      "candidate": {
+        "p50MsPerCall": 0.011161,
+        "p95MsPerCall": 0.011988
+      },
+      "p50DeltaPct": -14.1,
+      "p95DeltaPct": -21.7
+    },
+    {
+      "workload": "ASR-09D ambiguous negative",
+      "api": "findSpeechSurfaceMatch",
+      "iterationsPerTrial": 3000,
+      "baseline": {
+        "p50MsPerCall": 0.024027,
+        "p95MsPerCall": 0.02734
+      },
+      "candidate": {
+        "p50MsPerCall": 0.024868,
+        "p95MsPerCall": 0.027235
+      },
+      "p50DeltaPct": 3.5,
+      "p95DeltaPct": -0.4
+    },
+    {
+      "workload": "sentence alignment with two D spans",
+      "api": "alignSpeech",
+      "iterationsPerTrial": 60,
+      "baseline": {
+        "p50MsPerCall": 0.624154,
+        "p95MsPerCall": 0.679295
+      },
+      "candidate": {
+        "p50MsPerCall": 0.669498,
+        "p95MsPerCall": 0.782305
+      },
+      "p50DeltaPct": 7.3,
+      "p95DeltaPct": 15.2
+    }
+  ]
+}

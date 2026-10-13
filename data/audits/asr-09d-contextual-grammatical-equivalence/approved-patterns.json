@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "decisionId": "ambiguous-d",
+  "taxonomy": "CONTEXT_CONDITIONAL",
+  "disposition": "CONTEXT_CONDITIONAL",
+  "allowedModes": [
+    "vocabulary",
+    "correction"
+  ],
+  "excludedModes": [
+    "read",
+    "cloze"
+  ],
+  "subjects": [
+    "i",
+    "you",
+    "he",
+    "she",
+    "it",
+    "we",
+    "they"
+  ],
+  "pastParticipleAllowlist": [
+    "been",
+    "deposited",
+    "eaten",
+    "gone",
+    "seen",
+    "taken",
+    "written"
+  ],
+  "baseVerbAllowlist": [
+    "ask",
+    "be",
+    "do",
+    "eat",
+    "go",
+    "like",
+    "see",
+    "speak"
+  ],
+  "patterns": [
+    {
+      "patternId": "asr09d-had-past-participle",
+      "ruleId": "asr09d-had-past-participle",
+      "selectedAuxiliary": "had",
+      "expectedForm": "subject + had + explicitly allowlisted past participle",
+      "recognizedForm": "subject'd + same explicitly allowlisted past participle",
+      "minimalCounterexample": {
+        "expected": "I had read it.",
+        "observed": "I'd read it."
+      }
+    },
+    {
+      "patternId": "asr09d-would-base-verb",
+      "ruleId": "asr09d-would-base-verb",
+      "selectedAuxiliary": "would",
+      "expectedForm": "subject + would + explicitly allowlisted base verb",
+      "recognizedForm": "subject'd + same explicitly allowlisted base verb",
+      "minimalCounterexample": {
+        "expected": "I would put it there.",
+        "observed": "I'd put it there."
+      }
+    }
+  ],
+  "excludedVerbs": [
+    "put",
+    "read",
+    "cut",
+    "come",
+    "run",
+    "set",
+    "let",
+    "hit"
+  ],
+  "otherExclusions": [
+    "negation and negative adverbs",
+    "intervening adverbs",
+    "would have inference",
+    "had better and would rather idioms",
+    "nominal help/work/time collisions",
+    "question and relative pronouns",
+    "unsupported subject forms"
+  ]
+}
