@@ -119,7 +119,7 @@ public class NativeShellGateTest {
         awaitCondition(scenario, "Stage 4 — Game Initialization",
             "window.__nativeGameTraceReadiness?.terminal === true");
         assertStageTrue(scenario, "Stage 4 — Game Initialization",
-            "window.__nativeGameTraceReadiness?.phase === 'initialization-complete' && window.__nativeGameTraceReadiness?.events?.some(event => event.stage === 'native-capability-resolved' && event.available === true && event.enabled === true)");
+            "window.__nativeGameTraceReadiness?.events?.some(event => event.stage === 'initialization-complete' && event.terminal === true && event.capabilityEnabled === true && event.panelPresent === true && event.panelConnected === true) && window.__nativeGameTraceReadiness?.events?.some(event => event.stage === 'native-capability-resolved' && event.available === true && event.enabled === true)");
         awaitCondition(scenario, "Stage 5 — Panel Acceptance",
             "!!document.querySelector('#nativeGameTracePanel')?.isConnected && document.querySelector('#nativeGameTracePanel')?.textContent.includes('GAME TRACE') === true");
         eval(scenario, "window.__gateReturnResult='pending'; window.Capacitor?.Plugins?.NativeGameTrace?.openAcceptanceCases().then(()=>window.__gateReturnResult='resolved').catch(error=>window.__gateReturnResult=typeof error?.name==='string'?error.name:'UnknownError'); true");

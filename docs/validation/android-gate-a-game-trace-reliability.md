@@ -1,6 +1,6 @@
 # Android Gate A Game Trace readiness investigation
 
-**Status:** `DIAGNOSTICS_COMPLETE / ROOT_CAUSE_OPEN` (latest Gate A attempt exposed a diagnostics regression; fresh CI is required)
+**Status:** `DIAGNOSTICS_COMPLETE / ROOT_CAUSE_OPEN` (latest run exposed a readiness-test observation mismatch; corrected assertion needs fresh CI)
 
 **Investigation date:** 2026-10-13 UTC
 **Repository:** `miyatayuuma/english-pwa`
@@ -40,14 +40,16 @@ Logcat narrows the path without proving the final cause:
 | H3 MainActivity pre-navigation gate mismatch | Historical runs lacked a native state snapshot. | New failure passed Stage 3 native authorization; snapshot showed the app URL and launch flag enabled. | **Not supported for the reproduced failure.** The validation-page source gate and app navigation completed. |
 | H4 WebView navigation/document readiness | Old assertion combined `#app` and panel presence without `readyState`. | New failure snapshot showed `/index.html`, `document.readyState=complete`, and `#app` present. | **Not supported for the reproduced failure.** Navigation and app document readiness completed before Stage 4 stalled. |
 | H5 `nativeSpeechGameTraceLaunch` mismatch | Flag value was absent from historical reports. | New failure snapshot showed `launchEnabled=true`; its independent capability read showed `available=true, enabled=true`. | **Not supported by this failure snapshot.** The unresolved initializer request still leaves one capability call's exact response unknown. |
-| H6 Game Trace capability resolution | In the third independent Gate A execution, the initializer stopped after `native-bridge-resolved`; the failure snapshot's separate `getCapability()` request resolved `{available:true, enabled:true}`. | The separate request proves the capability can resolve, but that run did not mark the initializer's native request or native response. | **Original flake partially localized, unresolved.** Its own capability promise remained nonterminal; dispatch vs callback loss was unobserved. A later, separate diagnostics regression called WebView from the plugin thread and is fixed pending CI verification. |
-| H7 Game Trace initialization ordering | Navigation and document readiness passed; cycles 1–3 passed, then Stage 4 stayed nonterminal after a fresh Activity relaunch following cycle 3. The app bootstrap and panel initialization start concurrently. | Two other independent runs passed all 10 cycles, including fresh Activity relaunches after cycles 3 and 6. | **Plausible, unconfirmed.** The failure followed a fresh Activity relaunch once, but that condition alone did not reproduce it. This commit lacked app-bootstrap timestamps. |
-| H8 Panel detached after creation | Historical assertion saw no panel. | In the new failure, the initializer had not recorded capability resolution or panel creation. | **Not supported for the reproduced failure.** No evidence shows a panel was created and then detached. |
+| H6 Game Trace capability resolution | The b748 Stage 4 failure stopped after `native-bridge-resolved`, without native request/result markers. On `7ed63ca`, the initializer request and native response were both recorded, then initialization completed with an enabled capability. | The successful `7ed63ca` cycle is separate from the original timeout. | **The original timeout remains unresolved.** The new diagnostic path distinguishes request/result; it has not captured another nonterminal original-style failure. |
+| H7 Game Trace initialization ordering | The b748 Stage 4 failure followed a fresh Activity relaunch once. On `7ed63ca`, app bootstrap, DOM ready, capability resolution, panel creation, trace initialization completion, and app initialization completion were all recorded in order. | Two other independent b748 runs passed all 10 cycles and the same fresh Activity relaunch points. | **No ordering defect reproduced in the newest run.** A lifecycle race in the historical failure remains plausible but unconfirmed. |
+| H8 Panel detached after creation | Historical assertion saw no panel. | On `7ed63ca`, the failure snapshot showed the panel present and connected after initialization; the test stopped before the panel-acceptance assertion because Stage 4 checked the wrong phase field. | **Not supported by the latest run; historical panel absence remains unexplained.** |
 | H9 JavaScript/module error | Old setup swallowed the initializer rejection and did not include window error state. | No matching console exception/module-load message was found in the captured logcat. | **Not evidenced, not excluded.** Old error capture was incomplete. |
 | H10 Emulator / WebView / runner instability | The new failure occurred on an API 35 GitHub Actions emulator. | Pass and fail jobs all had emulator-console and emulator-configuration warnings. The second pass had 5 renderer-crash messages; the failure had 4. Both had WebView `124.0.6367.219`; the failure had no matching `ERROR:CONSOLE` or uncaught JS exception. | **Not isolated as cause.** Warning classes and renderer crashes also occurred in a pass and do not distinguish the failure. |
-| H11 Instrumentation observation defect | Historical failures had `{}` diagnostics and the conjunction could not identify its unmet term. | This explains poor diagnosis, not why the panel was absent. | **Confirmed.** The readiness diagnostics address the missing stage information. A follow-up Java telemetry implementation also violated WebView thread affinity; it has been corrected and requires a clean Gate A run. |
+| H11 Instrumentation observation defect | Historical failures had `{}` diagnostics and the conjunction could not identify its unmet term. The new Stage 4 assertion also compared a last-event phase with an earlier completion stage. | The `7ed63ca` snapshot proves trace initialization and panel creation completed despite the assertion failure. | **Confirmed diagnostic/test defect.** The original assertion now checks the specific completion event. A separate Java telemetry thread-affinity defect was also confirmed on `dbdfcac` and removed. Both fixes require a clean Gate A run. |
 
 **Classification:** `ROOT_CAUSE_OPEN`. The historical failures reached the app and called the capability method. The new repeated-run failure narrowed the missing readiness to a nonterminal Game Trace initialization after bridge resolution, but did not observe whether the initializer's capability request reached Java or received a callback. A production lifecycle race is not claimed.
+
+The latest `7ed63ca` run observed the initializer capability request and response, terminal initialization, and connected panel. Its failure was the Stage 4 assertion comparing a stale semantic expectation to the latest-event phase field; it did not reproduce the original missing-panel failure.
 
 ### Instrumented repeated-run evidence
 
@@ -69,7 +71,13 @@ This reproduces the missing initialization result at a narrower boundary, but do
 
 The first Gate A run after adding Java-side capability request/result markers was run `38374596236`, job `115219700370`, PR head `dbdfcacb3537db04eaa0b656a101c5cff02f3740`, artifact `11800359345`. The Android Debug/Release/Lint build passed, but Gate A failed in `a_permissionIsRequestedOnDemandAndGrantedThroughSystemDialog` before the Game Trace test ran. The runner log records a process crash in `NativeGameTracePlugin.getCapability()`: `recordNativeGameTraceCapabilityEvent()` called `WebView.getUrl()` on the `CapacitorPlugins` thread. Android reported that WebView methods must run on the main thread. This is a confirmed defect in the newly added diagnostics, not evidence for the two historical panel timeouts.
 
-The recorder has been changed to log the capability stage, booleans, launch flag, and Android elapsed-realtime timestamp without reading WebView state. A static regression assertion now prevents WebView calls from entering this plugin-thread recorder. The fix is not accepted until the new head completes Gate A and repeated emulator runs. The current run cannot be counted as a Game Trace attempt because the app process crashed in an earlier Gate A test.
+The recorder has been changed to log the capability stage, booleans, launch flag, and Android elapsed-realtime timestamp without reading WebView state. A static regression assertion now prevents WebView calls from entering this plugin-thread recorder. On the next head, the test reached the native capability request/result markers without a process crash; that run failed at the separate Stage 4 assertion documented below.
+
+### Readiness assertion mismatch on `7ed63ca`
+
+Run `38376343044`, Gate A job `115225562313`, PR head `7ed63ca349499362279cc2a627df510ab06f839b`, artifact `11801387631`, completed the other four Gate A tests and failed `d_debugValidationUsesActualTargetAuthority` at the Stage 4 assertion. The snapshot shows successful app initialization: the initializer recorded `native-capability-requested`, `native-capability-resolved` with `available=true, enabled=true`, `panel-created`, and `initialization-complete` with `terminal=true`, `capabilityEnabled=true`, `panelPresent=true`, and `panelConnected=true`. The native event log also contains capability requested/resolved with the launch flag enabled. No JavaScript errors were recorded.
+
+The test compared the single latest `phase` field with `initialization-complete`. After that event, the app bootstrap correctly recorded `app-initialization-complete`, so the latest phase had advanced while the trace-initialization completion event remained present. This is a confirmed test-observation mismatch, not a stalled initializer. The assertion now requires the specific `initialization-complete` event, its terminal/enabled/connected fields, and the successful native capability event. A regression test covers this event ordering. Android elapsed-realtime and per-document JavaScript `performance.now()` values remain separate.
 
 ## Changes in this branch
 
@@ -89,7 +97,7 @@ The recorder has been changed to log the capability stage, booleans, launch flag
 
 | Check | Result |
 |---|---|
-| `npm test` | 595 tests; 508 pass, 0 fail, 87 skipped because Chromium is unavailable locally. The post-fix full run completed successfully with normal process spawning. |
+| `npm test` | 595 tests; 508 pass, 0 fail, 87 skipped because Chromium is unavailable locally. Full suite passed after the latest Stage 4 assertion/event-order adjustment. |
 | `npm run speech:validate-td-cluster-before-to` | PASS |
 | `npm run speech:validate-asr-09b` | PASS (33 approved pairs / 66 directions) |
 | `npm run speech:validate-asr-09c` | PASS |
@@ -108,8 +116,12 @@ The recorder has been changed to log the capability stage, booleans, launch flag
 | PR head `dbdfcac` — Application tests | PASS (run `38374596125`). |
 | PR head `dbdfcac` — Scope guard / Vocabulary | PASS (runs `38374595986` / `38374596334`). |
 | PR head `dbdfcac` — Android Debug/Release/Lint | PASS (job `115219700737`). |
-| PR head `dbdfcac` — Gate A | FAIL (run `38374596236`, job `115219700370`, artifact `11800359345`): the new capability telemetry called `WebView.getUrl()` from `CapacitorPlugins`, crashing during `a_permissionIsRequestedOnDemandAndGrantedThroughSystemDialog`; the Game Trace target test did not run. The unsafe WebView read has been removed locally; CI is pending for the fix. |
-| Latest local regression checks | PASS: `nativeGameTraceGate`, `gameTraceReadinessDiagnostics`, and `swBootstrap` tests (3/3); full `npm test` (595 tests, 508 pass, 0 fail, 87 Chromium-dependent skips); `npm run native:sync` (117 assets). |
+| PR head `dbdfcac` — Gate A | FAIL (run `38374596236`, job `115219700370`, artifact `11800359345`): the new capability telemetry called `WebView.getUrl()` from `CapacitorPlugins`, crashing during `a_permissionIsRequestedOnDemandAndGrantedThroughSystemDialog`; the Game Trace target test did not run. The next head recorded capability requested/resolved events without that crash. |
+| PR head `7ed63ca` — Application tests | PASS (run `38376343052`; Chromium-backed suite completed). |
+| PR head `7ed63ca` — Scope guard / Vocabulary | PASS (runs `38376343079` / `38376343047`). |
+| PR head `7ed63ca` — Android Debug/Release/Lint | PASS (job `115225562924`). |
+| PR head `7ed63ca` — Gate A | 4 pass, 1 fail, 0 skip (run `38376343044`, job `115225562313`, artifact `11801387631`). The target reached capability resolution, terminal initialization, and a connected panel; Stage 4 then failed because the test checked the last-event `phase` instead of the earlier successful initialization event. The assertion has been changed locally to inspect the successful event and enabled/connected fields; fresh Gate A CI is pending. |
+| Latest local regression checks | PASS: `npm test` (595 tests, 508 pass, 0 fail, 87 Chromium-dependent skips); focused native/readiness/service-worker tests (3/3); `npm run native:sync` (117 assets). |
 
 ### Production authority immutability
 
@@ -117,11 +129,11 @@ Baseline and working tree retain Vocabulary blob `91324d35b2db1911ece2cf3ff74640
 
 ### PR and post-merge evidence
 
-PR #333 is open at `https://github.com/miyatayuuma/english-pwa/pull/333`, based on main `624e534baecb9dbcca6549e17eb0a12661259248`. The current report/code update adds request/response and bootstrap markers from the observed Stage 4 failure. Its PR-head workflows and Gate A results will be recorded before merge. No retry pass is treated as proof of root cause. Merge and post-merge values remain pending.
+PR #333 is open at `https://github.com/miyatayuuma/english-pwa/pull/333`, based on main `624e534baecb9dbcca6549e17eb0a12661259248`. The latest Gate A failure is explained by the test's phase-field expectation, while the captured readiness state shows successful app initialization. The strict assertion and event-order regression test are updated locally; fresh CI is required before merge. No retry pass is treated as proof of the original timeout's root cause.
 
 ## Residual risks
 
-- Root cause of the original timeout remains unconfirmed: one of three independent emulator executions reproduced a pending initializer capability step after an Activity relaunch, while two executions passed the same relaunch points. The later plugin-thread WebView diagnostics regression is understood and patched; fresh CI must verify the fix and then observe whether the initializer capability request is dispatched and answered and how that relates to application bootstrap.
+- Root cause of the original timeout remains unconfirmed: one of three independent emulator executions on `b74881c` reproduced a pending initializer capability step after an Activity relaunch, while two executions passed the same relaunch points. A later run recorded successful capability dispatch/response and panel connection but failed its phase-field assertion. Fresh CI must verify the corrected assertion; another original-style failure is needed to establish the cause.
 - The debug test exercises 10 full navigation cycles and two fresh Activity relaunches in one Gate A test invocation; this is not a mathematical proof that future flakiness is impossible and does not replace independent CI emulator runs.
 - Local Android build/emulator could not run in this environment. The browser regression passed in GitHub Actions on head `b74881c`; current-head CI must pass before merge.
 - Pixel ASR-08D remains a separate open hardware acceptance item; this change does not close it.

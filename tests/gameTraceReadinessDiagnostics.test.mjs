@@ -51,7 +51,13 @@ test('Game Trace readiness metadata is debug-only, ordered, and excludes payload
       audio: 'private audio payload',
     });
     recordGameTraceReadiness('panel-created', { panelPresent: true, panelConnected: true });
-    recordGameTraceReadiness('initialization-complete', { terminal: true });
+    recordGameTraceReadiness('initialization-complete', {
+      capabilityEnabled: true,
+      panelPresent: true,
+      panelConnected: true,
+      terminal: true,
+    });
+    recordGameTraceReadiness('app-initialization-complete');
 
     listeners.get('error')({
       error: { name: 'TypeError', message: 'private speech text' },
@@ -69,7 +75,10 @@ test('Game Trace readiness metadata is debug-only, ordered, and excludes payload
     assert.deepEqual(diagnostics.events.map(event => event.stage), [
       'app-bootstrap-started', 'app-initialization-started', 'native-capability-requested',
       'native-capability-resolved', 'panel-created', 'initialization-complete',
+      'app-initialization-complete',
     ]);
+    assert.equal(diagnostics.phase, 'app-initialization-complete');
+    assert.equal(diagnostics.events.find(event => event.stage === 'initialization-complete')?.panelConnected, true);
     assert.deepEqual(diagnostics.events[3], {
       sequence: 4,
       stage: 'native-capability-resolved',
@@ -80,7 +89,7 @@ test('Game Trace readiness metadata is debug-only, ordered, and excludes payload
     assert.equal(diagnostics.javascriptErrors[0].errorType, 'TypeError');
     assert.equal(diagnostics.javascriptErrors[0].source, 'https://localhost/scripts/app.js');
     assert.equal(diagnostics.javascriptErrors[1].errorType, 'RangeError');
-    assert.equal(dispatched.length, 6);
+    assert.equal(dispatched.length, 7);
     const serialized = JSON.stringify(diagnostics);
     assert.doesNotMatch(serialized, /private speech text|private audio payload|prompt=private/);
     assert.doesNotMatch(serialized, /"transcript"|"audio"|"message"/);
