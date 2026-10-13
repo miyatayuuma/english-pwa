@@ -202,10 +202,15 @@ $('openGameTrace').onclick=async()=>{
  window.recordNativeGameTraceNavigation('button-clicked', { buttonPresent: true });
  try{
   $('status').textContent='通常ゲームを開きます。ゲーム画面でTrace ONにしてください。';
-   window.recordNativeGameTraceNavigation('plugin-resolution-started');
-  const traceBridge=gameTraceBridge||await getNativeGameTrace();
+   let traceBridge=gameTraceBridge;
+   if(!traceBridge){
+    window.recordNativeGameTraceNavigation('plugin-resolution-started');
+    traceBridge=await getNativeGameTrace();
+    gameTraceBridge=traceBridge;
+   }
    window.recordNativeGameTraceNavigation('plugin-resolved', {
      pluginAvailable: !!traceBridge && typeof traceBridge.openGameTrace === 'function',
+     resolvedBeforeClick: !!traceBridge,
    });
    window.recordNativeGameTraceNavigation('native-request-started');
   await traceBridge.openGameTrace();
