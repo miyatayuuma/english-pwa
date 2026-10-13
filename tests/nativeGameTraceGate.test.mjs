@@ -16,6 +16,8 @@ test('only a debug Android launch Intent exposes the NativeGameTrace bridge', ()
   assert.match(activity, /protected void onNewIntent\(Intent intent\)[\s\S]*?setIntent\(intent\)[\s\S]*?getBooleanExtra\("nativeSpeechGameTrace", false\)/);
   assert.match(plugin, /BuildConfig\.DEBUG\s*&&[\s\S]*?isNativeSpeechGameTraceLaunchEnabled\(\)/);
   assert.match(plugin, /result\.put\("enabled", enabled\)/);
+  assert.match(plugin, /public void getReadinessDiagnostics\(PluginCall call\)[\s\S]*?if \(!BuildConfig\.DEBUG \|\| activity == null\)/);
+  assert.match(activity, /synchronized void recordNativeGameTraceGateEvent\([\s\S]*?if \(!BuildConfig\.DEBUG\) return/);
   assert.ok(plugin.includes('package com.miyatayuuma.englishpwa;'));
 });
 
@@ -23,9 +25,10 @@ test('web, URL, and storage state cannot enable game tracing', () => {
   const panel = read('scripts/ui/gameTracePanel.js');
   const collector = read('scripts/native/gameTrace.js');
   const nativeSpeech = read('scripts/native/nativeSpeech.js');
-  assert.match(panel, /if \(!isNativeAndroid\(\)\) return false/);
+  assert.match(panel, /const nativeAndroid = isNativeAndroid\(\)/);
+  assert.match(panel, /if \(!nativeAndroid\) \{[\s\S]*?recordGameTraceReadiness\('platform-rejected'[\s\S]*?return false/);
   assert.match(panel, /const capability = await nativeBridge\.getCapability\(\)/);
-  assert.match(panel, /if \(capability\.enabled\) ensurePanel\(\)/);
+  assert.match(panel, /if \(capability\.enabled\) \{[\s\S]*?ensurePanel\(\)/);
   assert.doesNotMatch(panel, /searchParams|location\.search|localStorage|sessionStorage/);
   assert.doesNotMatch(collector, /localStorage|sessionStorage|indexedDB|fetch\(/i);
   assert.match(nativeSpeech, /if \(!isNativeAndroid\(scope\)\) throw new Error\('NativeGameTrace requires/);

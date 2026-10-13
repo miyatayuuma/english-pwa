@@ -1,11 +1,18 @@
 import { getNativeGameTrace } from '../native/nativeSpeech.js';
 import { isNativeAndroid } from '../native/runtimePlatform.js';
 import { gameTraceCollector, setGameTraceCaptureEnabled } from '../native/gameTrace.js';
+import {
+  getGameTraceReadinessDiagnostics,
+  installGameTraceReadinessErrorCapture,
+  recordGameTraceReadiness,
+} from '../native/gameTraceReadinessDiagnostics.js';
 
 let nativeBridge = null;
 let capabilityEventInstalled = false;
 let panel = null;
 let expanded = false;
+
+installGameTraceReadinessErrorCapture();
 
 function decisionLabel(attempt) {
   const finalEvent = [...(attempt?.events || [])].reverse().find(event =>
@@ -176,35 +183,94 @@ function onCollectorChange() {
 }
 
 export async function initializeGameTracePanel() {
-  if (!isNativeAndroid()) return false;
+  installGameTraceReadinessErrorCapture();
+  let stage = 'platform-check';
   try {
+    const nativeAndroid = isNativeAndroid();
+    recordGameTraceReadiness('initialization-started', { nativeAndroid });
+    if (!nativeAndroid) {
+      recordGameTraceReadiness('platform-rejected', { terminal: true });
+      return false;
+    }
+    stage = 'native-bridge';
     nativeBridge = await getNativeGameTrace();
+    recordGameTraceReadiness('native-bridge-resolved', {
+      pluginAvailable: !!nativeBridge && typeof nativeBridge.getCapability === 'function',
+    });
+    stage = 'native-capability';
     const capability = await nativeBridge.getCapability();
-    if (!capability?.available) return false;
-    if (capability.enabled) ensurePanel();
+    recordGameTraceReadiness('native-capability-resolved', {
+      available: capability?.available === true,
+      enabled: capability?.enabled === true,
+    });
+    if (!capability?.available) {
+      recordGameTraceReadiness('capability-unavailable', { terminal: true });
+      return false;
+    }
+    if (capability.enabled) {
+      stage = 'panel-creation';
+      ensurePanel();
+      recordGameTraceReadiness('panel-created', {
+        panelPresent: !!document.querySelector('#nativeGameTracePanel'),
+        panelConnected: !!panel?.isConnected,
+      });
+    }
     if (!capabilityEventInstalled) {
       capabilityEventInstalled = true;
       window.addEventListener('native-game-trace-launch-updated', async () => {
+        let eventStage = 'launch-capability';
+        recordGameTraceReadiness('launch-update-started');
         try {
           const next = await nativeBridge.getCapability();
-          if (next?.available && next?.enabled) ensurePanel();
+          recordGameTraceReadiness('launch-capability-resolved', {
+            available: next?.available === true,
+            enabled: next?.enabled === true,
+          });
+          if (next?.available && next?.enabled) {
+            eventStage = 'launch-panel-creation';
+            ensurePanel();
+            recordGameTraceReadiness('launch-panel-ready', {
+              panelPresent: !!document.querySelector('#nativeGameTracePanel'),
+              panelConnected: !!panel?.isConnected,
+            });
+          }
           else {
+            eventStage = 'launch-panel-removal';
             await setGameTraceCaptureEnabled(false);
             panel?.remove();
             panel = null;
             expanded = false;
+            recordGameTraceReadiness('launch-panel-removed', {
+              panelPresent: !!document.querySelector('#nativeGameTracePanel'),
+              panelConnected: false,
+            });
           }
-        } catch (_) {
+        } catch (error) {
           await setGameTraceCaptureEnabled(false);
           panel?.remove();
           panel = null;
           expanded = false;
+          recordGameTraceReadiness('launch-update-failed', {
+            failedStage: eventStage,
+            errorType: error?.name || 'UnknownError',
+          });
         }
       });
       gameTraceCollector.subscribe(onCollectorChange);
     }
+    recordGameTraceReadiness('initialization-complete', {
+      capabilityEnabled: capability.enabled === true,
+      panelPresent: !!document.querySelector('#nativeGameTracePanel'),
+      panelConnected: !!panel?.isConnected,
+      terminal: true,
+    });
     return capability.enabled === true;
-  } catch (_) {
+  } catch (error) {
+    recordGameTraceReadiness('initialization-failed', {
+      failedStage: stage,
+      errorType: error?.name || 'UnknownError',
+      terminal: true,
+    });
     return false;
   }
 }
