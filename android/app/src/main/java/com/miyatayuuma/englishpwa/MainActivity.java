@@ -99,17 +99,13 @@ public class MainActivity extends BridgeActivity {
     synchronized void recordNativeGameTraceGateEvent(String stage, String source, String target, String reason) {
         if (!BuildConfig.DEBUG) return;
         JSObject event = new JSObject();
-        try {
-            event.put("sequence", ++nativeGameTraceGateSequence);
-            event.put("clock", "SystemClock.elapsedRealtimeNanos");
-            event.put("atNanos", SystemClock.elapsedRealtimeNanos());
-            event.put("stage", stage);
-            if (source != null) event.put("sourcePage", source);
-            if (target != null) event.put("targetPage", target);
-            if (reason != null) event.put("reason", reason);
-        } catch (JSONException ignored) {
-            return;
-        }
+        event.put("sequence", ++nativeGameTraceGateSequence);
+        event.put("clock", "SystemClock.elapsedRealtimeNanos");
+        event.put("atNanos", SystemClock.elapsedRealtimeNanos());
+        event.put("stage", stage);
+        if (source != null) event.put("sourcePage", source);
+        if (target != null) event.put("targetPage", target);
+        if (reason != null) event.put("reason", reason);
         nativeGameTraceGateEvents.put(event);
         if (nativeGameTraceGateEvents.length() > 60) nativeGameTraceGateEvents.remove(0);
         Log.i("NativeGameTraceGate", stage + " source=" + source + " target=" + target
