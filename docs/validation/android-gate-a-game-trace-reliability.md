@@ -85,6 +85,8 @@ On final PR head `180ce039728d08be6fdef9c36b641f2c9cdc8be3`, Android workflow ru
 
 The run used the configured API 35 Google APIs x86_64 emulator (`emulator-5554 - 15`), WebView `124.0.6367.219`, Node `22.23.3`, Temurin Java `21.0.12`, and Gradle `8.14.3`. It establishes successful repeated operation on this run, not why the earlier pending initialization occurred or that the flake is eliminated.
 
+The same strict Gate A implementation passed again on documentation-only PR head `55261eb8db691d2d2a397b62cdc2cd2feda336ba`, run `38378661461`, job `115233303123`, artifact `11802481428`: 5 passed, 0 failed, 0 skipped, first attempt. The target test implementation was unchanged and includes the same ten navigation cycles and two fresh Activity relaunches. This is a second independent clean run, not a retry of the first.
+
 ## Changes in this branch
 
 - Added a bounded, metadata-only Game Trace initialization reporter. It records bridge resolution, capability booleans, panel creation/connection, terminal initialization, and error type. It never stores audio, recognized text, or error messages and is inactive unless `Capacitor.DEBUG === true`.
@@ -131,6 +133,10 @@ The run used the configured API 35 Google APIs x86_64 emulator (`emulator-5554 -
 | Final head `180ce039` — Paraphrase scope guard | PASS (run `38377281611`). |
 | Final head `180ce039` — Android Debug/Release/Lint | PASS (Android run `38377281598`, job `115228730533`). |
 | Final head `180ce039` — Gate A | PASS on first attempt: 5 passed, 0 failed, 0 skipped (run `38377281598`, job `115228730713`, artifact `11801684881`); ten cycles and two fresh Activity relaunches, as detailed above. |
+| Documentation head `55261eb8` — Application / Chromium | PASS (run `38378661558`). |
+| Documentation head `55261eb8` — Vocabulary / paraphrase scope | PASS (runs `38378661447` / `38378661339`). |
+| Documentation head `55261eb8` — Android Debug/Release/Lint | PASS (run `38378661461`, job `115233303546`). |
+| Documentation head `55261eb8` — Gate A | PASS on first attempt: 5 passed, 0 failed, 0 skipped (run `38378661461`, job `115233303123`, artifact `11802481428`); same ten-cycle target and two fresh Activity relaunches. |
 | Latest local regression checks | PASS: `npm test` (595 tests, 508 pass, 0 fail, 87 Chromium-dependent skips); focused native/readiness/service-worker tests (3/3); `npm run native:sync` (117 assets). |
 
 ### Production authority immutability
@@ -139,11 +145,11 @@ Baseline and working tree retain Vocabulary blob `91324d35b2db1911ece2cf3ff74640
 
 ### PR and post-merge evidence
 
-PR #333 is open at `https://github.com/miyatayuuma/english-pwa/pull/333`, based on main `624e534baecb9dbcca6549e17eb0a12661259248`. Final code head `180ce039728d08be6fdef9c36b641f2c9cdc8be3` passed Application, Vocabulary, paraphrase-scope, Android build/lint, and Gate A checks. Gate A passed on its first attempt with all five tests retained. The original timeout remains unroot-caused; no retry pass or repeated success is presented as root-cause proof.
+PR #333 is open at `https://github.com/miyatayuuma/english-pwa/pull/333`, based on main `624e534baecb9dbcca6549e17eb0a12661259248`. Final code head `180ce039728d08be6fdef9c36b641f2c9cdc8be3` passed Application, Vocabulary, paraphrase-scope, Android build/lint, and Gate A checks. The report-only head `55261eb8` repeated those checks and passed Gate A again on its first attempt. The original timeout remains unroot-caused; no retry pass or repeated success is presented as root-cause proof.
 
 ## Residual risks
 
-- Root cause of the original timeout remains unconfirmed: one of three independent emulator executions on `b74881c` reproduced a pending initializer capability step after an Activity relaunch, while two executions passed the same relaunch points. The final head passed one clean Gate A job with ten cycles and two Activity relaunches, but that does not explain the earlier pending initializer or prove zero future flakiness.
+- Root cause of the original timeout remains unconfirmed: one of three independent emulator executions on `b74881c` reproduced a pending initializer capability step after an Activity relaunch, while two executions passed the same relaunch points. The final code and documentation heads each passed Gate A with ten cycles and two Activity relaunches, but those results do not explain the earlier pending initializer or prove zero future flakiness.
 - The debug test exercises 10 full navigation cycles and two fresh Activity relaunches in one Gate A test invocation; this is not a mathematical proof that future flakiness is impossible and does not replace independent CI emulator runs.
 - Local Android build/emulator could not run in this environment. The Chromium browser regression and Android build/lint/Gate A passed in GitHub Actions on final code head `180ce039`.
 - Pixel ASR-08D remains a separate open hardware acceptance item; this change does not close it.
