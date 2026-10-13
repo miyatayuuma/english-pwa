@@ -48,28 +48,28 @@ public class MainActivity extends BridgeActivity {
     }
 
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
         activityLifecycle = "started";
         recordNativeGameTraceGateEvent("activity-onStart", null, null);
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         activityLifecycle = "resumed";
         recordNativeGameTraceGateEvent("activity-onResume", null, null);
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         activityLifecycle = "paused";
         recordNativeGameTraceGateEvent("activity-onPause", null, null);
         super.onPause();
     }
 
     @Override
-    protected void onStop() {
+    public void onStop() {
         activityLifecycle = "stopped";
         recordNativeGameTraceGateEvent("activity-onStop", null, null);
         super.onStop();
