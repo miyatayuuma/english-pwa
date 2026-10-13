@@ -4,6 +4,7 @@ import { isNativeAndroid } from '../native/runtimePlatform.js';
 import { nativeDirectory } from '../native/media.js';
 import { gameTraceCollector, safeGameTraceRecord } from '../native/gameTrace.js';
 import { initializeGameTracePanel } from '../ui/gameTracePanel.js';
+import { recordGameTraceReadiness } from '../native/gameTraceReadinessDiagnostics.js';
 import { buildRecognitionContext } from '../speech/recognitionPolicy.js';
 import { nativeSpeechDiagnostic } from '../native/androidSpeechBackend.js';
 import { createCorrectionProgress, recordCorrectionAttempt } from '../speech/correctionProgress.js';
@@ -3881,10 +3882,18 @@ async function waitForDomReady() {
 
 async function bootstrap() {
   try {
+    recordGameTraceReadiness('app-bootstrap-started');
     await waitForDomReady();
-    initializeGameTracePanel().catch(()=>{});
+    recordGameTraceReadiness('app-dom-ready');
+    const traceInitialization = initializeGameTracePanel();
+    traceInitialization.catch(()=>{});
+    recordGameTraceReadiness('app-initialization-started');
     await initApp();
+    recordGameTraceReadiness('app-initialization-complete');
   } catch (err) {
+    recordGameTraceReadiness('app-bootstrap-failed', {
+      errorType: err?.name || 'UnknownError',
+    });
     console.error('App init failed', err);
   } finally {
     swUpdatePrompt.registerServiceWorker({

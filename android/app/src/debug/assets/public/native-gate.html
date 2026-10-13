@@ -33,6 +33,48 @@
 </section>
 </section>
 <pre id="output"></pre>
+<script>
+(() => {
+  const diagnostics = window.__nativeGameTraceNavigation = {
+    schemaVersion: 1,
+    debugOnly: true,
+    clock: 'performance.now per document',
+    phase: 'page-script-started',
+    events: [],
+    javascriptErrors: [],
+  };
+  window.recordNativeGameTraceNavigation = (phase, details = {}) => {
+    const event = {
+      sequence: diagnostics.events.length + 1,
+      phase,
+      atMs: Math.round(performance.now() * 1000) / 1000,
+      ...details,
+    };
+    diagnostics.phase = phase;
+    diagnostics.events.push(event);
+    if (diagnostics.events.length > 30) diagnostics.events.shift();
+  };
+  window.addEventListener('error', event => {
+    diagnostics.javascriptErrors.push({
+      type: 'error',
+      errorType: typeof event.error?.name === 'string' ? event.error.name : 'UnknownError',
+      source: String(event.filename || '').split(/[?#]/u, 1)[0].slice(-120),
+      line: Number(event.lineno) || 0,
+      column: Number(event.colno) || 0,
+      atMs: Math.round(performance.now() * 1000) / 1000,
+    });
+    if (diagnostics.javascriptErrors.length > 20) diagnostics.javascriptErrors.shift();
+  });
+  window.addEventListener('unhandledrejection', event => {
+    diagnostics.javascriptErrors.push({
+      type: 'unhandledrejection',
+      errorType: typeof event.reason?.name === 'string' ? event.reason.name : 'UnknownError',
+      atMs: Math.round(performance.now() * 1000) / 1000,
+    });
+    if (diagnostics.javascriptErrors.length > 20) diagnostics.javascriptErrors.shift();
+  });
+})();
+</script>
 <script type="module">
 import { getNativeSpeech, getNativeGameTrace } from '/scripts/native/nativeSpeech.js';
 import { ASR_08D_CASES, acceptanceCase } from '/native-gate-cases.js';
@@ -48,6 +90,13 @@ const $=id=>document.getElementById(id);
 const plugin=await getNativeSpeech();
 const capabilities=await plugin.isAvailable();
 const [vocabulary,items]=await Promise.all(['/data/vocabulary-v3.json','/data/items.json'].map(async path=>(await fetch(path)).json()));
+let gameTraceBridge=null,gameTraceBridgeErrorType=null;
+try{gameTraceBridge=await getNativeGameTrace();}
+catch(error){gameTraceBridgeErrorType=typeof error?.name==='string'?error.name:'UnknownError';}
+window.recordNativeGameTraceNavigation(gameTraceBridge?'native-plugin-resolution-resolved':'native-plugin-resolution-rejected',{
+ pluginAvailable:!!gameTraceBridge&&typeof gameTraceBridge.openGameTrace==='function',
+ errorType:gameTraceBridgeErrorType,
+});
 const itemById=new Map(items.map(item=>[item.id,item]));
 const rows=[];
 let controller,attempt,finished=true;
@@ -150,15 +199,41 @@ $('intended').oninput=()=>$('prompt').textContent=$('intended').value;
 $('copy').onclick=async()=>{try{await navigator.clipboard.writeText(JSON.stringify(rows,null,2));$('status').textContent='コピーしました';}catch(_){$('export').click();}};
 $('export').onclick=()=>{const box=$('exportText');box.hidden=false;box.value=JSON.stringify(rows,null,2);box.focus();box.select();};
 $('openGameTrace').onclick=async()=>{
+ window.recordNativeGameTraceNavigation('button-clicked', { buttonPresent: true });
  try{
   $('status').textContent='通常ゲームを開きます。ゲーム画面でTrace ONにしてください。';
-  const traceBridge=await getNativeGameTrace();
+   let traceBridge=gameTraceBridge;
+   if(!traceBridge){
+    window.recordNativeGameTraceNavigation('plugin-resolution-started');
+    traceBridge=await getNativeGameTrace();
+    gameTraceBridge=traceBridge;
+   }
+   window.recordNativeGameTraceNavigation('plugin-resolved', {
+     pluginAvailable: !!traceBridge && typeof traceBridge.openGameTrace === 'function',
+     resolvedBeforeClick: !!traceBridge,
+   });
+   window.recordNativeGameTraceNavigation('native-request-started');
   await traceBridge.openGameTrace();
- }catch(error){$('status').textContent='移動できませんでした: '+String(error?.message||error);}
+   window.recordNativeGameTraceNavigation('native-request-resolved');
+  }catch(error){
+   window.recordNativeGameTraceNavigation('native-request-rejected', {
+     errorType: typeof error?.name === 'string' ? error.name : 'UnknownError',
+   });
+   $('status').textContent='移動できませんでした: '+String(error?.message||error);
+  }
 };
 $('acceptanceCase').append(...ASR_08D_CASES.map(item=>new Option(item.id+' '+item.title,item.id)));
 $('acceptanceCase').onchange=selectAcceptanceCase;
 for(const id of ['fixture','control']) $(id).onchange=()=>{if($('control').value!=='positive') $('intended').value='';selected();};
 selectAcceptanceCase();log(capabilities);
+window.recordNativeGameTraceNavigation('validation-page-ready', {
+  readyState: document.readyState,
+  acceptanceCaseCount: $('acceptanceCase').options.length,
+  buttonPresent: !!$('openGameTrace'),
+  buttonHandlerAvailable: typeof $('openGameTrace').onclick === 'function',
+  capacitorAvailable: !!window.Capacitor,
+  pluginAvailable: !!gameTraceBridge && typeof gameTraceBridge.openGameTrace === 'function',
+  pluginResolutionErrorType: gameTraceBridgeErrorType,
+});
 </script>
 </html>

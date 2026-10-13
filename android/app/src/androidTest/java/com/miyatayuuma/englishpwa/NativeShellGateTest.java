@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.webkit.WebView;
+import android.util.Log;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -12,6 +12,8 @@ import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -24,6 +26,8 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class NativeShellGateTest {
+    private int successfulReadinessStageSequence;
+
     private String eval(ActivityScenario<MainActivity> scenario, String script) throws Exception {
         AtomicReference<String> value = new AtomicReference<>();
         CountDownLatch latch = new CountDownLatch(1);
@@ -35,14 +39,101 @@ public class NativeShellGateTest {
         return value.get();
     }
 
-    private void awaitTrue(ActivityScenario<MainActivity> scenario, String script) throws Exception {
+    private String diagnosticSnapshot(ActivityScenario<MainActivity> scenario) throws Exception {
+        AtomicReference<String> nativeJson = new AtomicReference<>("{}");
+        scenario.onActivity(activity -> nativeJson.set(
+            activity.getNativeGameTraceReadinessDiagnostics().toString()));
+        String begin = "window.__gateDiagnosticSnapshot={page:{href:location.href,readyState:document.readyState,appPresent:!!document.querySelector('#app'),panelPresent:!!document.querySelector('#nativeGameTracePanel'),panelConnected:!!document.querySelector('#nativeGameTracePanel')?.isConnected,validationCaseCount:document.querySelector('#acceptanceCase')?.options.length??null,validationButtonPresent:!!document.querySelector('#openGameTrace')},bridge:{capacitorAvailable:!!window.Capacitor,debug:window.Capacitor?.DEBUG===true,nativeGameTracePluginAvailable:!!window.Capacitor?.Plugins?.NativeGameTrace},navigation:window.__nativeGameTraceNavigation??null,initialization:window.__nativeGameTraceReadiness??null,capability:{status:'pending',value:null,errorType:null},native:{status:'pending',value:null,errorType:null}};const p=window.Capacitor?.Plugins?.NativeGameTrace;if(!p){window.__gateDiagnosticSnapshot.capability.status='unavailable';window.__gateDiagnosticSnapshot.native.status='unavailable';}else{if(typeof p.getCapability==='function')p.getCapability().then(value=>{window.__gateDiagnosticSnapshot.capability={status:'resolved',value,errorType:null};}).catch(error=>{window.__gateDiagnosticSnapshot.capability={status:'rejected',value:null,errorType:typeof error?.name==='string'?error.name:'UnknownError'};});else window.__gateDiagnosticSnapshot.capability.status='method-unavailable';if(typeof p.getReadinessDiagnostics==='function')p.getReadinessDiagnostics().then(value=>{window.__gateDiagnosticSnapshot.native={status:'resolved',value,errorType:null};}).catch(error=>{window.__gateDiagnosticSnapshot.native={status:'rejected',value:null,errorType:typeof error?.name==='string'?error.name:'UnknownError'};});else window.__gateDiagnosticSnapshot.native.status='method-unavailable';}true";
+        try {
+            eval(scenario, begin);
+            long deadline = System.currentTimeMillis() + 5000;
+            while (System.currentTimeMillis() < deadline) {
+                if ("true".equals(eval(scenario,
+                        "!!window.__gateDiagnosticSnapshot && window.__gateDiagnosticSnapshot.capability.status !== 'pending' && window.__gateDiagnosticSnapshot.native.status !== 'pending'"))) break;
+                Thread.sleep(100);
+            }
+            JSONObject result = new JSONObject();
+            String javascriptSnapshot = eval(scenario,
+                "JSON.stringify(window.__gateDiagnosticSnapshot || {capture:'unavailable'})");
+            Object decodedSnapshot = new JSONTokener(javascriptSnapshot).nextValue();
+            String javascriptJson = decodedSnapshot instanceof String
+                ? (String) decodedSnapshot : javascriptSnapshot;
+            result.put("javascript", new JSONObject(javascriptJson));
+            result.put("native", new JSONObject(nativeJson.get()));
+            return result.toString();
+        } catch (Exception captureFailure) {
+            JSONObject result = new JSONObject();
+            result.put("javascriptCaptureError", captureFailure.getClass().getSimpleName());
+            result.put("native", new JSONObject(nativeJson.get()));
+            return result.toString();
+        }
+    }
+
+    private void awaitCondition(ActivityScenario<MainActivity> scenario, String stage, String script) throws Exception {
         long deadline = System.currentTimeMillis() + 60000;
         while (System.currentTimeMillis() < deadline) {
-            if ("true".equals(eval(scenario, script))) return;
+            if ("true".equals(eval(scenario, script))) {
+                Log.i("NativeGameTraceGate", "instrumentation-stage-pass sequence="
+                    + (++successfulReadinessStageSequence) + " stage=" + stage);
+                return;
+            }
             Thread.sleep(100);
         }
-        fail("Gate condition not reached: " + script + " diagnostics=" + eval(scenario,
-            "JSON.stringify({bridge:window.__gateBridge,permission:window.__gatePermission})"));
+        String diagnostics = diagnosticSnapshot(scenario);
+        Log.e("NativeGameTraceGate", "instrumentation-stage-failed lastPassSequence="
+            + successfulReadinessStageSequence + " stage=" + stage + " diagnostics=" + diagnostics);
+        fail("Game Trace readiness stage failed [" + stage + "]: " + script
+            + " lastPassSequence=" + successfulReadinessStageSequence + " diagnostics=" + diagnostics);
+    }
+
+    private void awaitTrue(ActivityScenario<MainActivity> scenario, String script) throws Exception {
+        awaitCondition(scenario, "general WebView readiness", script);
+    }
+
+    private void assertStageTrue(ActivityScenario<MainActivity> scenario, String stage, String script) throws Exception {
+        if (!"true".equals(eval(scenario, script))) {
+            fail("Game Trace readiness stage failed [" + stage + "]: " + script
+                + " diagnostics=" + diagnosticSnapshot(scenario));
+        }
+    }
+
+    private Intent debugValidationIntent() {
+        Intent intent = new Intent(InstrumentationRegistry.getInstrumentation().getTargetContext(), MainActivity.class);
+        intent.putExtra("nativeSpeechGate", true);
+        return intent;
+    }
+
+    private void runGameTraceNavigationCycle(ActivityScenario<MainActivity> scenario, int cycle) throws Exception {
+        awaitCondition(scenario, "Stage 1 — Validation Page Ready",
+            "location.pathname === '/native-gate.html' && document.readyState === 'complete' && document.querySelector('#acceptanceCase')?.options.length === 14 && !!document.querySelector('#openGameTrace') && !!window.Capacitor && window.__nativeGameTraceNavigation?.phase === 'validation-page-ready' && window.__nativeGameTraceNavigation?.events?.at(-1)?.buttonHandlerAvailable === true && window.__nativeGameTraceNavigation?.events?.at(-1)?.pluginAvailable === true");
+        eval(scenario, "document.querySelector('#openGameTrace').click(); true");
+        awaitCondition(scenario, "Stage 2 — Navigation Request",
+            "location.pathname === '/index.html' || ['native-request-resolved','native-request-rejected'].includes(window.__nativeGameTraceNavigation?.phase)");
+        assertStageTrue(scenario, "Stage 2 — Navigation Request",
+            "location.pathname === '/index.html' || window.__nativeGameTraceNavigation?.phase !== 'native-request-rejected'");
+        awaitCondition(scenario, "Stage 3 — WebView Navigation",
+            "location.pathname === '/index.html' && document.readyState === 'complete'");
+        eval(scenario, "window.__nativeGateSnapshot={status:'pending'}; Capacitor?.Plugins?.NativeGameTrace?.getReadinessDiagnostics().then(value=>window.__nativeGateSnapshot={status:'resolved',value}).catch(error=>window.__nativeGateSnapshot={status:'rejected',errorType:typeof error?.name==='string'?error.name:'UnknownError'}); true");
+        awaitCondition(scenario, "Stage 3 — Native navigation authorization",
+            "window.__nativeGateSnapshot?.status === 'resolved' && window.__nativeGateSnapshot?.value?.currentPage === 'app' && window.__nativeGateSnapshot?.value?.launchEnabled === true && window.__nativeGateSnapshot?.value?.events?.some(event => event.stage === 'plugin-open-resolved') && window.__nativeGateSnapshot?.value?.events?.some(event => event.stage === 'navigation-authorized') && window.__nativeGateSnapshot?.value?.events?.some(event => event.stage === 'webview-load-requested')");
+        awaitCondition(scenario, "Stage 4 — Game Initialization",
+            "window.__nativeGameTraceReadiness?.terminal === true");
+        assertStageTrue(scenario, "Stage 4 — Game Initialization",
+            "window.__nativeGameTraceReadiness?.events?.some(event => event.stage === 'initialization-complete' && event.terminal === true && event.capabilityEnabled === true && event.panelPresent === true && event.panelConnected === true) && window.__nativeGameTraceReadiness?.events?.some(event => event.stage === 'native-capability-resolved' && event.available === true && event.enabled === true)");
+        awaitCondition(scenario, "Stage 5 — Panel Acceptance",
+            "!!document.querySelector('#nativeGameTracePanel')?.isConnected && document.querySelector('#nativeGameTracePanel')?.textContent.includes('GAME TRACE') === true");
+        eval(scenario, "window.__gateReturnResult='pending'; window.Capacitor?.Plugins?.NativeGameTrace?.openAcceptanceCases().then(()=>window.__gateReturnResult='resolved').catch(error=>window.__gateReturnResult=typeof error?.name==='string'?error.name:'UnknownError'); true");
+        awaitCondition(scenario, "Stage 5 — Return to Validation Page",
+            "location.pathname === '/native-gate.html' && document.readyState === 'complete' && document.querySelector('#acceptanceCase')?.options.length === 14");
+        eval(scenario, "window.__gateReturnCapability=null; window.Capacitor?.Plugins?.NativeGameTrace?.getCapability().then(value=>window.__gateReturnCapability=value).catch(error=>window.__gateReturnCapability={errorType:typeof error?.name==='string'?error.name:'UnknownError'}); true");
+        awaitCondition(scenario, "Stage 5 — Native Capability Reset",
+            "window.__gateReturnCapability?.available === true");
+        assertStageTrue(scenario, "Stage 5 — Capability Reset",
+            "window.__gateReturnCapability?.enabled === false && !document.querySelector('#nativeGameTracePanel')");
+        eval(scenario, "window.__nativeGateReturnSnapshot={status:'pending'}; Capacitor?.Plugins?.NativeGameTrace?.getReadinessDiagnostics().then(value=>window.__nativeGateReturnSnapshot={status:'resolved',value}).catch(error=>window.__nativeGateReturnSnapshot={status:'rejected',errorType:typeof error?.name==='string'?error.name:'UnknownError'}); true");
+        awaitCondition(scenario, "Stage 5 — Native return authorization",
+            "window.__nativeGateReturnSnapshot?.status === 'resolved' && window.__nativeGateReturnSnapshot?.value?.currentPage === 'native-gate' && window.__nativeGateReturnSnapshot?.value?.launchEnabled === false && window.__nativeGateReturnSnapshot?.value?.events?.some(event => event.stage === 'plugin-return-resolved') && window.__nativeGateReturnSnapshot?.value?.events?.some(event => event.stage === 'return-navigation-authorized')");
+        Log.i("NativeGameTraceGate", "ACCEPTANCE_CYCLE_PASS round=" + cycle);
     }
 
     @Test
@@ -90,10 +181,10 @@ public class NativeShellGateTest {
 
     @Test
     public void d_debugValidationUsesActualTargetAuthority() throws Exception {
-        Intent intent = new Intent(InstrumentationRegistry.getInstrumentation().getTargetContext(), MainActivity.class);
-        intent.putExtra("nativeSpeechGate", true);
-        try (ActivityScenario<MainActivity> scenario = ActivityScenario.launch(intent)) {
-            awaitTrue(scenario, "document.querySelector('#acceptanceCase')?.options.length === 14");
+        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(debugValidationIntent());
+        try {
+            awaitCondition(scenario, "Stage 1 — Validation Page Ready",
+                "location.pathname === '/native-gate.html' && document.readyState === 'complete' && document.querySelector('#acceptanceCase')?.options.length === 14");
             assertEquals("true", eval(scenario, "document.querySelector('#acceptanceCase').value === 'D01'"));
             eval(scenario, "document.querySelector('#acceptanceCase').value='D02'; document.querySelector('#acceptanceCase').dispatchEvent(new Event('change')); true");
             awaitTrue(scenario, "document.querySelector('#expected')?.textContent.includes('yield to something') === true");
@@ -111,11 +202,20 @@ public class NativeShellGateTest {
             assertEquals("true", eval(scenario, "document.querySelector('#expected').textContent.includes('Mom yelled in a rage.')"));
             eval(scenario, "document.querySelector('#acceptanceCase').value='D07'; document.querySelector('#acceptanceCase').dispatchEvent(new Event('change')); true");
             assertEquals("true", eval(scenario, "document.querySelector('#recognitionHarness').hidden"));
-            eval(scenario, "document.querySelector('#openGameTrace').click(); true");
-            awaitTrue(scenario, "!!document.querySelector('#app') && !!document.querySelector('#nativeGameTracePanel')");
-            assertEquals("true", eval(scenario, "document.querySelector('#nativeGameTracePanel')?.textContent.includes('GAME TRACE') === true"));
-            eval(scenario, "window.Capacitor.Plugins.NativeGameTrace.openAcceptanceCases(); true");
-            awaitTrue(scenario, "document.querySelector('#acceptanceCase')?.options.length === 14");
+            for (int cycle = 1; cycle <= 10; cycle++) {
+                runGameTraceNavigationCycle(scenario, cycle);
+                if (cycle == 3 || cycle == 6) {
+                    scenario.close();
+                    scenario = ActivityScenario.launch(debugValidationIntent());
+                    awaitCondition(scenario, "Fresh Activity launch after cycle " + cycle,
+                        "location.pathname === '/native-gate.html' && document.readyState === 'complete' && document.querySelector('#acceptanceCase')?.options.length === 14");
+                    assertStageTrue(scenario, "Fresh Activity launch readiness",
+                        "document.querySelector('#acceptanceCase').value === 'D01' && !document.querySelector('#nativeGameTracePanel')");
+                }
+            }
+            Log.i("NativeGameTraceGate", "ACCEPTANCE_CYCLES_PASS total=10 freshActivityRelaunches=2");
+        } finally {
+            scenario.close();
         }
     }
 
