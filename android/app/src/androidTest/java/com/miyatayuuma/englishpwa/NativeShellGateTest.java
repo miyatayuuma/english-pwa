@@ -13,6 +13,7 @@ import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -52,8 +53,12 @@ public class NativeShellGateTest {
                 Thread.sleep(100);
             }
             JSONObject result = new JSONObject();
-            result.put("javascript", new JSONObject(eval(scenario,
-                "JSON.stringify(window.__gateDiagnosticSnapshot || {capture:'unavailable'})")));
+            String javascriptSnapshot = eval(scenario,
+                "JSON.stringify(window.__gateDiagnosticSnapshot || {capture:'unavailable'})");
+            Object decodedSnapshot = new JSONTokener(javascriptSnapshot).nextValue();
+            String javascriptJson = decodedSnapshot instanceof String
+                ? (String) decodedSnapshot : javascriptSnapshot;
+            result.put("javascript", new JSONObject(javascriptJson));
             result.put("native", new JSONObject(nativeJson.get()));
             return result.toString();
         } catch (Exception captureFailure) {

@@ -10,6 +10,7 @@ const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 test('only a debug Android launch Intent exposes the NativeGameTrace bridge', () => {
   const activity = read('android/app/src/main/java/com/miyatayuuma/englishpwa/MainActivity.java');
   const plugin = read('android/app/src/debug/java/com/miyatayuuma/englishpwa/NativeGameTracePlugin.java');
+  const validationPage = read('android/app/src/debug/assets/public/native-gate.html');
   assert.match(activity, /BuildConfig\.DEBUG\s*&&\s*getIntent\(\)\.getBooleanExtra\("nativeSpeechGameTrace", false\)/);
   assert.match(activity, /if \(!BuildConfig\.DEBUG\) return/);
   assert.match(activity, /Class\.forName\("com\.miyatayuuma\.englishpwa\.NativeGameTracePlugin"\)/);
@@ -18,6 +19,9 @@ test('only a debug Android launch Intent exposes the NativeGameTrace bridge', ()
   assert.match(plugin, /result\.put\("enabled", enabled\)/);
   assert.match(plugin, /public void getReadinessDiagnostics\(PluginCall call\)[\s\S]*?if \(!BuildConfig\.DEBUG \|\| activity == null\)/);
   assert.match(activity, /synchronized void recordNativeGameTraceGateEvent\([\s\S]*?if \(!BuildConfig\.DEBUG\) return/);
+  assert.match(validationPage, /gameTraceBridge=await getNativeGameTrace\(\)/);
+  assert.match(validationPage, /pluginAvailable: !!gameTraceBridge && typeof gameTraceBridge\.openGameTrace === 'function'/);
+  assert.doesNotMatch(validationPage, /pluginAvailable: typeof plugin\.openGameTrace/);
   assert.ok(plugin.includes('package com.miyatayuuma.englishpwa;'));
 });
 

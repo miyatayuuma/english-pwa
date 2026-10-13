@@ -90,6 +90,13 @@ const $=id=>document.getElementById(id);
 const plugin=await getNativeSpeech();
 const capabilities=await plugin.isAvailable();
 const [vocabulary,items]=await Promise.all(['/data/vocabulary-v3.json','/data/items.json'].map(async path=>(await fetch(path)).json()));
+let gameTraceBridge=null,gameTraceBridgeErrorType=null;
+try{gameTraceBridge=await getNativeGameTrace();}
+catch(error){gameTraceBridgeErrorType=typeof error?.name==='string'?error.name:'UnknownError';}
+window.recordNativeGameTraceNavigation(gameTraceBridge?'native-plugin-resolution-resolved':'native-plugin-resolution-rejected',{
+ pluginAvailable:!!gameTraceBridge&&typeof gameTraceBridge.openGameTrace==='function',
+ errorType:gameTraceBridgeErrorType,
+});
 const itemById=new Map(items.map(item=>[item.id,item]));
 const rows=[];
 let controller,attempt,finished=true;
@@ -196,7 +203,7 @@ $('openGameTrace').onclick=async()=>{
  try{
   $('status').textContent='通常ゲームを開きます。ゲーム画面でTrace ONにしてください。';
    window.recordNativeGameTraceNavigation('plugin-resolution-started');
-  const traceBridge=await getNativeGameTrace();
+  const traceBridge=gameTraceBridge||await getNativeGameTrace();
    window.recordNativeGameTraceNavigation('plugin-resolved', {
      pluginAvailable: !!traceBridge && typeof traceBridge.openGameTrace === 'function',
    });
@@ -220,7 +227,8 @@ window.recordNativeGameTraceNavigation('validation-page-ready', {
   buttonPresent: !!$('openGameTrace'),
   buttonHandlerAvailable: typeof $('openGameTrace').onclick === 'function',
   capacitorAvailable: !!window.Capacitor,
-  pluginAvailable: typeof plugin.openGameTrace === 'function',
+  pluginAvailable: !!gameTraceBridge && typeof gameTraceBridge.openGameTrace === 'function',
+  pluginResolutionErrorType: gameTraceBridgeErrorType,
 });
 </script>
 </html>
