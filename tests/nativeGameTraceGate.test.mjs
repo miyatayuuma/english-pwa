@@ -17,6 +17,9 @@ test('only a debug Android launch Intent exposes the NativeGameTrace bridge', ()
   assert.match(activity, /protected void onNewIntent\(Intent intent\)[\s\S]*?setIntent\(intent\)[\s\S]*?getBooleanExtra\("nativeSpeechGameTrace", false\)/);
   assert.match(plugin, /BuildConfig\.DEBUG\s*&&[\s\S]*?isNativeSpeechGameTraceLaunchEnabled\(\)/);
   assert.match(plugin, /result\.put\("enabled", enabled\)/);
+  assert.match(plugin, /plugin-capability-requested/);
+  assert.match(plugin, /plugin-capability-resolved/);
+  assert.match(activity, /recordNativeGameTraceCapabilityEvent\(String stage, Boolean available, Boolean enabled\)/);
   assert.match(plugin, /public void getReadinessDiagnostics\(PluginCall call\)[\s\S]*?if \(!BuildConfig\.DEBUG \|\| activity == null\)/);
   assert.match(activity, /synchronized void recordNativeGameTraceGateEvent\([\s\S]*?if \(!BuildConfig\.DEBUG\) return/);
   assert.match(validationPage, /gameTraceBridge=await getNativeGameTrace\(\)/);
@@ -29,9 +32,12 @@ test('web, URL, and storage state cannot enable game tracing', () => {
   const panel = read('scripts/ui/gameTracePanel.js');
   const collector = read('scripts/native/gameTrace.js');
   const nativeSpeech = read('scripts/native/nativeSpeech.js');
+  const main = read('scripts/app/main.js');
   assert.match(panel, /const nativeAndroid = isNativeAndroid\(\)/);
   assert.match(panel, /if \(!nativeAndroid\) \{[\s\S]*?recordGameTraceReadiness\('platform-rejected'[\s\S]*?return false/);
   assert.match(panel, /const capability = await nativeBridge\.getCapability\(\)/);
+  assert.match(panel, /recordGameTraceReadiness\('native-capability-requested'\)[\s\S]*?await nativeBridge\.getCapability\(\)/);
+  assert.match(main, /recordGameTraceReadiness\('app-bootstrap-started'\)[\s\S]*?await waitForDomReady\(\)[\s\S]*?recordGameTraceReadiness\('app-dom-ready'\)[\s\S]*?initializeGameTracePanel\(\)[\s\S]*?recordGameTraceReadiness\('app-initialization-started'\)[\s\S]*?await initApp\(\)[\s\S]*?recordGameTraceReadiness\('app-initialization-complete'\)/);
   assert.match(panel, /if \(capability\.enabled\) \{[\s\S]*?ensurePanel\(\)/);
   assert.doesNotMatch(panel, /searchParams|location\.search|localStorage|sessionStorage/);
   assert.doesNotMatch(collector, /localStorage|sessionStorage|indexedDB|fetch\(/i);

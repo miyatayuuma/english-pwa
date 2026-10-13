@@ -112,6 +112,26 @@ public class MainActivity extends BridgeActivity {
             + " launchEnabled=" + nativeSpeechGameTraceLaunch);
     }
 
+    synchronized void recordNativeGameTraceCapabilityEvent(String stage, Boolean available, Boolean enabled) {
+        if (!BuildConfig.DEBUG) return;
+        JSObject event = new JSObject();
+        event.put("sequence", ++nativeGameTraceGateSequence);
+        event.put("clock", "SystemClock.elapsedRealtimeNanos");
+        event.put("atNanos", SystemClock.elapsedRealtimeNanos());
+        event.put("stage", stage);
+        String currentUrl = getBridge() != null && getBridge().getWebView() != null
+            ? getBridge().getWebView().getUrl() : null;
+        event.put("currentPage", pageId(currentUrl));
+        if (available != null) event.put("available", available);
+        if (enabled != null) event.put("enabled", enabled);
+        event.put("launchEnabled", nativeSpeechGameTraceLaunch);
+        nativeGameTraceGateEvents.put(event);
+        if (nativeGameTraceGateEvents.length() > 60) nativeGameTraceGateEvents.remove(0);
+        Log.i("NativeGameTraceGate", stage + " currentPage=" + pageId(currentUrl)
+            + " available=" + available + " enabled=" + enabled
+            + " launchEnabled=" + nativeSpeechGameTraceLaunch);
+    }
+
     synchronized JSObject getNativeGameTraceReadinessDiagnostics() {
         JSObject result = new JSObject();
         try {

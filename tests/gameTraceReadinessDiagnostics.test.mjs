@@ -41,6 +41,9 @@ test('Game Trace readiness metadata is debug-only, ordered, and excludes payload
 
     globalThis.Capacitor.DEBUG = true;
     installGameTraceReadinessErrorCapture();
+    recordGameTraceReadiness('app-bootstrap-started');
+    recordGameTraceReadiness('app-initialization-started');
+    recordGameTraceReadiness('native-capability-requested');
     recordGameTraceReadiness('native-capability-resolved', {
       available: true,
       enabled: true,
@@ -64,19 +67,20 @@ test('Game Trace readiness metadata is debug-only, ordered, and excludes payload
     assert.equal(diagnostics.debugOnly, true);
     assert.equal(diagnostics.terminal, true);
     assert.deepEqual(diagnostics.events.map(event => event.stage), [
+      'app-bootstrap-started', 'app-initialization-started', 'native-capability-requested',
       'native-capability-resolved', 'panel-created', 'initialization-complete',
     ]);
-    assert.deepEqual(diagnostics.events[0], {
-      sequence: 1,
+    assert.deepEqual(diagnostics.events[3], {
+      sequence: 4,
       stage: 'native-capability-resolved',
-      atMs: diagnostics.events[0].atMs,
+      atMs: diagnostics.events[3].atMs,
       available: true,
       enabled: true,
     });
     assert.equal(diagnostics.javascriptErrors[0].errorType, 'TypeError');
     assert.equal(diagnostics.javascriptErrors[0].source, 'https://localhost/scripts/app.js');
     assert.equal(diagnostics.javascriptErrors[1].errorType, 'RangeError');
-    assert.equal(dispatched.length, 3);
+    assert.equal(dispatched.length, 6);
     const serialized = JSON.stringify(diagnostics);
     assert.doesNotMatch(serialized, /private speech text|private audio payload|prompt=private/);
     assert.doesNotMatch(serialized, /"transcript"|"audio"|"message"/);

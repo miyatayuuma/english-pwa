@@ -198,6 +198,7 @@ export async function initializeGameTracePanel() {
       pluginAvailable: !!nativeBridge && typeof nativeBridge.getCapability === 'function',
     });
     stage = 'native-capability';
+    recordGameTraceReadiness('native-capability-requested');
     const capability = await nativeBridge.getCapability();
     recordGameTraceReadiness('native-capability-resolved', {
       available: capability?.available === true,

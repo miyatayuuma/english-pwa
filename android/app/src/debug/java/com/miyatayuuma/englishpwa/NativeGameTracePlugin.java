@@ -10,15 +10,22 @@ import com.getcapacitor.annotation.CapacitorPlugin;
 public class NativeGameTracePlugin extends Plugin {
     @PluginMethod
     public void getCapability(PluginCall call) {
-        JSObject result = new JSObject();
         MainActivity activity = getActivity() instanceof MainActivity
             ? (MainActivity) getActivity() : null;
+        if (activity != null) {
+            activity.recordNativeGameTraceCapabilityEvent("plugin-capability-requested", null, null);
+        }
         boolean enabled = BuildConfig.DEBUG
             && activity != null
             && activity.isNativeSpeechGameTraceLaunchEnabled();
-        result.put("available", BuildConfig.DEBUG);
+        boolean available = BuildConfig.DEBUG;
+        JSObject result = new JSObject();
+        result.put("available", available);
         result.put("enabled", enabled);
         result.put("source", enabled ? "debug-launch-intent" : "disabled");
+        if (activity != null) {
+            activity.recordNativeGameTraceCapabilityEvent("plugin-capability-resolved", available, enabled);
+        }
         call.resolve(result);
     }
 
