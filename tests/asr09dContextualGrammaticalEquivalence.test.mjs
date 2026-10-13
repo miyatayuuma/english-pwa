@@ -106,6 +106,24 @@ test('Vocabulary keeps TARGET and PARAPHRASE authority and records the selected 
   assert.equal(target.rawTranscript, "I'd eaten.");
   assert.equal(target.speechMatch.rawTranscript, "I'd eaten.");
 
+  const answerVariant = classifyVocabularySpeechAnswer({
+    entry: { id: 'asr09d-answer', canonical: 'show readiness', answers: ['I had eaten.'] },
+    transcript: "I'd eaten.",
+  });
+  assert.equal(answerVariant.type, 'target');
+  assert.equal(answerVariant.matchedAuthority, 'answer');
+  assert.equal(answerVariant.decisionId, 'ambiguous-d');
+
+  const sourceSentence = 'They had written it yesterday.';
+  const occurrence = classifyVocabularySpeechAnswer({
+    entry: { id: 'asr09d-source', canonical: 'write something' },
+    activeOccurrence: { item: { en: sourceSentence }, occurrence: { start: 0, end: 'They had written it'.length } },
+    transcript: "They'd written it.",
+  });
+  assert.equal(occurrence.type, 'target');
+  assert.equal(occurrence.matchedAuthority, 'source');
+  assert.equal(occurrence.decisionId, 'ambiguous-d');
+
   const paraphrase = classifyVocabularySpeechAnswer({
     entry: { id: 'asr09d-paraphrase', canonical: 'She had eaten.', paraphrases: ['She would go.'] },
     transcript: "She'd go.",
@@ -168,6 +186,19 @@ test('Correction uses the same resolver without writing scheduled SRS state; N-b
     recognitionSegments: [segment(["They'd"]), { ...segment(['written it.']), segmentIndex: 1 }],
   });
   assert.equal(crossSegmentFragments.type, 'miss');
+
+  const attemptOne = classifyVocabularySpeechAnswer({
+    entry: { id: 'asr09d-attempt-one', canonical: 'They had written it.' },
+    transcript: "They'd", recognitionComplete: true, completionState: 'finalized',
+    attemptId: 'attempt-one', recognitionSegments: [segment(["They'd"])],
+  });
+  const attemptTwo = classifyVocabularySpeechAnswer({
+    entry: { id: 'asr09d-attempt-two', canonical: 'They had written it.' },
+    transcript: 'written it.', recognitionComplete: true, completionState: 'finalized',
+    attemptId: 'attempt-two', recognitionSegments: [segment(['written it.'])],
+  });
+  assert.equal(attemptOne.type, 'miss');
+  assert.equal(attemptTwo.type, 'miss');
 
   const unfinished = classifyVocabularySpeechAnswer({
     entry: { id: 'asr09d-interim', canonical: 'They had written it.' },
