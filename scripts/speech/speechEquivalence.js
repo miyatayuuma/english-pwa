@@ -5,6 +5,10 @@ import {
   isContextualSHeadAt,
   resolveContextualGrammaticalEquivalence,
 } from './contextualGrammaticalEquivalence.js';
+import {
+  isContextualDHeadAt,
+  resolveContextualDGrammaticalEquivalence,
+} from './contextualDGrammaticalEquivalence.js';
 
 function scopeAllows(rule, context = {}) {
   const scope = rule?.scope || { type: 'global' };
@@ -82,10 +86,25 @@ export function resolveSpeechTokenSpan(expectedTokens, expectedStart, observedTo
       displayPolicy: rule.display,
     };
   }
-  if ((context.mode !== 'vocabulary' && context.mode !== 'correction')
-    || (!isContextualSHeadAt(expectedTokens, expectedStart)
-      && !isContextualSHeadAt(observedTokens, observedStart))) return null;
-  const contextual = resolveContextualGrammaticalEquivalence({
+  if (context.mode !== 'vocabulary' && context.mode !== 'correction') return null;
+  const sHead = isContextualSHeadAt(expectedTokens, expectedStart)
+    || isContextualSHeadAt(observedTokens, observedStart);
+  if (sHead) {
+    const contextual = resolveContextualGrammaticalEquivalence({
+      expectedTokens,
+      observedTokens,
+      expectedStart,
+      observedStart,
+      mode: context.mode,
+      referenceContext: context.referenceContext ?? context,
+      recognitionProvenance: context.recognitionProvenance ?? null,
+    });
+    if (contextual.status === 'MATCH') return contextual;
+    return null;
+  }
+  if (!isContextualDHeadAt(expectedTokens, expectedStart)
+    && !isContextualDHeadAt(observedTokens, observedStart)) return null;
+  const contextualD = resolveContextualDGrammaticalEquivalence({
     expectedTokens,
     observedTokens,
     expectedStart,
@@ -94,6 +113,6 @@ export function resolveSpeechTokenSpan(expectedTokens, expectedStart, observedTo
     referenceContext: context.referenceContext ?? context,
     recognitionProvenance: context.recognitionProvenance ?? null,
   });
-  if (contextual.status === 'MATCH') return contextual;
+  if (contextualD.status === 'MATCH') return contextualD;
   return null;
 }

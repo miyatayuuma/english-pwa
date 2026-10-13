@@ -30,6 +30,8 @@ jobs:
       - run: npm ci
       - name: Validate bounded ASR-09C authority
         run: npm run speech:validate-asr-09c
+      - name: Validate bounded ASR-09D authority
+        run: npm run speech:validate-asr-09d
       - run: npm run native:sync
       - run: ./android/gradlew -p android assembleDebug assembleRelease lintDebug --no-daemon
       - uses: actions/upload-artifact@v4

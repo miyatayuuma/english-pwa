@@ -73,7 +73,7 @@ test('polarity, auxiliary identity, ambiguous contractions, homophones, and spli
     ['they are here', 'their here'], ['they are here', 'there here'],
     ['it is ready', 'its ready'], ['its ready', "it's ready"],
     ['he is ready', "he's ready"], ['he has finished', "he's finished"],
-    ['I had left', "I'd left"], ['I would go', "I'd go"],
+    ['I had left', "I'd left"],
     ['let us go', "let's go"], ['cannot go', 'can not go'], ['can not go', "can't go"],
     ['do not agree', 'do agree'], ['do not agree', 'do'],
     ["we're ready", 'were ready'], ['were ready', "we're ready"],
@@ -82,12 +82,23 @@ test('polarity, auxiliary identity, ambiguous contractions, homophones, and spli
     ['their here', "they're here"], ['there here', "they're here"],
     ["it's ready", 'its ready'], ['its ready', "it's ready"],
     ["he's ready", 'he is ready'], ["he's finished", 'he has finished'],
-    ["I'd left", 'I had left'], ["I'd go", 'I would go'],
+    ["I'd left", 'I had left'],
     ["let's go", 'let us go'], ["can't go", 'can not go'],
   ]) {
     for (const mode of ['vocabulary', 'read', 'cloze', 'correction']) {
       assert.equal(findSpeechSurfaceMatch(expected, observed, context(mode)), null, `${expected} ≠ ${observed} in ${mode}`);
     }
+  }
+});
+
+test('ASR-09D would evidence is separate from ASR-09B and excluded from Read and Cloze', () => {
+  for (const mode of ['vocabulary', 'correction']) {
+    const match = findSpeechSurfaceMatch('I would go.', "I'd go.", context(mode));
+    assert.equal(match?.decisionId, 'ambiguous-d');
+    assert.equal(match?.selectedAuxiliary, 'would');
+  }
+  for (const mode of ['read', 'cloze']) {
+    assert.equal(findSpeechSurfaceMatch('I would go.', "I'd go.", context(mode)), null);
   }
 });
 

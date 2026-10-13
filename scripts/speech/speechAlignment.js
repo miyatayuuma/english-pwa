@@ -1,6 +1,7 @@
 import { safeSpeechTokens } from './safeSpeechNormalization.js';
 import { resolveSpeechTokenSpan } from './speechEquivalence.js';
 import { isContextualSHeadAt } from './contextualGrammaticalEquivalence.js';
+import { isContextualDHeadAt } from './contextualDGrammaticalEquivalence.js';
 
 export function calcAlignmentF1(referenceCount, recall, precision) {
   if (!referenceCount) return 1;
@@ -21,7 +22,9 @@ function contextualResolutionContext(expectedTokens, expectedStart, observedToke
   if ((context?.mode !== 'vocabulary' && context?.mode !== 'correction')
     || expectedTokens[expectedStart]?.value === observedTokens[observedStart]?.value
     || (!isContextualSHeadAt(expectedTokens, expectedStart)
-      && !isContextualSHeadAt(observedTokens, observedStart))) return context;
+      && !isContextualSHeadAt(observedTokens, observedStart)
+      && !isContextualDHeadAt(expectedTokens, expectedStart)
+      && !isContextualDHeadAt(observedTokens, observedStart))) return context;
   return {
     ...context,
     referenceContext: context.referenceContext ?? { referenceText, observedText: rawTranscript },
@@ -84,8 +87,10 @@ function alignWindow(referenceTokens, observedTokens, start, end, context, prove
         authorityTier: resolution.authorityTier ?? null,
         decisionId: resolution.decisionId ?? null,
         ruleId: resolution.ruleId,
+        patternId: resolution.patternId ?? null,
         ruleKind: resolution.ruleKind,
         selectedAuxiliary: resolution.selectedAuxiliary ?? null,
+        independentParseAgreement: resolution.independentParseAgreement ?? null,
         contextualGrammarEvidence: resolution.contextualGrammarEvidence ?? null,
         expectedTokenSpan: resolution.expectedTokenSpan ?? null,
         observedTokenSpan: resolution.observedTokenSpan ?? null,
@@ -362,8 +367,10 @@ export function findSpeechSurfaceMatch(expectedText, observedText, {
       authorityTier: firstEquivalence?.authorityTier ?? null,
       decisionId: firstEquivalence?.decisionId ?? null,
       ruleId: firstEquivalence?.ruleId ?? null,
+      patternId: firstEquivalence?.patternId ?? null,
       ruleKind: firstEquivalence?.ruleKind ?? null,
       selectedAuxiliary: firstEquivalence?.selectedAuxiliary ?? null,
+      independentParseAgreement: firstEquivalence?.independentParseAgreement ?? null,
       contextualGrammarEvidence: firstEquivalence?.contextualGrammarEvidence ?? null,
       matchedSpan: firstEquivalence ? {
         expectedStart: firstEquivalence.expectedStart,
