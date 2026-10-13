@@ -1,7 +1,6 @@
 import { safeSpeechTokens } from './safeSpeechNormalization.js';
 import { resolveSpeechTokenSpan } from './speechEquivalence.js';
-import { isContextualSHeadAt } from './contextualGrammaticalEquivalence.js';
-import { isContextualDHeadAt } from './contextualDGrammaticalEquivalence.js';
+import { contextualGrammarHeadAt } from './contextualGrammarHead.js';
 
 export function calcAlignmentF1(referenceCount, recall, precision) {
   if (!referenceCount) return 1;
@@ -21,10 +20,8 @@ function updateCell(scores, backs, row, column, value, step) {
 function contextualResolutionContext(expectedTokens, expectedStart, observedTokens, observedStart, context, referenceText, rawTranscript, provenance) {
   if ((context?.mode !== 'vocabulary' && context?.mode !== 'correction')
     || expectedTokens[expectedStart]?.value === observedTokens[observedStart]?.value
-    || (!isContextualSHeadAt(expectedTokens, expectedStart)
-      && !isContextualSHeadAt(observedTokens, observedStart)
-      && !isContextualDHeadAt(expectedTokens, expectedStart)
-      && !isContextualDHeadAt(observedTokens, observedStart))) return context;
+    || (!contextualGrammarHeadAt(expectedTokens, expectedStart)
+      && !contextualGrammarHeadAt(observedTokens, observedStart))) return context;
   return {
     ...context,
     referenceContext: context.referenceContext ?? { referenceText, observedText: rawTranscript },

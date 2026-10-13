@@ -1,14 +1,12 @@
 import { safeSpeechTokens } from './safeSpeechNormalization.js';
 import { speechEquivalenceRules } from './speechEquivalenceRules.js';
 import { grammaticalEquivalenceRules } from './grammaticalEquivalenceRules.js';
-import {
-  isContextualSHeadAt,
-  resolveContextualGrammaticalEquivalence,
-} from './contextualGrammaticalEquivalence.js';
+import { resolveContextualGrammaticalEquivalence } from './contextualGrammaticalEquivalence.js';
 import {
   isContextualDHeadAt,
   resolveContextualDGrammaticalEquivalence,
 } from './contextualDGrammaticalEquivalence.js';
+import { contextualGrammarHeadAt } from './contextualGrammarHead.js';
 
 function scopeAllows(rule, context = {}) {
   const scope = rule?.scope || { type: 'global' };
@@ -87,8 +85,9 @@ export function resolveSpeechTokenSpan(expectedTokens, expectedStart, observedTo
     };
   }
   if (context.mode !== 'vocabulary' && context.mode !== 'correction') return null;
-  const sHead = isContextualSHeadAt(expectedTokens, expectedStart)
-    || isContextualSHeadAt(observedTokens, observedStart);
+  const expectedHead = contextualGrammarHeadAt(expectedTokens, expectedStart);
+  const observedHead = contextualGrammarHeadAt(observedTokens, observedStart);
+  const sHead = expectedHead === 's' || observedHead === 's';
   if (sHead) {
     const contextual = resolveContextualGrammaticalEquivalence({
       expectedTokens,
@@ -102,8 +101,7 @@ export function resolveSpeechTokenSpan(expectedTokens, expectedStart, observedTo
     if (contextual.status === 'MATCH') return contextual;
     return null;
   }
-  if (!isContextualDHeadAt(expectedTokens, expectedStart)
-    && !isContextualDHeadAt(observedTokens, observedStart)) return null;
+  if (expectedHead !== 'd' && observedHead !== 'd') return null;
   const contextualD = resolveContextualDGrammaticalEquivalence({
     expectedTokens,
     observedTokens,

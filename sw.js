@@ -70,6 +70,7 @@ self.addEventListener('install', e => {
     './scripts/speech/grammaticalEquivalenceRules.js',
     './scripts/speech/contextualGrammaticalEquivalence.js',
     './scripts/speech/contextualDGrammaticalEquivalence.js',
+    './scripts/speech/contextualGrammarHead.js',
     './scripts/speech/vocabularyTdClusterBeforeToAuthority.js',
     './scripts/speech/speechEquivalence.js',
     './scripts/speech/speechAlignment.js',
