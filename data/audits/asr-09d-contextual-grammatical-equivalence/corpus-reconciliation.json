@@ -1,0 +1,1327 @@
+{
+  "schemaVersion": 1,
+  "decisionId": "ambiguous-d",
+  "total": 18,
+  "statusCounts": {
+    "SAFE_CONTEXT_RESOLVED": 12,
+    "AMBIGUOUS_UNRESOLVED": 1,
+    "REJECT": 1,
+    "OUT_OF_SCOPE": 4
+  },
+  "candidates": [
+    {
+      "candidateId": "ge-dfc3ae4ac12e59eb",
+      "historicalIdentity": {
+        "sourceOrder": 113,
+        "decisionId": "ambiguous-d",
+        "sourceType": "vocabulary",
+        "sourceId": "vocab:01648",
+        "field": "canonical",
+        "fieldIndex": null,
+        "characterSpan": {
+          "start": 0,
+          "end": 3
+        },
+        "historicalSurface": "I'd",
+        "historicalSourceContext": "I'd be glad to"
+      },
+      "latestProductionIdentity": {
+        "sourceType": "vocabulary",
+        "sourceId": "vocab:01648",
+        "field": "canonical",
+        "fieldIndex": null,
+        "sourceSurface": "I'd be glad to",
+        "exactSpanJoin": true
+      },
+      "proposedCounterparts": [
+        "i had",
+        "i would"
+      ],
+      "subject": "i",
+      "followingToken": "be",
+      "possibleHadParse": false,
+      "possibleWouldParse": true,
+      "allowedModes": [
+        "vocabulary"
+      ],
+      "semanticAuthority": {
+        "canonical": "I'd be glad to",
+        "answers": [],
+        "paraphrases": [
+          "I'd be happy to",
+          "I'd love to",
+          "with pleasure"
+        ],
+        "matchedField": "canonical",
+        "paraphraseCannotBePromoted": false,
+        "resultType": "TARGET authority remains field-defined"
+      },
+      "selectedAuxiliary": "would",
+      "ruleId": "asr09d-would-base-verb",
+      "contextualGrammarEvidence": {
+        "patternId": "asr09d-would-base-verb",
+        "subject": "i",
+        "selectedAuxiliary": "would",
+        "lexicalHead": "be",
+        "expectedParse": [
+          "i'd",
+          "be"
+        ],
+        "observedParse": [
+          "i",
+          "would",
+          "be"
+        ],
+        "expectedParseSpan": {
+          "start": 0,
+          "end": 2,
+          "auxiliaryIndex": 0
+        },
+        "observedParseSpan": {
+          "start": 0,
+          "end": 3,
+          "auxiliaryIndex": 1
+        },
+        "independentParseAgreement": true,
+        "permittedMode": "vocabulary",
+        "referenceContextProvided": true,
+        "recognitionProvenanceProvided": true
+      },
+      "status": "SAFE_CONTEXT_RESOLVED",
+      "minimalCounterexample": {
+        "expected": "I would put it there.",
+        "observed": "I'd put it there."
+      },
+      "decisionReason": "The complete latest production sentence independently parses to the same approved auxiliary on both sides.",
+      "sourceJoin": {
+        "exactFieldSurface": true,
+        "exactHistoricalSpan": true,
+        "counterpartSurface": "i had"
+      }
+    },
+    {
+      "candidateId": "ge-8a04d873946749d4",
+      "historicalIdentity": {
+        "sourceOrder": 114,
+        "decisionId": "ambiguous-d",
+        "sourceType": "vocabulary",
+        "sourceId": "vocab:01648",
+        "field": "paraphrases",
+        "fieldIndex": 0,
+        "characterSpan": {
+          "start": 0,
+          "end": 3
+        },
+        "historicalSurface": "I'd",
+        "historicalSourceContext": "I'd be happy to"
+      },
+      "latestProductionIdentity": {
+        "sourceType": "vocabulary",
+        "sourceId": "vocab:01648",
+        "field": "paraphrases",
+        "fieldIndex": 0,
+        "sourceSurface": "I'd be happy to",
+        "exactSpanJoin": true
+      },
+      "proposedCounterparts": [
+        "i had",
+        "i would"
+      ],
+      "subject": "i",
+      "followingToken": "be",
+      "possibleHadParse": false,
+      "possibleWouldParse": true,
+      "allowedModes": [
+        "vocabulary"
+      ],
+      "semanticAuthority": {
+        "canonical": "I'd be glad to",
+        "answers": [],
+        "paraphrases": [
+          "I'd be happy to",
+          "I'd love to",
+          "with pleasure"
+        ],
+        "matchedField": "paraphrases",
+        "paraphraseCannotBePromoted": true,
+        "resultType": "PARAPHRASE"
+      },
+      "selectedAuxiliary": "would",
+      "ruleId": "asr09d-would-base-verb",
+      "contextualGrammarEvidence": {
+        "patternId": "asr09d-would-base-verb",
+        "subject": "i",
+        "selectedAuxiliary": "would",
+        "lexicalHead": "be",
+        "expectedParse": [
+          "i'd",
+          "be"
+        ],
+        "observedParse": [
+          "i",
+          "would",
+          "be"
+        ],
+        "expectedParseSpan": {
+          "start": 0,
+          "end": 2,
+          "auxiliaryIndex": 0
+        },
+        "observedParseSpan": {
+          "start": 0,
+          "end": 3,
+          "auxiliaryIndex": 1
+        },
+        "independentParseAgreement": true,
+        "permittedMode": "vocabulary",
+        "referenceContextProvided": true,
+        "recognitionProvenanceProvided": true
+      },
+      "status": "SAFE_CONTEXT_RESOLVED",
+      "minimalCounterexample": {
+        "expected": "I would put it there.",
+        "observed": "I'd put it there."
+      },
+      "decisionReason": "The complete latest production sentence independently parses to the same approved auxiliary on both sides.",
+      "sourceJoin": {
+        "exactFieldSurface": true,
+        "exactHistoricalSpan": true,
+        "counterpartSurface": "i had"
+      }
+    },
+    {
+      "candidateId": "ge-c5c164cff00544b5",
+      "historicalIdentity": {
+        "sourceOrder": 136,
+        "decisionId": "ambiguous-d",
+        "sourceType": "vocabulary",
+        "sourceId": "vocab:02452",
+        "field": "canonical",
+        "fieldIndex": null,
+        "characterSpan": {
+          "start": 15,
+          "end": 18
+        },
+        "historicalSurface": "I'd",
+        "historicalSourceContext": "if I were you, I'd do something"
+      },
+      "latestProductionIdentity": {
+        "sourceType": "vocabulary",
+        "sourceId": "vocab:02452",
+        "field": "canonical",
+        "fieldIndex": null,
+        "sourceSurface": "if I were you, I'd do something",
+        "exactSpanJoin": true
+      },
+      "proposedCounterparts": [
+        "i had",
+        "i would"
+      ],
+      "subject": "i",
+      "followingToken": "do",
+      "possibleHadParse": false,
+      "possibleWouldParse": true,
+      "allowedModes": [
+        "vocabulary"
+      ],
+      "semanticAuthority": {
+        "canonical": "if I were you, I'd do something",
+        "answers": [],
+        "paraphrases": [],
+        "matchedField": "canonical",
+        "paraphraseCannotBePromoted": false,
+        "resultType": "TARGET authority remains field-defined"
+      },
+      "selectedAuxiliary": "would",
+      "ruleId": "asr09d-would-base-verb",
+      "contextualGrammarEvidence": {
+        "patternId": "asr09d-would-base-verb",
+        "subject": "i",
+        "selectedAuxiliary": "would",
+        "lexicalHead": "do",
+        "expectedParse": [
+          "i'd",
+          "do"
+        ],
+        "observedParse": [
+          "i",
+          "would",
+          "do"
+        ],
+        "expectedParseSpan": {
+          "start": 4,
+          "end": 6,
+          "auxiliaryIndex": 4
+        },
+        "observedParseSpan": {
+          "start": 4,
+          "end": 7,
+          "auxiliaryIndex": 5
+        },
+        "independentParseAgreement": true,
+        "permittedMode": "vocabulary",
+        "referenceContextProvided": true,
+        "recognitionProvenanceProvided": true
+      },
+      "status": "SAFE_CONTEXT_RESOLVED",
+      "minimalCounterexample": {
+        "expected": "I would put it there.",
+        "observed": "I'd put it there."
+      },
+      "decisionReason": "The complete latest production sentence independently parses to the same approved auxiliary on both sides.",
+      "sourceJoin": {
+        "exactFieldSurface": true,
+        "exactHistoricalSpan": true,
+        "counterpartSurface": "i had"
+      }
+    },
+    {
+      "candidateId": "ge-3a1f308c113acaa4",
+      "historicalIdentity": {
+        "sourceOrder": 189,
+        "decisionId": "ambiguous-d",
+        "sourceType": "item",
+        "sourceId": "E0070",
+        "field": "en",
+        "fieldIndex": null,
+        "characterSpan": {
+          "start": 49,
+          "end": 54
+        },
+        "historicalSurface": "I had",
+        "historicalSourceContext": "I was short of cash, so I withdrew the $100 that I had deposited in my bank account last week."
+      },
+      "latestProductionIdentity": {
+        "sourceType": "item",
+        "sourceId": "E0070",
+        "field": "en",
+        "fieldIndex": null,
+        "sourceSurface": "I was short of cash, so I withdrew the $100 that I had deposited in my bank account last week.",
+        "exactSpanJoin": true
+      },
+      "proposedCounterparts": [
+        "i'd"
+      ],
+      "subject": "i",
+      "followingToken": "deposited",
+      "possibleHadParse": true,
+      "possibleWouldParse": false,
+      "allowedModes": [
+        "correction"
+      ],
+      "semanticAuthority": null,
+      "selectedAuxiliary": "had",
+      "ruleId": "asr09d-had-past-participle",
+      "contextualGrammarEvidence": {
+        "patternId": "asr09d-had-past-participle",
+        "subject": "i",
+        "selectedAuxiliary": "had",
+        "lexicalHead": "deposited",
+        "expectedParse": [
+          "i",
+          "had",
+          "deposited"
+        ],
+        "observedParse": [
+          "i'd",
+          "deposited"
+        ],
+        "expectedParseSpan": {
+          "start": 12,
+          "end": 15,
+          "auxiliaryIndex": 13
+        },
+        "observedParseSpan": {
+          "start": 12,
+          "end": 14,
+          "auxiliaryIndex": 12
+        },
+        "independentParseAgreement": true,
+        "permittedMode": "correction",
+        "referenceContextProvided": true,
+        "recognitionProvenanceProvided": true
+      },
+      "status": "SAFE_CONTEXT_RESOLVED",
+      "minimalCounterexample": {
+        "expected": "I had read it.",
+        "observed": "I'd read it."
+      },
+      "decisionReason": "The complete latest production sentence independently parses to the same approved auxiliary on both sides.",
+      "sourceJoin": {
+        "exactFieldSurface": true,
+        "exactHistoricalSpan": true,
+        "counterpartSurface": "i'd"
+      }
+    },
+    {
+      "candidateId": "ge-e99e9c1998cc7ced",
+      "historicalIdentity": {
+        "sourceOrder": 208,
+        "decisionId": "ambiguous-d",
+        "sourceType": "item",
+        "sourceId": "E0098",
+        "field": "en",
+        "fieldIndex": null,
+        "characterSpan": {
+          "start": 28,
+          "end": 31
+        },
+        "historicalSurface": "I'd",
+        "historicalSourceContext": "On behalf of all the staff, I'd like to express our sympathy for the victims."
+      },
+      "latestProductionIdentity": {
+        "sourceType": "item",
+        "sourceId": "E0098",
+        "field": "en",
+        "fieldIndex": null,
+        "sourceSurface": "On behalf of all the staff, I'd like to express our sympathy for the victims.",
+        "exactSpanJoin": true
+      },
+      "proposedCounterparts": [
+        "i had",
+        "i would"
+      ],
+      "subject": "i",
+      "followingToken": "like",
+      "possibleHadParse": false,
+      "possibleWouldParse": true,
+      "allowedModes": [
+        "correction"
+      ],
+      "semanticAuthority": null,
+      "selectedAuxiliary": "would",
+      "ruleId": "asr09d-would-base-verb",
+      "contextualGrammarEvidence": {
+        "patternId": "asr09d-would-base-verb",
+        "subject": "i",
+        "selectedAuxiliary": "would",
+        "lexicalHead": "like",
+        "expectedParse": [
+          "i'd",
+          "like"
+        ],
+        "observedParse": [
+          "i",
+          "would",
+          "like"
+        ],
+        "expectedParseSpan": {
+          "start": 6,
+          "end": 8,
+          "auxiliaryIndex": 6
+        },
+        "observedParseSpan": {
+          "start": 6,
+          "end": 9,
+          "auxiliaryIndex": 7
+        },
+        "independentParseAgreement": true,
+        "permittedMode": "correction",
+        "referenceContextProvided": true,
+        "recognitionProvenanceProvided": true
+      },
+      "status": "SAFE_CONTEXT_RESOLVED",
+      "minimalCounterexample": {
+        "expected": "I would put it there.",
+        "observed": "I'd put it there."
+      },
+      "decisionReason": "The complete latest production sentence independently parses to the same approved auxiliary on both sides.",
+      "sourceJoin": {
+        "exactFieldSurface": true,
+        "exactHistoricalSpan": true,
+        "counterpartSurface": "i had"
+      }
+    },
+    {
+      "candidateId": "ge-1e969ace86ccc7c9",
+      "historicalIdentity": {
+        "sourceOrder": 270,
+        "decisionId": "ambiguous-d",
+        "sourceType": "item",
+        "sourceId": "E0187",
+        "field": "en",
+        "fieldIndex": null,
+        "characterSpan": {
+          "start": 73,
+          "end": 77
+        },
+        "historicalSurface": "He'd",
+        "historicalSourceContext": "I can't help laughing at him because he keeps on making stupid mistakes. He'd be the last person to learn his lesson."
+      },
+      "latestProductionIdentity": {
+        "sourceType": "item",
+        "sourceId": "E0187",
+        "field": "en",
+        "fieldIndex": null,
+        "sourceSurface": "I can't help laughing at him because he keeps on making stupid mistakes. He'd be the last person to learn his lesson.",
+        "exactSpanJoin": true
+      },
+      "proposedCounterparts": [
+        "he had",
+        "he would"
+      ],
+      "subject": "he",
+      "followingToken": "be",
+      "possibleHadParse": false,
+      "possibleWouldParse": true,
+      "allowedModes": [
+        "correction"
+      ],
+      "semanticAuthority": null,
+      "selectedAuxiliary": "would",
+      "ruleId": "asr09d-would-base-verb",
+      "contextualGrammarEvidence": {
+        "patternId": "asr09d-would-base-verb",
+        "subject": "he",
+        "selectedAuxiliary": "would",
+        "lexicalHead": "be",
+        "expectedParse": [
+          "he'd",
+          "be"
+        ],
+        "observedParse": [
+          "he",
+          "would",
+          "be"
+        ],
+        "expectedParseSpan": {
+          "start": 13,
+          "end": 15,
+          "auxiliaryIndex": 13
+        },
+        "observedParseSpan": {
+          "start": 13,
+          "end": 16,
+          "auxiliaryIndex": 14
+        },
+        "independentParseAgreement": true,
+        "permittedMode": "correction",
+        "referenceContextProvided": true,
+        "recognitionProvenanceProvided": true
+      },
+      "status": "SAFE_CONTEXT_RESOLVED",
+      "minimalCounterexample": {
+        "expected": "I would put it there.",
+        "observed": "I'd put it there."
+      },
+      "decisionReason": "The complete latest production sentence independently parses to the same approved auxiliary on both sides.",
+      "sourceJoin": {
+        "exactFieldSurface": true,
+        "exactHistoricalSpan": true,
+        "counterpartSurface": "he had"
+      }
+    },
+    {
+      "candidateId": "ge-d69c4df2b9eb824a",
+      "historicalIdentity": {
+        "sourceOrder": 305,
+        "decisionId": "ambiguous-d",
+        "sourceType": "item",
+        "sourceId": "E0222",
+        "field": "en",
+        "fieldIndex": null,
+        "characterSpan": {
+          "start": 49,
+          "end": 52
+        },
+        "historicalSurface": "I'd",
+        "historicalSourceContext": "\"I've got a flat tire. Can you give me a hand?\" \"I'd be glad to.\""
+      },
+      "latestProductionIdentity": {
+        "sourceType": "item",
+        "sourceId": "E0222",
+        "field": "en",
+        "fieldIndex": null,
+        "sourceSurface": "\"I've got a flat tire. Can you give me a hand?\" \"I'd be glad to.\"",
+        "exactSpanJoin": true
+      },
+      "proposedCounterparts": [
+        "i had",
+        "i would"
+      ],
+      "subject": "i",
+      "followingToken": "be",
+      "possibleHadParse": false,
+      "possibleWouldParse": true,
+      "allowedModes": [
+        "vocabulary",
+        "correction"
+      ],
+      "semanticAuthority": null,
+      "selectedAuxiliary": "would",
+      "ruleId": "asr09d-would-base-verb",
+      "contextualGrammarEvidence": {
+        "patternId": "asr09d-would-base-verb",
+        "subject": "i",
+        "selectedAuxiliary": "would",
+        "lexicalHead": "be",
+        "expectedParse": [
+          "i'd",
+          "be"
+        ],
+        "observedParse": [
+          "i",
+          "would",
+          "be"
+        ],
+        "expectedParseSpan": {
+          "start": 11,
+          "end": 13,
+          "auxiliaryIndex": 11
+        },
+        "observedParseSpan": {
+          "start": 11,
+          "end": 14,
+          "auxiliaryIndex": 12
+        },
+        "independentParseAgreement": true,
+        "permittedMode": "vocabulary",
+        "referenceContextProvided": true,
+        "recognitionProvenanceProvided": true
+      },
+      "status": "SAFE_CONTEXT_RESOLVED",
+      "minimalCounterexample": {
+        "expected": "I would put it there.",
+        "observed": "I'd put it there."
+      },
+      "decisionReason": "The complete latest production sentence independently parses to the same approved auxiliary on both sides.",
+      "sourceJoin": {
+        "exactFieldSurface": true,
+        "exactHistoricalSpan": true,
+        "counterpartSurface": "i had"
+      }
+    },
+    {
+      "candidateId": "ge-41a1477a4da3dcd9",
+      "historicalIdentity": {
+        "sourceOrder": 332,
+        "decisionId": "ambiguous-d",
+        "sourceType": "item",
+        "sourceId": "E0282",
+        "field": "en",
+        "fieldIndex": null,
+        "characterSpan": {
+          "start": 60,
+          "end": 68
+        },
+        "historicalSurface": "it would",
+        "historicalSourceContext": "Apparently, Nick wasn't willing to take on the task because it would just add to his burdens."
+      },
+      "latestProductionIdentity": {
+        "sourceType": "item",
+        "sourceId": "E0282",
+        "field": "en",
+        "fieldIndex": null,
+        "sourceSurface": "Apparently, Nick wasn't willing to take on the task because it would just add to his burdens.",
+        "exactSpanJoin": true
+      },
+      "proposedCounterparts": [
+        "it'd"
+      ],
+      "subject": "it",
+      "followingToken": "just",
+      "possibleHadParse": false,
+      "possibleWouldParse": false,
+      "allowedModes": [
+        "correction"
+      ],
+      "semanticAuthority": null,
+      "selectedAuxiliary": null,
+      "ruleId": null,
+      "contextualGrammarEvidence": {
+        "sourceSubject": "it",
+        "followingToken": "just",
+        "independentUniqueParse": false
+      },
+      "status": "OUT_OF_SCOPE",
+      "minimalCounterexample": {
+        "id": "noun-help",
+        "expected": "I would help.",
+        "observed": "I'd help."
+      },
+      "decisionReason": "An intervening adverb prevents the approved immediate-complement pattern.",
+      "sourceJoin": {
+        "exactFieldSurface": true,
+        "exactHistoricalSpan": true,
+        "counterpartSurface": "it'd"
+      }
+    },
+    {
+      "candidateId": "ge-3b699874e9561fe0",
+      "historicalIdentity": {
+        "sourceOrder": 333,
+        "decisionId": "ambiguous-d",
+        "sourceType": "item",
+        "sourceId": "E0283",
+        "field": "en",
+        "fieldIndex": null,
+        "characterSpan": {
+          "start": 46,
+          "end": 52
+        },
+        "historicalSurface": "he had",
+        "historicalSourceContext": "Bob had intended to take her out tonight, but he had to work overtime."
+      },
+      "latestProductionIdentity": {
+        "sourceType": "item",
+        "sourceId": "E0283",
+        "field": "en",
+        "fieldIndex": null,
+        "sourceSurface": "Bob had intended to take her out tonight, but he had to work overtime.",
+        "exactSpanJoin": true
+      },
+      "proposedCounterparts": [
+        "he'd"
+      ],
+      "subject": "he",
+      "followingToken": "to",
+      "possibleHadParse": false,
+      "possibleWouldParse": false,
+      "allowedModes": [
+        "correction"
+      ],
+      "semanticAuthority": null,
+      "selectedAuxiliary": null,
+      "ruleId": null,
+      "contextualGrammarEvidence": {
+        "sourceSubject": "he",
+        "followingToken": "to",
+        "independentUniqueParse": false
+      },
+      "status": "OUT_OF_SCOPE",
+      "minimalCounterexample": {
+        "id": "noun-help",
+        "expected": "I would help.",
+        "observed": "I'd help."
+      },
+      "decisionReason": "Had-to obligation is not an approved past-participle or bare-infinitive construction.",
+      "sourceJoin": {
+        "exactFieldSurface": true,
+        "exactHistoricalSpan": true,
+        "counterpartSurface": "he'd"
+      }
+    },
+    {
+      "candidateId": "ge-e9c6158e271c0e40",
+      "historicalIdentity": {
+        "sourceOrder": 343,
+        "decisionId": "ambiguous-d",
+        "sourceType": "item",
+        "sourceId": "E0290",
+        "field": "en",
+        "fieldIndex": null,
+        "characterSpan": {
+          "start": 57,
+          "end": 64
+        },
+        "historicalSurface": "I would",
+        "historicalSourceContext": "I've gotten pessimistic, and I'm worried about something I would never have been concerned about before."
+      },
+      "latestProductionIdentity": {
+        "sourceType": "item",
+        "sourceId": "E0290",
+        "field": "en",
+        "fieldIndex": null,
+        "sourceSurface": "I've gotten pessimistic, and I'm worried about something I would never have been concerned about before.",
+        "exactSpanJoin": true
+      },
+      "proposedCounterparts": [
+        "i'd"
+      ],
+      "subject": "i",
+      "followingToken": "never",
+      "possibleHadParse": false,
+      "possibleWouldParse": false,
+      "allowedModes": [
+        "correction"
+      ],
+      "semanticAuthority": null,
+      "selectedAuxiliary": null,
+      "ruleId": null,
+      "contextualGrammarEvidence": {
+        "sourceSubject": "i",
+        "followingToken": "never",
+        "independentUniqueParse": false
+      },
+      "status": "REJECT",
+      "minimalCounterexample": {
+        "id": "negative-omitted",
+        "expected": "I would not go.",
+        "observed": "I'd go."
+      },
+      "decisionReason": "The contraction occurs in an excluded negative or negative-adverb construction.",
+      "sourceJoin": {
+        "exactFieldSurface": true,
+        "exactHistoricalSpan": true,
+        "counterpartSurface": "i'd"
+      }
+    },
+    {
+      "candidateId": "ge-39f1669e19c1590e",
+      "historicalIdentity": {
+        "sourceOrder": 351,
+        "decisionId": "ambiguous-d",
+        "sourceType": "item",
+        "sourceId": "E0308",
+        "field": "en",
+        "fieldIndex": null,
+        "characterSpan": {
+          "start": 34,
+          "end": 38
+        },
+        "historicalSurface": "We'd",
+        "historicalSourceContext": "That restaurant is always packed. We'd better make a reservation beforehand."
+      },
+      "latestProductionIdentity": {
+        "sourceType": "item",
+        "sourceId": "E0308",
+        "field": "en",
+        "fieldIndex": null,
+        "sourceSurface": "That restaurant is always packed. We'd better make a reservation beforehand.",
+        "exactSpanJoin": true
+      },
+      "proposedCounterparts": [
+        "we had",
+        "we would"
+      ],
+      "subject": "we",
+      "followingToken": "better",
+      "possibleHadParse": false,
+      "possibleWouldParse": false,
+      "allowedModes": [
+        "vocabulary",
+        "correction"
+      ],
+      "semanticAuthority": null,
+      "selectedAuxiliary": null,
+      "ruleId": null,
+      "contextualGrammarEvidence": {
+        "sourceSubject": "we",
+        "followingToken": "better",
+        "independentUniqueParse": false
+      },
+      "status": "OUT_OF_SCOPE",
+      "minimalCounterexample": {
+        "expected": "We had better make a reservation.",
+        "observed": "We'd better make a reservation."
+      },
+      "decisionReason": "The following fixed idiom is outside the approved A/B subset; idiom-specific D rules were not enabled.",
+      "sourceJoin": {
+        "exactFieldSurface": true,
+        "exactHistoricalSpan": true,
+        "counterpartSurface": "we had"
+      }
+    },
+    {
+      "candidateId": "ge-251ffe7b35996cd8",
+      "historicalIdentity": {
+        "sourceOrder": 353,
+        "decisionId": "ambiguous-d",
+        "sourceType": "item",
+        "sourceId": "E0309",
+        "field": "en",
+        "fieldIndex": null,
+        "characterSpan": {
+          "start": 34,
+          "end": 37
+        },
+        "historicalSurface": "I'd",
+        "historicalSourceContext": "\"Sorry to interrupt your meal but I'd like a word with you in private.\" \"Can I get back to you later?\""
+      },
+      "latestProductionIdentity": {
+        "sourceType": "item",
+        "sourceId": "E0309",
+        "field": "en",
+        "fieldIndex": null,
+        "sourceSurface": "\"Sorry to interrupt your meal but I'd like a word with you in private.\" \"Can I get back to you later?\"",
+        "exactSpanJoin": true
+      },
+      "proposedCounterparts": [
+        "i had",
+        "i would"
+      ],
+      "subject": "i",
+      "followingToken": "like",
+      "possibleHadParse": false,
+      "possibleWouldParse": true,
+      "allowedModes": [
+        "vocabulary",
+        "correction"
+      ],
+      "semanticAuthority": null,
+      "selectedAuxiliary": "would",
+      "ruleId": "asr09d-would-base-verb",
+      "contextualGrammarEvidence": {
+        "patternId": "asr09d-would-base-verb",
+        "subject": "i",
+        "selectedAuxiliary": "would",
+        "lexicalHead": "like",
+        "expectedParse": [
+          "i'd",
+          "like"
+        ],
+        "observedParse": [
+          "i",
+          "would",
+          "like"
+        ],
+        "expectedParseSpan": {
+          "start": 6,
+          "end": 8,
+          "auxiliaryIndex": 6
+        },
+        "observedParseSpan": {
+          "start": 6,
+          "end": 9,
+          "auxiliaryIndex": 7
+        },
+        "independentParseAgreement": true,
+        "permittedMode": "vocabulary",
+        "referenceContextProvided": true,
+        "recognitionProvenanceProvided": true
+      },
+      "status": "SAFE_CONTEXT_RESOLVED",
+      "minimalCounterexample": {
+        "expected": "I would put it there.",
+        "observed": "I'd put it there."
+      },
+      "decisionReason": "The complete latest production sentence independently parses to the same approved auxiliary on both sides.",
+      "sourceJoin": {
+        "exactFieldSurface": true,
+        "exactHistoricalSpan": true,
+        "counterpartSurface": "i had"
+      }
+    },
+    {
+      "candidateId": "ge-9d6de5f05015202d",
+      "historicalIdentity": {
+        "sourceOrder": 374,
+        "decisionId": "ambiguous-d",
+        "sourceType": "item",
+        "sourceId": "E0340",
+        "field": "en",
+        "fieldIndex": null,
+        "characterSpan": {
+          "start": 0,
+          "end": 3
+        },
+        "historicalSurface": "I'd",
+        "historicalSourceContext": "I'd rather go my own way than toil away for a company. Trying to fit into a mold gets me nowhere!"
+      },
+      "latestProductionIdentity": {
+        "sourceType": "item",
+        "sourceId": "E0340",
+        "field": "en",
+        "fieldIndex": null,
+        "sourceSurface": "I'd rather go my own way than toil away for a company. Trying to fit into a mold gets me nowhere!",
+        "exactSpanJoin": true
+      },
+      "proposedCounterparts": [
+        "i had",
+        "i would"
+      ],
+      "subject": "i",
+      "followingToken": "rather",
+      "possibleHadParse": false,
+      "possibleWouldParse": false,
+      "allowedModes": [
+        "vocabulary",
+        "correction"
+      ],
+      "semanticAuthority": null,
+      "selectedAuxiliary": null,
+      "ruleId": null,
+      "contextualGrammarEvidence": {
+        "sourceSubject": "i",
+        "followingToken": "rather",
+        "independentUniqueParse": false
+      },
+      "status": "OUT_OF_SCOPE",
+      "minimalCounterexample": {
+        "expected": "I would rather go.",
+        "observed": "I'd rather go."
+      },
+      "decisionReason": "The following fixed idiom is outside the approved A/B subset; idiom-specific D rules were not enabled.",
+      "sourceJoin": {
+        "exactFieldSurface": true,
+        "exactHistoricalSpan": true,
+        "counterpartSurface": "i had"
+      }
+    },
+    {
+      "candidateId": "ge-edb5fe25ed65f920",
+      "historicalIdentity": {
+        "sourceOrder": 430,
+        "decisionId": "ambiguous-d",
+        "sourceType": "item",
+        "sourceId": "E0409",
+        "field": "en",
+        "fieldIndex": null,
+        "characterSpan": {
+          "start": 39,
+          "end": 47
+        },
+        "historicalSurface": "they had",
+        "historicalSourceContext": "During the trial it came to light that they had been covering up illegal transactions for decades."
+      },
+      "latestProductionIdentity": {
+        "sourceType": "item",
+        "sourceId": "E0409",
+        "field": "en",
+        "fieldIndex": null,
+        "sourceSurface": "During the trial it came to light that they had been covering up illegal transactions for decades.",
+        "exactSpanJoin": true
+      },
+      "proposedCounterparts": [
+        "they'd"
+      ],
+      "subject": "they",
+      "followingToken": "been",
+      "possibleHadParse": true,
+      "possibleWouldParse": false,
+      "allowedModes": [
+        "correction"
+      ],
+      "semanticAuthority": null,
+      "selectedAuxiliary": "had",
+      "ruleId": "asr09d-had-past-participle",
+      "contextualGrammarEvidence": {
+        "patternId": "asr09d-had-past-participle",
+        "subject": "they",
+        "selectedAuxiliary": "had",
+        "lexicalHead": "been covering",
+        "expectedParse": [
+          "they",
+          "had",
+          "been",
+          "covering"
+        ],
+        "observedParse": [
+          "they'd",
+          "been",
+          "covering"
+        ],
+        "expectedParseSpan": {
+          "start": 8,
+          "end": 12,
+          "auxiliaryIndex": 9
+        },
+        "observedParseSpan": {
+          "start": 8,
+          "end": 11,
+          "auxiliaryIndex": 8
+        },
+        "independentParseAgreement": true,
+        "permittedMode": "correction",
+        "referenceContextProvided": true,
+        "recognitionProvenanceProvided": true
+      },
+      "status": "SAFE_CONTEXT_RESOLVED",
+      "minimalCounterexample": {
+        "expected": "I had read it.",
+        "observed": "I'd read it."
+      },
+      "decisionReason": "The complete latest production sentence independently parses to the same approved auxiliary on both sides.",
+      "sourceJoin": {
+        "exactFieldSurface": true,
+        "exactHistoricalSpan": true,
+        "counterpartSurface": "they'd"
+      }
+    },
+    {
+      "candidateId": "ge-1f9ac59bc944cecf",
+      "historicalIdentity": {
+        "sourceOrder": 433,
+        "decisionId": "ambiguous-d",
+        "sourceType": "item",
+        "sourceId": "E0412",
+        "field": "en",
+        "fieldIndex": null,
+        "characterSpan": {
+          "start": 39,
+          "end": 44
+        },
+        "historicalSurface": "I had",
+        "historicalSourceContext": "I'm still haunted by a vivid nightmare I had last night."
+      },
+      "latestProductionIdentity": {
+        "sourceType": "item",
+        "sourceId": "E0412",
+        "field": "en",
+        "fieldIndex": null,
+        "sourceSurface": "I'm still haunted by a vivid nightmare I had last night.",
+        "exactSpanJoin": true
+      },
+      "proposedCounterparts": [
+        "i'd"
+      ],
+      "subject": "i",
+      "followingToken": "last",
+      "possibleHadParse": false,
+      "possibleWouldParse": false,
+      "allowedModes": [
+        "correction"
+      ],
+      "semanticAuthority": null,
+      "selectedAuxiliary": null,
+      "ruleId": null,
+      "contextualGrammarEvidence": {
+        "sourceSubject": "i",
+        "followingToken": "last",
+        "independentUniqueParse": false
+      },
+      "status": "AMBIGUOUS_UNRESOLVED",
+      "minimalCounterexample": {
+        "id": "syncretic-read",
+        "expected": "He had read the book.",
+        "observed": "He'd read the book."
+      },
+      "decisionReason": "Had is the lexical past-tense verb in “I had last night”; no unique auxiliary parse exists.",
+      "sourceJoin": {
+        "exactFieldSurface": true,
+        "exactHistoricalSpan": true,
+        "counterpartSurface": "i'd"
+      }
+    },
+    {
+      "candidateId": "ge-29af4a14798bf694",
+      "historicalIdentity": {
+        "sourceOrder": 482,
+        "decisionId": "ambiguous-d",
+        "sourceType": "item",
+        "sourceId": "E0518",
+        "field": "en",
+        "fieldIndex": null,
+        "characterSpan": {
+          "start": 24,
+          "end": 27
+        },
+        "historicalSurface": "I'd",
+        "historicalSourceContext": "Can you spare a minute? I'd like to discuss something of importance to both of us."
+      },
+      "latestProductionIdentity": {
+        "sourceType": "item",
+        "sourceId": "E0518",
+        "field": "en",
+        "fieldIndex": null,
+        "sourceSurface": "Can you spare a minute? I'd like to discuss something of importance to both of us.",
+        "exactSpanJoin": true
+      },
+      "proposedCounterparts": [
+        "i had",
+        "i would"
+      ],
+      "subject": "i",
+      "followingToken": "like",
+      "possibleHadParse": false,
+      "possibleWouldParse": true,
+      "allowedModes": [
+        "correction"
+      ],
+      "semanticAuthority": null,
+      "selectedAuxiliary": "would",
+      "ruleId": "asr09d-would-base-verb",
+      "contextualGrammarEvidence": {
+        "patternId": "asr09d-would-base-verb",
+        "subject": "i",
+        "selectedAuxiliary": "would",
+        "lexicalHead": "like",
+        "expectedParse": [
+          "i'd",
+          "like"
+        ],
+        "observedParse": [
+          "i",
+          "would",
+          "like"
+        ],
+        "expectedParseSpan": {
+          "start": 5,
+          "end": 7,
+          "auxiliaryIndex": 5
+        },
+        "observedParseSpan": {
+          "start": 5,
+          "end": 8,
+          "auxiliaryIndex": 6
+        },
+        "independentParseAgreement": true,
+        "permittedMode": "correction",
+        "referenceContextProvided": true,
+        "recognitionProvenanceProvided": true
+      },
+      "status": "SAFE_CONTEXT_RESOLVED",
+      "minimalCounterexample": {
+        "expected": "I would put it there.",
+        "observed": "I'd put it there."
+      },
+      "decisionReason": "The complete latest production sentence independently parses to the same approved auxiliary on both sides.",
+      "sourceJoin": {
+        "exactFieldSurface": true,
+        "exactHistoricalSpan": true,
+        "counterpartSurface": "i had"
+      }
+    },
+    {
+      "candidateId": "ge-4539fce29ab05e21",
+      "historicalIdentity": {
+        "sourceOrder": 496,
+        "decisionId": "ambiguous-d",
+        "sourceType": "item",
+        "sourceId": "E0537",
+        "field": "en",
+        "fieldIndex": null,
+        "characterSpan": {
+          "start": 122,
+          "end": 125
+        },
+        "historicalSurface": "I'd",
+        "historicalSourceContext": "\"To be honest, I'm crazy about Ken because he's brave, self-confident, and never afraid of taking risks.\" \"If I were you, I'd ask him out!\""
+      },
+      "latestProductionIdentity": {
+        "sourceType": "item",
+        "sourceId": "E0537",
+        "field": "en",
+        "fieldIndex": null,
+        "sourceSurface": "\"To be honest, I'm crazy about Ken because he's brave, self-confident, and never afraid of taking risks.\" \"If I were you, I'd ask him out!\"",
+        "exactSpanJoin": true
+      },
+      "proposedCounterparts": [
+        "i had",
+        "i would"
+      ],
+      "subject": "i",
+      "followingToken": "ask",
+      "possibleHadParse": false,
+      "possibleWouldParse": true,
+      "allowedModes": [
+        "vocabulary",
+        "correction"
+      ],
+      "semanticAuthority": null,
+      "selectedAuxiliary": "would",
+      "ruleId": "asr09d-would-base-verb",
+      "contextualGrammarEvidence": {
+        "patternId": "asr09d-would-base-verb",
+        "subject": "i",
+        "selectedAuxiliary": "would",
+        "lexicalHead": "ask",
+        "expectedParse": [
+          "i'd",
+          "ask"
+        ],
+        "observedParse": [
+          "i",
+          "would",
+          "ask"
+        ],
+        "expectedParseSpan": {
+          "start": 22,
+          "end": 24,
+          "auxiliaryIndex": 22
+        },
+        "observedParseSpan": {
+          "start": 22,
+          "end": 25,
+          "auxiliaryIndex": 23
+        },
+        "independentParseAgreement": true,
+        "permittedMode": "vocabulary",
+        "referenceContextProvided": true,
+        "recognitionProvenanceProvided": true
+      },
+      "status": "SAFE_CONTEXT_RESOLVED",
+      "minimalCounterexample": {
+        "expected": "I would put it there.",
+        "observed": "I'd put it there."
+      },
+      "decisionReason": "The complete latest production sentence independently parses to the same approved auxiliary on both sides.",
+      "sourceJoin": {
+        "exactFieldSurface": true,
+        "exactHistoricalSpan": true,
+        "counterpartSurface": "i had"
+      }
+    },
+    {
+      "candidateId": "ge-e48717b0bc53c079",
+      "historicalIdentity": {
+        "sourceOrder": 500,
+        "decisionId": "ambiguous-d",
+        "sourceType": "item",
+        "sourceId": "E0539",
+        "field": "en",
+        "fieldIndex": null,
+        "characterSpan": {
+          "start": 22,
+          "end": 27
+        },
+        "historicalSurface": "I had",
+        "historicalSourceContext": "\"It dawned on me that I had been taken in by Jennifer all along.\" \"How naive! Didn't you see through her?\""
+      },
+      "latestProductionIdentity": {
+        "sourceType": "item",
+        "sourceId": "E0539",
+        "field": "en",
+        "fieldIndex": null,
+        "sourceSurface": "\"It dawned on me that I had been taken in by Jennifer all along.\" \"How naive! Didn't you see through her?\"",
+        "exactSpanJoin": true
+      },
+      "proposedCounterparts": [
+        "i'd"
+      ],
+      "subject": "i",
+      "followingToken": "been",
+      "possibleHadParse": true,
+      "possibleWouldParse": false,
+      "allowedModes": [
+        "vocabulary",
+        "correction"
+      ],
+      "semanticAuthority": null,
+      "selectedAuxiliary": "had",
+      "ruleId": "asr09d-had-past-participle",
+      "contextualGrammarEvidence": {
+        "patternId": "asr09d-had-past-participle",
+        "subject": "i",
+        "selectedAuxiliary": "had",
+        "lexicalHead": "been taken",
+        "expectedParse": [
+          "i",
+          "had",
+          "been",
+          "taken"
+        ],
+        "observedParse": [
+          "i'd",
+          "been",
+          "taken"
+        ],
+        "expectedParseSpan": {
+          "start": 5,
+          "end": 9,
+          "auxiliaryIndex": 6
+        },
+        "observedParseSpan": {
+          "start": 5,
+          "end": 8,
+          "auxiliaryIndex": 5
+        },
+        "independentParseAgreement": true,
+        "permittedMode": "vocabulary",
+        "referenceContextProvided": true,
+        "recognitionProvenanceProvided": true
+      },
+      "status": "SAFE_CONTEXT_RESOLVED",
+      "minimalCounterexample": {
+        "expected": "I had read it.",
+        "observed": "I'd read it."
+      },
+      "decisionReason": "The complete latest production sentence independently parses to the same approved auxiliary on both sides.",
+      "sourceJoin": {
+        "exactFieldSurface": true,
+        "exactHistoricalSpan": true,
+        "counterpartSurface": "i'd"
+      }
+    }
+  ]
+}

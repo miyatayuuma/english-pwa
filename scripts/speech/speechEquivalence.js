@@ -1,10 +1,12 @@
 import { safeSpeechTokens } from './safeSpeechNormalization.js';
 import { speechEquivalenceRules } from './speechEquivalenceRules.js';
 import { grammaticalEquivalenceRules } from './grammaticalEquivalenceRules.js';
+import { resolveContextualGrammaticalEquivalence } from './contextualGrammaticalEquivalence.js';
 import {
-  isContextualSHeadAt,
-  resolveContextualGrammaticalEquivalence,
-} from './contextualGrammaticalEquivalence.js';
+  isContextualDHeadAt,
+  resolveContextualDGrammaticalEquivalence,
+} from './contextualDGrammaticalEquivalence.js';
+import { contextualGrammarHeadAt } from './contextualGrammarHead.js';
 
 function scopeAllows(rule, context = {}) {
   const scope = rule?.scope || { type: 'global' };
@@ -82,10 +84,25 @@ export function resolveSpeechTokenSpan(expectedTokens, expectedStart, observedTo
       displayPolicy: rule.display,
     };
   }
-  if ((context.mode !== 'vocabulary' && context.mode !== 'correction')
-    || (!isContextualSHeadAt(expectedTokens, expectedStart)
-      && !isContextualSHeadAt(observedTokens, observedStart))) return null;
-  const contextual = resolveContextualGrammaticalEquivalence({
+  if (context.mode !== 'vocabulary' && context.mode !== 'correction') return null;
+  const expectedHead = contextualGrammarHeadAt(expectedTokens, expectedStart);
+  const observedHead = contextualGrammarHeadAt(observedTokens, observedStart);
+  const sHead = expectedHead === 's' || observedHead === 's';
+  if (sHead) {
+    const contextual = resolveContextualGrammaticalEquivalence({
+      expectedTokens,
+      observedTokens,
+      expectedStart,
+      observedStart,
+      mode: context.mode,
+      referenceContext: context.referenceContext ?? context,
+      recognitionProvenance: context.recognitionProvenance ?? null,
+    });
+    if (contextual.status === 'MATCH') return contextual;
+    return null;
+  }
+  if (expectedHead !== 'd' && observedHead !== 'd') return null;
+  const contextualD = resolveContextualDGrammaticalEquivalence({
     expectedTokens,
     observedTokens,
     expectedStart,
@@ -94,6 +111,6 @@ export function resolveSpeechTokenSpan(expectedTokens, expectedStart, observedTo
     referenceContext: context.referenceContext ?? context,
     recognitionProvenance: context.recognitionProvenance ?? null,
   });
-  if (contextual.status === 'MATCH') return contextual;
+  if (contextualD.status === 'MATCH') return contextualD;
   return null;
 }

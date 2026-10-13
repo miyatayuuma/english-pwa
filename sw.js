@@ -1,6 +1,6 @@
-// sw.js: cache name follows the app version. v5.103
+// sw.js: cache name follows the app version. v5.104
 // Version the import itself so the browser cannot reuse an older worker import.
-importScripts('./scripts/version.js?v=5.103');
+importScripts('./scripts/version.js?v=5.104');
 const CACHE = self.APP_VERSION;
 
 self.addEventListener('install', e => {
@@ -25,8 +25,8 @@ self.addEventListener('install', e => {
     './icons/maskable-512.png',
     './scripts/version.js',
     './scripts/app/main.js',
-    './scripts/app/swBootstrap.js?v=5.103',
-    './scripts/app/swUpdatePrompt.js?v=5.103',
+    './scripts/app/swBootstrap.js?v=5.104',
+    './scripts/app/swUpdatePrompt.js?v=5.104',
     './scripts/native/runtimePlatform.js',
     './scripts/native/media.js',
     './scripts/reorder/sharedAuthority.js',
@@ -69,6 +69,8 @@ self.addEventListener('install', e => {
     './scripts/speech/speechEquivalenceRules.js',
     './scripts/speech/grammaticalEquivalenceRules.js',
     './scripts/speech/contextualGrammaticalEquivalence.js',
+    './scripts/speech/contextualDGrammaticalEquivalence.js',
+    './scripts/speech/contextualGrammarHead.js',
     './scripts/speech/vocabularyTdClusterBeforeToAuthority.js',
     './scripts/speech/speechEquivalence.js',
     './scripts/speech/speechAlignment.js',
