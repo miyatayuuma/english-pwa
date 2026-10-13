@@ -119,15 +119,12 @@ public class MainActivity extends BridgeActivity {
         event.put("clock", "SystemClock.elapsedRealtimeNanos");
         event.put("atNanos", SystemClock.elapsedRealtimeNanos());
         event.put("stage", stage);
-        String currentUrl = getBridge() != null && getBridge().getWebView() != null
-            ? getBridge().getWebView().getUrl() : null;
-        event.put("currentPage", pageId(currentUrl));
         if (available != null) event.put("available", available);
         if (enabled != null) event.put("enabled", enabled);
         event.put("launchEnabled", nativeSpeechGameTraceLaunch);
         nativeGameTraceGateEvents.put(event);
         if (nativeGameTraceGateEvents.length() > 60) nativeGameTraceGateEvents.remove(0);
-        Log.i("NativeGameTraceGate", stage + " currentPage=" + pageId(currentUrl)
+        Log.i("NativeGameTraceGate", stage
             + " available=" + available + " enabled=" + enabled
             + " launchEnabled=" + nativeSpeechGameTraceLaunch);
     }

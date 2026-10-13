@@ -81,6 +81,7 @@ self.addEventListener('install', e => {
     './scripts/native/androidSpeechBackend.js',
     './scripts/native/nativeSpeech.js',
     './scripts/native/gameTrace.js',
+    './scripts/native/gameTraceReadinessDiagnostics.js',
     './scripts/ui/gameTracePanel.js',
     './scripts/native/recognitionEvidence.js',
     './scripts/speech/vocabularySpeechEvidence.js',

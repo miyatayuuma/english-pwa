@@ -11,6 +11,7 @@ test('only a debug Android launch Intent exposes the NativeGameTrace bridge', ()
   const activity = read('android/app/src/main/java/com/miyatayuuma/englishpwa/MainActivity.java');
   const plugin = read('android/app/src/debug/java/com/miyatayuuma/englishpwa/NativeGameTracePlugin.java');
   const validationPage = read('android/app/src/debug/assets/public/native-gate.html');
+  const serviceWorker = read('sw.js');
   assert.match(activity, /BuildConfig\.DEBUG\s*&&\s*getIntent\(\)\.getBooleanExtra\("nativeSpeechGameTrace", false\)/);
   assert.match(activity, /if \(!BuildConfig\.DEBUG\) return/);
   assert.match(activity, /Class\.forName\("com\.miyatayuuma\.englishpwa\.NativeGameTracePlugin"\)/);
@@ -20,11 +21,17 @@ test('only a debug Android launch Intent exposes the NativeGameTrace bridge', ()
   assert.match(plugin, /plugin-capability-requested/);
   assert.match(plugin, /plugin-capability-resolved/);
   assert.match(activity, /recordNativeGameTraceCapabilityEvent\(String stage, Boolean available, Boolean enabled\)/);
+  const capabilityRecorder = activity.match(/synchronized void recordNativeGameTraceCapabilityEvent\([\s\S]*?\n    }/)?.[0] ?? '';
+  assert.ok(capabilityRecorder, 'capability diagnostics recorder exists');
+  assert.doesNotMatch(capabilityRecorder, /getBridge\(|getWebView\(|\.getUrl\(|\.getProgress\(/,
+    'capability telemetry runs on the plugin thread and must not call WebView APIs');
   assert.match(plugin, /public void getReadinessDiagnostics\(PluginCall call\)[\s\S]*?if \(!BuildConfig\.DEBUG \|\| activity == null\)/);
   assert.match(activity, /synchronized void recordNativeGameTraceGateEvent\([\s\S]*?if \(!BuildConfig\.DEBUG\) return/);
   assert.match(validationPage, /gameTraceBridge=await getNativeGameTrace\(\)/);
   assert.match(validationPage, /pluginAvailable: !!gameTraceBridge && typeof gameTraceBridge\.openGameTrace === 'function'/);
   assert.doesNotMatch(validationPage, /pluginAvailable: typeof plugin\.openGameTrace/);
+  assert.match(serviceWorker, /'\.\/scripts\/native\/gameTrace\.js',[\s\S]*?'\.\/scripts\/native\/gameTraceReadinessDiagnostics\.js',[\s\S]*?'\.\/scripts\/ui\/gameTracePanel\.js'/,
+    'the imported diagnostics module is precached with its consumer');
   assert.ok(plugin.includes('package com.miyatayuuma.englishpwa;'));
 });
 
