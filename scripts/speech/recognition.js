@@ -50,6 +50,8 @@ export function createRecognitionController(options = {}) {
   let pendingStop = null;
   let completionState = 'idle';
   let attemptId = null;
+  let attemptItemId = null;
+  let attemptEntryId = null;
   let attemptContext = null;
   let attemptTraceSessionId = null;
   let traceAttemptActive = false;
@@ -91,12 +93,17 @@ export function createRecognitionController(options = {}) {
   }
 
   function evidence(transcript = latestPreview) {
+    const recognitionSegments = getRecognitionSegments();
+    const evidenceFinality = !recognitionSegments.length ? 'none'
+      : recognitionSegments.every(segment => segment.isFinal === true) ? 'final' : 'interim';
     return {
       transcript,
       primaryTranscript: transcript,
       previewTranscript: latestPreview,
-      recognitionSegments: getRecognitionSegments(),
+      recognitionSegments,
       attemptId,
+      itemId: attemptItemId,
+      entryId: attemptEntryId,
       traceSessionId: attemptTraceSessionId,
       nativeSessionId,
       backendType,
@@ -104,7 +111,9 @@ export function createRecognitionController(options = {}) {
       requestedMaxAlternatives,
       ...(traceAttemptActive ? { gameContext: attemptContext } : {}),
       completionState,
-      recognitionComplete: completionState === 'terminal',
+      transportComplete: ['terminal', 'error', 'cancelled'].includes(completionState),
+      evidenceFinality,
+      recognitionComplete: completionState === 'terminal' && evidenceFinality === 'final',
       stopReason: stopRequested ? 'manual-stop' : (completionState === 'terminal' ? 'auto-stop' : null),
     };
   }
@@ -120,10 +129,20 @@ export function createRecognitionController(options = {}) {
     onStop?.();
     const transcript = (latestPreview || stableText || '').trim();
     const terminalEvidence = evidence(transcript);
+    trace('provider-ended', {
+      ...terminalEvidence,
+      providerEvent: 'end',
+      transportComplete: true,
+      finalEvidenceReceived: terminalEvidence.evidenceFinality === 'final',
+      stopReason: stopRequested ? 'manual-stop' : 'auto-stop',
+    });
     trace('terminal-recognition-completed', {
       ...terminalEvidence,
+      terminal: true,
       completionState: 'terminal',
-      recognitionComplete: true,
+      transportComplete: true,
+      finalEvidenceReceived: terminalEvidence.evidenceFinality === 'final',
+      recognitionComplete: terminalEvidence.recognitionComplete,
       stopReason: stopRequested ? 'manual-stop' : 'auto-stop',
     });
     recognition = null;
@@ -172,12 +191,17 @@ export function createRecognitionController(options = {}) {
     completionState = 'pending';
     attemptId = nextRecognitionAttemptId++;
     traceEventSequence = 0;
+    let contextAtStart = {};
+    try { contextAtStart = getAttemptContext?.() ?? {}; }
+    catch (_) { contextAtStart = {}; }
+    attemptItemId = contextAtStart?.itemId ?? null;
+    attemptEntryId = contextAtStart?.entryId ?? null;
     try { traceAttemptActive = isTracing?.() === true; }
     catch (_) { traceAttemptActive = false; }
     if (traceAttemptActive) {
       try { attemptTraceSessionId = getTraceSessionId?.() ?? null; }
       catch (_) { attemptTraceSessionId = null; }
-      try { attemptContext = JSON.parse(JSON.stringify(getAttemptContext?.() ?? {})); }
+      try { attemptContext = JSON.parse(JSON.stringify(contextAtStart)); }
       catch (_) { attemptContext = {}; }
     } else {
       attemptTraceSessionId = null;
@@ -225,6 +249,9 @@ export function createRecognitionController(options = {}) {
           isFinal: result.isFinal,
           requestedMaxResults: result.requestedMaxResults ?? currentRecognition.maxAlternatives,
           providerReturnedCount: result.providerReturnedCount ?? result.length,
+          attemptId,
+          itemId: attemptItemId,
+          entryId: attemptEntryId,
         });
       }
       const present = segments.filter(Boolean);
@@ -237,6 +264,7 @@ export function createRecognitionController(options = {}) {
         trace('final-result-received', {
           primaryTranscript: latestPreview,
           finalizedSegments: present.filter(segment => segment.isFinal),
+          finalEvidenceReceived: present.length > 0 && present.every(segment => segment.isFinal === true),
           completionState: 'pending',
           recognitionComplete: false,
         });

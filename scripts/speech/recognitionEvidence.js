@@ -33,7 +33,7 @@ export function appendRawTranscriptFinal(stable, fragment) {
 // No synthesis, deduplication or confidence sorting: retain provider bytes and rank.
 export function recognitionSegment({ alternatives = [], segmentIndex = 0, isFinal = false,
   primaryTranscript, requestedMaxResults = REQUESTED_MAX_ALTERNATIVES,
-  providerReturnedCount = alternatives.length } = {}) {
+  providerReturnedCount = alternatives.length, attemptId = null, itemId = null, entryId = null } = {}) {
   const retained = Array.from(alternatives).slice(0, REQUESTED_MAX_ALTERNATIVES).map((candidate, rank) => ({
     transcript: String(candidate?.transcript ?? ''),
     asrRank: Number.isInteger(candidate?.asrRank) && candidate.asrRank >= 0 ? candidate.asrRank : rank,
@@ -41,5 +41,9 @@ export function recognitionSegment({ alternatives = [], segmentIndex = 0, isFina
   }));
   return { segmentIndex, primaryTranscript: primaryTranscript ?? retained[0]?.transcript ?? '',
     alternatives: retained, isFinal: !!isFinal, requestedMaxResults, providerReturnedCount,
-    retainedCandidateCount: retained.length };
+    retainedCandidateCount: retained.length,
+    ...(attemptId == null ? {} : { attemptId }),
+    ...(itemId == null ? {} : { itemId }),
+    ...(entryId == null ? {} : { entryId }),
+  };
 }

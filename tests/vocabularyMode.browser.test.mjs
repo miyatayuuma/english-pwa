@@ -822,20 +822,28 @@ browserTest('native TARGET rescue preserves raw primary, answer authority and ex
   }
 });
 
-browserTest('a TARGET in an interim segment cannot rescue a terminalized Vocabulary attempt',async()=>{
+browserTest('a TARGET in an interim segment cannot rescue a terminalized Vocabulary attempt or replace its prior result',async()=>{
   const opened=await newPage(sources[0]);const {page}=opened;
   try{
     await injectCompletedFinal(page,['banana','run into someone']);
     await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent.includes('聞き取りを確認'));
+    const previousHeard=await page.locator('.vocab-heard__text').innerText();
+    const previousAnswerCount=await page.locator('.vocab-answer').count();
+    const previousAnswer=previousAnswerCount?await page.locator('.vocab-answer').innerText():null;
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0);
+    const srsBefore=await page.evaluate(()=>localStorage.getItem('itemLevelV1'));
     await page.locator('.vocab-mic').click();await page.waitForFunction(()=>window.__mockSpeech.startCount===2);
     await injectFinal(page,'not');await injectInterim(page,['wrong','come across someone']);
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0,'final plus interim evidence remains pending until terminal');
     await page.evaluate(()=>window.__mockSpeech.latest.emitEnd());
-    await page.waitForFunction(()=>document.querySelector('.vocab-heard__text')?.textContent==='not wrong');
-    assert.match(await page.locator('.vocab-feedback').innerText(),/聞き取りを確認/);
-    assert.equal(await page.locator('.vocab-heard__text').innerText(),'not wrong');
-    assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0,'a candidate from a non-final segment cannot be promoted or written as SRS evidence');
+    assert.equal(await page.locator('.vocab-transcript').innerText(),'','an incomplete attempt is cleared from the final transcript area');
+    assert.match(await page.locator('.vocab-feedback').innerText(),/発話を確定できませんでした/);
+    assert.equal(await page.locator('.vocab-heard__text').innerText(),previousHeard,'rejected evidence does not replace the prior finalized result');
+    assert.equal(await page.locator('.vocab-answer').count(),previousAnswerCount,'a candidate from a non-final segment is not promoted into a new result');
+    if(previousAnswerCount)assert.equal(await page.locator('.vocab-answer').innerText(),previousAnswer,'rejected evidence does not replace any prior answer');
+    assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0,'a candidate from a non-final segment cannot be written as SRS evidence');
+    assert.equal(await page.evaluate(()=>localStorage.getItem('itemLevelV1')),srsBefore,
+      'the incomplete attempt does not change the SRS storage snapshot');
     assert.deepEqual(await page.evaluate(()=>window.__mockSpeech.events.map(event=>event.type)),['start','result','end','start','result','result','end']);
   }finally{await closePage(opened);}
 });
@@ -1039,14 +1047,23 @@ browserTest('correct-answer playback holds capture until release and replay safe
   }finally{await closePage(opened);}
 });
 
-browserTest('interim transcript stays display-only until final terminal evidence arrives',async()=>{
+browserTest('interim-only transport end is NO GRADE and a new finalized attempt can pass',async()=>{
   const opened=await newPage(sources[0]);const {page}=opened;
   try{
+    const before=await page.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id],opened.entry.id);
     await injectInterim(page,'came across Nick');
     assert.equal(await page.locator('.vocab-transcript').innerText(),'came across Nick');
     await page.waitForTimeout(1300);
     assert.equal(await page.locator('.vocab-feedback').textContent(),'');
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0,'interim-only speech does not write SRS');
+    await page.evaluate(()=>window.__mockSpeech.latest.emitEnd());
+    assert.equal(await page.locator('.vocab-transcript').innerText(),'','interim-only transport end is cleared, not committed as a result');
+    assert.match(await page.locator('.vocab-feedback').innerText(),/発話を確定できませんでした/);
+    assert.equal(await page.locator('.vocab-heard__text').count(),0,'interim-only evidence has no final answer screen');
+    assert.deepEqual(await page.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id],opened.entry.id),before);
+    assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0);
+    await page.locator('.vocab-mic').click();
+    await page.waitForFunction(()=>window.__mockSpeech.startCount===2);
     await injectFinal(page,'came across Nick');
     await page.evaluate(()=>window.__mockSpeech.latest.emitEnd());
     await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='正解');

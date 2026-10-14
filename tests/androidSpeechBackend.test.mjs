@@ -128,7 +128,30 @@ test('production controller manual native stop waits for final and preserves com
   assert.equal(result.transcript, 'YouTube');
   assert.deepEqual(result.recognitionSegments[0].alternatives.map(c => c.asrRank), [0, 1]);
   assert.equal(result.recognitionSegments[0].isFinal, true);
+  assert.equal(result.recognitionComplete, true);
+  assert.equal(result.transportComplete, true);
+  assert.equal(result.recognitionSegments[0].attemptId, result.attemptId);
   assert.equal(controller.isActive(), false);
+});
+
+test('native end after partial speech settles transport without admitting partial evidence', async () => {
+  const f = fixture(); let driver;
+  class Backend extends AndroidSpeechRecognizerBackend {
+    constructor() { super({ pluginProvider: async () => f.plugin }); driver = this; drivers.push(this); }
+  }
+  let graded = 0;
+  const controller = createRecognitionController({ recognitionBackend: Backend, onAutoStop: () => { graded++; } });
+  controller.start(); await driver.startup;
+  f.emit(driver, 'partial', [{ transcript: 'interim exact answer' }]);
+  const pending = controller.stop();
+  f.emit(driver, 'end');
+  const result = await pending;
+  assert.equal(result.ok, true);
+  assert.equal(result.transportComplete, true);
+  assert.equal(result.completionState, 'terminal');
+  assert.equal(result.recognitionComplete, false);
+  assert.equal(result.recognitionSegments[0].isFinal, false);
+  assert.equal(graded, 0, 'manual stop does not route incomplete native evidence to auto grading');
 });
 
 test('native error and cancellation settle pending manual stop without grading partial speech', async () => {
