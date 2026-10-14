@@ -91,14 +91,44 @@ export function installMockSpeechRecognition({ stateKey = '__mockSpeech', stopBe
       const index = last >= 0 && !this.results[last].isFinal ? last : this.results.length;
       this.results[index] = this.makeResult(text, isFinal);
       const transcripts = (Array.isArray(text) ? text : [text]).map(candidate => String(candidate?.transcript ?? candidate ?? ''));
-      this.record('result', { resultIndex: index, isFinal, primaryTranscript: transcripts[0] ?? '', alternatives: transcripts });
+      this.record('result', {
+        resultIndex: index,
+        recognitionSegmentIndex: index,
+        isFinal,
+        primaryTranscript: transcripts[0] ?? '',
+        alternatives: transcripts,
+        rankedAlternatives: transcripts.map((transcript, asrRank) => ({ transcript, asrRank })),
+        recognitionSegments: [{
+          segmentIndex: index,
+          primaryTranscript: transcripts[0] ?? '',
+          alternatives: transcripts.map((transcript, asrRank) => ({ transcript, asrRank })),
+          isFinal,
+        }],
+        completionState: 'pending',
+        recognitionComplete: false,
+      });
       this.onresult?.({ resultIndex: index, results: this.results });
     }
 
     inject(text) {
       this.results = [this.makeResult(text, true)];
       const transcripts = (Array.isArray(text) ? text : [text]).map(candidate => String(candidate?.transcript ?? candidate ?? ''));
-      this.record('result', { resultIndex: 0, isFinal: true, primaryTranscript: transcripts[0] ?? '', alternatives: transcripts });
+      this.record('result', {
+        resultIndex: 0,
+        recognitionSegmentIndex: 0,
+        isFinal: true,
+        primaryTranscript: transcripts[0] ?? '',
+        alternatives: transcripts,
+        rankedAlternatives: transcripts.map((transcript, asrRank) => ({ transcript, asrRank })),
+        recognitionSegments: [{
+          segmentIndex: 0,
+          primaryTranscript: transcripts[0] ?? '',
+          alternatives: transcripts.map((transcript, asrRank) => ({ transcript, asrRank })),
+          isFinal: true,
+        }],
+        completionState: 'pending',
+        recognitionComplete: false,
+      });
       this.onresult?.({ resultIndex: 0, results: this.results });
     }
 
@@ -123,7 +153,10 @@ export function installMockSpeechRecognition({ stateKey = '__mockSpeech', stopBe
     emitEnd() {
       const duplicate = this.lifecycleState === 'ended';
       this.lifecycleState = 'ended';
-      this.record(duplicate ? 'duplicate-end' : 'end');
+      this.record(duplicate ? 'duplicate-end' : 'end', {
+        endCallbackDelivered: true,
+        completionState: 'provider-terminal-callback',
+      });
       this.onend?.();
     }
   }
