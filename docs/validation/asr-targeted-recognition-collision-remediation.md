@@ -5,7 +5,7 @@
 - Repository: `miyatayuuma/english-pwa`
 - Baseline main: `6e6d3d250570fc24d92ca768ebae3865b88946c5`
 - Baseline app version: `v5.105`
-- Original PR #334 app version: `v5.106`; final reconciled production version: `v5.107`
+- Original PR #334 app version: `v5.106`; reconciled PR #334 merge version: `v5.107`; current production version after PR #336 review follow-up: `v5.108`
 - Vocabulary blob (unchanged): `91324d35b2db1911ece2cf3ff746409d321fe963`
 - Items blob (unchanged): `ae2aca768b784199b77ac1cf8c0c5a80fd5725bb`
 
@@ -93,9 +93,9 @@ The three runs use the same application/test SHA; they are not combined with ano
 
 Main merge SHA `6147df3b5bda938d0f9925c899009ca8138cb24e` is `v5.107`. Push-triggered post-merge Application/Chromium (`38506804000`), Vocabulary (`38506804072`), Android Debug/Release/Lint + Gate A (`38506804085`), and Pages (`38506804189`) workflows passed. Application ran 605 tests (603 passed, 0 failed, 2 skipped). Main-pinned independent Gate A run `38506857511` separately checked out the exact main merge SHA in all three jobs; each passed 5/0/0 with ten cycles, two relaunches, and the real permission dialog.
 
-The final staged PWA runtime has 117 files with identity `6770e516e8cf4d46f8201f1c9d0d1dd7cc0bb7772bbfd117a89763ba7f250d9a`; Android has the same 117 plus its two generated Cordova files, for 119 files with identity `59578be76e702682ed70702e945ea87fe776e0c0210603364efb2161ea28c322`. Vocabulary blob `91324d35b2db1911ece2cf3ff746409d321fe963` and Items blob `ae2aca768b784199b77ac1cf8c0c5a80fd5725bb` remain unchanged. The main-tree rule source confirms `gaze-gays` and generated reverse `gays-gaze`; `asr-lack-to-black` has no reverse rule and remains restricted to the two approved Vocabulary entries. Pixel ASR-08D PR #323 remains OPEN.
+At the #334 main merge, the then-current v5.107 staged PWA runtime had 117 files with identity `6770e516e8cf4d46f8201f1c9d0d1dd7cc0bb7772bbfd117a89763ba7f250d9a`; Android had the same 117 plus its two generated Cordova files, for 119 files with identity `59578be76e702682ed70702e945ea87fe776e0c0210603364efb2161ea28c322`. Vocabulary blob `91324d35b2db1911ece2cf3ff746409d321fe963` and Items blob `ae2aca768b784199b77ac1cf8c0c5a80fd5725bb` remain unchanged. The main-tree rule source confirms `gaze-gays` and generated reverse `gays-gaze`; `asr-lack-to-black` has no reverse rule and remains restricted to the two approved Vocabulary entries. Pixel ASR-08D PR #323 remains OPEN.
 
-This final post-merge evidence supersedes the original report's note that the Gate A root cause remained open. See `android-gate-a-capability-callback-root-cause.md` for pinned A/B, callback correlation, exact failure mechanism, permission timing, and probe evidence.
+These v5.107 post-merge results describe PR #334's merge point and are followed by the v5.108 PR #336 review-fix validation below. The post-merge evidence supersedes the original report's note that the Gate A root cause remained open. See `android-gate-a-capability-callback-root-cause.md` for pinned A/B, callback correlation, exact failure mechanism, permission timing, and probe evidence.
 
 ## Performance
 
@@ -121,3 +121,21 @@ The biggest absolute P50 increase among non-match paths was 0.000592 ms for exac
 - Pixel ASR-08D remains OPEN.
 - Android Gate A root cause was later confirmed and repaired in PR #335; see `android-gate-a-capability-callback-root-cause.md`.
 - PR URL, final PR head, CI results, merge commit, and post-merge main SHA are recorded in the GitHub PR and final closure report.
+
+
+## Final-evidence review follow-up in PR #336
+
+After PR #334 merged at 6147df3b5bda938d0f9925c899009ca8138cb24e (v5.107), its unresolved inline review was checked before reporting the review complete. The comment identified that targeted explicit-paraphrase matching did not receive the final-recognition-evidence guard. PR #336 passed the already computed completeEvidence to primary, N-best, and explicit-paraphrase targeted grading. This also rejects a terminal outer event whose recognition segment is still interim (isFinal=false). Existing equivalence IDs and directions, scope, valid final answers, and other grading semantics remain intact.
+
+The targeted suite retains the positive final-result case and adds negative TARGET/PARAPHRASE cases for pending, interim, error, cancelled, and terminalized interim evidence. PR #336 head aada037f41ac182ddca5524aee36335941432354 passed Application/Chromium (38509108385), Vocabulary (38509108372), Scope guard (38509108382), and Android Debug/Release/Lint (38509108355). Its independent exact-head Gate A matrix 38509340349 passed all three fresh emulators: jobs 115673997725, 115673997935, 115673997942; each was 5/0/0, ten cycles, two Activity relaunches, and permission-dialog grant.
+
+PR #336 merged at 76101569b73a9ffd964028a9ba75c7a4db0d4c92 and advanced APP_VERSION to v5.108. Push-triggered post-merge Application/Chromium (38510184939), Vocabulary (38510184916), Android Debug/Release/Lint + Gate A (38510184838), and Pages (38510185088) passed. The Application suite reported 603 passed, 0 failed, 2 skipped. An independent Gate A matrix pinned to the exact merge SHA (38510219370; jobs 115676771986, 115676771983, 115676771865) passed 5/0/0 with ten cycles, two relaunches, and permission grant per job.
+
+The documented v5.107 identities above are historical values from the #334 merge and are not v5.108 identities.
+
+The original #334 review thread was answered and resolved with this follow-up evidence; PR #336 had no additional review findings. Vocabulary blob 91324d35b2db1911ece2cf3ff746409d321fe963 and Items blob ae2aca768b784199b77ac1cf8c0c5a80fd5725bb remain unchanged; PR #323 remains OPEN.
+
+
+The final exact-code-SHA workflow 38510777393 completed successfully on SHA 76101569b73a9ffd964028a9ba75c7a4db0d4c92 (v5.108). Jobs 115678529751, 115678530026, and 115678529999 uploaded artifacts 11870075488, 11869523870, and 11869354867. Each report shows all five required tests passing, zero failures, zero skips; logcat confirms ten navigation cycles and two fresh Activity relaunches. Each job independently reports the same staged identity: PWA 117 files, SHA-256 74c09237768a5faabc9f144ec7271ebb74853f7bce4256d12e21e828e427707e; Android 119 files, SHA-256 c8b8c60b56e345388e84b19c99b66374835e4215ec07fb3c1417536c85c8967a. The system PermissionController dialog appeared in all three artifacts and the dedicated on-demand permission test passed.
+
+In each artifact's test order, the dialog test runs before the backend cancellation test. The latter separately calls pm grant for its fixture; this does not serve as the dialog test's grant path. All 3 independent runs remain on the same exact code SHA.

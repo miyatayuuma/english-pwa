@@ -1,6 +1,6 @@
 # Android Gate A capability callback root-cause report
 
-**Status:** `ROOT_CAUSE_CONFIRMED / PR #335 MERGED / PR #334 MERGED / POST-MERGE ACCEPTANCE PASSED`
+**Status:** `ROOT_CAUSE_CONFIRMED / PR #335 MERGED / PR #334 MERGED / PR #336 MERGED / FINAL MAIN v5.108 ACCEPTANCE PASSED`
 
 **Investigation date:** 2026-10-14 UTC
 **Repository:** `miyatayuuma/english-pwa`
@@ -18,7 +18,7 @@
 | WebView | `124.0.6367.219` in all ten jobs |
 | Test order | `connectedDebugAndroidTest`; `NativeShellGateTest` fixed ascending method order; 5 required tests |
 
-This report covers the Game Trace Stage 4 callback stall and its relationship to PR #334. The ASR rules and evidence introduced by PR #334 remain unchanged by the diagnosis and proposed repair.
+This report covers the Game Trace Stage 4 callback stall and its relationship to PR #334. The ASR rules and evidence introduced by PR #334 remain unchanged by the diagnosis and root-cause repair. A later review follow-up in PR #336 added a final-recognition-evidence gate to the existing targeted Vocabulary matching paths without changing the approved equivalence mappings or scopes.
 
 ## Pinned-SHA A/B reproduction
 
@@ -113,7 +113,7 @@ The exploratory pre-fix probe job `115647048339` also saw `Microphone system per
 
 The baseline Vocabulary blob remains `91324d35b2db1911ece2cf3ff746409d321fe963`; the Items blob remains `ae2aca768b784199b77ac1cf8c0c5a80fd5725bb`. ASR-09A through ASR-09D authority, TARGET/PARAPHRASE/MISS, N-best provenance, `gaze ↔ gays`, `lack → black`, Read/Cloze/Correction grading, SRS updates, and Pixel ASR-08D acceptance are not changed by this repair.
 
-Because readiness diagnostics JS changed, PR #335 moved main from `v5.105` to `v5.106` and synchronized `index.html`, `scripts/app/swBootstrap.js`, `sw.js`, PWA precache references, and Capacitor staged assets. PR #335 merged at `3b14776ed5dbb3b6d47290874e2c0d52bf3a62b9`. Existing PR #334 was reconciled to `v5.107` and merged at `6147df3b5bda938d0f9925c899009ca8138cb24e`; the PR head tree and merge-commit tree are identical. The final main runtime/cache identity is `v5.107`.
+Because readiness diagnostics JS changed, PR #335 moved main from `v5.105` to `v5.106` and synchronized `index.html`, `scripts/app/swBootstrap.js`, `sw.js`, PWA precache references, and Capacitor staged assets. PR #335 merged at `3b14776ed5dbb3b6d47290874e2c0d52bf3a62b9`. Existing PR #334 was reconciled to `v5.107` and merged at `6147df3b5bda938d0f9925c899009ca8138cb24e`; the PR head tree and merge-commit tree are identical. That was the runtime/cache identity at the #334 merge. PR #336 later updated the targeted final-evidence guard and synchronized production assets to `v5.108`, merging at `76101569b73a9ffd964028a9ba75c7a4db0d4c92`.
 
 On repair code head `bd13c1cfbdfc37e104da82e0bee79d29bcfd823b`, `native-web` contained 117 files with staged asset identity `f4b360f5200a356c9e8f66017049e4e787553f067f22a4ba91a0ac4edb374360`; Android `assets/public` contained those same 117 byte-identical files plus generated `cordova.js` and `cordova_plugins.js`, for 119 files and identity `6fb5d3cbfb81a8da333e8248762d1641f1226f87461ac88134dc801c31e2cabe`. Both identities use SHA-256 over sorted relative paths, a NUL separator, 8-byte big-endian file length, file bytes, and a trailing NUL. Documentation-only commits do not alter these staged identities.
 
@@ -168,7 +168,9 @@ Local checks on the repair candidate before Android CI:
 | Root-fix main merge | `3b14776ed5dbb3b6d47290874e2c0d52bf3a62b9` (`v5.106`) |
 | PR #334 reconciled head | `718727eeb637f9b34cbe8338e79f70aa8388f775` (`v5.107`) |
 | PR #334 merge | `6147df3b5bda938d0f9925c899009ca8138cb24e` — MERGED |
-| Main after both merges | `6147df3b5bda938d0f9925c899009ca8138cb24e` (`v5.107`) |
+| Main after PR #335 and #334 merges | `6147df3b5bda938d0f9925c899009ca8138cb24e` (`v5.107`) |
+| PR #336 final-evidence follow-up merge | `76101569b73a9ffd964028a9ba75c7a4db0d4c92` (`v5.108`) — MERGED |
+| Main after #336 code merge | `76101569b73a9ffd964028a9ba75c7a4db0d4c92` (`v5.108`) |
 | Pixel ASR-08D PR #323 | OPEN; not part of this work |
 
 ### Repair-source and main acceptance
@@ -191,7 +193,7 @@ An additional independent main-pinned Gate A matrix run `38506857511` checked ou
 
 ### Version, staged assets, and protected authority
 
-The final `v5.107` PWA runtime contains 117 staged files with identity `6770e516e8cf4d46f8201f1c9d0d1dd7cc0bb7772bbfd117a89763ba7f250d9a`; Android contains those same 117 files plus generated `cordova.js` and `cordova_plugins.js`, for 119 files with identity `59578be76e702682ed70702e945ea87fe776e0c0210603364efb2161ea28c322`. These use SHA-256 over sorted relative paths, a NUL separator, 8-byte big-endian file length, file bytes, and a trailing NUL. All 116 repo-backed runtime files in the built APK match source bytes; the three debug-only validation assets match their Android debug sources. The remaining staged file is the Capacitor core module from the pinned npm dependency, while Cordova assets are generated by Capacitor sync. `index.html`, `scripts/app/swBootstrap.js`, `sw.js`, and `scripts/version.js` use the synchronized `v5.107` cache/version identity.
+At the PR #334 merge, the `v5.107` PWA runtime contained 117 staged files with identity `6770e516e8cf4d46f8201f1c9d0d1dd7cc0bb7772bbfd117a89763ba7f250d9a`; Android contains those same 117 files plus generated `cordova.js` and `cordova_plugins.js`, for 119 files with identity `59578be76e702682ed70702e945ea87fe776e0c0210603364efb2161ea28c322`. These use SHA-256 over sorted relative paths, a NUL separator, 8-byte big-endian file length, file bytes, and a trailing NUL. All 116 repo-backed runtime files in the built APK match source bytes; the three debug-only validation assets match their Android debug sources. The remaining staged file is the Capacitor core module from the pinned npm dependency, while Cordova assets are generated by Capacitor sync. `index.html`, `scripts/app/swBootstrap.js`, `sw.js`, and `scripts/version.js` used the synchronized `v5.107` cache/version identity at that merge.
 
 The merged main tree preserves Vocabulary blob `91324d35b2db1911ece2cf3ff746409d321fe963` and Items blob `ae2aca768b784199b77ac1cf8c0c5a80fd5725bb`. Main's speech-rule source and evidence confirm bidirectional `gaze ↔ gays`, `lack → black` only, Vocabulary-only and limited to `vocab:01251` / `vocab:01296`, with no reverse `black → lack` rule. The original 8-group targeted suite remains unchanged and passes; its 18 positive and 42 negative checks preserve TARGET/PARAPHRASE/MISS, rank/attempt/segment provenance, Read/Cloze/Correction boundaries, and SRS behavior.
 
@@ -200,3 +202,29 @@ The merged main tree preserves Vocabulary blob `91324d35b2db1911ece2cf3ff746409d
 Permission timing was separate from Stage 4. On the final test source, the test waits for a marker set immediately after the NativeSpeech permission request creates its Capacitor call, then waits up to 45 seconds for the actual system button and verifies the permission becomes GRANTED. It does not add a sleep, shell grant, retry, skip, or weaker assertion. Three exact-source PR runs, the main push Gate A, and the three post-merge main matrix jobs all passed this system-dialog path. The earlier selector timeouts and their request/dialog timestamps are preserved in the table above.
 
 Root cause is confirmed by the pinned A/B and test-only proxy-order probe. A/B counts (main 3/5 pass; original PR #334 4/5 pass) are descriptive only and do not estimate long-term failure probability. The unforced case of a callback deliberately held across Activity recreation remains a test limitation; the fix defers a short capability response to the main looper and does not add a delay hook to the plugin. All required merge gates are closed; Pixel ASR-08D remains an independent open hardware acceptance item.
+
+
+## PR #336 final-evidence review follow-up and current production head
+
+PR #334 merged its approved recognition-collision rules at 6147df3b5bda938d0f9925c899009ca8138cb24e (v5.107). During final review confirmation, an inline review comment identified that the explicit-paraphrase production path did not receive the same final-recognition-evidence gate already used by targeted primary and N-best paths. PR #336 made that minimal correction and added negative controls, preserving the existing rule IDs, directions, Vocabulary entry scopes, paraphrase authority, and final-result behavior.
+
+The review also found that Web Speech can report outer recognitionComplete=true and a terminal completion state while its only recognition segment is interim (isFinal=false). PR #336 therefore passes validated completeEvidence—which incorporates segment finality—to targeted primary, N-best, and explicit-paraphrase evaluation. Tests preserve the valid final “gays at something” PARAPHRASE case and reject non-final pending, interim, error, cancelled, and terminalized-interim evidence for both TARGET and PARAPHRASE. The two approved ASR mappings and scopes were not redesigned.
+
+PR #336 merged at 76101569b73a9ffd964028a9ba75c7a4db0d4c92, bringing main to v5.108. Latest-head checks passed: Application/Chromium run 38509108385; Vocabulary 38509108372; Paraphrase scope guard 38509108382; Android Debug/Release/Lint and Gate A 38509108355. The exact PR head aada037f41ac182ddca5524aee36335941432354 passed three independent Gate A jobs in run 38509340349 (jobs 115673997725, 115673997935, 115673997942), each 5 passed / 0 failed / 0 skipped, ten navigation cycles, two Activity relaunches, and real permission-dialog grant.
+
+Push-triggered post-merge checks on code merge SHA 76101569b73a9ffd964028a9ba75c7a4db0d4c92 passed: Android build/lint/Gate A run 38510184838, Application/Chromium 38510184939, Vocabulary 38510184916, and Pages 38510185088. The exact code merge SHA also passed the independent three-job Gate A matrix 38510219370 (jobs 115676771986, 115676771983, 115676771865), with 5/0/0, ten cycles, two Activity relaunches, and the real permission dialog in every job.
+
+Application run 38509108385 ran 605 tests (603 passed, 0 failed, 2 skipped); ASR validators, vocabulary validation, and scope guard passed on the follow-up head. The original #334 review thread was answered with this follow-up evidence and resolved; PR #336 review concluded without additional findings.
+
+Vocabulary and Items blobs remain 91324d35b2db1911ece2cf3ff746409d321fe963 and ae2aca768b784199b77ac1cf8c0c5a80fd5725bb. Pixel ASR-08D PR #323 remains OPEN. Remaining Gate A limitation: a callback deliberately held across Activity recreation was not separately forced; this is separate from the confirmed reply-proxy ordering cause.
+
+
+The additional exact-SHA workflow 38510777393 completed successfully after this report's initial v5.108 follow-up entry. All three fresh jobs checked out code SHA 76101569b73a9ffd964028a9ba75c7a4db0d4c92, confirmed APP_VERSION v5.108, and independently computed identical staged asset identities: PWA 117 files, SHA-256 74c09237768a5faabc9f144ec7271ebb74853f7bce4256d12e21e828e427707e; Android 119 files, SHA-256 c8b8c60b56e345388e84b19c99b66374835e4215ec07fb3c1417536c85c8967a. Hashing uses the same sorted relative-path/NUL/length/content/NUL format documented above.
+
+| Job | Artifact | Gate A HTML result | Cycle / relaunch and permission evidence |
+|---|---|---|---|
+| acceptance-1, 115678529751 | 11870075488 | 5 tests, 0 failures, 0 skipped; all four NativeShellGateTest methods and NativeNBestEvidenceTest passed | Logcat confirms total=10 cycles and 2 fresh Activity relaunches; the system GrantPermissionsActivity appeared and the permission test passed. |
+| acceptance-2, 115678530026 | 11869523870 | 5 tests, 0 failures, 0 skipped | Logcat confirms total=10 cycles and 2 fresh Activity relaunches; the system GrantPermissionsActivity appeared and the permission test passed. |
+| acceptance-3, 115678529999 | 11869354867 | 5 tests, 0 failures, 0 skipped | Logcat confirms total=10 cycles and 2 fresh Activity relaunches; the system GrantPermissionsActivity appeared and the permission test passed. |
+
+Artifact logcat also records a later pm grant command in NativeShellGateTest.b_productionBackendStartsAndCancelsWithoutWebSpeech. The test order is alphabetical: a_permissionIsRequestedOnDemandAndGrantedThroughSystemDialog runs first, asserts the permission begins denied, waits for and clicks the actual system Allow button, and verifies GRANTED. The later backend test uses pm grant as its own setup. Thus the permission acceptance is independently exercised through the system dialog and is not replaced by that subsequent test fixture.
