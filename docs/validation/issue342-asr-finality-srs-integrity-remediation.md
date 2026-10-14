@@ -117,6 +117,7 @@ The local Android Gradle build could not start because the wrapper could not dow
 ### Required CI and post-merge results
 
 - PR Application / Chromium: run `38654595646`, attempt 2 PASS. The suite reported 622 tests, 620 passed, 0 failed, 2 skipped, and 0 TODO. The Issue #342 E0006 test executed as `ok 180`.
+- PR Application attempt 1 hit a 30-second timeout in the existing audio-folder restore browser test. The same-head push run, PR retry attempt 2, and post-merge Application run passed; no production change was made for that transient unrelated timeout.
 - Post-merge Application / Chromium: run `38655489798` PASS; 622 tests, 620 passed, 0 failed, 2 skipped, and 0 TODO.
 - Post-merge raw E0006 interim evidence: `isFinal:false`, pending attempt; `beforeSrs=null`, `afterInterimSrs=null`, `afterNbestSrs=null`, and `studyLog=null`. The test asserted unchanged SRS and Study-log snapshots, zero SRS/Study-log writes, no score, no committed interim transcript, no result screen, and no advance.
 - Normal finalized E0006 retry in the same production browser test: PASS. One finalized attempt wrote SRS once and Study log once; `lastMatch=1`, `level5Count=1`, `noHintHistory=[2026-10-14T12:00:00Z]`, and the 24-hour review interval remained intact. The test asserted one pass and one `no_hint` entry.
