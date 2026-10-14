@@ -48,7 +48,7 @@ import {
   isRecognitionSupported
 } from '../speech/recognition.js';
 import { alignSpeech } from '../speech/speechAlignment.js';
-import { evaluateRecognitionCandidates, recognitionHypotheses } from '../speech/recognitionCandidates.js';
+import { assessProductionRecognitionEvidence, evaluateRecognitionCandidates, recognitionHypotheses } from '../speech/recognitionCandidates.js';
 import { gradeReadSpeech } from '../speech/readSpeechGrader.js';
 import { gradeCorrectionSpeech } from '../speech/correctionSpeechGrader.js';
 import { gradeClozeSpeech, applyClozeTargetRequirement } from '../speech/clozeSpeechGrader.js';
@@ -3155,17 +3155,16 @@ function createAppRuntime(){
         };
       },
       onTraceEvent:safeGameTraceRecord,
-      onTranscriptPreview:text=>{if(!isShadowingSession()) showTranscriptFinal(text);},
+      onTranscriptPreview:(text,evidence)=>{
+        if(isShadowingSession()) return;
+        if(evidence?.evidenceFinality==='final') showTranscriptFinal(text);
+        else showTranscriptInterim(text);
+      },
       onTranscriptReset: ()=>{resetTranscript();clearCurrentSpeechHighlight();},
       onTranscriptInterim: (text)=>{ if(!isShadowingSession()) showTranscriptInterim(text); },
       onTranscriptFinal: text=>{
         if(isShadowingSession()) return;
         showTranscriptFinal(text);
-        const item=QUEUE[idx];
-        if(!item?.en||!hasRecognizedSpeech(text)) return;
-        const mode=correctiveItemId===item.id?'correction':(getActiveClozeRecognitionContext(item.id)?.mode||getStudyMode());
-        lastMatchEval=alignAndHighlight(item.en,text,{mode});
-        updateMatch(gradeReadSpeech(lastMatchEval).score);
       },
       onUnsupported: ()=>toast('この端末では音声認識が使えません'),
       onError: (e)=>{
@@ -3425,11 +3424,15 @@ function createAppRuntime(){
     finally { if(!result) stopRecPending=false; }
     const traceAttemptId=outcome?.attemptId??null;
     const traceContext=outcome?.gameContext??null;
-    const contextItemChanged=traceContext?.itemId!=null&&String(traceContext.itemId)!==String(QUEUE[idx]?.id??'');
+    const contextItemChanged=(traceContext?.itemId!=null&&String(traceContext.itemId)!==String(QUEUE[idx]?.id??''))
+      ||(outcome?.itemId!=null&&(String(outcome.itemId)!==String(requestedItemId??'')
+        ||String(outcome.itemId)!==String(QUEUE[idx]?.id??'')));
     if(requestedItemId!==QUEUE[idx]?.id||contextItemChanged){
       if(traceAttemptId){
         safeGameTraceRecord({type:'stale-callback-observed',attemptId:traceAttemptId,
           contextAtStart:traceContext,currentItemId:QUEUE[idx]?.id??null});
+        safeGameTraceRecord({type:'srs-update-skipped',attemptId:traceAttemptId,updateAttempted:false,
+          skippedReason:'item-changed-before-grade',duplicateUpdateSuppressed:false});
         safeGameTraceRecord({type:'attempt-closed',attemptId:traceAttemptId,closeReason:'item-changed-before-grade'});
       }
       return;
@@ -3461,6 +3464,34 @@ function createAppRuntime(){
     if(attemptKey){
       processedRecognitionAttempts.add(attemptKey);
       if(processedRecognitionAttempts.size>100) processedRecognitionAttempts.delete(processedRecognitionAttempts.values().next().value);
+    }
+    const admission=assessProductionRecognitionEvidence(outcome,{
+      expectedItemId:requestedItemId,
+      currentItemId:QUEUE[idx]?.id??null,
+    });
+    if(!admission.admitted){
+      const reason=admission.reason||'incomplete-recognition-evidence';
+      if(traceAttemptId){
+        const incompleteEvidence=admission.evidenceFinality!=='final'||['no-recognition-segments','transport-not-complete',
+          'attempt-not-finalized','primary-transcript-not-backed-by-final-segments'].includes(reason);
+        if(incompleteEvidence) safeGameTraceRecord({type:'incomplete-evidence-rejected',attemptId:traceAttemptId,
+          reason,evidenceFinality:admission.evidenceFinality,transportComplete:outcome.transportComplete===true,
+          completionState:outcome.completionState??null,recognitionComplete:outcome.recognitionComplete===true,
+          recognitionSegments:outcome.recognitionSegments??[]});
+        safeGameTraceRecord({type:'grading-skipped',attemptId:traceAttemptId,skipReason:reason,
+          gradingStage:'before-candidate-evaluation',itemId:it.id});
+        safeGameTraceRecord({type:'srs-update-skipped',attemptId:traceAttemptId,updateAttempted:false,
+          skippedReason:reason,duplicateUpdateSuppressed:false});
+        safeGameTraceRecord({type:'attempt-closed',attemptId:traceAttemptId,closeReason:reason});
+      }
+      lastMatchEval=null;
+      updateMatch(null);
+      clearSpeechHighlight(el.en,()=>composeGuide.getNodes());
+      resetTranscript();
+      setFooterMessages('発話を確定できませんでした。もう一度話してください。','');
+      el.mic.disabled=false;
+      updatePlayButtonAvailability();
+      return;
     }
     const hyp = String(outcome.primaryTranscript??outcome.transcript??'');
     const hypotheses=recognitionHypotheses(outcome).map(candidate=>({...candidate,attemptId:outcome.attemptId??null}));

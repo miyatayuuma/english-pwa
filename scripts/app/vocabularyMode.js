@@ -3,6 +3,7 @@ import { buildRecognitionContext } from '../speech/recognitionPolicy.js';
 import { createCorrectionProgress, recordCorrectionAttempt } from '../speech/correctionProgress.js';
 import { createLevelStateManager } from './levelState.js';
 import { createRecognitionController, isRecognitionSupported } from '../speech/recognition.js';
+import { assessProductionRecognitionEvidence, isRecognitionEvidenceComplete } from '../speech/recognitionCandidates.js';
 import { nativeSpeechDiagnostic } from '../native/androidSpeechBackend.js';
 import { isNativeAndroid } from '../native/runtimePlatform.js';
 import { gameTraceCollector, safeGameTraceRecord } from '../native/gameTrace.js';
@@ -409,7 +410,7 @@ function scheduleTranscriptGrade(text,evidence){
   clearGradeTimer();
   // Recognition previews are display-only for every provider. A result can be
   // accepted only after this attempt has delivered its terminal evidence.
-  if(!evidence?.recognitionComplete&&evidence?.completionState!=='terminal') return;
+  if(!isRecognitionEvidenceComplete(evidence||{})) return;
   if(isNativeAndroid()) return;
   if(!state.liveTranscript.trim()&&!hasRecognitionEvidence()) return;
   const delay=state.current.kind==='word'?650:1200;
@@ -481,12 +482,12 @@ function setupRecognition(){
     isTracing:()=>gameTraceCollector.isEnabled(),
     getTraceSessionId:()=>gameTraceCollector.getTraceSessionId(),
     getAttemptContext:()=>{
+      const {itemId,entryId}=activeRecognitionContext();
       const source=activeSource();
       const occurrence=source?.occurrence??state.current?.activeOccurrence?.occurrence??null;
-      const item=source?.item??state.current?.activeOccurrence?.item??null;
       return {
-        itemId:item?.id??occurrence?.item_id??null,
-        entryId:state.current?.id??null,
+        itemId,
+        entryId,
         activeOccurrence:occurrence?{...occurrence}:null,
         gameMode:'Vocabulary',
         learningStage:state.correction?'Correction':'Vocabulary',
@@ -637,6 +638,16 @@ function bindPronunciationButton(){
 function activeSource(){
   const active=state.current?.activeOccurrence;
   return active?.item&&active?.occurrence?active:null;
+}
+
+function activeRecognitionContext(){
+  const source=activeSource();
+  const occurrence=source?.occurrence??state.current?.activeOccurrence?.occurrence??null;
+  const item=source?.item??state.current?.activeOccurrence?.item??null;
+  return {
+    itemId:item?.id??occurrence?.item_id??null,
+    entryId:state.current?.id??null,
+  };
 }
 
 function speakerProfile(item,turnIndex=null){
@@ -906,12 +917,49 @@ function gradeTranscript(text,recognitionEvidence={}){
   if(!transcript.trim()&&!hasRecognitionEvidence()) return;
   state.liveTranscript=transcript;
   const evidence=recognitionEvidence||{};
-  const complete=evidence.recognitionComplete===true||evidence.completionState==='terminal';
+  const expected=activeRecognitionContext();
+  const admission=assessProductionRecognitionEvidence(evidence,{
+    expectedItemId:expected.itemId,
+    currentItemId:activeRecognitionContext().itemId,
+    expectedEntryId:expected.entryId,
+    currentEntryId:state.current?.id??null,
+  });
+  if(!admission.admitted){
+    const attemptId=evidence.attemptId??null;
+    if(attemptId){
+      const incompleteEvidence=admission.evidenceFinality!=='final'||['no-recognition-segments','transport-not-complete',
+        'attempt-not-finalized','primary-transcript-not-backed-by-final-segments'].includes(admission.reason);
+      if(incompleteEvidence) safeGameTraceRecord({type:'incomplete-evidence-rejected',attemptId,
+        reason:admission.reason??'incomplete-recognition-evidence',evidenceFinality:admission.evidenceFinality,
+        transportComplete:evidence.transportComplete===true,completionState:evidence.completionState??null,
+        recognitionComplete:evidence.recognitionComplete===true,recognitionSegments:evidence.recognitionSegments??[]});
+      safeGameTraceRecord({type:'grading-skipped',attemptId,skipReason:admission.reason??'incomplete-recognition-evidence',
+        gradingStage:'before-vocabulary-classification',entryId:state.current.id});
+      safeGameTraceRecord({type:'srs-update-skipped',attemptId,updateAttempted:false,
+        skippedReason:admission.reason??'incomplete-recognition-evidence',duplicateUpdateSuppressed:false});
+      safeGameTraceRecord({type:'attempt-closed',attemptId,closeReason:admission.reason??'incomplete-recognition-evidence'});
+    }
+    const stale=admission.reason==='attempt-item-mismatch'||admission.reason==='item-changed-before-grade'
+      ||admission.reason==='attempt-entry-mismatch'||admission.reason==='entry-changed-before-grade';
+    if(stale) return;
+    clearGradeTimer();
+    state.liveTranscript='';
+    state.lastAttemptTranscript='';
+    state.lastRecognitionEvidence=null;
+    state.lastRecognitionDecision=null;
+    setTranscript('');
+    setListening(false);
+    const feedback=state.screen?.querySelector('.vocab-feedback');
+    if(feedback){feedback.className='vocab-feedback';feedback.textContent='発話を確定できませんでした。もう一度話してください。';}
+    showRecognitionStatus(state.correction?'表示された表現を話してください':'英語で答える');
+    return;
+  }
+  const complete=true;
   const result=classifyVocabularySpeechAnswer({
     entry:state.current,
     activeOccurrence:activeSource(),
     transcript,
-    recognitionSegments:complete?(evidence.recognitionSegments||[]):[],
+    recognitionSegments:evidence.recognitionSegments||[],
     recognitionComplete:complete,
     completionState:evidence.completionState,
     attemptId:evidence.attemptId,

@@ -496,6 +496,22 @@ for(const count of [1,3]) browserTest(`390×844 read Cloze ${count} targets pres
       assert.equal(leaked,false,'no new target data attribute');
     }
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+    const beforeInterim=await page.evaluate(()=>JSON.parse(localStorage.getItem('itemLevelV1')||'{}').RPROD1);
+    const beforeInterimWrites=await page.evaluate(()=>window.__testSpeech.srsWrites);
+    const startsBeforeInterim=await page.evaluate(()=>window.__testSpeech.starts||0);
+    await page.waitForFunction(()=>!document.querySelector('#btnMic').disabled&&document.querySelector('#micStatus')?.dataset.state==='off');
+    {const box=await page.locator('#btnMic').boundingBox();await page.mouse.click(box.x+box.width/2,box.y+box.height/2);}
+    await page.waitForFunction(count=>(window.__testSpeech.starts||0)>count,startsBeforeInterim);
+    await page.evaluate(sentence=>{const recognition=window.__testSpeech.latest;recognition.emitInterim(sentence);recognition.emitEnd();},sentence);
+    await page.waitForFunction(()=>document.querySelector('#micStatus')?.dataset.state==='off'
+      && document.querySelector('#btnMic')?.disabled===false
+      && document.querySelector('#transcript')?.textContent==='');
+    assert.deepEqual(await page.evaluate(()=>JSON.parse(localStorage.getItem('itemLevelV1')||'{}').RPROD1),beforeInterim,
+      'an exact interim Cloze sentence cannot write a PASS or failure to SRS');
+    assert.equal(await page.evaluate(()=>window.__testSpeech.srsWrites),beforeInterimWrites,
+      'interim-only Cloze transport completion causes no SRS write');
+    assert.equal(await page.locator('#valMatch').textContent(),'—','interim-only Cloze evidence has no final score');
+    assert.equal(await page.locator('#enText').getAttribute('data-item-id'),'RPROD1','interim-only Cloze evidence cannot advance the card');
     await speechAttempt(page,[registry.targets[0].surface,sentence]);
     const phrases=await page.evaluate(()=>window.__testSpeech.latest.phrasesAtStart);
     assert.deepEqual(phrases,[]);
@@ -503,11 +519,11 @@ for(const count of [1,3]) browserTest(`390×844 read Cloze ${count} targets pres
     assert.equal(await page.evaluate(()=>window.__testSpeech.latest.context.itemId),undefined);
     assert.equal(await page.evaluate(()=>window.__testSpeech.latest.context.sentenceIndex),undefined);
     await page.waitForFunction(()=>JSON.parse(localStorage.getItem('itemLevelV1')).RPROD1.lastMatch===1);
-    assert.deepEqual(await page.evaluate(()=>window.__testSpeech.events.find(event=>event.type==='result')?.alternatives),[registry.targets[0].surface,sentence]);
+    assert.deepEqual(await page.evaluate(()=>window.__testSpeech.events.find(event=>event.type==='result'&&event.isFinal===true)?.alternatives),[registry.targets[0].surface,sentence]);
     assert.equal(await page.locator('#transcript').innerText(),registry.targets[0].surface,'the raw rank-zero transcript remains visible after lower-ranked scoring');
     assert.equal(await page.locator('#enText').innerText(),sentence,'the selected complete hypothesis grades the full sentence');
     assert.equal(await page.evaluate(async()=> (await import('./scripts/app/clozeRecognitionContext.js')).getActiveClozeRecognitionContext()),null,'canonical reveal clears hidden context');
-    assert.equal(await page.evaluate(()=>window.__testSpeech.srsWrites),1,'one terminal accepted candidate records one SRS write');
+    assert.equal(await page.evaluate(()=>window.__testSpeech.srsWrites),beforeInterimWrites+1,'one terminal accepted candidate records one SRS write');
   }finally{await context.close();}
 });
 

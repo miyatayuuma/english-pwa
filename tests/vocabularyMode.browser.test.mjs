@@ -822,7 +822,7 @@ browserTest('native TARGET rescue preserves raw primary, answer authority and ex
   }
 });
 
-browserTest('a TARGET in an interim segment cannot rescue a terminalized Vocabulary attempt',async()=>{
+browserTest('a TARGET in an interim segment cannot rescue or fail a terminalized Vocabulary attempt',async()=>{
   const opened=await newPage(sources[0]);const {page}=opened;
   try{
     await injectCompletedFinal(page,['banana','run into someone']);
@@ -832,10 +832,13 @@ browserTest('a TARGET in an interim segment cannot rescue a terminalized Vocabul
     await injectFinal(page,'not');await injectInterim(page,['wrong','come across someone']);
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0,'final plus interim evidence remains pending until terminal');
     await page.evaluate(()=>window.__mockSpeech.latest.emitEnd());
-    await page.waitForFunction(()=>document.querySelector('.vocab-heard__text')?.textContent==='not wrong');
-    assert.match(await page.locator('.vocab-feedback').innerText(),/聞き取りを確認/);
-    assert.equal(await page.locator('.vocab-heard__text').innerText(),'not wrong');
-    assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0,'a candidate from a non-final segment cannot be promoted or written as SRS evidence');
+    assert.equal(await page.locator('.vocab-transcript').innerText(),'','an incomplete attempt is cleared from the final transcript area');
+    assert.match(await page.locator('.vocab-feedback').innerText(),/発話を確定できませんでした/);
+    assert.equal(await page.locator('.vocab-heard__text').count(),0,'mixed final/interim evidence produces no grade result');
+    assert.equal(await page.locator('.vocab-answer').count(),0,'a candidate from a non-final segment is not promoted');
+    assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0,'a candidate from a non-final segment cannot be written as SRS evidence');
+    assert.equal(await page.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id].lastMatch,entry.id),0,
+      'the incomplete attempt does not turn into a recorded failure');
     assert.deepEqual(await page.evaluate(()=>window.__mockSpeech.events.map(event=>event.type)),['start','result','end','start','result','result','end']);
   }finally{await closePage(opened);}
 });
@@ -1039,14 +1042,23 @@ browserTest('correct-answer playback holds capture until release and replay safe
   }finally{await closePage(opened);}
 });
 
-browserTest('interim transcript stays display-only until final terminal evidence arrives',async()=>{
+browserTest('interim-only transport end is NO GRADE and a new finalized attempt can pass',async()=>{
   const opened=await newPage(sources[0]);const {page}=opened;
   try{
+    const before=await page.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id],opened.entry.id);
     await injectInterim(page,'came across Nick');
     assert.equal(await page.locator('.vocab-transcript').innerText(),'came across Nick');
     await page.waitForTimeout(1300);
     assert.equal(await page.locator('.vocab-feedback').textContent(),'');
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0,'interim-only speech does not write SRS');
+    await page.evaluate(()=>window.__mockSpeech.latest.emitEnd());
+    assert.equal(await page.locator('.vocab-transcript').innerText(),'','interim-only transport end is cleared, not committed as a result');
+    assert.match(await page.locator('.vocab-feedback').innerText(),/発話を確定できませんでした/);
+    assert.equal(await page.locator('.vocab-heard__text').count(),0,'interim-only evidence has no final answer screen');
+    assert.deepEqual(await page.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id],opened.entry.id),before);
+    assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0);
+    await page.locator('.vocab-mic').click();
+    await page.waitForFunction(()=>window.__mockSpeech.startCount===2);
     await injectFinal(page,'came across Nick');
     await page.evaluate(()=>window.__mockSpeech.latest.emitEnd());
     await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='正解');

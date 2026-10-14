@@ -398,6 +398,12 @@ export function classifyVocabularySpeechAnswer({ entry, activeOccurrence = null,
     && recognitionSegments.length>0
     && recognitionSegments.every(segment=>segment?.isFinal===true);
   const metadata=evidenceMetadata(primaryTranscript,{attemptId,recognitionComplete:completeEvidence,recognitionSegments});
+  const evidenceContractSupplied=recognitionComplete!==undefined||completionState!=null
+    ||(Array.isArray(recognitionSegments)&&recognitionSegments.length>0);
+  if(evidenceContractSupplied&&!completeEvidence){
+    return {type:'miss',matchedText:'',matchedAuthority:null,...metadata,
+      recognitionRejectionReason:'incomplete-or-contradictory-evidence'};
+  }
   const hypotheses = finalizedRecognitionAlternatives(recognitionEvidence);
   const primary = classifyVocabularyAnswer({ entry, activeOccurrence, transcript: primaryTranscript });
   const primarySegmentIndex = primarySegmentIndexFor(primary.matchedText || entry?.canonical, entry, recognitionSegments);

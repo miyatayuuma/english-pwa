@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { vocabularyChunkRescueChunks } from '../scripts/speech/vocabularyChunkRescueAuthority.js';
+import { isRecognitionEvidenceComplete, recognitionHypotheses } from '../scripts/speech/recognitionCandidates.js';
 const production139=JSON.parse(readFileSync(new URL('../data/vocabulary-v3.json',import.meta.url),'utf8')).entries.find(entry=>entry.id==='vocab:00139');
 const result=(text,isFinal=true)=>Object.assign((Array.isArray(text)?text:[text]).map(transcript=>({transcript,confidence:0})),{isFinal});
 async function fixture(run,{phrases=true,constructor=true}={}){
@@ -178,6 +179,11 @@ test('interim-only auto-stop preserves non-final evidence and waits for onend',(
   native.emitEnd();
   assert.equal(completed.length,1);
   assert.equal(completed[0].completionState,'terminal');
+  assert.equal(completed[0].transportComplete,true);
+  assert.equal(completed[0].evidenceFinality,'interim');
+  assert.equal(completed[0].recognitionComplete,false);
+  assert.equal(isRecognitionEvidenceComplete(completed[0]),false);
+  assert.deepEqual(recognitionHypotheses(completed[0]),[]);
   assert.equal(completed[0].recognitionSegments[0].isFinal,false);
   native.emitEnd();
   assert.equal(completed.length,1,'a repeated terminal callback does not complete the attempt again');
@@ -192,11 +198,49 @@ test('normal end without final is terminal once and a later result from that att
   assert.equal(completed.length,1);
   assert.equal(completed[0].transcript,'');
   assert.deepEqual(completed[0].recognitionSegments,[]);
+  assert.equal(completed[0].recognitionComplete,false);
+  assert.equal(completed[0].evidenceFinality,'none');
   native.inject([result('too late')]);
   native.emitEnd();
   assert.equal(completed.length,1,'a late final cannot reopen or complete the ended attempt');
   assert.deepEqual(controller.getRecognitionSegments(),[]);
   assert.equal(controller.isActive(),false);
+}));
+
+test('production finality stays tied to finalized segments, attempt identity, and item context',()=>fixture(async({createRecognitionController},instances)=>{
+  const completed=[];const events=[];
+  const controller=createRecognitionController({
+    getAttemptContext:()=>({itemId:'E0006',entryId:'vocab:00006'}),
+    isTracing:()=>true,
+    onTraceEvent:event=>events.push(event),
+    onAutoStop:evidence=>completed.push(evidence),
+  });
+  controller.start();
+  let native=instances[0];
+  native.inject([result('exact answer',false)]);
+  native.emitEnd();
+  const interim=completed.at(-1);
+  assert.equal(interim.ok,true,'transport end settles normally even when evidence is incomplete');
+  assert.equal(interim.transportComplete,true);
+  assert.equal(interim.recognitionComplete,false);
+  assert.equal(interim.recognitionSegments[0].attemptId,interim.attemptId);
+  assert.equal(interim.recognitionSegments[0].itemId,'E0006');
+  assert.equal(interim.recognitionSegments[0].entryId,'vocab:00006');
+  assert.equal(events.some(event=>event.type==='provider-ended'&&event.transportComplete===true),true);
+
+  controller.start();
+  native=instances[1];
+  native.inject([result('first segment'),result('second segment')]);
+  native.emitEnd();
+  const final=completed.at(-1);
+  assert.equal(final.recognitionComplete,true);
+  assert.equal(final.evidenceFinality,'final');
+  assert.equal(final.primaryTranscript,'first segment second segment');
+  assert.equal(isRecognitionEvidenceComplete(final),true);
+  assert.deepEqual(final.recognitionSegments.map(segment=>segment.attemptId),[final.attemptId,final.attemptId]);
+  assert.deepEqual(final.recognitionSegments.map(segment=>segment.segmentIndex),[0,1]);
+  assert.deepEqual(recognitionHypotheses(final).map(candidate=>candidate.transcript),[final.primaryTranscript]);
+  assert.equal(events.filter(event=>event.type==='provider-ended').length,2);
 }));
 
 test('Web error and cancel remain technical outcomes without a normal grade',()=>fixture(async({createRecognitionController},instances)=>{

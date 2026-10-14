@@ -10,7 +10,7 @@ import { buildExchangeResult } from '../scripts/app/relationshipMode.js';
 import { reachedMilestones } from '../scripts/app/relationshipCore.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const INITIAL_MAIN_SHA = '179ee55f51f663dfc5acf2cbacde23a44a96d970';
+const INITIAL_MAIN_SHA = '4a01d9e6d8f4c080d738dc87dfc9c5082afb9d29';
 const FIXED_NOW = Date.parse('2026-10-14T12:00:00.000Z');
 const FIXED_DAY = '2026-10-14';
 const HOUR = 60 * 60 * 1000;
@@ -170,7 +170,7 @@ async function newFixturePage({ ids, levels = {}, storageSeed = {}, staleFilters
     && typeof window.__RELATIONSHIP_GAME_STATE__ === 'function'
     && document.querySelector('#sessionShellStyles')
     && document.querySelector('#friendshipHero'));
-  assert.equal(await page.evaluate(() => window.APP_VERSION), 'v5.109', 'browser fixture uses the audited production version');
+  assert.equal(await page.evaluate(() => window.APP_VERSION), 'v5.110', 'browser fixture uses the P0 finality repair version');
   await page.waitForFunction(() => !document.querySelector('#loadingOverlay')?.classList.contains('show'));
   await page.evaluate(() => { window.__issue210.writes = {}; });
   return { context, page, pageErrors, externalRequests };
@@ -533,6 +533,21 @@ browserTest('Issue 210 failure/correction: N-best and later attempts stay separa
     assert.equal((await storageSnapshot(page)).studyLog[FIXED_DAY]?.passes || 0, 0);
     const afterOriginalFail = await storageSnapshot(page);
 
+    const correctionInterim = await injectAndStop(page, itemsById.get('E0006').en, { final: false });
+    assert.notEqual(correctionInterim.attemptId, split.attemptId, 'interim correction is a separate attempt');
+    await page.waitForFunction(() => document.querySelector('#btnMic')?.disabled === false, null, { timeout: 10_000 });
+    const afterCorrectionInterim = await storageSnapshot(page);
+    assert.deepEqual(afterCorrectionInterim.itemLevel, afterOriginalFail.itemLevel,
+      'interim-only exact Correction speech cannot update the original SRS failure');
+    assert.deepEqual(afterCorrectionInterim.studyLog, afterOriginalFail.studyLog,
+      'interim-only Correction speech cannot change pass or study history');
+    assert.equal(await page.locator('#enText').getAttribute('data-item-id'), 'E0006',
+      'interim-only Correction speech cannot advance the session');
+    assert.equal(await page.locator('#reviewCompleteView').isHidden(), true,
+      'interim-only Correction speech cannot complete correction or show the result screen');
+    assert.equal(await page.locator('#valMatch').textContent(), '—',
+      'an interim correction cannot remain as a final score');
+
     const correctionFailure = await injectAndStop(page, 'gazed at the Statue of Liberty');
     assert.notEqual(correctionFailure.attemptId, split.attemptId, 'correction uses a new recognizer attempt');
     assert.equal(correctionFailure.event.isFinal, true);
@@ -559,7 +574,7 @@ browserTest('Issue 210 failure/correction: N-best and later attempts stay separa
     assert.equal(result.summary.attempts, 1, 'correction practice is not counted as another graded conversation attempt');
     assert.equal(result.summary.reason, 'completed');
     await assertQuietBrowser(t, fixturePage);
-    await auditDiagnostic(t, page, 'correction', { itemId: 'E0006', technicalAttemptId: errorAttemptId, splitNbest: split.event, originalFailure: failed, correctionFailure: correctionFailure.event, correctionSuccess: correctionSuccess.event, afterOriginalFail: afterOriginalFail.itemLevel.E0006, afterCorrection: snapshot.itemLevel.E0006, result: result.screen, closure: result.closure });
+    await auditDiagnostic(t, page, 'correction', { itemId: 'E0006', technicalAttemptId: errorAttemptId, splitNbest: split.event, originalFailure: failed, correctionInterim: correctionInterim.event, afterCorrectionInterim: afterCorrectionInterim.itemLevel.E0006, correctionFailure: correctionFailure.event, correctionSuccess: correctionSuccess.event, afterOriginalFail: afterOriginalFail.itemLevel.E0006, afterCorrection: snapshot.itemLevel.E0006, result: result.screen, closure: result.closure });
   } finally {
     await context.close();
   }
@@ -571,20 +586,86 @@ browserTest('Issue 210 interim negative control: an interim-only exact transcrip
   try {
     await startManualSession(page, { characterId: 'bob', ids: ['E0006'] });
     const before = await storageSnapshot(page);
+    const assertNoGrade = async label => {
+      const after=await storageSnapshot(page);
+      assert.deepEqual(after.itemLevel,before.itemLevel,`${label}: every SRS field remains unchanged`);
+      assert.equal(after.studyLog[FIXED_DAY]?.passes||0,before.studyLog[FIXED_DAY]?.passes||0,`${label}: no pass log`);
+      assert.equal(after.studyLog[FIXED_DAY]?.no_hint||0,before.studyLog[FIXED_DAY]?.no_hint||0,`${label}: no no-hint log`);
+      assert.equal(after.writes.itemLevelV1||0,before.writes.itemLevelV1||0,`${label}: no SRS storage write`);
+      assert.equal(after.writes.studyLogV1||0,before.writes.studyLogV1||0,`${label}: no study-log storage write`);
+      assert.equal(await page.locator('#valMatch').textContent(),'—',`${label}: no final score`);
+      assert.equal(await page.locator('#transcript').textContent(),'',`${label}: no interim preview remains as a committed transcript`);
+      assert.equal(await page.locator('#enText').getAttribute('data-item-id'),'E0006',`${label}: no automatic card advance`);
+      assert.equal(await page.locator('#reviewCompleteView').isHidden(),true,`${label}: no result screen`);
+      return after;
+    };
     const interim = await injectAndStop(page, itemsById.get('E0006').en, { final: false });
     assert.equal(interim.event.isFinal, false);
     assert.equal(interim.event.recognitionComplete, false);
-    const after = await storageSnapshot(page);
-    await auditDiagnostic(t, page, 'interim', { itemId: 'E0006', rawInput: interim.event, beforeSrs: before.itemLevel.E0006 || null, afterSrs: after.itemLevel.E0006 || null, studyLog: after.studyLog[FIXED_DAY] || null });
-    assert.deepEqual(after.itemLevel, before.itemLevel, 'interim candidate is never written to SRS');
-    assert.equal(after.studyLog[FIXED_DAY]?.passes || 0, 0, 'interim candidate is never a PASS in studyLogV1');
-    assert.equal(after.writes.itemLevelV1 || 0, before.writes.itemLevelV1 || 0);
-    assert.equal(await page.locator('#valMatch').textContent(), '—');
+    const afterInterim=await assertNoGrade('interim-only primary');
+    await page.waitForFunction(() => document.querySelector('#btnMic')?.disabled === false, null, { timeout: 10_000 });
+
+    const interimNbest=await injectAndStop(page,['a different transcript',itemsById.get('E0006').en],{final:false});
+    assert.equal(interimNbest.event.isFinal,false);
+    assert.equal(interimNbest.event.alternatives[1],itemsById.get('E0006').en,'rank-one interim N-best contains the exact target');
+    assert.notEqual(interimNbest.attemptId,interim.attemptId,'interim N-best control is a fresh attempt');
+    const afterInterimNbest=await assertNoGrade('interim-only matching N-best');
+    await auditDiagnostic(t, page, 'interim', { itemId: 'E0006', rawInput: interim.event,
+      rawNbestInput:interimNbest.event,beforeSrs:before.itemLevel.E0006||null,
+      afterInterimSrs:afterInterim.itemLevel.E0006||null,afterNbestSrs:afterInterimNbest.itemLevel.E0006||null,
+      studyLog:afterInterimNbest.studyLog[FIXED_DAY]||null });
+    await page.waitForFunction(() => document.querySelector('#btnMic')?.disabled === false, null, { timeout: 10_000 });
+
+    const finalized = await injectAndStop(page, itemsById.get('E0006').en, { final: true });
+    assert.notEqual(finalized.attemptId, interim.attemptId, 'retry creates a new recognition attempt');
+    assert.equal(finalized.event.isFinal, true);
+    const accepted = await waitForSrs(page, 'E0006', { field: 'lastMatch', op: 'gte', value: 0.99 });
+    const afterFinal = await storageSnapshot(page);
+    assert.equal(accepted.lastMatch, 1, 'a normally finalized exact answer still passes');
+    assert.equal(accepted.level5Count, 1, 'a normally finalized no-hint pass retains level promotion');
+    assert.deepEqual(accepted.noHintHistory, [FIXED_NOW], 'a finalized no-hint pass records its history once');
+    assert.equal(accepted.review.nextDueAt, FIXED_NOW + DAY, 'a finalized pass retains the normal review interval');
+    assert.equal(afterFinal.studyLog[FIXED_DAY]?.passes, 1, 'a finalized answer increments the pass log');
+    assert.equal(afterFinal.studyLog[FIXED_DAY]?.no_hint, 1, 'a finalized answer increments no-hint history');
+    assert.equal(afterFinal.writes.itemLevelV1, 1, 'one finalized attempt causes one SRS write');
+    assert.equal(afterFinal.writes.studyLogV1, 1, 'one finalized attempt causes one study-log write');
+    assert.equal(await page.locator('#transcript .interim').count(),0,'final segment display is not left in interim preview styling');
     await assertQuietBrowser(t, fixturePage);
   } finally {
     await context.close();
   }
-}, { todo: 'Confirmed P0 false PASS / SRS write; tracked in Issue #342' });
+});
+
+browserTest('Issue 342 interim-only automatic provider end remains NO GRADE',async t=>{
+  const fixturePage=await newFixturePage({ids:['E0006']});
+  const {context,page}=fixturePage;
+  try{
+    await startManualSession(page,{characterId:'bob',ids:['E0006']});
+    const before=await storageSnapshot(page);
+    const attemptId=await beginAttempt(page);
+    const interim=await page.evaluate(transcript=>{
+      const mock=window.__issue210Speech.latest;
+      mock.emitInterim(transcript);
+      const event=[...window.__issue210Speech.events].reverse().find(entry=>entry.type==='result'&&entry.attemptId===mock.attemptId);
+      mock.emitEnd();
+      return {attemptId:mock.attemptId,event};
+    },itemsById.get('E0006').en);
+    assert.equal(interim.attemptId,attemptId);
+    assert.equal(interim.event.isFinal,false);
+    await page.waitForFunction(()=>document.querySelector('#micStatus')?.dataset.state==='off'
+      &&document.querySelector('#btnMic')?.disabled===false, null,{timeout:10_000});
+    const after=await storageSnapshot(page);
+    assert.deepEqual(after.itemLevel,before.itemLevel,'automatic end after exact interim speech leaves SRS unchanged');
+    assert.deepEqual(after.studyLog,before.studyLog,'automatic end after exact interim speech leaves the pass log unchanged');
+    assert.equal(after.writes.itemLevelV1||0,before.writes.itemLevelV1||0);
+    assert.equal(after.writes.studyLogV1||0,before.writes.studyLogV1||0);
+    assert.equal(await page.locator('#valMatch').textContent(),'—');
+    assert.equal(await page.locator('#transcript').textContent(),'');
+    assert.equal(await page.locator('#enText').getAttribute('data-item-id'),'E0006');
+    assert.equal(await page.locator('#reviewCompleteView').isHidden(),true);
+    await assertQuietBrowser(t,fixturePage);
+  }finally{await context.close();}
+});
 
 browserTest('Issue 210 interruption/options: persist completed card, exclude unanswered card, clear temporary filters and old queue on normal launch', async t => {
   const staleLevels = {};

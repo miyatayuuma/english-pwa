@@ -1,11 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { evaluateRecognitionCandidates, recognitionHypotheses } from '../scripts/speech/recognitionCandidates.js';
+import { assessProductionRecognitionEvidence, evaluateRecognitionCandidates, isRecognitionEvidenceComplete, recognitionHypotheses } from '../scripts/speech/recognitionCandidates.js';
 import { alignSpeech } from '../scripts/speech/speechAlignment.js';
 import { gradeReadSpeech } from '../scripts/speech/readSpeechGrader.js';
 
 const segment=(segmentIndex,alternatives,isFinal=true)=>({
   segmentIndex,
+  primaryTranscript:alternatives.find(([,rank])=>rank===0)?.[0]??'',
   isFinal,
   alternatives:alternatives.map(([transcript,asrRank])=>({transcript,asrRank})),
 });
@@ -76,18 +77,23 @@ test('Read never promotes partial segment alternatives or combines lower ranks i
   assert.deepEqual(recognitionHypotheses(oneSegment)[1].segmentIndexes,[4]);
 });
 
-test('pending or non-final evidence never becomes an N-best rescue candidate',()=>{
+test('incomplete evidence never promotes even rank-zero primary text',()=>{
   for(const evidence of [
     {recognitionComplete:false,recognitionSegments:[segment(0,[['wrong',0],['right',1]])]},
     {recognitionComplete:true,recognitionSegments:[segment(0,[['wrong',0],['right',1]],false)]},
   ]){
-    assert.deepEqual(recognitionHypotheses(evidence).map(candidate=>candidate.source),['primary']);
+    const calls=[];
+    assert.deepEqual(recognitionHypotheses(evidence),[]);
+    const selection=evaluateRecognitionCandidates(evidence,candidate=>{calls.push(candidate);return {accepted:true};});
+    assert.equal(selection.selected,null);
+    assert.deepEqual(calls,[]);
   }
 });
 
 test('duplicate provider ranks remain ambiguous and are not selected',()=>{
-  const evidence={recognitionComplete:true,recognitionSegments:[{
+  const evidence={transcript:'wrong',recognitionComplete:true,completionState:'terminal',recognitionSegments:[{
     segmentIndex:2,isFinal:true,
+    primaryTranscript:'wrong',
     alternatives:[
       {transcript:'wrong',asrRank:0},
       {transcript:'first rank one',asrRank:1},
@@ -95,4 +101,42 @@ test('duplicate provider ranks remain ambiguous and are not selected',()=>{
     ],
   }]};
   assert.deepEqual(recognitionHypotheses(evidence).map(candidate=>candidate.asrRank),[0]);
+});
+
+test('Issue 342 finality matrix admits only a normally completed all-final transcript',()=>{
+  const exact='The primary stream';
+  const final=segment(0,[[exact,0],['The rank two stream',2]],true);
+  const interim=segment(0,[[exact,0],['The rank two stream',2]],false);
+  const cases=[
+    ['terminal and all final', {primaryTranscript:exact,completionState:'terminal',recognitionComplete:true,recognitionSegments:[final]}, true],
+    ['terminal and interim-only', {primaryTranscript:exact,completionState:'terminal',recognitionComplete:false,recognitionSegments:[interim]}, false],
+    ['terminal and mixed final/interim', {primaryTranscript:exact,completionState:'terminal',recognitionComplete:false,recognitionSegments:[segment(0,[['The primary',0]],true),segment(1,[['stream',0]],false)]}, false],
+    ['terminal without segments', {primaryTranscript:exact,completionState:'terminal',recognitionComplete:true,recognitionSegments:[]}, false],
+    ['pending interim-only', {primaryTranscript:exact,completionState:'pending',recognitionComplete:false,recognitionSegments:[interim]}, false],
+    ['error with exact transcript', {primaryTranscript:exact,completionState:'error',recognitionComplete:false,recognitionSegments:[final]}, false],
+    ['cancelled with exact transcript', {primaryTranscript:exact,completionState:'cancelled',recognitionComplete:false,recognitionSegments:[final]}, false],
+    ['final segments but unfinished attempt', {primaryTranscript:exact,completionState:'pending',recognitionComplete:false,recognitionSegments:[final]}, false],
+    ['terminal flag cannot override isFinal false', {primaryTranscript:exact,completionState:'terminal',recognitionComplete:true,recognitionSegments:[interim]}, false],
+    ['final segments with mismatched primary', {primaryTranscript:'exact target answer',completionState:'terminal',recognitionComplete:true,recognitionSegments:[final]}, false],
+  ];
+  for(const [name,evidence,expected] of cases){
+    assert.equal(isRecognitionEvidenceComplete(evidence),expected,name);
+    assert.equal(recognitionHypotheses(evidence).length>0,expected,name);
+  }
+  const valid={ok:true,transcript:exact,primaryTranscript:exact,completionState:'terminal',transportComplete:true,recognitionComplete:true,
+    attemptId:7,itemId:'E0006',recognitionSegments:[{...final,attemptId:7,itemId:'E0006'}]};
+  assert.deepEqual(assessProductionRecognitionEvidence(valid,{expectedItemId:'E0006',currentItemId:'E0006'}),
+    {admitted:true,reason:null,evidenceFinality:'final'});
+  for(const [name,evidence,expectedItemId,currentItemId] of [
+    ['wrong attempt', {...valid,recognitionSegments:[{...final,attemptId:6,itemId:'E0006'}]},'E0006','E0006'],
+    ['changed item', valid,'E0006','E0007'],
+    ['missing attempt', {...valid,attemptId:null},'E0006','E0006'],
+  ]){
+    assert.equal(assessProductionRecognitionEvidence(evidence,{expectedItemId,currentItemId}).admitted,false,name);
+  }
+  assert.equal(assessProductionRecognitionEvidence({...valid,transportComplete:false},{expectedItemId:'E0006',currentItemId:'E0006'}).reason,
+    'transport-not-complete','final-looking transcript cannot bypass transport completion');
+  const {transportComplete,...withoutTransport}=valid;
+  assert.equal(assessProductionRecognitionEvidence(withoutTransport,{expectedItemId:'E0006',currentItemId:'E0006'}).admitted,false,
+    'production grading requires an explicit normal terminal state');
 });
