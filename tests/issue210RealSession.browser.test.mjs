@@ -584,7 +584,7 @@ browserTest('Issue 210 interim negative control: an interim-only exact transcrip
   } finally {
     await context.close();
   }
-}, { todo: 'Confirmed P0 false PASS / SRS write; tracked in Issue #342' });
+});
 
 browserTest('Issue 210 interruption/options: persist completed card, exclude unanswered card, clear temporary filters and old queue on normal launch', async t => {
   const staleLevels = {};
