@@ -217,7 +217,7 @@ async function injectAndStop(page, candidate, { final = true } = {}) {
     if (final) mock.emitFinal(candidate);
     else mock.emitInterim(candidate);
     const event = [...window.__issue210Speech.events].reverse().find(entry => entry.type === 'result' && entry.attemptId === mock.attemptId);
-    return { attemptId, event };
+    return { attemptId: mock.attemptId, event };
   }, { candidate, final });
   await page.locator('#btnMic').click();
   await page.waitForFunction(attemptId => window.__issue210Speech?.events?.some(entry => entry.attemptId === attemptId
@@ -373,7 +373,7 @@ browserTest('Issue 210 success: real Read scoring, SRS, relationship, result rer
   try {
     const beforeSnapshot = await relationshipSnapshot(page);
     const milestonesBefore = await page.evaluate(() => JSON.parse(localStorage.getItem('relationshipMilestonesV1') || '{}'));
-    assert.equal((await storageSnapshot(page)).writes.itemLevelV1, 0, 'home display and options inspection do not write SRS');
+    assert.equal((await storageSnapshot(page)).writes.itemLevelV1 || 0, 0, 'home display and options inspection do not write SRS');
     await startManualSession(page, { characterId: 'bob', section: 'Section1', ids: ['E0006', 'E0007'] });
     assert.deepEqual(await storageSnapshot(page).then(value => value.recentItems), ['E0006', 'E0007']);
 
@@ -572,7 +572,7 @@ browserTest('Issue 210 interruption/options: persist completed card, exclude una
     await openOptions(page);
     await page.locator('#playOptionsCharacter').selectOption('bob');
     await page.locator('#playOptionsSkill').selectOption('grammar:future_will');
-    await page.locator('#playOptionsSection').selectOption('Section1');
+    await page.locator('#playOptionsSection').selectOption('Section19');
     await page.locator('[data-session-mode="manual"]').click();
     assert.equal(await page.locator('#playOptionsStart').isDisabled(), true, 'a zero-candidate character/grammar/section combination cannot start');
     assert.match(await page.locator('#playOptionsSummary').textContent(), /対象 0文/);
@@ -668,7 +668,7 @@ browserTest('Issue 210 shared speaker: one finalized shared item advances Bob an
     const shared = itemsById.get('E0212');
     const speakers = [...new Set(shared.speaker_tags.map(tag => tag.id))];
     assert.deepEqual(speakers, ['bob', 'jane']);
-    assert.equal((await storageSnapshot(page)).writes.itemLevelV1, 0);
+    assert.equal((await storageSnapshot(page)).writes.itemLevelV1 || 0, 0);
     await startManualSession(page, { characterId: 'jane', ids: ['E0212'] });
     const input = await injectAndStop(page, shared.en);
     assertRecognitionEvidence(input, shared.en, true);
