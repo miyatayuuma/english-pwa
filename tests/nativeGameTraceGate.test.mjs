@@ -19,8 +19,18 @@ test('only a debug Android launch Intent exposes the NativeGameTrace bridge', ()
   assert.match(plugin, /BuildConfig\.DEBUG\s*&&[\s\S]*?isNativeSpeechGameTraceLaunchEnabled\(\)/);
   assert.match(plugin, /result\.put\("enabled", enabled\)/);
   assert.match(plugin, /plugin-capability-requested/);
-  assert.match(plugin, /plugin-capability-resolved/);
+  assert.match(plugin, /plugin-capability-result-constructed/);
+  assert.match(plugin, /plugin-call-resolve-invoked/);
+  assert.match(plugin, /plugin-call-resolve-returned/);
+  assert.match(plugin, /call\.getData\(\)\.optString\("diagnosticRequestId"/);
+  assert.match(plugin, /call\.getCallbackId\(\)/);
+  assert.match(plugin, /new Handler\(Looper\.getMainLooper\(\)\)\.post\(\(\) -> \{/);
+  assert.match(plugin, /plugin-call-resolve-invoked[\s\S]*?call\.resolve\(result\)[\s\S]*?plugin-call-resolve-returned/);
+  assert.match(plugin, /Thread\.currentThread\(\)\.getName\(\)/);
   assert.match(activity, /recordNativeGameTraceCapabilityEvent\(String stage, Boolean available, Boolean enabled\)/);
+  assert.match(activity, /result\.put\("callbackTransportEligibility", legacyBridgeEnabled[\s\S]*?web-message-listener-preferred-fallback-possible/);
+  assert.doesNotMatch(activity, /androidx\.webkit\.WebViewFeature/,
+    'app diagnostics do not compile against Capacitor implementation-only WebView dependencies');
   const capabilityRecorder = activity.match(/synchronized void recordNativeGameTraceCapabilityEvent\([\s\S]*?\n    }/)?.[0] ?? '';
   assert.ok(capabilityRecorder, 'capability diagnostics recorder exists');
   assert.doesNotMatch(capabilityRecorder, /getBridge\(|getWebView\(|\.getUrl\(|\.getProgress\(/,
@@ -37,13 +47,19 @@ test('only a debug Android launch Intent exposes the NativeGameTrace bridge', ()
 
 test('web, URL, and storage state cannot enable game tracing', () => {
   const panel = read('scripts/ui/gameTracePanel.js');
+  const readiness = read('scripts/native/gameTraceReadinessDiagnostics.js');
   const collector = read('scripts/native/gameTrace.js');
   const nativeSpeech = read('scripts/native/nativeSpeech.js');
   const main = read('scripts/app/main.js');
   assert.match(panel, /const nativeAndroid = isNativeAndroid\(\)/);
   assert.match(panel, /if \(!nativeAndroid\) \{[\s\S]*?recordGameTraceReadiness\('platform-rejected'[\s\S]*?return false/);
-  assert.match(panel, /const capability = await nativeBridge\.getCapability\(\)/);
-  assert.match(panel, /recordGameTraceReadiness\('native-capability-requested'\)[\s\S]*?await nativeBridge\.getCapability\(\)/);
+  assert.match(panel, /const capabilityRequest = createGameTraceCapabilityRequest\('initializer'\)/);
+  assert.match(panel, /capability = await nativeBridge\.getCapability\(capabilityRequest\)/);
+  assert.match(panel, /recordGameTraceReadiness\('native-capability-requested'\)[\s\S]*?createGameTraceCapabilityRequest\('initializer'\)[\s\S]*?await nativeBridge\.getCapability\(capabilityRequest\)/);
+  assert.match(readiness, /installGameTraceCapabilityBridgeDiagnostics/);
+  assert.match(readiness, /native-capability-bridge-request-created/);
+  assert.match(readiness, /native-capability-bridge-response-received/);
+  assert.match(readiness, /Capacitor\?\.DEBUG !== true/);
   assert.match(main, /recordGameTraceReadiness\('app-bootstrap-started'\)[\s\S]*?await waitForDomReady\(\)[\s\S]*?recordGameTraceReadiness\('app-dom-ready'\)[\s\S]*?initializeGameTracePanel\(\)[\s\S]*?recordGameTraceReadiness\('app-initialization-started'\)[\s\S]*?await initApp\(\)[\s\S]*?recordGameTraceReadiness\('app-initialization-complete'\)/);
   assert.match(panel, /if \(capability\.enabled\) \{[\s\S]*?ensurePanel\(\)/);
   assert.doesNotMatch(panel, /searchParams|location\.search|localStorage|sessionStorage/);
