@@ -105,6 +105,16 @@ test('gaze/gays accepts only the explicit bidirectional homophone surfaces', () 
   assert.equal(existingParaphrase.type, 'paraphrase');
   assert.equal(existingParaphrase.targetRescued, false);
   assert.equal(existingParaphrase.matchedText, 'gaze at something');
+
+  for (const completionState of ['pending', 'interim', 'error', 'cancelled']) {
+    const unfinishedParaphrase = grade(entries.get('vocab:02374'), 'gays at something', {
+      recognitionComplete: false,
+      completionState,
+      recognitionSegments: [segment(['gays at something'], 0, false)],
+    });
+    assert.equal(unfinishedParaphrase.type, 'miss', `paraphrase / ${completionState}`);
+    assert.equal(unfinishedParaphrase.matched, false, `paraphrase / ${completionState}`);
+  }
 });
 
 test('gaze/gays keeps Vocabulary, Read, Cloze, and Correction grading contracts', () => {
