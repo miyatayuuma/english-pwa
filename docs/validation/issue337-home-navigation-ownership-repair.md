@@ -2,7 +2,9 @@
 
 ## Status
 
-Required pull-request Chromium, vocabulary, scope, Android build/lint, and Android Gate A checks pass. Production closure remains gated on merge, Pages deployment, and post-merge verification.
+ISSUE #337 HOME NAVIGATION REPAIR PRODUCTION CLOSED
+
+PR #339 is merged, the live GitHub Pages app serves `v5.109`, and the post-merge home, Vocabulary secondary route, session options, and range selection were opened and verified. Issue #337 is closed; parent Issue #210 remains open for the separate integration and device-acceptance work listed below.
 
 ## Authority and original finding
 
@@ -58,7 +60,7 @@ The browser suite asserts no horizontal overflow, no clipped nav labels, exactly
 - `docs/validation/issue337-evidence/home-390-after.png`
 - `docs/validation/issue337-evidence/home-430-after.png`
 
-The PNGs are retained in the [Issue #337 home-navigation screenshot artifact](https://github.com/miyatayuuma/english-pwa/actions/runs/38554224809/artifacts/11887669168). They are generated at the listed workspace paths and uploaded to the Actions artifact; binary copies are not committed to the repository. Before/after comparison: the home retains the character hero and start CTA, keeps contacts and learning selection as the only two primary navigation buttons, and moves session options behind the learning choice dialog. Vocabulary is reachable through the preserved secondary learning route, without an extra primary grid column.
+The PNGs are retained in the [Issue #337 home-navigation screenshot artifact](https://github.com/miyatayuuma/english-pwa/actions/runs/38555186929/artifacts/11889197285). The artifact was uploaded by the final passing Chromium run and contains the 360/390/430px after images. Binary copies are not committed to the repository. Before/after comparison: the home retains the character hero and start CTA, keeps contacts and learning selection as the only two primary navigation buttons, and moves session options behind the learning choice dialog. Vocabulary is reachable through the preserved secondary learning route, without an extra primary grid column.
 
 ## Required local regression and assets
 
@@ -91,22 +93,30 @@ No learning, relationship, vocabulary, audio, or ASR algorithm/data files are ch
 
 - PR: [#339 — `fix(ui): stabilize game lobby navigation ownership`](https://github.com/miyatayuuma/english-pwa/pull/339)
 - Branch: `fix/issue337-home-navigation-ownership`
-- Tested PR head: `5a4f357369babdc863caad529f0e9933fc934e63`
-- Application / Chromium: [run 38554224809](https://github.com/miyatayuuma/english-pwa/actions/runs/38554224809) — PASS, 609 tests / 607 passed / 0 failed / 2 skipped. The six initialization orders, three mobile widths, navigation paths, and delayed/error/empty controls passed; viewport screenshots are in the linked artifact.
-- Vocabulary validation: [run 38554224712](https://github.com/miyatayuuma/english-pwa/actions/runs/38554224712) — PASS.
-- Scope guard: [run 38554224743](https://github.com/miyatayuuma/english-pwa/actions/runs/38554224743) — PASS (not a paraphrase batch change).
-- Android Debug, Release, Lint, and strict Gate A emulator: [run 38554224746](https://github.com/miyatayuuma/english-pwa/actions/runs/38554224746) — `debug-build` and `gate-a-emulator` both PASS.
+- Tested PR head: `c3fa839f1bfa7d3782b5b80f19aee8bd3b8ae1b7`
+- Application / Chromium: [run 38555186929](https://github.com/miyatayuuma/english-pwa/actions/runs/38555186929) — PASS, 609 tests / 607 passed / 0 failed / 2 skipped. The six initialization orders, three mobile widths, navigation paths, and delayed/error/empty controls passed; viewport screenshots are in the linked artifact.
+- Vocabulary validation: [run 38555186918](https://github.com/miyatayuuma/english-pwa/actions/runs/38555186918) — PASS.
+- Scope guard: [run 38555186908](https://github.com/miyatayuuma/english-pwa/actions/runs/38555186908) — PASS (not a paraphrase batch change).
+- Android Debug, Release, Lint, and strict Gate A emulator: [run 38555186927](https://github.com/miyatayuuma/english-pwa/actions/runs/38555186927) — `debug-build` and `gate-a-emulator` both PASS.
 - Initial CI attempts exposed test-only issues: one browser option was not passed into the page context, and one activation assertion counted two actions despite three test taps. Both were corrected before this passing head. Chromium is required only in the Application job that installs it; the vocabulary job has no browser dependency.
-- Pages build/deploy, merge commit, final `main` SHA, and production smoke verification remain pending the merge and deployment.
+- Merge commit / production runtime `main` SHA: `cc524fdef1ea7d24cd43222d307b5a5d8398f369` (squash merge of PR #339).
+- Pages: no separate Pages workflow is defined in `.github/workflows`; post-merge deployment is verified by the public production smoke test below, which served `v5.109` and the new navigation owner.
 
-Issue #337 remains open until Pages deployment and post-merge verification pass. Issue #210 remains open after the child issue closes; real-session integrated E2E and physical-device visual acceptance remain unresolved. Pixel ASR-08D PR #323 is unchanged.
+Issue #337 was auto-closed as completed when PR #339 merged at `2026-10-14T11:19:56Z`. Issue #210 remains open; the #207 home-navigation finding is resolved, while the overall #207 integrated acceptance is not marked PASS. Real-session integrated E2E and physical-device visual acceptance remain unresolved. Pixel ASR-08D PR #323 is unchanged.
 
 ## Post-merge production verification
 
-To be filled after merge with the merge commit SHA, final `main` SHA, Pages deployment result, served `APP_VERSION`, primary operation count, vocabulary/session-options route checks, protected blob identities, and Issue #337 closure evidence.
+- PR #339 merged with merge commit `cc524fdef1ea7d24cd43222d307b5a5d8398f369`; GitHub's newest `main` commit is the same SHA. `APP_VERSION` is `v5.109` in the merged source and was served by [production GitHub Pages](https://miyatayuuma.github.io/english-pwa/).
+- The public app displayed an available-update prompt for the prior cache. After applying the offered update, its footer showed `v5.109`, and the home DOM showed `#focusHomeNav[data-home-navigation-ready="true"]` with exactly `openCharacterContacts` and `openLearningChoice`. The character hero CTA was visible; total first-view primary actions were three.
+- Opened `遊び方を選ぶ` → `単語チャレンジ` → `単語チャレンジを開く`; the live `単語・表現` dialog rendered normally. This fresh production browser profile had zero eligible vocabulary entries, so the dialog correctly showed its empty state and disabled start action; no answer, progress, or SRS data was written.
+- Opened `遊び方を選ぶ` → `詳細な条件を設定`; the live `遊び方を変える` panel exposed character, skill/theme, section, count, selection method, and training controls.
+- Opened `遊び方を選ぶ` → `範囲から` → `範囲を選ぶ`; the live range browser showed section, progress filters, search, and the range-start control.
+- Required mobile acceptance: 360×844, 390×844, and 430×844 passed in fresh Chromium contexts on the final PR head. The final browser run required Chromium, exercised six module initialization orders, and uploaded [three mobile screenshots](https://github.com/miyatayuuma/english-pwa/actions/runs/38555186929/artifacts/11889197285).
+- Protected Git blobs still match the initial-main values in the table above: vocabulary `91324d35b2db1911ece2cf3ff746409d321fe963`, items `ae2aca768b784199b77ac1cf8c0c5a80fd5725bb`, characters `1d0c61711d763373e1f587ecde16ff9f07cb1a45`. PR #339 changed no production data files or learning/storage contracts.
+- Issue #337 is closed as completed. Parent Issue #210 is still open, with a follow-up record that resolves only its #207 home-navigation finding.
 
 ## Remaining risks
 
-- Required Chromium and Android emulator/build/lint checks passed on PR head `5a4f357369babdc863caad529f0e9933fc934e63`.
-- Production Pages deployment and the served cache/version identity require post-merge verification.
-- The parent issue's real-session SRS/relationship/result E2E and physical-device visual acceptance remain open work.
+- Required Chromium and Android emulator/build/lint checks passed on PR head `c3fa839f1bfa7d3782b5b80f19aee8bd3b8ae1b7`; production Pages serves `v5.109`.
+- The live Vocabulary route was verified with an empty progress profile; exercising a populated production profile and real answer/scoring flow is outside this navigation repair and remains part of the broader integration work.
+- The parent issue's real-session SRS/relationship/result E2E and physical-device visual acceptance remain open work. Pixel ASR-08D PR #323 remains outside scope.
