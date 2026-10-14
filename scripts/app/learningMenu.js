@@ -1,6 +1,10 @@
 const CONFIG_KEY='appConfigV3';
-
-function sleep(ms){ return new Promise(resolve=>setTimeout(resolve,ms)); }
+import {
+  activateHomeNavigationAction,
+  getHomeNavigationAction,
+  getHomeNavigationCapability,
+  registerHomeNavigationAction,
+} from './homeNavigation.js';
 
 function storedMethod(){
   try{
@@ -25,7 +29,6 @@ function injectStyles(){
   const style=document.createElement('style');
   style.id='learningMenuStyles';
   style.textContent=`
-    .focus-home-nav.learning-nav{grid-template-columns:1fr 1fr!important}
     .learning-home-return{display:none;border:1px solid rgba(148,163,184,.18);background:rgba(148,163,184,.08);color:inherit;border-radius:11px;padding:8px 10px;font:inherit;font-size:12px;font-weight:750;cursor:pointer;white-space:nowrap;margin-right:8px}
     .learning-home-return.is-visible,body.focus-study-view .learning-home-return,body.focus-review-view .learning-home-return{display:inline-flex;align-items:center;gap:5px}
     .learning-choice{display:grid;gap:16px}
@@ -44,17 +47,14 @@ function injectStyles(){
     .learning-choice__footer{display:grid;gap:8px;padding-top:11px;border-top:1px solid rgba(148,163,184,.1)}
     .learning-choice__summary{text-align:center;font-size:12px;line-height:1.5;font-weight:750;color:#c7d2fe;min-height:18px}
     .learning-choice__start{width:100%;min-height:52px;border:0;border-radius:14px;background:#6366f1;color:#fff;font:inherit;font-size:15px;font-weight:850;cursor:pointer;box-shadow:0 10px 24px rgba(99,102,241,.2)}
+    .learning-choice__start:disabled{opacity:.48;cursor:wait}
+    .learning-choice__secondary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+    .learning-choice__secondary[hidden]{display:none!important}
+    .learning-choice__secondary button{min-width:0;min-height:43px;border:1px solid rgba(148,163,184,.16);border-radius:12px;background:rgba(148,163,184,.045);color:inherit;padding:8px;font:inherit;font-size:11px;font-weight:750;line-height:1.3;cursor:pointer}
+    .learning-choice__secondary button:disabled{opacity:.45;cursor:wait}
     @media(max-width:430px){.learning-home-return span{display:none}.learning-home-return{padding-inline:10px}.learning-choice__grid{grid-template-columns:1fr}.learning-choice__button{min-height:60px}.learning-choice__title-row{align-items:flex-end}.learning-choice__current{font-size:9px}}
   `;
   document.head.appendChild(style);
-}
-
-async function waitForNav(){
-  while(true){
-    const nav=document.getElementById('focusHomeNav');
-    if(nav) return nav;
-    await sleep(80);
-  }
 }
 
 function methodLabel(method){
@@ -67,6 +67,49 @@ function courseLabel(course){
   if(course==='tag') return '連絡先・トレーニング';
   if(course==='explore') return '範囲から';
   return 'おまかせ';
+}
+
+function vocabularyStatus(){
+  const status=globalThis.__ENGLISH_PWA_VOCABULARY_STATUS__?.status;
+  return ['loading','ready','empty','error'].includes(status)?status:'loading';
+}
+
+function syncSecondaryActions(dialog){
+  if(!dialog) return;
+  const options=dialog.querySelector('[data-open-session-options]');
+  if(options) options.disabled=typeof globalThis.__OPEN_SESSION_OPTIONS__!=='function';
+  const everyone=dialog.querySelector('[data-start-everyone]');
+  if(everyone){
+    const relationship=getHomeNavigationCapability('relationship');
+    const action=getHomeNavigationAction('everyone');
+    everyone.hidden=relationship?.allFriends!==true;
+    everyone.disabled=!action||action.ready===false||typeof action.onActivate!=='function';
+  }
+}
+
+function openLearningChoice(){
+  const dialog=makeDialog();
+  prepareDialog(dialog);
+  syncSecondaryActions(dialog);
+  if(!dialog.open) dialog.showModal();
+  return true;
+}
+
+function openSessionOptionsFromMenu(dialog){
+  const open=globalThis.__OPEN_SESSION_OPTIONS__;
+  if(typeof open!=='function') return false;
+  dialog.close();
+  const characterId=globalThis.__ENGLISH_PWA_ACTIVE_CHARACTER_ID__
+    ||globalThis.__ENGLISH_PWA_HOME_CHARACTER_ID__
+    ||'';
+  open({characterId});
+  return true;
+}
+
+function startEveryoneFromMenu(dialog){
+  if(getHomeNavigationCapability('relationship')?.allFriends!==true) return false;
+  dialog.close();
+  return activateHomeNavigationAction('everyone');
 }
 
 function syncPrimaryCta(){
@@ -124,23 +167,6 @@ function setupHomeReturn(){
   button.addEventListener('click',returnHome);
   header.insertBefore(button,firstStat||header.firstChild);
   bindHomeReturnVisibility();
-}
-
-async function openVocabulary(){
-  if(typeof globalThis.__OPEN_VOCABULARY_MODE__==='function'){
-    globalThis.__OPEN_VOCABULARY_MODE__();
-    return true;
-  }
-  for(let i=0;i<25;i+=1){
-    if(typeof globalThis.__OPEN_VOCABULARY_MODE__==='function'){
-      globalThis.__OPEN_VOCABULARY_MODE__();
-      return true;
-    }
-    const button=document.getElementById('openVocabularyMode');
-    if(button){button.click();return true;}
-    await sleep(80);
-  }
-  return false;
 }
 
 function clickExplore(nav){
@@ -210,22 +236,44 @@ function refreshChoiceState(dialog){
   const courseSection=dialog.querySelector('[data-course-section]');
   if(courseSection) courseSection.hidden=method==='vocabulary';
   const summary=dialog.querySelector('.learning-choice__summary');
-  if(summary) summary.textContent=method==='vocabulary'?methodLabel(method):`${methodLabel(method)} × ${courseLabel(course)}`;
+  const vocabulary=vocabularyStatus();
+  if(summary){
+    if(method!=='vocabulary') summary.textContent=`${methodLabel(method)} × ${courseLabel(course)}`;
+    else if(vocabulary==='loading') summary.textContent='単語教材を準備しています。読み込みが終わるまでお待ちください。';
+    else if(vocabulary==='ready') summary.textContent=methodLabel(method);
+    else if(vocabulary==='empty') summary.textContent='単語教材がありません。';
+    else summary.textContent='単語教材を読み込めませんでした。ページを再読み込みしてください。';
+  }
   const start=dialog.querySelector('.learning-choice__start');
   if(start){
-    if(method==='vocabulary') start.textContent='単語チャレンジを開く';
+    start.disabled=method==='vocabulary'&&(vocabulary!=='ready'||typeof globalThis.__OPEN_VOCABULARY_MODE__!=='function');
+    if(method==='vocabulary'&&vocabulary==='loading') start.textContent='教材を読み込み中…';
+    else if(method==='vocabulary'&&vocabulary==='empty') start.textContent='単語教材がありません';
+    else if(method==='vocabulary'&&vocabulary==='error') start.textContent='単語学習を利用できません';
+    else if(method==='vocabulary') start.textContent='単語チャレンジを開く';
     else if(course==='tag') start.textContent='連絡先・トレーニングを選ぶ';
     else if(course==='explore') start.textContent='範囲を選ぶ';
     else start.textContent=`${methodLabel(method)}で遊ぶ`;
   }
+  syncSecondaryActions(dialog);
 }
 
-async function executeChoice(dialog,nav){
+function executeChoice(dialog){
   const method=pendingMethod(dialog);
   const course=pendingCourse(dialog);
   if(method==='vocabulary'){
+    const open=globalThis.__OPEN_VOCABULARY_MODE__;
+    if(vocabularyStatus()!=='ready'||typeof open!=='function'){
+      refreshChoiceState(dialog);
+      return;
+    }
     dialog.close();
-    await openVocabulary();
+    if(!open()){
+      prepareDialog(dialog);
+      dialog.showModal();
+      const summary=dialog.querySelector('.learning-choice__summary');
+      if(summary) summary.textContent='単語教材を開けませんでした。もう一度お試しください。';
+    }
     return;
   }
 
@@ -237,7 +285,7 @@ async function executeChoice(dialog,nav){
     return;
   }
   syncPrimaryCta();
-  setTimeout(()=>runCourse(course,nav),0);
+  setTimeout(()=>runCourse(course,null),0);
 }
 
 function choiceButton({method='',course='',label,detail,recommended=false}){
@@ -246,20 +294,23 @@ function choiceButton({method='',course='',label,detail,recommended=false}){
   return `<button type="button" class="learning-choice__button" ${data} aria-pressed="false"${rec}><span class="learning-choice__mark" aria-hidden="true"></span>${label}<small>${detail}</small></button>`;
 }
 
-function makeDialog(nav){
+function makeDialog(){
   let dialog=document.getElementById('learningChoiceDialog');
   if(dialog) return dialog;
   dialog=document.createElement('dialog');
   dialog.id='learningChoiceDialog';
   dialog.className='focus-dialog';
-  dialog.innerHTML=`<section class="focus-sheet"><header class="focus-sheet__head"><h2>遊び方を選ぶ</h2><button class="focus-sheet__close" type="button" aria-label="閉じる">×</button></header><div class="focus-sheet__body"><div class="learning-choice"><section class="learning-choice__section"><div class="learning-choice__title-row"><div class="learning-choice__title">ゲーム</div><div class="learning-choice__current" data-method-current></div></div><div class="learning-choice__grid">${choiceButton({method:'read',label:'穴あきチャレンジ',detail:'隠れた部分を補って全文を言う',recommended:true})}${choiceButton({method:'compose',label:'並べ替えチャレンジ',detail:'語句ブロックから全文を組み立てる'})}${choiceButton({method:'vocabulary',label:'単語チャレンジ',detail:'日本語から英語をすばやく言う'})}</div></section><section class="learning-choice__section" data-course-section><div class="learning-choice__title-row"><div class="learning-choice__title">ステージ</div><div class="learning-choice__current" data-course-current></div></div><div class="learning-choice__grid">${choiceButton({course:'auto',label:'おまかせ',detail:'今やるカードを自動で選ぶ'})}${choiceButton({course:'tag',label:'連絡先・トレーニング',detail:'連絡先や文法・構文・5文型から選ぶ'})}${choiceButton({course:'explore',label:'範囲から',detail:'セクションや進み具合から選ぶ'})}</div></section><div class="learning-choice__footer"><div class="learning-choice__summary"></div><button type="button" class="learning-choice__start">穴あきチャレンジで遊ぶ</button></div></div></div></section>`;
+  dialog.innerHTML=`<section class="focus-sheet"><header class="focus-sheet__head"><h2>遊び方を選ぶ</h2><button class="focus-sheet__close" type="button" aria-label="閉じる">×</button></header><div class="focus-sheet__body"><div class="learning-choice"><section class="learning-choice__section"><div class="learning-choice__title-row"><div class="learning-choice__title">ゲーム</div><div class="learning-choice__current" data-method-current></div></div><div class="learning-choice__grid">${choiceButton({method:'read',label:'穴あきチャレンジ',detail:'隠れた部分を補って全文を言う',recommended:true})}${choiceButton({method:'compose',label:'並べ替えチャレンジ',detail:'語句ブロックから全文を組み立てる'})}${choiceButton({method:'vocabulary',label:'単語チャレンジ',detail:'日本語から英語をすばやく言う'})}</div></section><section class="learning-choice__section" data-course-section><div class="learning-choice__title-row"><div class="learning-choice__title">ステージ</div><div class="learning-choice__current" data-course-current></div></div><div class="learning-choice__grid">${choiceButton({course:'auto',label:'おまかせ',detail:'今やるカードを自動で選ぶ'})}${choiceButton({course:'tag',label:'連絡先・トレーニング',detail:'連絡先や文法・構文・5文型から選ぶ'})}${choiceButton({course:'explore',label:'範囲から',detail:'セクションや進み具合から選ぶ'})}</div></section><div class="learning-choice__footer"><div class="learning-choice__secondary"><button type="button" data-open-session-options>詳細な条件を設定</button><button type="button" data-start-everyone hidden>みんなと遊ぶ</button></div><div class="learning-choice__summary" role="status" aria-live="polite"></div><button type="button" class="learning-choice__start">穴あきチャレンジで遊ぶ</button></div></div></div></section>`;
   document.body.appendChild(dialog);
   dialog.querySelector('.focus-sheet__close')?.addEventListener('click',()=>dialog.close());
   dialog.addEventListener('cancel',event=>{event.preventDefault();dialog.close();});
   dialog.addEventListener('click',event=>{if(event.target===dialog) dialog.close();});
   dialog.querySelectorAll('[data-method]').forEach(button=>button.addEventListener('click',()=>setPendingMethod(dialog,button.dataset.method)));
   dialog.querySelectorAll('[data-course]').forEach(button=>button.addEventListener('click',()=>setPendingCourse(dialog,button.dataset.course)));
-  dialog.querySelector('.learning-choice__start')?.addEventListener('click',()=>executeChoice(dialog,nav));
+  dialog.querySelector('[data-open-session-options]')?.addEventListener('click',()=>openSessionOptionsFromMenu(dialog));
+  dialog.querySelector('[data-start-everyone]')?.addEventListener('click',()=>startEveryoneFromMenu(dialog));
+  dialog.querySelector('.learning-choice__start')?.addEventListener('click',()=>executeChoice(dialog));
+  syncSecondaryActions(dialog);
   return dialog;
 }
 
@@ -269,43 +320,39 @@ function prepareDialog(dialog){
   refreshChoiceState(dialog);
 }
 
-function syncNav(nav){
-  nav.classList.add('learning-nav');
-  let button=document.getElementById('openLearningChoice');
-  if(!button){
-    button=document.createElement('button');
-    button.id='openLearningChoice';
-    button.type='button';
-    button.textContent='遊び方を選ぶ';
-    button.addEventListener('click',()=>{
-      const dialog=makeDialog(nav);
-      prepareDialog(dialog);
-      dialog.showModal();
-    });
-    nav.insertBefore(button,nav.firstChild);
-  }
-  syncPrimaryCta();
-}
-
-function resumePendingAction(nav){
+function resumePendingAction(){
   let action='';
   try{
     action=sessionStorage.getItem('englishPwaPendingGameAction')||'';
     if(action) sessionStorage.removeItem('englishPwaPendingGameAction');
     sessionStorage.removeItem('englishPwaModeReloadNeeded');
   }catch(_){}
-  if(action) setTimeout(()=>runCourse(action,nav),100);
+  if(action) setTimeout(()=>runCourse(action,null),100);
 }
 
 async function init(){
   injectStyles();
   setupHomeReturn();
-  const nav=await waitForNav();
-  syncNav(nav);
-  const observer=new MutationObserver(()=>syncNav(nav));
-  observer.observe(nav,{childList:true,subtree:false});
-  makeDialog(nav);
-  resumePendingAction(nav);
+  const dialog=makeDialog();
+  registerHomeNavigationAction('learning',{
+    label:'遊び方を選ぶ',
+    ready:true,
+    onActivate:openLearningChoice,
+  });
+  globalThis.__OPEN_LEARNING_CHOICE__=openLearningChoice;
+  document.addEventListener('english-pwa:vocabulary-mode-state',()=>{
+    if(dialog.open) refreshChoiceState(dialog);
+  });
+  document.addEventListener('english-pwa:home-navigation-capability-changed',event=>{
+    if(event.detail?.name==='relationship') syncSecondaryActions(dialog);
+  });
+  document.addEventListener('english-pwa:home-navigation-action-registered',event=>{
+    if(event.detail?.id==='everyone') syncSecondaryActions(dialog);
+  });
+  document.addEventListener('english-pwa:session-shell-ready',()=>syncSecondaryActions(dialog));
+  syncSecondaryActions(dialog);
+  syncPrimaryCta();
+  resumePendingAction();
 }
 
 if(typeof document!=='undefined'){

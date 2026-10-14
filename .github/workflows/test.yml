@@ -67,6 +67,15 @@ jobs:
         run: node --experimental-default-type=module --test tests/*.test.mjs
         env:
           REORDER_REQUIRE_BROWSER: '1'
+          HOME_NAV_REQUIRE_BROWSER: '1'
+          HOME_NAV_CAPTURE: '1'
+      - name: Upload Issue 337 mobile navigation screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: issue337-home-navigation-evidence
+          path: docs/validation/issue337-evidence/home-*-after.png
+          if-no-files-found: warn
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'

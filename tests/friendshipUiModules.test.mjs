@@ -34,13 +34,20 @@ test('explicit browser entry wins over the saved tab',()=>{
   assert.equal(resolveBrowseType(undefined,null),'character');
 });
 
-test('home lobby keeps the three primary game actions above advanced options',async()=>{
-  const source=await readFile(new URL('../scripts/app/relationshipMode.js',import.meta.url),'utf8');
-  assert.match(source,/今日の相手/);
-  assert.match(source,/に会いに行く/);
-  assert.match(source,/chars\.textContent='連絡先'/);
-  assert.match(source,/遊び方を変える/);
-  assert.match(source,/@media\(max-width:430px\)/);
+test('home lobby delegates its fixed primary navigation to the single owner',async()=>{
+  const relationship=await readFile(new URL('../scripts/app/relationshipMode.js',import.meta.url),'utf8');
+  const learning=await readFile(new URL('../scripts/app/learningMenu.js',import.meta.url),'utf8');
+  const vocabulary=await readFile(new URL('../scripts/app/vocabularyMode.js',import.meta.url),'utf8');
+  const owner=await readFile(new URL('../scripts/app/homeNavigation.js',import.meta.url),'utf8');
+  assert.match(relationship,/今日の相手/);
+  assert.match(relationship,/に会いに行く/);
+  assert.doesNotMatch(relationship,/nav\.replaceChildren\(|nav\.appendChild\(|nav\.insertBefore\(/);
+  assert.doesNotMatch(learning,/function syncNav\(|nav\.insertBefore\(|observer\.observe\(nav/);
+  assert.doesNotMatch(vocabulary,/button\.id='openVocabularyMode'|nav\.appendChild\(|has-vocab-mode/);
+  assert.match(owner,/openCharacterContacts/);
+  assert.match(owner,/openLearningChoice/);
+  assert.match(owner,/nav\.replaceChildren\(\.\.\.rendered\)/);
+  assert.match(owner,/repeat\(2,minmax\(0,1fr\)\)/);
 });
 
 test('character selection uses the same two-stage profile flow in both entrances',async()=>{
