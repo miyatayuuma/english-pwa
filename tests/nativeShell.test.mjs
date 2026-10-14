@@ -4,7 +4,7 @@ import fs from 'node:fs/promises';
 import { execFileSync } from 'node:child_process';
 import { isNativePlatform, isNativeAndroid } from '../scripts/native/runtimePlatform.js';
 import { createSwUpdatePrompt } from '../scripts/app/swUpdatePrompt.js';
-import { getNativeSpeech, nativeSpeechFacade } from '../scripts/native/nativeSpeech.js';
+import { getNativeGameTrace, getNativeSpeech, nativeSpeechFacade } from '../scripts/native/nativeSpeech.js';
 
 test('native routing follows the bridge, not Android user agent or standalone PWA', () => {
   const browser = { navigator: { userAgent: 'Android', standalone: true } };
@@ -53,6 +53,24 @@ test('Gate A bridge requires native Android and resolves the custom plugin', asy
   } };
   assert.deepEqual(await (await getNativeSpeech(scope)).isAvailable(), { available: true });
   assert.equal(registered, 'NativeSpeech');
+});
+
+test('an unregistered NativeGameTrace plugin rejects capability instead of claiming readiness', async () => {
+  let registered;
+  const missingPlugin = new Proxy({}, {
+    get(_target, method) {
+      if (method === 'then') return undefined;
+      return () => Promise.reject(new Error('NativeGameTrace plugin is not implemented on android'));
+    },
+  });
+  const scope = { Capacitor: {
+    isNativePlatform: () => true,
+    getPlatform: () => 'android',
+    registerPlugin: name => { registered = name; return missingPlugin; },
+  } };
+  const bridge = await getNativeGameTrace(scope);
+  assert.equal(registered, 'NativeGameTrace');
+  await assert.rejects(bridge.getCapability(), /not implemented on android/);
 });
 
 test('async bridge acquisition cannot assimilate a Capacitor Proxy as a thenable', async () => {

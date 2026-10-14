@@ -5,7 +5,7 @@
 - Repository: `miyatayuuma/english-pwa`
 - Baseline main: `6e6d3d250570fc24d92ca768ebae3865b88946c5`
 - Baseline app version: `v5.105`
-- Resulting app version: `v5.106`
+- Original PR #334 app version: `v5.106`; reconciled release candidate after PR #335: `v5.107`
 - Vocabulary blob (unchanged): `91324d35b2db1911ece2cf3ff746409d321fe963`
 - Items blob (unchanged): `ae2aca768b784199b77ac1cf8c0c5a80fd5725bb`
 
@@ -63,6 +63,12 @@ The local Node runtime has no Chromium executable; the 87 skipped tests include 
 
 The local Android build could not resolve a Java compiler: this environment has a Java 17 runtime without `javac`, while the repository's Android workflow uses Temurin Java 21 and Android SDK 36. `native:sync` succeeded. Debug, Release, Lint, and Gate A are delegated to the repository's Android CI using that configured toolchain.
 
+## Gate A root-fix reconciliation
+
+PR #334 was based on the same shared Gate A defect found on baseline main. The defect was independently fixed and merged by PR #335 at `3b14776ed5dbb3b6d47290874e2c0d52bf3a62b9` (`v5.106`). This existing ASR branch retains its original equivalence rules and tests, merges the root-fix, and advances to `v5.107` so the ASR runtime changes do not share an app/cache version with main. `index.html`, `scripts/app/swBootstrap.js`, and `sw.js` carry the matching `v5.107` references.
+
+The original ASR validation above records checks on the original `v5.106` PR #334 head. Reconciliation acceptance, final CI run IDs, independent emulator runs, merge information, and post-merge authority checks are recorded in the root-cause report after those checks complete.
+
 ## Performance
 
 Before and after were measured in the same checkout environment using the new benchmark script against baseline main and the work branch. Each row is the median of three independent process runs; each run executed 8,000 calls twice and 10,000 calls once. Values are milliseconds per call.
@@ -85,5 +91,5 @@ The biggest absolute P50 increase among non-match paths was 0.000592 ms for exac
 - The SpeechRecognizer's raw recognition rate was not measured or improved by this change.
 - `gaze → gave` remains unsupported.
 - Pixel ASR-08D remains OPEN.
-- Android Gate A root cause remains OPEN; this task does not restart that diagnosis.
+- Android Gate A root cause was later confirmed and repaired in PR #335; see `android-gate-a-capability-callback-root-cause.md`.
 - PR URL, final PR head, CI results, merge commit, and post-merge main SHA are recorded in the GitHub PR and final closure report.
