@@ -6,9 +6,22 @@ import { vocabularyChunkRescueChunks } from './vocabularyChunkRescueAuthority.js
 
 export const VOCABULARY_SPEECH_CARRIER = 'my answer is';
 export const VOCABULARY_SPEECH_CARRIER_CUE = `${VOCABULARY_SPEECH_CARRIER} …`;
+const TARGETED_RECOGNITION_RULE_IDS = new Set(['gaze-gays', 'gays-gaze', 'asr-lack-to-black']);
 const VOCABULARY_SPEECH_CARRIER_TOKENS = Object.freeze(
   safeSpeechTokens(VOCABULARY_SPEECH_CARRIER).map(token => token.value),
 );
+
+function sameTokenSequence(left, right) {
+  const leftTokens = safeSpeechTokens(left).map(token => token.value);
+  const rightTokens = safeSpeechTokens(right).map(token => token.value);
+  return leftTokens.length === rightTokens.length
+    && leftTokens.every((token, index) => token === rightTokens[index]);
+}
+
+function targetedRecognitionIsConfirmed(recognitionComplete, completionState) {
+  if (recognitionComplete === false) return false;
+  return !['pending', 'interim', 'error', 'cancelled'].includes(String(completionState || ''));
+}
 
 function vocabularyCarrierSurface(value) {
   const raw = String(value ?? '');
@@ -91,10 +104,15 @@ function primarySegmentIndexFor(expected, entry, recognitionSegments) {
   return null;
 }
 
-function targetProduction({ entry, activeOccurrence, transcript, segmentIndex, segmentIndexes, attemptId, rank, displayPrimary }) {
+function targetProduction({ entry, activeOccurrence, transcript, segmentIndex, segmentIndexes, attemptId, rank, displayPrimary, recognitionComplete, completionState }) {
   for (const expected of answerVariants(entry, activeOccurrence)) {
     const match = speechMatch(expected, transcript, entry, segmentIndex, rank, displayPrimary, segmentIndexes, attemptId);
     if (!match) continue;
+    if (TARGETED_RECOGNITION_RULE_IDS.has(match.ruleId)
+      && !targetedRecognitionIsConfirmed(recognitionComplete, completionState)) continue;
+    // The user-approved lack/black collision is only safe for the complete
+    // recognized answer surface (after the existing carrier handling).
+    if (match.ruleKind === 'asr-known-confusion' && !sameTokenSequence(match.observed, transcript)) continue;
     const classified = classifyVocabularyAnswer({ entry, activeOccurrence, transcript: expected });
     if (classified.type !== 'target') continue;
     return {
@@ -309,7 +327,7 @@ function resultForTarget(target, metadata, {
     displayTranscript,
     targetRescued,
     recognitionSegmentIndex: segmentIndex ?? null,
-    recognitionSegmentIndexes: segmentIndexes,
+    recognitionSegmentIndexes: segmentIndexes.length ? segmentIndexes : metadata.recognitionSegmentIndexes,
     attemptId,
     asrRank: rank ?? 0,
     recognitionAuthority,
@@ -327,7 +345,7 @@ function resultForTarget(target, metadata, {
       matchedSpan: match.matchedSpan ?? null,
       alignment: match.alignment ?? [],
       recognitionSegmentIndex: segmentIndex ?? null,
-      recognitionSegmentIndexes: segmentIndexes,
+      recognitionSegmentIndexes: segmentIndexes.length ? segmentIndexes : metadata.recognitionSegmentIndexes,
       attemptId,
       asrRank: rank ?? 0,
       rawTranscript: String(transcript ?? ''),
@@ -380,7 +398,7 @@ export function classifyVocabularySpeechAnswer({ entry, activeOccurrence = null,
   const metadata=evidenceMetadata(primaryTranscript,{attemptId,recognitionComplete:completeEvidence,recognitionSegments});
   const hypotheses = finalizedRecognitionAlternatives(recognitionEvidence);
   const primary = classifyVocabularyAnswer({ entry, activeOccurrence, transcript: primaryTranscript });
-  const primarySegmentIndex = primarySegmentIndexFor(primary.matchedText, entry, recognitionSegments);
+  const primarySegmentIndex = primarySegmentIndexFor(primary.matchedText || entry?.canonical, entry, recognitionSegments);
 
   if (primary.type === 'target') {
     const { match } = exactVocabularyMatch(primary, primaryTranscript, entry, activeOccurrence, primarySegmentIndex, attemptId);
@@ -427,9 +445,12 @@ export function classifyVocabularySpeechAnswer({ entry, activeOccurrence = null,
     activeOccurrence,
     transcript: primaryTranscript,
     segmentIndex: primarySegmentIndex,
+    segmentIndexes: metadata.recognitionSegmentIndexes,
     rank: 0,
     attemptId,
     displayPrimary: true,
+    recognitionComplete,
+    completionState,
   });
   if (contained) {
     const containedSegmentIndex = primarySegmentIndexFor(contained.matchedText, entry, recognitionSegments);
@@ -437,6 +458,7 @@ export function classifyVocabularySpeechAnswer({ entry, activeOccurrence = null,
       transcript: primaryTranscript,
       authority: 'exact',
       segmentIndex: containedSegmentIndex,
+      segmentIndexes: metadata.recognitionSegmentIndexes,
       attemptId,
       rank: 0,
       primaryDisplay: true,
@@ -482,6 +504,8 @@ export function classifyVocabularySpeechAnswer({ entry, activeOccurrence = null,
       attemptId,
       rank: candidate.asrRank,
       displayPrimary: true,
+      recognitionComplete,
+      completionState,
     });
     if (!accepted) continue;
     const approvedAuthority = accepted.match.authority === 'explicit-equivalence' || accepted.match.authority === 'grammatical-variant';
