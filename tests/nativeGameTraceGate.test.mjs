@@ -28,7 +28,7 @@ test('only a debug Android launch Intent exposes the NativeGameTrace bridge', ()
   assert.match(plugin, /plugin-call-resolve-invoked[\s\S]*?call\.resolve\(result\)[\s\S]*?plugin-call-resolve-returned/);
   assert.match(plugin, /Thread\.currentThread\(\)\.getName\(\)/);
   assert.match(activity, /recordNativeGameTraceCapabilityEvent\(String stage, Boolean available, Boolean enabled\)/);
-  assert.match(activity, /result\.put\("callbackTransport", legacyBridgeEnabled[\s\S]*?web-message-listener-when-available/);
+  assert.match(activity, /result\.put\("callbackTransportEligibility", legacyBridgeEnabled[\s\S]*?web-message-listener-preferred-fallback-possible/);
   assert.doesNotMatch(activity, /androidx\.webkit\.WebViewFeature/,
     'app diagnostics do not compile against Capacitor implementation-only WebView dependencies');
   const capabilityRecorder = activity.match(/synchronized void recordNativeGameTraceCapabilityEvent\([\s\S]*?\n    }/)?.[0] ?? '';

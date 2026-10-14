@@ -182,8 +182,8 @@ public class MainActivity extends BridgeActivity {
             result.put("clock", "SystemClock.elapsedRealtimeNanos since boot");
             boolean legacyBridgeEnabled = getBridge() != null && getBridge().getConfig().isUsingLegacyBridge();
             result.put("legacyBridgeEnabled", legacyBridgeEnabled);
-            result.put("callbackTransport", legacyBridgeEnabled
-                ? "legacy-javascript-interface" : "web-message-listener-when-available");
+            result.put("callbackTransportEligibility", legacyBridgeEnabled
+                ? "legacy-javascript-interface-configured" : "web-message-listener-preferred-fallback-possible");
             result.put("events", new JSONArray(nativeGameTraceGateEvents.toString()));
         } catch (JSONException ignored) {
             // The diagnostic is best-effort and contains metadata only.
