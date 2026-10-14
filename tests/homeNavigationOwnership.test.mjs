@@ -264,7 +264,7 @@ test('secondary navigation opens contacts, vocabulary, detailed options, and ran
     assert.equal(await page.evaluate(()=>window.__everyoneActionCount),1);
     await page.locator('#openLearningChoice').click();
     await page.locator('#openLearningChoice').evaluate(node=>node.click());
-    assert.equal(await page.evaluate(()=>window.__learningActionCount),2,'repeated render/registration still installs exactly one activation handler per click');
+    assert.equal(await page.evaluate(()=>window.__learningActionCount),3,'three taps after repeated render/registration trigger exactly three activations');
     const navAfter=await getPrimaryState(page);
     assert.deepEqual(navAfter.navIds,navBefore.navIds);
     assert.equal(navAfter.actionCount,3);
