@@ -74,11 +74,11 @@ async function waitForCoreHome(page){
 
 async function waitForSettledHome(page,{requireHero=true}={}){
   await waitForCoreHome(page);
-  await page.waitForFunction(()=>{
+  await page.waitForFunction(requireHero=>{
     const state=window.__ENGLISH_PWA_VOCABULARY_STATUS__?.status;
     return ['ready','empty','error'].includes(state)
       &&(!requireHero||!!document.getElementById('friendshipHero'));
-  });
+  },requireHero);
 }
 
 async function newContextPage({viewport={width:390,height:844},failVocabulary=false,failCharacters=false,emptyVocabulary=false,beforeNavigate=null}={}){
