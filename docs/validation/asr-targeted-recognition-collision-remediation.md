@@ -5,7 +5,7 @@
 - Repository: `miyatayuuma/english-pwa`
 - Baseline main: `6e6d3d250570fc24d92ca768ebae3865b88946c5`
 - Baseline app version: `v5.105`
-- Original PR #334 app version: `v5.106`; reconciled release candidate after PR #335: `v5.107`
+- Original PR #334 app version: `v5.106`; final reconciled production version: `v5.107`
 - Vocabulary blob (unchanged): `91324d35b2db1911ece2cf3ff746409d321fe963`
 - Items blob (unchanged): `ae2aca768b784199b77ac1cf8c0c5a80fd5725bb`
 
@@ -63,11 +63,39 @@ The local Node runtime has no Chromium executable; the 87 skipped tests include 
 
 The local Android build could not resolve a Java compiler: this environment has a Java 17 runtime without `javac`, while the repository's Android workflow uses Temurin Java 21 and Android SDK 36. `native:sync` succeeded. Debug, Release, Lint, and Gate A are delegated to the repository's Android CI using that configured toolchain.
 
-## Gate A root-fix reconciliation
+## Gate A root-fix reconciliation and production closure
 
-PR #334 was based on the same shared Gate A defect found on baseline main. The defect was independently fixed and merged by PR #335 at `3b14776ed5dbb3b6d47290874e2c0d52bf3a62b9` (`v5.106`). This existing ASR branch retains its original equivalence rules and tests, merges the root-fix, and advances to `v5.107` so the ASR runtime changes do not share an app/cache version with main. `index.html`, `scripts/app/swBootstrap.js`, and `sw.js` carry the matching `v5.107` references.
+PR #334 was based on the same shared Gate A callback defect found on baseline main. The independent fix PR #335 merged to main at `3b14776ed5dbb3b6d47290874e2c0d52bf3a62b9` with `v5.106`. Existing PR #334 merged that root-fix commit and retained its original ASR implementation/tests; its reconciled head was `718727eeb637f9b34cbe8338e79f70aa8388f775`, and its main merge commit was `6147df3b5bda938d0f9925c899009ca8138cb24e` (`v5.107`). The PR head tree and main merge tree were identical.
 
-The original ASR validation above records checks on the original `v5.106` PR #334 head. Reconciliation acceptance, final CI run IDs, independent emulator runs, merge information, and post-merge authority checks are recorded in the root-cause report after those checks complete.
+The speech-equivalence registry, Vocabulary evidence grader, benchmark, and targeted collision tests are byte-identical to original PR #334 head `41f767c064ef88adf9180bcee1890fbcbf15cb03`. Only root-fix integration, `v5.107` cache/version synchronization, and validation-report reconciliation were added. `index.html`, `scripts/app/swBootstrap.js`, `sw.js`, and `scripts/version.js` share the `v5.107` identity.
+
+### ASR and browser acceptance
+
+- Dedicated collision suite: 8 groups PASS; 18 positive match/grading checks PASS; 42 explicit negative controls PASS. Bidirectional `gaze ↔ gays`, scoped one-way `lack → black`, candidate provenance, and grading-mode boundaries are unchanged.
+- Reconciled local exact-tree validators: ASR-09A audit and deterministic check, ASR-09B, ASR-09C, ASR-09D, T/D cluster, Vocabulary derived/full, and `git diff --check` passed.
+- Application/Chromium PR run `38506197872` and push run `38506193467`: PASS, 605 tests (603 passed, 0 failed, 2 skipped) on each. The workflow ran the ASR-09A through ASR-09D, T/D cluster, Vocabulary derived/full, and browser/unit test steps.
+- Vocabulary PR `38506198415` and push `38506193525`: PASS. Paraphrase scope guard `38506197866`: PASS.
+- Android PR run `38506197828`: Debug/Release/Lint and Gate A PASS. Android push run `38506193746`: Debug/Release/Lint and Gate A PASS.
+
+### Exact-head emulator acceptance
+
+Independent Gate A run `38506212927` pinned all three fresh emulator jobs to reconciled PR head `718727eeb637f9b34cbe8338e79f70aa8388f775` (`v5.107`).
+
+| Run | Job | Artifact | Result |
+|---|---:|---:|---|
+| Acceptance 1 | `115664204553` | `11867987071` | 5 PASS / 0 FAIL / 0 SKIP; 10 cycles; 2 Activity relaunches; permission granted |
+| Acceptance 2 | `115664204418` | `11867834808` | 5 PASS / 0 FAIL / 0 SKIP; 10 cycles; 2 Activity relaunches; permission granted |
+| Acceptance 3 | `115664204713` | `11868465031` | 5 PASS / 0 FAIL / 0 SKIP; 10 cycles; 2 Activity relaunches; permission granted |
+
+The three runs use the same application/test SHA; they are not combined with another head. PR #334 merged after all listed required checks passed.
+
+### Post-merge authority
+
+Main merge SHA `6147df3b5bda938d0f9925c899009ca8138cb24e` is `v5.107`. Push-triggered post-merge Application/Chromium (`38506804000`), Vocabulary (`38506804072`), Android Debug/Release/Lint + Gate A (`38506804085`), and Pages (`38506804189`) workflows passed. Application ran 605 tests (603 passed, 0 failed, 2 skipped). Main-pinned independent Gate A run `38506857511` separately checked out the exact main merge SHA in all three jobs; each passed 5/0/0 with ten cycles, two relaunches, and the real permission dialog.
+
+The final staged PWA runtime has 117 files with identity `6770e516e8cf4d46f8201f1c9d0d1dd7cc0bb7772bbfd117a89763ba7f250d9a`; Android has the same 117 plus its two generated Cordova files, for 119 files with identity `59578be76e702682ed70702e945ea87fe776e0c0210603364efb2161ea28c322`. Vocabulary blob `91324d35b2db1911ece2cf3ff746409d321fe963` and Items blob `ae2aca768b784199b77ac1cf8c0c5a80fd5725bb` remain unchanged. The main-tree rule source confirms `gaze-gays` and generated reverse `gays-gaze`; `asr-lack-to-black` has no reverse rule and remains restricted to the two approved Vocabulary entries. Pixel ASR-08D PR #323 remains OPEN.
+
+This final post-merge evidence supersedes the original report's note that the Gate A root cause remained open. See `android-gate-a-capability-callback-root-cause.md` for pinned A/B, callback correlation, exact failure mechanism, permission timing, and probe evidence.
 
 ## Performance
 
