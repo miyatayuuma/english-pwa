@@ -2,7 +2,7 @@
 
 ## Status
 
-Implementation and local non-browser regression checks are prepared on the repair branch. Production closure remains gated on required Chromium, Android, and Pages checks, merge, and post-merge verification.
+Required pull-request Chromium, vocabulary, scope, Android build/lint, and Android Gate A checks pass. Production closure remains gated on merge, Pages deployment, and post-merge verification.
 
 ## Authority and original finding
 
@@ -48,7 +48,7 @@ Vocabulary loading publishes `loading`, `ready`, `empty`, or `error`. The second
 
 `tests/friendshipUiModules.test.mjs` also guards the single-owner source contract and the removal of the competing mutations/observer. The test job sets `HOME_NAV_REQUIRE_BROWSER=1`, so missing Chromium fails CI instead of being accepted as a successful skip. `HOME_NAV_CAPTURE=1` captures viewport evidence under `docs/validation/issue337-evidence/` and uploads it as `issue337-home-navigation-evidence`.
 
-Local `npm test -- --test-reporter=dot`: 609 tests, 518 passed, 0 failed, 91 skipped because this environment has no Chromium binary. This is not mobile acceptance; CI browser results and screenshots remain required before merge.
+Local `npm test -- --test-reporter=dot`: 609 tests, 518 passed, 0 failed, 91 skipped because this environment has no Chromium binary. Mobile acceptance is supplied by the required CI browser run below.
 
 ## Responsive and screenshot evidence
 
@@ -58,7 +58,7 @@ The browser suite asserts no horizontal overflow, no clipped nav labels, exactly
 - `docs/validation/issue337-evidence/home-390-after.png`
 - `docs/validation/issue337-evidence/home-430-after.png`
 
-The CI artifact is retained for review. Before/after comparison: the home retains the character hero and start CTA, keeps contacts and learning selection as the only two primary navigation buttons, and moves session options behind the learning choice dialog. Vocabulary is reachable through the preserved secondary learning route, without an extra primary grid column.
+The PNGs are retained in the [Issue #337 home-navigation screenshot artifact](https://github.com/miyatayuuma/english-pwa/actions/runs/38554224809/artifacts/11887669168). They are generated at the listed workspace paths and uploaded to the Actions artifact; binary copies are not committed to the repository. Before/after comparison: the home retains the character hero and start CTA, keeps contacts and learning selection as the only two primary navigation buttons, and moves session options behind the learning choice dialog. Vocabulary is reachable through the preserved secondary learning route, without an extra primary grid column.
 
 ## Required local regression and assets
 
@@ -87,15 +87,26 @@ The following Git blobs match the initial main baseline:
 
 No learning, relationship, vocabulary, audio, or ASR algorithm/data files are changed. No new storage schema is introduced.
 
-## PR, CI, and production verification
+## Pull request CI and merge evidence
 
-To be filled with the repair PR URL and head SHA, Chromium/Application and vocabulary/scope checks, Android Debug/Release/Lint and Gate A, Pages deployment, merge SHA, final `main` SHA, and post-merge smoke results before Issue #337 is closed.
+- PR: [#339 — `fix(ui): stabilize game lobby navigation ownership`](https://github.com/miyatayuuma/english-pwa/pull/339)
+- Branch: `fix/issue337-home-navigation-ownership`
+- Tested PR head: `5a4f357369babdc863caad529f0e9933fc934e63`
+- Application / Chromium: [run 38554224809](https://github.com/miyatayuuma/english-pwa/actions/runs/38554224809) — PASS, 609 tests / 607 passed / 0 failed / 2 skipped. The six initialization orders, three mobile widths, navigation paths, and delayed/error/empty controls passed; viewport screenshots are in the linked artifact.
+- Vocabulary validation: [run 38554224712](https://github.com/miyatayuuma/english-pwa/actions/runs/38554224712) — PASS.
+- Scope guard: [run 38554224743](https://github.com/miyatayuuma/english-pwa/actions/runs/38554224743) — PASS (not a paraphrase batch change).
+- Android Debug, Release, Lint, and strict Gate A emulator: [run 38554224746](https://github.com/miyatayuuma/english-pwa/actions/runs/38554224746) — `debug-build` and `gate-a-emulator` both PASS.
+- Initial CI attempts exposed test-only issues: one browser option was not passed into the page context, and one activation assertion counted two actions despite three test taps. Both were corrected before this passing head. Chromium is required only in the Application job that installs it; the vocabulary job has no browser dependency.
+- Pages build/deploy, merge commit, final `main` SHA, and production smoke verification remain pending the merge and deployment.
 
-Issue #210 remains open. Its #207 lobby navigation finding can be marked resolved after this repair is merged and accepted; real-session integrated E2E and physical-device visual acceptance remain outside this issue. Pixel ASR-08D PR #323 is unchanged.
+Issue #337 remains open until Pages deployment and post-merge verification pass. Issue #210 remains open after the child issue closes; real-session integrated E2E and physical-device visual acceptance remain unresolved. Pixel ASR-08D PR #323 is unchanged.
+
+## Post-merge production verification
+
+To be filled after merge with the merge commit SHA, final `main` SHA, Pages deployment result, served `APP_VERSION`, primary operation count, vocabulary/session-options route checks, protected blob identities, and Issue #337 closure evidence.
 
 ## Remaining risks
 
-- Browser acceptance is not established until required GitHub Chromium CI runs with the browser installed and all viewport tests pass.
-- Android emulator Gate A and build/lint checks remain CI gates.
+- Required Chromium and Android emulator/build/lint checks passed on PR head `5a4f357369babdc863caad529f0e9933fc934e63`.
 - Production Pages deployment and the served cache/version identity require post-merge verification.
 - The parent issue's real-session SRS/relationship/result E2E and physical-device visual acceptance remain open work.
