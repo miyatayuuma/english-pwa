@@ -6,8 +6,8 @@
 - Baseline main: `6e6d3d250570fc24d92ca768ebae3865b88946c5`
 - Baseline app version: `v5.105`
 - Original PR #334 app version: `v5.106`; reconciled PR #334 merge version: `v5.107`; current production version after PR #336 review follow-up: `v5.108`
-- Vocabulary blob (unchanged): `91324d35b2db1911ece2cf3ff746409d321fe963`
-- Items blob (unchanged): `ae2aca768b784199b77ac1cf8c0c5a80fd5725bb`
+- `data/vocabulary-v3.json` blob (unchanged): `91324d35b2db1911ece2cf3ff746409d321fe963`
+- `data/items.json` blob (unchanged): `ae2aca768b784199b77ac1cf8c0c5a80fd5725bb`
 
 The implementation changes transcript-to-answer matching only. It does not change SpeechRecognizer output, vocabulary meanings, paraphrase authority, SRS rules, or the ASR-09A through ASR-09D audit artifacts.
 
@@ -39,7 +39,7 @@ Targeted rules are rejected when the supplied recognition state is explicitly no
 - Primary raw transcript and display policy remain intact. For lower-ranked rescue, the established policy keeps the primary transcript visible and stores the accepted candidate in `rawTranscript`.
 - Read ordering and precision, Cloze target/completeness/negation checks, Correction thresholds and practice-only state, paraphrase priority, and SRS behavior remain unchanged.
 
-The dedicated suite has 8 test groups and covers 18 positive match/grading checks plus 42 explicit negative controls, including direction, entry and mode isolation, carrier handling, all four non-final completion states, provenance, and non-synthesis.
+At original PR #334 head, the dedicated suite had 8 test groups and covered 18 positive match/grading checks plus 42 explicit negative controls, including direction, entry and mode isolation, carrier handling, all four non-final completion states, provenance, and non-synthesis. PR #336 extended the same suite with terminalized-interim negative controls for both TARGET and PARAPHRASE; those follow-up cases are described separately below.
 
 ## Local validation
 

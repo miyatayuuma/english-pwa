@@ -111,7 +111,7 @@ The exploratory pre-fix probe job `115647048339` also saw `Microphone system per
 
 ## Protected production data and ASR contracts
 
-The baseline Vocabulary blob remains `91324d35b2db1911ece2cf3ff746409d321fe963`; the Items blob remains `ae2aca768b784199b77ac1cf8c0c5a80fd5725bb`. ASR-09A through ASR-09D authority, TARGET/PARAPHRASE/MISS, N-best provenance, `gaze ↔ gays`, `lack → black`, Read/Cloze/Correction grading, SRS updates, and Pixel ASR-08D acceptance are not changed by this repair.
+The baseline `data/vocabulary-v3.json` blob remains `91324d35b2db1911ece2cf3ff746409d321fe963`; the `data/items.json` blob remains `ae2aca768b784199b77ac1cf8c0c5a80fd5725bb`. ASR-09A through ASR-09D authority, TARGET/PARAPHRASE/MISS, N-best provenance, `gaze ↔ gays`, `lack → black`, Read/Cloze/Correction grading, SRS updates, and Pixel ASR-08D acceptance are not changed by this repair.
 
 Because readiness diagnostics JS changed, PR #335 moved main from `v5.105` to `v5.106` and synchronized `index.html`, `scripts/app/swBootstrap.js`, `sw.js`, PWA precache references, and Capacitor staged assets. PR #335 merged at `3b14776ed5dbb3b6d47290874e2c0d52bf3a62b9`. Existing PR #334 was reconciled to `v5.107` and merged at `6147df3b5bda938d0f9925c899009ca8138cb24e`; the PR head tree and merge-commit tree are identical. That was the runtime/cache identity at the #334 merge. PR #336 later updated the targeted final-evidence guard and synchronized production assets to `v5.108`, merging at `76101569b73a9ffd964028a9ba75c7a4db0d4c92`.
 
@@ -228,3 +228,10 @@ The additional exact-SHA workflow 38510777393 completed successfully after this 
 | acceptance-3, 115678529999 | 11869354867 | 5 tests, 0 failures, 0 skipped | Logcat confirms total=10 cycles and 2 fresh Activity relaunches; the system GrantPermissionsActivity appeared and the permission test passed. |
 
 Artifact logcat also records a later pm grant command in NativeShellGateTest.b_productionBackendStartsAndCancelsWithoutWebSpeech. The test order is alphabetical: a_permissionIsRequestedOnDemandAndGrantedThroughSystemDialog runs first, asserts the permission begins denied, waits for and clicks the actual system Allow button, and verifies GRANTED. The later backend test uses pm grant as its own setup. Thus the permission acceptance is independently exercised through the system dialog and is not replaced by that subsequent test fixture.
+
+
+## Relationship to the PR #333 reliability report
+
+The earlier report, docs/validation/android-gate-a-game-trace-reliability.md, accurately described the evidence available through 2026-10-13 and left the callback root cause open. It recorded one of three independent executions on an earlier code head reproducing a pending initializer after relaunch, while two passed. That historical pass/fail result did not prove why the callback stalled.
+
+The 2026-10-14 pinned A/B comparison and controlled Capacitor proxy-order probe add evidence that was not available to PR #333: distinct initializer and diagnostic callback IDs, old and incoming JavaScriptReplyProxy identities, response thread, and before/after repair behavior. Those observations identify the response crossing the wrong document proxy before the new listener installs its proxy. The finding upgrades the current classification to ROOT_CAUSE_CONFIRMED without rewriting the older report's time-bounded ROOT_CAUSE_OPEN conclusion.
