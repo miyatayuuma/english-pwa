@@ -822,11 +822,13 @@ browserTest('native TARGET rescue preserves raw primary, answer authority and ex
   }
 });
 
-browserTest('a TARGET in an interim segment cannot rescue or fail a terminalized Vocabulary attempt',async()=>{
+browserTest('a TARGET in an interim segment cannot rescue a terminalized Vocabulary attempt or replace its prior result',async()=>{
   const opened=await newPage(sources[0]);const {page}=opened;
   try{
     await injectCompletedFinal(page,['banana','run into someone']);
     await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent.includes('聞き取りを確認'));
+    const previousHeard=await page.locator('.vocab-heard__text').innerText();
+    const previousAnswer=await page.locator('.vocab-answer').innerText();
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0);
     await page.locator('.vocab-mic').click();await page.waitForFunction(()=>window.__mockSpeech.startCount===2);
     await injectFinal(page,'not');await injectInterim(page,['wrong','come across someone']);
@@ -834,8 +836,8 @@ browserTest('a TARGET in an interim segment cannot rescue or fail a terminalized
     await page.evaluate(()=>window.__mockSpeech.latest.emitEnd());
     assert.equal(await page.locator('.vocab-transcript').innerText(),'','an incomplete attempt is cleared from the final transcript area');
     assert.match(await page.locator('.vocab-feedback').innerText(),/発話を確定できませんでした/);
-    assert.equal(await page.locator('.vocab-heard__text').count(),0,'mixed final/interim evidence produces no grade result');
-    assert.equal(await page.locator('.vocab-answer').count(),0,'a candidate from a non-final segment is not promoted');
+    assert.equal(await page.locator('.vocab-heard__text').innerText(),previousHeard,'rejected evidence does not replace the prior finalized result');
+    assert.equal(await page.locator('.vocab-answer').innerText(),previousAnswer,'a candidate from a non-final segment is not promoted into a new result');
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0,'a candidate from a non-final segment cannot be written as SRS evidence');
     assert.equal(await page.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id].lastMatch,entry.id),0,
       'the incomplete attempt does not turn into a recorded failure');
