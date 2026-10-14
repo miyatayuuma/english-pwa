@@ -841,7 +841,7 @@ browserTest('a TARGET in an interim segment cannot rescue a terminalized Vocabul
     assert.equal(await page.locator('.vocab-answer').count(),previousAnswerCount,'a candidate from a non-final segment is not promoted into a new result');
     if(previousAnswerCount)assert.equal(await page.locator('.vocab-answer').innerText(),previousAnswer,'rejected evidence does not replace any prior answer');
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0,'a candidate from a non-final segment cannot be written as SRS evidence');
-    assert.equal(await page.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id].lastMatch,entry.id),0,
+    assert.equal(await page.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id].lastMatch,opened.entry.id),0,
       'the incomplete attempt does not turn into a recorded failure');
     assert.deepEqual(await page.evaluate(()=>window.__mockSpeech.events.map(event=>event.type)),['start','result','end','start','result','result','end']);
   }finally{await closePage(opened);}
