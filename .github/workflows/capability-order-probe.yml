@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   gate-a:
-    name: "Gate A ${gh("matrix.label")} on pinned source"
+    name: "Gate A ${{ matrix.label }} on pinned source"
     runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:
@@ -25,10 +25,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: "${gh("matrix.app_sha")}"
+          ref: "${{ matrix.app_sha }}"
       - name: Verify exact source SHA
         env:
-          EXPECTED_SOURCE_SHA: "${gh("matrix.app_sha")}"
+          EXPECTED_SOURCE_SHA: "${{ matrix.app_sha }}"
         run: |
           actual="$(git rev-parse HEAD)"
           echo "GATE_A_SOURCE_SHA=$actual"
@@ -60,7 +60,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: independent-gate-a-${gh("matrix.label")}
+          name: independent-gate-a-${{ matrix.label }}
           path: |
             android/app/build/reports/androidTests/connected/
             android-gate-logcat.txt
