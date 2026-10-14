@@ -25,6 +25,16 @@ const sharedTDBoundaryRules = VOCABULARY_TD_CLUSTER_BEFORE_TO_AUTHORITY
   }));
 
 export const speechEquivalenceRules = Object.freeze([
+  ...pair({ id: 'gaze-gays', expected: 'gaze', recognized: 'gays', kind: 'homophone' }),
+  {
+    id: 'asr-lack-to-black',
+    expected: 'lack',
+    recognized: 'black',
+    kind: 'asr-known-confusion',
+    credit: 'exact-equivalent',
+    scope: { type: 'entry', entryIds: ['vocab:01251', 'vocab:01296'], mode: 'vocabulary' },
+    display: 'raw',
+  },
   // Than/then has the same audible form in all four speech-bearing modes.
   ...pair({ id: 'than-then', expected: 'than', recognized: 'then', kind: 'asr-context-collision', scope: { type: 'mode', modes: ['vocabulary', 'read', 'cloze', 'correction'] } }),
   ...pair({ id: 'prose-pros', expected: 'prose', recognized: 'pros', kind: 'homophone', display: 'expected' }),
