@@ -1,0 +1,98 @@
+name: Android Gate A pinned A/B diagnosis
+on:
+  push:
+    branches:
+      - diag/android-gate-a-pinned-ab
+permissions:
+  contents: read
+jobs:
+  gate-a:
+    name: ${{ matrix.label }} — ${{ matrix.source_name }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: A1
+            source_name: baseline
+            source_sha: 6e6d3d250570fc24d92ca768ebae3865b88946c5
+          - label: B1
+            source_name: pr334
+            source_sha: 41f767c064ef88adf9180bcee1890fbcbf15cb03
+          - label: A2
+            source_name: baseline
+            source_sha: 6e6d3d250570fc24d92ca768ebae3865b88946c5
+          - label: B2
+            source_name: pr334
+            source_sha: 41f767c064ef88adf9180bcee1890fbcbf15cb03
+          - label: A3
+            source_name: baseline
+            source_sha: 6e6d3d250570fc24d92ca768ebae3865b88946c5
+          - label: B3
+            source_name: pr334
+            source_sha: 41f767c064ef88adf9180bcee1890fbcbf15cb03
+    steps:
+      - name: Check out exact source SHA
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.source_sha }}
+          path: source
+          fetch-depth: 1
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: source/package-lock.json
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Install dependencies and stage Android assets
+        working-directory: source
+        run: |
+          npm ci
+          npm run native:sync
+      - name: Record pinned source and generated asset identity
+        run: |
+          expected='${{ matrix.source_sha }}'
+          actual="$(git -C source rev-parse HEAD)"
+          test "$actual" = "$expected"
+          echo "source_sha=$actual"
+          echo "source_tree=$(git -C source rev-parse HEAD^{tree})"
+          echo "source_name=${{ matrix.source_name }}"
+          echo "attempt_label=${{ matrix.label }}"
+          echo "APP_VERSION=$(sed -n "s/^const APP_VERSION = '\([^']*\)';/\1/p" source/scripts/version.js)"
+          echo "node=$(node --version) npm=$(npm --version) java=$(java -version 2>&1 | head -1)"
+          find source/android/app/src/main/assets/public -type f -print0 | sort -z | xargs -0 sha256sum | sha256sum
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Run independent API 35 emulator acceptance
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          disable-animations: true
+          script: |
+            adb shell getprop ro.build.version.sdk
+            adb shell getprop ro.product.cpu.abi
+            adb shell dumpsys package com.google.android.webview | grep -m1 versionName || true
+            status=0
+            (cd source && ./android/gradlew -p android :app:connectedDebugAndroidTest --no-daemon) || status=$?
+            adb logcat -d > source/android-gate-logcat.txt
+            exit "$status"
+      - name: Upload emulator result and diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gate-a-${{ matrix.label }}-${{ matrix.source_name }}
+          path: |
+            source/android/app/build/reports/androidTests/connected/
+            source/android-gate-logcat.txt
+          if-no-files-found: warn
