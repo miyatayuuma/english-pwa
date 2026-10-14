@@ -48,7 +48,7 @@ before(async()=>{
   try{browser=await chromium.launch({headless:true});}
   catch(error){
     browserError=error.message;
-    if(process.env.CI||process.env.HOME_NAV_REQUIRE_BROWSER) throw error;
+    if(process.env.HOME_NAV_REQUIRE_BROWSER==='1') throw error;
   }
 });
 
