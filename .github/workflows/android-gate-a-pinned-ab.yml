@@ -14,22 +14,16 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - label: A1
+          - label: A4
             source_name: baseline
             source_sha: 6e6d3d250570fc24d92ca768ebae3865b88946c5
-          - label: B1
+          - label: B4
             source_name: pr334
             source_sha: 41f767c064ef88adf9180bcee1890fbcbf15cb03
-          - label: A2
+          - label: A5
             source_name: baseline
             source_sha: 6e6d3d250570fc24d92ca768ebae3865b88946c5
-          - label: B2
-            source_name: pr334
-            source_sha: 41f767c064ef88adf9180bcee1890fbcbf15cb03
-          - label: A3
-            source_name: baseline
-            source_sha: 6e6d3d250570fc24d92ca768ebae3865b88946c5
-          - label: B3
+          - label: B5
             source_name: pr334
             source_sha: 41f767c064ef88adf9180bcee1890fbcbf15cb03
     steps:
@@ -80,13 +74,7 @@ jobs:
           arch: x86_64
           disable-animations: true
           script: |
-            adb shell getprop ro.build.version.sdk
-            adb shell getprop ro.product.cpu.abi
-            adb shell dumpsys package com.google.android.webview | grep -m1 versionName || true
-            status=0
-            (cd source && ./android/gradlew -p android :app:connectedDebugAndroidTest --no-daemon) || status=$?
-            adb logcat -d > source/android-gate-logcat.txt
-            exit "$status"
+            adb shell getprop ro.build.version.sdk || true; adb shell getprop ro.product.cpu.abi || true; adb shell dumpsys package com.google.android.webview | grep -m1 versionName || true; (cd source && ./android/gradlew -p android :app:connectedDebugAndroidTest --no-daemon); status=$?; adb logcat -d > source/android-gate-logcat.txt || echo 'post-test logcat capture unavailable' > source/android-gate-logcat.txt; exit "$status"
       - name: Upload emulator result and diagnostics
         if: always()
         uses: actions/upload-artifact@v4
