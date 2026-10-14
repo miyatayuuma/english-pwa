@@ -169,10 +169,15 @@ async function openBrowser(type){
   try{await ensureData();state.activeType=resolveBrowseType(requestedType,localStorage.getItem(TAB_KEY));refreshCatalog();renderShell();}catch(error){console.warn('Character/training browser failed to load',error);body.innerHTML='<div class="tag-browser__error">読み込めませんでした。閉じてもう一度お試しください。</div>';}
 }
 function isBrowserEntry(target){
-  if(!(target instanceof Element)) return false;if(target.closest('[data-course="tag"]')) return true;if(target.closest('.explore-tag-link')) return true;const button=target.closest('#focusHomeNav button');return !!button&&['連絡先・トレーニング','連絡先','キャラ・スキル','キャラを選ぶ','相手を選ぶ','トレーニング'].includes(button.textContent?.trim());
+  if(!(target instanceof Element)) return false;
+  if(target.closest('#learningChoiceDialog [data-course="tag"]')) return false;
+  if(target.closest('[data-course="tag"]')) return true;
+  if(target.closest('.explore-tag-link')) return true;
+  const button=target.closest('#focusHomeNav button');
+  return !!button&&button.id!=='openCharacterContacts'&&['連絡先・トレーニング','連絡先','キャラ・スキル','キャラを選ぶ','相手を選ぶ','トレーニング'].includes(button.textContent?.trim());
 }
 function interceptEntrances(event){
   if(!isBrowserEntry(event.target)) return;event.preventDefault();event.stopImmediatePropagation();document.getElementById('learningChoiceDialog')?.close();document.getElementById('focusExploreDialog')?.close();document.getElementById('focusTagDialog')?.close();const label=event.target.closest('button')?.textContent?.trim();const type=label==='トレーニング'?'skill':(['連絡先','キャラを選ぶ','相手を選ぶ'].includes(label)?'character':undefined);setTimeout(()=>openBrowser(type),0);
 }
-function init(){injectStyles();ensureDialog();cleanLegacyBrowserState();document.addEventListener('click',interceptEntrances,true);document.addEventListener('english-pwa:relationship-updated',()=>{if(document.getElementById('tagBrowserDialog')?.open&&state.loaded) renderResults();});globalThis.__OPEN_ENGLISH_LEARNING_BROWSER__=openBrowser;}
+function init(){injectStyles();ensureDialog();cleanLegacyBrowserState();document.addEventListener('click',interceptEntrances,true);document.addEventListener('english-pwa:relationship-updated',()=>{if(document.getElementById('tagBrowserDialog')?.open&&state.loaded) renderResults();});globalThis.__OPEN_ENGLISH_LEARNING_BROWSER__=openBrowser;document.dispatchEvent(new CustomEvent('english-pwa:character-browser-ready'));}
 if(typeof document!=='undefined'){if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true});else init();}

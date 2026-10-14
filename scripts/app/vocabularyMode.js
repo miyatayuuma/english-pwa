@@ -30,6 +30,7 @@ const GRAMMAR_ROLE_LABELS=Object.freeze({
 
 const state={
   entries:[],
+  readiness:'loading',
   characters:[],
   kind:'all',
   queue:[],
@@ -152,8 +153,6 @@ function injectStyles(){
   const style=document.createElement('style');
   style.id='vocabModeStyles';
   style.textContent=`
-    #focusHomeNav.has-vocab-mode{grid-template-columns:repeat(3,1fr)}
-    #focusHomeNav.has-vocab-mode button{min-width:0;font-size:13px;padding-inline:5px}
     .vocab-dialog{border:0;padding:0;background:transparent;color:inherit;width:min(100% - 10px,600px);max-height:calc(100dvh - 10px)}
     .vocab-dialog::backdrop{background:rgba(3,6,16,.82);backdrop-filter:blur(6px)}
     .vocab-shell{display:flex;flex-direction:column;height:min(720px,calc(100dvh - 10px));min-height:0;overflow:hidden;border:1px solid rgba(148,163,184,.16);border-radius:22px;background:#101522;box-shadow:0 24px 70px rgba(0,0,0,.5)}
@@ -246,27 +245,22 @@ function injectStyles(){
 }
 
 async function loadVocabulary(){
-  try{
-    const load=async path=>{
-      const res=await fetch(path,{cache:'no-cache'});
-      if(!res.ok) throw new Error(`${path}: ${res.status}`);
-      return res.json();
-    };
-    const [vocabulary,items,characters,migration]=await Promise.all([
-      load('./data/vocabulary-v3.json'),
-      load('./data/items.json'),
-      load('./data/characters.json'),
-      load('./data/vocabulary-v2-v3-migration.json'),
-    ]);
-    migrateVocabularyProgress({migration});
-    migrateFinalAdmissionProgress({migration});
-    levels.refreshLevelState();
-    state.characters=Array.isArray(characters)?characters:(Array.isArray(characters?.characters)?characters.characters:[]);
-    return readyVocabularyEntries(joinVocabularyData(vocabulary,items,state.characters));
-  }catch(error){
-    console.warn('Vocabulary database failed to load',error);
-    return [];
-  }
+  const load=async path=>{
+    const res=await fetch(path,{cache:'no-cache'});
+    if(!res.ok) throw new Error(`${path}: ${res.status}`);
+    return res.json();
+  };
+  const [vocabulary,items,characters,migration]=await Promise.all([
+    load('./data/vocabulary-v3.json'),
+    load('./data/items.json'),
+    load('./data/characters.json'),
+    load('./data/vocabulary-v2-v3-migration.json'),
+  ]);
+  migrateVocabularyProgress({migration});
+  migrateFinalAdmissionProgress({migration});
+  levels.refreshLevelState();
+  state.characters=Array.isArray(characters)?characters:(Array.isArray(characters?.characters)?characters.characters:[]);
+  return readyVocabularyEntries(joinVocabularyData(vocabulary,items,state.characters));
 }
 
 function makeDialog(){
@@ -1199,31 +1193,30 @@ function renderDone(){
   state.screen.querySelector('[data-back]')?.addEventListener('click',renderLobby);
 }
 
-async function waitForHomeNav(timeout=10000){
-  const started=Date.now();
-  while(Date.now()-started<timeout){
-    const nav=document.getElementById('focusHomeNav');
-    if(nav) return nav;
-    await new Promise(resolve=>setTimeout(resolve,80));
-  }
-  return null;
-}
-
 async function init(){
   injectStyles();
-  const [entries,nav]=await Promise.all([loadVocabulary(),waitForHomeNav()]);
-  state.entries=entries;
   globalThis.__OPEN_VOCABULARY_MODE__=openVocabularyMode;
-  if(!nav||!entries.length) return;
-  if(document.getElementById('openVocabularyMode')) return;
-  nav.classList.add('has-vocab-mode');
-  const button=document.createElement('button');
-  button.type='button';
-  button.id='openVocabularyMode';
-  button.textContent='単語・表現';
-  button.addEventListener('click',openVocabularyMode);
-  nav.appendChild(button);
-  makeDialog();
+  const loading={status:'loading',entryCount:0};
+  state.readiness='loading';
+  globalThis.__ENGLISH_PWA_VOCABULARY_STATUS__=loading;
+  document.dispatchEvent(new CustomEvent('english-pwa:vocabulary-mode-state',{detail:loading}));
+  try{
+    state.entries=await loadVocabulary();
+    state.readiness=state.entries.length?'ready':'empty';
+    if(state.readiness==='ready') makeDialog();
+    const result={status:state.readiness,entryCount:state.entries.length};
+    globalThis.__ENGLISH_PWA_VOCABULARY_STATUS__=result;
+    document.dispatchEvent(new CustomEvent('english-pwa:vocabulary-mode-state',{detail:result}));
+    return result;
+  }catch(error){
+    state.entries=[];
+    state.readiness='error';
+    console.warn('Vocabulary database failed to load',error);
+    const result={status:'error',entryCount:0,message:'Vocabulary data could not be loaded.'};
+    globalThis.__ENGLISH_PWA_VOCABULARY_STATUS__=result;
+    document.dispatchEvent(new CustomEvent('english-pwa:vocabulary-mode-state',{detail:result}));
+    return result;
+  }
 }
 
-if(typeof document!=='undefined') init().catch(error=>console.warn('Vocabulary mode failed to initialize',error));
+if(typeof document!=='undefined') globalThis.__ENGLISH_PWA_VOCABULARY_READY__=init();

@@ -17,6 +17,7 @@ import {
   resetSessionOptions,
 } from './sessionOptionsCore.js';
 import { TRAINING_MODES, isContinuousShadowingMode } from './continuousShadowing.js';
+import { initializeHomeNavigation } from './homeNavigation.js';
 
 const LEVEL_KEY='itemLevelV1';
 const RECENT_SESSION_KEY='recentSentenceSessionIdsV1';
@@ -206,13 +207,9 @@ function setupCompactHome(){
     const nav=document.createElement('div');
     nav.id='focusHomeNav';
     nav.className='focus-home-nav';
-    const explore=document.createElement('button');
-    explore.type='button';
-    explore.textContent='遊び方を変える';
-    explore.addEventListener('click',()=>openSessionOptions());
-    nav.appendChild(explore);
     wrap.appendChild(nav);
   }
+  initializeHomeNavigation();
   refreshHomeMeta();
 }
 

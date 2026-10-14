@@ -10,6 +10,10 @@ import {
   summarizeRelationshipWorld,
 } from './relationshipCore.js';
 import { buildAutomaticSession } from './adaptiveLearning.js';
+import {
+  registerHomeNavigationAction,
+  setHomeNavigationCapability,
+} from './homeNavigation.js';
 
 const LEVEL_KEY='itemLevelV1';
 const MILESTONE_KEY='relationshipMilestonesV1';
@@ -59,6 +63,21 @@ function iconPath(profile){
 }
 function activeRelationship(){ return state.relationships.find(entry=>entry.id===state.activeCharacterId)||null; }
 function relationshipById(id){ return state.relationships.find(entry=>entry.id===id)||null; }
+
+function openCharacterContacts(){
+  const open=globalThis.__OPEN_ENGLISH_LEARNING_BROWSER__;
+  if(typeof open!=='function') return false;
+  open('character');
+  return true;
+}
+
+function syncCharacterNavigationAction(){
+  registerHomeNavigationAction('contacts',{
+    label:'連絡先',
+    ready:typeof globalThis.__OPEN_ENGLISH_LEARNING_BROWSER__==='function',
+    onActivate:openCharacterContacts,
+  });
+}
 
 const CHARACTER_THEMES=Object.freeze([
   Object.freeze({accent:'#7dd3fc',deep:'#164e63',soft:'rgba(14,116,144,.28)'}),
@@ -131,6 +150,7 @@ function refreshModel(){
   const levels=loadLevelState();
   state.relationships=buildRelationshipCatalog(state.items,state.characters,levels,Date.now());
   state.world=summarizeRelationshipWorld(state.items,state.relationships);
+  setHomeNavigationCapability('relationship',{ready:true,allFriends:state.world.allFriends===true});
   document.dispatchEvent(new CustomEvent('english-pwa:relationship-updated',{detail:{world:state.world}}));
   return {levels,relationships:state.relationships,world:state.world};
 }
@@ -152,7 +172,7 @@ function injectStyles(){
     .friendship-talk-plan{margin-top:13px;font-size:14px;font-weight:850;line-height:1.45}.friendship-next{font-size:10px;opacity:.62;margin-top:6px;line-height:1.4}.friendship-intimacy-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:13px;font-size:10px;opacity:.8}.friendship-intimacy-row strong{font-size:11px;color:var(--character-accent)}.friendship-intimacy-track{height:6px;border-radius:999px;overflow:hidden;background:rgba(255,255,255,.1);margin-top:5px}.friendship-intimacy-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--character-accent),#a7f3d0);transition:width .35s ease}
     .friendship-hero__cta{width:100%;min-height:54px;border:0;border-radius:16px;background:var(--character-accent);color:#07111c;font:inherit;font-size:16px;font-weight:950;margin-top:13px;cursor:pointer;box-shadow:0 13px 28px color-mix(in srgb,var(--character-accent) 24%,transparent)}
     .friendship-world{display:none!important}
-    #focusHomeNav.friendship-nav{display:grid;grid-template-columns:1fr auto;gap:8px}.friendship-nav button{min-height:45px}.friendship-nav__choose{border-color:rgba(255,255,255,.14)!important;background:rgba(255,255,255,.055)!important}.friendship-nav__options{border-color:transparent!important;background:transparent!important;opacity:.68;padding-inline:12px!important}.friendship-all{display:none!important}
+    .friendship-nav__choose{border-color:rgba(255,255,255,.14)!important;background:rgba(255,255,255,.055)!important}
     .friendship-session{display:flex;align-items:center;gap:9px;min-height:44px;margin:0 0 8px;padding:7px 9px;border:1px solid rgba(129,140,248,.16);border-radius:14px;background:rgba(99,102,241,.055)}.friendship-session[hidden]{display:none!important}.friendship-session img{width:36px;height:36px;border-radius:11px;object-fit:cover}.friendship-session__copy{min-width:0}.friendship-session__title{font-size:12px;font-weight:850}.friendship-session__prompt{font-size:10px;opacity:.6;margin-top:2px}
     .friendship-float{position:fixed;left:50%;top:18%;z-index:1200;transform:translate(-50%,-10px);padding:10px 14px;border:1px solid rgba(129,140,248,.25);border-radius:999px;background:rgba(16,21,34,.96);box-shadow:0 14px 36px rgba(0,0,0,.35);font-size:13px;font-weight:850;opacity:0;pointer-events:none;animation:friendshipFloat 1.8s ease forwards}.friendship-float--rank{border-radius:16px;font-size:15px;padding:13px 18px}
     @keyframes friendshipFloat{0%{opacity:0;transform:translate(-50%,8px) scale(.96)}18%{opacity:1;transform:translate(-50%,0) scale(1)}75%{opacity:1}100%{opacity:0;transform:translate(-50%,-18px) scale(.98)}}
@@ -163,7 +183,7 @@ function injectStyles(){
     .friendship-ending{border:0;padding:0;background:transparent;color:inherit;width:min(100% - 28px,520px)}.friendship-ending::backdrop{background:rgba(3,6,16,.82);backdrop-filter:blur(7px)}.friendship-ending__card{padding:24px;border:1px solid rgba(129,140,248,.25);border-radius:25px;background:#101522;text-align:center;box-shadow:0 26px 70px rgba(0,0,0,.5)}.friendship-ending__title{font-size:25px;font-weight:950}.friendship-ending__text{font-size:13px;line-height:1.7;opacity:.72;margin:10px 0 18px}.friendship-ending button{width:100%;min-height:48px;border:0;border-radius:14px;background:#6366f1;color:#fff;font:inherit;font-weight:850;cursor:pointer}
     @media(prefers-reduced-motion:reduce){.friendship-float{animation:none;opacity:1;transform:translate(-50%,0)}.friendship-review__rank{box-shadow:none!important}}
     @media(max-width:430px){.friendship-hero{padding:12px;border-radius:24px}.friendship-hero__person{grid-template-columns:minmax(124px,42%) minmax(0,1fr);min-height:166px;gap:11px}.friendship-hero__portrait,.friendship-hero__portrait img{min-height:166px}.friendship-talk-plan{font-size:13px}.friendship-hero__cta{margin-top:11px}.friendship-next{font-size:9px}.friendship-review{padding:12px;border-radius:22px}.friendship-review__hero{grid-template-columns:78px minmax(0,1fr);gap:10px}.friendship-review__portrait{width:78px;height:92px}.friendship-review__headline{font-size:17px}.focus-review-view .review-complete-actions{grid-template-columns:1fr auto}.focus-review-view .review-complete-actions .friendship-review__secondary{min-width:100px;padding-inline:8px}}
-    @media(max-width:370px){.friendship-hero__person{grid-template-columns:118px minmax(0,1fr);min-height:154px}.friendship-hero__portrait,.friendship-hero__portrait img{min-height:154px}.friendship-intimacy-row{margin-top:9px}.friendship-talk-plan{margin-top:10px}.friendship-hero__cta{min-height:50px}.friendship-nav button{min-height:42px}}
+    @media(max-width:370px){.friendship-hero__person{grid-template-columns:118px minmax(0,1fr);min-height:154px}.friendship-hero__portrait,.friendship-hero__portrait img{min-height:154px}.friendship-intimacy-row{margin-top:9px}.friendship-talk-plan{margin-top:10px}.friendship-hero__cta{min-height:50px}}
   `;
   document.head.appendChild(style);
 }
@@ -202,6 +222,7 @@ function renderHome(){
   }
   const recommended=recommendCharacter(state.relationships,{recentCharacterIds:recentCharacterIds()})||state.relationships[0];
   const rel=recommended;
+  globalThis.__ENGLISH_PWA_HOME_CHARACTER_ID__=rel.id;
   const plan=buildAutomaticSession(state.items,loadLevelState(),{scope:{type:'character',id:rel.id}});
   const theme=characterTheme(rel.id);
   hero.style.setProperty('--character-accent',theme.accent);hero.style.setProperty('--character-deep',theme.deep);hero.style.setProperty('--character-soft',theme.soft);
@@ -231,16 +252,6 @@ function renderHome(){
   const goal=document.createElement('span');goal.className='friendship-world__goal';goal.textContent=worldGoalText(state.world);
   world.append(counts,goal);
 
-  const nav=document.getElementById('focusHomeNav');
-  if(nav){
-    nav.classList.add('friendship-nav');nav.replaceChildren();
-    const chars=document.createElement('button');chars.type='button';chars.className='friendship-nav__choose';chars.textContent='連絡先';chars.addEventListener('click',()=>globalThis.__OPEN_ENGLISH_LEARNING_BROWSER__?.('character'));
-    const options=document.createElement('button');options.type='button';options.className='friendship-nav__options';options.textContent='遊び方を変える';options.addEventListener('click',()=>globalThis.__OPEN_SESSION_OPTIONS__?.({characterId:rel.id}));
-    nav.append(chars,options);
-    if(state.world.allFriends){
-      const everyone=document.createElement('button');everyone.type='button';everyone.className='friendship-all';everyone.textContent='みんなと遊ぶ';everyone.addEventListener('click',startEveryone);nav.appendChild(everyone);
-    }
-  }
 }
 
 function beginCharacterSession(characterId){
@@ -468,6 +479,9 @@ async function init(){
   state.items=Array.isArray(window.ALL_ITEMS)?window.ALL_ITEMS.slice():[];
   state.characters=await loadCharacters();
   injectStyles();refreshModel();
+  registerHomeNavigationAction('everyone',{label:'みんなと遊ぶ',ready:true,onActivate:startEveryone});
+  document.addEventListener('english-pwa:character-browser-ready',syncCharacterNavigationAction);
+  syncCharacterNavigationAction();
   globalThis.__START_CHARACTER_STUDY__=startCharacter;
   globalThis.__PREPARE_CHARACTER_SESSION__=beginCharacterSession;
   globalThis.__CLEAR_ACTIVE_CHARACTER_SESSION__=clearActiveCharacter;

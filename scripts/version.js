@@ -1,4 +1,4 @@
-const APP_VERSION = 'v5.108';
+const APP_VERSION = 'v5.109';
 
 if (typeof globalThis !== 'undefined') {
   globalThis.APP_VERSION = APP_VERSION;
@@ -47,6 +47,9 @@ if (typeof document !== 'undefined') {
     console.warn('Character friendship game failed to load', error);
   });
   import('./app/vocabularyMode.js').catch((error) => {
+    const status={status:'error',entryCount:0,message:'Vocabulary module could not be loaded.'};
+    globalThis.__ENGLISH_PWA_VOCABULARY_STATUS__=status;
+    document.dispatchEvent(new CustomEvent('english-pwa:vocabulary-mode-state',{detail:status}));
     console.warn('Vocabulary learning surface failed to load', error);
   });
   import('./app/vocabularyFeedbackUx.js').catch((error) => {
