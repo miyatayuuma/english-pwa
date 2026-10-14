@@ -451,7 +451,7 @@ export function classifyVocabularySpeechAnswer({ entry, activeOccurrence = null,
     rank: 0,
     attemptId,
     displayPrimary: true,
-    recognitionComplete,
+    recognitionComplete: completeEvidence,
     completionState,
   });
   if (contained) {
@@ -473,7 +473,7 @@ export function classifyVocabularySpeechAnswer({ entry, activeOccurrence = null,
       activeOccurrence,
       transcript: primaryTranscript,
       recognitionSegments,
-      recognitionComplete,
+      recognitionComplete: completeEvidence,
       completionState,
       attemptId,
     });
@@ -508,7 +508,7 @@ export function classifyVocabularySpeechAnswer({ entry, activeOccurrence = null,
       attemptId,
       rank: candidate.asrRank,
       displayPrimary: true,
-      recognitionComplete,
+      recognitionComplete: completeEvidence,
       completionState,
     });
     if (!accepted) continue;
