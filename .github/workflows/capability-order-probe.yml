@@ -1,0 +1,133 @@
+name: Temporary Capacitor callback ordering probe
+
+on:
+  push:
+    branches: [diag/android-gate-a-capability-order-probe]
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    name: "\${{ matrix.label }} forced callback-order probe"
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: pre-fix
+            app_sha: 41f767c064ef88adf9180bcee1890fbcbf15cb03
+            expected: fail
+          - label: repaired
+            app_sha: 34003cf3544c8c5d91ce955799a5d39672a01e40
+            expected: pass
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: "\${{ matrix.app_sha }}"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - run: npm ci
+      - name: Inject test-only WebMessageListener ordering window
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import difflib, hashlib
+          path = Path("node_modules/@capacitor/android/capacitor/src/main/java/com/getcapacitor/MessageHandler.java")
+          original = path.read_text()
+          old = """if (isMainFrame) {
+                              postMessage(message.getData());
+                              javaScriptReplyProxy = replyProxy;
+                          }"""
+          new = """if (isMainFrame) {
+                              final String probeData = message.getData();
+                              String probeCallbackId = "unknown";
+                              try { probeCallbackId = new JSObject(probeData).getString("callbackId"); } catch (Exception ignored) {}
+                              boolean probeTarget = probeData.contains("\\\\"pluginId\\\\":\\\\"NativeGameTrace\\\\"") && probeData.contains("\\\\"methodName\\\\":\\\\"getCapability\\\\"");
+                              if (probeTarget) Logger.warn("ORDER_PROBE listener-enter callbackId=" + probeCallbackId + " oldProxy=" + (javaScriptReplyProxy == null ? 0 : System.identityHashCode(javaScriptReplyProxy)) + " incomingProxy=" + System.identityHashCode(replyProxy));
+                              postMessage(probeData);
+                              if (probeTarget) {
+                                  Logger.warn("ORDER_PROBE response-window-open callbackId=" + probeCallbackId);
+                                  try { Thread.sleep(500); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+                                  Logger.warn("ORDER_PROBE response-window-close callbackId=" + probeCallbackId + " oldProxy=" + (javaScriptReplyProxy == null ? 0 : System.identityHashCode(javaScriptReplyProxy)) + " incomingProxy=" + System.identityHashCode(replyProxy));
+                              }
+                              javaScriptReplyProxy = replyProxy;
+                          }"""
+          if original.count(old) != 1:
+              raise SystemExit(f"expected exact listener block once, got {original.count(old)}")
+          patched = original.replace(old, new)
+          old2 = """            boolean isValidCallbackId = !call.getCallbackId().equals(PluginCall.CALLBACK_ID_DANGLING);"""
+          new2 = """            if ("NativeGameTrace".equals(call.getPluginId()) && "getCapability".equals(call.getMethodName())) Logger.warn("ORDER_PROBE response callbackId=" + call.getCallbackId() + " thread=" + Thread.currentThread().getName() + " replyProxy=" + (javaScriptReplyProxy == null ? 0 : System.identityHashCode(javaScriptReplyProxy)));
+          """ + old2
+          if patched.count(old2) != 1:
+              raise SystemExit(f"expected response block once, got {patched.count(old2)}")
+          patched = patched.replace(old2, new2)
+          path.write_text(patched)
+          diff = "".join(difflib.unified_diff(original.splitlines(True), patched.splitlines(True), fromfile="a/MessageHandler.java", tofile="b/MessageHandler.java"))
+          Path("capacitor-ordering-probe.patch").write_text(diff)
+          print("ORDER_PROBE_PATCH_SHA256=" + hashlib.sha256(diff.encode()).hexdigest())
+          PY
+      - run: npm run native:sync
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Run Gate A under forced ordering window
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          disable-animations: true
+          script: |
+            set +e
+            ./android/gradlew -p android :app:connectedDebugAndroidTest --no-daemon
+            echo "$?" > android-gate-a-exit-code.txt
+            adb logcat -d > android-gate-logcat.txt
+            exit 0
+      - name: Assert expected independent probe result
+        if: always()
+        env:
+          EXPECTED: "\${{ matrix.expected }}"
+        run: |
+          python3 - <<'PY'
+          import glob, os, sys, xml.etree.ElementTree as ET
+          files = glob.glob("android/app/build/**/TEST-*.xml", recursive=True)
+          cases = []
+          for f in files:
+              root = ET.parse(f).getroot()
+              for case in root.iter("testcase"):
+                  failure = case.find("failure") is not None or case.find("error") is not None
+                  skipped = case.find("skipped") is not None
+                  cases.append((case.attrib.get("classname", ""), case.attrib.get("name", ""), "FAIL" if failure else "SKIP" if skipped else "PASS"))
+          for c in cases: print("GATE_A_CASE", *c)
+          target = [x for x in cases if x[1] == "d_debugValidationUsesActualTargetAuthority"]
+          expected = os.environ["EXPECTED"]
+          all_other_pass = len(cases) == 5 and all(x[2] == "PASS" for x in cases if x[1] != "d_debugValidationUsesActualTargetAuthority")
+          target_outcome = target[0][2] if len(target) == 1 else "MISSING_OR_DUPLICATE"
+          print(f"ORDER_PROBE_EXPECTED={expected} CASES={len(cases)} TARGET={target_outcome} OTHER_TESTS_PASS={all_other_pass}")
+          if expected == "fail":
+              ok = len(target) == 1 and target_outcome == "FAIL" and all_other_pass
+          else:
+              ok = len(target) == 1 and target_outcome == "PASS" and all_other_pass
+          sys.exit(0 if ok else 1)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: callback-order-probe-\${{ matrix.label }}
+          path: |
+            capacitor-ordering-probe.patch
+            android-gate-a-exit-code.txt
+            android/app/build/reports/androidTests/connected/
+            android/app/build/outputs/androidTest-results/connected/
+            android-gate-logcat.txt
+          if-no-files-found: warn
