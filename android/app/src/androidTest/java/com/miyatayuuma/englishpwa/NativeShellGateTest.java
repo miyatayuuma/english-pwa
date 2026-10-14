@@ -230,11 +230,18 @@ public class NativeShellGateTest {
         try (ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class)) {
             awaitTrue(scenario, "!!window.Capacitor?.Plugins?.NativeSpeech");
             assertEquals(PackageManager.PERMISSION_DENIED, InstrumentationRegistry.getInstrumentation().getTargetContext().checkSelfPermission(Manifest.permission.RECORD_AUDIO));
-            eval(scenario, "window.__gatePermission=null; import('https://localhost/scripts/native/nativeSpeech.js').then(m=>m.getNativeSpeech()).then(p=>p.requestPermission()).then(x=>window.__gatePermission=x).catch(e=>window.__gatePermission={error:e.message}); true");
-            // On a cold API 35 emulator the system PermissionController took
-            // 15.2 seconds to surface this dialog; keep waiting for the real
-            // system button instead of treating that launch delay as absence.
-            UiObject2 button = device.wait(Until.findObject(By.res(Pattern.compile(".*:id/permission_allow_foreground_only_button"))), 30000);
+            eval(scenario, "window.__gatePermission=null; window.__gatePermissionRequestStarted=false; import('https://localhost/scripts/native/nativeSpeech.js').then(m=>m.getNativeSpeech()).then(p=>{const request=p.requestPermission();window.__gatePermissionRequestStarted=true;return request;}).then(x=>window.__gatePermission=x).catch(e=>window.__gatePermission={error:e.message}); true");
+            long requestDeadline = System.currentTimeMillis() + 15000;
+            while (System.currentTimeMillis() < requestDeadline
+                    && !"true".equals(eval(scenario, "window.__gatePermissionRequestStarted===true"))) {
+                Thread.sleep(100);
+            }
+            assertEquals("NativeSpeech permission request did not reach the Capacitor bridge",
+                "true", eval(scenario, "window.__gatePermissionRequestStarted===true"));
+            // Cold API 35 runs surfaced PermissionController 25.2 seconds
+            // after the bridge request. Start this bounded UI wait only after
+            // dispatch, and still require the actual system Allow button.
+            UiObject2 button = device.wait(Until.findObject(By.res(Pattern.compile(".*:id/permission_allow_foreground_only_button"))), 45000);
             assertNotNull("Microphone system permission dialog missing: " + eval(scenario, "JSON.stringify(window.__gatePermission)"), button);
             button.click();
             awaitTrue(scenario, "window.__gatePermission?.granted === true");
