@@ -219,7 +219,9 @@ async function injectAndStop(page, candidate, { final = true } = {}) {
     const event = [...window.__issue210Speech.events].reverse().find(entry => entry.type === 'result' && entry.attemptId === mock.attemptId);
     return { attemptId: mock.attemptId, event };
   }, { candidate, final });
-  await page.locator('#btnMic').click();
+  // The production recording state uses a pulsing mic button; keep the real UI
+  // click while bypassing Playwright's animation-stability wait.
+  await page.locator('#btnMic').click({ force: true });
   await page.waitForFunction(attemptId => window.__issue210Speech?.events?.some(entry => entry.attemptId === attemptId
     && (entry.type === 'end' || entry.type === 'duplicate-end'))
     && document.querySelector('#micStatus')?.dataset.state === 'off', delivered.attemptId, { timeout: 10_000 });
@@ -634,6 +636,16 @@ browserTest('Issue 210 interruption/options: persist completed card, exclude una
       assert.deepEqual(migratedState.itemLevel, afterReload.itemLevel);
       assert.deepEqual(migratedState.studyLog, afterReload.studyLog);
       assert.deepEqual(migratedState.recentItems, afterReload.recentItems);
+      await migrated.page.locator('#openLearningChoice').click();
+      await migrated.page.locator('#learningChoiceDialog [data-course="explore"]').click();
+      await migrated.page.locator('#learningChoiceDialog .learning-choice__start').click();
+      await migrated.page.waitForFunction(() => document.querySelector('#focusExploreDialog')?.open === true);
+      await migrated.page.locator('#secSel').selectOption('Section45');
+      await migrated.page.locator('#rangeSearch').fill('issue210-no-range-match');
+      assert.match(await migrated.page.locator('#exploreCount').textContent(), /0文/);
+      await migrated.page.locator('#focusExploreDialog .focus-sheet__close').click();
+      await migrated.page.waitForFunction(() => document.querySelector('#focusExploreDialog')?.open !== true
+        && !document.querySelector('#homeView')?.hidden, null, { timeout: 5_000 });
       await migrated.page.locator('.friendship-hero__cta').click();
       await migrated.page.waitForFunction(() => !document.querySelector('#studyView')?.hidden
         && !!document.querySelector('#enText')?.dataset.itemId, null, { timeout: 15_000 });
