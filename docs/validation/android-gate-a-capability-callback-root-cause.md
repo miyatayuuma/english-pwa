@@ -1,6 +1,6 @@
 # Android Gate A capability callback root-cause report
 
-**Status:** `ROOT_CAUSE_CONFIRMED / ROOT_FIX_ACCEPTANCE_PENDING`
+**Status:** `ROOT_CAUSE_CONFIRMED / ROOT_FIX_ACCEPTANCE_PASSED`
 
 **Investigation date:** 2026-10-14 UTC
 **Repository:** `miyatayuuma/english-pwa`
@@ -139,10 +139,16 @@ Local checks on the repair candidate before Android CI:
 | Repair PR #335 code head paraphrase scope guard | PASS (PR run `38500779051`) |
 | Repair PR #335 code head Android Debug / Release / Lint | PASS (push run `38500774553`, job `115646938223`; PR run `38500779053`, job `115646953402`) |
 | Repair PR #335 code head normal Gate A | 2/2 independent emulator jobs passed 5/5, 0 fail, 0 skip; each logged 10 navigation cycles and 2 fresh Activity relaunches. PR run `38500779053`, job `115646953633`, artifact `11865464563`; push run `38500774553`, job `115646939112`, artifact `11865791801`. |
-| Independent post-repair Gate A acceptance | One additional run remains required on the final report commit: 3 separate emulator jobs on the exact same final source SHA, each 5/5, 0 fail, 0 skip, 10 cycles, and 2 relaunches. |
+| Final review-adjusted PR #335 head `e4de63d1abe52865a9e42eb74cf0969c5ac40ec2` Application / Chromium | PASS: PR run `38502219261`; push run `38502214948`. |
+| Final review-adjusted PR #335 head Vocabulary / scope guard | Vocabulary PASS: PR run `38502219270`, push run `38502214957`; scope guard PASS: PR run `38502219228`. |
+| Final review-adjusted PR #335 head Android Debug / Release / Lint | PASS: PR run `38502219255`, job `115651594254`; push run `38502214905`, job `115651579476`. |
+| Final review-adjusted PR #335 head normal Gate A | PR run `38502219255`, job `115651594034`, artifact `11866582385`; push run `38502214905`, job `115651579778`, artifact `11866114342`. Both reports show 5 passed, 0 failed, 0 skipped; ten navigation cycles; and two fresh Activity relaunches. Permission test passed. |
+| Independent Gate A acceptance on app/test source `e4de63d1abe52865a9e42eb74cf0969c5ac40ec2` | Run `38502250224`: jobs `115651688117`, `115651688129`, `115651688033`; artifacts `11865783833`, `11865619049`, `11866462799`. Each fresh-runner job shows 5 passed, 0 failed, 0 skipped, ten cycles, and two Activity relaunches. The permission-dialog test passed each time. |
+| Final review adjustment focused regressions | 11 tests passed, 0 failed across native shell/missing-plugin, Game Trace gate, and readiness/callback-correlation tests. |
+| Final review comment | Resolved after renaming `callbackTransport` to `callbackTransportEligibility`; logs no longer imply that WebMessageListener registration succeeded when fallback remains possible. |
 
 ## Merge and remaining risks
 
-Root-cause confirmation is complete. Root-fix PR #335 is open with Application/Chromium, Vocabulary, scope guard, Android build/lint, and two independent normal Gate A runs passing; the final three-run acceptance is still pending. PR #334 remains OPEN until the repair reaches main and #334 is reconciled, revalidated, and passes its own independent three-run acceptance. The historic and exploratory permission failures remain separate. A/B sampling is intentionally reported descriptively, not as a probability or flake-rate estimate.
+Root-cause confirmation is complete. Root-fix PR #335 is open with Application/Chromium, Vocabulary, scope guard, Android build/lint, normal Gate A, and three independent Gate A acceptance runs passing on the same repair app/test source SHA. The final PR report commit is documentation-only; production JS/assets and the tested Android app/test sources remain unchanged. PR #334 remains OPEN until the repair reaches main and #334 is reconciled, revalidated, and passes its own independent three-run acceptance. The historic and exploratory permission failures remain separate. A/B sampling is intentionally reported descriptively, not as a probability or flake-rate estimate.
 
-Remaining risks are unobserved bridge/lifecycle orderings outside the tested API 35 / WebView combination, the separate historical permission-dialog failure, and the pending third independent Gate A run on the final report commit. No statistical claim is made from the small pinned-SHA A/B sample.
+Remaining risks are unobserved bridge/lifecycle orderings outside the tested API 35 / WebView combination, the separate historical permission-dialog failure, and the unforced case of an in-flight callback deliberately held across Activity recreation. The final review report commit does not alter the tested production or Android test source. No statistical claim is made from the small pinned-SHA A/B sample.
