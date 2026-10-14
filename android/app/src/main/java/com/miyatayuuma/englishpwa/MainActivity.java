@@ -180,13 +180,10 @@ public class MainActivity extends BridgeActivity {
             result.put("activityLifecycle", activityLifecycle);
             result.put("launchEnabled", isNativeSpeechGameTraceLaunchEnabled());
             result.put("clock", "SystemClock.elapsedRealtimeNanos since boot");
-            boolean webMessageListenerSupported = androidx.webkit.WebViewFeature.isFeatureSupported(
-                androidx.webkit.WebViewFeature.WEB_MESSAGE_LISTENER);
             boolean legacyBridgeEnabled = getBridge() != null && getBridge().getConfig().isUsingLegacyBridge();
-            result.put("webMessageListenerSupported", webMessageListenerSupported);
             result.put("legacyBridgeEnabled", legacyBridgeEnabled);
-            result.put("callbackTransport", !legacyBridgeEnabled && webMessageListenerSupported
-                ? "web-message-listener" : "legacy-javascript-interface");
+            result.put("callbackTransport", legacyBridgeEnabled
+                ? "legacy-javascript-interface" : "web-message-listener-when-available");
             result.put("events", new JSONArray(nativeGameTraceGateEvents.toString()));
         } catch (JSONException ignored) {
             // The diagnostic is best-effort and contains metadata only.
