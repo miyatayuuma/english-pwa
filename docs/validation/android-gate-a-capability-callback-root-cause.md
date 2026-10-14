@@ -1,6 +1,6 @@
 # Android Gate A capability callback root-cause report
 
-**Status:** `ROOT_CAUSE_PROBABLE / REMEDIATION_VALIDATION_PENDING`
+**Status:** `ROOT_CAUSE_CONFIRMED / ROOT_FIX_ACCEPTANCE_PENDING`
 
 **Investigation date:** 2026-10-14 UTC
 **Repository:** `miyatayuuma/english-pwa`
@@ -64,17 +64,28 @@ The inspected application path is:
 
 The capability method is unusually short, so its worker can call `resolve()` before the current WebMessageListener invocation has returned and installed the new document's reply proxy. In that ordering window, the result may be sent through the previous document's proxy and the new document's callback map never receives the callback. The later diagnostic query is issued after the proxy assignment and can resolve normally. This explains the exact callback-specific symptom on both pinned SHAs and the rapid fail/pass variation.
 
-The A/B artifacts do not record which `JavaScriptReplyProxy` instance Capacitor used for each failed native `call.resolve()`. The bridge source ordering and failure observations establish a strong mechanism, but that per-callback fact remains to be captured by the temporary ordering probe before this classification is raised from probable to confirmed.
+### Test-only ordering probe and root-cause confirmation
+
+A temporary workflow patched only the installed Capacitor 8.5.2 dependency at `node_modules/@capacitor/android/capacitor/src/main/java/com/getcapacitor/MessageHandler.java`. It inserted a 500 ms window after `postMessage()` queued the plugin invocation but before the listener assigned its incoming frame's `JavaScriptReplyProxy`. It logged each request's Capacitor callback ID, the prior and incoming proxy identities, the proxy used at response time, and the response thread. The exact patch SHA-256 was `7602da23b09d5e7080029356356f986c4a21021fc885f19ba20594633ac465d1`. This test-only change was not added to the app or production assets.
+
+| Probe side | App SHA | Workflow run / job / artifact | Gate A result | Callback evidence |
+|---|---|---|---|---|
+| Before repair | PR #334 `41f767c064ef88adf9180bcee1890fbcbf15cb03` | `38500472419` / `115645969308` / `11866016430` | 4 pass, 1 fail, 0 skip. Stage 4 failed; the permission test and other three tests passed. The probe's expected-failure assertion passed. | Initializer callback `108624369` entered with old proxy `22387063` and incoming proxy `255773156`. `call.resolve()` responded on `CapacitorPlugins` through old proxy `22387063` while the 500 ms window was open. The initializer stayed nonterminal and the panel was absent. Later independent snapshot callback `108624378` resolved through the now-current proxy `255773156`. |
+| After repair | Repair PR #335 code `bd13c1cfbdfc37e104da82e0bee79d29bcfd823b` | `38500808360` / `115647048545` / `11866485035` | 5 pass, 0 fail, 0 skip; 10 navigation cycles and 2 fresh Activity relaunches. The probe's expected-pass assertion passed. | Initializer callback `119996905` entered with old proxy `111334269` and incoming proxy `259150450`. After the window closed, response used thread `main` and proxy `259150450`, matching the incoming proxy. Gate A observed the settled initializer, connected panel, and terminal readiness. |
+
+This reproduces the failure on the unmodified app source under a controlled bridge ordering window and removes it with the main-looper deferral. The native callback ID, prior/incoming proxy identities, response thread, later independent snapshot, and Stage 4 readiness agree on the same failure boundary. The response is sent to the previous frame's proxy before registration of the new frame's proxy; the initializer in the new document therefore never settles. Posting result construction and `call.resolve()` to the main looper lets the listener finish proxy registration first and keeps `JavaScriptReplyProxy` use on its documented UI thread. **The root cause is confirmed.**
+
+Two exploratory probe attempts are excluded from the before/after result: run `38500397451` failed before emulator execution because its first workflow version escaped GitHub matrix expressions; run `38500472419`'s repaired-side job used the earlier repair commit `34003cf3544c8c5d91ce955799a5d39672a01e40` and hit the AndroidX compile error described below. The later corrected repaired-side job passed. A second pre-fix run (`38500808360`, job `115647048339`) also reproduced Stage 4, but separately failed the permission dialog check; it is not counted as a clean 4/1/0 negative-control result. These permission failures remain distinct from the Game Trace callback defect.
 
 ## Hypothesis disposition
 
 | Hypothesis | Evidence and assessment |
 |---|---|
-| H1 — Capacitor response went to a callback other than the initializer | Supported as the likely failure boundary. B2's initializer and later snapshot have distinct callback IDs. Existing reports do not log JS callback-entry IDs. |
-| H2 — reply proxy/document lifecycle race | Strongly supported by Capacitor 8.5.2 source ordering, short synchronous handler duration, plugin-worker dispatch, both SHA reproductions, and A4's failure after Activity relaunches. Waiting for a UI-thread turn should occur after the current listener has installed its reply proxy. Direct proxy identity capture is pending. |
+| H1 — Capacitor response went to a callback other than the initializer | Confirmed by the test-only probe. Callback `108624369` was returned through the old proxy while callback `108624378` later resolved through the current proxy; after repair, callback `119996905` used the incoming proxy and the initializer settled. |
+| H2 — reply proxy/document lifecycle race | Confirmed by the test-only before/after ordering probe and the pinned-SHA reproduction on both main and PR #334. The previous document's reply proxy remained selected until the WebMessageListener callback returned. |
 | H3 — non-thenable facade regression | Rejected as cause. The facade remains a frozen plain object around concrete methods; its design is unchanged from main. |
 | H4 — concurrent application bootstrap caused the stall | Not supported as the callback-loss cause. `app-initialization-complete` can occur while Stage 4 is still pending by design; there is no native bootstrap call dependency. No global serialization was added. |
-| H5 — plugin worker/thread contract | Confirmed contract violation on the inspected path: the short capability method called `PluginCall.resolve()` from Capacitor's task thread; modern reply proxy is UI-thread annotated and used directly by the response method. This is the same boundary as H2. |
+| H5 — plugin worker/thread contract | Confirmed. Before repair, `PluginCall.resolve()` and `JavaScriptReplyProxy.postMessage()` ran on `CapacitorPlugins`. After repair, the response ran on `main` and used the newly installed proxy, consistent with the Android API's `@UiThread` contract. This is the same boundary as H2. |
 | H6 — PR #334 regression | Not supported as the root defect: the same Stage 4 stall reproduced on the exact main SHA. The observed run rates (3/5 vs 4/5) are too small to compare statistically. PR #334 changes do not touch the Game Trace plugin or facade. |
 | H7 — permission dialog test | Separate. It passed in all three new failing reports and is not altered by this callback repair. |
 
@@ -88,7 +99,7 @@ The current repair candidate does the following:
 - Keeps the non-thenable facade, parallel bootstrap behavior, panel assertions, ten-cycle test, permission dialog test, and debug-only plugin registration.
 - Adds tests for delayed, concurrent, reverse-order, rejected, duplicate, unmatched/prior-document, and debug-disabled callback cases. The Android Gate A test checks that the initializer's request ID and callback ID match through Native resolve, JS bridge receipt, Promise settlement, panel creation, and terminal readiness, and verifies `call.resolve()` ran on `main`.
 
-An isolated test-only Capacitor `MessageHandler` ordering probe is pending. It will delay reply-proxy registration on the first NativeGameTrace capability request without changing the pinned application source, compare the candidate without the repair against this repair, and save the exact dependency diff and SHA. This probe is not included in production assets.
+The successful and failed callback boundaries from the ordering probe are recorded above. The standalone probe run is overall red because its deliberate pre-fix matrix member must fail Stage 4; the repaired matrix member and its expected-pass assertion succeeded. The pre-fix permission failure in a later exploratory run is recorded separately and is not treated as a Game Trace result.
 
 ## Permission and rejected environmental explanations
 
@@ -96,11 +107,15 @@ All ten jobs used WebView `124.0.6367.219`, the same API 35 Google APIs image, x
 
 The permission test was the first test in the fixed alphabetical order and passed in A4, A5, and B2. The historical permission failure in PR #334 run `38492796565`, job `115623590865`, is retained as a separate unresolved issue. No permission selector, skip, or test order change is included.
 
+The exploratory pre-fix probe job `115647048339` also saw `Microphone system permission dialog missing: "null"` before the Game Trace test; its report independently records the Stage 4 stall. This permission event did not occur in the clean pre-fix probe job `115645969308`, the repaired probe job `115647048545`, or either of the two normal post-repair Gate A jobs. Permission remains a separate emulator observation; the acceptance test remains enabled and required.
+
 ## Protected production data and ASR contracts
 
 The baseline Vocabulary blob remains `91324d35b2db1911ece2cf3ff746409d321fe963`; the Items blob remains `ae2aca768b784199b77ac1cf8c0c5a80fd5725bb`. ASR-09A through ASR-09D authority, TARGET/PARAPHRASE/MISS, N-best provenance, `gaze ↔ gays`, `lack → black`, Read/Cloze/Correction grading, SRS updates, and Pixel ASR-08D acceptance are not changed by this repair.
 
 Because readiness diagnostics JS changed, the repair candidate increments APP_VERSION from `v5.105` to `v5.106` and synchronizes `index.html`, `scripts/app/swBootstrap.js`, `sw.js`, PWA precache references, and Capacitor staged assets. PR #334 must be reconciled to `v5.107` after this branch reaches main so that the production JS contents do not share an APP_VERSION.
+
+On repair code head `bd13c1cfbdfc37e104da82e0bee79d29bcfd823b`, `native-web` contained 117 files with staged asset identity `f4b360f5200a356c9e8f66017049e4e787553f067f22a4ba91a0ac4edb374360`; Android `assets/public` contained those same 117 byte-identical files plus generated `cordova.js` and `cordova_plugins.js`, for 119 files and identity `6fb5d3cbfb81a8da333e8248762d1641f1226f87461ac88134dc801c31e2cabe`. Both identities use SHA-256 over sorted relative paths, a NUL separator, 8-byte big-endian file length, file bytes, and a trailing NUL. Documentation-only commits do not alter these staged identities.
 
 ## Validation state
 
@@ -118,11 +133,16 @@ Local checks on the repair candidate before Android CI:
 | Vocabulary / Items blob IDs | unchanged from main baseline |
 | `npm test` | 596 tests; 509 pass, 0 fail, 87 Chromium-dependent skips in this local environment |
 | `npm run native:sync` | PASS; 117 assets staged and Capacitor sync completed |
-| GitHub Application / Chromium / Vocabulary / Scope / Android / Gate A | Pending on the repair PR |
-| Independent post-repair Gate A runs | Pending; require 3 separate runs with 5/5, 10 cycles, and 2 relaunches each |
+| Initial repair commit `34003cf3544c8c5d91ce955799a5d39672a01e40` Android build | FAIL before instrumentation: direct `androidx.webkit.WebViewFeature` reference was not available to app compilation. Removed that compile-time reference; callback transport diagnostics now record the configured bridge path. This failed attempt is not an emulator acceptance result. |
+| Repair PR #335 code head `bd13c1cfbdfc37e104da82e0bee79d29bcfd823b` Application / Chromium | PASS (push run `38500774538`; PR run `38500779057`) |
+| Repair PR #335 code head Vocabulary | PASS (push run `38500774517`; PR run `38500779058`) |
+| Repair PR #335 code head paraphrase scope guard | PASS (PR run `38500779051`) |
+| Repair PR #335 code head Android Debug / Release / Lint | PASS (push run `38500774553`, job `115646938223`; PR run `38500779053`, job `115646953402`) |
+| Repair PR #335 code head normal Gate A | 2/2 independent emulator jobs passed 5/5, 0 fail, 0 skip; each logged 10 navigation cycles and 2 fresh Activity relaunches. PR run `38500779053`, job `115646953633`, artifact `11865464563`; push run `38500774553`, job `115646939112`, artifact `11865791801`. |
+| Independent post-repair Gate A acceptance | One additional run remains required on the final report commit: 3 separate emulator jobs on the exact same final source SHA, each 5/5, 0 fail, 0 skip, 10 cycles, and 2 relaunches. |
 
 ## Merge and remaining risks
 
-No root-fix PR has been merged and PR #334 remains OPEN while the temporary callback-order probe and all required CI/emulator acceptance are pending. The historic permission failure remains separate. A/B sampling is intentionally reported descriptively, not as a probability or flake-rate estimate.
+Root-cause confirmation is complete. Root-fix PR #335 is open with Application/Chromium, Vocabulary, scope guard, Android build/lint, and two independent normal Gate A runs passing; the final three-run acceptance is still pending. PR #334 remains OPEN until the repair reaches main and #334 is reconciled, revalidated, and passes its own independent three-run acceptance. The historic and exploratory permission failures remain separate. A/B sampling is intentionally reported descriptively, not as a probability or flake-rate estimate.
 
-Root-cause classification may be changed to `ROOT_CAUSE_CONFIRMED` only after the instrumented before/after callback-order probe and the strict post-fix regression runs demonstrate the expected callback ID delivery on the current document and main thread.
+Remaining risks are unobserved bridge/lifecycle orderings outside the tested API 35 / WebView combination, the separate historical permission-dialog failure, and the pending third independent Gate A run on the final report commit. No statistical claim is made from the small pinned-SHA A/B sample.
