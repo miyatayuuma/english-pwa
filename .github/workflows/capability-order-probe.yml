@@ -44,6 +44,21 @@ jobs:
           java-version: '21'
       - run: npm ci
       - run: npm run native:sync
+      - name: Record staged runtime asset identities
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from hashlib import sha256
+
+          for label, root in (("PWA", Path("native-web")), ("Android", Path("android/app/src/main/assets/public"))):
+              files = sorted(path for path in root.rglob("*") if path.is_file())
+              digest = sha256()
+              for path in files:
+                  relative = path.relative_to(root).as_posix().encode("utf-8")
+                  content = path.read_bytes()
+                  digest.update(relative + b"\\0" + len(content).to_bytes(8, "big") + content + b"\\0")
+              print(f"STAGED_ASSET_IDENTITY {label} files={len(files)} sha256={digest.hexdigest()}")
+          PY
       - name: Enable KVM
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
