@@ -1,6 +1,6 @@
 # Issue #342 ASR finality / SRS integrity remediation
 
-**Status at report draft:** implementation and local non-browser validation complete; required Chromium and Android CI are pending. Issue #342 must remain open until those gates and post-merge verification pass.
+**Status: `ISSUE #342 P0 ASR FINALITY / SRS INTEGRITY PRODUCTION CLOSED`.** PR #343 is merged, all required PR and post-merge CI passed, and Issue #342 is closed. Issue #210 remains open for its separate physical-device and Pixel acceptance work.
 
 ## 1. GitHub authority
 
@@ -10,7 +10,10 @@
 - Production target: `v5.110`
 - Pull request: [#343](https://github.com/miyatayuuma/english-pwa/pull/343).
 - Implementation commit at PR creation: `c9b69f8e21ff27b74057b79a21957b92384c9322`.
-- Final PR head, merge SHA, and final main SHA: pending CI/merge and will be recorded in post-merge verification.
+- Final PR head: `8a9f6c4dc809f2be56c453a96bce4f6c72901a49`.
+- PR #343 merged at `2026-10-14T23:40:08Z`; merge commit and main immediately after the P0 merge: `614417ea209f4d18be4191755ca872029cf58d5f`.
+- Post-merge Application/Chromium, vocabulary, Android, and Pages workflow runs all passed; see §7 and §9.
+- Issue #342: CLOSED by PR #343. Issue #210: OPEN.
 
 ## 2. Confirmed P0 reproduction and pre-fix failure
 
@@ -24,6 +27,8 @@ The retained PR #341 browser test ran against the real production home, options 
 - Raw provider event: exact E0006 text, `isFinal:false`, one rank-zero candidate, attempt still pending.
 
 This is the pre-fix failure evidence. The audit TODO has now been removed and the assertion is a required browser test. A local pre-fix Chromium rerun was not available because this workspace has no Playwright Chromium executable; local browser download was not usable. The captured CI reproduction above is the pre-fix authority.
+
+The pre-fix red control was also run against original main `4a01d9e6d8f4c080d738dc87dfc9c5082afb9d29` on isolated branch `repro/issue342-pre-fix-red`, commit `238f14eff1dc11acf1a641b8c479f23005659e91`. In Application run `38655946872`, job `116165620352`, the formerly TODO test failed at the SRS snapshot assertion: expected `{}` but received an E0006 record with `lastMatch=1`, `level5Count=1`, a no-hint history entry, and a 24-hour review deadline. This is the required before-fix red result. The same full run also hit a separate 30-second audio-folder browser timeout; it did not alter the Issue #342 failure evidence.
 
 ## 3. Lifecycle mapping and root cause
 
@@ -107,7 +112,20 @@ Completed locally:
 - Staged `scripts/speech/recognition.js` SHA-256 equals source and Android staged asset: `6a2382bafcf2772ce96bb01eeda5c8f6dfbebaeac4e6bcf8df7a8e2265cb73ce`.
 - App version, PWA bootstrap, service-worker cache, worker precache, and native staging target `v5.110`.
 
-The local Android Gradle build could not start because the wrapper could not download Gradle 8.14.3 in this restricted network environment. The required Android debug/release/lint and Gate A results must come from GitHub CI before closure.
+The local Android Gradle build could not start because the wrapper could not download Gradle 8.14.3 in this restricted network environment. GitHub CI subsequently completed the required Android builds and emulator gate successfully.
+
+### Required CI and post-merge results
+
+- PR Application / Chromium: run `38654595646`, attempt 2 PASS. The suite reported 622 tests, 620 passed, 0 failed, 2 skipped, and 0 TODO. The Issue #342 E0006 test executed as `ok 180`.
+- Post-merge Application / Chromium: run `38655489798` PASS; 622 tests, 620 passed, 0 failed, 2 skipped, and 0 TODO.
+- Post-merge raw E0006 interim evidence: `isFinal:false`, pending attempt; `beforeSrs=null`, `afterInterimSrs=null`, `afterNbestSrs=null`, and `studyLog=null`. The test asserted unchanged SRS and Study-log snapshots, zero SRS/Study-log writes, no score, no committed interim transcript, no result screen, and no advance.
+- Normal finalized E0006 retry in the same production browser test: PASS. One finalized attempt wrote SRS once and Study log once; `lastMatch=1`, `level5Count=1`, `noHintHistory=[2026-10-14T12:00:00Z]`, and the 24-hour review interval remained intact. The test asserted one pass and one `no_hint` entry.
+- PR Vocabulary validation: run `38654595593` PASS. Post-merge Vocabulary validation: run `38655489763` PASS.
+- PR paraphrase scope guard: run `38654595570` PASS.
+- PR Android shell build: run `38654595600` PASS, including `native:sync`, `assembleDebug`, `assembleRelease`, `lintDebug`, and Android Gate A.
+- Post-merge Android shell build: run `38655489768` PASS with the same build/lint tasks and Gate A emulator.
+- Post-merge Pages build/deployment: run `38655489865` PASS.
+- Final PR-head Application/Chromium, vocabulary, scope, and Android checks were green before merge. Post-merge Application, vocabulary, Android, and Pages checks were green on `614417ea209f4d18be4191755ca872029cf58d5f`.
 
 ## 8. Protected data integrity
 
@@ -125,17 +143,25 @@ No learning data or user study history was changed.
 
 - PR URL: [#343](https://github.com/miyatayuuma/english-pwa/pull/343).
 - PR implementation commit: `c9b69f8e21ff27b74057b79a21957b92384c9322`.
-- Final PR head SHA: pending post-report CI run.
-- Required Application / Chromium, vocabulary, paraphrase scope, Android assembleDebug, assembleRelease, lintDebug, and Android Gate A: pending.
-- Merge SHA / final main SHA / Issue #342 closure: pending; do not close before every hard gate passes.
+- Final PR head SHA: `8a9f6c4dc809f2be56c453a96bce4f6c72901a49`.
+- PR #343 merge SHA / main at P0 merge: `614417ea209f4d18be4191755ca872029cf58d5f`.
+- Application / Chromium, vocabulary validation, paraphrase scope guard, Android assembleDebug, assembleRelease, lintDebug, Android Gate A, and post-merge Pages deployment: PASS. Run IDs are listed in §7.
+- Issue #342 is CLOSED after the verified merge. Protected data blob IDs match initial main.
 
 ## 10. Issue #210 reconciliation and remaining risks
 
-Issue #210 remains OPEN. If the required browser CI passes, browser acceptance can be updated for finalized speech scoring, interim-only false-pass prevention, SRS persistence integrity, Study-log integrity, and the tested result integration scenarios. Physical-device visual acceptance, actual Pixel microphone/Android SpeechRecognizer behavior, hidden-page `visibilitychange` finalization, and Pixel ASR-08D PR #323 remain unverified. The repair does not close #210.
+Issue #210 remains OPEN and has been reconciled with this verified browser result:
+
+- Finalized speech scoring: PASS.
+- Interim-only false-PASS prevention: PASS.
+- SRS persistence integrity: PASS.
+- Study-log integrity: PASS.
+- Existing result integration: PASS for the tested scenarios.
+
+Physical-device visual acceptance, actual Pixel microphone/Android SpeechRecognizer behavior, hidden-page `visibilitychange` finalization, and Pixel ASR-08D PR #323 remain unverified. This repair does not close #210.
 
 ## 11. Remaining risks
 
-- The new Chromium E2E assertions have not yet run in this local environment; the required GitHub Application / Chromium job is the acceptance gate.
-- Android browser assets were staged locally, but Android builds and emulator Gate A remain pending CI.
+- Local Chromium and Android Gradle could not be run in this workspace; required GitHub browser and Android CI passed on the PR head and after merge.
 - Physical-device and Pixel-specific speech behavior remain outside this browser/controller validation.
 - Service-worker behavior while the page is hidden remains `NOT_VERIFIED`.
