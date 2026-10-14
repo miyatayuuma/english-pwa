@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   probe:
-    name: "\${{ matrix.label }} forced callback-order probe"
+    name: "${{ matrix.label }} forced callback-order probe"
     runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:
@@ -25,7 +25,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: "\${{ matrix.app_sha }}"
+          ref: "${{ matrix.app_sha }}"
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -50,7 +50,7 @@ jobs:
                               final String probeData = message.getData();
                               String probeCallbackId = "unknown";
                               try { probeCallbackId = new JSObject(probeData).getString("callbackId"); } catch (Exception ignored) {}
-                              boolean probeTarget = probeData.contains("\\\\"pluginId\\\\":\\\\"NativeGameTrace\\\\"") && probeData.contains("\\\\"methodName\\\\":\\\\"getCapability\\\\"");
+                              boolean probeTarget = probeData.contains("NativeGameTrace") && probeData.contains("getCapability");
                               if (probeTarget) Logger.warn("ORDER_PROBE listener-enter callbackId=" + probeCallbackId + " oldProxy=" + (javaScriptReplyProxy == null ? 0 : System.identityHashCode(javaScriptReplyProxy)) + " incomingProxy=" + System.identityHashCode(replyProxy));
                               postMessage(probeData);
                               if (probeTarget) {
@@ -96,7 +96,7 @@ jobs:
       - name: Assert expected independent probe result
         if: always()
         env:
-          EXPECTED: "\${{ matrix.expected }}"
+          EXPECTED: "${{ matrix.expected }}"
         run: |
           python3 - <<'PY'
           import glob, os, sys, xml.etree.ElementTree as ET
@@ -123,7 +123,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: callback-order-probe-\${{ matrix.label }}
+          name: callback-order-probe-${{ matrix.label }}
           path: |
             capacitor-ordering-probe.patch
             android-gate-a-exit-code.txt
