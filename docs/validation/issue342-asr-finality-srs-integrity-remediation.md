@@ -8,7 +8,9 @@
 - Initial `APP_VERSION`: `v5.109`
 - Working branch: `fix/issue342-asr-finality-srs-integrity`
 - Production target: `v5.110`
-- Pull request, PR head, merge SHA, and final main SHA: pending PR/CI.
+- Pull request: [#343](https://github.com/miyatayuuma/english-pwa/pull/343).
+- Implementation commit at PR creation: `c9b69f8e21ff27b74057b79a21957b92384c9322`.
+- Final PR head, merge SHA, and final main SHA: pending CI/merge and will be recorded in post-merge verification.
 
 ## 2. Confirmed P0 reproduction and pre-fix failure
 
@@ -121,7 +123,9 @@ No learning data or user study history was changed.
 
 ## 9. PR, CI, merge, and post-merge evidence
 
-- PR URL / head SHA: pending.
+- PR URL: [#343](https://github.com/miyatayuuma/english-pwa/pull/343).
+- PR implementation commit: `c9b69f8e21ff27b74057b79a21957b92384c9322`.
+- Final PR head SHA: pending post-report CI run.
 - Required Application / Chromium, vocabulary, paraphrase scope, Android assembleDebug, assembleRelease, lintDebug, and Android Gate A: pending.
 - Merge SHA / final main SHA / Issue #342 closure: pending; do not close before every hard gate passes.
 
