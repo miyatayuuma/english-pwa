@@ -142,7 +142,7 @@ function targetProductionWithCarrier(options) {
   };
 }
 
-function explicitParaphraseProduction({ entry, activeOccurrence, transcript, recognitionSegments, attemptId = null }) {
+function explicitParaphraseProduction({ entry, activeOccurrence, transcript, recognitionSegments, recognitionComplete, completionState, attemptId = null }) {
   const rawTranscript = String(transcript ?? '');
   const candidate = vocabularyCarrierSurface(rawTranscript);
   const gradingTranscript = candidate.removed ? candidate.surface : rawTranscript;
@@ -154,6 +154,8 @@ function explicitParaphraseProduction({ entry, activeOccurrence, transcript, rec
     if (!match || (!candidate.removed
       && match.authority !== 'explicit-equivalence'
       && match.authority !== 'grammatical-variant')) continue;
+    if (TARGETED_RECOGNITION_RULE_IDS.has(match.ruleId)
+      && !targetedRecognitionIsConfirmed(recognitionComplete, completionState)) continue;
     const matchedTokens = safeSpeechTokens(match.observed).map(token => token.value);
     // Preserve the complete-surface rule: a carrier may precede one accepted
     // paraphrase, but any additional answer tokens still reject it.
@@ -449,7 +451,7 @@ export function classifyVocabularySpeechAnswer({ entry, activeOccurrence = null,
     rank: 0,
     attemptId,
     displayPrimary: true,
-    recognitionComplete,
+    recognitionComplete: completeEvidence,
     completionState,
   });
   if (contained) {
@@ -471,6 +473,8 @@ export function classifyVocabularySpeechAnswer({ entry, activeOccurrence = null,
       activeOccurrence,
       transcript: primaryTranscript,
       recognitionSegments,
+      recognitionComplete: completeEvidence,
+      completionState,
       attemptId,
     });
     if (paraphrase) {
@@ -504,7 +508,7 @@ export function classifyVocabularySpeechAnswer({ entry, activeOccurrence = null,
       attemptId,
       rank: candidate.asrRank,
       displayPrimary: true,
-      recognitionComplete,
+      recognitionComplete: completeEvidence,
       completionState,
     });
     if (!accepted) continue;
