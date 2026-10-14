@@ -53,10 +53,11 @@ jobs:
           for label, root in (("PWA", Path("native-web")), ("Android", Path("android/app/src/main/assets/public"))):
               files = sorted(path for path in root.rglob("*") if path.is_file())
               digest = sha256()
+              separator = bytes([0])
               for path in files:
                   relative = path.relative_to(root).as_posix().encode("utf-8")
                   content = path.read_bytes()
-                  digest.update(relative + b"\\0" + len(content).to_bytes(8, "big") + content + b"\\0")
+                  digest.update(relative + separator + len(content).to_bytes(8, "big") + content + separator)
               print(f"STAGED_ASSET_IDENTITY {label} files={len(files)} sha256={digest.hexdigest()}")
           PY
       - name: Enable KVM
