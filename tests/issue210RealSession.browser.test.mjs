@@ -313,9 +313,15 @@ function resultDomSnapshot(page) {
 }
 
 async function verifyResult(page, { beforeSnapshot, activeCharacterId, milestonesBefore = {} }) {
-  await page.waitForFunction(() => !document.querySelector('#reviewCompleteView')?.hidden
-    && !!document.querySelector('#friendshipReview')
-    && (window.__issue210?.results?.length || 0) > 0, null, { timeout: 15_000 });
+  await page.waitForFunction(() => {
+    const view = document.querySelector('#reviewCompleteView');
+    const summary = window.__issue210?.results?.at(-1);
+    const stats = [...(view?.querySelectorAll('.friendship-review__stat strong') || [])].map(node => node.textContent.trim());
+    const conversations = Math.max(0, Number(summary?.conversationCount ?? summary?.cardsDone) || 0);
+    const revisits = Math.max(0, Number(summary?.retryConversationCount) || 0);
+    return !!view && !view.hidden && !!view.querySelector('#friendshipReview') && !!summary
+      && stats[0] === String(conversations) && stats[1] === String(revisits);
+  }, null, { timeout: 15_000 });
   const [screen, after, snapshot] = await Promise.all([
     resultDomSnapshot(page),
     relationshipState(page),
