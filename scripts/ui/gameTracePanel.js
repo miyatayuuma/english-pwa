@@ -2,7 +2,8 @@ import { getNativeGameTrace } from '../native/nativeSpeech.js';
 import { isNativeAndroid } from '../native/runtimePlatform.js';
 import { gameTraceCollector, setGameTraceCaptureEnabled } from '../native/gameTrace.js';
 import {
-  getGameTraceReadinessDiagnostics,
+  createGameTraceCapabilityRequest,
+  installGameTraceCapabilityBridgeDiagnostics,
   installGameTraceReadinessErrorCapture,
   recordGameTraceReadiness,
 } from '../native/gameTraceReadinessDiagnostics.js';
@@ -199,7 +200,25 @@ export async function initializeGameTracePanel() {
     });
     stage = 'native-capability';
     recordGameTraceReadiness('native-capability-requested');
-    const capability = await nativeBridge.getCapability();
+    installGameTraceCapabilityBridgeDiagnostics();
+    const capabilityRequest = createGameTraceCapabilityRequest('initializer');
+    let capability;
+    try {
+      capability = await nativeBridge.getCapability(capabilityRequest);
+    } catch (error) {
+      recordGameTraceReadiness('native-capability-promise-settled', {
+        requestId: capabilityRequest.diagnosticRequestId,
+        requestType: capabilityRequest.diagnosticRequestType,
+        resolutionStatus: 'rejected',
+        errorType: error?.name || 'UnknownError',
+      });
+      throw error;
+    }
+    recordGameTraceReadiness('native-capability-promise-settled', {
+      requestId: capabilityRequest.diagnosticRequestId,
+      requestType: capabilityRequest.diagnosticRequestType,
+      resolutionStatus: 'resolved',
+    });
     recordGameTraceReadiness('native-capability-resolved', {
       available: capability?.available === true,
       enabled: capability?.enabled === true,
@@ -221,8 +240,14 @@ export async function initializeGameTracePanel() {
       window.addEventListener('native-game-trace-launch-updated', async () => {
         let eventStage = 'launch-capability';
         recordGameTraceReadiness('launch-update-started');
+        const capabilityRequest = createGameTraceCapabilityRequest('launch-update');
         try {
-          const next = await nativeBridge.getCapability();
+          const next = await nativeBridge.getCapability(capabilityRequest);
+          recordGameTraceReadiness('native-capability-promise-settled', {
+            requestId: capabilityRequest.diagnosticRequestId,
+            requestType: capabilityRequest.diagnosticRequestType,
+            resolutionStatus: 'resolved',
+          });
           recordGameTraceReadiness('launch-capability-resolved', {
             available: next?.available === true,
             enabled: next?.enabled === true,
@@ -251,6 +276,12 @@ export async function initializeGameTracePanel() {
           panel?.remove();
           panel = null;
           expanded = false;
+          recordGameTraceReadiness('native-capability-promise-settled', {
+            requestId: capabilityRequest.diagnosticRequestId,
+            requestType: capabilityRequest.diagnosticRequestType,
+            resolutionStatus: 'rejected',
+            errorType: error?.name || 'UnknownError',
+          });
           recordGameTraceReadiness('launch-update-failed', {
             failedStage: eventStage,
             errorType: error?.name || 'UnknownError',

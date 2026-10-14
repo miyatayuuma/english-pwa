@@ -113,6 +113,12 @@ public class MainActivity extends BridgeActivity {
     }
 
     synchronized void recordNativeGameTraceCapabilityEvent(String stage, Boolean available, Boolean enabled) {
+        recordNativeGameTraceCapabilityEvent(stage, available, enabled, null, null, null, null,
+            Thread.currentThread().getName());
+    }
+
+    synchronized void recordNativeGameTraceCapabilityEvent(String stage, Boolean available, Boolean enabled,
+            String requestId, String requestType, String callbackId, String resolutionStatus, String threadName) {
         if (!BuildConfig.DEBUG) return;
         JSObject event = new JSObject();
         event.put("sequence", ++nativeGameTraceGateSequence);
@@ -122,11 +128,43 @@ public class MainActivity extends BridgeActivity {
         if (available != null) event.put("available", available);
         if (enabled != null) event.put("enabled", enabled);
         event.put("launchEnabled", nativeSpeechGameTraceLaunch);
+        if (isBoundedDiagnosticId(requestId)) event.put("requestId", requestId);
+        if (isCapabilityRequestType(requestType)) event.put("requestType", requestType);
+        if (isBoundedCallbackId(callbackId)) event.put("callbackId", callbackId);
+        if (isCapabilityResolutionStatus(resolutionStatus)) event.put("resolutionStatus", resolutionStatus);
+        if (isBoundedThreadName(threadName)) event.put("threadName", threadName);
         nativeGameTraceGateEvents.put(event);
         if (nativeGameTraceGateEvents.length() > 60) nativeGameTraceGateEvents.remove(0);
         Log.i("NativeGameTraceGate", stage
             + " available=" + available + " enabled=" + enabled
-            + " launchEnabled=" + nativeSpeechGameTraceLaunch);
+            + " launchEnabled=" + nativeSpeechGameTraceLaunch
+            + " requestId=" + (isBoundedDiagnosticId(requestId) ? requestId : "none")
+            + " requestType=" + (isCapabilityRequestType(requestType) ? requestType : "none")
+            + " callbackId=" + (isBoundedCallbackId(callbackId) ? callbackId : "none")
+            + " resolutionStatus=" + (isCapabilityResolutionStatus(resolutionStatus) ? resolutionStatus : "none")
+            + " threadName=" + (isBoundedThreadName(threadName) ? threadName : "unknown"));
+    }
+
+    private static boolean isBoundedDiagnosticId(String value) {
+        return value != null && value.length() <= 64 && value.matches("[A-Za-z0-9_-]{1,64}");
+    }
+
+    private static boolean isCapabilityRequestType(String value) {
+        return "initializer".equals(value) || "launch-update".equals(value)
+            || "gate-snapshot".equals(value) || "gate-return".equals(value);
+    }
+
+    private static boolean isBoundedCallbackId(String value) {
+        return value != null && value.length() <= 20 && value.matches("[0-9]{1,20}");
+    }
+
+    private static boolean isCapabilityResolutionStatus(String value) {
+        return "requested".equals(value) || "constructed".equals(value)
+            || "invoked".equals(value) || "returned".equals(value);
+    }
+
+    private static boolean isBoundedThreadName(String value) {
+        return value != null && value.length() <= 40 && value.matches("[A-Za-z0-9._-]{1,40}");
     }
 
     synchronized JSObject getNativeGameTraceReadinessDiagnostics() {
@@ -142,6 +180,13 @@ public class MainActivity extends BridgeActivity {
             result.put("activityLifecycle", activityLifecycle);
             result.put("launchEnabled", isNativeSpeechGameTraceLaunchEnabled());
             result.put("clock", "SystemClock.elapsedRealtimeNanos since boot");
+            boolean webMessageListenerSupported = androidx.webkit.WebViewFeature.isFeatureSupported(
+                androidx.webkit.WebViewFeature.WEB_MESSAGE_LISTENER);
+            boolean legacyBridgeEnabled = getBridge() != null && getBridge().getConfig().isUsingLegacyBridge();
+            result.put("webMessageListenerSupported", webMessageListenerSupported);
+            result.put("legacyBridgeEnabled", legacyBridgeEnabled);
+            result.put("callbackTransport", !legacyBridgeEnabled && webMessageListenerSupported
+                ? "web-message-listener" : "legacy-javascript-interface");
             result.put("events", new JSONArray(nativeGameTraceGateEvents.toString()));
         } catch (JSONException ignored) {
             // The diagnostic is best-effort and contains metadata only.
