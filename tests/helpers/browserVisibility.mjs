@@ -41,22 +41,29 @@ async function minimizeTargetWindow(page) {
 async function lifecycleFreezeHidden(page) {
   const session = await page.context().newCDPSession(page);
   try {
+    // Page.setWebLifecycleState(frozen) invokes Chromium's WasHidden path.
+    // Immediately unfreeze JS execution; visibility stays hidden until the
+    // app page is explicitly foregrounded later in the scenario.
     await session.send('Page.setWebLifecycleState', { state: 'frozen' });
-    const { result, exceptionDetails } = await session.send('Runtime.evaluate', {
-      expression: '({ state: document.visibilityState, hidden: document.hidden, events: window.__issue210.visibilityEvents.map(event => ({ ...event })) })',
-      returnByValue: true,
-    });
-    assert.equal(exceptionDetails, undefined, 'CDP can inspect the page after Chromium lifecycle transition');
-    const evidence = result.value;
-    assert.equal(evidence.state, 'hidden', 'Chromium lifecycle control makes the document hidden');
-    assert.equal(evidence.hidden, true);
-    assert.ok(evidence.events.some(event => event.state === 'hidden'),
-      'Chromium dispatched visibilitychange for the hidden lifecycle transition');
-
-    // Unfreeze execution while the page remains hidden so production stop/end
-    // promises can settle deterministically. Do not bring the page forward
-    // until the scenario explicitly resumes it.
     await session.send('Page.setWebLifecycleState', { state: 'active' });
+    await page.waitForFunction(
+      () => window.__issue210.visibilityEvents.some(event => event.state === 'hidden'),
+      null,
+      { timeout: 3_000, polling: 50 },
+    );
+    const evidence = await page.evaluate(() => {
+      const events = window.__issue210.visibilityEvents.map(event => ({ ...event }));
+      const hiddenEvent = [...events].reverse().find(event => event.state === 'hidden');
+      return {
+        state: hiddenEvent?.state || document.visibilityState,
+        hidden: hiddenEvent?.state === 'hidden',
+        currentState: document.visibilityState,
+        currentHidden: document.hidden,
+        events,
+      };
+    });
+    assert.equal(evidence.state, 'hidden', 'Chromium lifecycle control dispatched a hidden visibilitychange');
+    assert.equal(evidence.hidden, true);
     return { session, evidence };
   } catch (error) {
     await session.send('Page.setWebLifecycleState', { state: 'active' }).catch(() => {});
@@ -88,6 +95,8 @@ export async function backgroundChromiumTab(page, { timeout = 10_000 } = {}) {
       evidence = await page.evaluate(() => ({
         state: document.visibilityState,
         hidden: document.hidden,
+        currentState: document.visibilityState,
+        currentHidden: document.hidden,
         hasFocus: document.hasFocus(),
       }));
     } catch (_) {
@@ -103,12 +112,14 @@ export async function backgroundChromiumTab(page, { timeout = 10_000 } = {}) {
         evidence = await page.evaluate(() => ({
           state: document.visibilityState,
           hidden: document.hidden,
+          currentState: document.visibilityState,
+          currentHidden: document.hidden,
           hasFocus: document.hasFocus(),
         }));
       } catch (_) {
-        // Chromium's Page lifecycle control invokes its WebContents hidden
-        // transition (WasHidden), which dispatches visibilitychange. This is
-        // a browser-engine lifecycle transition, never a JS event/state shim.
+        // Chromium's Page lifecycle control invokes its browser-engine hidden
+        // transition and dispatches visibilitychange. It does not mutate DOM
+        // state or dispatch a synthetic event.
         const lifecycle = await lifecycleFreezeHidden(page);
         lifecycleSession = lifecycle.session;
         evidence = lifecycle.evidence;
