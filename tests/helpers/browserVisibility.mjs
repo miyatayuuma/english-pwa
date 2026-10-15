@@ -70,8 +70,9 @@ export async function backgroundChromiumTab(page, { timeout = 10_000 } = {}) {
     if (!foregroundTab) foregroundTab = await context.newPage();
     else await foregroundTab.waitForLoadState('domcontentloaded', { timeout: 5_000 }).catch(() => {});
 
-    method = 'window-open-tab';
+    method = 'playwright-bring-to-front-tab';
     try {
+      await foregroundTab.bringToFront();
       const evidence = await waitForHidden(page, 1_500);
       return {
         evidence: { ...evidence, method },
@@ -83,8 +84,8 @@ export async function backgroundChromiumTab(page, { timeout = 10_000 } = {}) {
         },
       };
     } catch (_) {
-      // If the new page was not selected as a tab, use the browser's real
-      // keyboard shortcut to move to the next tab in the active window.
+      // The explicit Playwright foreground switch did not produce a native
+      // hidden transition; try the X11 keyboard and window controls next.
     }
 
     await page.bringToFront();
