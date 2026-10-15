@@ -132,10 +132,32 @@ export async function backgroundChromiumTab(page, { timeout = 10_000 } = {}) {
         // Continue cleanup even when the X11 session is unavailable.
       }
     }
+    const pageState = await page.evaluate(() => ({
+      visibility: document.visibilityState,
+      hidden: document.hidden,
+      hasFocus: document.hasFocus(),
+      issueEvents: window.__issue210?.visibilityEvents || null,
+      vocabularyEvents: window.__vocabularyHiddenAudit?.visibilityEvents || null,
+    })).catch(() => null);
+    const x11State = {
+      activeWindow: (() => { try { return x11('xdotool', ['getactivewindow']); } catch (_) { return null; } })(),
+      focusWindow: (() => { try { return x11('xdotool', ['getwindowfocus']); } catch (_) { return null; } })(),
+      windows: (() => { try { return x11('wmctrl', ['-lpG']); } catch (_) { return null; } })(),
+      netWmState: (() => {
+        try { return x11('xprop', ['-id', x11WindowId, '_NET_WM_STATE']); }
+        catch (_) { return null; }
+      })(),
+    };
+    const popupState = await foregroundTab?.evaluate(() => ({
+      url: location.href,
+      visibility: document.visibilityState,
+      hidden: document.hidden,
+      title: document.title,
+    })).catch(() => null);
     await page.bringToFront().catch(() => {});
     await foregroundTab?.close().catch(() => {});
     await context.unroute(targetUrl, routeHandler).catch(() => {});
     const detail = error instanceof Error ? `${error.name}: ${error.message}` : String(error);
-    throw new Error(`Chromium X11/tab lifecycle did not produce verified hidden state (${detail})`, { cause: error });
+    throw new Error(`Chromium X11/tab lifecycle did not produce verified hidden state: ${JSON.stringify({ method, x11WindowId, pageState, popupState, x11State })} (${detail})`, { cause: error });
   }
 }
