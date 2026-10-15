@@ -36,17 +36,17 @@ https://github.com/miyatayuuma/english-pwa/pull/347#discussion_r4279499100
 
 ## Verified runtime evidence
 
-Runtime commit `714e799011727e23bf94e925faae658152f574c5`:
+Final tested runtime commit `59f418f4585058786833703bc68f784937bf0d87`:
 
-- Application run https://github.com/miyatayuuma/english-pwa/actions/runs/38697405706 : **689 total / 679 PASS / 8 FAIL / 2 pre-existing ASR-09C/09D SKIP / 0 TODO**. All eight failures occur at the unchanged v5.111 assertion before those legacy scenarios run.
-- New mode-aware production-UI Chromium suite: **28/28 PASS**, no skip. Covers all 360/390/430 viewports; all mode navigation/switch/cancel; fixed counts; real queues; 49/50 shortage; manual order/cap/reset; both reload directions; exactly-once/replay/stale/malformed rejection; Vocabulary isolation; zero recovery; legacy restoration; storage invariance; non-due recency across reload; Issue #342 interim-only no-grade; permission gesture/Cancel ordering.
+- Application run https://github.com/miyatayuuma/english-pwa/actions/runs/38698000146 : **689 total / 679 PASS / 8 FAIL / 2 pre-existing ASR-09C/09D SKIP / 0 TODO**. All eight failures occur at the unchanged v5.111 assertion before those legacy scenarios run.
+- New mode-aware production-UI Chromium suite: **26/26 PASS**, no skip. Covers all 360/390/430 viewports; all mode navigation/switch/cancel; fixed counts; real queues; 49/50 shortage; manual order/cap/reset; both reload directions; exactly-once/replay/stale/malformed rejection; Vocabulary isolation; zero recovery; legacy restoration; storage invariance; non-due recency across reload; Issue #342 interim-only no-grade; permission gesture/Cancel ordering.
 - Existing saved-prompt audio restoration and options-submit permission tests: PASS after ordering repair.
-- Android run https://github.com/miyatayuuma/english-pwa/actions/runs/38697405774 : Debug/Release/Lint and Gate A PASS. Gate A has five tests.
+- Android run https://github.com/miyatayuuma/english-pwa/actions/runs/38698000108 : Debug/Release/Lint and Gate A PASS. Gate A has five tests.
 - Vocabulary validation and paraphrase scope guard: PASS at the same runtime commit.
-- Mobile screenshot/JSON artifact: https://github.com/miyatayuuma/english-pwa/actions/runs/38697405706/artifacts/11955167334
+- Mobile screenshot/JSON artifact: https://github.com/miyatayuuma/english-pwa/actions/runs/38698000146/artifacts/11955073511
 - Evidence contains actual checkout SHA, APP_VERSION, viewport, controls, preview/actual/launch counts, storage snapshots and page/console errors. Screenshots were downloaded and visually inspected; no source imagery was generated.
 
-A final summary-label compatibility refinement preserves the existing `対象 N文` text alongside the new detailed count breakdown; its final-head CI is recorded in the PR conversation/body. No protected test file was changed to obtain acceptance.
+The summary preserves the existing `対象 N文` text alongside the new detailed count breakdown, and the real zero-candidate browser scenario asserts that compatibility. All nine final-head mobile screenshots and 32 JSON evidence records were downloaded and checked: PASS records, v5.112 and zero recorded page/console errors. Actual CI checkout SHA is `644a0a506d2d5dc615277d09534a29a43f82837b` (the synthetic PR merge); its runtime tree matches the PR source. No protected test file was changed to obtain acceptance.
 
 ## Local validation and synchronized assets
 
