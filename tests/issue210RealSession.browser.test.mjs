@@ -10,7 +10,7 @@ import { buildExchangeResult } from '../scripts/app/relationshipMode.js';
 import { reachedMilestones } from '../scripts/app/relationshipCore.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const INITIAL_MAIN_SHA = '4a01d9e6d8f4c080d738dc87dfc9c5082afb9d29';
+const INITIAL_MAIN_SHA = '447063b6160ce3919a369dd7136512d41fafd6ce';
 const FIXED_NOW = Date.parse('2026-10-14T12:00:00.000Z');
 const FIXED_DAY = '2026-10-14';
 const HOUR = 60 * 60 * 1000;
@@ -111,7 +111,8 @@ async function newFixturePage({ ids, levels = {}, storageSeed = {}, staleFilters
       static now() { return fixedNow; }
     }
     Object.defineProperty(window, 'Date', { value: FixedDate, configurable: true });
-    window.__issue210 = { results: [], writes: {}, permissionCalls: 0 };
+    window.__issue210 = { results: [], writes: {}, permissionCalls: 0, visibilityEvents: [] };
+    document.addEventListener('visibilitychange', () => window.__issue210.visibilityEvents.push({ state: document.visibilityState, at: Math.round(performance.now()) }));
     document.addEventListener('english-pwa:session-result', event => {
       window.__issue210.results.push(JSON.parse(JSON.stringify(event.detail || {})));
     });
@@ -150,6 +151,7 @@ async function newFixturePage({ ids, levels = {}, storageSeed = {}, staleFilters
 
   const externalRequests = [];
   const pageErrors = [];
+  const consoleErrors = [];
   await context.route('**/*', async route => {
     const requested = new URL(route.request().url());
     if (requested.origin === baseUrl) return route.continue();
@@ -158,6 +160,7 @@ async function newFixturePage({ ids, levels = {}, storageSeed = {}, staleFilters
   });
   const page = await context.newPage();
   page.on('pageerror', error => pageErrors.push(error.message));
+  page.on('console', message => { if (message.type() === 'error') consoleErrors.push(message.text()); });
   page.on('request', request => {
     if (new URL(request.url()).origin !== baseUrl) externalRequests.push(request.url());
   });
@@ -173,7 +176,7 @@ async function newFixturePage({ ids, levels = {}, storageSeed = {}, staleFilters
   assert.equal(await page.evaluate(() => window.APP_VERSION), 'v5.110', 'browser fixture uses the P0 finality repair version');
   await page.waitForFunction(() => !document.querySelector('#loadingOverlay')?.classList.contains('show'));
   await page.evaluate(() => { window.__issue210.writes = {}; });
-  return { context, page, pageErrors, externalRequests };
+  return { context, page, pageErrors, consoleErrors, externalRequests };
 }
 
 async function openOptions(page) {
@@ -883,6 +886,619 @@ browserTest('Issue 210 relationship cap: passing a shared item at best_friend in
     assert.equal(result.screen.notices.length, 0);
     await assertQuietBrowser(t, fixturePage);
     await auditDiagnostic(t, page, 'cap', { itemId: 'E0212', beforeSrs: levels.E0212, afterSrs, beforeRelationships: beforeSnapshot, afterRelationships: afterSnapshot, result: result.screen });
+  } finally {
+    await context.close();
+  }
+});
+
+
+/**
+ * Cause a real Chromium page lifecycle transition by foregrounding a second
+ * page in the same BrowserContext. Dispatching visibilitychange by itself is
+ * not accepted as evidence: the app page must report hidden after the switch.
+ */
+async function backgroundTransition(page, context) {
+  const initialState = await page.evaluate(() => document.visibilityState);
+  assert.equal(initialState, 'visible', 'the real-session page starts foregrounded');
+  await page.evaluate(() => { window.__issue210.visibilityEvents.length = 0; });
+  const foregroundPage = await context.newPage();
+  await foregroundPage.goto('about:blank');
+  await foregroundPage.bringToFront();
+  await page.waitForFunction(() => document.visibilityState === 'hidden', null, { timeout: 10_000 });
+  const evidence = await page.evaluate(() => ({
+    state: document.visibilityState,
+    events: window.__issue210.visibilityEvents.map(event => ({ ...event })),
+  }));
+  assert.equal(evidence.state, 'hidden', 'Chromium reports the production page is actually hidden');
+  assert.ok(evidence.events.some(event => event.state === 'hidden'),
+    'the real hidden transition dispatched visibilitychange');
+  return { foregroundPage, evidence };
+}
+
+async function restoreForeground(page, foregroundPage) {
+  await page.bringToFront();
+  await page.waitForFunction(() => document.visibilityState === 'visible', null, { timeout: 10_000 });
+  if (foregroundPage && !foregroundPage.isClosed()) await foregroundPage.close();
+  await page.waitForFunction(() => document.visibilityState === 'visible', null, { timeout: 10_000 });
+}
+
+async function readSessionClosure(page) {
+  return page.evaluate(day => {
+    try {
+      const log = JSON.parse(localStorage.getItem('studyLogV1') || '{}');
+      return log?.[day]?.session_closure || null;
+    } catch (_) { return null; }
+  }, FIXED_DAY);
+}
+
+async function waitForAnySessionClosure(page) {
+  await page.waitForFunction(day => {
+    try {
+      const log = JSON.parse(localStorage.getItem('studyLogV1') || '{}');
+      return !!log?.[day]?.session_closure?.reason;
+    } catch (_) { return false; }
+  }, FIXED_DAY, { timeout: 15_000 });
+  return readSessionClosure(page);
+}
+
+async function waitForBackgroundClosure(page) {
+  await page.waitForFunction(day => {
+    try {
+      const log = JSON.parse(localStorage.getItem('studyLogV1') || '{}');
+      return log?.[day]?.session_closure?.reason === 'background';
+    } catch (_) { return false; }
+  }, FIXED_DAY, { timeout: 15_000 });
+  return readSessionClosure(page);
+}
+
+async function waitForStopRequest(page, attemptId) {
+  await page.waitForFunction(id => window.__issue210Speech?.events?.some(event =>
+    event.type === 'stop-request' && event.attemptId === id), attemptId, { timeout: 10_000 });
+}
+
+async function assertHiddenBrowserQuiet(t, fixturePage) {
+  await assertQuietBrowser(t, fixturePage);
+  assert.deepEqual(fixturePage.consoleErrors, [], 'hidden-page scenarios report no browser console errors');
+}
+
+browserTest("BG-01/BG-11/BG-14: real hidden exit closes unanswered session, resume stays idle, and normal start is clean", async t => {
+  const fixturePage = await newFixturePage({ ids: ['E0006', 'E0007', 'E0035'] });
+  const { context, page } = fixturePage;
+  try {
+    await startManualSession(page, { characterId: 'bob', ids: ['E0006', 'E0007'] });
+    const before = await storageSnapshot(page);
+    const transition = await backgroundTransition(page, context);
+    const closure = await waitForBackgroundClosure(page);
+    await page.waitForFunction(() => document.querySelector('#homeView')?.hidden === false
+      && document.querySelector('#studyView')?.hidden === true
+      && document.querySelector('#reviewCompleteView')?.hidden === true);
+    const after = await storageSnapshot(page);
+    assert.deepEqual(after.itemLevel, before.itemLevel, 'BG-01: unanswered items leave SRS unchanged');
+    assert.equal(after.studyLog[FIXED_DAY]?.passes || 0, before.studyLog[FIXED_DAY]?.passes || 0,
+      'BG-01: unanswered items do not add a study pass');
+    assert.equal(closure.reason, 'background');
+    assert.equal(closure.cardsDone, 0);
+    assert.equal(after.resultEvents, 0, 'background does not render the normal completed result');
+    assert.equal(await page.locator('#micStatus').getAttribute('data-state'), 'off');
+    assert.equal(transition.evidence.state, 'hidden');
+    assert.equal(transition.evidence.events.filter(event => event.state === 'hidden').length, 1);
+
+    await restoreForeground(page, transition.foregroundPage);
+    const resumed = await storageSnapshot(page);
+    assert.equal(resumed.studyLog[FIXED_DAY].session_closure.reason, 'background',
+      'BG-11: returning visible does not resume or rewrite the closed session');
+    assert.equal(await page.locator('#homeView').isHidden(), false);
+    assert.equal(await page.locator('#studyView').isHidden(), true);
+    assert.equal(await page.locator('#micStatus').getAttribute('data-state'), 'off');
+
+    await openOptions(page);
+    assert.equal(await page.locator('#playOptionsManual input:checked').count(), 0,
+      'BG-14: the interrupted manual queue is not retained');
+    assert.equal(await page.locator('[data-session-mode="auto"]').getAttribute('class').then(value => value.includes('is-active')), true,
+      'BG-14: next options visit uses the normal automatic mode');
+    await page.locator('#playOptionsDialog .focus-sheet__close').click();
+    await page.locator('.friendship-hero__cta').click();
+    await page.waitForFunction(() => !document.querySelector('#studyView')?.hidden
+      && !!document.querySelector('#enText')?.dataset.itemId, null, { timeout: 15_000 });
+    assert.equal(await page.locator('#reviewCompleteView').isHidden(), true);
+    await page.evaluate(() => document.querySelector('#learningHomeReturn')?.click());
+    await page.waitForFunction(() => !document.querySelector('#homeView')?.hidden
+      && document.querySelector('#studyView')?.hidden);
+    await assertHiddenBrowserQuiet(t, fixturePage);
+    await auditDiagnostic(t, page, 'BG-01-BG-11-BG-14', {
+      visibilityBefore: 'visible',
+      visibilityAfter: transition.evidence.state,
+      visibilityEvents: transition.evidence.events,
+      closure,
+      after: { itemLevel: after.itemLevel, studyLog: after.studyLog, resultEvents: after.resultEvents },
+      resumed: { homeVisible: true, micState: 'off', closureReason: resumed.studyLog[FIXED_DAY].session_closure.reason },
+      normalStartItemId: await page.locator('#enText').getAttribute('data-item-id'),
+    });
+  } finally {
+    await context.close();
+  }
+});
+
+browserTest("BG-02/BG-05/BG-13: finalized answer before hidden is preserved once across closure and reload", async t => {
+  const fixturePage = await newFixturePage({ ids: ['E0006', 'E0007'] });
+  const { context, page } = fixturePage;
+  try {
+    await startManualSession(page, { characterId: 'bob', ids: ['E0006', 'E0007'] });
+    const before = await storageSnapshot(page);
+    const committed = await injectAndStop(page, itemsById.get('E0006').en);
+    assertRecognitionEvidence(committed, itemsById.get('E0006').en, true);
+    const committedSrs = await waitForSrs(page, 'E0006', { field: 'lastMatch', op: 'eq', value: 1 });
+    await waitForItem(page, 'E0007');
+    const afterCommit = await storageSnapshot(page);
+    assert.equal(afterCommit.writes.itemLevelV1 - (before.writes.itemLevelV1 || 0), 1,
+      'BG-05: the finalized answer caused exactly one SRS storage write');
+    assert.equal(afterCommit.studyLog[FIXED_DAY]?.passes || 0, (before.studyLog[FIXED_DAY]?.passes || 0) + 1,
+      'BG-05: the finalized answer caused one pass entry');
+
+    const transition = await backgroundTransition(page, context);
+    const closure = await waitForBackgroundClosure(page);
+    const afterHidden = await storageSnapshot(page);
+    assert.equal(closure.reason, 'background');
+    assert.equal(closure.cardsDone, 1);
+    assert.equal(closure.conversationCount, 1);
+    assert.deepEqual(afterHidden.itemLevel.E0006, committedSrs, 'BG-02: committed SRS survives the background close');
+    assert.equal(afterHidden.itemLevel.E0007, undefined, 'BG-02: unanswered second item remains ungraded');
+    assert.equal(afterHidden.studyLog[FIXED_DAY]?.passes || 0, 1, 'BG-02: only the committed answer is in the pass log');
+    assert.equal(afterHidden.writes.itemLevelV1, afterCommit.writes.itemLevelV1,
+      'background closure does not write SRS again');
+    assert.equal(afterHidden.resultEvents, 0, 'background close has no completion result event');
+    await restoreForeground(page, transition.foregroundPage);
+    await page.reload();
+    await page.waitForFunction(() => !document.querySelector('#homeView')?.hidden
+      && typeof window.__RELATIONSHIP_GAME_STATE__ === 'function');
+    const afterReload = await storageSnapshot(page);
+    assert.deepEqual(afterReload.itemLevel, afterHidden.itemLevel, 'BG-13: reload preserves committed SRS');
+    assert.deepEqual(afterReload.studyLog, afterHidden.studyLog, 'BG-13: reload preserves pass and closure');
+    assert.equal(afterReload.studyLog[FIXED_DAY].session_closure.reason, 'background');
+    await assertHiddenBrowserQuiet(t, fixturePage);
+    await auditDiagnostic(t, page, 'BG-02-BG-05-BG-13', {
+      visibility: transition.evidence,
+      attemptId: committed.attemptId,
+      committedSrs,
+      afterHidden: { itemLevel: afterHidden.itemLevel, studyLog: afterHidden.studyLog, writes: afterHidden.writes },
+      afterReload: { itemLevel: afterReload.itemLevel, studyLog: afterReload.studyLog },
+      closure,
+    });
+  } finally {
+    await context.close();
+  }
+});
+
+browserTest("BG-03/BG-04: interim-only and exact interim N-best remain NO GRADE on real hidden exit", async t => {
+  const cases = [
+    { id: 'BG-03', label: 'exact primary interim', candidates: [itemsById.get('E0006').en] },
+    { id: 'BG-04', label: 'exact rank-1 interim N-best', candidates: ['an unrelated phrase', itemsById.get('E0006').en] },
+  ];
+  for (const scenario of cases) {
+    const fixturePage = await newFixturePage({ ids: ['E0006'] });
+    const { context, page } = fixturePage;
+    try {
+      await startManualSession(page, { characterId: 'bob', ids: ['E0006'] });
+      const before = await storageSnapshot(page);
+      const attemptId = await beginAttempt(page);
+      const interim = await page.evaluate(candidates => {
+        const mock = window.__issue210Speech.latest;
+        mock.emitInterim(candidates);
+        return [...window.__issue210Speech.events].reverse()
+          .find(event => event.type === 'result' && event.attemptId === mock.attemptId);
+      }, scenario.candidates);
+      assert.equal(interim.isFinal, false);
+      assert.equal(interim.recognitionComplete, false);
+      if (scenario.id === 'BG-04') {
+        assert.equal(interim.rankedAlternatives[1].transcript, itemsById.get('E0006').en);
+        assert.equal(interim.rankedAlternatives[1].asrRank, 1);
+      }
+      const transition = await backgroundTransition(page, context);
+      await page.waitForFunction(id => window.__issue210Speech.events.some(event =>
+        event.type === 'end' && event.attemptId === id), attemptId, { timeout: 10_000 });
+      const closure = await waitForBackgroundClosure(page);
+      const after = await storageSnapshot(page);
+      assert.deepEqual(after.itemLevel, before.itemLevel, scenario.id + ': no SRS change from interim evidence');
+      assert.equal(after.studyLog[FIXED_DAY]?.passes || 0, before.studyLog[FIXED_DAY]?.passes || 0,
+        scenario.id + ': no PASS history from interim evidence');
+      assert.equal(after.writes.itemLevelV1 || 0, before.writes.itemLevelV1 || 0,
+        scenario.id + ': no SRS write');
+      assert.equal(after.resultEvents, 0);
+      assert.equal(closure.reason, 'background');
+      assert.equal(closure.cardsDone, 0);
+      const timeline = await page.evaluate(() => ({
+        visibility: window.__issue210.visibilityEvents.map(event => ({ ...event })),
+        speech: window.__issue210Speech.events.map(event => ({ ...event })),
+      }));
+      const hiddenAt = timeline.visibility.find(event => event.state === 'hidden')?.at;
+      const stopAt = timeline.speech.find(event => event.type === 'stop-request' && event.attemptId === attemptId)?.at;
+      assert.ok(Number.isFinite(hiddenAt) && Number.isFinite(stopAt) && hiddenAt <= stopAt,
+        scenario.id + ': actual hidden transition precedes production stop request');
+      await restoreForeground(page, transition.foregroundPage);
+      await assertHiddenBrowserQuiet(t, fixturePage);
+      await auditDiagnostic(t, page, scenario.id, {
+        label: scenario.label,
+        visibility: transition.evidence,
+        attemptId,
+        interim,
+        timeline,
+        after: { itemLevel: after.itemLevel, studyLog: after.studyLog, writes: after.writes },
+        closure,
+      });
+    } finally {
+      await context.close();
+    }
+  }
+});
+
+browserTest("BG-06: final ASR callback races with the visibility boundary without duplicate attempt commits", async t => {
+  const variants = [
+    { name: 'final-callback-before-hidden', deliverAfterHidden: false },
+    { name: 'final-callback-after-hidden-stop', deliverAfterHidden: true },
+  ];
+  for (const variant of variants) {
+    const fixturePage = await newFixturePage({ ids: ['E0006', 'E0007'] });
+    const { context, page } = fixturePage;
+    try {
+      await startManualSession(page, { characterId: 'bob', ids: ['E0006', 'E0007'] });
+      const before = await storageSnapshot(page);
+      const attemptId = await beginAttempt(page);
+      if (!variant.deliverAfterHidden) {
+        await page.evaluate(transcript => window.__issue210Speech.latest.emitFinal(transcript),
+          itemsById.get('E0006').en);
+      } else {
+        await page.evaluate(transcript => {
+          window.__issue210Speech.latest.stopPlan = {
+            final: transcript,
+            finalDelayMs: 0,
+            holdTerminal: true,
+          };
+        }, itemsById.get('E0006').en);
+      }
+      const transition = await backgroundTransition(page, context);
+      await waitForStopRequest(page, attemptId);
+      if (variant.deliverAfterHidden) {
+        await page.waitForFunction(id => window.__issue210Speech.events.some(event =>
+          event.type === 'result' && event.attemptId === id && event.isFinal === true), attemptId, { timeout: 10_000 });
+        const beforeTerminal = await storageSnapshot(page);
+        assert.deepEqual(beforeTerminal.itemLevel, before.itemLevel,
+          'provider result alone is not committed before its terminal callback');
+        await page.evaluate(() => window.__issue210Speech.latest.emitEnd());
+      }
+      await page.waitForFunction(id => window.__issue210Speech.events.some(event =>
+        event.type === 'end' && event.attemptId === id), attemptId, { timeout: 10_000 });
+      const closure = await waitForBackgroundClosure(page);
+      const after = await storageSnapshot(page);
+      const timeline = await page.evaluate(() => ({
+        visibility: window.__issue210.visibilityEvents.map(event => ({ ...event })),
+        speech: window.__issue210Speech.events.map(event => ({ ...event })),
+      }));
+      const hiddenAt = timeline.visibility.find(event => event.state === 'hidden')?.at;
+      const resultAt = timeline.speech.find(event => event.type === 'result' && event.attemptId === attemptId)?.at;
+      const endAt = timeline.speech.find(event => event.type === 'end' && event.attemptId === attemptId)?.at;
+      assert.ok(Number.isFinite(hiddenAt) && Number.isFinite(resultAt) && Number.isFinite(endAt));
+      assert.ok(after.writes.itemLevelV1 - (before.writes.itemLevelV1 || 0) <= 1,
+        'one attempt cannot create multiple SRS writes');
+      assert.ok((after.studyLog[FIXED_DAY]?.passes || 0) - (before.studyLog[FIXED_DAY]?.passes || 0) <= 1,
+        'one attempt cannot create multiple pass entries');
+      assert.ok(closure.cardsDone <= 1, 'session closure cannot count one attempt twice');
+      assert.equal(after.resultEvents, 0, 'background close must not show the completion result');
+      if (variant.deliverAfterHidden) assert.ok(hiddenAt < resultAt && resultAt < endAt,
+        'BG-06 records the exact hidden → final result → terminal callback order');
+      else assert.ok(resultAt < hiddenAt && hiddenAt < endAt,
+        'BG-06 records the exact final result → hidden → terminal callback order');
+      await restoreForeground(page, transition.foregroundPage);
+      await assertHiddenBrowserQuiet(t, fixturePage);
+      await auditDiagnostic(t, page, 'BG-06-' + variant.name, {
+        visibility: transition.evidence,
+        attemptId,
+        eventOrder: variant.name,
+        savedSrs: after.itemLevel.E0006 || null,
+        srsWrites: after.writes.itemLevelV1 || 0,
+        passes: after.studyLog[FIXED_DAY]?.passes || 0,
+        timeline,
+        closure,
+      });
+    } finally {
+      await context.close();
+    }
+  }
+});
+
+browserTest("BG-07/BG-08: delayed end completes safely; missing end reproduces a stuck background finalizer", async t => {
+  const delayed = await newFixturePage({ ids: ['E0006'] });
+  try {
+    await startManualSession(delayed.page, { characterId: 'bob', ids: ['E0006'] });
+    const before = await storageSnapshot(delayed.page);
+    const attemptId = await beginAttempt(delayed.page);
+    await delayed.page.evaluate(() => { window.__issue210Speech.latest.stopPlan = { holdTerminal: true }; });
+    const transition = await backgroundTransition(delayed.page, delayed.context);
+    await waitForStopRequest(delayed.page, attemptId);
+    assert.equal(await readSessionClosure(delayed.page), null,
+      'BG-07: finalization waits while the deliberately delayed terminal callback is withheld');
+    const beforeEnd = await storageSnapshot(delayed.page);
+    assert.deepEqual(beforeEnd.itemLevel, before.itemLevel);
+    await delayed.page.evaluate(() => window.__issue210Speech.latest.emitEnd());
+    const closure = await waitForBackgroundClosure(delayed.page);
+    const after = await storageSnapshot(delayed.page);
+    assert.equal(closure.reason, 'background');
+    assert.equal(after.itemLevel.E0006, undefined);
+    assert.equal(after.studyLog[FIXED_DAY]?.passes || 0, 0);
+    assert.equal(after.resultEvents, 0);
+    await restoreForeground(delayed.page, transition.foregroundPage);
+    await assertHiddenBrowserQuiet(t, delayed);
+    await auditDiagnostic(t, delayed.page, 'BG-07-delayed-end', {
+      visibility: transition.evidence, attemptId, beforeEnd, after, closure,
+    });
+  } finally {
+    await delayed.context.close();
+  }
+
+  const missing = await newFixturePage({ ids: ['E0006'] });
+  try {
+    await startManualSession(missing.page, { characterId: 'bob', ids: ['E0006'] });
+    const before = await storageSnapshot(missing.page);
+    const attemptId = await beginAttempt(missing.page);
+    await missing.page.evaluate(() => { window.__issue210Speech.latest.stopPlan = { holdTerminal: true }; });
+    const transition = await backgroundTransition(missing.page, missing.context);
+    await waitForStopRequest(missing.page, attemptId);
+    await new Promise(resolve => setTimeout(resolve, 500));
+    const after = await storageSnapshot(missing.page);
+    const closure = await readSessionClosure(missing.page);
+    const state = await missing.page.evaluate(() => ({
+      visibility: document.visibilityState,
+      homeHidden: document.querySelector('#homeView')?.hidden,
+      studyHidden: document.querySelector('#studyView')?.hidden,
+      micState: document.querySelector('#micStatus')?.dataset.state,
+      providerState: window.__issue210Speech.latest?.lifecycleState,
+    }));
+    assert.equal(closure, null, 'BG-08 reproduces that no closure is written without provider end');
+    assert.equal(state.visibility, 'hidden');
+    assert.equal(state.homeHidden, true);
+    assert.equal(state.studyHidden, false, 'the hidden page remains in the active study view');
+    assert.equal(state.providerState, 'stopping');
+    assert.notEqual(state.micState, 'off', 'the UI still reports an active microphone state');
+    assert.deepEqual(after.itemLevel, before.itemLevel);
+    assert.equal(after.studyLog[FIXED_DAY]?.passes || 0, before.studyLog[FIXED_DAY]?.passes || 0);
+    t.diagnostic('[issue210-BG-08-FINDING-P1] stop() has no provider end/error; background finalization remains pending for 500ms, no closure is persisted, and study/mic state remains active. This is a reproduction record, not acceptance.');
+    await auditDiagnostic(t, missing.page, 'BG-08-missing-end-finding', {
+      visibility: transition.evidence,
+      attemptId,
+      state,
+      closure,
+      srsBefore: before.itemLevel,
+      srsAfter: after.itemLevel,
+      studyLog: after.studyLog,
+      providerEvents: await missing.page.evaluate(() => window.__issue210Speech.events),
+    });
+    await assertHiddenBrowserQuiet(t, missing);
+  } finally {
+    await missing.context.close();
+  }
+});
+
+browserTest("BG-09: duplicate hidden event during a pending stop creates one semantic closure", async t => {
+  const fixturePage = await newFixturePage({ ids: ['E0006'] });
+  const { context, page } = fixturePage;
+  try {
+    await startManualSession(page, { characterId: 'bob', ids: ['E0006'] });
+    const before = await storageSnapshot(page);
+    const attemptId = await beginAttempt(page);
+    await page.evaluate(() => { window.__issue210Speech.latest.stopPlan = { holdTerminal: true }; });
+    const transition = await backgroundTransition(page, context);
+    await waitForStopRequest(page, attemptId);
+    await page.evaluate(() => document.dispatchEvent(new Event('visibilitychange')));
+    const closure = await waitForBackgroundClosure(page);
+    const beforeEnd = await storageSnapshot(page);
+    assert.equal(beforeEnd.writes.studyLogV1 - (before.writes.studyLogV1 || 0), 1,
+      'duplicate event produces one semantic session-closure write');
+    assert.equal(beforeEnd.itemLevel.E0006, undefined);
+    assert.equal(beforeEnd.studyLog[FIXED_DAY]?.passes || 0, 0);
+    await page.evaluate(() => window.__issue210Speech.latest.emitEnd());
+    await page.waitForFunction(id => window.__issue210Speech.events.some(event =>
+      event.type === 'end' && event.attemptId === id), attemptId, { timeout: 10_000 });
+    const afterEnd = await storageSnapshot(page);
+    assert.deepEqual(afterEnd.studyLog[FIXED_DAY].session_closure, closure,
+      'settling the first finalizer does not replace the recorded closure');
+    assert.equal(afterEnd.writes.studyLogV1, beforeEnd.writes.studyLogV1,
+      'the first pending finalizer does not persist a second closure');
+    const evidence = await page.evaluate(() => ({
+      visibility: window.__issue210.visibilityEvents,
+      speech: window.__issue210Speech.events,
+    }));
+    assert.equal(evidence.visibility.filter(event => event.state === 'hidden').length, 2,
+      'one actual hidden transition plus one duplicate hidden-state event was observed');
+    await restoreForeground(page, transition.foregroundPage);
+    await assertHiddenBrowserQuiet(t, fixturePage);
+    await auditDiagnostic(t, page, 'BG-09', { transition: transition.evidence, attemptId, evidence, closure, beforeEnd, afterEnd });
+  } finally {
+    await context.close();
+  }
+});
+
+browserTest("BG-10: manual home exit racing hidden finalization produces one closure and records the winner", async t => {
+  const fixturePage = await newFixturePage({ ids: ['E0006'] });
+  const { context, page } = fixturePage;
+  try {
+    await startManualSession(page, { characterId: 'bob', ids: ['E0006'] });
+    const before = await storageSnapshot(page);
+    const attemptId = await beginAttempt(page);
+    await page.evaluate(() => { window.__issue210Speech.latest.stopPlan = { holdTerminal: true }; });
+    const transition = await backgroundTransition(page, context);
+    await waitForStopRequest(page, attemptId);
+    await page.evaluate(() => document.querySelector('#learningHomeReturn')?.click());
+    const closure = await waitForAnySessionClosure(page);
+    assert.ok(['background', 'idle'].includes(closure.reason),
+      'closure reason is one of the two requested production exits');
+    await page.evaluate(() => window.__issue210Speech.latest.emitEnd());
+    await page.waitForFunction(id => window.__issue210Speech.events.some(event =>
+      event.type === 'end' && event.attemptId === id), attemptId, { timeout: 10_000 });
+    const after = await storageSnapshot(page);
+    assert.equal(after.writes.studyLogV1 - (before.writes.studyLogV1 || 0), 1,
+      'hidden/manual collision records one session_closure value');
+    assert.equal(after.writes.itemLevelV1 || 0, before.writes.itemLevelV1 || 0);
+    assert.equal(after.studyLog[FIXED_DAY]?.passes || 0, before.studyLog[FIXED_DAY]?.passes || 0);
+    assert.equal(after.resultEvents, 0);
+    assert.deepEqual(await readSessionClosure(page), closure,
+      'late completion of the other finalizer does not overwrite the winning closure');
+    const evidence = await page.evaluate(() => ({
+      visibility: window.__issue210.visibilityEvents,
+      speech: window.__issue210Speech.events,
+      view: {
+        homeHidden: document.querySelector('#homeView')?.hidden,
+        studyHidden: document.querySelector('#studyView')?.hidden,
+        resultHidden: document.querySelector('#reviewCompleteView')?.hidden,
+      },
+    }));
+    await restoreForeground(page, transition.foregroundPage);
+    await assertHiddenBrowserQuiet(t, fixturePage);
+    await auditDiagnostic(t, page, 'BG-10', {
+      transition: transition.evidence, attemptId, evidence, closure,
+      closureWrites: after.writes.studyLogV1 - (before.writes.studyLogV1 || 0),
+    });
+  } finally {
+    await context.close();
+  }
+});
+
+browserTest("BG-12: late callback from a closed hidden attempt cannot affect a new session item", async t => {
+  const fixturePage = await newFixturePage({ ids: ['E0006', 'E0007'] });
+  const { context, page } = fixturePage;
+  try {
+    await startManualSession(page, { characterId: 'bob', ids: ['E0006', 'E0007'] });
+    const oldAttemptId = await beginAttempt(page);
+    await page.evaluate(() => {
+      window.__issue210.oldAttempt = window.__issue210Speech.latest;
+      window.__issue210Speech.latest.stopPlan = { holdTerminal: true };
+    });
+    const transition = await backgroundTransition(page, context);
+    await waitForStopRequest(page, oldAttemptId);
+    await page.evaluate(() => window.__issue210Speech.latest.emitEnd());
+    const closure = await waitForBackgroundClosure(page);
+    await restoreForeground(page, transition.foregroundPage);
+
+    await startManualSession(page, { characterId: 'bob', ids: ['E0007'] });
+    const newAttemptId = await beginAttempt(page);
+    assert.notEqual(newAttemptId, oldAttemptId);
+    const beforeLateCallback = await storageSnapshot(page);
+    const oldDelivery = await page.evaluate(transcript => {
+      const old = window.__issue210.oldAttempt;
+      old.emitFinal(transcript);
+      return {
+        oldAttemptId: old.attemptId,
+        finalEvent: [...window.__issue210Speech.events].reverse()
+          .find(event => event.type === 'result' && event.attemptId === old.attemptId),
+      };
+    }, itemsById.get('E0006').en);
+    assert.equal(oldDelivery.oldAttemptId, oldAttemptId);
+    assert.equal(oldDelivery.finalEvent.isFinal, true);
+    const afterLateCallback = await storageSnapshot(page);
+    assert.deepEqual(afterLateCallback.itemLevel, beforeLateCallback.itemLevel,
+      'old attempt does not write its SRS after a new session starts');
+    assert.equal(afterLateCallback.studyLog[FIXED_DAY]?.passes || 0,
+      beforeLateCallback.studyLog[FIXED_DAY]?.passes || 0);
+    assert.equal(await page.locator('#enText').getAttribute('data-item-id'), 'E0007');
+    assert.equal(afterLateCallback.resultEvents, 0);
+    await page.evaluate(() => document.querySelector('#learningHomeReturn')?.click());
+    await page.waitForFunction(() => !document.querySelector('#homeView')?.hidden
+      && document.querySelector('#studyView')?.hidden);
+    await assertHiddenBrowserQuiet(t, fixturePage);
+    await auditDiagnostic(t, page, 'BG-12', {
+      transition: transition.evidence, oldAttemptId, newAttemptId, oldDelivery,
+      beforeLateCallback: beforeLateCallback.itemLevel,
+      afterLateCallback: afterLateCallback.itemLevel,
+      closure,
+    });
+  } finally {
+    await context.close();
+  }
+});
+
+browserTest("BG-15: hidden Correction attempt preserves original FAIL and creates no correction PASS", async t => {
+  const fixturePage = await newFixturePage({ ids: ['E0006'] });
+  const { context, page } = fixturePage;
+  try {
+    await startManualSession(page, { characterId: 'bob', ids: ['E0006'] });
+    const beforeFailure = await storageSnapshot(page);
+    const failedAttempt = await injectAndStop(page, 'a deliberately incorrect sentence');
+    assert.equal(failedAttempt.event.isFinal, true);
+    const failedSrs = await waitForSrs(page, 'E0006', { field: 'lastMatch', op: 'lt', value: 0.7 });
+    const afterFailure = await storageSnapshot(page);
+    assert.notDeepEqual(afterFailure.itemLevel, beforeFailure.itemLevel,
+      'control: the original finalized FAIL is stored through production scoring');
+
+    const correctionAttemptId = await beginAttempt(page);
+    await page.evaluate(transcript => window.__issue210Speech.latest.emitInterim(transcript),
+      itemsById.get('E0006').en);
+    const transition = await backgroundTransition(page, context);
+    await page.waitForFunction(id => window.__issue210Speech.events.some(event =>
+      event.type === 'end' && event.attemptId === id), correctionAttemptId, { timeout: 10_000 });
+    const closure = await waitForBackgroundClosure(page);
+    const afterHidden = await storageSnapshot(page);
+    assert.deepEqual(afterHidden.itemLevel, afterFailure.itemLevel,
+      'BG-15: hidden Correction does not replace the original FAIL SRS state');
+    assert.equal(afterHidden.studyLog[FIXED_DAY]?.passes || 0,
+      afterFailure.studyLog[FIXED_DAY]?.passes || 0, 'BG-15: correction cannot add a study PASS');
+    assert.equal(afterHidden.writes.itemLevelV1, afterFailure.writes.itemLevelV1,
+      'BG-15: interim correction does not write SRS');
+    assert.equal(afterHidden.resultEvents, 0);
+    assert.equal(closure.reason, 'background');
+    assert.equal(closure.cardsDone, 0);
+    await restoreForeground(page, transition.foregroundPage);
+    await assertHiddenBrowserQuiet(t, fixturePage);
+    await auditDiagnostic(t, page, 'BG-15', {
+      transition: transition.evidence, originalFailAttemptId: failedAttempt.attemptId,
+      correctionAttemptId, failedSrs, afterFailure: afterFailure.itemLevel.E0006,
+      afterHidden: afterHidden.itemLevel.E0006, closure,
+    });
+  } finally {
+    await context.close();
+  }
+});
+
+browserTest("BG-16: hidden Read Cloze stage rejects interim-only full-sentence recognition", async t => {
+  const fixturePage = await newFixturePage({ ids: ['E0006'] });
+  const { context, page } = fixturePage;
+  try {
+    await startManualSession(page, { characterId: 'bob', ids: ['E0006'] });
+    await page.evaluate(() => {
+      document.dispatchEvent(new CustomEvent('english-pwa:request-hint'));
+      document.dispatchEvent(new CustomEvent('english-pwa:request-hint'));
+    });
+    await page.waitForFunction(() => document.querySelector('#enText')?.classList.contains('cloze-active')
+      && document.querySelector('#enText .cloze-mask'), null, { timeout: 10_000 });
+    const clozeState = await page.evaluate(() => ({
+      itemId: document.querySelector('#enText')?.dataset.itemId,
+      clozeRendered: document.querySelector('#enText')?.dataset.clozeRendered,
+      maskedTokens: document.querySelectorAll('#enText .cloze-mask').length,
+    }));
+    assert.equal(clozeState.itemId, 'E0006');
+    assert.ok(clozeState.maskedTokens > 0, 'the production progressive hint module entered its Cloze stage');
+    const before = await storageSnapshot(page);
+    const attemptId = await beginAttempt(page);
+    const interim = await page.evaluate(transcript => {
+      const mock = window.__issue210Speech.latest;
+      mock.emitInterim(transcript);
+      return [...window.__issue210Speech.events].reverse()
+        .find(event => event.type === 'result' && event.attemptId === mock.attemptId);
+    }, itemsById.get('E0006').en);
+    assert.equal(interim.isFinal, false);
+    const transition = await backgroundTransition(page, context);
+    await page.waitForFunction(id => window.__issue210Speech.events.some(event =>
+      event.type === 'end' && event.attemptId === id), attemptId, { timeout: 10_000 });
+    const closure = await waitForBackgroundClosure(page);
+    const after = await storageSnapshot(page);
+    assert.deepEqual(after.itemLevel, before.itemLevel, 'BG-16: interim full-sentence Cloze attempt cannot pass');
+    assert.equal(after.studyLog[FIXED_DAY]?.passes || 0, before.studyLog[FIXED_DAY]?.passes || 0);
+    assert.equal(after.writes.itemLevelV1 || 0, before.writes.itemLevelV1 || 0);
+    assert.equal(after.resultEvents, 0);
+    assert.equal(closure.reason, 'background');
+    assert.equal(closure.cardsDone, 0);
+    await restoreForeground(page, transition.foregroundPage);
+    await assertHiddenBrowserQuiet(t, fixturePage);
+    await auditDiagnostic(t, page, 'BG-16', {
+      transition: transition.evidence, clozeState, attemptId, interim, after, closure,
+    });
   } finally {
     await context.close();
   }
