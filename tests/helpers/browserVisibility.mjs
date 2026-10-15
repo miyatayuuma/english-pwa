@@ -1,100 +1,48 @@
 import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
 
-async function minimizeTargetWindow(page) {
+function x11(command, args) {
+  execFileSync(command, args, { stdio: 'ignore' });
+}
+
+function xid(windowId) {
+  return `0x${Number(windowId).toString(16)}`;
+}
+
+async function getWindowId(page) {
   const pageSession = await page.context().newCDPSession(page);
   const browserSession = await page.context().browser().newBrowserCDPSession();
   try {
     const { targetInfo } = await pageSession.send('Target.getTargetInfo');
     const { windowId } = await browserSession.send('Browser.getWindowForTarget', { targetId: targetInfo.targetId });
-    await browserSession.send('Browser.setWindowBounds', {
-      windowId,
-      bounds: { windowState: 'minimized' },
-    });
-    return {
-      windowId,
-      restore: async () => {
-        await browserSession.send('Browser.setWindowBounds', {
-          windowId,
-          bounds: { windowState: 'normal' },
-        });
-        await page.bringToFront();
-        await page.waitForFunction(
-          () => document.visibilityState === 'visible',
-          null,
-          { timeout: 10_000, polling: 100 },
-        );
-        await pageSession.detach();
-        await browserSession.detach();
-      },
-      cleanup: async () => {
-        await pageSession.detach().catch(() => {});
-        await browserSession.detach().catch(() => {});
-      },
-    };
+    return { windowId, browserSession };
   } catch (error) {
-    await pageSession.detach().catch(() => {});
     await browserSession.detach().catch(() => {});
     throw error;
+  } finally {
+    await pageSession.detach().catch(() => {});
   }
 }
 
-async function lifecycleFreezeHidden(page) {
-  const session = await page.context().newCDPSession(page);
-  let frozenSnapshot = null;
-  let evaluationTimedOut = false;
-  try {
-    await session.send('Page.setWebLifecycleState', { state: 'frozen' });
-    const inspect = session.send('Runtime.evaluate', {
-      expression: '({ state: document.visibilityState, hidden: document.hidden })',
-      returnByValue: true,
-    });
-    const inspection = await Promise.race([
-      inspect.then(value => ({ value })),
-      new Promise(resolve => setTimeout(() => resolve({ timeout: true }), 1_500)),
-    ]);
-    evaluationTimedOut = inspection.timeout === true;
-    frozenSnapshot = inspection.value?.result?.value || null;
-
-    // Resume script execution and let Chromium deliver the lifecycle event.
-    // The observer name differs between the Read fixture and Vocabulary fixture.
-    await session.send('Page.setWebLifecycleState', { state: 'active' });
-    await page.waitForFunction(() => {
-      const traces = [
-        window.__issue210?.visibilityEvents,
-        window.__vocabularyHiddenAudit?.visibilityEvents,
-      ].filter(Array.isArray);
-      return traces.some(events => events.some(event => event.state === 'hidden'));
-    }, null, { timeout: 3_000, polling: 50 });
-
-    const after = await page.evaluate(() => {
-      const issueEvents = window.__issue210?.visibilityEvents?.map(event => ({ ...event })) || null;
-      const vocabularyEvents = window.__vocabularyHiddenAudit?.visibilityEvents?.map(event => ({ ...event })) || null;
-      const hiddenEvent = [...(issueEvents || []), ...(vocabularyEvents || [])]
-        .reverse().find(event => event.state === 'hidden');
-      return {
-        state: hiddenEvent?.state || document.visibilityState,
-        hidden: hiddenEvent?.state === 'hidden',
-        currentState: document.visibilityState,
-        currentHidden: document.hidden,
-        issueEvents,
-        vocabularyEvents,
-        hiddenEvent,
-      };
-    });
-    assert.equal(after.state, 'hidden', 'Chromium dispatched visibilitychange with hidden state');
-    assert.equal(after.hidden, true);
-    return { session, evidence: after };
-  } catch (error) {
-    await session.send('Page.setWebLifecycleState', { state: 'active' }).catch(() => {});
-    const detail = await page.evaluate(() => ({
-      state: document.visibilityState,
-      hidden: document.hidden,
-      issueEvents: window.__issue210?.visibilityEvents || null,
-      vocabularyEvents: window.__vocabularyHiddenAudit?.visibilityEvents || null,
-    })).catch(() => null);
-    await session.detach().catch(() => {});
-    throw new Error(`CDP page lifecycle inspection failed: ${JSON.stringify({ frozenSnapshot, evaluationTimedOut, detail, error: error.message })}`, { cause: error });
-  }
+async function waitForHidden(page, timeout) {
+  await page.waitForFunction(
+    () => document.visibilityState === 'hidden',
+    null,
+    { timeout, polling: 50 },
+  );
+  const evidence = await page.evaluate(() => ({
+    state: document.visibilityState,
+    hidden: document.hidden,
+    hasFocus: document.hasFocus(),
+    visibilityEvents: window.__issue210?.visibilityEvents?.map(event => ({ ...event }))
+      || window.__vocabularyHiddenAudit?.visibilityEvents?.map(event => ({ ...event }))
+      || [],
+  }));
+  assert.equal(evidence.state, 'hidden');
+  assert.equal(evidence.hidden, true);
+  assert.ok(evidence.visibilityEvents.some(event => event.state === 'hidden'),
+    'Chromium fired a visibilitychange event with hidden state');
+  return evidence;
 }
 
 export async function backgroundChromiumTab(page, { timeout = 10_000 } = {}) {
@@ -104,90 +52,124 @@ export async function backgroundChromiumTab(page, { timeout = 10_000 } = {}) {
   }));
   assert.equal(initial.visibility, 'visible', 'Chromium page starts foregrounded');
 
-  const foregroundTab = await page.context().newPage();
-  let minimizedWindow = null;
-  let lifecycleSession = null;
-  let method = 'foreground-tab';
-  let evidence = null;
+  const context = page.context();
+  const targetUrl = new URL('/__issue210-background-tab__', page.url()).href;
+  const routeHandler = route => route.fulfill({
+    status: 200,
+    contentType: 'text/html; charset=utf-8',
+    body: '<!doctype html><title>Background tab</title>',
+  });
+  await context.route(targetUrl, routeHandler);
+
+  let foregroundTab = null;
+  let minimized = false;
+  let windowId = null;
+  let browserSession = null;
+  let method = '';
   try {
-    await foregroundTab.bringToFront();
+    // Open an actual same-window tab through Chromium's window.open path. The
+    // fixture route is intentionally blank and the fixture init scripts skip it.
+    const pageEvent = context.waitForEvent('page', { timeout: 2_000 }).catch(() => null);
+    const opener = await context.newCDPSession(page);
     try {
-      await page.waitForFunction(
-        () => document.visibilityState === 'hidden',
-        null,
-        { timeout: Math.min(timeout, 1_000), polling: 100 },
-      );
-      evidence = await page.evaluate(() => ({
-        state: document.visibilityState,
-        hidden: document.hidden,
-        currentState: document.visibilityState,
-        currentHidden: document.hidden,
-        hasFocus: document.hasFocus(),
-      }));
-    } catch (_) {
-      // Context-created pages can occupy separate windows in Xvfb.
-      minimizedWindow = await minimizeTargetWindow(page);
-      method = 'cdp-window-minimize';
+      await opener.send('Runtime.evaluate', {
+        expression: `window.open(${JSON.stringify(targetUrl)}, '_blank')`,
+        userGesture: true,
+      });
+    } finally {
+      await opener.detach();
+    }
+    foregroundTab = await pageEvent;
+
+    if (foregroundTab) {
+      method = 'window-open-tab';
+      await foregroundTab.waitForLoadState('domcontentloaded', { timeout: 5_000 }).catch(() => {});
+      const target = await getWindowId(page);
+      windowId = target.windowId;
+      browserSession = target.browserSession;
+
+      // Use the window manager's real keyboard path to select the next browser
+      // tab, then verify the app document itself became hidden.
       try {
-        await page.waitForFunction(
-          () => document.visibilityState === 'hidden',
-          null,
-          { timeout: Math.min(timeout, 1_000), polling: 100 },
-        );
-        evidence = await page.evaluate(() => ({
-          state: document.visibilityState,
-          hidden: document.hidden,
-          currentState: document.visibilityState,
-          currentHidden: document.hidden,
-          hasFocus: document.hasFocus(),
-        }));
+        x11('wmctrl', ['-ia', xid(windowId)]);
+        x11('xdotool', ['key', 'ctrl+Tab']);
+        method = 'x11-ctrl-tab';
+        try {
+          const evidence = await waitForHidden(page, 1_500);
+          return {
+            evidence: { ...evidence, method, windowId },
+            restore: async () => {
+              x11('wmctrl', ['-ia', xid(windowId)]);
+              await page.bringToFront();
+              await page.waitForFunction(() => document.visibilityState === 'visible', null, { timeout, polling: 100 });
+              await foregroundTab.close();
+              await context.unroute(targetUrl, routeHandler);
+              await browserSession.detach().catch(() => {});
+            },
+          };
+        } catch (_) {
+          // Continue with an OS window minimize if the popup was not a tab in
+          // the same browser window.
+        }
       } catch (_) {
-        // Chromium's Page lifecycle control invokes its browser-engine hidden
-        // transition and dispatches visibilitychange. It does not mutate DOM
-        // state or dispatch a synthetic event.
-        const lifecycle = await lifecycleFreezeHidden(page);
-        lifecycleSession = lifecycle.session;
-        evidence = lifecycle.evidence;
-        method = 'cdp-page-lifecycle-hidden';
+        // X11 window controls may be unavailable in local browser runs.
+      }
+    } else {
+      // Keep a controllable second page for non-X11 and local fallback cases.
+      foregroundTab = await context.newPage();
+      await foregroundTab.bringToFront();
+      method = 'playwright-new-page';
+      try {
+        const evidence = await waitForHidden(page, 1_500);
+        return {
+          evidence: { ...evidence, method, windowId: null },
+          restore: async () => {
+            await page.bringToFront();
+            await page.waitForFunction(() => document.visibilityState === 'visible', null, { timeout, polling: 100 });
+            await foregroundTab.close();
+            await context.unroute(targetUrl, routeHandler);
+          },
+        };
+      } catch (_) {
+        // Continue with window minimization below.
       }
     }
 
-    assert.equal(evidence.state, 'hidden');
-    assert.equal(evidence.hidden, true);
-
+    if (windowId === null) {
+      const target = await getWindowId(page);
+      windowId = target.windowId;
+      browserSession = target.browserSession;
+    }
+    x11('xdotool', ['windowminimize', xid(windowId)]);
+    minimized = true;
+    method = 'x11-window-minimize';
+    const evidence = await waitForHidden(page, timeout);
     return {
-      evidence: { ...evidence, method, windowId: minimizedWindow?.windowId ?? null },
+      evidence: { ...evidence, method, windowId },
       restore: async () => {
-        if (lifecycleSession) {
-          await lifecycleSession.send('Page.setWebLifecycleState', { state: 'active' }).catch(() => {});
-          await lifecycleSession.detach().catch(() => {});
-          lifecycleSession = null;
-        }
-        if (minimizedWindow) {
-          await minimizedWindow.restore();
-        } else {
-          await page.bringToFront();
-          await page.waitForFunction(
-            () => document.visibilityState === 'visible',
-            null,
-            { timeout, polling: 100 },
-          );
-        }
-        await foregroundTab.close();
+        x11('xdotool', ['windowmap', xid(windowId)]);
+        x11('wmctrl', ['-ia', xid(windowId)]);
+        await page.bringToFront();
+        await page.waitForFunction(() => document.visibilityState === 'visible', null, { timeout, polling: 100 });
+        await foregroundTab?.close().catch(() => {});
+        await context.unroute(targetUrl, routeHandler);
+        await browserSession?.detach().catch(() => {});
       },
     };
   } catch (error) {
-    if (lifecycleSession) {
-      await lifecycleSession.send('Page.setWebLifecycleState', { state: 'active' }).catch(() => {});
-      await lifecycleSession.detach().catch(() => {});
-    }
-    if (minimizedWindow) {
-      await minimizedWindow.restore().catch(() => {});
-      await minimizedWindow.cleanup();
+    if (minimized && windowId !== null) {
+      try {
+        x11('xdotool', ['windowmap', xid(windowId)]);
+        x11('wmctrl', ['-ia', xid(windowId)]);
+      } catch (_) {
+        // Continue cleanup even when the X11 session is unavailable.
+      }
     }
     await page.bringToFront().catch(() => {});
-    await foregroundTab.close().catch(() => {});
+    await foregroundTab?.close().catch(() => {});
+    await context.unroute(targetUrl, routeHandler).catch(() => {});
+    await browserSession?.detach().catch(() => {});
     const detail = error instanceof Error ? `${error.name}: ${error.message}` : String(error);
-    throw new Error(`Chromium did not produce a verified hidden lifecycle transition (${detail})`, { cause: error });
+    throw new Error(`Chromium X11/tab lifecycle did not produce verified hidden state (${detail})`, { cause: error });
   }
 }
