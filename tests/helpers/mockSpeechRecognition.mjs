@@ -32,7 +32,8 @@ export function installMockSpeechRecognition({ stateKey = '__mockSpeech', stopBe
         type,
         attemptId: this.attemptId,
         state: this.lifecycleState,
-        at: Math.round(performance.now()),
+        sequence: window.__issue210Sequence?.() ?? null,
+        at: performance.now(),
         ...detail,
       });
     }
