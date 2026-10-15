@@ -899,36 +899,27 @@ browserTest('Issue 210 relationship cap: passing a shared item at best_friend in
  * page in the same BrowserContext. Dispatching visibilitychange by itself is
  * not accepted as evidence: the app page must report hidden after the switch.
  */
-async function backgroundTransition(page, context) {
+async function backgroundTransition(page) {
   const initialState = await page.evaluate(() => document.visibilityState);
   assert.equal(initialState, 'visible', 'the real-session page starts foregrounded');
   await page.evaluate(() => { window.__issue210.visibilityEvents.length = 0; });
 
-  // Foreground a second real Chromium tab in the same BrowserContext. This
-  // uses Chromium's tab lifecycle and never overrides document state or
-  // dispatches a synthetic visibilitychange event.
-  const foregroundPage = await context.newPage();
-  try {
-    await foregroundPage.goto('about:blank');
-    await foregroundPage.bringToFront();
-    await page.waitForFunction(() => document.visibilityState === 'hidden', null, { timeout: 10_000, polling: 100 });
-    const evidence = await page.evaluate(() => ({
-      state: document.visibilityState,
-      events: window.__issue210.visibilityEvents.map(event => ({ ...event })),
-      hidden: document.hidden,
-      hasFocus: document.hasFocus(),
-    }));
-    assert.equal(evidence.state, 'hidden', 'Chromium reports the production page is actually hidden');
-    assert.equal(evidence.hidden, true, 'Chromium marks the document hidden');
-    assert.ok(evidence.events.some(event => event.state === 'hidden'),
-      'the real hidden transition dispatched visibilitychange');
-    return { foregroundPage, evidence };
-  } catch (error) {
-    await foregroundPage.close().catch(() => {});
-    throw error;
-  }
+  // The CI window manager minimizes this exact Chromium window. The helper
+  // returns only after Chromium itself reports hidden; no state override or
+  // synthetic visibilitychange event is used.
+  const lifecycle = await minimizeChromiumWindow(page);
+  const eventEvidence = await page.evaluate(() => ({
+    state: document.visibilityState,
+    events: window.__issue210.visibilityEvents.map(event => ({ ...event })),
+  }));
+  assert.equal(eventEvidence.state, 'hidden');
+  assert.ok(eventEvidence.events.some(event => event.state === 'hidden'),
+    'Chromium dispatched visibilitychange for the actual hidden transition');
+  return {
+    foregroundPage: lifecycle,
+    evidence: { ...lifecycle.evidence, events: eventEvidence.events },
+  };
 }
-
 async function restoreForeground(page, foregroundPage) {
   if (foregroundPage?.restore) await foregroundPage.restore();
   await page.bringToFront();
