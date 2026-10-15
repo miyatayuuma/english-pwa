@@ -363,7 +363,7 @@ function updateOptionsSheet(dialog,{renderManual=true}={}){
   const {characters,skills}=optionsLabelMaps();
   const labels=[characters.get(options.characterId)||'誰でも',skills.get(options.skillId)||'テーマおまかせ',options.section?options.section.replace(/^Section/i,'Chapter '):'チャプターおまかせ'];
   const methodLabel=state.gameMethodDraft==='compose'?'並べ替え':'穴あき';
-  dialog.querySelector('#playOptionsSummary').textContent=`${methodLabel} · ${labels.join(' × ')}${isContinuousShadowingMode(options.trainingMode)?' · 連続シャドウイング':''}`;
+  dialog.querySelector('#playOptionsSummary').textContent=`${methodLabel} · ${labels.join(' × ')} · 対象 ${eligible.length}文${isContinuousShadowingMode(options.trainingMode)?' · 連続シャドウイング':''}`;
   const plan=sentencePlan(options);
   const count=requestedCountForSessionOptions(options);
   const shortage=plan.composition?.shortfall||0;

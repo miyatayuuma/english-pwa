@@ -277,6 +277,7 @@ browserTest('zero-candidate filters disable actual Start and expose a recovery a
     await page.evaluate(()=>window.__OPEN_SESSION_OPTIONS__({section:'Section999',count:'50'}));
     assert.equal(await page.locator('#playOptionsStart').isDisabled(),true);
     assert.match(await page.locator('#playOptionsCount').innerText(),/実際 0問/);
+    assert.match(await page.locator('#playOptionsSummary').innerText(),/対象 0文/);
     assert.match(await page.locator('#playOptionsCauses').innerText(),/条件に合う文がありません/);
     await page.locator('.play-options__cause').first().click();assert.equal(await page.locator('#playOptionsStart').isDisabled(),false);
     await page.locator('button[data-game-method="compose"]').click();assert.equal(await page.locator('[data-training-field]').isVisible(),false);
