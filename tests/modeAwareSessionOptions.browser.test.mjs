@@ -295,3 +295,15 @@ browserTest('preview and Start share all prior-session IDs beyond the persisted 
     await page.locator('#playOptionsStart').click();await started(page,40);await evidence(t,page,'recent-window-alignment',errors);
   }finally{await context.close();}
 });
+
+for(const [from,to] of [['read','compose'],['compose','read']]) browserTest(`reload ${from} to ${to}: preview uses persisted recency after a prior 20-question session`,async t=>{
+  const {page,context,errors}=await setup({method:from,due:false});try{
+    await open(page,from);await page.locator('[data-session-count="20"]').click();await page.locator('#playOptionsStart').click();await started(page,20,from);
+    await page.locator('#learningHomeReturn').click();await page.waitForFunction(()=>!document.querySelector('#homeView').hidden);
+    await open(page,from);await page.locator(`button[data-game-method="${to}"]`).click();await page.locator('[data-session-count="50"]').click();
+    assert.match(await page.locator('#playOptionsCount').innerText(),/実際 48問 · 不足 2問/);
+    await Promise.all([page.waitForEvent('load'),page.locator('#playOptionsStart').click()]);await ready(page);await started(page,48,to);
+    assert.equal(await page.evaluate(()=>Number(sessionStorage.getItem('__setupLaunches'))),2);
+    await evidence(t,page,`recent-reload-${from}-${to}`,errors);
+  }finally{await context.close();}
+});

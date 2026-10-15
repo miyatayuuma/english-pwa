@@ -311,8 +311,11 @@ function nextSentenceRecentIds(){
   return state.sessionPlan?.items?.map(item=>item.id)||loadRecentSessionIds();
 }
 
-function sentencePlan(options=state.optionsDraft){
-  return buildSessionPlanFromOptions(state.items,loadLevelState(),options,{recentItemIds:nextSentenceRecentIds()});
+function sentencePlan(options=state.optionsDraft,gameMethod=state.gameMethodDraft){
+  // A different method boots a new runtime. Preview the persisted recency that
+  // runtime will read, rather than an in-memory plan that reload cannot retain.
+  const recentItemIds=gameMethod===BOOT_SENTENCE_METHOD?nextSentenceRecentIds():loadRecentSessionIds();
+  return buildSessionPlanFromOptions(state.items,loadLevelState(),options,{recentItemIds});
 }
 
 function updateOptionsSheet(dialog,{renderManual=true}={}){
@@ -397,7 +400,7 @@ async function waitForSentenceLaunchReady(){
 }
 
 function launchSentenceOptions(options){
-  if(!sentencePlan(options).size) return false;
+  if(!sentencePlan(options,BOOT_SENTENCE_METHOD).size) return false;
   state.pendingOptions=options;
   state.optionsDraft=resetSessionOptions(options);
   if(options.characterId) globalThis.__PREPARE_CHARACTER_SESSION__?.(options.characterId);
@@ -838,7 +841,7 @@ async function init(){
   if(BOOT_HAS_SETUP_HANDOFF){
     if(!await waitForSentenceLaunchReady()) {clearSetupHandoff();return;}
     const handoff=consumeSetupHandoff({appVersion:globalThis.APP_VERSION,method:storedSentenceMethod()});
-    if(handoff&&handoff.gameMethod===BOOT_SENTENCE_METHOD&&sentencePlan(handoff.options).size){
+    if(handoff&&handoff.gameMethod===BOOT_SENTENCE_METHOD&&sentencePlan(handoff.options,BOOT_SENTENCE_METHOD).size){
       if(handoff.legacyCountReset) openSessionOptions({...handoff.options,gameMethod:handoff.gameMethod,count:'custom',customCount:null});
       else launchSentenceOptions(handoff.options);
     }
