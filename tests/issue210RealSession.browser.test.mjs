@@ -1479,10 +1479,8 @@ browserTest("BG-16: hidden Read Cloze stage rejects interim-only full-sentence r
   const { context, page } = fixturePage;
   try {
     await startManualSession(page, { characterId: 'bob', ids: ['E0006'] });
-    await page.evaluate(() => {
-      document.dispatchEvent(new CustomEvent('english-pwa:request-hint'));
-      document.dispatchEvent(new CustomEvent('english-pwa:request-hint'));
-    });
+    // In Read mode, the first hint step is Cloze; the second reveals the full sentence.
+    await page.evaluate(() => document.dispatchEvent(new CustomEvent('english-pwa:request-hint')));
     await page.waitForFunction(() => document.querySelector('#enText')?.classList.contains('cloze-active')
       && document.querySelector('#enText .cloze-mask'), null, { timeout: 10_000, polling: 100 });
     const clozeState = await page.evaluate(() => ({
