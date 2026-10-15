@@ -903,25 +903,59 @@ async function backgroundTransition(page, context) {
   const initialState = await page.evaluate(() => document.visibilityState);
   assert.equal(initialState, 'visible', 'the real-session page starts foregrounded');
   await page.evaluate(() => { window.__issue210.visibilityEvents.length = 0; });
-  const foregroundPage = await context.newPage();
-  await foregroundPage.goto('about:blank');
-  await foregroundPage.bringToFront();
-  await page.waitForFunction(() => document.visibilityState === 'hidden', null, { timeout: 10_000 });
-  const evidence = await page.evaluate(() => ({
-    state: document.visibilityState,
-    events: window.__issue210.visibilityEvents.map(event => ({ ...event })),
-  }));
-  assert.equal(evidence.state, 'hidden', 'Chromium reports the production page is actually hidden');
-  assert.ok(evidence.events.some(event => event.state === 'hidden'),
-    'the real hidden transition dispatched visibilitychange');
-  return { foregroundPage, evidence };
+
+  // Minimize the real Chromium browser window through CDP. This changes the
+  // browser-managed page lifecycle; it does not override document state or
+  // dispatch a synthetic visibilitychange event.
+  const pageSession = await context.newCDPSession(page);
+  const { targetInfo } = await pageSession.send('Target.getTargetInfo');
+  await pageSession.detach();
+  const browserSession = await browser.newBrowserCDPSession();
+  try {
+    const { windowId } = await browserSession.send('Browser.getWindowForTarget', {
+      targetId: targetInfo.targetId,
+    });
+    await browserSession.send('Browser.setWindowBounds', {
+      windowId,
+      bounds: { windowState: 'minimized' },
+    });
+    await page.waitForFunction(() => document.visibilityState === 'hidden', null, { timeout: 10_000 });
+    const evidence = await page.evaluate(() => ({
+      state: document.visibilityState,
+      events: window.__issue210.visibilityEvents.map(event => ({ ...event })),
+      hidden: document.hidden,
+      hasFocus: document.hasFocus(),
+    }));
+    assert.equal(evidence.state, 'hidden', 'Chromium reports the production page is actually hidden');
+    assert.equal(evidence.hidden, true, 'Chromium marks the document hidden');
+    assert.ok(evidence.events.some(event => event.state === 'hidden'),
+      'the real hidden transition dispatched visibilitychange');
+    return {
+      foregroundPage: {
+        restore: async () => {
+          await browserSession.send('Browser.setWindowBounds', {
+            windowId,
+            bounds: { windowState: 'normal' },
+          });
+          await browserSession.detach();
+        },
+      },
+      evidence,
+    };
+  } catch (error) {
+    await browserSession.detach().catch(() => {});
+    throw error;
+  }
 }
 
 async function restoreForeground(page, foregroundPage) {
+  if (foregroundPage?.restore) await foregroundPage.restore();
   await page.bringToFront();
   await page.waitForFunction(() => document.visibilityState === 'visible', null, { timeout: 10_000 });
-  if (foregroundPage && !foregroundPage.isClosed()) await foregroundPage.close();
-  await page.waitForFunction(() => document.visibilityState === 'visible', null, { timeout: 10_000 });
+  if (foregroundPage && !foregroundPage.restore && !foregroundPage.isClosed()) {
+    await foregroundPage.close();
+    await page.waitForFunction(() => document.visibilityState === 'visible', null, { timeout: 10_000 });
+  }
 }
 
 async function readSessionClosure(page) {
@@ -1274,6 +1308,7 @@ browserTest("BG-07/BG-08: delayed end completes safely; missing end reproduces a
       providerEvents: await missing.page.evaluate(() => window.__issue210Speech.events),
     });
     await assertHiddenBrowserQuiet(t, missing);
+    await restoreForeground(missing.page, transition.foregroundPage);
   } finally {
     await missing.context.close();
   }
