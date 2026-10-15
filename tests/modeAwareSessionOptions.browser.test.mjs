@@ -38,6 +38,7 @@ async function setup({width=390,method='read',size=60}={}){
       localStorage.setItem('appConfigV3',JSON.stringify({studyMode:method}));
       localStorage.setItem('itemLevelV1',JSON.stringify(Object.fromEntries(items.map(item=>[item.id,{last:2,best:2,updatedAt:Date.now()-86400000,review:{nextDueAt:Date.now()-10000}}]))));
       localStorage.setItem('studyLogV1','{}');
+      localStorage.setItem('relationshipMilestonesV1',JSON.stringify(Object.fromEntries(['friends_5','friends_10','friends_all','best_friends_5','best_friends_10','best_friends_all'].map(id=>[id,Date.now()]))));
     }
     window.__setupErrors=[];
     window.__setupWrites=[];
@@ -109,6 +110,7 @@ for(const width of [360,390,430]) browserTest(`mobile ${width}: navigation, mode
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
       const rect=await page.locator('#playOptionsStart').boundingBox();assert.ok(rect.y>=0&&rect.y+rect.height<=844);
       assert.equal(await page.evaluate(()=>getComputedStyle(document.body).overflow),'hidden');
+      await page.locator('.play-options__fields').evaluate(element=>{element.scrollTop=0;});
       await evidence(t,page,`${width}-${method}`,errors);
       await page.screenshot({path:path.join(evidenceDir,`${width}-${method}.png`)});
       await page.locator('[data-cancel-setup]').click();
@@ -209,6 +211,7 @@ for(const invalid of ['expired','invalid','duplicate']) browserTest(`handoff ${i
       sessionStorage.setItem(mod.SETUP_HANDOFF_KEY,JSON.stringify(payload));sessionStorage.setItem('englishPwaPendingGameAction','auto');
     },invalid);
     await page.reload();await ready(page);
+    await page.waitForFunction(()=>sessionStorage.getItem('englishPwaSessionSetupHandoff')===null);
     assert.equal(await page.locator('#studyView').isHidden(),true);
     assert.equal(await page.evaluate(()=>sessionStorage.getItem('englishPwaSessionSetupHandoff')),null);
     assert.equal(await page.evaluate(()=>sessionStorage.getItem('englishPwaPendingGameAction')),null);

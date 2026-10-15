@@ -226,8 +226,8 @@ test('secondary navigation opens contacts, vocabulary, detailed options, and ran
       else assert.ok(await page.locator(`#playOptionsDialog #${id}`).count()>0);
     }
     await page.locator('#playOptionsDialog .focus-sheet__close').click();
-
-    await page.locator('#openLearningChoice').click();
+    await page.waitForFunction(()=>document.getElementById('learningChoiceDialog')?.open===true);
+    assert.equal(await page.locator('#studyView').isHidden(),true,'closing details returns to chooser without starting');
     await page.locator('#learningChoiceDialog [data-course="explore"]').click();
     await page.locator('#learningChoiceDialog .learning-choice__start').click();
     await page.waitForFunction(()=>document.getElementById('focusExploreDialog')?.open===true);
