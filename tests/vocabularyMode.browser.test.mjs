@@ -57,6 +57,8 @@ async function newPage(source,{reducedMotion='reduce',entryState:entryStateOverr
       return nativeFetch(input,init);
     };
     window.__mockSpeech=Object.assign(window.__mockSpeech||{},{latest:null,spoken:[],audioPlayed:[],latestAudio:null,startCount:0,srsWrites:0});
+    window.__vocabularyHiddenAudit={visibilityEvents:[]};
+    document.addEventListener('visibilitychange',()=>window.__vocabularyHiddenAudit.visibilityEvents.push({state:document.visibilityState,at:performance.now()}));
     const storageSetItem=Storage.prototype.setItem;
     Storage.prototype.setItem=function(key,value){
       if(key==='itemLevelV1') window.__mockSpeech.srsWrites+=1;
@@ -118,6 +120,32 @@ async function newPage(source,{reducedMotion='reduce',entryState:entryStateOverr
 }
 
 async function closePage({context}){await context.close();}
+async function minimizeBrowserWindow(page){
+  assert.equal(await page.evaluate(()=>document.visibilityState),'visible','Vocabulary starts foregrounded');
+  await page.evaluate(()=>{window.__vocabularyHiddenAudit.visibilityEvents.length=0;});
+  const pageSession=await page.context().newCDPSession(page);
+  const {targetInfo}=await pageSession.send('Target.getTargetInfo');
+  await pageSession.detach();
+  const browserSession=await browser.newBrowserCDPSession();
+  const {windowId}=await browserSession.send('Browser.getWindowForTarget',{targetId:targetInfo.targetId});
+  await browserSession.send('Browser.setWindowBounds',{windowId,bounds:{windowState:'minimized'}});
+  await page.waitForFunction(()=>document.visibilityState==='hidden',null,{timeout:10_000,polling:100});
+  const evidence=await page.evaluate(()=>({
+    state:document.visibilityState,
+    hidden:document.hidden,
+    events:window.__vocabularyHiddenAudit.visibilityEvents.map(event=>({...event})),
+  }));
+  assert.equal(evidence.state,'hidden');
+  assert.equal(evidence.hidden,true);
+  assert.ok(evidence.events.some(event=>event.state==='hidden'));
+  return {browserSession,windowId,evidence};
+}
+async function restoreBrowserWindow(page,lifecycle){
+  await lifecycle.browserSession.send('Browser.setWindowBounds',{windowId:lifecycle.windowId,bounds:{windowState:'normal'}});
+  await lifecycle.browserSession.detach();
+  await page.bringToFront();
+  await page.waitForFunction(()=>document.visibilityState==='visible',null,{timeout:10_000,polling:100});
+}
 async function injectCompletedFinal(page,text){
   await page.waitForFunction(()=>window.__mockSpeech?.latest);
   await page.evaluate(value=>{const recognition=window.__mockSpeech.latest;recognition.inject(value);recognition.emitEnd();},text);
@@ -268,7 +296,7 @@ before(async()=>{
     return;
   }
   baseUrl=`http://127.0.0.1:${server.address().port}`;
-  try{browser=await chromium.launch({headless:true});}catch(error){browserError=String(error?.message??error).split('\n')[0];if(process.env.REORDER_REQUIRE_BROWSER)throw error;}
+  try{browser=await chromium.launch({headless:process.env.ISSUE210_HEADFUL!=='1'});}catch(error){browserError=String(error?.message??error).split('\n')[0];if(process.env.REORDER_REQUIRE_BROWSER)throw error;}
 });
 
 after(async()=>{await browser?.close();if(server?.listening) await new Promise(resolve=>server.close(resolve));});
@@ -1195,4 +1223,56 @@ for(const rank of [1,6,12,20]) browserTest(`Web production Vocabulary strict TAR
     assert.equal(await page.locator('.vocab-heard__text').innerText(),alternatives[0]);
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);
   }finally{await closePage(opened);}
+});
+
+
+browserTest('Vocabulary true hidden-page transition records its independent recognition stop behavior',async t=>{
+  const opened=await newPage(sources[0]);
+  const {context,page}=opened;
+  let lifecycle=null;
+  try{
+    await page.waitForFunction(()=>window.__mockSpeech?.latest?.lifecycleState==='active',null,{timeout:10_000});
+    const before=await page.evaluate(()=>({
+      attemptId:window.__mockSpeech.latest.attemptId,
+      itemLevel:JSON.parse(localStorage.getItem('itemLevelV1')||'{}'),
+      srsWrites:window.__mockSpeech.srsWrites,
+      micListening:document.querySelector('.vocab-mic')?.classList.contains('is-listening')||false,
+    }));
+    lifecycle=await minimizeBrowserWindow(page);
+    const afterHidden=await page.evaluate(()=>({
+      visibility:document.visibilityState,
+      dialogOpen:document.querySelector('#vocabModeDialog')?.open||false,
+      recognitionState:window.__mockSpeech.latest?.lifecycleState||null,
+      stopCalls:window.__mockSpeech.latest?.stopCalls||0,
+      abortCalls:window.__mockSpeech.latest?.abortCalls||0,
+      micListening:document.querySelector('.vocab-mic')?.classList.contains('is-listening')||false,
+      micLabel:document.querySelector('.vocab-mic')?.getAttribute('aria-label')||null,
+      itemLevel:JSON.parse(localStorage.getItem('itemLevelV1')||'{}'),
+      srsWrites:window.__mockSpeech.srsWrites,
+      visibilityEvents:window.__vocabularyHiddenAudit.visibilityEvents,
+    }));
+    assert.equal(afterHidden.visibility,'hidden');
+    assert.deepEqual(afterHidden.itemLevel,before.itemLevel,'backgrounding without speech does not change vocabulary SRS');
+    assert.equal(afterHidden.srsWrites,before.srsWrites,'backgrounding without speech does not write vocabulary SRS');
+    if(afterHidden.recognitionState==='active'||afterHidden.micListening){
+      t.diagnostic('[issue210-BG-VOCAB-FINDING-P1] Vocabulary recognition and listening UI remain active after a real hidden transition; see the recorded state/stop/abort/SRS evidence.');
+    }else{
+      t.diagnostic('[issue210-BG-VOCAB] Vocabulary recognition was no longer active after a real hidden transition.');
+    }
+    await restoreBrowserWindow(page,lifecycle);
+    lifecycle=null;
+    const resumed=await page.evaluate(()=>({
+      visibility:document.visibilityState,
+      recognitionState:window.__mockSpeech.latest?.lifecycleState||null,
+      micListening:document.querySelector('.vocab-mic')?.classList.contains('is-listening')||false,
+      itemLevel:JSON.parse(localStorage.getItem('itemLevelV1')||'{}'),
+      srsWrites:window.__mockSpeech.srsWrites,
+    }));
+    t.diagnostic('[issue210-BG-VOCAB-EVIDENCE] '+JSON.stringify({attemptId:before.attemptId,before,afterHidden,resumed}));
+  }finally{
+    if(lifecycle){
+      await restoreBrowserWindow(page,lifecycle).catch(()=>{});
+    }
+    await closePage(opened);
+  }
 });
