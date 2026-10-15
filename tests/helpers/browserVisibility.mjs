@@ -40,35 +40,60 @@ async function minimizeTargetWindow(page) {
 
 async function lifecycleFreezeHidden(page) {
   const session = await page.context().newCDPSession(page);
+  let frozenSnapshot = null;
+  let evaluationTimedOut = false;
   try {
-    // Page.setWebLifecycleState(frozen) invokes Chromium's WasHidden path.
-    // Immediately unfreeze JS execution; visibility stays hidden until the
-    // app page is explicitly foregrounded later in the scenario.
     await session.send('Page.setWebLifecycleState', { state: 'frozen' });
+    const inspect = session.send('Runtime.evaluate', {
+      expression: '({ state: document.visibilityState, hidden: document.hidden })',
+      returnByValue: true,
+    });
+    const inspection = await Promise.race([
+      inspect.then(value => ({ value })),
+      new Promise(resolve => setTimeout(() => resolve({ timeout: true }), 1_500)),
+    ]);
+    evaluationTimedOut = inspection.timeout === true;
+    frozenSnapshot = inspection.value?.result?.value || null;
+
+    // Resume script execution and let Chromium deliver the lifecycle event.
+    // The observer name differs between the Read fixture and Vocabulary fixture.
     await session.send('Page.setWebLifecycleState', { state: 'active' });
-    await page.waitForFunction(
-      () => window.__issue210.visibilityEvents.some(event => event.state === 'hidden'),
-      null,
-      { timeout: 3_000, polling: 50 },
-    );
-    const evidence = await page.evaluate(() => {
-      const events = window.__issue210.visibilityEvents.map(event => ({ ...event }));
-      const hiddenEvent = [...events].reverse().find(event => event.state === 'hidden');
+    await page.waitForFunction(() => {
+      const traces = [
+        window.__issue210?.visibilityEvents,
+        window.__vocabularyHiddenAudit?.visibilityEvents,
+      ].filter(Array.isArray);
+      return traces.some(events => events.some(event => event.state === 'hidden'));
+    }, null, { timeout: 3_000, polling: 50 });
+
+    const after = await page.evaluate(() => {
+      const issueEvents = window.__issue210?.visibilityEvents?.map(event => ({ ...event })) || null;
+      const vocabularyEvents = window.__vocabularyHiddenAudit?.visibilityEvents?.map(event => ({ ...event })) || null;
+      const hiddenEvent = [...(issueEvents || []), ...(vocabularyEvents || [])]
+        .reverse().find(event => event.state === 'hidden');
       return {
         state: hiddenEvent?.state || document.visibilityState,
         hidden: hiddenEvent?.state === 'hidden',
         currentState: document.visibilityState,
         currentHidden: document.hidden,
-        events,
+        issueEvents,
+        vocabularyEvents,
+        hiddenEvent,
       };
     });
-    assert.equal(evidence.state, 'hidden', 'Chromium lifecycle control dispatched a hidden visibilitychange');
-    assert.equal(evidence.hidden, true);
-    return { session, evidence };
+    assert.equal(after.state, 'hidden', 'Chromium dispatched visibilitychange with hidden state');
+    assert.equal(after.hidden, true);
+    return { session, evidence: after };
   } catch (error) {
     await session.send('Page.setWebLifecycleState', { state: 'active' }).catch(() => {});
+    const detail = await page.evaluate(() => ({
+      state: document.visibilityState,
+      hidden: document.hidden,
+      issueEvents: window.__issue210?.visibilityEvents || null,
+      vocabularyEvents: window.__vocabularyHiddenAudit?.visibilityEvents || null,
+    })).catch(() => null);
     await session.detach().catch(() => {});
-    throw error;
+    throw new Error(`CDP page lifecycle inspection failed: ${JSON.stringify({ frozenSnapshot, evaluationTimedOut, detail, error: error.message })}`, { cause: error });
   }
 }
 
