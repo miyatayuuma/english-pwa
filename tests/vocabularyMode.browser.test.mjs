@@ -6,6 +6,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 import { installMockSpeechRecognition } from './helpers/mockSpeechRecognition.mjs';
+import { minimizeChromiumWindow } from './helpers/browserVisibility.mjs';
 
 const ROOT=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const vocabulary=JSON.parse(await fs.readFile(path.join(ROOT,'data/vocabulary-v3.json'),'utf8'));
@@ -120,32 +121,22 @@ async function newPage(source,{reducedMotion='reduce',entryState:entryStateOverr
 }
 
 async function closePage({context}){await context.close();}
-async function foregroundVocabularyBackgroundTab(page,context){
+async function foregroundVocabularyBackgroundTab(page){
   assert.equal(await page.evaluate(()=>document.visibilityState),'visible','Vocabulary starts foregrounded');
   await page.evaluate(()=>{window.__vocabularyHiddenAudit.visibilityEvents.length=0;});
-  const foregroundPage=await context.newPage();
-  try{
-    await foregroundPage.goto('about:blank');
-    await foregroundPage.bringToFront();
-    await page.waitForFunction(()=>document.visibilityState==='hidden',null,{timeout:10_000,polling:100});
-    const evidence=await page.evaluate(()=>({
-      state:document.visibilityState,
-      hidden:document.hidden,
-      events:window.__vocabularyHiddenAudit.visibilityEvents.map(event=>({...event})),
-    }));
-    assert.equal(evidence.state,'hidden');
-    assert.equal(evidence.hidden,true);
-    assert.ok(evidence.events.some(event=>event.state==='hidden'));
-    return {foregroundPage,evidence};
-  }catch(error){
-    await foregroundPage.close().catch(()=>{});
-    throw error;
-  }
+  const lifecycle=await minimizeChromiumWindow(page);
+  const evidence=await page.evaluate(()=>({
+    state:document.visibilityState,
+    hidden:document.hidden,
+    events:window.__vocabularyHiddenAudit.visibilityEvents.map(event=>({...event})),
+  }));
+  assert.equal(evidence.state,'hidden');
+  assert.equal(evidence.hidden,true);
+  assert.ok(evidence.events.some(event=>event.state==='hidden'));
+  return {...lifecycle,evidence};
 }
 async function restoreBrowserWindow(page,lifecycle){
-  await lifecycle.foregroundPage.close();
-  await page.bringToFront();
-  await page.waitForFunction(()=>document.visibilityState==='visible',null,{timeout:10_000,polling:100});
+  await lifecycle.restore();
 }
 async function injectCompletedFinal(page,text){
   await page.waitForFunction(()=>window.__mockSpeech?.latest);
@@ -1239,7 +1230,7 @@ browserTest('Vocabulary true hidden-page transition records its independent reco
       srsWrites:window.__mockSpeech.srsWrites,
       micListening:document.querySelector('.vocab-mic')?.classList.contains('is-listening')||false,
     }));
-    lifecycle=await foregroundVocabularyBackgroundTab(page,context);
+    lifecycle=await foregroundVocabularyBackgroundTab(page);
     const afterHidden=await page.evaluate(()=>({
       visibility:document.visibilityState,
       dialogOpen:document.querySelector('#vocabModeDialog')?.open||false,
