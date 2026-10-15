@@ -82,7 +82,7 @@ before(async () => {
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   baseUrl = `http://127.0.0.1:${server.address().port}`;
   try {
-    browser = await chromium.launch({ headless: true });
+    browser = await chromium.launch({ headless: process.env.ISSUE210_HEADFUL !== '1' });
   } catch (error) {
     browserError = error?.message || String(error);
     if (process.env.ISSUE210_REQUIRE_BROWSER) throw error;
