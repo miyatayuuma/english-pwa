@@ -1,0 +1,389 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Pixel per-trial sanitized manifest (one surface/build/attempt)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "caseId",
+    "sourceSha",
+    "appVersion",
+    "apkSha256",
+    "deviceModel",
+    "api",
+    "surface",
+    "attemptAlias",
+    "recognitionFinality",
+    "candidateCount",
+    "candidateRank",
+    "gradingResult",
+    "uiResult",
+    "srsWriteCount",
+    "studyLogResult",
+    "result",
+    "triage",
+    "evidenceLocation",
+    "subtrialId",
+    "requestedCount",
+    "availableCount",
+    "startedCount",
+    "shortfallCount",
+    "viewportWidth",
+    "viewportHeight",
+    "webViewVersion",
+    "chromeVersion",
+    "orientation",
+    "microphonePermission",
+    "network"
+  ],
+  "properties": {
+    "caseId": {
+      "type": "string",
+      "pattern": "^(UI-(0[1-9]|10)[ab]?|D(0[1-9]|1[0-4]))$"
+    },
+    "sourceSha": {
+      "const": "f5fa6064761d4fcaf5c66214f3dbba4183ae03d5"
+    },
+    "appVersion": {
+      "const": "v5.113"
+    },
+    "apkSha256": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "deviceModel": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^Pixel [A-Za-z0-9 +_-]{1,40}$"
+    },
+    "api": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "surface": {
+      "enum": [
+        "NATIVE_APK",
+        "BROWSER_PWA",
+        "NOT_OBSERVED"
+      ]
+    },
+    "attemptAlias": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^attempt-[0-9]+$"
+    },
+    "recognitionFinality": {
+      "enum": [
+        "final",
+        "interim",
+        "mixed",
+        "none",
+        "NOT_OBSERVED"
+      ]
+    },
+    "candidateCount": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "candidateRank": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "gradingResult": {
+      "enum": [
+        "TARGET",
+        "MISS",
+        "PASS",
+        "FAIL",
+        "NO_GRADE",
+        "NOT_OBSERVED",
+        "PARAPHRASE",
+        "CORRECTION_SUCCESS",
+        "CORRECTION_FAILURE",
+        "CORRECTION_TECHNICAL_ERROR"
+      ]
+    },
+    "uiResult": {
+      "enum": [
+        "TARGET",
+        "MISS",
+        "PASS",
+        "FAIL",
+        "NO_GRADE",
+        "NOT_OBSERVED",
+        "PARAPHRASE",
+        "CORRECTION_SUCCESS",
+        "CORRECTION_FAILURE",
+        "CORRECTION_TECHNICAL_ERROR"
+      ]
+    },
+    "srsWriteCount": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "studyLogResult": {
+      "enum": [
+        "MATCH",
+        "MISMATCH",
+        "NOT_OBSERVED"
+      ]
+    },
+    "result": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "INCONCLUSIVE",
+        "NOT_RUN"
+      ]
+    },
+    "triage": {
+      "enum": [
+        "NONE",
+        "PROVIDER_RECOGNITION_FAILURE",
+        "DEVICE_PROVIDER",
+        "ASR_EVIDENCE",
+        "APPLICATION",
+        "NOT_OBSERVED"
+      ]
+    },
+    "evidenceLocation": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[a-zA-Z0-9_-]+[.]safe[.]json$"
+    },
+    "subtrialId": {
+      "enum": [
+        "primary",
+        "repeat",
+        "manual-stop",
+        "auto-stop",
+        "key-word",
+        "whole-chunk",
+        "content-omission",
+        "meaning-change",
+        "restart",
+        "repetition",
+        "target-omission",
+        "middle-omission",
+        "end-omission",
+        "read-correction",
+        "vocabulary-correction",
+        "delayed-final",
+        "interim-only",
+        "multi-segment",
+        "pending",
+        "cancel",
+        "technical-error",
+        "incomplete-evidence",
+        "stale-callback",
+        "final-target",
+        "final-miss",
+        "retry",
+        "duplicate-callback",
+        "reload",
+        "trace-off",
+        "ordinary-launch",
+        "debug-launch",
+        "release-isolation",
+        "back",
+        "close",
+        "android-back",
+        "reopen",
+        "auto",
+        "count-5",
+        "count-8",
+        "count-12",
+        "count-20",
+        "count-30",
+        "count-50",
+        "short-list",
+        "over-limit",
+        "zero"
+      ]
+    },
+    "requestedCount": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "availableCount": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "startedCount": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "shortfallCount": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "viewportWidth": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "viewportHeight": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "webViewVersion": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9]+([.][0-9]+){1,3}$"
+    },
+    "chromeVersion": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9]+([.][0-9]+){1,3}$"
+    },
+    "orientation": {
+      "enum": [
+        "PORTRAIT",
+        "LANDSCAPE",
+        "NOT_OBSERVED"
+      ]
+    },
+    "microphonePermission": {
+      "enum": [
+        "GRANTED",
+        "DENIED",
+        "NOT_OBSERVED"
+      ]
+    },
+    "network": {
+      "enum": [
+        "ONLINE",
+        "OFFLINE",
+        "NOT_OBSERVED"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "result": {
+            "const": "PASS"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "deviceModel": {
+            "type": "string"
+          },
+          "api": {
+            "type": "integer"
+          },
+          "surface": {
+            "enum": [
+              "NATIVE_APK",
+              "BROWSER_PWA"
+            ]
+          },
+          "evidenceLocation": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "result": {
+            "const": "PASS"
+          },
+          "caseId": {
+            "pattern": "^D(0[1-9]|1[0-3])$"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "surface": {
+            "const": "NATIVE_APK"
+          },
+          "attemptAlias": {
+            "type": "string"
+          },
+          "studyLogResult": {
+            "const": "MATCH"
+          },
+          "srsWriteCount": {
+            "type": "integer"
+          },
+          "gradingResult": {
+            "not": {
+              "const": "NOT_OBSERVED"
+            }
+          },
+          "uiResult": {
+            "not": {
+              "const": "NOT_OBSERVED"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "result": {
+            "const": "PASS"
+          },
+          "surface": {
+            "const": "NATIVE_APK"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "apkSha256": {
+            "const": "5209c8946aaa3e714cd86199f1c3f88d1b196a4bcb30c9d45e64535241238cad"
+          }
+        }
+      }
+    }
+  ]
+}
