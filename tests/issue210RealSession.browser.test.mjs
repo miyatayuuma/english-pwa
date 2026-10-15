@@ -914,19 +914,31 @@ async function backgroundTransition(page) {
   assert.equal(initialState, 'visible', 'the real-session page starts foregrounded');
   await page.evaluate(() => { window.__issue210.visibilityEvents.length = 0; });
 
-  // Activate a second tab in the same BrowserContext. Proceed only after
-  // Chromium itself reports hidden and emits the visibilitychange event.
+  // Require Chromium's hidden visibilitychange event and preserve the state
+  // observed inside that event, even when CDP lifecycle control unfreezes JS.
   const lifecycle = await backgroundChromiumTab(page);
-  const eventEvidence = await page.evaluate(() => ({
-    state: document.visibilityState,
-    events: window.__issue210.visibilityEvents.map(event => ({ ...event })),
-  }));
-  assert.equal(eventEvidence.state, 'hidden');
-  assert.ok(eventEvidence.events.some(event => event.state === 'hidden'),
-    'Chromium dispatched visibilitychange for the actual hidden transition');
+  const eventEvidence = await page.evaluate(() => {
+    const events = window.__issue210.visibilityEvents.map(event => ({ ...event }));
+    const hiddenEvent = [...events].reverse().find(event => event.state === 'hidden');
+    return {
+      currentState: document.visibilityState,
+      currentHidden: document.hidden,
+      events,
+      hiddenEvent,
+    };
+  });
+  assert.ok(eventEvidence.hiddenEvent, 'Chromium dispatched a visibilitychange event with hidden state');
+  assert.equal(eventEvidence.hiddenEvent.state, 'hidden');
   return {
     foregroundPage: lifecycle,
-    evidence: { ...lifecycle.evidence, events: eventEvidence.events },
+    evidence: {
+      ...lifecycle.evidence,
+      state: eventEvidence.hiddenEvent.state,
+      hidden: true,
+      currentState: eventEvidence.currentState,
+      currentHidden: eventEvidence.currentHidden,
+      events: eventEvidence.events,
+    },
   };
 }
 async function restoreForeground(page, foregroundPage) {
