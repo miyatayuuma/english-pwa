@@ -73,3 +73,10 @@ test('compose handoff normalizes training; legacy invalid custom requires restor
   const store=storage();storeSetupHandoff(payload({options:{...options,count:'custom',customCount:7}}),store);
   const restored=consume(store);assert.equal(restored.options.count,'auto');assert.equal(restored.legacyCountReset,true);
 });
+
+test('malformed legacy custom cannot bypass the restoration notice through auto string',()=>{
+  for(const customCount of ['auto',null,undefined,7]){
+    const store=storage();storeSetupHandoff(payload({options:{...options,count:'custom',customCount}}),store);
+    const restored=consume(store);assert.equal(restored.options.count,'auto');assert.equal(restored.legacyCountReset,true);
+  }
+});

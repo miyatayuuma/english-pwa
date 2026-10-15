@@ -25,13 +25,13 @@ Status: implementation complete; browser/Android acceptance pending. Do not merg
 
 ## Independent review
 
-Separate read-only review found two P1 races: relationship initialization preceding reload launch, and stale asynchronous Start after Cancel/reopen/edit. Both were repaired and re-reviewed. Reviewer independently ran 38 focused tests: 38 pass, no skip/TODO. No unresolved major findings in reviewed code. Browser evidence and Android acceptance are outside that review's verified scope.
+Separate read-only review found two P1 races: relationship initialization preceding reload launch, and stale asynchronous Start after Cancel/reopen/edit. Both were repaired and re-reviewed. Reviewer independently ran 42 focused tests after final refinements: 42 pass, no skip/TODO. No unresolved major findings in reviewed code. Browser evidence and Android acceptance are outside that review's verified scope.
 
 ## Initial local validation
 
 - npm ci: PASS.
 - Focused count/handoff/shell/menu/migration tests: PASS (expanded totals in final record).
-- Full local npm test before final test additions: 678 total / 558 pass / 0 fail / 120 skip / 0 TODO. Chromium-dependent skips are not acceptance.
+- Full local npm test after final test additions: 685 total / 562 pass / 0 fail / 123 skip / 0 TODO. Chromium-dependent skips are not acceptance.
 - Vocabulary derived/validation, TD-cluster-before-to, ASR-09B/09C/09D: PASS.
 - Native sync: PASS, 119 runtime assets. Staged/Android byte comparison PASS; final sync repeated after code changes.
 - Local Playwright Chromium installation failed: downloaded archive was not a valid ZIP (`End of central directory record signature not found`). No repeated installation attempts after the installer exhausted its own mirrors.
@@ -50,3 +50,13 @@ The task explicitly prohibits edits to `tests/issue210RealSession.browser.test.m
 | data/characters.json | 1d0c61711d763373e1f587ecde16ff9f07cb1a45 |
 
 Issue #210 stays OPEN. PR #344 hidden-page E2E and PR #323 Pixel physical-device acceptance remain separate and unverified by this implementation. DEVICE_PENDING. No merge or production deployment acceptance is claimed.
+
+
+## Initial GitHub CI evidence
+
+Runtime SHA `600217573b97f71f5af0651df0ee5a1587e8f978`:
+- Android run https://github.com/miyatayuuma/english-pwa/actions/runs/38688178594 : Debug/Release/Lint and Gate A PASS. Gate A log: `Finished 5 tests`, `BUILD SUCCESSFUL`.
+- Application run https://github.com/miyatayuuma/english-pwa/actions/runs/38688178770 : Chromium tests in progress at this record; no acceptance claim yet.
+- Vocabulary and paraphrase scope guard PASS.
+
+The subsequent commit retains mobile PNG/JSON evidence as a separate CI artifact without changing test commands, concurrency or gates. Final runtime refinements add malformed-custom restoration protection and update the sheet if candidates become empty during Start readiness. Final-SHA acceptance must be read separately from the initial Android result.

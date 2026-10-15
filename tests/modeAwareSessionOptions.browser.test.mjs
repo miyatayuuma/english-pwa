@@ -101,6 +101,10 @@ for(const width of [360,390,430]) browserTest(`mobile ${width}: navigation, mode
         const bounds=await page.locator('[data-session-count]').evaluateAll(nodes=>nodes.map(x=>({height:x.getBoundingClientRect().height,top:x.getBoundingClientRect().top})));
         assert.ok(bounds.every(x=>x.height>=44));assert.equal(bounds[0].top,bounds[3].top);assert.ok(bounds[4].top>bounds[3].top);
         await page.locator('[data-session-count="50"]').click();
+        for(const id of ['playOptionsSkill','playOptionsSection']){
+          const value=await page.locator('#'+id+' option').nth(1).getAttribute('value');
+          if(value) await page.locator('#'+id).selectOption(value);
+        }
       }
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
       const rect=await page.locator('#playOptionsStart').boundingBox();assert.ok(rect.y>=0&&rect.y+rect.height<=844);
@@ -255,5 +259,19 @@ browserTest('new setup Start preserves Issue #342 interim-only finality and SRS/
     const after=await snapshot(page);assert.equal(after.itemLevelV1,before.itemLevelV1);assert.equal(after.studyLogV1,before.studyLogV1);
     assert.equal(await page.locator('#valMatch').textContent(),'—');assert.equal(await page.locator('#enText').getAttribute('data-item-id'),items[0].id);assert.equal(await page.locator('#reviewCompleteView').isHidden(),true);
     await evidence(t,page,'issue342-interim',errors);
+  }finally{await context.close();}
+});
+
+browserTest('zero-candidate filters disable actual Start and expose a recovery action',async t=>{
+  const {page,context,errors}=await setup();try{
+    const before=await snapshot(page);
+    await page.evaluate(()=>window.__OPEN_SESSION_OPTIONS__({section:'Section999',count:'50'}));
+    assert.equal(await page.locator('#playOptionsStart').isDisabled(),true);
+    assert.match(await page.locator('#playOptionsCount').innerText(),/実際 0問/);
+    assert.match(await page.locator('#playOptionsCauses').innerText(),/条件に合う文がありません/);
+    await page.locator('.play-options__cause').first().click();assert.equal(await page.locator('#playOptionsStart').isDisabled(),false);
+    await page.locator('[data-game-method="compose"]').click();assert.equal(await page.locator('[data-training-field]').isVisible(),false);
+    await page.locator('[data-game-method="read"]').click();assert.equal(await page.locator('[data-training-mode="standard"]').getAttribute('aria-pressed'),'true');
+    assert.deepEqual(await snapshot(page),before);await evidence(t,page,'zero-recovery',errors);
   }finally{await context.close();}
 });

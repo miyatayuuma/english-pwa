@@ -428,7 +428,7 @@ async function confirmSetupStart(dialog){
   if(!ready||method!==state.gameMethodDraft||JSON.stringify(options)!==JSON.stringify(normalizeSessionOptions(state.optionsDraft))){
     state.setupNotice='設定または準備状態が変わりました。内容を確認して、もう一度開始してください。';updateOptionsSheet(dialog);return;
   }
-  if(!sentencePlan(options).size) return;
+  if(!sentencePlan(options).size) {updateOptionsSheet(dialog);return;}
   const previous=storedSentenceMethod();
   if(method!==BOOT_SENTENCE_METHOD){
     const payload=createSetupHandoff({gameMethod:method,options,appVersion:globalThis.APP_VERSION});

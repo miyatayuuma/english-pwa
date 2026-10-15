@@ -1,5 +1,5 @@
 // Ephemeral, tab-scoped launch intent. Never a learning-data authority.
-import { normalizeSessionOptions, SESSION_COUNT_CHOICES } from './sessionOptionsCore.js';
+import { normalizeSessionOptions, migrateLegacySessionCount, SESSION_COUNT_CHOICES } from './sessionOptionsCore.js';
 export const SETUP_HANDOFF_KEY='englishPwaSessionSetupHandoff';
 export const SETUP_RECEIPT_KEY='englishPwaSessionSetupConsumed';
 export const SETUP_HANDOFF_TTL=120_000;
@@ -70,6 +70,6 @@ export function consumeSetupHandoff({storage=globalThis.sessionStorage,appVersio
     retained[value.nonce]=now;
     storage.setItem(SETUP_RECEIPT_KEY,JSON.stringify(retained));
     if(!JSON.parse(storage.getItem(SETUP_RECEIPT_KEY)||'{}')[value.nonce]) return null;
-    return {...value,options:normalizeSessionOptions(value.options),legacyCountReset:value.options.count==='custom'&&!SESSION_COUNT_CHOICES.includes(String(value.options.customCount))};
+    return {...value,options:normalizeSessionOptions(value.options),legacyCountReset:migrateLegacySessionCount(value.options).changed};
   }catch(_){clearSetupHandoff(storage);return null;}
 }
