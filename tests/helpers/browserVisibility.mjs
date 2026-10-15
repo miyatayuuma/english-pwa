@@ -94,13 +94,26 @@ export async function backgroundChromiumTab(page, { timeout = 10_000 } = {}) {
     });
     createdTargetId = created.targetId;
     const createdWindow = await browserCdpSession.send('Browser.getWindowForTarget', { targetId: createdTargetId });
+    const appBounds = await browserCdpSession.send('Browser.getWindowBounds', { windowId: appWindow.windowId });
+    await browserCdpSession.send('Browser.setWindowBounds', {
+      windowId: createdWindow.windowId,
+      bounds: {
+        left: appBounds.bounds.left,
+        top: appBounds.bounds.top,
+        width: appBounds.bounds.width,
+        height: appBounds.bounds.height,
+        windowState: 'normal',
+      },
+    });
     targetEvidence = {
-      method: 'cdp-target-create-tab',
+      method: 'cdp-target-create-window-overlap',
       appTargetId,
       appWindowId: appWindow.windowId,
       createdTargetId,
       createdWindowId: createdWindow.windowId,
       sameWindow: appWindow.windowId === createdWindow.windowId,
+      appBounds: appBounds.bounds,
+      createdBounds: (await browserCdpSession.send('Browser.getWindowBounds', { windowId: createdWindow.windowId })).bounds,
       focusMarker,
     };
     assert.equal(targetEvidence.sameWindow, false, 'Chromium created a separate foreground window in the isolated app context');
