@@ -39,6 +39,7 @@ export const speechEquivalenceRules = Object.freeze([
   ...pair({ id: 'than-then', expected: 'than', recognized: 'then', kind: 'asr-context-collision', scope: { type: 'mode', modes: ['vocabulary', 'read', 'cloze', 'correction'] } }),
   ...pair({ id: 'prose-pros', expected: 'prose', recognized: 'pros', kind: 'homophone', display: 'expected' }),
   ...pair({ id: 'dye-die', expected: 'dye', recognized: 'die', kind: 'homophone' }),
+  ...pair({ id: 'dyed-died', expected: 'dyed', recognized: 'died', kind: 'homophone' }),
   ...pair({ id: 'postwar-post-war', expected: 'postwar', recognized: 'post war', kind: 'segmentation-equivalence' }),
   ...pair({ id: 'birthrate-birth-rate', expected: 'birthrate', recognized: 'birth rate', kind: 'segmentation-equivalence' }),
   ...pair({ id: 'makeup-make-up', expected: 'makeup', recognized: 'make up', kind: 'segmentation-equivalence' }),

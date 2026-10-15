@@ -4,6 +4,7 @@ import { appendRawTranscriptFinal } from '../scripts/speech/recognition.js';
 import { alignSpeech, findSpeechSurfaceMatch } from '../scripts/speech/speechAlignment.js';
 import { gradeReadSpeech } from '../scripts/speech/readSpeechGrader.js';
 import { applySpeechHighlight } from '../scripts/speech/speechPresentation.js';
+import { speechEquivalenceRules } from '../scripts/speech/speechEquivalenceRules.js';
 
 function tokenSpan(text) {
   const classes = new Set();
@@ -65,6 +66,98 @@ test('dye/die is a symmetric explicit homophone and preserves the provider spell
   }
   assert.equal(findSpeechSurfaceMatch('dye','die')?.ruleId,'dye-die');
   assert.equal(findSpeechSurfaceMatch('die','dye')?.ruleId,'die-dye');
+});
+
+test('dyed/died is a symmetric explicit homophone with raw transcript and provenance',()=>{
+  const rules=speechEquivalenceRules.filter(rule=>['dyed-died','died-dyed'].includes(rule.id));
+  assert.deepEqual(rules.map(({id,expected,recognized,kind,credit,scope,display})=>({id,expected,recognized,kind,credit,scope,display})),[
+    {id:'dyed-died',expected:'dyed',recognized:'died',kind:'homophone',credit:'exact-equivalent',scope:{type:'global'},display:'raw'},
+    {id:'died-dyed',expected:'died',recognized:'dyed',kind:'homophone',credit:'exact-equivalent',scope:{type:'global'},display:'raw'},
+  ]);
+  const ids=speechEquivalenceRules.map(rule=>rule.id);
+  assert.equal(new Set(ids).size,ids.length,'rule IDs remain unique');
+
+  for(const [expected,recognized,ruleId] of [['dyed','died','dyed-died'],['died','dyed','died-dyed']]){
+    const result=alignSpeech(expected,recognized,{
+      context:{mode:'read'},recognitionSegmentIndex:4,recognitionSegmentIndexes:[4],asrRank:2,attemptId:'dyed-died-attempt',
+    });
+    assert.equal(result.matchRate,1);
+    assert.equal(result.rawTranscript,recognized);
+    assert.equal(result.displayTranscript,recognized);
+    const [match]=result.alignment.filter(event=>event.ruleId===ruleId);
+    assert.ok(match);
+    assert.equal(match.authority,'explicit-equivalence');
+    assert.equal(match.ruleKind,'homophone');
+    assert.equal(match.expected,expected);
+    assert.equal(match.observed,recognized);
+    assert.equal(match.recognitionSegmentIndex,4);
+    assert.deepEqual(match.recognitionSegmentIndexes,[4]);
+    assert.equal(match.asrRank,2);
+    assert.equal(match.attemptId,'dyed-died-attempt');
+  }
+  assert.equal(findSpeechSurfaceMatch('dyed','died')?.ruleId,'dyed-died');
+  assert.equal(findSpeechSurfaceMatch('died','dyed')?.ruleId,'died-dyed');
+
+  for(const exact of ['dyed','died']){
+    const result=alignSpeech(exact,exact);
+    assert.equal(result.matchRate,1);
+    assert.equal(result.alignment[0]?.authority,'exact');
+    assert.equal(result.alignment[0]?.ruleId,null);
+  }
+});
+
+test('dyed/died sentence examples preserve order and only align the changed token',()=>{
+  const cases=[
+    ['The fabric was dyed blue.','The fabric was died blue.','dyed-died',3],
+    ['He died last year.','He dyed last year.','died-dyed',1],
+  ];
+  for(const [expected,recognized,ruleId,tokenIndex] of cases){
+    const result=alignSpeech(expected,recognized,{
+      context:{mode:'read'},recognitionSegmentIndex:7,asrRank:0,attemptId:`sentence-${ruleId}`,
+    });
+    assert.equal(result.matchRate,1);
+    assert.equal(result.recall,1);
+    assert.equal(result.precision,1);
+    assert.equal(result.orderedMatchIntegrity.valid,true);
+    assert.equal(result.rawTranscript,recognized);
+    assert.equal(result.displayTranscript,recognized);
+    const equivalences=result.alignment.filter(event=>event.authority==='explicit-equivalence');
+    assert.equal(equivalences.length,1);
+    assert.equal(equivalences[0].ruleId,ruleId);
+    assert.equal(equivalences[0].ruleKind,'homophone');
+    assert.deepEqual(equivalences[0].expectedTokenIndexes,[tokenIndex]);
+    assert.deepEqual(equivalences[0].observedTokenIndexes,[tokenIndex]);
+  }
+});
+
+test('dyed/died does not extend to other morphology or partial-word boundaries',()=>{
+  const negatives=[
+    ['dye','died'],['die','dyed'],['dyed','dye'],['died','die'],
+    ['dyeing','dying'],['dyed','dying'],['died','dyeing'],
+    ['dyed','undied'],['dyed','diedly'],['dyed','diedy'],
+  ];
+  for(const [expected,recognized] of negatives){
+    assert.equal(findSpeechSurfaceMatch(expected,recognized),null,`${expected} / ${recognized}`);
+    const result=alignSpeech(expected,recognized);
+    assert.equal(result.alignment.some(event=>event.ruleId==='dyed-died'||event.ruleId==='died-dyed'),false,`${expected} / ${recognized}`);
+  }
+  for(const [expected,recognized,ruleId] of [
+    ['dye','die','dye-die'],['die','dye','die-dye'],['gaze','gays','gaze-gays'],
+    ['gays','gaze','gays-gaze'],
+    ['prose','pros','prose-pros'],['pros','prose','pros-prose'],
+  ]) assert.equal(findSpeechSurfaceMatch(expected,recognized)?.ruleId,ruleId);
+  assert.equal(findSpeechSurfaceMatch('than','then',{context:{mode:'read'}})?.ruleId,'than-then');
+  assert.equal(findSpeechSurfaceMatch('then','than',{context:{mode:'read'}})?.ruleId,'then-than');
+});
+
+test('a reordered dyed/died token cannot pass Read through homophone overlap',()=>{
+  const expected='The fabric was dyed blue.';
+  const recognized='The fabric was blue died.';
+  const result=alignSpeech(expected,recognized,{context:{mode:'read'}});
+  assert.equal(result.alignment.some(event=>event.ruleId==='dyed-died'),false);
+  assert.ok(result.missing.includes('dyed'));
+  assert.equal(result.orderedMatchIntegrity.valid,false);
+  assert.equal(gradeReadSpeech(result).score,0);
 });
 
 test('postwar/post war is an explicit segmentation equivalence with raw display and exact-equivalent score', () => {
