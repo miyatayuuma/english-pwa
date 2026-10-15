@@ -904,21 +904,13 @@ async function backgroundTransition(page, context) {
   assert.equal(initialState, 'visible', 'the real-session page starts foregrounded');
   await page.evaluate(() => { window.__issue210.visibilityEvents.length = 0; });
 
-  // Minimize the real Chromium browser window through CDP. This changes the
-  // browser-managed page lifecycle; it does not override document state or
-  // dispatch a synthetic visibilitychange event.
-  const pageSession = await context.newCDPSession(page);
-  const { targetInfo } = await pageSession.send('Target.getTargetInfo');
-  await pageSession.detach();
-  const browserSession = await browser.newBrowserCDPSession();
+  // Foreground a second real Chromium tab in the same BrowserContext. This
+  // uses Chromium's tab lifecycle and never overrides document state or
+  // dispatches a synthetic visibilitychange event.
+  const foregroundPage = await context.newPage();
   try {
-    const { windowId } = await browserSession.send('Browser.getWindowForTarget', {
-      targetId: targetInfo.targetId,
-    });
-    await browserSession.send('Browser.setWindowBounds', {
-      windowId,
-      bounds: { windowState: 'minimized' },
-    });
+    await foregroundPage.goto('about:blank');
+    await foregroundPage.bringToFront();
     await page.waitForFunction(() => document.visibilityState === 'hidden', null, { timeout: 10_000, polling: 100 });
     const evidence = await page.evaluate(() => ({
       state: document.visibilityState,
@@ -930,20 +922,9 @@ async function backgroundTransition(page, context) {
     assert.equal(evidence.hidden, true, 'Chromium marks the document hidden');
     assert.ok(evidence.events.some(event => event.state === 'hidden'),
       'the real hidden transition dispatched visibilitychange');
-    return {
-      foregroundPage: {
-        restore: async () => {
-          await browserSession.send('Browser.setWindowBounds', {
-            windowId,
-            bounds: { windowState: 'normal' },
-          });
-          await browserSession.detach();
-        },
-      },
-      evidence,
-    };
+    return { foregroundPage, evidence };
   } catch (error) {
-    await browserSession.detach().catch(() => {});
+    await foregroundPage.close().catch(() => {});
     throw error;
   }
 }
