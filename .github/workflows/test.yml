@@ -56,7 +56,7 @@ jobs:
       - name: Install X11 window manager for Chromium lifecycle tests
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends openbox wmctrl
+          sudo apt-get install -y --no-install-recommends openbox wmctrl xdotool
       - name: Validate speech and vocabulary production authority
         run: |
           npm run speech:validate-td-cluster-before-to
