@@ -51,6 +51,7 @@ export async function backgroundChromiumTab(page, { timeout = 10_000 } = {}) {
   let foregroundTab = null;
   let x11WindowId = null;
   let minimized = false;
+  let targetActivation = null;
   let method = '';
   try {
     // Add and click a fixture link with target=_blank. Chromium handles the
@@ -89,7 +90,86 @@ export async function backgroundChromiumTab(page, { timeout = 10_000 } = {}) {
       };
     } catch (_) {
       // The explicit Playwright foreground switch did not produce a native
-      // hidden transition; try the X11 keyboard and window controls next.
+      // hidden transition; try browser-level tab activation next.
+    }
+
+    let browserCdpSession = null;
+    let appCdpSession = null;
+    let foregroundCdpSession = null;
+    let createdTargetId = null;
+    try {
+      browserCdpSession = await context.browser().newBrowserCDPSession();
+      appCdpSession = await context.newCDPSession(page);
+      foregroundCdpSession = await context.newCDPSession(foregroundTab);
+      const [{ targetInfo: appTarget }, { targetInfo: foregroundTarget }] = await Promise.all([
+        appCdpSession.send('Target.getTargetInfo'),
+        foregroundCdpSession.send('Target.getTargetInfo'),
+      ]);
+      const [appWindow, foregroundWindow] = await Promise.all([
+        browserCdpSession.send('Browser.getWindowForTarget', { targetId: appTarget.targetId }),
+        browserCdpSession.send('Browser.getWindowForTarget', { targetId: foregroundTarget.targetId }),
+      ]);
+      targetActivation = {
+        appTargetId: appTarget.targetId,
+        appBrowserContextId: appTarget.browserContextId || null,
+        appWindowId: appWindow.windowId,
+        foregroundTargetId: foregroundTarget.targetId,
+        foregroundWindowId: foregroundWindow.windowId,
+      };
+      let targetIdToActivate = foregroundTarget.targetId;
+      if (appWindow.windowId !== foregroundWindow.windowId) {
+        const pageEvent = context.waitForEvent('page', { timeout: 5_000 }).catch(() => null);
+        const created = await browserCdpSession.send('Target.createTarget', {
+          url: targetUrl,
+          browserContextId: appTarget.browserContextId,
+          openerId: appTarget.targetId,
+          forTab: true,
+          background: false,
+        });
+        createdTargetId = created.targetId;
+        targetIdToActivate = created.targetId;
+        const sameWindowTab = await pageEvent;
+        assert.ok(sameWindowTab, 'Chromium created a tab target in the isolated BrowserContext');
+        await sameWindowTab.waitForLoadState('domcontentloaded', { timeout: 5_000 }).catch(() => {});
+        await foregroundTab.close();
+        foregroundTab = sameWindowTab;
+        const createdWindow = await browserCdpSession.send('Browser.getWindowForTarget', { targetId: created.targetId });
+        targetActivation.createdTargetId = created.targetId;
+        targetActivation.createdWindowId = createdWindow.windowId;
+      }
+      await browserCdpSession.send('Target.activateTarget', { targetId: targetIdToActivate });
+      targetActivation.activatedTargetId = targetIdToActivate;
+      method = 'cdp-activate-chromium-tab';
+    } catch (error) {
+      targetActivation = {
+        ...(targetActivation || {}),
+        error: error instanceof Error ? `${error.name}: ${error.message}` : String(error),
+      };
+      if (createdTargetId) {
+        await browserCdpSession?.send('Target.closeTarget', { targetId: createdTargetId }).catch(() => {});
+      }
+    } finally {
+      await foregroundCdpSession?.detach().catch(() => {});
+      await appCdpSession?.detach().catch(() => {});
+      await browserCdpSession?.detach().catch(() => {});
+    }
+    if (targetActivation?.activatedTargetId) {
+      try {
+        const evidence = await waitForHidden(page, 2_000);
+        return {
+          evidence: { ...evidence, method, targetActivation },
+          restore: async () => {
+            await page.bringToFront();
+            await page.waitForFunction(() => document.visibilityState === 'visible', null, { timeout, polling: 100 });
+            await foregroundTab.close();
+            await context.unroute(targetUrl, routeHandler);
+          },
+        };
+      } catch (error) {
+        targetActivation.hiddenWaitError = error instanceof Error ? `${error.name}: ${error.message}` : String(error);
+        await foregroundTab.close().catch(() => {});
+        foregroundTab = null;
+      }
     }
 
     await page.bringToFront();
@@ -163,6 +243,6 @@ export async function backgroundChromiumTab(page, { timeout = 10_000 } = {}) {
     await foregroundTab?.close().catch(() => {});
     await context.unroute(targetUrl, routeHandler).catch(() => {});
     const detail = error instanceof Error ? `${error.name}: ${error.message}` : String(error);
-    throw new Error(`Chromium X11/tab lifecycle did not produce verified hidden state: ${JSON.stringify({ method, x11WindowId, pageState, popupState, x11State })} (${detail})`, { cause: error });
+    throw new Error(`Chromium X11/tab lifecycle did not produce verified hidden state: ${JSON.stringify({ method, targetActivation, x11WindowId, pageState, popupState, x11State })} (${detail})`, { cause: error });
   }
 }
