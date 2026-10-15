@@ -307,3 +307,24 @@ for(const [from,to] of [['read','compose'],['compose','read']]) browserTest(`rel
     await evidence(t,page,`recent-reload-${from}-${to}`,errors);
   }finally{await context.close();}
 });
+
+browserTest('Start requests saved audio permission inside the gesture before readiness; Cancel invalidates the pending launch',async t=>{
+  const {page,context,errors}=await setup();try{
+    await open(page);
+    await page.evaluate(()=>{
+      window.__setupClear=window.__CLEAR_ACTIVE_CHARACTER_SESSION__;delete window.__CLEAR_ACTIVE_CHARACTER_SESSION__;
+      window.__setupPermissionRequests=[];
+      window.__REQUEST_SAVED_AUDIO_FOLDER_PERMISSION__=()=>{
+        window.__setupPermissionRequests.push({active:navigator.userActivation.isActive,ready:typeof window.__CLEAR_ACTIVE_CHARACTER_SESSION__==='function'});
+        return new Promise(resolve=>{window.__releaseSetupPermission=resolve;});
+      };
+    });
+    await page.locator('#playOptionsStart').click();
+    assert.deepEqual(await page.evaluate(()=>window.__setupPermissionRequests),[{active:true,ready:false}]);
+    await page.locator('[data-cancel-setup]').click();await page.locator('#learningChoiceDialog[open]').waitFor();
+    await page.evaluate(()=>{window.__CLEAR_ACTIVE_CHARACTER_SESSION__=window.__setupClear;window.__releaseSetupPermission();});
+    await page.waitForTimeout(100);
+    assert.equal(await page.locator('#studyView').isHidden(),true);assert.equal(await page.evaluate(()=>Number(sessionStorage.getItem('__setupLaunches')||0)),0);
+    await evidence(t,page,'permission-before-readiness',errors);
+  }finally{await context.close();}
+});

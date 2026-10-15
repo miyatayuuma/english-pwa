@@ -152,7 +152,7 @@ function injectStyles(){
     #playOptionsDialog{width:min(100%,720px);height:100dvh;max-height:100dvh;margin:0 auto}
     #playOptionsDialog .focus-sheet{height:100dvh;max-height:100dvh;border-radius:0}
     #playOptionsDialog .focus-sheet__body{flex:1;padding:0;display:flex;flex-direction:column;min-height:0;overflow:hidden}
-    .play-options{display:flex;flex:1;flex-direction:column;min-width:0;min-height:0;margin:0}.play-options__fields{display:grid;flex:1;min-height:0;gap:14px;padding:14px 16px;overflow:auto;overscroll-behavior:contain}
+    .play-options{display:flex;flex:1;flex-direction:column;min-width:0;min-height:0;margin:0}.play-options__fields{display:grid;align-content:start;flex:1;min-height:0;gap:14px;padding:14px 16px;overflow:auto;overscroll-behavior:contain}
     .play-options__field{display:grid;gap:7px}.play-options__label{font-size:12px;font-weight:850;letter-spacing:.02em}.play-options__select,.play-options__search{width:100%;min-height:48px;border:1px solid rgba(148,163,184,.17);border-radius:13px;background:rgba(148,163,184,.055);color:inherit;padding:10px 12px;font:inherit}
     .play-options__choices{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.play-options__choices--mode,.play-options__choices--training{grid-template-columns:repeat(2,minmax(0,1fr))}.play-options__choice{min-height:44px;border:1px solid rgba(148,163,184,.14);border-radius:12px;background:rgba(148,163,184,.04);color:inherit;font:inherit;font-size:12px;font-weight:700;cursor:pointer}.play-options__choice.is-active{border-color:rgba(129,140,248,.65);background:rgba(99,102,241,.18);color:#e0e7ff}.play-options__training-note{font-size:10px;line-height:1.5;opacity:.62;margin:7px 2px 0}
     .play-options [hidden]{display:none!important}.play-options__choices--method{grid-template-columns:repeat(3,minmax(0,1fr))}body:has(dialog[open]){overflow:hidden}#playOptionsDialog .focus-sheet__close{width:44px;height:44px}.play-options__fields>*{min-width:0}.play-options__notice{font-size:12px;color:#fde68a}.play-options__cancel{min-height:44px;width:100%;background:transparent;color:inherit;border:0;font:inherit;cursor:pointer}
@@ -415,25 +415,30 @@ async function confirmSetupStart(dialog){
   if(state.setupLaunching) return;
   updateOptionsSheet(dialog);
   if(dialog.querySelector('#playOptionsStart').disabled) return;
-  if(state.gameMethodDraft==='vocabulary'){
-    if(!state.vocabularySetup?.start()) {updateOptionsSheet(dialog);return;}
-    state.setupLaunching=true;
-    clearSetupHandoff();
-    state.cancelSetup=null;dialog.close();
-    state.optionsDraft=createDefaultSessionOptions();state.vocabularySetup=null;
-    return;
-  }
   const generation=state.setupGeneration;
   const options=normalizeSessionOptions(state.optionsDraft);
   const method=state.gameMethodDraft;
+  const vocabularyKind=state.vocabularySetup?.getKind();
   state.setupLaunching=true;
   dialog.querySelector('#playOptionsStart').disabled=true;
-  const ready=await waitForSentenceLaunchReady();
+  // Issue the saved-handle permission request in the explicit user gesture,
+  // before readiness or any other asynchronous boundary can consume activation.
+  const permission=globalThis.__REQUEST_SAVED_AUDIO_FOLDER_PERMISSION__?.();
+  const ready=method==='vocabulary'||await waitForSentenceLaunchReady();
+  try{await permission;}catch(_){/* Existing audio fallback remains available. */}
   if(generation!==state.setupGeneration) return;
   state.setupLaunching=false;
   if(!dialog.open) return;
-  if(!ready||method!==state.gameMethodDraft||JSON.stringify(options)!==JSON.stringify(normalizeSessionOptions(state.optionsDraft))){
+  if(!ready||method!==state.gameMethodDraft||JSON.stringify(options)!==JSON.stringify(normalizeSessionOptions(state.optionsDraft))
+    ||(method==='vocabulary'&&vocabularyKind!==state.vocabularySetup?.getKind())){
     state.setupNotice='設定または準備状態が変わりました。内容を確認して、もう一度開始してください。';updateOptionsSheet(dialog);return;
+  }
+  if(method==='vocabulary'){
+    if(!state.vocabularySetup?.start()) {updateOptionsSheet(dialog);return;}
+    state.setupLaunching=true;
+    clearSetupHandoff();state.cancelSetup=null;dialog.close();
+    state.optionsDraft=createDefaultSessionOptions();state.vocabularySetup=null;
+    return;
   }
   if(!sentencePlan(options).size) {updateOptionsSheet(dialog);return;}
   const previous=storedSentenceMethod();
@@ -450,7 +455,6 @@ async function confirmSetupStart(dialog){
     state.setupNotice='遊び方を保存できません。保存領域を確認してください。';updateOptionsSheet(dialog);return;
   }
   state.setupLaunching=true;state.cancelSetup=null;clearSetupHandoff();
-  globalThis.__REQUEST_SAVED_AUDIO_FOLDER_PERMISSION__?.();
   dialog.close();launchSentenceOptions(options);
 }
 
