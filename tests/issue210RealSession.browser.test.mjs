@@ -919,7 +919,7 @@ async function backgroundTransition(page, context) {
       windowId,
       bounds: { windowState: 'minimized' },
     });
-    await page.waitForFunction(() => document.visibilityState === 'hidden', null, { timeout: 10_000 });
+    await page.waitForFunction(() => document.visibilityState === 'hidden', null, { timeout: 10_000, polling: 100 });
     const evidence = await page.evaluate(() => ({
       state: document.visibilityState,
       events: window.__issue210.visibilityEvents.map(event => ({ ...event })),
@@ -951,10 +951,10 @@ async function backgroundTransition(page, context) {
 async function restoreForeground(page, foregroundPage) {
   if (foregroundPage?.restore) await foregroundPage.restore();
   await page.bringToFront();
-  await page.waitForFunction(() => document.visibilityState === 'visible', null, { timeout: 10_000 });
+  await page.waitForFunction(() => document.visibilityState === 'visible', null, { timeout: 10_000, polling: 100 });
   if (foregroundPage && !foregroundPage.restore && !foregroundPage.isClosed()) {
     await foregroundPage.close();
-    await page.waitForFunction(() => document.visibilityState === 'visible', null, { timeout: 10_000 });
+    await page.waitForFunction(() => document.visibilityState === 'visible', null, { timeout: 10_000, polling: 100 });
   }
 }
 
@@ -973,7 +973,7 @@ async function waitForAnySessionClosure(page) {
       const log = JSON.parse(localStorage.getItem('studyLogV1') || '{}');
       return !!log?.[day]?.session_closure?.reason;
     } catch (_) { return false; }
-  }, FIXED_DAY, { timeout: 15_000 });
+  }, FIXED_DAY, { timeout: 15_000, polling: 100 });
   return readSessionClosure(page);
 }
 
@@ -983,13 +983,13 @@ async function waitForBackgroundClosure(page) {
       const log = JSON.parse(localStorage.getItem('studyLogV1') || '{}');
       return log?.[day]?.session_closure?.reason === 'background';
     } catch (_) { return false; }
-  }, FIXED_DAY, { timeout: 15_000 });
+  }, FIXED_DAY, { timeout: 15_000, polling: 100 });
   return readSessionClosure(page);
 }
 
 async function waitForStopRequest(page, attemptId) {
   await page.waitForFunction(id => window.__issue210Speech?.events?.some(event =>
-    event.type === 'stop-request' && event.attemptId === id), attemptId, { timeout: 10_000 });
+    event.type === 'stop-request' && event.attemptId === id), attemptId, { timeout: 10_000, polling: 100 });
 }
 
 async function assertHiddenBrowserQuiet(t, fixturePage) {
@@ -1007,7 +1007,7 @@ browserTest("BG-01/BG-11/BG-14: real hidden exit closes unanswered session, resu
     const closure = await waitForBackgroundClosure(page);
     await page.waitForFunction(() => document.querySelector('#homeView')?.hidden === false
       && document.querySelector('#studyView')?.hidden === true
-      && document.querySelector('#reviewCompleteView')?.hidden === true);
+      && document.querySelector('#reviewCompleteView')?.hidden === true, null, { polling: 100 });
     const after = await storageSnapshot(page);
     assert.deepEqual(after.itemLevel, before.itemLevel, 'BG-01: unanswered items leave SRS unchanged');
     assert.equal(after.studyLog[FIXED_DAY]?.passes || 0, before.studyLog[FIXED_DAY]?.passes || 0,
@@ -1035,7 +1035,7 @@ browserTest("BG-01/BG-11/BG-14: real hidden exit closes unanswered session, resu
     await page.locator('#playOptionsDialog .focus-sheet__close').click();
     await page.locator('.friendship-hero__cta').click();
     await page.waitForFunction(() => !document.querySelector('#studyView')?.hidden
-      && !!document.querySelector('#enText')?.dataset.itemId, null, { timeout: 15_000 });
+      && !!document.querySelector('#enText')?.dataset.itemId, null, { timeout: 15_000, polling: 100 });
     assert.equal(await page.locator('#reviewCompleteView').isHidden(), true);
     await page.evaluate(() => document.querySelector('#learningHomeReturn')?.click());
     await page.waitForFunction(() => !document.querySelector('#homeView')?.hidden
@@ -1131,7 +1131,7 @@ browserTest("BG-03/BG-04: interim-only and exact interim N-best remain NO GRADE 
       }
       const transition = await backgroundTransition(page, context);
       await page.waitForFunction(id => window.__issue210Speech.events.some(event =>
-        event.type === 'end' && event.attemptId === id), attemptId, { timeout: 10_000 });
+        event.type === 'end' && event.attemptId === id), attemptId, { timeout: 10_000, polling: 100 });
       const closure = await waitForBackgroundClosure(page);
       const after = await storageSnapshot(page);
       assert.deepEqual(after.itemLevel, before.itemLevel, scenario.id + ': no SRS change from interim evidence');
@@ -1195,14 +1195,14 @@ browserTest("BG-06: final ASR callback races with the visibility boundary withou
       await waitForStopRequest(page, attemptId);
       if (variant.deliverAfterHidden) {
         await page.waitForFunction(id => window.__issue210Speech.events.some(event =>
-          event.type === 'result' && event.attemptId === id && event.isFinal === true), attemptId, { timeout: 10_000 });
+          event.type === 'result' && event.attemptId === id && event.isFinal === true), attemptId, { timeout: 10_000, polling: 100 });
         const beforeTerminal = await storageSnapshot(page);
         assert.deepEqual(beforeTerminal.itemLevel, before.itemLevel,
           'provider result alone is not committed before its terminal callback');
         await page.evaluate(() => window.__issue210Speech.latest.emitEnd());
       }
       await page.waitForFunction(id => window.__issue210Speech.events.some(event =>
-        event.type === 'end' && event.attemptId === id), attemptId, { timeout: 10_000 });
+        event.type === 'end' && event.attemptId === id), attemptId, { timeout: 10_000, polling: 100 });
       const closure = await waitForBackgroundClosure(page);
       const after = await storageSnapshot(page);
       const timeline = await page.evaluate(() => ({
@@ -1333,7 +1333,7 @@ browserTest("BG-09: duplicate hidden event during a pending stop creates one sem
     assert.equal(beforeEnd.studyLog[FIXED_DAY]?.passes || 0, 0);
     await page.evaluate(() => window.__issue210Speech.latest.emitEnd());
     await page.waitForFunction(id => window.__issue210Speech.events.some(event =>
-      event.type === 'end' && event.attemptId === id), attemptId, { timeout: 10_000 });
+      event.type === 'end' && event.attemptId === id), attemptId, { timeout: 10_000, polling: 100 });
     const afterEnd = await storageSnapshot(page);
     assert.deepEqual(afterEnd.studyLog[FIXED_DAY].session_closure, closure,
       'settling the first finalizer does not replace the recorded closure');
@@ -1369,7 +1369,7 @@ browserTest("BG-10: manual home exit racing hidden finalization produces one clo
       'closure reason is one of the two requested production exits');
     await page.evaluate(() => window.__issue210Speech.latest.emitEnd());
     await page.waitForFunction(id => window.__issue210Speech.events.some(event =>
-      event.type === 'end' && event.attemptId === id), attemptId, { timeout: 10_000 });
+      event.type === 'end' && event.attemptId === id), attemptId, { timeout: 10_000, polling: 100 });
     const after = await storageSnapshot(page);
     assert.equal(after.writes.studyLogV1 - (before.writes.studyLogV1 || 0), 1,
       'hidden/manual collision records one session_closure value');
@@ -1469,7 +1469,7 @@ browserTest("BG-15: hidden Correction attempt preserves original FAIL and create
       itemsById.get('E0006').en);
     const transition = await backgroundTransition(page, context);
     await page.waitForFunction(id => window.__issue210Speech.events.some(event =>
-      event.type === 'end' && event.attemptId === id), correctionAttemptId, { timeout: 10_000 });
+      event.type === 'end' && event.attemptId === id), correctionAttemptId, { timeout: 10_000, polling: 100 });
     const closure = await waitForBackgroundClosure(page);
     const afterHidden = await storageSnapshot(page);
     assert.deepEqual(afterHidden.itemLevel, afterFailure.itemLevel,
@@ -1503,7 +1503,7 @@ browserTest("BG-16: hidden Read Cloze stage rejects interim-only full-sentence r
       document.dispatchEvent(new CustomEvent('english-pwa:request-hint'));
     });
     await page.waitForFunction(() => document.querySelector('#enText')?.classList.contains('cloze-active')
-      && document.querySelector('#enText .cloze-mask'), null, { timeout: 10_000 });
+      && document.querySelector('#enText .cloze-mask'), null, { timeout: 10_000, polling: 100 });
     const clozeState = await page.evaluate(() => ({
       itemId: document.querySelector('#enText')?.dataset.itemId,
       clozeRendered: document.querySelector('#enText')?.dataset.clozeRendered,
@@ -1522,7 +1522,7 @@ browserTest("BG-16: hidden Read Cloze stage rejects interim-only full-sentence r
     assert.equal(interim.isFinal, false);
     const transition = await backgroundTransition(page, context);
     await page.waitForFunction(id => window.__issue210Speech.events.some(event =>
-      event.type === 'end' && event.attemptId === id), attemptId, { timeout: 10_000 });
+      event.type === 'end' && event.attemptId === id), attemptId, { timeout: 10_000, polling: 100 });
     const closure = await waitForBackgroundClosure(page);
     const after = await storageSnapshot(page);
     assert.deepEqual(after.itemLevel, before.itemLevel, 'BG-16: interim full-sentence Cloze attempt cannot pass');
