@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
+import { randomUUID } from 'node:crypto';
 
 function x11(command, args) {
   return execFileSync(command, args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
@@ -31,12 +32,25 @@ async function activeX11Window() {
   assert.match(windowId, /^\d+$/, 'xdotool returned the actual active X11 window ID');
   return windowId;
 }
-function x11WindowForPid(pid) {
+function x11WindowForTitle(title) {
   const rows = x11('wmctrl', ['-lpG']).split(/\r?\n/);
-  const match = rows.map(row => row.match(/^(0x[0-9a-f]+)\s+-?\d+\s+(\d+)\s+/i))
-    .find(rowMatch => rowMatch && Number(rowMatch[2]) === Number(pid));
-  assert.ok(match, `X11 window exists for Chromium Browser PID ${pid}`);
-  return match[1];
+  const line = rows.find(row => row.includes(title));
+  assert.ok(line, `X11 window exists for unique Chromium tab title ${title}`);
+  return line.match(/^(0x[0-9a-f]+)/i)?.[1] || null;
+}
+
+async function waitForX11WindowForTitle(title, timeout) {
+  const deadline = Date.now() + timeout;
+  let lastError = null;
+  while (Date.now() < deadline) {
+    try {
+      const windowId = x11WindowForTitle(title);
+      assert.ok(windowId, `X11 window ID is present for ${title}`);
+      return windowId;
+    } catch (error) { lastError = error; }
+    await new Promise(resolve => setTimeout(resolve, 100));
+  }
+  throw lastError || new Error(`X11 window title did not appear: ${title}`);
 }
 
 export async function backgroundChromiumTab(page, { timeout = 10_000 } = {}) {
@@ -52,6 +66,8 @@ export async function backgroundChromiumTab(page, { timeout = 10_000 } = {}) {
   let appTargetId = null;
   let createdTargetId = null;
   let targetEvidence = null;
+  let appX11WindowId = null;
+  let focusMarker = null;
   const detachSessions = async () => {
     await pageCdpSession?.detach().catch(() => {});
     await browserCdpSession?.detach().catch(() => {});
@@ -66,12 +82,10 @@ export async function backgroundChromiumTab(page, { timeout = 10_000 } = {}) {
     appTargetId = appTarget.targetId;
     assert.ok(appTarget.browserContextId, 'app page belongs to an isolated BrowserContext');
     const appWindow = await browserCdpSession.send('Browser.getWindowForTarget', { targetId: appTargetId });
-    const { processInfo } = await browserCdpSession.send('SystemInfo.getProcessInfo');
-    const browserProcess = processInfo.find(process => process.type === 'Browser');
-    assert.ok(browserProcess, 'Chromium exposes its Browser process ID');
-    const appX11WindowId = x11WindowForPid(browserProcess.id);
+    focusMarker = `ISSUE210_BG_${randomUUID().replaceAll('-', '')}`;
+    const targetUrl = `data:text/html,${encodeURIComponent(`<title>${focusMarker}</title>`)}`;
     const created = await browserCdpSession.send('Target.createTarget', {
-      url: 'about:blank',
+      url: targetUrl,
       browserContextId: appTarget.browserContextId,
       openerId: appTargetId,
       forTab: true,
@@ -87,23 +101,26 @@ export async function backgroundChromiumTab(page, { timeout = 10_000 } = {}) {
       createdTargetId,
       createdWindowId: createdWindow.windowId,
       sameWindow: appWindow.windowId === createdWindow.windowId,
-      browserProcessId: browserProcess.id,
-      appX11WindowId,
+      focusMarker,
     };
     assert.equal(targetEvidence.sameWindow, true, 'Chromium created a tab in the app window');
     await browserCdpSession.send('Target.activateTarget', { targetId: createdTargetId });
+    appX11WindowId = await waitForX11WindowForTitle(focusMarker, 5_000);
+    targetEvidence.appX11WindowId = appX11WindowId;
     x11('wmctrl', ['-ia', appX11WindowId]);
     x11('xdotool', ['windowactivate', '--sync', appX11WindowId]);
     targetEvidence.activeX11Window = await activeX11Window();
     assert.equal(Number(targetEvidence.activeX11Window), Number.parseInt(appX11WindowId, 16),
-      'the actual X11 window for this app Chromium process is foregrounded');
+      'the X11 window containing this uniquely titled Chromium tab is foregrounded');
     const evidence = await waitForHidden(page, timeout);
     return {
       evidence: { ...evidence, ...targetEvidence },
       restore: async () => {
         await browserCdpSession.send('Target.activateTarget', { targetId: appTargetId });
-        x11('wmctrl', ['-ia', appX11WindowId]);
-        x11('xdotool', ['windowactivate', '--sync', appX11WindowId]);
+        if (appX11WindowId) {
+          x11('wmctrl', ['-ia', appX11WindowId]);
+          x11('xdotool', ['windowactivate', '--sync', appX11WindowId]);
+        }
         await page.waitForFunction(() => document.visibilityState === 'visible', null, { timeout, polling: 100 });
         await browserCdpSession.send('Target.closeTarget', { targetId: createdTargetId }).catch(() => {});
         await detachSessions();
@@ -124,6 +141,12 @@ export async function backgroundChromiumTab(page, { timeout = 10_000 } = {}) {
       windows: (() => { try { return x11('wmctrl', ['-lpG']); } catch (_) { return null; } })(),
     };
     if (appTargetId) await browserCdpSession?.send('Target.activateTarget', { targetId: appTargetId }).catch(() => {});
+    if (appX11WindowId) {
+      try {
+        x11('wmctrl', ['-ia', appX11WindowId]);
+        x11('xdotool', ['windowactivate', '--sync', appX11WindowId]);
+      } catch (_) { /* retain the original lifecycle diagnostic */ }
+    }
     if (createdTargetId) await browserCdpSession?.send('Target.closeTarget', { targetId: createdTargetId }).catch(() => {});
     await detachSessions();
     const detail = error instanceof Error ? `${error.name}: ${error.message}` : String(error);
