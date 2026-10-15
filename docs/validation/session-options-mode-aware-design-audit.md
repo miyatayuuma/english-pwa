@@ -14,7 +14,7 @@
 - PR #323: DRAFT / Pixel device acceptance pending at audit time
 - PR #344: OPEN; hidden-page session-finalization E2E work. Its files and branch were not changed.
 - PR #345: OPEN; ASR dyed/died remediation work. Its files and branch were not changed.
-- Audit PR: created from this branch and left OPEN; see the repository PR for its canonical URL and final HEAD.
+- Audit PR: [#346](https://github.com/miyatayuuma/english-pwa/pull/346), OPEN and not merged; documentation-only and based on main.
 
 Local HEAD and origin/main both matched the confirmed SHA before documentation changes. Browser reproduction used the published PWA after applying its available update; the visible footer showed v5.110. The deployed page did not expose a commit SHA, so the exact deployed-source commit was not independently verified.
 
