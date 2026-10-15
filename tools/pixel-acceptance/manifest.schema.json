@@ -40,7 +40,7 @@
   "properties": {
     "caseId": {
       "type": "string",
-      "pattern": "^(UI-(0[1-9]|10)[ab]?|D(0[1-9]|1[0-4]))$"
+      "pattern": "^(UI-(0[1-9]|10[ab])|D(0[1-9]|1[0-4]))$"
     },
     "sourceSha": {
       "const": "f5fa6064761d4fcaf5c66214f3dbba4183ae03d5"
@@ -373,7 +373,10 @@
           },
           "gradingResult": {
             "not": {
-              "const": "NOT_OBSERVED"
+              "enum": [
+                "NOT_OBSERVED",
+                "CORRECTION_TECHNICAL_ERROR"
+              ]
             }
           },
           "uiResult": {
