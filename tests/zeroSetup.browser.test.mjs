@@ -82,11 +82,10 @@ browserTest('existing migration preserves progress/method/speed/goals without re
     assert.deepEqual(remote,[]);assert.deepEqual(errors,[]);assert.equal(await page.evaluate(()=>window.__permissionCalls),0);
   }finally{await context.close();}
 });
-for(const [count,custom,size] of [['5',null,5],['8',null,8],['12',null,12],['custom',17,17]])browserTest(`normal session options create actual QUEUE of ${size}`,async()=>{
+for(const [count,custom,size] of [['5',null,5],['8',null,8],['12',null,12],['20',null,20],['30',null,30],['50',null,50]])browserTest(`normal session options create actual QUEUE of ${size}`,async()=>{
   const {context,page,errors}=await open();try{
     await page.evaluate(()=>window.__OPEN_SESSION_OPTIONS__());
     await page.locator(`[data-session-count="${count}"]`).click();
-    if(custom)await page.locator('#playOptionsCustomCount').fill(String(custom));
     await page.locator('#playOptionsStart').click();
     await page.waitForFunction(size=>!document.querySelector('#studyView').hidden&&Number(document.querySelector('#statProgressTotal').textContent)===size,size);
     assert.deepEqual(errors,[]);

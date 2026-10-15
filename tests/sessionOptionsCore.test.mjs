@@ -41,7 +41,7 @@ test('zero-result diagnosis still offers every active filter when two releases a
   assert.deepEqual(causes.map(entry=>entry.key),['characterId','skillId','section']);
 });
 
-test('arbitrary counts and selection modes feed the automatic selector',()=>{
+test('legacy exact custom count and selection modes feed the automatic selector',()=>{
   const now=10_000;
   const items=Array.from({length:16},(_,index)=>item(`E${index}`));
   const levels=Object.fromEntries(items.slice(0,8).map((entry,index)=>[entry.id,{last:index<3?4:2,review:{nextDueAt:index<3?now-1:now+1000}}]));
