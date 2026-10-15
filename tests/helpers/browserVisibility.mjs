@@ -31,6 +31,13 @@ async function activeX11Window() {
   assert.match(windowId, /^\d+$/, 'xdotool returned the actual active X11 window ID');
   return windowId;
 }
+function x11WindowForPid(pid) {
+  const rows = x11('wmctrl', ['-lpG']).split(/\r?\n/);
+  const match = rows.map(row => row.match(/^(0x[0-9a-f]+)\s+-?\d+\s+(\d+)\s+/i))
+    .find(rowMatch => rowMatch && Number(rowMatch[2]) === Number(pid));
+  assert.ok(match, `X11 window exists for Chromium Browser PID ${pid}`);
+  return match[1];
+}
 
 export async function backgroundChromiumTab(page, { timeout = 10_000 } = {}) {
   const initial = await page.evaluate(() => ({
@@ -59,6 +66,10 @@ export async function backgroundChromiumTab(page, { timeout = 10_000 } = {}) {
     appTargetId = appTarget.targetId;
     assert.ok(appTarget.browserContextId, 'app page belongs to an isolated BrowserContext');
     const appWindow = await browserCdpSession.send('Browser.getWindowForTarget', { targetId: appTargetId });
+    const { processInfo } = await browserCdpSession.send('SystemInfo.getProcessInfo');
+    const browserProcess = processInfo.find(process => process.type === 'Browser');
+    assert.ok(browserProcess, 'Chromium exposes its Browser process ID');
+    const appX11WindowId = x11WindowForPid(browserProcess.id);
     const created = await browserCdpSession.send('Target.createTarget', {
       url: 'about:blank',
       browserContextId: appTarget.browserContextId,
@@ -76,14 +87,23 @@ export async function backgroundChromiumTab(page, { timeout = 10_000 } = {}) {
       createdTargetId,
       createdWindowId: createdWindow.windowId,
       sameWindow: appWindow.windowId === createdWindow.windowId,
+      browserProcessId: browserProcess.id,
+      appX11WindowId,
     };
     assert.equal(targetEvidence.sameWindow, true, 'Chromium created a tab in the app window');
     await browserCdpSession.send('Target.activateTarget', { targetId: createdTargetId });
+    x11('wmctrl', ['-ia', appX11WindowId]);
+    x11('xdotool', ['windowactivate', '--sync', appX11WindowId]);
+    targetEvidence.activeX11Window = await activeX11Window();
+    assert.equal(Number(targetEvidence.activeX11Window), Number.parseInt(appX11WindowId, 16),
+      'the actual X11 window for this app Chromium process is foregrounded');
     const evidence = await waitForHidden(page, timeout);
     return {
       evidence: { ...evidence, ...targetEvidence },
       restore: async () => {
         await browserCdpSession.send('Target.activateTarget', { targetId: appTargetId });
+        x11('wmctrl', ['-ia', appX11WindowId]);
+        x11('xdotool', ['windowactivate', '--sync', appX11WindowId]);
         await page.waitForFunction(() => document.visibilityState === 'visible', null, { timeout, polling: 100 });
         await browserCdpSession.send('Target.closeTarget', { targetId: createdTargetId }).catch(() => {});
         await detachSessions();
