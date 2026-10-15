@@ -36,6 +36,7 @@ async function newPage(source,{reducedMotion='reduce',entryState:entryStateOverr
   assert.ok(entry,`fixture ${source.kind}/${source.canonical} exists`);
   const entryState=entryStateOverride||{last:0,best:0,noHintHistory:[],noHintStreak:0,level5Count:0,review:{nextDueAt:0,intervalMs:0},stability:0,difficulty:0};
   await context.addInitScript(({entry,fixtures,source,entryState,speechSupported,fullDataset,items,native,nativePermission,additionalEntryState})=>{
+    if(location.pathname==='/__issue210-background-tab__') return;
     const freshState={last:0,best:0,noHintHistory:[],noHintStreak:0,level5Count:0,review:{nextDueAt:0,intervalMs:0},stability:0,difficulty:0};
     const encounteredIds=[...new Set([source.itemId,...fixtures.flatMap(value=>(value.occurrences||[]).map(occurrence=>String(occurrence.item_id||''))).filter(Boolean)])];
     const initial={
