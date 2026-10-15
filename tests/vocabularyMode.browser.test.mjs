@@ -120,29 +120,30 @@ async function newPage(source,{reducedMotion='reduce',entryState:entryStateOverr
 }
 
 async function closePage({context}){await context.close();}
-async function minimizeBrowserWindow(page){
+async function foregroundVocabularyBackgroundTab(page,context){
   assert.equal(await page.evaluate(()=>document.visibilityState),'visible','Vocabulary starts foregrounded');
   await page.evaluate(()=>{window.__vocabularyHiddenAudit.visibilityEvents.length=0;});
-  const pageSession=await page.context().newCDPSession(page);
-  const {targetInfo}=await pageSession.send('Target.getTargetInfo');
-  await pageSession.detach();
-  const browserSession=await browser.newBrowserCDPSession();
-  const {windowId}=await browserSession.send('Browser.getWindowForTarget',{targetId:targetInfo.targetId});
-  await browserSession.send('Browser.setWindowBounds',{windowId,bounds:{windowState:'minimized'}});
-  await page.waitForFunction(()=>document.visibilityState==='hidden',null,{timeout:10_000,polling:100});
-  const evidence=await page.evaluate(()=>({
-    state:document.visibilityState,
-    hidden:document.hidden,
-    events:window.__vocabularyHiddenAudit.visibilityEvents.map(event=>({...event})),
-  }));
-  assert.equal(evidence.state,'hidden');
-  assert.equal(evidence.hidden,true);
-  assert.ok(evidence.events.some(event=>event.state==='hidden'));
-  return {browserSession,windowId,evidence};
+  const foregroundPage=await context.newPage();
+  try{
+    await foregroundPage.goto('about:blank');
+    await foregroundPage.bringToFront();
+    await page.waitForFunction(()=>document.visibilityState==='hidden',null,{timeout:10_000,polling:100});
+    const evidence=await page.evaluate(()=>({
+      state:document.visibilityState,
+      hidden:document.hidden,
+      events:window.__vocabularyHiddenAudit.visibilityEvents.map(event=>({...event})),
+    }));
+    assert.equal(evidence.state,'hidden');
+    assert.equal(evidence.hidden,true);
+    assert.ok(evidence.events.some(event=>event.state==='hidden'));
+    return {foregroundPage,evidence};
+  }catch(error){
+    await foregroundPage.close().catch(()=>{});
+    throw error;
+  }
 }
 async function restoreBrowserWindow(page,lifecycle){
-  await lifecycle.browserSession.send('Browser.setWindowBounds',{windowId:lifecycle.windowId,bounds:{windowState:'normal'}});
-  await lifecycle.browserSession.detach();
+  await lifecycle.foregroundPage.close();
   await page.bringToFront();
   await page.waitForFunction(()=>document.visibilityState==='visible',null,{timeout:10_000,polling:100});
 }
@@ -1238,7 +1239,7 @@ browserTest('Vocabulary true hidden-page transition records its independent reco
       srsWrites:window.__mockSpeech.srsWrites,
       micListening:document.querySelector('.vocab-mic')?.classList.contains('is-listening')||false,
     }));
-    lifecycle=await minimizeBrowserWindow(page);
+    lifecycle=await foregroundVocabularyBackgroundTab(page,context);
     const afterHidden=await page.evaluate(()=>({
       visibility:document.visibilityState,
       dialogOpen:document.querySelector('#vocabModeDialog')?.open||false,
