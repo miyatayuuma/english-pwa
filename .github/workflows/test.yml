@@ -53,6 +53,10 @@ jobs:
         run: npm ci
       - name: Install Chromium for browser lifecycle tests
         run: npx playwright install --with-deps chromium
+      - name: Install X11 window manager for Chromium lifecycle tests
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends openbox wmctrl
       - name: Validate speech and vocabulary production authority
         run: |
           npm run speech:validate-td-cluster-before-to
@@ -65,7 +69,17 @@ jobs:
           npm run vocab:validate
       - name: Run unit and pointer-browser tests
         run: |
-          xvfb-run -a node --experimental-default-type=module --test tests/*.test.mjs
+          xvfb-run -a bash -c '
+            openbox >/tmp/issue210-openbox.log 2>&1 &
+            for attempt in {1..50}; do
+              if wmctrl -m >/dev/null 2>&1; then
+                break
+              fi
+              sleep 0.1
+            done
+            wmctrl -m
+            exec node --experimental-default-type=module --test tests/*.test.mjs
+          '
         env:
           REORDER_REQUIRE_BROWSER: '1'
           HOME_NAV_REQUIRE_BROWSER: '1'
