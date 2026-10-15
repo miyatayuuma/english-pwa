@@ -61,7 +61,7 @@ async function setup({width=390,method='read',size=60,due=true}={}){
 }
 async function ready(page){
   await page.waitForFunction(()=>typeof window.__OPEN_SESSION_OPTIONS__==='function'&&typeof window.__OPEN_LEARNING_CHOICE__==='function'&&typeof window.__PREPARE_CHARACTER_SESSION__==='function'&&['ready','empty'].includes(window.__ENGLISH_PWA_VOCABULARY_STATUS__?.status));
-  await page.waitForFunction(()=>!document.querySelector('#loadingOverlay')?.classList.contains('show'));
+  await page.waitForFunction(()=>!document.querySelector('#loadingOverlay')?.classList.contains('active'));
 }
 async function open(page,method='read'){
   await page.locator('#openLearningChoice').click();
@@ -188,6 +188,37 @@ for(const [from,to] of [['read','compose'],['compose','read']]) browserTest(`rel
     await page.reload();await ready(page);assert.equal(await page.locator('#studyView').isHidden(),true);
     assert.equal(await page.evaluate(()=>Number(sessionStorage.getItem('__setupLaunches'))),1);
   }finally{await context.close();}
+});
+for(const [from,to] of [['read','compose'],['compose','read']]) browserTest(`reload ${from} to ${to}: waits for delayed main boot before consuming intent`,async t=>{
+  const {page,context,errors}=await setup({method:from});
+  let releaseBoot;
+  const bootGate=new Promise(resolve=>{releaseBoot=resolve;});
+  try{
+    // Main publishes ALL_ITEMS before awaiting SRS; relationship readiness can
+    // therefore precede the final boot queue reset on a real network.
+    await context.route('**/data/srs.json',async route=>{await bootGate;await route.fulfill({contentType:'application/json',body:'[]'});});
+    await open(page,from);await page.locator(`button[data-game-method="${to}"]`).click();
+    await page.locator('[data-session-count="5"]').click();
+    await Promise.all([page.waitForEvent('load'),page.locator('#playOptionsStart').click()]);
+    await page.waitForFunction(()=>document.querySelector('#loadingOverlay')?.classList.contains('active')
+      &&typeof window.__PREPARE_CHARACTER_SESSION__==='function'
+      &&typeof window.__CLEAR_ACTIVE_CHARACTER_SESSION__==='function');
+    // Allow the handoff poll to run while the real boot lock is held.
+    await page.waitForTimeout(200);
+    assert.equal(await page.evaluate(()=>Number(sessionStorage.getItem('__setupLaunches')||0)),0);
+    assert.ok(await page.evaluate(()=>sessionStorage.getItem('englishPwaSessionSetupHandoff')));
+    assert.equal(await page.locator('#studyView').isHidden(),true);
+    releaseBoot();await ready(page);await started(page,5,to);
+    await page.waitForTimeout(200);
+    assert.equal(await page.locator('#studyView').isHidden(),false,'late boot cannot reset the started session');
+    assert.equal(Number(await page.locator('#statProgressTotal').textContent()),5);
+    assert.equal(await page.evaluate(()=>Number(sessionStorage.getItem('__setupLaunches'))),1);
+    assert.equal(await page.evaluate(()=>sessionStorage.getItem('englishPwaSessionSetupHandoff')),null);
+    await evidence(t,page,`delayed-boot-${from}-${to}`,errors);
+    await page.reload();await ready(page);
+    assert.equal(await page.locator('#studyView').isHidden(),true);
+    assert.equal(await page.evaluate(()=>Number(sessionStorage.getItem('__setupLaunches'))),1);
+  }finally{releaseBoot();await context.close();}
 });
 browserTest('vocabulary draft preview is side effect free and Start uses independent 12-card authority',async t=>{
   const {page,context,errors}=await setup();try{
