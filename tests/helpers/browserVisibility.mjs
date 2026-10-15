@@ -117,29 +117,26 @@ export async function backgroundChromiumTab(page, { timeout = 10_000 } = {}) {
         foregroundTargetId: foregroundTarget.targetId,
         foregroundWindowId: foregroundWindow.windowId,
       };
-      let targetIdToActivate = foregroundTarget.targetId;
-      if (appWindow.windowId !== foregroundWindow.windowId) {
-        const pageEvent = context.waitForEvent('page', { timeout: 5_000 }).catch(() => null);
-        const created = await browserCdpSession.send('Target.createTarget', {
-          url: targetUrl,
-          browserContextId: appTarget.browserContextId,
-          openerId: appTarget.targetId,
-          forTab: true,
-          background: false,
-        });
-        createdTargetId = created.targetId;
-        targetIdToActivate = created.targetId;
-        const sameWindowTab = await pageEvent;
-        assert.ok(sameWindowTab, 'Chromium created a tab target in the isolated BrowserContext');
-        await sameWindowTab.waitForLoadState('domcontentloaded', { timeout: 5_000 }).catch(() => {});
-        await foregroundTab.close();
-        foregroundTab = sameWindowTab;
-        const createdWindow = await browserCdpSession.send('Browser.getWindowForTarget', { targetId: created.targetId });
-        targetActivation.createdTargetId = created.targetId;
-        targetActivation.createdWindowId = createdWindow.windowId;
-      }
-      await browserCdpSession.send('Target.activateTarget', { targetId: targetIdToActivate });
-      targetActivation.activatedTargetId = targetIdToActivate;
+      const pageEvent = context.waitForEvent('page', { timeout: 5_000 }).catch(() => null);
+      const created = await browserCdpSession.send('Target.createTarget', {
+        url: targetUrl,
+        browserContextId: appTarget.browserContextId,
+        openerId: appTarget.targetId,
+        forTab: true,
+        background: false,
+        focus: true,
+      });
+      createdTargetId = created.targetId;
+      const sameWindowTab = await pageEvent;
+      assert.ok(sameWindowTab, 'Chromium created a tab target in the isolated BrowserContext');
+      await sameWindowTab.waitForLoadState('domcontentloaded', { timeout: 5_000 }).catch(() => {});
+      await foregroundTab.close();
+      foregroundTab = sameWindowTab;
+      const createdWindow = await browserCdpSession.send('Browser.getWindowForTarget', { targetId: created.targetId });
+      targetActivation.createdTargetId = created.targetId;
+      targetActivation.createdWindowId = createdWindow.windowId;
+      await browserCdpSession.send('Target.activateTarget', { targetId: created.targetId });
+      targetActivation.activatedTargetId = created.targetId;
       method = 'cdp-activate-chromium-tab';
     } catch (error) {
       targetActivation = {
