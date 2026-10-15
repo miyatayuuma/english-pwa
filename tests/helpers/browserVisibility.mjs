@@ -85,6 +85,7 @@ export async function backgroundChromiumTab(page, { timeout = 10_000 } = {}) {
           await page.bringToFront();
           await page.waitForFunction(() => document.visibilityState === 'visible', null, { timeout, polling: 100 });
           await foregroundTab.close();
+          await page.evaluate(() => document.querySelector('#issue210-background-tab-link')?.remove());
           await context.unroute(targetUrl, routeHandler);
         },
       };
@@ -162,6 +163,7 @@ export async function backgroundChromiumTab(page, { timeout = 10_000 } = {}) {
             await page.bringToFront();
             await page.waitForFunction(() => document.visibilityState === 'visible', null, { timeout, polling: 100 });
             await foregroundTab.close();
+            await page.evaluate(() => document.querySelector('#issue210-background-tab-link')?.remove());
             await context.unroute(targetUrl, routeHandler);
           },
         };
@@ -184,6 +186,7 @@ export async function backgroundChromiumTab(page, { timeout = 10_000 } = {}) {
           await page.bringToFront();
           await page.waitForFunction(() => document.visibilityState === 'visible', null, { timeout, polling: 100 });
           await foregroundTab.close();
+          await page.evaluate(() => document.querySelector('#issue210-background-tab-link')?.remove());
           await context.unroute(targetUrl, routeHandler);
         },
       };
@@ -241,6 +244,7 @@ export async function backgroundChromiumTab(page, { timeout = 10_000 } = {}) {
     })).catch(() => null);
     await page.bringToFront().catch(() => {});
     await foregroundTab?.close().catch(() => {});
+    await page.evaluate(() => document.querySelector('#issue210-background-tab-link')?.remove()).catch(() => {});
     await context.unroute(targetUrl, routeHandler).catch(() => {});
     const detail = error instanceof Error ? `${error.name}: ${error.message}` : String(error);
     throw new Error(`Chromium X11/tab lifecycle did not produce verified hidden state: ${JSON.stringify({ method, targetActivation, x11WindowId, pageState, popupState, x11State })} (${detail})`, { cause: error });
