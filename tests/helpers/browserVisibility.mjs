@@ -88,7 +88,7 @@ export async function backgroundChromiumTab(page, { timeout = 10_000 } = {}) {
       url: targetUrl,
       browserContextId: appTarget.browserContextId,
       openerId: appTargetId,
-      forTab: true,
+      newWindow: true,
       background: false,
       focus: true,
     });
@@ -103,7 +103,7 @@ export async function backgroundChromiumTab(page, { timeout = 10_000 } = {}) {
       sameWindow: appWindow.windowId === createdWindow.windowId,
       focusMarker,
     };
-    assert.equal(targetEvidence.sameWindow, true, 'Chromium created a tab in the app window');
+    assert.equal(targetEvidence.sameWindow, false, 'Chromium created a separate foreground window in the isolated app context');
     await browserCdpSession.send('Target.activateTarget', { targetId: createdTargetId });
     appX11WindowId = await waitForX11WindowForTitle(focusMarker, 5_000);
     targetEvidence.appX11WindowId = appX11WindowId;
