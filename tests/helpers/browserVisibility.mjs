@@ -88,6 +88,24 @@ export async function backgroundChromiumTab(page, { timeout = 10_000 } = {}) {
       windowId = target.windowId;
       browserSession = target.browserSession;
 
+      // window.open normally selects the new tab immediately; capture that
+      // natural hidden transition before using any additional UI controls.
+      try {
+        const evidence = await waitForHidden(page, 1_500);
+        return {
+          evidence: { ...evidence, method, windowId },
+          restore: async () => {
+            await page.bringToFront();
+            await page.waitForFunction(() => document.visibilityState === 'visible', null, { timeout, polling: 100 });
+            await foregroundTab.close();
+            await context.unroute(targetUrl, routeHandler);
+            await browserSession.detach().catch(() => {});
+          },
+        };
+      } catch (_) {
+        // If the popup is a separate window, try the real tab-strip shortcut.
+      }
+
       // Use the window manager's real keyboard path to select the next browser
       // tab, then verify the app document itself became hidden.
       try {
