@@ -111,8 +111,10 @@ async function newFixturePage({ ids, levels = {}, storageSeed = {}, staleFilters
       static now() { return fixedNow; }
     }
     Object.defineProperty(window, 'Date', { value: FixedDate, configurable: true });
+    let eventSequence = 0;
+    window.__issue210Sequence = () => ++eventSequence;
     window.__issue210 = { results: [], writes: {}, permissionCalls: 0, visibilityEvents: [] };
-    document.addEventListener('visibilitychange', () => window.__issue210.visibilityEvents.push({ state: document.visibilityState, at: Math.round(performance.now()) }));
+    document.addEventListener('visibilitychange', () => window.__issue210.visibilityEvents.push({ state: document.visibilityState, sequence: window.__issue210Sequence(), at: performance.now() }));
     document.addEventListener('english-pwa:session-result', event => {
       window.__issue210.results.push(JSON.parse(JSON.stringify(event.detail || {})));
     });
@@ -1173,19 +1175,19 @@ browserTest("BG-06: final ASR callback races with the visibility boundary withou
         visibility: window.__issue210.visibilityEvents.map(event => ({ ...event })),
         speech: window.__issue210Speech.events.map(event => ({ ...event })),
       }));
-      const hiddenAt = timeline.visibility.find(event => event.state === 'hidden')?.at;
-      const resultAt = timeline.speech.find(event => event.type === 'result' && event.attemptId === attemptId)?.at;
-      const endAt = timeline.speech.find(event => event.type === 'end' && event.attemptId === attemptId)?.at;
-      assert.ok(Number.isFinite(hiddenAt) && Number.isFinite(resultAt) && Number.isFinite(endAt));
+      const hiddenEvent = timeline.visibility.find(event => event.state === 'hidden');
+      const resultEvent = timeline.speech.find(event => event.type === 'result' && event.attemptId === attemptId);
+      const endEvent = timeline.speech.find(event => event.type === 'end' && event.attemptId === attemptId);
+      assert.ok(Number.isFinite(hiddenEvent?.sequence) && Number.isFinite(resultEvent?.sequence) && Number.isFinite(endEvent?.sequence));
       assert.ok(after.writes.itemLevelV1 - (before.writes.itemLevelV1 || 0) <= 1,
         'one attempt cannot create multiple SRS writes');
       assert.ok((after.studyLog[FIXED_DAY]?.passes || 0) - (before.studyLog[FIXED_DAY]?.passes || 0) <= 1,
         'one attempt cannot create multiple pass entries');
       assert.ok(closure.cardsDone <= 1, 'session closure cannot count one attempt twice');
       assert.equal(after.resultEvents, 0, 'background close must not show the completion result');
-      if (variant.deliverAfterHidden) assert.ok(hiddenAt < resultAt && resultAt < endAt,
+      if (variant.deliverAfterHidden) assert.ok(hiddenEvent.sequence < resultEvent.sequence && resultEvent.sequence < endEvent.sequence,
         'BG-06 records the exact hidden → final result → terminal callback order');
-      else assert.ok(resultAt < hiddenAt && hiddenAt < endAt,
+      else assert.ok(resultEvent.sequence < hiddenEvent.sequence && hiddenEvent.sequence < endEvent.sequence,
         'BG-06 records the exact final result → hidden → terminal callback order');
       await restoreForeground(page, transition.foregroundPage);
       await assertHiddenBrowserQuiet(t, fixturePage);
