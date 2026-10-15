@@ -23,7 +23,7 @@ test('fresh and malformed old config never block setup or erase learning history
 });
 test('actual plan counts use the existing authority with auto, explicit, custom and shortfall',()=>{
   const items=Array.from({length:30},(_,i)=>({id:'E'+i,en:'Test '+i,ja:'例文',unit:'Section1'}));
-  for(const [count,customCount,size] of [['5',7,5],['8',7,8],['12',7,12],['custom',17,17]]){
+  for(const [count,customCount,size] of [['5',7,5],['8',7,8],['12',7,12],['20',7,20],['30',7,30],['custom',20,20]]){
     const plan=buildSessionPlanFromOptions(items,{}, {count,customCount},{now:10000,random:()=>0.5});
     assert.equal(plan.items.length,size);assert.equal(plan.size,size);
   }

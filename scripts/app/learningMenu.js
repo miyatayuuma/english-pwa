@@ -1,3 +1,4 @@
+import { BOOT_HAS_SETUP_HANDOFF, hasSetupHandoff, normalizeGameMethod } from './sessionSetupHandoff.js';
 const CONFIG_KEY='appConfigV3';
 import {
   activateHomeNavigationAction,
@@ -102,7 +103,10 @@ function openSessionOptionsFromMenu(dialog){
   const characterId=globalThis.__ENGLISH_PWA_ACTIVE_CHARACTER_ID__
     ||globalThis.__ENGLISH_PWA_HOME_CHARACTER_ID__
     ||'';
-  open({characterId});
+  open({characterId,gameMethod:pendingMethod(dialog),onCancel:()=>{
+    refreshChoiceState(dialog);
+    if(!dialog.open) dialog.showModal();
+  }});
   return true;
 }
 
@@ -197,7 +201,7 @@ function runCourse(course,nav,attempt=0){
 
 function pendingMethod(dialog){
   const value=dialog?.dataset?.pendingMethod;
-  return value==='compose'?'compose':value==='vocabulary'?'vocabulary':'read';
+  return normalizeGameMethod(value,storedMethod());
 }
 function pendingCourse(dialog){
   const value=dialog?.dataset?.pendingCourse;
@@ -327,7 +331,7 @@ function resumePendingAction(){
     if(action) sessionStorage.removeItem('englishPwaPendingGameAction');
     sessionStorage.removeItem('englishPwaModeReloadNeeded');
   }catch(_){}
-  if(action) setTimeout(()=>runCourse(action,null),100);
+  if(action&&!BOOT_HAS_SETUP_HANDOFF&&!hasSetupHandoff()) setTimeout(()=>runCourse(action,null),100);
 }
 
 async function init(){
@@ -360,4 +364,4 @@ if(typeof document!=='undefined'){
   else init();
 }
 
-export { storedMethod,pendingMethod,pendingCourse };
+export { storedMethod,pendingMethod,pendingCourse,openSessionOptionsFromMenu };

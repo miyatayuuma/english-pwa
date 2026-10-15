@@ -6,7 +6,7 @@ import {
   normalizeTrainingMode,
 } from './continuousShadowing.js';
 
-export const SESSION_COUNT_CHOICES=Object.freeze(['auto','5','8','12','custom']);
+export const SESSION_COUNT_CHOICES=Object.freeze(['auto','5','8','12','20','30','50']);
 export const SESSION_SELECTION_MODES=Object.freeze(['auto','review','new','manual']);
 
 export function createDefaultSessionOptions(characterId=''){
@@ -15,21 +15,22 @@ export function createDefaultSessionOptions(characterId=''){
     skillId:'',
     section:'',
     count:'auto',
-    customCount:7,
     mode:'auto',
     trainingMode:TRAINING_MODES.STANDARD,
     manualItemIds:[],
   };
 }
 
-function clampCount(value){
-  const number=Math.round(Number(value));
-  return Number.isFinite(number)?Math.max(1,Math.min(50,number)):7;
+export function migrateLegacySessionCount(value={}){
+  if(value?.count!=='custom') return {count:SESSION_COUNT_CHOICES.includes(String(value?.count))?String(value.count):'auto',changed:false};
+  const candidate=String(value.customCount??'');
+  const exact=candidate!=='auto'&&SESSION_COUNT_CHOICES.includes(candidate);
+  return {count:exact?candidate:'auto',changed:!exact};
 }
 
 export function normalizeSessionOptions(value={}){
   const base=createDefaultSessionOptions(value?.characterId);
-  const count=SESSION_COUNT_CHOICES.includes(String(value?.count))?String(value.count):base.count;
+  const {count}=migrateLegacySessionCount(value);
   const mode=SESSION_SELECTION_MODES.includes(String(value?.mode))?String(value.mode):base.mode;
   return {
     ...base,
@@ -37,7 +38,6 @@ export function normalizeSessionOptions(value={}){
     skillId:String(value?.skillId||''),
     section:String(value?.section||''),
     count,
-    customCount:clampCount(value?.customCount),
     mode,
     trainingMode:normalizeTrainingMode(value?.trainingMode),
     manualItemIds:[...new Set((Array.isArray(value?.manualItemIds)?value.manualItemIds:[]).map(String).filter(Boolean))],
@@ -56,7 +56,7 @@ export function scopeForSessionOptions(value={}){
 export function requestedCountForSessionOptions(value={}){
   const options=normalizeSessionOptions(value);
   if(options.count==='auto') return null;
-  return options.count==='custom'?options.customCount:Number(options.count);
+  return Number(options.count);
 }
 
 export function eligibleItemsForSessionOptions(items,value={},levelState={}){

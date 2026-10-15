@@ -1,3 +1,4 @@
+import { BOOT_SENTENCE_METHOD, BOOT_HAS_SETUP_HANDOFF, normalizeGameMethod, storedSentenceMethod, commitSentenceMethod, clearSetupHandoff, createSetupHandoff, storeSetupHandoff, consumeSetupHandoff } from './sessionSetupHandoff.js';
 import {
   buildAutomaticSession,
   buildLegacyQueueItems,
@@ -13,6 +14,8 @@ import {
   diagnoseEmptySessionOptions,
   eligibleItemsForSessionOptions,
   normalizeSessionOptions,
+  migrateLegacySessionCount,
+  SESSION_COUNT_CHOICES,
   requestedCountForSessionOptions,
   resetSessionOptions,
 } from './sessionOptionsCore.js';
@@ -36,6 +39,12 @@ const state={
   lastView:'',
   optionsDraft:createDefaultSessionOptions(),
   pendingOptions:null,
+  gameMethodDraft:'read',
+  vocabularySetup:null,
+  cancelSetup:null,
+  setupLaunching:false,
+  setupNotice:'',
+  setupGeneration:0,
 };
 
 function sleep(ms){ return new Promise(resolve=>setTimeout(resolve,ms)); }
@@ -143,9 +152,10 @@ function injectStyles(){
     #playOptionsDialog{width:min(100%,720px);height:100dvh;max-height:100dvh;margin:0 auto}
     #playOptionsDialog .focus-sheet{height:100dvh;max-height:100dvh;border-radius:0}
     #playOptionsDialog .focus-sheet__body{flex:1;padding:0;display:flex;flex-direction:column;min-height:0;overflow:hidden}
-    .play-options{display:flex;flex:1;flex-direction:column;min-width:0;min-height:0;margin:0}.play-options__fields{display:grid;flex:1;min-height:0;gap:14px;padding:14px 16px;overflow:auto;overscroll-behavior:contain}
-    .play-options__field{display:grid;gap:7px}.play-options__label{font-size:12px;font-weight:850;letter-spacing:.02em}.play-options__select,.play-options__custom,.play-options__search{width:100%;min-height:48px;border:1px solid rgba(148,163,184,.17);border-radius:13px;background:rgba(148,163,184,.055);color:inherit;padding:10px 12px;font:inherit}
-    .play-options__choices{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.play-options__choices--mode,.play-options__choices--training{grid-template-columns:repeat(2,minmax(0,1fr))}.play-options__choice{min-height:43px;border:1px solid rgba(148,163,184,.14);border-radius:12px;background:rgba(148,163,184,.04);color:inherit;font:inherit;font-size:12px;font-weight:700;cursor:pointer}.play-options__choice.is-active{border-color:rgba(129,140,248,.65);background:rgba(99,102,241,.18);color:#e0e7ff}.play-options__training-note{font-size:10px;line-height:1.5;opacity:.62;margin:7px 2px 0}
+    .play-options{display:flex;flex:1;flex-direction:column;min-width:0;min-height:0;margin:0}.play-options__fields{display:grid;align-content:start;flex:1;min-height:0;gap:14px;padding:14px 16px;overflow:auto;overscroll-behavior:contain}
+    .play-options__field{display:grid;gap:7px}.play-options__label{font-size:12px;font-weight:850;letter-spacing:.02em}.play-options__select,.play-options__search{width:100%;min-height:48px;border:1px solid rgba(148,163,184,.17);border-radius:13px;background:rgba(148,163,184,.055);color:inherit;padding:10px 12px;font:inherit}
+    .play-options__choices{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.play-options__choices--mode,.play-options__choices--training{grid-template-columns:repeat(2,minmax(0,1fr))}.play-options__choice{min-height:44px;border:1px solid rgba(148,163,184,.14);border-radius:12px;background:rgba(148,163,184,.04);color:inherit;font:inherit;font-size:12px;font-weight:700;cursor:pointer}.play-options__choice.is-active{border-color:rgba(129,140,248,.65);background:rgba(99,102,241,.18);color:#e0e7ff}.play-options__training-note{font-size:10px;line-height:1.5;opacity:.62;margin:7px 2px 0}
+    .play-options [hidden]{display:none!important}.play-options__choices--method{grid-template-columns:repeat(3,minmax(0,1fr))}body:has(dialog[open]){overflow:hidden}#playOptionsDialog .focus-sheet__close{width:44px;height:44px}.play-options__fields>*{min-width:0}.play-options__notice{font-size:12px;color:#fde68a}.play-options__cancel{min-height:44px;width:100%;background:transparent;color:inherit;border:0;font:inherit;cursor:pointer}
     .play-options__manual{display:grid;gap:8px}.play-options__manual-list{display:grid;gap:5px;max-height:270px;overflow:auto;padding-right:2px}.play-options__manual-row{display:grid;grid-template-columns:auto minmax(0,1fr);gap:9px;align-items:start;padding:9px;border:1px solid rgba(148,163,184,.11);border-radius:11px;background:rgba(148,163,184,.025);font-size:11px}.play-options__manual-row input{margin-top:3px}.play-options__manual-en{display:block;font-weight:750;line-height:1.35}.play-options__manual-ja{display:block;opacity:.58;line-height:1.35;margin-top:3px}.play-options__manual-note{font-size:10px;opacity:.52}
     .play-options__footer{display:block;flex:0 0 auto;margin:0;padding:12px 16px calc(12px + env(safe-area-inset-bottom));border-top:1px solid rgba(148,163,184,.12);background:rgba(16,21,34,.97);backdrop-filter:blur(12px)}.play-options__summary{font-size:12px;font-weight:800;line-height:1.45}.play-options__count{font-size:10px;opacity:.6;margin-top:3px}.play-options__causes{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}.play-options__cause{border:1px solid rgba(248,113,113,.28);border-radius:999px;background:rgba(248,113,113,.08);color:#fecaca;padding:6px 9px;font:inherit;font-size:10px;cursor:pointer}.play-options__start{display:block;width:100%;min-height:52px;border:0;border-radius:15px;background:#6366f1;color:#fff;font:inherit;font-size:16px;font-weight:900;margin-top:10px;cursor:pointer}.play-options__start:disabled{opacity:.38;cursor:not-allowed}
     @media(max-width:390px){.home-cta-wrap.focus-home{margin-top:7vh}.focus-sheet__body{padding-inline:12px}.conversation-card{padding-inline:9px!important}.conversation-scene{grid-template-columns:104px minmax(0,1fr);min-height:150px;gap:8px}.conversation-cast{min-height:150px}.conversation-bubble{padding:11px 10px}.conversation-prompt{font-size:14px}.conversation-card .audio-ctrls{grid-template-columns:1fr 68px 1fr}.conversation-card #btnMic{width:68px;height:68px}.conversation-card #btnPlay,.conversation-card .conversation-hint{width:50px;height:50px}}
@@ -297,41 +307,155 @@ function renderManualChoices(dialog,eligible){
   note.textContent=matched.length>shown.length?`${matched.length}文中、先頭${shown.length}文を表示`:`${matched.length}文から選択`;
 }
 
+function nextSentenceRecentIds(){
+  return state.sessionPlan?.items?.map(item=>item.id)||loadRecentSessionIds();
+}
+
+function sentencePlan(options=state.optionsDraft,gameMethod=state.gameMethodDraft){
+  // A different method boots a new runtime. Preview the persisted recency that
+  // runtime will read, rather than an in-memory plan that reload cannot retain.
+  const recentItemIds=gameMethod===BOOT_SENTENCE_METHOD?nextSentenceRecentIds():loadRecentSessionIds();
+  return buildSessionPlanFromOptions(state.items,loadLevelState(),options,{recentItemIds});
+}
+
 function updateOptionsSheet(dialog,{renderManual=true}={}){
   state.optionsDraft=normalizeSessionOptions(state.optionsDraft);
+  if(state.gameMethodDraft!=='read') state.optionsDraft.trainingMode=TRAINING_MODES.STANDARD;
   const options=state.optionsDraft;
+  const vocabulary=state.gameMethodDraft==='vocabulary';
+  dialog.dataset.gameMethod=state.gameMethodDraft;
+  dialog.querySelectorAll('[data-game-method]').forEach(button=>{
+    const active=button.dataset.gameMethod===state.gameMethodDraft;
+    button.classList.toggle('is-active',active);button.setAttribute('aria-pressed',String(active));
+  });
+  dialog.querySelectorAll('[data-sentence-field]').forEach(field=>{field.hidden=vocabulary;});
+  dialog.querySelector('[data-training-field]').hidden=state.gameMethodDraft!=='read';
+  dialog.querySelector('[data-vocabulary-field]').hidden=!vocabulary;
+  dialog.querySelector('#playOptionsNotice').textContent=state.setupNotice;
+  const causes=dialog.querySelector('#playOptionsCauses');causes.replaceChildren();
+  const start=dialog.querySelector('#playOptionsStart');
+  if(vocabulary){
+    state.vocabularySetup ||= globalThis.__VOCABULARY_SESSION_SETUP__?.createDraft();
+    const preview=state.vocabularySetup?.preview();
+    dialog.querySelectorAll('[data-vocabulary-kind]').forEach(button=>{
+      const active=button.dataset.vocabularyKind===state.vocabularySetup?.getKind();
+      button.classList.toggle('is-active',active);button.setAttribute('aria-pressed',String(active));
+    });
+    dialog.querySelector('#playOptionsSummary').textContent='単語チャレンジ · カード種別を選んで始めます';
+    dialog.querySelector('#playOptionsCount').textContent=preview
+      ?`対象候補 ${preview.candidateCount}枚 · 実際 ${preview.plan.size}枚（上限12枚）${preview.reason?' · '+preview.reason:''}`
+      :'単語教材を準備しています。読み込み後に開始できます。';
+    start.disabled=!preview?.canStart;
+    start.textContent=preview?.canStart?`${preview.plan.size}枚で始める`:'単語学習を開始できません';
+    return;
+  }
   const levelState=loadLevelState();
-  const character=dialog.querySelector('#playOptionsCharacter');if(character) character.value=options.characterId;
-  const skill=dialog.querySelector('#playOptionsSkill');if(skill) skill.value=options.skillId;
-  const section=dialog.querySelector('#playOptionsSection');if(section) section.value=options.section;
-  dialog.querySelectorAll('[data-session-count]').forEach(button=>button.classList.toggle('is-active',button.dataset.sessionCount===options.count));
-  dialog.querySelectorAll('[data-session-mode]').forEach(button=>button.classList.toggle('is-active',button.dataset.sessionMode===options.mode));
-  dialog.querySelectorAll('[data-training-mode]').forEach(button=>button.classList.toggle('is-active',button.dataset.trainingMode===options.trainingMode));
-  const custom=dialog.querySelector('#playOptionsCustomCount');custom.hidden=options.count!=='custom';custom.value=String(options.customCount);
+  for(const [id,key] of [['Character','characterId'],['Skill','skillId'],['Section','section']]) dialog.querySelector('#playOptions'+id).value=options[key];
+  for(const [attribute,key] of [['session-count','count'],['session-mode','mode'],['training-mode','trainingMode']]){
+    dialog.querySelectorAll(`[data-${attribute}]`).forEach(button=>{
+      const active=button.getAttribute(`data-${attribute}`)===options[key];
+      button.classList.toggle('is-active',active);button.setAttribute('aria-pressed',String(active));
+    });
+  }
   const manual=dialog.querySelector('#playOptionsManual');manual.hidden=options.mode!=='manual';
   const eligible=eligibleItemsForSessionOptions(state.items,options,levelState);
   if(renderManual&&options.mode==='manual') renderManualChoices(dialog,eligible);
   const {characters,skills}=optionsLabelMaps();
   const labels=[characters.get(options.characterId)||'誰でも',skills.get(options.skillId)||'テーマおまかせ',options.section?options.section.replace(/^Section/i,'Chapter '):'チャプターおまかせ'];
-  const trainingLabel=isContinuousShadowingMode(options.trainingMode)?'連続シャドウイング':'通常会話';
-  const summary=dialog.querySelector('#playOptionsSummary');summary.textContent=`${labels.join(' × ')} · ${trainingLabel}：対象 ${eligible.length}文`;
+  const methodLabel=state.gameMethodDraft==='compose'?'並べ替え':'穴あき';
+  dialog.querySelector('#playOptionsSummary').textContent=`${methodLabel} · ${labels.join(' × ')} · 対象 ${eligible.length}文${isContinuousShadowingMode(options.trainingMode)?' · 連続シャドウイング':''}`;
+  const plan=sentencePlan(options);
   const count=requestedCountForSessionOptions(options);
-  const selectedManual=options.manualItemIds.filter(id=>eligible.some(item=>String(item.id)===id)).length;
-  dialog.querySelector('#playOptionsCount').textContent=options.mode==='manual'
-    ?`例文指定 ${selectedManual}文${count?` · 今回は最大${count}問`:''}`
-    :(count?`今回は ${count}問`:'出題数は自動で6〜8');
-  const causes=dialog.querySelector('#playOptionsCauses');causes.replaceChildren();
-  if(!eligible.length){
+  const shortage=plan.composition?.shortfall||0;
+  dialog.querySelector('#playOptionsCount').textContent=`指定 ${count??'おまかせ（6〜8問）'} · 有効候補 ${eligible.length}文 · 実際 ${plan.size}問 · 不足 ${shortage}問`;
+  if(!plan.size){
+    causes.textContent=options.mode==='manual'&&eligible.length?'例文を選択してください。':'条件に合う文がありません。条件を解除してください。';
     for(const cause of diagnoseEmptySessionOptions(state.items,options,levelState)){
       const button=document.createElement('button');button.type='button';button.className='play-options__cause';button.textContent=`${cause.label}を解除（${cause.available}文）`;
       button.addEventListener('click',()=>{state.optionsDraft={...state.optionsDraft,[cause.key]:cause.value??''};updateOptionsSheet(dialog);});causes.appendChild(button);
     }
   }
-  const start=dialog.querySelector('#playOptionsStart');
-  start.disabled=!eligible.length||(options.mode==='manual'&&selectedManual===0);
-  start.textContent=isContinuousShadowingMode(options.trainingMode)
-    ?(count?`${count}文を連続練習`:'連続シャドウイングを始める')
-    :(options.mode==='manual'?`${selectedManual}文で始める`:(count?`${count}問を始める`:'おまかせで始める'));
+  start.disabled=!plan.size;
+  start.textContent=isContinuousShadowingMode(options.trainingMode)?`${plan.size}文を連続練習`:`${plan.size}問で始める`;
+}
+
+function discardSetup(){
+  if(state.setupLaunching&&state.cancelSetup===null) return;
+  state.setupGeneration+=1;
+  state.optionsDraft=createDefaultSessionOptions();
+  state.vocabularySetup=null;
+  clearSetupHandoff();
+  const cancel=state.cancelSetup;state.cancelSetup=null;
+  cancel?.();
+}
+
+async function waitForSentenceLaunchReady(){
+  const deadline=performance.now()+10_000;
+  while(typeof globalThis.__PREPARE_CHARACTER_SESSION__!=='function'
+    ||typeof globalThis.__CLEAR_ACTIVE_CHARACTER_SESSION__!=='function'){
+    if(performance.now()>=deadline) return false;
+    await sleep(40);
+  }
+  return true;
+}
+
+function launchSentenceOptions(options){
+  if(!sentencePlan(options,BOOT_SENTENCE_METHOD).size) return false;
+  state.pendingOptions=options;
+  state.optionsDraft=resetSessionOptions(options);
+  if(options.characterId) globalThis.__PREPARE_CHARACTER_SESSION__?.(options.characterId);
+  else globalThis.__CLEAR_ACTIVE_CHARACTER_SESSION__?.();
+  globalThis.__ENGLISH_PWA_CUSTOM_SESSION_PENDING__=true;
+  // Plan and queue are still installed by the existing capture-phase authority.
+  document.getElementById('startStudyCta')?.click();
+  return true;
+}
+
+async function confirmSetupStart(dialog){
+  if(state.setupLaunching) return;
+  updateOptionsSheet(dialog);
+  if(dialog.querySelector('#playOptionsStart').disabled) return;
+  const generation=state.setupGeneration;
+  const options=normalizeSessionOptions(state.optionsDraft);
+  const method=state.gameMethodDraft;
+  const vocabularyKind=state.vocabularySetup?.getKind();
+  state.setupLaunching=true;
+  dialog.querySelector('#playOptionsStart').disabled=true;
+  // Issue the saved-handle permission request in the explicit user gesture,
+  // before readiness or any other asynchronous boundary can consume activation.
+  const permission=globalThis.__REQUEST_SAVED_AUDIO_FOLDER_PERMISSION__?.();
+  const ready=method==='vocabulary'||await waitForSentenceLaunchReady();
+  try{await permission;}catch(_){/* Existing audio fallback remains available. */}
+  if(generation!==state.setupGeneration) return;
+  state.setupLaunching=false;
+  if(!dialog.open) return;
+  if(!ready||method!==state.gameMethodDraft||JSON.stringify(options)!==JSON.stringify(normalizeSessionOptions(state.optionsDraft))
+    ||(method==='vocabulary'&&vocabularyKind!==state.vocabularySetup?.getKind())){
+    state.setupNotice='設定または準備状態が変わりました。内容を確認して、もう一度開始してください。';updateOptionsSheet(dialog);return;
+  }
+  if(method==='vocabulary'){
+    if(!state.vocabularySetup?.start()) {updateOptionsSheet(dialog);return;}
+    state.setupLaunching=true;
+    clearSetupHandoff();state.cancelSetup=null;dialog.close();
+    state.optionsDraft=createDefaultSessionOptions();state.vocabularySetup=null;
+    return;
+  }
+  if(!sentencePlan(options).size) {updateOptionsSheet(dialog);return;}
+  const previous=storedSentenceMethod();
+  if(method!==BOOT_SENTENCE_METHOD){
+    const payload=createSetupHandoff({gameMethod:method,options,appVersion:globalThis.APP_VERSION});
+    if(!storeSetupHandoff(payload)||!commitSentenceMethod(method)){
+      clearSetupHandoff();commitSentenceMethod(previous);
+      state.setupNotice='設定を引き継げませんでした。もう一度開始してください。';updateOptionsSheet(dialog);return;
+    }
+    state.setupLaunching=true;
+    globalThis.location.reload();return;
+  }
+  if(!commitSentenceMethod(method)){
+    state.setupNotice='遊び方を保存できません。保存領域を確認してください。';updateOptionsSheet(dialog);return;
+  }
+  state.setupLaunching=true;state.cancelSetup=null;clearSetupHandoff();
+  dialog.close();launchSentenceOptions(options);
 }
 
 function createOptionsDialog(){
@@ -341,21 +465,24 @@ function createOptionsDialog(){
   body.dataset.ready='true';
   body.innerHTML=`<form class="play-options" id="playOptionsForm">
     <div class="play-options__fields">
-      <label class="play-options__field"><span class="play-options__label">相手</span><select class="play-options__select" id="playOptionsCharacter"></select></label>
-      <label class="play-options__field"><span class="play-options__label">特訓テーマ</span><select class="play-options__select" id="playOptionsSkill"></select></label>
-      <label class="play-options__field"><span class="play-options__label">チャプター</span><select class="play-options__select" id="playOptionsSection"></select></label>
-      <div class="play-options__field"><span class="play-options__label">今回の出題数</span><div class="play-options__choices">
-        <button class="play-options__choice" type="button" data-session-count="auto">おまかせ</button><button class="play-options__choice" type="button" data-session-count="5">5</button><button class="play-options__choice" type="button" data-session-count="8">8</button><button class="play-options__choice" type="button" data-session-count="12">12</button>
-      </div><button class="play-options__choice" type="button" data-session-count="custom">任意</button><input class="play-options__custom" id="playOptionsCustomCount" type="number" inputmode="numeric" min="1" max="50" aria-label="任意の出題数"></div>
-      <div class="play-options__field"><span class="play-options__label">選び方</span><div class="play-options__choices play-options__choices--mode">
+      <div class="play-options__field"><span class="play-options__label">ゲーム</span><div class="play-options__choices play-options__choices--method" role="group" aria-label="ゲームモード">${[['read','穴あき'],['compose','並べ替え'],['vocabulary','単語']].map(([method,label])=>`<button class="play-options__choice" type="button" data-game-method="${method}" aria-pressed="false">${label}</button>`).join('')}</div></div>
+      <div id="playOptionsNotice" class="play-options__notice" role="status"></div>
+      <div class="play-options__field" data-vocabulary-field hidden><span class="play-options__label">カード種別</span><div class="play-options__choices play-options__choices--method" role="group" aria-label="カード種別">${[['all','すべて'],['word','単語'],['expression','表現']].map(([kind,label])=>`<button class="play-options__choice" type="button" data-vocabulary-kind="${kind}" aria-pressed="false">${label}</button>`).join('')}</div></div>
+      <label class="play-options__field" data-sentence-field><span class="play-options__label">相手</span><select class="play-options__select" id="playOptionsCharacter"></select></label>
+      <label class="play-options__field" data-sentence-field><span class="play-options__label">特訓テーマ</span><select class="play-options__select" id="playOptionsSkill"></select></label>
+      <label class="play-options__field" data-sentence-field><span class="play-options__label">チャプター</span><select class="play-options__select" id="playOptionsSection"></select></label>
+      <div class="play-options__field" data-sentence-field><span class="play-options__label">今回の出題数</span><div class="play-options__choices">
+        ${SESSION_COUNT_CHOICES.map(count=>`<button class="play-options__choice" type="button" data-session-count="${count}" aria-pressed="false">${count==='auto'?'おまかせ':count}</button>`).join('')}
+      </div></div>
+      <div class="play-options__field" data-sentence-field><span class="play-options__label">選び方</span><div class="play-options__choices play-options__choices--mode">
         <button class="play-options__choice" type="button" data-session-mode="auto">おまかせ</button><button class="play-options__choice" type="button" data-session-mode="review">復習優先</button><button class="play-options__choice" type="button" data-session-mode="new">新規多め</button><button class="play-options__choice" type="button" data-session-mode="manual">例文指定</button>
       </div></div>
-      <div class="play-options__field"><span class="play-options__label">トレーニング</span><div class="play-options__choices play-options__choices--training">
+      <div class="play-options__field" data-training-field><span class="play-options__label">トレーニング</span><div class="play-options__choices play-options__choices--training">
         <button class="play-options__choice" type="button" data-training-mode="${TRAINING_MODES.STANDARD}">通常会話</button><button class="play-options__choice" type="button" data-training-mode="${TRAINING_MODES.CONTINUOUS_SHADOWING}">連続シャドウイング</button>
       </div><p class="play-options__training-note">連続シャドウイングは一致率70%以上で合格済みの文だけを使う復習モードです。評価・親密度・実績・SRSは更新しません。</p></div>
-      <div class="play-options__manual" id="playOptionsManual" hidden><input class="play-options__search" type="search" placeholder="英文・和訳を検索" aria-label="指定する例文を検索"><div class="play-options__manual-note"></div><div class="play-options__manual-list"></div></div>
+      <div data-sentence-field><div class="play-options__manual" id="playOptionsManual" hidden><input class="play-options__search" type="search" placeholder="英文・和訳を検索" aria-label="指定する例文を検索"><div class="play-options__manual-note"></div><div class="play-options__manual-list"></div></div></div>
     </div>
-    <footer class="play-options__footer"><div class="play-options__summary" id="playOptionsSummary"></div><div class="play-options__count" id="playOptionsCount"></div><div class="play-options__causes" id="playOptionsCauses"></div><button class="play-options__start" id="playOptionsStart" type="submit"></button></footer>
+    <footer class="play-options__footer"><div class="play-options__summary" id="playOptionsSummary" role="status" aria-live="polite"></div><div class="play-options__count" id="playOptionsCount"></div><div class="play-options__causes" id="playOptionsCauses"></div><button class="play-options__start" id="playOptionsStart" type="submit" aria-describedby="playOptionsCount playOptionsCauses"></button><button class="play-options__cancel" type="button" data-cancel-setup>キャンセル</button></footer>
   </form>`;
   body.querySelector('#playOptionsCharacter').addEventListener('change',event=>{state.optionsDraft={...state.optionsDraft,characterId:event.target.value};updateOptionsSheet(dialog);});
   body.querySelector('#playOptionsSkill').addEventListener('change',event=>{state.optionsDraft={...state.optionsDraft,skillId:event.target.value};updateOptionsSheet(dialog);});
@@ -363,27 +490,36 @@ function createOptionsDialog(){
   body.querySelectorAll('[data-session-count]').forEach(button=>button.addEventListener('click',()=>{state.optionsDraft={...state.optionsDraft,count:button.dataset.sessionCount};updateOptionsSheet(dialog);}));
   body.querySelectorAll('[data-session-mode]').forEach(button=>button.addEventListener('click',()=>{state.optionsDraft={...state.optionsDraft,mode:button.dataset.sessionMode};updateOptionsSheet(dialog);}));
   body.querySelectorAll('[data-training-mode]').forEach(button=>button.addEventListener('click',()=>{state.optionsDraft={...state.optionsDraft,trainingMode:button.dataset.trainingMode};updateOptionsSheet(dialog);}));
-  body.querySelector('#playOptionsCustomCount').addEventListener('input',event=>{state.optionsDraft={...state.optionsDraft,customCount:event.target.value};updateOptionsSheet(dialog,{renderManual:false});});
+  body.querySelectorAll('[data-game-method]').forEach(button=>button.addEventListener('click',()=>{
+    state.gameMethodDraft=normalizeGameMethod(button.dataset.gameMethod);
+    if(state.gameMethodDraft!=='read') state.optionsDraft.trainingMode=TRAINING_MODES.STANDARD;
+    updateOptionsSheet(dialog);
+  }));
+  body.querySelectorAll('[data-vocabulary-kind]').forEach(button=>button.addEventListener('click',()=>{
+    state.vocabularySetup?.setKind(button.dataset.vocabularyKind);updateOptionsSheet(dialog);
+  }));
+  body.querySelector('[data-cancel-setup]').addEventListener('click',()=>dialog.close());
+  dialog.addEventListener('close',()=>{if(!dialog.open) discardSetup();});
+  document.addEventListener('english-pwa:vocabulary-mode-state',()=>{if(dialog.open) updateOptionsSheet(dialog);});
   body.querySelector('.play-options__search').addEventListener('input',()=>renderManualChoices(dialog,eligibleItemsForSessionOptions(state.items,state.optionsDraft,loadLevelState())));
   body.querySelector('#playOptionsForm').addEventListener('submit',event=>{
     event.preventDefault();
-    const options=normalizeSessionOptions(state.optionsDraft);
-    if(!eligibleItemsForSessionOptions(state.items,options,loadLevelState()).length) return;
-    state.pendingOptions=options;
-    state.optionsDraft=resetSessionOptions(options);
-    globalThis.__REQUEST_SAVED_AUDIO_FOLDER_PERMISSION__?.();
-    dialog.close();
-    if(options.characterId) globalThis.__PREPARE_CHARACTER_SESSION__?.(options.characterId);
-    else globalThis.__CLEAR_ACTIVE_CHARACTER_SESSION__?.();
-    globalThis.__ENGLISH_PWA_CUSTOM_SESSION_PENDING__=true;
-    setTimeout(()=>document.getElementById('startStudyCta')?.click(),0);
+    confirmSetupStart(dialog);
   });
   return dialog;
 }
 
 function openSessionOptions(initial={}){
-  state.optionsDraft=normalizeSessionOptions({...state.optionsDraft,...initial});
+  state.setupGeneration+=1;
+  clearSetupHandoff();
+  state.setupLaunching=false;
+  state.cancelSetup=typeof initial.onCancel==='function'?initial.onCancel:()=>globalThis.__OPEN_LEARNING_CHOICE__?.();
+  state.gameMethodDraft=normalizeGameMethod(initial.gameMethod);
+  state.vocabularySetup=globalThis.__VOCABULARY_SESSION_SETUP__?.createDraft()||null;
+  state.setupNotice=migrateLegacySessionCount(initial).changed?'以前の任意出題数を「おまかせ」に戻しました。':'';
+  state.optionsDraft=normalizeSessionOptions({...createDefaultSessionOptions(),...initial});
   const dialog=createOptionsDialog();
+  dialog.querySelector('.play-options__search').value='';
   populateOptionsSelects(dialog);updateOptionsSheet(dialog);
   if(!dialog.open) dialog.showModal();
 }
@@ -498,7 +634,7 @@ function setLegacyPlan(plan){
 }
 
 function prepareStart(){
-  const recentItemIds=state.sessionPlan?.items?.map(item=>item.id)||loadRecentSessionIds();
+  const recentItemIds=nextSentenceRecentIds();
   if(state.pendingOptions){
     const options=state.pendingOptions;
     state.pendingOptions=null;
@@ -706,6 +842,14 @@ async function init(){
   globalThis.__OPEN_SESSION_OPTIONS__=openSessionOptions;
   globalThis.__OPEN_ENGLISH_RANGE_BROWSER__=openExploreDialog;
   document.dispatchEvent(new CustomEvent('english-pwa:session-shell-ready'));
+  if(BOOT_HAS_SETUP_HANDOFF){
+    if(!await waitForSentenceLaunchReady()) {clearSetupHandoff();return;}
+    const handoff=consumeSetupHandoff({appVersion:globalThis.APP_VERSION,method:storedSentenceMethod()});
+    if(handoff&&handoff.gameMethod===BOOT_SENTENCE_METHOD&&sentencePlan(handoff.options,BOOT_SENTENCE_METHOD).size){
+      if(handoff.legacyCountReset) openSessionOptions({...handoff.options,gameMethod:handoff.gameMethod,count:'custom',customCount:null});
+      else launchSentenceOptions(handoff.options);
+    }
+  }
 }
 
 if(typeof document!=='undefined'){

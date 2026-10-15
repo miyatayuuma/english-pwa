@@ -83,10 +83,44 @@ function loadRecentVocabularyIds(){
   }catch(_){ return []; }
 }
 
-function nextVocabularyRotationSeed(){
-  let value=0;
-  try{ value=Math.max(0,Number(localStorage.getItem(VOCAB_ROTATION_KEY))||0)+1;localStorage.setItem(VOCAB_ROTATION_KEY,String(value)); }catch(_){ value=Date.now(); }
-  return value;
+function peekVocabularyRotationSeed(){
+  try{return Math.max(0,Number(localStorage.getItem(VOCAB_ROTATION_KEY))||0)+1;}catch(_){return 1;}
+}
+function commitVocabularyRotationSeed(seed){
+  try{localStorage.setItem(VOCAB_ROTATION_KEY,String(seed));}catch(_){}
+}
+function vocabularyPlan(kind){
+  const levelState=JSON.parse(localStorage.getItem('itemLevelV1')||'{}');
+  const eligible=eligibleVocabularyEntries(state.entries,levelState);
+  const candidates=kind==='all'?collapseDuplicateVocabularyCards(eligible,levelState):eligible.filter(entry=>kind==='word'?entry.kind==='word':['expression','construction'].includes(entry.kind));
+  return {
+    candidateCount:candidates.length,
+    plan:buildVocabularySession(eligible,levelState,{size:12,kind,recentItemIds:loadRecentVocabularyIds(),rotationSeed:peekVocabularyRotationSeed()}),
+  };
+}
+// Each setup owns a private kind draft. Preview reads the same planner and next
+// seed as Start, without consuming rotation or mutating the independent lobby.
+function createVocabularySetupDraft(){
+  let kind=['all','word','expression'].includes(state.kind)?state.kind:'all';
+  return {
+    getKind:()=>kind,
+    setKind:value=>{kind=['all','word','expression'].includes(value)?value:'all';},
+    preview:()=>{
+      const ready=state.readiness==='ready';
+      const preview=vocabularyPlan(kind);
+      const supported=isRecognitionSupported();
+      return {...preview,readiness:state.readiness,canStart:ready&&supported&&preview.plan.size>0,
+        reason:!ready?'単語教材を準備できていません。':!supported?'音声認識を利用できません。':!preview.plan.size?'会話学習を進めると対象カードが追加されます。':''};
+    },
+    start:()=>{
+      if(state.readiness!=='ready'||!isRecognitionSupported()||!vocabularyPlan(kind).plan.size) return false;
+      makeDialog();
+      const previous=state.kind;state.kind=kind;
+      if(!startSession()){state.kind=previous;return false;}
+      if(!state.dialog.open) state.dialog.showModal();
+      return true;
+    },
+  };
 }
 
 function rememberVocabularySession(entries){
@@ -365,14 +399,9 @@ function startSession(){
   if(!isRecognitionSupported()) return;
   stopListening();
   cancelPronunciation();
-  const levelState=JSON.parse(localStorage.getItem('itemLevelV1')||'{}');
-  const eligible=eligibleVocabularyEntries(state.entries,levelState);
-  const plan=buildVocabularySession(eligible,levelState,{
-    size:12,
-    kind:state.kind,
-    recentItemIds:loadRecentVocabularyIds(),
-    rotationSeed:nextVocabularyRotationSeed(),
-  });
+  const {plan}=vocabularyPlan(state.kind);
+  if(!plan.size) return false;
+  commitVocabularyRotationSeed(plan.rotationSeed);
   rememberVocabularySession(plan.entries);
   state.queue=plan.entries.slice();
   state.position=0;
@@ -388,6 +417,7 @@ function startSession(){
   state.lastRecognitionDecision=null;
   state.correction=false;
   showNextCard();
+  return true;
 }
 
 function latestNonEmptyTranscript(...values){
@@ -1244,6 +1274,7 @@ function renderDone(){
 async function init(){
   injectStyles();
   globalThis.__OPEN_VOCABULARY_MODE__=openVocabularyMode;
+  globalThis.__VOCABULARY_SESSION_SETUP__=Object.freeze({createDraft:createVocabularySetupDraft});
   const loading={status:'loading',entryCount:0};
   state.readiness='loading';
   globalThis.__ENGLISH_PWA_VOCABULARY_STATUS__=loading;
