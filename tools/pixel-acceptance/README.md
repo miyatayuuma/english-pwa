@@ -1,6 +1,6 @@
 # Pixel v5.113 acceptance operator handoff
 
-Status: **PIXEL ACCEPTANCE KIT READY / DEVICE_PENDING**. This kit does not install, clear, stop, launch, grant permissions, grade speech, or modify storage. Run from a clean checkout with Python 3 and git. No ADB on the Work host: do not retry connection here.
+Status: **PIXEL ACCEPTANCE KIT READY / DEVICE_PENDING**. This kit does not install, clear, stop, launch, grant permissions, grade speech, or modify storage. Run from a clean checkout with Python 3 and git. For APK verification, the pinned source object must be present; in a shallow clone run `git fetch origin f5fa6064761d4fcaf5c66214f3dbba4183ae03d5` first. Unit tests build an isolated synthetic source repository and need no checkout history. No ADB on the Work host: do not retry connection here.
 
 ## 1. Identify the exact build
 
@@ -105,3 +105,5 @@ Use `manifest.template.json` per surface and trial and validate against `manifes
 Outcome vocabulary: PASS (all evidence reconciled), FAIL (reproduced mismatch), INCONCLUSIVE (insufficient/provided wrong evidence), NOT_RUN (not executed). `PROVIDER_RECOGNITION_FAILURE` is a triage classification, not a grader defect. Gate B/C require physical evidence, never emulator/mocked PASS. Keep #323 DRAFT / DEVICE_PENDING and #210 OPEN until acceptance is complete; frozen #344 remains NOT_VERIFIED.
 
 Schema constraints require the exact APK hash only for Native surface, and reject an unobserved PASS and require native attempt/SRS/Study-log evidence fields for D01–D13 PASS. This still does not prove semantics: a human must reconcile every required subtrial against private source. Browser UI results are recorded separately, not promoted to native ASR PASS.
+
+ASR PASS records require observed finality and completion state. A graded TARGET/MISS/PARAPHRASE/PASS/FAIL or lexical correction outcome requires final evidence, terminal completion and recognitionComplete=true. Successful negative-control acceptance may instead record interim/none plus pending/cancelled/error and NO_GRADE; do not turn a NO_GRADE control into a lexical MISS.

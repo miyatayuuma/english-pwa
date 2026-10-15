@@ -95,3 +95,11 @@ Next operator: authorize the specific Pixel and usual native/browser surface; ve
 - td-cluster, ASR-09B/C/D, vocab:check-derived and vocab:validate executed locally with exit 0.
 - Actual artifact verification and DEVICE_UNAVAILABLE preflight executed successfully.
 - Independent reviewer inspected privacy, native/finality/event shapes and cumulative SRS semantics; first-review findings corrected before PR submission. PR review and relevant CI required before merge.
+
+## PR review remediation
+
+The first PR-head Application and Vocabulary runs failed because the new Python test read the pinned ancestor from a depth-1 checkout. This is a tooling defect, not an application/Pixel finding. The APK test now constructs an isolated temporary git repository and verifies committed fixture bytes despite a dirty worktree; it requires no ancestor from the CI checkout. Real APK verification still requires the pinned source object; the handoff documents the explicit fetch for shallow operator clones.
+
+The review also identified ASR PASS records that could leave finality unobserved. D01–D13 PASS now requires observed finality/completion and a boolean recognitionComplete. Graded lexical outcomes require final/terminal/true; negative controls may prove NO_GRADE with interim/none and pending/cancelled/error evidence. This preserves recognition finality instead of assuming every accepted test is a successful recognition.
+
+After these fixes the Node wrapper/Python 8-case suite passes locally. Draft 2020-12 schema checks accept NOT_RUN, finalized TARGET, negative-control NO_GRADE and browser UI shapes, and reject missing/interim/incomplete evidence for graded PASS. Final CI/review and main merge identity are recorded in the linked PR, independently of the pinned runtime/APK source SHA.

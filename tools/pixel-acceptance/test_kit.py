@@ -69,22 +69,49 @@ class KitTests(unittest.TestCase):
             with self.assertRaises(ValueError): kit.verify_apk(f.name)
 
     def test_apk_checks_exact_embedded_assets(self):
-        authority = dict(kit.AUTHORITY)
-        data = {}
-        for relative in ['index.html','scripts/version.js','data/vocabulary-v3.json','data/items.json','data/characters.json']:
-            data[relative] = subprocess.check_output(['git','show',authority['sourceSha']+':'+relative],cwd=kit.ROOT)
-        def package(changed=False):
-            apk = io.BytesIO()
-            with zipfile.ZipFile(apk,'w') as z:
-                for name,value in data.items(): z.writestr('assets/public/'+name,b'tampered' if changed and name=='data/items.json' else value)
-            out = io.BytesIO()
-            with zipfile.ZipFile(out,'w') as z:z.writestr('app-debug.apk',apk.getvalue())
-            return out.getvalue()
-        with tempfile.NamedTemporaryFile() as f:
-            raw=package();f.write(raw);f.flush();authority['artifactZipSha256']=kit.digest(raw)
-            self.assertEqual(kit.verify_apk(f.name,authority)['status'],'APK_VERIFIED')
-        with tempfile.NamedTemporaryFile() as f:
-            raw=package(True);f.write(raw);f.flush();authority['artifactZipSha256']=kit.digest(raw)
-            with self.assertRaises(ValueError):kit.verify_apk(f.name,authority)
+        # Isolated source repository: no ancestor objects from the checkout required.
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            data = {
+                'index.html': b'<script src="scripts/version.js"></script>',
+                'scripts/version.js': b"const APP_VERSION = 'v5.113';",
+                'data/vocabulary-v3.json': b'{"entries":[]}',
+                'data/items.json': b'[]',
+                'data/characters.json': b'[]',
+            }
+            for name, value in data.items():
+                target = root / name
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes(value)
+            def git(*args):
+                return subprocess.check_output(['git', *args], cwd=root, stderr=subprocess.DEVNULL)
+            git('init', '-q')
+            git('add', '.')
+            git('-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.invalid',
+                'commit', '-qm', 'Pinned source fixture')
+            authority = dict(kit.AUTHORITY, sourceSha=git('rev-parse', 'HEAD').decode().strip())
+            # Dirty worktree must not replace the committed source authority.
+            (root / 'data/items.json').write_bytes(b'changed worktree')
+            def package(changed=False):
+                apk = io.BytesIO()
+                with zipfile.ZipFile(apk, 'w') as archive:
+                    for name, value in data.items():
+                        archive.writestr('assets/public/' + name,
+                            b'tampered' if changed and name == 'data/items.json' else value)
+                outer = io.BytesIO()
+                with zipfile.ZipFile(outer, 'w') as archive:
+                    archive.writestr('app-debug.apk', apk.getvalue())
+                return outer.getvalue()
+            with patch.object(kit, 'ROOT', root):
+                for changed in (False, True):
+                    raw = package(changed)
+                    artifact = root / 'artifact.zip'
+                    artifact.write_bytes(raw)
+                    authority['artifactZipSha256'] = kit.digest(raw)
+                    if changed:
+                        with self.assertRaises(ValueError):
+                            kit.verify_apk(artifact, authority)
+                    else:
+                        self.assertEqual(kit.verify_apk(artifact, authority)['status'], 'APK_VERIFIED')
 
 if __name__ == '__main__': unittest.main()

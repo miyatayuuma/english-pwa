@@ -33,7 +33,9 @@
     "chromeVersion",
     "orientation",
     "microphonePermission",
-    "network"
+    "network",
+    "completionState",
+    "recognitionComplete"
   ],
   "properties": {
     "caseId": {
@@ -297,6 +299,22 @@
         "OFFLINE",
         "NOT_OBSERVED"
       ]
+    },
+    "completionState": {
+      "enum": [
+        "idle",
+        "pending",
+        "terminal",
+        "cancelled",
+        "error",
+        "NOT_OBSERVED"
+      ]
+    },
+    "recognitionComplete": {
+      "type": [
+        "boolean",
+        "null"
+      ]
     }
   },
   "allOf": [
@@ -362,6 +380,22 @@
             "not": {
               "const": "NOT_OBSERVED"
             }
+          },
+          "recognitionFinality": {
+            "enum": [
+              "final",
+              "interim",
+              "mixed",
+              "none"
+            ]
+          },
+          "completionState": {
+            "not": {
+              "const": "NOT_OBSERVED"
+            }
+          },
+          "recognitionComplete": {
+            "type": "boolean"
           }
         }
       }
@@ -381,6 +415,67 @@
         "properties": {
           "apkSha256": {
             "const": "5209c8946aaa3e714cd86199f1c3f88d1b196a4bcb30c9d45e64535241238cad"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "result": {
+            "const": "PASS"
+          },
+          "caseId": {
+            "pattern": "^D(0[1-9]|1[0-3])$"
+          },
+          "gradingResult": {
+            "enum": [
+              "TARGET",
+              "MISS",
+              "PARAPHRASE",
+              "PASS",
+              "FAIL",
+              "CORRECTION_SUCCESS",
+              "CORRECTION_FAILURE"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "recognitionFinality": {
+            "const": "final"
+          },
+          "completionState": {
+            "const": "terminal"
+          },
+          "recognitionComplete": {
+            "const": true
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "result": {
+            "const": "PASS"
+          },
+          "caseId": {
+            "pattern": "^D(0[1-9]|1[0-3])$"
+          },
+          "gradingResult": {
+            "const": "NO_GRADE"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "uiResult": {
+            "const": "NO_GRADE"
+          },
+          "srsWriteCount": {
+            "const": 0
           }
         }
       }
