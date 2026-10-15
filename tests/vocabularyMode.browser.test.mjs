@@ -6,7 +6,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 import { installMockSpeechRecognition } from './helpers/mockSpeechRecognition.mjs';
-import { minimizeChromiumWindow } from './helpers/browserVisibility.mjs';
+import { backgroundChromiumTab } from './helpers/browserVisibility.mjs';
 
 const ROOT=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const vocabulary=JSON.parse(await fs.readFile(path.join(ROOT,'data/vocabulary-v3.json'),'utf8'));
@@ -124,7 +124,7 @@ async function closePage({context}){await context.close();}
 async function foregroundVocabularyBackgroundTab(page){
   assert.equal(await page.evaluate(()=>document.visibilityState),'visible','Vocabulary starts foregrounded');
   await page.evaluate(()=>{window.__vocabularyHiddenAudit.visibilityEvents.length=0;});
-  const lifecycle=await minimizeChromiumWindow(page);
+  const lifecycle=await backgroundChromiumTab(page);
   const evidence=await page.evaluate(()=>({
     state:document.visibilityState,
     hidden:document.hidden,
