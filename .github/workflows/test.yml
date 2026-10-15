@@ -77,6 +77,13 @@ jobs:
           name: issue337-home-navigation-evidence
           path: docs/validation/issue337-evidence/home-*-after.png
           if-no-files-found: warn
+      - name: Upload mode-aware session options browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mode-aware-session-options-evidence
+          path: docs/validation/mode-aware-session-options-evidence/
+          if-no-files-found: warn
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'

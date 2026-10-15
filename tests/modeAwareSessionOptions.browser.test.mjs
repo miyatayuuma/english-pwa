@@ -6,6 +6,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {execFileSync} from 'node:child_process';
 import {chromium} from 'playwright';
+import {buildAutomaticSession} from '../scripts/app/adaptiveLearning.js';
 import {installMockSpeechRecognition} from './helpers/mockSpeechRecognition.mjs';
 const ROOT=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const rows=JSON.parse(await fs.readFile(path.join(ROOT,'data/items.json'),'utf8'));
@@ -150,8 +151,12 @@ browserTest('manual real queue retains order/cap/shortfall and disables empty se
     assert.deepEqual(await page.evaluate(()=>JSON.parse(localStorage.getItem('recentSentenceSessionIdsV1'))),[items[2].id,items[0].id,items[1].id,items[3].id,items[4].id]);
     await evidence(t,page,'manual-order-cap',errors);
     await page.locator('#learningHomeReturn').click();await page.waitForFunction(()=>!document.querySelector('#homeView').hidden);
+    const recentItemIds=await page.evaluate(()=>JSON.parse(localStorage.getItem('recentSentenceSessionIdsV1')));
     await page.locator('#startStudyCta').click();await page.waitForFunction(()=>!document.querySelector('#studyView').hidden);
-    const normal=Number(await page.locator('#statProgressTotal').textContent());assert.ok(normal>=6&&normal<=8);
+    const runtime=await page.evaluate(()=>({active:window.__ENGLISH_PWA_ACTIVE_CHARACTER_ID__,levels:JSON.parse(localStorage.getItem('itemLevelV1')),ids:JSON.parse(localStorage.getItem('recentSentenceSessionIdsV1'))}));
+    const expected=buildAutomaticSession(items,runtime.levels,{scope:runtime.active?{type:'character',id:runtime.active}:null,recentItemIds});
+    assert.equal(Number(await page.locator('#statProgressTotal').textContent()),expected.size);
+    assert.deepEqual(runtime.ids,expected.items.map(x=>x.id).slice(0,12));
   }finally{await context.close();}
 });
 for(const [from,to] of [['read','compose'],['compose','read']]) browserTest(`reload ${from} to ${to}: one launch, character authority, no course replay`,async t=>{
@@ -234,5 +239,21 @@ browserTest('pending Start cannot launch a cancelled/reopened or edited setup dr
     assert.equal(await page.locator('#playOptionsDialog[open]').count(),1);assert.equal(await page.locator('#vocabularyModeDialog[open]').count(),0);
     assert.equal(await page.evaluate(()=>Number(sessionStorage.getItem('__setupLaunches')||0)),0);
     await evidence(t,page,'cancel-pending-start',errors);
+  }finally{await context.close();}
+});
+
+browserTest('new setup Start preserves Issue #342 interim-only finality and SRS/study-log integrity',async t=>{
+  const {page,context,errors,items}=await setup();try{
+    await open(page);await page.locator('[data-session-mode="manual"]').click();
+    await page.locator(`#playOptionsManual input[value="${items[0].id}"]`).check();await page.locator('#playOptionsStart').click();await started(page,1);
+    const before=await snapshot(page);
+    await page.waitForFunction(()=>!document.querySelector('#btnMic').disabled);
+    await page.locator('#btnMic').click();await page.waitForFunction(()=>window.__setupSpeech?.latest?.lifecycleState==='active');
+    const attempt=await page.evaluate(text=>{const mock=window.__setupSpeech.latest;mock.emitInterim(text);return mock.attemptId;},items[0].en);
+    await page.locator('#btnMic').click({force:true});
+    await page.waitForFunction(attempt=>window.__setupSpeech.events.some(e=>e.attemptId===attempt&&e.type==='end')&&document.querySelector('#micStatus').dataset.state==='off',attempt);
+    const after=await snapshot(page);assert.equal(after.itemLevelV1,before.itemLevelV1);assert.equal(after.studyLogV1,before.studyLogV1);
+    assert.equal(await page.locator('#valMatch').textContent(),'—');assert.equal(await page.locator('#enText').getAttribute('data-item-id'),items[0].id);assert.equal(await page.locator('#reviewCompleteView').isHidden(),true);
+    await evidence(t,page,'issue342-interim',errors);
   }finally{await context.close();}
 });
