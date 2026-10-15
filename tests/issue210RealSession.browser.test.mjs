@@ -83,7 +83,16 @@ before(async () => {
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   baseUrl = `http://127.0.0.1:${server.address().port}`;
   try {
-    browser = await chromium.launch({ headless: process.env.ISSUE210_HEADFUL !== '1' });
+    browser = await chromium.launch({
+      headless: process.env.ISSUE210_HEADFUL !== '1',
+      // Playwright disables browser background lifecycle behavior by default.
+      // Remove those defaults so Chromium exercises real visibility transitions.
+      ignoreDefaultArgs: [
+        '--disable-background-timer-throttling',
+        '--disable-backgrounding-occluded-windows',
+        '--disable-renderer-backgrounding',
+      ],
+    });
   } catch (error) {
     browserError = error?.message || String(error);
     if (process.env.ISSUE210_REQUIRE_BROWSER) throw error;
