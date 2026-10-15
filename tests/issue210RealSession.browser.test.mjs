@@ -6,7 +6,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 import { installMockSpeechRecognition } from './helpers/mockSpeechRecognition.mjs';
-import { minimizeChromiumWindow } from './helpers/browserVisibility.mjs';
+import { backgroundChromiumTab } from './helpers/browserVisibility.mjs';
 import { buildExchangeResult } from '../scripts/app/relationshipMode.js';
 import { reachedMilestones } from '../scripts/app/relationshipCore.js';
 
@@ -905,10 +905,9 @@ async function backgroundTransition(page) {
   assert.equal(initialState, 'visible', 'the real-session page starts foregrounded');
   await page.evaluate(() => { window.__issue210.visibilityEvents.length = 0; });
 
-  // The CI window manager minimizes this exact Chromium window. The helper
-  // returns only after Chromium itself reports hidden; no state override or
-  // synthetic visibilitychange event is used.
-  const lifecycle = await minimizeChromiumWindow(page);
+  // Activate a second tab in the same BrowserContext. Proceed only after
+  // Chromium itself reports hidden and emits the visibilitychange event.
+  const lifecycle = await backgroundChromiumTab(page);
   const eventEvidence = await page.evaluate(() => ({
     state: document.visibilityState,
     events: window.__issue210.visibilityEvents.map(event => ({ ...event })),
