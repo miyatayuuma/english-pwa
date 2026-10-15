@@ -392,7 +392,10 @@ function discardSetup(){
 async function waitForSentenceLaunchReady(){
   const deadline=performance.now()+10_000;
   while(typeof globalThis.__PREPARE_CHARACTER_SESSION__!=='function'
-    ||typeof globalThis.__CLEAR_ACTIVE_CHARACTER_SESSION__!=='function'){
+    ||typeof globalThis.__CLEAR_ACTIVE_CHARACTER_SESSION__!=='function'
+    // ALL_ITEMS and relationship entry points appear before main's boot
+    // rebuild finishes. Its overlay lock covers that entire initialization.
+    ||document.getElementById('loadingOverlay')?.classList.contains('active')){
     if(performance.now()>=deadline) return false;
     await sleep(40);
   }

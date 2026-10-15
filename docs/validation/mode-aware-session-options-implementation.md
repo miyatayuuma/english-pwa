@@ -1,6 +1,6 @@
 # Mode-aware session options implementation
 
-Status: **MODE-AWARE SESSION OPTIONS UI PR READY / MERGE HELD** pending final required CI. Implementation and independent review are complete. The user authorized resuming through production integration, including the previously reported one-line release-version reconciliation. Final CI, merge and production acceptance will be recorded in PR #347 and Issue #210 before closure.
+Status: **MODE-AWARE SESSION OPTIONS UI PR READY / MERGE HELD** pending follow-up boot-race CI. PR #347 merged as `3c23a520e8ed134989d47869e396cc83ed42a3b0` and v5.112 deployed. Live post-merge acceptance found a main-initialization race, so production closure was withheld and a v5.113 follow-up is required. Final results are recorded on the follow-up PR and Issue #210.
 
 ## Authority
 
@@ -75,3 +75,15 @@ The previously reported blocker was the legacy browser fixture's fixed v5.111 as
 - Issue #210 remains OPEN.
 - PR #344 hidden-page E2E remains frozen NOT_VERIFIED.
 - PR #323 Pixel physical-device acceptance remains DEVICE_PENDING.
+
+
+## Post-merge acceptance and v5.113 boot-race repair
+
+- PR #347 final source `0ab471c9291a618438f84e39335f5f424f0fb610`; Application [38701947388](https://github.com/miyatayuuma/english-pwa/actions/runs/38701947388): **689 total / 687 PASS / 0 FAIL / 2 existing ASR skips / 0 TODO**. All eight previously blocked legacy scenarios execute and PASS, including Issue #342.
+- Android [38701947357](https://github.com/miyatayuuma/english-pwa/actions/runs/38701947357): Debug/Release/Lint and Gate A **5/5 PASS**. Vocabulary/scope guard PASS. Final 9 mobile screenshots and 32 JSON records checked, zero page/console errors.
+- Merge `3c23a520e8ed134989d47869e396cc83ed42a3b0` exactly matches the validated tree. [Pages deployment](https://github.com/miyatayuuma/english-pwa/actions/runs/38702702113) PASS. Live13 delivery files, including SW/new helper/protected materials, match main byte-for-byte. Existing PWA update notification successfully applied v5.111→v5.112.
+- Live UI confirms all three methods, mode-specific controls, fixed seven counts, 50 requested /49 eligible /49 actual /1 short, Vocabulary zero-candidate reason, Cancel→chooser. However Read→Compose reload installed its plan before the main boot finished; the later boot queue rebuild reset it to Home. Production closure was correctly withheld despite green CI.
+- Root cause independently confirmed: main publishes ALL_ITEMS before awaiting character-voice/SRS data; relationship entry points can then appear before main's final idle-queue rebuild. The existing boot overlay lock encloses that entire interval.
+- v5.113 repair adds the active boot-overlay lock to sentence launch readiness. The separate mode-aware Chromium suite now delays the actual SRS boot response in both reload directions: relationship ready + boot active must retain intent/start0; releasing boot must start the correct5 exactly once, remain in study after initialization, and reject replay after another reload. Fixture boot waiting uses the actual `active` class instead of obsolete `show`.
+- No main/scoring/SRS/ASR/relationship/protected-data source changes. All version/cache/bootstrap references and native assets synchronize to v5.113. The authorized legacy E2E expected-version literal follows v5.113 with behavioral assertions intact.
+- Follow-up merge remains gated on required CI and independent review, followed by fresh live acceptance. #344 and #323 remain unresolved; #210 stays OPEN.
