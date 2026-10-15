@@ -78,7 +78,7 @@ jobs:
               sleep 0.1
             done
             wmctrl -m
-            exec node --experimental-default-type=module --test tests/*.test.mjs
+            exec node --test-concurrency=1 --experimental-default-type=module --test tests/*.test.mjs
           '
         env:
           REORDER_REQUIRE_BROWSER: '1'
