@@ -115,6 +115,7 @@ async function newFixturePage({ ids, levels = {}, storageSeed = {}, staleFilters
   });
   await context.addInitScript(installMockSpeechRecognition, { stateKey: '__issue210Speech' });
   await context.addInitScript(({ fixedNow, levels, storageSeed, staleFilters }) => {
+    if (location.pathname === '/__issue210-background-tab__') return;
     const RealDate = Date;
     class FixedDate extends RealDate {
       constructor(...args) { super(...(args.length ? args : [fixedNow])); }
