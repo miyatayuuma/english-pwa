@@ -16,9 +16,9 @@ const evidenceDir=path.join(ROOT,'docs/validation/mode-aware-session-options-evi
 let server,browser,baseUrl,browserError;
 before(async()=>{
   server=http.createServer(async(req,res)=>{
-    const target=path.resolve(ROOT,'.'+new URL(req.url,'http://localhost').pathname.replace(/\/$/,'/index.html'));
+    const target=path.resolve(ROOT,'.'+decodeURIComponent(new URL(req.url,'http://localhost').pathname).replace(/\/$/,'/index.html'));
     if(!target.startsWith(ROOT+path.sep)) return res.writeHead(403).end();
-    try{const bytes=await fs.readFile(target);res.writeHead(200,{'content-type':({'.js':'text/javascript','.json':'application/json','.html':'text/html','.css':'text/css','.png':'image/png'})[path.extname(target)]||'application/octet-stream','cache-control':'no-store'}).end(bytes);}catch(_){res.writeHead(404).end();}
+    try{const bytes=await fs.readFile(target);res.writeHead(200,{'content-type':({'.js':'text/javascript','.json':'application/json','.html':'text/html','.css':'text/css','.png':'image/png','.svg':'image/svg+xml','.mjs':'text/javascript'})[path.extname(target)]||'application/octet-stream','cache-control':'no-store'}).end(bytes);}catch(_){res.writeHead(404).end();}
   });
   await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));baseUrl=`http://127.0.0.1:${server.address().port}`;
   try{browser=await chromium.launch({headless:true});}catch(error){browserError=error.message;}
@@ -28,15 +28,15 @@ function browserTest(name,run){test(name,{timeout:120_000},async t=>{
   if(!browser){if(process.env.ISSUE210_REQUIRE_BROWSER) throw Error(browserError);t.skip('Chromium unavailable: '+browserError);return;}
   await run(t);
 });}
-async function setup({width=390,method='read',size=60}={}){
+async function setup({width=390,method='read',size=60,due=true}={}){
   const items=rows.slice(0,size);
   const context=await browser.newContext({viewport:{width,height:844},serviceWorkers:'block',reducedMotion:'reduce'});
   await context.addInitScript(installMockSpeechRecognition,{stateKey:'__setupSpeech'});
-  await context.addInitScript(({items,method})=>{
+  await context.addInitScript(({items,method,due})=>{
     if(!sessionStorage.getItem('__setupSeeded')){
       sessionStorage.setItem('__setupSeeded','true');
       localStorage.setItem('appConfigV3',JSON.stringify({studyMode:method}));
-      localStorage.setItem('itemLevelV1',JSON.stringify(Object.fromEntries(items.map(item=>[item.id,{last:2,best:2,updatedAt:Date.now()-86400000,review:{nextDueAt:Date.now()-10000}}]))));
+      localStorage.setItem('itemLevelV1',JSON.stringify(Object.fromEntries(items.map(item=>[item.id,{last:2,best:2,updatedAt:Date.now()-86400000,review:{nextDueAt:Date.now()+(due?-10000:86400000)}}]))));
       localStorage.setItem('studyLogV1','{}');
       localStorage.setItem('relationshipMilestonesV1',JSON.stringify(Object.fromEntries(['friends_5','friends_10','friends_all','best_friends_5','best_friends_10','best_friends_all'].map(id=>[id,Date.now()]))));
     }
@@ -50,11 +50,13 @@ async function setup({width=390,method='read',size=60}={}){
     document.addEventListener('english-pwa:prepare-focused-session',()=>{
       sessionStorage.setItem('__setupLaunches',String(Number(sessionStorage.getItem('__setupLaunches')||0)+1));
     });
-  },{items,method});
+  },{items,method,due});
   await context.route('**/*',route=>new URL(route.request().url()).origin===baseUrl?route.continue():route.abort());
   await context.route('**/data/items.json',route=>route.fulfill({contentType:'application/json',body:JSON.stringify(items)}));
-  const page=await context.newPage();const errors=[];page.on('pageerror',error=>errors.push(error.message));
+  const page=await context.newPage();const errors=[];page.on('pageerror',error=>errors.push('page: '+error.message));
+  page.on('console',message=>{if(message.type()==='error') errors.push('console: '+message.text());});
   await page.goto(baseUrl+'/index.html');await ready(page);
+  assert.equal(await page.evaluate(()=>window.APP_VERSION),version);
   return {page,context,errors,items};
 }
 async function ready(page){
@@ -78,7 +80,8 @@ async function started(page,count,method='read'){
 async function evidence(t,page,label,errors=[]){
   const state=await page.evaluate(()=>({appVersion:window.APP_VERSION,viewport:{width:innerWidth,height:innerHeight},gameMethod:document.querySelector('#playOptionsDialog')?.dataset.gameMethod,
     visibleControls:[...document.querySelectorAll('#playOptionsDialog button,#playOptionsDialog select')].filter(el=>el.checkVisibility()).map(el=>el.id||el.dataset.gameMethod||el.dataset.sessionCount||el.textContent.trim()),
-    preview:document.querySelector('#playOptionsCount')?.textContent,startedCount:Number(document.querySelector('#statProgressTotal')?.textContent)||0,
+    preview:document.querySelector('#playOptionsCount')?.textContent,startedCount:document.querySelector('#studyView')?.hidden?0:(Number(document.querySelector('#statProgressTotal')?.textContent)||0),
+    sessionLaunchCount:Number(sessionStorage.getItem('__setupLaunches')||0),vocabularyStartedCount:document.querySelector('#vocabularyModeDialog[open] .vocab-study')?JSON.parse(localStorage.getItem('recentVocabularySessionIdsV1')||'[]').length:0,
     localStorage:Object.fromEntries(Object.entries(localStorage)),sessionStorage:Object.fromEntries(Object.entries(sessionStorage))}));
   const record={label,sourceSHA:sha,...state,errors,result:'PASS'};
   t.diagnostic('[mode-aware-browser] '+JSON.stringify(record));
@@ -91,9 +94,10 @@ for(const width of [360,390,430]) browserTest(`mobile ${width}: navigation, mode
     for(const method of ['read','compose','vocabulary']){
       await open(page,method);
       assert.equal(await page.locator('#playOptionsDialog').getAttribute('data-game-method'),method);
-      assert.equal(await page.locator(`[data-game-method="${method}"]`).getAttribute('aria-pressed'),'true');
+      assert.equal(await page.locator(`button[data-game-method="${method}"]`).getAttribute('aria-pressed'),'true');
       if(method==='vocabulary'){
         assert.equal(await page.locator('#playOptionsCharacter').isVisible(),false);
+        assert.equal(await page.locator('#playOptionsCharacter').evaluate(element=>{element.focus();return document.activeElement!==element;}),true,'hidden sentence control cannot take focus');
         await page.locator('[data-vocabulary-kind="word"]').click();
       }else{
         assert.equal(await page.locator('[data-training-field]').isVisible(),method==='read');
@@ -119,10 +123,12 @@ for(const width of [360,390,430]) browserTest(`mobile ${width}: navigation, mode
       await page.locator('#learningChoiceDialog .focus-sheet__close').click();
     }
     await open(page,'read');
+    await page.locator('[data-training-mode="continuous_shadowing"]').click();
     for(const method of ['compose','vocabulary','read']){
-      await page.locator(`[data-game-method="${method}"]`).click();assert.equal(await page.locator('#playOptionsDialog').getAttribute('data-game-method'),method);
+      await page.locator(`button[data-game-method="${method}"]`).click();assert.equal(await page.locator('#playOptionsDialog').getAttribute('data-game-method'),method);
       assert.deepEqual(await snapshot(page),before);
     }
+    assert.equal(await page.locator('[data-training-mode="standard"]').getAttribute('aria-pressed'),'true','Compose switch clears Read-only training');
     await page.keyboard.press('Escape');await page.locator('#learningChoiceDialog[open]').waitFor();assert.deepEqual(await snapshot(page),before);
     await page.locator('#learningChoiceDialog .focus-sheet__close').click();
     await open(page,'vocabulary');await page.locator('#playOptionsDialog .focus-sheet__close').click();await page.locator('#learningChoiceDialog[open]').waitFor();assert.deepEqual(await snapshot(page),before);
@@ -158,7 +164,7 @@ browserTest('manual real queue retains order/cap/shortfall and disables empty se
     await evidence(t,page,'manual-order-cap',errors);
     await page.locator('#learningHomeReturn').click();await page.waitForFunction(()=>!document.querySelector('#homeView').hidden);
     const recentItemIds=await page.evaluate(()=>JSON.parse(localStorage.getItem('recentSentenceSessionIdsV1')));
-    await page.locator('#startStudyCta').click();await page.waitForFunction(()=>!document.querySelector('#studyView').hidden);
+    await page.locator('.friendship-hero__cta').click();await page.waitForFunction(()=>!document.querySelector('#studyView').hidden);
     const runtime=await page.evaluate(()=>({active:window.__ENGLISH_PWA_ACTIVE_CHARACTER_ID__,levels:JSON.parse(localStorage.getItem('itemLevelV1')),ids:JSON.parse(localStorage.getItem('recentSentenceSessionIdsV1'))}));
     const expected=buildAutomaticSession(items,runtime.levels,{scope:runtime.active?{type:'character',id:runtime.active}:null,recentItemIds});
     assert.equal(Number(await page.locator('#statProgressTotal').textContent()),expected.size);
@@ -167,7 +173,7 @@ browserTest('manual real queue retains order/cap/shortfall and disables empty se
 });
 for(const [from,to] of [['read','compose'],['compose','read']]) browserTest(`reload ${from} to ${to}: one launch, character authority, no course replay`,async t=>{
   const {page,context,errors,items}=await setup({method:from});try{
-    await open(page,from);await page.locator(`[data-game-method="${to}"]`).click();await page.locator('[data-session-count="20"]').click();
+    await open(page,from);await page.locator(`button[data-game-method="${to}"]`).click();await page.locator('[data-session-count="20"]').click();
     const character=items.flatMap(item=>item.speaker_tags||[]).map(x=>x.id).find(id=>id);
     await page.locator('#playOptionsCharacter').selectOption(character);
     const actual=Number((await page.locator('#playOptionsCount').innerText()).match(/実際 (\d+)問/)[1]);assert.ok(actual>0);
@@ -187,7 +193,7 @@ browserTest('vocabulary draft preview is side effect free and Start uses indepen
   const {page,context,errors}=await setup();try{
     const before=await snapshot(page);await open(page,'read');
     await page.locator('[data-session-count="50"]').click();await page.locator('[data-session-mode="manual"]').click();
-    await page.locator('[data-game-method="vocabulary"]').click();
+    await page.locator('button[data-game-method="vocabulary"]').click();
     for(const kind of ['all','word','expression']){await page.locator(`[data-vocabulary-kind="${kind}"]`).click();assert.deepEqual(await snapshot(page),before);}
     await page.locator('[data-vocabulary-kind="all"]').click();
     const preview=await page.evaluate(()=>window.__VOCABULARY_SESSION_SETUP__.createDraft().preview());assert.ok(preview.plan.size>0&&preview.plan.size<=12);
@@ -223,7 +229,7 @@ browserTest('legacy nonmatching custom count restores with notice; exact fixed c
   const {page,context,errors}=await setup();try{
     await page.evaluate(()=>window.__OPEN_SESSION_OPTIONS__({count:'custom',customCount:17}));
     assert.match(await page.locator('#playOptionsNotice').innerText(),/おまかせ/);assert.equal(await page.locator('[data-session-count="auto"]').getAttribute('aria-pressed'),'true');
-    await page.locator('[data-game-method="compose"]').click();assert.equal(await page.locator('#playOptionsNotice').count(),1);
+    await page.locator('button[data-game-method="compose"]').click();assert.equal(await page.locator('#playOptionsNotice').count(),1);
     await page.locator('[data-cancel-setup]').click();await page.locator('#learningChoiceDialog .focus-sheet__close').click();
     await page.evaluate(()=>window.__OPEN_SESSION_OPTIONS__({count:'custom',customCount:20}));assert.equal(await page.locator('[data-session-count="20"]').getAttribute('aria-pressed'),'true');assert.equal(await page.locator('#playOptionsNotice').innerText(),'');
     await evidence(t,page,'legacy-custom',errors);
@@ -241,7 +247,7 @@ browserTest('pending Start cannot launch a cancelled/reopened or edited setup dr
     assert.equal(await page.locator('#playOptionsDialog[open]').count(),1);assert.equal(await page.locator('#studyView').isHidden(),true);
     assert.equal(await page.evaluate(()=>Number(sessionStorage.getItem('__setupLaunches')||0)),0);
     await page.evaluate(()=>{delete window.__CLEAR_ACTIVE_CHARACTER_SESSION__;});
-    await page.locator('#playOptionsStart').click();await page.locator('[data-game-method="vocabulary"]').click();
+    await page.locator('#playOptionsStart').click();await page.locator('button[data-game-method="vocabulary"]').click();
     await page.evaluate(()=>{window.__CLEAR_ACTIVE_CHARACTER_SESSION__=window.__setupClear;});await page.waitForTimeout(100);
     assert.equal(await page.locator('#playOptionsDialog[open]').count(),1);assert.equal(await page.locator('#vocabularyModeDialog[open]').count(),0);
     assert.equal(await page.evaluate(()=>Number(sessionStorage.getItem('__setupLaunches')||0)),0);
@@ -273,8 +279,19 @@ browserTest('zero-candidate filters disable actual Start and expose a recovery a
     assert.match(await page.locator('#playOptionsCount').innerText(),/実際 0問/);
     assert.match(await page.locator('#playOptionsCauses').innerText(),/条件に合う文がありません/);
     await page.locator('.play-options__cause').first().click();assert.equal(await page.locator('#playOptionsStart').isDisabled(),false);
-    await page.locator('[data-game-method="compose"]').click();assert.equal(await page.locator('[data-training-field]').isVisible(),false);
-    await page.locator('[data-game-method="read"]').click();assert.equal(await page.locator('[data-training-mode="standard"]').getAttribute('aria-pressed'),'true');
+    await page.locator('button[data-game-method="compose"]').click();assert.equal(await page.locator('[data-training-field]').isVisible(),false);
+    await page.locator('button[data-game-method="read"]').click();assert.equal(await page.locator('[data-training-mode="standard"]').getAttribute('aria-pressed'),'true');
     assert.deepEqual(await snapshot(page),before);await evidence(t,page,'zero-recovery',errors);
+  }finally{await context.close();}
+});
+
+browserTest('preview and Start share all prior-session IDs beyond the persisted 12-ID recent window',async t=>{
+  const {page,context,errors}=await setup({due:false});try{
+    await open(page);await page.locator('[data-session-count="20"]').click();await page.locator('#playOptionsStart').click();await started(page,20);
+    await page.locator('#learningHomeReturn').click();await page.waitForFunction(()=>!document.querySelector('#homeView').hidden);
+    await open(page);await page.locator('[data-session-count="50"]').click();
+    assert.match(await page.locator('#playOptionsCount').innerText(),/実際 40問 · 不足 10問/);
+    assert.equal(await page.locator('#playOptionsStart').innerText(),'40問で始める');
+    await page.locator('#playOptionsStart').click();await started(page,40);await evidence(t,page,'recent-window-alignment',errors);
   }finally{await context.close();}
 });

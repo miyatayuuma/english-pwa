@@ -307,8 +307,12 @@ function renderManualChoices(dialog,eligible){
   note.textContent=matched.length>shown.length?`${matched.length}文中、先頭${shown.length}文を表示`:`${matched.length}文から選択`;
 }
 
+function nextSentenceRecentIds(){
+  return state.sessionPlan?.items?.map(item=>item.id)||loadRecentSessionIds();
+}
+
 function sentencePlan(options=state.optionsDraft){
-  return buildSessionPlanFromOptions(state.items,loadLevelState(),options,{recentItemIds:loadRecentSessionIds()});
+  return buildSessionPlanFromOptions(state.items,loadLevelState(),options,{recentItemIds:nextSentenceRecentIds()});
 }
 
 function updateOptionsSheet(dialog,{renderManual=true}={}){
@@ -623,7 +627,7 @@ function setLegacyPlan(plan){
 }
 
 function prepareStart(){
-  const recentItemIds=state.sessionPlan?.items?.map(item=>item.id)||loadRecentSessionIds();
+  const recentItemIds=nextSentenceRecentIds();
   if(state.pendingOptions){
     const options=state.pendingOptions;
     state.pendingOptions=null;
