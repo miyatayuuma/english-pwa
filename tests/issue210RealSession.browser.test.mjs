@@ -6,6 +6,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 import { installMockSpeechRecognition } from './helpers/mockSpeechRecognition.mjs';
+import { minimizeChromiumWindow } from './helpers/browserVisibility.mjs';
 import { buildExchangeResult } from '../scripts/app/relationshipMode.js';
 import { reachedMilestones } from '../scripts/app/relationshipCore.js';
 
