@@ -51,47 +51,30 @@ export async function backgroundChromiumTab(page, { timeout = 10_000 } = {}) {
   let foregroundTab = null;
   let x11WindowId = null;
   let minimized = false;
-  let browserCdpSession = null;
-  let pageCdpSession = null;
-  let cdpWindowId = null;
-  let originalWindowState = null;
-  let cdpMinimized = false;
-  let cdpFailure = null;
   let method = '';
-  const restoreCdpWindow = async () => {
-    if (cdpMinimized && browserCdpSession && cdpWindowId != null) {
-      await browserCdpSession.send('Browser.setWindowBounds', {
-        windowId: cdpWindowId,
-        bounds: { windowState: originalWindowState || 'normal' },
-      }).catch(() => {});
-      cdpMinimized = false;
-    }
-  };
-  const detachCdpSessions = async () => {
-    await pageCdpSession?.detach().catch(() => {});
-    await browserCdpSession?.detach().catch(() => {});
-    pageCdpSession = null;
-    browserCdpSession = null;
-  };
   try {
-    // Open an actual same-window tab through Chromium's window.open path. The
-    // route is intentionally blank and fixture init scripts skip this path.
-    const pageEvent = context.waitForEvent('page', { timeout: 2_000 }).catch(() => null);
-    const opener = await context.newCDPSession(page);
-    try {
-      await opener.send('Runtime.evaluate', {
-        expression: `window.open(${JSON.stringify(targetUrl)}, '_blank')`,
-        userGesture: true,
+    // Add and click a fixture link with target=_blank. Chromium handles the
+    // actual navigation and selects a tab in the app window.
+    await page.evaluate(url => {
+      const link = document.createElement('a');
+      link.id = 'issue210-background-tab-link';
+      link.href = url;
+      link.target = '_blank';
+      link.rel = 'noopener';
+      link.textContent = 'Open background test tab';
+      Object.assign(link.style, {
+        position: 'fixed', left: '8px', top: '8px', zIndex: '2147483647',
+        width: '180px', height: '36px', opacity: '0.01',
       });
-    } finally {
-      await opener.detach();
-    }
+      document.body.append(link);
+    }, targetUrl);
+    const pageEvent = context.waitForEvent('page', { timeout: 5_000 }).catch(() => null);
+    await page.locator('#issue210-background-tab-link').click({ timeout: 5_000 });
     foregroundTab = await pageEvent;
+    assert.ok(foregroundTab, 'Chromium created a second page for the real target=_blank link');
+    await foregroundTab.waitForLoadState('domcontentloaded', { timeout: 5_000 }).catch(() => {});
 
-    if (!foregroundTab) foregroundTab = await context.newPage();
-    else await foregroundTab.waitForLoadState('domcontentloaded', { timeout: 5_000 }).catch(() => {});
-
-    method = 'playwright-bring-to-front-tab';
+    method = 'chromium-target-blank-tab';
     try {
       await foregroundTab.bringToFront();
       const evidence = await waitForHidden(page, 1_500);
@@ -128,46 +111,6 @@ export async function backgroundChromiumTab(page, { timeout = 10_000 } = {}) {
       // The keyboard shortcut did not select another tab in this CI window.
     }
 
-    // Ask Chromium to minimize the real top-level browser window. The test
-    // still accepts this only if the page itself reports hidden and records
-    // its native visibilitychange event.
-    try {
-      browserCdpSession = await context.browser().newBrowserCDPSession();
-      pageCdpSession = await context.newCDPSession(page);
-      const { targetInfo } = await pageCdpSession.send('Target.getTargetInfo');
-      const window = await browserCdpSession.send('Browser.getWindowForTarget', { targetId: targetInfo.targetId });
-      cdpWindowId = window.windowId;
-      originalWindowState = window.bounds?.windowState || 'normal';
-      await browserCdpSession.send('Browser.setWindowBounds', {
-        windowId: cdpWindowId,
-        bounds: { windowState: 'minimized' },
-      });
-      cdpMinimized = true;
-      method = 'cdp-native-window-minimize';
-      try {
-        const evidence = await waitForHidden(page, 2_000);
-        return {
-          evidence: { ...evidence, method, cdpWindowId, originalWindowState },
-          restore: async () => {
-            await restoreCdpWindow();
-            await page.bringToFront();
-            await page.waitForFunction(() => document.visibilityState === 'visible', null, { timeout, polling: 100 });
-            await foregroundTab.close();
-            await context.unroute(targetUrl, routeHandler);
-            await detachCdpSessions();
-          },
-        };
-      } catch (error) {
-        cdpFailure = error instanceof Error ? `${error.name}: ${error.message}` : String(error);
-        await restoreCdpWindow();
-        await detachCdpSessions();
-      }
-    } catch (error) {
-      cdpFailure = error instanceof Error ? `${error.name}: ${error.message}` : String(error);
-      await restoreCdpWindow();
-      await detachCdpSessions();
-    }
-
     await page.bringToFront();
     x11WindowId = await activeX11Window();
     x11('xdotool', ['windowminimize', x11WindowId]);
@@ -186,8 +129,6 @@ export async function backgroundChromiumTab(page, { timeout = 10_000 } = {}) {
       },
     };
   } catch (error) {
-    await restoreCdpWindow();
-    await detachCdpSessions();
     if (minimized && x11WindowId) {
       try {
         x11('xdotool', ['windowmap', x11WindowId]);
@@ -222,6 +163,6 @@ export async function backgroundChromiumTab(page, { timeout = 10_000 } = {}) {
     await foregroundTab?.close().catch(() => {});
     await context.unroute(targetUrl, routeHandler).catch(() => {});
     const detail = error instanceof Error ? `${error.name}: ${error.message}` : String(error);
-    throw new Error(`Chromium X11/tab lifecycle did not produce verified hidden state: ${JSON.stringify({ method, x11WindowId, cdpWindowId, originalWindowState, cdpFailure, pageState, popupState, x11State })} (${detail})`, { cause: error });
+    throw new Error(`Chromium X11/tab lifecycle did not produce verified hidden state: ${JSON.stringify({ method, x11WindowId, pageState, popupState, x11State })} (${detail})`, { cause: error });
   }
 }
