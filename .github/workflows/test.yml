@@ -84,6 +84,13 @@ jobs:
           name: mode-aware-session-options-evidence
           path: docs/validation/mode-aware-session-options-evidence/
           if-no-files-found: warn
+      - name: Upload Vocabulary count mobile and completion evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vocabulary-count-evidence
+          path: docs/validation/vocabulary-count-evidence/
+          if-no-files-found: error
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'

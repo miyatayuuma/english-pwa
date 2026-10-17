@@ -1196,3 +1196,216 @@ for(const rank of [1,6,12,20]) browserTest(`Web production Vocabulary strict TAR
     assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);
   }finally{await closePage(opened);}
 });
+
+// Count acceptance uses production cards and the production planner/recognizer/
+// SRS. Only the data subset and provider boundary are controlled.
+const countEvidenceDir=path.join(ROOT,'docs/validation/vocabulary-count-evidence');
+const countFixtures=vocabulary.entries.filter(entry=>entry.id!=='vocab:00947'&&entry.id!==fixtureFor(sources[0]).id
+  &&['word','expression','construction'].includes(entry.kind)&&entry.meaning_ja&&entry.occurrences?.length).slice(0,119);
+async function countSetup({route='lobby',size=60,fresh=false,locked=false,width=390}={}){
+  const learned={last:2,best:2,updatedAt:1700000000000,review:{nextDueAt:1900000000000}};
+  const opened=await newPage(sources[0],{startSession:false,entryState:fresh?{}:learned,additionalEntryState:fresh?{}:learned,
+    additionalEntries:countFixtures.slice(0,size-1),viewport:{width,height:844}});
+  const {page}=opened;
+  await page.waitForFunction(()=>typeof window.__OPEN_SESSION_OPTIONS__==='function');
+  if(locked) await page.evaluate(()=>localStorage.setItem('itemLevelV1','{}'));
+  if(route==='details'){
+    await page.locator('.vocab-close').click();
+    await page.evaluate(()=>window.__OPEN_SESSION_OPTIONS__({gameMethod:'vocabulary'}));
+    await page.locator('#playOptionsDialog[open]').waitFor();
+  }else if(locked){
+    await page.locator('[data-kind="all"]').click();
+  }
+  const selectors=route==='details'?{count:'data-vocabulary-count',kind:'data-vocabulary-kind',start:'#playOptionsStart',preview:'#playOptionsCount'}
+    :{count:'data-vocab-count',kind:'data-kind',start:'.vocab-start',preview:'.vocab-plan'};
+  return {...opened,...selectors,route};
+}
+async function countSnapshot(page){return page.evaluate(()=>Object.fromEntries(Object.entries(localStorage).sort(([a],[b])=>a.localeCompare(b))));}
+async function expectedCountPlan(page,count,kind='all'){
+  return page.evaluate(({count,kind})=>{
+    const draft=window.__VOCABULARY_SESSION_SETUP__.createDraft();draft.setCount(count);draft.setKind(kind);
+    return draft.preview().plan;
+  },{count,kind});
+}
+async function countStart(opened,count){
+  const {page,start}=opened;
+  const plan=await expectedCountPlan(page,count);
+  await page.locator(start).click();await page.locator('.vocab-study').waitFor();
+  const recent=await page.evaluate(()=>JSON.parse(localStorage.getItem('recentVocabularySessionIdsV1')));
+  assert.deepEqual(recent,plan.entries.map(entry=>entry.id),'committed IDs match previewed production queue');
+  assert.equal(new Set(recent).size,plan.size);
+  assert.equal(await page.locator('.vocab-meaning').innerText(),plan.entries[0].meaning_ja.trim());
+  assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0,'starting does not grade a card');
+  return plan;
+}
+for(const route of ['details','lobby']){
+  for(const count of ['auto','5','8','12','20','30','50']) browserTest(`VOC-COUNT ${route} ${count}: preview matches actual committed queue, seed once, no preview writes`,async()=>{
+    const opened=await countSetup({route});const {page,start,preview}=opened;
+    try{
+      const before=await countSnapshot(page);
+      await page.evaluate(()=>{window.__countWrites=[];const set=Storage.prototype.setItem;Storage.prototype.setItem=function(key,value){window.__countWrites.push(key);return set.call(this,key,value);};});
+      await page.locator(`[${opened.count}="${count}"]`).click();
+      assert.deepEqual(await countSnapshot(page),before);
+      assert.deepEqual(await page.evaluate(()=>window.__countWrites),[]);
+      const target=count==='auto'?12:Number(count);
+      assert.match(await page.locator(preview).innerText(),new RegExp(`対象候補 60枚 · 実際 ${target}枚 · 不足 0枚`));
+      assert.equal(await page.locator(start).innerText(),`${target}枚で始める`);
+      const plan=await countStart(opened,count);assert.equal(plan.size,target);
+      const writes=await page.evaluate(()=>window.__countWrites);
+      assert.equal(writes.filter(key=>key==='vocabularyRotationSeedV1').length,1);
+      assert.equal(writes.filter(key=>key==='recentVocabularySessionIdsV1').length,1);
+      assert.equal((await countSnapshot(page)).appConfigV3,before.appConfigV3);
+    }finally{await closePage(opened);}
+  });
+  for(const [label,config,actual,pattern] of [
+    ['49 candidates',{size:49},49,/不足 1枚.*対象カードが1枚不足/],
+    ['fresh cap',{size:50,fresh:true},8,/不足 42枚.*新しいカードは1回8枚まで/],
+    ['zero candidates',{locked:true},0,/対象候補 0枚 · 実際 0枚 · 不足 50枚/],
+  ]) browserTest(`VOC-COUNT ${route}: ${label} uses real shortfall and disables empty start`,async()=>{
+    const opened=await countSetup({route,...config});const {page,start,preview}=opened;
+    try{
+      await page.locator(`[${opened.count}="50"]`).click();
+      assert.match(await page.locator(preview).innerText(),pattern);
+      assert.equal(await page.locator(start).isDisabled(),actual===0);
+      if(actual) assert.equal((await countStart(opened,'50')).size,actual);
+    }finally{await closePage(opened);}
+  });
+  for(const width of [360,390,430]) browserTest(`VOC-COUNT ${route} mobile ${width}: seven choices, 44px, 4+3 grid, kind/count independence and cancel safety`,async()=>{
+    const opened=await countSetup({route,width});const {page,start,preview}=opened;
+    try{
+      const before=await countSnapshot(page);
+      const controls=page.locator(`[${opened.count}]`);
+      assert.deepEqual(await controls.evaluateAll(nodes=>nodes.map(node=>Object.values(node.dataset)[0])),['auto','5','8','12','20','30','50']);
+      const bounds=await controls.evaluateAll(nodes=>nodes.map(node=>({height:node.getBoundingClientRect().height,top:node.getBoundingClientRect().top,visible:node.checkVisibility()})));
+      assert.ok(bounds.every(bound=>bound.height>=44&&bound.visible));assert.equal(bounds[0].top,bounds[3].top);assert.ok(bounds[4].top>bounds[3].top);
+      await page.locator(`[${opened.count}="50"]`).click();
+      const all=await page.locator(preview).innerText();
+      await page.locator(`[${opened.kind}="word"]`).click();
+      assert.equal(await page.locator(`[${opened.count}="50"]`).getAttribute('aria-pressed'),'true');
+      assert.equal(await page.locator(`[${opened.count}="auto"]`).getAttribute('aria-pressed'),'false');
+      const wordPlan=await expectedCountPlan(page,'50','word');
+      assert.match(await page.locator(preview).innerText(),new RegExp(`対象候補 ${wordPlan.candidateCount}枚 · 実際 ${wordPlan.size}枚`));
+      assert.notEqual(await page.locator(preview).innerText(),all);
+      assert.deepEqual(await countSnapshot(page),before);
+      assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+      const rect=await page.locator(start).boundingBox();assert.ok(rect.y>=0&&rect.y+rect.height<=844,JSON.stringify(rect));
+      await fs.mkdir(countEvidenceDir,{recursive:true});
+      await page.screenshot({path:path.join(countEvidenceDir,`${route}-${width}.png`)});
+      await fs.writeFile(path.join(countEvidenceDir,`${route}-${width}.json`),JSON.stringify({width,route,summary:await page.locator(preview).innerText(),bounds,start:rect},null,2));
+      if(route==='details'){
+        // Same dialog keeps sentence count separate from the private Vocabulary count.
+        await page.locator('[data-game-method="read"]').click();
+        assert.equal(await page.locator('[data-session-count="auto"]').getAttribute('aria-pressed'),'true');
+        await page.locator('[data-session-count="20"]').click();
+        await page.locator('[data-game-method="compose"]').click();
+        assert.equal(await page.locator('[data-session-count="20"]').getAttribute('aria-pressed'),'true');
+        await page.locator('[data-game-method="vocabulary"]').click();
+        assert.equal(await page.locator('[data-vocabulary-count="50"]').getAttribute('aria-pressed'),'true');
+        await page.locator('[data-cancel-setup]').click();
+        await page.evaluate(()=>window.__OPEN_SESSION_OPTIONS__({gameMethod:'vocabulary'}));
+        assert.equal(await page.locator('[data-vocabulary-count="auto"]').getAttribute('aria-pressed'),'true');
+        await page.keyboard.press('Escape');
+      }else{await page.locator('.vocab-close').click();await page.evaluate(()=>window.__OPEN_VOCABULARY_MODE__());
+        assert.equal(await page.locator('[data-vocab-count="auto"]').getAttribute('aria-pressed'),'true');}
+      assert.deepEqual(await countSnapshot(page),before);
+    }finally{await closePage(opened);}
+  });
+  browserTest(`VOC-COUNT ${route}: changed planner inputs during permission revalidate before committing`,async()=>{
+    const opened=await countSetup({route});const {page,start,preview}=opened;
+    try{
+      await page.locator(`[${opened.count}="50"]`).click();
+      await page.evaluate(()=>{window.__REQUEST_SAVED_AUDIO_FOLDER_PERMISSION__=()=>new Promise(resolve=>{window.__releaseCountPermission=resolve;});});
+      const before=await countSnapshot(page);
+      await page.locator(start).click();
+      await page.waitForFunction(()=>typeof window.__releaseCountPermission==='function');
+      await page.evaluate(()=>{localStorage.setItem('itemLevelV1','{}');window.__releaseCountPermission();});
+      await page.locator(route==='details'?'#playOptionsNotice':'.vocab-plan').filter({hasText:'変わりました'}).waitFor();
+      assert.equal(await page.locator(start).isDisabled(),true);
+      assert.match(await page.locator(preview).innerText(),/実際 0枚/);
+      assert.equal((await countSnapshot(page)).recentVocabularySessionIdsV1,before.recentVocabularySessionIdsV1);
+      assert.equal((await countSnapshot(page)).vocabularyRotationSeedV1,before.vocabularyRotationSeedV1);
+      assert.equal(await page.locator('.vocab-study').count(),0);
+    }finally{await closePage(opened);}
+  });
+}
+for(const target of [5,50]) browserTest(`VOC-COUNT ${target}-card completion: actual queue, finality, stale callbacks, one SRS write per card and normal home`,async()=>{
+  const opened=await countSetup({route:target===50?'details':'lobby'});const {page}=opened;
+  try{
+    await page.locator(`[${opened.count}="${target}"]`).click();
+    const plan=await countStart(opened,String(target));
+    const before=await countSnapshot(page);
+    for(let index=0;index<plan.size;index++){
+      const entry=plan.entries[index];
+      await page.locator('.vocab-study').waitFor();
+      assert.equal(await page.locator('.vocab-meaning').innerText(),entry.meaning_ja.trim());
+      await page.waitForFunction(()=>window.__mockSpeech.latest?.lifecycleState==='active');
+      if(index===0){
+        await injectInterim(page,entry.canonical);await page.evaluate(()=>window.__mockSpeech.latest.emitEnd());
+        assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0,'interim only is NO GRADE');
+        assert.equal(await page.evaluate(()=>localStorage.getItem('itemLevelV1')),before.itemLevelV1);
+        await page.locator('.vocab-mic').click();
+        await recognitionError(page);
+        assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0,'technical error is NO GRADE');
+        await page.locator('.vocab-mic').click();
+      }
+      await page.evaluate(()=>{window.__countPriorRecognition=window.__mockSpeech.latest;});
+      await injectCompletedFinal(page,entry.canonical);await page.locator('.vocab-answer').waitFor();
+      assert.equal(await page.locator('.vocab-feedback').innerText(),'正解');
+      await page.evaluate(()=>{window.__countPriorRecognition.emitFinal('late wrong callback');window.__countPriorRecognition.emitEnd();});
+      assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),index+1,'one SRS write per original card');
+      await tapResult(page);
+      if(index<plan.size-1){
+        await page.locator('.vocab-study').waitFor();
+        await page.evaluate(()=>{window.__countPriorRecognition?.emitFinal('stale previous card');window.__countPriorRecognition?.emitEnd();});
+        assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),index+1,'previous card callback cannot grade next card');
+      }
+    }
+    await page.locator('.vocab-done').waitFor();
+    assert.match(await page.locator('.vocab-done').innerText(),new RegExp(`ターゲット正解 ${target}.*要復習 0`));
+    assert.match(await page.locator('.vocab-done small').first().innerText(),new RegExp(`対象 ${target}枚`));
+    assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('recentVocabularySessionIdsV1')).length),target);
+    assert.equal((await countSnapshot(page)).studyLogV1,before.studyLogV1,'Vocabulary count does not add sentence pass logs');
+    assert.equal((await countSnapshot(page)).relationshipMilestonesV1,before.relationshipMilestonesV1);
+    await page.locator('[data-back]').click();
+    assert.equal(await page.locator('[data-vocab-count="auto"]').getAttribute('aria-pressed'),'true');
+    await page.locator('.vocab-close').click();
+    assert.equal(await page.locator('#homeView').isVisible(),true);
+    await fs.mkdir(countEvidenceDir,{recursive:true});
+    await fs.writeFile(path.join(countEvidenceDir,`completion-${target}.json`),JSON.stringify({target,actual:plan.size,ids:plan.entries.map(x=>x.id),srsWrites:await page.evaluate(()=>window.__mockSpeech.srsWrites),result:'PASS'},null,2));
+  }finally{await closePage(opened);}
+});
+browserTest('VOC-COUNT legacy recent30 survives preview and next-session recent50 rotates without excluding fallback',async()=>{
+  const opened=await countSetup({size:120});const {page}=opened;
+  try{
+    const all=await expectedCountPlan(page,'50');
+    const legacy=all.entries.slice(0,30).map(entry=>entry.id);
+    await page.evaluate(ids=>localStorage.setItem('recentVocabularySessionIdsV1',JSON.stringify([...ids,ids[0]])),legacy);
+    await page.locator('[data-vocab-count="50"]').click();
+    const preview=await expectedCountPlan(page,'50');
+    assert.ok(preview.entries.every(entry=>!legacy.includes(entry.id)));
+    assert.deepEqual(JSON.parse((await countSnapshot(page)).recentVocabularySessionIdsV1),[...legacy,legacy[0]],'preview does not rewrite legacy storage');
+    const first=await countStart(opened,'50');assert.equal(first.size,50);
+    await page.locator('.vocab-close').click();await page.evaluate(()=>window.__OPEN_VOCABULARY_MODE__());
+    await page.locator('[data-vocab-count="50"]').click();
+    const second=await countStart(opened,'50');
+    assert.ok(second.entries.every(entry=>!first.entries.some(previous=>previous.id===entry.id)));
+  }finally{await closePage(opened);}
+});
+
+browserTest('VOC-COUNT 50-card session correction preserves the original MISS, initial target and one SRS write',async()=>{
+  const opened=await countSetup();const {page}=opened;
+  try{
+    await page.locator('[data-vocab-count="50"]').click();const plan=await countStart(opened,'50');
+    await page.locator('.vocab-reveal').click();await page.locator('.vocab-answer').waitFor();
+    assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);
+    const before=await countSnapshot(page);
+    await page.locator('.vocab-mic').click();await page.waitForFunction(()=>window.__mockSpeech.latest?.lifecycleState==='active');
+    await injectCompletedFinal(page,plan.entries[0].canonical);
+    await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='修正練習完了');
+    assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);
+    assert.equal((await countSnapshot(page)).itemLevelV1,before.itemLevelV1);
+    assert.equal(JSON.parse((await countSnapshot(page)).recentVocabularySessionIdsV1).length,50);
+    await tapResult(page);await page.locator('.vocab-study').waitFor();
+    assert.equal(await page.locator('.vocab-meaning').innerText(),plan.entries[1].meaning_ja.trim());
+  }finally{await closePage(opened);}
+});

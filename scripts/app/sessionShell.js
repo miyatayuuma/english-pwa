@@ -1,3 +1,4 @@
+import { VOCABULARY_COUNT_CHOICES, vocabularyPlanSummary } from './vocabularyLearningCore.js';
 import { BOOT_SENTENCE_METHOD, BOOT_HAS_SETUP_HANDOFF, normalizeGameMethod, storedSentenceMethod, commitSentenceMethod, clearSetupHandoff, createSetupHandoff, storeSetupHandoff, consumeSetupHandoff } from './sessionSetupHandoff.js';
 import {
   buildAutomaticSession,
@@ -330,7 +331,7 @@ function updateOptionsSheet(dialog,{renderManual=true}={}){
   });
   dialog.querySelectorAll('[data-sentence-field]').forEach(field=>{field.hidden=vocabulary;});
   dialog.querySelector('[data-training-field]').hidden=state.gameMethodDraft!=='read';
-  dialog.querySelector('[data-vocabulary-field]').hidden=!vocabulary;
+  dialog.querySelectorAll('[data-vocabulary-field]').forEach(field=>{field.hidden=!vocabulary;});
   dialog.querySelector('#playOptionsNotice').textContent=state.setupNotice;
   const causes=dialog.querySelector('#playOptionsCauses');causes.replaceChildren();
   const start=dialog.querySelector('#playOptionsStart');
@@ -341,9 +342,13 @@ function updateOptionsSheet(dialog,{renderManual=true}={}){
       const active=button.dataset.vocabularyKind===state.vocabularySetup?.getKind();
       button.classList.toggle('is-active',active);button.setAttribute('aria-pressed',String(active));
     });
-    dialog.querySelector('#playOptionsSummary').textContent='単語チャレンジ · カード種別を選んで始めます';
+    dialog.querySelectorAll('[data-vocabulary-count]').forEach(button=>{
+      const active=button.dataset.vocabularyCount===state.vocabularySetup?.getCount();
+      button.classList.toggle('is-active',active);button.setAttribute('aria-pressed',String(active));
+    });
+    dialog.querySelector('#playOptionsSummary').textContent='単語チャレンジ · カード種別と出題数を選んで始めます';
     dialog.querySelector('#playOptionsCount').textContent=preview
-      ?`対象候補 ${preview.candidateCount}枚 · 実際 ${preview.plan.size}枚（上限12枚）${preview.reason?' · '+preview.reason:''}`
+      ?vocabularyPlanSummary(preview.plan,state.vocabularySetup.getCount())+(preview.reason?' · '+preview.reason:'')
       :'単語教材を準備しています。読み込み後に開始できます。';
     start.disabled=!preview?.canStart;
     start.textContent=preview?.canStart?`${preview.plan.size}枚で始める`:'単語学習を開始できません';
@@ -416,12 +421,18 @@ function launchSentenceOptions(options){
 
 async function confirmSetupStart(dialog){
   if(state.setupLaunching) return;
+  const previousToken=state.vocabularySetup?.getPreviewToken();
   updateOptionsSheet(dialog);
+  if(state.gameMethodDraft==='vocabulary'&&previousToken!==state.vocabularySetup?.getPreviewToken()){
+    state.setupNotice='条件が変わりました。予定を確認して、もう一度開始してください。';updateOptionsSheet(dialog);return;
+  }
   if(dialog.querySelector('#playOptionsStart').disabled) return;
   const generation=state.setupGeneration;
   const options=normalizeSessionOptions(state.optionsDraft);
   const method=state.gameMethodDraft;
   const vocabularyKind=state.vocabularySetup?.getKind();
+  const vocabularyCount=state.vocabularySetup?.getCount();
+  const vocabularyToken=state.vocabularySetup?.getPreviewToken();
   state.setupLaunching=true;
   dialog.querySelector('#playOptionsStart').disabled=true;
   // Issue the saved-handle permission request in the explicit user gesture,
@@ -433,11 +444,11 @@ async function confirmSetupStart(dialog){
   state.setupLaunching=false;
   if(!dialog.open) return;
   if(!ready||method!==state.gameMethodDraft||JSON.stringify(options)!==JSON.stringify(normalizeSessionOptions(state.optionsDraft))
-    ||(method==='vocabulary'&&vocabularyKind!==state.vocabularySetup?.getKind())){
+    ||(method==='vocabulary'&&(vocabularyKind!==state.vocabularySetup?.getKind()||vocabularyCount!==state.vocabularySetup?.getCount()))){
     state.setupNotice='設定または準備状態が変わりました。内容を確認して、もう一度開始してください。';updateOptionsSheet(dialog);return;
   }
   if(method==='vocabulary'){
-    if(!state.vocabularySetup?.start()) {updateOptionsSheet(dialog);return;}
+    if(!state.vocabularySetup?.start(vocabularyToken)) {state.setupNotice='条件が変わりました。予定を確認して、もう一度開始してください。';updateOptionsSheet(dialog);return;}
     state.setupLaunching=true;
     clearSetupHandoff();state.cancelSetup=null;dialog.close();
     state.optionsDraft=createDefaultSessionOptions();state.vocabularySetup=null;
@@ -471,6 +482,7 @@ function createOptionsDialog(){
       <div class="play-options__field"><span class="play-options__label">ゲーム</span><div class="play-options__choices play-options__choices--method" role="group" aria-label="ゲームモード">${[['read','穴あき'],['compose','並べ替え'],['vocabulary','単語']].map(([method,label])=>`<button class="play-options__choice" type="button" data-game-method="${method}" aria-pressed="false">${label}</button>`).join('')}</div></div>
       <div id="playOptionsNotice" class="play-options__notice" role="status"></div>
       <div class="play-options__field" data-vocabulary-field hidden><span class="play-options__label">カード種別</span><div class="play-options__choices play-options__choices--method" role="group" aria-label="カード種別">${[['all','すべて'],['word','単語'],['expression','表現']].map(([kind,label])=>`<button class="play-options__choice" type="button" data-vocabulary-kind="${kind}" aria-pressed="false">${label}</button>`).join('')}</div></div>
+      <div class="play-options__field" data-vocabulary-field hidden><span class="play-options__label">今回の出題数</span><div class="play-options__choices" role="group" aria-label="単語の出題数">${VOCABULARY_COUNT_CHOICES.map(count=>`<button class="play-options__choice" type="button" data-vocabulary-count="${count}" aria-pressed="false">${count==='auto'?'おまかせ':count}</button>`).join('')}</div></div>
       <label class="play-options__field" data-sentence-field><span class="play-options__label">相手</span><select class="play-options__select" id="playOptionsCharacter"></select></label>
       <label class="play-options__field" data-sentence-field><span class="play-options__label">特訓テーマ</span><select class="play-options__select" id="playOptionsSkill"></select></label>
       <label class="play-options__field" data-sentence-field><span class="play-options__label">チャプター</span><select class="play-options__select" id="playOptionsSection"></select></label>
@@ -497,6 +509,9 @@ function createOptionsDialog(){
     state.gameMethodDraft=normalizeGameMethod(button.dataset.gameMethod);
     if(state.gameMethodDraft!=='read') state.optionsDraft.trainingMode=TRAINING_MODES.STANDARD;
     updateOptionsSheet(dialog);
+  }));
+  body.querySelectorAll('[data-vocabulary-count]').forEach(button=>button.addEventListener('click',()=>{
+    state.vocabularySetup?.setCount(button.dataset.vocabularyCount);updateOptionsSheet(dialog);
   }));
   body.querySelectorAll('[data-vocabulary-kind]').forEach(button=>button.addEventListener('click',()=>{
     state.vocabularySetup?.setKind(button.dataset.vocabularyKind);updateOptionsSheet(dialog);

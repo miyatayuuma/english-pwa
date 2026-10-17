@@ -10,6 +10,10 @@ import { gameTraceCollector, safeGameTraceRecord } from '../native/gameTrace.js'
 import { createSpeechSynthesisController } from '../speech/synthesis.js';
 import {
   buildVocabularySession,
+  VOCABULARY_COUNT_CHOICES,
+  normalizeVocabularyCount,
+  vocabularyCountTarget,
+  vocabularyPlanSummary,
   collapseDuplicateVocabularyCards,
   applyVocabularyAnswerSrs,
   displayAnswer,
@@ -34,6 +38,8 @@ const state={
   readiness:'loading',
   characters:[],
   kind:'all',
+  count:'auto',
+  lobbyGeneration:0,
   queue:[],
   position:0,
   initialCount:0,
@@ -79,7 +85,7 @@ const VOCAB_ROTATION_KEY='vocabularyRotationSeedV1';
 function loadRecentVocabularyIds(){
   try{
     const value=JSON.parse(localStorage.getItem(RECENT_VOCAB_KEY)||'[]');
-    return Array.isArray(value)?[...new Set(value.map(String).filter(Boolean))].slice(0,30):[];
+    return Array.isArray(value)?[...new Set(value.map(String).filter(Boolean))].slice(0,50):[];
   }catch(_){ return []; }
 }
 
@@ -89,34 +95,41 @@ function peekVocabularyRotationSeed(){
 function commitVocabularyRotationSeed(seed){
   try{localStorage.setItem(VOCAB_ROTATION_KEY,String(seed));}catch(_){}
 }
-function vocabularyPlan(kind){
+function vocabularyPlan(kind,count='auto'){
   const levelState=JSON.parse(localStorage.getItem('itemLevelV1')||'{}');
   const eligible=eligibleVocabularyEntries(state.entries,levelState);
-  const candidates=kind==='all'?collapseDuplicateVocabularyCards(eligible,levelState):eligible.filter(entry=>kind==='word'?entry.kind==='word':['expression','construction'].includes(entry.kind));
+  const recentItemIds=loadRecentVocabularyIds(),rotationSeed=peekVocabularyRotationSeed();
+  const plan=buildVocabularySession(eligible,levelState,{size:vocabularyCountTarget(count),kind,recentItemIds,rotationSeed});
   return {
-    candidateCount:candidates.length,
-    plan:buildVocabularySession(eligible,levelState,{size:12,kind,recentItemIds:loadRecentVocabularyIds(),rotationSeed:peekVocabularyRotationSeed()}),
+    candidateCount:plan.candidateCount,plan,
+    // Detect changed inputs (including equal-size queue replacements) across an
+    // async permission prompt. Preview never consumes either storage authority.
+    token:JSON.stringify({kind,count,levelState,recentItemIds,rotationSeed,ids:plan.entries.map(entry=>entry.id),size:plan.size,due:plan.due,fresh:plan.fresh}),
   };
 }
-// Each setup owns a private kind draft. Preview reads the same planner and next
+// Each setup owns a private kind/count draft. Preview reads the same planner and next
 // seed as Start, without consuming rotation or mutating the independent lobby.
 function createVocabularySetupDraft(){
   let kind=['all','word','expression'].includes(state.kind)?state.kind:'all';
+  let count='auto',previewToken=null;
   return {
     getKind:()=>kind,
     setKind:value=>{kind=['all','word','expression'].includes(value)?value:'all';},
+    getCount:()=>count,
+    setCount:value=>{count=normalizeVocabularyCount(value);},
+    getPreviewToken:()=>previewToken,
     preview:()=>{
       const ready=state.readiness==='ready';
-      const preview=vocabularyPlan(kind);
+      const preview=vocabularyPlan(kind,count);
+      previewToken=preview.token;
       const supported=isRecognitionSupported();
       return {...preview,readiness:state.readiness,canStart:ready&&supported&&preview.plan.size>0,
         reason:!ready?'単語教材を準備できていません。':!supported?'音声認識を利用できません。':!preview.plan.size?'会話学習を進めると対象カードが追加されます。':''};
     },
-    start:()=>{
-      if(state.readiness!=='ready'||!isRecognitionSupported()||!vocabularyPlan(kind).plan.size) return false;
+    start:(expectedToken=previewToken)=>{
+      if(state.readiness!=='ready'||!isRecognitionSupported()||!previewToken) return false;
       makeDialog();
-      const previous=state.kind;state.kind=kind;
-      if(!startSession()){state.kind=previous;return false;}
+      if(!startSession({kind,count,expectedToken})) return false;
       if(!state.dialog.open) state.dialog.showModal();
       return true;
     },
@@ -124,7 +137,7 @@ function createVocabularySetupDraft(){
 }
 
 function rememberVocabularySession(entries){
-  const ids=(Array.isArray(entries)?entries:[]).map(entry=>String(entry?.id||'')).filter(Boolean).slice(0,30);
+  const ids=[...new Set((Array.isArray(entries)?entries:[]).map(entry=>String(entry?.id||'')).filter(Boolean))].slice(0,50);
   try{ localStorage.setItem(RECENT_VOCAB_KEY,JSON.stringify(ids)); }catch(_){}
 }
 
@@ -194,10 +207,11 @@ function injectStyles(){
     .vocab-head{display:flex;flex:0 0 auto;align-items:center;justify-content:space-between;gap:10px;padding:13px 15px;border-bottom:1px solid rgba(148,163,184,.1)}
     .vocab-head strong{font-size:17px}.vocab-close{width:44px;height:44px;min-width:44px;min-height:44px;border:0;border-radius:12px;background:rgba(148,163,184,.09);color:inherit;font:inherit;font-size:20px;cursor:pointer}
     .vocab-body{display:flex;flex:1;min-height:0;flex-direction:column;padding:15px;overflow:hidden}
-    .vocab-lobby{display:flex;flex:1;min-height:0;flex-direction:column;justify-content:center;gap:16px;max-width:460px;width:100%;margin:auto;overflow:auto;padding:4px 1px}
+    .vocab-lobby{display:flex;flex:1;min-height:0;flex-direction:column;justify-content:safe center;gap:10px;max-width:460px;width:100%;margin:auto;overflow:auto;padding:4px 1px}
     .vocab-lead{text-align:center}.vocab-lead h2{font-size:25px;margin:0 0 7px}.vocab-lead p{margin:0;opacity:.6;font-size:12px;line-height:1.55}
     .vocab-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.vocab-stat{min-width:0;padding:11px 6px;border:1px solid rgba(148,163,184,.12);border-radius:13px;text-align:center;background:rgba(148,163,184,.045)}.vocab-stat b{display:block;font-size:19px}.vocab-stat span{display:block;margin-top:1px;font-size:10px;opacity:.54;white-space:nowrap}
     .vocab-kind{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;padding:4px;border-radius:13px;background:rgba(148,163,184,.07)}.vocab-kind button{min-width:0;min-height:44px;border:0;background:transparent;color:inherit;border-radius:9px;padding:10px 4px;font:inherit;font-size:12px;cursor:pointer;opacity:.58;white-space:nowrap}.vocab-kind button.is-active{background:rgba(99,102,241,.22);opacity:1;font-weight:800}
+    .vocab-label{font-size:12px;font-weight:800}.vocab-count{grid-template-columns:repeat(4,minmax(0,1fr))}.vocab-plan{font-size:11px;line-height:1.5;overflow-wrap:anywhere}
     .vocab-start{min-height:54px;border:0;border-radius:15px;background:#6366f1;color:#fff;font:inherit;font-weight:850;font-size:16px;cursor:pointer;box-shadow:0 10px 24px rgba(99,102,241,.22)}.vocab-start:disabled{opacity:.45;cursor:default;box-shadow:none}
     .vocab-note{text-align:center;font-size:10px;line-height:1.45;opacity:.62}
     .vocab-study{display:flex;flex:1;min-height:0;flex-direction:column;overflow:hidden}.vocab-progress{display:flex;flex:0 0 auto;align-items:center;gap:9px;font-size:10px;opacity:.56;white-space:nowrap}.vocab-progress__bar{height:4px;flex:1;min-width:30px;border-radius:99px;background:rgba(148,163,184,.12);overflow:hidden}.vocab-progress__bar i{display:block;height:100%;background:currentColor;transition:width .2s ease}
@@ -335,6 +349,7 @@ function stopListening(){
 }
 
 function closeDialog(){
+  state.lobbyGeneration+=1;
   if(state.resultResizeHandler) window.removeEventListener('resize',state.resultResizeHandler);
   state.resultResizeHandler=null;
   state.resultGesture=null;
@@ -349,7 +364,9 @@ function closeDialog(){
   if(state.dialog?.open) state.dialog.close();
 }
 
-function renderLobby(){
+function renderLobby(notice=''){
+  const generation=++state.lobbyGeneration;
+  state.queue=[];state.current=null;state.initialCount=0;
   stopListening();
   cancelPronunciation();
   state.processing=false;
@@ -359,7 +376,7 @@ function renderLobby(){
   const entries=state.kind==='all'?collapseDuplicateVocabularyCards(eligible,levelState):eligible.filter(x=>state.kind==='word'
     ?x.kind==='word':x.kind==='expression'||x.kind==='construction');
   const stats=vocabularyStats(entries,levelState);
-  const plan=buildVocabularySession(entries,levelState,{size:12,kind:'all'});
+  const {plan,token}=vocabularyPlan(state.kind,state.count);
   const speechSupported=isRecognitionSupported();
   state.screen.innerHTML=`
     <section class="vocab-lobby">
@@ -369,11 +386,15 @@ function renderLobby(){
         <div class="vocab-stat"><b>${stats.fresh}</b><span>未学習</span></div>
         <div class="vocab-stat"><b>${stats.total}</b><span>対象</span></div>
       </div>
+      <span class="vocab-label">カード種別</span>
       <div class="vocab-kind" role="group" aria-label="カード種別">
         <button type="button" data-kind="all" aria-pressed="${state.kind==='all'}" class="${state.kind==='all'?'is-active':''}">すべて</button>
         <button type="button" data-kind="word" aria-pressed="${state.kind==='word'}" class="${state.kind==='word'?'is-active':''}">単語</button>
         <button type="button" data-kind="expression" aria-pressed="${state.kind==='expression'}" class="${state.kind==='expression'?'is-active':''}">表現</button>
       </div>
+      <span class="vocab-label">今回の出題数</span>
+      <div class="vocab-kind vocab-count" role="group" aria-label="今回の出題数">${VOCABULARY_COUNT_CHOICES.map(count=>`<button type="button" data-vocab-count="${count}" aria-pressed="${state.count===count}" class="${state.count===count?'is-active':''}">${count==='auto'?'おまかせ':count}</button>`).join('')}</div>
+      <div class="vocab-plan" role="status" aria-live="polite">${escapeHtml(vocabularyPlanSummary(plan,state.count))}${notice?`<p>${escapeHtml(notice)}</p>`:''}</div>
       <button type="button" class="vocab-start" ${plan.size&&speechSupported?'':'disabled'}>${!speechSupported?'音声認識を利用できません':plan.size?`${plan.size}枚で始める`:'対象カードなし'}</button>
       <div class="vocab-note">${!speechSupported?'音声認識に対応していないため、このモードは利用できません。':stats.total?'答えを見ると要復習として記録されます。':'会話学習を進めると、出会った単語・表現がここに追加されます。'}</div>
     </section>`;
@@ -381,26 +402,34 @@ function renderLobby(){
     state.kind=button.dataset.kind||'all';
     renderLobby();
   }));
-  state.screen.querySelector('.vocab-start')?.addEventListener('click',async()=>{
-    await globalThis.__REQUEST_SAVED_AUDIO_FOLDER_PERMISSION__?.();
-    startSession();
+  state.screen.querySelectorAll('[data-vocab-count]').forEach(button=>button.addEventListener('click',()=>{
+    state.count=normalizeVocabularyCount(button.dataset.vocabCount);renderLobby();
+  }));
+  state.screen.querySelector('.vocab-start')?.addEventListener('click',async event=>{
+    event.currentTarget.disabled=true;
+    try{await globalThis.__REQUEST_SAVED_AUDIO_FOLDER_PERMISSION__?.();}catch(_){}
+    if(generation!==state.lobbyGeneration||!state.dialog.open) return;
+    if(!startSession({expectedToken:token})) renderLobby('条件が変わりました。予定を確認して、もう一度開始してください。');
   });
 }
 
 function openVocabularyMode(){
   if(!state.entries.length) return false;
   makeDialog();
+  state.count='auto';
   renderLobby();
   if(!state.dialog.open) state.dialog.showModal();
   return true;
 }
 
-function startSession(){
+function startSession({kind=state.kind,count=state.count,expectedToken}={}){
   if(!isRecognitionSupported()) return;
   stopListening();
   cancelPronunciation();
-  const {plan}=vocabularyPlan(state.kind);
-  if(!plan.size) return false;
+  const {plan,token}=vocabularyPlan(kind,count);
+  if(!plan.size||(expectedToken&&expectedToken!==token)) return false;
+  state.kind=kind;state.count=normalizeVocabularyCount(count);
+  state.lobbyGeneration+=1;
   commitVocabularyRotationSeed(plan.rotationSeed);
   rememberVocabularySession(plan.entries);
   state.queue=plan.entries.slice();
@@ -1267,8 +1296,8 @@ function renderDone(){
   const paraphraseCount=outcomes.filter(type=>type==='paraphrase').length;
   const missCount=outcomes.filter(type=>type==='miss').length;
   state.screen.innerHTML=`<section class="vocab-done"><h2>完了</h2><p>ターゲット正解 ${targetCount}　別表現 ${paraphraseCount}　要復習 ${missCount}</p><small>対象 ${initial}枚</small>${retryCount?`<small>再確認 ${retryCount}枚</small>`:''}<button type="button">もう1セット</button><button type="button" class="vocab-reveal" data-back>戻る</button></section>`;
-  state.screen.querySelector('.vocab-done>button:not([data-back])')?.addEventListener('click',renderLobby);
-  state.screen.querySelector('[data-back]')?.addEventListener('click',renderLobby);
+  state.screen.querySelector('.vocab-done>button:not([data-back])')?.addEventListener('click',()=>{state.count='auto';renderLobby();});
+  state.screen.querySelector('[data-back]')?.addEventListener('click',()=>{state.count='auto';renderLobby();});
 }
 
 async function init(){
