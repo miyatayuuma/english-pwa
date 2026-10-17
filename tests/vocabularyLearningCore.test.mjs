@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
+  VOCABULARY_COUNT_CHOICES, normalizeVocabularyCount, vocabularyCountTarget, vocabularyPlanSummary,
   answerVariants,
   buildVocabularySession,
   displayAnswer,
@@ -118,3 +119,66 @@ test('runtime joins source fields and speaker metadata instead of duplicating th
   assert.equal(Object.hasOwn(word,'en'),false);
   assert.equal(Object.hasOwn(word.occurrences[0],'speaker_id'),false);
 });
+
+const countEntries=Array.from({length:120},(_,i)=>({...word,id:`count:${i}`,canonical:`card ${i}`,kind:i%3===0?'expression':'word'}));
+const countLevels=Object.fromEntries(countEntries.map(entry=>[entry.id,{last:2,updatedAt:1}]));
+for(const size of [undefined,5,8,12,20,30,50]) test(`Vocabulary target ${size??'AUTO'} supports a real unique queue`,()=>{
+  const plan=buildVocabularySession([...countEntries,countEntries[0]],countLevels,{size,now:1800000000000});
+  assert.equal(plan.size,size??12);assert.equal(plan.targetSize,size??12);
+  assert.equal(new Set(plan.entries.map(entry=>entry.id)).size,plan.size);
+  assert.equal(plan.candidateCount,120);assert.equal(plan.shortfall,0);assert.equal(plan.shortfallReason,'');
+});
+test('Vocabulary public size API normalizes invalid, fractional and extreme requests safely',()=>{
+  for(const [size,expected] of [[NaN,12],[undefined,12],[Infinity,12],[-Infinity,12],[-50,1],[0,12],[5.6,6],[1e10,50],['20',20]]){
+    assert.equal(buildVocabularySession(countEntries,countLevels,{size}).targetSize,expected);
+  }
+});
+test('50-card plan preserves due/fresh/learning/stable order and cap at every requested count',()=>{
+  const now=1800000000000;
+  const levels=Object.fromEntries(countEntries.map((entry,i)=>[entry.id,i<3?{last:2,updatedAt:1,review:{nextDueAt:now-100}}:i<30?{}:i<90?{last:2,updatedAt:1}:{last:5,updatedAt:1}]));
+  for(const size of [5,8,12,20,30,50]){
+    const plan=buildVocabularySession(countEntries,levels,{size,now,recentItemIds:countEntries.slice(0,3).map(x=>x.id)});
+    assert.equal(plan.size,size);assert.equal(plan.due,3);assert.equal(plan.fresh,Math.min(8,size-3));
+    assert.ok(plan.entries.slice(0,3).every(entry=>levels[entry.id].review?.nextDueAt<now));
+    assert.equal(plan.newCap,Math.min(8,size));
+  }
+  assert.equal(buildVocabularySession(countEntries,{}, {size:5,now}).fresh,5);
+  assert.equal(buildVocabularySession(countEntries,{}, {size:50,now}).size,8);
+});
+test('shortfall differentiates candidate scarcity, fresh cap, both, and zero without guessed reasons',()=>{
+  const cap=buildVocabularySession(countEntries.slice(0,50),{}, {size:50});
+  assert.deepEqual([cap.size,cap.candidateCount,cap.shortfall,cap.candidateShortfall,cap.freshCapShortfall],[8,50,42,0,42]);
+  assert.match(cap.shortfallReason,/新しいカードは1回8枚まで/);
+  const scarce=buildVocabularySession(countEntries.slice(0,49),countLevels,{size:50});
+  assert.deepEqual([scarce.size,scarce.shortfall,scarce.candidateShortfall,scarce.freshCapShortfall],[49,1,1,0]);
+  assert.doesNotMatch(scarce.shortfallReason,/新しいカード/);
+  const both=buildVocabularySession(countEntries.slice(0,10),{}, {size:50});
+  assert.deepEqual([both.size,both.shortfall,both.candidateShortfall,both.freshCapShortfall],[8,42,40,2]);
+  const zero=buildVocabularySession([],{}, {size:50});
+  assert.deepEqual([zero.size,zero.shortfall,zero.candidateCount,zero.freshCapShortfall],[0,50,0,0]);
+});
+test('50 recent IDs defer non-due cards within their bucket, retain due priority and never exclude fallback',()=>{
+  const now=1800000000000;
+  const first=buildVocabularySession(countEntries,countLevels,{size:50,now,rotationSeed:1});
+  const recentItemIds=first.entries.map(x=>x.id);
+  const second=buildVocabularySession(countEntries,countLevels,{size:50,now,rotationSeed:2,recentItemIds});
+  assert.equal(second.entries.filter(entry=>recentItemIds.includes(entry.id)).length,0);
+  assert.equal(second.recentExcluded,50);
+  assert.deepEqual(buildVocabularySession(countEntries,countLevels,{size:50,now,rotationSeed:2,recentItemIds}),second);
+  assert.notDeepEqual(first.entries.map(x=>x.id),buildVocabularySession(countEntries,countLevels,{size:50,now,rotationSeed:3}).entries.map(x=>x.id));
+  const dueId=recentItemIds[0];
+  const due=buildVocabularySession(countEntries,{...countLevels,[dueId]:{last:2,updatedAt:1,review:{nextDueAt:now-1}}},{size:50,now,recentItemIds});
+  assert.equal(due.entries[0].id,dueId);
+  assert.equal(buildVocabularySession(first.entries,countLevels,{size:50,now,recentItemIds}).size,50);
+  for(const kind of ['word','expression']){
+    const plan=buildVocabularySession(countEntries,countLevels,{size:50,kind,now});
+    assert.ok(plan.entries.every(x=>x.kind===kind));assert.equal(plan.candidateCount,kind==='word'?80:40);
+  }
+});
+
+ test('Vocabulary count enum defaults and normalization remain independent of sentence options',()=>{
+  assert.deepEqual(VOCABULARY_COUNT_CHOICES,['auto','5','8','12','20','30','50']);
+  for(const count of VOCABULARY_COUNT_CHOICES){assert.equal(normalizeVocabularyCount(count),count);assert.equal(vocabularyCountTarget(count),count==='auto'?12:Number(count));}
+  for(const count of [undefined,NaN,Infinity,-1,7,5.2,'custom','AUTO']){assert.equal(normalizeVocabularyCount(count),'auto');}
+  assert.match(vocabularyPlanSummary(buildVocabularySession([],{}, {size:12})),/指定 おまかせ（12枚）.*実際 0枚.*不足 12枚/);
+ });

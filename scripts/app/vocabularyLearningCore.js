@@ -2,6 +2,19 @@ import { quotedTurnContainingSpan } from '../tagging/quotedTurns.js';
 
 const DAY_MS=24*60*60*1000;
 export const VOCABULARY_MIGRATION_FALLBACK='_vocabularyV3LegacySourceFallback';
+export const VOCABULARY_SESSION_MAX=50;
+export const VOCABULARY_COUNT_CHOICES=Object.freeze(['auto','5','8','12','20','30','50']);
+export function normalizeVocabularyCount(value){
+  const count=String(value??'auto');
+  return VOCABULARY_COUNT_CHOICES.includes(count)?count:'auto';
+}
+export function vocabularyCountTarget(value){
+  const count=normalizeVocabularyCount(value);
+  return count==='auto'?12:Number(count);
+}
+export function vocabularyPlanSummary(plan,count='auto'){
+  return `指定 ${normalizeVocabularyCount(count)==='auto'?'おまかせ（12枚）':`${plan.targetSize}枚`} · 対象候補 ${plan.candidateCount}枚 · 実際 ${plan.size}枚 · 不足 ${plan.shortfall}枚${plan.shortfallReason?' · '+plan.shortfallReason:''}`;
+}
 
 export function vocabStateId(entry){
   return String(entry?.id||'').trim();
@@ -188,14 +201,16 @@ function candidate(entry,levelState,now,index,rotationSeed=0){
 export function buildVocabularySession(entries,levelState={},options={}){
   const now=Number(options.now)||Date.now();
   const kind=['word','expression'].includes(options.kind)?options.kind:'all';
-  const requested=Math.max(1,Math.min(30,Math.round(Number(options.size)||12)));
+  const sizeRaw=Number(options.size);
+  const requested=Math.max(1,Math.min(VOCABULARY_SESSION_MAX,Math.round(Number.isFinite(sizeRaw)&&sizeRaw?sizeRaw:12)));
   const newCapRaw=Number(options.newCap);
   const newCap=Number.isFinite(newCapRaw)
     ? Math.max(0,Math.min(requested,Math.round(newCapRaw)))
     : Math.min(8,requested);
   const filtered=(Array.isArray(entries)?entries:[]).filter(entry=>kind==='all'
     ||(kind==='word'?entry?.kind==='word':entry?.kind==='expression'||entry?.kind==='construction'));
-  const source=kind==='all'?collapseDuplicateVocabularyCards(filtered,levelState,now):filtered;
+  const unique=[...new Map(filtered.filter(entry=>vocabStateId(entry)).map(entry=>[vocabStateId(entry),entry])).values()];
+  const source=kind==='all'?collapseDuplicateVocabularyCards(unique,levelState,now):unique;
   const rotationSeed=Math.max(0,Math.round(Number(options.rotationSeed)||0));
   const recentIds=new Set(Array.from(options.recentItemIds||[],String));
   const allMetas=source.map((entry,index)=>candidate(entry,levelState,now,index,rotationSeed));
@@ -217,12 +232,20 @@ export function buildVocabularySession(entries,levelState={},options={}){
   const freshUsed=pushFrom(fresh,newCap);
   pushFrom(early);
   pushFrom(stable);
+  const shortfall=requested-selected.length;
+  const candidateShortfall=Math.max(0,requested-source.length);
+  const freshCapShortfall=shortfall-candidateShortfall;
+  const shortfallReason=[
+    candidateShortfall?`対象カードが${candidateShortfall}枚不足しています。カード種別の変更や会話学習で対象を増やせます。`:'',
+    freshCapShortfall?`新しいカードは1回${newCap}枚まで（上限による不足${freshCapShortfall}枚）。復習カードが増えると予定枚数も増えます。`:'',
+  ].filter(Boolean).join(' ');
   return {
     entries:selected.map(x=>x.entry),
     size:selected.length,
     due:selected.filter(x=>x.bucket==='due').length,
     fresh:freshUsed,
     early:selected.filter(x=>x.bucket==='learning'||x.bucket==='stable').length,
+    targetSize:requested,candidateCount:source.length,shortfall,shortfallReason,candidateShortfall,freshCapShortfall,
     kind,newCap,rotationSeed,recentExcluded:recentDeferred,
   };
 }
