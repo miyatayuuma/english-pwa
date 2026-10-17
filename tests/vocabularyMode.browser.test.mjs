@@ -1207,7 +1207,13 @@ async function countSetup({route='lobby',size=60,fresh=false,locked=false,width=
   const opened=await newPage(sources[0],{startSession:false,entryState:fresh?{}:learned,additionalEntryState:fresh?{}:learned,
     additionalEntries:countFixtures.slice(0,size-1),viewport:{width,height:844}});
   const {page}=opened;
-  await page.waitForFunction(()=>typeof window.__OPEN_SESSION_OPTIONS__==='function');
+  // Vocabulary loads independently of main. Wait for main's persisted range
+  // initialization before taking a whole-storage baseline; otherwise its late
+  // secSel write can be mistaken for a count-preview side effect.
+  await page.waitForFunction(()=>typeof window.__OPEN_SESSION_OPTIONS__==='function'
+    &&typeof window.__PREPARE_CHARACTER_SESSION__==='function'
+    &&localStorage.getItem('secSel')!==null
+    &&!document.querySelector('#loadingOverlay')?.classList.contains('active'));
   if(locked) await page.evaluate(()=>localStorage.setItem('itemLevelV1','{}'));
   if(route==='details'){
     await page.locator('.vocab-close').click();
