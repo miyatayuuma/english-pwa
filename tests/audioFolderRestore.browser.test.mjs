@@ -33,7 +33,7 @@ function browserTest(name,run){
   test(name,async t=>{if(!browser)return t.skip('Chromium unavailable');await run();});
 }
 
-async function openApp({saved=false,permission='granted',nextPermission='granted'}={}){
+async function openApp({saved=false,permission='granted',nextPermission='granted',holdInitialLookup=false}={}){
   const context=await browser.newContext({serviceWorkers:'block',viewport:{width:390,height:844},reducedMotion:'reduce'});
   await context.addInitScript(({permission,nextPermission,audioFile})=>{
     window.__dirPermissionState=permission;
@@ -61,23 +61,25 @@ async function openApp({saved=false,permission='granted',nextPermission='granted
       const root=await navigator.storage.getDirectory();
       return root.getDirectoryHandle('selected-audio',{create:true});
     }});
-    // These tests verify directory restoration and URL selection, not media
-    // codec support. The tiny OPFS payload below is intentionally not a real
-    // audio file, so make blob URLs immediately media-ready in this fixture.
-    const readyState=Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype,'readyState');
-    Object.defineProperty(HTMLMediaElement.prototype,'readyState',{configurable:true,get(){
-      return this.dataset?.srcKey?.startsWith('blob:')?4:readyState?.get?.call(this)??0;
-    }});
-    const nativeLoad=HTMLMediaElement.prototype.load;
-    HTMLMediaElement.prototype.load=function(){
-      if(this.dataset?.srcKey?.startsWith('blob:')){
-        queueMicrotask(()=>this.dispatchEvent(new Event('canplay')));
-        return;
-      }
-      return nativeLoad.call(this);
-    };
     window.__folderRestoreAudioFile=audioFile;
   },{permission,nextPermission,audioFile:AUDIO_FILE});
+  if(holdInitialLookup) await context.addInitScript(audioFile=>{
+    const getDirectory=navigator.storage.getDirectory.bind(navigator.storage);
+    navigator.storage.getDirectory=async()=>{
+      const root=await getDirectory();const getFile=root.getFileHandle.bind(root);
+      root.getFileHandle=async(name,...args)=>{
+        try{return await getFile(name,...args);}catch(error){
+          if(name===audioFile&&!window.__heldInitialLookup){
+            window.__heldInitialLookup=true;
+            await new Promise(resolve=>{window.__releaseInitialLookup=resolve;});
+            window.__initialLookupReturned=true;
+          }
+          throw error;
+        }
+      };
+      return root;
+    };
+  },AUDIO_FILE);
   const page=await context.newPage();
   const errors=[];page.on('pageerror',error=>errors.push(error.message));
   await page.goto(url+'/seed');
@@ -86,7 +88,17 @@ async function openApp({saved=false,permission='granted',nextPermission='granted
     const dir=await root.getDirectoryHandle('selected-audio',{create:true});
     const file=await dir.getFileHandle(audioFile,{create:true});
     const writer=await file.createWritable();
-    await writer.write(new Uint8Array([73,68,51,0]));
+    // Real silent PCM/WAV (the resolver preserves the lesson's .m4a filename).
+    // Let Chromium load/decode/play it normally, including sentence autoplay.
+    const samples=8000;
+    const wav=new ArrayBuffer(44+samples*2);
+    const header=new DataView(wav);
+    const text=(offset,value)=>{for(let i=0;i<value.length;i++)header.setUint8(offset+i,value.charCodeAt(i));};
+    text(0,'RIFF');header.setUint32(4,wav.byteLength-8,true);text(8,'WAVE');text(12,'fmt ');
+    header.setUint32(16,16,true);header.setUint16(20,1,true);header.setUint16(22,1,true);
+    header.setUint32(24,8000,true);header.setUint32(28,16000,true);header.setUint16(32,2,true);header.setUint16(34,16,true);
+    text(36,'data');header.setUint32(40,samples*2,true);
+    await writer.write(wav);
     await writer.close();
     if(saved){
       await new Promise((resolve,reject)=>{
@@ -105,7 +117,7 @@ async function openApp({saved=false,permission='granted',nextPermission='granted
   },{audioFile:AUDIO_FILE,saved});
   await page.goto(url+'/index.html');
   await page.waitForFunction(()=>window.ALL_ITEMS?.length&&document.querySelector('#sessionShellStyles')&&typeof window.__OPEN_SESSION_OPTIONS__==='function');
-  await page.waitForFunction(()=>!document.querySelector('#loadingOverlay')?.classList.contains('show'));
+  await page.waitForFunction(()=>!document.querySelector('#loadingOverlay')?.classList.contains('active'));
   return {context,page,errors};
 }
 
@@ -226,12 +238,13 @@ browserTest('explicit selection refreshes current audio and explicit clear remov
     await page.locator('#btnPickDir').click();
     await page.waitForFunction(()=>document.querySelector('audio')?.dataset.srcKey?.startsWith('blob:'));
     assert.equal(await page.locator('#dirStatus').textContent(),'保存済み');
+    await page.waitForFunction(()=>{const audio=document.querySelector('audio');return audio?.readyState>=2&&!audio.error;});
     assert.equal(await page.evaluate(()=>window.__folderPickerCalls),1);
     assert.equal(await page.evaluate(()=>window.__dirRequestCalls),0);
     assert.equal(await savedHandleMatchesSelectedFolder(page),true);
     await page.reload();
     await page.waitForFunction(()=>window.ALL_ITEMS?.length&&typeof window.__OPEN_SESSION_OPTIONS__==='function');
-    await page.waitForFunction(()=>!document.querySelector('#loadingOverlay')?.classList.contains('show'));
+    await page.waitForFunction(()=>!document.querySelector('#loadingOverlay')?.classList.contains('active'));
     assert.equal(await page.locator('#dirStatus').textContent(),'保存済み');
     assert.equal(await page.evaluate(()=>window.__folderPickerCalls),0);
     assert.equal(await page.evaluate(()=>window.__dirRequestCalls),0);
@@ -253,5 +266,22 @@ browserTest('explicit selection refreshes current audio and explicit clear remov
       });
     }),true);
     assert.deepEqual(errors,[]);
+  }finally{await context.close();}
+});
+
+browserTest('folder selection supersedes a pending initial missing-audio lookup',async()=>{
+  const {context,page,errors}=await openApp({holdInitialLookup:true});
+  try{
+    await startDefaultSession(page);
+    await page.waitForFunction(()=>window.__heldInitialLookup);
+    await page.locator('#btnCfg').click();await page.locator('#btnPickDir').click();
+    await page.waitForFunction(()=>document.querySelector('audio')?.dataset.srcKey?.startsWith('blob:'));
+    await page.waitForFunction(()=>{const audio=document.querySelector('audio');return audio?.readyState>=2&&!audio.error;});
+    const selected=await page.locator('audio').getAttribute('data-src-key');
+    await page.evaluate(()=>window.__releaseInitialLookup());
+    await page.waitForFunction(()=>window.__initialLookupReturned);
+    await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+    assert.equal(await page.locator('audio').getAttribute('data-src-key'),selected,'initial empty lookup cannot clear a newer selected-folder source');
+    assert.equal(await page.locator('#dirStatus').innerText(),'保存済み');assert.deepEqual(errors,[]);
   }finally{await context.close();}
 });

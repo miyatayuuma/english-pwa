@@ -3,17 +3,30 @@ export function createAudioUrlResolver({
   resolveFromOPFS=async()=>'',
 }={}){
   const urlCache=new Map();
+  const pending=new Map();
+  let generation=0;
   async function resolveAudioUrl(name){
     if(!name) return '';
     const key=String(name);
     if(urlCache.has(key)) return urlCache.get(key);
-    let url='';
-    try{url=await resolveFromDirectory(key);}catch(_){}
-    if(!url){try{url=await resolveFromOPFS(key);}catch(_){}}
-    urlCache.set(key,url||'');
-    return url||'';
+    if(pending.has(key)) return pending.get(key);
+    const startedGeneration=generation;
+    const request=Promise.resolve().then(async()=>{
+      let url='';
+      try{url=await resolveFromDirectory(key);}catch(_){}
+      if(!url){try{url=await resolveFromOPFS(key);}catch(_){}}
+      // A folder change invalidates both cached and still-running lookups.
+      // Their callers must receive the current source, not overwrite it later.
+      if(startedGeneration!==generation) return resolveAudioUrl(key);
+      urlCache.set(key,url||'');
+      return url||'';
+    });
+    pending.set(key,request);
+    try{return await request;}finally{
+      if(pending.get(key)===request) pending.delete(key);
+    }
   }
-  function clear(){urlCache.clear();}
+  function clear(){generation++;urlCache.clear();pending.clear();}
   return {resolveAudioUrl,clear,hasCached:name=>urlCache.has(String(name||''))};
 }
 let sharedResolver=null;

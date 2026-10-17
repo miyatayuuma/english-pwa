@@ -1979,11 +1979,11 @@ function createAppRuntime(){
       if(!isNativeAndroid()&&!window.showDirectoryPicker){ toast('この端末はフォルダピッカー非対応'); return; }
       try{
         const h=isNativeAndroid()?await nativeDirectory('pick'):await showDirectoryPicker({mode:'read'});
-        audioUrlResolver.clear();
         await saveDirHandle(h);
         DIR=h;
         dirNeedsGesture=false;
         dirPermissionState='unknown';
+        audioUrlResolver.clear();
         refreshDirStatus();
         await ensureDir({forceCheck:true});
         refreshDirStatus();
