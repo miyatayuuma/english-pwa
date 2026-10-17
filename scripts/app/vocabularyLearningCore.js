@@ -2,6 +2,7 @@ import { quotedTurnContainingSpan } from '../tagging/quotedTurns.js';
 
 const DAY_MS=24*60*60*1000;
 export const VOCABULARY_MIGRATION_FALLBACK='_vocabularyV3LegacySourceFallback';
+export const VOCABULARY_SESSION_MAX=50;
 export const VOCABULARY_COUNT_CHOICES=Object.freeze(['auto','5','8','12','20','30','50']);
 export function normalizeVocabularyCount(value){
   const count=String(value??'auto');
@@ -201,7 +202,7 @@ export function buildVocabularySession(entries,levelState={},options={}){
   const now=Number(options.now)||Date.now();
   const kind=['word','expression'].includes(options.kind)?options.kind:'all';
   const sizeRaw=Number(options.size);
-  const requested=Math.max(1,Math.min(50,Math.round(Number.isFinite(sizeRaw)&&sizeRaw?sizeRaw:12)));
+  const requested=Math.max(1,Math.min(VOCABULARY_SESSION_MAX,Math.round(Number.isFinite(sizeRaw)&&sizeRaw?sizeRaw:12)));
   const newCapRaw=Number(options.newCap);
   const newCap=Number.isFinite(newCapRaw)
     ? Math.max(0,Math.min(requested,Math.round(newCapRaw)))

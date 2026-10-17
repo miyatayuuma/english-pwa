@@ -11,6 +11,7 @@ import { createSpeechSynthesisController } from '../speech/synthesis.js';
 import {
   buildVocabularySession,
   VOCABULARY_COUNT_CHOICES,
+  VOCABULARY_SESSION_MAX,
   normalizeVocabularyCount,
   vocabularyCountTarget,
   vocabularyPlanSummary,
@@ -85,7 +86,7 @@ const VOCAB_ROTATION_KEY='vocabularyRotationSeedV1';
 function loadRecentVocabularyIds(){
   try{
     const value=JSON.parse(localStorage.getItem(RECENT_VOCAB_KEY)||'[]');
-    return Array.isArray(value)?[...new Set(value.map(String).filter(Boolean))].slice(0,50):[];
+    return Array.isArray(value)?[...new Set(value.map(String).filter(Boolean))].slice(0,VOCABULARY_SESSION_MAX):[];
   }catch(_){ return []; }
 }
 
@@ -137,7 +138,7 @@ function createVocabularySetupDraft(){
 }
 
 function rememberVocabularySession(entries){
-  const ids=[...new Set((Array.isArray(entries)?entries:[]).map(entry=>String(entry?.id||'')).filter(Boolean))].slice(0,50);
+  const ids=[...new Set((Array.isArray(entries)?entries:[]).map(entry=>String(entry?.id||'')).filter(Boolean))].slice(0,VOCABULARY_SESSION_MAX);
   try{ localStorage.setItem(RECENT_VOCAB_KEY,JSON.stringify(ids)); }catch(_){}
 }
 

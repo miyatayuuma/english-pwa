@@ -1344,9 +1344,11 @@ for(const target of [5,50]) browserTest(`VOC-COUNT ${target}-card completion: ac
         assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0,'interim only is NO GRADE');
         assert.equal(await page.evaluate(()=>localStorage.getItem('itemLevelV1')),before.itemLevelV1);
         await page.locator('.vocab-mic').click();
+        await page.waitForFunction(()=>window.__mockSpeech.latest?.lifecycleState==='active');
         await recognitionError(page);
         assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0,'technical error is NO GRADE');
         await page.locator('.vocab-mic').click();
+        await page.waitForFunction(()=>window.__mockSpeech.latest?.lifecycleState==='active');
       }
       await page.evaluate(()=>{window.__countPriorRecognition=window.__mockSpeech.latest;});
       await injectCompletedFinal(page,entry.canonical);await page.locator('.vocab-answer').waitFor();
