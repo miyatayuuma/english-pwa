@@ -1417,3 +1417,76 @@ browserTest('VOC-COUNT 50-card session correction preserves the original MISS, i
     assert.equal(await page.locator('.vocab-meaning').innerText(),plan.entries[1].meaning_ja.trim());
   }finally{await closePage(opened);}
 });
+
+
+browserTest('Vocabulary correction skip keeps the original MISS, avoids additional ASR and advances only by gesture',async()=>{
+  const opened=await newPage(sources[1]);
+  const {page,entry}=opened;
+  try{
+    await page.locator('.vocab-reveal').click();
+    await page.waitForSelector('.vocab-correction-skip');
+    const missed=await page.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id],entry.id);
+    assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);
+    const startsBefore=await page.evaluate(()=>window.__mockSpeech.startCount);
+    await page.locator('.vocab-correction-skip').click();
+    assert.equal(await page.locator('.vocab-feedback').innerText(),'言い直しをスキップしました');
+    assert.equal(await page.locator('.vocab-mic, .vocab-correction-skip').count(),0);
+    assert.equal(await page.locator('.vocab-answer').innerText(),entry.canonical);
+    assert.equal(await page.evaluate(()=>window.__mockSpeech.startCount),startsBefore);
+    assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);
+    assert.deepEqual(await page.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id],entry.id),missed);
+    await page.waitForTimeout(400);
+    await page.keyboard.press('ArrowRight');
+    await page.waitForSelector('.vocab-meaning');
+  }finally{await closePage(opened);}
+});
+
+browserTest('Vocabulary typed fallback is discreet, rejects nonmatching text and never uses ASR evidence for manual TARGET',async()=>{
+  const opened=await newPage(sources[1]);
+  const {page,entry}=opened;
+  try{
+    assert.equal(await page.locator('.vocab-type-toggle').innerText(),'文字で答える');
+    assert.equal(await page.locator('.vocab-typed-form').isHidden(),true);
+    assert.equal(await page.locator('.vocab-secondary-actions .vocab-reveal').innerText(),'答えを見る');
+    await page.locator('.vocab-type-toggle').click();
+    assert.equal(await page.locator('.vocab-typed-form').isVisible(),true);
+    const attrs=await page.locator('.vocab-typed-input').evaluate(node=>({
+      autocomplete:node.getAttribute('autocomplete'),autocorrect:node.getAttribute('autocorrect'),
+      autocapitalize:node.getAttribute('autocapitalize'),spellcheck:node.getAttribute('spellcheck'),
+      lang:node.getAttribute('lang'),
+    }));
+    assert.deepEqual(attrs,{autocomplete:'off',autocorrect:'off',autocapitalize:'off',spellcheck:'false',lang:'en'});
+    await page.locator('.vocab-typed-input').fill('different');
+    await page.locator('.vocab-typed-submit').click();
+    assert.match(await page.locator('.vocab-feedback').innerText(),/一致しません/);
+    assert.equal(await page.locator('.vocab-answer').count(),0);
+    assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),0);
+    await page.locator('.vocab-typed-input').fill(entry.canonical);
+    await page.locator('.vocab-typed-submit').click();
+    await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='正解');
+    const record=await page.evaluate(id=>JSON.parse(localStorage.getItem('itemLevelV1'))[id],entry.id);
+    assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);
+    assert.equal(record.lastMatch,1);
+    assert.equal(record.noHintStreak,0,'typed answers must not count as no-hint speech');
+    assert.ok(record.last<=3,'typing cannot grant speech mastery');
+    assert.equal(await page.locator('.vocab-heard__text').innerText(),entry.canonical);
+    await page.waitForTimeout(700);
+    assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1,'stale speech callbacks must not double-grade a typed answer');
+  }finally{await closePage(opened);}
+});
+
+browserTest('Vocabulary typing can be cancelled, and answer reveal from typing still permits correction skip',async()=>{
+  const opened=await newPage(sources[1]);
+  const {page}=opened;
+  try{
+    await page.locator('.vocab-type-toggle').click();
+    await page.locator('.vocab-type-toggle').click();
+    assert.equal(await page.locator('.vocab-typed-form').isHidden(),true);
+    await page.locator('.vocab-type-toggle').click();
+    await page.locator('.vocab-reveal').click();
+    await page.waitForSelector('.vocab-correction-skip');
+    await page.locator('.vocab-correction-skip').click();
+    assert.equal(await page.locator('.vocab-feedback').innerText(),'言い直しをスキップしました');
+    assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);
+  }finally{await closePage(opened);}
+});
