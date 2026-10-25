@@ -497,7 +497,7 @@ function showRecognitionStatus(message){
 }
 
 function showRecognitionFailure(error,event=null){
-  if(state.manualInputActive) return;
+  if(state.manualInputActive||state.processing) return;
   const retryMessage=error==='PERMISSION_DENIED'?'マイクの権限が拒否されました。端末の設定で許可して再試行してください。':error==='UNAVAILABLE'?'端末の音声認識サービスが利用できません。':'マイクを押してもう一度話してください。';
   const explicitError=error==='PERMISSION_DENIED'||error==='UNAVAILABLE';
   if(state.correction&&!state.processing){
@@ -903,7 +903,7 @@ function completeCorrectionPractice({skipped=false}={}){
   clearGradeTimer();
   setListening(false);
   const feedback=state.screen?.querySelector('.vocab-feedback');
-  if(feedback){feedback.className='vocab-feedback is-ok';feedback.textContent=skipped?'言い直しをスキップしました':'修正練習完了';}
+  if(feedback){feedback.className=skipped?'vocab-feedback':'vocab-feedback is-ok';feedback.textContent=skipped?'言い直しをスキップしました':'修正練習完了';}
   const controls=state.screen?.querySelector('.vocab-controls');
   if(controls) controls.replaceChildren();
   state.processing=true;
@@ -1196,6 +1196,7 @@ function renderTranscriptReview(){
 
 function finalizeVocabularyAnswer(result,attemptId=null,{source='speech'}={}){
   if(!state.current) return;
+  state.manualInputActive=false;
   let followupTraceId=null;
   if(!attemptId&&source!=='typed'&&gameTraceCollector.isEnabled()){
     const latest=gameTraceCollector.getLatest();
