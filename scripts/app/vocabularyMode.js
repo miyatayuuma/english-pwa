@@ -1244,6 +1244,45 @@ function finalizeVocabularyAnswer(result,attemptId=null,{source='speech'}={}){
   }
 }
 
+function toggleTypedAnswer(){
+  if(state.processing||!state.current||state.correction) return;
+  const form=state.screen?.querySelector('.vocab-typed-form');
+  const toggle=state.screen?.querySelector('.vocab-type-toggle');
+  if(!form||!toggle) return;
+  const open=!state.manualInputActive;
+  if(open) stopListening();
+  state.manualInputActive=open;
+  form.hidden=!open;
+  toggle.setAttribute('aria-expanded',String(open));
+  toggle.textContent=open?'入力を閉じる':'文字で答える';
+  showRecognitionStatus(open?'英語を入力して確認':'英語で答える');
+  if(open) form.querySelector('.vocab-typed-input')?.focus({preventScroll:true});
+}
+
+function submitTypedAnswer(event){
+  event.preventDefault();
+  if(state.processing||!state.manualInputActive||!state.current||state.correction) return;
+  const input=event.currentTarget.querySelector('.vocab-typed-input');
+  const transcript=String(input?.value||'').trim();
+  if(!transcript) return;
+  const result=classifyVocabularyAnswer({entry:state.current,activeOccurrence:activeSource(),transcript});
+  if(result.type==='miss'){
+    const feedback=state.screen?.querySelector('.vocab-feedback');
+    if(feedback){feedback.className='vocab-feedback is-miss';feedback.textContent='一致しません。入力を直すか「答えを見る」を選んでください。';}
+    return;
+  }
+  // Typed recall is not successful pronunciation evidence. Cap its
+  // proficiency gain as hinted practice and never grant a no-hint streak.
+  state.hintUsed=true;
+  state.processing=true;
+  state.manualInputActive=false;
+  state.lastAttemptTranscript=transcript;
+  state.liveTranscript=transcript;
+  input.blur();
+  stopListening();
+  finalizeVocabularyAnswer(result,null,{source:'typed'});
+}
+
 function revealAnswer(){
   if(state.processing||!state.current||state.correction) return;
   state.processing=true;
@@ -1274,6 +1313,7 @@ function showNextCard(){
   state.lastAttemptTranscript='';
   state.lastRecognitionDecision=null;
   state.correction=false;
+  state.manualInputActive=false;
   state.sourceAudio?.pause?.();state.sourceAudio=null;state.sourceAudioUrl='';
   if(state.position>=state.queue.length){ renderDone(); return; }
   state.current=state.queue[state.position];
@@ -1295,13 +1335,23 @@ function showNextCard(){
       </div>
       <div class="vocab-controls">
         <button type="button" class="vocab-mic" aria-label="英語で答える">話す</button>
-        <button type="button" class="vocab-reveal">答えを見る</button>
+        <form class="vocab-typed-form" hidden>
+          <input class="vocab-typed-input" type="text" aria-label="英語の回答" lang="en" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" required>
+          <button type="submit" class="vocab-typed-submit">確認</button>
+          <div class="vocab-typed-note">文字入力の正解は発音の達成扱いにはなりません</div>
+        </form>
+        <div class="vocab-secondary-actions">
+          <button type="button" class="vocab-reveal">答えを見る</button>
+          <button type="button" class="vocab-type-toggle" aria-expanded="false">文字で答える</button>
+        </div>
       </div>
     </section>`;
   bindSpeakerImageFallback();
   setupRecognition();
   state.screen.querySelector('.vocab-mic')?.addEventListener('click',startListening);
   state.screen.querySelector('.vocab-reveal')?.addEventListener('click',revealAnswer);
+  state.screen.querySelector('.vocab-type-toggle')?.addEventListener('click',toggleTypedAnswer);
+  state.screen.querySelector('.vocab-typed-form')?.addEventListener('submit',submitTypedAnswer);
   state.screen.querySelector('.vocab-mic')?.focus({preventScroll:true});
   if(isRecognitionSupported()) state.timer=setTimeout(startListening,550);
 }
