@@ -17,6 +17,7 @@ import {
   vocabularyPlanSummary,
   collapseDuplicateVocabularyCards,
   applyVocabularyAnswerSrs,
+  classifyVocabularyAnswer,
   displayAnswer,
   displayMeaning,
   eligibleVocabularyEntries,
@@ -50,6 +51,7 @@ const state={
   current:null,
   hintUsed:false,
   processing:false,
+  manualInputActive:false,
   timer:0,
   gradeTimer:0,
   liveTranscript:'',
@@ -226,6 +228,13 @@ function injectStyles(){
     .vocab-feedback{flex:0 0 auto;min-height:22px;text-align:center;font-size:12px;font-weight:750}.vocab-feedback.is-ok{color:#86efac}.vocab-feedback.is-paraphrase{color:#99f6e4}.vocab-feedback.is-miss{color:#fca5a5}.vocab-answer-detail,.vocab-paraphrases{margin:7px auto;text-align:center;font-size:12px;line-height:1.7;overflow-wrap:anywhere}.vocab-answer-detail{color:#99f6e4}.vocab-answer-detail strong{color:#e2e8f0}.vocab-paraphrases{opacity:.68}.vocab-paraphrases>span:first-child{font-size:10px;opacity:.8}
     .vocab-controls{display:flex;flex:0 0 auto;flex-direction:column;align-items:stretch;gap:7px;margin-top:6px}.vocab-mic{min-width:78px;width:auto;max-width:100%;padding-inline:12px;height:78px;align-self:center;border:0;border-radius:50%;background:#6366f1;color:#fff;font:inherit;font-size:14px;font-weight:850;cursor:pointer;box-shadow:0 12px 28px rgba(99,102,241,.28);transition:transform .12s ease,box-shadow .12s ease}.vocab-mic.is-listening{transform:scale(1.05);box-shadow:0 0 0 8px rgba(99,102,241,.14),0 12px 28px rgba(99,102,241,.28)}
     .vocab-reveal{min-height:44px;align-self:center;border:0;background:transparent;color:inherit;font:inherit;font-size:11px;opacity:.56;padding:7px 12px;cursor:pointer}
+    .vocab-secondary-actions{display:flex;justify-content:center;align-items:center;gap:6px}
+    .vocab-type-toggle{min-height:44px;border:0;background:transparent;color:inherit;font:inherit;font-size:11px;opacity:.56;padding:7px 12px;cursor:pointer}
+    .vocab-typed-form{width:min(100%,430px);align-self:center;display:flex;flex-wrap:wrap;justify-content:center;gap:7px}
+    .vocab-typed-form[hidden]{display:none!important}
+    .vocab-typed-input{flex:1 1 175px;min-width:0;min-height:44px;border:1px solid rgba(165,180,252,.35);border-radius:10px;background:rgba(148,163,184,.08);color:inherit;font:inherit;font-size:16px;padding:8px 12px}
+    .vocab-typed-submit{min-height:44px;border:0;border-radius:10px;background:rgba(99,102,241,.28);color:inherit;font:inherit;font-size:12px;font-weight:700;padding:8px 14px;cursor:pointer}
+    .vocab-typed-note{flex:0 0 100%;font-size:10px;opacity:.55;text-align:center}
     .vocab-done{display:flex;flex:1;min-height:0;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:11px}.vocab-done h2{font-size:29px;margin:0}.vocab-done p{margin:0;opacity:.62}.vocab-done small{opacity:.48}.vocab-done button{min-width:210px;min-height:50px;border:0;border-radius:14px;background:#6366f1;color:white;font:inherit;font-weight:850;cursor:pointer;margin-top:7px}.vocab-done .vocab-reveal{min-width:44px;min-height:44px;background:transparent;color:inherit;margin-top:0}
     .vocab-speaker{display:inline-flex;align-items:center;gap:6px;min-height:32px;color:inherit;font-size:12px;font-weight:750;opacity:.84}.vocab-speaker img{width:32px;height:32px;flex:0 0 32px;border-radius:50%;object-fit:cover;background:rgba(148,163,184,.12)}.vocab-meta .vocab-speaker{min-height:32px;padding:0;border:0;background:transparent;font-size:12px;opacity:.9}.vocab-speaker-turns{display:grid;gap:6px;margin-top:10px}.vocab-speaker-turn{display:flex;align-items:center;gap:8px;padding:7px;border:1px solid rgba(148,163,184,.11);border-radius:11px;text-align:left}.vocab-context-state{gap:8px}.vocab-context-scroll{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:8px 2px 4px}.vocab-context-top{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px;margin:2px 0 8px}.vocab-answer{max-width:100%;font-size:clamp(22px,5.8vw,32px);font-weight:850;line-height:1.35;color:#a5b4fc;overflow-wrap:anywhere}.vocab-source-line{margin:14px auto 8px;max-width:560px;font-size:clamp(16px,4.1vw,21px);line-height:1.65;text-align:center;overflow-wrap:anywhere}.vocab-target{color:#fff;background:rgba(99,102,241,.3);border-bottom:2px solid #a5b4fc;border-radius:3px;padding:0 2px}.vocab-contextual-meaning{margin:5px auto 12px;text-align:center;font-size:clamp(14px,3.8vw,17px);line-height:1.65;overflow-wrap:anywhere}.vocab-contextual-meaning span{display:block;font-size:10px;opacity:.55}.vocab-context-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}.vocab-expand-context{min-height:44px;padding:8px 14px;border:1px solid rgba(148,163,184,.16);border-radius:12px;background:rgba(148,163,184,.05);color:inherit;font:inherit;font-size:12px;cursor:pointer}.vocab-context-full{margin-top:12px;padding:11px 10px;border:1px solid rgba(148,163,184,.12);border-radius:13px;background:rgba(148,163,184,.035)}.vocab-context-full[hidden]{display:none}.vocab-context-full .vocab-source-line{margin:0 auto 9px;font-size:15px}.vocab-source-ja{margin:10px 0 2px;font-size:13px;line-height:1.6;opacity:.78;text-align:center;overflow-wrap:anywhere}.vocab-source-audio-status{min-height:17px;font-size:10px;text-align:center;opacity:.64}.vocab-next{width:100%;min-height:52px;border:0;border-radius:14px;background:#6366f1;color:#fff;font:inherit;font-size:15px;font-weight:850;cursor:pointer}.vocab-controls{padding-bottom:env(safe-area-inset-bottom)}.vocab-controls button,.vocab-context-actions button{touch-action:manipulation}.vocab-transcript:empty{display:none}.vocab-answer[hidden]{display:none!important}
     @media(max-width:390px){.vocab-body{padding:12px}.vocab-shell{border-radius:18px}.vocab-card{padding-inline:3px}.vocab-meta{margin-bottom:10px}.vocab-meaning{font-size:26px}.vocab-meaning.is-long{font-size:22px}.vocab-meaning.is-xlong{font-size:19px}.vocab-mic{min-width:72px;width:auto;max-width:100%;height:72px;padding-inline:12px}}
@@ -488,6 +497,7 @@ function showRecognitionStatus(message){
 }
 
 function showRecognitionFailure(error,event=null){
+  if(state.manualInputActive) return;
   const retryMessage=error==='PERMISSION_DENIED'?'マイクの権限が拒否されました。端末の設定で許可して再試行してください。':error==='UNAVAILABLE'?'端末の音声認識サービスが利用できません。':'マイクを押してもう一度話してください。';
   const explicitError=error==='PERMISSION_DENIED'||error==='UNAVAILABLE';
   if(state.correction&&!state.processing){
@@ -558,11 +568,11 @@ function setupRecognition(){
     onTraceEvent:safeGameTraceRecord,
     onTranscriptReset:()=>{clearGradeTimer();state.liveTranscript='';state.lastAttemptTranscript='';state.lastRecognitionEvidence=null;setTranscript('');},
     onTranscriptPreview:(text,evidence)=>{
-      if(state.processing||!state.current) return;
+      if(state.processing||state.manualInputActive||!state.current) return;
       scheduleTranscriptGrade(text,evidence);
     },
     onAutoStop:result=>{
-      if(state.processing||!state.current) return;
+      if(state.processing||state.manualInputActive||!state.current) return;
       clearGradeTimer();
       const text=latestNonEmptyTranscript(result?.previewTranscript,state.liveTranscript,result?.transcript);
       state.lastRecognitionEvidence=result||null;
@@ -592,7 +602,7 @@ function setTranscript(text){
 }
 
 async function startListening(){
-  if(!state.current||state.processing||!state.recognition) return;
+  if(!state.current||state.processing||state.manualInputActive||!state.recognition) return;
   clearTimeout(state.timer);
   state.timer=0;
   if(state.recognition.isActive()){
@@ -984,7 +994,7 @@ function renderAnswerContext({result=null,heardTranscript=state.lastAttemptTrans
 }
 
 function gradeTranscript(text,recognitionEvidence={}){
-  if(state.processing||!state.current) return;
+  if(state.processing||state.manualInputActive||!state.current) return;
   const transcript=String(text??'');
   if(!transcript.trim()&&!hasRecognitionEvidence()) return;
   state.liveTranscript=transcript;
@@ -1184,10 +1194,10 @@ function renderTranscriptReview(){
   state.processing=false;
 }
 
-function finalizeVocabularyAnswer(result,attemptId=null){
+function finalizeVocabularyAnswer(result,attemptId=null,{source='speech'}={}){
   if(!state.current) return;
   let followupTraceId=null;
-  if(!attemptId&&gameTraceCollector.isEnabled()){
+  if(!attemptId&&source!=='typed'&&gameTraceCollector.isEnabled()){
     const latest=gameTraceCollector.getLatest();
     if(latest&&String(latest.attemptId)===String(state.lastTraceAttemptId)
       &&String(latest.context?.entryId||'')===String(state.current.id)){
@@ -1198,7 +1208,7 @@ function finalizeVocabularyAnswer(result,attemptId=null){
     }
   }
   const traceId=attemptId??followupTraceId;
-  const traceTrigger=attemptId?'speech-grading':followupTraceId?'answer-reveal':'speech-grading';
+  const traceTrigger=source==='typed'?'typed-answer':attemptId?'speech-grading':followupTraceId?'answer-reveal':'speech-grading';
   state.processing=true;
   state.correction=result.type==='miss';
   state.correctionProgress=createCorrectionProgress();
