@@ -273,6 +273,7 @@ function injectStyles(){
     .vocab-context-state .vocab-controls:empty{display:none}
     .vocab-correction-footer{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:68px}
     .vocab-correction-footer [data-vocab-listening-host]{min-width:0;flex:0 1 auto}
+    .vocab-correction-skip{min-height:44px;padding:8px 9px;border:0;background:transparent;color:inherit;font:inherit;font-size:11px;opacity:.6;cursor:pointer}
     .vocab-context-state .vocab-mic{width:68px;height:68px;min-width:68px;min-height:68px;padding:0;font-size:13px}
     .vocab-context-state .vocab-listening-indicator{min-height:28px;margin:0;padding:3px 9px;font-size:10px}
     .vocab-context-state .vocab-listening-indicator__dot{width:6px;height:6px;flex:0 0 6px}
@@ -876,13 +877,23 @@ function bindResultGestures(surface){
   }));
 }
 
-function completeCorrectionPractice(){
+function skipCorrectionPractice(){
+  if(!state.current||!state.correction||state.advanceBusy) return;
+  state.processing=true;
+  stopListening();
+  safeGameTraceRecord({type:'correction-skipped',gameMode:'Vocabulary',entryId:state.current.id,
+    underlyingOriginalGradingOutcome:state.correctionOriginalOutcome??'MISS',
+    correctionAttemptNumber:state.correctionAttemptCount,srsUpdateAttempted:false});
+  completeCorrectionPractice({skipped:true});
+}
+
+function completeCorrectionPractice({skipped=false}={}){
   state.correction=false;
   state.processing=true;
   clearGradeTimer();
   setListening(false);
   const feedback=state.screen?.querySelector('.vocab-feedback');
-  if(feedback){feedback.className='vocab-feedback is-ok';feedback.textContent='修正練習完了';}
+  if(feedback){feedback.className='vocab-feedback is-ok';feedback.textContent=skipped?'言い直しをスキップしました':'修正練習完了';}
   const controls=state.screen?.querySelector('.vocab-controls');
   if(controls) controls.replaceChildren();
   state.processing=true;
@@ -959,8 +970,9 @@ function renderAnswerContext({result=null,heardTranscript=state.lastAttemptTrans
   state.advanceLockUntil=Date.now()+350;
   const controls=state.screen.querySelector('.vocab-controls');
   if(state.correction){
-    controls.innerHTML='<div class="vocab-correction-footer"><div data-vocab-listening-host></div><button type="button" class="vocab-mic" aria-label="表示された表現を話す">話す</button></div>';
+    controls.innerHTML='<div class="vocab-correction-footer"><div data-vocab-listening-host></div><button type="button" class="vocab-mic" aria-label="表示された表現を話す">話す</button><button type="button" class="vocab-correction-skip">言い直しをスキップ</button></div>';
     controls.querySelector('.vocab-mic').addEventListener('click',startListening);
+    controls.querySelector('.vocab-correction-skip').addEventListener('click',skipCorrectionPractice);
     const audioButton=state.screen.querySelector('.vocab-expression-audio');
     (audioButton&&!audioButton.hidden?audioButton:controls.querySelector('.vocab-mic'))?.focus({preventScroll:true});
     state.processing=false;
