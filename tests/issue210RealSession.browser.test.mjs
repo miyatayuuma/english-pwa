@@ -170,7 +170,7 @@ async function newFixturePage({ ids, levels = {}, storageSeed = {}, staleFilters
     && typeof window.__RELATIONSHIP_GAME_STATE__ === 'function'
     && document.querySelector('#sessionShellStyles')
     && document.querySelector('#friendshipHero'));
-  assert.equal(await page.evaluate(() => window.APP_VERSION), 'v5.116', 'browser fixture uses the expected release version');
+  assert.equal(await page.evaluate(() => window.APP_VERSION), 'v5.117', 'browser fixture uses the expected release version');
   await page.waitForFunction(() => !document.querySelector('#loadingOverlay')?.classList.contains('show'));
   await page.evaluate(() => { window.__issue210.writes = {}; });
   return { context, page, pageErrors, externalRequests };
