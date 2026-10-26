@@ -29,6 +29,50 @@ test('strict TARGET token sequence anywhere in primary utterance is accepted and
   assert.equal(classifyVocabularyAnswer({entry:entry(target),transcript:'I mean yield to something please'}).type,'miss','strict lexical authority remains unchanged');
 });
 
+test('vocab:00478 recognizes expanded there is as the same TARGET with raw ASR intact',()=>{
+  const target=currentProductionEntry('vocab:00478');
+  assert.ok(target);
+  assert.equal(target.canonical,"there's no point in doing something");
+  for(const observed of [
+    'there is no point in doing something',
+    'There is no point in doing something.',
+    'My answer is, there is no point in doing something.',
+  ]){
+    const result=classifyVocabularySpeechAnswer({
+      entry:target,transcript:observed,recognitionSegments:[segment([observed])],
+    });
+    assert.equal(result.type,'target',observed);
+    assert.equal(result.rawTranscript,observed);
+    assert.equal(result.displayTranscript,observed);
+    assert.equal(result.matchedExpected,'there is no point in doing something');
+    assert.equal(result.targetRescued,false);
+  }
+  const nbest=classifyVocabularySpeechAnswer({
+    entry:target,transcript:'wrong',
+    recognitionSegments:[segment(['wrong','there is no point in doing something'])],
+  });
+  assert.equal(nbest.type,'target');
+  assert.equal(nbest.targetRescued,true);
+  assert.equal(nbest.asrRank,1);
+  assert.equal(nbest.primaryTranscript,'wrong');
+  assert.equal(nbest.matchedExpected,'there is no point in doing something');
+  assert.equal(classifyVocabularySpeechAnswer({
+    entry:target,transcript:'there is no point in doing something',correction:true,
+  }).type,'target');
+  for(const observed of [
+    'there has no point in doing something',
+    'there is no point at doing something',
+    'there is no point in doing anything',
+    'there are no point in doing something',
+  ]){
+    assert.equal(classifyVocabularySpeechAnswer({entry:target,transcript:observed}).type,'miss',observed);
+  }
+  assert.equal(classifyVocabularySpeechAnswer({
+    entry:{...target,id:'fixture-other-id'},
+    transcript:'there is no point in doing something',
+  }).type,'miss');
+});
+
 test('TARGET sequence must be contiguous; words inside it cannot be skipped',()=>{
   for(const spoken of ['yield um to something','yield please to something','yield to definitely something','years to something','yield something','yield to do something','yielded to something']){
     assert.equal(grade('yield to something',spoken).type,'miss',spoken);

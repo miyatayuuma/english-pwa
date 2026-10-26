@@ -49,6 +49,26 @@ test('canonical, explicit answer, and active exact source realizations classify 
   assert.equal(classify("I'm beside myself",'be beside himself').type,'target');
 });
 
+test('vocab:00478 approves only there is / there\'s full-phrase equivalence as TARGET',()=>{
+  const target=entry("there's no point in doing something");
+  assert.equal(target.id,'vocab:00478');
+  assert.ok(answerVariants(target).includes('there is no point in doing something'));
+  assert.deepEqual(
+    classifyVocabularyAnswer({entry:target,transcript:'There is no point in doing something.'}),
+    {type:'target',matchedText:'there is no point in doing something',matchedAuthority:'approved-surface'},
+  );
+  assert.equal(classifyVocabularyAnswer({entry:target,transcript:"there's no point in doing something"}).type,'target');
+  assert.equal(classifyVocabularyAnswer({entry:target,transcript:'there is no point in doing anything'}).type,'miss');
+  assert.equal(classifyVocabularyAnswer({entry:target,transcript:'there has no point in doing something'}).type,'miss');
+  assert.equal(classifyVocabularyAnswer({entry:target,transcript:'there are no point in doing something'}).type,'miss');
+  assert.equal(classifyVocabularyAnswer({entry:target,transcript:'there is no use doing something'}).type,'miss');
+  assert.equal(classifyVocabularyAnswer({entry:target,transcript:'there is no point in not doing something'}).type,'miss');
+  const unrelated={...target,id:'fixture-other-id'};
+  assert.equal(classifyVocabularyAnswer({entry:unrelated,transcript:'there is no point in doing something'}).type,'miss');
+  assert.equal(classifyVocabularyAnswer({entry:target,transcript:"I'm no point in doing something"}).type,'miss');
+  assert.notEqual(normalizeVocabularyAnswer("I'm here"),normalizeVocabularyAnswer('I am here'));
+});
+
 test('active source realization is local to the selected occurrence and does not create a wildcard',()=>{
   const value={id:'fixture',kind:'expression',canonical:'take up',answers:[],paraphrases:[],occurrences:[]};
   const active={occurrence:{start:0,end:9},item:{en:'taking up'}};

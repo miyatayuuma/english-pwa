@@ -263,6 +263,21 @@ export function normalizeVocabularyAnswer(text){
     .trim();
 }
 
+// Entry-scoped, reviewed surface-equivalent expressions. These variants
+// preserve the original lexical target and must never turn a paraphrase into
+// TARGET or relax contraction matching across the vocabulary catalog.
+const VOCABULARY_SURFACE_EQUIVALENTS=Object.freeze({
+  'vocab:00478': Object.freeze({
+    canonical: "there's no point in doing something",
+    variants: Object.freeze(['there is no point in doing something']),
+  }),
+});
+
+function approvedTargetSurfaceVariants(entry){
+  const rule=VOCABULARY_SURFACE_EQUIVALENTS[String(entry?.id||'')];
+  return rule&&String(entry?.canonical||'').trim()===rule.canonical?rule.variants:[];
+}
+
 function occurrenceSourceSurface(activeOccurrence){
   const source=activeOccurrence?.item?.en;
   const occurrence=activeOccurrence?.occurrence||activeOccurrence;
@@ -274,7 +289,7 @@ function occurrenceSourceSurface(activeOccurrence){
 export function answerVariants(entry,activeOccurrence=null){
   const canonical=String(entry?.canonical||'').trim();
   if(!canonical) return [];
-  return [...new Set([canonical,...(Array.isArray(entry?.answers)?entry.answers:[]),occurrenceSourceSurface(activeOccurrence)]
+  return [...new Set([canonical,...(Array.isArray(entry?.answers)?entry.answers:[]),occurrenceSourceSurface(activeOccurrence),...approvedTargetSurfaceVariants(entry)]
     .map(value=>String(value||'').trim()).filter(Boolean))];
 }
 
@@ -285,6 +300,7 @@ export function classifyVocabularyAnswer({entry,activeOccurrence=null,transcript
     {text:String(entry.canonical||''),authority:'canonical'},
     ...(Array.isArray(entry.answers)?entry.answers.map(text=>({text:String(text||''),authority:'answer'})):[]),
     {text:occurrenceSourceSurface(activeOccurrence),authority:'source'},
+    ...approvedTargetSurfaceVariants(entry).map(text=>({text,authority:'approved-surface'})),
   ];
   for(const variant of targetVariants){
     if(variant.text&&normalizeVocabularyAnswer(variant.text)===normalized){
