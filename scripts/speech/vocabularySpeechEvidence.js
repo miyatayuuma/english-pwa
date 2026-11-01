@@ -6,7 +6,10 @@ import { vocabularyChunkRescueChunks } from './vocabularyChunkRescueAuthority.js
 
 export const VOCABULARY_SPEECH_CARRIER = 'my answer is';
 export const VOCABULARY_SPEECH_CARRIER_CUE = `${VOCABULARY_SPEECH_CARRIER} …`;
-const TARGETED_RECOGNITION_RULE_IDS = new Set(['gaze-gays', 'gays-gaze', 'asr-lack-to-black']);
+const TARGETED_RECOGNITION_RULE_IDS = new Set([
+  'gaze-gays', 'gays-gaze', 'asr-lack-to-black',
+  'asr-wealth-wells', 'asr-frank-prank', 'asr-scarcely-scarcity',
+]);
 const VOCABULARY_SPEECH_CARRIER_TOKENS = Object.freeze(
   safeSpeechTokens(VOCABULARY_SPEECH_CARRIER).map(token => token.value),
 );
@@ -110,8 +113,8 @@ function targetProduction({ entry, activeOccurrence, transcript, segmentIndex, s
     if (!match) continue;
     if (TARGETED_RECOGNITION_RULE_IDS.has(match.ruleId)
       && !targetedRecognitionIsConfirmed(recognitionComplete, completionState)) continue;
-    // The user-approved lack/black collision is only safe for the complete
-    // recognized answer surface (after the existing carrier handling).
+    // Directional, non-homophonic ASR substitutions are safe only for the
+    // complete recognized answer surface (after optional carrier removal).
     if (match.ruleKind === 'asr-known-confusion' && !sameTokenSequence(match.observed, transcript)) continue;
     const classified = classifyVocabularyAnswer({ entry, activeOccurrence, transcript: expected });
     if (classified.type !== 'target') continue;
