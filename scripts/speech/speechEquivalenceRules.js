@@ -67,6 +67,15 @@ export const speechEquivalenceRules = Object.freeze([
     scope: { type: 'entry', entryIds: ['vocab:00743'], mode: 'vocabulary' },
     display: 'raw',
   },
+  {
+    id: 'asr-sweeping-sleeping',
+    expected: 'sweeping',
+    recognized: 'sleeping',
+    kind: 'asr-known-confusion',
+    credit: 'exact-equivalent',
+    scope: { type: 'entry', entryIds: ['vocab:01354'], mode: 'vocabulary' },
+    display: 'raw',
+  },
   // Than/then has the same audible form in all four speech-bearing modes.
   ...pair({ id: 'than-then', expected: 'than', recognized: 'then', kind: 'asr-context-collision', scope: { type: 'mode', modes: ['vocabulary', 'read', 'cloze', 'correction'] } }),
   ...pair({ id: 'prose-pros', expected: 'prose', recognized: 'pros', kind: 'homophone', display: 'expected' }),
