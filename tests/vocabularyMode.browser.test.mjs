@@ -809,6 +809,20 @@ browserTest('Web Vocabulary retains strict TARGET context and N-best without phr
   }
 });
 
+browserTest('isolated scarcely recognized as scarcity is accepted only on completed finalized ASR and saves one SRS write',async()=>{
+  const opened=await newPage(sources[5]);const {page}=opened;
+  try{
+    assert.equal(sources[5].canonical,'scarcely');
+    await injectCompletedFinal(page,['scarcity']);
+    await page.waitForFunction(()=>document.querySelector('.vocab-feedback')?.textContent==='正解');
+    assert.equal(await page.locator('.vocab-heard__text').innerText(),'scarcity');
+    assert.equal(await page.locator('.vocab-answer').innerText(),'scarcely');
+    assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);
+    await page.waitForTimeout(300);
+    assert.equal(await page.evaluate(()=>window.__mockSpeech.srsWrites),1);
+  }finally{await closePage(opened);}
+});
+
 browserTest('native TARGET rescue preserves raw primary, answer authority and exactly one SRS write',async()=>{
   for(const [source,primary] of [[sources[4],'YouTube something'],[sources[5],'scarcity'],[sources[6],'confused']]){
     const opened=await newPage(source);const {page}=opened;

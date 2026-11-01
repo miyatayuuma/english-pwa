@@ -608,6 +608,71 @@ test('postwar/post war is explicit TARGET equivalence with raw transcript displa
   assert.equal(result.displayTranscript,'post war');
 });
 
+test('targeted ASR substitutions rescue finalized Vocabulary answers only in the observed direction',()=>{
+  const cases=[
+    {id:'vocab:01370',expected:'wealth',recognized:'wells',ruleId:'asr-wealth-wells'},
+    {id:'vocab:00811',expected:'frank',recognized:'prank',ruleId:'asr-frank-prank'},
+    {id:'vocab:00743',expected:'scarcely',recognized:'scarcity',ruleId:'asr-scarcely-scarcity'},
+    {id:'vocab:01354',expected:'sweeping',recognized:'sleeping',ruleId:'asr-sweeping-sleeping'},
+    {id:'vocab:00758',expected:'rate',recognized:'great',ruleId:'asr-rate-great'},
+    {id:'vocab:00771',expected:'rate',recognized:'great',ruleId:'asr-rate-great'},
+  ];
+  for(const {id,expected,recognized,ruleId} of cases){
+    const live=currentProductionEntry(id);
+    assert.equal(live?.canonical,expected,id+' must remain the reviewed production entry');
+    assert.equal(classifyVocabularySpeechAnswer({entry:live,transcript:recognized}).type,'miss',
+      id+' must not grade absent finalized recognition evidence');
+
+    const segments=[segmentFactory([recognized])];
+    const options={entry:live,transcript:recognized,recognitionSegments:segments,recognitionComplete:true,completionState:'finalized'};
+    const result=classifyVocabularySpeechAnswer(options);
+    assert.equal(result.type,'target',id);
+    assert.equal(result.matchedExpected,expected,id);
+    assert.equal(result.recognitionAuthority,'explicit-equivalence',id);
+    assert.equal(result.speechMatch?.ruleId,ruleId,id);
+    assert.equal(result.speechMatch?.ruleKind,'asr-known-confusion',id);
+    assert.equal(result.rawTranscript,recognized,id);
+    assert.equal(result.displayTranscript,recognized,id);
+    assert.equal(result.targetRescued,false,id);
+    assert.equal(result.recognitionComplete,true,id);
+    assert.equal(classifyVocabularySpeechAnswer({...options,recognitionComplete:false}).type,'miss',id+' interim must fail');
+    assert.equal(classifyVocabularySpeechAnswer({...options,completionState:'pending'}).type,'miss',id+' pending must fail');
+    assert.equal(classifyVocabularySpeechAnswer({...options,recognitionSegments:[{...segments[0],isFinal:false}]}).type,'miss',id+' nonfinal must fail');
+
+    const otherId={...live,id:'fixture-non-target'};
+    assert.equal(classifyVocabularySpeechAnswer({...options,entry:otherId}).type,'miss',id+' must remain entry-scoped');
+    assert.equal(classifyVocabularySpeechAnswer({...options,entry:{...live,canonical:recognized},transcript:expected,
+      recognitionSegments:[segmentFactory([expected])]}).type,'miss',id+' must not rescue reverse direction');
+    assert.equal(classifyVocabularySpeechAnswer({...options,transcript:'I said '+recognized,
+      recognitionSegments:[segmentFactory(['I said '+recognized])]}).type,'miss',id+' must require full recognized answer surface');
+    assert.equal(findSpeechSurfaceMatch(expected,recognized,{context:{mode:'vocabulary',entryId:id}})?.ruleId,ruleId);
+    assert.equal(findSpeechSurfaceMatch(expected,recognized,{context:{mode:'vocabulary',entryId:'unrelated'}}),null);
+    assert.equal(findSpeechSurfaceMatch(expected,recognized,{context:{mode:'read',entryId:id}}),null);
+    assert.equal(findSpeechSurfaceMatch(expected,recognized,{context:{mode:'cloze',entryId:id}}),null);
+
+    const rankZero='unrelated';
+    const nbest=classifyVocabularySpeechAnswer({
+      entry:live,transcript:rankZero,
+      recognitionSegments:[segmentFactory([rankZero,recognized])],
+      recognitionComplete:true,completionState:'terminal',
+    });
+    assert.equal(nbest.type,'target',id+' finalized lower-ranked ASR surface may be rescued');
+    assert.equal(nbest.asrRank,1);
+    assert.equal(nbest.primaryTranscript,rankZero);
+    assert.equal(nbest.rawTranscript,recognized);
+    assert.equal(nbest.displayTranscript,rankZero);
+    const carrier='my answer is '+recognized;
+    const carried=classifyVocabularySpeechAnswer({
+      entry:live,transcript:carrier,
+      recognitionSegments:[segmentFactory([carrier])],
+      recognitionComplete:true,completionState:'terminal',
+    });
+    assert.equal(carried.type,'target',id+' optional carrier is allowed');
+    assert.equal(carried.rawTranscript,carrier);
+    assert.equal(carried.displayTranscript,carrier);
+  }
+});
+
 test('legacy phonetic/one-edit examples remain Vocabulary MISS',()=>{
   for(const [canonical,spoken] of [['yell','yeah'],['live','love'],['cat','cut'],['price','prize'],['walk','talk']]){
     assert.equal(classifyVocabularySpeechAnswer({entry:{canonical},transcript:spoken}).type,'miss',`${canonical} / ${spoken}`);
