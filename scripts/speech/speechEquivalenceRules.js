@@ -35,6 +35,38 @@ export const speechEquivalenceRules = Object.freeze([
     scope: { type: 'entry', entryIds: ['vocab:01251', 'vocab:01296'], mode: 'vocabulary' },
     display: 'raw',
   },
+  // Observed, directional ASR substitutions from isolated Vocabulary answers.
+  // These words are NOT homophones: only these specific expected vocabulary
+  // entries may receive credit when a completed ASR transcript gives the
+  // corresponding wrong surface. Vocabulary grading also enforces the
+  // complete answer surface and finalized transport for these rules.
+  {
+    id: 'asr-wealth-wells',
+    expected: 'wealth',
+    recognized: 'wells',
+    kind: 'asr-known-confusion',
+    credit: 'exact-equivalent',
+    scope: { type: 'entry', entryIds: ['vocab:01370'], mode: 'vocabulary' },
+    display: 'raw',
+  },
+  {
+    id: 'asr-frank-prank',
+    expected: 'frank',
+    recognized: 'prank',
+    kind: 'asr-known-confusion',
+    credit: 'exact-equivalent',
+    scope: { type: 'entry', entryIds: ['vocab:00811'], mode: 'vocabulary' },
+    display: 'raw',
+  },
+  {
+    id: 'asr-scarcely-scarcity',
+    expected: 'scarcely',
+    recognized: 'scarcity',
+    kind: 'asr-known-confusion',
+    credit: 'exact-equivalent',
+    scope: { type: 'entry', entryIds: ['vocab:00743'], mode: 'vocabulary' },
+    display: 'raw',
+  },
   // Than/then has the same audible form in all four speech-bearing modes.
   ...pair({ id: 'than-then', expected: 'than', recognized: 'then', kind: 'asr-context-collision', scope: { type: 'mode', modes: ['vocabulary', 'read', 'cloze', 'correction'] } }),
   ...pair({ id: 'prose-pros', expected: 'prose', recognized: 'pros', kind: 'homophone', display: 'expected' }),
