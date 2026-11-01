@@ -8,7 +8,7 @@ export const VOCABULARY_SPEECH_CARRIER = 'my answer is';
 export const VOCABULARY_SPEECH_CARRIER_CUE = `${VOCABULARY_SPEECH_CARRIER} …`;
 const TARGETED_RECOGNITION_RULE_IDS = new Set([
   'gaze-gays', 'gays-gaze', 'asr-lack-to-black',
-  'asr-wealth-wells', 'asr-frank-prank', 'asr-scarcely-scarcity',
+  'asr-wealth-wells', 'asr-frank-prank', 'asr-scarcely-scarcity', 'asr-sweeping-sleeping',
 ]);
 const VOCABULARY_SPEECH_CARRIER_TOKENS = Object.freeze(
   safeSpeechTokens(VOCABULARY_SPEECH_CARRIER).map(token => token.value),
