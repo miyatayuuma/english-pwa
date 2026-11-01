@@ -613,6 +613,7 @@ test('targeted ASR substitutions rescue finalized Vocabulary answers only in the
     {id:'vocab:01370',expected:'wealth',recognized:'wells',ruleId:'asr-wealth-wells'},
     {id:'vocab:00811',expected:'frank',recognized:'prank',ruleId:'asr-frank-prank'},
     {id:'vocab:00743',expected:'scarcely',recognized:'scarcity',ruleId:'asr-scarcely-scarcity'},
+    {id:'vocab:01354',expected:'sweeping',recognized:'sleeping',ruleId:'asr-sweeping-sleeping'},
   ];
   for(const {id,expected,recognized,ruleId} of cases){
     const live=currentProductionEntry(id);
