@@ -614,6 +614,8 @@ test('targeted ASR substitutions rescue finalized Vocabulary answers only in the
     {id:'vocab:00811',expected:'frank',recognized:'prank',ruleId:'asr-frank-prank'},
     {id:'vocab:00743',expected:'scarcely',recognized:'scarcity',ruleId:'asr-scarcely-scarcity'},
     {id:'vocab:01354',expected:'sweeping',recognized:'sleeping',ruleId:'asr-sweeping-sleeping'},
+    {id:'vocab:00758',expected:'rate',recognized:'great',ruleId:'asr-rate-great'},
+    {id:'vocab:00771',expected:'rate',recognized:'great',ruleId:'asr-rate-great'},
   ];
   for(const {id,expected,recognized,ruleId} of cases){
     const live=currentProductionEntry(id);
