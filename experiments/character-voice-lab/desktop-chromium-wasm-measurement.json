@@ -1,0 +1,68 @@
+{
+  "fresh": true,
+  "runtime": "https://cdn.jsdelivr.net/npm/kokoro-js@1.2.1/dist/kokoro.web.js",
+  "revision": "1939ad2a8e416c0acfeecc08a694d14ef25f2231",
+  "device": "wasm",
+  "browserUserAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.82 Safari/537.36",
+  "initMs": 19055.100000000093,
+  "transfer": {
+    "tokenizer_config.json": 113,
+    "config.json": 44,
+    "tokenizer.json": 3497,
+    "onnx/model_quantized.onnx": 92361116
+  },
+  "measurements": [
+    {
+      "id": "everyday",
+      "voice": "af_heart",
+      "inferenceMs": 6999.5,
+      "wavReadyMs": 7001,
+      "audioSeconds": 2.85,
+      "rtf": 2.455964912280702
+    },
+    {
+      "id": "everyday",
+      "voice": "af_heart",
+      "inferenceMs": 6354.90000000014,
+      "wavReadyMs": 6355.100000000093,
+      "audioSeconds": 2.85,
+      "rtf": 2.2297894736842596
+    },
+    {
+      "id": "long",
+      "voice": "af_heart",
+      "inferenceMs": 17016.600000000093,
+      "wavReadyMs": 17017,
+      "audioSeconds": 7.025,
+      "rtf": 2.4222918149466324
+    }
+  ],
+  "workerJsHeapBytes": null,
+  "conditionNotes": "",
+  "testedAt": "2026-11-25T15:18:55.404Z",
+  "browserOnlineAtStart": true,
+  "deviceMemoryGiBHint": 8,
+  "hardwareConcurrency": 9,
+  "crossOriginIsolated": false,
+  "requestTrials": [
+    {
+      "id": "everyday",
+      "text": "I can meet you by the station after lunch.",
+      "voice": "af_heart",
+      "speed": 1.01
+    },
+    {
+      "id": "everyday",
+      "text": "I can meet you by the station after lunch.",
+      "voice": "af_heart",
+      "speed": 1.01
+    },
+    {
+      "id": "long",
+      "text": "Although the lights were already off when we got back, Maya waited by the gate because she had promised to return the key.",
+      "voice": "af_heart",
+      "speed": 1.01
+    }
+  ],
+  "runLabel": "init"
+}
