@@ -67,6 +67,7 @@ import { createOverlayController } from './overlay.js';
 import { createCardTransitionQueue } from './cardTransitions.js';
 import { createReorderGuide } from './reorderGuide.js';
 import { qs, qsa } from './dom.js';
+import { initializeLearningBackupSettings } from './learningBackupSettings.js';
 import { createLevelStateManager, LEVEL_CHOICES, retainHighestHintStageUsed } from './levelState.js';
 import { createViewStateController, VIEW_HOME, VIEW_STUDYING, VIEW_REVIEW_COMPLETE } from './viewState.js';
 import { createGoalController, normalizeGoalValue } from './goalController.js';
@@ -1291,6 +1292,7 @@ function createAppRuntime(){
   });
   let sessionActive=false;
   let sessionStarting=false;
+  let bootFinished=false;
   let activeTrainingMode=TRAINING_MODES.STANDARD;
   let shadowCycleToken=0;
   let shadowCycleState=null;
@@ -1964,12 +1966,24 @@ function createAppRuntime(){
   if(el.cfgBtn && el.cfgModal){
     el.cfgBtn.addEventListener('click',()=>{
       refreshDirStatus();
+      el.app.inert=true;
       el.cfgModal.style.display='flex';
+      el.cfgClose?.focus();
     });
   }
   if(el.cfgClose && el.cfgModal){
-    el.cfgClose.addEventListener('click',()=>{el.cfgModal.style.display='none';});
+    el.cfgClose.addEventListener('click',()=>{
+      el.cfgModal.style.display='none';
+      el.app.inert=false;
+      el.cfgBtn?.focus();
+    });
   }
+  initializeLearningBackupSettings({
+    appVersion: APP_VERSION,
+    isStudyBusy: () => !bootFinished || sessionActive || sessionStarting
+      || !!document.querySelector('#vocabularyModeDialog[open]')
+      || globalThis.__ENGLISH_PWA_VOCABULARY_STATUS__?.status === 'loading',
+  });
   const notifHandlers=initNotificationSystem({settings:getNotificationSettings(),toast});
   if(notifHandlers?.handleVisibilityChange){
     document.addEventListener('visibilitychange',notifHandlers.handleVisibilityChange);
@@ -3883,6 +3897,7 @@ function createAppRuntime(){
       console.error(e);
       toast('初期化失敗: '+(e&&e.message||e));
     }finally{
+      bootFinished=true;
       releaseBoot();
     }
   }

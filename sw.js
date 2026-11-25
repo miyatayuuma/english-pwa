@@ -25,6 +25,8 @@ self.addEventListener('install', e => {
     './icons/maskable-512.png',
     './scripts/version.js',
     './scripts/app/main.js',
+    './scripts/app/startup.js',
+    './scripts/app/learningBackupSettings.js',
     './scripts/app/swBootstrap.js?v=5.117',
     './scripts/app/swUpdatePrompt.js?v=5.117',
     './scripts/native/runtimePlatform.js',
@@ -93,6 +95,8 @@ self.addEventListener('install', e => {
     './scripts/speech/voiceProfiles.js',
     './scripts/state/studyLog.js',
     './scripts/storage/local.js',
+    './scripts/storage/learningBackup.js',
+    './scripts/storage/learningBackupAccess.js',
     './scripts/storage/zeroSetupMigration.js',
     './scripts/ui/milestones.js',
     './scripts/utils/text.js'

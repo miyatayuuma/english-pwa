@@ -13,6 +13,7 @@ import androidx.activity.result.ActivityResult;
 import com.getcapacitor.*;
 import com.getcapacitor.annotation.*;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
@@ -104,6 +105,41 @@ public class NativeMediaPlugin extends Plugin {
         for(android.content.UriPermission permission:getContext().getContentResolver().getPersistedUriPermissions()) if(permission.getUri().toString().equals(tree)&&permission.isReadPermission()) granted=true;
         JSObject result=new JSObject();result.put("selected",!tree.isEmpty());result.put("granted",granted);call.resolve(result);
     }
+    @PluginMethod public void saveLearningBackup(PluginCall call) {
+        String name = call.getString("name", "");
+        String text = call.getString("text", "");
+        if (!name.matches("english-pwa-learning-[0-9TZ-]+[.]json") || text.isEmpty()) {
+            call.reject("バックアップのファイル名または内容が無効です。");
+            return;
+        }
+        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("application/json");
+        intent.putExtra(Intent.EXTRA_TITLE, name);
+        startActivityForResult(call, intent, "learningBackupDestination");
+    }
+
+    @ActivityCallback private void learningBackupDestination(PluginCall call, ActivityResult result) {
+        if (call == null) return;
+        Intent data = result.getData();
+        if (result.getResultCode() != Activity.RESULT_OK || data == null || data.getData() == null) {
+            call.reject("保存をキャンセルしました。", "CANCELLED");
+            return;
+        }
+        Uri uri = data.getData();
+        io.execute(() -> {
+            try {
+                try (OutputStream stream = getContext().getContentResolver().openOutputStream(uri, "wt")) {
+                    if (stream == null) throw new IOException("Cannot open backup destination");
+                    stream.write(call.getString("text", "").getBytes(StandardCharsets.UTF_8));
+                }
+                call.resolve();
+            } catch (IOException | SecurityException error) {
+                call.reject("バックアップを保存できませんでした。", error);
+            }
+        });
+    }
+
     @PluginMethod public void read(PluginCall call) {
         io.execute(() -> {
             try {

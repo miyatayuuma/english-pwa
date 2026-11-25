@@ -308,6 +308,16 @@
         </div>
       </div>
       <div class="cfg-section">
+        <p class="cfg-section-title">学習データ</p>
+        <div class="row cfg-row">
+          <button id="exportLearningBackup" type="button" class="btn">バックアップを保存</button>
+          <button id="chooseLearningBackup" type="button" class="btn">バックアップから復元</button>
+          <input id="learningBackupFile" type="file" accept=".json,application/json" aria-label="バックアップファイル" hidden>
+        </div>
+        <p class="muted cfg-status">端末変更時は音源ファイルを別途コピーし、音源フォルダを指定してください。</p>
+        <p id="learningBackupStatus" class="muted cfg-status" role="status"></p>
+      </div>
+      <div class="cfg-section">
         <p class="cfg-section-title">アプリ情報</p>
         <div class="row cfg-row">
           <span data-app-version aria-label="アプリのバージョン"></span>
@@ -321,7 +331,19 @@
   </div>
 </div>
 
-<script type="module" src="scripts/app/main.js"></script>
+<dialog id="learningRestoreDialog" class="info-dialog" aria-labelledby="learningRestoreTitle">
+  <form method="dialog" class="info-dialog__form">
+    <h3 id="learningRestoreTitle">学習データを復元</h3>
+    <div id="learningRestoreDetails" class="info-dialog__body"></div>
+    <p>この端末の学習データと学習設定が、バックアップの内容に置き換わります。</p>
+    <div class="info-dialog__actions">
+      <button class="btn" autofocus>キャンセル</button>
+      <button id="confirmLearningRestore" class="btn btn--primary" type="button">置き換えて復元</button>
+    </div>
+  </form>
+</dialog>
+
+<script type="module" src="scripts/app/startup.js"></script>
 <script type="module" src="scripts/app/swBootstrap.js?v=5.117"></script>
 </body>
 </html>
