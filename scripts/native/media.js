@@ -4,7 +4,7 @@ export function getNativeMedia(){
   if(!isNativeAndroid()) return Promise.reject(new Error('Android shell required'));
   return pluginPromise ||= import('./capacitor-core.js').then(({registerPlugin})=>{
     const proxy=registerPlugin('NativeMedia');
-    return Object.fromEntries(['pick','status','clear','read','voices','speak','cancel','addListener'].map(key=>[key,(...args)=>proxy[key](...args)]));
+    return Object.fromEntries(['pick','status','clear','read','saveLearningBackup','voices','speak','cancel','addListener'].map(key=>[key,(...args)=>proxy[key](...args)]));
   });
 }
 export async function nativeDirectory(action,getPlugin=getNativeMedia){

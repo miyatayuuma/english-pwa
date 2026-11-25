@@ -58,8 +58,8 @@ browserTest('fresh install opens home without questionnaire/permissions and star
     assert.equal(await page.locator('#onboardingCard').count(),0);
     assert.equal(await page.evaluate(()=>window.__permissionCalls),0);
     await page.locator('#btnCfg').click();
-    assert.deepEqual(await page.locator('#cfgBox button').evaluateAll(nodes=>nodes.map(node=>node.id)),['btnPickDir','btnClearDir','cfgClose']);
-    assert.equal(await page.locator('#cfgBox input,#cfgBox select').count(),0);
+    assert.deepEqual(await page.locator('#cfgBox button').evaluateAll(nodes=>nodes.map(node=>node.id)),['btnPickDir','btnClearDir','exportLearningBackup','chooseLearningBackup','cfgClose']);
+    assert.equal(await page.locator('#cfgBox input:not([hidden]),#cfgBox select').count(),0);
     const version=await page.locator('#cfgBox [data-app-version]').innerText();
     assert.equal(version,await page.evaluate(()=>`バージョン: ${window.APP_VERSION}`));
     assert.ok(version.trim());

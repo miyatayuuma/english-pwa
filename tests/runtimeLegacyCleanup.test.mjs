@@ -9,12 +9,12 @@ async function text(path){
 }
 
 test('runtime manifest uses session shell and no retired bridge modules',async()=>{
-  const [version,sw]=await Promise.all([text('scripts/version.js'),text('sw.js')]);
+  const [version,manifest]=await Promise.all([text('scripts/version.js'),text('runtime-assets.json')]);
   assert.match(version,/sessionShell\.js/);
-  assert.match(sw,/sessionShell\.js/);
+  assert.match(manifest,/sessionShell\.js/);
   for(const retired of ['tagMode.js','gameModeBridge.js']){
     assert.doesNotMatch(version,new RegExp(retired.replace('.','\\.')));
-    assert.doesNotMatch(sw,new RegExp(retired.replace('.','\\.')));
+    assert.doesNotMatch(manifest,new RegExp(retired.replace('.','\\.')));
   }
 });
 

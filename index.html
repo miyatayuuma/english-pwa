@@ -4,27 +4,6 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>毎日続く英語スピーキング | English PWA</title>
-  <script>
-    (function suppressSesLockdownNoise(){
-      const blockedPatterns=[
-        'SES Removing unpermitted intrinsics',
-        'Removing intrinsics.%MapPrototype%.getOrInsert',
-        'Removing intrinsics.%MapPrototype%.getOrInsertComputed',
-        'Removing intrinsics.%WeakMapPrototype%.getOrInsert',
-        'Removing intrinsics.%WeakMapPrototype%.getOrInsertComputed',
-        'Removing intrinsics.%DatePrototype%.toTemporalInstant'
-      ];
-      const shouldBlock=(args)=>args.some((value)=>{
-        if(typeof value!=='string') return false;
-        return blockedPatterns.some((pattern)=>value.includes(pattern));
-      });
-      const originalError=console.error.bind(console);
-      const originalWarn=console.warn.bind(console);
-      console.error=(...args)=>{ if(shouldBlock(args)) return; originalError(...args); };
-      console.warn=(...args)=>{ if(shouldBlock(args)) return; originalWarn(...args); };
-    })();
-  </script>
-  <!-- ★ PWA 追加 -->
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png">
   <link rel="stylesheet" href="styles/app.css">
@@ -308,6 +287,16 @@
         </div>
       </div>
       <div class="cfg-section">
+        <p class="cfg-section-title">学習データ</p>
+        <div class="row cfg-row">
+          <button id="exportLearningBackup" type="button" class="btn">バックアップを保存</button>
+          <button id="chooseLearningBackup" type="button" class="btn">バックアップから復元</button>
+          <input id="learningBackupFile" type="file" accept=".json,application/json" aria-label="バックアップファイル" hidden>
+        </div>
+        <p class="muted cfg-status">端末変更時は音源ファイルを別途コピーし、音源フォルダを指定してください。</p>
+        <p id="learningBackupStatus" class="muted cfg-status" role="status"></p>
+      </div>
+      <div class="cfg-section">
         <p class="cfg-section-title">アプリ情報</p>
         <div class="row cfg-row">
           <span data-app-version aria-label="アプリのバージョン"></span>
@@ -321,7 +310,19 @@
   </div>
 </div>
 
-<script type="module" src="scripts/app/main.js"></script>
-<script type="module" src="scripts/app/swBootstrap.js?v=5.117"></script>
+<dialog id="learningRestoreDialog" class="info-dialog" aria-labelledby="learningRestoreTitle">
+  <form method="dialog" class="info-dialog__form">
+    <h3 id="learningRestoreTitle">学習データを復元</h3>
+    <div id="learningRestoreDetails" class="info-dialog__body"></div>
+    <p>この端末の学習データと学習設定が、バックアップの内容に置き換わります。</p>
+    <div class="info-dialog__actions">
+      <button class="btn" autofocus>キャンセル</button>
+      <button id="confirmLearningRestore" class="btn btn--primary" type="button">置き換えて復元</button>
+    </div>
+  </form>
+</dialog>
+
+<script type="module" src="scripts/app/startup.js"></script>
+<script type="module" src="scripts/app/swBootstrap.js?v=5.118"></script>
 </body>
 </html>

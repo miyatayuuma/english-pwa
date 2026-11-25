@@ -385,7 +385,8 @@ browserTest('the current PWA worker clears old caches and serves reorder metadat
   const fixture = basicFixture(3);
   currentMetadata = { schemaVersion: 2, items: [fixture.metadataItem] };
   await page.evaluate(async () => {
-    await caches.open('v5.54');
+    await caches.open(`english-pwa:${location.origin}/:v5.54`);
+    await caches.open('unrelated-app-cache');
     await navigator.serviceWorker.register('/sw.js');
     await navigator.serviceWorker.ready;
   });
@@ -397,7 +398,9 @@ browserTest('the current PWA worker clears old caches and serves reorder metadat
   });
   const online = await page.evaluate(async () => (await fetch('/data/reorder-v1.json')).json());
   assert.equal(online.schemaVersion, 2);
-  assert.equal(await page.evaluate(() => caches.keys().then((keys) => keys.includes('v5.54'))), false);
+  const cacheKeys = await page.evaluate(() => caches.keys());
+  assert.equal(cacheKeys.some(key => key.endsWith(':v5.54')), false);
+  assert.ok(cacheKeys.includes('unrelated-app-cache'));
   await context.setOffline(true);
   const offline = await page.evaluate(async () => (await fetch('/data/reorder-v1.json')).json());
   assert.equal(offline.items[0].itemId, fixture.item.id);

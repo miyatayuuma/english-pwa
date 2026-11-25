@@ -1,5 +1,20 @@
 import { isNativePlatform } from '../native/runtimePlatform.js';
 
+let registrationRequest;
+
+export function ensureServiceWorkerRegistration() {
+  if (isNativePlatform() || !('serviceWorker' in navigator)) return null;
+  return registrationRequest ??= navigator.serviceWorker.register('./sw.js')
+    .then(registration => {
+      registration.update().catch(() => {});
+      return registration;
+    })
+    .catch(() => {
+      registrationRequest = null;
+      return null;
+    });
+}
+
 export function createSwUpdatePrompt(){
   let hasPromptedReload=false;
   let swRegistration=null;
@@ -167,21 +182,22 @@ export function createSwUpdatePrompt(){
       getCurrentViewState,
       showUpdatePrompt:()=>showUpdatePromptWithFooterDialog({ toastFn }),
     };
-    window.addEventListener('load', () => {
-      swRegistrationPromise = navigator.serviceWorker
-        .register('./sw.js')
-        .then((registration) => {
+    const register = () => {
+      swRegistrationPromise = ensureServiceWorkerRegistration()
+        ?.then((registration) => {
+          if(!registration) return null;
           swRegistration = registration;
           handleServiceWorker(registration, registration.installing || registration.waiting);
           registration.addEventListener('updatefound', () => handleServiceWorker(registration, registration.installing));
-          registration.update().catch(() => {});
           return registration;
         })
         .catch(() => {
           swRegistration=null;
           return null;
         });
-    });
+    };
+    if (globalThis.document?.readyState === 'complete') register();
+    else window.addEventListener('load', register, { once: true });
   }
 
   function handleViewStateChange(nextViewState){

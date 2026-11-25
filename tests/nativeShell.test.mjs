@@ -86,7 +86,7 @@ test('async bridge acquisition cannot assimilate a Capacitor Proxy as a thenable
 });
 
 test('staging is deterministic, loads real runtime data and excludes repository tooling', async () => {
-  execFileSync(process.execPath, ['scripts/native/stage-web.mjs']);
+  execFileSync(process.execPath, ['scripts/build/stage-runtime.mjs', 'native']);
   async function inventory(directory, prefix = '') {
     const result = [];
     for (const entry of await fs.readdir(directory, { withFileTypes: true })) {
@@ -106,6 +106,6 @@ test('staging is deterministic, loads real runtime data and excludes repository 
   for (const file of first) assert.ok(!/(?:^sw\.js$|node_modules|^android\/|^tests\/|audit|\.mjs$|\.py$|package|\.github)/.test(file), file);
   assert.equal(await fs.readFile('native-web/index.html', 'utf8'), await fs.readFile('index.html', 'utf8'));
   assert.equal(await fs.readFile('native-web/scripts/native/capacitor-core.js', 'utf8'), await fs.readFile('node_modules/@capacitor/core/dist/index.js', 'utf8'));
-  execFileSync(process.execPath, ['scripts/native/stage-web.mjs']);
+  execFileSync(process.execPath, ['scripts/build/stage-runtime.mjs', 'native']);
   assert.deepEqual(await inventory('native-web'), first);
 });

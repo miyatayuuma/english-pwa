@@ -10,7 +10,7 @@ import { execFileSync } from "node:child_process";
 import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, isAbsolute, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { lintRecommendedPrompt } from "./aggregate-japanese-prompt-authority-parallel-review.mjs";
+import { lintRecommendedPrompt } from "./japanesePromptLint.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const AUDIT_REL = "data/audits/vocabulary-japanese-prompt-authority-reconciliation";
