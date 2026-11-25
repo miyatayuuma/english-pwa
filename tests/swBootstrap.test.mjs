@@ -10,14 +10,17 @@ const worker = read('sw.js');
 const assets = JSON.parse(read('runtime-assets.json'));
 const appVersion = read('scripts/version.js').match(/APP_VERSION\s*=\s*'v(\d+\.\d+)'/)?.[1];
 
-test('a versioned bootstrap escapes stale cache-first workers and registers updates', () => {
+test('the standalone bootstrap checks for updates independently of app modules', () => {
   assert.ok(appVersion);
-  assert.ok(index.includes(`swBootstrap.js?v=${appVersion}`));
-  assert.ok(bootstrap.includes(`swUpdatePrompt.js?v=${appVersion}`));
-  assert.match(bootstrap, /ensureServiceWorkerRegistration\(\)/);
+  const loader = `<script defer src="scripts/app/swBootstrap.js?v=${appVersion}"`;
+  assert.ok(index.includes(loader));
+  assert.ok(read('recover.html').includes(loader));
+  assert.match(bootstrap, /register\('\.\/sw\.js', \{ updateViaCache: 'none' \}\)/);
+  assert.doesNotMatch(bootstrap, /^import\s/m);
   assert.ok(worker.includes(`version.js?v=${appVersion}`));
   assert.ok(assets.includes(`./scripts/app/swBootstrap.js?v=${appVersion}`));
   assert.ok(assets.includes(`./scripts/app/swUpdatePrompt.js?v=${appVersion}`));
+  assert.ok(assets.includes('./recover.html'));
 });
 
 test('the worker and both builds share the runtime graph with no audit assets', () => {

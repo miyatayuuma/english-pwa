@@ -72,7 +72,7 @@ import { createLevelStateManager, LEVEL_CHOICES, retainHighestHintStageUsed } fr
 import { createViewStateController, VIEW_HOME, VIEW_STUDYING, VIEW_REVIEW_COMPLETE } from './viewState.js';
 import { createGoalController, normalizeGoalValue } from './goalController.js';
 import { createFilterController } from './filterController.js';
-import { createSwUpdatePrompt } from './swUpdatePrompt.js?v=5.118';
+import { createSwUpdatePrompt } from './swUpdatePrompt.js?v=5.119';
 import {
   consumeFocusedSessionPending,
   FOCUSED_SESSION_PREPARE_EVENT,

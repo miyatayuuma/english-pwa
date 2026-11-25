@@ -8,13 +8,18 @@
   <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png">
   <link rel="stylesheet" href="styles/app.css">
   <meta name="theme-color" content="#0b0e1a" />
+  <script defer src="scripts/app/swBootstrap.js?v=5.119"></script>
 </head>
 <body>
-<div id="loadingOverlay" role="presentation" aria-hidden="true">
-  <div class="loaderAura">
+<div id="loadingOverlay">
+  <div class="loaderAura" aria-hidden="true">
     <div class="loaderRing"></div>
     <div class="loaderCore"></div>
     <div class="loaderDots" aria-hidden="true"><span></span><span></span><span></span></div>
+  </div>
+  <div id="workerRecovery" class="worker-recovery" hidden>
+    <p role="status">新しいバージョンの読み込みを待っています。</p>
+    <button class="btn" type="button">もう一度確認</button>
   </div>
 </div>
 
@@ -323,6 +328,5 @@
 </dialog>
 
 <script type="module" src="scripts/app/startup.js"></script>
-<script type="module" src="scripts/app/swBootstrap.js?v=5.118"></script>
 </body>
 </html>

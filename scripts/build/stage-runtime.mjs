@@ -67,6 +67,7 @@ async function include(relativePath, search = '') {
 for (const rootAsset of roots) await include(rootAsset);
 
 if (!native) {
+  await include('recover.html');
   const assets = [...files, ...versionedUrls].sort().map(asset => './' + asset);
   const manifest = JSON.stringify(assets, null, 2) + '\n';
   const manifestPath = path.join(root, manifestName);

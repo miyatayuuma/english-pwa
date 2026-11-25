@@ -4,6 +4,7 @@ let registrationRequest;
 
 export function ensureServiceWorkerRegistration() {
   if (isNativePlatform() || !('serviceWorker' in navigator)) return null;
+  if (globalThis.__ENGLISH_PWA_SW_BOOTSTRAP__) return globalThis.__ENGLISH_PWA_SW_BOOTSTRAP__.registration;
   return registrationRequest ??= navigator.serviceWorker.register('./sw.js')
     .then(registration => {
       registration.update().catch(() => {});
