@@ -1,6 +1,7 @@
 import test, { after, before } from 'node:test';
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
+import { execFileSync } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 import { chromium, devices } from 'playwright';
 
@@ -9,14 +10,18 @@ let server;
 let browser;
 let source;
 let destination;
-const type = { js: 'text/javascript', json: 'application/json', css: 'text/css', html: 'text/html' };
+const type = {
+  js: 'text/javascript', json: 'application/json', webmanifest: 'application/manifest+json',
+  css: 'text/css', html: 'text/html', png: 'image/png',
+};
 
 before(async () => {
+  execFileSync(process.execPath, ['scripts/build/stage-runtime.mjs', 'web'], { cwd: root });
   server = createServer(async (request, response) => {
     const path = new URL(request.url, 'http://localhost').pathname.replace(/^\/practice\//, '/');
     const name = path === '/' ? '/index.html' : path;
     try {
-      const body = await readFile(new URL('.' + name, root));
+      const body = await readFile(new URL('web-dist' + name, root));
       response.setHeader('Content-Type', type[name.split('.').at(-1)] || 'application/octet-stream');
       response.end(body);
     } catch {
@@ -87,7 +92,7 @@ test('Android viewport exports, previews, cancels and restores across origins wi
     });
     await page.goto(source);
     await waitForHome(page);
-    const relationship = () => page.evaluate(async () => {
+    const relationship = () => page.evaluate(() => {
       const state = window.__RELATIONSHIP_GAME_STATE__();
       return state.relationships.map(row => [row.id, row.rank, row.friendshipPoints, row.intimacy]);
     });
@@ -119,6 +124,17 @@ test('Android viewport exports, previews, cancels and restores across origins wi
     await page.locator('#confirmLearningRestore').click();
     await page.waitForFunction(() => document.querySelector('#learningBackupStatus').textContent.includes('別のタブ'));
     assert.equal(await page.evaluate(() => localStorage.getItem('itemLevelV1')), null);
+    await secondTab.locator('#btnCfg').click();
+    await selectBackup(page, first);
+    await selectBackup(secondTab, first);
+    await Promise.all([
+      page.locator('#confirmLearningRestore').click(),
+      secondTab.locator('#confirmLearningRestore').click(),
+    ]);
+    for (const tab of [page, secondTab]) {
+      await tab.waitForFunction(() => document.querySelector('#learningBackupStatus').textContent.includes('別のタブ'));
+      assert.equal(await tab.evaluate(() => localStorage.getItem('itemLevelV1')), null);
+    }
     await secondTab.close();
 
     for (let i = 0; i < 2; i++) {
@@ -143,5 +159,39 @@ test('Android viewport exports, previews, cancels and restores across origins wi
     assert.equal(await page.evaluate(() => localStorage.getItem('englishPwaLearningRestoreRecoveryV1')), null);
   } finally {
     await context.close();
+  }
+});
+
+test('staged PWA launches and exports while offline at both root and subdirectory scopes', async t => {
+  if (!browser) return t.skip('Chromium unavailable');
+  for (const url of [source, destination]) {
+    const context = await browser.newContext({ ...devices['Pixel 7'], reducedMotion: 'reduce' });
+    try {
+      const page = await context.newPage();
+      await page.goto(url);
+      await waitForHome(page);
+      await page.waitForFunction(() => !!navigator.serviceWorker.controller);
+      assert.deepEqual(await page.evaluate(async () => {
+        const registration = await navigator.serviceWorker.ready;
+        const manifestUrl = document.querySelector('link[rel="manifest"]').href;
+        const manifest = await (await fetch(manifestUrl)).json();
+        return [registration.scope, new URL(manifest.scope, manifestUrl).href, new URL(manifest.start_url, manifestUrl).href];
+      }), [url, url, url]);
+      assert.equal((await page.request.get(url + 'data/vocabulary-v3-paraphrase-audit.json')).status(), 404);
+      assert.equal((await page.request.get(url + 'tests/learningBackup.test.mjs')).status(), 404);
+      assert.equal((await page.request.get(url + 'scripts/native/capacitor-core.js')).status(), 404);
+      await context.setOffline(true);
+      await page.reload();
+      await waitForHome(page);
+      assert.equal(await page.evaluate(async () =>
+        (await fetch('./Bill.png')).ok && (await fetch('./data/reorder-v1.json')).ok
+      ), true);
+      await page.locator('#btnCfg').click();
+      const offlineBackup = JSON.parse(await downloadBackup(page));
+      assert.equal(offlineBackup.schemaVersion, 1);
+      assert.equal(offlineBackup.data.itemLevelV1, null);
+    } finally {
+      await context.close();
+    }
   }
 });

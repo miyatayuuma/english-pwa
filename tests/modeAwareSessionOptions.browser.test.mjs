@@ -191,12 +191,22 @@ for(const [from,to] of [['read','compose'],['compose','read']]) browserTest(`rel
 });
 for(const [from,to] of [['read','compose'],['compose','read']]) browserTest(`reload ${from} to ${to}: waits for delayed main boot before consuming intent`,async t=>{
   const {page,context,errors}=await setup({method:from});
-  let releaseBoot;
-  const bootGate=new Promise(resolve=>{releaseBoot=resolve;});
   try{
-    // Main publishes ALL_ITEMS before awaiting SRS; relationship readiness can
-    // therefore precede the final boot queue reset on a real network.
-    await context.route('**/data/srs.json',async route=>{await bootGate;await route.fulfill({contentType:'application/json',body:'[]'});});
+    // Hold the main runtime's character voice-data request. The roster loads
+    // the same data separately and can become ready while main is still booting.
+    await page.addInitScript(() => {
+      if (sessionStorage.getItem('__delayedMainBoot')) return;
+      sessionStorage.setItem('__delayedMainBoot', '1');
+      const originalFetch = window.fetch;
+      window.fetch = (url, options) => {
+        if (url === './data/characters.json' && options?.cache === 'no-store') {
+          return new Promise(resolve => {
+            window.__releaseMainBoot = () => resolve(originalFetch(url, options));
+          });
+        }
+        return originalFetch(url, options);
+      };
+    });
     await open(page,from);await page.locator(`button[data-game-method="${to}"]`).click();
     await page.locator('[data-session-count="5"]').click();
     await Promise.all([page.waitForEvent('load'),page.locator('#playOptionsStart').click()]);
@@ -208,7 +218,7 @@ for(const [from,to] of [['read','compose'],['compose','read']]) browserTest(`rel
     assert.equal(await page.evaluate(()=>Number(sessionStorage.getItem('__setupLaunches')||0)),0);
     assert.ok(await page.evaluate(()=>sessionStorage.getItem('englishPwaSessionSetupHandoff')));
     assert.equal(await page.locator('#studyView').isHidden(),true);
-    releaseBoot();await ready(page);await started(page,5,to);
+    await page.evaluate(()=>window.__releaseMainBoot());await ready(page);await started(page,5,to);
     await page.waitForTimeout(200);
     assert.equal(await page.locator('#studyView').isHidden(),false,'late boot cannot reset the started session');
     assert.equal(Number(await page.locator('#statProgressTotal').textContent()),5);
@@ -218,7 +228,7 @@ for(const [from,to] of [['read','compose'],['compose','read']]) browserTest(`rel
     await page.reload();await ready(page);
     assert.equal(await page.locator('#studyView').isHidden(),true);
     assert.equal(await page.evaluate(()=>Number(sessionStorage.getItem('__setupLaunches'))),1);
-  }finally{releaseBoot();await context.close();}
+  }finally{await context.close();}
 });
 browserTest('vocabulary draft preview is side effect free and Start uses independent 12-card authority',async t=>{
   const {page,context,errors}=await setup();try{

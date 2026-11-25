@@ -15,7 +15,9 @@
     "vocab:validate": "node scripts/vocabulary/validate-vocabulary-v3.mjs --check-report && node scripts/vocabulary/validate-vocabulary-grammar-role.mjs && node scripts/vocabulary/validate-source-sentence-integrity.mjs && node scripts/vocabulary/validate-final-admission-occurrences.mjs && node scripts/vocabulary/validate-final-admission-materialization.mjs && node scripts/vocabulary/validate-meaning-canonical-audit.mjs --check-production && node scripts/vocabulary/validate-japanese-prompt-authority-materialization.mjs",
     "vocab:sync-derived": "node scripts/vocabulary/validate-vocabulary-v3.mjs && node scripts/vocabulary/validate-final-admission-materialization.mjs --sync-inventory",
     "vocab:validate-admission-occurrences": "node scripts/vocabulary/validate-final-admission-occurrences.mjs",
-    "native:stage": "node scripts/native/stage-web.mjs",
+    "web:manifest": "node scripts/build/stage-runtime.mjs manifest",
+    "web:stage": "node scripts/build/stage-runtime.mjs web",
+    "native:stage": "node scripts/build/stage-runtime.mjs native",
     "native:sync": "npm run native:stage && cap sync android",
     "native:build": "npm run native:sync && cd android && ./gradlew assembleDebug"
   },

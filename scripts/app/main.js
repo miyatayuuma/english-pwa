@@ -72,7 +72,7 @@ import { createLevelStateManager, LEVEL_CHOICES, retainHighestHintStageUsed } fr
 import { createViewStateController, VIEW_HOME, VIEW_STUDYING, VIEW_REVIEW_COMPLETE } from './viewState.js';
 import { createGoalController, normalizeGoalValue } from './goalController.js';
 import { createFilterController } from './filterController.js';
-import { createSwUpdatePrompt } from './swUpdatePrompt.js';
+import { createSwUpdatePrompt } from './swUpdatePrompt.js?v=5.118';
 import {
   consumeFocusedSessionPending,
   FOCUSED_SESSION_PREPARE_EVENT,
@@ -2029,18 +2029,13 @@ function createAppRuntime(){
     el.dirStatus.textContent='保存済み';
   }
 
-  // GAS Bridge
-
-
-
   // Data
   const DATA_URL='./data/items.json';
   const CHARACTER_DATA_URL='./data/characters.json';
-  const ITEM_CACHE_NAME='items-v1';
   const ITEMS_BY_SECTION=new Map();
   let itemsLoadPromise=null;
   async function fetchJson(url){ const r=await fetch(url,{cache:'no-store'}); if(!r.ok) throw new Error(url+': '+r.status); return r.json(); }
-  window.ALL_ITEMS=[]; let SRS_MAP=new Map();
+  window.ALL_ITEMS=[];
   function rebuildSectionIndex(){
     ITEMS_BY_SECTION.clear();
     for(const it of window.ALL_ITEMS){
@@ -2080,44 +2075,6 @@ function createAppRuntime(){
     }
     updateHeaderStats();
   }
-  function applyItemsData(items,{refreshPicker=false}={}){
-    window.ALL_ITEMS=Array.isArray(items)?items.slice():[];
-    itemLabelCache.clear();
-    rebuildSectionIndex();
-    if(refreshPicker) updateSectionOptions();
-    updateHeaderStats();
-  }
-  async function loadItemsOnce(url){
-    let cache=null;
-    if('caches' in window){
-      try{ cache=await caches.open(ITEM_CACHE_NAME); }catch(_){ cache=null; }
-    }
-    let resp=cache?await cache.match(url):null;
-    if(!resp){
-      resp=await fetch(url,{cache:'no-cache'});
-      if(!resp.ok) throw new Error(url+': '+resp.status);
-      if(cache){
-        try{ await cache.put(url, resp.clone()); }catch(_){ }
-      }
-    }
-    let data;
-    try{
-      data=await resp.json();
-    }catch(err){
-      console.error('Failed to parse items data', err);
-      toast('items.json parse failed');
-      throw err;
-    }
-    if(cache){
-      fetch(url,{cache:'no-cache'}).then(async fresh=>{
-        if(!fresh.ok) return;
-        try{ await cache.put(url, fresh.clone()); }catch(_){ }
-        const latest=await fresh.json();
-        applyItemsData(latest,{refreshPicker:true});
-      }).catch(()=>{});
-    }
-    return data;
-  }
   async function ensureItemsLoaded(){
     if(window.ALL_ITEMS.length){
       if(!ITEMS_BY_SECTION.size) rebuildSectionIndex();
@@ -2125,8 +2082,12 @@ function createAppRuntime(){
     }
     if(!itemsLoadPromise){
       itemsLoadPromise=(async()=>{
-        const data=await loadItemsOnce(DATA_URL);
-        applyItemsData(data);
+        const data=await fetchJson(DATA_URL);
+        if(!Array.isArray(data)) throw new Error('items.json does not contain a list');
+        window.ALL_ITEMS=data.slice();
+        itemLabelCache.clear();
+        rebuildSectionIndex();
+        updateHeaderStats();
         return window.ALL_ITEMS;
       })().catch(err=>{ itemsLoadPromise=null; throw err; });
     }
@@ -2142,10 +2103,6 @@ function createAppRuntime(){
         characterVoiceData={characters:[]};
         speechController?.setCharacterVoiceData?.(characterVoiceData);
       }
-    }
-    if(!SRS_MAP.size){
-      try{ const arr=await fetchJson('./data/srs.json'); const m=new Map(); for(const x of arr) m.set(x.id,x); SRS_MAP=m; }
-      catch(_){ SRS_MAP=new Map(); }
     }
   }
 

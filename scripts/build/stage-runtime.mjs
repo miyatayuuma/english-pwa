@@ -1,14 +1,19 @@
-import { readFile, copyFile, mkdir, rm } from 'node:fs/promises';
+import { readFile, copyFile, mkdir, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { init, parse } from 'es-module-lexer';
 
+const target = process.argv[2];
+if (!['web', 'native', 'manifest'].includes(target)) throw new Error('Expected web, native, or manifest');
+const native = target === 'native';
+const root = fileURLToPath(new URL('../../', import.meta.url));
+const destination = path.join(root, native ? 'native-web' : 'web-dist');
+const manifestName = 'runtime-assets.json';
+const nativeBridge = 'scripts/native/capacitor-core.js';
+
 await init;
 
-const root = fileURLToPath(new URL('../../', import.meta.url));
-const destination = path.join(root, 'native-web');
-// Runtime data is an explicit allowlist. Audit reports, generators, tests,
-// repository metadata, node_modules and Android sources never enter webDir.
+// Files loaded outside the static HTML/ESM/CSS graph.
 const roots = [
   'index.html', 'contact.html', 'privacy.html', 'signup.html', 'terms.html',
   'manifest.webmanifest', 'scripts/version.js', 'scripts/native/nativeSpeech.js',
@@ -17,18 +22,21 @@ const roots = [
   'icons/icon-192.png', 'icons/icon-512.png',
   'icons/maskable-192.png', 'icons/maskable-512.png',
 ];
-const characters = JSON.parse(await readFile(path.join(root, 'data/characters.json'), 'utf8'));
-const profiles = Array.isArray(characters) ? characters : characters.characters;
-if (!Array.isArray(profiles)) throw new Error('Unknown character data schema');
-for (const profile of profiles) if (profile.name) roots.push(`${profile.name}.png`);
+const { characters } = JSON.parse(await readFile(path.join(root, 'data/characters.json'), 'utf8'));
+if (!Array.isArray(characters)) throw new Error('Unknown character data schema');
+for (const profile of characters) if (profile.name) roots.push(`${profile.name}.png`);
 
 const files = new Set();
-const sourcePath = (asset) => asset === 'scripts/native/capacitor-core.js'
+const versionedUrls = new Set();
+const sourcePath = asset => asset === nativeBridge
   ? path.join(root, 'node_modules/@capacitor/core/dist/index.js')
   : path.join(root, asset);
-async function include(relativePath) {
+
+async function include(relativePath, search = '') {
   const normalized = path.posix.normalize(relativePath);
   if (normalized.startsWith('../') || path.isAbsolute(normalized)) throw new Error(`Unsafe asset: ${normalized}`);
+  if (!native && normalized === nativeBridge) return;
+  if (search) versionedUrls.add(`${normalized}${search}`);
   if (files.has(normalized)) return;
   const bytes = await readFile(sourcePath(normalized));
   files.add(normalized);
@@ -37,8 +45,6 @@ async function include(relativePath) {
   const source = bytes.toString('utf8');
   const refs = [];
   if (extension === '.js') {
-    // Static ESM imports/exports and literal dynamic imports. No bundling or
-    // rewritten module specifiers; preserve the existing relative topology.
     const [imports] = parse(source);
     for (const dependency of imports) {
       if (dependency.d === -2) continue; // import.meta
@@ -51,16 +57,34 @@ async function include(relativePath) {
     for (const match of source.matchAll(/url\(\s*["']?([^"'\s)]+)["']?\s*\)/g)) refs.push(match[1]);
     for (const match of source.matchAll(/@import\s*["']([^"']+)["']/g)) refs.push(match[1]);
   }
+  const base = new URL(normalized, 'https://runtime.invalid/');
   for (const ref of refs) {
     if (/^(?:[a-z]+:|\/|#)/i.test(ref)) continue;
-    const asset = decodeURIComponent(ref.split(/[?#]/)[0]);
-    if (asset) await include(path.posix.join(path.posix.dirname(normalized), asset));
+    const url = new URL(ref, base);
+    await include(decodeURIComponent(url.pathname.slice(1)), url.search);
   }
 }
 for (const rootAsset of roots) await include(rootAsset);
+
+if (!native) {
+  const assets = [...files, ...versionedUrls].sort().map(asset => './' + asset);
+  const manifest = JSON.stringify(assets, null, 2) + '\n';
+  const manifestPath = path.join(root, manifestName);
+  if (target === 'manifest') {
+    await writeFile(manifestPath, manifest);
+    console.log(`Updated ${manifestName} (${assets.length} URLs).`);
+    process.exit(0);
+  }
+  if (await readFile(manifestPath, 'utf8') !== manifest) {
+    throw new Error('runtime-assets.json is stale. Run npm run web:manifest.');
+  }
+  files.add(manifestName);
+  files.add('sw.js');
+}
+
 await rm(destination, { recursive: true, force: true });
 for (const relativePath of [...files].sort()) {
   await mkdir(path.dirname(path.join(destination, relativePath)), { recursive: true });
   await copyFile(sourcePath(relativePath), path.join(destination, relativePath));
 }
-console.log(`Staged ${files.size} runtime assets (no Service Worker, build tools or audit reports).`);
+console.log(`Staged ${files.size} runtime files in ${path.basename(destination)}.`);

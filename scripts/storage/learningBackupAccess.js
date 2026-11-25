@@ -1,6 +1,7 @@
 import { hasPendingLearningRestore, recoverLearningRestore } from './learningBackup.js';
 
 const lockName = 'english-pwa-learning-data-v1';
+const transferLockName = lockName + ':transfer';
 let runtimeLock;
 let transferInProgress = false;
 
@@ -43,34 +44,33 @@ export async function prepareLearningStorage() {
 export async function withLearningDataAccess(operation, { reload = false } = {}) {
   if (transferInProgress || !runtimeLock) throw new Error('この環境では学習データを操作できません。');
   transferInProgress = true;
-  const { release, done } = runtimeLock;
-  runtimeLock = undefined;
-  release();
-  let committed = false;
+  const locks = navigator.locks;
   try {
-    await done;
-    return await navigator.locks.request(lockName, { ifAvailable: true }, lock => {
-      if (!lock) throw new Error('別のタブで English PWA が開いています。閉じてからやり直してください。');
-      const result = operation();
-      if (reload) {
-        committed = true;
-        location.reload();
-        // Keep the storage exclusive until the old in-memory runtime is gone.
-        return new Promise(() => {});
+    // Only one tab can release its shared lock to attempt a transfer. A second
+    // tab keeps its shared lock and therefore still blocks the first transfer.
+    return await locks.request(transferLockName, { ifAvailable: true }, async transferLock => {
+      if (!transferLock) throw new Error('別のタブで学習データを操作中です。');
+      const { release, done } = runtimeLock;
+      runtimeLock = undefined;
+      release();
+      try {
+        await done;
+        return await locks.request(lockName, { ifAvailable: true }, lock => {
+          if (!lock) throw new Error('別のタブで English PWA が開いています。閉じてからやり直してください。');
+          const result = operation();
+          if (reload) {
+            location.reload();
+            // Keep storage exclusive until the old in-memory runtime is gone.
+            return new Promise(() => {});
+          }
+          return result;
+        });
+      } finally {
+        if (hasPendingLearningRestore(localStorage)) location.reload();
+        else await holdRuntimeLock(locks);
       }
-      return result;
     });
   } finally {
-    if (!committed) {
-      try {
-        if (hasPendingLearningRestore(localStorage)) {
-          location.reload();
-        } else {
-          await holdRuntimeLock(navigator.locks);
-        }
-      } finally {
-        transferInProgress = false;
-      }
-    }
+    transferInProgress = false;
   }
 }

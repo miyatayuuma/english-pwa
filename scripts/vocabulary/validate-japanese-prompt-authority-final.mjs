@@ -5,7 +5,7 @@ import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { lintRecommendedPrompt } from "./aggregate-japanese-prompt-authority-parallel-review.mjs";
+import { lintRecommendedPrompt } from "./japanesePromptLint.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const AUDIT = resolve(ROOT, "data/audits/vocabulary-japanese-prompt-authority-reconciliation");
