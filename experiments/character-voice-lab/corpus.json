@@ -1,0 +1,40 @@
+{
+  "version": "p35-original-en-v1",
+  "common": ["word-clear", "everyday", "emotion"],
+  "pilot": ["word-clear", "word-gaze", "word-lack", "word-flatter", "word-flatly", "word-former", "word-yield", "everyday", "long", "question", "emotion", "heteronyms", "read", "read-curated", "connected", "homophones"],
+  "utterances": [
+    {"id":"word-clear","kind":"単語","text":"Clear","check":"語頭 /kl/、語末の r 音"},
+    {"id":"word-gaze","kind":"単語","text":"Gaze","check":"語末 /z/。gays と同音。"},
+    {"id":"word-lack","kind":"単語","text":"Lack","check":"/æ/ と語末 /k/"},
+    {"id":"word-flatter","kind":"単語","text":"Flatter","check":"単独発話の /fl/ と母音。米音の /t/ はフラップ可。"},
+    {"id":"word-flatly","kind":"単語","text":"Flatly","check":"単独発話の /fl/ と /t.l/"},
+    {"id":"word-former","kind":"単語","text":"Former","check":"単独発話の /f/、米音では r 音"},
+    {"id":"word-yield","kind":"単語","text":"Yield","check":"/j/ と語末 /ld/"},
+    {"id":"everyday","kind":"文章","text":"I can meet you by the station after lunch.","check":"自然な区切りと、弱形の can"},
+    {"id":"long","kind":"文章","text":"Although the lights were already off when we got back, Maya waited by the gate because she had promised to return the key.","check":"従属節の区切り、脱落・反復、文末までの明瞭さ"},
+    {"id":"question","kind":"文章","text":"Did you leave the blue bag here, or should I look upstairs?","check":"did you の連結、二択を示す抑揚"},
+    {"id":"emotion","kind":"文章","text":"You found it? Oh, that's wonderful!","check":"前半の驚きから後半の喜びへの変化"},
+    {"id":"heteronyms","kind":"文章","text":"We need to record a new record before we present the present.","check":"record は動詞が第2音節、名詞が第1音節。present も動詞が第2、名詞が第1。"},
+    {"id":"read","kind":"文章","text":"I read it yesterday, but I'll read it again tomorrow.","check":"過去形 read /rɛd/、原形 read /riːd/"},
+    {"id":"read-curated","kind":"文章","variant":"Kokoro発音指定","compareAs":"read","text":"I read it yesterday, but I'll read it again tomorrow.","check":"Kokoroは先頭の read を /rɛd/ に指定。他2方式は同じ英文の自動発音。","kokoroPhonemes":"aɪ ɹˈɛd ɪt jˈɛstɚdˌeɪ, bˌʌt aɪl ɹˈiːd ɪɾ ɐɡˈɛn təmˈɑːɹoʊ."},
+    {"id":"connected","kind":"文章","text":"Could you give it to her? I could have done it myself.","check":"could you と give it の連結、to・her・have の弱形、myself の強勢"},
+    {"id":"homophones","kind":"文章","text":"I dyed the cloth blue before the campfire died down.","check":"dyed と died はどちらも /daɪd/。転写の綴りは音声品質の判定対象外。"}
+  ],
+  "dialogues": [
+    {"id":"umbrella","title":"忘れ物","turns":[
+      {"speaker":"bob","text":"I brought an umbrella this time. Actually, I brought two."},
+      {"speaker":"jennifer","text":"Good. Now, did you remember where we left the bike?"},
+      {"speaker":"bob","text":"I was hoping you'd remember that part."}
+    ]},
+    {"id":"reservation","title":"席の予約","turns":[
+      {"speaker":"nick","text":"I called ahead. They saved us a table by the window."},
+      {"speaker":"lisa","text":"That's lovely. Did you tell them we're bringing six friends?"},
+      {"speaker":"nick","text":"Let me make one more call."}
+    ]},
+    {"id":"bus","title":"バスを待ちながら","turns":[
+      {"speaker":"bill","text":"If the bus is late again, I'll wait here with you."},
+      {"speaker":"monica","text":"Really? I thought you had somewhere else to be."},
+      {"speaker":"bill","text":"It can wait. Are you warm enough?"}
+    ]}
+  ]
+}

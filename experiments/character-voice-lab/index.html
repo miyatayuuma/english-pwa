@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>キャラクターボイス試聴室 | English PWA</title>
+  <link rel="stylesheet" href="lab.css">
+</head>
+<body>
+  <header class="masthead">
+    <div class="frame top"><a href="#main" class="brand">English PWA <span>Voice Lab</span></a><a href="#pixel">Pixel 9 測定</a></div>
+    <div class="frame intro">
+      <h1>キャラクターボイス<br class="narrow">試聴室</h1>
+      <p>同じ英文を聴き比べて、発音の明瞭さと、声から伝わるキャラクターの個性を確かめる。</p>
+    </div>
+  </header>
+  <main id="main" class="frame">
+    <section aria-label="音声比較">
+      <div class="tabs" role="tablist" aria-label="比較方法">
+        <button id="tab-cast" role="tab" aria-selected="true" aria-controls="lab-panel" data-mode="cast">20人の声</button>
+        <button id="tab-models" role="tab" aria-selected="false" aria-controls="lab-panel" data-mode="models" tabindex="-1">モデル比較</button>
+        <button id="tab-dialogues" role="tab" aria-selected="false" aria-controls="lab-panel" data-mode="dialogues" tabindex="-1">二人の会話</button>
+      </div>
+      <div id="lab-panel" role="tabpanel" aria-labelledby="tab-cast" tabindex="0">
+        <div id="comparison"><p>試聴データを読み込んでいます。</p></div>
+        <div class="controls playback">
+          <p id="now-playing" role="status" aria-live="polite">聴きたい音声を選んでください。</p>
+          <audio id="player" controls preload="none" aria-label="試聴プレーヤー" hidden></audio>
+          <button type="button" id="stop" class="quiet" hidden>停止</button>
+        </div>
+        <div id="voices" class="voices"></div>
+      </div>
+    </section>
+    <section class="pixel" id="pixel" aria-labelledby="pixel-title">
+      <h2 id="pixel-title">Pixel 9 端末内合成</h2>
+      <p>ベンチマークを実行すると、端末でKokoroを動かして、初回準備・生成開始からWAV完成までの時間とRTFを記録します。初回はモデルなど約100 MB以上の通信が見込まれます。Wi-Fiで実行してください。</p>
+      <div class="controls field-group">
+        <label>実行方式
+          <select id="backend"><option value="wasm">WASM / q8（CPU）</option><option value="webgpu">WebGPU / fp32（約326 MBのモデル）</option></select>
+        </label>
+        <label>端末・条件メモ <input id="conditions" maxlength="240" placeholder="Pixel 9、機内モード、ASR停止など"></label>
+      </div>
+      <div class="controls actions">
+        <button type="button" id="bench-start" class="primary">モデルを取得して測定</button>
+        <button type="button" id="bench-cached" class="quiet" disabled>同じモデルで再測定</button>
+        <button type="button" id="bench-fresh" class="quiet" disabled>モデルを解放</button>
+        <button type="button" id="bench-export" class="quiet" disabled>結果を保存</button>
+      </div>
+      <p id="bench-status" role="status"></p>
+      <div id="bench-results"></div>
+      <audio id="bench-audio" controls preload="none" aria-label="端末内生成の最後の音声" hidden></audio>
+      <details>
+        <summary>実機での測り方</summary>
+        <ol>
+          <li>Wi-Fi接続で初回測定を実行し、結果を保存します。ネットワーク転送と初期化を含みます。ブラウザキャッシュが残っている場合は端末メモに記録します。</li>
+          <li>ページを開いたまま機内モードにし、Wi-Fiも切って「同じモデルで再測定」を実行します。さらにページ再読込後の測定で、永続キャッシュからの起動可否を別に確認します。</li>
+          <li>発熱・消費電力は同条件の連続運転で端末側から記録します。ASR競合はAndroid版・Web版の実際のASRを動かして別途A/B測定します。ブラウザから端末全体のRAMや温度は取得できません。</li>
+        </ol>
+      </details>
+    </section>
+  </main>
+  <footer class="frame">P3.5 研究試作 / 自作評価文を使用</footer>
+  <template id="voice-card">
+    <article class="voice">
+      <div class="identity">
+        <img width="64" height="64" alt="">
+        <div class="name-wrap"><h3></h3><p class="meta"></p></div>
+        <button type="button" class="play"></button>
+      </div>
+      <details><summary>声のプロフィール</summary><dl></dl></details>
+    </article>
+  </template>
+  <script type="module" src="lab.js"></script>
+</body>
+</html>
