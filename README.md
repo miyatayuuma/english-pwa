@@ -23,6 +23,8 @@ npm run native:sync
 
 Capacitor は `native-web/` を Android のアセットへ同期します。ブラウザと Android で学習ロジックを共用し、音声認識・TTS・音源フォルダ・バックアップのファイル保存にはそれぞれの実行環境の API を使います。Android の診断手順は [Android の音声と検証](docs/android-native-speech.md) を参照してください。
 
+旧版が読み込み中のまま止まる場合は、同じブラウザで配信先の `recover.html` を開きます。新しい配信ファイルを準備して学習画面に戻り、端末内の学習データと音源フォルダの権限はそのまま使えます。
+
 ## 構成
 
 | 場所 | 責務 |

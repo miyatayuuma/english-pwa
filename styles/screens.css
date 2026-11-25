@@ -1,4 +1,6 @@
     #loadingOverlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(120% 120% at 50% 45%,rgba(40,54,94,.88),rgba(11,14,26,.96));z-index:100000;transition:opacity .6s ease,visibility .6s ease;opacity:1;visibility:visible;pointer-events:auto}
+    #loadingOverlay:has(.worker-recovery:not([hidden])){flex-direction:column;gap:42px}
+    .worker-recovery,.worker-recovery-page{padding:16px;text-align:center}
     #loadingOverlay.hidden{opacity:0;visibility:hidden;pointer-events:none}
     #loadingOverlay .loaderAura{position:relative;width:120px;height:120px;display:flex;align-items:center;justify-content:center}
     #loadingOverlay .loaderCore{width:78px;height:78px;border-radius:999px;background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.55),rgba(98,213,255,.25) 45%,rgba(11,14,26,0) 75%);box-shadow:0 0 32px rgba(98,213,255,.35);animation:loaderSpin 3.8s linear infinite;filter:blur(.3px)}
