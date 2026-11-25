@@ -8,9 +8,11 @@
   const version = entry && new URL(entry.src).searchParams.get('v');
   const registration = serviceWorker.register('./sw.js', { updateViaCache: 'none' })
     .then(value => {
+      if (!value) return null;
       value.update().catch(() => {});
       return value;
-    }, () => null);
+    })
+    .catch(() => null);
 
   const ready = controller && version ? waitForMatchingWorker(controller, `v${version}`) : Promise.resolve();
   globalThis.__ENGLISH_PWA_SW_BOOTSTRAP__ = { registration, ready };
