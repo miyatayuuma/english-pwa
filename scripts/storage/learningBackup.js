@@ -31,7 +31,11 @@ const optionalFields = (value, fields) => isRecord(value)
   && Object.entries(fields).every(([key, validate]) => !Object.hasOwn(value, key) || validate(value[key]));
 const ids = value => Array.isArray(value) && value.every(validId);
 const date = value => typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value);
-const iso = value => typeof value === 'string' && Number.isFinite(Date.parse(value));
+function iso(value) {
+  if (typeof value !== 'string') return false;
+  const timestamp = Date.parse(value);
+  return Number.isFinite(timestamp) && new Date(timestamp).toISOString() === value;
+}
 const numericSetting = value => typeof value === 'string' && value.trim() !== '' && nonnegative(Number(value));
 const reviewFields = { nextDueAt: nonnegative, stability: nonnegative, difficulty: nonnegative, intervalMs: nonnegative };
 const level = value => optionalFields(value, {
@@ -168,8 +172,9 @@ export async function loadBackupCurriculum() {
 export function previewLearningBackup(backup, curriculum) {
   const { data } = backup;
   const levelIds = Object.keys(data[LEVEL_STATE] || {});
-  const sentenceIds = levelIds.filter(id => !id.startsWith('vocab:'));
-  const vocabularyIds = levelIds.filter(id => id.startsWith('vocab:'));
+  const isVocabularyId = id => /^(?:word|phrase|duo|vocab):/.test(id);
+  const sentenceIds = levelIds.filter(id => !isVocabularyId(id));
+  const vocabularyIds = levelIds.filter(isVocabularyId);
   const outstanding = (known, ...lists) => [...new Set(lists.flat())].filter(id => !known.has(id)).length;
   const log = Object.values(data[STUDY_LOG] || {});
   return {

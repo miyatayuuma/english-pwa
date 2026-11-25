@@ -13,6 +13,7 @@ const learning = {
       review: { nextDueAt: 1770000000000, stability: 2, difficulty: 4, intervalMs: 15000 } },
     'vocab:00001': { last: 3, best: 3, nextDueAt: 1770000000000 },
     'vocab:old': { last: 2, best: 3, updatedAt: 1730000000000 },
+    'duo:1:4': { last: 2, best: 2 },
   }),
   studyLogV1: JSON.stringify({ '2026-11-25': { passes: 10, modes: { read: { passes: 10 } },
     session_closure: { cardsDone: 10, attempts: 12, reason: 'completed', failRate: 0.167 } } }),
@@ -65,8 +66,8 @@ test('full replacement round-trips and retains historical IDs without combining 
     characters: { hash: curriculum.characters, currentIds: new Set(['bob']) },
   });
   assert.deepEqual(preview, {
-    sameCurriculum: false, sentenceCount: 1, vocabularyCount: 2, studyDays: 1, sessionSummaries: 1,
-    missingSentences: 1, missingVocabulary: 1, missingCharacters: 0,
+    sameCurriculum: false, sentenceCount: 1, vocabularyCount: 3, studyDays: 1, sessionSummaries: 1,
+    missingSentences: 1, missingVocabulary: 2, missingCharacters: 0,
   });
 });
 
@@ -75,6 +76,7 @@ test('invalid backups and failed recovery reservation leave storage unchanged', 
   const target = makeStorage(original, () => { throw new Error('quota'); });
   const backup = createLearningBackup(makeStorage(learning), metadata);
   assert.throws(() => parseLearningBackup('bad json'), /JSON/);
+  assert.throws(() => restoreLearningBackup(target, { ...backup, exportedAt: '1' }), /基本情報/);
   assert.throws(() => restoreLearningBackup(target, { ...backup, schemaVersion: 2 }), /バージョン/);
   assert.throws(() => restoreLearningBackup(target, { ...backup, data: { ...backup.data, itemLevelV1: [] } }), /形式/);
   assert.throws(() => restoreLearningBackup(target, { ...backup, data: { ...backup.data, appConfigV3: { apiKey: 'bad' } } }), /形式/);
