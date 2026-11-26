@@ -15,6 +15,7 @@ android {
         versionCode 1
         versionName 'P3.7'
         ndk { abiFilters targetAbi }
+        externalNativeBuild { cmake { targets 'kokoro_g2p' } }
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
 

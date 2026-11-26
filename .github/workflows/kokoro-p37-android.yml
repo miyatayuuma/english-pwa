@@ -49,6 +49,9 @@ jobs:
           python3 "$LAB/tests/verify_apk.py" "$apk"
           git rev-parse HEAD > pixel-kit/source-commit.txt
           cp "$LAB/README.md" "$LAB/P6-BRIDGE.md" pixel-kit/
+          espeak_license=$(find "$LAB/app/.cxx" -path "*/espeak-src/COPYING" -print -quit)
+          test -n "$espeak_license"
+          cp "$espeak_license" pixel-kit/eSpeak-NG-COPYING.txt
           (cd pixel-kit && sha256sum Kokoro-Pixel-Lab-P37.apk > SHA256SUMS)
       - uses: actions/upload-artifact@v4
         with:
