@@ -273,7 +273,7 @@ final class LabTests implements AutoCloseable {
                 "character", assets.voices.get(line.speaker).json(),
                 "phonemeSource", line.phonemes == null ? "espeak-ng" : "specified",
                 "phonemes", pcm.phonemes(), "modelPhonemes", pcm.modelPhonemes(), "tokenCount", pcm.tokenCount(),
-                "phonemeMs", pcm.phonemeMs(), "ortInputAndRunMs", pcm.inferenceMs(), "pcmMs", pcm.pcmMs(),
+                "phonemeMs", pcm.phonemeMs(), "ortInputMs", pcm.inputMs(), "inferenceMs", pcm.inferenceMs(), "pcmMs", pcm.pcmMs(),
                 "rawSeconds", pcm.rawSeconds(), "audioSeconds", pcm.seconds(),
                 "leadingQuietMs", pcm.leadingQuietFrames() * 1000.0 / KokoroEngine.RATE, "rtf", pcm.rtf(),
                 "clippedSamples", pcm.clipped(), "synthesisQueueMs", difference(pending.synthesisStarted, requested),

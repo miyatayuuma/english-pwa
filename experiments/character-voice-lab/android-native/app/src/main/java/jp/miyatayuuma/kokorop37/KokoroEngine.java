@@ -31,9 +31,9 @@ final class KokoroEngine implements AutoCloseable {
     }
 
     record Output(short[] pcm, String phonemes, String modelPhonemes, int tokenCount,
-                  double phonemeMs, double inferenceMs, double pcmMs,
+                  double phonemeMs, double inputMs, double inferenceMs, double pcmMs,
                   double rawSeconds, double seconds, int leadingQuietFrames, int clipped) {
-        double rtf() { return (phonemeMs + inferenceMs + pcmMs) / 1000 / seconds; }
+        double rtf() { return (phonemeMs + inputMs + inferenceMs + pcmMs) / 1000 / seconds; }
     }
 
     private final OrtEnvironment env = OrtEnvironment.getEnvironment();
@@ -124,17 +124,22 @@ final class KokoroEngine implements AutoCloseable {
         start = System.nanoTime();
         FloatBuffer samples;
         double inferenceMs;
+        double inputMs;
         try (OnnxTensor tokens = OnnxTensor.createTensor(env, LongBuffer.wrap(ids), new long[]{1, ids.length});
              OnnxTensor speaker = OnnxTensor.createTensor(env, style, new long[]{1, STYLE_COLUMNS});
-             OnnxTensor speed = OnnxTensor.createTensor(env, FloatBuffer.wrap(new float[]{voice.speed()}), new long[]{1});
-             OrtSession.Result output = session.run(Map.of(tokenInput, tokens, "style", speaker, "speed", speed))) {
-            inferenceMs = Results.elapsedMs(start);
+             OnnxTensor speed = OnnxTensor.createTensor(env, FloatBuffer.wrap(new float[]{voice.speed()}), new long[]{1})) {
+            var inputs = Map.of(tokenInput, tokens, "style", speaker, "speed", speed);
+            inputMs = Results.elapsedMs(start);
             start = System.nanoTime();
-            samples = ((OnnxTensor) output.get("waveform").orElseThrow()).getFloatBuffer();
+            try (OrtSession.Result output = session.run(inputs)) {
+                inferenceMs = Results.elapsedMs(start);
+                start = System.nanoTime();
+                samples = ((OnnxTensor) output.get("waveform").orElseThrow()).getFloatBuffer();
+            }
         }
         run.check();
         Pcm.Audio audio = Pcm.process(samples);
-        return new Output(audio.samples(), phonemes, modelPhonemes, symbols.length, phonemeMs, inferenceMs,
+        return new Output(audio.samples(), phonemes, modelPhonemes, symbols.length, phonemeMs, inputMs, inferenceMs,
                 Results.elapsedMs(start), audio.rawSeconds(), audio.samples().length / (double) RATE,
                 audio.leadingQuietFrames(), audio.clipped());
     }

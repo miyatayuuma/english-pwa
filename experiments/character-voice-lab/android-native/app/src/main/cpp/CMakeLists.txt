@@ -22,4 +22,4 @@ endif()
 
 add_library(kokoro_g2p SHARED phonemes.cpp)
 target_compile_features(kokoro_g2p PRIVATE cxx_std_17)
-target_link_libraries(kokoro_g2p PRIVATE espeak-ng)
+target_link_libraries(kokoro_g2p PRIVATE espeak-ng ucd)
