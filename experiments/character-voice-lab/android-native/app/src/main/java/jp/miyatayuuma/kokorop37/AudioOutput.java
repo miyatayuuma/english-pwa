@@ -35,14 +35,19 @@ final class AudioOutput {
         this.manager = context.getSystemService(AudioManager.class);
     }
 
-    void halt(LabRun run) {
+    boolean halt(LabRun run) {
         synchronized (lock) {
-            if (owner != run) return;
+            if (owner != run) return false;
             if (activeTrack != null && activeTrack.getPlayState() == AudioTrack.PLAYSTATE_PLAYING) {
                 activeTrack.pause();
                 activeTrack.flush();
+                return true;
             }
-            if (activeMedia != null && activeMedia.isPlaying()) activeMedia.pause();
+            if (activeMedia != null && activeMedia.isPlaying()) {
+                activeMedia.pause();
+                return true;
+            }
+            return false;
         }
     }
 

@@ -34,7 +34,9 @@ Java_jp_miyatayuuma_kokorop37_Phonemizer_ipa(
     std::lock_guard<std::mutex> guard(espeak_lock);
     const char* voice = env->GetStringUTFChars(accent, nullptr);
     if (!voice) return nullptr;
-    const bool voice_ok = initialized && espeak_SetVoiceByName(voice) == EE_OK;
+    espeak_VOICE selector{};
+    selector.languages = voice;
+    const bool voice_ok = initialized && espeak_SetVoiceByProperties(&selector) == EE_OK;
     env->ReleaseStringUTFChars(accent, voice);
     if (!voice_ok) {
         fail(env, "eSpeak NG accent unavailable");

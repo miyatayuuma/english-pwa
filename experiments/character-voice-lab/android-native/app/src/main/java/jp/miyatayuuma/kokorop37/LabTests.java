@@ -232,6 +232,10 @@ final class LabTests implements AutoCloseable {
             waitFor(producer);
         } finally {
             producer.cancel(true);
+            if (pending != null && !pending.playback.isDone()) {
+                run.stop("dialogue-ended-with-pending-audio");
+                audio.halt(run);
+            }
             report.put("conversationWallMs", Results.elapsedMs(begun));
             report.put("conversationCompletedUtterances", rows.length() - before);
         }

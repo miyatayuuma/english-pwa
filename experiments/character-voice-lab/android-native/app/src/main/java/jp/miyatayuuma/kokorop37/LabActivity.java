@@ -193,21 +193,22 @@ public final class LabActivity extends Activity {
 
     @Override public void onRequestPermissionsResult(int request, String[] permissions, int[] grants) {
         super.onRequestPermissionsResult(request, permissions, grants);
-        if (request == MIC_PERMISSION && grants.length > 0 && grants[0] == PackageManager.PERMISSION_GRANTED
-                && hasWindowFocus()) beginMic();
+        if (request == MIC_PERMISSION && grants.length > 0 && grants[0] == PackageManager.PERMISSION_GRANTED) beginMic();
     }
 
     private void beginMic() {
         if (micReport != null || destroyed) return;
         micStarted = System.nanoTime();
         LabRun interrupted = active;
+        boolean playbackHalted = false;
         if (interrupted != null) {
             interrupted.stop("microphone-interruption");
-            audio.halt(interrupted);
+            playbackHalted = audio.halt(interrupted);
         }
         asrFinal = false;
         micReport = Results.object("type", "asr-switch", "startedAt", Results.timestamp(), "mode", "on-device",
-                "interruptedRun", interrupted != null, "haltReturnMs", Results.elapsedMs(micStarted));
+                "interruptedRun", interrupted != null, "playbackHalted", playbackHalted,
+                "haltReturnMs", Results.elapsedMs(micStarted));
         JSONObject identity = micReport;
         controls();
         status.setText("再生を停止しました。マイクを準備中");

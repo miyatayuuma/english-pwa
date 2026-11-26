@@ -41,7 +41,7 @@ final class Phonemizer {
         String decoded = new String(ipa(segment.strip().getBytes(StandardCharsets.UTF_8), accent), StandardCharsets.UTF_8);
         decoded = LANGUAGE_MARKER.matcher(decoded).replaceAll("").strip();
         if (decoded.isEmpty()) return;
-        if (!output.isEmpty() && Character.isWhitespace(segment.charAt(0))) output.append(' ');
+        if (output.length() != 0 && Character.isWhitespace(segment.charAt(0))) output.append(' ');
         output.append(decoded);
     }
 

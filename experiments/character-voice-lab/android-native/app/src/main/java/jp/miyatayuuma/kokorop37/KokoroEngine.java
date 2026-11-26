@@ -49,7 +49,7 @@ final class KokoroEngine implements AutoCloseable {
     KokoroEngine(Config config, Path model, Path tokenizer, Path data) throws Exception {
         this.config = config;
         phonemizer = new Phonemizer(data);
-        JSONObject symbols = new JSONObject(Files.readString(tokenizer, StandardCharsets.UTF_8))
+        JSONObject symbols = new JSONObject(new String(Files.readAllBytes(tokenizer), StandardCharsets.UTF_8))
                 .getJSONObject("model").getJSONObject("vocab");
         for (var keys = symbols.keys(); keys.hasNext();) {
             String symbol = keys.next();
