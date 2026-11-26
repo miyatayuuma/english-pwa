@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Kokoro 会話音声ラボ</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="lab.js"></script>
+</head>
+<body>
+<main>
+  <header>
+    <p class="eyebrow">ENGLISH PWA / P3.6</p>
+    <h1>Kokoro 会話音声ラボ</h1>
+    <p>Pixel 9の端末内で合成し、会話の待ち時間と話し声を確認します。</p>
+  </header>
+  <section aria-labelledby="runtime-title">
+    <h2 id="runtime-title">合成方式</h2>
+    <div class="settings">
+      <label>バックエンド<select id="backend" disabled>
+        <option value="wasm:q8">WASM / q8</option>
+        <option value="wasm:q4">WASM / q4</option>
+        <option value="wasm:fp32">WASM / FP32</option>
+        <option value="webgpu:fp32">WebGPU / FP32</option>
+      </select></label>
+      <label>WASMスレッド<select id="threads">
+        <option>1</option><option>2</option><option selected>4</option><option>8</option>
+      </select></label>
+    </div>
+    <p id="capabilities" class="detail"></p>
+    <div class="actions">
+      <button id="warm" disabled>モデルを準備</button>
+      <button id="release" disabled>モデルを解放</button>
+      <button id="cache" disabled>端末に保存</button>
+    </div>
+    <p id="storage" class="detail" role="status"></p>
+  </section>
+  <section aria-labelledby="dialogue-title">
+    <h2 id="dialogue-title">会話と割り込み</h2>
+    <div class="settings">
+      <label>試験<select id="scenario">
+        <option value="short">短文 × 5（ウォーム測定）</option>
+        <option value="dialogue">4ターン（逐次到着）</option>
+        <option value="endurance">10分連続会話</option>
+        <option value="everyday">声の比較（日常文）</option>
+        <option value="read">発音比較（自動）</option>
+        <option value="read-curated">発音比較（先頭の read を指定）</option>
+      </select></label>
+      <label>話者（比較用）<select id="voice"></select></label>
+    </div>
+    <label class="check"><input type="checkbox" id="vad"> 声で割り込む（ヘッドホン使用）</label>
+    <div class="actions">
+      <button class="primary" id="run" disabled>合成して再生</button>
+      <button id="stop" disabled>停止</button>
+      <button id="talk" disabled>話す・割り込む</button>
+      <button id="reference" disabled>事前生成を試聴</button>
+    </div>
+    <label>割り込み後の聞き取り<select id="asr-mode">
+      <option value="mic">マイクで発話を検出</option>
+      <option value="browser">ブラウザ標準ASR（通信あり）</option>
+      <option value="local">英語の端末内ASR</option>
+    </select></label>
+    <button id="install" hidden>英語の端末内認識を準備</button>
+    <p id="asr" class="detail"></p>
+    <p id="status" class="status" role="status">試験環境を確認中</p>
+    <p id="line" lang="en"></p>
+  </section>
+  <section aria-labelledby="measure-title">
+    <h2 id="measure-title">測定結果</h2>
+    <dl id="summary"></dl>
+    <p class="detail">再生開始はブラウザの出力クロックによる推定です。</p>
+    <button id="export" disabled>結果をJSONで保存</button>
+  </section>
+</main>
+</body>
+</html>
