@@ -1,9 +1,10 @@
-"""Same Kokoro q8 weights, voices and public short text in native desktop ORT."""
+"""Same Kokoro model family, voices and public short text in native desktop ORT."""
 import argparse
 import json
 from pathlib import Path
 import platform
 import resource
+import subprocess
 import sys
 from tempfile import TemporaryDirectory
 import time
@@ -21,14 +22,35 @@ def load(path):
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def row_key(line):
+    return (line["speaker"], line["text"], bool(line.get("kokoroPhonemes")))
+
+
+def transcribe(vosk, model, samples, rate):
+    audio = subprocess.run(
+        ["ffmpeg", "-loglevel", "error", "-f", "f32le", "-ar", str(rate), "-ac", "1", "-i", "pipe:0",
+         "-f", "s16le", "-ar", "16000", "pipe:1"], input=samples.astype("<f4").tobytes(),
+        capture_output=True, check=True,
+    ).stdout
+    recognizer = vosk.KaldiRecognizer(model, 16000)
+    parts = []
+    for offset in range(0, len(audio), 4096):
+        if recognizer.AcceptWaveform(audio[offset:offset + 4096]):
+            parts.append(json.loads(recognizer.Result())["text"])
+    parts.append(json.loads(recognizer.FinalResult())["text"])
+    return " ".join(part for part in parts if part)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("site", type=Path)
     parser.add_argument("--threads", type=int, default=4)
     parser.add_argument("--dtype", choices=("q8", "q4", "fp32"), default="q8")
     parser.add_argument("--quality", action="store_true", help="Run additional US/UK, question and prosody samples")
+    parser.add_argument("--vosk-model", type=Path, help="Optional local English Vosk model for intelligibility checks")
     args = parser.parse_args()
-    runtime = load(ROOT / "runtime.json")
+    ort.disable_telemetry_events()
+    runtime = load(LAB / "kokoro-runtime.json")
     profiles = load(LAB / "profiles.json")
     voices = {voice["id"]: voice for voice in profiles["voices"]}
     public_short = load(ROOT / "scenarios.json")["short"][0]
@@ -55,10 +77,11 @@ def main():
         init_ms = (clock() - start) * 1000
         before = psutil.Process().memory_info().rss
         rows = []
+        probes = {}
         for index, line in enumerate(trials):
             voice = voices[line["speaker"]]
             started = clock()
-            phonemes = line.get("kokoroPhonemes") or kokoro.tokenizer.phonemize(line["text"], voice["accent"])
+            phonemes = line.get(runtime["pronunciationField"]) or kokoro.tokenizer.phonemize(line["text"], voice["accent"])
             samples, rate = kokoro.create(phonemes, voice["voice"], speed=voice["speed"], lang=voice["accent"],
                                           is_phonemes=True, trim=False)
             elapsed = (clock() - started) * 1000
@@ -73,9 +96,20 @@ def main():
                          "rtf": elapsed / 1000 / trimmed, "peak": float(np.max(np.abs(samples))),
                          "rmsDbfs": float(20 * np.log10(np.sqrt(np.mean(samples ** 2)))),
                          "clippedSamples": int(np.count_nonzero(np.abs(samples) >= 1))})
+            if args.vosk_model:
+                probes[row_key(line)] = (samples, rate)
         peak = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+        if args.vosk_model:
+            import vosk
+
+            vosk.SetLogLevel(-1)
+            recognizer = vosk.Model(str(args.vosk_model))
+            transcripts = {key: transcribe(vosk, recognizer, *probe) for key, probe in probes.items()}
+            for row, line in zip(rows, trials):
+                row["transcription"] = transcripts[row_key(line)]
         print(json.dumps({"platform": platform.platform(), "runtime": ort.__version__, "device": "desktop-native-cpu",
-                          "weights": args.dtype, "threads": args.threads, "modelRevision": runtime["revision"],
+                          "weights": args.dtype, "threads": args.threads, "telemetryEnabled": False,
+                          "modelRevision": runtime["revision"],
                           "profileVersion": profiles["version"], "initMs": init_ms, "residentBytes": before,
                           "peakRssBytes": peak if sys.platform == "darwin" else peak * 1024, "rows": rows}, indent=2))
 

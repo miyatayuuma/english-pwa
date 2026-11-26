@@ -14,7 +14,7 @@ from tempfile import TemporaryDirectory
 ROOT = Path(__file__).resolve().parent
 LAB = ROOT.parent
 FILES = (
-    "index.html", "style.css", "runtime.json", "scenarios.json", "lab.js", "audio.js",
+    "index.html", "style.css", "scenarios.json", "lab.js", "audio.js",
     "worker.js", "stream.js", "mic.js", "offline.js", "offline-sw.js",
 )
 LOCK = {
@@ -70,7 +70,7 @@ def sha256(path):
         return hashlib.file_digest(stream, "sha256").hexdigest()
 
 
-def fetch(item, output, cache):
+def fetch(item, output, cache, runtime):
     url, relative, dtype = item
     destination = output / relative
     path = cache / relative.name
@@ -82,7 +82,7 @@ def fetch(item, output, cache):
     if not valid(path):
         with TemporaryDirectory(dir=cache) as folder:
             partial_file = Path(folder) / path.name
-            subprocess.run(["curl", "-fsSL", "--retry", "2", "--max-time", "300",
+            subprocess.run(["curl", "-fsSL", "--retry", "2", "--max-time", "900",
                             "-o", str(partial_file), url], check=True)
             if not valid(partial_file):
                 raise ValueError(f"Unexpected asset checksum or size: {url}")
@@ -90,16 +90,21 @@ def fetch(item, output, cache):
     destination.parent.mkdir(parents=True, exist_ok=True)
     if path.name == "kokoro.web.js":
         original = path.read_text(encoding="utf-8")
-        if original.count(MARKER) != 1:
+        voice_url = f"https://huggingface.co/{runtime['model']}/resolve/main/voices/"
+        if original.count(MARKER) != 1 or original.count(voice_url) != 1:
             raise ValueError("Pinned Kokoro SDK adaptation point changed")
-        destination.write_text(original.replace(MARKER, ADAPTER, 1), encoding="utf-8")
+        # Pin the SDK's internal Cache Storage key as well as the network source.
+        voice_key = voice_url.replace("/resolve/main/", f"/resolve/{runtime['revision']}/")
+        adapted = original.replace(MARKER, ADAPTER, 1).replace(voice_url, voice_key, 1)
+        destination.write_text(adapted, encoding="utf-8")
     else:
         shutil.copyfile(path, destination)
     return destination, dtype
 
 
 def build(output, cache, dtypes):
-    runtime = load(ROOT / "runtime.json")
+    runtime_path = LAB / "kokoro-runtime.json"
+    runtime = load(runtime_path)
     profile = load(LAB / "profiles.json")
     if profile["version"] != runtime["profileVersion"] or len(profile["voices"]) != 20:
         raise ValueError("P3.5 voice profile mismatch")
@@ -126,10 +131,13 @@ def build(output, cache, dtypes):
     cache.mkdir(parents=True, exist_ok=True)
     copy = []
     with ThreadPoolExecutor(max_workers=6) as pool:
-        copy.extend(pool.map(partial(fetch, output=output, cache=cache), files))
+        copy.extend(pool.map(partial(fetch, output=output, cache=cache, runtime=runtime), files))
     for name in FILES:
         shutil.copyfile(ROOT / name, output / name)
         copy.append((output / name, None))
+
+    shutil.copyfile(runtime_path, output / "runtime.json")
+    copy.append((output / "runtime.json", None))
 
     cast = output / "cast"
     cast.mkdir(exist_ok=True)

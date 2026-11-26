@@ -12,14 +12,14 @@ git switch research/p3-6-kokoro-realtime
 python3 experiments/character-voice-lab/realtime/prepare.py --serve
 ```
 
-別の端末で以下を実行し、PixelのChromeで [http://127.0.0.1:8766/](http://127.0.0.1:8766/) を開く。
+PCで別のターミナルを開いて以下を実行し、PixelのChromeで [http://127.0.0.1:8766/](http://127.0.0.1:8766/) を開く。
 
 ```sh
 adb devices
 adb reverse tcp:8766 tcp:8766
 ```
 
-初回の準備でPCが固定版のモデル・音声・実行ライブラリを取得する。既定のq8パックは約125 MB。PCはローカルの静的ファイルを配信し、合成・再生・測定はPixel内で行う。端末のlocalhostを使うため、マイクの許可とWASMのスレッド利用が可能になる。USB転送は冷間の初期化時間に含まれる。PC自身でも同じURLを開ける。
+初回の準備でPCが固定版のモデル・音声・実行ライブラリを取得する。既定のq8パックは約127 MB。PCはローカルの静的ファイルを配信し、合成・再生・測定はPixel内で行う。端末のlocalhostを使うため、マイクの許可とWASMのスレッド利用が可能になる。USB転送は冷間の初期化時間に含まれる。PC自身でも同じURLを開ける。
 
 q4・FP32・WebGPUを比較するときは、サーバーを停止して `--precision q8 q4 fp32 --serve` を指定する。3種類を合わせると約760 MBのダウンロードを要する。WebGPUの項目はブラウザがAPIを公開し、FP32を準備したときに選べる。実際のアダプターとモデルの実行可否は初期化時に確認する。取得済みファイルで配信だけを始める場合は `--serve-only` を使う。
 
@@ -47,12 +47,16 @@ q4・FP32・WebGPUを比較するときは、サーバーを停止して `--prec
 
 ## 共通プロフィールとP6への受け渡し
 
-- `../profiles.json` の `p35-voice-v1` をP3.5バッチと共有する。`runtime.json` はKokoroのモデルID・重みのリビジョン・SDK版・24 kHzの出力を固定する。パック生成時、20人の事前生成クリップの声・アクセント・話速・リビジョンおよびファイルハッシュを照合する。ブラウザでは起動時に同じ20人の音声IDとアクセントを照合する。
+- `../profiles.json` の `p35-voice-v1` をP3.5バッチと共有する。`../kokoro-runtime.json` は事前生成とリアルタイム合成で共有し、KokoroのモデルID・重みのリビジョン・SDK版・24 kHzの出力を固定する。パック生成時、20人の事前生成クリップの声・アクセント・話速・リビジョンおよびファイルハッシュを照合する。ブラウザでは起動時に同じ20人の音声IDとアクセントを照合する。
 - 発話入力は `{speaker, text, kokoroPhonemes?}`。音素指定がある場合は全文のKokoro音素列として扱い、分割せずSDKの `generate_from_ids` に渡す。表示英文は保持する。P3.5のPythonとブラウザでは音素化実装が異なるので、比較対象の発音は同じ音素列と耳で確認する。
 - `stream.js` は英語の文境界を優先し、長文でだけ句や空白に分ける。略称・小数・短縮形を含む公開英語で回帰を確認する。P6では話者切り替えとターン終了を明示イベントにし、LLMの入力ストリームにキャンセルを伝える。
 - `worker.js` と `audio.js` はモデル常駐、最大2発話の再生先読み、世代の中断を担う。停止時に音声ノードを破棄する。合成が進行中の割り込みではWorkerを終了するため、次回の初期化が必要になる。完了済みのモデルは再利用する。聞き取りは出力バッファを排出してから開始し、ASRの終了まで次の合成を待つ。
 - 声による割り込みの試験はブラウザのエコーキャンセルとマイク音量を利用する。ヘッドホン前提で、人の声と環境音は自動識別しない。割り込みを引き起こした音声の先頭を後段のASRへ引き継がない。P6のスピーカー運用は、Android側でエコーと発話前の音声バッファ、フォーカスとASRを統合したうえで受け入れる。
 - 端末でウォームp50が約500 ms、RTFが1未満の設定を優先する。間に合わない端末では同一プロフィールの事前生成した短い応答と、常駐モデルによる次の文の先行生成を組み合わせる。WASMの次にAndroid ORTを試す場合はこの重み・声ベクトル・音素列と同じ条件でARM64 CPUの1/2/4スレッド、続いて対応するXNNPACKを比較する。P6には実測した設定を渡す。
+
+## デスクトップ実測
+
+[結果と計測条件](RESULTS.md)に、スレッド数・量子化・WebGPU・ネイティブCPU、会話の無音時間、メモリ、音質の比較を記録した。
 
 ## 再現用コマンド
 
@@ -64,3 +68,5 @@ python3 -m venv /tmp/kokoro-p36
 ```
 
 Androidのハードウェアパスは [ORT Webのスレッド条件](https://onnxruntime.ai/docs/tutorials/web/env-flags-and-session-options.html)、[XNNPACK](https://onnxruntime.ai/docs/execution-providers/Xnnpack-ExecutionProvider.html)、[AndroidのNNAPI移行ガイド](https://developer.android.com/ndk/guides/neuralnetworks/migration-guide)を参照。NNAPIはAndroid 15で非推奨。Android Chromeの端末内Web Speech認識の対応は [MDNの互換性データ](https://github.com/mdn/browser-compat-data/blob/main/api/SpeechRecognition.json)を参照。
+
+任意の発音比較は、端末で使うASRとは独立に実行する。FFmpegと `vosk==0.3.45` を用意し、[Voskの英語モデル](https://alphacephei.com/vosk/models)を展開して `--quality --vosk-model PATH` を指定すると、公開試験文ごとの書き起こしをJSONに追加できる。

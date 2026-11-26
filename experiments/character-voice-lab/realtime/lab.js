@@ -78,8 +78,14 @@ async function ready(signal) {
   signal.throwIfAborted();
   if (worker) return;
   worker = new KokoroWorker(file => status(`読み込み中 · ${file}`));
-  const init = await worker.request("init", { runtime, config: config(), voices: [...voices.values()] });
-  starts.push({ ...init, at: now() });
+  const attempt = { config: config(), at: now() };
+  starts.push(attempt);
+  try {
+    Object.assign(attempt, await worker.request("init", { runtime, config: attempt.config, voices: [...voices.values()] }));
+  } catch (error) {
+    attempt.error = error.message;
+    throw error;
+  }
 }
 
 function cancel(reason) {
@@ -255,6 +261,7 @@ async function run(prepareOnly = false) {
     controller.abort();
     if (!report.stopReason && active === session) {
       report.error = error.message;
+      if (prepareOnly && starts.at(-1)?.initMs != null) starts.at(-1).primeError = error.message;
       release();
       status(`試験エラー · ${error.message}`);
     }

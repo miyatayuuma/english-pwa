@@ -13,8 +13,10 @@ import numpy as np
 import psutil
 
 ROOT = Path(__file__).resolve().parent
+KOKORO_RUNTIME = json.loads((ROOT / "kokoro-runtime.json").read_text(encoding="utf-8"))
+PHONEME_FIELD = KOKORO_RUNTIME["pronunciationField"]
 MODELS = {
-    "kokoro": ("onnx-community/Kokoro-82M-v1.0-ONNX", "1939ad2a8e416c0acfeecc08a694d14ef25f2231"),
+    "kokoro": (KOKORO_RUNTIME["model"], KOKORO_RUNTIME["revision"]),
     "supertonic": ("Supertone/supertonic-3", "3cadd1ee6394adea1bd021217a0e650ede09a323"),
 }
 ENCODING = "mp3-mono24k-64k-rms20-v1"
@@ -86,10 +88,11 @@ def jobs(corpus, profiles, engine, stage):
 def engine_runner(cache, engine, voice_ids, threads):
     if engine == "kokoro":
         from kokoro_onnx import Kokoro
-        from onnxruntime import InferenceSession, SessionOptions
+        from onnxruntime import InferenceSession, SessionOptions, disable_telemetry_events
 
-        remote = "onnx/model_quantized.onnx"
-        weights = fetch(cache, engine, remote, "model_quantized.onnx")
+        disable_telemetry_events()
+        name = KOKORO_RUNTIME["weights"]["q8"]
+        weights = fetch(cache, engine, f"onnx/{name}", name)
         config = fetch(cache, engine, "config.json")
         vectors = {}
         for voice_id in voice_ids:
@@ -106,9 +109,11 @@ def engine_runner(cache, engine, voice_ids, threads):
         )
 
         def synth(line, voice, voice_id, seed):
-            phonemes = line.get("kokoroPhonemes") or model.tokenizer.phonemize(line["text"], voice["accent"])
+            phonemes = line.get(PHONEME_FIELD) or model.tokenizer.phonemize(line["text"], voice["accent"])
             audio, rate = model.create(phonemes, voice_id, speed=voice["speed"],
                                        lang=voice["accent"], is_phonemes=True, trim=False)
+            if rate != KOKORO_RUNTIME["sampleRate"]:
+                raise ValueError(f"Unexpected Kokoro sample rate: {rate}")
             return audio, rate, phonemes
 
         return synth, [weights, config, *(cache / engine / f"voices/{v}.bin" for v in voice_ids)]
@@ -169,6 +174,8 @@ def main():
     args = parser.parse_args()
     cache = args.cache.resolve()
     corpus, profiles = (read_json(ROOT / name) for name in ("corpus.json", "profiles.json"))
+    if args.engine == "kokoro" and profiles["version"] != KOKORO_RUNTIME["profileVersion"]:
+        raise ValueError("Kokoro profile version mismatch")
     target = ROOT / "audio" / args.engine
     target.mkdir(parents=True, exist_ok=True)
     manifest_path = ROOT / f"{args.engine}-clips.json"
@@ -187,8 +194,8 @@ def main():
             "locale": voice["accent"] if args.engine == "kokoro" else "en",
             "speed": voice["speed"], "encoding": ENCODING,
         }
-        if "kokoroPhonemes" in line:
-            identity["phonemeOverrideSha256"] = digest(line["kokoroPhonemes"].encode())
+        if PHONEME_FIELD in line:
+            identity["phonemeOverrideSha256"] = digest(line[PHONEME_FIELD].encode())
         identity_sha = config_digest(identity)
         filename = f"{speaker}--{line_id}--{identity_sha[:12]}.mp3"
         key = f"{speaker}/{line_id}"

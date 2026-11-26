@@ -1,0 +1,4428 @@
+{
+  "browserMatrix": {
+    "format": "kokoro-realtime-v1",
+    "exportedAt": "2026-11-26T00:28:38.901Z",
+    "runtime": {
+      "model": "onnx-community/Kokoro-82M-v1.0-ONNX",
+      "revision": "1939ad2a8e416c0acfeecc08a694d14ef25f2231",
+      "kokoroJs": "1.2.1",
+      "ortWeb": "1.22.0-dev.20250409-89f8206ba4",
+      "profileVersion": "p35-voice-v1",
+      "pronunciationField": "kokoroPhonemes",
+      "sampleRate": 24000,
+      "weights": {
+        "q8": "model_quantized.onnx",
+        "q4": "model_q4.onnx",
+        "fp32": "model.onnx"
+      }
+    },
+    "pack": "5d11030d7e1f697f",
+    "environment": {
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.82 Safari/537.36",
+      "hardwareConcurrency": 9,
+      "deviceMemoryGiB": 8,
+      "online": true,
+      "isolated": true,
+      "sampleRate": 44100,
+      "baseLatency": 0.01,
+      "outputLatency": 0.03
+    },
+    "starts": [
+      {
+        "initMs": 2860.3599999998696,
+        "config": {
+          "device": "wasm",
+          "dtype": "q8",
+          "threads": 1
+        },
+        "isolated": true,
+        "at": 3082.6200000001118,
+        "primeMs": 3897.2349999998696
+      },
+      {
+        "initMs": 2225.6750000002794,
+        "config": {
+          "device": "wasm",
+          "dtype": "q8",
+          "threads": 2
+        },
+        "isolated": true,
+        "at": 32550.205000000075,
+        "primeMs": 3525.8549999999814
+      },
+      {
+        "initMs": 1919.1000000000931,
+        "config": {
+          "device": "wasm",
+          "dtype": "q8",
+          "threads": 4
+        },
+        "isolated": true,
+        "at": 56548.91000000015,
+        "primeMs": 2642.6200000001118
+      },
+      {
+        "initMs": 3358.554999999702,
+        "config": {
+          "device": "wasm",
+          "dtype": "q8",
+          "threads": 8
+        },
+        "isolated": true,
+        "at": 88965.13499999978,
+        "primeMs": 3700.4499999997206
+      },
+      {
+        "initMs": 5482.300000000279,
+        "config": {
+          "device": "wasm",
+          "dtype": "q4",
+          "threads": 4
+        },
+        "isolated": true,
+        "at": 117175.97999999998,
+        "primeMs": 2090.7299999999814
+      },
+      {
+        "initMs": 2911.625,
+        "config": {
+          "device": "wasm",
+          "dtype": "fp32",
+          "threads": 4
+        },
+        "isolated": true,
+        "at": 141270.41500000004,
+        "primeMs": 1393.6200000001118
+      },
+      {
+        "initMs": 2923.5550000001676,
+        "config": {
+          "device": "webgpu",
+          "dtype": "fp32",
+          "threads": 1
+        },
+        "isolated": true,
+        "at": 162681.79499999993,
+        "primeError": "Kokoro Worker timed out after 60000 ms (Chromium software GPU)"
+      }
+    ],
+    "runs": [
+      {
+        "scenario": "short",
+        "startedAt": 7036.060000000056,
+        "modelAlreadyResident": true,
+        "config": {
+          "device": "wasm",
+          "dtype": "q8",
+          "threads": 1
+        },
+        "rows": [
+          {
+            "speaker": "jennifer",
+            "text": "I found it.",
+            "receivedAt": 7060.475000000093,
+            "phonemeOverride": false,
+            "warmVoice": true,
+            "synthesisRequestedAt": 7060.629999999888,
+            "synthesisMs": 3916.3700000001118,
+            "audioSeconds": 0.89,
+            "rawSeconds": 1.525,
+            "leadingMs": 70,
+            "trailingMs": 110,
+            "rawRtf": 2.5681114754099093,
+            "rtf": 4.400415730337204,
+            "pcmReadyAt": 10982.095000000205,
+            "scheduledAt": 10983.549999999814,
+            "gapMs": null,
+            "playbackAt": 11034.022922902568,
+            "playbackClock": "output-timestamp",
+            "synthesisToPlaybackMs": 3973.39292290268,
+            "arrivalToPlaybackMs": 3973.547922902475,
+            "ended": true
+          },
+          {
+            "speaker": "jennifer",
+            "text": "I found it.",
+            "receivedAt": 11888.270000000019,
+            "phonemeOverride": false,
+            "warmVoice": true,
+            "synthesisRequestedAt": 11888.294999999925,
+            "synthesisMs": 4045.4150000000373,
+            "audioSeconds": 0.89,
+            "rawSeconds": 1.525,
+            "leadingMs": 70,
+            "trailingMs": 110,
+            "rawRtf": 2.652731147541008,
+            "rtf": 4.545410112359592,
+            "pcmReadyAt": 15934.504999999888,
+            "scheduledAt": 15934.634999999776,
+            "gapMs": null,
+            "playbackAt": 15982.733757369782,
+            "playbackClock": "output-timestamp",
+            "synthesisToPlaybackMs": 4094.438757369857,
+            "arrivalToPlaybackMs": 4094.4637573697637,
+            "ended": true
+          },
+          {
+            "speaker": "jennifer",
+            "text": "I found it.",
+            "receivedAt": 16837.959999999963,
+            "phonemeOverride": false,
+            "warmVoice": true,
+            "synthesisRequestedAt": 16838,
+            "synthesisMs": 3713.5200000000186,
+            "audioSeconds": 0.89,
+            "rawSeconds": 1.525,
+            "leadingMs": 70,
+            "trailingMs": 110,
+            "rawRtf": 2.4350950819672255,
+            "rtf": 4.172494382022493,
+            "pcmReadyAt": 20552.055000000168,
+            "scheduledAt": 20552.21499999985,
+            "gapMs": null,
+            "playbackAt": 20603.490732426213,
+            "playbackClock": "output-timestamp",
+            "synthesisToPlaybackMs": 3765.490732426213,
+            "arrivalToPlaybackMs": 3765.5307324262503,
+            "ended": true
+          },
+          {
+            "speaker": "jennifer",
+            "text": "I found it.",
+            "receivedAt": 21457.899999999907,
+            "phonemeOverride": false,
+            "warmVoice": true,
+            "synthesisRequestedAt": 21457.924999999814,
+            "synthesisMs": 3569.7849999996834,
+            "audioSeconds": 0.89,
+            "rawSeconds": 1.525,
+            "leadingMs": 70,
+            "trailingMs": 110,
+            "rawRtf": 2.340842622950612,
+            "rtf": 4.010994382022116,
+            "pcmReadyAt": 25028.314999999944,
+            "scheduledAt": 25028.600000000093,
+            "gapMs": null,
+            "playbackAt": 25084.928979591805,
+            "playbackClock": "output-timestamp",
+            "synthesisToPlaybackMs": 3627.003979591991,
+            "arrivalToPlaybackMs": 3627.028979591898,
+            "ended": true
+          },
+          {
+            "speaker": "jennifer",
+            "text": "I found it.",
+            "receivedAt": 25938.294999999925,
+            "phonemeOverride": false,
+            "warmVoice": true,
+            "synthesisRequestedAt": 25938.330000000075,
+            "synthesisMs": 3330.2450000001118,
+            "audioSeconds": 0.89,
+            "rawSeconds": 1.525,
+            "leadingMs": 70,
+            "trailingMs": 110,
+            "rawRtf": 2.1837672131148276,
+            "rtf": 3.7418483146068673,
+            "pcmReadyAt": 29269.91000000015,
+            "scheduledAt": 29271.069999999832,
+            "gapMs": null,
+            "playbackAt": 29322.581702947773,
+            "playbackClock": "output-timestamp",
+            "synthesisToPlaybackMs": 3384.2517029476985,
+            "arrivalToPlaybackMs": 3384.2867029478475,
+            "ended": true
+          }
+        ],
+        "memoryBefore": 10000000,
+        "agentMemoryBefore": null,
+        "complete": true,
+        "endedAt": 30177.674999999814,
+        "memoryAfter": 10000000,
+        "agentMemoryAfter": null,
+        "summary": {
+          "firstSynthesisToPlaybackMs": 3973.39292290268,
+          "firstArrivalToPlaybackMs": 3973.547922902475,
+          "warmSynthesisToPlaybackMs": {
+            "count": 5,
+            "p50": 3765.490732426213,
+            "p95": 4094.438757369857,
+            "max": 4094.438757369857
+          },
+          "rtf": {
+            "count": 5,
+            "p50": 4.172494382022493,
+            "p95": 4.545410112359592,
+            "max": 4.545410112359592
+          },
+          "interUtteranceSilenceMs": null,
+          "generationDuringPlayback": 0,
+          "played": 5
+        }
+      },
+      {
+        "scenario": "short",
+        "startedAt": 36148.220000000205,
+        "modelAlreadyResident": true,
+        "config": {
+          "device": "wasm",
+          "dtype": "q8",
+          "threads": 2
+        },
+        "rows": [
+          {
+            "speaker": "jennifer",
+            "text": "I found it.",
+            "receivedAt": 36162.455000000075,
+            "phonemeOverride": false,
+            "warmVoice": true,
+            "synthesisRequestedAt": 36162.48499999987,
+            "synthesisMs": 2898.600000000093,
+            "audioSeconds": 0.89,
+            "rawSeconds": 1.525,
+            "leadingMs": 70,
+            "trailingMs": 110,
+            "rawRtf": 1.9007213114754709,
+            "rtf": 3.256853932584374,
+            "pcmReadyAt": 39063.12999999989,
+            "scheduledAt": 39063.35499999998,
+            "gapMs": null,
+            "playbackAt": 39112.675081632544,
+            "playbackClock": "output-timestamp",
+            "synthesisToPlaybackMs": 2950.1900816326743,
+            "arrivalToPlaybackMs": 2950.2200816324694,
+            "ended": true
+          },
+          {
+            "speaker": "jennifer",
+            "text": "I found it.",
+            "receivedAt": 39968.904999999795,
+            "phonemeOverride": false,
+            "warmVoice": true,
+            "synthesisRequestedAt": 39968.950000000186,
+            "synthesisMs": 2622.560000000056,
+            "audioSeconds": 0.89,
+            "rawSeconds": 1.525,
+            "leadingMs": 70,
+            "trailingMs": 110,
+            "rawRtf": 1.7197114754098728,
+            "rtf": 2.946696629213546,
+            "pcmReadyAt": 42592.39000000013,
+            "scheduledAt": 42592.58999999985,
+            "gapMs": null,
+            "playbackAt": 42645.00368253968,
+            "playbackClock": "output-timestamp",
+            "synthesisToPlaybackMs": 2676.0536825394956,
+            "arrivalToPlaybackMs": 2676.098682539887,
+            "ended": true
+          },
+          {
+            "speaker": "jennifer",
+            "text": "I found it.",
+            "receivedAt": 43498.08499999996,
+            "phonemeOverride": false,
+            "warmVoice": true,
+            "synthesisRequestedAt": 43498.10999999987,
+            "synthesisMs": 2841.1800000001676,
+            "audioSeconds": 0.89,
+            "rawSeconds": 1.525,
+            "leadingMs": 70,
+            "trailingMs": 110,
+            "rawRtf": 1.8630688524591263,
+            "rtf": 3.1923370786518737,
+            "pcmReadyAt": 46339.924999999814,
+            "scheduledAt": 46340.05500000017,
+            "gapMs": null,
+            "playbackAt": 46395.0613582768,
+            "playbackClock": "output-timestamp",
+            "synthesisToPlaybackMs": 2896.9513582769287,
+            "arrivalToPlaybackMs": 2896.9763582768355,
+            "ended": true
+          },
+          {
+            "speaker": "jennifer",
+            "text": "I found it.",
+            "receivedAt": 47247.83499999996,
+            "phonemeOverride": false,
+            "warmVoice": true,
+            "synthesisRequestedAt": 47247.85499999998,
+            "synthesisMs": 2881.899999999907,
+            "audioSeconds": 0.89,
+            "rawSeconds": 1.525,
+            "leadingMs": 70,
+            "trailingMs": 110,
+            "rawRtf": 1.8897704918032177,
+            "rtf": 3.2380898876403448,
+            "pcmReadyAt": 50130.33999999985,
+            "scheduledAt": 50130.49500000011,
+            "gapMs": null,
+            "playbackAt": 50183.15846031758,
+            "playbackClock": "output-timestamp",
+            "synthesisToPlaybackMs": 2935.3034603175984,
+            "arrivalToPlaybackMs": 2935.323460317617,
+            "ended": true
+          },
+          {
+            "speaker": "jennifer",
+            "text": "I found it.",
+            "receivedAt": 51037.89500000002,
+            "phonemeOverride": false,
+            "warmVoice": true,
+            "synthesisRequestedAt": 51037.91000000015,
+            "synthesisMs": 2524.5300000002608,
+            "audioSeconds": 0.89,
+            "rawSeconds": 1.525,
+            "leadingMs": 70,
+            "trailingMs": 110,
+            "rawRtf": 1.6554295081968924,
+            "rtf": 2.8365505617980458,
+            "pcmReadyAt": 53562.99500000011,
+            "scheduledAt": 53563.39000000013,
+            "gapMs": null,
+            "playbackAt": 53613.57675963699,
+            "playbackClock": "output-timestamp",
+            "synthesisToPlaybackMs": 2575.6667596368425,
+            "arrivalToPlaybackMs": 2575.681759636973,
+            "ended": true
+          }
+        ],
+        "memoryBefore": 10000000,
+        "agentMemoryBefore": null,
+        "complete": true,
+        "endedAt": 54470.66000000015,
+        "memoryAfter": 10000000,
+        "agentMemoryAfter": null,
+        "summary": {
+          "firstSynthesisToPlaybackMs": 2950.1900816326743,
+          "firstArrivalToPlaybackMs": 2950.2200816324694,
+          "warmSynthesisToPlaybackMs": {
+            "count": 5,
+            "p50": 2896.9513582769287,
+            "p95": 2950.1900816326743,
+            "max": 2950.1900816326743
+          },
+          "rtf": {
+            "count": 5,
+            "p50": 3.1923370786518737,
+            "p95": 3.256853932584374,
+            "max": 3.256853932584374
+          },
+          "interUtteranceSilenceMs": null,
+          "generationDuringPlayback": 0,
+          "played": 5
+        }
+      },
+      {
+        "scenario": "short",
+        "startedAt": 59264.85000000009,
+        "modelAlreadyResident": true,
+        "config": {
+          "device": "wasm",
+          "dtype": "q8",
+          "threads": 4
+        },
+        "rows": [
+          {
+            "speaker": "jennifer",
+            "text": "I found it.",
+            "receivedAt": 59277.935000000056,
+            "phonemeOverride": false,
+            "warmVoice": true,
+            "synthesisRequestedAt": 59277.955000000075,
+            "synthesisMs": 2599.899999999907,
+            "audioSeconds": 0.89,
+            "rawSeconds": 1.525,
+            "leadingMs": 70,
+            "trailingMs": 110,
+            "rawRtf": 1.7048524590163323,
+            "rtf": 2.921235955056075,
+            "pcmReadyAt": 61880.77499999991,
+            "scheduledAt": 61881.35499999998,
+            "gapMs": null,
+            "playbackAt": 61933.411029478484,
+            "playbackClock": "output-timestamp",
+            "synthesisToPlaybackMs": 2655.4560294784096,
+            "arrivalToPlaybackMs": 2655.4760294784282,
+            "ended": true
+          },
+          {
+            "speaker": "jennifer",
+            "text": "I found it.",
+            "receivedAt": 62789.35000000009,
+            "phonemeOverride": false,
+            "warmVoice": true,
+            "synthesisRequestedAt": 62789.455000000075,
+            "synthesisMs": 2538.4699999997392,
+            "audioSeconds": 0.89,
+            "rawSeconds": 1.525,
+            "leadingMs": 70,
+            "trailingMs": 110,
+            "rawRtf": 1.6645704918031077,
+            "rtf": 2.8522134831457744,
+            "pcmReadyAt": 65331.71499999985,
+            "scheduledAt": 65332.78500000015,
+            "gapMs": null,
+            "playbackAt": 65384.45178911541,
+            "playbackClock": "output-timestamp",
+            "synthesisToPlaybackMs": 2594.9967891153356,
+            "arrivalToPlaybackMs": 2595.101789115317,
+            "ended": true
+          },
+          {
+            "speaker": "jennifer",
+            "text": "I found it.",
+            "receivedAt": 66238.29999999981,
+            "phonemeOverride": false,
+            "warmVoice": true,
+            "synthesisRequestedAt": 66238.375,
+            "synthesisMs": 2296.160000000149,
+            "audioSeconds": 0.89,
+            "rawSeconds": 1.525,
+            "leadingMs": 70,
+            "trailingMs": 110,
+            "rawRtf": 1.5056786885246878,
+            "rtf": 2.579955056179943,
+            "pcmReadyAt": 68536.16999999993,
+            "scheduledAt": 68536.75999999978,
+            "gapMs": null,
+            "playbackAt": 68583.02054195014,
+            "playbackClock": "output-timestamp",
+            "synthesisToPlaybackMs": 2344.6455419501435,
+            "arrivalToPlaybackMs": 2344.72054195033,
+            "ended": true
+          },
+          {
+            "speaker": "jennifer",
+            "text": "I found it.",
+            "receivedAt": 69441.73499999987,
+            "phonemeOverride": false,
+            "warmVoice": true,
+            "synthesisRequestedAt": 69441.81999999983,
+            "synthesisMs": 2594.7949999999255,
+            "audioSeconds": 0.89,
+            "rawSeconds": 1.525,
+            "leadingMs": 70,
+            "trailingMs": 110,
+            "rawRtf": 1.701504918032738,
+            "rtf": 2.9154999999999163,
+            "pcmReadyAt": 72038.83999999985,
+            "scheduledAt": 72039.25999999978,
+            "gapMs": null,
+            "playbackAt": 72094.72122222235,
+            "playbackClock": "output-timestamp",
+            "synthesisToPlaybackMs": 2652.9012222225138,
+            "arrivalToPlaybackMs": 2652.9862222224765,
+            "ended": true
+          },
+          {
+            "speaker": "jennifer",
+            "text": "I found it.",
+            "receivedAt": 72947.95500000007,
+            "phonemeOverride": false,
+            "warmVoice": true,
+            "synthesisRequestedAt": 72947.96499999985,
+            "synthesisMs": 2575.0849999999627,
+            "audioSeconds": 0.89,
+            "rawSeconds": 1.525,
+            "leadingMs": 70,
+            "trailingMs": 110,
+            "rawRtf": 1.688580327868828,
+            "rtf": 2.893353932584228,
+            "pcmReadyAt": 75524.70999999996,
+            "scheduledAt": 75525.68000000017,
+            "gapMs": null,
+            "playbackAt": 75574.81892516986,
+            "playbackClock": "output-timestamp",
+            "synthesisToPlaybackMs": 2626.853925170013,
+            "arrivalToPlaybackMs": 2626.8639251697896,
+            "ended": true
+          }
+        ],
+        "memoryBefore": 10000000,
+        "agentMemoryBefore": null,
+        "complete": true,
+        "endedAt": 76427.66999999993,
+        "memoryAfter": 10000000,
+        "agentMemoryAfter": null,
+        "summary": {
+          "firstSynthesisToPlaybackMs": 2655.4560294784096,
+          "firstArrivalToPlaybackMs": 2655.4760294784282,
+          "warmSynthesisToPlaybackMs": {
+            "count": 5,
+            "p50": 2626.853925170013,
+            "p95": 2655.4560294784096,
+            "max": 2655.4560294784096
+          },
+          "rtf": {
+            "count": 5,
+            "p50": 2.893353932584228,
+            "p95": 2.921235955056075,
+            "max": 2.921235955056075
+          },
+          "interUtteranceSilenceMs": null,
+          "generationDuringPlayback": 0,
+          "played": 5
+        }
+      },
+      {
+        "scenario": "read-curated",
+        "startedAt": 76496.81999999983,
+        "modelAlreadyResident": true,
+        "config": {
+          "device": "wasm",
+          "dtype": "q8",
+          "threads": 4
+        },
+        "rows": [
+          {
+            "speaker": "jennifer",
+            "text": "I read it yesterday, but I'll read it again tomorrow.",
+            "receivedAt": 76498.55500000017,
+            "phonemeOverride": true,
+            "warmVoice": true,
+            "synthesisRequestedAt": 76498.57500000019,
+            "synthesisMs": 6093.570000000298,
+            "audioSeconds": 2.76,
+            "rawSeconds": 3.4,
+            "leadingMs": 70,
+            "trailingMs": 110,
+            "rawRtf": 1.7922264705883229,
+            "rtf": 2.2078152173914125,
+            "pcmReadyAt": 82593.45999999996,
+            "scheduledAt": 82593.79000000004,
+            "gapMs": null,
+            "playbackAt": 82643.13192063484,
+            "playbackClock": "output-timestamp",
+            "synthesisToPlaybackMs": 6144.556920634655,
+            "arrivalToPlaybackMs": 6144.576920634674,
+            "ended": true
+          }
+        ],
+        "memoryBefore": 10000000,
+        "agentMemoryBefore": null,
+        "complete": true,
+        "endedAt": 85437.7749999999,
+        "memoryAfter": 10000000,
+        "agentMemoryAfter": null,
+        "summary": {
+          "firstSynthesisToPlaybackMs": 6144.556920634655,
+          "firstArrivalToPlaybackMs": 6144.576920634674,
+          "warmSynthesisToPlaybackMs": {
+            "count": 1,
+            "p50": 6144.556920634655,
+            "p95": 6144.556920634655,
+            "max": 6144.556920634655
+          },
+          "rtf": {
+            "count": 1,
+            "p50": 2.2078152173914125,
+            "p95": 2.2078152173914125,
+            "max": 2.2078152173914125
+          },
+          "interUtteranceSilenceMs": null,
+          "generationDuringPlayback": 0,
+          "played": 1
+        }
+      },
+      {
+        "scenario": "short",
+        "startedAt": 92729.91500000004,
+        "modelAlreadyResident": true,
+        "config": {
+          "device": "wasm",
+          "dtype": "q8",
+          "threads": 8
+        },
+        "rows": [
+          {
+            "speaker": "jennifer",
+            "text": "I found it.",
+            "receivedAt": 92743.69499999983,
+            "phonemeOverride": false,
+            "warmVoice": true,
+            "synthesisRequestedAt": 92743.7200000002,
+            "synthesisMs": 3208.0449999999255,
+            "audioSeconds": 0.89,
+            "rawSeconds": 1.525,
+            "leadingMs": 70,
+            "trailingMs": 110,
+            "rawRtf": 2.103636065573722,
+            "rtf": 3.604544943820141,
+            "pcmReadyAt": 95955.72999999998,
+            "scheduledAt": 95955.91500000004,
+            "gapMs": null,
+            "playbackAt": 96005.01968253983,
+            "playbackClock": "output-timestamp",
+            "synthesisToPlaybackMs": 3261.299682539626,
+            "arrivalToPlaybackMs": 3261.3246825399983,
+            "ended": true
+          },
+          {
+            "speaker": "jennifer",
+            "text": "I found it.",
+            "receivedAt": 96868.26500000013,
+            "phonemeOverride": false,
+            "warmVoice": true,
+            "synthesisRequestedAt": 96868.30500000017,
+            "synthesisMs": 2778.970000000205,
+            "audioSeconds": 0.89,
+            "rawSeconds": 1.525,
+            "leadingMs": 70,
+            "trailingMs": 110,
+            "rawRtf": 1.8222754098362,
+            "rtf": 3.1224382022474213,
+            "pcmReadyAt": 99648.67499999981,
+            "scheduledAt": 99649.03500000015,
+            "gapMs": null,
+            "playbackAt": 99704.10297732429,
+            "playbackClock": "output-timestamp",
+            "synthesisToPlaybackMs": 2835.797977324124,
+            "arrivalToPlaybackMs": 2835.8379773241613,
+            "ended": true
+          },
+          {
+            "speaker": "jennifer",
+            "text": "I found it.",
+            "receivedAt": 100560.10999999987,
+            "phonemeOverride": false,
+            "warmVoice": true,
+            "synthesisRequestedAt": 100560.20500000007,
+            "synthesisMs": 2817.9599999999627,
+            "audioSeconds": 0.89,
+            "rawSeconds": 1.525,
+            "leadingMs": 70,
+            "trailingMs": 110,
+            "rawRtf": 1.8478426229507952,
+            "rtf": 3.1662471910111942,
+            "pcmReadyAt": 103382.23499999987,
+            "scheduledAt": 103382.75,
+            "gapMs": null,
+            "playbackAt": 103433.46573242618,
+            "playbackClock": "output-timestamp",
+            "synthesisToPlaybackMs": 2873.2607324261044,
+            "arrivalToPlaybackMs": 2873.3557324263093,
+            "ended": true
+          },
+          {
+            "speaker": "jennifer",
+            "text": "I found it.",
+            "receivedAt": 104287.875,
+            "phonemeOverride": false,
+            "warmVoice": true,
+            "synthesisRequestedAt": 104287.8999999999,
+            "synthesisMs": 2748.464999999851,
+            "audioSeconds": 0.89,
+            "rawSeconds": 1.525,
+            "leadingMs": 70,
+            "trailingMs": 110,
+            "rawRtf": 1.8022721311474432,
+            "rtf": 3.088162921348147,
+            "pcmReadyAt": 107037.14000000013,
+            "scheduledAt": 107037.25,
+            "gapMs": null,
+            "playbackAt": 107084.80360090714,
+            "playbackClock": "output-timestamp",
+            "synthesisToPlaybackMs": 2796.9036009072297,
+            "arrivalToPlaybackMs": 2796.9286009071366,
+            "ended": true
+          },
+          {
+            "speaker": "jennifer",
+            "text": "I found it.",
+            "receivedAt": 107938.60499999998,
+            "phonemeOverride": false,
+            "warmVoice": true,
+            "synthesisRequestedAt": 107938.60999999987,
+            "synthesisMs": 2672.9499999997206,
+            "audioSeconds": 0.89,
+            "rawSeconds": 1.525,
+            "leadingMs": 70,
+            "trailingMs": 110,
+            "rawRtf": 1.7527540983604726,
+            "rtf": 3.003314606741259,
+            "pcmReadyAt": 110612.875,
+            "scheduledAt": 110613.45500000007,
+            "gapMs": null,
+            "playbackAt": 110663.58211111085,
+            "playbackClock": "output-timestamp",
+            "synthesisToPlaybackMs": 2724.972111110983,
+            "arrivalToPlaybackMs": 2724.977111110871,
+            "ended": true
+          }
+        ],
+        "memoryBefore": 10000000,
+        "agentMemoryBefore": null,
+        "complete": true,
+        "endedAt": 111517.79000000004,
+        "memoryAfter": 10000000,
+        "agentMemoryAfter": null,
+        "summary": {
+          "firstSynthesisToPlaybackMs": 3261.299682539626,
+          "firstArrivalToPlaybackMs": 3261.3246825399983,
+          "warmSynthesisToPlaybackMs": {
+            "count": 5,
+            "p50": 2835.797977324124,
+            "p95": 3261.299682539626,
+            "max": 3261.299682539626
+          },
+          "rtf": {
+            "count": 5,
+            "p50": 3.1224382022474213,
+            "p95": 3.604544943820141,
+            "max": 3.604544943820141
+          },
+          "interUtteranceSilenceMs": null,
+          "generationDuringPlayback": 0,
+          "played": 5
+        }
+      },
+      {
+        "scenario": "short",
+        "startedAt": 119367.18000000017,
+        "modelAlreadyResident": true,
+        "config": {
+          "device": "wasm",
+          "dtype": "q4",
+          "threads": 4
+        },
+        "rows": [
+          {
+            "speaker": "jennifer",
+            "text": "I found it.",
+            "receivedAt": 119376.79999999981,
+            "phonemeOverride": false,
+            "warmVoice": true,
+            "synthesisRequestedAt": 119376.83000000007,
+            "synthesisMs": 1705.6099999998696,
+            "audioSeconds": 0.91,
+            "rawSeconds": 1.55,
+            "leadingMs": 70,
+            "trailingMs": 110,
+            "rawRtf": 1.1003935483870126,
+            "rtf": 1.87429670329656,
+            "pcmReadyAt": 121086.70500000007,
+            "scheduledAt": 121086.8999999999,
+            "gapMs": null,
+            "playbackAt": 121145.36357142862,
+            "playbackClock": "output-timestamp",
+            "synthesisToPlaybackMs": 1768.5335714285466,
+            "arrivalToPlaybackMs": 1768.5635714288073,
+            "ended": true
+          },
+          {
+            "speaker": "jennifer",
+            "text": "I found it.",
+            "receivedAt": 122038.39500000002,
+            "phonemeOverride": false,
+            "warmVoice": true,
+            "synthesisRequestedAt": 122038.41500000004,
+            "synthesisMs": 1549.2549999998882,
+            "audioSeconds": 0.91,
+            "rawSeconds": 1.55,
+            "leadingMs": 70,
+            "trailingMs": 110,
+            "rawRtf": 0.9995193548386376,
+            "rtf": 1.7024780219778992,
+            "pcmReadyAt": 123588.83499999996,
+            "scheduledAt": 123594.2799999998,
+            "gapMs": null,
+            "playbackAt": 123642.64273015864,
+            "playbackClock": "output-timestamp",
+            "synthesisToPlaybackMs": 1604.2277301586,
+            "arrivalToPlaybackMs": 1604.2477301586187,
+            "ended": true
+          },
+          {
+            "speaker": "jennifer",
+            "text": "I found it.",
+            "receivedAt": 124517.98999999976,
+            "phonemeOverride": false,
+            "warmVoice": true,
+            "synthesisRequestedAt": 124518.00499999989,
+            "synthesisMs": 1689.8100000000559,
+            "audioSeconds": 0.91,
+            "rawSeconds": 1.55,
+            "leadingMs": 70,
+            "trailingMs": 110,
+            "rawRtf": 1.090200000000036,
+            "rtf": 1.8569340659341274,
+            "pcmReadyAt": 126208.875,
+            "scheduledAt": 126209.14000000013,
+            "gapMs": null,
+            "playbackAt": 126264.88262811782,
+            "playbackClock": "output-timestamp",
+            "synthesisToPlaybackMs": 1746.8776281179307,
+            "arrivalToPlaybackMs": 1746.892628118061,
+            "ended": true
+          },
+          {
+            "speaker": "jennifer",
+            "text": "I found it.",
+            "receivedAt": 127137.94499999983,
+            "phonemeOverride": false,
+            "warmVoice": true,
+            "synthesisRequestedAt": 127137.95500000007,
+            "synthesisMs": 1730.4799999999814,
+            "audioSeconds": 0.91,
+            "rawSeconds": 1.55,
+            "leadingMs": 70,
+            "trailingMs": 110,
+            "rawRtf": 1.1164387096774073,
+            "rtf": 1.9016263736263532,
+            "pcmReadyAt": 128870.02000000002,
+            "scheduledAt": 128870.18500000006,
+            "gapMs": null,
+            "playbackAt": 128914.89195238089,
+            "playbackClock": "output-timestamp",
+            "synthesisToPlaybackMs": 1776.9369523808127,
+            "arrivalToPlaybackMs": 1776.9469523810549,
+            "ended": true
+          },
+          {
+            "speaker": "jennifer",
+            "text": "I found it.",
+            "receivedAt": 129789.35499999998,
+            "phonemeOverride": false,
+            "warmVoice": true,
+            "synthesisRequestedAt": 129789.4750000001,
+            "synthesisMs": 1676.8500000000931,
+            "audioSeconds": 0.91,
+            "rawSeconds": 1.55,
+            "leadingMs": 70,
+            "trailingMs": 110,
+            "rawRtf": 1.0818387096774795,
+            "rtf": 1.84269230769241,
+            "pcmReadyAt": 131467.91000000015,
+            "scheduledAt": 131468.0750000002,
+            "gapMs": null,
+            "playbackAt": 131524.21935600907,
+            "playbackClock": "output-timestamp",
+            "synthesisToPlaybackMs": 1734.7443560089741,
+            "arrivalToPlaybackMs": 1734.864356009086,
+            "ended": true
+          }
+        ],
+        "memoryBefore": 10000000,
+        "agentMemoryBefore": null,
+        "complete": true,
+        "endedAt": 132397.81000000006,
+        "memoryAfter": 10000000,
+        "agentMemoryAfter": null,
+        "summary": {
+          "firstSynthesisToPlaybackMs": 1768.5335714285466,
+          "firstArrivalToPlaybackMs": 1768.5635714288073,
+          "warmSynthesisToPlaybackMs": {
+            "count": 5,
+            "p50": 1746.8776281179307,
+            "p95": 1776.9369523808127,
+            "max": 1776.9369523808127
+          },
+          "rtf": {
+            "count": 5,
+            "p50": 1.8569340659341274,
+            "p95": 1.9016263736263532,
+            "max": 1.9016263736263532
+          },
+          "interUtteranceSilenceMs": null,
+          "generationDuringPlayback": 0,
+          "played": 5
+        }
+      },
+      {
+        "scenario": "read-curated",
+        "startedAt": 132462.83000000007,
+        "modelAlreadyResident": true,
+        "config": {
+          "device": "wasm",
+          "dtype": "q4",
+          "threads": 4
+        },
+        "rows": [
+          {
+            "speaker": "jennifer",
+            "text": "I read it yesterday, but I'll read it again tomorrow.",
+            "receivedAt": 132464.5049999999,
+            "phonemeOverride": true,
+            "warmVoice": true,
+            "synthesisRequestedAt": 132464.51500000013,
+            "synthesisMs": 2953.8300000000745,
+            "audioSeconds": 2.79,
+            "rawSeconds": 3.425,
+            "leadingMs": 70,
+            "trailingMs": 110,
+            "rawRtf": 0.862432116788343,
+            "rtf": 1.0587204301075537,
+            "pcmReadyAt": 135419.21499999985,
+            "scheduledAt": 135419.6299999999,
+            "gapMs": null,
+            "playbackAt": 135472.87516326527,
+            "playbackClock": "output-timestamp",
+            "synthesisToPlaybackMs": 3008.3601632651407,
+            "arrivalToPlaybackMs": 3008.370163265383,
+            "ended": true
+          }
+        ],
+        "memoryBefore": 10000000,
+        "agentMemoryBefore": null,
+        "complete": true,
+        "endedAt": 138227.68000000017,
+        "memoryAfter": 10000000,
+        "agentMemoryAfter": null,
+        "summary": {
+          "firstSynthesisToPlaybackMs": 3008.3601632651407,
+          "firstArrivalToPlaybackMs": 3008.370163265383,
+          "warmSynthesisToPlaybackMs": {
+            "count": 1,
+            "p50": 3008.3601632651407,
+            "p95": 3008.3601632651407,
+            "max": 3008.3601632651407
+          },
+          "rtf": {
+            "count": 1,
+            "p50": 1.0587204301075537,
+            "p95": 1.0587204301075537,
+            "max": 1.0587204301075537
+          },
+          "interUtteranceSilenceMs": null,
+          "generationDuringPlayback": 0,
+          "played": 1
+        }
+      },
+      {
+        "scenario": "short",
+        "startedAt": 142711.19499999983,
+        "modelAlreadyResident": true,
+        "config": {
+          "device": "wasm",
+          "dtype": "fp32",
+          "threads": 4
+        },
+        "rows": [
+          {
+            "speaker": "jennifer",
+            "text": "I found it.",
+            "receivedAt": 142724.5750000002,
+            "phonemeOverride": false,
+            "warmVoice": true,
+            "synthesisRequestedAt": 142724.61499999976,
+            "synthesisMs": 1457,
+            "audioSeconds": 0.89,
+            "rawSeconds": 1.525,
+            "leadingMs": 70,
+            "trailingMs": 110,
+            "rawRtf": 0.9554098360655737,
+            "rtf": 1.6370786516853932,
+            "pcmReadyAt": 144184.6749999998,
+            "scheduledAt": 144185.14500000002,
+            "gapMs": null,
+            "playbackAt": 144233.9455714287,
+            "playbackClock": "output-timestamp",
+            "synthesisToPlaybackMs": 1509.3305714289309,
+            "arrivalToPlaybackMs": 1509.3705714285024,
+            "ended": true
+          },
+          {
+            "speaker": "jennifer",
+            "text": "I found it.",
+            "receivedAt": 145091.64500000002,
+            "phonemeOverride": false,
+            "warmVoice": true,
+            "synthesisRequestedAt": 145091.66000000015,
+            "synthesisMs": 1322.8899999996647,
+            "audioSeconds": 0.89,
+            "rawSeconds": 1.525,
+            "leadingMs": 70,
+            "trailingMs": 110,
+            "rawRtf": 0.8674688524587966,
+            "rtf": 1.4863932584265895,
+            "pcmReadyAt": 146416.30500000017,
+            "scheduledAt": 146416.41999999993,
+            "gapMs": null,
+            "playbackAt": 146463.01821768715,
+            "playbackClock": "output-timestamp",
+            "synthesisToPlaybackMs": 1371.3582176869968,
+            "arrivalToPlaybackMs": 1371.3732176871272,
+            "ended": true
+          },
+          {
+            "speaker": "jennifer",
+            "text": "I found it.",
+            "receivedAt": 147318.25,
+            "phonemeOverride": false,
+            "warmVoice": true,
+            "synthesisRequestedAt": 147318.26500000013,
+            "synthesisMs": 1441.4249999998137,
+            "audioSeconds": 0.89,
+            "rawSeconds": 1.525,
+            "leadingMs": 70,
+            "trailingMs": 110,
+            "rawRtf": 0.9451967213113532,
+            "rtf": 1.619578651685184,
+            "pcmReadyAt": 148760.58999999985,
+            "scheduledAt": 148760.7200000002,
+            "gapMs": null,
+            "playbackAt": 148814.0766258501,
+            "playbackClock": "output-timestamp",
+            "synthesisToPlaybackMs": 1495.8116258499795,
+            "arrivalToPlaybackMs": 1495.8266258501098,
+            "ended": true
+          },
+          {
+            "speaker": "jennifer",
+            "text": "I found it.",
+            "receivedAt": 149669.33999999985,
+            "phonemeOverride": false,
+            "warmVoice": true,
+            "synthesisRequestedAt": 149669.54000000004,
+            "synthesisMs": 1344.3649999997579,
+            "audioSeconds": 0.89,
+            "rawSeconds": 1.525,
+            "leadingMs": 70,
+            "trailingMs": 110,
+            "rawRtf": 0.8815508196719724,
+            "rtf": 1.5105224719098402,
+            "pcmReadyAt": 151015.25999999978,
+            "scheduledAt": 151015.375,
+            "gapMs": null,
+            "playbackAt": 151063.46773242616,
+            "playbackClock": "output-timestamp",
+            "synthesisToPlaybackMs": 1393.9277324261202,
+            "arrivalToPlaybackMs": 1394.1277324263065,
+            "ended": true
+          },
+          {
+            "speaker": "jennifer",
+            "text": "I found it.",
+            "receivedAt": 151919.4049999998,
+            "phonemeOverride": false,
+            "warmVoice": true,
+            "synthesisRequestedAt": 151919.5499999998,
+            "synthesisMs": 1237.5750000001863,
+            "audioSeconds": 0.89,
+            "rawSeconds": 1.525,
+            "leadingMs": 70,
+            "trailingMs": 110,
+            "rawRtf": 0.8115245901640565,
+            "rtf": 1.3905337078653779,
+            "pcmReadyAt": 153158.88499999978,
+            "scheduledAt": 153159.1299999999,
+            "gapMs": null,
+            "playbackAt": 153214.22003174576,
+            "playbackClock": "output-timestamp",
+            "synthesisToPlaybackMs": 1294.6700317459472,
+            "arrivalToPlaybackMs": 1294.8150317459658,
+            "ended": true
+          }
+        ],
+        "memoryBefore": 10000000,
+        "agentMemoryBefore": null,
+        "complete": true,
+        "endedAt": 154067.85999999987,
+        "memoryAfter": 10000000,
+        "agentMemoryAfter": null,
+        "summary": {
+          "firstSynthesisToPlaybackMs": 1509.3305714289309,
+          "firstArrivalToPlaybackMs": 1509.3705714285024,
+          "warmSynthesisToPlaybackMs": {
+            "count": 5,
+            "p50": 1393.9277324261202,
+            "p95": 1509.3305714289309,
+            "max": 1509.3305714289309
+          },
+          "rtf": {
+            "count": 5,
+            "p50": 1.5105224719098402,
+            "p95": 1.6370786516853932,
+            "max": 1.6370786516853932
+          },
+          "interUtteranceSilenceMs": null,
+          "generationDuringPlayback": 0,
+          "played": 5
+        }
+      },
+      {
+        "scenario": "read-curated",
+        "startedAt": 154126.7450000001,
+        "modelAlreadyResident": true,
+        "config": {
+          "device": "wasm",
+          "dtype": "fp32",
+          "threads": 4
+        },
+        "rows": [
+          {
+            "speaker": "jennifer",
+            "text": "I read it yesterday, but I'll read it again tomorrow.",
+            "receivedAt": 154128.5499999998,
+            "phonemeOverride": true,
+            "warmVoice": true,
+            "synthesisRequestedAt": 154128.56000000006,
+            "synthesisMs": 2663.760000000242,
+            "audioSeconds": 2.81,
+            "rawSeconds": 3.45,
+            "leadingMs": 70,
+            "trailingMs": 110,
+            "rawRtf": 0.7721043478261571,
+            "rtf": 0.9479572953737516,
+            "pcmReadyAt": 156794.20500000007,
+            "scheduledAt": 156794.4249999998,
+            "gapMs": null,
+            "playbackAt": 156845.235439909,
+            "playbackClock": "output-timestamp",
+            "synthesisToPlaybackMs": 2716.675439908955,
+            "arrivalToPlaybackMs": 2716.685439909197,
+            "ended": true
+          }
+        ],
+        "memoryBefore": 10000000,
+        "agentMemoryBefore": null,
+        "complete": true,
+        "endedAt": 159618.6299999999,
+        "memoryAfter": 10000000,
+        "agentMemoryAfter": null,
+        "summary": {
+          "firstSynthesisToPlaybackMs": 2716.675439908955,
+          "firstArrivalToPlaybackMs": 2716.685439909197,
+          "warmSynthesisToPlaybackMs": {
+            "count": 1,
+            "p50": 2716.675439908955,
+            "p95": 2716.675439908955,
+            "max": 2716.675439908955
+          },
+          "rtf": {
+            "count": 1,
+            "p50": 0.9479572953737516,
+            "p95": 0.9479572953737516,
+            "max": 0.9479572953737516
+          },
+          "interUtteranceSilenceMs": null,
+          "generationDuringPlayback": 0,
+          "played": 1
+        }
+      }
+    ],
+    "asrEvents": []
+  },
+  "browserPss": {
+    "browser": "140.0.7339.82",
+    "baseline": {
+      "pssKiB": 116351,
+      "sizes": [
+        {
+          "type": "browser",
+          "pssKiB": 28249,
+          "rssKiB": 90608
+        },
+        {
+          "type": "renderer",
+          "pssKiB": 48054,
+          "rssKiB": 117524
+        },
+        {
+          "type": "GPU",
+          "pssKiB": 24274,
+          "rssKiB": 67048
+        },
+        {
+          "type": "network.mojom.NetworkService",
+          "pssKiB": 15774,
+          "rssKiB": 62264
+        }
+      ]
+    },
+    "results": [
+      {
+        "backend": "wasm:q8",
+        "label": "準備完了 · 初期化 2472 ms · 初回合成 3777 ms",
+        "resident": {
+          "pssKiB": 556004,
+          "sizes": [
+            {
+              "type": "browser",
+              "pssKiB": 29869,
+              "rssKiB": 94696
+            },
+            {
+              "type": "renderer",
+              "pssKiB": 473093,
+              "rssKiB": 549904
+            },
+            {
+              "type": "GPU",
+              "pssKiB": 22175,
+              "rssKiB": 63440
+            },
+            {
+              "type": "network.mojom.NetworkService",
+              "pssKiB": 18200,
+              "rssKiB": 65348
+            },
+            {
+              "type": "audio.mojom.AudioService",
+              "pssKiB": 12667,
+              "rssKiB": 51004
+            }
+          ]
+        },
+        "afterSynthesis": {
+          "pssKiB": 540301,
+          "sizes": [
+            {
+              "type": "browser",
+              "pssKiB": 24848,
+              "rssKiB": 95036
+            },
+            {
+              "type": "renderer",
+              "pssKiB": 468502,
+              "rssKiB": 555404
+            },
+            {
+              "type": "GPU",
+              "pssKiB": 19713,
+              "rssKiB": 64272
+            },
+            {
+              "type": "network.mojom.NetworkService",
+              "pssKiB": 16025,
+              "rssKiB": 65348
+            },
+            {
+              "type": "audio.mojom.AudioService",
+              "pssKiB": 11213,
+              "rssKiB": 51156
+            }
+          ]
+        }
+      },
+      {
+        "backend": "wasm:fp32",
+        "label": "準備完了 · 初期化 2125 ms · 初回合成 3060 ms",
+        "resident": {
+          "pssKiB": 1300257,
+          "sizes": [
+            {
+              "type": "browser",
+              "pssKiB": 25165,
+              "rssKiB": 95660
+            },
+            {
+              "type": "renderer",
+              "pssKiB": 1226917,
+              "rssKiB": 1314284
+            },
+            {
+              "type": "GPU",
+              "pssKiB": 20642,
+              "rssKiB": 66132
+            },
+            {
+              "type": "network.mojom.NetworkService",
+              "pssKiB": 16322,
+              "rssKiB": 65772
+            },
+            {
+              "type": "audio.mojom.AudioService",
+              "pssKiB": 11211,
+              "rssKiB": 51156
+            }
+          ]
+        },
+        "afterSynthesis": {
+          "pssKiB": 1289325,
+          "sizes": [
+            {
+              "type": "browser",
+              "pssKiB": 25075,
+              "rssKiB": 95656
+            },
+            {
+              "type": "renderer",
+              "pssKiB": 1217368,
+              "rssKiB": 1303692
+            },
+            {
+              "type": "GPU",
+              "pssKiB": 19358,
+              "rssKiB": 63576
+            },
+            {
+              "type": "network.mojom.NetworkService",
+              "pssKiB": 16313,
+              "rssKiB": 65768
+            },
+            {
+              "type": "audio.mojom.AudioService",
+              "pssKiB": 11211,
+              "rssKiB": 51156
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "cleanQ8PackSmoke": {
+    "format": "kokoro-realtime-v1",
+    "exportedAt": "2026-11-26T00:37:57.785Z",
+    "runtime": {
+      "model": "onnx-community/Kokoro-82M-v1.0-ONNX",
+      "revision": "1939ad2a8e416c0acfeecc08a694d14ef25f2231",
+      "kokoroJs": "1.2.1",
+      "ortWeb": "1.22.0-dev.20250409-89f8206ba4",
+      "profileVersion": "p35-voice-v1",
+      "pronunciationField": "kokoroPhonemes",
+      "sampleRate": 24000,
+      "weights": {
+        "q8": "model_quantized.onnx",
+        "q4": "model_q4.onnx",
+        "fp32": "model.onnx"
+      }
+    },
+    "pack": "d0047caedef5c2d9",
+    "environment": {
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.82 Safari/537.36",
+      "hardwareConcurrency": 9,
+      "deviceMemoryGiB": 8,
+      "online": true,
+      "isolated": true,
+      "sampleRate": 44100,
+      "baseLatency": 0.01,
+      "outputLatency": 0.032
+    },
+    "starts": [
+      {
+        "config": {
+          "device": "wasm",
+          "dtype": "q8",
+          "threads": 4
+        },
+        "at": 259.3800000003539,
+        "initMs": 3226.970000000205,
+        "isolated": true,
+        "primeMs": 3158.9500000001863
+      }
+    ],
+    "runs": [
+      {
+        "scenario": "short",
+        "startedAt": 6726.785000000149,
+        "modelAlreadyResident": true,
+        "config": {
+          "device": "wasm",
+          "dtype": "q8",
+          "threads": 4
+        },
+        "rows": [
+          {
+            "speaker": "jennifer",
+            "text": "I found it.",
+            "receivedAt": 6735.260000000242,
+            "phonemeOverride": false,
+            "warmVoice": true,
+            "synthesisRequestedAt": 6735.340000000317,
+            "synthesisMs": 2809.1100000003353,
+            "audioSeconds": 0.89,
+            "rawSeconds": 1.525,
+            "leadingMs": 70,
+            "trailingMs": 110,
+            "rawRtf": 1.842039344262515,
+            "rtf": 3.1563033707868935,
+            "pcmReadyAt": 9552.035000000149,
+            "scheduledAt": 9554.205000000075,
+            "gapMs": null,
+            "playbackAt": 9607.813893424127,
+            "playbackClock": "output-timestamp",
+            "synthesisToPlaybackMs": 2872.4738934238103,
+            "arrivalToPlaybackMs": 2872.553893423885,
+            "ended": true
+          },
+          {
+            "speaker": "jennifer",
+            "text": "I found it.",
+            "receivedAt": 10463.115000000224,
+            "phonemeOverride": false,
+            "warmVoice": true,
+            "synthesisRequestedAt": 10463.130000000354,
+            "synthesisMs": 3422.8900000001304,
+            "audioSeconds": 0.89,
+            "rawSeconds": 1.525,
+            "leadingMs": 70,
+            "trailingMs": 110,
+            "rawRtf": 2.2445180327869707,
+            "rtf": 3.8459438202248655,
+            "pcmReadyAt": 13892.370000000112,
+            "scheduledAt": 13894.370000000112,
+            "gapMs": null,
+            "playbackAt": 13952.984435374428,
+            "playbackClock": "output-timestamp",
+            "synthesisToPlaybackMs": 3489.8544353740745,
+            "arrivalToPlaybackMs": 3489.869435374205,
+            "ended": true
+          },
+          {
+            "speaker": "jennifer",
+            "text": "I found it.",
+            "receivedAt": 14803.084999999963,
+            "phonemeOverride": false,
+            "warmVoice": true,
+            "synthesisRequestedAt": 14803.125,
+            "synthesisMs": 2659.4199999999255,
+            "audioSeconds": 0.89,
+            "rawSeconds": 1.525,
+            "leadingMs": 70,
+            "trailingMs": 110,
+            "rawRtf": 1.7438819672130659,
+            "rtf": 2.988112359550478,
+            "pcmReadyAt": 17464.62000000011,
+            "scheduledAt": 17465.14000000013,
+            "gapMs": null,
+            "playbackAt": 17518.39446258528,
+            "playbackClock": "output-timestamp",
+            "synthesisToPlaybackMs": 2715.2694625852782,
+            "arrivalToPlaybackMs": 2715.3094625853155,
+            "ended": true
+          },
+          {
+            "speaker": "jennifer",
+            "text": "I found it.",
+            "receivedAt": 18379.180000000168,
+            "phonemeOverride": false,
+            "warmVoice": true,
+            "synthesisRequestedAt": 18379.450000000186,
+            "synthesisMs": 2626.2549999998882,
+            "audioSeconds": 0.89,
+            "rawSeconds": 1.525,
+            "leadingMs": 70,
+            "trailingMs": 110,
+            "rawRtf": 1.722134426229435,
+            "rtf": 2.950848314606616,
+            "pcmReadyAt": 21013.985000000335,
+            "scheduledAt": 21014.709999999963,
+            "gapMs": null,
+            "playbackAt": 21068.13602947857,
+            "playbackClock": "output-timestamp",
+            "synthesisToPlaybackMs": 2688.6860294783837,
+            "arrivalToPlaybackMs": 2688.9560294784023,
+            "ended": true
+          },
+          {
+            "speaker": "jennifer",
+            "text": "I found it.",
+            "receivedAt": 21922.62000000011,
+            "phonemeOverride": false,
+            "warmVoice": true,
+            "synthesisRequestedAt": 21922.67500000028,
+            "synthesisMs": 2537.839999999851,
+            "audioSeconds": 0.89,
+            "rawSeconds": 1.525,
+            "leadingMs": 70,
+            "trailingMs": 110,
+            "rawRtf": 1.6641573770490825,
+            "rtf": 2.851505617977361,
+            "pcmReadyAt": 24461.255000000354,
+            "scheduledAt": 24461.53500000015,
+            "gapMs": null,
+            "playbackAt": 24508.888328798184,
+            "playbackClock": "output-timestamp",
+            "synthesisToPlaybackMs": 2586.213328797905,
+            "arrivalToPlaybackMs": 2586.2683287980726,
+            "ended": true
+          }
+        ],
+        "memoryBefore": 10000000,
+        "agentMemoryBefore": null,
+        "complete": true,
+        "endedAt": 25363.79500000039,
+        "memoryAfter": 10000000,
+        "agentMemoryAfter": null,
+        "summary": {
+          "firstSynthesisToPlaybackMs": 2872.4738934238103,
+          "firstArrivalToPlaybackMs": 2872.553893423885,
+          "warmSynthesisToPlaybackMs": {
+            "count": 5,
+            "p50": 2715.2694625852782,
+            "p95": 3489.8544353740745,
+            "max": 3489.8544353740745
+          },
+          "rtf": {
+            "count": 5,
+            "p50": 2.988112359550478,
+            "p95": 3.8459438202248655,
+            "max": 3.8459438202248655
+          },
+          "interUtteranceSilenceMs": null,
+          "generationDuringPlayback": 0,
+          "played": 5
+        }
+      }
+    ],
+    "asrEvents": []
+  },
+  "browserChecks": {
+    "browser-interruption": {
+      "pack": "5d11030d7e1f697f",
+      "environment": {
+        "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.82 Safari/537.36",
+        "hardwareConcurrency": 9,
+        "deviceMemoryGiB": 8,
+        "online": true,
+        "isolated": true,
+        "sampleRate": 44100,
+        "baseLatency": 0.01,
+        "outputLatency": 0.03
+      },
+      "starts": [
+        {
+          "initMs": 4312.410000000149,
+          "config": {
+            "device": "wasm",
+            "dtype": "q8",
+            "threads": 4
+          },
+          "isolated": true,
+          "at": 4669.9199999999255,
+          "primeMs": 6353.194999999832
+        },
+        {
+          "initMs": 2914.904999999795,
+          "config": {
+            "device": "wasm",
+            "dtype": "q8",
+            "threads": 4
+          },
+          "isolated": true,
+          "at": 94052.86499999976
+        }
+      ],
+      "runs": [
+        {
+          "scenario": "dialogue",
+          "startedAt": 11113.739999999758,
+          "modelAlreadyResident": true,
+          "config": {
+            "device": "wasm",
+            "dtype": "q8",
+            "threads": 4
+          },
+          "rows": [
+            {
+              "speaker": "jennifer",
+              "text": "I found it.",
+              "receivedAt": 11275.84499999974,
+              "phonemeOverride": false,
+              "warmVoice": true,
+              "synthesisRequestedAt": 11276.049999999814,
+              "synthesisMs": 4500.35999999987,
+              "audioSeconds": 0.89,
+              "rawSeconds": 1.525,
+              "leadingMs": 70,
+              "trailingMs": 110,
+              "rawRtf": 2.9510557377048325,
+              "rtf": 5.056584269662775,
+              "pcmReadyAt": 15788.104999999981,
+              "scheduledAt": 15790.399999999907,
+              "gapMs": null,
+              "playbackAt": 15847.450061224099,
+              "playbackClock": "output-timestamp",
+              "synthesisToPlaybackMs": 4571.400061224285,
+              "arrivalToPlaybackMs": 4571.60506122436,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "text": "The key was under the blue cup.",
+              "receivedAt": 11594.19999999972,
+              "phonemeOverride": false,
+              "warmVoice": true,
+              "synthesisRequestedAt": 15790.520000000019,
+              "synthesisMs": 5836.060000000056,
+              "audioSeconds": 1.56,
+              "rawSeconds": 2.075,
+              "leadingMs": 70,
+              "trailingMs": 110,
+              "rawRtf": 2.8125590361446053,
+              "rtf": 3.7410641025641382,
+              "pcmReadyAt": 21627.654999999795,
+              "scheduledAt": 21628.21999999974,
+              "gapMs": 4807.596371882084,
+              "playbackAt": 21687.9274331062,
+              "playbackClock": "output-timestamp",
+              "synthesisToPlaybackMs": 5897.407433106182,
+              "arrivalToPlaybackMs": 10093.72743310648,
+              "ended": true
+            },
+            {
+              "speaker": "bob",
+              "text": "That explains it, but I still don't know who moved the cup.",
+              "receivedAt": 12152,
+              "phonemeOverride": false,
+              "warmVoice": false,
+              "synthesisRequestedAt": 21628.364999999758,
+              "synthesisMs": 9457.430000000168,
+              "audioSeconds": 2.97,
+              "rawSeconds": 3.575,
+              "leadingMs": 70,
+              "trailingMs": 110,
+              "rawRtf": 2.6454349650350117,
+              "rtf": 3.184319865319922,
+              "pcmReadyAt": 31087.794999999925,
+              "scheduledAt": 31088.084999999963,
+              "gapMs": 7611.882086167803,
+              "playbackAt": 31136.935519274226,
+              "playbackClock": "output-timestamp",
+              "synthesisToPlaybackMs": 9508.570519274468,
+              "arrivalToPlaybackMs": 18984.935519274226,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "text": "Let's ask Dr. Moss.",
+              "receivedAt": 12336,
+              "phonemeOverride": false,
+              "warmVoice": true,
+              "synthesisRequestedAt": 31088.159999999683,
+              "synthesisMs": 8295.360000000335,
+              "audioSeconds": 1.51,
+              "rawSeconds": 2.05,
+              "leadingMs": 70,
+              "trailingMs": 110,
+              "rawRtf": 4.046517073170895,
+              "rtf": 5.493615894039957,
+              "pcmReadyAt": 39391.389999999665,
+              "scheduledAt": 39391.70999999996,
+              "gapMs": 5029.274376417235,
+              "playbackAt": 39458.20089569135,
+              "playbackClock": "output-timestamp",
+              "synthesisToPlaybackMs": 8370.040895691665,
+              "arrivalToPlaybackMs": 27122.20089569135,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "text": "She was here at 3.15, just before the rain started.",
+              "receivedAt": 12800.579999999609,
+              "phonemeOverride": false,
+              "warmVoice": true,
+              "synthesisRequestedAt": 39392.014999999665,
+              "synthesisMs": 14609.115000000224,
+              "audioSeconds": 3.76,
+              "rawSeconds": 4.375,
+              "leadingMs": 70,
+              "trailingMs": 110,
+              "rawRtf": 3.3392262857143367,
+              "rtf": 3.885402925531974,
+              "pcmReadyAt": 54003.25,
+              "scheduledAt": 54005.02000000002,
+              "gapMs": 12570,
+              "playbackAt": 54056.19989569145,
+              "playbackClock": "output-timestamp",
+              "synthesisToPlaybackMs": 14664.184895691782,
+              "arrivalToPlaybackMs": 41255.61989569184,
+              "ended": true
+            },
+            {
+              "speaker": "ted",
+              "text": "Give me a minute.",
+              "receivedAt": 13000.704999999609,
+              "phonemeOverride": false,
+              "warmVoice": false,
+              "synthesisRequestedAt": 54005.125,
+              "synthesisMs": 8550.285000000149,
+              "audioSeconds": 1.35,
+              "rawSeconds": 1.875,
+              "leadingMs": 70,
+              "trailingMs": 110,
+              "rawRtf": 4.5601520000000795,
+              "rtf": 6.333544444444555,
+              "pcmReadyAt": 62559.994999999646,
+              "scheduledAt": 62560.314999999944,
+              "gapMs": 4250.884353741498,
+              "playbackAt": 62637.085249433054,
+              "playbackClock": "output-timestamp",
+              "synthesisToPlaybackMs": 8631.960249433054,
+              "arrivalToPlaybackMs": 49636.380249433445,
+              "ended": true
+            },
+            {
+              "speaker": "ted",
+              "text": "I'll check the note by the window.",
+              "receivedAt": 13398.679999999702,
+              "phonemeOverride": false,
+              "warmVoice": true,
+              "synthesisRequestedAt": 62560.375,
+              "synthesisMs": 8367.870000000112,
+              "audioSeconds": 2.45,
+              "rawSeconds": 3,
+              "leadingMs": 70,
+              "trailingMs": 110,
+              "rawRtf": 2.789290000000037,
+              "rtf": 3.4154571428571883,
+              "pcmReadyAt": 70928.98499999987,
+              "scheduledAt": 70929.32499999972,
+              "gapMs": 6730.544217687076,
+              "playbackAt": 70978.35846711978,
+              "playbackClock": "output-timestamp",
+              "synthesisToPlaybackMs": 8417.983467119775,
+              "arrivalToPlaybackMs": 57579.67846712007,
+              "ended": true
+            }
+          ],
+          "memoryBefore": 10000000,
+          "agentMemoryBefore": null,
+          "complete": true,
+          "endedAt": 73390.28499999968,
+          "memoryAfter": 10000000,
+          "agentMemoryAfter": null,
+          "summary": {
+            "firstSynthesisToPlaybackMs": 4571.400061224285,
+            "firstArrivalToPlaybackMs": 4571.60506122436,
+            "warmSynthesisToPlaybackMs": {
+              "count": 5,
+              "p50": 8370.040895691665,
+              "p95": 14664.184895691782,
+              "max": 14664.184895691782
+            },
+            "rtf": {
+              "count": 7,
+              "p50": 3.885402925531974,
+              "p95": 6.333544444444555,
+              "max": 6.333544444444555
+            },
+            "interUtteranceSilenceMs": {
+              "count": 6,
+              "p50": 5209.274376417235,
+              "p95": 12750,
+              "max": 12750
+            },
+            "generationDuringPlayback": 6,
+            "played": 7
+          }
+        },
+        {
+          "scenario": "read-curated",
+          "startedAt": 73511.91999999993,
+          "modelAlreadyResident": true,
+          "config": {
+            "device": "wasm",
+            "dtype": "q8",
+            "threads": 4
+          },
+          "rows": [
+            {
+              "speaker": "jennifer",
+              "text": "I read it yesterday, but I'll read it again tomorrow.",
+              "receivedAt": 73513.48999999976,
+              "phonemeOverride": true,
+              "warmVoice": true,
+              "synthesisRequestedAt": 73513.50999999978,
+              "synthesisMs": 6064.850000000093,
+              "audioSeconds": 2.76,
+              "rawSeconds": 3.4,
+              "leadingMs": 70,
+              "trailingMs": 110,
+              "rawRtf": 1.7837794117647332,
+              "rtf": 2.1974094202898886,
+              "pcmReadyAt": 79579.25499999989,
+              "scheduledAt": 79579.58499999996,
+              "gapMs": null,
+              "playbackAt": 79625.49159637185,
+              "playbackClock": "output-timestamp",
+              "synthesisToPlaybackMs": 6111.981596372076,
+              "arrivalToPlaybackMs": 6112.001596372094,
+              "ended": true
+            }
+          ],
+          "memoryBefore": 10000000,
+          "agentMemoryBefore": null,
+          "complete": true,
+          "endedAt": 82360.1549999998,
+          "memoryAfter": 10000000,
+          "agentMemoryAfter": null,
+          "summary": {
+            "firstSynthesisToPlaybackMs": 6111.981596372076,
+            "firstArrivalToPlaybackMs": 6112.001596372094,
+            "warmSynthesisToPlaybackMs": {
+              "count": 1,
+              "p50": 6111.981596372076,
+              "p95": 6111.981596372076,
+              "max": 6111.981596372076
+            },
+            "rtf": {
+              "count": 1,
+              "p50": 2.1974094202898886,
+              "p95": 2.1974094202898886,
+              "max": 2.1974094202898886
+            },
+            "interUtteranceSilenceMs": null,
+            "generationDuringPlayback": 0,
+            "played": 1
+          }
+        },
+        {
+          "scenario": "dialogue",
+          "startedAt": 82490.09499999974,
+          "modelAlreadyResident": true,
+          "config": {
+            "device": "wasm",
+            "dtype": "q8",
+            "threads": 4
+          },
+          "rows": [
+            {
+              "speaker": "jennifer",
+              "text": "I found it.",
+              "receivedAt": 82627.44499999983,
+              "phonemeOverride": false,
+              "warmVoice": true,
+              "synthesisRequestedAt": 82627.51499999966,
+              "synthesisMs": 2788.7000000001863,
+              "audioSeconds": 0.89,
+              "rawSeconds": 1.525,
+              "leadingMs": 70,
+              "trailingMs": 110,
+              "rawRtf": 1.82865573770504,
+              "rtf": 3.1333707865170632,
+              "pcmReadyAt": 85416.8049999997,
+              "scheduledAt": 85417.05999999959,
+              "gapMs": null,
+              "playbackAt": 85466.29224716531,
+              "playbackClock": "output-timestamp",
+              "synthesisToPlaybackMs": 2838.77724716565,
+              "arrivalToPlaybackMs": 2838.8472471654823,
+              "ended": false
+            },
+            {
+              "speaker": "jennifer",
+              "text": "The key was under the blue cup.",
+              "receivedAt": 82961.16500000004,
+              "phonemeOverride": false,
+              "warmVoice": true,
+              "synthesisRequestedAt": 85417.14500000002
+            }
+          ],
+          "memoryBefore": 10000000,
+          "agentMemoryBefore": null,
+          "stopReason": "push-to-talk",
+          "stopRequestedAt": 85516.50499999989,
+          "workerTerminated": true,
+          "endedAt": 85519.92499999981,
+          "memoryAfter": 10000000,
+          "summary": {
+            "firstSynthesisToPlaybackMs": 2838.77724716565,
+            "firstArrivalToPlaybackMs": 2838.8472471654823,
+            "warmSynthesisToPlaybackMs": {
+              "count": 1,
+              "p50": 2838.77724716565,
+              "p95": 2838.77724716565,
+              "max": 2838.77724716565
+            },
+            "rtf": {
+              "count": 1,
+              "p50": 3.1333707865170632,
+              "p95": 3.1333707865170632,
+              "max": 3.1333707865170632
+            },
+            "interUtteranceSilenceMs": null,
+            "generationDuringPlayback": 0,
+            "played": 1
+          }
+        },
+        {
+          "scenario": "dialogue",
+          "startedAt": 91110.35499999998,
+          "modelAlreadyResident": false,
+          "config": {
+            "device": "wasm",
+            "dtype": "q8",
+            "threads": 4
+          },
+          "rows": [
+            {
+              "speaker": "jennifer",
+              "text": "I found it.",
+              "receivedAt": 94198.97999999998,
+              "phonemeOverride": false,
+              "warmVoice": false,
+              "synthesisRequestedAt": 94199.0549999997
+            }
+          ],
+          "memoryBefore": 10000000,
+          "agentMemoryBefore": null,
+          "stopReason": "voice",
+          "stopRequestedAt": 94452.06999999983,
+          "workerTerminated": true,
+          "endedAt": 94478.19999999972,
+          "memoryAfter": 10000000,
+          "summary": {
+            "firstSynthesisToPlaybackMs": null,
+            "firstArrivalToPlaybackMs": null,
+            "warmSynthesisToPlaybackMs": null,
+            "rtf": null,
+            "interUtteranceSilenceMs": null,
+            "generationDuringPlayback": 0,
+            "played": 0
+          }
+        }
+      ],
+      "asrEvents": [
+        {
+          "event": "interruption",
+          "trigger": "push-to-talk",
+          "interrupted": true,
+          "asrMode": "mic",
+          "at": 85516.95499999961
+        },
+        {
+          "event": "mic-only",
+          "detail": "mic",
+          "at": 85632.23499999987
+        },
+        {
+          "event": "mic-speech",
+          "at": 85809.6499999999
+        },
+        {
+          "event": "vad-armed",
+          "at": 94057.44999999972
+        },
+        {
+          "event": "interruption",
+          "trigger": "voice",
+          "interrupted": true,
+          "asrMode": "mic",
+          "at": 94452.25
+        },
+        {
+          "event": "mic-only",
+          "detail": "mic",
+          "at": 94569.47499999963
+        },
+        {
+          "event": "mic-speech",
+          "at": 94746.64500000002
+        }
+      ]
+    },
+    "browser-offline-reload": {
+      "pack": "5d11030d7e1f697f",
+      "environment": {
+        "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.82 Safari/537.36",
+        "hardwareConcurrency": 9,
+        "deviceMemoryGiB": 8,
+        "online": true,
+        "isolated": true,
+        "sampleRate": 44100,
+        "baseLatency": 0.01,
+        "outputLatency": 0.03
+      },
+      "starts": [
+        {
+          "initMs": 2743.0150000001304,
+          "config": {
+            "device": "wasm",
+            "dtype": "q8",
+            "threads": 4
+          },
+          "isolated": true,
+          "at": 3007.2949999999255,
+          "primeMs": 4528.385000000242
+        }
+      ],
+      "runs": [
+        {
+          "scenario": "short",
+          "startedAt": 7628.550000000279,
+          "modelAlreadyResident": true,
+          "config": {
+            "device": "wasm",
+            "dtype": "q8",
+            "threads": 4
+          },
+          "rows": [
+            {
+              "speaker": "jennifer",
+              "text": "I found it.",
+              "receivedAt": 7641.050000000279,
+              "phonemeOverride": false,
+              "warmVoice": true,
+              "synthesisRequestedAt": 7641.120000000112,
+              "synthesisMs": 3066.8900000001304,
+              "audioSeconds": 0.89,
+              "rawSeconds": 1.525,
+              "leadingMs": 70,
+              "trailingMs": 110,
+              "rawRtf": 2.011075409836151,
+              "rtf": 3.4459438202248656,
+              "pcmReadyAt": 10710.910000000149,
+              "scheduledAt": 10711.604999999981,
+              "gapMs": null,
+              "playbackAt": 10763.980625850396,
+              "playbackClock": "output-timestamp",
+              "synthesisToPlaybackMs": 3122.860625850284,
+              "arrivalToPlaybackMs": 3122.9306258501165,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "text": "I found it.",
+              "receivedAt": 11618.290000000037,
+              "phonemeOverride": false,
+              "warmVoice": true,
+              "synthesisRequestedAt": 11618.310000000056,
+              "synthesisMs": 3600.8549999999814,
+              "audioSeconds": 0.89,
+              "rawSeconds": 1.525,
+              "leadingMs": 70,
+              "trailingMs": 110,
+              "rawRtf": 2.3612163934426107,
+              "rtf": 4.045904494382001,
+              "pcmReadyAt": 15221.53000000026,
+              "scheduledAt": 15221.854999999981,
+              "gapMs": null,
+              "playbackAt": 15272.527378685014,
+              "playbackClock": "output-timestamp",
+              "synthesisToPlaybackMs": 3654.217378684958,
+              "arrivalToPlaybackMs": 3654.2373786849766,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "text": "I found it.",
+              "receivedAt": 16128.325000000186,
+              "phonemeOverride": false,
+              "warmVoice": true,
+              "synthesisRequestedAt": 16128.35999999987,
+              "synthesisMs": 3229.3549999999814,
+              "audioSeconds": 0.89,
+              "rawSeconds": 1.525,
+              "leadingMs": 70,
+              "trailingMs": 110,
+              "rawRtf": 2.1176098360655615,
+              "rtf": 3.628488764044923,
+              "pcmReadyAt": 19358.220000000205,
+              "scheduledAt": 19358.33999999985,
+              "gapMs": null,
+              "playbackAt": 19414.073328798488,
+              "playbackClock": "output-timestamp",
+              "synthesisToPlaybackMs": 3285.713328798618,
+              "arrivalToPlaybackMs": 3285.7483287983014,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "text": "I found it.",
+              "receivedAt": 20270.149999999907,
+              "phonemeOverride": false,
+              "warmVoice": true,
+              "synthesisRequestedAt": 20270.180000000168,
+              "synthesisMs": 3414.3599999998696,
+              "audioSeconds": 0.89,
+              "rawSeconds": 1.525,
+              "leadingMs": 70,
+              "trailingMs": 110,
+              "rawRtf": 2.238924590163849,
+              "rtf": 3.8363595505616512,
+              "pcmReadyAt": 23686.24500000011,
+              "scheduledAt": 23686.725000000093,
+              "gapMs": null,
+              "playbackAt": 23732.666433106428,
+              "playbackClock": "output-timestamp",
+              "synthesisToPlaybackMs": 3462.48643310626,
+              "arrivalToPlaybackMs": 3462.5164331065207,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "text": "I found it.",
+              "receivedAt": 24587.774999999907,
+              "phonemeOverride": false,
+              "warmVoice": true,
+              "synthesisRequestedAt": 24587.805000000168,
+              "synthesisMs": 3637.18499999959,
+              "audioSeconds": 0.89,
+              "rawSeconds": 1.525,
+              "leadingMs": 70,
+              "trailingMs": 110,
+              "rawRtf": 2.3850393442620264,
+              "rtf": 4.086724719100663,
+              "pcmReadyAt": 28225.830000000075,
+              "scheduledAt": 28226.149999999907,
+              "gapMs": null,
+              "playbackAt": 28274.41914058951,
+              "playbackClock": "output-timestamp",
+              "synthesisToPlaybackMs": 3686.614140589343,
+              "arrivalToPlaybackMs": 3686.644140589604,
+              "ended": true
+            }
+          ],
+          "memoryBefore": 10000000,
+          "agentMemoryBefore": null,
+          "complete": true,
+          "endedAt": 29127.58999999985,
+          "memoryAfter": 10000000,
+          "agentMemoryAfter": null,
+          "summary": {
+            "firstSynthesisToPlaybackMs": 3122.860625850284,
+            "firstArrivalToPlaybackMs": 3122.9306258501165,
+            "warmSynthesisToPlaybackMs": {
+              "count": 5,
+              "p50": 3462.48643310626,
+              "p95": 3686.614140589343,
+              "max": 3686.614140589343
+            },
+            "rtf": {
+              "count": 5,
+              "p50": 3.8363595505616512,
+              "p95": 4.086724719100663,
+              "max": 4.086724719100663
+            },
+            "interUtteranceSilenceMs": null,
+            "generationDuringPlayback": 0,
+            "played": 5
+          }
+        }
+      ],
+      "asrEvents": []
+    },
+    "browser-asr-mock": {
+      "pack": "b6d515c13e3daa38",
+      "environment": {
+        "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.82 Safari/537.36",
+        "hardwareConcurrency": 9,
+        "deviceMemoryGiB": 8,
+        "online": true,
+        "isolated": true,
+        "sampleRate": 44100,
+        "baseLatency": 0.01,
+        "outputLatency": 0.03
+      },
+      "starts": [
+        {
+          "config": {
+            "device": "wasm",
+            "dtype": "q8",
+            "threads": 4
+          },
+          "at": 362.79999999981374,
+          "initMs": 3089.350000000093,
+          "isolated": true,
+          "primeMs": 5273.9749999996275
+        }
+      ],
+      "runs": [
+        {
+          "scenario": "dialogue",
+          "startedAt": 8884.274999999907,
+          "modelAlreadyResident": true,
+          "config": {
+            "device": "wasm",
+            "dtype": "q8",
+            "threads": 4
+          },
+          "rows": [
+            {
+              "speaker": "jennifer",
+              "text": "I found it.",
+              "receivedAt": 9022.43499999959,
+              "phonemeOverride": false,
+              "warmVoice": true,
+              "synthesisRequestedAt": 9022.569999999832,
+              "synthesisMs": 3534.6299999998882,
+              "audioSeconds": 0.89,
+              "rawSeconds": 1.525,
+              "leadingMs": 70,
+              "trailingMs": 110,
+              "rawRtf": 2.3177901639343528,
+              "rtf": 3.9714943820223465,
+              "pcmReadyAt": 12557.774999999907,
+              "scheduledAt": 12558.504999999888,
+              "gapMs": null,
+              "playbackAt": 12611.052922902365,
+              "playbackClock": "output-timestamp",
+              "synthesisToPlaybackMs": 3588.4829229025327,
+              "arrivalToPlaybackMs": 3588.617922902775,
+              "ended": false
+            },
+            {
+              "speaker": "jennifer",
+              "text": "The key was under the blue cup.",
+              "receivedAt": 9353.85999999987,
+              "phonemeOverride": false,
+              "warmVoice": true,
+              "synthesisRequestedAt": 12558.629999999888
+            }
+          ],
+          "memoryBefore": 10000000,
+          "agentMemoryBefore": null,
+          "stopReason": "push-to-talk",
+          "stopRequestedAt": 12883.169999999925,
+          "workerTerminated": true,
+          "endedAt": 12891.134999999776,
+          "memoryAfter": 10000000,
+          "summary": {
+            "firstSynthesisToPlaybackMs": 3588.4829229025327,
+            "firstArrivalToPlaybackMs": 3588.617922902775,
+            "warmSynthesisToPlaybackMs": {
+              "count": 1,
+              "p50": 3588.4829229025327,
+              "p95": 3588.4829229025327,
+              "max": 3588.4829229025327
+            },
+            "rtf": {
+              "count": 1,
+              "p50": 3.9714943820223465,
+              "p95": 3.9714943820223465,
+              "max": 3.9714943820223465
+            },
+            "interUtteranceSilenceMs": null,
+            "generationDuringPlayback": 0,
+            "played": 1
+          }
+        }
+      ],
+      "asrEvents": [
+        {
+          "event": "interruption",
+          "trigger": "push-to-talk",
+          "interrupted": true,
+          "asrMode": "browser",
+          "at": 12883.569999999832
+        },
+        {
+          "event": "asr-start",
+          "detail": "browser",
+          "at": 12991.534999999683
+        },
+        {
+          "event": "asr-speech",
+          "at": 13192.459999999963
+        },
+        {
+          "event": "asr-final",
+          "at": 13642.55999999959
+        },
+        {
+          "event": "asr-end",
+          "at": 13642.84499999974
+        }
+      ]
+    },
+    "browser-endurance": {
+      "pack": "5d11030d7e1f697f",
+      "environment": {
+        "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/140.0.7339.82 Safari/537.36",
+        "hardwareConcurrency": 9,
+        "deviceMemoryGiB": 8,
+        "online": true,
+        "isolated": true,
+        "sampleRate": 44100,
+        "baseLatency": 0.01,
+        "outputLatency": 0.03
+      },
+      "starts": [
+        {
+          "initMs": 4380.1150000002235,
+          "config": {
+            "device": "wasm",
+            "dtype": "q8",
+            "threads": 4
+          },
+          "isolated": true,
+          "at": 4744.584999999963,
+          "primeMs": 6517.410000000149
+        }
+      ],
+      "runs": [
+        {
+          "scenario": "endurance",
+          "startedAt": 11347.024999999907,
+          "modelAlreadyResident": true,
+          "config": {
+            "device": "wasm",
+            "dtype": "q8",
+            "threads": 4
+          },
+          "rows": [
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 4621.550000000279,
+              "audioSeconds": 0.89,
+              "rtf": 5.192752808989078,
+              "playbackAt": 16173.648356008736,
+              "gapMs": null,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 6106.054999999702,
+              "audioSeconds": 1.56,
+              "rtf": 3.9141378205126296,
+              "playbackAt": 22295.468950113456,
+              "gapMs": 4949.8185941043075,
+              "ended": true
+            },
+            {
+              "speaker": "bob",
+              "synthesisMs": 9685.39000000013,
+              "audioSeconds": 2.97,
+              "rtf": 3.2610740740741178,
+              "playbackAt": 31954.29943990904,
+              "gapMs": 7661.22448979592,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 9303.299999999814,
+              "audioSeconds": 1.51,
+              "rtf": 6.1611258278144465,
+              "playbackAt": 41272.49356916074,
+              "gapMs": 5667.823129251701,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 15078.084999999963,
+              "audioSeconds": 3.76,
+              "rtf": 4.010128989361692,
+              "playbackAt": 56354.11535827662,
+              "gapMs": 12421.972789115649,
+              "ended": true
+            },
+            {
+              "speaker": "ted",
+              "synthesisMs": 7617.23499999987,
+              "audioSeconds": 1.35,
+              "rtf": 5.6423962962962,
+              "playbackAt": 63963.380571428315,
+              "gapMs": 3298.866213151925,
+              "ended": true
+            },
+            {
+              "speaker": "ted",
+              "synthesisMs": 7697.5099999997765,
+              "audioSeconds": 2.45,
+              "rtf": 3.1418408163264395,
+              "playbackAt": 71673.68519501139,
+              "gapMs": 6010.725623582772,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 3307.5400000000373,
+              "audioSeconds": 0.89,
+              "rtf": 3.716337078651727,
+              "playbackAt": 77583.19632879813,
+              "gapMs": null,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 3732.035000000149,
+              "audioSeconds": 1.56,
+              "rtf": 2.3923301282052236,
+              "playbackAt": 81322.8985442175,
+              "gapMs": 2839.7052154194994,
+              "ended": true
+            },
+            {
+              "speaker": "bob",
+              "synthesisMs": 6467.755000000354,
+              "audioSeconds": 2.97,
+              "rtf": 2.1776952861954055,
+              "playbackAt": 87792.88954421741,
+              "gapMs": 4840.000000000004,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 3651.2849999996834,
+              "audioSeconds": 1.51,
+              "rtf": 2.4180695364236313,
+              "playbackAt": 91443.32443537383,
+              "gapMs": 669.7278911564553,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 8292.80000000028,
+              "audioSeconds": 3.76,
+              "rtf": 2.205531914893691,
+              "playbackAt": 99743.12230158737,
+              "gapMs": 6750.498866213149,
+              "ended": true
+            },
+            {
+              "speaker": "ted",
+              "synthesisMs": 3841.2350000003353,
+              "audioSeconds": 1.35,
+              "rtf": 2.845359259259508,
+              "playbackAt": 103584.49581859392,
+              "gapMs": 71.29251700679617,
+              "ended": true
+            },
+            {
+              "speaker": "ted",
+              "synthesisMs": 6370.095000000205,
+              "audioSeconds": 2.45,
+              "rtf": 2.6000387755102876,
+              "playbackAt": 109951.5309999997,
+              "gapMs": 4957.120181405898,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 2822.6200000001118,
+              "audioSeconds": 0.89,
+              "rtf": 3.1714831460675414,
+              "playbackAt": 115372.81943310647,
+              "gapMs": null,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 4025.755000000354,
+              "audioSeconds": 1.56,
+              "rtf": 2.580612179487406,
+              "playbackAt": 119402.70113832204,
+              "gapMs": 3100.929705215421,
+              "ended": true
+            },
+            {
+              "speaker": "bob",
+              "synthesisMs": 6675.719999999739,
+              "audioSeconds": 2.97,
+              "rtf": 2.247717171717084,
+              "playbackAt": 126085.26808843522,
+              "gapMs": 5121.541950113368,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 3831.2949999999255,
+              "audioSeconds": 1.51,
+              "rtf": 2.537281456953593,
+              "playbackAt": 129912.97424716523,
+              "gapMs": 788.7301587301607,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 6792.214999999851,
+              "audioSeconds": 3.76,
+              "rtf": 1.8064401595744284,
+              "playbackAt": 136712.02448752825,
+              "gapMs": 5278.934240362802,
+              "ended": true
+            },
+            {
+              "speaker": "ted",
+              "synthesisMs": 3625.4500000001863,
+              "audioSeconds": 1.35,
+              "rtf": 2.6855185185186565,
+              "playbackAt": 140481.94048752842,
+              "gapMs": 0,
+              "ended": true
+            },
+            {
+              "speaker": "ted",
+              "synthesisMs": 5893.790000000037,
+              "audioSeconds": 2.45,
+              "rtf": 2.4056285714285868,
+              "playbackAt": 146392.22821768673,
+              "gapMs": 4500.158730158745,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 3760.9550000000745,
+              "audioSeconds": 0.89,
+              "rtf": 4.225792134831544,
+              "playbackAt": 152764.81835374137,
+              "gapMs": null,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 4735.429999999702,
+              "audioSeconds": 1.56,
+              "rtf": 3.0355320512818604,
+              "playbackAt": 157491.5616757369,
+              "gapMs": 3809.1383219954764,
+              "ended": true
+            },
+            {
+              "speaker": "bob",
+              "synthesisMs": 6758.145000000019,
+              "audioSeconds": 2.97,
+              "rtf": 2.275469696969703,
+              "playbackAt": 164252.777489796,
+              "gapMs": 5191.201814058957,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 3428.899999999907,
+              "audioSeconds": 1.51,
+              "rtf": 2.270794701986693,
+              "playbackAt": 167683.50778911533,
+              "gapMs": 460.74829931973227,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 7900.480000000447,
+              "audioSeconds": 3.76,
+              "rtf": 2.101191489361821,
+              "playbackAt": 175591.7359999997,
+              "gapMs": 6318.0272108843665,
+              "ended": true
+            },
+            {
+              "speaker": "ted",
+              "synthesisMs": 3237.9950000001118,
+              "audioSeconds": 1.35,
+              "rtf": 2.398514814814898,
+              "playbackAt": 179351.56799999974,
+              "gapMs": 0,
+              "ended": true
+            },
+            {
+              "speaker": "ted",
+              "synthesisMs": 4845.635000000242,
+              "audioSeconds": 2.45,
+              "rtf": 1.9778102040817316,
+              "playbackAt": 184213.2316802719,
+              "gapMs": 3501.7006802721085,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 4082.814999999944,
+              "audioSeconds": 0.89,
+              "rtf": 4.5874325842696,
+              "playbackAt": 190893.25300453487,
+              "gapMs": null,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 4818.4900000002235,
+              "audioSeconds": 1.56,
+              "rtf": 3.0887756410257845,
+              "playbackAt": 195722.02086621293,
+              "gapMs": 3788.820861678033,
+              "ended": true
+            },
+            {
+              "speaker": "bob",
+              "synthesisMs": 7756.040000000037,
+              "audioSeconds": 2.97,
+              "rtf": 2.611461279461292,
+              "playbackAt": 203477.3815192742,
+              "gapMs": 6041.632653061214,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 3910.9449999998324,
+              "audioSeconds": 1.51,
+              "rtf": 2.590029801324392,
+              "playbackAt": 207384.02297959168,
+              "gapMs": 890.3174603174477,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 7497.60999999987,
+              "audioSeconds": 3.76,
+              "rtf": 1.9940452127659227,
+              "playbackAt": 214884.03033106573,
+              "gapMs": 5990.045351473953,
+              "ended": true
+            },
+            {
+              "speaker": "ted",
+              "synthesisMs": 3657.0699999998324,
+              "audioSeconds": 1.35,
+              "rtf": 2.7089407407406165,
+              "playbackAt": 218654.0203310658,
+              "gapMs": 0,
+              "ended": true
+            },
+            {
+              "speaker": "ted",
+              "synthesisMs": 7258.799999999814,
+              "audioSeconds": 2.45,
+              "rtf": 2.9627755102040054,
+              "playbackAt": 225933.9156009069,
+              "gapMs": 5759.841269841274,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 3577.225000000093,
+              "audioSeconds": 0.89,
+              "rtf": 4.019353932584374,
+              "playbackAt": 232122.37932653038,
+              "gapMs": null,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 4591.199999999721,
+              "audioSeconds": 1.56,
+              "rtf": 2.943076923076744,
+              "playbackAt": 236713.8355736958,
+              "gapMs": 3591.4512471655653,
+              "ended": true
+            },
+            {
+              "speaker": "bob",
+              "synthesisMs": 5954.89000000013,
+              "audioSeconds": 2.97,
+              "rtf": 2.005013468013512,
+              "playbackAt": 242672.63243537417,
+              "gapMs": 4398.82086167799,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 3470.0849999999627,
+              "audioSeconds": 1.51,
+              "rtf": 2.2980695364238164,
+              "playbackAt": 246144.98965532886,
+              "gapMs": 501.3832199546471,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 10542.244999999646,
+              "audioSeconds": 3.76,
+              "rtf": 2.803788563829693,
+              "playbackAt": 256682.97967800443,
+              "gapMs": 8718.390022675749,
+              "ended": true
+            },
+            {
+              "speaker": "ted",
+              "synthesisMs": 3856.8549999999814,
+              "audioSeconds": 1.35,
+              "rtf": 2.856929629629616,
+              "playbackAt": 260572.41367800426,
+              "gapMs": 0,
+              "ended": true
+            },
+            {
+              "speaker": "ted",
+              "synthesisMs": 6109.5250000003725,
+              "audioSeconds": 2.45,
+              "rtf": 2.49368367346954,
+              "playbackAt": 266701.8861360544,
+              "gapMs": 4639.478458049894,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 2818.7650000001304,
+              "audioSeconds": 0.89,
+              "rtf": 3.1671516853934047,
+              "playbackAt": 272123.75154648506,
+              "gapMs": null,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 4152.0449999999255,
+              "audioSeconds": 1.56,
+              "rtf": 2.66156730769226,
+              "playbackAt": 276273.7411950113,
+              "gapMs": 3129.954648526109,
+              "ended": true
+            },
+            {
+              "speaker": "bob",
+              "synthesisMs": 6766.334999999963,
+              "audioSeconds": 2.97,
+              "rtf": 2.27822727272726,
+              "playbackAt": 283044.2315147389,
+              "gapMs": 5188.299319727889,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 4116.850000000093,
+              "audioSeconds": 1.51,
+              "rtf": 2.7263907284768827,
+              "playbackAt": 287164.19206122414,
+              "gapMs": 1102.199546485224,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 8833.379999999888,
+              "audioSeconds": 3.76,
+              "rtf": 2.349303191489332,
+              "playbackAt": 295992.9498956916,
+              "gapMs": 7278.752834467127,
+              "ended": true
+            },
+            {
+              "speaker": "ted",
+              "synthesisMs": 3705.0099999997765,
+              "audioSeconds": 1.35,
+              "rtf": 2.7444518518516863,
+              "playbackAt": 299772.9448956914,
+              "gapMs": 0,
+              "ended": true
+            },
+            {
+              "speaker": "ted",
+              "synthesisMs": 5446.305000000168,
+              "audioSeconds": 2.45,
+              "rtf": 2.2229816326531298,
+              "playbackAt": 305231.9284875281,
+              "gapMs": 4058.979591836703,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 4084.2299999999814,
+              "audioSeconds": 0.89,
+              "rtf": 4.589022471910091,
+              "playbackAt": 311914.14303401334,
+              "gapMs": null,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 4781.024999999907,
+              "audioSeconds": 1.56,
+              "rtf": 3.0647596153845558,
+              "playbackAt": 316711.6540544215,
+              "gapMs": 3707.551020408175,
+              "ended": true
+            },
+            {
+              "speaker": "bob",
+              "synthesisMs": 7548.104999999981,
+              "audioSeconds": 2.97,
+              "rtf": 2.5414494949494886,
+              "playbackAt": 324254.5691950114,
+              "gapMs": 5792.018140589618,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 4166.790000000037,
+              "audioSeconds": 1.51,
+              "rtf": 2.759463576158965,
+              "playbackAt": 328423.33038321976,
+              "gapMs": 1029.6371882085396,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 8723.254999999888,
+              "audioSeconds": 3.76,
+              "rtf": 2.320014627659545,
+              "playbackAt": 337145.05700680276,
+              "gapMs": 7130.7256235828045,
+              "ended": true
+            },
+            {
+              "speaker": "ted",
+              "synthesisMs": 3919.850000000093,
+              "audioSeconds": 1.35,
+              "rtf": 2.903592592592662,
+              "playbackAt": 341125.51575736934,
+              "gapMs": 207.70975056689167,
+              "ended": true
+            },
+            {
+              "speaker": "ted",
+              "synthesisMs": 5188.23499999987,
+              "audioSeconds": 2.45,
+              "rtf": 2.117646938775457,
+              "playbackAt": 346333.02559863933,
+              "gapMs": 3851.2698412698114,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 2612.649999999907,
+              "audioSeconds": 0.89,
+              "rtf": 2.935561797752704,
+              "playbackAt": 351551.7334058955,
+              "gapMs": null,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 3457.2450000001118,
+              "audioSeconds": 1.56,
+              "rtf": 2.216182692307764,
+              "playbackAt": 355004.10268253926,
+              "gapMs": 2552.358276643986,
+              "ended": true
+            },
+            {
+              "speaker": "bob",
+              "synthesisMs": 5464.209999999963,
+              "audioSeconds": 2.97,
+              "rtf": 1.8398013468013343,
+              "playbackAt": 360472.38800226746,
+              "gapMs": 3908.2993197279166,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 3302.125,
+              "audioSeconds": 1.51,
+              "rtf": 2.186837748344371,
+              "playbackAt": 363773.8105736959,
+              "gapMs": 321.4285714285552,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 6827.965000000317,
+              "audioSeconds": 3.76,
+              "rtf": 1.8159481382979565,
+              "playbackAt": 370613.43621768674,
+              "gapMs": 5328.276643990932,
+              "ended": true
+            },
+            {
+              "speaker": "ted",
+              "synthesisMs": 2973.4249999998137,
+              "audioSeconds": 1.35,
+              "rtf": 2.202537037036899,
+              "playbackAt": 374392.4902176868,
+              "gapMs": 0,
+              "ended": true
+            },
+            {
+              "speaker": "ted",
+              "synthesisMs": 5069.274999999907,
+              "audioSeconds": 2.45,
+              "rtf": 2.069091836734656,
+              "playbackAt": 379483.7315464853,
+              "gapMs": 3681.655328798172,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 2625.7050000000745,
+              "audioSeconds": 0.89,
+              "rtf": 2.9502303370787355,
+              "playbackAt": 384714.1903310655,
+              "gapMs": null,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 3250.30999999959,
+              "audioSeconds": 1.56,
+              "rtf": 2.0835320512817885,
+              "playbackAt": 387964.6544875281,
+              "gapMs": 2357.8911564625855,
+              "ended": true
+            },
+            {
+              "speaker": "bob",
+              "synthesisMs": 5508.614999999758,
+              "audioSeconds": 2.97,
+              "rtf": 1.8547525252524437,
+              "playbackAt": 393473.77622222225,
+              "gapMs": 3951.8367346938703,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 3074.0300000002608,
+              "audioSeconds": 1.51,
+              "rtf": 2.0357814569538153,
+              "playbackAt": 396541.70173015876,
+              "gapMs": 97.93650793648112,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 6770.395000000019,
+              "audioSeconds": 3.76,
+              "rtf": 1.8006369680851113,
+              "playbackAt": 403322.0944875283,
+              "gapMs": 5270.226757369642,
+              "ended": true
+            },
+            {
+              "speaker": "ted",
+              "synthesisMs": 3093.0750000001863,
+              "audioSeconds": 1.35,
+              "rtf": 2.2911666666668045,
+              "playbackAt": 407081.94048752816,
+              "gapMs": 0,
+              "ended": true
+            },
+            {
+              "speaker": "ted",
+              "synthesisMs": 5148.550000000279,
+              "audioSeconds": 2.45,
+              "rtf": 2.1014489795919506,
+              "playbackAt": 412244.2000612245,
+              "gapMs": 3812.26757369609,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 2503.0500000002794,
+              "audioSeconds": 0.89,
+              "rtf": 2.8124157303373924,
+              "playbackAt": 417352.70308390004,
+              "gapMs": null,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 3353.470000000205,
+              "audioSeconds": 1.56,
+              "rtf": 2.149660256410388,
+              "playbackAt": 420703.35305895685,
+              "gapMs": 2450.7709750566846,
+              "ended": true
+            },
+            {
+              "speaker": "bob",
+              "synthesisMs": 5856.635000000242,
+              "audioSeconds": 2.97,
+              "rtf": 1.971930976431058,
+              "playbackAt": 426563.8606530611,
+              "gapMs": 4279.818594104313,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 3177.704999999609,
+              "audioSeconds": 1.51,
+              "rtf": 2.1044403973507344,
+              "playbackAt": 429744.29543990915,
+              "gapMs": 211.13378684805184,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 6755.645000000019,
+              "audioSeconds": 3.76,
+              "rtf": 1.7967140957446859,
+              "playbackAt": 436502.2772993195,
+              "gapMs": 5217.981859410429,
+              "ended": true
+            },
+            {
+              "speaker": "ted",
+              "synthesisMs": 2985.2599999997765,
+              "audioSeconds": 1.35,
+              "rtf": 2.211303703703538,
+              "playbackAt": 440262.29629931966,
+              "gapMs": 0,
+              "ended": true
+            },
+            {
+              "speaker": "ted",
+              "synthesisMs": 5121.135000000242,
+              "audioSeconds": 2.45,
+              "rtf": 2.0902591836735684,
+              "playbackAt": 445402.6284353742,
+              "gapMs": 3780.340136054406,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 2620.9199999999255,
+              "audioSeconds": 0.89,
+              "rtf": 2.944853932584186,
+              "playbackAt": 450624.2157369613,
+              "gapMs": null,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 3668.529999999795,
+              "audioSeconds": 1.56,
+              "rtf": 2.3516217948716633,
+              "playbackAt": 454292.653111111,
+              "gapMs": 2758.4353741496557,
+              "ended": true
+            },
+            {
+              "speaker": "bob",
+              "synthesisMs": 5532.260000000242,
+              "audioSeconds": 2.97,
+              "rtf": 1.8627138047138863,
+              "playbackAt": 459831.5923514739,
+              "gapMs": 3948.934240362803,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 3608.1299999998882,
+              "audioSeconds": 1.51,
+              "rtf": 2.3894900662250915,
+              "playbackAt": 463442.2882993198,
+              "gapMs": 640.7029478457957,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 6834.354999999981,
+              "audioSeconds": 3.76,
+              "rtf": 1.8176476063829738,
+              "playbackAt": 470283.46343764174,
+              "gapMs": 5331.179138322,
+              "ended": true
+            },
+            {
+              "speaker": "ted",
+              "synthesisMs": 3472.5750000001863,
+              "audioSeconds": 1.35,
+              "rtf": 2.5722777777779156,
+              "playbackAt": 474043.4614376416,
+              "gapMs": 0,
+              "ended": true
+            },
+            {
+              "speaker": "ted",
+              "synthesisMs": 5341.825000000186,
+              "audioSeconds": 2.45,
+              "rtf": 2.1803367346939537,
+              "playbackAt": 479402.4447052153,
+              "gapMs": 3969.0022675736714,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 2740.4599999999627,
+              "audioSeconds": 0.89,
+              "rtf": 3.079168539325801,
+              "playbackAt": 484742.7524897959,
+              "gapMs": null,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 3796.7700000000186,
+              "audioSeconds": 1.56,
+              "rtf": 2.433826923076935,
+              "playbackAt": 488544.0636825397,
+              "gapMs": 2851.315192743755,
+              "ended": true
+            },
+            {
+              "speaker": "bob",
+              "synthesisMs": 6501.654999999795,
+              "audioSeconds": 2.97,
+              "rtf": 2.189109427609359,
+              "playbackAt": 495043.0806258502,
+              "gapMs": 4869.024943310706,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 4518.564999999944,
+              "audioSeconds": 1.51,
+              "rtf": 2.992427152317844,
+              "playbackAt": 499583.04457142856,
+              "gapMs": 1409.863945578195,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 9149.84499999974,
+              "audioSeconds": 3.76,
+              "rtf": 2.4334694148935476,
+              "playbackAt": 508722.3876780045,
+              "gapMs": 7139.433106575951,
+              "ended": true
+            },
+            {
+              "speaker": "ted",
+              "synthesisMs": 2939.1049999999814,
+              "audioSeconds": 1.35,
+              "rtf": 2.177114814814801,
+              "playbackAt": 512482.4016780042,
+              "gapMs": 0,
+              "ended": true
+            },
+            {
+              "speaker": "ted",
+              "synthesisMs": 4560.549999999814,
+              "audioSeconds": 2.45,
+              "rtf": 1.8614489795917608,
+              "playbackAt": 517064.1643854872,
+              "gapMs": 3231.7687074829564,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 2591.220000000205,
+              "audioSeconds": 0.89,
+              "rtf": 2.911483146067646,
+              "playbackAt": 522262.54473242594,
+              "gapMs": null,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 3528.1099999998696,
+              "audioSeconds": 1.56,
+              "rtf": 2.2616089743588907,
+              "playbackAt": 525791.9548390019,
+              "gapMs": 2639.433106576007,
+              "ended": true
+            },
+            {
+              "speaker": "bob",
+              "synthesisMs": 5437.935000000056,
+              "audioSeconds": 2.97,
+              "rtf": 1.8309545454545644,
+              "playbackAt": 531234.1367097504,
+              "gapMs": 3882.176870748367,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 3386.814999999944,
+              "audioSeconds": 1.51,
+              "rtf": 2.2429238410595658,
+              "playbackAt": 534624.2460884351,
+              "gapMs": 420.1133786847322,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 6804.800000000279,
+              "audioSeconds": 3.76,
+              "rtf": 1.8097872340426275,
+              "playbackAt": 541433.5267891157,
+              "gapMs": 5299.2517006803155,
+              "ended": true
+            },
+            {
+              "speaker": "ted",
+              "synthesisMs": 3025.560000000056,
+              "audioSeconds": 1.35,
+              "rtf": 2.241155555555597,
+              "playbackAt": 545203.5067891154,
+              "gapMs": 0,
+              "ended": true
+            },
+            {
+              "speaker": "ted",
+              "synthesisMs": 4685.2050000000745,
+              "audioSeconds": 2.45,
+              "rtf": 1.9123285714286018,
+              "playbackAt": 549904.3087641724,
+              "gapMs": 3350.770975056662,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 2399.5049999998882,
+              "audioSeconds": 0.89,
+              "rtf": 2.6960730337077394,
+              "playbackAt": 554902.3740022674,
+              "gapMs": null,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 3075.5150000001304,
+              "audioSeconds": 1.56,
+              "rtf": 1.971483974359058,
+              "playbackAt": 557981.9104875283,
+              "gapMs": 2189.5464852607347,
+              "ended": true
+            },
+            {
+              "speaker": "bob",
+              "synthesisMs": 5720.850000000093,
+              "audioSeconds": 2.97,
+              "rtf": 1.9262121212121526,
+              "playbackAt": 563702.7508140587,
+              "gapMs": 4160.816326530721,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 3218.8249999997206,
+              "audioSeconds": 1.51,
+              "rtf": 2.1316721854302787,
+              "playbackAt": 566921.6040272106,
+              "gapMs": 248.866213151814,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 7193.689999999944,
+              "audioSeconds": 3.76,
+              "rtf": 1.9132154255319,
+              "playbackAt": 574123.3710589566,
+              "gapMs": 5641.746031746038,
+              "ended": true
+            },
+            {
+              "speaker": "ted",
+              "synthesisMs": 3987.314999999944,
+              "audioSeconds": 1.35,
+              "rtf": 2.9535666666666254,
+              "playbackAt": 578114.2817641723,
+              "gapMs": 230.92970521543066,
+              "ended": true
+            },
+            {
+              "speaker": "ted",
+              "synthesisMs": 4849.9900000002235,
+              "audioSeconds": 2.45,
+              "rtf": 1.9795877551021321,
+              "playbackAt": 582962.7258140589,
+              "gapMs": 3488.458049886617,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 2508.5200000000186,
+              "audioSeconds": 0.89,
+              "rtf": 2.81856179775283,
+              "playbackAt": 588074.0223310655,
+              "gapMs": null,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 3432,
+              "audioSeconds": 1.56,
+              "rtf": 2.2,
+              "playbackAt": 591513.1876530609,
+              "gapMs": 2529.138321995447,
+              "ended": true
+            },
+            {
+              "speaker": "bob",
+              "synthesisMs": 5917.165000000037,
+              "audioSeconds": 2.97,
+              "rtf": 1.9923114478114603,
+              "playbackAt": 597433.9606281179,
+              "gapMs": 4340.770975056785,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 3261.220000000205,
+              "audioSeconds": 1.51,
+              "rtf": 2.1597483443709966,
+              "playbackAt": 600713.7542222223,
+              "gapMs": 309.8185941042857,
+              "ended": true
+            },
+            {
+              "speaker": "jennifer",
+              "synthesisMs": 6727.81500000041,
+              "audioSeconds": 3.76,
+              "rtf": 1.7893125000001089,
+              "playbackAt": 607453.3680589568,
+              "gapMs": 5229.5918367346985,
+              "ended": true
+            },
+            {
+              "speaker": "ted",
+              "synthesisMs": 3019.5699999998324,
+              "audioSeconds": 1.35,
+              "rtf": 2.236718518518394,
+              "playbackAt": 611213.3490589571,
+              "gapMs": 0,
+              "ended": true
+            },
+            {
+              "speaker": "ted",
+              "synthesisMs": 4620.075000000186,
+              "audioSeconds": 2.45,
+              "rtf": 1.8857448979592597,
+              "playbackAt": 615853.5416530612,
+              "gapMs": 3289.818594104304,
+              "ended": true
+            }
+          ],
+          "memoryBefore": 10000000,
+          "agentMemoryBefore": null,
+          "complete": true,
+          "endedAt": 618267.8849999998,
+          "memoryAfter": 10000000,
+          "agentMemoryAfter": null,
+          "summary": {
+            "firstSynthesisToPlaybackMs": 4685.038356008867,
+            "firstArrivalToPlaybackMs": 4685.193356008662,
+            "warmSynthesisToPlaybackMs": {
+              "count": 110,
+              "p50": 4220.725383219775,
+              "p95": 8774.972006802796,
+              "max": 15138.49035827662
+            },
+            "rtf": {
+              "count": 112,
+              "p50": 2.320014627659545,
+              "p95": 4.225792134831544,
+              "max": 6.1611258278144465
+            },
+            "interUtteranceSilenceMs": {
+              "count": 96,
+              "p50": 3771.4512471655653,
+              "p95": 7319.433106575951,
+              "max": 12601.972789115649
+            },
+            "generationDuringPlayback": 96,
+            "played": 112
+          }
+        }
+      ],
+      "asrEvents": []
+    }
+  },
+  "nativeDesktop": {
+    "q8": {
+      "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+      "runtime": "1.32.0",
+      "device": "desktop-native-cpu",
+      "weights": "q8",
+      "threads": 4,
+      "telemetryEnabled": false,
+      "modelRevision": "1939ad2a8e416c0acfeecc08a694d14ef25f2231",
+      "profileVersion": "p35-voice-v1",
+      "initMs": 715.1521959999627,
+      "residentBytes": 211996672,
+      "peakRssBytes": 340344832,
+      "rows": [
+        {
+          "text": "I found it.",
+          "phonemes": "aɪ fˈaʊnd ɪt.",
+          "voice": "af_heart",
+          "warm": false,
+          "synthesisMs": 586.9397370001934,
+          "rawSeconds": 1.55,
+          "audioSeconds": 0.89,
+          "rtf": 0.659482850562015,
+          "peak": 0.6685806512832642,
+          "rmsDbfs": -23.50864028930664,
+          "clippedSamples": 0,
+          "transcription": "i found it"
+        },
+        {
+          "text": "I found it.",
+          "phonemes": "aɪ fˈaʊnd ɪt.",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 810.3134489997501,
+          "rawSeconds": 1.55,
+          "audioSeconds": 0.89,
+          "rtf": 0.9104645494379214,
+          "peak": 0.6685806512832642,
+          "rmsDbfs": -23.50864028930664,
+          "clippedSamples": 0,
+          "transcription": "i found it"
+        },
+        {
+          "text": "I found it.",
+          "phonemes": "aɪ fˈaʊnd ɪt.",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 725.0020900000891,
+          "rawSeconds": 1.55,
+          "audioSeconds": 0.89,
+          "rtf": 0.8146090898877405,
+          "peak": 0.6685806512832642,
+          "rmsDbfs": -23.50864028930664,
+          "clippedSamples": 0,
+          "transcription": "i found it"
+        },
+        {
+          "text": "I found it.",
+          "phonemes": "aɪ fˈaʊnd ɪt.",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 651.0892739997871,
+          "rawSeconds": 1.55,
+          "audioSeconds": 0.89,
+          "rtf": 0.7315609820222327,
+          "peak": 0.6685806512832642,
+          "rmsDbfs": -23.50864028930664,
+          "clippedSamples": 0,
+          "transcription": "i found it"
+        },
+        {
+          "text": "I found it.",
+          "phonemes": "aɪ fˈaʊnd ɪt.",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 827.2531330003403,
+          "rawSeconds": 1.55,
+          "audioSeconds": 0.89,
+          "rtf": 0.9294979022475733,
+          "peak": 0.6685806512832642,
+          "rmsDbfs": -23.50864028930664,
+          "clippedSamples": 0,
+          "transcription": "i found it"
+        },
+        {
+          "text": "I found it.",
+          "phonemes": "aɪ fˈaʊnd ɪt.",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 703.2211269997788,
+          "rawSeconds": 1.55,
+          "audioSeconds": 0.89,
+          "rtf": 0.7901360977525604,
+          "peak": 0.6685806512832642,
+          "rmsDbfs": -23.50864028930664,
+          "clippedSamples": 0,
+          "transcription": "i found it"
+        },
+        {
+          "text": "I read it yesterday, but I'll read it again tomorrow.",
+          "phonemes": "aɪ ɹˈɛd ɪt jˈɛstɚdˌeɪ, bˌʌt aɪl ɹˈiːd ɪɾ ɐɡˈɛn təmˈɑːɹoʊ.",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 2267.335713000193,
+          "rawSeconds": 3.425,
+          "audioSeconds": 2.79,
+          "rtf": 0.8126651301075961,
+          "peak": 0.5167120695114136,
+          "rmsDbfs": -23.593711853027344,
+          "clippedSamples": 0,
+          "transcription": "i read it yesterday but i'll read it again tomorrow"
+        },
+        {
+          "text": "I can meet you by the station after lunch.",
+          "phonemes": "aɪ kæn mˈiːt juː baɪ ðə stˈeɪʃən ˈæftɚ lˈʌntʃ.",
+          "voice": "am_liam",
+          "warm": true,
+          "synthesisMs": 1167.5288649998947,
+          "rawSeconds": 3.0,
+          "audioSeconds": 2.41,
+          "rtf": 0.4844518112032758,
+          "peak": 0.8435699343681335,
+          "rmsDbfs": -21.725433349609375,
+          "clippedSamples": 0,
+          "transcription": "i can meet you by the station after lunch"
+        },
+        {
+          "text": "Did you leave the blue bag here, or should I look upstairs?",
+          "phonemes": "dˈɪd juː lˈiːv ðə blˈuː bˈæɡ hˈɪɹ, ɔːɹ ʃˌʊd aɪ lˈʊk ʌpstˈɛɹz?",
+          "voice": "am_liam",
+          "warm": true,
+          "synthesisMs": 1295.2593289996912,
+          "rawSeconds": 3.6,
+          "audioSeconds": 2.97,
+          "rtf": 0.4361142521884482,
+          "peak": 0.6047642827033997,
+          "rmsDbfs": -22.063430786132812,
+          "clippedSamples": 0,
+          "transcription": "did you leave the blue bag here or should i look upstairs"
+        },
+        {
+          "text": "Could you give it to her? I could have done it myself.",
+          "phonemes": "kʊd juː ɡˈɪv ɪt tə hɜː? aɪ kˌʊdɐv dˈʌn ɪt maɪsˈɛlf.",
+          "voice": "am_liam",
+          "warm": true,
+          "synthesisMs": 1390.8173760000864,
+          "rawSeconds": 3.075,
+          "audioSeconds": 2.48,
+          "rtf": 0.560813458064551,
+          "peak": 0.574575662612915,
+          "rmsDbfs": -21.88754653930664,
+          "clippedSamples": 0,
+          "transcription": "could you give it to her i could have done it myself"
+        },
+        {
+          "text": "I can meet you by the station after lunch.",
+          "phonemes": "aɪ kæn mˈiːt juː baɪ ðə stˈeɪʃən ˈæftɚ lˈʌntʃ.",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 1034.631472000001,
+          "rawSeconds": 2.775,
+          "audioSeconds": 2.2,
+          "rtf": 0.4702870327272731,
+          "peak": 0.6988750100135803,
+          "rmsDbfs": -23.37740707397461,
+          "clippedSamples": 0,
+          "transcription": "i can meet you by the station after lunch"
+        },
+        {
+          "text": "Did you leave the blue bag here, or should I look upstairs?",
+          "phonemes": "dˈɪd juː lˈiːv ðə blˈuː bˈæɡ hˈɪɹ, ɔːɹ ʃˌʊd aɪ lˈʊk ʌpstˈɛɹz?",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 1118.8186500003212,
+          "rawSeconds": 3.5,
+          "audioSeconds": 2.94,
+          "rtf": 0.38055056122459907,
+          "peak": 0.48195314407348633,
+          "rmsDbfs": -23.225250244140625,
+          "clippedSamples": 0,
+          "transcription": "did you leave the blue bag here or should i look up stairs"
+        },
+        {
+          "text": "Could you give it to her? I could have done it myself.",
+          "phonemes": "kʊd juː ɡˈɪv ɪt tə hɜː? aɪ kˌʊdɐv dˈʌn ɪt maɪsˈɛlf.",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 998.6982069999613,
+          "rawSeconds": 3.1,
+          "audioSeconds": 2.57,
+          "rtf": 0.3885985241244986,
+          "peak": 0.7951312065124512,
+          "rmsDbfs": -23.21997833251953,
+          "clippedSamples": 0,
+          "transcription": "could you give it to her i could have done it myself"
+        },
+        {
+          "text": "I can meet you by the station after lunch.",
+          "phonemes": "aɪ kan mˈiːt juː baɪ ðə stˈeɪʃən ˈaftə lˈʌntʃ.",
+          "voice": "bm_george",
+          "warm": true,
+          "synthesisMs": 1105.1618270003019,
+          "rawSeconds": 3.725,
+          "audioSeconds": 3.1,
+          "rtf": 0.3565038151613877,
+          "peak": 0.47384828329086304,
+          "rmsDbfs": -21.368167877197266,
+          "clippedSamples": 0,
+          "transcription": "i can meet you by the station after lunch"
+        },
+        {
+          "text": "Did you leave the blue bag here, or should I look upstairs?",
+          "phonemes": "dˈɪd juː lˈiːv ðə blˈuː bˈaɡ hˈiə, ɔː ʃˌʊd aɪ lˈʊk ʌpstˈeəz?",
+          "voice": "bm_george",
+          "warm": true,
+          "synthesisMs": 1303.6081499999455,
+          "rawSeconds": 4.275,
+          "audioSeconds": 3.63,
+          "rtf": 0.3591207024793238,
+          "peak": 0.5284879803657532,
+          "rmsDbfs": -21.439842224121094,
+          "clippedSamples": 0,
+          "transcription": "did you leave the blue bag here or should i look upstairs"
+        },
+        {
+          "text": "Could you give it to her? I could have done it myself.",
+          "phonemes": "kʊd juː ɡˈɪv ɪt tə hɜː? aɪ kˌʊdɐv dˈʌn ɪt maɪsˈɛlf.",
+          "voice": "bm_george",
+          "warm": true,
+          "synthesisMs": 1495.8603749996655,
+          "rawSeconds": 3.875,
+          "audioSeconds": 3.28,
+          "rtf": 0.45605499237794683,
+          "peak": 0.6010066866874695,
+          "rmsDbfs": -21.17384910583496,
+          "clippedSamples": 0,
+          "transcription": "could you give it to her i could have done it myself"
+        }
+      ]
+    },
+    "q4": {
+      "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+      "runtime": "1.32.0",
+      "device": "desktop-native-cpu",
+      "weights": "q4",
+      "threads": 4,
+      "telemetryEnabled": false,
+      "modelRevision": "1939ad2a8e416c0acfeecc08a694d14ef25f2231",
+      "profileVersion": "p35-voice-v1",
+      "initMs": 625.1658950000092,
+      "residentBytes": 453939200,
+      "peakRssBytes": 597344256,
+      "rows": [
+        {
+          "text": "I found it.",
+          "phonemes": "aɪ fˈaʊnd ɪt.",
+          "voice": "af_heart",
+          "warm": false,
+          "synthesisMs": 839.3706190004195,
+          "rawSeconds": 1.575,
+          "audioSeconds": 0.91,
+          "rtf": 0.9223852956048566,
+          "peak": 0.6388291716575623,
+          "rmsDbfs": -23.366392135620117,
+          "clippedSamples": 0,
+          "transcription": "i found it"
+        },
+        {
+          "text": "I found it.",
+          "phonemes": "aɪ fˈaʊnd ɪt.",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 640.7245630002762,
+          "rawSeconds": 1.575,
+          "audioSeconds": 0.91,
+          "rtf": 0.70409292637393,
+          "peak": 0.6388291716575623,
+          "rmsDbfs": -23.366392135620117,
+          "clippedSamples": 0,
+          "transcription": "i found it"
+        },
+        {
+          "text": "I found it.",
+          "phonemes": "aɪ fˈaʊnd ɪt.",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 558.1775840000773,
+          "rawSeconds": 1.575,
+          "audioSeconds": 0.91,
+          "rtf": 0.6133819604396454,
+          "peak": 0.6388291716575623,
+          "rmsDbfs": -23.366392135620117,
+          "clippedSamples": 0,
+          "transcription": "i found it"
+        },
+        {
+          "text": "I found it.",
+          "phonemes": "aɪ fˈaʊnd ɪt.",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 716.7990769999051,
+          "rawSeconds": 1.575,
+          "audioSeconds": 0.91,
+          "rtf": 0.787691293406489,
+          "peak": 0.6388291716575623,
+          "rmsDbfs": -23.366392135620117,
+          "clippedSamples": 0,
+          "transcription": "i found it"
+        },
+        {
+          "text": "I found it.",
+          "phonemes": "aɪ fˈaʊnd ɪt.",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 618.2515639998201,
+          "rawSeconds": 1.575,
+          "audioSeconds": 0.91,
+          "rtf": 0.6793973230767253,
+          "peak": 0.6388291716575623,
+          "rmsDbfs": -23.366392135620117,
+          "clippedSamples": 0,
+          "transcription": "i found it"
+        },
+        {
+          "text": "I found it.",
+          "phonemes": "aɪ fˈaʊnd ɪt.",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 621.775401999912,
+          "rawSeconds": 1.575,
+          "audioSeconds": 0.91,
+          "rtf": 0.6832696725273758,
+          "peak": 0.6388291716575623,
+          "rmsDbfs": -23.366392135620117,
+          "clippedSamples": 0,
+          "transcription": "i found it"
+        },
+        {
+          "text": "I read it yesterday, but I'll read it again tomorrow.",
+          "phonemes": "aɪ ɹˈɛd ɪt jˈɛstɚdˌeɪ, bˌʌt aɪl ɹˈiːd ɪɾ ɐɡˈɛn təmˈɑːɹoʊ.",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 1098.7627229997088,
+          "rawSeconds": 3.4,
+          "audioSeconds": 2.77,
+          "rtf": 0.3966652429601837,
+          "peak": 0.4285363554954529,
+          "rmsDbfs": -23.514636993408203,
+          "clippedSamples": 0,
+          "transcription": "i read it yesterday but i'll read it again tomorrow"
+        },
+        {
+          "text": "I can meet you by the station after lunch.",
+          "phonemes": "aɪ kæn mˈiːt juː baɪ ðə stˈeɪʃən ˈæftɚ lˈʌntʃ.",
+          "voice": "am_liam",
+          "warm": true,
+          "synthesisMs": 1096.6792880003595,
+          "rawSeconds": 3.075,
+          "audioSeconds": 2.48,
+          "rtf": 0.4422093903227256,
+          "peak": 0.9368800520896912,
+          "rmsDbfs": -21.70051383972168,
+          "clippedSamples": 0,
+          "transcription": "i can meet you by the station after lunch"
+        },
+        {
+          "text": "Did you leave the blue bag here, or should I look upstairs?",
+          "phonemes": "dˈɪd juː lˈiːv ðə blˈuː bˈæɡ hˈɪɹ, ɔːɹ ʃˌʊd aɪ lˈʊk ʌpstˈɛɹz?",
+          "voice": "am_liam",
+          "warm": true,
+          "synthesisMs": 1309.1072160000294,
+          "rawSeconds": 3.625,
+          "audioSeconds": 2.99,
+          "rtf": 0.43782850033445797,
+          "peak": 0.564696192741394,
+          "rmsDbfs": -22.032957077026367,
+          "clippedSamples": 0,
+          "transcription": "did you leave the blue bag here or should i look upstairs"
+        },
+        {
+          "text": "Could you give it to her? I could have done it myself.",
+          "phonemes": "kʊd juː ɡˈɪv ɪt tə hɜː? aɪ kˌʊdɐv dˈʌn ɪt maɪsˈɛlf.",
+          "voice": "am_liam",
+          "warm": true,
+          "synthesisMs": 1139.6341620002204,
+          "rawSeconds": 3.15,
+          "audioSeconds": 2.55,
+          "rtf": 0.4469153576471453,
+          "peak": 0.6355826258659363,
+          "rmsDbfs": -21.89388656616211,
+          "clippedSamples": 0,
+          "transcription": "could you give it to her i could have done it myself"
+        },
+        {
+          "text": "I can meet you by the station after lunch.",
+          "phonemes": "aɪ kæn mˈiːt juː baɪ ðə stˈeɪʃən ˈæftɚ lˈʌntʃ.",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 1057.1248840001317,
+          "rawSeconds": 2.925,
+          "audioSeconds": 2.35,
+          "rtf": 0.4498403761702688,
+          "peak": 0.6439024209976196,
+          "rmsDbfs": -23.41277313232422,
+          "clippedSamples": 0,
+          "transcription": "i can meet you by the station after lunch"
+        },
+        {
+          "text": "Did you leave the blue bag here, or should I look upstairs?",
+          "phonemes": "dˈɪd juː lˈiːv ðə blˈuː bˈæɡ hˈɪɹ, ɔːɹ ʃˌʊd aɪ lˈʊk ʌpstˈɛɹz?",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 1235.344330999851,
+          "rawSeconds": 3.65,
+          "audioSeconds": 3.06,
+          "rtf": 0.40370729771236963,
+          "peak": 0.4213561713695526,
+          "rmsDbfs": -23.2246036529541,
+          "clippedSamples": 0,
+          "transcription": "did you leave the blue bag here or should i look upstairs"
+        },
+        {
+          "text": "Could you give it to her? I could have done it myself.",
+          "phonemes": "kʊd juː ɡˈɪv ɪt tə hɜː? aɪ kˌʊdɐv dˈʌn ɪt maɪsˈɛlf.",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 1326.4765730000363,
+          "rawSeconds": 3.15,
+          "audioSeconds": 2.61,
+          "rtf": 0.5082285720306653,
+          "peak": 0.8618806600570679,
+          "rmsDbfs": -23.105113983154297,
+          "clippedSamples": 0,
+          "transcription": "could you give it to her i could have done it myself"
+        },
+        {
+          "text": "I can meet you by the station after lunch.",
+          "phonemes": "aɪ kan mˈiːt juː baɪ ðə stˈeɪʃən ˈaftə lˈʌntʃ.",
+          "voice": "bm_george",
+          "warm": true,
+          "synthesisMs": 1286.9839119998687,
+          "rawSeconds": 3.675,
+          "audioSeconds": 3.05,
+          "rtf": 0.42196193836061274,
+          "peak": 0.4924435317516327,
+          "rmsDbfs": -21.36787223815918,
+          "clippedSamples": 0,
+          "transcription": "i can meet you by the station after lunch"
+        },
+        {
+          "text": "Did you leave the blue bag here, or should I look upstairs?",
+          "phonemes": "dˈɪd juː lˈiːv ðə blˈuː bˈaɡ hˈiə, ɔː ʃˌʊd aɪ lˈʊk ʌpstˈeəz?",
+          "voice": "bm_george",
+          "warm": true,
+          "synthesisMs": 1396.950810999897,
+          "rawSeconds": 4.35,
+          "audioSeconds": 3.7,
+          "rtf": 0.3775542732432154,
+          "peak": 0.5298070907592773,
+          "rmsDbfs": -21.402347564697266,
+          "clippedSamples": 0,
+          "transcription": "did you leave the blue bag here or should i look upstairs"
+        },
+        {
+          "text": "Could you give it to her? I could have done it myself.",
+          "phonemes": "kʊd juː ɡˈɪv ɪt tə hɜː? aɪ kˌʊdɐv dˈʌn ɪt maɪsˈɛlf.",
+          "voice": "bm_george",
+          "warm": true,
+          "synthesisMs": 1744.313597999735,
+          "rawSeconds": 3.9,
+          "audioSeconds": 3.31,
+          "rtf": 0.5269829601207658,
+          "peak": 0.6414151191711426,
+          "rmsDbfs": -21.271333694458008,
+          "clippedSamples": 0,
+          "transcription": "could you give it to her i could have done it myself"
+        }
+      ]
+    },
+    "fp32": {
+      "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+      "runtime": "1.32.0",
+      "device": "desktop-native-cpu",
+      "weights": "fp32",
+      "threads": 4,
+      "telemetryEnabled": false,
+      "modelRevision": "1939ad2a8e416c0acfeecc08a694d14ef25f2231",
+      "profileVersion": "p35-voice-v1",
+      "initMs": 960.3084769996713,
+      "residentBytes": 487223296,
+      "peakRssBytes": 596180992,
+      "rows": [
+        {
+          "text": "I found it.",
+          "phonemes": "aɪ fˈaʊnd ɪt.",
+          "voice": "af_heart",
+          "warm": false,
+          "synthesisMs": 808.8390899997648,
+          "rawSeconds": 1.55,
+          "audioSeconds": 0.89,
+          "rtf": 0.9088079662918706,
+          "peak": 0.5836653709411621,
+          "rmsDbfs": -23.267438888549805,
+          "clippedSamples": 0,
+          "transcription": "i found it"
+        },
+        {
+          "text": "I found it.",
+          "phonemes": "aɪ fˈaʊnd ɪt.",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 627.6504669999667,
+          "rawSeconds": 1.55,
+          "audioSeconds": 0.89,
+          "rtf": 0.7052252438201874,
+          "peak": 0.5836653709411621,
+          "rmsDbfs": -23.267438888549805,
+          "clippedSamples": 0,
+          "transcription": "i found it"
+        },
+        {
+          "text": "I found it.",
+          "phonemes": "aɪ fˈaʊnd ɪt.",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 762.807757000246,
+          "rawSeconds": 1.55,
+          "audioSeconds": 0.89,
+          "rtf": 0.8570873674160068,
+          "peak": 0.5836653709411621,
+          "rmsDbfs": -23.267438888549805,
+          "clippedSamples": 0,
+          "transcription": "i found it"
+        },
+        {
+          "text": "I found it.",
+          "phonemes": "aɪ fˈaʊnd ɪt.",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 619.2853749998903,
+          "rawSeconds": 1.55,
+          "audioSeconds": 0.89,
+          "rtf": 0.6958262640448206,
+          "peak": 0.5836653709411621,
+          "rmsDbfs": -23.267438888549805,
+          "clippedSamples": 0,
+          "transcription": "i found it"
+        },
+        {
+          "text": "I found it.",
+          "phonemes": "aɪ fˈaʊnd ɪt.",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 537.8563170002053,
+          "rawSeconds": 1.55,
+          "audioSeconds": 0.89,
+          "rtf": 0.6043329404496689,
+          "peak": 0.5836653709411621,
+          "rmsDbfs": -23.267438888549805,
+          "clippedSamples": 0,
+          "transcription": "i found it"
+        },
+        {
+          "text": "I found it.",
+          "phonemes": "aɪ fˈaʊnd ɪt.",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 536.0932379999213,
+          "rawSeconds": 1.55,
+          "audioSeconds": 0.89,
+          "rtf": 0.6023519528089003,
+          "peak": 0.5836653709411621,
+          "rmsDbfs": -23.267438888549805,
+          "clippedSamples": 0,
+          "transcription": "i found it"
+        },
+        {
+          "text": "I read it yesterday, but I'll read it again tomorrow.",
+          "phonemes": "aɪ ɹˈɛd ɪt jˈɛstɚdˌeɪ, bˌʌt aɪl ɹˈiːd ɪɾ ɐɡˈɛn təmˈɑːɹoʊ.",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 1337.4449679999998,
+          "rawSeconds": 3.425,
+          "audioSeconds": 2.77,
+          "rtf": 0.48283211841155227,
+          "peak": 0.5172721743583679,
+          "rmsDbfs": -23.591739654541016,
+          "clippedSamples": 0,
+          "transcription": "i read it yesterday but i'll read it again tomorrow"
+        },
+        {
+          "text": "I can meet you by the station after lunch.",
+          "phonemes": "aɪ kæn mˈiːt juː baɪ ðə stˈeɪʃən ˈæftɚ lˈʌntʃ.",
+          "voice": "am_liam",
+          "warm": true,
+          "synthesisMs": 1176.3961960000415,
+          "rawSeconds": 3.075,
+          "audioSeconds": 2.48,
+          "rtf": 0.47435330483872645,
+          "peak": 0.8820500373840332,
+          "rmsDbfs": -21.669998168945312,
+          "clippedSamples": 0,
+          "transcription": "i can meet you by the station after lunch"
+        },
+        {
+          "text": "Did you leave the blue bag here, or should I look upstairs?",
+          "phonemes": "dˈɪd juː lˈiːv ðə blˈuː bˈæɡ hˈɪɹ, ɔːɹ ʃˌʊd aɪ lˈʊk ʌpstˈɛɹz?",
+          "voice": "am_liam",
+          "warm": true,
+          "synthesisMs": 1371.4729030002673,
+          "rawSeconds": 3.65,
+          "audioSeconds": 3.02,
+          "rtf": 0.4541301003312143,
+          "peak": 0.565375804901123,
+          "rmsDbfs": -22.024965286254883,
+          "clippedSamples": 0,
+          "transcription": "did you leave the blue bag here or should i look upstairs"
+        },
+        {
+          "text": "Could you give it to her? I could have done it myself.",
+          "phonemes": "kʊd juː ɡˈɪv ɪt tə hɜː? aɪ kˌʊdɐv dˈʌn ɪt maɪsˈɛlf.",
+          "voice": "am_liam",
+          "warm": true,
+          "synthesisMs": 1128.049954999824,
+          "rawSeconds": 3.1,
+          "audioSeconds": 2.5,
+          "rtf": 0.4512199819999296,
+          "peak": 0.6402255296707153,
+          "rmsDbfs": -21.888446807861328,
+          "clippedSamples": 0,
+          "transcription": "could you give it to her i could have done it myself"
+        },
+        {
+          "text": "I can meet you by the station after lunch.",
+          "phonemes": "aɪ kæn mˈiːt juː baɪ ðə stˈeɪʃən ˈæftɚ lˈʌntʃ.",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 865.4880159997447,
+          "rawSeconds": 2.85,
+          "audioSeconds": 2.27,
+          "rtf": 0.3812722537443809,
+          "peak": 0.5133637189865112,
+          "rmsDbfs": -23.347110748291016,
+          "clippedSamples": 0,
+          "transcription": "i can meet you by the station after lunch"
+        },
+        {
+          "text": "Did you leave the blue bag here, or should I look upstairs?",
+          "phonemes": "dˈɪd juː lˈiːv ðə blˈuː bˈæɡ hˈɪɹ, ɔːɹ ʃˌʊd aɪ lˈʊk ʌpstˈɛɹz?",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 1027.1170819996769,
+          "rawSeconds": 3.55,
+          "audioSeconds": 2.99,
+          "rtf": 0.3435174187289889,
+          "peak": 0.4371623396873474,
+          "rmsDbfs": -23.161420822143555,
+          "clippedSamples": 0,
+          "transcription": "did you leave the blue bag here or should i look upstairs"
+        },
+        {
+          "text": "Could you give it to her? I could have done it myself.",
+          "phonemes": "kʊd juː ɡˈɪv ɪt tə hɜː? aɪ kˌʊdɐv dˈʌn ɪt maɪsˈɛlf.",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 1118.2769060001192,
+          "rawSeconds": 3.125,
+          "audioSeconds": 2.6,
+          "rtf": 0.4301065023077381,
+          "peak": 0.7718161344528198,
+          "rmsDbfs": -23.207496643066406,
+          "clippedSamples": 0,
+          "transcription": "could you give it to her i could have done it myself"
+        },
+        {
+          "text": "I can meet you by the station after lunch.",
+          "phonemes": "aɪ kan mˈiːt juː baɪ ðə stˈeɪʃən ˈaftə lˈʌntʃ.",
+          "voice": "bm_george",
+          "warm": true,
+          "synthesisMs": 1823.383482999816,
+          "rawSeconds": 3.675,
+          "audioSeconds": 3.07,
+          "rtf": 0.5939359879478228,
+          "peak": 0.47003984451293945,
+          "rmsDbfs": -21.40087890625,
+          "clippedSamples": 0,
+          "transcription": "i can meet you by the station after lunch"
+        },
+        {
+          "text": "Did you leave the blue bag here, or should I look upstairs?",
+          "phonemes": "dˈɪd juː lˈiːv ðə blˈuː bˈaɡ hˈiə, ɔː ʃˌʊd aɪ lˈʊk ʌpstˈeəz?",
+          "voice": "bm_george",
+          "warm": true,
+          "synthesisMs": 1589.2059390002942,
+          "rawSeconds": 4.2,
+          "audioSeconds": 3.57,
+          "rtf": 0.44515572521016644,
+          "peak": 0.5096972584724426,
+          "rmsDbfs": -21.462230682373047,
+          "clippedSamples": 0,
+          "transcription": "did you leave the blue bag here or should i look upstairs"
+        },
+        {
+          "text": "Could you give it to her? I could have done it myself.",
+          "phonemes": "kʊd juː ɡˈɪv ɪt tə hɜː? aɪ kˌʊdɐv dˈʌn ɪt maɪsˈɛlf.",
+          "voice": "bm_george",
+          "warm": true,
+          "synthesisMs": 1602.7308040002026,
+          "rawSeconds": 3.875,
+          "audioSeconds": 3.28,
+          "rtf": 0.48863744024396427,
+          "peak": 0.6073630452156067,
+          "rmsDbfs": -21.270732879638672,
+          "clippedSamples": 0,
+          "transcription": "could you give it to her i could have done it myself"
+        }
+      ]
+    }
+  },
+  "nativeDesktopQ8ThreadSweep": {
+    "1": {
+      "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+      "runtime": "1.32.0",
+      "device": "desktop-native-cpu",
+      "weights": "q8",
+      "threads": 1,
+      "telemetryEnabled": false,
+      "modelRevision": "1939ad2a8e416c0acfeecc08a694d14ef25f2231",
+      "profileVersion": "p35-voice-v1",
+      "initMs": 808.5381160003635,
+      "residentBytes": 210161664,
+      "peakRssBytes": 286912512,
+      "rows": [
+        {
+          "text": "I found it.",
+          "phonemes": "aɪ fˈaʊnd ɪt.",
+          "voice": "af_heart",
+          "warm": false,
+          "synthesisMs": 935.227174999909,
+          "rawSeconds": 1.55,
+          "audioSeconds": 0.89,
+          "rtf": 1.0508170505616956,
+          "peak": 0.6685806512832642,
+          "rmsDbfs": -23.50864028930664,
+          "clippedSamples": 0
+        },
+        {
+          "text": "I found it.",
+          "phonemes": "aɪ fˈaʊnd ɪt.",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 950.1974790000531,
+          "rawSeconds": 1.55,
+          "audioSeconds": 0.89,
+          "rtf": 1.0676376168539923,
+          "peak": 0.6685806512832642,
+          "rmsDbfs": -23.50864028930664,
+          "clippedSamples": 0
+        },
+        {
+          "text": "I found it.",
+          "phonemes": "aɪ fˈaʊnd ɪt.",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 957.9624240000157,
+          "rawSeconds": 1.55,
+          "audioSeconds": 0.89,
+          "rtf": 1.076362274157321,
+          "peak": 0.6685806512832642,
+          "rmsDbfs": -23.50864028930664,
+          "clippedSamples": 0
+        },
+        {
+          "text": "I found it.",
+          "phonemes": "aɪ fˈaʊnd ɪt.",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 870.7883350002703,
+          "rawSeconds": 1.55,
+          "audioSeconds": 0.89,
+          "rtf": 0.9784138595508655,
+          "peak": 0.6685806512832642,
+          "rmsDbfs": -23.50864028930664,
+          "clippedSamples": 0
+        },
+        {
+          "text": "I found it.",
+          "phonemes": "aɪ fˈaʊnd ɪt.",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 1052.7363269998204,
+          "rawSeconds": 1.55,
+          "audioSeconds": 0.89,
+          "rtf": 1.1828498056177759,
+          "peak": 0.6685806512832642,
+          "rmsDbfs": -23.50864028930664,
+          "clippedSamples": 0
+        },
+        {
+          "text": "I found it.",
+          "phonemes": "aɪ fˈaʊnd ɪt.",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 907.1615789998759,
+          "rawSeconds": 1.55,
+          "audioSeconds": 0.89,
+          "rtf": 1.0192826730335685,
+          "peak": 0.6685806512832642,
+          "rmsDbfs": -23.50864028930664,
+          "clippedSamples": 0
+        },
+        {
+          "text": "I read it yesterday, but I'll read it again tomorrow.",
+          "phonemes": "aɪ ɹˈɛd ɪt jˈɛstɚdˌeɪ, bˌʌt aɪl ɹˈiːd ɪɾ ɐɡˈɛn təmˈɑːɹoʊ.",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 2035.1162449996991,
+          "rawSeconds": 3.425,
+          "audioSeconds": 2.79,
+          "rtf": 0.7294323458780283,
+          "peak": 0.5167120695114136,
+          "rmsDbfs": -23.593711853027344,
+          "clippedSamples": 0
+        }
+      ]
+    },
+    "2": {
+      "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+      "runtime": "1.32.0",
+      "device": "desktop-native-cpu",
+      "weights": "q8",
+      "threads": 2,
+      "telemetryEnabled": false,
+      "modelRevision": "1939ad2a8e416c0acfeecc08a694d14ef25f2231",
+      "profileVersion": "p35-voice-v1",
+      "initMs": 476.53427200020815,
+      "residentBytes": 210255872,
+      "peakRssBytes": 287137792,
+      "rows": [
+        {
+          "text": "I found it.",
+          "phonemes": "aɪ fˈaʊnd ɪt.",
+          "voice": "af_heart",
+          "warm": false,
+          "synthesisMs": 905.069538999669,
+          "rawSeconds": 1.55,
+          "audioSeconds": 0.89,
+          "rtf": 1.016932066291763,
+          "peak": 0.6685806512832642,
+          "rmsDbfs": -23.50864028930664,
+          "clippedSamples": 0
+        },
+        {
+          "text": "I found it.",
+          "phonemes": "aɪ fˈaʊnd ɪt.",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 756.4275039999302,
+          "rawSeconds": 1.55,
+          "audioSeconds": 0.89,
+          "rtf": 0.8499185438201463,
+          "peak": 0.6685806512832642,
+          "rmsDbfs": -23.50864028930664,
+          "clippedSamples": 0
+        },
+        {
+          "text": "I found it.",
+          "phonemes": "aɪ fˈaʊnd ɪt.",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 706.0505379999995,
+          "rawSeconds": 1.55,
+          "audioSeconds": 0.89,
+          "rtf": 0.7933152112359545,
+          "peak": 0.6685806512832642,
+          "rmsDbfs": -23.50864028930664,
+          "clippedSamples": 0
+        },
+        {
+          "text": "I found it.",
+          "phonemes": "aɪ fˈaʊnd ɪt.",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 515.8684039997752,
+          "rawSeconds": 1.55,
+          "audioSeconds": 0.89,
+          "rtf": 0.5796274202244664,
+          "peak": 0.6685806512832642,
+          "rmsDbfs": -23.50864028930664,
+          "clippedSamples": 0
+        },
+        {
+          "text": "I found it.",
+          "phonemes": "aɪ fˈaʊnd ɪt.",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 711.1345109997274,
+          "rawSeconds": 1.55,
+          "audioSeconds": 0.89,
+          "rtf": 0.7990275404491318,
+          "peak": 0.6685806512832642,
+          "rmsDbfs": -23.50864028930664,
+          "clippedSamples": 0
+        },
+        {
+          "text": "I found it.",
+          "phonemes": "aɪ fˈaʊnd ɪt.",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 629.5256539997354,
+          "rawSeconds": 1.55,
+          "audioSeconds": 0.89,
+          "rtf": 0.7073321955053207,
+          "peak": 0.6685806512832642,
+          "rmsDbfs": -23.50864028930664,
+          "clippedSamples": 0
+        },
+        {
+          "text": "I read it yesterday, but I'll read it again tomorrow.",
+          "phonemes": "aɪ ɹˈɛd ɪt jˈɛstɚdˌeɪ, bˌʌt aɪl ɹˈiːd ɪɾ ɐɡˈɛn təmˈɑːɹoʊ.",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 1941.273402999741,
+          "rawSeconds": 3.425,
+          "audioSeconds": 2.79,
+          "rtf": 0.6957969186378999,
+          "peak": 0.5167120695114136,
+          "rmsDbfs": -23.593711853027344,
+          "clippedSamples": 0
+        }
+      ]
+    },
+    "8": {
+      "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+      "runtime": "1.32.0",
+      "device": "desktop-native-cpu",
+      "weights": "q8",
+      "threads": 8,
+      "telemetryEnabled": false,
+      "modelRevision": "1939ad2a8e416c0acfeecc08a694d14ef25f2231",
+      "profileVersion": "p35-voice-v1",
+      "initMs": 441.01488900014374,
+      "residentBytes": 212238336,
+      "peakRssBytes": 289521664,
+      "rows": [
+        {
+          "text": "I found it.",
+          "phonemes": "aɪ fˈaʊnd ɪt.",
+          "voice": "af_heart",
+          "warm": false,
+          "synthesisMs": 470.87269900021056,
+          "rawSeconds": 1.55,
+          "audioSeconds": 0.89,
+          "rtf": 0.5290704483148433,
+          "peak": 0.6685806512832642,
+          "rmsDbfs": -23.50864028930664,
+          "clippedSamples": 0
+        },
+        {
+          "text": "I found it.",
+          "phonemes": "aɪ fˈaʊnd ɪt.",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 507.98028400004114,
+          "rawSeconds": 1.55,
+          "audioSeconds": 0.89,
+          "rtf": 0.57076436404499,
+          "peak": 0.6685806512832642,
+          "rmsDbfs": -23.50864028930664,
+          "clippedSamples": 0
+        },
+        {
+          "text": "I found it.",
+          "phonemes": "aɪ fˈaʊnd ɪt.",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 1025.8046680000916,
+          "rawSeconds": 1.55,
+          "audioSeconds": 0.89,
+          "rtf": 1.1525895146068446,
+          "peak": 0.6685806512832642,
+          "rmsDbfs": -23.50864028930664,
+          "clippedSamples": 0
+        },
+        {
+          "text": "I found it.",
+          "phonemes": "aɪ fˈaʊnd ɪt.",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 532.4419410003429,
+          "rawSeconds": 1.55,
+          "audioSeconds": 0.89,
+          "rtf": 0.5982493719104977,
+          "peak": 0.6685806512832642,
+          "rmsDbfs": -23.50864028930664,
+          "clippedSamples": 0
+        },
+        {
+          "text": "I found it.",
+          "phonemes": "aɪ fˈaʊnd ɪt.",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 638.8610869998956,
+          "rawSeconds": 1.55,
+          "audioSeconds": 0.89,
+          "rtf": 0.7178214460672985,
+          "peak": 0.6685806512832642,
+          "rmsDbfs": -23.50864028930664,
+          "clippedSamples": 0
+        },
+        {
+          "text": "I found it.",
+          "phonemes": "aɪ fˈaʊnd ɪt.",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 1078.6763050000445,
+          "rawSeconds": 1.55,
+          "audioSeconds": 0.89,
+          "rtf": 1.2119958483146567,
+          "peak": 0.6685806512832642,
+          "rmsDbfs": -23.50864028930664,
+          "clippedSamples": 0
+        },
+        {
+          "text": "I read it yesterday, but I'll read it again tomorrow.",
+          "phonemes": "aɪ ɹˈɛd ɪt jˈɛstɚdˌeɪ, bˌʌt aɪl ɹˈiːd ɪɾ ɐɡˈɛn təmˈɑːɹoʊ.",
+          "voice": "af_heart",
+          "warm": true,
+          "synthesisMs": 1509.0688880000016,
+          "rawSeconds": 3.425,
+          "audioSeconds": 2.79,
+          "rtf": 0.5408849060931905,
+          "peak": 0.5167120695114136,
+          "rmsDbfs": -23.593711853027344,
+          "clippedSamples": 0
+        }
+      ]
+    }
+  }
+}

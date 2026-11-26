@@ -5,7 +5,7 @@ const fetchAsset = self.fetch.bind(self);
 
 self.fetch = async (input, init) => {
   const url = new URL(input instanceof Request ? input.url : input, location.href);
-  const voicePrefix = `https://huggingface.co/${runtime?.model}/resolve/main/voices/`;
+  const voicePrefix = `https://huggingface.co/${runtime?.model}/resolve/${runtime?.revision}/voices/`;
   if (url.href.startsWith(voicePrefix)) {
     const file = url.href.slice(voicePrefix.length);
     if (!/^[a-z_]+\.bin$/.test(file)) throw new Error("Invalid voice asset");
