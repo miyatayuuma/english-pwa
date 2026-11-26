@@ -1,0 +1,25 @@
+:root { font-family: system-ui, sans-serif; color: #edf1ee; background: #101514; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { max-width: 950px; margin: auto; padding: clamp(16px, 4vw, 42px); }
+header { padding: 8px 0 17px; }
+h1 { margin: 4px 0; font-size: clamp(27px, 6vw, 48px); letter-spacing: -.03em; }
+h2 { font-size: 19px; margin: 0 0 16px; }
+p { margin: 8px 0; line-height: 1.55; }
+.eyebrow { color: #b3efc1; font-size: 13px; letter-spacing: .15em; }
+section { border: 1px solid #42524a; background: #171e1b; border-radius: 14px; padding: clamp(14px, 3vw, 24px); margin: 0 0 13px; }
+.settings { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 245px), 1fr)); gap: 10px; }
+label { display: grid; gap: 5px; }
+.check { display: flex; align-items: center; gap: 8px; min-height: 44px; margin: 5px 0; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 8px; }
+button, select { min-height: 44px; border: 1px solid #61746a; border-radius: 8px; background: #222c27; color: inherit; padding: 7px 12px; font: inherit; }
+select { width: 100%; }
+button { cursor: pointer; }
+button:disabled { opacity: .47; cursor: default; }
+.primary { background: #b3efc1; color: #14231a; font-weight: 650; }
+.detail { color: #b8c9bf; font-size: 14px; }
+.status { color: #b3efc1; overflow-wrap: anywhere; }
+#line { font-size: 19px; font-weight: 600; }
+dl { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 6px 12px; margin: 10px 0; font-variant-numeric: tabular-nums; }
+dd { margin: 0; overflow-wrap: anywhere; }
+[hidden] { display: none !important; }
