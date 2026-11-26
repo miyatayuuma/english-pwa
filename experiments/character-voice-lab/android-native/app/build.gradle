@@ -1,0 +1,55 @@
+plugins {
+    id 'com.android.application' version '8.13.0'
+}
+
+def targetAbi = providers.gradleProperty('kokoroSmokeAbi').getOrElse('arm64-v8a')
+
+android {
+    namespace 'jp.miyatayuuma.kokorop37'
+    compileSdk 36
+    ndkVersion '28.2.13676358'
+    defaultConfig {
+        applicationId 'jp.miyatayuuma.kokorop37'
+        minSdk 34
+        targetSdk 36
+        versionCode 1
+        versionName 'P3.7'
+        ndk { abiFilters targetAbi }
+        externalNativeBuild { cmake { targets 'kokoro_g2p' } }
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    externalNativeBuild {
+        cmake {
+            path 'src/main/cpp/CMakeLists.txt'
+            version '3.22.1'
+        }
+    }
+    sourceSets.main.assets.srcDir(layout.buildDirectory.dir('generated/research-assets'))
+    androidResources { noCompress += 'mp3' }
+}
+
+dependencies {
+    implementation 'com.microsoft.onnxruntime:onnxruntime-android:1.32.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.3.0'
+    androidTestImplementation 'androidx.test:runner:1.7.0'
+}
+
+def prepareResearchAssets = tasks.register('prepareResearchAssets', Exec) {
+    def lab = rootProject.projectDir.parentFile
+    def target = layout.buildDirectory.dir('generated/research-assets')
+    inputs.files(new File(lab, 'kokoro-runtime.json'), new File(lab, 'profiles.json'),
+                 new File(lab, 'corpus.json'), new File(lab, 'kokoro-clips.json'),
+                 new File(lab, 'realtime/scenarios.json'), new File(lab, 'realtime/prepare.py'),
+                 new File(rootProject.projectDir, 'prepare_assets.py'))
+    inputs.dir(new File(lab, 'audio/kokoro'))
+    outputs.dir(target)
+    workingDir rootProject.projectDir
+    commandLine 'python3', 'prepare_assets.py', target.get().asFile.absolutePath
+}
+tasks.named('preBuild').configure { dependsOn prepareResearchAssets }
