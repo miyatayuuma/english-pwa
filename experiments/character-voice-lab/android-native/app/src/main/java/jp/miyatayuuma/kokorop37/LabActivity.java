@@ -12,6 +12,7 @@ import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.view.View;
+import android.view.WindowInsets;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -58,19 +59,31 @@ public final class LabActivity extends Activity {
 
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
-        getWindow().setStatusBarColor(Color.rgb(24, 33, 52));
-        getWindow().setNavigationBarColor(Color.rgb(24, 33, 52));
+        var screen = new LinearLayout(this);
+        screen.setOrientation(LinearLayout.VERTICAL);
+        screen.setBackgroundColor(Color.rgb(245, 247, 250));
+        screen.setOnApplyWindowInsetsListener((view, insets) -> {
+            var bars = insets.getInsets(WindowInsets.Type.systemBars());
+            view.setPadding(bars.left, bars.top, bars.right, bars.bottom);
+            return insets;
+        });
+
+        var header = new LinearLayout(this);
+        header.setOrientation(LinearLayout.VERTICAL);
+        header.setPadding(dp(18), dp(6), dp(18), dp(8));
+        screen.addView(header);
+        label(header, "Kokoro Pixel Lab · P3.7", 23);
+        status = label(header, "試験データを確認中", 16);
+        status.setAccessibilityLiveRegion(View.ACCESSIBILITY_LIVE_REGION_POLITE);
+
         var scroll = new ScrollView(this);
         var body = new LinearLayout(this);
         body.setOrientation(LinearLayout.VERTICAL);
-        body.setPadding(dp(18), dp(34), dp(18), dp(40));
-        body.setBackgroundColor(Color.rgb(245, 247, 250));
+        body.setPadding(dp(18), 0, dp(18), dp(16));
         scroll.addView(body);
-        setContentView(scroll);
-        label(body, "Kokoro Pixel Lab", 27);
-        label(body, "P3.7 · Androidネイティブ音声合成", 15);
-        status = label(body, "試験データを確認中", 16);
-        status.setAccessibilityLiveRegion(View.ACCESSIBILITY_LIVE_REGION_POLITE);
+        screen.addView(scroll, new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, 0, 1));
+        setContentView(screen);
         try {
             assets = new LabAssets(this);
             results = new Results(this, assets);
@@ -236,14 +249,14 @@ public final class LabActivity extends Activity {
                         if (micReport == identity) set(identity, "speechEndMs", Results.elapsedMs(micStarted));
                     }
                     @Override public void onError(int code) {
-                        if (micReport == identity) finishMic("recognizer-error-" + code);
+                        if (micReport == identity && !asrFinal) finishMic("recognizer-error-" + code);
                     }
                     @Override public void onResults(Bundle data) {
-                        if (micReport != identity) return;
+                        if (micReport != identity || asrFinal) return;
                         inspect(data, identity, true);
                         set(identity, "finalMs", Results.elapsedMs(micStarted));
-                        destroyRecognizer();
                         asrFinal = true;
+                        destroyRecognizer();
                         status.setText("音声認識が確定しました");
                         replyIfReady();
                     }
