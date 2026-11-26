@@ -42,6 +42,7 @@ jobs:
           cp "$LAB/app/build/outputs/apk/debug/app-debug.apk" "$apk"
           tools="$ANDROID_HOME/build-tools/36.0.0"
           "$tools/apksigner" verify --verbose "$apk"
+          "$tools/zipalign" -c -P 16 4 "$apk"
           "$tools/aapt" dump badging "$apk" | tee pixel-kit/apk-info.txt
           grep -F "package: name='jp.miyatayuuma.kokorop37'" pixel-kit/apk-info.txt
           grep -Fx "native-code: 'arm64-v8a'" pixel-kit/apk-info.txt
@@ -72,6 +73,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools'
       - run: python3 -m pip install 'espeakng-loader==0.2.4'
       - run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0' 'ndk;28.2.13676358' 'cmake;3.22.1'
       - name: Enable KVM

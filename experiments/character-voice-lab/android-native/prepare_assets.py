@@ -44,7 +44,7 @@ def build(output):
     runtime["downloads"] = {path: lock[Path(path).name] for path in paths}
     runtime["baseCommit"] = BASE
     runtime["license"] = "Apache-2.0"
-    runtime["ortAndroid"] = "1.22.0"
+    runtime["ortAndroid"] = "1.32.0"
     runtime["phonemizer"] = {
         "library": "eSpeak NG 1.52.0",
         "revision": ESPEAK,

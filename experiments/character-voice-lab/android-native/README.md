@@ -28,7 +28,7 @@ Pixel 9向けの独立したARM64試験アプリ。パッケージ名は `jp.miy
 
 ## 実装・再現
 
-- Native ONNX Runtime Android 1.22.0（MIT）。同じ条件ではセッションを常駐させる。XNNPACKは未対応演算にCPUを使用する。EPのノード割当・高速化は未判定。q4は比較対象から外した。
+- Native ONNX Runtime Android 1.32.0（MIT）。同じ条件ではセッションを常駐させる。XNNPACKは未対応演算にCPUを使用する。EPのノード割当・高速化は未判定。q4は比較対象から外した。
 - モデル・声ベクトル・トークナイザは [ONNX Communityの固定リビジョン](https://huggingface.co/onnx-community/Kokoro-82M-v1.0-ONNX/tree/1939ad2a8e416c0acfeecc08a694d14ef25f2231)（Apache-2.0）。P3.6の `realtime/prepare.py` から取得するSHA-256をAPKに同梱。ダウンロードしたファイルは検証後に原子的に配置する。
 - 20人の声設定はP3.5の `profiles.json` を直接使用。事前生成クリップのモデル・声・アクセント・話速・MP3ハッシュをビルド時に照合する。P4.2の音声は、この公開ラボに持ち込まず、同じ公開プロファイルの来歴で照合を受ける。
 - eSpeak NG 1.52.0の [対応ソースとライセンス](https://github.com/espeak-ng/espeak-ng/tree/4870adfa25b1a32b4361592f1be8a40337c58d6c)（GPL-3.0-or-later）。JNIラッパーもGPL-3.0-or-later。データは同リビジョン由来の `espeakng-loader==0.2.4` から取り出してハッシュを記録する。P3.5のPython phonemizerと句読点・略語の処理差があるため、比較BとCを分け、音素をログに保持する。
