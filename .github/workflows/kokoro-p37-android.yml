@@ -1,0 +1,56 @@
+name: Kokoro P3.7 Pixel APK
+
+on:
+  pull_request:
+    branches: [research/p3-6-kokoro-realtime]
+    paths:
+      - 'experiments/character-voice-lab/android-native/**'
+      - '.github/workflows/kokoro-p37-android.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  pixel-apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      LAB: experiments/character-voice-lab/android-native
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools'
+      - run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0' 'ndk;28.2.13676358' 'cmake;3.22.1'
+      - run: python3 -m pip install 'espeakng-loader==0.2.4'
+      - run: bash "$LAB/tests/check-host.sh"
+      - run: ./android/gradlew -p "$LAB" :app:assembleDebug --no-daemon
+      - name: Verify and package the signed ARM64 APK
+        run: |
+          mkdir -p pixel-kit
+          apk=pixel-kit/Kokoro-Pixel-Lab-P37.apk
+          cp "$LAB/app/build/outputs/apk/debug/app-debug.apk" "$apk"
+          tools="$ANDROID_HOME/build-tools/36.0.0"
+          "$tools/apksigner" verify --verbose "$apk"
+          "$tools/aapt" dump badging "$apk" | tee pixel-kit/apk-info.txt
+          grep -F "package: name='jp.miyatayuuma.kokorop37'" pixel-kit/apk-info.txt
+          grep -Fx "native-code: 'arm64-v8a'" pixel-kit/apk-info.txt
+          python3 "$LAB/tests/verify_apk.py" "$apk"
+          git rev-parse HEAD > pixel-kit/source-commit.txt
+          cp "$LAB/README.md" "$LAB/P6-BRIDGE.md" pixel-kit/
+          (cd pixel-kit && sha256sum Kokoro-Pixel-Lab-P37.apk > SHA256SUMS)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kokoro-p37-pixel-apk
+          path: pixel-kit/
+          if-no-files-found: error
+          retention-days: 30
